@@ -1,0 +1,52 @@
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+
+package telnyx_test
+
+import (
+	"context"
+	"errors"
+	"os"
+	"testing"
+	"time"
+
+	"github.com/stainless-sdks/telnyx-go"
+	"github.com/stainless-sdks/telnyx-go/internal/testutil"
+	"github.com/stainless-sdks/telnyx-go/option"
+)
+
+func TestMessagingOptoutListWithOptionalParams(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.MessagingOptouts.List(context.TODO(), telnyx.MessagingOptoutListParams{
+		CreatedAt: telnyx.MessagingOptoutListParamsCreatedAt{
+			Gte: telnyx.Time(time.Now()),
+			Lte: telnyx.Time(time.Now()),
+		},
+		Filter: telnyx.MessagingOptoutListParamsFilter{
+			From:               telnyx.String("from"),
+			MessagingProfileID: telnyx.String("messaging_profile_id"),
+		},
+		Page: telnyx.MessagingOptoutListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
+		RedactionEnabled: telnyx.String("redaction_enabled"),
+	})
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
