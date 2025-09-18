@@ -1,7 +1,7 @@
 package sentinel
 
 import (
-	"github.com/stainless-sdks/telnyx-go/internal/encoding/json/shims"
+	"github.com/team-telnyx/telnyx-go/internal/encoding/json/shims"
 	"reflect"
 	"sync"
 )

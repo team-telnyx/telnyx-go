@@ -18,10 +18,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stainless-sdks/telnyx-go/internal"
-	"github.com/stainless-sdks/telnyx-go/internal/apierror"
-	"github.com/stainless-sdks/telnyx-go/internal/apiform"
-	"github.com/stainless-sdks/telnyx-go/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/internal"
+	"github.com/team-telnyx/telnyx-go/internal/apierror"
+	"github.com/team-telnyx/telnyx-go/internal/apiform"
+	"github.com/team-telnyx/telnyx-go/internal/apiquery"
 )
 
 func getDefaultHeaders() map[string]string {

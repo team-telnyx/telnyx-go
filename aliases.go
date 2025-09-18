@@ -3,9 +3,9 @@
 package telnyx
 
 import (
-	"github.com/stainless-sdks/telnyx-go/internal/apierror"
-	"github.com/stainless-sdks/telnyx-go/packages/param"
-	"github.com/stainless-sdks/telnyx-go/shared"
+	"github.com/team-telnyx/telnyx-go/internal/apierror"
+	"github.com/team-telnyx/telnyx-go/packages/param"
+	"github.com/team-telnyx/telnyx-go/shared"
 )
 
 // aliased to make [param.APIUnion] private when embedding

@@ -13,9 +13,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/telnyx-go"
-	"github.com/stainless-sdks/telnyx-go/internal/testutil"
-	"github.com/stainless-sdks/telnyx-go/option"
+	"github.com/team-telnyx/telnyx-go"
+	"github.com/team-telnyx/telnyx-go/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/option"
 )
 
 func TestDocumentGet(t *testing.T) {

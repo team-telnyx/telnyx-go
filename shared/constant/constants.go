@@ -3,7 +3,7 @@
 package constant
 
 import (
-	shimjson "github.com/stainless-sdks/telnyx-go/internal/encoding/json"
+	shimjson "github.com/team-telnyx/telnyx-go/internal/encoding/json"
 )
 
 type Constant[T any] interface {

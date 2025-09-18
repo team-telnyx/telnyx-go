@@ -9,12 +9,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/stainless-sdks/telnyx-go/internal/apijson"
-	shimjson "github.com/stainless-sdks/telnyx-go/internal/encoding/json"
-	"github.com/stainless-sdks/telnyx-go/internal/requestconfig"
-	"github.com/stainless-sdks/telnyx-go/option"
-	"github.com/stainless-sdks/telnyx-go/packages/param"
-	"github.com/stainless-sdks/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/internal/apijson"
+	shimjson "github.com/team-telnyx/telnyx-go/internal/encoding/json"
+	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/option"
+	"github.com/team-telnyx/telnyx-go/packages/param"
+	"github.com/team-telnyx/telnyx-go/packages/respjson"
 )
 
 // CustomStorageCredentialService contains methods and other services that help

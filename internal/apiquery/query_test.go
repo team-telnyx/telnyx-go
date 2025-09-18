@@ -1,7 +1,7 @@
 package apiquery
 
 import (
-	"github.com/stainless-sdks/telnyx-go/packages/param"
+	"github.com/team-telnyx/telnyx-go/packages/param"
 	"net/url"
 	"testing"
 	"time"

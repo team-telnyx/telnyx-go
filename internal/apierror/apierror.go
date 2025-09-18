@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"net/http/httputil"
 
-	"github.com/stainless-sdks/telnyx-go/internal/apijson"
-	"github.com/stainless-sdks/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/packages/respjson"
 )
 
 // Error represents an error that originates from the API, i.e. when a request is
