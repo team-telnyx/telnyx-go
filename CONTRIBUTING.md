@@ -41,7 +41,7 @@ To use a local version of this library from source in another project, edit the 
 directive. This can be done through the CLI with the following:
 
 ```sh
-$ go mod edit -replace github.com/stainless-sdks/telnyx-go=/path/to/telnyx-go
+$ go mod edit -replace github.com/team-telnyx/telnyx-go=/path/to/telnyx-go
 ```
 
 ## Running tests

@@ -6,9 +6,9 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/stainless-sdks/telnyx-go/internal/apijson"
-	"github.com/stainless-sdks/telnyx-go/packages/param"
-	"github.com/stainless-sdks/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/packages/param"
+	"github.com/team-telnyx/telnyx-go/packages/respjson"
 )
 
 // aliased to make [param.APIUnion] private when embedding

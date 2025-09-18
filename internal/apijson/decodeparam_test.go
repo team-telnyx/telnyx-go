@@ -3,8 +3,8 @@ package apijson_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/stainless-sdks/telnyx-go/internal/apijson"
-	"github.com/stainless-sdks/telnyx-go/packages/param"
+	"github.com/team-telnyx/telnyx-go/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/packages/param"
 	"reflect"
 	"testing"
 )

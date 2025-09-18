@@ -2,7 +2,7 @@ package param_test
 
 import (
 	"encoding/json"
-	"github.com/stainless-sdks/telnyx-go/packages/param"
+	"github.com/team-telnyx/telnyx-go/packages/param"
 	"testing"
 )
 

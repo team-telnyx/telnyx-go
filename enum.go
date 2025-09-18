@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/stainless-sdks/telnyx-go/internal/requestconfig"
-	"github.com/stainless-sdks/telnyx-go/option"
+	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/option"
 )
 
 // EnumService contains methods and other services that help with interacting with

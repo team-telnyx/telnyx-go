@@ -12,11 +12,11 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/stainless-sdks/telnyx-go/internal/apiform"
-	"github.com/stainless-sdks/telnyx-go/internal/apijson"
-	"github.com/stainless-sdks/telnyx-go/internal/requestconfig"
-	"github.com/stainless-sdks/telnyx-go/option"
-	"github.com/stainless-sdks/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/internal/apiform"
+	"github.com/team-telnyx/telnyx-go/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/option"
+	"github.com/team-telnyx/telnyx-go/packages/respjson"
 )
 
 // StorageBucketSslCertificateService contains methods and other services that help

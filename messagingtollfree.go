@@ -3,7 +3,7 @@
 package telnyx
 
 import (
-	"github.com/stainless-sdks/telnyx-go/option"
+	"github.com/team-telnyx/telnyx-go/option"
 )
 
 // MessagingTollfreeService contains methods and other services that help with

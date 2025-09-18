@@ -6,11 +6,11 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/stainless-sdks/telnyx-go/internal/apijson"
-	"github.com/stainless-sdks/telnyx-go/internal/requestconfig"
-	"github.com/stainless-sdks/telnyx-go/option"
-	"github.com/stainless-sdks/telnyx-go/packages/param"
-	"github.com/stainless-sdks/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/option"
+	"github.com/team-telnyx/telnyx-go/packages/param"
+	"github.com/team-telnyx/telnyx-go/packages/respjson"
 )
 
 // TexmlService contains methods and other services that help with interacting with

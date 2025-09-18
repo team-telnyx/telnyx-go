@@ -1,7 +1,7 @@
 package apijson
 
 import (
-	"github.com/stainless-sdks/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/packages/respjson"
 	"reflect"
 )
 

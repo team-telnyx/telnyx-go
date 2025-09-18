@@ -11,12 +11,12 @@ import (
 	"mime/multipart"
 	"net/http"
 
-	"github.com/stainless-sdks/telnyx-go/internal/apiform"
-	"github.com/stainless-sdks/telnyx-go/internal/apijson"
-	"github.com/stainless-sdks/telnyx-go/internal/requestconfig"
-	"github.com/stainless-sdks/telnyx-go/option"
-	"github.com/stainless-sdks/telnyx-go/packages/respjson"
-	"github.com/stainless-sdks/telnyx-go/shared"
+	"github.com/team-telnyx/telnyx-go/internal/apiform"
+	"github.com/team-telnyx/telnyx-go/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/option"
+	"github.com/team-telnyx/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/shared"
 )
 
 // MessagingHostedNumberOrderActionService contains methods and other services that

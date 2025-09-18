@@ -2,7 +2,7 @@ package param
 
 import (
 	"encoding/json"
-	"github.com/stainless-sdks/telnyx-go/internal/encoding/json/sentinel"
+	"github.com/team-telnyx/telnyx-go/internal/encoding/json/sentinel"
 	"reflect"
 )
 

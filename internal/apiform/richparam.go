@@ -1,7 +1,7 @@
 package apiform
 
 import (
-	"github.com/stainless-sdks/telnyx-go/packages/param"
+	"github.com/team-telnyx/telnyx-go/packages/param"
 	"mime/multipart"
 	"reflect"
 )

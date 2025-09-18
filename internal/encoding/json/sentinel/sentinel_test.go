@@ -1,8 +1,8 @@
 package sentinel_test
 
 import (
-	"github.com/stainless-sdks/telnyx-go/internal/encoding/json/sentinel"
-	"github.com/stainless-sdks/telnyx-go/packages/param"
+	"github.com/team-telnyx/telnyx-go/internal/encoding/json/sentinel"
+	"github.com/team-telnyx/telnyx-go/packages/param"
 	"reflect"
 	"slices"
 	"testing"
