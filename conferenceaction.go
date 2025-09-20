@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	shimjson "github.com/team-telnyx/telnyx-go/internal/encoding/json"
@@ -38,7 +39,7 @@ func NewConferenceActionService(opts ...option.RequestOption) (r ConferenceActio
 
 // Update conference participant supervisor_role
 func (r *ConferenceActionService) Update(ctx context.Context, id string, body ConferenceActionUpdateParams, opts ...option.RequestOption) (res *ConferenceActionUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *ConferenceActionService) Update(ctx context.Context, id string, body Co
 
 // Hold a list of participants in a conference call
 func (r *ConferenceActionService) Hold(ctx context.Context, id string, body ConferenceActionHoldParams, opts ...option.RequestOption) (res *ConferenceActionHoldResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -73,7 +74,7 @@ func (r *ConferenceActionService) Hold(ctx context.Context, id string, body Conf
 // - `conference.participant.joined`
 // - `conference.participant.left`
 func (r *ConferenceActionService) Join(ctx context.Context, id string, body ConferenceActionJoinParams, opts ...option.RequestOption) (res *ConferenceActionJoinResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -91,7 +92,7 @@ func (r *ConferenceActionService) Join(ctx context.Context, id string, body Conf
 //
 // - `conference.participant.left`
 func (r *ConferenceActionService) Leave(ctx context.Context, id string, body ConferenceActionLeaveParams, opts ...option.RequestOption) (res *ConferenceActionLeaveResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -103,7 +104,7 @@ func (r *ConferenceActionService) Leave(ctx context.Context, id string, body Con
 
 // Mute a list of participants in a conference call
 func (r *ConferenceActionService) Mute(ctx context.Context, id string, body ConferenceActionMuteParams, opts ...option.RequestOption) (res *ConferenceActionMuteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -115,7 +116,7 @@ func (r *ConferenceActionService) Mute(ctx context.Context, id string, body Conf
 
 // Play audio to all or some participants on a conference call.
 func (r *ConferenceActionService) Play(ctx context.Context, id string, body ConferenceActionPlayParams, opts ...option.RequestOption) (res *ConferenceActionPlayResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -127,7 +128,7 @@ func (r *ConferenceActionService) Play(ctx context.Context, id string, body Conf
 
 // Pause conference recording.
 func (r *ConferenceActionService) RecordPause(ctx context.Context, id string, body ConferenceActionRecordPauseParams, opts ...option.RequestOption) (res *ConferenceActionRecordPauseResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -139,7 +140,7 @@ func (r *ConferenceActionService) RecordPause(ctx context.Context, id string, bo
 
 // Resume conference recording.
 func (r *ConferenceActionService) RecordResume(ctx context.Context, id string, body ConferenceActionRecordResumeParams, opts ...option.RequestOption) (res *ConferenceActionRecordResumeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -158,7 +159,7 @@ func (r *ConferenceActionService) RecordResume(ctx context.Context, id string, b
 //
 // - `conference.recording.saved`
 func (r *ConferenceActionService) RecordStart(ctx context.Context, id string, body ConferenceActionRecordStartParams, opts ...option.RequestOption) (res *ConferenceActionRecordStartResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -176,7 +177,7 @@ func (r *ConferenceActionService) RecordStart(ctx context.Context, id string, bo
 //
 // - `conference.recording.saved`
 func (r *ConferenceActionService) RecordStop(ctx context.Context, id string, body ConferenceActionRecordStopParams, opts ...option.RequestOption) (res *ConferenceActionRecordStopResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -188,7 +189,7 @@ func (r *ConferenceActionService) RecordStop(ctx context.Context, id string, bod
 
 // Convert text to speech and play it to all or some participants.
 func (r *ConferenceActionService) Speak(ctx context.Context, id string, body ConferenceActionSpeakParams, opts ...option.RequestOption) (res *ConferenceActionSpeakResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -200,7 +201,7 @@ func (r *ConferenceActionService) Speak(ctx context.Context, id string, body Con
 
 // Stop audio being played to all or some participants on a conference call.
 func (r *ConferenceActionService) Stop(ctx context.Context, id string, body ConferenceActionStopParams, opts ...option.RequestOption) (res *ConferenceActionStopResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -212,7 +213,7 @@ func (r *ConferenceActionService) Stop(ctx context.Context, id string, body Conf
 
 // Unhold a list of participants in a conference call
 func (r *ConferenceActionService) Unhold(ctx context.Context, id string, body ConferenceActionUnholdParams, opts ...option.RequestOption) (res *ConferenceActionUnholdResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -224,7 +225,7 @@ func (r *ConferenceActionService) Unhold(ctx context.Context, id string, body Co
 
 // Unmute a list of participants in a conference call
 func (r *ConferenceActionService) Unmute(ctx context.Context, id string, body ConferenceActionUnmuteParams, opts ...option.RequestOption) (res *ConferenceActionUnmuteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -51,7 +52,7 @@ func NewExternalConnectionService(opts ...option.RequestOption) (r ExternalConne
 // created, you can assign phone numbers to your application using the
 // `/phone_numbers` endpoint.
 func (r *ExternalConnectionService) New(ctx context.Context, body ExternalConnectionNewParams, opts ...option.RequestOption) (res *ExternalConnectionNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "external_connections"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -60,7 +61,7 @@ func (r *ExternalConnectionService) New(ctx context.Context, body ExternalConnec
 // Return the details of an existing External Connection inside the 'data'
 // attribute of the response.
 func (r *ExternalConnectionService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ExternalConnectionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -73,7 +74,7 @@ func (r *ExternalConnectionService) Get(ctx context.Context, id string, opts ...
 // Updates settings of an existing External Connection based on the parameters of
 // the request.
 func (r *ExternalConnectionService) Update(ctx context.Context, id string, body ExternalConnectionUpdateParams, opts ...option.RequestOption) (res *ExternalConnectionUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -88,7 +89,7 @@ func (r *ExternalConnectionService) Update(ctx context.Context, id string, body 
 // seamless configure SIP trunking integrations with Telnyx Partners, through
 // External Voice Integrations in Mission Control Portal.
 func (r *ExternalConnectionService) List(ctx context.Context, query ExternalConnectionListParams, opts ...option.RequestOption) (res *ExternalConnectionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "external_connections"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -99,7 +100,7 @@ func (r *ExternalConnectionService) List(ctx context.Context, query ExternalConn
 // Connect connection. To remove an Operator Connect integration please contact
 // Telnyx support.
 func (r *ExternalConnectionService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *ExternalConnectionDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -111,7 +112,7 @@ func (r *ExternalConnectionService) Delete(ctx context.Context, id string, opts 
 
 // Update a location's static emergency address
 func (r *ExternalConnectionService) UpdateLocation(ctx context.Context, locationID string, params ExternalConnectionUpdateLocationParams, opts ...option.RequestOption) (res *ExternalConnectionUpdateLocationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.ID == "" {
 		err = errors.New("missing required id parameter")
 		return

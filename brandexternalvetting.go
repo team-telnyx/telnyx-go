@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -36,7 +37,7 @@ func NewBrandExternalVettingService(opts ...option.RequestOption) (r BrandExtern
 
 // Get list of valid external vetting record for a given brand
 func (r *BrandExternalVettingService) List(ctx context.Context, brandID string, opts ...option.RequestOption) (res *BrandExternalVettingListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
 		return
@@ -51,7 +52,7 @@ func (r *BrandExternalVettingService) List(ctx context.Context, brandID string, 
 // record, it will be saved with the brand and will be considered for future
 // campaign qualification.
 func (r *BrandExternalVettingService) Import(ctx context.Context, brandID string, body BrandExternalVettingImportParams, opts ...option.RequestOption) (res *BrandExternalVettingImportResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
 		return
@@ -63,7 +64,7 @@ func (r *BrandExternalVettingService) Import(ctx context.Context, brandID string
 
 // Order new external vetting for a brand
 func (r *BrandExternalVettingService) Order(ctx context.Context, brandID string, body BrandExternalVettingOrderParams, opts ...option.RequestOption) (res *BrandExternalVettingOrderResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
 		return

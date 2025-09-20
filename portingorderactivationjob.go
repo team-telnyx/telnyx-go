@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewPortingOrderActivationJobService(opts ...option.RequestOption) (r Portin
 
 // Returns a porting activation job.
 func (r *PortingOrderActivationJobService) Get(ctx context.Context, activationJobID string, query PortingOrderActivationJobGetParams, opts ...option.RequestOption) (res *PortingOrderActivationJobGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.ID == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *PortingOrderActivationJobService) Get(ctx context.Context, activationJo
 
 // Updates the activation time of a porting activation job.
 func (r *PortingOrderActivationJobService) Update(ctx context.Context, activationJobID string, params PortingOrderActivationJobUpdateParams, opts ...option.RequestOption) (res *PortingOrderActivationJobUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.ID == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -71,7 +72,7 @@ func (r *PortingOrderActivationJobService) Update(ctx context.Context, activatio
 
 // Returns a list of your porting activation jobs.
 func (r *PortingOrderActivationJobService) List(ctx context.Context, id string, query PortingOrderActivationJobListParams, opts ...option.RequestOption) (res *PortingOrderActivationJobListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

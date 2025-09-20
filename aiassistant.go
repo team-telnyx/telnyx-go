@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -50,7 +51,7 @@ func NewAIAssistantService(opts ...option.RequestOption) (r AIAssistantService) 
 
 // Create a new AI Assistant.
 func (r *AIAssistantService) New(ctx context.Context, body AIAssistantNewParams, opts ...option.RequestOption) (res *AIAssistantNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -58,7 +59,7 @@ func (r *AIAssistantService) New(ctx context.Context, body AIAssistantNewParams,
 
 // Retrieve an AI Assistant configuration by `assistant_id`.
 func (r *AIAssistantService) Get(ctx context.Context, assistantID string, query AIAssistantGetParams, opts ...option.RequestOption) (res *AIAssistantGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return
@@ -70,7 +71,7 @@ func (r *AIAssistantService) Get(ctx context.Context, assistantID string, query 
 
 // Update an AI Assistant's attributes.
 func (r *AIAssistantService) Update(ctx context.Context, assistantID string, body AIAssistantUpdateParams, opts ...option.RequestOption) (res *AIAssistantUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return
@@ -82,7 +83,7 @@ func (r *AIAssistantService) Update(ctx context.Context, assistantID string, bod
 
 // Retrieve a list of all AI Assistants configured by the user.
 func (r *AIAssistantService) List(ctx context.Context, opts ...option.RequestOption) (res *AssistantsList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -90,7 +91,7 @@ func (r *AIAssistantService) List(ctx context.Context, opts ...option.RequestOpt
 
 // Delete an AI Assistant by `assistant_id`.
 func (r *AIAssistantService) Delete(ctx context.Context, assistantID string, opts ...option.RequestOption) (res *AIAssistantDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return
@@ -109,7 +110,7 @@ func (r *AIAssistantService) Delete(ctx context.Context, assistantID string, opt
 // and
 // [manually add messages to a conversation](https://developers.telnyx.com/api/inference/inference-embedding/add-new-message).
 func (r *AIAssistantService) Chat(ctx context.Context, assistantID string, body AIAssistantChatParams, opts ...option.RequestOption) (res *AIAssistantChatResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return
@@ -121,7 +122,7 @@ func (r *AIAssistantService) Chat(ctx context.Context, assistantID string, body 
 
 // Clone an existing assistant, excluding telephony and messaging settings.
 func (r *AIAssistantService) Clone(ctx context.Context, assistantID string, opts ...option.RequestOption) (res *AIAssistantCloneResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return
@@ -133,7 +134,7 @@ func (r *AIAssistantService) Clone(ctx context.Context, assistantID string, opts
 
 // Get an assistant texml by `assistant_id`.
 func (r *AIAssistantService) GetTexml(ctx context.Context, assistantID string, opts ...option.RequestOption) (res *string, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return
@@ -147,7 +148,7 @@ func (r *AIAssistantService) GetTexml(ctx context.Context, assistantID string, o
 // imported will be overwritten with its latest version from the importing
 // provider.
 func (r *AIAssistantService) Import(ctx context.Context, body AIAssistantImportParams, opts ...option.RequestOption) (res *AssistantsList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants/import"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

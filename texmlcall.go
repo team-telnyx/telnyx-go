@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	shimjson "github.com/team-telnyx/telnyx-go/internal/encoding/json"
@@ -39,7 +40,7 @@ func NewTexmlCallService(opts ...option.RequestOption) (r TexmlCallService) {
 // Update TeXML call. Please note that the keys present in the payload MUST BE
 // formatted in CamelCase as specified in the example.
 func (r *TexmlCallService) Update(ctx context.Context, callSid string, body TexmlCallUpdateParams, opts ...option.RequestOption) (res *TexmlCallUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callSid == "" {
 		err = errors.New("missing required call_sid parameter")
 		return
@@ -52,7 +53,7 @@ func (r *TexmlCallService) Update(ctx context.Context, callSid string, body Texm
 // Initiate an outbound TeXML call. Telnyx will request TeXML from the XML Request
 // URL configured for the connection in the Mission Control Portal.
 func (r *TexmlCallService) Initiate(ctx context.Context, applicationID string, body TexmlCallInitiateParams, opts ...option.RequestOption) (res *TexmlCallInitiateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if applicationID == "" {
 		err = errors.New("missing required application_id parameter")
 		return

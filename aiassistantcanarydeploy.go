@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -42,7 +43,7 @@ func NewAIAssistantCanaryDeployService(opts ...option.RequestOption) (r AIAssist
 // Creates a new canary deploy configuration with multiple version IDs and their
 // traffic percentages for A/B testing or gradual rollouts of assistant versions.
 func (r *AIAssistantCanaryDeployService) New(ctx context.Context, assistantID string, body AIAssistantCanaryDeployNewParams, opts ...option.RequestOption) (res *CanaryDeployResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return
@@ -57,7 +58,7 @@ func (r *AIAssistantCanaryDeployService) New(ctx context.Context, assistantID st
 // Retrieves the current canary deploy configuration with all version IDs and their
 // traffic percentages for the specified assistant.
 func (r *AIAssistantCanaryDeployService) Get(ctx context.Context, assistantID string, opts ...option.RequestOption) (res *CanaryDeployResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return
@@ -73,7 +74,7 @@ func (r *AIAssistantCanaryDeployService) Get(ctx context.Context, assistantID st
 // percentages. All old versions and percentages are replaces by new ones from this
 // request.
 func (r *AIAssistantCanaryDeployService) Update(ctx context.Context, assistantID string, body AIAssistantCanaryDeployUpdateParams, opts ...option.RequestOption) (res *CanaryDeployResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return
@@ -87,7 +88,7 @@ func (r *AIAssistantCanaryDeployService) Update(ctx context.Context, assistantID
 //
 // Removes all canary deploy configurations for the specified assistant.
 func (r *AIAssistantCanaryDeployService) Delete(ctx context.Context, assistantID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")

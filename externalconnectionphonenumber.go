@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -39,7 +40,7 @@ func NewExternalConnectionPhoneNumberService(opts ...option.RequestOption) (r Ex
 // Return the details of a phone number associated with the given external
 // connection.
 func (r *ExternalConnectionPhoneNumberService) Get(ctx context.Context, phoneNumberID string, query ExternalConnectionPhoneNumberGetParams, opts ...option.RequestOption) (res *ExternalConnectionPhoneNumberGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.ID == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -56,7 +57,7 @@ func (r *ExternalConnectionPhoneNumberService) Get(ctx context.Context, phoneNum
 // Asynchronously update settings of the phone number associated with the given
 // external connection.
 func (r *ExternalConnectionPhoneNumberService) Update(ctx context.Context, phoneNumberID string, params ExternalConnectionPhoneNumberUpdateParams, opts ...option.RequestOption) (res *ExternalConnectionPhoneNumberUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.ID == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -73,7 +74,7 @@ func (r *ExternalConnectionPhoneNumberService) Update(ctx context.Context, phone
 // Returns a list of all active phone numbers associated with the given external
 // connection.
 func (r *ExternalConnectionPhoneNumberService) List(ctx context.Context, id string, query ExternalConnectionPhoneNumberListParams, opts ...option.RequestOption) (res *ExternalConnectionPhoneNumberListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

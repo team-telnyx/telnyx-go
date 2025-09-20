@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -45,7 +46,7 @@ func NewAIConversationService(opts ...option.RequestOption) (r AIConversationSer
 
 // Create a new AI Conversation.
 func (r *AIConversationService) New(ctx context.Context, body AIConversationNewParams, opts ...option.RequestOption) (res *Conversation, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/conversations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -53,7 +54,7 @@ func (r *AIConversationService) New(ctx context.Context, body AIConversationNewP
 
 // Retrieve a specific AI conversation by its ID.
 func (r *AIConversationService) Get(ctx context.Context, conversationID string, opts ...option.RequestOption) (res *AIConversationGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if conversationID == "" {
 		err = errors.New("missing required conversation_id parameter")
 		return
@@ -65,7 +66,7 @@ func (r *AIConversationService) Get(ctx context.Context, conversationID string, 
 
 // Update metadata for a specific conversation.
 func (r *AIConversationService) Update(ctx context.Context, conversationID string, body AIConversationUpdateParams, opts ...option.RequestOption) (res *AIConversationUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if conversationID == "" {
 		err = errors.New("missing required conversation_id parameter")
 		return
@@ -81,7 +82,7 @@ func (r *AIConversationService) Update(ctx context.Context, conversationID strin
 // can filter on any field in the metadata JSON object. For example, to filter by a
 // custom field `metadata->custom_field`, use `metadata->custom_field=eq.value`.
 func (r *AIConversationService) List(ctx context.Context, query AIConversationListParams, opts ...option.RequestOption) (res *AIConversationListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/conversations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -89,7 +90,7 @@ func (r *AIConversationService) List(ctx context.Context, query AIConversationLi
 
 // Delete a specific conversation by its ID.
 func (r *AIConversationService) Delete(ctx context.Context, conversationID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if conversationID == "" {
 		err = errors.New("missing required conversation_id parameter")
@@ -102,7 +103,7 @@ func (r *AIConversationService) Delete(ctx context.Context, conversationID strin
 
 // Retrieve insights for a specific conversation
 func (r *AIConversationService) GetConversationsInsights(ctx context.Context, conversationID string, opts ...option.RequestOption) (res *AIConversationGetConversationsInsightsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if conversationID == "" {
 		err = errors.New("missing required conversation_id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewSubNumberOrderService(opts ...option.RequestOption) (r SubNumberOrderSer
 
 // Get an existing sub number order.
 func (r *SubNumberOrderService) Get(ctx context.Context, subNumberOrderID string, query SubNumberOrderGetParams, opts ...option.RequestOption) (res *SubNumberOrderGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if subNumberOrderID == "" {
 		err = errors.New("missing required sub_number_order_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *SubNumberOrderService) Get(ctx context.Context, subNumberOrderID string
 
 // Updates a sub number order.
 func (r *SubNumberOrderService) Update(ctx context.Context, subNumberOrderID string, body SubNumberOrderUpdateParams, opts ...option.RequestOption) (res *SubNumberOrderUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if subNumberOrderID == "" {
 		err = errors.New("missing required sub_number_order_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *SubNumberOrderService) Update(ctx context.Context, subNumberOrderID str
 
 // Get a paginated list of sub number orders.
 func (r *SubNumberOrderService) List(ctx context.Context, query SubNumberOrderListParams, opts ...option.RequestOption) (res *SubNumberOrderListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "sub_number_orders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -71,7 +72,7 @@ func (r *SubNumberOrderService) List(ctx context.Context, query SubNumberOrderLi
 
 // Allows you to cancel a sub number order in 'pending' status.
 func (r *SubNumberOrderService) Cancel(ctx context.Context, subNumberOrderID string, opts ...option.RequestOption) (res *SubNumberOrderCancelResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if subNumberOrderID == "" {
 		err = errors.New("missing required sub_number_order_id parameter")
 		return
@@ -83,7 +84,7 @@ func (r *SubNumberOrderService) Cancel(ctx context.Context, subNumberOrderID str
 
 // Update requirement group for a sub number order
 func (r *SubNumberOrderService) UpdateRequirementGroup(ctx context.Context, id string, body SubNumberOrderUpdateRequirementGroupParams, opts ...option.RequestOption) (res *SubNumberOrderUpdateRequirementGroupResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

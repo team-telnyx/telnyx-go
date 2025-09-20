@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -39,7 +40,7 @@ func NewOutboundVoiceProfileService(opts ...option.RequestOption) (r OutboundVoi
 
 // Create an outbound voice profile.
 func (r *OutboundVoiceProfileService) New(ctx context.Context, body OutboundVoiceProfileNewParams, opts ...option.RequestOption) (res *OutboundVoiceProfileNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "outbound_voice_profiles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *OutboundVoiceProfileService) New(ctx context.Context, body OutboundVoic
 
 // Retrieves the details of an existing outbound voice profile.
 func (r *OutboundVoiceProfileService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *OutboundVoiceProfileGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *OutboundVoiceProfileService) Get(ctx context.Context, id string, opts .
 
 // Updates an existing outbound voice profile.
 func (r *OutboundVoiceProfileService) Update(ctx context.Context, id string, body OutboundVoiceProfileUpdateParams, opts ...option.RequestOption) (res *OutboundVoiceProfileUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -72,7 +73,7 @@ func (r *OutboundVoiceProfileService) Update(ctx context.Context, id string, bod
 // Get all outbound voice profiles belonging to the user that match the given
 // filters.
 func (r *OutboundVoiceProfileService) List(ctx context.Context, query OutboundVoiceProfileListParams, opts ...option.RequestOption) (res *OutboundVoiceProfileListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "outbound_voice_profiles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -80,7 +81,7 @@ func (r *OutboundVoiceProfileService) List(ctx context.Context, query OutboundVo
 
 // Deletes an existing outbound voice profile.
 func (r *OutboundVoiceProfileService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *OutboundVoiceProfileDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewAIAssistantTestRunService(opts ...option.RequestOption) (r AIAssistantTe
 
 // Retrieves detailed information about a specific test run execution
 func (r *AIAssistantTestRunService) Get(ctx context.Context, runID string, query AIAssistantTestRunGetParams, opts ...option.RequestOption) (res *TestRunResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.TestID == "" {
 		err = errors.New("missing required test_id parameter")
 		return
@@ -56,7 +57,7 @@ func (r *AIAssistantTestRunService) Get(ctx context.Context, runID string, query
 // Retrieves paginated execution history for a specific assistant test with
 // filtering options
 func (r *AIAssistantTestRunService) List(ctx context.Context, testID string, query AIAssistantTestRunListParams, opts ...option.RequestOption) (res *PaginatedTestRunList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if testID == "" {
 		err = errors.New("missing required test_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *AIAssistantTestRunService) List(ctx context.Context, testID string, que
 
 // Initiates immediate execution of a specific assistant test
 func (r *AIAssistantTestRunService) Trigger(ctx context.Context, testID string, body AIAssistantTestRunTriggerParams, opts ...option.RequestOption) (res *TestRunResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if testID == "" {
 		err = errors.New("missing required test_id parameter")
 		return

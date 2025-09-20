@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewExternalConnectionCivicAddressService(opts ...option.RequestOption) (r E
 // Return the details of an existing Civic Address with its Locations inside the
 // 'data' attribute of the response.
 func (r *ExternalConnectionCivicAddressService) Get(ctx context.Context, addressID string, query ExternalConnectionCivicAddressGetParams, opts ...option.RequestOption) (res *ExternalConnectionCivicAddressGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.ID == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *ExternalConnectionCivicAddressService) Get(ctx context.Context, address
 
 // Returns the civic addresses and locations from Microsoft Teams.
 func (r *ExternalConnectionCivicAddressService) List(ctx context.Context, id string, query ExternalConnectionCivicAddressListParams, opts ...option.RequestOption) (res *ExternalConnectionCivicAddressListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -37,7 +38,7 @@ func NewTexmlAccountCallRecordingsJsonService(opts ...option.RequestOption) (r T
 
 // Starts recording with specified parameters for call idientified by call_sid.
 func (r *TexmlAccountCallRecordingsJsonService) RecordingsJson(ctx context.Context, callSid string, params TexmlAccountCallRecordingsJsonRecordingsJsonParams, opts ...option.RequestOption) (res *TexmlAccountCallRecordingsJsonRecordingsJsonResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return
@@ -53,7 +54,7 @@ func (r *TexmlAccountCallRecordingsJsonService) RecordingsJson(ctx context.Conte
 
 // Returns recordings for a call identified by call_sid.
 func (r *TexmlAccountCallRecordingsJsonService) GetRecordingsJson(ctx context.Context, callSid string, query TexmlAccountCallRecordingsJsonGetRecordingsJsonParams, opts ...option.RequestOption) (res *TexmlAccountCallRecordingsJsonGetRecordingsJsonResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return

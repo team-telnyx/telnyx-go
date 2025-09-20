@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	shimjson "github.com/team-telnyx/telnyx-go/internal/encoding/json"
@@ -38,7 +39,7 @@ func NewRoomSessionActionService(opts ...option.RequestOption) (r RoomSessionAct
 
 // Note: this will also kick all participants currently present in the room
 func (r *RoomSessionActionService) End(ctx context.Context, roomSessionID string, opts ...option.RequestOption) (res *RoomSessionActionEndResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if roomSessionID == "" {
 		err = errors.New("missing required room_session_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *RoomSessionActionService) End(ctx context.Context, roomSessionID string
 
 // Kick participants from a room session.
 func (r *RoomSessionActionService) Kick(ctx context.Context, roomSessionID string, body RoomSessionActionKickParams, opts ...option.RequestOption) (res *RoomSessionActionKickResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if roomSessionID == "" {
 		err = errors.New("missing required room_session_id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *RoomSessionActionService) Kick(ctx context.Context, roomSessionID strin
 
 // Mute participants in room session.
 func (r *RoomSessionActionService) Mute(ctx context.Context, roomSessionID string, body RoomSessionActionMuteParams, opts ...option.RequestOption) (res *RoomSessionActionMuteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if roomSessionID == "" {
 		err = errors.New("missing required room_session_id parameter")
 		return
@@ -74,7 +75,7 @@ func (r *RoomSessionActionService) Mute(ctx context.Context, roomSessionID strin
 
 // Unmute participants in room session.
 func (r *RoomSessionActionService) Unmute(ctx context.Context, roomSessionID string, body RoomSessionActionUnmuteParams, opts ...option.RequestOption) (res *RoomSessionActionUnmuteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if roomSessionID == "" {
 		err = errors.New("missing required room_session_id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -36,7 +37,7 @@ func NewMessagingNumbersBulkUpdateService(opts ...option.RequestOption) (r Messa
 
 // Update the messaging profile of multiple phone numbers
 func (r *MessagingNumbersBulkUpdateService) New(ctx context.Context, body MessagingNumbersBulkUpdateNewParams, opts ...option.RequestOption) (res *MessagingNumbersBulkUpdateNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "messaging_numbers_bulk_updates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -44,7 +45,7 @@ func (r *MessagingNumbersBulkUpdateService) New(ctx context.Context, body Messag
 
 // Retrieve bulk update status
 func (r *MessagingNumbersBulkUpdateService) Get(ctx context.Context, orderID string, opts ...option.RequestOption) (res *MessagingNumbersBulkUpdateGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if orderID == "" {
 		err = errors.New("missing required order_id parameter")
 		return

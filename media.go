@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewMediaService(opts ...option.RequestOption) (r MediaService) {
 
 // Returns the information about a stored media file.
 func (r *MediaService) Get(ctx context.Context, mediaName string, opts ...option.RequestOption) (res *MediaGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if mediaName == "" {
 		err = errors.New("missing required media_name parameter")
 		return
@@ -50,7 +51,7 @@ func (r *MediaService) Get(ctx context.Context, mediaName string, opts ...option
 
 // Updates a stored media file.
 func (r *MediaService) Update(ctx context.Context, mediaName string, body MediaUpdateParams, opts ...option.RequestOption) (res *MediaUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if mediaName == "" {
 		err = errors.New("missing required media_name parameter")
 		return
@@ -62,7 +63,7 @@ func (r *MediaService) Update(ctx context.Context, mediaName string, body MediaU
 
 // Returns a list of stored media files.
 func (r *MediaService) List(ctx context.Context, query MediaListParams, opts ...option.RequestOption) (res *MediaListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "media"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -70,7 +71,7 @@ func (r *MediaService) List(ctx context.Context, query MediaListParams, opts ...
 
 // Deletes a stored media file.
 func (r *MediaService) Delete(ctx context.Context, mediaName string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if mediaName == "" {
 		err = errors.New("missing required media_name parameter")
@@ -83,7 +84,7 @@ func (r *MediaService) Delete(ctx context.Context, mediaName string, opts ...opt
 
 // Downloads a stored media file.
 func (r *MediaService) Download(ctx context.Context, mediaName string, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
 	if mediaName == "" {
 		err = errors.New("missing required media_name parameter")
@@ -96,7 +97,7 @@ func (r *MediaService) Download(ctx context.Context, mediaName string, opts ...o
 
 // Upload media file to Telnyx so it can be used with other Telnyx services
 func (r *MediaService) Upload(ctx context.Context, body MediaUploadParams, opts ...option.RequestOption) (res *MediaUploadResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "media"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

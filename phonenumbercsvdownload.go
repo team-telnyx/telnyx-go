@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewPhoneNumberCsvDownloadService(opts ...option.RequestOption) (r PhoneNumb
 
 // Create a CSV download
 func (r *PhoneNumberCsvDownloadService) New(ctx context.Context, body PhoneNumberCsvDownloadNewParams, opts ...option.RequestOption) (res *PhoneNumberCsvDownloadNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "phone_numbers/csv_downloads"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *PhoneNumberCsvDownloadService) New(ctx context.Context, body PhoneNumbe
 
 // Retrieve a CSV download
 func (r *PhoneNumberCsvDownloadService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PhoneNumberCsvDownloadGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *PhoneNumberCsvDownloadService) Get(ctx context.Context, id string, opts
 
 // List CSV downloads
 func (r *PhoneNumberCsvDownloadService) List(ctx context.Context, query PhoneNumberCsvDownloadListParams, opts ...option.RequestOption) (res *PhoneNumberCsvDownloadListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "phone_numbers/csv_downloads"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

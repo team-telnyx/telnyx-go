@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -42,7 +43,7 @@ func NewStorageMigrationService(opts ...option.RequestOption) (r StorageMigratio
 // Initiate a migration of data from an external provider into Telnyx Cloud
 // Storage. Currently, only S3 is supported.
 func (r *StorageMigrationService) New(ctx context.Context, body StorageMigrationNewParams, opts ...option.RequestOption) (res *StorageMigrationNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "storage/migrations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -50,7 +51,7 @@ func (r *StorageMigrationService) New(ctx context.Context, body StorageMigration
 
 // Get a Migration
 func (r *StorageMigrationService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *StorageMigrationGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *StorageMigrationService) Get(ctx context.Context, id string, opts ...op
 
 // List all Migrations
 func (r *StorageMigrationService) List(ctx context.Context, opts ...option.RequestOption) (res *StorageMigrationListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "storage/migrations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

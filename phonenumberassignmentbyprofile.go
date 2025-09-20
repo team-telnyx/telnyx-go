@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -46,7 +47,7 @@ func NewPhoneNumberAssignmentByProfileService(opts ...option.RequestOption) (r P
 // cases (where the campaign you're assigning was created with Telnyx 10DLC
 // services), only provide `campaignId`, not `tcrCampaignId`.
 func (r *PhoneNumberAssignmentByProfileService) Assign(ctx context.Context, body PhoneNumberAssignmentByProfileAssignParams, opts ...option.RequestOption) (res *PhoneNumberAssignmentByProfileAssignResponseUnion, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "phoneNumberAssignmentByProfile"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -55,7 +56,7 @@ func (r *PhoneNumberAssignmentByProfileService) Assign(ctx context.Context, body
 // Check the status of the individual phone number/campaign assignments associated
 // with the supplied `taskId`.
 func (r *PhoneNumberAssignmentByProfileService) GetPhoneNumberStatus(ctx context.Context, taskID string, query PhoneNumberAssignmentByProfileGetPhoneNumberStatusParams, opts ...option.RequestOption) (res *PhoneNumberAssignmentByProfileGetPhoneNumberStatusResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
 		err = errors.New("missing required taskId parameter")
 		return
@@ -68,7 +69,7 @@ func (r *PhoneNumberAssignmentByProfileService) GetPhoneNumberStatus(ctx context
 // Check the status of the task associated with assigning all phone numbers on a
 // messaging profile to a campaign by `taskId`.
 func (r *PhoneNumberAssignmentByProfileService) GetStatus(ctx context.Context, taskID string, opts ...option.RequestOption) (res *PhoneNumberAssignmentByProfileGetStatusResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
 		err = errors.New("missing required taskId parameter")
 		return

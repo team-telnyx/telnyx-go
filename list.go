@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -35,7 +36,7 @@ func NewListService(opts ...option.RequestOption) (r ListService) {
 
 // Retrieve a list of all phone numbers using Channel Billing, grouped by Zone.
 func (r *ListService) GetAll(ctx context.Context, opts ...option.RequestOption) (res *ListGetAllResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "list"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -43,7 +44,7 @@ func (r *ListService) GetAll(ctx context.Context, opts ...option.RequestOption) 
 
 // Retrieve a list of phone numbers using Channel Billing for a specific Zone.
 func (r *ListService) GetByZone(ctx context.Context, channelZoneID string, opts ...option.RequestOption) (res *ListGetByZoneResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if channelZoneID == "" {
 		err = errors.New("missing required channel_zone_id parameter")
 		return

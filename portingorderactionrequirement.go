@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewPortingOrderActionRequirementService(opts ...option.RequestOption) (r Po
 
 // Returns a list of action requirements for a specific porting order.
 func (r *PortingOrderActionRequirementService) List(ctx context.Context, portingOrderID string, query PortingOrderActionRequirementListParams, opts ...option.RequestOption) (res *PortingOrderActionRequirementListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if portingOrderID == "" {
 		err = errors.New("missing required porting_order_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *PortingOrderActionRequirementService) List(ctx context.Context, porting
 
 // Initiates a specific action requirement for a porting order.
 func (r *PortingOrderActionRequirementService) Initiate(ctx context.Context, id string, params PortingOrderActionRequirementInitiateParams, opts ...option.RequestOption) (res *PortingOrderActionRequirementInitiateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.PortingOrderID == "" {
 		err = errors.New("missing required porting_order_id parameter")
 		return

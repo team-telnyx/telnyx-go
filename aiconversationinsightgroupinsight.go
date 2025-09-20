@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/option"
@@ -33,7 +34,7 @@ func NewAIConversationInsightGroupInsightService(opts ...option.RequestOption) (
 
 // Assign an insight to a group
 func (r *AIConversationInsightGroupInsightService) Assign(ctx context.Context, insightID string, body AIConversationInsightGroupInsightAssignParams, opts ...option.RequestOption) (res *AIConversationInsightGroupInsightAssignResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if body.GroupID == "" {
 		err = errors.New("missing required group_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AIConversationInsightGroupInsightService) Assign(ctx context.Context, i
 
 // Remove an insight from a group
 func (r *AIConversationInsightGroupInsightService) DeleteUnassign(ctx context.Context, insightID string, body AIConversationInsightGroupInsightDeleteUnassignParams, opts ...option.RequestOption) (res *AIConversationInsightGroupInsightDeleteUnassignResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if body.GroupID == "" {
 		err = errors.New("missing required group_id parameter")
 		return

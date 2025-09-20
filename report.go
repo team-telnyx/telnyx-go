@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -41,7 +42,7 @@ func NewReportService(opts ...option.RequestOption) (r ReportService) {
 
 // Fetch all Mdr records
 func (r *ReportService) ListMdrs(ctx context.Context, query ReportListMdrsParams, opts ...option.RequestOption) (res *ReportListMdrsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "reports/mdrs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -49,7 +50,7 @@ func (r *ReportService) ListMdrs(ctx context.Context, query ReportListMdrsParams
 
 // Fetch all Wdr records
 func (r *ReportService) ListWdrs(ctx context.Context, query ReportListWdrsParams, opts ...option.RequestOption) (res *ReportListWdrsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "reports/wdrs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

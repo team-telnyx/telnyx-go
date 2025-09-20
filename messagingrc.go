@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -38,7 +39,7 @@ func NewMessagingRcService(opts ...option.RequestOption) (r MessagingRcService) 
 
 // Adds a test phone number to an RCS agent for testing purposes.
 func (r *MessagingRcService) InviteTestNumber(ctx context.Context, phoneNumber string, body MessagingRcInviteTestNumberParams, opts ...option.RequestOption) (res *MessagingRcInviteTestNumberResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if body.ID == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *MessagingRcService) InviteTestNumber(ctx context.Context, phoneNumber s
 
 // List RCS capabilities of a given batch of phone numbers
 func (r *MessagingRcService) ListBulkCapabilities(ctx context.Context, body MessagingRcListBulkCapabilitiesParams, opts ...option.RequestOption) (res *MessagingRcListBulkCapabilitiesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "messaging/rcs/bulk_capabilities"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -62,7 +63,7 @@ func (r *MessagingRcService) ListBulkCapabilities(ctx context.Context, body Mess
 
 // List RCS capabilities of a phone number
 func (r *MessagingRcService) GetCapabilities(ctx context.Context, phoneNumber string, query MessagingRcGetCapabilitiesParams, opts ...option.RequestOption) (res *MessagingRcGetCapabilitiesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.AgentID == "" {
 		err = errors.New("missing required agent_id parameter")
 		return

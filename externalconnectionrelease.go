@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewExternalConnectionReleaseService(opts ...option.RequestOption) (r Extern
 
 // Return the details of a Release request and its phone numbers.
 func (r *ExternalConnectionReleaseService) Get(ctx context.Context, releaseID string, query ExternalConnectionReleaseGetParams, opts ...option.RequestOption) (res *ExternalConnectionReleaseGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.ID == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -56,7 +57,7 @@ func (r *ExternalConnectionReleaseService) Get(ctx context.Context, releaseID st
 // automatically created when you change the `connection_id` of a phone number that
 // is currently on Microsoft Teams.
 func (r *ExternalConnectionReleaseService) List(ctx context.Context, id string, query ExternalConnectionReleaseListParams, opts ...option.RequestOption) (res *ExternalConnectionReleaseListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

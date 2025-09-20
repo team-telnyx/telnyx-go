@@ -5,6 +5,7 @@ package telnyx
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -42,7 +43,7 @@ func NewCampaignBuilderService(opts ...option.RequestOption) (r CampaignBuilderS
 // the campaign's use case
 // ([see 10DLC Costs section for details](https://developers.telnyx.com/docs/messaging/10dlc/concepts#10dlc-costs)).
 func (r *CampaignBuilderService) New(ctx context.Context, body CampaignBuilderNewParams, opts ...option.RequestOption) (res *TelnyxCampaignCsp, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "campaignBuilder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

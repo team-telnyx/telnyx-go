@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -36,7 +37,7 @@ func NewDocumentLinkService(opts ...option.RequestOption) (r DocumentLinkService
 
 // List all documents links ordered by created_at descending.
 func (r *DocumentLinkService) List(ctx context.Context, query DocumentLinkListParams, opts ...option.RequestOption) (res *DocumentLinkListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "document_links"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

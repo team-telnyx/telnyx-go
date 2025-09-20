@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewPhoneNumberBlockJobService(opts ...option.RequestOption) (r PhoneNumberB
 
 // Retrieves a phone number blocks job
 func (r *PhoneNumberBlockJobService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PhoneNumberBlockJobGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *PhoneNumberBlockJobService) Get(ctx context.Context, id string, opts ..
 
 // Lists the phone number blocks jobs
 func (r *PhoneNumberBlockJobService) List(ctx context.Context, query PhoneNumberBlockJobListParams, opts ...option.RequestOption) (res *PhoneNumberBlockJobListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "phone_number_blocks/jobs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -63,7 +64,7 @@ func (r *PhoneNumberBlockJobService) List(ctx context.Context, query PhoneNumber
 // may be necessary in case some of the phone numbers present errors during the
 // deletion process.
 func (r *PhoneNumberBlockJobService) DeletePhoneNumberBlock(ctx context.Context, body PhoneNumberBlockJobDeletePhoneNumberBlockParams, opts ...option.RequestOption) (res *PhoneNumberBlockJobDeletePhoneNumberBlockResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "phone_number_blocks/jobs/delete_phone_number_block"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

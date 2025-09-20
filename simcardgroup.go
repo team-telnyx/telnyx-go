@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -40,7 +41,7 @@ func NewSimCardGroupService(opts ...option.RequestOption) (r SimCardGroupService
 
 // Creates a new SIM card group object
 func (r *SimCardGroupService) New(ctx context.Context, body SimCardGroupNewParams, opts ...option.RequestOption) (res *SimCardGroupNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "sim_card_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *SimCardGroupService) New(ctx context.Context, body SimCardGroupNewParam
 
 // Returns the details regarding a specific SIM card group
 func (r *SimCardGroupService) Get(ctx context.Context, id string, query SimCardGroupGetParams, opts ...option.RequestOption) (res *SimCardGroupGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *SimCardGroupService) Get(ctx context.Context, id string, query SimCardG
 
 // Updates a SIM card group
 func (r *SimCardGroupService) Update(ctx context.Context, id string, body SimCardGroupUpdateParams, opts ...option.RequestOption) (res *SimCardGroupUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -72,7 +73,7 @@ func (r *SimCardGroupService) Update(ctx context.Context, id string, body SimCar
 
 // Get all SIM card groups belonging to the user that match the given filters.
 func (r *SimCardGroupService) List(ctx context.Context, query SimCardGroupListParams, opts ...option.RequestOption) (res *SimCardGroupListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "sim_card_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -80,7 +81,7 @@ func (r *SimCardGroupService) List(ctx context.Context, query SimCardGroupListPa
 
 // Permanently deletes a SIM card group
 func (r *SimCardGroupService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardGroupDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewExternalConnectionLogMessageService(opts ...option.RequestOption) (r Ext
 
 // Retrieve a log message for an external connection associated with your account.
 func (r *ExternalConnectionLogMessageService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ExternalConnectionLogMessageGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *ExternalConnectionLogMessageService) Get(ctx context.Context, id string
 // Retrieve a list of log messages for all external connections associated with
 // your account.
 func (r *ExternalConnectionLogMessageService) List(ctx context.Context, query ExternalConnectionLogMessageListParams, opts ...option.RequestOption) (res *ExternalConnectionLogMessageListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "external_connections/log_messages"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -59,7 +60,7 @@ func (r *ExternalConnectionLogMessageService) List(ctx context.Context, query Ex
 
 // Dismiss a log message for an external connection associated with your account.
 func (r *ExternalConnectionLogMessageService) Dismiss(ctx context.Context, id string, opts ...option.RequestOption) (res *ExternalConnectionLogMessageDismissResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -36,7 +37,7 @@ func NewPortoutSupportingDocumentService(opts ...option.RequestOption) (r Portou
 
 // Creates a list of supporting documents on a portout request.
 func (r *PortoutSupportingDocumentService) New(ctx context.Context, id string, body PortoutSupportingDocumentNewParams, opts ...option.RequestOption) (res *PortoutSupportingDocumentNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *PortoutSupportingDocumentService) New(ctx context.Context, id string, b
 
 // List every supporting documents for a portout request.
 func (r *PortoutSupportingDocumentService) List(ctx context.Context, id string, opts ...option.RequestOption) (res *PortoutSupportingDocumentListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

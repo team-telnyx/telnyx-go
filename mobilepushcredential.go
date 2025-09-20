@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewMobilePushCredentialService(opts ...option.RequestOption) (r MobilePushC
 
 // Creates a new mobile push credential
 func (r *MobilePushCredentialService) New(ctx context.Context, body MobilePushCredentialNewParams, opts ...option.RequestOption) (res *PushCredentialResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "mobile_push_credentials"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *MobilePushCredentialService) New(ctx context.Context, body MobilePushCr
 
 // Retrieves mobile push credential based on the given `push_credential_id`
 func (r *MobilePushCredentialService) Get(ctx context.Context, pushCredentialID string, opts ...option.RequestOption) (res *PushCredentialResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if pushCredentialID == "" {
 		err = errors.New("missing required push_credential_id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *MobilePushCredentialService) Get(ctx context.Context, pushCredentialID 
 
 // List mobile push credentials
 func (r *MobilePushCredentialService) List(ctx context.Context, query MobilePushCredentialListParams, opts ...option.RequestOption) (res *MobilePushCredentialListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "mobile_push_credentials"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -67,7 +68,7 @@ func (r *MobilePushCredentialService) List(ctx context.Context, query MobilePush
 
 // Deletes a mobile push credential based on the given `push_credential_id`
 func (r *MobilePushCredentialService) Delete(ctx context.Context, pushCredentialID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if pushCredentialID == "" {
 		err = errors.New("missing required push_credential_id parameter")

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewUserAddressService(opts ...option.RequestOption) (r UserAddressService) 
 
 // Creates a user address.
 func (r *UserAddressService) New(ctx context.Context, body UserAddressNewParams, opts ...option.RequestOption) (res *UserAddressNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "user_addresses"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *UserAddressService) New(ctx context.Context, body UserAddressNewParams,
 
 // Retrieves the details of an existing user address.
 func (r *UserAddressService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *UserAddressGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *UserAddressService) Get(ctx context.Context, id string, opts ...option.
 
 // Returns a list of your user addresses.
 func (r *UserAddressService) List(ctx context.Context, query UserAddressListParams, opts ...option.RequestOption) (res *UserAddressListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "user_addresses"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

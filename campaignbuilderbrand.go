@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -36,7 +37,7 @@ func NewCampaignBuilderBrandService(opts ...option.RequestOption) (r CampaignBui
 // This endpoint allows you to see whether or not the supplied brand is suitable
 // for your desired campaign use case.
 func (r *CampaignBuilderBrandService) QualifyByUsecase(ctx context.Context, usecase string, query CampaignBuilderBrandQualifyByUsecaseParams, opts ...option.RequestOption) (res *CampaignBuilderBrandQualifyByUsecaseResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.BrandID == "" {
 		err = errors.New("missing required brandId parameter")
 		return

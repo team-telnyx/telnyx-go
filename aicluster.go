@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewAIClusterService(opts ...option.RequestOption) (r AIClusterService) {
 
 // Fetch a cluster
 func (r *AIClusterService) Get(ctx context.Context, taskID string, query AIClusterGetParams, opts ...option.RequestOption) (res *AIClusterGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
 		err = errors.New("missing required task_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AIClusterService) Get(ctx context.Context, taskID string, query AIClust
 
 // List all clusters
 func (r *AIClusterService) List(ctx context.Context, query AIClusterListParams, opts ...option.RequestOption) (res *AIClusterListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/clusters"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -59,7 +60,7 @@ func (r *AIClusterService) List(ctx context.Context, query AIClusterListParams, 
 
 // Delete a cluster
 func (r *AIClusterService) Delete(ctx context.Context, taskID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if taskID == "" {
 		err = errors.New("missing required task_id parameter")
@@ -74,7 +75,7 @@ func (r *AIClusterService) Delete(ctx context.Context, taskID string, opts ...op
 // [embedded storage bucket](https://developers.telnyx.com/api/inference/inference-embedding/post-embedding)
 // is clustered. This helps identify common themes and patterns in the data.
 func (r *AIClusterService) Compute(ctx context.Context, body AIClusterComputeParams, opts ...option.RequestOption) (res *AIClusterComputeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/clusters"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -82,7 +83,7 @@ func (r *AIClusterService) Compute(ctx context.Context, body AIClusterComputePar
 
 // Fetch a cluster visualization
 func (r *AIClusterService) FetchGraph(ctx context.Context, taskID string, query AIClusterFetchGraphParams, opts ...option.RequestOption) (res *AIClusterFetchGraphResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
 		err = errors.New("missing required task_id parameter")
 		return

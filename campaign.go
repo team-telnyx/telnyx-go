@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -43,7 +44,7 @@ func NewCampaignService(opts ...option.RequestOption) (r CampaignService) {
 
 // Retrieve campaign details by `campaignId`.
 func (r *CampaignService) Get(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *TelnyxCampaignCsp, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
 		return
@@ -56,7 +57,7 @@ func (r *CampaignService) Get(ctx context.Context, campaignID string, opts ...op
 // Update a campaign's properties by `campaignId`. **Please note:** only sample
 // messages are editable.
 func (r *CampaignService) Update(ctx context.Context, campaignID string, body CampaignUpdateParams, opts ...option.RequestOption) (res *TelnyxCampaignCsp, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
 		return
@@ -68,7 +69,7 @@ func (r *CampaignService) Update(ctx context.Context, campaignID string, body Ca
 
 // Retrieve a list of campaigns associated with a supplied `brandId`.
 func (r *CampaignService) List(ctx context.Context, query CampaignListParams, opts ...option.RequestOption) (res *CampaignListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "campaign"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -76,7 +77,7 @@ func (r *CampaignService) List(ctx context.Context, query CampaignListParams, op
 
 // Manually accept a campaign shared with Telnyx
 func (r *CampaignService) AcceptSharing(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *CampaignAcceptSharingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
 		return
@@ -88,7 +89,7 @@ func (r *CampaignService) AcceptSharing(ctx context.Context, campaignID string, 
 
 // Terminate a campaign. Note that once deactivated, a campaign cannot be restored.
 func (r *CampaignService) Deactivate(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *CampaignDeactivateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
 		return
@@ -100,7 +101,7 @@ func (r *CampaignService) Deactivate(ctx context.Context, campaignID string, opt
 
 // Get the campaign metadata for each MNO it was submitted to.
 func (r *CampaignService) GetMnoMetadata(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *CampaignGetMnoMetadataResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
 		return
@@ -112,7 +113,7 @@ func (r *CampaignService) GetMnoMetadata(ctx context.Context, campaignID string,
 
 // Retrieve campaign's operation status at MNO level.
 func (r *CampaignService) GetOperationStatus(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *CampaignGetOperationStatusResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
 		return
@@ -124,7 +125,7 @@ func (r *CampaignService) GetOperationStatus(ctx context.Context, campaignID str
 
 // Get Sharing Status
 func (r *CampaignService) GetSharingStatus(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *CampaignGetSharingStatusResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
 		return
@@ -139,7 +140,7 @@ func (r *CampaignService) GetSharingStatus(ctx context.Context, campaignID strin
 // campaign status is reset to TCR_ACCEPTED. Note: Appeal forwarding is handled
 // manually to allow proper review before incurring upstream charges.
 func (r *CampaignService) SubmitAppeal(ctx context.Context, campaignID string, body CampaignSubmitAppealParams, opts ...option.RequestOption) (res *CampaignSubmitAppealResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
 		return

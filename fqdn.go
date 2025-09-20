@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -39,7 +40,7 @@ func NewFqdnService(opts ...option.RequestOption) (r FqdnService) {
 
 // Create a new FQDN object.
 func (r *FqdnService) New(ctx context.Context, body FqdnNewParams, opts ...option.RequestOption) (res *FqdnNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "fqdns"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *FqdnService) New(ctx context.Context, body FqdnNewParams, opts ...optio
 
 // Return the details regarding a specific FQDN.
 func (r *FqdnService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *FqdnGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *FqdnService) Get(ctx context.Context, id string, opts ...option.Request
 
 // Update the details of a specific FQDN.
 func (r *FqdnService) Update(ctx context.Context, id string, body FqdnUpdateParams, opts ...option.RequestOption) (res *FqdnUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -71,7 +72,7 @@ func (r *FqdnService) Update(ctx context.Context, id string, body FqdnUpdatePara
 
 // Get all FQDNs belonging to the user that match the given filters.
 func (r *FqdnService) List(ctx context.Context, query FqdnListParams, opts ...option.RequestOption) (res *FqdnListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "fqdns"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -79,7 +80,7 @@ func (r *FqdnService) List(ctx context.Context, query FqdnListParams, opts ...op
 
 // Delete an FQDN.
 func (r *FqdnService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *FqdnDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

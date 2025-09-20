@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -36,7 +37,7 @@ func NewTexmlAccountCallSiprecService(opts ...option.RequestOption) (r TexmlAcco
 
 // Updates siprec session identified by siprec_sid.
 func (r *TexmlAccountCallSiprecService) SiprecSidJson(ctx context.Context, siprecSid string, params TexmlAccountCallSiprecSiprecSidJsonParams, opts ...option.RequestOption) (res *TexmlAccountCallSiprecSiprecSidJsonResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return

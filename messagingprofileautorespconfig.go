@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -41,7 +42,7 @@ func NewMessagingProfileAutorespConfigService(opts ...option.RequestOption) (r M
 
 // Create Auto-Reponse Setting
 func (r *MessagingProfileAutorespConfigService) New(ctx context.Context, profileID string, body MessagingProfileAutorespConfigNewParams, opts ...option.RequestOption) (res *AutoRespConfigResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if profileID == "" {
 		err = errors.New("missing required profile_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *MessagingProfileAutorespConfigService) New(ctx context.Context, profile
 
 // Get Auto-Response Setting
 func (r *MessagingProfileAutorespConfigService) Get(ctx context.Context, autorespCfgID string, query MessagingProfileAutorespConfigGetParams, opts ...option.RequestOption) (res *AutoRespConfigResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.ProfileID == "" {
 		err = errors.New("missing required profile_id parameter")
 		return
@@ -69,7 +70,7 @@ func (r *MessagingProfileAutorespConfigService) Get(ctx context.Context, autores
 
 // Update Auto-Response Setting
 func (r *MessagingProfileAutorespConfigService) Update(ctx context.Context, autorespCfgID string, params MessagingProfileAutorespConfigUpdateParams, opts ...option.RequestOption) (res *AutoRespConfigResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.ProfileID == "" {
 		err = errors.New("missing required profile_id parameter")
 		return
@@ -85,7 +86,7 @@ func (r *MessagingProfileAutorespConfigService) Update(ctx context.Context, auto
 
 // List Auto-Response Settings
 func (r *MessagingProfileAutorespConfigService) List(ctx context.Context, profileID string, query MessagingProfileAutorespConfigListParams, opts ...option.RequestOption) (res *MessagingProfileAutorespConfigListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if profileID == "" {
 		err = errors.New("missing required profile_id parameter")
 		return
@@ -97,7 +98,7 @@ func (r *MessagingProfileAutorespConfigService) List(ctx context.Context, profil
 
 // Delete Auto-Response Setting
 func (r *MessagingProfileAutorespConfigService) Delete(ctx context.Context, autorespCfgID string, body MessagingProfileAutorespConfigDeleteParams, opts ...option.RequestOption) (res *MessagingProfileAutorespConfigDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if body.ProfileID == "" {
 		err = errors.New("missing required profile_id parameter")
 		return

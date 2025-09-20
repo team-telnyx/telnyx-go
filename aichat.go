@@ -5,6 +5,7 @@ package telnyx
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -35,7 +36,7 @@ func NewAIChatService(opts ...option.RequestOption) (r AIChatService) {
 // [OpenAI Chat Completions API](https://platform.openai.com/docs/api-reference/chat)
 // and may be used with the OpenAI JS or Python SDK.
 func (r *AIChatService) NewCompletion(ctx context.Context, body AIChatNewCompletionParams, opts ...option.RequestOption) (res *AIChatNewCompletionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/chat/completions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

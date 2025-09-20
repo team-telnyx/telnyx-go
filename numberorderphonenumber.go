@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -40,7 +41,7 @@ func NewNumberOrderPhoneNumberService(opts ...option.RequestOption) (r NumberOrd
 
 // Get an existing phone number in number order.
 func (r *NumberOrderPhoneNumberService) Get(ctx context.Context, numberOrderPhoneNumberID string, opts ...option.RequestOption) (res *NumberOrderPhoneNumberGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if numberOrderPhoneNumberID == "" {
 		err = errors.New("missing required number_order_phone_number_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *NumberOrderPhoneNumberService) Get(ctx context.Context, numberOrderPhon
 
 // Get a list of phone numbers associated to orders.
 func (r *NumberOrderPhoneNumberService) List(ctx context.Context, query NumberOrderPhoneNumberListParams, opts ...option.RequestOption) (res *NumberOrderPhoneNumberListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "number_order_phone_numbers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -60,7 +61,7 @@ func (r *NumberOrderPhoneNumberService) List(ctx context.Context, query NumberOr
 
 // Update requirement group for a phone number order
 func (r *NumberOrderPhoneNumberService) UpdateRequirementGroup(ctx context.Context, id string, body NumberOrderPhoneNumberUpdateRequirementGroupParams, opts ...option.RequestOption) (res *NumberOrderPhoneNumberUpdateRequirementGroupResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -72,7 +73,7 @@ func (r *NumberOrderPhoneNumberService) UpdateRequirementGroup(ctx context.Conte
 
 // Updates requirements for a single phone number within a number order.
 func (r *NumberOrderPhoneNumberService) UpdateRequirements(ctx context.Context, numberOrderPhoneNumberID string, body NumberOrderPhoneNumberUpdateRequirementsParams, opts ...option.RequestOption) (res *NumberOrderPhoneNumberUpdateRequirementsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if numberOrderPhoneNumberID == "" {
 		err = errors.New("missing required number_order_phone_number_id parameter")
 		return

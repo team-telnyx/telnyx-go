@@ -5,6 +5,7 @@ package telnyx
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -39,7 +40,7 @@ func NewStorageService(opts ...option.RequestOption) (r StorageService) {
 
 // List Migration Source coverage
 func (r *StorageService) ListMigrationSourceCoverage(ctx context.Context, opts ...option.RequestOption) (res *StorageListMigrationSourceCoverageResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "storage/migration_source_coverage"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

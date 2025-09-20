@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -40,7 +41,7 @@ func NewConnectionService(opts ...option.RequestOption) (r ConnectionService) {
 // Retrieves the high-level details of an existing connection. To retrieve specific
 // authentication information, use the endpoint for the specific connection type.
 func (r *ConnectionService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ConnectionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *ConnectionService) Get(ctx context.Context, id string, opts ...option.R
 
 // Returns a list of your connections irrespective of type.
 func (r *ConnectionService) List(ctx context.Context, query ConnectionListParams, opts ...option.RequestOption) (res *ConnectionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "connections"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -62,7 +63,7 @@ func (r *ConnectionService) List(ctx context.Context, query ConnectionListParams
 // SIP connections with webhook_url or xml_request_url, call control or texml.
 // Returned results are cursor paginated.
 func (r *ConnectionService) ListActiveCalls(ctx context.Context, connectionID string, query ConnectionListActiveCallsParams, opts ...option.RequestOption) (res *ConnectionListActiveCallsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
 		return

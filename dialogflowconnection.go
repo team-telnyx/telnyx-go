@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -37,7 +38,7 @@ func NewDialogflowConnectionService(opts ...option.RequestOption) (r DialogflowC
 // Save Dialogflow Credentiails to Telnyx, so it can be used with other Telnyx
 // services.
 func (r *DialogflowConnectionService) New(ctx context.Context, connectionID string, body DialogflowConnectionNewParams, opts ...option.RequestOption) (res *DialogflowConnectionNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *DialogflowConnectionService) New(ctx context.Context, connectionID stri
 // Return details of the Dialogflow connection associated with the given
 // CallControl connection.
 func (r *DialogflowConnectionService) Get(ctx context.Context, connectionID string, opts ...option.RequestOption) (res *DialogflowConnectionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *DialogflowConnectionService) Get(ctx context.Context, connectionID stri
 
 // Updates a stored Dialogflow Connection.
 func (r *DialogflowConnectionService) Update(ctx context.Context, connectionID string, body DialogflowConnectionUpdateParams, opts ...option.RequestOption) (res *DialogflowConnectionUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
 		return
@@ -74,7 +75,7 @@ func (r *DialogflowConnectionService) Update(ctx context.Context, connectionID s
 
 // Deletes a stored Dialogflow Connection.
 func (r *DialogflowConnectionService) Delete(ctx context.Context, connectionID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")

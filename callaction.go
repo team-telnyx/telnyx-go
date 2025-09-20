@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	shimjson "github.com/team-telnyx/telnyx-go/internal/encoding/json"
@@ -50,7 +51,7 @@ func NewCallActionService(opts ...option.RequestOption) (r CallActionService) {
 // When the `record` parameter is set to `record-from-answer`, the response will
 // include a `recording_id` field.
 func (r *CallActionService) Answer(ctx context.Context, callControlID string, body CallActionAnswerParams, opts ...option.RequestOption) (res *CallActionAnswerResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -69,7 +70,7 @@ func (r *CallActionService) Answer(ctx context.Context, callControlID string, bo
 // - `call.bridged` for Leg A
 // - `call.bridged` for Leg B
 func (r *CallActionService) Bridge(ctx context.Context, callControlID string, body CallActionBridgeParams, opts ...option.RequestOption) (res *CallActionBridgeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -81,7 +82,7 @@ func (r *CallActionService) Bridge(ctx context.Context, callControlID string, bo
 
 // Put the call in a queue.
 func (r *CallActionService) Enqueue(ctx context.Context, callControlID string, body CallActionEnqueueParams, opts ...option.RequestOption) (res *CallActionEnqueueResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -103,7 +104,7 @@ func (r *CallActionService) Enqueue(ctx context.Context, callControlID string, b
 // - `call.dtmf.received` (you may receive many of these webhooks)
 // - `call.gather.ended`
 func (r *CallActionService) Gather(ctx context.Context, callControlID string, body CallActionGatherParams, opts ...option.RequestOption) (res *CallActionGatherResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -128,7 +129,7 @@ func (r *CallActionService) Gather(ctx context.Context, callControlID string, bo
 //   - `call.ai_gather.message_history_updated` (if `send_message_history_updates` is
 //     set to `true`)
 func (r *CallActionService) GatherUsingAI(ctx context.Context, callControlID string, body CallActionGatherUsingAIParams, opts ...option.RequestOption) (res *CallActionGatherUsingAIResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -155,7 +156,7 @@ func (r *CallActionService) GatherUsingAI(ctx context.Context, callControlID str
 // - `call.dtmf.received` (you may receive many of these webhooks)
 // - `call.gather.ended`
 func (r *CallActionService) GatherUsingAudio(ctx context.Context, callControlID string, body CallActionGatherUsingAudioParams, opts ...option.RequestOption) (res *CallActionGatherUsingAudioResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -180,7 +181,7 @@ func (r *CallActionService) GatherUsingAudio(ctx context.Context, callControlID 
 // - `call.dtmf.received` (you may receive many of these webhooks)
 // - `call.gather.ended`
 func (r *CallActionService) GatherUsingSpeak(ctx context.Context, callControlID string, body CallActionGatherUsingSpeakParams, opts ...option.RequestOption) (res *CallActionGatherUsingSpeakResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -199,7 +200,7 @@ func (r *CallActionService) GatherUsingSpeak(ctx context.Context, callControlID 
 // - `call.hangup`
 // - `call.recording.saved`
 func (r *CallActionService) Hangup(ctx context.Context, callControlID string, body CallActionHangupParams, opts ...option.RequestOption) (res *CallActionHangupResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -211,7 +212,7 @@ func (r *CallActionService) Hangup(ctx context.Context, callControlID string, bo
 
 // Removes the call from a queue.
 func (r *CallActionService) LeaveQueue(ctx context.Context, callControlID string, body CallActionLeaveQueueParams, opts ...option.RequestOption) (res *CallActionLeaveQueueResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -227,7 +228,7 @@ func (r *CallActionService) LeaveQueue(ctx context.Context, callControlID string
 //
 // There are no webhooks associated with this command.
 func (r *CallActionService) PauseRecording(ctx context.Context, callControlID string, body CallActionPauseRecordingParams, opts ...option.RequestOption) (res *CallActionPauseRecordingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -248,7 +249,7 @@ func (r *CallActionService) PauseRecording(ctx context.Context, callControlID st
 // - `call.refer.completed`
 // - `call.refer.failed`
 func (r *CallActionService) Refer(ctx context.Context, callControlID string, body CallActionReferParams, opts ...option.RequestOption) (res *CallActionReferResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -266,7 +267,7 @@ func (r *CallActionService) Refer(ctx context.Context, callControlID string, bod
 //
 // - `call.hangup`
 func (r *CallActionService) Reject(ctx context.Context, callControlID string, body CallActionRejectParams, opts ...option.RequestOption) (res *CallActionRejectResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -282,7 +283,7 @@ func (r *CallActionService) Reject(ctx context.Context, callControlID string, bo
 //
 // There are no webhooks associated with this command.
 func (r *CallActionService) ResumeRecording(ctx context.Context, callControlID string, body CallActionResumeRecordingParams, opts ...option.RequestOption) (res *CallActionResumeRecordingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -299,7 +300,7 @@ func (r *CallActionService) ResumeRecording(ctx context.Context, callControlID s
 //
 // There are no webhooks associated with this command.
 func (r *CallActionService) SendDtmf(ctx context.Context, callControlID string, body CallActionSendDtmfParams, opts ...option.RequestOption) (res *CallActionSendDtmfResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -315,7 +316,7 @@ func (r *CallActionService) SendDtmf(ctx context.Context, callControlID string, 
 //
 // - `call.sip_info.received` (to be received on the target call leg)
 func (r *CallActionService) SendSipInfo(ctx context.Context, callControlID string, body CallActionSendSipInfoParams, opts ...option.RequestOption) (res *CallActionSendSipInfoResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -336,7 +337,7 @@ func (r *CallActionService) SendSipInfo(ctx context.Context, callControlID strin
 // - `call.speak.started`
 // - `call.speak.ended`
 func (r *CallActionService) Speak(ctx context.Context, callControlID string, body CallActionSpeakParams, opts ...option.RequestOption) (res *CallActionSpeakResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -355,7 +356,7 @@ func (r *CallActionService) Speak(ctx context.Context, callControlID string, bod
 // - `call.conversation.ended`
 // - `call.conversation_insights.generated`
 func (r *CallActionService) StartAIAssistant(ctx context.Context, callControlID string, body CallActionStartAIAssistantParams, opts ...option.RequestOption) (res *CallActionStartAIAssistantResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -378,7 +379,7 @@ func (r *CallActionService) StartAIAssistant(ctx context.Context, callControlID 
 // - `call.fork.started`
 // - `call.fork.stopped`
 func (r *CallActionService) StartForking(ctx context.Context, callControlID string, body CallActionStartForkingParams, opts ...option.RequestOption) (res *CallActionStartForkingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -390,7 +391,7 @@ func (r *CallActionService) StartForking(ctx context.Context, callControlID stri
 
 // Noise Suppression Start (BETA)
 func (r *CallActionService) StartNoiseSuppression(ctx context.Context, callControlID string, body CallActionStartNoiseSuppressionParams, opts ...option.RequestOption) (res *CallActionStartNoiseSuppressionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -416,7 +417,7 @@ func (r *CallActionService) StartNoiseSuppression(ctx context.Context, callContr
 // - `call.playback.started`
 // - `call.playback.ended`
 func (r *CallActionService) StartPlayback(ctx context.Context, callControlID string, body CallActionStartPlaybackParams, opts ...option.RequestOption) (res *CallActionStartPlaybackResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -437,7 +438,7 @@ func (r *CallActionService) StartPlayback(ctx context.Context, callControlID str
 // - `call.recording.transcription.saved`
 // - `call.recording.error`
 func (r *CallActionService) StartRecording(ctx context.Context, callControlID string, body CallActionStartRecordingParams, opts ...option.RequestOption) (res *CallActionStartRecordingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -455,7 +456,7 @@ func (r *CallActionService) StartRecording(ctx context.Context, callControlID st
 // - `siprec.stopped`
 // - `siprec.failed`
 func (r *CallActionService) StartSiprec(ctx context.Context, callControlID string, body CallActionStartSiprecParams, opts ...option.RequestOption) (res *CallActionStartSiprecResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -472,7 +473,7 @@ func (r *CallActionService) StartSiprec(ctx context.Context, callControlID strin
 // Please find more details about media streaming messages specification under the
 // [link](https://developers.telnyx.com/docs/voice/programmable-voice/media-streaming).
 func (r *CallActionService) StartStreaming(ctx context.Context, callControlID string, body CallActionStartStreamingParams, opts ...option.RequestOption) (res *CallActionStartStreamingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -491,7 +492,7 @@ func (r *CallActionService) StartStreaming(ctx context.Context, callControlID st
 //
 // - `call.transcription`
 func (r *CallActionService) StartTranscription(ctx context.Context, callControlID string, body CallActionStartTranscriptionParams, opts ...option.RequestOption) (res *CallActionStartTranscriptionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -503,7 +504,7 @@ func (r *CallActionService) StartTranscription(ctx context.Context, callControlI
 
 // Stop an AI assistant on the call.
 func (r *CallActionService) StopAIAssistant(ctx context.Context, callControlID string, body CallActionStopAIAssistantParams, opts ...option.RequestOption) (res *CallActionStopAIAssistantResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -521,7 +522,7 @@ func (r *CallActionService) StopAIAssistant(ctx context.Context, callControlID s
 //
 // - `call.fork.stopped`
 func (r *CallActionService) StopForking(ctx context.Context, callControlID string, body CallActionStopForkingParams, opts ...option.RequestOption) (res *CallActionStopForkingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -539,7 +540,7 @@ func (r *CallActionService) StopForking(ctx context.Context, callControlID strin
 //
 // - `call.gather.ended`
 func (r *CallActionService) StopGather(ctx context.Context, callControlID string, body CallActionStopGatherParams, opts ...option.RequestOption) (res *CallActionStopGatherResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -551,7 +552,7 @@ func (r *CallActionService) StopGather(ctx context.Context, callControlID string
 
 // Noise Suppression Stop (BETA)
 func (r *CallActionService) StopNoiseSuppression(ctx context.Context, callControlID string, body CallActionStopNoiseSuppressionParams, opts ...option.RequestOption) (res *CallActionStopNoiseSuppressionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -569,7 +570,7 @@ func (r *CallActionService) StopNoiseSuppression(ctx context.Context, callContro
 //
 // - `call.playback.ended` or `call.speak.ended`
 func (r *CallActionService) StopPlayback(ctx context.Context, callControlID string, body CallActionStopPlaybackParams, opts ...option.RequestOption) (res *CallActionStopPlaybackResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -587,7 +588,7 @@ func (r *CallActionService) StopPlayback(ctx context.Context, callControlID stri
 //
 // - `call.recording.saved`
 func (r *CallActionService) StopRecording(ctx context.Context, callControlID string, body CallActionStopRecordingParams, opts ...option.RequestOption) (res *CallActionStopRecordingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -603,7 +604,7 @@ func (r *CallActionService) StopRecording(ctx context.Context, callControlID str
 //
 // - `siprec.stopped`
 func (r *CallActionService) StopSiprec(ctx context.Context, callControlID string, body CallActionStopSiprecParams, opts ...option.RequestOption) (res *CallActionStopSiprecResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -621,7 +622,7 @@ func (r *CallActionService) StopSiprec(ctx context.Context, callControlID string
 //
 // - `streaming.stopped`
 func (r *CallActionService) StopStreaming(ctx context.Context, callControlID string, body CallActionStopStreamingParams, opts ...option.RequestOption) (res *CallActionStopStreamingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -633,7 +634,7 @@ func (r *CallActionService) StopStreaming(ctx context.Context, callControlID str
 
 // Stop real-time transcription.
 func (r *CallActionService) StopTranscription(ctx context.Context, callControlID string, body CallActionStopTranscriptionParams, opts ...option.RequestOption) (res *CallActionStopTranscriptionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -646,7 +647,7 @@ func (r *CallActionService) StopTranscription(ctx context.Context, callControlID
 // Switch the supervisor role for a bridged call. This allows switching between
 // different supervisor modes during an active call
 func (r *CallActionService) SwitchSupervisorRole(ctx context.Context, callControlID string, body CallActionSwitchSupervisorRoleParams, opts ...option.RequestOption) (res *CallActionSwitchSupervisorRoleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -677,7 +678,7 @@ func (r *CallActionService) SwitchSupervisorRole(ctx context.Context, callContro
 //   - `call.machine.premium.greeting.ended` if `answering_machine_detection=premium`
 //     was requested and a beep was detected
 func (r *CallActionService) Transfer(ctx context.Context, callControlID string, body CallActionTransferParams, opts ...option.RequestOption) (res *CallActionTransferResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return
@@ -689,7 +690,7 @@ func (r *CallActionService) Transfer(ctx context.Context, callControlID string, 
 
 // Updates client state
 func (r *CallActionService) UpdateClientState(ctx context.Context, callControlID string, body CallActionUpdateClientStateParams, opts ...option.RequestOption) (res *CallActionUpdateClientStateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return

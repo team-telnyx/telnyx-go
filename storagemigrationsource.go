@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	shimjson "github.com/team-telnyx/telnyx-go/internal/encoding/json"
@@ -38,7 +39,7 @@ func NewStorageMigrationSourceService(opts ...option.RequestOption) (r StorageMi
 
 // Create a source from which data can be migrated from.
 func (r *StorageMigrationSourceService) New(ctx context.Context, body StorageMigrationSourceNewParams, opts ...option.RequestOption) (res *StorageMigrationSourceNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "storage/migration_sources"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *StorageMigrationSourceService) New(ctx context.Context, body StorageMig
 
 // Get a Migration Source
 func (r *StorageMigrationSourceService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *StorageMigrationSourceGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *StorageMigrationSourceService) Get(ctx context.Context, id string, opts
 
 // List all Migration Sources
 func (r *StorageMigrationSourceService) List(ctx context.Context, opts ...option.RequestOption) (res *StorageMigrationSourceListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "storage/migration_sources"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -66,7 +67,7 @@ func (r *StorageMigrationSourceService) List(ctx context.Context, opts ...option
 
 // Delete a Migration Source
 func (r *StorageMigrationSourceService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *StorageMigrationSourceDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

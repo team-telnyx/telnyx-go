@@ -5,6 +5,7 @@ package telnyx
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -37,7 +38,7 @@ func NewOperatorConnectActionService(opts ...option.RequestOption) (r OperatorCo
 // integration results as
 // [log messages](https://developers.telnyx.com/api/external-voice-integrations/list-external-connection-log-messages).
 func (r *OperatorConnectActionService) Refresh(ctx context.Context, opts ...option.RequestOption) (res *OperatorConnectActionRefreshResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "operator_connect/actions/refresh"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return

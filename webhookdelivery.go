@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -40,7 +41,7 @@ func NewWebhookDeliveryService(opts ...option.RequestOption) (r WebhookDeliveryS
 // Provides webhook_delivery debug data, such as timestamps, delivery status and
 // attempts.
 func (r *WebhookDeliveryService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *WebhookDeliveryGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *WebhookDeliveryService) Get(ctx context.Context, id string, opts ...opt
 
 // Lists webhook_deliveries for the authenticated user
 func (r *WebhookDeliveryService) List(ctx context.Context, query WebhookDeliveryListParams, opts ...option.RequestOption) (res *WebhookDeliveryListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "webhook_deliveries"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

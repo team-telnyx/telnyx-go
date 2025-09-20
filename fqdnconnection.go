@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -40,7 +41,7 @@ func NewFqdnConnectionService(opts ...option.RequestOption) (r FqdnConnectionSer
 
 // Creates a FQDN connection.
 func (r *FqdnConnectionService) New(ctx context.Context, body FqdnConnectionNewParams, opts ...option.RequestOption) (res *FqdnConnectionNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "fqdn_connections"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *FqdnConnectionService) New(ctx context.Context, body FqdnConnectionNewP
 
 // Retrieves the details of an existing FQDN connection.
 func (r *FqdnConnectionService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *FqdnConnectionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *FqdnConnectionService) Get(ctx context.Context, id string, opts ...opti
 
 // Updates settings of an existing FQDN connection.
 func (r *FqdnConnectionService) Update(ctx context.Context, id string, body FqdnConnectionUpdateParams, opts ...option.RequestOption) (res *FqdnConnectionUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -72,7 +73,7 @@ func (r *FqdnConnectionService) Update(ctx context.Context, id string, body Fqdn
 
 // Returns a list of your FQDN connections.
 func (r *FqdnConnectionService) List(ctx context.Context, query FqdnConnectionListParams, opts ...option.RequestOption) (res *FqdnConnectionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "fqdn_connections"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -80,7 +81,7 @@ func (r *FqdnConnectionService) List(ctx context.Context, query FqdnConnectionLi
 
 // Deletes an FQDN connection.
 func (r *FqdnConnectionService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *FqdnConnectionDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

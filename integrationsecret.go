@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -40,7 +41,7 @@ func NewIntegrationSecretService(opts ...option.RequestOption) (r IntegrationSec
 // Create a new secret with an associated identifier that can be used to securely
 // integrate with other services.
 func (r *IntegrationSecretService) New(ctx context.Context, body IntegrationSecretNewParams, opts ...option.RequestOption) (res *IntegrationSecretNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "integration_secrets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *IntegrationSecretService) New(ctx context.Context, body IntegrationSecr
 
 // Retrieve a list of all integration secrets configured by the user.
 func (r *IntegrationSecretService) List(ctx context.Context, query IntegrationSecretListParams, opts ...option.RequestOption) (res *IntegrationSecretListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "integration_secrets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -56,7 +57,7 @@ func (r *IntegrationSecretService) List(ctx context.Context, query IntegrationSe
 
 // Delete an integration secret given its ID.
 func (r *IntegrationSecretService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")

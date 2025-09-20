@@ -5,6 +5,7 @@ package telnyx
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -38,7 +39,7 @@ func NewActionPurchaseService(opts ...option.RequestOption) (r ActionPurchaseSer
 // be associated with that group. Otherwise, the default group for the current user
 // will be used.<br/><br/>
 func (r *ActionPurchaseService) New(ctx context.Context, body ActionPurchaseNewParams, opts ...option.RequestOption) (res *ActionPurchaseNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "actions/purchase/esims"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

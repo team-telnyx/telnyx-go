@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewPortingOrderCommentService(opts ...option.RequestOption) (r PortingOrder
 
 // Creates a new comment for a porting order.
 func (r *PortingOrderCommentService) New(ctx context.Context, id string, body PortingOrderCommentNewParams, opts ...option.RequestOption) (res *PortingOrderCommentNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *PortingOrderCommentService) New(ctx context.Context, id string, body Po
 
 // Returns a list of all comments of a porting order.
 func (r *PortingOrderCommentService) List(ctx context.Context, id string, query PortingOrderCommentListParams, opts ...option.RequestOption) (res *PortingOrderCommentListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

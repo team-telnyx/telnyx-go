@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -40,7 +41,7 @@ func NewVerificationService(opts ...option.RequestOption) (r VerificationService
 
 // Retrieve verification
 func (r *VerificationService) Get(ctx context.Context, verificationID string, opts ...option.RequestOption) (res *VerificationGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if verificationID == "" {
 		err = errors.New("missing required verification_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *VerificationService) Get(ctx context.Context, verificationID string, op
 
 // Trigger Call verification
 func (r *VerificationService) TriggerCall(ctx context.Context, body VerificationTriggerCallParams, opts ...option.RequestOption) (res *CreateVerificationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "verifications/call"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -60,7 +61,7 @@ func (r *VerificationService) TriggerCall(ctx context.Context, body Verification
 
 // Trigger Flash call verification
 func (r *VerificationService) TriggerFlashcall(ctx context.Context, body VerificationTriggerFlashcallParams, opts ...option.RequestOption) (res *CreateVerificationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "verifications/flashcall"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -68,7 +69,7 @@ func (r *VerificationService) TriggerFlashcall(ctx context.Context, body Verific
 
 // Trigger SMS verification
 func (r *VerificationService) TriggerSMS(ctx context.Context, body VerificationTriggerSMSParams, opts ...option.RequestOption) (res *CreateVerificationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "verifications/sms"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

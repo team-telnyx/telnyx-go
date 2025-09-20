@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -37,7 +38,7 @@ func NewTexmlAccountCallRecordingService(opts ...option.RequestOption) (r TexmlA
 
 // Updates recording resource for particular call.
 func (r *TexmlAccountCallRecordingService) RecordingSidJson(ctx context.Context, recordingSid string, params TexmlAccountCallRecordingRecordingSidJsonParams, opts ...option.RequestOption) (res *TexmlAccountCallRecordingRecordingSidJsonResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return

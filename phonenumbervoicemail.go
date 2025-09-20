@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	shimjson "github.com/team-telnyx/telnyx-go/internal/encoding/json"
@@ -38,7 +39,7 @@ func NewPhoneNumberVoicemailService(opts ...option.RequestOption) (r PhoneNumber
 
 // Create voicemail settings for a phone number
 func (r *PhoneNumberVoicemailService) New(ctx context.Context, phoneNumberID string, body PhoneNumberVoicemailNewParams, opts ...option.RequestOption) (res *PhoneNumberVoicemailNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if phoneNumberID == "" {
 		err = errors.New("missing required phone_number_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *PhoneNumberVoicemailService) New(ctx context.Context, phoneNumberID str
 
 // Returns the voicemail settings for a phone number
 func (r *PhoneNumberVoicemailService) Get(ctx context.Context, phoneNumberID string, opts ...option.RequestOption) (res *PhoneNumberVoicemailGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if phoneNumberID == "" {
 		err = errors.New("missing required phone_number_id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *PhoneNumberVoicemailService) Get(ctx context.Context, phoneNumberID str
 
 // Update voicemail settings for a phone number
 func (r *PhoneNumberVoicemailService) Update(ctx context.Context, phoneNumberID string, body PhoneNumberVoicemailUpdateParams, opts ...option.RequestOption) (res *PhoneNumberVoicemailUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if phoneNumberID == "" {
 		err = errors.New("missing required phone_number_id parameter")
 		return

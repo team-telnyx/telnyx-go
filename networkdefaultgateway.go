@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -36,7 +37,7 @@ func NewNetworkDefaultGatewayService(opts ...option.RequestOption) (r NetworkDef
 
 // Create Default Gateway.
 func (r *NetworkDefaultGatewayService) New(ctx context.Context, id string, body NetworkDefaultGatewayNewParams, opts ...option.RequestOption) (res *NetworkDefaultGatewayNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *NetworkDefaultGatewayService) New(ctx context.Context, id string, body 
 
 // Get Default Gateway status.
 func (r *NetworkDefaultGatewayService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *NetworkDefaultGatewayGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *NetworkDefaultGatewayService) Get(ctx context.Context, id string, opts 
 
 // Delete Default Gateway.
 func (r *NetworkDefaultGatewayService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *NetworkDefaultGatewayDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

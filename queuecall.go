@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewQueueCallService(opts ...option.RequestOption) (r QueueCallService) {
 
 // Retrieve an existing call from an existing queue
 func (r *QueueCallService) Get(ctx context.Context, callControlID string, query QueueCallGetParams, opts ...option.RequestOption) (res *QueueCallGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.QueueName == "" {
 		err = errors.New("missing required queue_name parameter")
 		return
@@ -54,7 +55,7 @@ func (r *QueueCallService) Get(ctx context.Context, callControlID string, query 
 
 // Retrieve the list of calls in an existing queue
 func (r *QueueCallService) List(ctx context.Context, queueName string, query QueueCallListParams, opts ...option.RequestOption) (res *QueueCallListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if queueName == "" {
 		err = errors.New("missing required queue_name parameter")
 		return

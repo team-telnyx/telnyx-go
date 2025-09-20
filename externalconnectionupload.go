@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -40,7 +41,7 @@ func NewExternalConnectionUploadService(opts ...option.RequestOption) (r Externa
 // Only one of civic_address_id or location_id must be provided, not both. The
 // maximum allowed phone numbers for the numbers_ids array is 1000.
 func (r *ExternalConnectionUploadService) New(ctx context.Context, id string, body ExternalConnectionUploadNewParams, opts ...option.RequestOption) (res *ExternalConnectionUploadNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *ExternalConnectionUploadService) New(ctx context.Context, id string, bo
 
 // Return the details of an Upload request and its phone numbers.
 func (r *ExternalConnectionUploadService) Get(ctx context.Context, ticketID string, query ExternalConnectionUploadGetParams, opts ...option.RequestOption) (res *ExternalConnectionUploadGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.ID == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *ExternalConnectionUploadService) Get(ctx context.Context, ticketID stri
 
 // Returns a list of your Upload requests for the given external connection.
 func (r *ExternalConnectionUploadService) List(ctx context.Context, id string, query ExternalConnectionUploadListParams, opts ...option.RequestOption) (res *ExternalConnectionUploadListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -81,7 +82,7 @@ func (r *ExternalConnectionUploadService) List(ctx context.Context, id string, q
 // Returns the count of all pending upload requests for the given external
 // connection.
 func (r *ExternalConnectionUploadService) PendingCount(ctx context.Context, id string, opts ...option.RequestOption) (res *ExternalConnectionUploadPendingCountResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -94,7 +95,7 @@ func (r *ExternalConnectionUploadService) PendingCount(ctx context.Context, id s
 // Forces a recheck of the status of all pending Upload requests for the given
 // external connection in the background.
 func (r *ExternalConnectionUploadService) RefreshStatus(ctx context.Context, id string, opts ...option.RequestOption) (res *ExternalConnectionUploadRefreshStatusResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -109,7 +110,7 @@ func (r *ExternalConnectionUploadService) RefreshStatus(ctx context.Context, id 
 // in other cases it may create a new upload request. Please check the ticket_id in
 // the response to determine if a new upload request was created.
 func (r *ExternalConnectionUploadService) Retry(ctx context.Context, ticketID string, body ExternalConnectionUploadRetryParams, opts ...option.RequestOption) (res *ExternalConnectionUploadRetryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if body.ID == "" {
 		err = errors.New("missing required id parameter")
 		return

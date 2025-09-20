@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -40,7 +41,7 @@ func NewGlobalIPAssignmentService(opts ...option.RequestOption) (r GlobalIPAssig
 
 // Create a Global IP assignment.
 func (r *GlobalIPAssignmentService) New(ctx context.Context, body GlobalIPAssignmentNewParams, opts ...option.RequestOption) (res *GlobalIPAssignmentNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_assignments"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *GlobalIPAssignmentService) New(ctx context.Context, body GlobalIPAssign
 
 // Retrieve a Global IP assignment.
 func (r *GlobalIPAssignmentService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *GlobalIPAssignmentGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *GlobalIPAssignmentService) Get(ctx context.Context, id string, opts ...
 
 // Update a Global IP assignment.
 func (r *GlobalIPAssignmentService) Update(ctx context.Context, id string, body GlobalIPAssignmentUpdateParams, opts ...option.RequestOption) (res *GlobalIPAssignmentUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -72,7 +73,7 @@ func (r *GlobalIPAssignmentService) Update(ctx context.Context, id string, body 
 
 // List all Global IP assignments.
 func (r *GlobalIPAssignmentService) List(ctx context.Context, query GlobalIPAssignmentListParams, opts ...option.RequestOption) (res *GlobalIPAssignmentListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_assignments"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -80,7 +81,7 @@ func (r *GlobalIPAssignmentService) List(ctx context.Context, query GlobalIPAssi
 
 // Delete a Global IP assignment.
 func (r *GlobalIPAssignmentService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *GlobalIPAssignmentDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

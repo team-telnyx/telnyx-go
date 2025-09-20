@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewAccessIPRangeService(opts ...option.RequestOption) (r AccessIPRangeServi
 
 // Create new Access IP Range
 func (r *AccessIPRangeService) New(ctx context.Context, body AccessIPRangeNewParams, opts ...option.RequestOption) (res *AccessIPRange, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "access_ip_ranges"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *AccessIPRangeService) New(ctx context.Context, body AccessIPRangeNewPar
 
 // List all Access IP Ranges
 func (r *AccessIPRangeService) List(ctx context.Context, query AccessIPRangeListParams, opts ...option.RequestOption) (res *AccessIPRangeListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "access_ip_ranges"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -55,7 +56,7 @@ func (r *AccessIPRangeService) List(ctx context.Context, query AccessIPRangeList
 
 // Delete access IP ranges
 func (r *AccessIPRangeService) Delete(ctx context.Context, accessIPRangeID string, opts ...option.RequestOption) (res *AccessIPRange, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accessIPRangeID == "" {
 		err = errors.New("missing required access_ip_range_id parameter")
 		return

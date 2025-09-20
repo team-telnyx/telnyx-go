@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -37,7 +38,7 @@ func NewPhoneNumberActionService(opts ...option.RequestOption) (r PhoneNumberAct
 // Change the bundle status for a phone number (set to being in a bundle or remove
 // from a bundle)
 func (r *PhoneNumberActionService) ChangeBundleStatus(ctx context.Context, id string, body PhoneNumberActionChangeBundleStatusParams, opts ...option.RequestOption) (res *PhoneNumberActionChangeBundleStatusResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *PhoneNumberActionService) ChangeBundleStatus(ctx context.Context, id st
 
 // Enable emergency for a phone number
 func (r *PhoneNumberActionService) EnableEmergency(ctx context.Context, id string, body PhoneNumberActionEnableEmergencyParams, opts ...option.RequestOption) (res *PhoneNumberActionEnableEmergencyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *PhoneNumberActionService) EnableEmergency(ctx context.Context, id strin
 // Verifies ownership of the provided phone numbers and returns a mapping of
 // numbers to their IDs, plus a list of numbers not found in the account.
 func (r *PhoneNumberActionService) VerifyOwnership(ctx context.Context, body PhoneNumberActionVerifyOwnershipParams, opts ...option.RequestOption) (res *PhoneNumberActionVerifyOwnershipResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "phone_numbers/actions/verify_ownership"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

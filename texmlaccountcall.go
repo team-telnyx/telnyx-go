@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -50,7 +51,7 @@ func NewTexmlAccountCallService(opts ...option.RequestOption) (r TexmlAccountCal
 // Returns an individual call identified by its CallSid. This endpoint is
 // eventually consistent.
 func (r *TexmlAccountCallService) Get(ctx context.Context, callSid string, query TexmlAccountCallGetParams, opts ...option.RequestOption) (res *TexmlAccountCallGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return
@@ -67,7 +68,7 @@ func (r *TexmlAccountCallService) Get(ctx context.Context, callSid string, query
 // Update TeXML call. Please note that the keys present in the payload MUST BE
 // formatted in CamelCase as specified in the example.
 func (r *TexmlAccountCallService) Update(ctx context.Context, callSid string, params TexmlAccountCallUpdateParams, opts ...option.RequestOption) (res *TexmlAccountCallUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return
@@ -84,7 +85,7 @@ func (r *TexmlAccountCallService) Update(ctx context.Context, callSid string, pa
 // Initiate an outbound TeXML call. Telnyx will request TeXML from the XML Request
 // URL configured for the connection in the Mission Control Portal.
 func (r *TexmlAccountCallService) Calls(ctx context.Context, accountSid string, body TexmlAccountCallCallsParams, opts ...option.RequestOption) (res *TexmlAccountCallCallsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return
@@ -97,7 +98,7 @@ func (r *TexmlAccountCallService) Calls(ctx context.Context, accountSid string, 
 // Returns multiple call resouces for an account. This endpoint is eventually
 // consistent.
 func (r *TexmlAccountCallService) GetCalls(ctx context.Context, accountSid string, query TexmlAccountCallGetCallsParams, opts ...option.RequestOption) (res *TexmlAccountCallGetCallsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return
@@ -110,7 +111,7 @@ func (r *TexmlAccountCallService) GetCalls(ctx context.Context, accountSid strin
 // Starts siprec session with specified parameters for call idientified by
 // call_sid.
 func (r *TexmlAccountCallService) SiprecJson(ctx context.Context, callSid string, params TexmlAccountCallSiprecJsonParams, opts ...option.RequestOption) (res *TexmlAccountCallSiprecJsonResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return
@@ -126,7 +127,7 @@ func (r *TexmlAccountCallService) SiprecJson(ctx context.Context, callSid string
 
 // Starts streaming media from a call to a specific WebSocket address.
 func (r *TexmlAccountCallService) StreamsJson(ctx context.Context, callSid string, params TexmlAccountCallStreamsJsonParams, opts ...option.RequestOption) (res *TexmlAccountCallStreamsJsonResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return

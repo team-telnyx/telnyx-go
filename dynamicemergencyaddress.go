@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -41,7 +42,7 @@ func NewDynamicEmergencyAddressService(opts ...option.RequestOption) (r DynamicE
 
 // Creates a dynamic emergency address.
 func (r *DynamicEmergencyAddressService) New(ctx context.Context, body DynamicEmergencyAddressNewParams, opts ...option.RequestOption) (res *DynamicEmergencyAddressNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "dynamic_emergency_addresses"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -49,7 +50,7 @@ func (r *DynamicEmergencyAddressService) New(ctx context.Context, body DynamicEm
 
 // Returns the dynamic emergency address based on the ID provided
 func (r *DynamicEmergencyAddressService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *DynamicEmergencyAddressGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -61,7 +62,7 @@ func (r *DynamicEmergencyAddressService) Get(ctx context.Context, id string, opt
 
 // Returns the dynamic emergency addresses according to filters
 func (r *DynamicEmergencyAddressService) List(ctx context.Context, query DynamicEmergencyAddressListParams, opts ...option.RequestOption) (res *DynamicEmergencyAddressListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "dynamic_emergency_addresses"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -69,7 +70,7 @@ func (r *DynamicEmergencyAddressService) List(ctx context.Context, query Dynamic
 
 // Deletes the dynamic emergency address based on the ID provided
 func (r *DynamicEmergencyAddressService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *DynamicEmergencyAddressDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

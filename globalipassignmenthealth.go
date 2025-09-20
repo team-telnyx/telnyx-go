@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -37,7 +38,7 @@ func NewGlobalIPAssignmentHealthService(opts ...option.RequestOption) (r GlobalI
 
 // Global IP Assignment Health Check Metrics
 func (r *GlobalIPAssignmentHealthService) Get(ctx context.Context, query GlobalIPAssignmentHealthGetParams, opts ...option.RequestOption) (res *GlobalIPAssignmentHealthGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_assignment_health"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

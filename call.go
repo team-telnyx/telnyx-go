@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -60,7 +61,7 @@ func NewCallService(opts ...option.RequestOption) (r CallService) {
 // When the `record` parameter is set to `record-from-answer`, the response will
 // include a `recording_id` field.
 func (r *CallService) Dial(ctx context.Context, body CallDialParams, opts ...option.RequestOption) (res *CallDialResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "calls"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -68,7 +69,7 @@ func (r *CallService) Dial(ctx context.Context, body CallDialParams, opts ...opt
 
 // Returns the status of a call (data is available 10 minutes after call ended).
 func (r *CallService) GetStatus(ctx context.Context, callControlID string, opts ...option.RequestOption) (res *CallGetStatusResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
 		return

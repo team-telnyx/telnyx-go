@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -42,7 +43,7 @@ func NewRoomSessionService(opts ...option.RequestOption) (r RoomSessionService) 
 
 // View a room session.
 func (r *RoomSessionService) Get(ctx context.Context, roomSessionID string, query RoomSessionGetParams, opts ...option.RequestOption) (res *RoomSessionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if roomSessionID == "" {
 		err = errors.New("missing required room_session_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *RoomSessionService) Get(ctx context.Context, roomSessionID string, quer
 
 // View a list of room sessions.
 func (r *RoomSessionService) List0(ctx context.Context, query RoomSessionList0Params, opts ...option.RequestOption) (res *RoomSessionList0Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "room_sessions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -62,7 +63,7 @@ func (r *RoomSessionService) List0(ctx context.Context, query RoomSessionList0Pa
 
 // View a list of room sessions.
 func (r *RoomSessionService) List1(ctx context.Context, roomID string, query RoomSessionList1Params, opts ...option.RequestOption) (res *RoomSessionList1Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if roomID == "" {
 		err = errors.New("missing required room_id parameter")
 		return
@@ -74,7 +75,7 @@ func (r *RoomSessionService) List1(ctx context.Context, roomID string, query Roo
 
 // View a list of room participants.
 func (r *RoomSessionService) GetParticipants(ctx context.Context, roomSessionID string, query RoomSessionGetParticipantsParams, opts ...option.RequestOption) (res *RoomSessionGetParticipantsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if roomSessionID == "" {
 		err = errors.New("missing required room_session_id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewPublicInternetGatewayService(opts ...option.RequestOption) (r PublicInte
 
 // Create a new Public Internet Gateway.
 func (r *PublicInternetGatewayService) New(ctx context.Context, body PublicInternetGatewayNewParams, opts ...option.RequestOption) (res *PublicInternetGatewayNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "public_internet_gateways"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *PublicInternetGatewayService) New(ctx context.Context, body PublicInter
 
 // Retrieve a Public Internet Gateway.
 func (r *PublicInternetGatewayService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PublicInternetGatewayGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *PublicInternetGatewayService) Get(ctx context.Context, id string, opts 
 
 // List all Public Internet Gateways.
 func (r *PublicInternetGatewayService) List(ctx context.Context, query PublicInternetGatewayListParams, opts ...option.RequestOption) (res *PublicInternetGatewayListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "public_internet_gateways"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -66,7 +67,7 @@ func (r *PublicInternetGatewayService) List(ctx context.Context, query PublicInt
 
 // Delete a Public Internet Gateway.
 func (r *PublicInternetGatewayService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *PublicInternetGatewayDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

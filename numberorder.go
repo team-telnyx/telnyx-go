@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -40,7 +41,7 @@ func NewNumberOrderService(opts ...option.RequestOption) (r NumberOrderService) 
 
 // Creates a phone number order.
 func (r *NumberOrderService) New(ctx context.Context, body NumberOrderNewParams, opts ...option.RequestOption) (res *NumberOrderNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "number_orders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *NumberOrderService) New(ctx context.Context, body NumberOrderNewParams,
 
 // Get an existing phone number order.
 func (r *NumberOrderService) Get(ctx context.Context, numberOrderID string, opts ...option.RequestOption) (res *NumberOrderGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if numberOrderID == "" {
 		err = errors.New("missing required number_order_id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *NumberOrderService) Get(ctx context.Context, numberOrderID string, opts
 
 // Updates a phone number order.
 func (r *NumberOrderService) Update(ctx context.Context, numberOrderID string, body NumberOrderUpdateParams, opts ...option.RequestOption) (res *NumberOrderUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if numberOrderID == "" {
 		err = errors.New("missing required number_order_id parameter")
 		return
@@ -72,7 +73,7 @@ func (r *NumberOrderService) Update(ctx context.Context, numberOrderID string, b
 
 // Get a paginated list of number orders.
 func (r *NumberOrderService) List(ctx context.Context, query NumberOrderListParams, opts ...option.RequestOption) (res *NumberOrderListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "number_orders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

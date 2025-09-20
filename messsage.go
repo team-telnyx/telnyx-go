@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -36,7 +37,7 @@ func NewMesssageService(opts ...option.RequestOption) (r MesssageService) {
 
 // Send an RCS message
 func (r *MesssageService) Rcs(ctx context.Context, body MesssageRcsParams, opts ...option.RequestOption) (res *MesssageRcsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "messsages/rcs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

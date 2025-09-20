@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -40,7 +41,7 @@ func NewFaxApplicationService(opts ...option.RequestOption) (r FaxApplicationSer
 // application name and webhook URL are required. Once created, you can assign
 // phone numbers to your application using the `/phone_numbers` endpoint.
 func (r *FaxApplicationService) New(ctx context.Context, body FaxApplicationNewParams, opts ...option.RequestOption) (res *FaxApplicationNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "fax_applications"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -49,7 +50,7 @@ func (r *FaxApplicationService) New(ctx context.Context, body FaxApplicationNewP
 // Return the details of an existing Fax Application inside the 'data' attribute of
 // the response.
 func (r *FaxApplicationService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *FaxApplicationGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *FaxApplicationService) Get(ctx context.Context, id string, opts ...opti
 // Updates settings of an existing Fax Application based on the parameters of the
 // request.
 func (r *FaxApplicationService) Update(ctx context.Context, id string, body FaxApplicationUpdateParams, opts ...option.RequestOption) (res *FaxApplicationUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -77,7 +78,7 @@ func (r *FaxApplicationService) Update(ctx context.Context, id string, body FaxA
 // filters. Fax Applications are used to configure how you send and receive faxes
 // using the Programmable Fax API with Telnyx.
 func (r *FaxApplicationService) List(ctx context.Context, query FaxApplicationListParams, opts ...option.RequestOption) (res *FaxApplicationListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "fax_applications"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -86,7 +87,7 @@ func (r *FaxApplicationService) List(ctx context.Context, query FaxApplicationLi
 // Permanently deletes a Fax Application. Deletion may be prevented if the
 // application is in use by phone numbers.
 func (r *FaxApplicationService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *FaxApplicationDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

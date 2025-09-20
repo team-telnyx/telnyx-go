@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -37,7 +38,7 @@ func NewNumberLookupService(opts ...option.RequestOption) (r NumberLookupService
 
 // Returns information about the provided phone number.
 func (r *NumberLookupService) Get(ctx context.Context, phoneNumber string, query NumberLookupGetParams, opts ...option.RequestOption) (res *NumberLookupGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
 		err = errors.New("missing required phone_number parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -36,7 +37,7 @@ func NewAIFineTuningJobService(opts ...option.RequestOption) (r AIFineTuningJobS
 
 // Create a new fine tuning job.
 func (r *AIFineTuningJobService) New(ctx context.Context, body AIFineTuningJobNewParams, opts ...option.RequestOption) (res *FineTuningJob, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/fine_tuning/jobs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -44,7 +45,7 @@ func (r *AIFineTuningJobService) New(ctx context.Context, body AIFineTuningJobNe
 
 // Retrieve a fine tuning job by `job_id`.
 func (r *AIFineTuningJobService) Get(ctx context.Context, jobID string, opts ...option.RequestOption) (res *FineTuningJob, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if jobID == "" {
 		err = errors.New("missing required job_id parameter")
 		return
@@ -56,7 +57,7 @@ func (r *AIFineTuningJobService) Get(ctx context.Context, jobID string, opts ...
 
 // Retrieve a list of all fine tuning jobs created by the user.
 func (r *AIFineTuningJobService) List(ctx context.Context, opts ...option.RequestOption) (res *AIFineTuningJobListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/fine_tuning/jobs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -64,7 +65,7 @@ func (r *AIFineTuningJobService) List(ctx context.Context, opts ...option.Reques
 
 // Cancel a fine tuning job.
 func (r *AIFineTuningJobService) Cancel(ctx context.Context, jobID string, opts ...option.RequestOption) (res *FineTuningJob, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if jobID == "" {
 		err = errors.New("missing required job_id parameter")
 		return

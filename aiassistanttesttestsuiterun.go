@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -39,7 +40,7 @@ func NewAIAssistantTestTestSuiteRunService(opts ...option.RequestOption) (r AIAs
 // Retrieves paginated history of test runs for a specific test suite with
 // filtering options
 func (r *AIAssistantTestTestSuiteRunService) List(ctx context.Context, suiteName string, query AIAssistantTestTestSuiteRunListParams, opts ...option.RequestOption) (res *PaginatedTestRunList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if suiteName == "" {
 		err = errors.New("missing required suite_name parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AIAssistantTestTestSuiteRunService) List(ctx context.Context, suiteName
 
 // Executes all tests within a specific test suite as a batch operation
 func (r *AIAssistantTestTestSuiteRunService) Trigger(ctx context.Context, suiteName string, body AIAssistantTestTestSuiteRunTriggerParams, opts ...option.RequestOption) (res *[]TestRunResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if suiteName == "" {
 		err = errors.New("missing required suite_name parameter")
 		return

@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -37,7 +38,7 @@ func NewGlobalIPLatencyService(opts ...option.RequestOption) (r GlobalIPLatencyS
 
 // Global IP Latency Metrics
 func (r *GlobalIPLatencyService) Get(ctx context.Context, query GlobalIPLatencyGetParams, opts ...option.RequestOption) (res *GlobalIPLatencyGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_latency"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

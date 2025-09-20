@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -61,7 +62,7 @@ func NewPortingOrderService(opts ...option.RequestOption) (r PortingOrderService
 
 // Creates a new porting order object.
 func (r *PortingOrderService) New(ctx context.Context, body PortingOrderNewParams, opts ...option.RequestOption) (res *PortingOrderNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "porting_orders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -69,7 +70,7 @@ func (r *PortingOrderService) New(ctx context.Context, body PortingOrderNewParam
 
 // Retrieves the details of an existing porting order.
 func (r *PortingOrderService) Get(ctx context.Context, id string, query PortingOrderGetParams, opts ...option.RequestOption) (res *PortingOrderGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -89,7 +90,7 @@ func (r *PortingOrderService) Get(ctx context.Context, id string, query PortingO
 // current values. To explicitly set something to null, it must be included in the
 // request with a null value.
 func (r *PortingOrderService) Update(ctx context.Context, id string, body PortingOrderUpdateParams, opts ...option.RequestOption) (res *PortingOrderUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -101,7 +102,7 @@ func (r *PortingOrderService) Update(ctx context.Context, id string, body Portin
 
 // Returns a list of your porting order.
 func (r *PortingOrderService) List(ctx context.Context, query PortingOrderListParams, opts ...option.RequestOption) (res *PortingOrderListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "porting_orders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -110,7 +111,7 @@ func (r *PortingOrderService) List(ctx context.Context, query PortingOrderListPa
 // Deletes an existing porting order. This operation is restrict to porting orders
 // in draft state.
 func (r *PortingOrderService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -123,7 +124,7 @@ func (r *PortingOrderService) Delete(ctx context.Context, id string, opts ...opt
 
 // Returns a list of allowed FOC dates for a porting order.
 func (r *PortingOrderService) GetAllowedFocWindows(ctx context.Context, id string, opts ...option.RequestOption) (res *PortingOrderGetAllowedFocWindowsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -135,7 +136,7 @@ func (r *PortingOrderService) GetAllowedFocWindows(ctx context.Context, id strin
 
 // Returns a list of all possible exception types for a porting order.
 func (r *PortingOrderService) GetExceptionTypes(ctx context.Context, opts ...option.RequestOption) (res *PortingOrderGetExceptionTypesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "porting_orders/exception_types"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -143,7 +144,7 @@ func (r *PortingOrderService) GetExceptionTypes(ctx context.Context, opts ...opt
 
 // Download a porting order loa template
 func (r *PortingOrderService) GetLoaTemplate(ctx context.Context, id string, query PortingOrderGetLoaTemplateParams, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/pdf")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -157,7 +158,7 @@ func (r *PortingOrderService) GetLoaTemplate(ctx context.Context, id string, que
 // Returns a list of all requirements based on country/number type for this porting
 // order.
 func (r *PortingOrderService) GetRequirements(ctx context.Context, id string, query PortingOrderGetRequirementsParams, opts ...option.RequestOption) (res *PortingOrderGetRequirementsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -169,7 +170,7 @@ func (r *PortingOrderService) GetRequirements(ctx context.Context, id string, qu
 
 // Retrieve the associated V1 sub_request_id and port_request_id
 func (r *PortingOrderService) GetSubRequest(ctx context.Context, id string, opts ...option.RequestOption) (res *PortingOrderGetSubRequestResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

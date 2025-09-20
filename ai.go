@@ -5,6 +5,7 @@ package telnyx
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -52,7 +53,7 @@ func NewAIService(opts ...option.RequestOption) (r AIService) {
 // `mistralai/Mistral-7B-Instruct-v0.1` consistent with HuggingFace naming
 // conventions.
 func (r *AIService) GetModels(ctx context.Context, opts ...option.RequestOption) (res *AIGetModelsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/models"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -70,7 +71,7 @@ func (r *AIService) GetModels(ctx context.Context, opts ...option.RequestOption)
 // - flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm
 // - Up to 100 MB
 func (r *AIService) Summarize(ctx context.Context, body AISummarizeParams, opts ...option.RequestOption) (res *AISummarizeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/summarize"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

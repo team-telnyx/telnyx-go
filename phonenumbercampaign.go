@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -40,7 +41,7 @@ func NewPhoneNumberCampaignService(opts ...option.RequestOption) (r PhoneNumberC
 
 // Create New Phone Number Campaign
 func (r *PhoneNumberCampaignService) New(ctx context.Context, body PhoneNumberCampaignNewParams, opts ...option.RequestOption) (res *PhoneNumberCampaign, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "phone_number_campaigns"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *PhoneNumberCampaignService) New(ctx context.Context, body PhoneNumberCa
 
 // Retrieve an individual phone number/campaign assignment by `phoneNumber`.
 func (r *PhoneNumberCampaignService) Get(ctx context.Context, phoneNumber string, opts ...option.RequestOption) (res *PhoneNumberCampaign, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
 		err = errors.New("missing required phoneNumber parameter")
 		return
@@ -60,7 +61,7 @@ func (r *PhoneNumberCampaignService) Get(ctx context.Context, phoneNumber string
 
 // Create New Phone Number Campaign
 func (r *PhoneNumberCampaignService) Update(ctx context.Context, phoneNumber string, body PhoneNumberCampaignUpdateParams, opts ...option.RequestOption) (res *PhoneNumberCampaign, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
 		err = errors.New("missing required phoneNumber parameter")
 		return
@@ -72,7 +73,7 @@ func (r *PhoneNumberCampaignService) Update(ctx context.Context, phoneNumber str
 
 // Retrieve All Phone Number Campaigns
 func (r *PhoneNumberCampaignService) List(ctx context.Context, query PhoneNumberCampaignListParams, opts ...option.RequestOption) (res *PhoneNumberCampaignListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "phone_number_campaigns"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -81,7 +82,7 @@ func (r *PhoneNumberCampaignService) List(ctx context.Context, query PhoneNumber
 // This endpoint allows you to remove a campaign assignment from the supplied
 // `phoneNumber`.
 func (r *PhoneNumberCampaignService) Delete(ctx context.Context, phoneNumber string, opts ...option.RequestOption) (res *PhoneNumberCampaign, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
 		err = errors.New("missing required phoneNumber parameter")
 		return

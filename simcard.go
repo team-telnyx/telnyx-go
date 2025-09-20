@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -43,7 +44,7 @@ func NewSimCardService(opts ...option.RequestOption) (r SimCardService) {
 
 // Returns the details regarding a specific SIM card.
 func (r *SimCardService) Get(ctx context.Context, id string, query SimCardGetParams, opts ...option.RequestOption) (res *SimCardGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *SimCardService) Get(ctx context.Context, id string, query SimCardGetPar
 
 // Updates SIM card data
 func (r *SimCardService) Update(ctx context.Context, id string, body SimCardUpdateParams, opts ...option.RequestOption) (res *SimCardUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -67,7 +68,7 @@ func (r *SimCardService) Update(ctx context.Context, id string, body SimCardUpda
 
 // Get all SIM cards belonging to the user that match the given filters.
 func (r *SimCardService) List(ctx context.Context, query SimCardListParams, opts ...option.RequestOption) (res *SimCardListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "sim_cards"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -81,7 +82,7 @@ func (r *SimCardService) List(ctx context.Context, query SimCardListParams, opts
 // <code>disabling</code>.<br />In order to re-enable the SIM card, you will need
 // to re-register it.
 func (r *SimCardService) Delete(ctx context.Context, id string, body SimCardDeleteParams, opts ...option.RequestOption) (res *SimCardDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -95,7 +96,7 @@ func (r *SimCardService) Delete(ctx context.Context, id string, body SimCardDele
 // for eSIMs. If the given SIM is a physical SIM card, or has already been
 // installed, an error will be returned.
 func (r *SimCardService) GetActivationCode(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardGetActivationCodeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -107,7 +108,7 @@ func (r *SimCardService) GetActivationCode(ctx context.Context, id string, opts 
 
 // It returns the device details where a SIM card is currently being used.
 func (r *SimCardService) GetDeviceDetails(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardGetDeviceDetailsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -119,7 +120,7 @@ func (r *SimCardService) GetDeviceDetails(ctx context.Context, id string, opts .
 
 // It returns the public IP requested for a SIM card.
 func (r *SimCardService) GetPublicIP(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardGetPublicIPResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -132,7 +133,7 @@ func (r *SimCardService) GetPublicIP(ctx context.Context, id string, opts ...opt
 // This API allows listing a paginated collection of Wireless Connectivity Logs
 // associated with a SIM Card, for troubleshooting purposes.
 func (r *SimCardService) ListWirelessConnectivityLogs(ctx context.Context, id string, query SimCardListWirelessConnectivityLogsParams, opts ...option.RequestOption) (res *SimCardListWirelessConnectivityLogsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewPortingLoaConfigurationService(opts ...option.RequestOption) (r PortingL
 
 // Create a LOA configuration.
 func (r *PortingLoaConfigurationService) New(ctx context.Context, body PortingLoaConfigurationNewParams, opts ...option.RequestOption) (res *PortingLoaConfigurationNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "porting/loa_configurations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *PortingLoaConfigurationService) New(ctx context.Context, body PortingLo
 
 // Retrieve a specific LOA configuration.
 func (r *PortingLoaConfigurationService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PortingLoaConfigurationGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *PortingLoaConfigurationService) Get(ctx context.Context, id string, opt
 
 // Update a specific LOA configuration.
 func (r *PortingLoaConfigurationService) Update(ctx context.Context, id string, body PortingLoaConfigurationUpdateParams, opts ...option.RequestOption) (res *PortingLoaConfigurationUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -71,7 +72,7 @@ func (r *PortingLoaConfigurationService) Update(ctx context.Context, id string, 
 
 // List the LOA configurations.
 func (r *PortingLoaConfigurationService) List(ctx context.Context, query PortingLoaConfigurationListParams, opts ...option.RequestOption) (res *PortingLoaConfigurationListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "porting/loa_configurations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -79,7 +80,7 @@ func (r *PortingLoaConfigurationService) List(ctx context.Context, query Porting
 
 // Delete a specific LOA configuration.
 func (r *PortingLoaConfigurationService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -93,7 +94,7 @@ func (r *PortingLoaConfigurationService) Delete(ctx context.Context, id string, 
 // Preview the LOA template that would be generated without need to create LOA
 // configuration.
 func (r *PortingLoaConfigurationService) Preview0(ctx context.Context, body PortingLoaConfigurationPreview0Params, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/pdf")}, opts...)
 	path := "porting/loa_configuration/preview"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -102,7 +103,7 @@ func (r *PortingLoaConfigurationService) Preview0(ctx context.Context, body Port
 
 // Preview a specific LOA configuration.
 func (r *PortingLoaConfigurationService) Preview1(ctx context.Context, id string, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/pdf")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")

@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -36,7 +37,7 @@ func NewNetworkCoverageService(opts ...option.RequestOption) (r NetworkCoverageS
 
 // List all locations and the interfaces that region supports
 func (r *NetworkCoverageService) List(ctx context.Context, query NetworkCoverageListParams, opts ...option.RequestOption) (res *NetworkCoverageListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "network_coverage"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

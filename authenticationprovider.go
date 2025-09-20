@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewAuthenticationProviderService(opts ...option.RequestOption) (r Authentic
 
 // Creates an authentication provider.
 func (r *AuthenticationProviderService) New(ctx context.Context, body AuthenticationProviderNewParams, opts ...option.RequestOption) (res *AuthenticationProviderNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "authentication_providers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *AuthenticationProviderService) New(ctx context.Context, body Authentica
 
 // Retrieves the details of an existing authentication provider.
 func (r *AuthenticationProviderService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *AuthenticationProviderGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *AuthenticationProviderService) Get(ctx context.Context, id string, opts
 
 // Updates settings of an existing authentication provider.
 func (r *AuthenticationProviderService) Update(ctx context.Context, id string, body AuthenticationProviderUpdateParams, opts ...option.RequestOption) (res *AuthenticationProviderUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -71,7 +72,7 @@ func (r *AuthenticationProviderService) Update(ctx context.Context, id string, b
 
 // Returns a list of your SSO authentication providers.
 func (r *AuthenticationProviderService) List(ctx context.Context, query AuthenticationProviderListParams, opts ...option.RequestOption) (res *AuthenticationProviderListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "authentication_providers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -79,7 +80,7 @@ func (r *AuthenticationProviderService) List(ctx context.Context, query Authenti
 
 // Deletes an existing authentication provider.
 func (r *AuthenticationProviderService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *AuthenticationProviderDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

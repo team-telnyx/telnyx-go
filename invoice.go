@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewInvoiceService(opts ...option.RequestOption) (r InvoiceService) {
 
 // Retrieve a single invoice by its unique identifier.
 func (r *InvoiceService) Get(ctx context.Context, id string, query InvoiceGetParams, opts ...option.RequestOption) (res *InvoiceGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *InvoiceService) Get(ctx context.Context, id string, query InvoiceGetPar
 
 // Retrieve a paginated list of invoices.
 func (r *InvoiceService) List(ctx context.Context, query InvoiceListParams, opts ...option.RequestOption) (res *InvoiceListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "invoices"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

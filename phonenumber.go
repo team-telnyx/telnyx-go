@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -50,7 +51,7 @@ func NewPhoneNumberService(opts ...option.RequestOption) (r PhoneNumberService) 
 
 // Retrieve a phone number
 func (r *PhoneNumberService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PhoneNumberGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *PhoneNumberService) Get(ctx context.Context, id string, opts ...option.
 
 // Update a phone number
 func (r *PhoneNumberService) Update(ctx context.Context, id string, body PhoneNumberUpdateParams, opts ...option.RequestOption) (res *PhoneNumberUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -74,7 +75,7 @@ func (r *PhoneNumberService) Update(ctx context.Context, id string, body PhoneNu
 
 // List phone numbers
 func (r *PhoneNumberService) List(ctx context.Context, query PhoneNumberListParams, opts ...option.RequestOption) (res *PhoneNumberListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "phone_numbers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -82,7 +83,7 @@ func (r *PhoneNumberService) List(ctx context.Context, query PhoneNumberListPara
 
 // Delete a phone number
 func (r *PhoneNumberService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *PhoneNumberDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -95,7 +96,7 @@ func (r *PhoneNumberService) Delete(ctx context.Context, id string, opts ...opti
 // List phone numbers, This endpoint is a lighter version of the /phone_numbers
 // endpoint having higher performance and rate limit.
 func (r *PhoneNumberService) SlimList(ctx context.Context, query PhoneNumberSlimListParams, opts ...option.RequestOption) (res *PhoneNumberSlimListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "phone_numbers/slim"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

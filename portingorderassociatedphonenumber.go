@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -41,7 +42,7 @@ func NewPortingOrderAssociatedPhoneNumberService(opts ...option.RequestOption) (
 // partial porting in GB to specify which phone numbers should be kept or
 // disconnected.
 func (r *PortingOrderAssociatedPhoneNumberService) New(ctx context.Context, portingOrderID string, body PortingOrderAssociatedPhoneNumberNewParams, opts ...option.RequestOption) (res *PortingOrderAssociatedPhoneNumberNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if portingOrderID == "" {
 		err = errors.New("missing required porting_order_id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *PortingOrderAssociatedPhoneNumberService) New(ctx context.Context, port
 // phone numbers are used for partial porting in GB to specify which phone numbers
 // should be kept or disconnected.
 func (r *PortingOrderAssociatedPhoneNumberService) List(ctx context.Context, portingOrderID string, query PortingOrderAssociatedPhoneNumberListParams, opts ...option.RequestOption) (res *PortingOrderAssociatedPhoneNumberListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if portingOrderID == "" {
 		err = errors.New("missing required porting_order_id parameter")
 		return
@@ -67,7 +68,7 @@ func (r *PortingOrderAssociatedPhoneNumberService) List(ctx context.Context, por
 
 // Deletes an associated phone number from a porting order.
 func (r *PortingOrderAssociatedPhoneNumberService) Delete(ctx context.Context, id string, body PortingOrderAssociatedPhoneNumberDeleteParams, opts ...option.RequestOption) (res *PortingOrderAssociatedPhoneNumberDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if body.PortingOrderID == "" {
 		err = errors.New("missing required porting_order_id parameter")
 		return

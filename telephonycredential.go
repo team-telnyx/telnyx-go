@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewTelephonyCredentialService(opts ...option.RequestOption) (r TelephonyCre
 
 // Create a credential.
 func (r *TelephonyCredentialService) New(ctx context.Context, body TelephonyCredentialNewParams, opts ...option.RequestOption) (res *TelephonyCredentialNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "telephony_credentials"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *TelephonyCredentialService) New(ctx context.Context, body TelephonyCred
 
 // Get the details of an existing On-demand Credential.
 func (r *TelephonyCredentialService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *TelephonyCredentialGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *TelephonyCredentialService) Get(ctx context.Context, id string, opts ..
 
 // Update an existing credential.
 func (r *TelephonyCredentialService) Update(ctx context.Context, id string, body TelephonyCredentialUpdateParams, opts ...option.RequestOption) (res *TelephonyCredentialUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -70,7 +71,7 @@ func (r *TelephonyCredentialService) Update(ctx context.Context, id string, body
 
 // List all On-demand Credentials.
 func (r *TelephonyCredentialService) List(ctx context.Context, query TelephonyCredentialListParams, opts ...option.RequestOption) (res *TelephonyCredentialListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "telephony_credentials"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -78,7 +79,7 @@ func (r *TelephonyCredentialService) List(ctx context.Context, query TelephonyCr
 
 // Delete an existing credential.
 func (r *TelephonyCredentialService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *TelephonyCredentialDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -90,7 +91,7 @@ func (r *TelephonyCredentialService) Delete(ctx context.Context, id string, opts
 
 // Create an Access Token (JWT) for the credential.
 func (r *TelephonyCredentialService) NewToken(ctx context.Context, id string, opts ...option.RequestOption) (res *string, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/plain")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -40,7 +41,7 @@ func NewVerifiedNumberService(opts ...option.RequestOption) (r VerifiedNumberSer
 
 // Initiates phone number verification procedure.
 func (r *VerifiedNumberService) New(ctx context.Context, body VerifiedNumberNewParams, opts ...option.RequestOption) (res *VerifiedNumberNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "verified_numbers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *VerifiedNumberService) New(ctx context.Context, body VerifiedNumberNewP
 
 // Retrieve a verified number
 func (r *VerifiedNumberService) Get(ctx context.Context, phoneNumber string, opts ...option.RequestOption) (res *VerifiedNumberDataWrapper, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
 		err = errors.New("missing required phone_number parameter")
 		return
@@ -60,7 +61,7 @@ func (r *VerifiedNumberService) Get(ctx context.Context, phoneNumber string, opt
 
 // Gets a paginated list of Verified Numbers.
 func (r *VerifiedNumberService) List(ctx context.Context, query VerifiedNumberListParams, opts ...option.RequestOption) (res *VerifiedNumberListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "verified_numbers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -68,7 +69,7 @@ func (r *VerifiedNumberService) List(ctx context.Context, query VerifiedNumberLi
 
 // Delete a verified number
 func (r *VerifiedNumberService) Delete(ctx context.Context, phoneNumber string, opts ...option.RequestOption) (res *VerifiedNumberDataWrapper, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
 		err = errors.New("missing required phone_number parameter")
 		return

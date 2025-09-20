@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -55,7 +56,7 @@ func NewConferenceService(opts ...option.RequestOption) (r ConferenceService) {
 // - `conference.recording.saved`
 // - `conference.floor.changed`
 func (r *ConferenceService) New(ctx context.Context, body ConferenceNewParams, opts ...option.RequestOption) (res *ConferenceNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "conferences"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -63,7 +64,7 @@ func (r *ConferenceService) New(ctx context.Context, body ConferenceNewParams, o
 
 // Retrieve an existing conference
 func (r *ConferenceService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ConferenceGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -78,7 +79,7 @@ func (r *ConferenceService) Get(ctx context.Context, id string, opts ...option.R
 // of active participants. Conferences are listed in descending order by
 // `expires_at`.
 func (r *ConferenceService) List(ctx context.Context, query ConferenceListParams, opts ...option.RequestOption) (res *ConferenceListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "conferences"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -86,7 +87,7 @@ func (r *ConferenceService) List(ctx context.Context, query ConferenceListParams
 
 // Lists conference participants
 func (r *ConferenceService) ListParticipants(ctx context.Context, conferenceID string, query ConferenceListParticipantsParams, opts ...option.RequestOption) (res *ConferenceListParticipantsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if conferenceID == "" {
 		err = errors.New("missing required conference_id parameter")
 		return

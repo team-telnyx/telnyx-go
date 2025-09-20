@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewChargesSummaryService(opts ...option.RequestOption) (r ChargesSummarySer
 // Retrieve a summary of monthly charges for a specified date range. The date range
 // cannot exceed 31 days.
 func (r *ChargesSummaryService) Get(ctx context.Context, query ChargesSummaryGetParams, opts ...option.RequestOption) (res *ChargesSummaryGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "charges_summary"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

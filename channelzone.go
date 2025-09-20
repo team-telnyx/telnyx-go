@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -41,7 +42,7 @@ func NewChannelZoneService(opts ...option.RequestOption) (r ChannelZoneService) 
 // this endpoint to increase or decrease your capacity based on expected call
 // volume.
 func (r *ChannelZoneService) Update(ctx context.Context, channelZoneID string, body ChannelZoneUpdateParams, opts ...option.RequestOption) (res *ChannelZoneUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if channelZoneID == "" {
 		err = errors.New("missing required channel_zone_id parameter")
 		return
@@ -57,7 +58,7 @@ func (r *ChannelZoneService) Update(ctx context.Context, channelZoneID string, b
 // Support Articles</a> section for full information and examples of how to utilize
 // Channel Billing.
 func (r *ChannelZoneService) List(ctx context.Context, query ChannelZoneListParams, opts ...option.RequestOption) (res *ChannelZoneListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "channel_zones"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -42,7 +43,7 @@ func NewCredentialConnectionService(opts ...option.RequestOption) (r CredentialC
 
 // Creates a credential connection.
 func (r *CredentialConnectionService) New(ctx context.Context, body CredentialConnectionNewParams, opts ...option.RequestOption) (res *CredentialConnectionNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "credential_connections"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -50,7 +51,7 @@ func (r *CredentialConnectionService) New(ctx context.Context, body CredentialCo
 
 // Retrieves the details of an existing credential connection.
 func (r *CredentialConnectionService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *CredentialConnectionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *CredentialConnectionService) Get(ctx context.Context, id string, opts .
 
 // Updates settings of an existing credential connection.
 func (r *CredentialConnectionService) Update(ctx context.Context, id string, body CredentialConnectionUpdateParams, opts ...option.RequestOption) (res *CredentialConnectionUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -74,7 +75,7 @@ func (r *CredentialConnectionService) Update(ctx context.Context, id string, bod
 
 // Returns a list of your credential connections.
 func (r *CredentialConnectionService) List(ctx context.Context, query CredentialConnectionListParams, opts ...option.RequestOption) (res *CredentialConnectionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "credential_connections"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -82,7 +83,7 @@ func (r *CredentialConnectionService) List(ctx context.Context, query Credential
 
 // Deletes an existing credential connection.
 func (r *CredentialConnectionService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *CredentialConnectionDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

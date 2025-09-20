@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -40,7 +41,7 @@ func NewAIAssistantScheduledEventService(opts ...option.RequestOption) (r AIAssi
 
 // Create a scheduled event for an assistant
 func (r *AIAssistantScheduledEventService) New(ctx context.Context, assistantID string, body AIAssistantScheduledEventNewParams, opts ...option.RequestOption) (res *ScheduledEventResponseUnion, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *AIAssistantScheduledEventService) New(ctx context.Context, assistantID 
 
 // Retrieve a scheduled event by event ID
 func (r *AIAssistantScheduledEventService) Get(ctx context.Context, eventID string, query AIAssistantScheduledEventGetParams, opts ...option.RequestOption) (res *ScheduledEventResponseUnion, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.AssistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *AIAssistantScheduledEventService) Get(ctx context.Context, eventID stri
 
 // Get scheduled events for an assistant with pagination and filtering
 func (r *AIAssistantScheduledEventService) List(ctx context.Context, assistantID string, query AIAssistantScheduledEventListParams, opts ...option.RequestOption) (res *AIAssistantScheduledEventListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return
@@ -81,7 +82,7 @@ func (r *AIAssistantScheduledEventService) List(ctx context.Context, assistantID
 // If the event is pending, this will cancel the event. Otherwise, this will simply
 // remove the record of the event.
 func (r *AIAssistantScheduledEventService) Delete(ctx context.Context, eventID string, body AIAssistantScheduledEventDeleteParams, opts ...option.RequestOption) (res *AIAssistantScheduledEventDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if body.AssistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return

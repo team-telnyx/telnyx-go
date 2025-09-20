@@ -5,6 +5,7 @@ package telnyx
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewNumbersFeatureService(opts ...option.RequestOption) (r NumbersFeatureSer
 
 // Retrieve the features for a list of numbers
 func (r *NumbersFeatureService) New(ctx context.Context, body NumbersFeatureNewParams, opts ...option.RequestOption) (res *NumbersFeatureNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "numbers_features"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

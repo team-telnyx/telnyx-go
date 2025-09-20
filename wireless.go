@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -38,7 +39,7 @@ func NewWirelessService(opts ...option.RequestOption) (r WirelessService) {
 
 // Retrieve all wireless regions for the given product.
 func (r *WirelessService) GetRegions(ctx context.Context, query WirelessGetRegionsParams, opts ...option.RequestOption) (res *WirelessGetRegionsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "wireless/regions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
