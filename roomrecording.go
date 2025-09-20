@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewRoomRecordingService(opts ...option.RequestOption) (r RoomRecordingServi
 
 // View a room recording.
 func (r *RoomRecordingService) Get(ctx context.Context, roomRecordingID string, opts ...option.RequestOption) (res *RoomRecordingGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if roomRecordingID == "" {
 		err = errors.New("missing required room_recording_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *RoomRecordingService) Get(ctx context.Context, roomRecordingID string, 
 
 // View a list of room recordings.
 func (r *RoomRecordingService) List(ctx context.Context, query RoomRecordingListParams, opts ...option.RequestOption) (res *RoomRecordingListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "room_recordings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -59,7 +60,7 @@ func (r *RoomRecordingService) List(ctx context.Context, query RoomRecordingList
 
 // Synchronously delete a Room Recording.
 func (r *RoomRecordingService) Delete(ctx context.Context, roomRecordingID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if roomRecordingID == "" {
 		err = errors.New("missing required room_recording_id parameter")
@@ -72,7 +73,7 @@ func (r *RoomRecordingService) Delete(ctx context.Context, roomRecordingID strin
 
 // Delete several room recordings in a bulk.
 func (r *RoomRecordingService) DeleteBulk(ctx context.Context, body RoomRecordingDeleteBulkParams, opts ...option.RequestOption) (res *RoomRecordingDeleteBulkResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "room_recordings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
 	return

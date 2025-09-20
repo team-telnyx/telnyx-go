@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewStorageBucketUsageService(opts ...option.RequestOption) (r StorageBucket
 // Returns the detail on API usage on a bucket of a particular time period, group
 // by method category.
 func (r *StorageBucketUsageService) GetAPIUsage(ctx context.Context, bucketName string, query StorageBucketUsageGetAPIUsageParams, opts ...option.RequestOption) (res *StorageBucketUsageGetAPIUsageResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if bucketName == "" {
 		err = errors.New("missing required bucketName parameter")
 		return
@@ -51,7 +52,7 @@ func (r *StorageBucketUsageService) GetAPIUsage(ctx context.Context, bucketName 
 
 // Returns the amount of storage space and number of files a bucket takes up.
 func (r *StorageBucketUsageService) GetBucketUsage(ctx context.Context, bucketName string, opts ...option.RequestOption) (res *StorageBucketUsageGetBucketUsageResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if bucketName == "" {
 		err = errors.New("missing required bucketName parameter")
 		return

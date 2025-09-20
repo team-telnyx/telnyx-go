@@ -5,6 +5,7 @@ package telnyx
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -33,7 +34,7 @@ func NewRegionService(opts ...option.RequestOption) (r RegionService) {
 
 // List all regions and the interfaces that region supports
 func (r *RegionService) List(ctx context.Context, opts ...option.RequestOption) (res *RegionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "regions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

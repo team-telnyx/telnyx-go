@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewVirtualCrossConnectsCoverageService(opts ...option.RequestOption) (r Vir
 // cloud regions are available for the `location_code` your Virtual Cross Connect
 // will be provisioned in.
 func (r *VirtualCrossConnectsCoverageService) List(ctx context.Context, query VirtualCrossConnectsCoverageListParams, opts ...option.RequestOption) (res *VirtualCrossConnectsCoverageListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "virtual_cross_connects_coverage"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

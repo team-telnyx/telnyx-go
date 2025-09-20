@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -36,7 +37,7 @@ func NewTexmlAccountConferenceParticipantService(opts ...option.RequestOption) (
 
 // Gets conference participant resource
 func (r *TexmlAccountConferenceParticipantService) Get(ctx context.Context, callSidOrParticipantLabel string, query TexmlAccountConferenceParticipantGetParams, opts ...option.RequestOption) (res *TexmlAccountConferenceParticipantGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return
@@ -56,7 +57,7 @@ func (r *TexmlAccountConferenceParticipantService) Get(ctx context.Context, call
 
 // Updates a conference participant
 func (r *TexmlAccountConferenceParticipantService) Update(ctx context.Context, callSidOrParticipantLabel string, params TexmlAccountConferenceParticipantUpdateParams, opts ...option.RequestOption) (res *TexmlAccountConferenceParticipantUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return
@@ -76,7 +77,7 @@ func (r *TexmlAccountConferenceParticipantService) Update(ctx context.Context, c
 
 // Deletes a conference participant
 func (r *TexmlAccountConferenceParticipantService) Delete(ctx context.Context, callSidOrParticipantLabel string, body TexmlAccountConferenceParticipantDeleteParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if body.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
@@ -97,7 +98,7 @@ func (r *TexmlAccountConferenceParticipantService) Delete(ctx context.Context, c
 
 // Dials a new conference participant
 func (r *TexmlAccountConferenceParticipantService) Participants(ctx context.Context, conferenceSid string, params TexmlAccountConferenceParticipantParticipantsParams, opts ...option.RequestOption) (res *TexmlAccountConferenceParticipantParticipantsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return
@@ -113,7 +114,7 @@ func (r *TexmlAccountConferenceParticipantService) Participants(ctx context.Cont
 
 // Lists conference participants
 func (r *TexmlAccountConferenceParticipantService) GetParticipants(ctx context.Context, conferenceSid string, query TexmlAccountConferenceParticipantGetParticipantsParams, opts ...option.RequestOption) (res *TexmlAccountConferenceParticipantGetParticipantsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return

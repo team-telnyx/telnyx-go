@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -39,7 +40,7 @@ func NewBulkSimCardActionService(opts ...option.RequestOption) (r BulkSimCardAct
 // This API fetches information about a bulk SIM card action. A bulk SIM card
 // action contains details about a collection of individual SIM card actions.
 func (r *BulkSimCardActionService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *BulkSimCardActionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *BulkSimCardActionService) Get(ctx context.Context, id string, opts ...o
 // This API lists a paginated collection of bulk SIM card actions. A bulk SIM card
 // action contains details about a collection of individual SIM card actions.
 func (r *BulkSimCardActionService) List(ctx context.Context, query BulkSimCardActionListParams, opts ...option.RequestOption) (res *BulkSimCardActionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "bulk_sim_card_actions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

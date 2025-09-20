@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewRequirementGroupService(opts ...option.RequestOption) (r RequirementGrou
 
 // Create a new requirement group
 func (r *RequirementGroupService) New(ctx context.Context, body RequirementGroupNewParams, opts ...option.RequestOption) (res *RequirementGroup, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "requirement_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *RequirementGroupService) New(ctx context.Context, body RequirementGroup
 
 // Get a single requirement group by ID
 func (r *RequirementGroupService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *RequirementGroup, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *RequirementGroupService) Get(ctx context.Context, id string, opts ...op
 
 // Update requirement values in requirement group
 func (r *RequirementGroupService) Update(ctx context.Context, id string, body RequirementGroupUpdateParams, opts ...option.RequestOption) (res *RequirementGroup, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -71,7 +72,7 @@ func (r *RequirementGroupService) Update(ctx context.Context, id string, body Re
 
 // List requirement groups
 func (r *RequirementGroupService) List(ctx context.Context, query RequirementGroupListParams, opts ...option.RequestOption) (res *[]RequirementGroup, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "requirement_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -79,7 +80,7 @@ func (r *RequirementGroupService) List(ctx context.Context, query RequirementGro
 
 // Delete a requirement group by ID
 func (r *RequirementGroupService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *RequirementGroup, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -91,7 +92,7 @@ func (r *RequirementGroupService) Delete(ctx context.Context, id string, opts ..
 
 // Submit a Requirement Group for Approval
 func (r *RequirementGroupService) SubmitForApproval(ctx context.Context, id string, opts ...option.RequestOption) (res *RequirementGroup, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

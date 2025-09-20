@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -36,7 +37,7 @@ func NewMessagingURLDomainService(opts ...option.RequestOption) (r MessagingURLD
 
 // List messaging URL domains
 func (r *MessagingURLDomainService) List(ctx context.Context, query MessagingURLDomainListParams, opts ...option.RequestOption) (res *MessagingURLDomainListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "messaging_url_domains"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

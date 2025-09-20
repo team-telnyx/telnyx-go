@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -35,7 +36,7 @@ func NewVerifiedNumberActionService(opts ...option.RequestOption) (r VerifiedNum
 
 // Submit verification code
 func (r *VerifiedNumberActionService) SubmitVerificationCode(ctx context.Context, phoneNumber string, body VerifiedNumberActionSubmitVerificationCodeParams, opts ...option.RequestOption) (res *VerifiedNumberDataWrapper, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
 		err = errors.New("missing required phone_number parameter")
 		return

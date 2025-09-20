@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -40,7 +41,7 @@ func NewPortoutEventService(opts ...option.RequestOption) (r PortoutEventService
 
 // Show a specific port-out event.
 func (r *PortoutEventService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PortoutEventGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *PortoutEventService) Get(ctx context.Context, id string, opts ...option
 
 // Returns a list of all port-out events.
 func (r *PortoutEventService) List(ctx context.Context, query PortoutEventListParams, opts ...option.RequestOption) (res *PortoutEventListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "portouts/events"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -60,7 +61,7 @@ func (r *PortoutEventService) List(ctx context.Context, query PortoutEventListPa
 
 // Republish a specific port-out event.
 func (r *PortoutEventService) Republish(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")

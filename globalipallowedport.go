@@ -5,6 +5,7 @@ package telnyx
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -33,7 +34,7 @@ func NewGlobalIPAllowedPortService(opts ...option.RequestOption) (r GlobalIPAllo
 
 // List all Global IP Allowed Ports
 func (r *GlobalIPAllowedPortService) List(ctx context.Context, opts ...option.RequestOption) (res *GlobalIPAllowedPortListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_allowed_ports"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

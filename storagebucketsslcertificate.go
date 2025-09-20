@@ -10,6 +10,7 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apiform"
@@ -41,7 +42,7 @@ func NewStorageBucketSslCertificateService(opts ...option.RequestOption) (r Stor
 // Uploads an SSL certificate and its matching secret so that you can use Telnyx’s
 // storage as your CDN.
 func (r *StorageBucketSslCertificateService) New(ctx context.Context, bucketName string, body StorageBucketSslCertificateNewParams, opts ...option.RequestOption) (res *StorageBucketSslCertificateNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if bucketName == "" {
 		err = errors.New("missing required bucketName parameter")
 		return
@@ -53,7 +54,7 @@ func (r *StorageBucketSslCertificateService) New(ctx context.Context, bucketName
 
 // Returns the stored certificate detail of a bucket, if applicable.
 func (r *StorageBucketSslCertificateService) Get(ctx context.Context, bucketName string, opts ...option.RequestOption) (res *StorageBucketSslCertificateGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if bucketName == "" {
 		err = errors.New("missing required bucketName parameter")
 		return
@@ -65,7 +66,7 @@ func (r *StorageBucketSslCertificateService) Get(ctx context.Context, bucketName
 
 // Deletes an SSL certificate and its matching secret.
 func (r *StorageBucketSslCertificateService) Delete(ctx context.Context, bucketName string, opts ...option.RequestOption) (res *StorageBucketSslCertificateDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if bucketName == "" {
 		err = errors.New("missing required bucketName parameter")
 		return

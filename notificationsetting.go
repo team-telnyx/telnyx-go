@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -41,7 +42,7 @@ func NewNotificationSettingService(opts ...option.RequestOption) (r Notification
 
 // Add a notification setting.
 func (r *NotificationSettingService) New(ctx context.Context, body NotificationSettingNewParams, opts ...option.RequestOption) (res *NotificationSettingNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "notification_settings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -49,7 +50,7 @@ func (r *NotificationSettingService) New(ctx context.Context, body NotificationS
 
 // Get a notification setting.
 func (r *NotificationSettingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *NotificationSettingGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -61,7 +62,7 @@ func (r *NotificationSettingService) Get(ctx context.Context, id string, opts ..
 
 // List notification settings.
 func (r *NotificationSettingService) List(ctx context.Context, query NotificationSettingListParams, opts ...option.RequestOption) (res *NotificationSettingListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "notification_settings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -69,7 +70,7 @@ func (r *NotificationSettingService) List(ctx context.Context, query Notificatio
 
 // Delete a notification setting.
 func (r *NotificationSettingService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *NotificationSettingDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

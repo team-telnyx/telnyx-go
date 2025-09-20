@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -36,7 +37,7 @@ func NewTexmlAccountTranscriptionJsonService(opts ...option.RequestOption) (r Te
 
 // Permanently deletes a recording transcription.
 func (r *TexmlAccountTranscriptionJsonService) DeleteRecordingTranscriptionSidJson(ctx context.Context, recordingTranscriptionSid string, body TexmlAccountTranscriptionJsonDeleteRecordingTranscriptionSidJsonParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if body.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
@@ -53,7 +54,7 @@ func (r *TexmlAccountTranscriptionJsonService) DeleteRecordingTranscriptionSidJs
 
 // Returns the recording transcription resource identified by its ID.
 func (r *TexmlAccountTranscriptionJsonService) GetRecordingTranscriptionSidJson(ctx context.Context, recordingTranscriptionSid string, query TexmlAccountTranscriptionJsonGetRecordingTranscriptionSidJsonParams, opts ...option.RequestOption) (res *TexmlAccountTranscriptionJsonGetRecordingTranscriptionSidJsonResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return

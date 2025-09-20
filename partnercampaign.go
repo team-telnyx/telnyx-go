@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewPartnerCampaignService(opts ...option.RequestOption) (r PartnerCampaignS
 
 // Retrieve campaign details by `campaignId`.
 func (r *PartnerCampaignService) Get(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *TelnyxDownstreamCampaign, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
 		return
@@ -51,7 +52,7 @@ func (r *PartnerCampaignService) Get(ctx context.Context, campaignID string, opt
 // Update campaign details by `campaignId`. **Please note:** Only webhook urls are
 // editable.
 func (r *PartnerCampaignService) Update(ctx context.Context, campaignID string, body PartnerCampaignUpdateParams, opts ...option.RequestOption) (res *TelnyxDownstreamCampaign, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
 		return
@@ -67,7 +68,7 @@ func (r *PartnerCampaignService) Update(ctx context.Context, campaignID string, 
 // Telnyx has accepted. In other words, shared but pending campaigns are currently
 // omitted from the response from this endpoint.
 func (r *PartnerCampaignService) List(ctx context.Context, query PartnerCampaignListParams, opts ...option.RequestOption) (res *PartnerCampaignListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "partner_campaigns"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -79,7 +80,7 @@ func (r *PartnerCampaignService) List(ctx context.Context, query PartnerCampaign
 // Telnyx has accepted. In other words, shared but pending campaigns are currently
 // omitted from the response from this endpoint.
 func (r *PartnerCampaignService) ListSharedByMe(ctx context.Context, query PartnerCampaignListSharedByMeParams, opts ...option.RequestOption) (res *PartnerCampaignListSharedByMeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "partnerCampaign/sharedByMe"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -87,7 +88,7 @@ func (r *PartnerCampaignService) ListSharedByMe(ctx context.Context, query Partn
 
 // Get Sharing Status
 func (r *PartnerCampaignService) GetSharingStatus(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *PartnerCampaignGetSharingStatusResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
 		return

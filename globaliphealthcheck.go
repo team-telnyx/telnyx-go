@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewGlobalIPHealthCheckService(opts ...option.RequestOption) (r GlobalIPHeal
 
 // Create a Global IP health check.
 func (r *GlobalIPHealthCheckService) New(ctx context.Context, body GlobalIPHealthCheckNewParams, opts ...option.RequestOption) (res *GlobalIPHealthCheckNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_health_checks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *GlobalIPHealthCheckService) New(ctx context.Context, body GlobalIPHealt
 
 // Retrieve a Global IP health check.
 func (r *GlobalIPHealthCheckService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *GlobalIPHealthCheckGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *GlobalIPHealthCheckService) Get(ctx context.Context, id string, opts ..
 
 // List all Global IP health checks.
 func (r *GlobalIPHealthCheckService) List(ctx context.Context, query GlobalIPHealthCheckListParams, opts ...option.RequestOption) (res *GlobalIPHealthCheckListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_health_checks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -66,7 +67,7 @@ func (r *GlobalIPHealthCheckService) List(ctx context.Context, query GlobalIPHea
 
 // Delete a Global IP health check.
 func (r *GlobalIPHealthCheckService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *GlobalIPHealthCheckDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

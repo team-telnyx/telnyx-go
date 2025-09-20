@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -35,7 +36,7 @@ func NewCampaignUsecaseService(opts ...option.RequestOption) (r CampaignUsecaseS
 
 // Get Campaign Cost
 func (r *CampaignUsecaseService) GetCost(ctx context.Context, query CampaignUsecaseGetCostParams, opts ...option.RequestOption) (res *CampaignUsecaseGetCostResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "campaign/usecase/cost"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

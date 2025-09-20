@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -37,7 +38,7 @@ func NewQueueService(opts ...option.RequestOption) (r QueueService) {
 
 // Retrieve an existing call queue
 func (r *QueueService) Get(ctx context.Context, queueName string, opts ...option.RequestOption) (res *QueueGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if queueName == "" {
 		err = errors.New("missing required queue_name parameter")
 		return

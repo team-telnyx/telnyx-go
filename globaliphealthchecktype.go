@@ -5,6 +5,7 @@ package telnyx
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -33,7 +34,7 @@ func NewGlobalIPHealthCheckTypeService(opts ...option.RequestOption) (r GlobalIP
 
 // List all Global IP Health check types.
 func (r *GlobalIPHealthCheckTypeService) List(ctx context.Context, opts ...option.RequestOption) (res *GlobalIPHealthCheckTypeListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_health_check_types"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -39,7 +40,7 @@ func NewCallControlApplicationService(opts ...option.RequestOption) (r CallContr
 
 // Create a call control application.
 func (r *CallControlApplicationService) New(ctx context.Context, body CallControlApplicationNewParams, opts ...option.RequestOption) (res *CallControlApplicationNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "call_control_applications"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *CallControlApplicationService) New(ctx context.Context, body CallContro
 
 // Retrieves the details of an existing call control application.
 func (r *CallControlApplicationService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *CallControlApplicationGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *CallControlApplicationService) Get(ctx context.Context, id string, opts
 
 // Updates settings of an existing call control application.
 func (r *CallControlApplicationService) Update(ctx context.Context, id string, body CallControlApplicationUpdateParams, opts ...option.RequestOption) (res *CallControlApplicationUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -71,7 +72,7 @@ func (r *CallControlApplicationService) Update(ctx context.Context, id string, b
 
 // Return a list of call control applications.
 func (r *CallControlApplicationService) List(ctx context.Context, query CallControlApplicationListParams, opts ...option.RequestOption) (res *CallControlApplicationListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "call_control_applications"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -79,7 +80,7 @@ func (r *CallControlApplicationService) List(ctx context.Context, query CallCont
 
 // Deletes a call control application.
 func (r *CallControlApplicationService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *CallControlApplicationDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

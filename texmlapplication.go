@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewTexmlApplicationService(opts ...option.RequestOption) (r TexmlApplicatio
 
 // Creates a TeXML Application.
 func (r *TexmlApplicationService) New(ctx context.Context, body TexmlApplicationNewParams, opts ...option.RequestOption) (res *TexmlApplicationNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "texml_applications"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *TexmlApplicationService) New(ctx context.Context, body TexmlApplication
 
 // Retrieves the details of an existing TeXML Application.
 func (r *TexmlApplicationService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *TexmlApplicationGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *TexmlApplicationService) Get(ctx context.Context, id string, opts ...op
 
 // Updates settings of an existing TeXML Application.
 func (r *TexmlApplicationService) Update(ctx context.Context, id string, body TexmlApplicationUpdateParams, opts ...option.RequestOption) (res *TexmlApplicationUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -70,7 +71,7 @@ func (r *TexmlApplicationService) Update(ctx context.Context, id string, body Te
 
 // Returns a list of your TeXML Applications.
 func (r *TexmlApplicationService) List(ctx context.Context, query TexmlApplicationListParams, opts ...option.RequestOption) (res *TexmlApplicationListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "texml_applications"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -78,7 +79,7 @@ func (r *TexmlApplicationService) List(ctx context.Context, query TexmlApplicati
 
 // Deletes a TeXML Application.
 func (r *TexmlApplicationService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *TexmlApplicationDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

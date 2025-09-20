@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -41,7 +42,7 @@ func NewManagedAccountService(opts ...option.RequestOption) (r ManagedAccountSer
 // Create a new managed account owned by the authenticated user. You need to be
 // explictly approved by Telnyx in order to become a manager account.
 func (r *ManagedAccountService) New(ctx context.Context, body ManagedAccountNewParams, opts ...option.RequestOption) (res *ManagedAccountNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "managed_accounts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -49,7 +50,7 @@ func (r *ManagedAccountService) New(ctx context.Context, body ManagedAccountNewP
 
 // Retrieves the details of a single managed account.
 func (r *ManagedAccountService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ManagedAccountGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -61,7 +62,7 @@ func (r *ManagedAccountService) Get(ctx context.Context, id string, opts ...opti
 
 // Update a single managed account.
 func (r *ManagedAccountService) Update(ctx context.Context, id string, body ManagedAccountUpdateParams, opts ...option.RequestOption) (res *ManagedAccountUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -74,7 +75,7 @@ func (r *ManagedAccountService) Update(ctx context.Context, id string, body Mana
 // Lists the accounts managed by the current user. Users need to be explictly
 // approved by Telnyx in order to become manager accounts.
 func (r *ManagedAccountService) List(ctx context.Context, query ManagedAccountListParams, opts ...option.RequestOption) (res *ManagedAccountListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "managed_accounts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -83,7 +84,7 @@ func (r *ManagedAccountService) List(ctx context.Context, query ManagedAccountLi
 // Display information about allocatable global outbound channels for the current
 // user. Only usable by account managers.
 func (r *ManagedAccountService) GetAllocatableGlobalOutboundChannels(ctx context.Context, opts ...option.RequestOption) (res *ManagedAccountGetAllocatableGlobalOutboundChannelsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "managed_accounts/allocatable_global_outbound_channels"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -92,7 +93,7 @@ func (r *ManagedAccountService) GetAllocatableGlobalOutboundChannels(ctx context
 // Update the amount of allocatable global outbound channels allocated to a
 // specific managed account.
 func (r *ManagedAccountService) UpdateGlobalChannelLimit(ctx context.Context, id string, body ManagedAccountUpdateGlobalChannelLimitParams, opts ...option.RequestOption) (res *ManagedAccountUpdateGlobalChannelLimitResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

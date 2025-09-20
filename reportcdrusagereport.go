@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewReportCdrUsageReportService(opts ...option.RequestOption) (r ReportCdrUs
 // generate and fetch the voice report over a specified time period. No polling is
 // necessary but the response may take up to a couple of minutes.
 func (r *ReportCdrUsageReportService) FetchSync(ctx context.Context, query ReportCdrUsageReportFetchSyncParams, opts ...option.RequestOption) (res *ReportCdrUsageReportFetchSyncResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "reports/cdr_usage_reports/sync"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

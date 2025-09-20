@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -37,7 +38,7 @@ func NewLedgerBillingGroupReportService(opts ...option.RequestOption) (r LedgerB
 
 // Create a ledger billing group report
 func (r *LedgerBillingGroupReportService) New(ctx context.Context, body LedgerBillingGroupReportNewParams, opts ...option.RequestOption) (res *LedgerBillingGroupReportNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ledger_billing_group_reports"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -45,7 +46,7 @@ func (r *LedgerBillingGroupReportService) New(ctx context.Context, body LedgerBi
 
 // Get a ledger billing group report
 func (r *LedgerBillingGroupReportService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *LedgerBillingGroupReportGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

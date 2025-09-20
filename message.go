@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -43,7 +44,7 @@ func NewMessageService(opts ...option.RequestOption) (r MessageService) {
 // generate an
 // [MDR report.](https://developers.telnyx.com/api/v1/mission-control/add-mdr-request)
 func (r *MessageService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *MessageGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -56,7 +57,7 @@ func (r *MessageService) Get(ctx context.Context, id string, opts ...option.Requ
 // Cancel a scheduled message that has not yet been sent. Only messages with
 // `status=scheduled` and `send_at` more than a minute from now can be cancelled.
 func (r *MessageService) CancelScheduled(ctx context.Context, id string, opts ...option.RequestOption) (res *MessageCancelScheduledResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -73,7 +74,7 @@ func (r *MessageService) CancelScheduled(ctx context.Context, id string, opts ..
 // Current messaging resources include: long-code, short-code, number-pool, and
 // alphanumeric-sender-id.
 func (r *MessageService) Schedule(ctx context.Context, body MessageScheduleParams, opts ...option.RequestOption) (res *MessageScheduleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "messages/schedule"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -86,7 +87,7 @@ func (r *MessageService) Schedule(ctx context.Context, body MessageScheduleParam
 // messaging resources include: long-code, short-code, number-pool, and
 // alphanumeric-sender-id.
 func (r *MessageService) Send(ctx context.Context, body MessageSendParams, opts ...option.RequestOption) (res *MessageSendResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "messages"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -94,7 +95,7 @@ func (r *MessageService) Send(ctx context.Context, body MessageSendParams, opts 
 
 // Send a group MMS message
 func (r *MessageService) SendGroupMms(ctx context.Context, body MessageSendGroupMmsParams, opts ...option.RequestOption) (res *MessageSendGroupMmsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "messages/group_mms"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -102,7 +103,7 @@ func (r *MessageService) SendGroupMms(ctx context.Context, body MessageSendGroup
 
 // Send a long code message
 func (r *MessageService) SendLongCode(ctx context.Context, body MessageSendLongCodeParams, opts ...option.RequestOption) (res *MessageSendLongCodeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "messages/long_code"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -110,7 +111,7 @@ func (r *MessageService) SendLongCode(ctx context.Context, body MessageSendLongC
 
 // Send a message using number pool
 func (r *MessageService) SendNumberPool(ctx context.Context, body MessageSendNumberPoolParams, opts ...option.RequestOption) (res *MessageSendNumberPoolResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "messages/number_pool"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -118,7 +119,7 @@ func (r *MessageService) SendNumberPool(ctx context.Context, body MessageSendNum
 
 // Send a short code message
 func (r *MessageService) SendShortCode(ctx context.Context, body MessageSendShortCodeParams, opts ...option.RequestOption) (res *MessageSendShortCodeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "messages/short_code"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

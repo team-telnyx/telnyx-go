@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewOtaUpdateService(opts ...option.RequestOption) (r OtaUpdateService) {
 
 // This API returns the details of an Over the Air (OTA) update.
 func (r *OtaUpdateService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *OtaUpdateGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *OtaUpdateService) Get(ctx context.Context, id string, opts ...option.Re
 
 // List OTA updates
 func (r *OtaUpdateService) List(ctx context.Context, query OtaUpdateListParams, opts ...option.RequestOption) (res *OtaUpdateListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ota_updates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

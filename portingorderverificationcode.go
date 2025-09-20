@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewPortingOrderVerificationCodeService(opts ...option.RequestOption) (r Por
 
 // Returns a list of verification codes for a porting order.
 func (r *PortingOrderVerificationCodeService) List(ctx context.Context, id string, query PortingOrderVerificationCodeListParams, opts ...option.RequestOption) (res *PortingOrderVerificationCodeListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *PortingOrderVerificationCodeService) List(ctx context.Context, id strin
 
 // Send the verification code for all porting phone numbers.
 func (r *PortingOrderVerificationCodeService) Send(ctx context.Context, id string, body PortingOrderVerificationCodeSendParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -64,7 +65,7 @@ func (r *PortingOrderVerificationCodeService) Send(ctx context.Context, id strin
 
 // Verifies the verification code for a list of phone numbers.
 func (r *PortingOrderVerificationCodeService) Verify(ctx context.Context, id string, body PortingOrderVerificationCodeVerifyParams, opts ...option.RequestOption) (res *PortingOrderVerificationCodeVerifyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

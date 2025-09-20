@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -40,7 +41,7 @@ func NewPhoneNumberVoiceService(opts ...option.RequestOption) (r PhoneNumberVoic
 
 // Retrieve a phone number with voice settings
 func (r *PhoneNumberVoiceService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PhoneNumberVoiceGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *PhoneNumberVoiceService) Get(ctx context.Context, id string, opts ...op
 
 // Update a phone number with voice settings
 func (r *PhoneNumberVoiceService) Update(ctx context.Context, id string, body PhoneNumberVoiceUpdateParams, opts ...option.RequestOption) (res *PhoneNumberVoiceUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -64,7 +65,7 @@ func (r *PhoneNumberVoiceService) Update(ctx context.Context, id string, body Ph
 
 // List phone numbers with voice settings
 func (r *PhoneNumberVoiceService) List(ctx context.Context, query PhoneNumberVoiceListParams, opts ...option.RequestOption) (res *PhoneNumberVoiceListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "phone_numbers/voice"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

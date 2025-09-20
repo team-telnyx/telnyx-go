@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -37,7 +38,7 @@ func NewAIEmbeddingBucketService(opts ...option.RequestOption) (r AIEmbeddingBuc
 // Get all embedded files for a given user bucket, including their processing
 // status.
 func (r *AIEmbeddingBucketService) Get(ctx context.Context, bucketName string, opts ...option.RequestOption) (res *AIEmbeddingBucketGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AIEmbeddingBucketService) Get(ctx context.Context, bucketName string, o
 
 // Get all embedding buckets for a user.
 func (r *AIEmbeddingBucketService) List(ctx context.Context, opts ...option.RequestOption) (res *AIEmbeddingBucketListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/embeddings/buckets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -58,7 +59,7 @@ func (r *AIEmbeddingBucketService) List(ctx context.Context, opts ...option.Requ
 // Deletes an entire bucket's embeddings and disables the bucket for AI-use,
 // returning it to normal storage pricing.
 func (r *AIEmbeddingBucketService) Delete(ctx context.Context, bucketName string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")

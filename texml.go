@@ -5,6 +5,7 @@ package telnyx
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -42,7 +43,7 @@ func NewTexmlService(opts ...option.RequestOption) (r TexmlService) {
 // when processing the TeXML on Telnyx side. The secrets are not visible in any
 // logs.
 func (r *TexmlService) Secrets(ctx context.Context, body TexmlSecretsParams, opts ...option.RequestOption) (res *TexmlSecretsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "texml/secrets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

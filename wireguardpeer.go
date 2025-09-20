@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -41,7 +42,7 @@ func NewWireguardPeerService(opts ...option.RequestOption) (r WireguardPeerServi
 // Create a new WireGuard Peer. Current limitation of 5 peers per interface can be
 // created.
 func (r *WireguardPeerService) New(ctx context.Context, body WireguardPeerNewParams, opts ...option.RequestOption) (res *WireguardPeerNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "wireguard_peers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -49,7 +50,7 @@ func (r *WireguardPeerService) New(ctx context.Context, body WireguardPeerNewPar
 
 // Retrieve the WireGuard peer.
 func (r *WireguardPeerService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *WireguardPeerGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -61,7 +62,7 @@ func (r *WireguardPeerService) Get(ctx context.Context, id string, opts ...optio
 
 // Update the WireGuard peer.
 func (r *WireguardPeerService) Update(ctx context.Context, id string, body WireguardPeerUpdateParams, opts ...option.RequestOption) (res *WireguardPeerUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -73,7 +74,7 @@ func (r *WireguardPeerService) Update(ctx context.Context, id string, body Wireg
 
 // List all WireGuard peers.
 func (r *WireguardPeerService) List(ctx context.Context, query WireguardPeerListParams, opts ...option.RequestOption) (res *WireguardPeerListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "wireguard_peers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -81,7 +82,7 @@ func (r *WireguardPeerService) List(ctx context.Context, query WireguardPeerList
 
 // Delete the WireGuard peer.
 func (r *WireguardPeerService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *WireguardPeerDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -93,7 +94,7 @@ func (r *WireguardPeerService) Delete(ctx context.Context, id string, opts ...op
 
 // Retrieve Wireguard config template for Peer
 func (r *WireguardPeerService) GetConfig(ctx context.Context, id string, opts ...option.RequestOption) (res *string, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/plain")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")

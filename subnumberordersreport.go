@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewSubNumberOrdersReportService(opts ...option.RequestOption) (r SubNumberO
 // Create a CSV report for sub number orders. The report will be generated
 // asynchronously and can be downloaded once complete.
 func (r *SubNumberOrdersReportService) New(ctx context.Context, body SubNumberOrdersReportNewParams, opts ...option.RequestOption) (res *SubNumberOrdersReportNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "sub_number_orders_report"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *SubNumberOrdersReportService) New(ctx context.Context, body SubNumberOr
 
 // Get the status and details of a sub number orders report.
 func (r *SubNumberOrdersReportService) Get(ctx context.Context, reportID string, opts ...option.RequestOption) (res *SubNumberOrdersReportGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if reportID == "" {
 		err = errors.New("missing required report_id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *SubNumberOrdersReportService) Get(ctx context.Context, reportID string,
 // Download the CSV file for a completed sub number orders report. The report
 // status must be 'success' before the file can be downloaded.
 func (r *SubNumberOrdersReportService) Download(ctx context.Context, reportID string, opts ...option.RequestOption) (res *io.Reader, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/csv")}, opts...)
 	if reportID == "" {
 		err = errors.New("missing required report_id parameter")

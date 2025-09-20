@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -40,7 +41,7 @@ func NewPortoutReportService(opts ...option.RequestOption) (r PortoutReportServi
 
 // Generate reports about port-out operations.
 func (r *PortoutReportService) New(ctx context.Context, body PortoutReportNewParams, opts ...option.RequestOption) (res *PortoutReportNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "portouts/reports"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *PortoutReportService) New(ctx context.Context, body PortoutReportNewPar
 
 // Retrieve a specific report generated.
 func (r *PortoutReportService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PortoutReportGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *PortoutReportService) Get(ctx context.Context, id string, opts ...optio
 
 // List the reports generated about port-out operations.
 func (r *PortoutReportService) List(ctx context.Context, query PortoutReportListParams, opts ...option.RequestOption) (res *PortoutReportListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "portouts/reports"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

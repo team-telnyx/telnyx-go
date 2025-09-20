@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewVerifyProfileService(opts ...option.RequestOption) (r VerifyProfileServi
 
 // Creates a new Verify profile to associate verifications with.
 func (r *VerifyProfileService) New(ctx context.Context, body VerifyProfileNewParams, opts ...option.RequestOption) (res *VerifyProfileData, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "verify_profiles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *VerifyProfileService) New(ctx context.Context, body VerifyProfileNewPar
 
 // Gets a single Verify profile.
 func (r *VerifyProfileService) Get(ctx context.Context, verifyProfileID string, opts ...option.RequestOption) (res *VerifyProfileData, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if verifyProfileID == "" {
 		err = errors.New("missing required verify_profile_id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *VerifyProfileService) Get(ctx context.Context, verifyProfileID string, 
 
 // Update Verify profile
 func (r *VerifyProfileService) Update(ctx context.Context, verifyProfileID string, body VerifyProfileUpdateParams, opts ...option.RequestOption) (res *VerifyProfileData, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if verifyProfileID == "" {
 		err = errors.New("missing required verify_profile_id parameter")
 		return
@@ -70,7 +71,7 @@ func (r *VerifyProfileService) Update(ctx context.Context, verifyProfileID strin
 
 // Gets a paginated list of Verify profiles.
 func (r *VerifyProfileService) List(ctx context.Context, query VerifyProfileListParams, opts ...option.RequestOption) (res *VerifyProfileListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "verify_profiles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -78,7 +79,7 @@ func (r *VerifyProfileService) List(ctx context.Context, query VerifyProfileList
 
 // Delete Verify profile
 func (r *VerifyProfileService) Delete(ctx context.Context, verifyProfileID string, opts ...option.RequestOption) (res *VerifyProfileData, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if verifyProfileID == "" {
 		err = errors.New("missing required verify_profile_id parameter")
 		return
@@ -90,7 +91,7 @@ func (r *VerifyProfileService) Delete(ctx context.Context, verifyProfileID strin
 
 // List all Verify profile message templates.
 func (r *VerifyProfileService) GetTemplates(ctx context.Context, opts ...option.RequestOption) (res *VerifyProfileGetTemplatesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "verify_profiles/templates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

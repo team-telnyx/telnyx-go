@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -41,7 +42,7 @@ func NewAIConversationInsightGroupService(opts ...option.RequestOption) (r AICon
 
 // Get insight group by ID
 func (r *AIConversationInsightGroupService) Get(ctx context.Context, groupID string, opts ...option.RequestOption) (res *InsightTemplateGroupDetail, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if groupID == "" {
 		err = errors.New("missing required group_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *AIConversationInsightGroupService) Get(ctx context.Context, groupID str
 
 // Update an insight template group
 func (r *AIConversationInsightGroupService) Update(ctx context.Context, groupID string, body AIConversationInsightGroupUpdateParams, opts ...option.RequestOption) (res *InsightTemplateGroupDetail, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if groupID == "" {
 		err = errors.New("missing required group_id parameter")
 		return
@@ -65,7 +66,7 @@ func (r *AIConversationInsightGroupService) Update(ctx context.Context, groupID 
 
 // Delete insight group by ID
 func (r *AIConversationInsightGroupService) Delete(ctx context.Context, groupID string, opts ...option.RequestOption) (res *AIConversationInsightGroupDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if groupID == "" {
 		err = errors.New("missing required group_id parameter")
 		return
@@ -77,7 +78,7 @@ func (r *AIConversationInsightGroupService) Delete(ctx context.Context, groupID 
 
 // Create a new insight group
 func (r *AIConversationInsightGroupService) InsightGroups(ctx context.Context, body AIConversationInsightGroupInsightGroupsParams, opts ...option.RequestOption) (res *InsightTemplateGroupDetail, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/conversations/insight-groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -85,7 +86,7 @@ func (r *AIConversationInsightGroupService) InsightGroups(ctx context.Context, b
 
 // Get all insight groups
 func (r *AIConversationInsightGroupService) GetInsightGroups(ctx context.Context, query AIConversationInsightGroupGetInsightGroupsParams, opts ...option.RequestOption) (res *AIConversationInsightGroupGetInsightGroupsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/conversations/insight-groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

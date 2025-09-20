@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -46,7 +47,7 @@ func NewStorageBucketService(opts ...option.RequestOption) (r StorageBucketServi
 //
 // Refer to: https://developers.telnyx.com/docs/cloud-storage/presigned-urls
 func (r *StorageBucketService) NewPresignedURL(ctx context.Context, objectName string, params StorageBucketNewPresignedURLParams, opts ...option.RequestOption) (res *StorageBucketNewPresignedURLResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.BucketName == "" {
 		err = errors.New("missing required bucketName parameter")
 		return

@@ -5,6 +5,7 @@ package telnyx
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -36,7 +37,7 @@ func NewInboundChannelService(opts ...option.RequestOption) (r InboundChannelSer
 // handle multiple simultaneous inbound calls to US numbers. Use this endpoint to
 // increase or decrease your capacity based on expected call volume.
 func (r *InboundChannelService) Update(ctx context.Context, body InboundChannelUpdateParams, opts ...option.RequestOption) (res *InboundChannelUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "inbound_channels"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *InboundChannelService) Update(ctx context.Context, body InboundChannelU
 // Support Articles</a> section for full information and examples of how to utilize
 // Channel Billing.
 func (r *InboundChannelService) List(ctx context.Context, opts ...option.RequestOption) (res *InboundChannelListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "inbound_channels"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

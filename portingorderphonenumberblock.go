@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewPortingOrderPhoneNumberBlockService(opts ...option.RequestOption) (r Por
 
 // Creates a new phone number block.
 func (r *PortingOrderPhoneNumberBlockService) New(ctx context.Context, portingOrderID string, body PortingOrderPhoneNumberBlockNewParams, opts ...option.RequestOption) (res *PortingOrderPhoneNumberBlockNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if portingOrderID == "" {
 		err = errors.New("missing required porting_order_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *PortingOrderPhoneNumberBlockService) New(ctx context.Context, portingOr
 
 // Returns a list of all phone number blocks of a porting order.
 func (r *PortingOrderPhoneNumberBlockService) List(ctx context.Context, portingOrderID string, query PortingOrderPhoneNumberBlockListParams, opts ...option.RequestOption) (res *PortingOrderPhoneNumberBlockListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if portingOrderID == "" {
 		err = errors.New("missing required porting_order_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *PortingOrderPhoneNumberBlockService) List(ctx context.Context, portingO
 
 // Deletes a phone number block.
 func (r *PortingOrderPhoneNumberBlockService) Delete(ctx context.Context, id string, body PortingOrderPhoneNumberBlockDeleteParams, opts ...option.RequestOption) (res *PortingOrderPhoneNumberBlockDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if body.PortingOrderID == "" {
 		err = errors.New("missing required porting_order_id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -39,7 +40,7 @@ func NewSimCardActionService(opts ...option.RequestOption) (r SimCardActionServi
 // This API fetches detailed information about a SIM card action to follow-up on an
 // existing asynchronous operation.
 func (r *SimCardActionService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardActionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *SimCardActionService) Get(ctx context.Context, id string, opts ...optio
 // This API lists a paginated collection of SIM card actions. It enables exploring
 // a collection of existing asynchronous operations using specific filters.
 func (r *SimCardActionService) List(ctx context.Context, query SimCardActionListParams, opts ...option.RequestOption) (res *SimCardActionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "sim_card_actions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -64,7 +65,7 @@ func (r *SimCardActionService) List(ctx context.Context, query SimCardActionList
 // [List SIM Card Action](https://developersdev.telnyx.com/docs/api/v2/wireless/SIM-Card-Actions#ListSIMCardActions)
 // API.
 func (r *SimCardActionService) BulkSetPublicIPs(ctx context.Context, body SimCardActionBulkSetPublicIPsParams, opts ...option.RequestOption) (res *SimCardActionBulkSetPublicIPsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "sim_cards/actions/bulk_set_public_ips"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -77,7 +78,7 @@ func (r *SimCardActionService) BulkSetPublicIPs(ctx context.Context, body SimCar
 // [List SIM Card Action](https://developersdev.telnyx.com/docs/api/v2/wireless/SIM-Card-Actions#ListSIMCardActions)
 // API.
 func (r *SimCardActionService) Disable(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardActionDisableResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -95,7 +96,7 @@ func (r *SimCardActionService) Disable(ctx context.Context, id string, opts ...o
 // [List SIM Card Action](https://developersdev.telnyx.com/docs/api/v2/wireless/SIM-Card-Actions#ListSIMCardActions)
 // API.
 func (r *SimCardActionService) Enable(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardActionEnableResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -111,7 +112,7 @@ func (r *SimCardActionService) Enable(ctx context.Context, id string, opts ...op
 // [List SIM Card Action](https://developersdev.telnyx.com/docs/api/v2/wireless/SIM-Card-Actions#ListSIMCardActions)
 // API.
 func (r *SimCardActionService) RemovePublicIP(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardActionRemovePublicIPResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -129,7 +130,7 @@ func (r *SimCardActionService) RemovePublicIP(ctx context.Context, id string, op
 // API. <br/><br/> Setting a Public IP to a SIM Card incurs a charge and will only
 // succeed if the account has sufficient funds.
 func (r *SimCardActionService) SetPublicIP(ctx context.Context, id string, body SimCardActionSetPublicIPParams, opts ...option.RequestOption) (res *SimCardActionSetPublicIPResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -148,7 +149,7 @@ func (r *SimCardActionService) SetPublicIP(ctx context.Context, id string, body 
 // [List SIM Card Action](https://developersdev.telnyx.com/docs/api/v2/wireless/SIM-Card-Actions#ListSIMCardActions)
 // API.
 func (r *SimCardActionService) SetStandby(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardActionSetStandbyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -160,7 +161,7 @@ func (r *SimCardActionService) SetStandby(ctx context.Context, id string, opts .
 
 // It validates whether SIM card registration codes are valid or not.
 func (r *SimCardActionService) ValidateRegistrationCodes(ctx context.Context, body SimCardActionValidateRegistrationCodesParams, opts ...option.RequestOption) (res *SimCardActionValidateRegistrationCodesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "sim_cards/actions/validate_registration_codes"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

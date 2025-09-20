@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -69,7 +70,7 @@ func NewAIEmbeddingService(opts ...option.RequestOption) (r AIEmbeddingService) 
 // values will be returned by the `/v2/ai/embeddings/similarity-search` endpoint in
 // the `loader_metadata` field.
 func (r *AIEmbeddingService) New(ctx context.Context, body AIEmbeddingNewParams, opts ...option.RequestOption) (res *EmbeddingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/embeddings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -84,7 +85,7 @@ func (r *AIEmbeddingService) New(ctx context.Context, body AIEmbeddingNewParams,
 //   - `partial_success` - Some files were embedded successfully, but at least one
 //     failed
 func (r *AIEmbeddingService) Get(ctx context.Context, taskID string, opts ...option.RequestOption) (res *AIEmbeddingGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
 		err = errors.New("missing required task_id parameter")
 		return
@@ -98,7 +99,7 @@ func (r *AIEmbeddingService) Get(ctx context.Context, taskID string, opts ...opt
 // `success` or `partial_success` based on the query string. Defaults to `queued`
 // and `processing`.
 func (r *AIEmbeddingService) List(ctx context.Context, query AIEmbeddingListParams, opts ...option.RequestOption) (res *AIEmbeddingListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/embeddings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -118,7 +119,7 @@ func (r *AIEmbeddingService) List(ctx context.Context, query AIEmbeddingListPara
 // If a bucket was embedded using a custom loader, such as `intercom`, the
 // additional metadata will be returned in the `loader_metadata` field.
 func (r *AIEmbeddingService) SimilaritySearch(ctx context.Context, body AIEmbeddingSimilaritySearchParams, opts ...option.RequestOption) (res *AIEmbeddingSimilaritySearchResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/embeddings/similarity-search"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -132,7 +133,7 @@ func (r *AIEmbeddingService) SimilaritySearch(ctx context.Context, body AIEmbedd
 // [similarity search](https://developers.telnyx.com/api/inference/inference-embedding/post-embedding-similarity-search)
 // and [clustering](https://developers.telnyx.com/docs/inference/clusters).
 func (r *AIEmbeddingService) URL(ctx context.Context, body AIEmbeddingURLParams, opts ...option.RequestOption) (res *EmbeddingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/embeddings/url"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

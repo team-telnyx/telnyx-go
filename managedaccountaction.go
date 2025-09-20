@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -39,7 +40,7 @@ func NewManagedAccountActionService(opts ...option.RequestOption) (r ManagedAcco
 // be affected. The managed account and its sub-users will no longer be able to log
 // in via the mission control portal.
 func (r *ManagedAccountActionService) Disable(ctx context.Context, id string, opts ...option.RequestOption) (res *ManagedAccountActionDisableResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *ManagedAccountActionService) Disable(ctx context.Context, id string, op
 
 // Enables a managed account and its sub-users to use Telnyx services.
 func (r *ManagedAccountActionService) Enable(ctx context.Context, id string, body ManagedAccountActionEnableParams, opts ...option.RequestOption) (res *ManagedAccountActionEnableResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

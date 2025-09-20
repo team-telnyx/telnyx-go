@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -37,7 +38,7 @@ func NewTextToSpeechService(opts ...option.RequestOption) (r TextToSpeechService
 // Converts the provided text to speech using the specified voice and returns audio
 // data
 func (r *TextToSpeechService) GenerateSpeech(ctx context.Context, body TextToSpeechGenerateSpeechParams, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "audio/mpeg")}, opts...)
 	path := "text-to-speech/speech"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -46,7 +47,7 @@ func (r *TextToSpeechService) GenerateSpeech(ctx context.Context, body TextToSpe
 
 // Returns a list of voices that can be used with the text to speech commands.
 func (r *TextToSpeechService) ListVoices(ctx context.Context, query TextToSpeechListVoicesParams, opts ...option.RequestOption) (res *TextToSpeechListVoicesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "text-to-speech/voices"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

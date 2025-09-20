@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewMessagingRcAgentService(opts ...option.RequestOption) (r MessagingRcAgen
 
 // Retrieve an RCS agent
 func (r *MessagingRcAgentService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *RcsAgentResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *MessagingRcAgentService) Get(ctx context.Context, id string, opts ...op
 
 // Modify an RCS agent
 func (r *MessagingRcAgentService) Update(ctx context.Context, id string, body MessagingRcAgentUpdateParams, opts ...option.RequestOption) (res *RcsAgentResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *MessagingRcAgentService) Update(ctx context.Context, id string, body Me
 
 // List all RCS agents
 func (r *MessagingRcAgentService) List(ctx context.Context, query MessagingRcAgentListParams, opts ...option.RequestOption) (res *MessagingRcAgentListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "messaging/rcs/agents"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

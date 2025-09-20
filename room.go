@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -44,7 +45,7 @@ func NewRoomService(opts ...option.RequestOption) (r RoomService) {
 
 // Synchronously create a Room.
 func (r *RoomService) New(ctx context.Context, body RoomNewParams, opts ...option.RequestOption) (res *RoomNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "rooms"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -52,7 +53,7 @@ func (r *RoomService) New(ctx context.Context, body RoomNewParams, opts ...optio
 
 // View a room.
 func (r *RoomService) Get(ctx context.Context, roomID string, query RoomGetParams, opts ...option.RequestOption) (res *RoomGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if roomID == "" {
 		err = errors.New("missing required room_id parameter")
 		return
@@ -64,7 +65,7 @@ func (r *RoomService) Get(ctx context.Context, roomID string, query RoomGetParam
 
 // Synchronously update a Room.
 func (r *RoomService) Update(ctx context.Context, roomID string, body RoomUpdateParams, opts ...option.RequestOption) (res *RoomUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if roomID == "" {
 		err = errors.New("missing required room_id parameter")
 		return
@@ -76,7 +77,7 @@ func (r *RoomService) Update(ctx context.Context, roomID string, body RoomUpdate
 
 // View a list of rooms.
 func (r *RoomService) List(ctx context.Context, query RoomListParams, opts ...option.RequestOption) (res *RoomListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "rooms"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -86,7 +87,7 @@ func (r *RoomService) List(ctx context.Context, query RoomListParams, opts ...op
 // they won't be able to join that room anymore, and you won't be charged anymore
 // for that room.
 func (r *RoomService) Delete(ctx context.Context, roomID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if roomID == "" {
 		err = errors.New("missing required room_id parameter")

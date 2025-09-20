@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -36,7 +37,7 @@ func NewSiprecConnectorService(opts ...option.RequestOption) (r SiprecConnectorS
 
 // Creates a new SIPREC connector configuration.
 func (r *SiprecConnectorService) New(ctx context.Context, body SiprecConnectorNewParams, opts ...option.RequestOption) (res *SiprecConnectorNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "siprec_connectors"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -44,7 +45,7 @@ func (r *SiprecConnectorService) New(ctx context.Context, body SiprecConnectorNe
 
 // Returns details of a stored SIPREC connector.
 func (r *SiprecConnectorService) Get(ctx context.Context, connectorName string, opts ...option.RequestOption) (res *SiprecConnectorGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if connectorName == "" {
 		err = errors.New("missing required connector_name parameter")
 		return
@@ -56,7 +57,7 @@ func (r *SiprecConnectorService) Get(ctx context.Context, connectorName string, 
 
 // Updates a stored SIPREC connector configuration.
 func (r *SiprecConnectorService) Update(ctx context.Context, connectorName string, body SiprecConnectorUpdateParams, opts ...option.RequestOption) (res *SiprecConnectorUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if connectorName == "" {
 		err = errors.New("missing required connector_name parameter")
 		return
@@ -68,7 +69,7 @@ func (r *SiprecConnectorService) Update(ctx context.Context, connectorName strin
 
 // Deletes a stored SIPREC connector.
 func (r *SiprecConnectorService) Delete(ctx context.Context, connectorName string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if connectorName == "" {
 		err = errors.New("missing required connector_name parameter")

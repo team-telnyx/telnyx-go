@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -43,7 +44,7 @@ func NewMessagingProfileService(opts ...option.RequestOption) (r MessagingProfil
 
 // Create a messaging profile
 func (r *MessagingProfileService) New(ctx context.Context, body MessagingProfileNewParams, opts ...option.RequestOption) (res *MessagingProfileNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "messaging_profiles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -51,7 +52,7 @@ func (r *MessagingProfileService) New(ctx context.Context, body MessagingProfile
 
 // Retrieve a messaging profile
 func (r *MessagingProfileService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *MessagingProfileGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *MessagingProfileService) Get(ctx context.Context, id string, opts ...op
 
 // Update a messaging profile
 func (r *MessagingProfileService) Update(ctx context.Context, id string, body MessagingProfileUpdateParams, opts ...option.RequestOption) (res *MessagingProfileUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -75,7 +76,7 @@ func (r *MessagingProfileService) Update(ctx context.Context, id string, body Me
 
 // List messaging profiles
 func (r *MessagingProfileService) List(ctx context.Context, query MessagingProfileListParams, opts ...option.RequestOption) (res *MessagingProfileListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "messaging_profiles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -83,7 +84,7 @@ func (r *MessagingProfileService) List(ctx context.Context, query MessagingProfi
 
 // Delete a messaging profile
 func (r *MessagingProfileService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *MessagingProfileDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -95,7 +96,7 @@ func (r *MessagingProfileService) Delete(ctx context.Context, id string, opts ..
 
 // List phone numbers associated with a messaging profile
 func (r *MessagingProfileService) ListPhoneNumbers(ctx context.Context, id string, query MessagingProfileListPhoneNumbersParams, opts ...option.RequestOption) (res *MessagingProfileListPhoneNumbersResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -107,7 +108,7 @@ func (r *MessagingProfileService) ListPhoneNumbers(ctx context.Context, id strin
 
 // List short codes associated with a messaging profile
 func (r *MessagingProfileService) ListShortCodes(ctx context.Context, id string, query MessagingProfileListShortCodesParams, opts ...option.RequestOption) (res *MessagingProfileListShortCodesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

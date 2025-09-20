@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/option"
@@ -32,7 +33,7 @@ func NewEnumService(opts ...option.RequestOption) (r EnumService) {
 
 // Get Enum
 func (r *EnumService) Get(ctx context.Context, endpoint EnumGetParamsEndpoint, opts ...option.RequestOption) (res *[]any, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("enum/%v", endpoint)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

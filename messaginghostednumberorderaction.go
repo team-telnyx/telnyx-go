@@ -10,6 +10,7 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apiform"
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -40,7 +41,7 @@ func NewMessagingHostedNumberOrderActionService(opts ...option.RequestOption) (r
 
 // Upload file required for a messaging hosted number order
 func (r *MessagingHostedNumberOrderActionService) UploadFile(ctx context.Context, id string, body MessagingHostedNumberOrderActionUploadFileParams, opts ...option.RequestOption) (res *MessagingHostedNumberOrderActionUploadFileResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

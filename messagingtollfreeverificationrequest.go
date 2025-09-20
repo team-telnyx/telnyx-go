@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -42,7 +43,7 @@ func NewMessagingTollfreeVerificationRequestService(opts ...option.RequestOption
 
 // Submit a new tollfree verification request
 func (r *MessagingTollfreeVerificationRequestService) New(ctx context.Context, body MessagingTollfreeVerificationRequestNewParams, opts ...option.RequestOption) (res *VerificationRequestEgress, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "messaging_tollfree/verification/requests"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -50,7 +51,7 @@ func (r *MessagingTollfreeVerificationRequestService) New(ctx context.Context, b
 
 // Get a single verification request by its ID.
 func (r *MessagingTollfreeVerificationRequestService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *VerificationRequestStatus, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *MessagingTollfreeVerificationRequestService) Get(ctx context.Context, i
 // Update an existing tollfree verification request. This is particularly useful
 // when there are pending customer actions to be taken.
 func (r *MessagingTollfreeVerificationRequestService) Update(ctx context.Context, id string, body MessagingTollfreeVerificationRequestUpdateParams, opts ...option.RequestOption) (res *VerificationRequestEgress, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -75,7 +76,7 @@ func (r *MessagingTollfreeVerificationRequestService) Update(ctx context.Context
 
 // Get a list of previously-submitted tollfree verification requests
 func (r *MessagingTollfreeVerificationRequestService) List(ctx context.Context, query MessagingTollfreeVerificationRequestListParams, opts ...option.RequestOption) (res *MessagingTollfreeVerificationRequestListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "messaging_tollfree/verification/requests"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -89,7 +90,7 @@ func (r *MessagingTollfreeVerificationRequestService) List(ctx context.Context, 
 // - `HTTP 400`: request exists but can't be deleted (i.e. not rejected)
 // - `HTTP 404`: request unknown or already deleted
 func (r *MessagingTollfreeVerificationRequestService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *MessagingTollfreeVerificationRequestDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

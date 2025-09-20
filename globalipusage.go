@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -37,7 +38,7 @@ func NewGlobalIPUsageService(opts ...option.RequestOption) (r GlobalIPUsageServi
 
 // Global IP Usage Metrics
 func (r *GlobalIPUsageService) Get(ctx context.Context, query GlobalIPUsageGetParams, opts ...option.RequestOption) (res *GlobalIPUsageGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_usage"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

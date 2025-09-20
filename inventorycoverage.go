@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewInventoryCoverageService(opts ...option.RequestOption) (r InventoryCover
 // national_destination_code is used in groupBy, and no region or locality filters
 // are used, the whole paginated set is returned.
 func (r *InventoryCoverageService) List(ctx context.Context, query InventoryCoverageListParams, opts ...option.RequestOption) (res *InventoryCoverageListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "inventory_coverage"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

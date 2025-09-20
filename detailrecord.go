@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -38,7 +39,7 @@ func NewDetailRecordService(opts ...option.RequestOption) (r DetailRecordService
 
 // Search for any detail record across the Telnyx Platform
 func (r *DetailRecordService) List(ctx context.Context, query DetailRecordListParams, opts ...option.RequestOption) (res *DetailRecordListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "detail_records"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

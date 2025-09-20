@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -42,7 +43,7 @@ func (r *BundlePricingUserBundleService) New(ctx context.Context, params BundleP
 	if !param.IsOmitted(params.AuthorizationBearer) {
 		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%s", params.AuthorizationBearer.Value)))
 	}
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "bundle_pricing/user_bundles/bulk"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
@@ -53,7 +54,7 @@ func (r *BundlePricingUserBundleService) Get(ctx context.Context, userBundleID s
 	if !param.IsOmitted(query.AuthorizationBearer) {
 		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%s", query.AuthorizationBearer.Value)))
 	}
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if userBundleID == "" {
 		err = errors.New("missing required user_bundle_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *BundlePricingUserBundleService) List(ctx context.Context, params Bundle
 	if !param.IsOmitted(params.AuthorizationBearer) {
 		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%s", params.AuthorizationBearer.Value)))
 	}
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "bundle_pricing/user_bundles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return
@@ -79,7 +80,7 @@ func (r *BundlePricingUserBundleService) Deactivate(ctx context.Context, userBun
 	if !param.IsOmitted(body.AuthorizationBearer) {
 		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%s", body.AuthorizationBearer.Value)))
 	}
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if userBundleID == "" {
 		err = errors.New("missing required user_bundle_id parameter")
 		return
@@ -94,7 +95,7 @@ func (r *BundlePricingUserBundleService) ListResources(ctx context.Context, user
 	if !param.IsOmitted(query.AuthorizationBearer) {
 		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%s", query.AuthorizationBearer.Value)))
 	}
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if userBundleID == "" {
 		err = errors.New("missing required user_bundle_id parameter")
 		return
@@ -109,7 +110,7 @@ func (r *BundlePricingUserBundleService) ListUnused(ctx context.Context, params 
 	if !param.IsOmitted(params.AuthorizationBearer) {
 		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%s", params.AuthorizationBearer.Value)))
 	}
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "bundle_pricing/user_bundles/unused"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return

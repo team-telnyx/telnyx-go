@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -42,7 +43,7 @@ func NewMessagingHostedNumberOrderService(opts ...option.RequestOption) (r Messa
 
 // Create a messaging hosted number order
 func (r *MessagingHostedNumberOrderService) New(ctx context.Context, body MessagingHostedNumberOrderNewParams, opts ...option.RequestOption) (res *MessagingHostedNumberOrderNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "messaging_hosted_number_orders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -50,7 +51,7 @@ func (r *MessagingHostedNumberOrderService) New(ctx context.Context, body Messag
 
 // Retrieve a messaging hosted number order
 func (r *MessagingHostedNumberOrderService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *MessagingHostedNumberOrderGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *MessagingHostedNumberOrderService) Get(ctx context.Context, id string, 
 
 // List messaging hosted number orders
 func (r *MessagingHostedNumberOrderService) List(ctx context.Context, query MessagingHostedNumberOrderListParams, opts ...option.RequestOption) (res *MessagingHostedNumberOrderListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "messaging_hosted_number_orders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -70,7 +71,7 @@ func (r *MessagingHostedNumberOrderService) List(ctx context.Context, query Mess
 
 // Delete a messaging hosted number order and all associated phone numbers.
 func (r *MessagingHostedNumberOrderService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *MessagingHostedNumberOrderDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -82,7 +83,7 @@ func (r *MessagingHostedNumberOrderService) Delete(ctx context.Context, id strin
 
 // Check eligibility of phone numbers for hosted messaging
 func (r *MessagingHostedNumberOrderService) CheckEligibility(ctx context.Context, body MessagingHostedNumberOrderCheckEligibilityParams, opts ...option.RequestOption) (res *MessagingHostedNumberOrderCheckEligibilityResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "messaging_hosted_number_orders/eligibility_numbers_check"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -91,7 +92,7 @@ func (r *MessagingHostedNumberOrderService) CheckEligibility(ctx context.Context
 // Create verification codes to validate numbers of the hosted order. The
 // verification codes will be sent to the numbers of the hosted order.
 func (r *MessagingHostedNumberOrderService) NewVerificationCodes(ctx context.Context, id string, body MessagingHostedNumberOrderNewVerificationCodesParams, opts ...option.RequestOption) (res *MessagingHostedNumberOrderNewVerificationCodesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -104,7 +105,7 @@ func (r *MessagingHostedNumberOrderService) NewVerificationCodes(ctx context.Con
 // Validate the verification codes sent to the numbers of the hosted order. The
 // verification codes must be created in the verification codes endpoint.
 func (r *MessagingHostedNumberOrderService) ValidateCodes(ctx context.Context, id string, body MessagingHostedNumberOrderValidateCodesParams, opts ...option.RequestOption) (res *MessagingHostedNumberOrderValidateCodesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

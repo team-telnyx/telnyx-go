@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -40,7 +41,7 @@ func NewMobileNetworkOperatorService(opts ...option.RequestOption) (r MobileNetw
 // for it. Still, it's available so it can be used as a support resource that can
 // be related to other resources or become a configuration option.
 func (r *MobileNetworkOperatorService) List(ctx context.Context, query MobileNetworkOperatorListParams, opts ...option.RequestOption) (res *MobileNetworkOperatorListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "mobile_network_operators"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

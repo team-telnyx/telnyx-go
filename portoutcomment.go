@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -37,7 +38,7 @@ func NewPortoutCommentService(opts ...option.RequestOption) (r PortoutCommentSer
 
 // Creates a comment on a portout request.
 func (r *PortoutCommentService) New(ctx context.Context, id string, body PortoutCommentNewParams, opts ...option.RequestOption) (res *PortoutCommentNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *PortoutCommentService) New(ctx context.Context, id string, body Portout
 
 // Returns a list of comments for a portout request.
 func (r *PortoutCommentService) List(ctx context.Context, id string, opts ...option.RequestOption) (res *PortoutCommentListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

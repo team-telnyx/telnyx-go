@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -36,7 +37,7 @@ func NewSetiService(opts ...option.RequestOption) (r SetiService) {
 
 // Returns the results of the various black box tests
 func (r *SetiService) GetBlackBoxTestResults(ctx context.Context, query SetiGetBlackBoxTestResultsParams, opts ...option.RequestOption) (res *SetiGetBlackBoxTestResultsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "seti/black_box_test_results"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

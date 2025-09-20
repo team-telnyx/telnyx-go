@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -42,7 +43,7 @@ func NewNetworkService(opts ...option.RequestOption) (r NetworkService) {
 
 // Create a new Network.
 func (r *NetworkService) New(ctx context.Context, body NetworkNewParams, opts ...option.RequestOption) (res *NetworkNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "networks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -50,7 +51,7 @@ func (r *NetworkService) New(ctx context.Context, body NetworkNewParams, opts ..
 
 // Retrieve a Network.
 func (r *NetworkService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *NetworkGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *NetworkService) Get(ctx context.Context, id string, opts ...option.Requ
 
 // Update a Network.
 func (r *NetworkService) Update(ctx context.Context, id string, body NetworkUpdateParams, opts ...option.RequestOption) (res *NetworkUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -74,7 +75,7 @@ func (r *NetworkService) Update(ctx context.Context, id string, body NetworkUpda
 
 // List all Networks.
 func (r *NetworkService) List(ctx context.Context, query NetworkListParams, opts ...option.RequestOption) (res *NetworkListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "networks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -82,7 +83,7 @@ func (r *NetworkService) List(ctx context.Context, query NetworkListParams, opts
 
 // Delete a Network.
 func (r *NetworkService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *NetworkDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -94,7 +95,7 @@ func (r *NetworkService) Delete(ctx context.Context, id string, opts ...option.R
 
 // List all Interfaces for a Network.
 func (r *NetworkService) ListInterfaces(ctx context.Context, id string, query NetworkListInterfacesParams, opts ...option.RequestOption) (res *NetworkListInterfacesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

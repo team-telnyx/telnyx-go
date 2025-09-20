@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -35,7 +36,7 @@ func NewCountryCoverageService(opts ...option.RequestOption) (r CountryCoverageS
 
 // Get country coverage
 func (r *CountryCoverageService) Get(ctx context.Context, opts ...option.RequestOption) (res *CountryCoverageGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "country_coverage"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -43,7 +44,7 @@ func (r *CountryCoverageService) Get(ctx context.Context, opts ...option.Request
 
 // Get coverage for a specific country
 func (r *CountryCoverageService) GetCountry(ctx context.Context, countryCode string, opts ...option.RequestOption) (res *CountryCoverageGetCountryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if countryCode == "" {
 		err = errors.New("missing required country_code parameter")
 		return

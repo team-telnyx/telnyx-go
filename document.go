@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -41,7 +42,7 @@ func NewDocumentService(opts ...option.RequestOption) (r DocumentService) {
 
 // Retrieve a document.
 func (r *DocumentService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *DocumentGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *DocumentService) Get(ctx context.Context, id string, opts ...option.Req
 
 // Update a document.
 func (r *DocumentService) Update(ctx context.Context, id string, body DocumentUpdateParams, opts ...option.RequestOption) (res *DocumentUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -65,7 +66,7 @@ func (r *DocumentService) Update(ctx context.Context, id string, body DocumentUp
 
 // List all documents ordered by created_at descending.
 func (r *DocumentService) List(ctx context.Context, query DocumentListParams, opts ...option.RequestOption) (res *DocumentListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "documents"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -75,7 +76,7 @@ func (r *DocumentService) List(ctx context.Context, query DocumentListParams, op
 // to a service. If it is linked to a service, it must be unlinked prior to
 // deleting.
 func (r *DocumentService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *DocumentDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -87,7 +88,7 @@ func (r *DocumentService) Delete(ctx context.Context, id string, opts ...option.
 
 // Download a document.
 func (r *DocumentService) Download(ctx context.Context, id string, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -101,7 +102,7 @@ func (r *DocumentService) Download(ctx context.Context, id string, opts ...optio
 // Generates a temporary pre-signed URL that can be used to download the document
 // directly from the storage backend without authentication.
 func (r *DocumentService) GenerateDownloadLink(ctx context.Context, id string, opts ...option.RequestOption) (res *DocumentGenerateDownloadLinkResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -114,7 +115,7 @@ func (r *DocumentService) GenerateDownloadLink(ctx context.Context, id string, o
 // Upload a document.<br /><br />Uploaded files must be linked to a service within
 // 30 minutes or they will be automatically deleted.
 func (r *DocumentService) Upload(ctx context.Context, body DocumentUploadParams, opts ...option.RequestOption) (res *DocumentUploadResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "documents"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

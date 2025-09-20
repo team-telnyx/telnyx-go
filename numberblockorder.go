@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewNumberBlockOrderService(opts ...option.RequestOption) (r NumberBlockOrde
 
 // Creates a phone number block order.
 func (r *NumberBlockOrderService) New(ctx context.Context, body NumberBlockOrderNewParams, opts ...option.RequestOption) (res *NumberBlockOrderNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "number_block_orders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *NumberBlockOrderService) New(ctx context.Context, body NumberBlockOrder
 
 // Get an existing phone number block order.
 func (r *NumberBlockOrderService) Get(ctx context.Context, numberBlockOrderID string, opts ...option.RequestOption) (res *NumberBlockOrderGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if numberBlockOrderID == "" {
 		err = errors.New("missing required number_block_order_id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *NumberBlockOrderService) Get(ctx context.Context, numberBlockOrderID st
 
 // Get a paginated list of number block orders.
 func (r *NumberBlockOrderService) List(ctx context.Context, query NumberBlockOrderListParams, opts ...option.RequestOption) (res *NumberBlockOrderListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "number_block_orders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

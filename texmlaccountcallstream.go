@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -37,7 +38,7 @@ func NewTexmlAccountCallStreamService(opts ...option.RequestOption) (r TexmlAcco
 
 // Updates streaming resource for particular call.
 func (r *TexmlAccountCallStreamService) StreamingSidJson(ctx context.Context, streamingSid string, params TexmlAccountCallStreamStreamingSidJsonParams, opts ...option.RequestOption) (res *TexmlAccountCallStreamStreamingSidJsonResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return

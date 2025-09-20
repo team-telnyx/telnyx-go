@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -40,7 +41,7 @@ func NewCallEventService(opts ...option.RequestOption) (r CallEventService) {
 //
 // **Note**: Only one `filter[occurred_at]` can be passed.
 func (r *CallEventService) List(ctx context.Context, query CallEventListParams, opts ...option.RequestOption) (res *CallEventListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "call_events"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

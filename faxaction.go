@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -36,7 +37,7 @@ func NewFaxActionService(opts ...option.RequestOption) (r FaxActionService) {
 // Cancel the outbound fax that is in one of the following states: `queued`,
 // `media.processed`, `originated` or `sending`
 func (r *FaxActionService) Cancel(ctx context.Context, id string, opts ...option.RequestOption) (res *FaxActionCancelResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *FaxActionService) Cancel(ctx context.Context, id string, opts ...option
 
 // Refreshes the inbound fax's media_url when it has expired
 func (r *FaxActionService) Refresh(ctx context.Context, id string, opts ...option.RequestOption) (res *FaxActionRefreshResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

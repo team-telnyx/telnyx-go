@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/option"
@@ -33,7 +34,7 @@ func NewTexmlAccountRecordingJsonService(opts ...option.RequestOption) (r TexmlA
 
 // Deletes recording resource identified by recording id.
 func (r *TexmlAccountRecordingJsonService) DeleteRecordingSidJson(ctx context.Context, recordingSid string, body TexmlAccountRecordingJsonDeleteRecordingSidJsonParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if body.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
@@ -50,7 +51,7 @@ func (r *TexmlAccountRecordingJsonService) DeleteRecordingSidJson(ctx context.Co
 
 // Returns recording resource identified by recording id.
 func (r *TexmlAccountRecordingJsonService) GetRecordingSidJson(ctx context.Context, recordingSid string, query TexmlAccountRecordingJsonGetRecordingSidJsonParams, opts ...option.RequestOption) (res *TexmlGetCallRecordingResponseBody, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return

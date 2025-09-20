@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewAccessIPAddressService(opts ...option.RequestOption) (r AccessIPAddressS
 
 // Create new Access IP Address
 func (r *AccessIPAddressService) New(ctx context.Context, body AccessIPAddressNewParams, opts ...option.RequestOption) (res *AccessIPAddressResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "access_ip_address"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *AccessIPAddressService) New(ctx context.Context, body AccessIPAddressNe
 
 // Retrieve an access IP address
 func (r *AccessIPAddressService) Get(ctx context.Context, accessIPAddressID string, opts ...option.RequestOption) (res *AccessIPAddressResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accessIPAddressID == "" {
 		err = errors.New("missing required access_ip_address_id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *AccessIPAddressService) Get(ctx context.Context, accessIPAddressID stri
 
 // List all Access IP Addresses
 func (r *AccessIPAddressService) List(ctx context.Context, query AccessIPAddressListParams, opts ...option.RequestOption) (res *AccessIPAddressListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "access_ip_address"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -67,7 +68,7 @@ func (r *AccessIPAddressService) List(ctx context.Context, query AccessIPAddress
 
 // Delete access IP address
 func (r *AccessIPAddressService) Delete(ctx context.Context, accessIPAddressID string, opts ...option.RequestOption) (res *AccessIPAddressResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accessIPAddressID == "" {
 		err = errors.New("missing required access_ip_address_id parameter")
 		return

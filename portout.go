@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -48,7 +49,7 @@ func NewPortoutService(opts ...option.RequestOption) (r PortoutService) {
 
 // Returns the portout request based on the ID provided
 func (r *PortoutService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PortoutGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *PortoutService) Get(ctx context.Context, id string, opts ...option.Requ
 
 // Returns the portout requests according to filters
 func (r *PortoutService) List(ctx context.Context, query PortoutListParams, opts ...option.RequestOption) (res *PortoutListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "portouts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -68,7 +69,7 @@ func (r *PortoutService) List(ctx context.Context, query PortoutListParams, opts
 
 // Given a port-out ID, list rejection codes that are eligible for that port-out
 func (r *PortoutService) ListRejectionCodes(ctx context.Context, portoutID string, query PortoutListRejectionCodesParams, opts ...option.RequestOption) (res *PortoutListRejectionCodesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if portoutID == "" {
 		err = errors.New("missing required portout_id parameter")
 		return
@@ -80,7 +81,7 @@ func (r *PortoutService) ListRejectionCodes(ctx context.Context, portoutID strin
 
 // Authorize or reject portout request
 func (r *PortoutService) UpdateStatus(ctx context.Context, status PortoutUpdateStatusParamsStatus, params PortoutUpdateStatusParams, opts ...option.RequestOption) (res *PortoutUpdateStatusResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.ID == "" {
 		err = errors.New("missing required id parameter")
 		return

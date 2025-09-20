@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -36,7 +37,7 @@ func NewAvailablePhoneNumberService(opts ...option.RequestOption) (r AvailablePh
 
 // List available phone numbers
 func (r *AvailablePhoneNumberService) List(ctx context.Context, query AvailablePhoneNumberListParams, opts ...option.RequestOption) (res *AvailablePhoneNumberListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "available_phone_numbers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

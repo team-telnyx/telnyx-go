@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewIPService(opts ...option.RequestOption) (r IPService) {
 
 // Create a new IP object.
 func (r *IPService) New(ctx context.Context, body IPNewParams, opts ...option.RequestOption) (res *IPNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ips"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *IPService) New(ctx context.Context, body IPNewParams, opts ...option.Re
 
 // Return the details regarding a specific IP.
 func (r *IPService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *IPGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *IPService) Get(ctx context.Context, id string, opts ...option.RequestOp
 
 // Update the details of a specific IP.
 func (r *IPService) Update(ctx context.Context, id string, body IPUpdateParams, opts ...option.RequestOption) (res *IPUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -70,7 +71,7 @@ func (r *IPService) Update(ctx context.Context, id string, body IPUpdateParams, 
 
 // Get all IPs belonging to the user that match the given filters.
 func (r *IPService) List(ctx context.Context, query IPListParams, opts ...option.RequestOption) (res *IPListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ips"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -78,7 +79,7 @@ func (r *IPService) List(ctx context.Context, query IPListParams, opts ...option
 
 // Delete an IP.
 func (r *IPService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *IPDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

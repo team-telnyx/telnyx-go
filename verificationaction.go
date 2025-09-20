@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -35,7 +36,7 @@ func NewVerificationActionService(opts ...option.RequestOption) (r VerificationA
 
 // Verify verification code by ID
 func (r *VerificationActionService) Verify(ctx context.Context, verificationID string, body VerificationActionVerifyParams, opts ...option.RequestOption) (res *VerifyVerificationCodeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if verificationID == "" {
 		err = errors.New("missing required verification_id parameter")
 		return

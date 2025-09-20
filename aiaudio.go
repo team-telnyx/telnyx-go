@@ -8,6 +8,7 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apiform"
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -40,7 +41,7 @@ func NewAIAudioService(opts ...option.RequestOption) (r AIAudioService) {
 // [OpenAI Transcription API](https://platform.openai.com/docs/api-reference/audio/createTranscription)
 // and may be used with the OpenAI JS or Python SDK.
 func (r *AIAudioService) Transcribe(ctx context.Context, body AIAudioTranscribeParams, opts ...option.RequestOption) (res *AIAudioTranscribeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/audio/transcriptions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

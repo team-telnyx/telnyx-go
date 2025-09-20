@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -35,7 +36,7 @@ func NewStorageMigrationActionService(opts ...option.RequestOption) (r StorageMi
 
 // Stop a Migration
 func (r *StorageMigrationActionService) Stop(ctx context.Context, id string, opts ...option.RequestOption) (res *StorageMigrationActionStopResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

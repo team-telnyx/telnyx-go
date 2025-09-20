@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -38,7 +39,7 @@ func NewChargesBreakdownService(opts ...option.RequestOption) (r ChargesBreakdow
 // Retrieve a detailed breakdown of monthly charges for phone numbers in a
 // specified date range. The date range cannot exceed 31 days.
 func (r *ChargesBreakdownService) Get(ctx context.Context, query ChargesBreakdownGetParams, opts ...option.RequestOption) (res *ChargesBreakdownGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "charges_breakdown"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

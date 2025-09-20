@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -35,7 +36,7 @@ func NewNumberReservationActionService(opts ...option.RequestOption) (r NumberRe
 
 // Extends reservation expiry time on all phone numbers.
 func (r *NumberReservationActionService) Extend(ctx context.Context, numberReservationID string, opts ...option.RequestOption) (res *NumberReservationActionExtendResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if numberReservationID == "" {
 		err = errors.New("missing required number_reservation_id parameter")
 		return

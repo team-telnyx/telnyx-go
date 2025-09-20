@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewWirelessBlocklistService(opts ...option.RequestOption) (r WirelessBlockl
 
 // Create a Wireless Blocklist to prevent SIMs from connecting to certain networks.
 func (r *WirelessBlocklistService) New(ctx context.Context, body WirelessBlocklistNewParams, opts ...option.RequestOption) (res *WirelessBlocklistNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "wireless_blocklists"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *WirelessBlocklistService) New(ctx context.Context, body WirelessBlockli
 
 // Retrieve information about a Wireless Blocklist.
 func (r *WirelessBlocklistService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *WirelessBlocklistGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *WirelessBlocklistService) Get(ctx context.Context, id string, opts ...o
 
 // Update a Wireless Blocklist.
 func (r *WirelessBlocklistService) Update(ctx context.Context, body WirelessBlocklistUpdateParams, opts ...option.RequestOption) (res *WirelessBlocklistUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "wireless_blocklists"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -66,7 +67,7 @@ func (r *WirelessBlocklistService) Update(ctx context.Context, body WirelessBloc
 
 // Get all Wireless Blocklists belonging to the user.
 func (r *WirelessBlocklistService) List(ctx context.Context, query WirelessBlocklistListParams, opts ...option.RequestOption) (res *WirelessBlocklistListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "wireless_blocklists"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -74,7 +75,7 @@ func (r *WirelessBlocklistService) List(ctx context.Context, query WirelessBlock
 
 // Deletes the Wireless Blocklist.
 func (r *WirelessBlocklistService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *WirelessBlocklistDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

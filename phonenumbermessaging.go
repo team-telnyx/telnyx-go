@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -39,7 +40,7 @@ func NewPhoneNumberMessagingService(opts ...option.RequestOption) (r PhoneNumber
 
 // Retrieve a phone number with messaging settings
 func (r *PhoneNumberMessagingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PhoneNumberMessagingGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *PhoneNumberMessagingService) Get(ctx context.Context, id string, opts .
 
 // Update the messaging profile and/or messaging product of a phone number
 func (r *PhoneNumberMessagingService) Update(ctx context.Context, id string, body PhoneNumberMessagingUpdateParams, opts ...option.RequestOption) (res *PhoneNumberMessagingUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *PhoneNumberMessagingService) Update(ctx context.Context, id string, bod
 
 // List phone numbers with messaging settings
 func (r *PhoneNumberMessagingService) List(ctx context.Context, query PhoneNumberMessagingListParams, opts ...option.RequestOption) (res *PhoneNumberMessagingListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "phone_numbers/messaging"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

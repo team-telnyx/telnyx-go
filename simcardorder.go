@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewSimCardOrderService(opts ...option.RequestOption) (r SimCardOrderService
 
 // Creates a new order for SIM cards.
 func (r *SimCardOrderService) New(ctx context.Context, body SimCardOrderNewParams, opts ...option.RequestOption) (res *SimCardOrderNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "sim_card_orders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *SimCardOrderService) New(ctx context.Context, body SimCardOrderNewParam
 
 // Get a single SIM card order by its ID.
 func (r *SimCardOrderService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardOrderGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *SimCardOrderService) Get(ctx context.Context, id string, opts ...option
 
 // Get all SIM card orders according to filters.
 func (r *SimCardOrderService) List(ctx context.Context, query SimCardOrderListParams, opts ...option.RequestOption) (res *SimCardOrderListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "sim_card_orders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

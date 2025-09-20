@@ -5,6 +5,7 @@ package telnyx
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -33,7 +34,7 @@ func NewGlobalIPProtocolService(opts ...option.RequestOption) (r GlobalIPProtoco
 
 // List all Global IP Protocols
 func (r *GlobalIPProtocolService) List(ctx context.Context, opts ...option.RequestOption) (res *GlobalIPProtocolListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_protocols"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -40,7 +41,7 @@ func NewTexmlAccountConferenceService(opts ...option.RequestOption) (r TexmlAcco
 
 // Returns a conference resource.
 func (r *TexmlAccountConferenceService) Get(ctx context.Context, conferenceSid string, query TexmlAccountConferenceGetParams, opts ...option.RequestOption) (res *TexmlAccountConferenceGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return
@@ -56,7 +57,7 @@ func (r *TexmlAccountConferenceService) Get(ctx context.Context, conferenceSid s
 
 // Updates a conference resource.
 func (r *TexmlAccountConferenceService) Update(ctx context.Context, conferenceSid string, params TexmlAccountConferenceUpdateParams, opts ...option.RequestOption) (res *TexmlAccountConferenceUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return
@@ -72,7 +73,7 @@ func (r *TexmlAccountConferenceService) Update(ctx context.Context, conferenceSi
 
 // Lists conference resources.
 func (r *TexmlAccountConferenceService) GetConferences(ctx context.Context, accountSid string, query TexmlAccountConferenceGetConferencesParams, opts ...option.RequestOption) (res *TexmlAccountConferenceGetConferencesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return
@@ -84,7 +85,7 @@ func (r *TexmlAccountConferenceService) GetConferences(ctx context.Context, acco
 
 // Lists conference recordings
 func (r *TexmlAccountConferenceService) GetRecordings(ctx context.Context, conferenceSid string, query TexmlAccountConferenceGetRecordingsParams, opts ...option.RequestOption) (res *TexmlAccountConferenceGetRecordingsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return
@@ -100,7 +101,7 @@ func (r *TexmlAccountConferenceService) GetRecordings(ctx context.Context, confe
 
 // Returns recordings for a conference identified by conference_sid.
 func (r *TexmlAccountConferenceService) GetRecordingsJson(ctx context.Context, conferenceSid string, query TexmlAccountConferenceGetRecordingsJsonParams, opts ...option.RequestOption) (res *TexmlAccountConferenceGetRecordingsJsonResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return

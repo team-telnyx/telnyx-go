@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -40,7 +41,7 @@ func NewPrivateWirelessGatewayService(opts ...option.RequestOption) (r PrivateWi
 // created network. This operation may take several minutes so you can check the
 // Private Wireless Gateway status at the section Get a Private Wireless Gateway.
 func (r *PrivateWirelessGatewayService) New(ctx context.Context, body PrivateWirelessGatewayNewParams, opts ...option.RequestOption) (res *PrivateWirelessGatewayNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "private_wireless_gateways"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *PrivateWirelessGatewayService) New(ctx context.Context, body PrivateWir
 
 // Retrieve information about a Private Wireless Gateway.
 func (r *PrivateWirelessGatewayService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PrivateWirelessGatewayGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *PrivateWirelessGatewayService) Get(ctx context.Context, id string, opts
 
 // Get all Private Wireless Gateways belonging to the user.
 func (r *PrivateWirelessGatewayService) List(ctx context.Context, query PrivateWirelessGatewayListParams, opts ...option.RequestOption) (res *PrivateWirelessGatewayListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "private_wireless_gateways"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -68,7 +69,7 @@ func (r *PrivateWirelessGatewayService) List(ctx context.Context, query PrivateW
 
 // Deletes the Private Wireless Gateway.
 func (r *PrivateWirelessGatewayService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *PrivateWirelessGatewayDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

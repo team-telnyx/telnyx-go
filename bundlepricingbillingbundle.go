@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -42,7 +43,7 @@ func (r *BundlePricingBillingBundleService) Get(ctx context.Context, bundleID st
 	if !param.IsOmitted(query.AuthorizationBearer) {
 		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%s", query.AuthorizationBearer.Value)))
 	}
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if bundleID == "" {
 		err = errors.New("missing required bundle_id parameter")
 		return
@@ -57,7 +58,7 @@ func (r *BundlePricingBillingBundleService) List(ctx context.Context, params Bun
 	if !param.IsOmitted(params.AuthorizationBearer) {
 		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%s", params.AuthorizationBearer.Value)))
 	}
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "bundle_pricing/billing_bundles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return

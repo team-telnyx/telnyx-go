@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -40,7 +41,7 @@ func NewRecordingService(opts ...option.RequestOption) (r RecordingService) {
 
 // Retrieves the details of an existing call recording.
 func (r *RecordingService) Get(ctx context.Context, recordingID string, opts ...option.RequestOption) (res *RecordingGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if recordingID == "" {
 		err = errors.New("missing required recording_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *RecordingService) Get(ctx context.Context, recordingID string, opts ...
 
 // Returns a list of your call recordings.
 func (r *RecordingService) List(ctx context.Context, query RecordingListParams, opts ...option.RequestOption) (res *RecordingListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "recordings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -60,7 +61,7 @@ func (r *RecordingService) List(ctx context.Context, query RecordingListParams, 
 
 // Permanently deletes a call recording.
 func (r *RecordingService) Delete(ctx context.Context, recordingID string, opts ...option.RequestOption) (res *RecordingDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if recordingID == "" {
 		err = errors.New("missing required recording_id parameter")
 		return

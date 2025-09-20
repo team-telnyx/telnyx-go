@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -39,7 +40,7 @@ func NewShortCodeService(opts ...option.RequestOption) (r ShortCodeService) {
 
 // Retrieve a short code
 func (r *ShortCodeService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ShortCodeGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *ShortCodeService) Get(ctx context.Context, id string, opts ...option.Re
 // Update the settings for a specific short code. To unbind a short code from a
 // profile, set the `messaging_profile_id` to `null` or an empty string.
 func (r *ShortCodeService) Update(ctx context.Context, id string, body ShortCodeUpdateParams, opts ...option.RequestOption) (res *ShortCodeUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -64,7 +65,7 @@ func (r *ShortCodeService) Update(ctx context.Context, id string, body ShortCode
 
 // List short codes
 func (r *ShortCodeService) List(ctx context.Context, query ShortCodeListParams, opts ...option.RequestOption) (res *ShortCodeListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "short_codes"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

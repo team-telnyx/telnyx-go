@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -40,7 +41,7 @@ func NewReportMdrUsageReportService(opts ...option.RequestOption) (r ReportMdrUs
 // Submit request for new new messaging usage report. This endpoint will pull and
 // aggregate messaging data in specified time period.
 func (r *ReportMdrUsageReportService) New(ctx context.Context, body ReportMdrUsageReportNewParams, opts ...option.RequestOption) (res *ReportMdrUsageReportNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "reports/mdr_usage_reports"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *ReportMdrUsageReportService) New(ctx context.Context, body ReportMdrUsa
 
 // Fetch a single messaging usage report by id
 func (r *ReportMdrUsageReportService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ReportMdrUsageReportGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -61,7 +62,7 @@ func (r *ReportMdrUsageReportService) Get(ctx context.Context, id string, opts .
 // Fetch all messaging usage reports. Usage reports are aggregated messaging data
 // for specified time period and breakdown
 func (r *ReportMdrUsageReportService) List(ctx context.Context, query ReportMdrUsageReportListParams, opts ...option.RequestOption) (res *ReportMdrUsageReportListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "reports/mdr_usage_reports"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -69,7 +70,7 @@ func (r *ReportMdrUsageReportService) List(ctx context.Context, query ReportMdrU
 
 // Delete messaging usage report by id
 func (r *ReportMdrUsageReportService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *ReportMdrUsageReportDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -83,7 +84,7 @@ func (r *ReportMdrUsageReportService) Delete(ctx context.Context, id string, opt
 // generate and fetch the messaging report over a specified time period. No polling
 // is necessary but the response may take up to a couple of minutes.
 func (r *ReportMdrUsageReportService) FetchSync(ctx context.Context, query ReportMdrUsageReportFetchSyncParams, opts ...option.RequestOption) (res *ReportMdrUsageReportFetchSyncResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "reports/mdr_usage_reports/sync"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

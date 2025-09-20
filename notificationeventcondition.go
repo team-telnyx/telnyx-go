@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -37,7 +38,7 @@ func NewNotificationEventConditionService(opts ...option.RequestOption) (r Notif
 
 // Returns a list of your notifications events conditions.
 func (r *NotificationEventConditionService) List(ctx context.Context, query NotificationEventConditionListParams, opts ...option.RequestOption) (res *NotificationEventConditionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "notification_event_conditions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -42,7 +43,7 @@ func NewNumberReservationService(opts ...option.RequestOption) (r NumberReservat
 
 // Creates a Phone Number Reservation for multiple numbers.
 func (r *NumberReservationService) New(ctx context.Context, body NumberReservationNewParams, opts ...option.RequestOption) (res *NumberReservationNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "number_reservations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -50,7 +51,7 @@ func (r *NumberReservationService) New(ctx context.Context, body NumberReservati
 
 // Gets a single phone number reservation.
 func (r *NumberReservationService) Get(ctx context.Context, numberReservationID string, opts ...option.RequestOption) (res *NumberReservationGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if numberReservationID == "" {
 		err = errors.New("missing required number_reservation_id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *NumberReservationService) Get(ctx context.Context, numberReservationID 
 
 // Gets a paginated list of phone number reservations.
 func (r *NumberReservationService) List(ctx context.Context, query NumberReservationListParams, opts ...option.RequestOption) (res *NumberReservationListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "number_reservations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

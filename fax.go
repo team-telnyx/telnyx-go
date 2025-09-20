@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -51,7 +52,7 @@ func NewFaxService(opts ...option.RequestOption) (r FaxService) {
 // - `fax.delivered`
 // - `fax.failed`
 func (r *FaxService) New(ctx context.Context, body FaxNewParams, opts ...option.RequestOption) (res *FaxNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "faxes"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -59,7 +60,7 @@ func (r *FaxService) New(ctx context.Context, body FaxNewParams, opts ...option.
 
 // View a fax
 func (r *FaxService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *FaxGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -71,7 +72,7 @@ func (r *FaxService) Get(ctx context.Context, id string, opts ...option.RequestO
 
 // View a list of faxes
 func (r *FaxService) List(ctx context.Context, query FaxListParams, opts ...option.RequestOption) (res *FaxListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "faxes"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -79,7 +80,7 @@ func (r *FaxService) List(ctx context.Context, query FaxListParams, opts ...opti
 
 // Delete a fax
 func (r *FaxService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")

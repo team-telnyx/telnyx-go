@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/option"
@@ -374,7 +375,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 // For even greater flexibility, see [option.WithResponseInto] and
 // [option.WithResponseBodyInto].
 func (r *Client) Execute(ctx context.Context, method string, path string, params any, res any, opts ...option.RequestOption) error {
-	opts = append(r.Options, opts...)
+	opts = slices.Concat(r.Options, opts)
 	return requestconfig.ExecuteNewRequest(ctx, method, path, params, res, opts...)
 }
 
@@ -413,7 +414,7 @@ func (r *Client) Delete(ctx context.Context, path string, params any, res any, o
 
 // Create a bucket.
 func (r *Client) NewBucket(ctx context.Context, bucketName string, body NewBucketParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucketName parameter")
@@ -426,7 +427,7 @@ func (r *Client) NewBucket(ctx context.Context, bucketName string, body NewBucke
 
 // Deletes a bucket. The bucket must be empty for it to be deleted.
 func (r *Client) DeleteBucket(ctx context.Context, bucketName string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucketName parameter")
@@ -439,7 +440,7 @@ func (r *Client) DeleteBucket(ctx context.Context, bucketName string, opts ...op
 
 // Delete an object from a given bucket.
 func (r *Client) DeleteObject(ctx context.Context, objectName string, body DeleteObjectParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if body.BucketName == "" {
 		err = errors.New("missing required bucketName parameter")
@@ -456,7 +457,7 @@ func (r *Client) DeleteObject(ctx context.Context, objectName string, body Delet
 
 // Deletes one or multiple objects from a given bucket.
 func (r *Client) DeleteObjects(ctx context.Context, bucketName string, params DeleteObjectsParams, opts ...option.RequestOption) (res *DeleteObjectsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/xml")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucketName parameter")
@@ -469,7 +470,7 @@ func (r *Client) DeleteObjects(ctx context.Context, bucketName string, params De
 
 // Retrieves an object from a given bucket.
 func (r *Client) GetObject(ctx context.Context, objectName string, params GetObjectParams, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
 	if params.BucketName == "" {
 		err = errors.New("missing required bucketName parameter")
@@ -486,7 +487,7 @@ func (r *Client) GetObject(ctx context.Context, objectName string, params GetObj
 
 // List all Buckets.
 func (r *Client) ListBuckets(ctx context.Context, opts ...option.RequestOption) (res *ListBucketsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/xml")}, opts...)
 	path := ""
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -495,7 +496,7 @@ func (r *Client) ListBuckets(ctx context.Context, opts ...option.RequestOption) 
 
 // List all objects contained in a given bucket.
 func (r *Client) ListObjects(ctx context.Context, bucketName string, query ListObjectsParams, opts ...option.RequestOption) (res *ListObjectsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/xml")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucketName parameter")
@@ -508,7 +509,7 @@ func (r *Client) ListObjects(ctx context.Context, bucketName string, query ListO
 
 // Add an object to a bucket.
 func (r *Client) PutObject(ctx context.Context, objectName string, params PutObjectParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if params.BucketName == "" {
 		err = errors.New("missing required bucketName parameter")

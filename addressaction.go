@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -37,7 +38,7 @@ func NewAddressActionService(opts ...option.RequestOption) (r AddressActionServi
 // Accepts this address suggestion as a new emergency address for Operator Connect
 // and finishes the uploads of the numbers associated with it to Microsoft.
 func (r *AddressActionService) AcceptSuggestions(ctx context.Context, id string, body AddressActionAcceptSuggestionsParams, opts ...option.RequestOption) (res *AddressActionAcceptSuggestionsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AddressActionService) AcceptSuggestions(ctx context.Context, id string,
 
 // Validates an address for emergency services.
 func (r *AddressActionService) Validate(ctx context.Context, body AddressActionValidateParams, opts ...option.RequestOption) (res *AddressActionValidateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "addresses/actions/validate"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

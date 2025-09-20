@@ -5,6 +5,7 @@ package telnyx
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewPortabilityCheckService(opts ...option.RequestOption) (r PortabilityChec
 
 // Runs a portability check, returning the results immediately.
 func (r *PortabilityCheckService) Run(ctx context.Context, body PortabilityCheckRunParams, opts ...option.RequestOption) (res *PortabilityCheckRunResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "portability_checks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

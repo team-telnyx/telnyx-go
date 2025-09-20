@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -44,7 +45,7 @@ func NewAIAssistantTestService(opts ...option.RequestOption) (r AIAssistantTestS
 // Creates a comprehensive test configuration for evaluating AI assistant
 // performance
 func (r *AIAssistantTestService) New(ctx context.Context, body AIAssistantTestNewParams, opts ...option.RequestOption) (res *AssistantTest, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants/tests"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -52,7 +53,7 @@ func (r *AIAssistantTestService) New(ctx context.Context, body AIAssistantTestNe
 
 // Retrieves detailed information about a specific assistant test
 func (r *AIAssistantTestService) Get(ctx context.Context, testID string, opts ...option.RequestOption) (res *AssistantTest, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if testID == "" {
 		err = errors.New("missing required test_id parameter")
 		return
@@ -64,7 +65,7 @@ func (r *AIAssistantTestService) Get(ctx context.Context, testID string, opts ..
 
 // Updates an existing assistant test configuration with new settings
 func (r *AIAssistantTestService) Update(ctx context.Context, testID string, body AIAssistantTestUpdateParams, opts ...option.RequestOption) (res *AssistantTest, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if testID == "" {
 		err = errors.New("missing required test_id parameter")
 		return
@@ -77,7 +78,7 @@ func (r *AIAssistantTestService) Update(ctx context.Context, testID string, body
 // Retrieves a paginated list of assistant tests with optional filtering
 // capabilities
 func (r *AIAssistantTestService) List(ctx context.Context, query AIAssistantTestListParams, opts ...option.RequestOption) (res *AIAssistantTestListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants/tests"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -85,7 +86,7 @@ func (r *AIAssistantTestService) List(ctx context.Context, query AIAssistantTest
 
 // Permanently removes an assistant test and all associated data
 func (r *AIAssistantTestService) Delete(ctx context.Context, testID string, opts ...option.RequestOption) (res *AIAssistantTestDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if testID == "" {
 		err = errors.New("missing required test_id parameter")
 		return

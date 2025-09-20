@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewPhoneNumberJobService(opts ...option.RequestOption) (r PhoneNumberJobSer
 
 // Retrieve a phone numbers job
 func (r *PhoneNumberJobService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PhoneNumberJobGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *PhoneNumberJobService) Get(ctx context.Context, id string, opts ...opti
 
 // Lists the phone numbers jobs
 func (r *PhoneNumberJobService) List(ctx context.Context, query PhoneNumberJobListParams, opts ...option.RequestOption) (res *PhoneNumberJobListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "phone_numbers/jobs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -60,7 +61,7 @@ func (r *PhoneNumberJobService) List(ctx context.Context, query PhoneNumberJobLi
 // Creates a new background job to delete a batch of numbers. At most one thousand
 // numbers can be updated per API call.
 func (r *PhoneNumberJobService) DeleteBatch(ctx context.Context, body PhoneNumberJobDeleteBatchParams, opts ...option.RequestOption) (res *PhoneNumberJobDeleteBatchResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "phone_numbers/jobs/delete_phone_numbers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -76,7 +77,7 @@ func (r *PhoneNumberJobService) DeleteBatch(ctx context.Context, body PhoneNumbe
 // When using the phone_numbers parameter, ensure you follow the correct format as
 // shown in the example (either phone number IDs or phone numbers in E164 format).
 func (r *PhoneNumberJobService) UpdateBatch(ctx context.Context, params PhoneNumberJobUpdateBatchParams, opts ...option.RequestOption) (res *PhoneNumberJobUpdateBatchResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "phone_numbers/jobs/update_phone_numbers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
@@ -85,7 +86,7 @@ func (r *PhoneNumberJobService) UpdateBatch(ctx context.Context, params PhoneNum
 // Creates a background job to update the emergency settings of a collection of
 // phone numbers. At most one thousand numbers can be updated per API call.
 func (r *PhoneNumberJobService) UpdateEmergencySettingsBatch(ctx context.Context, body PhoneNumberJobUpdateEmergencySettingsBatchParams, opts ...option.RequestOption) (res *PhoneNumberJobUpdateEmergencySettingsBatchResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "phone_numbers/jobs/update_emergency_settings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

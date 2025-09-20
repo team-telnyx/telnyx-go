@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -36,7 +37,7 @@ func NewMessagingHostedNumberService(opts ...option.RequestOption) (r MessagingH
 
 // Delete a messaging hosted number
 func (r *MessagingHostedNumberService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *MessagingHostedNumberDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

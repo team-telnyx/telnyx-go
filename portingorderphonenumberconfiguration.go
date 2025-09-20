@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -38,7 +39,7 @@ func NewPortingOrderPhoneNumberConfigurationService(opts ...option.RequestOption
 
 // Creates a list of phone number configurations.
 func (r *PortingOrderPhoneNumberConfigurationService) New(ctx context.Context, body PortingOrderPhoneNumberConfigurationNewParams, opts ...option.RequestOption) (res *PortingOrderPhoneNumberConfigurationNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "porting_orders/phone_number_configurations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *PortingOrderPhoneNumberConfigurationService) New(ctx context.Context, b
 
 // Returns a list of phone number configurations paginated.
 func (r *PortingOrderPhoneNumberConfigurationService) List(ctx context.Context, query PortingOrderPhoneNumberConfigurationListParams, opts ...option.RequestOption) (res *PortingOrderPhoneNumberConfigurationListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "porting_orders/phone_number_configurations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

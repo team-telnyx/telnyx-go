@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewPortingOrderAdditionalDocumentService(opts ...option.RequestOption) (r P
 
 // Creates a list of additional documents for a porting order.
 func (r *PortingOrderAdditionalDocumentService) New(ctx context.Context, id string, body PortingOrderAdditionalDocumentNewParams, opts ...option.RequestOption) (res *PortingOrderAdditionalDocumentNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *PortingOrderAdditionalDocumentService) New(ctx context.Context, id stri
 
 // Returns a list of additional documents for a porting order.
 func (r *PortingOrderAdditionalDocumentService) List(ctx context.Context, id string, query PortingOrderAdditionalDocumentListParams, opts ...option.RequestOption) (res *PortingOrderAdditionalDocumentListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *PortingOrderAdditionalDocumentService) List(ctx context.Context, id str
 
 // Deletes an additional document for a porting order.
 func (r *PortingOrderAdditionalDocumentService) Delete(ctx context.Context, additionalDocumentID string, body PortingOrderAdditionalDocumentDeleteParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if body.ID == "" {
 		err = errors.New("missing required id parameter")

@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -40,7 +41,7 @@ func NewSimCardDataUsageNotificationService(opts ...option.RequestOption) (r Sim
 
 // Creates a new SIM card data usage notification.
 func (r *SimCardDataUsageNotificationService) New(ctx context.Context, body SimCardDataUsageNotificationNewParams, opts ...option.RequestOption) (res *SimCardDataUsageNotificationNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "sim_card_data_usage_notifications"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *SimCardDataUsageNotificationService) New(ctx context.Context, body SimC
 
 // Get a single SIM Card Data Usage Notification.
 func (r *SimCardDataUsageNotificationService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardDataUsageNotificationGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *SimCardDataUsageNotificationService) Get(ctx context.Context, id string
 
 // Updates information for a SIM Card Data Usage Notification.
 func (r *SimCardDataUsageNotificationService) Update(ctx context.Context, id string, body SimCardDataUsageNotificationUpdateParams, opts ...option.RequestOption) (res *SimCardDataUsageNotificationUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -73,7 +74,7 @@ func (r *SimCardDataUsageNotificationService) Update(ctx context.Context, id str
 // Lists a paginated collection of SIM card data usage notifications. It enables
 // exploring the collection using specific filters.
 func (r *SimCardDataUsageNotificationService) List(ctx context.Context, query SimCardDataUsageNotificationListParams, opts ...option.RequestOption) (res *SimCardDataUsageNotificationListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "sim_card_data_usage_notifications"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -81,7 +82,7 @@ func (r *SimCardDataUsageNotificationService) List(ctx context.Context, query Si
 
 // Delete the SIM Card Data Usage Notification.
 func (r *SimCardDataUsageNotificationService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardDataUsageNotificationDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

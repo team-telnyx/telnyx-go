@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewAIConversationInsightService(opts ...option.RequestOption) (r AIConversa
 
 // Create a new insight
 func (r *AIConversationInsightService) New(ctx context.Context, body AIConversationInsightNewParams, opts ...option.RequestOption) (res *InsightTemplateDetail, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/conversations/insights"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *AIConversationInsightService) New(ctx context.Context, body AIConversat
 
 // Get insight by ID
 func (r *AIConversationInsightService) Get(ctx context.Context, insightID string, opts ...option.RequestOption) (res *InsightTemplateDetail, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if insightID == "" {
 		err = errors.New("missing required insight_id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *AIConversationInsightService) Get(ctx context.Context, insightID string
 
 // Update an insight template
 func (r *AIConversationInsightService) Update(ctx context.Context, insightID string, body AIConversationInsightUpdateParams, opts ...option.RequestOption) (res *InsightTemplateDetail, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if insightID == "" {
 		err = errors.New("missing required insight_id parameter")
 		return
@@ -71,7 +72,7 @@ func (r *AIConversationInsightService) Update(ctx context.Context, insightID str
 
 // Get all insights
 func (r *AIConversationInsightService) List(ctx context.Context, query AIConversationInsightListParams, opts ...option.RequestOption) (res *AIConversationInsightListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/conversations/insights"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -79,7 +80,7 @@ func (r *AIConversationInsightService) List(ctx context.Context, query AIConvers
 
 // Delete insight by ID
 func (r *AIConversationInsightService) Delete(ctx context.Context, insightID string, opts ...option.RequestOption) (res *AIConversationInsightDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if insightID == "" {
 		err = errors.New("missing required insight_id parameter")
 		return

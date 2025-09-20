@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -39,7 +40,7 @@ func NewSimCardGroupActionService(opts ...option.RequestOption) (r SimCardGroupA
 // This API allows fetching detailed information about a SIM card group action
 // resource to make follow-ups in an existing asynchronous operation.
 func (r *SimCardGroupActionService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardGroupActionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *SimCardGroupActionService) Get(ctx context.Context, id string, opts ...
 // allows to explore a collection of existing asynchronous operation using specific
 // filters.
 func (r *SimCardGroupActionService) List(ctx context.Context, query SimCardGroupActionListParams, opts ...option.RequestOption) (res *SimCardGroupActionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "sim_card_group_actions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -64,7 +65,7 @@ func (r *SimCardGroupActionService) List(ctx context.Context, query SimCardGroup
 // cards in the SIM card group will get their traffic handled by Telnyx's default
 // mobile network configuration.
 func (r *SimCardGroupActionService) RemovePrivateWirelessGateway(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardGroupActionRemovePrivateWirelessGatewayResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -77,7 +78,7 @@ func (r *SimCardGroupActionService) RemovePrivateWirelessGateway(ctx context.Con
 // This action will asynchronously remove an existing Wireless Blocklist to all the
 // SIMs in the SIM card group.
 func (r *SimCardGroupActionService) RemoveWirelessBlocklist(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardGroupActionRemoveWirelessBlocklistResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -95,7 +96,7 @@ func (r *SimCardGroupActionService) RemoveWirelessBlocklist(ctx context.Context,
 // that doesn't have a Private Wireless Gateway, it'll use Telnyx's default mobile
 // network configuration.
 func (r *SimCardGroupActionService) SetPrivateWirelessGateway(ctx context.Context, id string, body SimCardGroupActionSetPrivateWirelessGatewayParams, opts ...option.RequestOption) (res *SimCardGroupActionSetPrivateWirelessGatewayResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -108,7 +109,7 @@ func (r *SimCardGroupActionService) SetPrivateWirelessGateway(ctx context.Contex
 // This action will asynchronously assign a Wireless Blocklist to all the SIMs in
 // the SIM card group.
 func (r *SimCardGroupActionService) SetWirelessBlocklist(ctx context.Context, id string, body SimCardGroupActionSetWirelessBlocklistParams, opts ...option.RequestOption) (res *SimCardGroupActionSetWirelessBlocklistResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

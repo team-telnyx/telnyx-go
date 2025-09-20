@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -43,7 +44,7 @@ func NewVirtualCrossConnectService(opts ...option.RequestOption) (r VirtualCross
 // this option. Azure requires both the primary and secondary connections to be
 // created at the same time and they can not be independantly disabled.
 func (r *VirtualCrossConnectService) New(ctx context.Context, body VirtualCrossConnectNewParams, opts ...option.RequestOption) (res *VirtualCrossConnectNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "virtual_cross_connects"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -51,7 +52,7 @@ func (r *VirtualCrossConnectService) New(ctx context.Context, body VirtualCrossC
 
 // Retrieve a Virtual Cross Connect.
 func (r *VirtualCrossConnectService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *VirtualCrossConnectGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -69,7 +70,7 @@ func (r *VirtualCrossConnectService) Get(ctx context.Context, id string, opts ..
 // and you are ready to enable routing, you can toggle the routing announcements to
 // `true`.
 func (r *VirtualCrossConnectService) Update(ctx context.Context, id string, body VirtualCrossConnectUpdateParams, opts ...option.RequestOption) (res *VirtualCrossConnectUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -81,7 +82,7 @@ func (r *VirtualCrossConnectService) Update(ctx context.Context, id string, body
 
 // List all Virtual Cross Connects.
 func (r *VirtualCrossConnectService) List(ctx context.Context, query VirtualCrossConnectListParams, opts ...option.RequestOption) (res *VirtualCrossConnectListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "virtual_cross_connects"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -89,7 +90,7 @@ func (r *VirtualCrossConnectService) List(ctx context.Context, query VirtualCros
 
 // Delete a Virtual Cross Connect.
 func (r *VirtualCrossConnectService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *VirtualCrossConnectDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

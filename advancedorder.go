@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -35,7 +36,7 @@ func NewAdvancedOrderService(opts ...option.RequestOption) (r AdvancedOrderServi
 
 // Create Advanced Order
 func (r *AdvancedOrderService) New(ctx context.Context, body AdvancedOrderNewParams, opts ...option.RequestOption) (res *AdvancedOrderNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "advanced_orders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -43,7 +44,7 @@ func (r *AdvancedOrderService) New(ctx context.Context, body AdvancedOrderNewPar
 
 // Get Advanced Order
 func (r *AdvancedOrderService) Get(ctx context.Context, orderID string, opts ...option.RequestOption) (res *AdvancedOrderGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if orderID == "" {
 		err = errors.New("missing required order_id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *AdvancedOrderService) Get(ctx context.Context, orderID string, opts ...
 
 // Update Advanced Order
 func (r *AdvancedOrderService) Update(ctx context.Context, orderID string, body AdvancedOrderUpdateParams, opts ...option.RequestOption) (res *AdvancedOrderUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if orderID == "" {
 		err = errors.New("missing required order_id parameter")
 		return
@@ -67,7 +68,7 @@ func (r *AdvancedOrderService) Update(ctx context.Context, orderID string, body 
 
 // List Advanced Orders
 func (r *AdvancedOrderService) List(ctx context.Context, opts ...option.RequestOption) (res *AdvancedOrderListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "advanced_orders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

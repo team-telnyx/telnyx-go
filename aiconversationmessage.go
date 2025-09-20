@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -38,7 +39,7 @@ func NewAIConversationMessageService(opts ...option.RequestOption) (r AIConversa
 // Add a new message to the conversation. Used to insert a new messages to a
 // conversation manually ( without using chat endpoint )
 func (r *AIConversationMessageService) New(ctx context.Context, conversationID string, body AIConversationMessageNewParams, opts ...option.RequestOption) (res *AIConversationMessageNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if conversationID == "" {
 		err = errors.New("missing required conversation_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AIConversationMessageService) New(ctx context.Context, conversationID s
 // Retrieve messages for a specific conversation, including tool calls made by the
 // assistant.
 func (r *AIConversationMessageService) List(ctx context.Context, conversationID string, opts ...option.RequestOption) (res *AIConversationMessageListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if conversationID == "" {
 		err = errors.New("missing required conversation_id parameter")
 		return

@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -41,7 +42,7 @@ func NewNotificationChannelService(opts ...option.RequestOption) (r Notification
 
 // Create a notification channel.
 func (r *NotificationChannelService) New(ctx context.Context, body NotificationChannelNewParams, opts ...option.RequestOption) (res *NotificationChannelNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "notification_channels"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -49,7 +50,7 @@ func (r *NotificationChannelService) New(ctx context.Context, body NotificationC
 
 // Get a notification channel.
 func (r *NotificationChannelService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *NotificationChannelGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -61,7 +62,7 @@ func (r *NotificationChannelService) Get(ctx context.Context, id string, opts ..
 
 // Update a notification channel.
 func (r *NotificationChannelService) Update(ctx context.Context, id string, body NotificationChannelUpdateParams, opts ...option.RequestOption) (res *NotificationChannelUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -73,7 +74,7 @@ func (r *NotificationChannelService) Update(ctx context.Context, id string, body
 
 // List notification channels.
 func (r *NotificationChannelService) List(ctx context.Context, query NotificationChannelListParams, opts ...option.RequestOption) (res *NotificationChannelListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "notification_channels"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -81,7 +82,7 @@ func (r *NotificationChannelService) List(ctx context.Context, query Notificatio
 
 // Delete a notification channel.
 func (r *NotificationChannelService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *NotificationChannelDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

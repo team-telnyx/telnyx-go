@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -36,7 +37,7 @@ func NewAIAssistantToolService(opts ...option.RequestOption) (r AIAssistantToolS
 
 // Test a webhook tool for an assistant
 func (r *AIAssistantToolService) Test(ctx context.Context, toolID string, params AIAssistantToolTestParams, opts ...option.RequestOption) (res *AIAssistantToolTestResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.AssistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return

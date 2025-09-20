@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -41,7 +42,7 @@ func NewAIAssistantVersionService(opts ...option.RequestOption) (r AIAssistantVe
 
 // Retrieves a specific version of an assistant by assistant_id and version_id
 func (r *AIAssistantVersionService) Get(ctx context.Context, versionID string, params AIAssistantVersionGetParams, opts ...option.RequestOption) (res *AIAssistantVersionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.AssistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *AIAssistantVersionService) Get(ctx context.Context, versionID string, p
 // Updates the configuration of a specific assistant version. Can not update main
 // version
 func (r *AIAssistantVersionService) Update(ctx context.Context, versionID string, params AIAssistantVersionUpdateParams, opts ...option.RequestOption) (res *AIAssistantVersionUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.AssistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return
@@ -75,7 +76,7 @@ func (r *AIAssistantVersionService) Update(ctx context.Context, versionID string
 // Retrieves all versions of a specific assistant with complete configuration and
 // metadata
 func (r *AIAssistantVersionService) List(ctx context.Context, assistantID string, opts ...option.RequestOption) (res *AssistantsList, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return
@@ -88,7 +89,7 @@ func (r *AIAssistantVersionService) List(ctx context.Context, assistantID string
 // Permanently removes a specific version of an assistant. Can not delete main
 // version
 func (r *AIAssistantVersionService) Delete(ctx context.Context, versionID string, body AIAssistantVersionDeleteParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if body.AssistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
@@ -107,7 +108,7 @@ func (r *AIAssistantVersionService) Delete(ctx context.Context, versionID string
 // This will delete any existing canary deploy configuration and send all live
 // production traffic to this version.
 func (r *AIAssistantVersionService) Promote(ctx context.Context, versionID string, body AIAssistantVersionPromoteParams, opts ...option.RequestOption) (res *AIAssistantVersionPromoteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if body.AssistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return

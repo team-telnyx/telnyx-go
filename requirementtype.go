@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -39,7 +40,7 @@ func NewRequirementTypeService(opts ...option.RequestOption) (r RequirementTypeS
 
 // Retrieve a requirement type by id
 func (r *RequirementTypeService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *RequirementTypeGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *RequirementTypeService) Get(ctx context.Context, id string, opts ...opt
 
 // List all requirement types ordered by created_at descending
 func (r *RequirementTypeService) List(ctx context.Context, query RequirementTypeListParams, opts ...option.RequestOption) (res *RequirementTypeListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "requirement_types"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

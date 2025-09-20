@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -40,7 +41,7 @@ func NewRoomCompositionService(opts ...option.RequestOption) (r RoomCompositionS
 
 // Asynchronously create a room composition.
 func (r *RoomCompositionService) New(ctx context.Context, body RoomCompositionNewParams, opts ...option.RequestOption) (res *RoomCompositionNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "room_compositions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *RoomCompositionService) New(ctx context.Context, body RoomCompositionNe
 
 // View a room composition.
 func (r *RoomCompositionService) Get(ctx context.Context, roomCompositionID string, opts ...option.RequestOption) (res *RoomCompositionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if roomCompositionID == "" {
 		err = errors.New("missing required room_composition_id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *RoomCompositionService) Get(ctx context.Context, roomCompositionID stri
 
 // View a list of room compositions.
 func (r *RoomCompositionService) List(ctx context.Context, query RoomCompositionListParams, opts ...option.RequestOption) (res *RoomCompositionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "room_compositions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -68,7 +69,7 @@ func (r *RoomCompositionService) List(ctx context.Context, query RoomComposition
 
 // Synchronously delete a room composition.
 func (r *RoomCompositionService) Delete(ctx context.Context, roomCompositionID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if roomCompositionID == "" {
 		err = errors.New("missing required room_composition_id parameter")

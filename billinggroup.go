@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewBillingGroupService(opts ...option.RequestOption) (r BillingGroupService
 
 // Create a billing group
 func (r *BillingGroupService) New(ctx context.Context, body BillingGroupNewParams, opts ...option.RequestOption) (res *BillingGroupNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "billing_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *BillingGroupService) New(ctx context.Context, body BillingGroupNewParam
 
 // Get a billing group
 func (r *BillingGroupService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *BillingGroupGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *BillingGroupService) Get(ctx context.Context, id string, opts ...option
 
 // Update a billing group
 func (r *BillingGroupService) Update(ctx context.Context, id string, body BillingGroupUpdateParams, opts ...option.RequestOption) (res *BillingGroupUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -71,7 +72,7 @@ func (r *BillingGroupService) Update(ctx context.Context, id string, body Billin
 
 // List all billing groups
 func (r *BillingGroupService) List(ctx context.Context, query BillingGroupListParams, opts ...option.RequestOption) (res *BillingGroupListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "billing_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -79,7 +80,7 @@ func (r *BillingGroupService) List(ctx context.Context, query BillingGroupListPa
 
 // Delete a billing group
 func (r *BillingGroupService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *BillingGroupDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

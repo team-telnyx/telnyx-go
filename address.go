@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -40,7 +41,7 @@ func NewAddressService(opts ...option.RequestOption) (r AddressService) {
 
 // Creates an address.
 func (r *AddressService) New(ctx context.Context, body AddressNewParams, opts ...option.RequestOption) (res *AddressNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "addresses"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *AddressService) New(ctx context.Context, body AddressNewParams, opts ..
 
 // Retrieves the details of an existing address.
 func (r *AddressService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *AddressGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *AddressService) Get(ctx context.Context, id string, opts ...option.Requ
 
 // Returns a list of your addresses.
 func (r *AddressService) List(ctx context.Context, query AddressListParams, opts ...option.RequestOption) (res *AddressListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "addresses"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -68,7 +69,7 @@ func (r *AddressService) List(ctx context.Context, query AddressListParams, opts
 
 // Deletes an existing address.
 func (r *AddressService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *AddressDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

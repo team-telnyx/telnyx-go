@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -39,7 +40,7 @@ func NewWirelessDetailRecordsReportService(opts ...option.RequestOption) (r Wire
 // Asynchronously create a report containing Wireless Detail Records (WDRs) for the
 // SIM cards that consumed wireless data in the given time period.
 func (r *WirelessDetailRecordsReportService) New(ctx context.Context, body WirelessDetailRecordsReportNewParams, opts ...option.RequestOption) (res *WirelessDetailRecordsReportNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "wireless/detail_records_reports"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *WirelessDetailRecordsReportService) New(ctx context.Context, body Wirel
 
 // Returns one specific WDR report
 func (r *WirelessDetailRecordsReportService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *WirelessDetailRecordsReportGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *WirelessDetailRecordsReportService) Get(ctx context.Context, id string,
 
 // Returns the WDR Reports that match the given parameters.
 func (r *WirelessDetailRecordsReportService) List(ctx context.Context, query WirelessDetailRecordsReportListParams, opts ...option.RequestOption) (res *WirelessDetailRecordsReportListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "wireless/detail_records_reports"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -67,7 +68,7 @@ func (r *WirelessDetailRecordsReportService) List(ctx context.Context, query Wir
 
 // Deletes one specific WDR report.
 func (r *WirelessDetailRecordsReportService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *WirelessDetailRecordsReportDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

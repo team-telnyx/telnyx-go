@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -37,7 +38,7 @@ func NewMessagingOptoutService(opts ...option.RequestOption) (r MessagingOptoutS
 
 // Retrieve a list of opt-out blocks.
 func (r *MessagingOptoutService) List(ctx context.Context, query MessagingOptoutListParams, opts ...option.RequestOption) (res *MessagingOptoutListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "messaging_optouts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

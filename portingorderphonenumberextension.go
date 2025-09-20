@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewPortingOrderPhoneNumberExtensionService(opts ...option.RequestOption) (r
 
 // Creates a new phone number extension.
 func (r *PortingOrderPhoneNumberExtensionService) New(ctx context.Context, portingOrderID string, body PortingOrderPhoneNumberExtensionNewParams, opts ...option.RequestOption) (res *PortingOrderPhoneNumberExtensionNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if portingOrderID == "" {
 		err = errors.New("missing required porting_order_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *PortingOrderPhoneNumberExtensionService) New(ctx context.Context, porti
 
 // Returns a list of all phone number extensions of a porting order.
 func (r *PortingOrderPhoneNumberExtensionService) List(ctx context.Context, portingOrderID string, query PortingOrderPhoneNumberExtensionListParams, opts ...option.RequestOption) (res *PortingOrderPhoneNumberExtensionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if portingOrderID == "" {
 		err = errors.New("missing required porting_order_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *PortingOrderPhoneNumberExtensionService) List(ctx context.Context, port
 
 // Deletes a phone number extension.
 func (r *PortingOrderPhoneNumberExtensionService) Delete(ctx context.Context, id string, body PortingOrderPhoneNumberExtensionDeleteParams, opts ...option.RequestOption) (res *PortingOrderPhoneNumberExtensionDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if body.PortingOrderID == "" {
 		err = errors.New("missing required porting_order_id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -36,7 +37,7 @@ func NewWirelessBlocklistValueService(opts ...option.RequestOption) (r WirelessB
 
 // Retrieve all wireless blocklist values for a given blocklist type.
 func (r *WirelessBlocklistValueService) List(ctx context.Context, query WirelessBlocklistValueListParams, opts ...option.RequestOption) (res *WirelessBlocklistValueListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "wireless_blocklist_values"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

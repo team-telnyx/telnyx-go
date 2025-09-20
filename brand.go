@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -43,7 +44,7 @@ func NewBrandService(opts ...option.RequestOption) (r BrandService) {
 // entity that TCR created campaigns will be associated with. Each brand creation
 // will entail an upfront, non-refundable $4 expense.
 func (r *BrandService) New(ctx context.Context, body BrandNewParams, opts ...option.RequestOption) (res *TelnyxBrand, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "brand"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -51,7 +52,7 @@ func (r *BrandService) New(ctx context.Context, body BrandNewParams, opts ...opt
 
 // Retrieve a brand by `brandId`.
 func (r *BrandService) Get(ctx context.Context, brandID string, opts ...option.RequestOption) (res *BrandGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
 		return
@@ -63,7 +64,7 @@ func (r *BrandService) Get(ctx context.Context, brandID string, opts ...option.R
 
 // Update a brand's attributes by `brandId`.
 func (r *BrandService) Update(ctx context.Context, brandID string, body BrandUpdateParams, opts ...option.RequestOption) (res *TelnyxBrand, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
 		return
@@ -75,7 +76,7 @@ func (r *BrandService) Update(ctx context.Context, brandID string, body BrandUpd
 
 // This endpoint is used to list all brands associated with your organization.
 func (r *BrandService) List(ctx context.Context, query BrandListParams, opts ...option.RequestOption) (res *BrandListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "brand"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -85,7 +86,7 @@ func (r *BrandService) List(ctx context.Context, query BrandListParams, opts ...
 // deleted if it contains one or more active campaigns, the campaigns need to be
 // inactive and at least 3 months old due to billing purposes.
 func (r *BrandService) Delete(ctx context.Context, brandID string, opts ...option.RequestOption) (res *BrandDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
 		return
@@ -109,7 +110,7 @@ func (r *BrandService) Delete(ctx context.Context, brandID string, opts ...optio
 //     found.
 //   - `OTHERS` - Details of the data misrepresentation if any.
 func (r *BrandService) GetFeedback(ctx context.Context, brandID string, opts ...option.RequestOption) (res *BrandGetFeedbackResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
 		return
@@ -121,7 +122,7 @@ func (r *BrandService) GetFeedback(ctx context.Context, brandID string, opts ...
 
 // Resend brand 2FA email
 func (r *BrandService) Resend2faEmail(ctx context.Context, brandID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
@@ -136,7 +137,7 @@ func (r *BrandService) Resend2faEmail(ctx context.Context, brandID string, opts 
 // after the successful brand registration and thereafter limited to once every 3
 // months.
 func (r *BrandService) Revet(ctx context.Context, brandID string, opts ...option.RequestOption) (res *BrandRevetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
 		return

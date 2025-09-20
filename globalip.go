@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -38,7 +39,7 @@ func NewGlobalIPService(opts ...option.RequestOption) (r GlobalIPService) {
 
 // Create a Global IP.
 func (r *GlobalIPService) New(ctx context.Context, body GlobalIPNewParams, opts ...option.RequestOption) (res *GlobalIPNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "global_ips"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *GlobalIPService) New(ctx context.Context, body GlobalIPNewParams, opts 
 
 // Retrieve a Global IP.
 func (r *GlobalIPService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *GlobalIPGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *GlobalIPService) Get(ctx context.Context, id string, opts ...option.Req
 
 // List all Global IPs.
 func (r *GlobalIPService) List(ctx context.Context, query GlobalIPListParams, opts ...option.RequestOption) (res *GlobalIPListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "global_ips"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -66,7 +67,7 @@ func (r *GlobalIPService) List(ctx context.Context, query GlobalIPListParams, op
 
 // Delete a Global IP.
 func (r *GlobalIPService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *GlobalIPDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

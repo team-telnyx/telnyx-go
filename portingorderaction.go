@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -38,7 +39,7 @@ func NewPortingOrderActionService(opts ...option.RequestOption) (r PortingOrderA
 // Activate each number in a porting order asynchronously. This operation is
 // limited to US FastPort orders only.
 func (r *PortingOrderActionService) Activate(ctx context.Context, id string, opts ...option.RequestOption) (res *PortingOrderActionActivateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *PortingOrderActionService) Activate(ctx context.Context, id string, opt
 
 // Cancel a porting order
 func (r *PortingOrderActionService) Cancel(ctx context.Context, id string, opts ...option.RequestOption) (res *PortingOrderActionCancelResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *PortingOrderActionService) Cancel(ctx context.Context, id string, opts 
 
 // Confirm and submit your porting order.
 func (r *PortingOrderActionService) Confirm(ctx context.Context, id string, opts ...option.RequestOption) (res *PortingOrderActionConfirmResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -75,7 +76,7 @@ func (r *PortingOrderActionService) Confirm(ctx context.Context, id string, opts
 // Creates a sharing token for a porting order. The token can be used to share the
 // porting order with non-Telnyx users.
 func (r *PortingOrderActionService) Share(ctx context.Context, id string, body PortingOrderActionShareParams, opts ...option.RequestOption) (res *PortingOrderActionShareResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

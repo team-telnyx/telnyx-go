@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -40,7 +41,7 @@ func NewRoomActionService(opts ...option.RequestOption) (r RoomActionService) {
 // Refresh Token is also provided to refresh a Client Token, the Refresh Token
 // expires after `refresh_token_ttl_secs`.
 func (r *RoomActionService) GenerateJoinClientToken(ctx context.Context, roomID string, body RoomActionGenerateJoinClientTokenParams, opts ...option.RequestOption) (res *RoomActionGenerateJoinClientTokenResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if roomID == "" {
 		err = errors.New("missing required room_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *RoomActionService) GenerateJoinClientToken(ctx context.Context, roomID 
 // Synchronously refresh an Client Token to join a Room. Client Token is necessary
 // to join a Telnyx Room. Client Token will expire after `token_ttl_secs`.
 func (r *RoomActionService) RefreshClientToken(ctx context.Context, roomID string, body RoomActionRefreshClientTokenParams, opts ...option.RequestOption) (res *RoomActionRefreshClientTokenResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if roomID == "" {
 		err = errors.New("missing required room_id parameter")
 		return

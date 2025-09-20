@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -40,7 +41,7 @@ func NewIPConnectionService(opts ...option.RequestOption) (r IPConnectionService
 
 // Creates an IP connection.
 func (r *IPConnectionService) New(ctx context.Context, body IPConnectionNewParams, opts ...option.RequestOption) (res *IPConnectionNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ip_connections"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *IPConnectionService) New(ctx context.Context, body IPConnectionNewParam
 
 // Retrieves the details of an existing ip connection.
 func (r *IPConnectionService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *IPConnectionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *IPConnectionService) Get(ctx context.Context, id string, opts ...option
 
 // Updates settings of an existing IP connection.
 func (r *IPConnectionService) Update(ctx context.Context, id string, body IPConnectionUpdateParams, opts ...option.RequestOption) (res *IPConnectionUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -72,7 +73,7 @@ func (r *IPConnectionService) Update(ctx context.Context, id string, body IPConn
 
 // Returns a list of your IP connections.
 func (r *IPConnectionService) List(ctx context.Context, query IPConnectionListParams, opts ...option.RequestOption) (res *IPConnectionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ip_connections"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -80,7 +81,7 @@ func (r *IPConnectionService) List(ctx context.Context, query IPConnectionListPa
 
 // Deletes an existing IP connection.
 func (r *IPConnectionService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *IPConnectionDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

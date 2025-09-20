@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewCommentService(opts ...option.RequestOption) (r CommentService) {
 
 // Create a comment
 func (r *CommentService) New(ctx context.Context, body CommentNewParams, opts ...option.RequestOption) (res *CommentNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "comments"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *CommentService) New(ctx context.Context, body CommentNewParams, opts ..
 
 // Retrieve a comment
 func (r *CommentService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *CommentGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *CommentService) Get(ctx context.Context, id string, opts ...option.Requ
 
 // Retrieve all comments
 func (r *CommentService) List(ctx context.Context, query CommentListParams, opts ...option.RequestOption) (res *CommentListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "comments"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -67,7 +68,7 @@ func (r *CommentService) List(ctx context.Context, query CommentListParams, opts
 
 // Mark a comment as read
 func (r *CommentService) MarkAsRead(ctx context.Context, id string, opts ...option.RequestOption) (res *CommentMarkAsReadResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

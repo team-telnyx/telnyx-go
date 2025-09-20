@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -35,7 +36,7 @@ func NewRecordingTranscriptionService(opts ...option.RequestOption) (r Recording
 
 // Retrieves the details of an existing recording transcription.
 func (r *RecordingTranscriptionService) Get(ctx context.Context, recordingTranscriptionID string, opts ...option.RequestOption) (res *RecordingTranscriptionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if recordingTranscriptionID == "" {
 		err = errors.New("missing required recording_transcription_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *RecordingTranscriptionService) Get(ctx context.Context, recordingTransc
 
 // Returns a list of your recording transcriptions.
 func (r *RecordingTranscriptionService) List(ctx context.Context, opts ...option.RequestOption) (res *RecordingTranscriptionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "recording_transcriptions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -55,7 +56,7 @@ func (r *RecordingTranscriptionService) List(ctx context.Context, opts ...option
 
 // Permanently deletes a recording transcription.
 func (r *RecordingTranscriptionService) Delete(ctx context.Context, recordingTranscriptionID string, opts ...option.RequestOption) (res *RecordingTranscriptionDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if recordingTranscriptionID == "" {
 		err = errors.New("missing required recording_transcription_id parameter")
 		return

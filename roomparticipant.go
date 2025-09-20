@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -40,7 +41,7 @@ func NewRoomParticipantService(opts ...option.RequestOption) (r RoomParticipantS
 
 // View a room participant.
 func (r *RoomParticipantService) Get(ctx context.Context, roomParticipantID string, opts ...option.RequestOption) (res *RoomParticipantGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if roomParticipantID == "" {
 		err = errors.New("missing required room_participant_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *RoomParticipantService) Get(ctx context.Context, roomParticipantID stri
 
 // View a list of room participants.
 func (r *RoomParticipantService) List(ctx context.Context, query RoomParticipantListParams, opts ...option.RequestOption) (res *RoomParticipantListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "room_participants"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

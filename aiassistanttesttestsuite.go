@@ -5,6 +5,7 @@ package telnyx
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -35,7 +36,7 @@ func NewAIAssistantTestTestSuiteService(opts ...option.RequestOption) (r AIAssis
 
 // Retrieves a list of all distinct test suite names available to the current user
 func (r *AIAssistantTestTestSuiteService) List(ctx context.Context, opts ...option.RequestOption) (res *AIAssistantTestTestSuiteListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants/tests/test-suites"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

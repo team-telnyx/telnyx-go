@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -39,7 +40,7 @@ func NewMessageRcService(opts ...option.RequestOption) (r MessageRcService) {
 // Generate a deeplink URL that can be used to start an RCS conversation with a
 // specific agent.
 func (r *MessageRcService) GenerateDeeplink(ctx context.Context, agentID string, query MessageRcGenerateDeeplinkParams, opts ...option.RequestOption) (res *MessageRcGenerateDeeplinkResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if agentID == "" {
 		err = errors.New("missing required agent_id parameter")
 		return

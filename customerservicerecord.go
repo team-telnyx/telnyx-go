@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewCustomerServiceRecordService(opts ...option.RequestOption) (r CustomerSe
 
 // Create a new customer service record for the provided phone number.
 func (r *CustomerServiceRecordService) New(ctx context.Context, body CustomerServiceRecordNewParams, opts ...option.RequestOption) (res *CustomerServiceRecordNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "customer_service_records"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *CustomerServiceRecordService) New(ctx context.Context, body CustomerSer
 
 // Get a specific customer service record.
 func (r *CustomerServiceRecordService) Get(ctx context.Context, customerServiceRecordID string, opts ...option.RequestOption) (res *CustomerServiceRecordGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if customerServiceRecordID == "" {
 		err = errors.New("missing required customer_service_record_id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *CustomerServiceRecordService) Get(ctx context.Context, customerServiceR
 
 // List customer service records.
 func (r *CustomerServiceRecordService) List(ctx context.Context, query CustomerServiceRecordListParams, opts ...option.RequestOption) (res *CustomerServiceRecordListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "customer_service_records"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -67,7 +68,7 @@ func (r *CustomerServiceRecordService) List(ctx context.Context, query CustomerS
 
 // Verify the coverage for a list of phone numbers.
 func (r *CustomerServiceRecordService) VerifyPhoneNumberCoverage(ctx context.Context, body CustomerServiceRecordVerifyPhoneNumberCoverageParams, opts ...option.RequestOption) (res *CustomerServiceRecordVerifyPhoneNumberCoverageResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "customer_service_records/phone_number_coverages"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

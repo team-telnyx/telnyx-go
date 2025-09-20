@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
@@ -41,7 +42,7 @@ func NewNotificationProfileService(opts ...option.RequestOption) (r Notification
 
 // Create a notification profile.
 func (r *NotificationProfileService) New(ctx context.Context, body NotificationProfileNewParams, opts ...option.RequestOption) (res *NotificationProfileNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "notification_profiles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -49,7 +50,7 @@ func (r *NotificationProfileService) New(ctx context.Context, body NotificationP
 
 // Get a notification profile.
 func (r *NotificationProfileService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *NotificationProfileGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -61,7 +62,7 @@ func (r *NotificationProfileService) Get(ctx context.Context, id string, opts ..
 
 // Update a notification profile.
 func (r *NotificationProfileService) Update(ctx context.Context, id string, body NotificationProfileUpdateParams, opts ...option.RequestOption) (res *NotificationProfileUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -73,7 +74,7 @@ func (r *NotificationProfileService) Update(ctx context.Context, id string, body
 
 // Returns a list of your notifications profiles.
 func (r *NotificationProfileService) List(ctx context.Context, query NotificationProfileListParams, opts ...option.RequestOption) (res *NotificationProfileListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "notification_profiles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -81,7 +82,7 @@ func (r *NotificationProfileService) List(ctx context.Context, query Notificatio
 
 // Delete a notification profile.
 func (r *NotificationProfileService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *NotificationProfileDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

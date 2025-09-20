@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -39,7 +40,7 @@ func NewWireguardInterfaceService(opts ...option.RequestOption) (r WireguardInte
 // Create a new WireGuard Interface. Current limitation of 10 interfaces per user
 // can be created.
 func (r *WireguardInterfaceService) New(ctx context.Context, body WireguardInterfaceNewParams, opts ...option.RequestOption) (res *WireguardInterfaceNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "wireguard_interfaces"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *WireguardInterfaceService) New(ctx context.Context, body WireguardInter
 
 // Retrieve a WireGuard Interfaces.
 func (r *WireguardInterfaceService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *WireguardInterfaceGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *WireguardInterfaceService) Get(ctx context.Context, id string, opts ...
 
 // List all WireGuard Interfaces.
 func (r *WireguardInterfaceService) List(ctx context.Context, query WireguardInterfaceListParams, opts ...option.RequestOption) (res *WireguardInterfaceListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "wireguard_interfaces"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -67,7 +68,7 @@ func (r *WireguardInterfaceService) List(ctx context.Context, query WireguardInt
 
 // Delete a WireGuard Interface.
 func (r *WireguardInterfaceService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *WireguardInterfaceDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

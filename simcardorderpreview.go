@@ -5,6 +5,7 @@ package telnyx
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewSimCardOrderPreviewService(opts ...option.RequestOption) (r SimCardOrder
 
 // Preview SIM card order purchases.
 func (r *SimCardOrderPreviewService) Preview(ctx context.Context, body SimCardOrderPreviewPreviewParams, opts ...option.RequestOption) (res *SimCardOrderPreviewPreviewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "sim_card_order_preview"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

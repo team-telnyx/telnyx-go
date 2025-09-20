@@ -5,6 +5,7 @@ package telnyx
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewPaymentAutoRechargePrefService(opts ...option.RequestOption) (r PaymentA
 
 // Update payment auto recharge preferences.
 func (r *PaymentAutoRechargePrefService) Update(ctx context.Context, body PaymentAutoRechargePrefUpdateParams, opts ...option.RequestOption) (res *PaymentAutoRechargePrefUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "payment/auto_recharge_prefs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -42,7 +43,7 @@ func (r *PaymentAutoRechargePrefService) Update(ctx context.Context, body Paymen
 
 // Returns the payment auto recharge preferences.
 func (r *PaymentAutoRechargePrefService) List(ctx context.Context, opts ...option.RequestOption) (res *PaymentAutoRechargePrefListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "payment/auto_recharge_prefs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

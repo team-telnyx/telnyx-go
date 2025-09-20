@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -36,7 +37,7 @@ func NewPhoneNumbersRegulatoryRequirementService(opts ...option.RequestOption) (
 
 // Retrieve regulatory requirements for a list of phone numbers
 func (r *PhoneNumbersRegulatoryRequirementService) Get(ctx context.Context, query PhoneNumbersRegulatoryRequirementGetParams, opts ...option.RequestOption) (res *PhoneNumbersRegulatoryRequirementGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "phone_numbers_regulatory_requirements"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

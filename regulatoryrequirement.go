@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/apiquery"
@@ -36,7 +37,7 @@ func NewRegulatoryRequirementService(opts ...option.RequestOption) (r Regulatory
 
 // Retrieve regulatory requirements
 func (r *RegulatoryRequirementService) Get(ctx context.Context, query RegulatoryRequirementGetParams, opts ...option.RequestOption) (res *RegulatoryRequirementGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "regulatory_requirements"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

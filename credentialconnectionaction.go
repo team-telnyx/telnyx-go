@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
@@ -37,7 +38,7 @@ func NewCredentialConnectionActionService(opts ...option.RequestOption) (r Crede
 // (`registration_status`) as well as the timestamp for the last SIP registration
 // event (`registration_status_updated_at`)
 func (r *CredentialConnectionActionService) CheckRegistrationStatus(ctx context.Context, id string, opts ...option.RequestOption) (res *CredentialConnectionActionCheckRegistrationStatusResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

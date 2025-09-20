@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/team-telnyx/telnyx-go/internal/apijson"
 	shimjson "github.com/team-telnyx/telnyx-go/internal/encoding/json"
@@ -38,7 +39,7 @@ func NewCustomStorageCredentialService(opts ...option.RequestOption) (r CustomSt
 
 // Creates a custom storage credentials configuration.
 func (r *CustomStorageCredentialService) New(ctx context.Context, connectionID string, body CustomStorageCredentialNewParams, opts ...option.RequestOption) (res *CustomStorageCredentialNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *CustomStorageCredentialService) New(ctx context.Context, connectionID s
 
 // Returns the information about custom storage credentials.
 func (r *CustomStorageCredentialService) Get(ctx context.Context, connectionID string, opts ...option.RequestOption) (res *CustomStorageCredentialGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *CustomStorageCredentialService) Get(ctx context.Context, connectionID s
 
 // Updates a stored custom credentials configuration.
 func (r *CustomStorageCredentialService) Update(ctx context.Context, connectionID string, body CustomStorageCredentialUpdateParams, opts ...option.RequestOption) (res *CustomStorageCredentialUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
 		return
@@ -74,7 +75,7 @@ func (r *CustomStorageCredentialService) Update(ctx context.Context, connectionI
 
 // Deletes a stored custom credentials configuration.
 func (r *CustomStorageCredentialService) Delete(ctx context.Context, connectionID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
