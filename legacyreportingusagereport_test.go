@@ -7,13 +7,14 @@ import (
 	"errors"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/team-telnyx/telnyx-go"
 	"github.com/team-telnyx/telnyx-go/internal/testutil"
 	"github.com/team-telnyx/telnyx-go/option"
 )
 
-func TestAIConversationMessageList(t *testing.T) {
+func TestLegacyReportingUsageReportGetSpeechToTextWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +27,10 @@ func TestAIConversationMessageList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Conversations.Messages.List(context.TODO(), "conversation_id")
+	_, err := client.Legacy.Reporting.UsageReports.GetSpeechToText(context.TODO(), telnyx.LegacyReportingUsageReportGetSpeechToTextParams{
+		EndDate:   telnyx.Time(time.Now()),
+		StartDate: telnyx.Time(time.Now()),
+	})
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

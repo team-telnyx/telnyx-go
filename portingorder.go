@@ -191,6 +191,8 @@ type PortingOrder struct {
 	AdditionalSteps []string `json:"additional_steps"`
 	// ISO 8601 formatted date indicating when the resource was created.
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// A customer-specified group reference for customer bookkeeping purposes
+	CustomerGroupReference string `json:"customer_group_reference"`
 	// A customer-specified reference number for customer bookkeeping purposes
 	CustomerReference string `json:"customer_reference"`
 	// A description of the porting order
@@ -237,6 +239,7 @@ type PortingOrder struct {
 		ActivationSettings       respjson.Field
 		AdditionalSteps          respjson.Field
 		CreatedAt                respjson.Field
+		CustomerGroupReference   respjson.Field
 		CustomerReference        respjson.Field
 		Description              respjson.Field
 		Documents                respjson.Field
@@ -1195,6 +1198,8 @@ func (r *PortingOrderGetSubRequestResponseData) UnmarshalJSON(data []byte) error
 type PortingOrderNewParams struct {
 	// The list of +E.164 formatted phone numbers
 	PhoneNumbers []string `json:"phone_numbers,omitzero,required"`
+	// A customer-specified group reference for customer bookkeeping purposes
+	CustomerGroupReference param.Opt[string] `json:"customer_group_reference,omitzero"`
 	// A customer-specified reference number for customer bookkeeping purposes
 	CustomerReference param.Opt[string] `json:"customer_reference,omitzero"`
 	paramObj
@@ -1223,7 +1228,8 @@ func (r PortingOrderGetParams) URLQuery() (v url.Values, err error) {
 }
 
 type PortingOrderUpdateParams struct {
-	CustomerReference param.Opt[string] `json:"customer_reference,omitzero"`
+	CustomerGroupReference param.Opt[string] `json:"customer_group_reference,omitzero"`
+	CustomerReference      param.Opt[string] `json:"customer_reference,omitzero"`
 	// If present, we will read the current values from the specified Requirement Group
 	// into the Documents and Requirements for this Porting Order. Note that any future
 	// changes in the Requirement Group would have no impact on this Porting Order. We
@@ -1306,10 +1312,10 @@ type PortingOrderListParams struct {
 	// Include the first 50 phone number objects in the results
 	IncludePhoneNumbers param.Opt[bool] `query:"include_phone_numbers,omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
-	// filter[customer_reference], filter[parent_support_key],
-	// filter[phone_numbers.country_code], filter[phone_numbers.carrier_name],
-	// filter[misc.type], filter[end_user.admin.entity_name],
-	// filter[end_user.admin.auth_person_name],
+	// filter[customer_reference], filter[customer_group_reference],
+	// filter[parent_support_key], filter[phone_numbers.country_code],
+	// filter[phone_numbers.carrier_name], filter[misc.type],
+	// filter[end_user.admin.entity_name], filter[end_user.admin.auth_person_name],
 	// filter[activation_settings.fast_port_eligible],
 	// filter[activation_settings.foc_datetime_requested][gt],
 	// filter[activation_settings.foc_datetime_requested][lt],
@@ -1332,43 +1338,48 @@ func (r PortingOrderListParams) URLQuery() (v url.Values, err error) {
 }
 
 // Consolidated filter parameter (deepObject style). Originally:
-// filter[customer_reference], filter[parent_support_key],
-// filter[phone_numbers.country_code], filter[phone_numbers.carrier_name],
-// filter[misc.type], filter[end_user.admin.entity_name],
-// filter[end_user.admin.auth_person_name],
+// filter[customer_reference], filter[customer_group_reference],
+// filter[parent_support_key], filter[phone_numbers.country_code],
+// filter[phone_numbers.carrier_name], filter[misc.type],
+// filter[end_user.admin.entity_name], filter[end_user.admin.auth_person_name],
 // filter[activation_settings.fast_port_eligible],
 // filter[activation_settings.foc_datetime_requested][gt],
 // filter[activation_settings.foc_datetime_requested][lt],
 // filter[phone_numbers.phone_number][contains]
 type PortingOrderListParamsFilter struct {
-	// Filter results by fast port eligible
-	ActivationSettingsFastPortEligible param.Opt[bool] `query:"activation_settings.fast_port_eligible,omitzero" json:"-"`
+	// Filter results by customer_group_reference
+	CustomerGroupReference param.Opt[string] `query:"customer_group_reference,omitzero" json:"-"`
 	// Filter results by customer_reference
 	CustomerReference param.Opt[string] `query:"customer_reference,omitzero" json:"-"`
-	// Filter results by authorized person
-	EndUserAdminAuthPersonName param.Opt[string] `query:"end_user.admin.auth_person_name,omitzero" json:"-"`
-	// Filter results by person or company name
-	EndUserAdminEntityName param.Opt[string] `query:"end_user.admin.entity_name,omitzero" json:"-"`
 	// Filter results by parent_support_key
-	ParentSupportKey param.Opt[string] `query:"parent_support_key,omitzero" json:"-"`
-	// Filter results by old service provider
-	PhoneNumbersCarrierName param.Opt[string] `query:"phone_numbers.carrier_name,omitzero" json:"-"`
-	// Filter results by country ISO 3166-1 alpha-2 code
-	PhoneNumbersCountryCode param.Opt[string] `query:"phone_numbers.country_code,omitzero" json:"-"`
-	// FOC datetime range filtering operations
-	ActivationSettingsFocDatetimeRequested PortingOrderListParamsFilterActivationSettingsFocDatetimeRequested `query:"activation_settings.foc_datetime_requested,omitzero" json:"-"`
-	// Filter results by porting order type
-	//
-	// Any of "full", "partial".
-	MiscType PortingOrderType `query:"misc.type,omitzero" json:"-"`
-	// Phone number filtering operations
-	PhoneNumbersPhoneNumber PortingOrderListParamsFilterPhoneNumbersPhoneNumber `query:"phone_numbers.phone_number,omitzero" json:"-"`
+	ParentSupportKey   param.Opt[string]                              `query:"parent_support_key,omitzero" json:"-"`
+	ActivationSettings PortingOrderListParamsFilterActivationSettings `query:"activation_settings,omitzero" json:"-"`
+	EndUser            PortingOrderListParamsFilterEndUser            `query:"end_user,omitzero" json:"-"`
+	Misc               PortingOrderListParamsFilterMisc               `query:"misc,omitzero" json:"-"`
+	PhoneNumbers       PortingOrderListParamsFilterPhoneNumbers       `query:"phone_numbers,omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [PortingOrderListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r PortingOrderListParamsFilter) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type PortingOrderListParamsFilterActivationSettings struct {
+	// Filter results by fast port eligible
+	FastPortEligible param.Opt[bool] `query:"fast_port_eligible,omitzero" json:"-"`
+	// FOC datetime range filtering operations
+	FocDatetimeRequested PortingOrderListParamsFilterActivationSettingsFocDatetimeRequested `query:"foc_datetime_requested,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [PortingOrderListParamsFilterActivationSettings]'s query
+// parameters as `url.Values`.
+func (r PortingOrderListParamsFilterActivationSettings) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
@@ -1394,7 +1405,74 @@ func (r PortingOrderListParamsFilterActivationSettingsFocDatetimeRequested) URLQ
 	})
 }
 
-// Phone number filtering operations
+type PortingOrderListParamsFilterEndUser struct {
+	Admin PortingOrderListParamsFilterEndUserAdmin `query:"admin,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [PortingOrderListParamsFilterEndUser]'s query parameters as
+// `url.Values`.
+func (r PortingOrderListParamsFilterEndUser) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type PortingOrderListParamsFilterEndUserAdmin struct {
+	// Filter results by authorized person
+	AuthPersonName param.Opt[string] `query:"auth_person_name,omitzero" json:"-"`
+	// Filter results by person or company name
+	EntityName param.Opt[string] `query:"entity_name,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [PortingOrderListParamsFilterEndUserAdmin]'s query
+// parameters as `url.Values`.
+func (r PortingOrderListParamsFilterEndUserAdmin) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type PortingOrderListParamsFilterMisc struct {
+	// Filter results by porting order type
+	//
+	// Any of "full", "partial".
+	Type PortingOrderType `query:"type,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [PortingOrderListParamsFilterMisc]'s query parameters as
+// `url.Values`.
+func (r PortingOrderListParamsFilterMisc) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type PortingOrderListParamsFilterPhoneNumbers struct {
+	// Filter results by old service provider
+	CarrierName param.Opt[string] `query:"carrier_name,omitzero" json:"-"`
+	// Filter results by country ISO 3166-1 alpha-2 code
+	CountryCode param.Opt[string] `query:"country_code,omitzero" json:"-"`
+	// Phone number pattern filtering operations
+	PhoneNumber PortingOrderListParamsFilterPhoneNumbersPhoneNumber `query:"phone_number,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [PortingOrderListParamsFilterPhoneNumbers]'s query
+// parameters as `url.Values`.
+func (r PortingOrderListParamsFilterPhoneNumbers) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Phone number pattern filtering operations
 type PortingOrderListParamsFilterPhoneNumbersPhoneNumber struct {
 	// Filter results by full or partial phone_number
 	Contains param.Opt[string] `query:"contains,omitzero" json:"-"`

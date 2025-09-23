@@ -62,7 +62,6 @@
   "release-type": "go",
   "extra-files": [
     "internal/version.go",
-    "README.md",
-    ".github/workflows/create-releases.yml"
+    "README.md"
   ]
 }

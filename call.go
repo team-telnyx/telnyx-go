@@ -42,9 +42,7 @@ func NewCallService(opts ...option.RequestOption) (r CallService) {
 // include a `call_leg_id` which can be used to correlate the command with
 // subsequent webhooks.
 //
-// **Expected Webhooks (see
-// [schema](https://developers.telnyx.com/api/call-control/dial-call#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 //   - `call.initiated`
 //   - `call.answered` or `call.hangup`
@@ -230,6 +228,7 @@ const (
 	StreamBidirectionalCodecG722  StreamBidirectionalCodec = "G722"
 	StreamBidirectionalCodecOpus  StreamBidirectionalCodec = "OPUS"
 	StreamBidirectionalCodecAmrWb StreamBidirectionalCodec = "AMR-WB"
+	StreamBidirectionalCodecL16   StreamBidirectionalCodec = "L16"
 )
 
 // Configures method of bidirectional streaming (mp3, rtp).
@@ -251,12 +250,15 @@ const (
 
 // Specifies the codec to be used for the streamed audio. When set to 'default' or
 // when transcoding is not possible, the codec from the call will be used.
-// Currently, transcoding is only supported between PCMU and PCMA codecs.
 type StreamCodec string
 
 const (
-	StreamCodecPcma    StreamCodec = "PCMA"
 	StreamCodecPcmu    StreamCodec = "PCMU"
+	StreamCodecPcma    StreamCodec = "PCMA"
+	StreamCodecG722    StreamCodec = "G722"
+	StreamCodecOpus    StreamCodec = "OPUS"
+	StreamCodecAmrWb   StreamCodec = "AMR-WB"
+	StreamCodecL16     StreamCodec = "L16"
 	StreamCodecDefault StreamCodec = "default"
 )
 
@@ -547,7 +549,7 @@ type CallDialParams struct {
 	// Indicates codec for bidirectional streaming RTP payloads. Used only with
 	// stream_bidirectional_mode=rtp. Case sensitive.
 	//
-	// Any of "PCMU", "PCMA", "G722", "OPUS", "AMR-WB".
+	// Any of "PCMU", "PCMA", "G722", "OPUS", "AMR-WB", "L16".
 	StreamBidirectionalCodec StreamBidirectionalCodec `json:"stream_bidirectional_codec,omitzero"`
 	// Configures method of bidirectional streaming (mp3, rtp).
 	//
@@ -555,7 +557,7 @@ type CallDialParams struct {
 	StreamBidirectionalMode StreamBidirectionalMode `json:"stream_bidirectional_mode,omitzero"`
 	// Audio sampling rate.
 	//
-	// Any of 8000, 16000, 48000.
+	// Any of 8000, 16000, 22050, 24000, 48000.
 	StreamBidirectionalSamplingRate int64 `json:"stream_bidirectional_sampling_rate,omitzero"`
 	// Specifies which call legs should receive the bidirectional stream audio.
 	//
@@ -563,9 +565,8 @@ type CallDialParams struct {
 	StreamBidirectionalTargetLegs StreamBidirectionalTargetLegs `json:"stream_bidirectional_target_legs,omitzero"`
 	// Specifies the codec to be used for the streamed audio. When set to 'default' or
 	// when transcoding is not possible, the codec from the call will be used.
-	// Currently, transcoding is only supported between PCMU and PCMA codecs.
 	//
-	// Any of "PCMA", "PCMU", "default".
+	// Any of "PCMU", "PCMA", "G722", "OPUS", "AMR-WB", "L16", "default".
 	StreamCodec StreamCodec `json:"stream_codec,omitzero"`
 	// Specifies which track should be streamed.
 	//

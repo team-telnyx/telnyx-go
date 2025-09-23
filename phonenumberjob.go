@@ -492,6 +492,10 @@ type PhoneNumberJobUpdateBatchParams struct {
 	ConnectionID param.Opt[string] `json:"connection_id,omitzero"`
 	// A customer reference string for customer look ups.
 	CustomerReference param.Opt[string] `json:"customer_reference,omitzero"`
+	// Indicates whether to enable or disable the deletion lock on each phone number.
+	// When enabled, this prevents the phone number from being deleted via the API or
+	// Telnyx portal.
+	DeletionLockEnabled param.Opt[bool] `json:"deletion_lock_enabled,omitzero"`
 	// If someone attempts to port your phone number away from Telnyx and your phone
 	// number has an external PIN set, we will attempt to verify that you provided the
 	// correct external PIN to the winning carrier. Note that not all carriers

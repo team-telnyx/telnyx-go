@@ -7,14 +7,13 @@ import (
 	"errors"
 	"os"
 	"testing"
-	"time"
 
 	"github.com/team-telnyx/telnyx-go"
 	"github.com/team-telnyx/telnyx-go/internal/testutil"
 	"github.com/team-telnyx/telnyx-go/option"
 )
 
-func TestAIConversationNewWithOptionalParams(t *testing.T) {
+func TestOAuthGet(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -27,11 +26,32 @@ func TestAIConversationNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Conversations.New(context.TODO(), telnyx.AIConversationNewParams{
-		Metadata: map[string]string{
-			"foo": "string",
-		},
-		Name: telnyx.String("name"),
+	_, err := client.OAuth.Get(context.TODO(), "consent_token")
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestOAuthGrants(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.OAuth.Grants(context.TODO(), telnyx.OAuthGrantsParams{
+		Allowed:      true,
+		ConsentToken: "consent_token",
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -42,7 +62,7 @@ func TestAIConversationNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAIConversationGet(t *testing.T) {
+func TestOAuthIntrospect(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -55,73 +75,8 @@ func TestAIConversationGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Conversations.Get(context.TODO(), "conversation_id")
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestAIConversationUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.AI.Conversations.Update(
-		context.TODO(),
-		"conversation_id",
-		telnyx.AIConversationUpdateParams{
-			Metadata: map[string]string{
-				"foo": "string",
-			},
-		},
-	)
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestAIConversationListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.AI.Conversations.List(context.TODO(), telnyx.AIConversationListParams{
-		ID:                                telnyx.String("id"),
-		CreatedAt:                         telnyx.String("created_at"),
-		LastMessageAt:                     telnyx.String("last_message_at"),
-		Limit:                             telnyx.Int(1),
-		MetadataAssistantID:               telnyx.String("metadata->assistant_id"),
-		MetadataCallControlID:             telnyx.String("metadata->call_control_id"),
-		MetadataTelnyxAgentTarget:         telnyx.String("metadata->telnyx_agent_target"),
-		MetadataTelnyxConversationChannel: telnyx.String("metadata->telnyx_conversation_channel"),
-		MetadataTelnyxEndUserTarget:       telnyx.String("metadata->telnyx_end_user_target"),
-		Name:                              telnyx.String("name"),
-		Or:                                telnyx.String("or"),
-		Order:                             telnyx.String("order"),
+	_, err := client.OAuth.Introspect(context.TODO(), telnyx.OAuthIntrospectParams{
+		Token: "token",
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -132,7 +87,7 @@ func TestAIConversationListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAIConversationDelete(t *testing.T) {
+func TestOAuthRegisterWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -145,7 +100,17 @@ func TestAIConversationDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.AI.Conversations.Delete(context.TODO(), "conversation_id")
+	_, err := client.OAuth.Register(context.TODO(), telnyx.OAuthRegisterParams{
+		ClientName:              telnyx.String("My OAuth Application"),
+		GrantTypes:              []string{"authorization_code"},
+		LogoUri:                 telnyx.String("https://example.com"),
+		PolicyUri:               telnyx.String("https://example.com"),
+		RedirectUris:            []string{"https://example.com/callback"},
+		ResponseTypes:           []string{"string"},
+		Scope:                   telnyx.String("admin"),
+		TokenEndpointAuthMethod: telnyx.OAuthRegisterParamsTokenEndpointAuthMethodNone,
+		TosUri:                  telnyx.String("https://example.com"),
+	})
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -155,8 +120,8 @@ func TestAIConversationDelete(t *testing.T) {
 	}
 }
 
-func TestAIConversationAddMessageWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+func TestOAuthGetAuthorizeWithOptionalParams(t *testing.T) {
+	t.Skip("Prism doesn't properly handle redirects")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -168,26 +133,15 @@ func TestAIConversationAddMessageWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Conversations.AddMessage(
-		context.TODO(),
-		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-		telnyx.AIConversationAddMessageParams{
-			Role:    "role",
-			Content: telnyx.String("content"),
-			Metadata: map[string]telnyx.AIConversationAddMessageParamsMetadataUnion{
-				"foo": {
-					OfString: telnyx.String("string"),
-				},
-			},
-			Name:       telnyx.String("name"),
-			SentAt:     telnyx.Time(time.Now()),
-			ToolCallID: telnyx.String("tool_call_id"),
-			ToolCalls: []map[string]any{{
-				"foo": "bar",
-			}},
-			ToolChoice: map[string]interface{}{},
-		},
-	)
+	err := client.OAuth.GetAuthorize(context.TODO(), telnyx.OAuthGetAuthorizeParams{
+		ClientID:            "client_id",
+		RedirectUri:         "https://example.com",
+		ResponseType:        telnyx.OAuthGetAuthorizeParamsResponseTypeCode,
+		CodeChallenge:       telnyx.String("code_challenge"),
+		CodeChallengeMethod: telnyx.OAuthGetAuthorizeParamsCodeChallengeMethodPlain,
+		Scope:               telnyx.String("scope"),
+		State:               telnyx.String("state"),
+	})
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -197,7 +151,7 @@ func TestAIConversationAddMessageWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAIConversationGetConversationsInsights(t *testing.T) {
+func TestOAuthGetJwks(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -210,7 +164,39 @@ func TestAIConversationGetConversationsInsights(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Conversations.GetConversationsInsights(context.TODO(), "conversation_id")
+	_, err := client.OAuth.GetJwks(context.TODO())
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestOAuthTokenWithOptionalParams(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.OAuth.Token(context.TODO(), telnyx.OAuthTokenParams{
+		GrantType:    telnyx.OAuthTokenParamsGrantTypeClientCredentials,
+		ClientID:     telnyx.String("client_id"),
+		ClientSecret: telnyx.String("client_secret"),
+		Code:         telnyx.String("code"),
+		CodeVerifier: telnyx.String("code_verifier"),
+		RedirectUri:  telnyx.String("https://example.com"),
+		RefreshToken: telnyx.String("refresh_token"),
+		Scope:        telnyx.String("admin"),
+	})
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

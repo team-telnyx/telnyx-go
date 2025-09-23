@@ -40,9 +40,7 @@ func NewCallActionService(opts ...option.RequestOption) (r CallActionService) {
 // Answer an incoming call. You must issue this command before executing subsequent
 // commands on an incoming call.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/answer-call#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 //   - `call.answered`
 //   - `streaming.started`, `streaming.stopped` or `streaming.failed` if `stream_url`
@@ -63,9 +61,7 @@ func (r *CallActionService) Answer(ctx context.Context, callControlID string, bo
 
 // Bridge two call control calls.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/bridge-call#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `call.bridged` for Leg A
 // - `call.bridged` for Leg B
@@ -97,9 +93,7 @@ func (r *CallActionService) Enqueue(ctx context.Context, callControlID string, b
 // You can pass a list of valid digits. The `Answer` command must be issued before
 // the `gather` command.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/gather-call#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `call.dtmf.received` (you may receive many of these webhooks)
 // - `call.gather.ended`
@@ -119,9 +113,7 @@ func (r *CallActionService) Gather(ctx context.Context, callControlID string, bo
 // You can pass parameters described as a JSON Schema object and the voice
 // assistant will attempt to gather these informations.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/call-gather-using-ai#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 //   - `call.ai_gather.ended`
 //   - `call.conversation.ended`
@@ -147,9 +139,7 @@ func (r *CallActionService) GatherUsingAI(ctx context.Context, callControlID str
 // interrupted when a DTMF signal is received. The
 // `Answer command must be issued before the `gather_using_audio` command.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/gather-using-audio#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `call.playback.started`
 // - `call.playback.ended`
@@ -174,9 +164,7 @@ func (r *CallActionService) GatherUsingAudio(ctx context.Context, callControlID 
 // a DTMF signal is received. The `Answer` command must be issued before the
 // `gather_using_speak` command.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/gather-using-speak#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `call.dtmf.received` (you may receive many of these webhooks)
 // - `call.gather.ended`
@@ -193,9 +181,7 @@ func (r *CallActionService) GatherUsingSpeak(ctx context.Context, callControlID 
 
 // Hang up the call.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/hangup-call#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `call.hangup`
 // - `call.recording.saved`
@@ -241,9 +227,7 @@ func (r *CallActionService) PauseRecording(ctx context.Context, callControlID st
 // Initiate a SIP Refer on a Call Control call. You can initiate a SIP Refer at any
 // point in the duration of a call.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/refer-call#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `call.refer.started`
 // - `call.refer.completed`
@@ -261,9 +245,7 @@ func (r *CallActionService) Refer(ctx context.Context, callControlID string, bod
 
 // Reject an incoming call.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/reject-call#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `call.hangup`
 func (r *CallActionService) Reject(ctx context.Context, callControlID string, body CallActionRejectParams, opts ...option.RequestOption) (res *CallActionRejectResponse, err error) {
@@ -330,9 +312,7 @@ func (r *CallActionService) SendSipInfo(ctx context.Context, callControlID strin
 // commands are issued consecutively, the audio files will be placed in a queue
 // awaiting playback.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/speak-call#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `call.speak.started`
 // - `call.speak.ended`
@@ -349,9 +329,7 @@ func (r *CallActionService) Speak(ctx context.Context, callControlID string, bod
 
 // Start an AI assistant on the call.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/call-start-ai-assistant#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `call.conversation.ended`
 // - `call.conversation_insights.generated`
@@ -372,9 +350,7 @@ func (r *CallActionService) StartAIAssistant(ctx context.Context, callControlID 
 // audio responses. Requests must specify either the `target` attribute or the `rx`
 // and `tx` attributes.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/start-call-fork#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `call.fork.started`
 // - `call.fork.stopped`
@@ -410,9 +386,7 @@ func (r *CallActionService) StartNoiseSuppression(ctx context.Context, callContr
 //   - A customer cannot Play Audio with `overlay=true` unless there is a Play Audio
 //     with `overlay=false` actively playing.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/start-call-playback#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `call.playback.started`
 // - `call.playback.ended`
@@ -430,9 +404,7 @@ func (r *CallActionService) StartPlayback(ctx context.Context, callControlID str
 // Start recording the call. Recording will stop on call hang-up, or can be
 // initiated via the Stop Recording command.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/start-call-record#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `call.recording.saved`
 // - `call.recording.transcription.saved`
@@ -486,9 +458,7 @@ func (r *CallActionService) StartStreaming(ctx context.Context, callControlID st
 // Start real-time transcription. Transcription will stop on call hang-up, or can
 // be initiated via the Transcription stop command.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/start-call-transcription#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `call.transcription`
 func (r *CallActionService) StartTranscription(ctx context.Context, callControlID string, body CallActionStartTranscriptionParams, opts ...option.RequestOption) (res *CallActionStartTranscriptionResponse, err error) {
@@ -516,9 +486,7 @@ func (r *CallActionService) StopAIAssistant(ctx context.Context, callControlID s
 
 // Stop forking a call.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/stop-call-fork#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `call.fork.stopped`
 func (r *CallActionService) StopForking(ctx context.Context, callControlID string, body CallActionStopForkingParams, opts ...option.RequestOption) (res *CallActionStopForkingResponse, err error) {
@@ -534,9 +502,7 @@ func (r *CallActionService) StopForking(ctx context.Context, callControlID strin
 
 // Stop current gather.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/stop-call-gather#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `call.gather.ended`
 func (r *CallActionService) StopGather(ctx context.Context, callControlID string, body CallActionStopGatherParams, opts ...option.RequestOption) (res *CallActionStopGatherResponse, err error) {
@@ -564,9 +530,7 @@ func (r *CallActionService) StopNoiseSuppression(ctx context.Context, callContro
 
 // Stop audio being played on the call.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/stop-call-playback#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `call.playback.ended` or `call.speak.ended`
 func (r *CallActionService) StopPlayback(ctx context.Context, callControlID string, body CallActionStopPlaybackParams, opts ...option.RequestOption) (res *CallActionStopPlaybackResponse, err error) {
@@ -582,9 +546,7 @@ func (r *CallActionService) StopPlayback(ctx context.Context, callControlID stri
 
 // Stop recording the call.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/stop-call-recording#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `call.recording.saved`
 func (r *CallActionService) StopRecording(ctx context.Context, callControlID string, body CallActionStopRecordingParams, opts ...option.RequestOption) (res *CallActionStopRecordingResponse, err error) {
@@ -616,9 +578,7 @@ func (r *CallActionService) StopSiprec(ctx context.Context, callControlID string
 
 // Stop streaming a call to a WebSocket.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/stop-call-streaming#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `streaming.stopped`
 func (r *CallActionService) StopStreaming(ctx context.Context, callControlID string, body CallActionStopStreamingParams, opts ...option.RequestOption) (res *CallActionStopStreamingResponse, err error) {
@@ -663,9 +623,7 @@ func (r *CallActionService) SwitchSupervisorRole(ctx context.Context, callContro
 // may be issued additional commands, potentially transfering the call to an
 // alternate destination.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/transfer-call#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 //   - `call.initiated`
 //   - `call.bridged` to Leg B
@@ -2027,7 +1985,7 @@ type CallActionAnswerParams struct {
 	// Indicates codec for bidirectional streaming RTP payloads. Used only with
 	// stream_bidirectional_mode=rtp. Case sensitive.
 	//
-	// Any of "PCMU", "PCMA", "G722", "OPUS", "AMR-WB".
+	// Any of "PCMU", "PCMA", "G722", "OPUS", "AMR-WB", "L16".
 	StreamBidirectionalCodec StreamBidirectionalCodec `json:"stream_bidirectional_codec,omitzero"`
 	// Configures method of bidirectional streaming (mp3, rtp).
 	//
@@ -2039,9 +1997,8 @@ type CallActionAnswerParams struct {
 	StreamBidirectionalTargetLegs StreamBidirectionalTargetLegs `json:"stream_bidirectional_target_legs,omitzero"`
 	// Specifies the codec to be used for the streamed audio. When set to 'default' or
 	// when transcoding is not possible, the codec from the call will be used.
-	// Currently, transcoding is only supported between PCMU and PCMA codecs.
 	//
-	// Any of "PCMA", "PCMU", "default".
+	// Any of "PCMU", "PCMA", "G722", "OPUS", "AMR-WB", "L16", "default".
 	StreamCodec StreamCodec `json:"stream_codec,omitzero"`
 	// Specifies which track should be streamed.
 	//
@@ -2404,16 +2361,13 @@ type CallActionGatherUsingAIParams struct {
 	// for `AWS.Polly.<voice_id>` voices. There is a 3,000 character limit.
 	Greeting param.Opt[string] `json:"greeting,omitzero"`
 	// Default is `false`. If set to `true`, the voice assistant will send updates to
-	// the message history via the `call.ai_gather.message_history_updated`
-	// [callback](https://developers.telnyx.com/api/call-control/call-gather-using-ai#callbacks)
-	// in real time as the message history is updated.
+	// the message history via the `call.ai_gather.message_history_updated` callback in
+	// real time as the message history is updated.
 	SendMessageHistoryUpdates param.Opt[bool] `json:"send_message_history_updates,omitzero"`
 	// Default is `false`. If set to `true`, the voice assistant will send partial
-	// results via the `call.ai_gather.partial_results`
-	// [callback](https://developers.telnyx.com/api/call-control/call-gather-using-ai#callbacks)
-	// in real time as individual fields are gathered. If set to `false`, the voice
-	// assistant will only send the final result via the `call.ai_gather.ended`
-	// callback.
+	// results via the `call.ai_gather.partial_results` callback in real time as
+	// individual fields are gathered. If set to `false`, the voice assistant will only
+	// send the final result via the `call.ai_gather.ended` callback.
 	SendPartialResults param.Opt[bool] `json:"send_partial_results,omitzero"`
 	// The number of milliseconds to wait for a user response before the voice
 	// assistant times out and check if the user is still there.
@@ -3681,21 +3635,24 @@ type CallActionStartStreamingParams struct {
 	// Indicates codec for bidirectional streaming RTP payloads. Used only with
 	// stream_bidirectional_mode=rtp. Case sensitive.
 	//
-	// Any of "PCMU", "PCMA", "G722", "OPUS", "AMR-WB".
+	// Any of "PCMU", "PCMA", "G722", "OPUS", "AMR-WB", "L16".
 	StreamBidirectionalCodec StreamBidirectionalCodec `json:"stream_bidirectional_codec,omitzero"`
 	// Configures method of bidirectional streaming (mp3, rtp).
 	//
 	// Any of "mp3", "rtp".
 	StreamBidirectionalMode StreamBidirectionalMode `json:"stream_bidirectional_mode,omitzero"`
+	// Audio sampling rate.
+	//
+	// Any of 8000, 16000, 22050, 24000, 48000.
+	StreamBidirectionalSamplingRate int64 `json:"stream_bidirectional_sampling_rate,omitzero"`
 	// Specifies which call legs should receive the bidirectional stream audio.
 	//
 	// Any of "both", "self", "opposite".
 	StreamBidirectionalTargetLegs StreamBidirectionalTargetLegs `json:"stream_bidirectional_target_legs,omitzero"`
 	// Specifies the codec to be used for the streamed audio. When set to 'default' or
 	// when transcoding is not possible, the codec from the call will be used.
-	// Currently, transcoding is only supported between PCMU and PCMA codecs.
 	//
-	// Any of "PCMA", "PCMU", "default".
+	// Any of "PCMU", "PCMA", "G722", "OPUS", "AMR-WB", "L16", "default".
 	StreamCodec StreamCodec `json:"stream_codec,omitzero"`
 	// Specifies which track should be streamed.
 	//
@@ -3972,6 +3929,19 @@ type CallActionTransferParams struct {
 	// or is transferred). If supplied with the value `self`, the current leg will be
 	// parked after unbridge. If not set, the default behavior is to hang up the leg.
 	ParkAfterUnbridge param.Opt[string] `json:"park_after_unbridge,omitzero"`
+	// The custom recording file name to be used instead of the default `call_leg_id`.
+	// Telnyx will still add a Unix timestamp suffix.
+	RecordCustomFileName param.Opt[string] `json:"record_custom_file_name,omitzero"`
+	// Defines the maximum length for the recording in seconds when `record` is
+	// specified. The minimum value is 0. The maximum value is 43200. The default value
+	// is 0 (infinite).
+	RecordMaxLength param.Opt[int64] `json:"record_max_length,omitzero"`
+	// The number of seconds that Telnyx will wait for the recording to be stopped if
+	// silence is detected when `record` is specified. The timer only starts when the
+	// speech is detected. Please note that call transcription is used to detect
+	// silence and the related charge will be applied. The minimum value is 0. The
+	// default value is 0 (infinite).
+	RecordTimeoutSecs param.Opt[int64] `json:"record_timeout_secs,omitzero"`
 	// SIP Authentication password used for SIP challenges.
 	SipAuthPassword param.Opt[string] `json:"sip_auth_password,omitzero"`
 	// SIP Authentication username used for SIP challenges.
@@ -4020,6 +3990,30 @@ type CallActionTransferParams struct {
 	//
 	// Any of "none", "both", "self", "opposite".
 	MuteDtmf CallActionTransferParamsMuteDtmf `json:"mute_dtmf,omitzero"`
+	// Start recording automatically after an event. Disabled by default.
+	//
+	// Any of "record-from-answer".
+	Record CallActionTransferParamsRecord `json:"record,omitzero"`
+	// Defines which channel should be recorded ('single' or 'dual') when `record` is
+	// specified.
+	//
+	// Any of "single", "dual".
+	RecordChannels CallActionTransferParamsRecordChannels `json:"record_channels,omitzero"`
+	// Defines the format of the recording ('wav' or 'mp3') when `record` is specified.
+	//
+	// Any of "wav", "mp3".
+	RecordFormat CallActionTransferParamsRecordFormat `json:"record_format,omitzero"`
+	// The audio track to be recorded. Can be either `both`, `inbound` or `outbound`.
+	// If only single track is specified (`inbound`, `outbound`), `channels`
+	// configuration is ignored and it will be recorded as mono (single channel).
+	//
+	// Any of "both", "inbound", "outbound".
+	RecordTrack CallActionTransferParamsRecordTrack `json:"record_track,omitzero"`
+	// When set to `trim-silence`, silence will be removed from the beginning and end
+	// of the recording.
+	//
+	// Any of "trim-silence".
+	RecordTrim CallActionTransferParamsRecordTrim `json:"record_trim,omitzero"`
 	// SIP headers to be added to the SIP INVITE. Currently only User-to-User header is
 	// supported.
 	SipHeaders []SipHeaderParam `json:"sip_headers,omitzero"`
@@ -4118,6 +4112,49 @@ const (
 	CallActionTransferParamsMuteDtmfBoth     CallActionTransferParamsMuteDtmf = "both"
 	CallActionTransferParamsMuteDtmfSelf     CallActionTransferParamsMuteDtmf = "self"
 	CallActionTransferParamsMuteDtmfOpposite CallActionTransferParamsMuteDtmf = "opposite"
+)
+
+// Start recording automatically after an event. Disabled by default.
+type CallActionTransferParamsRecord string
+
+const (
+	CallActionTransferParamsRecordRecordFromAnswer CallActionTransferParamsRecord = "record-from-answer"
+)
+
+// Defines which channel should be recorded ('single' or 'dual') when `record` is
+// specified.
+type CallActionTransferParamsRecordChannels string
+
+const (
+	CallActionTransferParamsRecordChannelsSingle CallActionTransferParamsRecordChannels = "single"
+	CallActionTransferParamsRecordChannelsDual   CallActionTransferParamsRecordChannels = "dual"
+)
+
+// Defines the format of the recording ('wav' or 'mp3') when `record` is specified.
+type CallActionTransferParamsRecordFormat string
+
+const (
+	CallActionTransferParamsRecordFormatWav CallActionTransferParamsRecordFormat = "wav"
+	CallActionTransferParamsRecordFormatMP3 CallActionTransferParamsRecordFormat = "mp3"
+)
+
+// The audio track to be recorded. Can be either `both`, `inbound` or `outbound`.
+// If only single track is specified (`inbound`, `outbound`), `channels`
+// configuration is ignored and it will be recorded as mono (single channel).
+type CallActionTransferParamsRecordTrack string
+
+const (
+	CallActionTransferParamsRecordTrackBoth     CallActionTransferParamsRecordTrack = "both"
+	CallActionTransferParamsRecordTrackInbound  CallActionTransferParamsRecordTrack = "inbound"
+	CallActionTransferParamsRecordTrackOutbound CallActionTransferParamsRecordTrack = "outbound"
+)
+
+// When set to `trim-silence`, silence will be removed from the beginning and end
+// of the recording.
+type CallActionTransferParamsRecordTrim string
+
+const (
+	CallActionTransferParamsRecordTrimTrimSilence CallActionTransferParamsRecordTrim = "trim-silence"
 )
 
 // Defines SIP transport protocol to be used on the call.
