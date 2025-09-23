@@ -125,12 +125,12 @@ func (r *MessageService) SendShortCode(ctx context.Context, body MessageSendShor
 	return
 }
 
-type Error struct {
+type APIError struct {
 	Code   string         `json:"code,required" format:"int64"`
 	Title  string         `json:"title,required"`
 	Detail string         `json:"detail"`
 	Meta   map[string]any `json:"meta"`
-	Source ErrorSource    `json:"source"`
+	Source APIErrorSource `json:"source"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Code        respjson.Field
@@ -144,12 +144,12 @@ type Error struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r Error) RawJSON() string { return r.JSON.raw }
-func (r *Error) UnmarshalJSON(data []byte) error {
+func (r APIError) RawJSON() string { return r.JSON.raw }
+func (r *APIError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ErrorSource struct {
+type APIErrorSource struct {
 	// Indicates which query parameter caused the error.
 	Parameter string `json:"parameter"`
 	// JSON pointer (RFC6901) to the offending entity.
@@ -164,8 +164,8 @@ type ErrorSource struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ErrorSource) RawJSON() string { return r.JSON.raw }
-func (r *ErrorSource) UnmarshalJSON(data []byte) error {
+func (r APIErrorSource) RawJSON() string { return r.JSON.raw }
+func (r *APIErrorSource) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

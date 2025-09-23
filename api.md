@@ -1948,7 +1948,7 @@ Methods:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go#Error">Error</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go#APIError">APIError</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go#MessagingError">MessagingError</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go#OutboundMessagePayload">OutboundMessagePayload</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go#MessageGetResponse">MessageGetResponse</a>
