@@ -154,7 +154,7 @@ func TestPhoneNumberJobUpdateBatchWithOptionalParams(t *testing.T) {
 				T38FaxGatewayEnabled:       telnyx.Bool(true),
 			},
 			TechPrefixEnabled:  telnyx.Bool(true),
-			TranslatedNumber:   telnyx.String("translated_number"),
+			TranslatedNumber:   telnyx.String("+13035559999"),
 			UsagePaymentMethod: telnyx.UpdateVoiceSettingsUsagePaymentMethodPayPerMinute,
 		},
 	})
