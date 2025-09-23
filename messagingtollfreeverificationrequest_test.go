@@ -41,7 +41,7 @@ func TestMessagingTollfreeVerificationRequestNewWithOptionalParams(t *testing.T)
 			BusinessZip:              "78701",
 			CorporateWebsite:         "http://example.com",
 			IsvReseller:              "isvReseller",
-			MessageVolume:            telnyx.Volume10,
+			MessageVolume:            telnyx.Volume100_000,
 			OptInWorkflow:            "User signs into the Telnyx portal, enters a number and is prompted to select whether they want to use 2FA verification for security purposes. If they've opted in a confirmation message is sent out to the handset",
 			OptInWorkflowImageURLs: []telnyx.URLParam{{
 				URL: "https://telnyx.com/sign-up",
@@ -122,7 +122,7 @@ func TestMessagingTollfreeVerificationRequestUpdateWithOptionalParams(t *testing
 				BusinessZip:              "78701",
 				CorporateWebsite:         "http://example.com",
 				IsvReseller:              "isvReseller",
-				MessageVolume:            telnyx.Volume10,
+				MessageVolume:            telnyx.Volume100_000,
 				OptInWorkflow:            "User signs into the Telnyx portal, enters a number and is prompted to select whether they want to use 2FA verification for security purposes. If they've opted in a confirmation message is sent out to the handset",
 				OptInWorkflowImageURLs: []telnyx.URLParam{{
 					URL: "https://telnyx.com/sign-up",
