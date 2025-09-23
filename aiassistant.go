@@ -1163,6 +1163,8 @@ type InferenceEmbeddingWebhookToolParamsHeaderResp struct {
 	// For example you can use
 	// `Bearer {{#integration_secret}}test-secret{{/integration_secret}}` to pass the
 	// value of the integration secret as the bearer token.
+	// [Telnyx signature headers](https://developers.telnyx.com/docs/voice/programmable-voice/voice-api-webhooks)
+	// will be automatically added to the request.
 	Value string `json:"value"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1325,6 +1327,8 @@ type InferenceEmbeddingWebhookToolParamsHeader struct {
 	// For example you can use
 	// `Bearer {{#integration_secret}}test-secret{{/integration_secret}}` to pass the
 	// value of the integration secret as the bearer token.
+	// [Telnyx signature headers](https://developers.telnyx.com/docs/voice/programmable-voice/voice-api-webhooks)
+	// will be automatically added to the request.
 	Value param.Opt[string] `json:"value,omitzero"`
 	paramObj
 }

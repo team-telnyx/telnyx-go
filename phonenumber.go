@@ -128,6 +128,9 @@ type PhoneNumberDetailed struct {
 	CreatedAt string `json:"created_at"`
 	// A customer reference string for customer look ups.
 	CustomerReference string `json:"customer_reference"`
+	// Indicates whether deletion lock is enabled for this number. When enabled, this
+	// prevents the phone number from being deleted via the API or Telnyx portal.
+	DeletionLockEnabled bool `json:"deletion_lock_enabled"`
 	// Identifies the emergency address associated with the phone number.
 	EmergencyAddressID string `json:"emergency_address_id"`
 	// Indicates whether emergency services are enabled for this number.
@@ -198,6 +201,7 @@ type PhoneNumberDetailed struct {
 		CountryISOAlpha2      respjson.Field
 		CreatedAt             respjson.Field
 		CustomerReference     respjson.Field
+		DeletionLockEnabled   respjson.Field
 		EmergencyAddressID    respjson.Field
 		EmergencyEnabled      respjson.Field
 		EmergencyStatus       respjson.Field
@@ -386,6 +390,9 @@ type PhoneNumberDeleteResponseData struct {
 	CreatedAt string `json:"created_at"`
 	// A customer reference string for customer look ups.
 	CustomerReference string `json:"customer_reference"`
+	// Indicates whether deletion lock is enabled for this number. When enabled, this
+	// prevents the phone number from being deleted via the API or Telnyx portal.
+	DeletionLockEnabled bool `json:"deletion_lock_enabled"`
 	// Identifies the emergency address associated with the phone number.
 	EmergencyAddressID string `json:"emergency_address_id"`
 	// Indicates whether emergency services are enabled for this number.
@@ -433,6 +440,7 @@ type PhoneNumberDeleteResponseData struct {
 		ConnectionName        respjson.Field
 		CreatedAt             respjson.Field
 		CustomerReference     respjson.Field
+		DeletionLockEnabled   respjson.Field
 		EmergencyAddressID    respjson.Field
 		EmergencyEnabled      respjson.Field
 		ExternalPin           respjson.Field
@@ -678,6 +686,11 @@ type PhoneNumberListParamsFilter struct {
 	//
 	// Any of "pay-per-minute", "channel".
 	VoiceUsagePaymentMethod string `query:"voice.usage_payment_method,omitzero" json:"-"`
+	// When set to 'true', filters for phone numbers that do not have any tags applied.
+	// All other values are ignored.
+	//
+	// Any of "true", "false".
+	WithoutTags string `query:"without_tags,omitzero" json:"-"`
 	paramObj
 }
 
@@ -699,6 +712,9 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[PhoneNumberListParamsFilter](
 		"voice.usage_payment_method", "pay-per-minute", "channel",
+	)
+	apijson.RegisterFieldValidator[PhoneNumberListParamsFilter](
+		"without_tags", "true", "false",
 	)
 }
 

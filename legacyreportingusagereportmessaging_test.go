@@ -7,13 +7,14 @@ import (
 	"errors"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/team-telnyx/telnyx-go"
 	"github.com/team-telnyx/telnyx-go/internal/testutil"
 	"github.com/team-telnyx/telnyx-go/option"
 )
 
-func TestVerificationGet(t *testing.T) {
+func TestLegacyReportingUsageReportMessagingNewWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,35 +27,13 @@ func TestVerificationGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Verifications.Get(context.TODO(), "12ade33a-21c0-473b-b055-b3c836e1c292")
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestVerificationTriggerCallWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Verifications.TriggerCall(context.TODO(), telnyx.VerificationTriggerCallParams{
-		PhoneNumber:     "+13035551234",
-		VerifyProfileID: "12ade33a-21c0-473b-b055-b3c836e1c292",
-		CustomCode:      telnyx.String("43612"),
-		Extension:       telnyx.String("1www2WABCDw9"),
-		TimeoutSecs:     telnyx.Int(300),
+	_, err := client.Legacy.Reporting.UsageReports.Messaging.New(context.TODO(), telnyx.LegacyReportingUsageReportMessagingNewParams{
+		AggregationType:          0,
+		EndTime:                  telnyx.Time(time.Now()),
+		ManagedAccounts:          []string{"f47ac10b-58cc-4372-a567-0e02b2c3d479", "6ba7b810-9dad-11d1-80b4-00c04fd430c8"},
+		Profiles:                 []string{"3fa85f64-5717-4562-b3fc-2c963f66afa6", "7d4e3f8a-9b2c-4e1d-8f5a-1a2b3c4d5e6f"},
+		SelectAllManagedAccounts: telnyx.Bool(true),
+		StartTime:                telnyx.Time(time.Now()),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -65,7 +44,7 @@ func TestVerificationTriggerCallWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestVerificationTriggerFlashcallWithOptionalParams(t *testing.T) {
+func TestLegacyReportingUsageReportMessagingGet(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -78,10 +57,32 @@ func TestVerificationTriggerFlashcallWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Verifications.TriggerFlashcall(context.TODO(), telnyx.VerificationTriggerFlashcallParams{
-		PhoneNumber:     "+13035551234",
-		VerifyProfileID: "12ade33a-21c0-473b-b055-b3c836e1c292",
-		TimeoutSecs:     telnyx.Int(300),
+	_, err := client.Legacy.Reporting.UsageReports.Messaging.Get(context.TODO(), "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestLegacyReportingUsageReportMessagingListWithOptionalParams(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Legacy.Reporting.UsageReports.Messaging.List(context.TODO(), telnyx.LegacyReportingUsageReportMessagingListParams{
+		Page:    telnyx.Int(1),
+		PerPage: telnyx.Int(1),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -92,7 +93,7 @@ func TestVerificationTriggerFlashcallWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestVerificationTriggerSMSWithOptionalParams(t *testing.T) {
+func TestLegacyReportingUsageReportMessagingDelete(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -105,12 +106,7 @@ func TestVerificationTriggerSMSWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Verifications.TriggerSMS(context.TODO(), telnyx.VerificationTriggerSMSParams{
-		PhoneNumber:     "+13035551234",
-		VerifyProfileID: "12ade33a-21c0-473b-b055-b3c836e1c292",
-		CustomCode:      telnyx.String("43612"),
-		TimeoutSecs:     telnyx.Int(300),
-	})
+	_, err := client.Legacy.Reporting.UsageReports.Messaging.Delete(context.TODO(), "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

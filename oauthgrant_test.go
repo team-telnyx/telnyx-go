@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/option"
 )
 
-func TestVerificationGet(t *testing.T) {
+func TestOAuthGrantGet(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,7 @@ func TestVerificationGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Verifications.Get(context.TODO(), "12ade33a-21c0-473b-b055-b3c836e1c292")
+	_, err := client.OAuthGrants.Get(context.TODO(), "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -36,7 +36,7 @@ func TestVerificationGet(t *testing.T) {
 	}
 }
 
-func TestVerificationTriggerCallWithOptionalParams(t *testing.T) {
+func TestOAuthGrantListWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -49,12 +49,9 @@ func TestVerificationTriggerCallWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Verifications.TriggerCall(context.TODO(), telnyx.VerificationTriggerCallParams{
-		PhoneNumber:     "+13035551234",
-		VerifyProfileID: "12ade33a-21c0-473b-b055-b3c836e1c292",
-		CustomCode:      telnyx.String("43612"),
-		Extension:       telnyx.String("1www2WABCDw9"),
-		TimeoutSecs:     telnyx.Int(300),
+	_, err := client.OAuthGrants.List(context.TODO(), telnyx.OAuthGrantListParams{
+		PageNumber: telnyx.Int(1),
+		PageSize:   telnyx.Int(1),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -65,7 +62,7 @@ func TestVerificationTriggerCallWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestVerificationTriggerFlashcallWithOptionalParams(t *testing.T) {
+func TestOAuthGrantDelete(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -78,39 +75,7 @@ func TestVerificationTriggerFlashcallWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Verifications.TriggerFlashcall(context.TODO(), telnyx.VerificationTriggerFlashcallParams{
-		PhoneNumber:     "+13035551234",
-		VerifyProfileID: "12ade33a-21c0-473b-b055-b3c836e1c292",
-		TimeoutSecs:     telnyx.Int(300),
-	})
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestVerificationTriggerSMSWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Verifications.TriggerSMS(context.TODO(), telnyx.VerificationTriggerSMSParams{
-		PhoneNumber:     "+13035551234",
-		VerifyProfileID: "12ade33a-21c0-473b-b055-b3c836e1c292",
-		CustomCode:      telnyx.String("43612"),
-		TimeoutSecs:     telnyx.Int(300),
-	})
+	_, err := client.OAuthGrants.Delete(context.TODO(), "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

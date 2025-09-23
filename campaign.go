@@ -692,14 +692,11 @@ func (r *CampaignGetSharingStatusResponse) UnmarshalJSON(data []byte) error {
 type CampaignSubmitAppealResponse struct {
 	// Timestamp when the appeal was submitted
 	AppealedAt time.Time `json:"appealed_at" format:"date-time"`
-	// Previous campaign status (currently always null)
-	PreviousStatus string `json:"previous_status,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AppealedAt     respjson.Field
-		PreviousStatus respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
+		AppealedAt  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 

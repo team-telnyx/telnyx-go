@@ -683,12 +683,20 @@ type SimpleSimCard struct {
 	ID string `json:"id" format:"uuid"`
 	// Indicate whether the SIM card has any pending (in-progress) actions.
 	ActionsInProgress bool `json:"actions_in_progress"`
+	// List of IMEIs authorized to use a given SIM card.
+	AuthorizedImeis []string `json:"authorized_imeis,nullable"`
 	// ISO 8601 formatted date-time indicating when the resource was created.
 	CreatedAt string `json:"created_at"`
 	// The SIM card consumption so far in the current billing cycle.
 	CurrentBillingPeriodConsumedData SimpleSimCardCurrentBillingPeriodConsumedData `json:"current_billing_period_consumed_data"`
 	// The SIM card individual data limit configuration.
 	DataLimit SimpleSimCardDataLimit `json:"data_limit"`
+	// The Embedded Identity Document (eID) for eSIM cards.
+	Eid string `json:"eid,nullable"`
+	// The installation status of the eSIM. Only applicable for eSIM cards.
+	//
+	// Any of "released", "disabled".
+	EsimInstallationStatus SimpleSimCardEsimInstallationStatus `json:"esim_installation_status,nullable"`
 	// The ICCID is the identifier of the specific SIM card/chip. Each SIM is
 	// internationally identified by its integrated circuit card identifier (ICCID).
 	// ICCIDs are stored in the SIM card's memory and are also engraved or printed on
@@ -708,6 +716,8 @@ type SimpleSimCard struct {
 	// Destination Code which identifies the subscriber's operator.
 	Msisdn     string `json:"msisdn"`
 	RecordType string `json:"record_type"`
+	// List of resources with actions in progress.
+	ResourcesWithInProgressActions []any `json:"resources_with_in_progress_actions"`
 	// The group SIMCardGroup identification. This attribute can be <code>null</code>
 	// when it's present in an associated resource.
 	SimCardGroupID string        `json:"sim_card_group_id" format:"uuid"`
@@ -720,22 +730,29 @@ type SimpleSimCard struct {
 	Type SimpleSimCardType `json:"type"`
 	// ISO 8601 formatted date-time indicating when the resource was updated.
 	UpdatedAt string `json:"updated_at"`
+	// The version of the SIM card.
+	Version string `json:"version"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                               respjson.Field
 		ActionsInProgress                respjson.Field
+		AuthorizedImeis                  respjson.Field
 		CreatedAt                        respjson.Field
 		CurrentBillingPeriodConsumedData respjson.Field
 		DataLimit                        respjson.Field
+		Eid                              respjson.Field
+		EsimInstallationStatus           respjson.Field
 		Iccid                            respjson.Field
 		Imsi                             respjson.Field
 		Msisdn                           respjson.Field
 		RecordType                       respjson.Field
+		ResourcesWithInProgressActions   respjson.Field
 		SimCardGroupID                   respjson.Field
 		Status                           respjson.Field
 		Tags                             respjson.Field
 		Type                             respjson.Field
 		UpdatedAt                        respjson.Field
+		Version                          respjson.Field
 		ExtraFields                      map[string]respjson.Field
 		raw                              string
 	} `json:"-"`
@@ -785,6 +802,14 @@ func (r SimpleSimCardDataLimit) RawJSON() string { return r.JSON.raw }
 func (r *SimpleSimCardDataLimit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// The installation status of the eSIM. Only applicable for eSIM cards.
+type SimpleSimCardEsimInstallationStatus string
+
+const (
+	SimpleSimCardEsimInstallationStatusReleased SimpleSimCardEsimInstallationStatus = "released"
+	SimpleSimCardEsimInstallationStatusDisabled SimpleSimCardEsimInstallationStatus = "disabled"
+)
 
 // The type of SIM card
 type SimpleSimCardType string

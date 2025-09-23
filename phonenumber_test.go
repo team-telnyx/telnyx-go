@@ -106,6 +106,7 @@ func TestPhoneNumberListWithOptionalParams(t *testing.T) {
 				StartsWith: telnyx.String("test"),
 			},
 			VoiceUsagePaymentMethod: "channel",
+			WithoutTags:             "true",
 		},
 		Page: telnyx.PhoneNumberListParamsPage{
 			Number: telnyx.Int(1),

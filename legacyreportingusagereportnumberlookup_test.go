@@ -7,13 +7,14 @@ import (
 	"errors"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/team-telnyx/telnyx-go"
 	"github.com/team-telnyx/telnyx-go/internal/testutil"
 	"github.com/team-telnyx/telnyx-go/option"
 )
 
-func TestVerificationGet(t *testing.T) {
+func TestLegacyReportingUsageReportNumberLookupNewWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,35 +27,11 @@ func TestVerificationGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Verifications.Get(context.TODO(), "12ade33a-21c0-473b-b055-b3c836e1c292")
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestVerificationTriggerCallWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Verifications.TriggerCall(context.TODO(), telnyx.VerificationTriggerCallParams{
-		PhoneNumber:     "+13035551234",
-		VerifyProfileID: "12ade33a-21c0-473b-b055-b3c836e1c292",
-		CustomCode:      telnyx.String("43612"),
-		Extension:       telnyx.String("1www2WABCDw9"),
-		TimeoutSecs:     telnyx.Int(300),
+	err := client.Legacy.Reporting.UsageReports.NumberLookup.New(context.TODO(), telnyx.LegacyReportingUsageReportNumberLookupNewParams{
+		AggregationType: telnyx.LegacyReportingUsageReportNumberLookupNewParamsAggregationTypeAll,
+		EndDate:         telnyx.Time(time.Now()),
+		ManagedAccounts: []string{"f47ac10b-58cc-4372-a567-0e02b2c3d479", "6ba7b810-9dad-11d1-80b4-00c04fd430c8"},
+		StartDate:       telnyx.Time(time.Now()),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -65,7 +42,7 @@ func TestVerificationTriggerCallWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestVerificationTriggerFlashcallWithOptionalParams(t *testing.T) {
+func TestLegacyReportingUsageReportNumberLookupGet(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -78,10 +55,32 @@ func TestVerificationTriggerFlashcallWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Verifications.TriggerFlashcall(context.TODO(), telnyx.VerificationTriggerFlashcallParams{
-		PhoneNumber:     "+13035551234",
-		VerifyProfileID: "12ade33a-21c0-473b-b055-b3c836e1c292",
-		TimeoutSecs:     telnyx.Int(300),
+	err := client.Legacy.Reporting.UsageReports.NumberLookup.Get(context.TODO(), "id")
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestLegacyReportingUsageReportNumberLookupListWithOptionalParams(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	err := client.Legacy.Reporting.UsageReports.NumberLookup.List(context.TODO(), telnyx.LegacyReportingUsageReportNumberLookupListParams{
+		Page:    telnyx.Int(0),
+		PerPage: telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -92,7 +91,7 @@ func TestVerificationTriggerFlashcallWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestVerificationTriggerSMSWithOptionalParams(t *testing.T) {
+func TestLegacyReportingUsageReportNumberLookupDelete(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -105,12 +104,7 @@ func TestVerificationTriggerSMSWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Verifications.TriggerSMS(context.TODO(), telnyx.VerificationTriggerSMSParams{
-		PhoneNumber:     "+13035551234",
-		VerifyProfileID: "12ade33a-21c0-473b-b055-b3c836e1c292",
-		CustomCode:      telnyx.String("43612"),
-		TimeoutSecs:     telnyx.Int(300),
-	})
+	err := client.Legacy.Reporting.UsageReports.NumberLookup.Delete(context.TODO(), "id")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

@@ -19,6 +19,10 @@ import (
 // directly, and instead use the [NewClient] method instead.
 type Client struct {
 	Options                            []option.RequestOption
+	Legacy                             LegacyService
+	OAuth                              OAuthService
+	OAuthClients                       OAuthClientService
+	OAuthGrants                        OAuthGrantService
 	Webhooks                           WebhookService
 	AccessIPAddress                    AccessIPAddressService
 	AccessIPRanges                     AccessIPRangeService
@@ -167,6 +171,7 @@ type Client struct {
 	WirelessBlocklistValues            WirelessBlocklistValueService
 	WirelessBlocklists                 WirelessBlocklistService
 	PartnerCampaigns                   PartnerCampaignService
+	Client                             ClientService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -191,6 +196,10 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 
 	r = Client{Options: opts}
 
+	r.Legacy = NewLegacyService(opts...)
+	r.OAuth = NewOAuthService(opts...)
+	r.OAuthClients = NewOAuthClientService(opts...)
+	r.OAuthGrants = NewOAuthGrantService(opts...)
 	r.Webhooks = NewWebhookService(opts...)
 	r.AccessIPAddress = NewAccessIPAddressService(opts...)
 	r.AccessIPRanges = NewAccessIPRangeService(opts...)
@@ -339,6 +348,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.WirelessBlocklistValues = NewWirelessBlocklistValueService(opts...)
 	r.WirelessBlocklists = NewWirelessBlocklistService(opts...)
 	r.PartnerCampaigns = NewPartnerCampaignService(opts...)
+	r.Client = NewClientService(opts...)
 
 	return
 }

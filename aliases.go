@@ -361,6 +361,17 @@ type SimpleSimCardCurrentBillingPeriodConsumedData = shared.SimpleSimCardCurrent
 // This is an alias to an internal type.
 type SimpleSimCardDataLimit = shared.SimpleSimCardDataLimit
 
+// The installation status of the eSIM. Only applicable for eSIM cards.
+//
+// This is an alias to an internal type.
+type SimpleSimCardEsimInstallationStatus = shared.SimpleSimCardEsimInstallationStatus
+
+// Equals "released"
+const SimpleSimCardEsimInstallationStatusReleased = shared.SimpleSimCardEsimInstallationStatusReleased
+
+// Equals "disabled"
+const SimpleSimCardEsimInstallationStatusDisabled = shared.SimpleSimCardEsimInstallationStatusDisabled
+
 // The type of SIM card
 //
 // This is an alias to an internal type.

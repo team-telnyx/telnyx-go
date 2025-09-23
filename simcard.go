@@ -149,7 +149,7 @@ type SimCard struct {
 	// Indicate whether the SIM card has any pending (in-progress) actions.
 	ActionsInProgress bool `json:"actions_in_progress"`
 	// List of IMEIs authorized to use a given SIM card.
-	AuthorizedImeis []string `json:"authorized_imeis"`
+	AuthorizedImeis []string `json:"authorized_imeis,nullable"`
 	// ISO 8601 formatted date-time indicating when the resource was created.
 	CreatedAt string `json:"created_at"`
 	// The SIM card consumption so far in the current billing cycle.
@@ -170,6 +170,12 @@ type SimCard struct {
 	CurrentMnc string `json:"current_mnc"`
 	// The SIM card individual data limit configuration.
 	DataLimit SimCardDataLimit `json:"data_limit"`
+	// The Embedded Identity Document (eID) for eSIM cards.
+	Eid string `json:"eid,nullable"`
+	// The installation status of the eSIM. Only applicable for eSIM cards.
+	//
+	// Any of "released", "disabled".
+	EsimInstallationStatus SimCardEsimInstallationStatus `json:"esim_installation_status,nullable"`
 	// The ICCID is the identifier of the specific SIM card/chip. Each SIM is
 	// internationally identified by its integrated circuit card identifier (ICCID).
 	// ICCIDs are stored in the SIM card's memory and are also engraved or printed on
@@ -205,6 +211,8 @@ type SimCard struct {
 	// include_pin_puk_codes=true is set in the request.
 	PinPukCodes SimCardPinPukCodes `json:"pin_puk_codes"`
 	RecordType  string             `json:"record_type"`
+	// List of resources with actions in progress.
+	ResourcesWithInProgressActions []any `json:"resources_with_in_progress_actions"`
 	// The group SIMCardGroup identification. This attribute can be <code>null</code>
 	// when it's present in an associated resource.
 	SimCardGroupID string               `json:"sim_card_group_id" format:"uuid"`
@@ -217,6 +225,8 @@ type SimCard struct {
 	Type SimCardType `json:"type"`
 	// ISO 8601 formatted date-time indicating when the resource was updated.
 	UpdatedAt string `json:"updated_at"`
+	// The version of the SIM card.
+	Version string `json:"version"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                               respjson.Field
@@ -229,6 +239,8 @@ type SimCard struct {
 		CurrentMcc                       respjson.Field
 		CurrentMnc                       respjson.Field
 		DataLimit                        respjson.Field
+		Eid                              respjson.Field
+		EsimInstallationStatus           respjson.Field
 		Iccid                            respjson.Field
 		Imsi                             respjson.Field
 		Ipv4                             respjson.Field
@@ -237,11 +249,13 @@ type SimCard struct {
 		Msisdn                           respjson.Field
 		PinPukCodes                      respjson.Field
 		RecordType                       respjson.Field
+		ResourcesWithInProgressActions   respjson.Field
 		SimCardGroupID                   respjson.Field
 		Status                           respjson.Field
 		Tags                             respjson.Field
 		Type                             respjson.Field
 		UpdatedAt                        respjson.Field
+		Version                          respjson.Field
 		ExtraFields                      map[string]respjson.Field
 		raw                              string
 	} `json:"-"`
@@ -324,6 +338,14 @@ func (r *SimCardDataLimit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The installation status of the eSIM. Only applicable for eSIM cards.
+type SimCardEsimInstallationStatus string
+
+const (
+	SimCardEsimInstallationStatusReleased SimCardEsimInstallationStatus = "released"
+	SimCardEsimInstallationStatusDisabled SimCardEsimInstallationStatus = "disabled"
+)
+
 // Indicates whether the device is actively connected to a network and able to run
 // data.
 type SimCardLiveDataSession string
@@ -376,6 +398,8 @@ const (
 )
 
 type SimCardParam struct {
+	// The Embedded Identity Document (eID) for eSIM cards.
+	Eid param.Opt[string] `json:"eid,omitzero"`
 	// Identifies the resource.
 	ID param.Opt[string] `json:"id,omitzero" format:"uuid"`
 	// Indicate whether the SIM card has any pending (in-progress) actions.
@@ -426,8 +450,14 @@ type SimCardParam struct {
 	SimCardGroupID param.Opt[string] `json:"sim_card_group_id,omitzero" format:"uuid"`
 	// ISO 8601 formatted date-time indicating when the resource was updated.
 	UpdatedAt param.Opt[string] `json:"updated_at,omitzero"`
+	// The version of the SIM card.
+	Version param.Opt[string] `json:"version,omitzero"`
 	// List of IMEIs authorized to use a given SIM card.
 	AuthorizedImeis []string `json:"authorized_imeis,omitzero"`
+	// The installation status of the eSIM. Only applicable for eSIM cards.
+	//
+	// Any of "released", "disabled".
+	EsimInstallationStatus SimCardEsimInstallationStatus `json:"esim_installation_status,omitzero"`
 	// The SIM card consumption so far in the current billing cycle.
 	CurrentBillingPeriodConsumedData SimCardCurrentBillingPeriodConsumedDataParam `json:"current_billing_period_consumed_data,omitzero"`
 	// Current physical location data of a given SIM card. Accuracy is given in meters.
@@ -441,8 +471,10 @@ type SimCardParam struct {
 	LiveDataSession SimCardLiveDataSession `json:"live_data_session,omitzero"`
 	// PIN and PUK codes for the SIM card. Only available when
 	// include_pin_puk_codes=true is set in the request.
-	PinPukCodes SimCardPinPukCodesParam   `json:"pin_puk_codes,omitzero"`
-	Status      shared.SimCardStatusParam `json:"status,omitzero"`
+	PinPukCodes SimCardPinPukCodesParam `json:"pin_puk_codes,omitzero"`
+	// List of resources with actions in progress.
+	ResourcesWithInProgressActions []any                     `json:"resources_with_in_progress_actions,omitzero"`
+	Status                         shared.SimCardStatusParam `json:"status,omitzero"`
 	// Searchable tags associated with the SIM card
 	Tags []string `json:"tags,omitzero"`
 	// The type of SIM card

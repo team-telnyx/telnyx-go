@@ -32,8 +32,9 @@ func TestPortingOrderNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.PortingOrders.New(context.TODO(), telnyx.PortingOrderNewParams{
-		PhoneNumbers:      []string{"+13035550000", "+13035550001", "+13035550002"},
-		CustomerReference: telnyx.String("Acct 123abc"),
+		PhoneNumbers:           []string{"+13035550000", "+13035550001", "+13035550002"},
+		CustomerGroupReference: telnyx.String("Group-456"),
+		CustomerReference:      telnyx.String("Acct 123abc"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -93,7 +94,8 @@ func TestPortingOrderUpdateWithOptionalParams(t *testing.T) {
 			ActivationSettings: telnyx.PortingOrderUpdateParamsActivationSettings{
 				FocDatetimeRequested: telnyx.Time(time.Now()),
 			},
-			CustomerReference: telnyx.String("customer_reference"),
+			CustomerGroupReference: telnyx.String("customer_group_reference"),
+			CustomerReference:      telnyx.String("customer_reference"),
 			Documents: telnyx.PortingOrderDocumentsParam{
 				Invoice: telnyx.String("ce74b771-d23d-4960-81ec-8741b3862146"),
 				Loa:     telnyx.String("64ffb720-04c7-455b-92d6-20fcca92e935"),
@@ -168,20 +170,31 @@ func TestPortingOrderListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.PortingOrders.List(context.TODO(), telnyx.PortingOrderListParams{
 		Filter: telnyx.PortingOrderListParamsFilter{
-			ActivationSettingsFastPortEligible: telnyx.Bool(true),
-			ActivationSettingsFocDatetimeRequested: telnyx.PortingOrderListParamsFilterActivationSettingsFocDatetimeRequested{
-				Gt: telnyx.String("2021-03-25T10:00:00.000Z"),
-				Lt: telnyx.String("2021-03-25T10:00:00.000Z"),
+			ActivationSettings: telnyx.PortingOrderListParamsFilterActivationSettings{
+				FastPortEligible: telnyx.Bool(true),
+				FocDatetimeRequested: telnyx.PortingOrderListParamsFilterActivationSettingsFocDatetimeRequested{
+					Gt: telnyx.String("2021-03-25T10:00:00.000Z"),
+					Lt: telnyx.String("2021-03-25T10:00:00.000Z"),
+				},
 			},
-			CustomerReference:          telnyx.String("customer_reference"),
-			EndUserAdminAuthPersonName: telnyx.String("end_user.admin.auth_person_name"),
-			EndUserAdminEntityName:     telnyx.String("end_user.admin.entity_name"),
-			MiscType:                   telnyx.PortingOrderTypeFull,
-			ParentSupportKey:           telnyx.String("parent_support_key"),
-			PhoneNumbersCarrierName:    telnyx.String("phone_numbers.carrier_name"),
-			PhoneNumbersCountryCode:    telnyx.String("phone_numbers.country_code"),
-			PhoneNumbersPhoneNumber: telnyx.PortingOrderListParamsFilterPhoneNumbersPhoneNumber{
-				Contains: telnyx.String("contains"),
+			CustomerGroupReference: telnyx.String("customer_group_reference"),
+			CustomerReference:      telnyx.String("customer_reference"),
+			EndUser: telnyx.PortingOrderListParamsFilterEndUser{
+				Admin: telnyx.PortingOrderListParamsFilterEndUserAdmin{
+					AuthPersonName: telnyx.String("auth_person_name"),
+					EntityName:     telnyx.String("entity_name"),
+				},
+			},
+			Misc: telnyx.PortingOrderListParamsFilterMisc{
+				Type: telnyx.PortingOrderTypeFull,
+			},
+			ParentSupportKey: telnyx.String("parent_support_key"),
+			PhoneNumbers: telnyx.PortingOrderListParamsFilterPhoneNumbers{
+				CarrierName: telnyx.String("carrier_name"),
+				CountryCode: telnyx.String("country_code"),
+				PhoneNumber: telnyx.PortingOrderListParamsFilterPhoneNumbersPhoneNumber{
+					Contains: telnyx.String("contains"),
+				},
 			},
 		},
 		IncludePhoneNumbers: telnyx.Bool(true),
