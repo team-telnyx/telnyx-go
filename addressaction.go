@@ -118,7 +118,7 @@ type AddressActionValidateResponseData struct {
 	Result string `json:"result,required"`
 	// Provides normalized address when available.
 	Suggested AddressActionValidateResponseDataSuggested `json:"suggested,required"`
-	Errors    []Error                                    `json:"errors"`
+	Errors    []APIError                                 `json:"errors"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
