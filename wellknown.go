@@ -13,27 +13,27 @@ import (
 	"github.com/team-telnyx/telnyx-go/packages/respjson"
 )
 
-// ClientWellKnownService contains methods and other services that help with
-// interacting with the telnyx API.
+// WellKnownService contains methods and other services that help with interacting
+// with the telnyx API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewClientWellKnownService] method instead.
-type ClientWellKnownService struct {
+// the [NewWellKnownService] method instead.
+type WellKnownService struct {
 	Options []option.RequestOption
 }
 
-// NewClientWellKnownService generates a new service that applies the given options
-// to each request. These options are applied after the parent client's options (if
+// NewWellKnownService generates a new service that applies the given options to
+// each request. These options are applied after the parent client's options (if
 // there is one), and before any request-specific options.
-func NewClientWellKnownService(opts ...option.RequestOption) (r ClientWellKnownService) {
-	r = ClientWellKnownService{}
+func NewWellKnownService(opts ...option.RequestOption) (r WellKnownService) {
+	r = WellKnownService{}
 	r.Options = opts
 	return
 }
 
 // OAuth 2.0 Authorization Server Metadata (RFC 8414)
-func (r *ClientWellKnownService) GetAuthorizationServerMetadata(ctx context.Context, opts ...option.RequestOption) (res *ClientWellKnownGetAuthorizationServerMetadataResponse, err error) {
+func (r *WellKnownService) GetAuthorizationServerMetadata(ctx context.Context, opts ...option.RequestOption) (res *WellKnownGetAuthorizationServerMetadataResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithBaseURL("https://api.telnyx.com/")}, opts...)
 	path := ".well-known/oauth-authorization-server"
@@ -42,7 +42,7 @@ func (r *ClientWellKnownService) GetAuthorizationServerMetadata(ctx context.Cont
 }
 
 // OAuth 2.0 Protected Resource Metadata for resource discovery
-func (r *ClientWellKnownService) GetProtectedResourceMetadata(ctx context.Context, opts ...option.RequestOption) (res *ClientWellKnownGetProtectedResourceMetadataResponse, err error) {
+func (r *WellKnownService) GetProtectedResourceMetadata(ctx context.Context, opts ...option.RequestOption) (res *WellKnownGetProtectedResourceMetadataResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithBaseURL("https://api.telnyx.com/")}, opts...)
 	path := ".well-known/oauth-protected-resource"
@@ -50,7 +50,7 @@ func (r *ClientWellKnownService) GetProtectedResourceMetadata(ctx context.Contex
 	return
 }
 
-type ClientWellKnownGetAuthorizationServerMetadataResponse struct {
+type WellKnownGetAuthorizationServerMetadataResponse struct {
 	// Authorization endpoint URL
 	AuthorizationEndpoint string `json:"authorization_endpoint" format:"uri"`
 	// Supported PKCE code challenge methods
@@ -92,12 +92,12 @@ type ClientWellKnownGetAuthorizationServerMetadataResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ClientWellKnownGetAuthorizationServerMetadataResponse) RawJSON() string { return r.JSON.raw }
-func (r *ClientWellKnownGetAuthorizationServerMetadataResponse) UnmarshalJSON(data []byte) error {
+func (r WellKnownGetAuthorizationServerMetadataResponse) RawJSON() string { return r.JSON.raw }
+func (r *WellKnownGetAuthorizationServerMetadataResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ClientWellKnownGetProtectedResourceMetadataResponse struct {
+type WellKnownGetProtectedResourceMetadataResponse struct {
 	// List of authorization server URLs
 	AuthorizationServers []string `json:"authorization_servers" format:"uri"`
 	// Protected resource URL
@@ -112,7 +112,7 @@ type ClientWellKnownGetProtectedResourceMetadataResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ClientWellKnownGetProtectedResourceMetadataResponse) RawJSON() string { return r.JSON.raw }
-func (r *ClientWellKnownGetProtectedResourceMetadataResponse) UnmarshalJSON(data []byte) error {
+func (r WellKnownGetProtectedResourceMetadataResponse) RawJSON() string { return r.JSON.raw }
+func (r *WellKnownGetProtectedResourceMetadataResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/option"
 )
 
-func TestClientWellKnownGetAuthorizationServerMetadata(t *testing.T) {
+func TestWellKnownGetAuthorizationServerMetadata(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,7 @@ func TestClientWellKnownGetAuthorizationServerMetadata(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Client.WellKnown.GetAuthorizationServerMetadata(context.TODO())
+	_, err := client.WellKnown.GetAuthorizationServerMetadata(context.TODO())
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -36,7 +36,7 @@ func TestClientWellKnownGetAuthorizationServerMetadata(t *testing.T) {
 	}
 }
 
-func TestClientWellKnownGetProtectedResourceMetadata(t *testing.T) {
+func TestWellKnownGetProtectedResourceMetadata(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -49,7 +49,7 @@ func TestClientWellKnownGetProtectedResourceMetadata(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Client.WellKnown.GetProtectedResourceMetadata(context.TODO())
+	_, err := client.WellKnown.GetProtectedResourceMetadata(context.TODO())
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
