@@ -4,6 +4,7 @@
 
 # Shared Response Types
 
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/shared#APIError">APIError</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/shared#ConnectionsPaginationMeta">ConnectionsPaginationMeta</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/shared#DocReqsRequirementType">DocReqsRequirementType</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/shared#HostedNumber">HostedNumber</a>
@@ -1948,7 +1949,6 @@ Methods:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go#APIError">APIError</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go#MessagingError">MessagingError</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go#OutboundMessagePayload">OutboundMessagePayload</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go#MessageGetResponse">MessageGetResponse</a>

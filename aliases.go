@@ -17,6 +17,12 @@ type paramObj = param.APIObject
 type Error = apierror.Error
 
 // This is an alias to an internal type.
+type APIError = shared.APIError
+
+// This is an alias to an internal type.
+type APIErrorSource = shared.APIErrorSource
+
+// This is an alias to an internal type.
 type ConnectionsPaginationMeta = shared.ConnectionsPaginationMeta
 
 // This is an alias to an internal type.
