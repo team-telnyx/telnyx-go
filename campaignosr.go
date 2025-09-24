@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/option"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
 // CampaignOsrService contains methods and other services that help with

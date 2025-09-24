@@ -3,8 +3,8 @@ package respjson_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/team-telnyx/telnyx-go/internal/apijson"
-	rj "github.com/team-telnyx/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	rj "github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 	"reflect"
 	"testing"
 )

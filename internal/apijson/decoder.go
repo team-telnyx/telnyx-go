@@ -7,7 +7,7 @@ package apijson
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/team-telnyx/telnyx-go/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"reflect"
 	"strconv"
 	"sync"

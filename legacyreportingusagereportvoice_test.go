@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go"
-	"github.com/team-telnyx/telnyx-go/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/option"
+	"github.com/team-telnyx/telnyx-go/v3"
+	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
 func TestLegacyReportingUsageReportVoiceNewWithOptionalParams(t *testing.T) {

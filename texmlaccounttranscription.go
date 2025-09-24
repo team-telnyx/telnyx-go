@@ -3,7 +3,7 @@
 package telnyx
 
 import (
-	"github.com/team-telnyx/telnyx-go/option"
+	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
 // TexmlAccountTranscriptionService contains methods and other services that help

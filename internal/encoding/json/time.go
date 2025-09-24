@@ -2,7 +2,7 @@
 package json
 
 import (
-	"github.com/team-telnyx/telnyx-go/internal/encoding/json/shims"
+	"github.com/team-telnyx/telnyx-go/v3/internal/encoding/json/shims"
 	"reflect"
 	"time"
 )
