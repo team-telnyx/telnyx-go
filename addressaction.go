@@ -14,6 +14,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/option"
 	"github.com/team-telnyx/telnyx-go/packages/param"
 	"github.com/team-telnyx/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/shared"
 )
 
 // AddressActionService contains methods and other services that help with
@@ -118,7 +119,7 @@ type AddressActionValidateResponseData struct {
 	Result string `json:"result,required"`
 	// Provides normalized address when available.
 	Suggested AddressActionValidateResponseDataSuggested `json:"suggested,required"`
-	Errors    []APIError                                 `json:"errors"`
+	Errors    []shared.APIError                          `json:"errors"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
