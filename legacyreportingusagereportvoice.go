@@ -1,0 +1,390 @@
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+
+package telnyx
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"net/http"
+	"net/url"
+	"slices"
+	"time"
+
+	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+)
+
+// LegacyReportingUsageReportVoiceService contains methods and other services that
+// help with interacting with the telnyx API.
+//
+// Note, unlike clients, this service does not read variables from the environment
+// automatically. You should not instantiate this service directly, and instead use
+// the [NewLegacyReportingUsageReportVoiceService] method instead.
+type LegacyReportingUsageReportVoiceService struct {
+	Options []option.RequestOption
+}
+
+// NewLegacyReportingUsageReportVoiceService generates a new service that applies
+// the given options to each request. These options are applied after the parent
+// client's options (if there is one), and before any request-specific options.
+func NewLegacyReportingUsageReportVoiceService(opts ...option.RequestOption) (r LegacyReportingUsageReportVoiceService) {
+	r = LegacyReportingUsageReportVoiceService{}
+	r.Options = opts
+	return
+}
+
+// Creates a new legacy usage V2 CDR report request with the specified filters
+func (r *LegacyReportingUsageReportVoiceService) New(ctx context.Context, body LegacyReportingUsageReportVoiceNewParams, opts ...option.RequestOption) (res *LegacyReportingUsageReportVoiceNewResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "legacy/reporting/usage_reports/voice"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
+// Fetch single cdr usage report by id.
+func (r *LegacyReportingUsageReportVoiceService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *LegacyReportingUsageReportVoiceGetResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("legacy/reporting/usage_reports/voice/%s", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
+}
+
+// Fetch all previous requests for cdr usage reports.
+func (r *LegacyReportingUsageReportVoiceService) List(ctx context.Context, query LegacyReportingUsageReportVoiceListParams, opts ...option.RequestOption) (res *LegacyReportingUsageReportVoiceListResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "legacy/reporting/usage_reports/voice"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
+}
+
+// Deletes a specific V2 legacy usage CDR report request by ID
+func (r *LegacyReportingUsageReportVoiceService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *LegacyReportingUsageReportVoiceDeleteResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("legacy/reporting/usage_reports/voice/%s", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	return
+}
+
+type LegacyReportingUsageReportVoiceNewResponse struct {
+	// Legacy V2 CDR usage report response
+	Data LegacyReportingUsageReportVoiceNewResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingUsageReportVoiceNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *LegacyReportingUsageReportVoiceNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Legacy V2 CDR usage report response
+type LegacyReportingUsageReportVoiceNewResponseData struct {
+	// Identifies the resource
+	ID string `json:"id" format:"uuid"`
+	// Aggregation type: All = 0, By Connections = 1, By Tags = 2, By Billing Group = 3
+	AggregationType int64     `json:"aggregation_type"`
+	Connections     []int64   `json:"connections"`
+	CreatedAt       time.Time `json:"created_at" format:"date-time"`
+	EndTime         time.Time `json:"end_time" format:"date-time"`
+	// Product breakdown type: No breakdown = 0, DID vs Toll-free = 1, Country = 2, DID
+	// vs Toll-free per Country = 3
+	ProductBreakdown int64     `json:"product_breakdown"`
+	RecordType       string    `json:"record_type"`
+	ReportURL        string    `json:"report_url"`
+	Result           any       `json:"result"`
+	StartTime        time.Time `json:"start_time" format:"date-time"`
+	// Status of the report: Pending = 1, Complete = 2, Failed = 3, Expired = 4
+	Status    int64     `json:"status"`
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		AggregationType  respjson.Field
+		Connections      respjson.Field
+		CreatedAt        respjson.Field
+		EndTime          respjson.Field
+		ProductBreakdown respjson.Field
+		RecordType       respjson.Field
+		ReportURL        respjson.Field
+		Result           respjson.Field
+		StartTime        respjson.Field
+		Status           respjson.Field
+		UpdatedAt        respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingUsageReportVoiceNewResponseData) RawJSON() string { return r.JSON.raw }
+func (r *LegacyReportingUsageReportVoiceNewResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LegacyReportingUsageReportVoiceGetResponse struct {
+	// Legacy V2 CDR usage report response
+	Data LegacyReportingUsageReportVoiceGetResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingUsageReportVoiceGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *LegacyReportingUsageReportVoiceGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Legacy V2 CDR usage report response
+type LegacyReportingUsageReportVoiceGetResponseData struct {
+	// Identifies the resource
+	ID string `json:"id" format:"uuid"`
+	// Aggregation type: All = 0, By Connections = 1, By Tags = 2, By Billing Group = 3
+	AggregationType int64     `json:"aggregation_type"`
+	Connections     []int64   `json:"connections"`
+	CreatedAt       time.Time `json:"created_at" format:"date-time"`
+	EndTime         time.Time `json:"end_time" format:"date-time"`
+	// Product breakdown type: No breakdown = 0, DID vs Toll-free = 1, Country = 2, DID
+	// vs Toll-free per Country = 3
+	ProductBreakdown int64     `json:"product_breakdown"`
+	RecordType       string    `json:"record_type"`
+	ReportURL        string    `json:"report_url"`
+	Result           any       `json:"result"`
+	StartTime        time.Time `json:"start_time" format:"date-time"`
+	// Status of the report: Pending = 1, Complete = 2, Failed = 3, Expired = 4
+	Status    int64     `json:"status"`
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		AggregationType  respjson.Field
+		Connections      respjson.Field
+		CreatedAt        respjson.Field
+		EndTime          respjson.Field
+		ProductBreakdown respjson.Field
+		RecordType       respjson.Field
+		ReportURL        respjson.Field
+		Result           respjson.Field
+		StartTime        respjson.Field
+		Status           respjson.Field
+		UpdatedAt        respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingUsageReportVoiceGetResponseData) RawJSON() string { return r.JSON.raw }
+func (r *LegacyReportingUsageReportVoiceGetResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LegacyReportingUsageReportVoiceListResponse struct {
+	Data []LegacyReportingUsageReportVoiceListResponseData `json:"data"`
+	Meta LegacyReportingUsageReportVoiceListResponseMeta   `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingUsageReportVoiceListResponse) RawJSON() string { return r.JSON.raw }
+func (r *LegacyReportingUsageReportVoiceListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Legacy V2 CDR usage report response
+type LegacyReportingUsageReportVoiceListResponseData struct {
+	// Identifies the resource
+	ID string `json:"id" format:"uuid"`
+	// Aggregation type: All = 0, By Connections = 1, By Tags = 2, By Billing Group = 3
+	AggregationType int64     `json:"aggregation_type"`
+	Connections     []int64   `json:"connections"`
+	CreatedAt       time.Time `json:"created_at" format:"date-time"`
+	EndTime         time.Time `json:"end_time" format:"date-time"`
+	// Product breakdown type: No breakdown = 0, DID vs Toll-free = 1, Country = 2, DID
+	// vs Toll-free per Country = 3
+	ProductBreakdown int64     `json:"product_breakdown"`
+	RecordType       string    `json:"record_type"`
+	ReportURL        string    `json:"report_url"`
+	Result           any       `json:"result"`
+	StartTime        time.Time `json:"start_time" format:"date-time"`
+	// Status of the report: Pending = 1, Complete = 2, Failed = 3, Expired = 4
+	Status    int64     `json:"status"`
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		AggregationType  respjson.Field
+		Connections      respjson.Field
+		CreatedAt        respjson.Field
+		EndTime          respjson.Field
+		ProductBreakdown respjson.Field
+		RecordType       respjson.Field
+		ReportURL        respjson.Field
+		Result           respjson.Field
+		StartTime        respjson.Field
+		Status           respjson.Field
+		UpdatedAt        respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingUsageReportVoiceListResponseData) RawJSON() string { return r.JSON.raw }
+func (r *LegacyReportingUsageReportVoiceListResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LegacyReportingUsageReportVoiceListResponseMeta struct {
+	PageNumber   int64 `json:"page_number"`
+	PageSize     int64 `json:"page_size"`
+	TotalPages   int64 `json:"total_pages"`
+	TotalResults int64 `json:"total_results"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingUsageReportVoiceListResponseMeta) RawJSON() string { return r.JSON.raw }
+func (r *LegacyReportingUsageReportVoiceListResponseMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LegacyReportingUsageReportVoiceDeleteResponse struct {
+	// Legacy V2 CDR usage report response
+	Data LegacyReportingUsageReportVoiceDeleteResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingUsageReportVoiceDeleteResponse) RawJSON() string { return r.JSON.raw }
+func (r *LegacyReportingUsageReportVoiceDeleteResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Legacy V2 CDR usage report response
+type LegacyReportingUsageReportVoiceDeleteResponseData struct {
+	// Identifies the resource
+	ID string `json:"id" format:"uuid"`
+	// Aggregation type: All = 0, By Connections = 1, By Tags = 2, By Billing Group = 3
+	AggregationType int64     `json:"aggregation_type"`
+	Connections     []int64   `json:"connections"`
+	CreatedAt       time.Time `json:"created_at" format:"date-time"`
+	EndTime         time.Time `json:"end_time" format:"date-time"`
+	// Product breakdown type: No breakdown = 0, DID vs Toll-free = 1, Country = 2, DID
+	// vs Toll-free per Country = 3
+	ProductBreakdown int64     `json:"product_breakdown"`
+	RecordType       string    `json:"record_type"`
+	ReportURL        string    `json:"report_url"`
+	Result           any       `json:"result"`
+	StartTime        time.Time `json:"start_time" format:"date-time"`
+	// Status of the report: Pending = 1, Complete = 2, Failed = 3, Expired = 4
+	Status    int64     `json:"status"`
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		AggregationType  respjson.Field
+		Connections      respjson.Field
+		CreatedAt        respjson.Field
+		EndTime          respjson.Field
+		ProductBreakdown respjson.Field
+		RecordType       respjson.Field
+		ReportURL        respjson.Field
+		Result           respjson.Field
+		StartTime        respjson.Field
+		Status           respjson.Field
+		UpdatedAt        respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingUsageReportVoiceDeleteResponseData) RawJSON() string { return r.JSON.raw }
+func (r *LegacyReportingUsageReportVoiceDeleteResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LegacyReportingUsageReportVoiceNewParams struct {
+	// End time in ISO format
+	EndTime time.Time `json:"end_time,required" format:"date-time"`
+	// Start time in ISO format
+	StartTime time.Time `json:"start_time,required" format:"date-time"`
+	// Aggregation type: All = 0, By Connections = 1, By Tags = 2, By Billing Group = 3
+	AggregationType param.Opt[int64] `json:"aggregation_type,omitzero"`
+	// Product breakdown type: No breakdown = 0, DID vs Toll-free = 1, Country = 2, DID
+	// vs Toll-free per Country = 3
+	ProductBreakdown param.Opt[int64] `json:"product_breakdown,omitzero"`
+	// Whether to select all managed accounts
+	SelectAllManagedAccounts param.Opt[bool] `json:"select_all_managed_accounts,omitzero"`
+	// List of connections to filter by
+	Connections []int64 `json:"connections,omitzero"`
+	// List of managed accounts to include
+	ManagedAccounts []string `json:"managed_accounts,omitzero" format:"uuid"`
+	paramObj
+}
+
+func (r LegacyReportingUsageReportVoiceNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow LegacyReportingUsageReportVoiceNewParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LegacyReportingUsageReportVoiceNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LegacyReportingUsageReportVoiceListParams struct {
+	// Page number
+	Page param.Opt[int64] `query:"page,omitzero" json:"-"`
+	// Size of the page
+	PerPage param.Opt[int64] `query:"per_page,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [LegacyReportingUsageReportVoiceListParams]'s query
+// parameters as `url.Values`.
+func (r LegacyReportingUsageReportVoiceListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
