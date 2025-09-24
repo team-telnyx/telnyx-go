@@ -9,12 +9,12 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/option"
-	"github.com/team-telnyx/telnyx-go/packages/param"
-	"github.com/team-telnyx/telnyx-go/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/shared"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/shared"
 )
 
 // AddressActionService contains methods and other services that help with

@@ -11,14 +11,14 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/internal/apiquery"
-	shimjson "github.com/team-telnyx/telnyx-go/internal/encoding/json"
-	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/option"
-	"github.com/team-telnyx/telnyx-go/packages/param"
-	"github.com/team-telnyx/telnyx-go/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/shared"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
+	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/shared"
 )
 
 // DynamicEmergencyAddressService contains methods and other services that help

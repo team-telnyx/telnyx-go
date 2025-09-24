@@ -2,7 +2,7 @@ package apijson
 
 import (
 	"errors"
-	"github.com/team-telnyx/telnyx-go/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"reflect"
 
 	"github.com/tidwall/gjson"

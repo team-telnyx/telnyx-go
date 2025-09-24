@@ -2,8 +2,8 @@ package apijson_test
 
 import (
 	"encoding/json"
-	"github.com/team-telnyx/telnyx-go/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 	"testing"
 )
 
