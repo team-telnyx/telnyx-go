@@ -302,12 +302,6 @@ func (r PortingOrderAssociatedPhoneNumberListParamsFilter) URLQuery() (v url.Val
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[PortingOrderAssociatedPhoneNumberListParamsFilter](
-		"action", "keep", "disconnect",
-	)
-}
-
 // Consolidated page parameter (deepObject style). Originally: page[size],
 // page[number]
 type PortingOrderAssociatedPhoneNumberListParamsPage struct {
@@ -344,12 +338,6 @@ func (r PortingOrderAssociatedPhoneNumberListParamsSort) URLQuery() (v url.Value
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[PortingOrderAssociatedPhoneNumberListParamsSort](
-		"value", "-created_at", "created_at",
-	)
 }
 
 type PortingOrderAssociatedPhoneNumberDeleteParams struct {

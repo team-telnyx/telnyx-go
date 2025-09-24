@@ -341,15 +341,6 @@ func (r PortingReportListParamsFilter) URLQuery() (v url.Values, err error) {
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[PortingReportListParamsFilter](
-		"report_type", "export_porting_orders_csv",
-	)
-	apijson.RegisterFieldValidator[PortingReportListParamsFilter](
-		"status", "pending", "completed",
-	)
-}
-
 // Consolidated page parameter (deepObject style). Originally: page[size],
 // page[number]
 type PortingReportListParamsPage struct {

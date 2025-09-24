@@ -280,9 +280,3 @@ func (r PortingOrderPhoneNumberConfigurationListParamsSort) URLQuery() (v url.Va
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
-
-func init() {
-	apijson.RegisterFieldValidator[PortingOrderPhoneNumberConfigurationListParamsSort](
-		"value", "created_at", "-created_at",
-	)
-}

@@ -677,18 +677,6 @@ func (r CallControlApplicationListParamsFilter) URLQuery() (v url.Values, err er
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[CallControlApplicationListParamsFilter](
-		"product", "call_control", "fax", "texml",
-	)
-	apijson.RegisterFieldValidator[CallControlApplicationListParamsFilter](
-		"status", "init", "in_progress", "completed",
-	)
-	apijson.RegisterFieldValidator[CallControlApplicationListParamsFilter](
-		"type", "command", "webhook",
-	)
-}
-
 // Application name filters
 type CallControlApplicationListParamsFilterApplicationName struct {
 	// If present, applications with <code>application_name</code> containing the given

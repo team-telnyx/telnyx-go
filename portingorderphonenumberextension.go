@@ -345,12 +345,6 @@ func (r PortingOrderPhoneNumberExtensionListParamsSort) URLQuery() (v url.Values
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[PortingOrderPhoneNumberExtensionListParamsSort](
-		"value", "-created_at", "created_at",
-	)
-}
-
 type PortingOrderPhoneNumberExtensionDeleteParams struct {
 	PortingOrderID string `path:"porting_order_id,required" format:"uuid" json:"-"`
 	paramObj

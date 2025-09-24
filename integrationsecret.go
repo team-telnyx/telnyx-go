@@ -214,12 +214,6 @@ func (r IntegrationSecretListParamsFilter) URLQuery() (v url.Values, err error) 
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[IntegrationSecretListParamsFilter](
-		"type", "bearer", "basic",
-	)
-}
-
 // Consolidated page parameter (deepObject style). Originally: page[size],
 // page[number]
 type IntegrationSecretListParamsPage struct {

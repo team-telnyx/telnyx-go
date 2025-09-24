@@ -567,12 +567,6 @@ func (r WebhookDeliveryListParamsFilterStatus) URLQuery() (v url.Values, err err
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[WebhookDeliveryListParamsFilterStatus](
-		"eq", "delivered", "failed",
-	)
-}
-
 type WebhookDeliveryListParamsFilterWebhook struct {
 	// Return only webhook deliveries whose `webhook` component contains the given text
 	Contains param.Opt[string] `query:"contains,omitzero" json:"-"`

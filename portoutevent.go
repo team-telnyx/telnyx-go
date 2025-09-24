@@ -608,12 +608,6 @@ func (r PortoutEventListParamsFilter) URLQuery() (v url.Values, err error) {
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[PortoutEventListParamsFilter](
-		"event_type", "portout.status_changed", "portout.new_comment", "portout.foc_date_changed",
-	)
-}
-
 // Filter by created_at date range using nested operations
 type PortoutEventListParamsFilterCreatedAt struct {
 	// Filter by created at greater than or equal to.

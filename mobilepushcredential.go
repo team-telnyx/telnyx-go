@@ -273,12 +273,6 @@ func (r MobilePushCredentialListParamsFilter) URLQuery() (v url.Values, err erro
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[MobilePushCredentialListParamsFilter](
-		"type", "ios", "android",
-	)
-}
-
 // Consolidated page parameter (deepObject style). Originally: page[size],
 // page[number]
 type MobilePushCredentialListParamsPage struct {

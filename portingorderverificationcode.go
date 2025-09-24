@@ -253,12 +253,6 @@ func (r PortingOrderVerificationCodeListParamsSort) URLQuery() (v url.Values, er
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[PortingOrderVerificationCodeListParamsSort](
-		"value", "created_at", "-created_at",
-	)
-}
-
 type PortingOrderVerificationCodeSendParams struct {
 	PhoneNumbers []string `json:"phone_numbers,omitzero"`
 	// Any of "sms", "call".

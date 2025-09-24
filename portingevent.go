@@ -975,12 +975,6 @@ func (r PortingEventListParamsFilter) URLQuery() (v url.Values, err error) {
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[PortingEventListParamsFilter](
-		"type", "porting_order.deleted", "porting_order.loa_updated", "porting_order.messaging_changed", "porting_order.status_changed", "porting_order.sharing_token_expired", "porting_order.new_comment", "porting_order.split",
-	)
-}
-
 // Created at date range filtering operations
 type PortingEventListParamsFilterCreatedAt struct {
 	// Filter by created at greater than or equal to.

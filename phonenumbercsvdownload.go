@@ -236,15 +236,6 @@ func (r PhoneNumberCsvDownloadNewParamsFilter) URLQuery() (v url.Values, err err
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[PhoneNumberCsvDownloadNewParamsFilter](
-		"status", "purchase-pending", "purchase-failed", "port-pending", "active", "deleted", "port-failed", "emergency-only", "ported-out", "port-out-pending",
-	)
-	apijson.RegisterFieldValidator[PhoneNumberCsvDownloadNewParamsFilter](
-		"voice.usage_payment_method", "pay-per-minute", "channel",
-	)
-}
-
 // Filter by voice connection name pattern matching.
 type PhoneNumberCsvDownloadNewParamsFilterVoiceConnectionName struct {
 	// Filter contains connection name. Requires at least three characters.

@@ -286,12 +286,6 @@ func (r DynamicEmergencyEndpointListParamsFilter) URLQuery() (v url.Values, err 
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[DynamicEmergencyEndpointListParamsFilter](
-		"status", "pending", "activated", "rejected",
-	)
-}
-
 // Consolidated page parameter (deepObject style). Originally: page[size],
 // page[number]
 type DynamicEmergencyEndpointListParamsPage struct {

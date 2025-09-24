@@ -179,12 +179,6 @@ func (r VirtualCrossConnectsCoverageListParamsFilter) URLQuery() (v url.Values, 
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[VirtualCrossConnectsCoverageListParamsFilter](
-		"cloud_provider", "aws", "azure", "gce",
-	)
-}
-
 // Consolidated filters parameter (deepObject style). Originally:
 // filters[available_bandwidth][contains]
 type VirtualCrossConnectsCoverageListParamsFilters struct {

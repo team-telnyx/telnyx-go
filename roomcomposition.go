@@ -383,12 +383,6 @@ func (r RoomCompositionListParamsFilter) URLQuery() (v url.Values, err error) {
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[RoomCompositionListParamsFilter](
-		"status", "completed", "processing", "enqueued",
-	)
-}
-
 type RoomCompositionListParamsFilterDateCreatedAt struct {
 	// ISO 8601 date for filtering room compositions created on that date.
 	Eq param.Opt[time.Time] `query:"eq,omitzero" format:"date" json:"-"`

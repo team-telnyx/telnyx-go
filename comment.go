@@ -350,9 +350,3 @@ func (r CommentListParamsFilter) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
-
-func init() {
-	apijson.RegisterFieldValidator[CommentListParamsFilter](
-		"comment_record_type", "sub_number_order", "requirement_group",
-	)
-}

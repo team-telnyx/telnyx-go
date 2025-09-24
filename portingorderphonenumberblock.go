@@ -339,15 +339,6 @@ func (r PortingOrderPhoneNumberBlockListParamsFilter) URLQuery() (v url.Values, 
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[PortingOrderPhoneNumberBlockListParamsFilter](
-		"activation_status", "New", "Pending", "Conflict", "Cancel Pending", "Failed", "Concurred", "Activate RDY", "Disconnect Pending", "Concurrence Sent", "Old", "Sending", "Active", "Cancelled",
-	)
-	apijson.RegisterFieldValidator[PortingOrderPhoneNumberBlockListParamsFilter](
-		"portability_status", "pending", "confirmed", "provisional",
-	)
-}
-
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
@@ -436,12 +427,6 @@ func (r PortingOrderPhoneNumberBlockListParamsSort) URLQuery() (v url.Values, er
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[PortingOrderPhoneNumberBlockListParamsSort](
-		"value", "-created_at", "created_at",
-	)
 }
 
 type PortingOrderPhoneNumberBlockDeleteParams struct {

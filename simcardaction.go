@@ -531,15 +531,6 @@ func (r SimCardActionListParamsFilter) URLQuery() (v url.Values, err error) {
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[SimCardActionListParamsFilter](
-		"action_type", "enable", "enable_standby_sim_card", "disable", "set_standby", "remove_public_ip", "set_public_ip",
-	)
-	apijson.RegisterFieldValidator[SimCardActionListParamsFilter](
-		"status", "in-progress", "completed", "failed",
-	)
-}
-
 // Consolidated pagination parameter (deepObject style). Originally: page[number],
 // page[size]
 type SimCardActionListParamsPage struct {

@@ -509,12 +509,6 @@ func (r PhoneNumberVoiceListParamsFilter) URLQuery() (v url.Values, err error) {
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[PhoneNumberVoiceListParamsFilter](
-		"voice.usage_payment_method", "pay-per-minute", "channel",
-	)
-}
-
 // Filter by connection name pattern matching.
 type PhoneNumberVoiceListParamsFilterConnectionName struct {
 	// Filter contains connection name. Requires at least three characters.

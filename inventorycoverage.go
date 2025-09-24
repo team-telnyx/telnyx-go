@@ -176,15 +176,3 @@ func (r InventoryCoverageListParamsFilter) URLQuery() (v url.Values, err error) 
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
-
-func init() {
-	apijson.RegisterFieldValidator[InventoryCoverageListParamsFilter](
-		"country_code", "AT", "AU", "BE", "BG", "CA", "CH", "CN", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", "GB", "GR", "HU", "HR", "IE", "IT", "LT", "LU", "LV", "NL", "NZ", "MX", "NO", "PL", "PT", "RO", "SE", "SG", "SI", "SK", "US",
-	)
-	apijson.RegisterFieldValidator[InventoryCoverageListParamsFilter](
-		"groupBy", "locality", "npa", "national_destination_code",
-	)
-	apijson.RegisterFieldValidator[InventoryCoverageListParamsFilter](
-		"phone_number_type", "local", "toll_free", "national", "mobile", "landline", "shared_cost",
-	)
-}

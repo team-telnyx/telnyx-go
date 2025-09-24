@@ -314,12 +314,6 @@ func (r PortingOrderAdditionalDocumentListParamsSort) URLQuery() (v url.Values, 
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[PortingOrderAdditionalDocumentListParamsSort](
-		"value", "created_at", "-created_at",
-	)
-}
-
 type PortingOrderAdditionalDocumentDeleteParams struct {
 	ID string `path:"id,required" format:"uuid" json:"-"`
 	paramObj
