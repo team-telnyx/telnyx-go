@@ -305,15 +305,3 @@ func (r RequirementGroupListParamsFilter) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
-
-func init() {
-	apijson.RegisterFieldValidator[RequirementGroupListParamsFilter](
-		"action", "ordering", "porting", "action",
-	)
-	apijson.RegisterFieldValidator[RequirementGroupListParamsFilter](
-		"phone_number_type", "local", "toll_free", "mobile", "national", "shared_cost",
-	)
-	apijson.RegisterFieldValidator[RequirementGroupListParamsFilter](
-		"status", "approved", "unapproved", "pending-approval", "declined",
-	)
-}

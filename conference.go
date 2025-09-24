@@ -475,18 +475,6 @@ func (r ConferenceListParamsFilter) URLQuery() (v url.Values, err error) {
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[ConferenceListParamsFilter](
-		"product", "call_control", "fax", "texml",
-	)
-	apijson.RegisterFieldValidator[ConferenceListParamsFilter](
-		"status", "init", "in_progress", "completed",
-	)
-	apijson.RegisterFieldValidator[ConferenceListParamsFilter](
-		"type", "command", "webhook",
-	)
-}
-
 // Application name filters
 type ConferenceListParamsFilterApplicationName struct {
 	// If present, applications with <code>application_name</code> containing the given

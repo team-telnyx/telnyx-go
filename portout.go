@@ -358,12 +358,6 @@ func (r PortoutListParamsFilter) URLQuery() (v url.Values, err error) {
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[PortoutListParamsFilter](
-		"status", "pending", "authorized", "ported", "rejected", "rejected-pending", "canceled",
-	)
-}
-
 // Filter by inserted_at date range using nested operations
 type PortoutListParamsFilterInsertedAt struct {
 	// Filter by inserted_at date greater than or equal.

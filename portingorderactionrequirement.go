@@ -244,15 +244,6 @@ func (r PortingOrderActionRequirementListParamsFilter) URLQuery() (v url.Values,
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[PortingOrderActionRequirementListParamsFilter](
-		"action_type", "au_id_verification",
-	)
-	apijson.RegisterFieldValidator[PortingOrderActionRequirementListParamsFilter](
-		"status", "created", "pending", "completed", "cancelled", "failed",
-	)
-}
-
 // Consolidated page parameter (deepObject style). Originally: page[size],
 // page[number]
 type PortingOrderActionRequirementListParamsPage struct {
@@ -289,12 +280,6 @@ func (r PortingOrderActionRequirementListParamsSort) URLQuery() (v url.Values, e
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[PortingOrderActionRequirementListParamsSort](
-		"value", "created_at", "-created_at", "updated_at", "-updated_at",
-	)
 }
 
 type PortingOrderActionRequirementInitiateParams struct {

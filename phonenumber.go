@@ -703,21 +703,6 @@ func (r PhoneNumberListParamsFilter) URLQuery() (v url.Values, err error) {
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[PhoneNumberListParamsFilter](
-		"source", "ported", "purchased",
-	)
-	apijson.RegisterFieldValidator[PhoneNumberListParamsFilter](
-		"status", "purchase-pending", "purchase-failed", "port-pending", "active", "deleted", "port-failed", "emergency-only", "ported-out", "port-out-pending",
-	)
-	apijson.RegisterFieldValidator[PhoneNumberListParamsFilter](
-		"voice.usage_payment_method", "pay-per-minute", "channel",
-	)
-	apijson.RegisterFieldValidator[PhoneNumberListParamsFilter](
-		"without_tags", "true", "false",
-	)
-}
-
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
@@ -752,12 +737,6 @@ func (r PhoneNumberListParamsFilterNumberType) URLQuery() (v url.Values, err err
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[PhoneNumberListParamsFilterNumberType](
-		"eq", "local", "national", "toll_free", "mobile", "shared_cost",
-	)
 }
 
 // Filter by voice connection name pattern matching.
@@ -903,18 +882,6 @@ func (r PhoneNumberSlimListParamsFilter) URLQuery() (v url.Values, err error) {
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[PhoneNumberSlimListParamsFilter](
-		"source", "ported", "purchased",
-	)
-	apijson.RegisterFieldValidator[PhoneNumberSlimListParamsFilter](
-		"status", "purchase-pending", "purchase-failed", "port_pending", "active", "deleted", "port-failed", "emergency-only", "ported-out", "port-out-pending",
-	)
-	apijson.RegisterFieldValidator[PhoneNumberSlimListParamsFilter](
-		"voice.usage_payment_method", "pay-per-minute", "channel",
-	)
-}
-
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
@@ -949,12 +916,6 @@ func (r PhoneNumberSlimListParamsFilterNumberType) URLQuery() (v url.Values, err
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[PhoneNumberSlimListParamsFilterNumberType](
-		"eq", "local", "national", "toll_free", "mobile", "shared_cost",
-	)
 }
 
 // Filter by voice connection name pattern matching (requires include_connection

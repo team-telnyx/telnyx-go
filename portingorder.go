@@ -1528,12 +1528,6 @@ func (r PortingOrderListParamsSort) URLQuery() (v url.Values, err error) {
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[PortingOrderListParamsSort](
-		"value", "created_at", "-created_at", "activation_settings.foc_datetime_requested", "-activation_settings.foc_datetime_requested",
-	)
-}
-
 type PortingOrderGetLoaTemplateParams struct {
 	// The identifier of the LOA configuration to use for the template. If not
 	// provided, the default LOA configuration will be used.

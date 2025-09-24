@@ -558,12 +558,6 @@ func (r ExternalConnectionListParamsFilter) URLQuery() (v url.Values, err error)
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[ExternalConnectionListParamsFilter](
-		"external_sip_connection", "zoom", "operator_connect",
-	)
-}
-
 type ExternalConnectionListParamsFilterConnectionName struct {
 	// If present, connections with <code>connection_name</code> containing the given
 	// value will be returned. Matching is not case-sensitive. Requires at least three

@@ -433,12 +433,6 @@ func (r PhoneNumberJobListParamsFilter) URLQuery() (v url.Values, err error) {
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[PhoneNumberJobListParamsFilter](
-		"type", "update_emergency_settings", "delete_phone_numbers", "update_phone_numbers",
-	)
-}
-
 // Consolidated page parameter (deepObject style). Originally: page[size],
 // page[number]
 type PhoneNumberJobListParamsPage struct {
@@ -580,15 +574,6 @@ func (r PhoneNumberJobUpdateBatchParamsFilter) URLQuery() (v url.Values, err err
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[PhoneNumberJobUpdateBatchParamsFilter](
-		"status", "purchase-pending", "purchase-failed", "port-pending", "active", "deleted", "port-failed", "emergency-only", "ported-out", "port-out-pending",
-	)
-	apijson.RegisterFieldValidator[PhoneNumberJobUpdateBatchParamsFilter](
-		"voice.usage_payment_method", "pay-per-minute", "channel",
-	)
 }
 
 // Filter by voice connection name pattern matching.

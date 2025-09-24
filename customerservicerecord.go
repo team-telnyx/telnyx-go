@@ -457,12 +457,6 @@ func (r CustomerServiceRecordListParamsFilterStatus) URLQuery() (v url.Values, e
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[CustomerServiceRecordListParamsFilterStatus](
-		"eq", "pending", "completed", "failed",
-	)
-}
-
 // Consolidated page parameter (deepObject style). Originally: page[size],
 // page[number]
 type CustomerServiceRecordListParamsPage struct {
@@ -499,12 +493,6 @@ func (r CustomerServiceRecordListParamsSort) URLQuery() (v url.Values, err error
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[CustomerServiceRecordListParamsSort](
-		"value", "created_at", "-created_at",
-	)
 }
 
 type CustomerServiceRecordVerifyPhoneNumberCoverageParams struct {

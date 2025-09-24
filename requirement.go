@@ -236,15 +236,6 @@ func (r RequirementListParamsFilter) URLQuery() (v url.Values, err error) {
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[RequirementListParamsFilter](
-		"action", "branded_calling", "ordering", "porting",
-	)
-	apijson.RegisterFieldValidator[RequirementListParamsFilter](
-		"phone_number_type", "local", "national", "toll_free",
-	)
-}
-
 // Consolidated page parameter (deepObject style). Originally: page[size],
 // page[number]
 type RequirementListParamsPage struct {

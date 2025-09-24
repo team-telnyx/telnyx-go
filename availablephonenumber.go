@@ -245,12 +245,6 @@ func (r AvailablePhoneNumberListParamsFilter) URLQuery() (v url.Values, err erro
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[AvailablePhoneNumberListParamsFilter](
-		"phone_number_type", "local", "toll_free", "mobile", "national", "shared_cost",
-	)
-}
-
 // Filter phone numbers by pattern matching.
 type AvailablePhoneNumberListParamsFilterPhoneNumber struct {
 	// Filter numbers containing a pattern (excludes NDC if used with

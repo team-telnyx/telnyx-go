@@ -206,9 +206,3 @@ func (r AvailablePhoneNumberBlockListParamsFilter) URLQuery() (v url.Values, err
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
-
-func init() {
-	apijson.RegisterFieldValidator[AvailablePhoneNumberBlockListParamsFilter](
-		"phone_number_type", "local", "toll_free", "mobile", "national", "shared_cost",
-	)
-}

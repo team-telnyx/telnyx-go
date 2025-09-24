@@ -156,12 +156,6 @@ func (r PortingPhoneNumberListParamsFilter) URLQuery() (v url.Values, err error)
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[PortingPhoneNumberListParamsFilter](
-		"porting_order_status", "draft", "in-process", "submitted", "exception", "foc-date-confirmed", "cancel-pending", "ported", "cancelled",
-	)
-}
-
 // Consolidated page parameter (deepObject style). Originally: page[size],
 // page[number]
 type PortingPhoneNumberListParamsPage struct {

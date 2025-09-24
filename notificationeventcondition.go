@@ -190,12 +190,6 @@ func (r NotificationEventConditionListParamsFilterAssociatedRecordType) URLQuery
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[NotificationEventConditionListParamsFilterAssociatedRecordType](
-		"eq", "account", "phone_number",
-	)
-}
-
 type NotificationEventConditionListParamsFilterChannelTypeID struct {
 	// Filter by the id of a channel type
 	//
@@ -211,12 +205,6 @@ func (r NotificationEventConditionListParamsFilterChannelTypeID) URLQuery() (v u
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[NotificationEventConditionListParamsFilterChannelTypeID](
-		"eq", "webhook", "sms", "email", "voice",
-	)
 }
 
 type NotificationEventConditionListParamsFilterNotificationChannel struct {
@@ -283,12 +271,6 @@ func (r NotificationEventConditionListParamsFilterStatus) URLQuery() (v url.Valu
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[NotificationEventConditionListParamsFilterStatus](
-		"eq", "enabled", "enable-received", "enable-pending", "enable-submtited", "delete-received", "delete-pending", "delete-submitted", "deleted",
-	)
 }
 
 // Consolidated page parameter (deepObject style). Originally: page[number],

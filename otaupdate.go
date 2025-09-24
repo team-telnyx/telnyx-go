@@ -268,15 +268,6 @@ func (r OtaUpdateListParamsFilter) URLQuery() (v url.Values, err error) {
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[OtaUpdateListParamsFilter](
-		"status", "in-progress", "completed", "failed",
-	)
-	apijson.RegisterFieldValidator[OtaUpdateListParamsFilter](
-		"type", "sim_card_network_preferences",
-	)
-}
-
 // Consolidated pagination parameter (deepObject style). Originally: page[number],
 // page[size]
 type OtaUpdateListParamsPage struct {

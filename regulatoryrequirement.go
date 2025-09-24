@@ -187,12 +187,3 @@ func (r RegulatoryRequirementGetParamsFilter) URLQuery() (v url.Values, err erro
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
-
-func init() {
-	apijson.RegisterFieldValidator[RegulatoryRequirementGetParamsFilter](
-		"action", "ordering", "porting", "action",
-	)
-	apijson.RegisterFieldValidator[RegulatoryRequirementGetParamsFilter](
-		"phone_number_type", "local", "toll_free", "mobile", "national", "shared_cost",
-	)
-}

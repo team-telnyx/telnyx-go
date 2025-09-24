@@ -332,15 +332,6 @@ func (r PhoneNumberBlockJobListParamsFilter) URLQuery() (v url.Values, err error
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[PhoneNumberBlockJobListParamsFilter](
-		"status", "pending", "in_progress", "completed", "failed",
-	)
-	apijson.RegisterFieldValidator[PhoneNumberBlockJobListParamsFilter](
-		"type", "delete_phone_number_block",
-	)
-}
-
 // Consolidated page parameter (deepObject style). Originally: page[size],
 // page[number]
 type PhoneNumberBlockJobListParamsPage struct {
