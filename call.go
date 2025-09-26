@@ -433,6 +433,10 @@ type CallDialParams struct {
 	// api.telnyx.com/v2/media by the same user/organization. The file must either be a
 	// WAV or MP3 file.
 	MediaName param.Opt[string] `json:"media_name,omitzero"`
+	// If supplied with the value `self`, the current leg will be parked after
+	// unbridge. If not set, the default behavior is to hang up the leg. When
+	// park_after_unbridge is set, link_to becomes required.
+	ParkAfterUnbridge param.Opt[string] `json:"park_after_unbridge,omitzero"`
 	// The list of comma-separated codecs in a preferred order for the forked media to
 	// be received.
 	PreferredCodecs param.Opt[string] `json:"preferred_codecs,omitzero"`

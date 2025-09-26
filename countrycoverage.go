@@ -87,6 +87,8 @@ type CountryCoverageGetResponseData struct {
 	PhoneNumberType []string `json:"phone_number_type"`
 	// Supports quickship
 	Quickship bool `json:"quickship"`
+	// Geographic region (e.g., AMER, EMEA, APAC)
+	Region string `json:"region,nullable"`
 	// Supports reservable
 	Reservable bool                                   `json:"reservable"`
 	SharedCost map[string]any                         `json:"shared_cost"`
@@ -104,6 +106,7 @@ type CountryCoverageGetResponseData struct {
 		P2p               respjson.Field
 		PhoneNumberType   respjson.Field
 		Quickship         respjson.Field
+		Region            respjson.Field
 		Reservable        respjson.Field
 		SharedCost        respjson.Field
 		TollFree          respjson.Field
@@ -119,20 +122,22 @@ func (r *CountryCoverageGetResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type CountryCoverageGetResponseDataLocal struct {
-	Features         []string `json:"features"`
-	InternationalSMS bool     `json:"international_sms"`
-	P2p              bool     `json:"p2p"`
-	Quickship        bool     `json:"quickship"`
-	Reservable       bool     `json:"reservable"`
+	Features            []string `json:"features"`
+	FullPstnReplacement bool     `json:"full_pstn_replacement"`
+	InternationalSMS    bool     `json:"international_sms"`
+	P2p                 bool     `json:"p2p"`
+	Quickship           bool     `json:"quickship"`
+	Reservable          bool     `json:"reservable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Features         respjson.Field
-		InternationalSMS respjson.Field
-		P2p              respjson.Field
-		Quickship        respjson.Field
-		Reservable       respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		Features            respjson.Field
+		FullPstnReplacement respjson.Field
+		InternationalSMS    respjson.Field
+		P2p                 respjson.Field
+		Quickship           respjson.Field
+		Reservable          respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -143,20 +148,22 @@ func (r *CountryCoverageGetResponseDataLocal) UnmarshalJSON(data []byte) error {
 }
 
 type CountryCoverageGetResponseDataTollFree struct {
-	Features         []string `json:"features"`
-	InternationalSMS bool     `json:"international_sms"`
-	P2p              bool     `json:"p2p"`
-	Quickship        bool     `json:"quickship"`
-	Reservable       bool     `json:"reservable"`
+	Features            []string `json:"features"`
+	FullPstnReplacement bool     `json:"full_pstn_replacement"`
+	InternationalSMS    bool     `json:"international_sms"`
+	P2p                 bool     `json:"p2p"`
+	Quickship           bool     `json:"quickship"`
+	Reservable          bool     `json:"reservable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Features         respjson.Field
-		InternationalSMS respjson.Field
-		P2p              respjson.Field
-		Quickship        respjson.Field
-		Reservable       respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		Features            respjson.Field
+		FullPstnReplacement respjson.Field
+		InternationalSMS    respjson.Field
+		P2p                 respjson.Field
+		Quickship           respjson.Field
+		Reservable          respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -199,6 +206,8 @@ type CountryCoverageGetCountryResponseData struct {
 	PhoneNumberType []string `json:"phone_number_type"`
 	// Supports quickship
 	Quickship bool `json:"quickship"`
+	// Geographic region (e.g., AMER, EMEA, APAC)
+	Region string `json:"region,nullable"`
 	// Supports reservable
 	Reservable bool                                          `json:"reservable"`
 	SharedCost map[string]any                                `json:"shared_cost"`
@@ -216,6 +225,7 @@ type CountryCoverageGetCountryResponseData struct {
 		P2p               respjson.Field
 		PhoneNumberType   respjson.Field
 		Quickship         respjson.Field
+		Region            respjson.Field
 		Reservable        respjson.Field
 		SharedCost        respjson.Field
 		TollFree          respjson.Field
@@ -231,20 +241,22 @@ func (r *CountryCoverageGetCountryResponseData) UnmarshalJSON(data []byte) error
 }
 
 type CountryCoverageGetCountryResponseDataLocal struct {
-	Features         []string `json:"features"`
-	InternationalSMS bool     `json:"international_sms"`
-	P2p              bool     `json:"p2p"`
-	Quickship        bool     `json:"quickship"`
-	Reservable       bool     `json:"reservable"`
+	Features            []string `json:"features"`
+	FullPstnReplacement bool     `json:"full_pstn_replacement"`
+	InternationalSMS    bool     `json:"international_sms"`
+	P2p                 bool     `json:"p2p"`
+	Quickship           bool     `json:"quickship"`
+	Reservable          bool     `json:"reservable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Features         respjson.Field
-		InternationalSMS respjson.Field
-		P2p              respjson.Field
-		Quickship        respjson.Field
-		Reservable       respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		Features            respjson.Field
+		FullPstnReplacement respjson.Field
+		InternationalSMS    respjson.Field
+		P2p                 respjson.Field
+		Quickship           respjson.Field
+		Reservable          respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -255,20 +267,22 @@ func (r *CountryCoverageGetCountryResponseDataLocal) UnmarshalJSON(data []byte) 
 }
 
 type CountryCoverageGetCountryResponseDataTollFree struct {
-	Features         []string `json:"features"`
-	InternationalSMS bool     `json:"international_sms"`
-	P2p              bool     `json:"p2p"`
-	Quickship        bool     `json:"quickship"`
-	Reservable       bool     `json:"reservable"`
+	Features            []string `json:"features"`
+	FullPstnReplacement bool     `json:"full_pstn_replacement"`
+	InternationalSMS    bool     `json:"international_sms"`
+	P2p                 bool     `json:"p2p"`
+	Quickship           bool     `json:"quickship"`
+	Reservable          bool     `json:"reservable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Features         respjson.Field
-		InternationalSMS respjson.Field
-		P2p              respjson.Field
-		Quickship        respjson.Field
-		Reservable       respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		Features            respjson.Field
+		FullPstnReplacement respjson.Field
+		InternationalSMS    respjson.Field
+		P2p                 respjson.Field
+		Quickship           respjson.Field
+		Reservable          respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 

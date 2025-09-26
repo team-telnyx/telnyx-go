@@ -94,8 +94,14 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			Model:    telnyx.String("model"),
 		},
 		VoiceSettings: telnyx.VoiceSettingsParam{
-			Voice:      "voice",
-			APIKeyRef:  telnyx.String("api_key_ref"),
+			Voice:     "voice",
+			APIKeyRef: telnyx.String("api_key_ref"),
+			BackgroundAudio: telnyx.VoiceSettingsBackgroundAudioUnionParam{
+				OfVoiceSettingsBackgroundAudioObject: &telnyx.VoiceSettingsBackgroundAudioObjectParam{
+					Type:  "predefined_media",
+					Value: "silence",
+				},
+			},
 			VoiceSpeed: telnyx.Float(0),
 		},
 	})
@@ -225,8 +231,14 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				Model:    telnyx.String("model"),
 			},
 			VoiceSettings: telnyx.VoiceSettingsParam{
-				Voice:      "voice",
-				APIKeyRef:  telnyx.String("api_key_ref"),
+				Voice:     "voice",
+				APIKeyRef: telnyx.String("api_key_ref"),
+				BackgroundAudio: telnyx.VoiceSettingsBackgroundAudioUnionParam{
+					OfVoiceSettingsBackgroundAudioObject: &telnyx.VoiceSettingsBackgroundAudioObjectParam{
+						Type:  "predefined_media",
+						Value: "silence",
+					},
+				},
 				VoiceSpeed: telnyx.Float(0),
 			},
 		},
