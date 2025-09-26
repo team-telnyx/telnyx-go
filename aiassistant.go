@@ -944,13 +944,17 @@ type InferenceEmbeddingTransferToolParamsResp struct {
 	Targets []InferenceEmbeddingTransferToolParamsTargetResp `json:"targets,required"`
 	// Custom headers to be added to the SIP INVITE for the transfer command.
 	CustomHeaders []InferenceEmbeddingTransferToolParamsCustomHeaderResp `json:"custom_headers"`
+	// Natural language instructions for your agent for how to provide context for the
+	// transfer recipient.
+	WarmTransferInstructions string `json:"warm_transfer_instructions"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		From          respjson.Field
-		Targets       respjson.Field
-		CustomHeaders respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
+		From                     respjson.Field
+		Targets                  respjson.Field
+		CustomHeaders            respjson.Field
+		WarmTransferInstructions respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
 	} `json:"-"`
 }
 
@@ -1019,6 +1023,9 @@ type InferenceEmbeddingTransferToolParams struct {
 	// The different possible targets of the transfer. The assistant will be able to
 	// choose one of the targets to transfer the call to.
 	Targets []InferenceEmbeddingTransferToolParamsTarget `json:"targets,omitzero,required"`
+	// Natural language instructions for your agent for how to provide context for the
+	// transfer recipient.
+	WarmTransferInstructions param.Opt[string] `json:"warm_transfer_instructions,omitzero"`
 	// Custom headers to be added to the SIP INVITE for the transfer command.
 	CustomHeaders []InferenceEmbeddingTransferToolParamsCustomHeader `json:"custom_headers,omitzero"`
 	paramObj
@@ -1766,17 +1773,22 @@ type VoiceSettings struct {
 	// that refers to your ElevenLabs API key. Warning: Free plans are unlikely to work
 	// with this integration.
 	APIKeyRef string `json:"api_key_ref"`
+	// Optional background audio to play on the call. Use a predefined media bed, or
+	// supply a looped MP3 URL. If a media URL is chosen in the portal, customers can
+	// preview it before saving.
+	BackgroundAudio VoiceSettingsBackgroundAudioUnion `json:"background_audio"`
 	// The speed of the voice in the range [0.25, 2.0]. 1.0 is deafult speed. Larger
 	// numbers make the voice faster, smaller numbers make it slower. This is only
 	// applicable for Telnyx Natural voices.
 	VoiceSpeed float64 `json:"voice_speed"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Voice       respjson.Field
-		APIKeyRef   respjson.Field
-		VoiceSpeed  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		Voice           respjson.Field
+		APIKeyRef       respjson.Field
+		BackgroundAudio respjson.Field
+		VoiceSpeed      respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
 	} `json:"-"`
 }
 
@@ -1793,6 +1805,69 @@ func (r *VoiceSettings) UnmarshalJSON(data []byte) error {
 // VoiceSettingsParam.Overrides()
 func (r VoiceSettings) ToParam() VoiceSettingsParam {
 	return param.Override[VoiceSettingsParam](json.RawMessage(r.RawJSON()))
+}
+
+// VoiceSettingsBackgroundAudioUnion contains all possible properties and values
+// from [VoiceSettingsBackgroundAudioObject], [VoiceSettingsBackgroundAudioObject],
+// [VoiceSettingsBackgroundAudioObject].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type VoiceSettingsBackgroundAudioUnion struct {
+	// This field is from variant [VoiceSettingsBackgroundAudioObject].
+	Type string `json:"type"`
+	// This field is from variant [VoiceSettingsBackgroundAudioObject].
+	Value string `json:"value"`
+	JSON  struct {
+		Type  respjson.Field
+		Value respjson.Field
+		raw   string
+	} `json:"-"`
+}
+
+func (u VoiceSettingsBackgroundAudioUnion) AsVoiceSettingsBackgroundAudioObject() (v VoiceSettingsBackgroundAudioObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u VoiceSettingsBackgroundAudioUnion) AsVariant2() (v VoiceSettingsBackgroundAudioObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u VoiceSettingsBackgroundAudioUnion) AsVariant3() (v VoiceSettingsBackgroundAudioObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u VoiceSettingsBackgroundAudioUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *VoiceSettingsBackgroundAudioUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VoiceSettingsBackgroundAudioObject struct {
+	// Select from predefined media options.
+	//
+	// Any of "predefined_media".
+	Type string `json:"type,required"`
+	// The predefined media to use. `silence` disables background audio.
+	//
+	// Any of "silence", "office".
+	Value string `json:"value,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VoiceSettingsBackgroundAudioObject) RawJSON() string { return r.JSON.raw }
+func (r *VoiceSettingsBackgroundAudioObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property Voice is required.
@@ -1814,6 +1889,10 @@ type VoiceSettingsParam struct {
 	// numbers make the voice faster, smaller numbers make it slower. This is only
 	// applicable for Telnyx Natural voices.
 	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
+	// Optional background audio to play on the call. Use a predefined media bed, or
+	// supply a looped MP3 URL. If a media URL is chosen in the portal, customers can
+	// preview it before saving.
+	BackgroundAudio VoiceSettingsBackgroundAudioUnionParam `json:"background_audio,omitzero"`
 	paramObj
 }
 
@@ -1823,6 +1902,88 @@ func (r VoiceSettingsParam) MarshalJSON() (data []byte, err error) {
 }
 func (r *VoiceSettingsParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type VoiceSettingsBackgroundAudioUnionParam struct {
+	OfVoiceSettingsBackgroundAudioObject *VoiceSettingsBackgroundAudioObjectParam `json:",omitzero,inline"`
+	OfVariant2                           *VoiceSettingsBackgroundAudioObjectParam `json:",omitzero,inline"`
+	OfVariant3                           *VoiceSettingsBackgroundAudioObjectParam `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u VoiceSettingsBackgroundAudioUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfVoiceSettingsBackgroundAudioObject, u.OfVariant2, u.OfVariant3)
+}
+func (u *VoiceSettingsBackgroundAudioUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *VoiceSettingsBackgroundAudioUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfVoiceSettingsBackgroundAudioObject) {
+		return u.OfVoiceSettingsBackgroundAudioObject
+	} else if !param.IsOmitted(u.OfVariant2) {
+		return u.OfVariant2
+	} else if !param.IsOmitted(u.OfVariant3) {
+		return u.OfVariant3
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u VoiceSettingsBackgroundAudioUnionParam) GetType() *string {
+	if vt := u.OfVoiceSettingsBackgroundAudioObject; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfVariant2; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfVariant3; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u VoiceSettingsBackgroundAudioUnionParam) GetValue() *string {
+	if vt := u.OfVoiceSettingsBackgroundAudioObject; vt != nil {
+		return (*string)(&vt.Value)
+	} else if vt := u.OfVariant2; vt != nil {
+		return (*string)(&vt.Value)
+	} else if vt := u.OfVariant3; vt != nil {
+		return (*string)(&vt.Value)
+	}
+	return nil
+}
+
+// The properties Type, Value are required.
+type VoiceSettingsBackgroundAudioObjectParam struct {
+	// Select from predefined media options.
+	//
+	// Any of "predefined_media".
+	Type string `json:"type,omitzero,required"`
+	// The predefined media to use. `silence` disables background audio.
+	//
+	// Any of "silence", "office".
+	Value string `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r VoiceSettingsBackgroundAudioObjectParam) MarshalJSON() (data []byte, err error) {
+	type shadow VoiceSettingsBackgroundAudioObjectParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VoiceSettingsBackgroundAudioObjectParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[VoiceSettingsBackgroundAudioObjectParam](
+		"type", "predefined_media",
+	)
+	apijson.RegisterFieldValidator[VoiceSettingsBackgroundAudioObjectParam](
+		"value", "silence", "office",
+	)
 }
 
 type WebhookTool struct {
