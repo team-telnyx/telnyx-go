@@ -59,7 +59,7 @@ func (r *OAuthGrantService) List(ctx context.Context, query OAuthGrantListParams
 }
 
 // Revoke an OAuth grant
-func (r *OAuthGrantService) Revoke(ctx context.Context, id string, opts ...option.RequestOption) (res *OAuthGrantRevokeResponse, err error) {
+func (r *OAuthGrantService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *OAuthGrantDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -198,8 +198,8 @@ func (r *OAuthGrantListResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type OAuthGrantRevokeResponse struct {
-	Data OAuthGrantRevokeResponseData `json:"data"`
+type OAuthGrantDeleteResponse struct {
+	Data OAuthGrantDeleteResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -209,12 +209,12 @@ type OAuthGrantRevokeResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r OAuthGrantRevokeResponse) RawJSON() string { return r.JSON.raw }
-func (r *OAuthGrantRevokeResponse) UnmarshalJSON(data []byte) error {
+func (r OAuthGrantDeleteResponse) RawJSON() string { return r.JSON.raw }
+func (r *OAuthGrantDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type OAuthGrantRevokeResponseData struct {
+type OAuthGrantDeleteResponseData struct {
 	// Unique identifier for the OAuth grant
 	ID string `json:"id,required" format:"uuid"`
 	// OAuth client identifier
@@ -243,8 +243,8 @@ type OAuthGrantRevokeResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r OAuthGrantRevokeResponseData) RawJSON() string { return r.JSON.raw }
-func (r *OAuthGrantRevokeResponseData) UnmarshalJSON(data []byte) error {
+func (r OAuthGrantDeleteResponseData) RawJSON() string { return r.JSON.raw }
+func (r *OAuthGrantDeleteResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
