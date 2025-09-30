@@ -582,7 +582,8 @@ type BrandNewParams struct {
 	Vertical Vertical `json:"vertical,omitzero,required"`
 	// Business contact email.
 	//
-	// Required if `entityType` is `PUBLIC_PROFIT`.
+	// Required if `entityType` is `PUBLIC_PROFIT`. Otherwise, it is recommended to
+	// either omit this field or set it to `null`.
 	BusinessContactEmail param.Opt[string] `json:"businessContactEmail,omitzero"`
 	// City name
 	City param.Opt[string] `json:"city,omitzero"`
@@ -657,7 +658,8 @@ type BrandUpdateParams struct {
 	AltBusinessID param.Opt[string] `json:"altBusiness_id,omitzero"`
 	// Business contact email.
 	//
-	// Required if `entityType` will be changed to `PUBLIC_PROFIT`.
+	// Required if `entityType` will be changed to `PUBLIC_PROFIT`. Otherwise, it is
+	// recommended to either omit this field or set it to `null`.
 	BusinessContactEmail param.Opt[string] `json:"businessContactEmail,omitzero"`
 	// City name
 	City param.Opt[string] `json:"city,omitzero"`

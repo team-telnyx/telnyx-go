@@ -62,7 +62,7 @@ func TestOAuthGrantListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestOAuthGrantDelete(t *testing.T) {
+func TestOAuthGrantRevoke(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -75,7 +75,7 @@ func TestOAuthGrantDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.OAuthGrants.Delete(context.TODO(), "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+	_, err := client.OAuthGrants.Revoke(context.TODO(), "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

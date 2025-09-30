@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
-func TestVerifiedNumberNew(t *testing.T) {
+func TestVerifiedNumberNewWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -29,6 +29,7 @@ func TestVerifiedNumberNew(t *testing.T) {
 	_, err := client.VerifiedNumbers.New(context.TODO(), telnyx.VerifiedNumberNewParams{
 		PhoneNumber:        "+15551234567",
 		VerificationMethod: telnyx.VerifiedNumberNewParamsVerificationMethodSMS,
+		Extension:          telnyx.String("ww243w1"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

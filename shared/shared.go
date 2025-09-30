@@ -17,50 +17,6 @@ type paramUnion = param.APIUnion
 // aliased to make [param.APIObject] private when embedding
 type paramObj = param.APIObject
 
-type APIError struct {
-	Code   string         `json:"code,required" format:"int64"`
-	Title  string         `json:"title,required"`
-	Detail string         `json:"detail"`
-	Meta   map[string]any `json:"meta"`
-	Source APIErrorSource `json:"source"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Title       respjson.Field
-		Detail      respjson.Field
-		Meta        respjson.Field
-		Source      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r APIError) RawJSON() string { return r.JSON.raw }
-func (r *APIError) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type APIErrorSource struct {
-	// Indicates which query parameter caused the error.
-	Parameter string `json:"parameter"`
-	// JSON pointer (RFC6901) to the offending entity.
-	Pointer string `json:"pointer" format:"json-pointer"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Parameter   respjson.Field
-		Pointer     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r APIErrorSource) RawJSON() string { return r.JSON.raw }
-func (r *APIErrorSource) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type ConnectionsPaginationMeta struct {
 	PageNumber   int64 `json:"page_number"`
 	PageSize     int64 `json:"page_size"`
