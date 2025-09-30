@@ -11,12 +11,12 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/option"
-	"github.com/team-telnyx/telnyx-go/packages/param"
-	"github.com/team-telnyx/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
 // CallControlApplicationService contains methods and other services that help with
@@ -675,18 +675,6 @@ func (r CallControlApplicationListParamsFilter) URLQuery() (v url.Values, err er
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[CallControlApplicationListParamsFilter](
-		"product", "call_control", "fax", "texml",
-	)
-	apijson.RegisterFieldValidator[CallControlApplicationListParamsFilter](
-		"status", "init", "in_progress", "completed",
-	)
-	apijson.RegisterFieldValidator[CallControlApplicationListParamsFilter](
-		"type", "command", "webhook",
-	)
 }
 
 // Application name filters

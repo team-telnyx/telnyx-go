@@ -9,11 +9,11 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/option"
-	"github.com/team-telnyx/telnyx-go/packages/param"
-	"github.com/team-telnyx/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
 // VerificationService contains methods and other services that help with
@@ -190,6 +190,9 @@ type VerificationTriggerCallParams struct {
 	VerifyProfileID string `json:"verify_profile_id,required" format:"uuid"`
 	// Send a self-generated numeric code to the end-user
 	CustomCode param.Opt[string] `json:"custom_code,omitzero"`
+	// Optional extension to dial after call is answered using DTMF digits. Valid
+	// digits are 0-9, A-D, \*, and #. Pauses can be added using w (0.5s) and W (1s).
+	Extension param.Opt[string] `json:"extension,omitzero"`
 	// The number of seconds the verification code is valid for.
 	TimeoutSecs param.Opt[int64] `json:"timeout_secs,omitzero"`
 	paramObj

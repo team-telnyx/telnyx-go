@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go"
-	"github.com/team-telnyx/telnyx-go/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/option"
+	"github.com/team-telnyx/telnyx-go/v3"
+	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
 func TestVerificationGet(t *testing.T) {
@@ -53,6 +53,7 @@ func TestVerificationTriggerCallWithOptionalParams(t *testing.T) {
 		PhoneNumber:     "+13035551234",
 		VerifyProfileID: "12ade33a-21c0-473b-b055-b3c836e1c292",
 		CustomCode:      telnyx.String("43612"),
+		Extension:       telnyx.String("1www2WABCDw9"),
 		TimeoutSecs:     telnyx.Int(300),
 	})
 	if err != nil {

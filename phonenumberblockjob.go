@@ -11,12 +11,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/option"
-	"github.com/team-telnyx/telnyx-go/packages/param"
-	"github.com/team-telnyx/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
 // PhoneNumberBlockJobService contains methods and other services that help with
@@ -330,15 +330,6 @@ func (r PhoneNumberBlockJobListParamsFilter) URLQuery() (v url.Values, err error
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[PhoneNumberBlockJobListParamsFilter](
-		"status", "pending", "in_progress", "completed", "failed",
-	)
-	apijson.RegisterFieldValidator[PhoneNumberBlockJobListParamsFilter](
-		"type", "delete_phone_number_block",
-	)
 }
 
 // Consolidated page parameter (deepObject style). Originally: page[size],

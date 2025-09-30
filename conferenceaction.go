@@ -10,12 +10,12 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/internal/apijson"
-	shimjson "github.com/team-telnyx/telnyx-go/internal/encoding/json"
-	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/option"
-	"github.com/team-telnyx/telnyx-go/packages/param"
-	"github.com/team-telnyx/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
 // ConferenceActionService contains methods and other services that help with
@@ -67,9 +67,7 @@ func (r *ConferenceActionService) Hold(ctx context.Context, id string, body Conf
 // certain amount of active participants, as set by the `max_participants`
 // parameter in conference creation request.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/join-conference#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `conference.participant.joined`
 // - `conference.participant.left`
@@ -86,9 +84,7 @@ func (r *ConferenceActionService) Join(ctx context.Context, id string, body Conf
 
 // Removes a call leg from a conference and moves it back to parked state.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/leave-conference#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `conference.participant.left`
 func (r *ConferenceActionService) Leave(ctx context.Context, id string, body ConferenceActionLeaveParams, opts ...option.RequestOption) (res *ConferenceActionLeaveResponse, err error) {
@@ -153,9 +149,7 @@ func (r *ConferenceActionService) RecordResume(ctx context.Context, id string, b
 // Start recording the conference. Recording will stop on conference end, or via
 // the Stop Recording command.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/start-conference-recording#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `conference.recording.saved`
 func (r *ConferenceActionService) RecordStart(ctx context.Context, id string, body ConferenceActionRecordStartParams, opts ...option.RequestOption) (res *ConferenceActionRecordStartResponse, err error) {
@@ -171,9 +165,7 @@ func (r *ConferenceActionService) RecordStart(ctx context.Context, id string, bo
 
 // Stop recording the conference.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/stop-conference-recording#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `conference.recording.saved`
 func (r *ConferenceActionService) RecordStop(ctx context.Context, id string, body ConferenceActionRecordStopParams, opts ...option.RequestOption) (res *ConferenceActionRecordStopResponse, err error) {

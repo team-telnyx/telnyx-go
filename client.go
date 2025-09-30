@@ -4,14 +4,12 @@ package telnyx
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"net/http"
 	"os"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/option"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
 // Client creates a struct with services and top level methods that help with
@@ -19,6 +17,10 @@ import (
 // directly, and instead use the [NewClient] method instead.
 type Client struct {
 	Options                            []option.RequestOption
+	Legacy                             LegacyService
+	OAuth                              OAuthService
+	OAuthClients                       OAuthClientService
+	OAuthGrants                        OAuthGrantService
 	Webhooks                           WebhookService
 	AccessIPAddress                    AccessIPAddressService
 	AccessIPRanges                     AccessIPRangeService
@@ -167,6 +169,7 @@ type Client struct {
 	WirelessBlocklistValues            WirelessBlocklistValueService
 	WirelessBlocklists                 WirelessBlocklistService
 	PartnerCampaigns                   PartnerCampaignService
+	WellKnown                          WellKnownService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -191,6 +194,10 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 
 	r = Client{Options: opts}
 
+	r.Legacy = NewLegacyService(opts...)
+	r.OAuth = NewOAuthService(opts...)
+	r.OAuthClients = NewOAuthClientService(opts...)
+	r.OAuthGrants = NewOAuthGrantService(opts...)
 	r.Webhooks = NewWebhookService(opts...)
 	r.AccessIPAddress = NewAccessIPAddressService(opts...)
 	r.AccessIPRanges = NewAccessIPRangeService(opts...)
@@ -339,6 +346,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.WirelessBlocklistValues = NewWirelessBlocklistValueService(opts...)
 	r.WirelessBlocklists = NewWirelessBlocklistService(opts...)
 	r.PartnerCampaigns = NewPartnerCampaignService(opts...)
+	r.WellKnown = NewWellKnownService(opts...)
 
 	return
 }
@@ -410,116 +418,4 @@ func (r *Client) Patch(ctx context.Context, path string, params any, res any, op
 // response.
 func (r *Client) Delete(ctx context.Context, path string, params any, res any, opts ...option.RequestOption) error {
 	return r.Execute(ctx, http.MethodDelete, path, params, res, opts...)
-}
-
-// Create a bucket.
-func (r *Client) NewBucket(ctx context.Context, bucketName string, body NewBucketParams, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	if bucketName == "" {
-		err = errors.New("missing required bucketName parameter")
-		return
-	}
-	path := fmt.Sprintf("%s", bucketName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, nil, opts...)
-	return
-}
-
-// Deletes a bucket. The bucket must be empty for it to be deleted.
-func (r *Client) DeleteBucket(ctx context.Context, bucketName string, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	if bucketName == "" {
-		err = errors.New("missing required bucketName parameter")
-		return
-	}
-	path := fmt.Sprintf("%s", bucketName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
-}
-
-// Delete an object from a given bucket.
-func (r *Client) DeleteObject(ctx context.Context, objectName string, body DeleteObjectParams, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	if body.BucketName == "" {
-		err = errors.New("missing required bucketName parameter")
-		return
-	}
-	if objectName == "" {
-		err = errors.New("missing required objectName parameter")
-		return
-	}
-	path := fmt.Sprintf("%s/%s", body.BucketName, objectName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
-}
-
-// Deletes one or multiple objects from a given bucket.
-func (r *Client) DeleteObjects(ctx context.Context, bucketName string, params DeleteObjectsParams, opts ...option.RequestOption) (res *DeleteObjectsResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/xml")}, opts...)
-	if bucketName == "" {
-		err = errors.New("missing required bucketName parameter")
-		return
-	}
-	path := fmt.Sprintf("%s", bucketName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
-}
-
-// Retrieves an object from a given bucket.
-func (r *Client) GetObject(ctx context.Context, objectName string, params GetObjectParams, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
-	if params.BucketName == "" {
-		err = errors.New("missing required bucketName parameter")
-		return
-	}
-	if objectName == "" {
-		err = errors.New("missing required objectName parameter")
-		return
-	}
-	path := fmt.Sprintf("%s/%s", params.BucketName, objectName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return
-}
-
-// List all Buckets.
-func (r *Client) ListBuckets(ctx context.Context, opts ...option.RequestOption) (res *ListBucketsResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/xml")}, opts...)
-	path := ""
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
-// List all objects contained in a given bucket.
-func (r *Client) ListObjects(ctx context.Context, bucketName string, query ListObjectsParams, opts ...option.RequestOption) (res *ListObjectsResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/xml")}, opts...)
-	if bucketName == "" {
-		err = errors.New("missing required bucketName parameter")
-		return
-	}
-	path := fmt.Sprintf("%s", bucketName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
-}
-
-// Add an object to a bucket.
-func (r *Client) PutObject(ctx context.Context, objectName string, params PutObjectParams, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	if params.BucketName == "" {
-		err = errors.New("missing required bucketName parameter")
-		return
-	}
-	if objectName == "" {
-		err = errors.New("missing required objectName parameter")
-		return
-	}
-	path := fmt.Sprintf("%s/%s", params.BucketName, objectName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, nil, opts...)
-	return
 }

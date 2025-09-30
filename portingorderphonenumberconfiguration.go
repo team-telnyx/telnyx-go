@@ -9,12 +9,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/option"
-	"github.com/team-telnyx/telnyx-go/packages/param"
-	"github.com/team-telnyx/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
 // PortingOrderPhoneNumberConfigurationService contains methods and other services
@@ -207,11 +207,7 @@ func (r PortingOrderPhoneNumberConfigurationListParams) URLQuery() (v url.Values
 // filter[porting_order.status][in][], filter[porting_phone_number][in][],
 // filter[user_bundle_id][in][]
 type PortingOrderPhoneNumberConfigurationListParamsFilter struct {
-	// Filter results by specific porting order statuses
-	//
-	// Any of "activation-in-progress", "cancel-pending", "cancelled", "draft",
-	// "exception", "foc-date-confirmed", "in-process", "ported", "submitted".
-	PortingOrderStatus []string `query:"porting_order.status,omitzero" json:"-"`
+	PortingOrder PortingOrderPhoneNumberConfigurationListParamsFilterPortingOrder `query:"porting_order,omitzero" json:"-"`
 	// Filter results by a list of porting phone number IDs
 	PortingPhoneNumber []string `query:"porting_phone_number,omitzero" format:"uuid" json:"-"`
 	// Filter results by a list of user bundle IDs
@@ -222,6 +218,25 @@ type PortingOrderPhoneNumberConfigurationListParamsFilter struct {
 // URLQuery serializes [PortingOrderPhoneNumberConfigurationListParamsFilter]'s
 // query parameters as `url.Values`.
 func (r PortingOrderPhoneNumberConfigurationListParamsFilter) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type PortingOrderPhoneNumberConfigurationListParamsFilterPortingOrder struct {
+	// Filter results by specific porting order statuses
+	//
+	// Any of "activation-in-progress", "cancel-pending", "cancelled", "draft",
+	// "exception", "foc-date-confirmed", "in-process", "ported", "submitted".
+	Status []string `query:"status,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes
+// [PortingOrderPhoneNumberConfigurationListParamsFilterPortingOrder]'s query
+// parameters as `url.Values`.
+func (r PortingOrderPhoneNumberConfigurationListParamsFilterPortingOrder) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
@@ -264,10 +279,4 @@ func (r PortingOrderPhoneNumberConfigurationListParamsSort) URLQuery() (v url.Va
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[PortingOrderPhoneNumberConfigurationListParamsSort](
-		"value", "created_at", "-created_at",
-	)
 }

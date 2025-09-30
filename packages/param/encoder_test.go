@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 )
 
 type Struct struct {

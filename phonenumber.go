@@ -10,12 +10,12 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/option"
-	"github.com/team-telnyx/telnyx-go/packages/param"
-	"github.com/team-telnyx/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
 // PhoneNumberService contains methods and other services that help with
@@ -128,6 +128,9 @@ type PhoneNumberDetailed struct {
 	CreatedAt string `json:"created_at"`
 	// A customer reference string for customer look ups.
 	CustomerReference string `json:"customer_reference"`
+	// Indicates whether deletion lock is enabled for this number. When enabled, this
+	// prevents the phone number from being deleted via the API or Telnyx portal.
+	DeletionLockEnabled bool `json:"deletion_lock_enabled"`
 	// Identifies the emergency address associated with the phone number.
 	EmergencyAddressID string `json:"emergency_address_id"`
 	// Indicates whether emergency services are enabled for this number.
@@ -198,6 +201,7 @@ type PhoneNumberDetailed struct {
 		CountryISOAlpha2      respjson.Field
 		CreatedAt             respjson.Field
 		CustomerReference     respjson.Field
+		DeletionLockEnabled   respjson.Field
 		EmergencyAddressID    respjson.Field
 		EmergencyEnabled      respjson.Field
 		EmergencyStatus       respjson.Field
@@ -386,6 +390,9 @@ type PhoneNumberDeleteResponseData struct {
 	CreatedAt string `json:"created_at"`
 	// A customer reference string for customer look ups.
 	CustomerReference string `json:"customer_reference"`
+	// Indicates whether deletion lock is enabled for this number. When enabled, this
+	// prevents the phone number from being deleted via the API or Telnyx portal.
+	DeletionLockEnabled bool `json:"deletion_lock_enabled"`
 	// Identifies the emergency address associated with the phone number.
 	EmergencyAddressID string `json:"emergency_address_id"`
 	// Indicates whether emergency services are enabled for this number.
@@ -433,6 +440,7 @@ type PhoneNumberDeleteResponseData struct {
 		ConnectionName        respjson.Field
 		CreatedAt             respjson.Field
 		CustomerReference     respjson.Field
+		DeletionLockEnabled   respjson.Field
 		EmergencyAddressID    respjson.Field
 		EmergencyEnabled      respjson.Field
 		ExternalPin           respjson.Field
@@ -678,6 +686,11 @@ type PhoneNumberListParamsFilter struct {
 	//
 	// Any of "pay-per-minute", "channel".
 	VoiceUsagePaymentMethod string `query:"voice.usage_payment_method,omitzero" json:"-"`
+	// When set to 'true', filters for phone numbers that do not have any tags applied.
+	// All other values are ignored.
+	//
+	// Any of "true", "false".
+	WithoutTags string `query:"without_tags,omitzero" json:"-"`
 	paramObj
 }
 
@@ -688,18 +701,6 @@ func (r PhoneNumberListParamsFilter) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[PhoneNumberListParamsFilter](
-		"source", "ported", "purchased",
-	)
-	apijson.RegisterFieldValidator[PhoneNumberListParamsFilter](
-		"status", "purchase-pending", "purchase-failed", "port-pending", "active", "deleted", "port-failed", "emergency-only", "ported-out", "port-out-pending",
-	)
-	apijson.RegisterFieldValidator[PhoneNumberListParamsFilter](
-		"voice.usage_payment_method", "pay-per-minute", "channel",
-	)
 }
 
 // Only one field can be non-zero.
@@ -736,12 +737,6 @@ func (r PhoneNumberListParamsFilterNumberType) URLQuery() (v url.Values, err err
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[PhoneNumberListParamsFilterNumberType](
-		"eq", "local", "national", "toll_free", "mobile", "shared_cost",
-	)
 }
 
 // Filter by voice connection name pattern matching.
@@ -887,18 +882,6 @@ func (r PhoneNumberSlimListParamsFilter) URLQuery() (v url.Values, err error) {
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[PhoneNumberSlimListParamsFilter](
-		"source", "ported", "purchased",
-	)
-	apijson.RegisterFieldValidator[PhoneNumberSlimListParamsFilter](
-		"status", "purchase-pending", "purchase-failed", "port_pending", "active", "deleted", "port-failed", "emergency-only", "ported-out", "port-out-pending",
-	)
-	apijson.RegisterFieldValidator[PhoneNumberSlimListParamsFilter](
-		"voice.usage_payment_method", "pay-per-minute", "channel",
-	)
-}
-
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
@@ -933,12 +916,6 @@ func (r PhoneNumberSlimListParamsFilterNumberType) URLQuery() (v url.Values, err
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[PhoneNumberSlimListParamsFilterNumberType](
-		"eq", "local", "national", "toll_free", "mobile", "shared_cost",
-	)
 }
 
 // Filter by voice connection name pattern matching (requires include_connection

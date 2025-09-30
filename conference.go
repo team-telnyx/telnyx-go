@@ -10,12 +10,12 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/option"
-	"github.com/team-telnyx/telnyx-go/packages/param"
-	"github.com/team-telnyx/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
 // ConferenceService contains methods and other services that help with interacting
@@ -45,9 +45,7 @@ func NewConferenceService(opts ...option.RequestOption) (r ConferenceService) {
 // left the conference or after 4 hours regardless of the number of active
 // participants.
 //
-// **Expected Webhooks (see
-// [callback schema](https://developers.telnyx.com/api/call-control/create-conference#callbacks)
-// below):**
+// **Expected Webhooks:**
 //
 // - `conference.created`
 // - `conference.participant.joined`
@@ -475,18 +473,6 @@ func (r ConferenceListParamsFilter) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ConferenceListParamsFilter](
-		"product", "call_control", "fax", "texml",
-	)
-	apijson.RegisterFieldValidator[ConferenceListParamsFilter](
-		"status", "init", "in_progress", "completed",
-	)
-	apijson.RegisterFieldValidator[ConferenceListParamsFilter](
-		"type", "command", "webhook",
-	)
 }
 
 // Application name filters

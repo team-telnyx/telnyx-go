@@ -3,21 +3,17 @@
 package telnyx_test
 
 import (
-	"bytes"
 	"context"
 	"errors"
-	"io"
-	"net/http"
-	"net/http/httptest"
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go"
-	"github.com/team-telnyx/telnyx-go/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/option"
+	"github.com/team-telnyx/telnyx-go/v3"
+	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
-func TestTelnyxNewBucketWithOptionalParams(t *testing.T) {
+func TestOAuthGet(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -30,13 +26,7 @@ func TestTelnyxNewBucketWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.NewBucket(
-		context.TODO(),
-		"mybucket",
-		telnyx.NewBucketParams{
-			LocationConstraint: telnyx.String("LocationConstraint"),
-		},
-	)
+	_, err := client.OAuth.Get(context.TODO(), "consent_token")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -46,7 +36,7 @@ func TestTelnyxNewBucketWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestTelnyxDeleteBucket(t *testing.T) {
+func TestOAuthGrants(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -59,7 +49,10 @@ func TestTelnyxDeleteBucket(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.DeleteBucket(context.TODO(), "bucketName")
+	_, err := client.OAuth.Grants(context.TODO(), telnyx.OAuthGrantsParams{
+		Allowed:      true,
+		ConsentToken: "consent_token",
+	})
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -69,7 +62,7 @@ func TestTelnyxDeleteBucket(t *testing.T) {
 	}
 }
 
-func TestTelnyxDeleteObject(t *testing.T) {
+func TestOAuthIntrospect(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -82,13 +75,9 @@ func TestTelnyxDeleteObject(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.DeleteObject(
-		context.TODO(),
-		"x",
-		telnyx.DeleteObjectParams{
-			BucketName: "bucketName",
-		},
-	)
+	_, err := client.OAuth.Introspect(context.TODO(), telnyx.OAuthIntrospectParams{
+		Token: "token",
+	})
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -98,7 +87,7 @@ func TestTelnyxDeleteObject(t *testing.T) {
 	}
 }
 
-func TestTelnyxDeleteObjects(t *testing.T) {
+func TestOAuthRegisterWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -111,16 +100,17 @@ func TestTelnyxDeleteObjects(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.DeleteObjects(
-		context.TODO(),
-		"bucketName",
-		telnyx.DeleteObjectsParams{
-			Delete: true,
-			Body: []telnyx.DeleteObjectsParamsBody{{
-				Key: telnyx.String("Key"),
-			}},
-		},
-	)
+	_, err := client.OAuth.Register(context.TODO(), telnyx.OAuthRegisterParams{
+		ClientName:              telnyx.String("My OAuth Application"),
+		GrantTypes:              []string{"authorization_code"},
+		LogoUri:                 telnyx.String("https://example.com"),
+		PolicyUri:               telnyx.String("https://example.com"),
+		RedirectUris:            []string{"https://example.com/callback"},
+		ResponseTypes:           []string{"string"},
+		Scope:                   telnyx.String("admin"),
+		TokenEndpointAuthMethod: telnyx.OAuthRegisterParamsTokenEndpointAuthMethodNone,
+		TosUri:                  telnyx.String("https://example.com"),
+	})
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -130,48 +120,38 @@ func TestTelnyxDeleteObjects(t *testing.T) {
 	}
 }
 
-func TestTelnyxGetObjectWithOptionalParams(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(200)
-		w.Write([]byte("abc"))
-	}))
-	defer server.Close()
-	baseURL := server.URL
+func TestOAuthGetAuthorizeWithOptionalParams(t *testing.T) {
+	t.Skip("Prism doesn't properly handle redirects")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
 	client := telnyx.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	resp, err := client.GetObject(
-		context.TODO(),
-		"x",
-		telnyx.GetObjectParams{
-			BucketName: "bucketName",
-			UploadID:   telnyx.String("uploadId"),
-		},
-	)
+	err := client.OAuth.GetAuthorize(context.TODO(), telnyx.OAuthGetAuthorizeParams{
+		ClientID:            "client_id",
+		RedirectUri:         "https://example.com",
+		ResponseType:        telnyx.OAuthGetAuthorizeParamsResponseTypeCode,
+		CodeChallenge:       telnyx.String("code_challenge"),
+		CodeChallengeMethod: telnyx.OAuthGetAuthorizeParamsCodeChallengeMethodPlain,
+		Scope:               telnyx.String("scope"),
+		State:               telnyx.String("state"),
+	})
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
 		t.Fatalf("err should be nil: %s", err.Error())
-	}
-	defer resp.Body.Close()
-
-	b, err := io.ReadAll(resp.Body)
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-	if !bytes.Equal(b, []byte("abc")) {
-		t.Fatalf("return value not %s: %s", "abc", b)
 	}
 }
 
-func TestTelnyxListBuckets(t *testing.T) {
+func TestOAuthGetJwks(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -184,7 +164,7 @@ func TestTelnyxListBuckets(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ListBuckets(context.TODO())
+	_, err := client.OAuth.GetJwks(context.TODO())
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -194,7 +174,7 @@ func TestTelnyxListBuckets(t *testing.T) {
 	}
 }
 
-func TestTelnyxListObjectsWithOptionalParams(t *testing.T) {
+func TestOAuthTokenWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -207,45 +187,16 @@ func TestTelnyxListObjectsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ListObjects(
-		context.TODO(),
-		"xxxx",
-		telnyx.ListObjectsParams{
-			ListType: 2,
-		},
-	)
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestTelnyxPutObjectWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	err := client.PutObject(
-		context.TODO(),
-		"x",
-		telnyx.PutObjectParams{
-			BucketName: "bucketName",
-			Body:       io.Reader(bytes.NewBuffer([]byte("some file contents"))),
-			PartNumber: telnyx.String("partNumber"),
-			UploadID:   telnyx.String("uploadId"),
-		},
-	)
+	_, err := client.OAuth.Token(context.TODO(), telnyx.OAuthTokenParams{
+		GrantType:    telnyx.OAuthTokenParamsGrantTypeClientCredentials,
+		ClientID:     telnyx.String("client_id"),
+		ClientSecret: telnyx.String("client_secret"),
+		Code:         telnyx.String("code"),
+		CodeVerifier: telnyx.String("code_verifier"),
+		RedirectUri:  telnyx.String("https://example.com"),
+		RefreshToken: telnyx.String("refresh_token"),
+		Scope:        telnyx.String("admin"),
+	})
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

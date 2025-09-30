@@ -4,15 +4,20 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"strings"
 	"time"
 
-	shimjson "github.com/team-telnyx/telnyx-go/internal/encoding/json"
+	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
 
 	"github.com/tidwall/sjson"
 )
 
 // EncodedAsDate is not be stable and shouldn't be relied upon
 type EncodedAsDate Opt[time.Time]
+
+// If we want to set a literal key value into JSON using sjson, we need to make sure it doesn't have
+// special characters that sjson interprets as a path.
+var EscapeSJSONKey = strings.NewReplacer("\\", "\\\\", "|", "\\|", "#", "\\#", "@", "\\@", "*", "\\*", ".", "\\.", ":", "\\:", "?", "\\?").Replace
 
 type forceOmit int
 
@@ -52,7 +57,7 @@ func MarshalWithExtras[T ParamStruct, R any](f T, underlying any, extras map[str
 				}
 				continue
 			}
-			bytes, err = sjson.SetBytes(bytes, k, v)
+			bytes, err = sjson.SetBytes(bytes, EscapeSJSONKey(k), v)
 			if err != nil {
 				return nil, err
 			}

@@ -11,12 +11,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/option"
-	"github.com/team-telnyx/telnyx-go/packages/param"
-	"github.com/team-telnyx/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
 // CampaignService contains methods and other services that help with interacting
@@ -692,14 +692,11 @@ func (r *CampaignGetSharingStatusResponse) UnmarshalJSON(data []byte) error {
 type CampaignSubmitAppealResponse struct {
 	// Timestamp when the appeal was submitted
 	AppealedAt time.Time `json:"appealed_at" format:"date-time"`
-	// Previous campaign status (currently always null)
-	PreviousStatus string `json:"previous_status,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AppealedAt     respjson.Field
-		PreviousStatus respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
+		AppealedAt  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 

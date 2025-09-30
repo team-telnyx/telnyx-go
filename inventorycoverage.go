@@ -8,12 +8,12 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/option"
-	"github.com/team-telnyx/telnyx-go/packages/param"
-	"github.com/team-telnyx/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
 // InventoryCoverageService contains methods and other services that help with
@@ -175,16 +175,4 @@ func (r InventoryCoverageListParamsFilter) URLQuery() (v url.Values, err error) 
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[InventoryCoverageListParamsFilter](
-		"country_code", "AT", "AU", "BE", "BG", "CA", "CH", "CN", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", "GB", "GR", "HU", "HR", "IE", "IT", "LT", "LU", "LV", "NL", "NZ", "MX", "NO", "PL", "PT", "RO", "SE", "SG", "SI", "SK", "US",
-	)
-	apijson.RegisterFieldValidator[InventoryCoverageListParamsFilter](
-		"groupBy", "locality", "npa", "national_destination_code",
-	)
-	apijson.RegisterFieldValidator[InventoryCoverageListParamsFilter](
-		"phone_number_type", "local", "toll_free", "national", "mobile", "landline", "shared_cost",
-	)
 }

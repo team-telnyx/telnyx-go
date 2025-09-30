@@ -1,4 +1,4 @@
-module github.com/team-telnyx/telnyx-go
+module github.com/team-telnyx/telnyx-go/v3
 
 go 1.22
 

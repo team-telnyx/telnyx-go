@@ -2,7 +2,7 @@
 
 <!-- x-release-please-start-version -->
 
-<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go"><img src="https://pkg.go.dev/badge/github.com/team-telnyx/telnyx-go.svg" alt="Go Reference"></a>
+<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3"><img src="https://pkg.go.dev/badge/github.com/team-telnyx/telnyx-go.svg" alt="Go Reference"></a>
 
 <!-- x-release-please-end -->
 
@@ -17,7 +17,7 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 ```go
 import (
-	"github.com/team-telnyx/telnyx-go" // imported as telnyx
+	"github.com/team-telnyx/telnyx-go/v3" // imported as telnyx
 )
 ```
 
@@ -28,7 +28,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/team-telnyx/telnyx-go@v0.0.1'
+go get -u 'github.com/team-telnyx/telnyx-go@v3.0.0'
 ```
 
 <!-- x-release-please-end -->
@@ -48,8 +48,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/team-telnyx/telnyx-go"
-	"github.com/team-telnyx/telnyx-go/option"
+	"github.com/team-telnyx/telnyx-go/v3"
+	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
 func main() {

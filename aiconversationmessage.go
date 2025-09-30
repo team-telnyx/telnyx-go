@@ -10,11 +10,10 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/option"
-	"github.com/team-telnyx/telnyx-go/packages/param"
-	"github.com/team-telnyx/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
 // AIConversationMessageService contains methods and other services that help with
@@ -36,19 +35,6 @@ func NewAIConversationMessageService(opts ...option.RequestOption) (r AIConversa
 	return
 }
 
-// Add a new message to the conversation. Used to insert a new messages to a
-// conversation manually ( without using chat endpoint )
-func (r *AIConversationMessageService) New(ctx context.Context, conversationID string, body AIConversationMessageNewParams, opts ...option.RequestOption) (res *AIConversationMessageNewResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	if conversationID == "" {
-		err = errors.New("missing required conversation_id parameter")
-		return
-	}
-	path := fmt.Sprintf("ai/conversations/%s/messages", conversationID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
-}
-
 // Retrieve messages for a specific conversation, including tool calls made by the
 // assistant.
 func (r *AIConversationMessageService) List(ctx context.Context, conversationID string, opts ...option.RequestOption) (res *AIConversationMessageListResponse, err error) {
@@ -61,8 +47,6 @@ func (r *AIConversationMessageService) List(ctx context.Context, conversationID 
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
-
-type AIConversationMessageNewResponse = any
 
 type AIConversationMessageListResponse struct {
 	Data []AIConversationMessageListResponseData `json:"data,required"`
@@ -157,83 +141,4 @@ type AIConversationMessageListResponseDataToolCallFunction struct {
 func (r AIConversationMessageListResponseDataToolCallFunction) RawJSON() string { return r.JSON.raw }
 func (r *AIConversationMessageListResponseDataToolCallFunction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIConversationMessageNewParams struct {
-	Role       string                                                 `json:"role,required"`
-	Content    param.Opt[string]                                      `json:"content,omitzero"`
-	Name       param.Opt[string]                                      `json:"name,omitzero"`
-	SentAt     param.Opt[time.Time]                                   `json:"sent_at,omitzero" format:"date-time"`
-	ToolCallID param.Opt[string]                                      `json:"tool_call_id,omitzero"`
-	Metadata   map[string]AIConversationMessageNewParamsMetadataUnion `json:"metadata,omitzero"`
-	ToolCalls  []map[string]any                                       `json:"tool_calls,omitzero"`
-	ToolChoice any                                                    `json:"tool_choice,omitzero"`
-	paramObj
-}
-
-func (r AIConversationMessageNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow AIConversationMessageNewParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AIConversationMessageNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type AIConversationMessageNewParamsMetadataUnion struct {
-	OfString                                 param.Opt[string]                                      `json:",omitzero,inline"`
-	OfInt                                    param.Opt[int64]                                       `json:",omitzero,inline"`
-	OfBool                                   param.Opt[bool]                                        `json:",omitzero,inline"`
-	OfAIConversationMessageNewsMetadataArray []AIConversationMessageNewParamsMetadataArrayItemUnion `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u AIConversationMessageNewParamsMetadataUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfString, u.OfInt, u.OfBool, u.OfAIConversationMessageNewsMetadataArray)
-}
-func (u *AIConversationMessageNewParamsMetadataUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *AIConversationMessageNewParamsMetadataUnion) asAny() any {
-	if !param.IsOmitted(u.OfString) {
-		return &u.OfString.Value
-	} else if !param.IsOmitted(u.OfInt) {
-		return &u.OfInt.Value
-	} else if !param.IsOmitted(u.OfBool) {
-		return &u.OfBool.Value
-	} else if !param.IsOmitted(u.OfAIConversationMessageNewsMetadataArray) {
-		return &u.OfAIConversationMessageNewsMetadataArray
-	}
-	return nil
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type AIConversationMessageNewParamsMetadataArrayItemUnion struct {
-	OfString param.Opt[string] `json:",omitzero,inline"`
-	OfInt    param.Opt[int64]  `json:",omitzero,inline"`
-	OfBool   param.Opt[bool]   `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u AIConversationMessageNewParamsMetadataArrayItemUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfString, u.OfInt, u.OfBool)
-}
-func (u *AIConversationMessageNewParamsMetadataArrayItemUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *AIConversationMessageNewParamsMetadataArrayItemUnion) asAny() any {
-	if !param.IsOmitted(u.OfString) {
-		return &u.OfString.Value
-	} else if !param.IsOmitted(u.OfInt) {
-		return &u.OfInt.Value
-	} else if !param.IsOmitted(u.OfBool) {
-		return &u.OfBool.Value
-	}
-	return nil
 }

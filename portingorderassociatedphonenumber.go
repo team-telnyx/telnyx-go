@@ -11,12 +11,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/option"
-	"github.com/team-telnyx/telnyx-go/packages/param"
-	"github.com/team-telnyx/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
 // PortingOrderAssociatedPhoneNumberService contains methods and other services
@@ -302,12 +302,6 @@ func (r PortingOrderAssociatedPhoneNumberListParamsFilter) URLQuery() (v url.Val
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[PortingOrderAssociatedPhoneNumberListParamsFilter](
-		"action", "keep", "disconnect",
-	)
-}
-
 // Consolidated page parameter (deepObject style). Originally: page[size],
 // page[number]
 type PortingOrderAssociatedPhoneNumberListParamsPage struct {
@@ -344,12 +338,6 @@ func (r PortingOrderAssociatedPhoneNumberListParamsSort) URLQuery() (v url.Value
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[PortingOrderAssociatedPhoneNumberListParamsSort](
-		"value", "-created_at", "created_at",
-	)
 }
 
 type PortingOrderAssociatedPhoneNumberDeleteParams struct {

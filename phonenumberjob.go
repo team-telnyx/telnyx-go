@@ -11,12 +11,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/option"
-	"github.com/team-telnyx/telnyx-go/packages/param"
-	"github.com/team-telnyx/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
 // PhoneNumberJobService contains methods and other services that help with
@@ -433,12 +433,6 @@ func (r PhoneNumberJobListParamsFilter) URLQuery() (v url.Values, err error) {
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[PhoneNumberJobListParamsFilter](
-		"type", "update_emergency_settings", "delete_phone_numbers", "update_phone_numbers",
-	)
-}
-
 // Consolidated page parameter (deepObject style). Originally: page[size],
 // page[number]
 type PhoneNumberJobListParamsPage struct {
@@ -492,6 +486,10 @@ type PhoneNumberJobUpdateBatchParams struct {
 	ConnectionID param.Opt[string] `json:"connection_id,omitzero"`
 	// A customer reference string for customer look ups.
 	CustomerReference param.Opt[string] `json:"customer_reference,omitzero"`
+	// Indicates whether to enable or disable the deletion lock on each phone number.
+	// When enabled, this prevents the phone number from being deleted via the API or
+	// Telnyx portal.
+	DeletionLockEnabled param.Opt[bool] `json:"deletion_lock_enabled,omitzero"`
 	// If someone attempts to port your phone number away from Telnyx and your phone
 	// number has an external PIN set, we will attempt to verify that you provided the
 	// correct external PIN to the winning carrier. Note that not all carriers
@@ -576,15 +574,6 @@ func (r PhoneNumberJobUpdateBatchParamsFilter) URLQuery() (v url.Values, err err
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[PhoneNumberJobUpdateBatchParamsFilter](
-		"status", "purchase-pending", "purchase-failed", "port-pending", "active", "deleted", "port-failed", "emergency-only", "ported-out", "port-out-pending",
-	)
-	apijson.RegisterFieldValidator[PhoneNumberJobUpdateBatchParamsFilter](
-		"voice.usage_payment_method", "pay-per-minute", "channel",
-	)
 }
 
 // Filter by voice connection name pattern matching.

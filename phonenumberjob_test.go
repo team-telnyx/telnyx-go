@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go"
-	"github.com/team-telnyx/telnyx-go/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/option"
+	"github.com/team-telnyx/telnyx-go/v3"
+	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
 func TestPhoneNumberJobGet(t *testing.T) {
@@ -125,12 +125,13 @@ func TestPhoneNumberJobUpdateBatchWithOptionalParams(t *testing.T) {
 			},
 			VoiceUsagePaymentMethod: "channel",
 		},
-		BillingGroupID:    telnyx.String("dc8e4d67-33a0-4cbb-af74-7b58f05bd494"),
-		ConnectionID:      telnyx.String("dc8e4d67-33a0-4cbb-af74-7b58f05bd494"),
-		CustomerReference: telnyx.String("customer-reference"),
-		ExternalPin:       telnyx.String("123456"),
-		HDVoiceEnabled:    telnyx.Bool(true),
-		Tags:              []string{"tag"},
+		BillingGroupID:      telnyx.String("dc8e4d67-33a0-4cbb-af74-7b58f05bd494"),
+		ConnectionID:        telnyx.String("dc8e4d67-33a0-4cbb-af74-7b58f05bd494"),
+		CustomerReference:   telnyx.String("customer-reference"),
+		DeletionLockEnabled: telnyx.Bool(true),
+		ExternalPin:         telnyx.String("123456"),
+		HDVoiceEnabled:      telnyx.Bool(true),
+		Tags:                []string{"tag"},
 		Voice: telnyx.UpdateVoiceSettingsParam{
 			CallForwarding: telnyx.CallForwardingParam{
 				CallForwardingEnabled: telnyx.Bool(true),

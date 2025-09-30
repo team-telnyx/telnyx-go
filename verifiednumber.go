@@ -10,12 +10,12 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/option"
-	"github.com/team-telnyx/telnyx-go/packages/param"
-	"github.com/team-telnyx/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
 // VerifiedNumberService contains methods and other services that help with
@@ -39,7 +39,8 @@ func NewVerifiedNumberService(opts ...option.RequestOption) (r VerifiedNumberSer
 	return
 }
 
-// Initiates phone number verification procedure.
+// Initiates phone number verification procedure. Supports DTMF extension dialing
+// for voice calls to numbers behind IVR systems.
 func (r *VerifiedNumberService) New(ctx context.Context, body VerifiedNumberNewParams, opts ...option.RequestOption) (res *VerifiedNumberNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "verified_numbers"
@@ -190,6 +191,12 @@ type VerifiedNumberNewParams struct {
 	//
 	// Any of "sms", "call".
 	VerificationMethod VerifiedNumberNewParamsVerificationMethod `json:"verification_method,omitzero,required"`
+	// Optional DTMF extension sequence to dial after the call is answered. This
+	// parameter enables verification of phone numbers behind IVR systems that require
+	// extension dialing. Valid characters: digits 0-9, letters A-D, symbols \* and #.
+	// Pauses: w = 0.5 second pause, W = 1 second pause. Maximum length: 50 characters.
+	// Only works with 'call' verification method.
+	Extension param.Opt[string] `json:"extension,omitzero"`
 	paramObj
 }
 

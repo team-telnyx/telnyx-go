@@ -11,12 +11,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/option"
-	"github.com/team-telnyx/telnyx-go/packages/param"
-	"github.com/team-telnyx/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
 // CustomerServiceRecordService contains methods and other services that help with
@@ -457,12 +457,6 @@ func (r CustomerServiceRecordListParamsFilterStatus) URLQuery() (v url.Values, e
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[CustomerServiceRecordListParamsFilterStatus](
-		"eq", "pending", "completed", "failed",
-	)
-}
-
 // Consolidated page parameter (deepObject style). Originally: page[size],
 // page[number]
 type CustomerServiceRecordListParamsPage struct {
@@ -499,12 +493,6 @@ func (r CustomerServiceRecordListParamsSort) URLQuery() (v url.Values, err error
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[CustomerServiceRecordListParamsSort](
-		"value", "created_at", "-created_at",
-	)
 }
 
 type CustomerServiceRecordVerifyPhoneNumberCoverageParams struct {

@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go"
-	"github.com/team-telnyx/telnyx-go/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/option"
+	"github.com/team-telnyx/telnyx-go/v3"
+	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
 func TestPortingOrderPhoneNumberConfigurationNewWithOptionalParams(t *testing.T) {
@@ -56,7 +56,9 @@ func TestPortingOrderPhoneNumberConfigurationListWithOptionalParams(t *testing.T
 	)
 	_, err := client.PortingOrders.PhoneNumberConfigurations.List(context.TODO(), telnyx.PortingOrderPhoneNumberConfigurationListParams{
 		Filter: telnyx.PortingOrderPhoneNumberConfigurationListParamsFilter{
-			PortingOrderStatus: []string{"activation-in-progress"},
+			PortingOrder: telnyx.PortingOrderPhoneNumberConfigurationListParamsFilterPortingOrder{
+				Status: []string{"activation-in-progress"},
+			},
 			PortingPhoneNumber: []string{"5d6f7ede-1961-4717-bfb5-db392c5efc2d"},
 			UserBundleID:       []string{"5d6f7ede-1961-4717-bfb5-db392c5efc2d"},
 		},

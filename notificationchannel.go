@@ -12,13 +12,13 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/internal/apiquery"
-	shimjson "github.com/team-telnyx/telnyx-go/internal/encoding/json"
-	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/option"
-	"github.com/team-telnyx/telnyx-go/packages/param"
-	"github.com/team-telnyx/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
+	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
 // NotificationChannelService contains methods and other services that help with
@@ -346,12 +346,6 @@ func (r NotificationChannelListParamsFilterAssociatedRecordType) URLQuery() (v u
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[NotificationChannelListParamsFilterAssociatedRecordType](
-		"eq", "account", "phone_number",
-	)
-}
-
 type NotificationChannelListParamsFilterChannelTypeID struct {
 	// Filter by the id of a channel type
 	//
@@ -367,12 +361,6 @@ func (r NotificationChannelListParamsFilterChannelTypeID) URLQuery() (v url.Valu
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[NotificationChannelListParamsFilterChannelTypeID](
-		"eq", "webhook", "sms", "email", "voice",
-	)
 }
 
 type NotificationChannelListParamsFilterNotificationChannel struct {
@@ -437,12 +425,6 @@ func (r NotificationChannelListParamsFilterStatus) URLQuery() (v url.Values, err
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[NotificationChannelListParamsFilterStatus](
-		"eq", "enabled", "enable-received", "enable-pending", "enable-submtited", "delete-received", "delete-pending", "delete-submitted", "deleted",
-	)
 }
 
 // Consolidated page parameter (deepObject style). Originally: page[number],

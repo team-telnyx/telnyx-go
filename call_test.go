@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go"
-	"github.com/team-telnyx/telnyx-go/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/option"
+	"github.com/team-telnyx/telnyx-go/v3"
+	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
 func TestCallDialWithOptionalParams(t *testing.T) {
@@ -83,6 +83,7 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 		LinkTo:               telnyx.String("ilditnZK_eVysupV21KzmzN_sM29ygfauQojpm4BgFtfX5hXAcjotg=="),
 		MediaEncryption:      telnyx.CallDialParamsMediaEncryptionSrtp,
 		MediaName:            telnyx.String("my_media_uploaded_to_media_storage_api"),
+		ParkAfterUnbridge:    telnyx.String("self"),
 		PreferredCodecs:      telnyx.String("G722,PCMU,PCMA,G729,OPUS,VP8,H264"),
 		Record:               telnyx.CallDialParamsRecordRecordFromAnswer,
 		RecordChannels:       telnyx.CallDialParamsRecordChannelsSingle,

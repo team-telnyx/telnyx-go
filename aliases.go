@@ -3,9 +3,9 @@
 package telnyx
 
 import (
-	"github.com/team-telnyx/telnyx-go/internal/apierror"
-	"github.com/team-telnyx/telnyx-go/packages/param"
-	"github.com/team-telnyx/telnyx-go/shared"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apierror"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/shared"
 )
 
 // aliased to make [param.APIUnion] private when embedding
@@ -15,6 +15,12 @@ type paramUnion = param.APIUnion
 type paramObj = param.APIObject
 
 type Error = apierror.Error
+
+// This is an alias to an internal type.
+type APIError = shared.APIError
+
+// This is an alias to an internal type.
+type APIErrorSource = shared.APIErrorSource
 
 // This is an alias to an internal type.
 type ConnectionsPaginationMeta = shared.ConnectionsPaginationMeta
@@ -360,6 +366,17 @@ type SimpleSimCardCurrentBillingPeriodConsumedData = shared.SimpleSimCardCurrent
 //
 // This is an alias to an internal type.
 type SimpleSimCardDataLimit = shared.SimpleSimCardDataLimit
+
+// The installation status of the eSIM. Only applicable for eSIM cards.
+//
+// This is an alias to an internal type.
+type SimpleSimCardEsimInstallationStatus = shared.SimpleSimCardEsimInstallationStatus
+
+// Equals "released"
+const SimpleSimCardEsimInstallationStatusReleased = shared.SimpleSimCardEsimInstallationStatusReleased
+
+// Equals "disabled"
+const SimpleSimCardEsimInstallationStatusDisabled = shared.SimpleSimCardEsimInstallationStatusDisabled
 
 // The type of SIM card
 //

@@ -11,12 +11,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/option"
-	"github.com/team-telnyx/telnyx-go/packages/param"
-	"github.com/team-telnyx/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
 // PortingOrderActionRequirementService contains methods and other services that
@@ -244,15 +244,6 @@ func (r PortingOrderActionRequirementListParamsFilter) URLQuery() (v url.Values,
 	})
 }
 
-func init() {
-	apijson.RegisterFieldValidator[PortingOrderActionRequirementListParamsFilter](
-		"action_type", "au_id_verification",
-	)
-	apijson.RegisterFieldValidator[PortingOrderActionRequirementListParamsFilter](
-		"status", "created", "pending", "completed", "cancelled", "failed",
-	)
-}
-
 // Consolidated page parameter (deepObject style). Originally: page[size],
 // page[number]
 type PortingOrderActionRequirementListParamsPage struct {
@@ -289,12 +280,6 @@ func (r PortingOrderActionRequirementListParamsSort) URLQuery() (v url.Values, e
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[PortingOrderActionRequirementListParamsSort](
-		"value", "created_at", "-created_at", "updated_at", "-updated_at",
-	)
 }
 
 type PortingOrderActionRequirementInitiateParams struct {

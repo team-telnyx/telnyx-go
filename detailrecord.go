@@ -10,12 +10,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/option"
-	"github.com/team-telnyx/telnyx-go/packages/param"
-	"github.com/team-telnyx/telnyx-go/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
 // DetailRecordService contains methods and other services that help with
@@ -919,15 +919,6 @@ func (r DetailRecordListParamsFilter) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-func init() {
-	apijson.RegisterFieldValidator[DetailRecordListParamsFilter](
-		"record_type", "ai-voice-assistant", "amd", "call-control", "conference", "conference-participant", "embedding", "fax", "inference", "inference-speech-to-text", "media_storage", "media-streaming", "messaging", "noise-suppression", "recording", "sip-trunking", "siprec-client", "stt", "tts", "verify", "webrtc", "wireless",
-	)
-	apijson.RegisterFieldValidator[DetailRecordListParamsFilter](
-		"date_range", "yesterday", "today", "tomorrow", "last_week", "this_week", "next_week", "last_month", "this_month", "next_month",
-	)
 }
 
 // Consolidated page parameter (deepObject style). Originally: page[number],
