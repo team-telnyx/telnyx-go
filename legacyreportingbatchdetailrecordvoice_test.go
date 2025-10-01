@@ -33,13 +33,13 @@ func TestLegacyReportingBatchDetailRecordVoiceNewWithOptionalParams(t *testing.T
 		CallTypes:   []int64{1, 2},
 		Connections: []int64{123, 456},
 		Fields:      []string{"call_leg_id", "start_time", "end_time"},
-		Filters: []telnyx.LegacyReportingBatchDetailRecordVoiceNewParamsFilter{{
+		Filters: []telnyx.FilterParam{{
 			BillingGroup: telnyx.String("adfaa016-f921-4b6c-97bb-e4c1dad231c5"),
 			Cld:          telnyx.String("+13129457420"),
-			CldFilter:    "contains",
+			CldFilter:    telnyx.FilterCldFilterContains,
 			Cli:          telnyx.String("+13129457420"),
-			CliFilter:    "contains",
-			FilterType:   "and",
+			CliFilter:    telnyx.FilterCliFilterContains,
+			FilterType:   telnyx.FilterFilterTypeAnd,
 			TagsList:     telnyx.String("tag1"),
 		}},
 		IncludeAllMetadata:       telnyx.Bool(true),
