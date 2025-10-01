@@ -54,18 +54,6 @@ func (r *AdvancedOrderService) Get(ctx context.Context, orderID string, opts ...
 	return
 }
 
-// Update Advanced Order
-func (r *AdvancedOrderService) Update(ctx context.Context, orderID string, body AdvancedOrderUpdateParams, opts ...option.RequestOption) (res *AdvancedOrderUpdateResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	if orderID == "" {
-		err = errors.New("missing required order_id parameter")
-		return
-	}
-	path := fmt.Sprintf("advanced_orders/%s", orderID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
-}
-
 // List Advanced Orders
 func (r *AdvancedOrderService) List(ctx context.Context, opts ...option.RequestOption) (res *AdvancedOrderListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -74,13 +62,25 @@ func (r *AdvancedOrderService) List(ctx context.Context, opts ...option.RequestO
 	return
 }
 
+// Update Advanced Order
+func (r *AdvancedOrderService) UpdateRequirementGroup(ctx context.Context, advancedOrderID string, body AdvancedOrderUpdateRequirementGroupParams, opts ...option.RequestOption) (res *AdvancedOrderUpdateRequirementGroupResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if advancedOrderID == "" {
+		err = errors.New("missing required advanced-order-id parameter")
+		return
+	}
+	path := fmt.Sprintf("advanced_orders/%s/requirement_group", advancedOrderID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
+	return
+}
+
 type AdvancedOrderNewResponse = any
 
 type AdvancedOrderGetResponse = any
 
-type AdvancedOrderUpdateResponse = any
-
 type AdvancedOrderListResponse = any
+
+type AdvancedOrderUpdateRequirementGroupResponse = any
 
 type AdvancedOrderNewParams struct {
 	AreaCode          param.Opt[string] `json:"area_code,omitzero"`
@@ -116,7 +116,7 @@ const (
 	AdvancedOrderNewParamsPhoneNumberTypeLandline   AdvancedOrderNewParamsPhoneNumberType = "landline"
 )
 
-type AdvancedOrderUpdateParams struct {
+type AdvancedOrderUpdateRequirementGroupParams struct {
 	AreaCode          param.Opt[string] `json:"area_code,omitzero"`
 	Comments          param.Opt[string] `json:"comments,omitzero"`
 	CountryCode       param.Opt[string] `json:"country_code,omitzero"`
@@ -127,25 +127,25 @@ type AdvancedOrderUpdateParams struct {
 	// Any of "sms", "mms", "voice", "fax", "emergency".
 	Features []string `json:"features,omitzero"`
 	// Any of "local", "mobile", "toll_free", "shared_cost", "national", "landline".
-	PhoneNumberType AdvancedOrderUpdateParamsPhoneNumberType `json:"phone_number_type,omitzero"`
+	PhoneNumberType AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType `json:"phone_number_type,omitzero"`
 	paramObj
 }
 
-func (r AdvancedOrderUpdateParams) MarshalJSON() (data []byte, err error) {
-	type shadow AdvancedOrderUpdateParams
+func (r AdvancedOrderUpdateRequirementGroupParams) MarshalJSON() (data []byte, err error) {
+	type shadow AdvancedOrderUpdateRequirementGroupParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AdvancedOrderUpdateParams) UnmarshalJSON(data []byte) error {
+func (r *AdvancedOrderUpdateRequirementGroupParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AdvancedOrderUpdateParamsPhoneNumberType string
+type AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType string
 
 const (
-	AdvancedOrderUpdateParamsPhoneNumberTypeLocal      AdvancedOrderUpdateParamsPhoneNumberType = "local"
-	AdvancedOrderUpdateParamsPhoneNumberTypeMobile     AdvancedOrderUpdateParamsPhoneNumberType = "mobile"
-	AdvancedOrderUpdateParamsPhoneNumberTypeTollFree   AdvancedOrderUpdateParamsPhoneNumberType = "toll_free"
-	AdvancedOrderUpdateParamsPhoneNumberTypeSharedCost AdvancedOrderUpdateParamsPhoneNumberType = "shared_cost"
-	AdvancedOrderUpdateParamsPhoneNumberTypeNational   AdvancedOrderUpdateParamsPhoneNumberType = "national"
-	AdvancedOrderUpdateParamsPhoneNumberTypeLandline   AdvancedOrderUpdateParamsPhoneNumberType = "landline"
+	AdvancedOrderUpdateRequirementGroupParamsPhoneNumberTypeLocal      AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType = "local"
+	AdvancedOrderUpdateRequirementGroupParamsPhoneNumberTypeMobile     AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType = "mobile"
+	AdvancedOrderUpdateRequirementGroupParamsPhoneNumberTypeTollFree   AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType = "toll_free"
+	AdvancedOrderUpdateRequirementGroupParamsPhoneNumberTypeSharedCost AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType = "shared_cost"
+	AdvancedOrderUpdateRequirementGroupParamsPhoneNumberTypeNational   AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType = "national"
+	AdvancedOrderUpdateRequirementGroupParamsPhoneNumberTypeLandline   AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType = "landline"
 )
