@@ -70,22 +70,22 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 			TranscriptionConfig: telnyx.TranscriptionStartRequestParam{
 				ClientState:         telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
 				CommandID:           telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
-				TranscriptionEngine: telnyx.TranscriptionStartRequestTranscriptionEngineA,
+				TranscriptionEngine: telnyx.TranscriptionStartRequestTranscriptionEngineGoogle,
 				TranscriptionEngineConfig: telnyx.TranscriptionStartRequestTranscriptionEngineConfigUnionParam{
-					OfA: &telnyx.TranscriptionEngineAConfigParam{
+					OfGoogle: &telnyx.TranscriptionStartRequestTranscriptionEngineConfigGoogleParam{
 						EnableSpeakerDiarization: telnyx.Bool(true),
-						Hints:                    []string{"Telnyx"},
+						Hints:                    []string{"string"},
 						InterimResults:           telnyx.Bool(true),
 						Language:                 telnyx.GoogleTranscriptionLanguageEn,
 						MaxSpeakerCount:          telnyx.Int(4),
 						MinSpeakerCount:          telnyx.Int(4),
-						Model:                    telnyx.TranscriptionEngineAConfigModelLatestLong,
+						Model:                    "latest_long",
 						ProfanityFilter:          telnyx.Bool(true),
-						SpeechContext: []telnyx.TranscriptionEngineAConfigSpeechContextParam{{
+						SpeechContext: []telnyx.TranscriptionStartRequestTranscriptionEngineConfigGoogleSpeechContextParam{{
 							Boost:   telnyx.Float(1),
-							Phrases: []string{"Telnyx"},
+							Phrases: []string{"string"},
 						}},
-						TranscriptionEngine: telnyx.TranscriptionEngineAConfigTranscriptionEngineA,
+						TranscriptionEngine: "Google",
 						UseEnhanced:         telnyx.Bool(true),
 					},
 				},
@@ -995,22 +995,22 @@ func TestCallActionStartTranscriptionWithOptionalParams(t *testing.T) {
 			TranscriptionStartRequest: telnyx.TranscriptionStartRequestParam{
 				ClientState:         telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
 				CommandID:           telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
-				TranscriptionEngine: telnyx.TranscriptionStartRequestTranscriptionEngineA,
+				TranscriptionEngine: telnyx.TranscriptionStartRequestTranscriptionEngineGoogle,
 				TranscriptionEngineConfig: telnyx.TranscriptionStartRequestTranscriptionEngineConfigUnionParam{
-					OfA: &telnyx.TranscriptionEngineAConfigParam{
+					OfGoogle: &telnyx.TranscriptionStartRequestTranscriptionEngineConfigGoogleParam{
 						EnableSpeakerDiarization: telnyx.Bool(true),
-						Hints:                    []string{"Telnyx"},
+						Hints:                    []string{"string"},
 						InterimResults:           telnyx.Bool(true),
 						Language:                 telnyx.GoogleTranscriptionLanguageEn,
 						MaxSpeakerCount:          telnyx.Int(4),
 						MinSpeakerCount:          telnyx.Int(4),
-						Model:                    telnyx.TranscriptionEngineAConfigModelLatestLong,
+						Model:                    "latest_long",
 						ProfanityFilter:          telnyx.Bool(true),
-						SpeechContext: []telnyx.TranscriptionEngineAConfigSpeechContextParam{{
+						SpeechContext: []telnyx.TranscriptionStartRequestTranscriptionEngineConfigGoogleSpeechContextParam{{
 							Boost:   telnyx.Float(1),
-							Phrases: []string{"Telnyx"},
+							Phrases: []string{"string"},
 						}},
-						TranscriptionEngine: telnyx.TranscriptionEngineAConfigTranscriptionEngineA,
+						TranscriptionEngine: "Google",
 						UseEnhanced:         telnyx.Bool(true),
 					},
 				},

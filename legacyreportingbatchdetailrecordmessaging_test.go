@@ -32,13 +32,13 @@ func TestLegacyReportingBatchDetailRecordMessagingNewWithOptionalParams(t *testi
 		StartTime:   time.Now(),
 		Connections: []int64{123, 456},
 		Directions:  []int64{1, 2},
-		Filters: []telnyx.FilterParam{{
+		Filters: []telnyx.LegacyReportingBatchDetailRecordMessagingNewParamsFilter{{
 			BillingGroup: telnyx.String("adfaa016-f921-4b6c-97bb-e4c1dad231c5"),
 			Cld:          telnyx.String("+13129457420"),
-			CldFilter:    telnyx.FilterCldFilterContains,
+			CldFilter:    "contains",
 			Cli:          telnyx.String("+13129457420"),
-			CliFilter:    telnyx.FilterCliFilterContains,
-			FilterType:   telnyx.FilterFilterTypeAnd,
+			CliFilter:    "contains",
+			FilterType:   "and",
 			TagsList:     telnyx.String("tag1"),
 		}},
 		IncludeMessageBody:       telnyx.Bool(true),
