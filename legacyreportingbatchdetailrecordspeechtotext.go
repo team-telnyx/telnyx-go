@@ -77,8 +77,48 @@ func (r *LegacyReportingBatchDetailRecordSpeechToTextService) Delete(ctx context
 	return
 }
 
+type SttDetailReportResponse struct {
+	// Identifies the resource
+	ID        string    `json:"id"`
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// URL to download the report
+	DownloadLink string    `json:"download_link"`
+	EndDate      time.Time `json:"end_date" format:"date-time"`
+	RecordType   string    `json:"record_type"`
+	StartDate    time.Time `json:"start_date" format:"date-time"`
+	// Any of "PENDING", "COMPLETE", "FAILED", "EXPIRED".
+	Status SttDetailReportResponseStatus `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		CreatedAt    respjson.Field
+		DownloadLink respjson.Field
+		EndDate      respjson.Field
+		RecordType   respjson.Field
+		StartDate    respjson.Field
+		Status       respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SttDetailReportResponse) RawJSON() string { return r.JSON.raw }
+func (r *SttDetailReportResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SttDetailReportResponseStatus string
+
+const (
+	SttDetailReportResponseStatusPending  SttDetailReportResponseStatus = "PENDING"
+	SttDetailReportResponseStatusComplete SttDetailReportResponseStatus = "COMPLETE"
+	SttDetailReportResponseStatusFailed   SttDetailReportResponseStatus = "FAILED"
+	SttDetailReportResponseStatusExpired  SttDetailReportResponseStatus = "EXPIRED"
+)
+
 type LegacyReportingBatchDetailRecordSpeechToTextNewResponse struct {
-	Data LegacyReportingBatchDetailRecordSpeechToTextNewResponseData `json:"data"`
+	Data SttDetailReportResponse `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -93,41 +133,8 @@ func (r *LegacyReportingBatchDetailRecordSpeechToTextNewResponse) UnmarshalJSON(
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type LegacyReportingBatchDetailRecordSpeechToTextNewResponseData struct {
-	// Identifies the resource
-	ID        string    `json:"id"`
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// URL to download the report
-	DownloadLink string    `json:"download_link"`
-	EndDate      time.Time `json:"end_date" format:"date-time"`
-	RecordType   string    `json:"record_type"`
-	StartDate    time.Time `json:"start_date" format:"date-time"`
-	// Any of "PENDING", "COMPLETE", "FAILED", "EXPIRED".
-	Status string `json:"status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID           respjson.Field
-		CreatedAt    respjson.Field
-		DownloadLink respjson.Field
-		EndDate      respjson.Field
-		RecordType   respjson.Field
-		StartDate    respjson.Field
-		Status       respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LegacyReportingBatchDetailRecordSpeechToTextNewResponseData) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *LegacyReportingBatchDetailRecordSpeechToTextNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type LegacyReportingBatchDetailRecordSpeechToTextGetResponse struct {
-	Data LegacyReportingBatchDetailRecordSpeechToTextGetResponseData `json:"data"`
+	Data SttDetailReportResponse `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -142,41 +149,8 @@ func (r *LegacyReportingBatchDetailRecordSpeechToTextGetResponse) UnmarshalJSON(
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type LegacyReportingBatchDetailRecordSpeechToTextGetResponseData struct {
-	// Identifies the resource
-	ID        string    `json:"id"`
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// URL to download the report
-	DownloadLink string    `json:"download_link"`
-	EndDate      time.Time `json:"end_date" format:"date-time"`
-	RecordType   string    `json:"record_type"`
-	StartDate    time.Time `json:"start_date" format:"date-time"`
-	// Any of "PENDING", "COMPLETE", "FAILED", "EXPIRED".
-	Status string `json:"status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID           respjson.Field
-		CreatedAt    respjson.Field
-		DownloadLink respjson.Field
-		EndDate      respjson.Field
-		RecordType   respjson.Field
-		StartDate    respjson.Field
-		Status       respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LegacyReportingBatchDetailRecordSpeechToTextGetResponseData) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *LegacyReportingBatchDetailRecordSpeechToTextGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type LegacyReportingBatchDetailRecordSpeechToTextListResponse struct {
-	Data []LegacyReportingBatchDetailRecordSpeechToTextListResponseData `json:"data"`
+	Data []SttDetailReportResponse `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -191,41 +165,8 @@ func (r *LegacyReportingBatchDetailRecordSpeechToTextListResponse) UnmarshalJSON
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type LegacyReportingBatchDetailRecordSpeechToTextListResponseData struct {
-	// Identifies the resource
-	ID        string    `json:"id"`
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// URL to download the report
-	DownloadLink string    `json:"download_link"`
-	EndDate      time.Time `json:"end_date" format:"date-time"`
-	RecordType   string    `json:"record_type"`
-	StartDate    time.Time `json:"start_date" format:"date-time"`
-	// Any of "PENDING", "COMPLETE", "FAILED", "EXPIRED".
-	Status string `json:"status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID           respjson.Field
-		CreatedAt    respjson.Field
-		DownloadLink respjson.Field
-		EndDate      respjson.Field
-		RecordType   respjson.Field
-		StartDate    respjson.Field
-		Status       respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LegacyReportingBatchDetailRecordSpeechToTextListResponseData) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *LegacyReportingBatchDetailRecordSpeechToTextListResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type LegacyReportingBatchDetailRecordSpeechToTextDeleteResponse struct {
-	Data LegacyReportingBatchDetailRecordSpeechToTextDeleteResponseData `json:"data"`
+	Data SttDetailReportResponse `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -239,39 +180,6 @@ func (r LegacyReportingBatchDetailRecordSpeechToTextDeleteResponse) RawJSON() st
 	return r.JSON.raw
 }
 func (r *LegacyReportingBatchDetailRecordSpeechToTextDeleteResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type LegacyReportingBatchDetailRecordSpeechToTextDeleteResponseData struct {
-	// Identifies the resource
-	ID        string    `json:"id"`
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// URL to download the report
-	DownloadLink string    `json:"download_link"`
-	EndDate      time.Time `json:"end_date" format:"date-time"`
-	RecordType   string    `json:"record_type"`
-	StartDate    time.Time `json:"start_date" format:"date-time"`
-	// Any of "PENDING", "COMPLETE", "FAILED", "EXPIRED".
-	Status string `json:"status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID           respjson.Field
-		CreatedAt    respjson.Field
-		DownloadLink respjson.Field
-		EndDate      respjson.Field
-		RecordType   respjson.Field
-		StartDate    respjson.Field
-		Status       respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LegacyReportingBatchDetailRecordSpeechToTextDeleteResponseData) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *LegacyReportingBatchDetailRecordSpeechToTextDeleteResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
