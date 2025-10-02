@@ -79,9 +79,52 @@ func (r *LegacyReportingUsageReportMessagingService) Delete(ctx context.Context,
 	return
 }
 
+// Legacy V2 MDR usage report response
+type MdrUsageReportResponseLegacy struct {
+	// Identifies the resource
+	ID string `json:"id" format:"uuid"`
+	// Aggregation type: No aggregation = 0, By Messaging Profile = 1, By Tags = 2
+	AggregationType int64     `json:"aggregation_type"`
+	Connections     []int64   `json:"connections"`
+	CreatedAt       time.Time `json:"created_at" format:"date-time"`
+	EndTime         time.Time `json:"end_time" format:"date-time"`
+	// List of messaging profile IDs
+	Profiles   []string  `json:"profiles" format:"uuid"`
+	RecordType string    `json:"record_type"`
+	ReportURL  string    `json:"report_url"`
+	Result     any       `json:"result"`
+	StartTime  time.Time `json:"start_time" format:"date-time"`
+	// Status of the report (Pending = 1, Complete = 2, Failed = 3, Expired = 4)
+	Status    int64     `json:"status"`
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID              respjson.Field
+		AggregationType respjson.Field
+		Connections     respjson.Field
+		CreatedAt       respjson.Field
+		EndTime         respjson.Field
+		Profiles        respjson.Field
+		RecordType      respjson.Field
+		ReportURL       respjson.Field
+		Result          respjson.Field
+		StartTime       respjson.Field
+		Status          respjson.Field
+		UpdatedAt       respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MdrUsageReportResponseLegacy) RawJSON() string { return r.JSON.raw }
+func (r *MdrUsageReportResponseLegacy) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type LegacyReportingUsageReportMessagingNewResponse struct {
 	// Legacy V2 MDR usage report response
-	Data LegacyReportingUsageReportMessagingNewResponseData `json:"data"`
+	Data MdrUsageReportResponseLegacy `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -96,52 +139,9 @@ func (r *LegacyReportingUsageReportMessagingNewResponse) UnmarshalJSON(data []by
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Legacy V2 MDR usage report response
-type LegacyReportingUsageReportMessagingNewResponseData struct {
-	// Identifies the resource
-	ID string `json:"id" format:"uuid"`
-	// Aggregation type: No aggregation = 0, By Messaging Profile = 1, By Tags = 2
-	AggregationType int64     `json:"aggregation_type"`
-	Connections     []int64   `json:"connections"`
-	CreatedAt       time.Time `json:"created_at" format:"date-time"`
-	EndTime         time.Time `json:"end_time" format:"date-time"`
-	// List of messaging profile IDs
-	Profiles   []string  `json:"profiles" format:"uuid"`
-	RecordType string    `json:"record_type"`
-	ReportURL  string    `json:"report_url"`
-	Result     any       `json:"result"`
-	StartTime  time.Time `json:"start_time" format:"date-time"`
-	// Status of the report (Pending = 1, Complete = 2, Failed = 3, Expired = 4)
-	Status    int64     `json:"status"`
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID              respjson.Field
-		AggregationType respjson.Field
-		Connections     respjson.Field
-		CreatedAt       respjson.Field
-		EndTime         respjson.Field
-		Profiles        respjson.Field
-		RecordType      respjson.Field
-		ReportURL       respjson.Field
-		Result          respjson.Field
-		StartTime       respjson.Field
-		Status          respjson.Field
-		UpdatedAt       respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LegacyReportingUsageReportMessagingNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *LegacyReportingUsageReportMessagingNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type LegacyReportingUsageReportMessagingGetResponse struct {
 	// Legacy V2 MDR usage report response
-	Data LegacyReportingUsageReportMessagingGetResponseData `json:"data"`
+	Data MdrUsageReportResponseLegacy `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -156,52 +156,9 @@ func (r *LegacyReportingUsageReportMessagingGetResponse) UnmarshalJSON(data []by
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Legacy V2 MDR usage report response
-type LegacyReportingUsageReportMessagingGetResponseData struct {
-	// Identifies the resource
-	ID string `json:"id" format:"uuid"`
-	// Aggregation type: No aggregation = 0, By Messaging Profile = 1, By Tags = 2
-	AggregationType int64     `json:"aggregation_type"`
-	Connections     []int64   `json:"connections"`
-	CreatedAt       time.Time `json:"created_at" format:"date-time"`
-	EndTime         time.Time `json:"end_time" format:"date-time"`
-	// List of messaging profile IDs
-	Profiles   []string  `json:"profiles" format:"uuid"`
-	RecordType string    `json:"record_type"`
-	ReportURL  string    `json:"report_url"`
-	Result     any       `json:"result"`
-	StartTime  time.Time `json:"start_time" format:"date-time"`
-	// Status of the report (Pending = 1, Complete = 2, Failed = 3, Expired = 4)
-	Status    int64     `json:"status"`
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID              respjson.Field
-		AggregationType respjson.Field
-		Connections     respjson.Field
-		CreatedAt       respjson.Field
-		EndTime         respjson.Field
-		Profiles        respjson.Field
-		RecordType      respjson.Field
-		ReportURL       respjson.Field
-		Result          respjson.Field
-		StartTime       respjson.Field
-		Status          respjson.Field
-		UpdatedAt       respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LegacyReportingUsageReportMessagingGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *LegacyReportingUsageReportMessagingGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type LegacyReportingUsageReportMessagingListResponse struct {
-	Data []LegacyReportingUsageReportMessagingListResponseData `json:"data"`
-	Meta LegacyReportingUsageReportMessagingListResponseMeta   `json:"meta"`
+	Data []MdrUsageReportResponseLegacy                      `json:"data"`
+	Meta LegacyReportingUsageReportMessagingListResponseMeta `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -214,49 +171,6 @@ type LegacyReportingUsageReportMessagingListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r LegacyReportingUsageReportMessagingListResponse) RawJSON() string { return r.JSON.raw }
 func (r *LegacyReportingUsageReportMessagingListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Legacy V2 MDR usage report response
-type LegacyReportingUsageReportMessagingListResponseData struct {
-	// Identifies the resource
-	ID string `json:"id" format:"uuid"`
-	// Aggregation type: No aggregation = 0, By Messaging Profile = 1, By Tags = 2
-	AggregationType int64     `json:"aggregation_type"`
-	Connections     []int64   `json:"connections"`
-	CreatedAt       time.Time `json:"created_at" format:"date-time"`
-	EndTime         time.Time `json:"end_time" format:"date-time"`
-	// List of messaging profile IDs
-	Profiles   []string  `json:"profiles" format:"uuid"`
-	RecordType string    `json:"record_type"`
-	ReportURL  string    `json:"report_url"`
-	Result     any       `json:"result"`
-	StartTime  time.Time `json:"start_time" format:"date-time"`
-	// Status of the report (Pending = 1, Complete = 2, Failed = 3, Expired = 4)
-	Status    int64     `json:"status"`
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID              respjson.Field
-		AggregationType respjson.Field
-		Connections     respjson.Field
-		CreatedAt       respjson.Field
-		EndTime         respjson.Field
-		Profiles        respjson.Field
-		RecordType      respjson.Field
-		ReportURL       respjson.Field
-		Result          respjson.Field
-		StartTime       respjson.Field
-		Status          respjson.Field
-		UpdatedAt       respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LegacyReportingUsageReportMessagingListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *LegacyReportingUsageReportMessagingListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -284,7 +198,7 @@ func (r *LegacyReportingUsageReportMessagingListResponseMeta) UnmarshalJSON(data
 
 type LegacyReportingUsageReportMessagingDeleteResponse struct {
 	// Legacy V2 MDR usage report response
-	Data LegacyReportingUsageReportMessagingDeleteResponseData `json:"data"`
+	Data MdrUsageReportResponseLegacy `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -296,49 +210,6 @@ type LegacyReportingUsageReportMessagingDeleteResponse struct {
 // Returns the unmodified JSON received from the API
 func (r LegacyReportingUsageReportMessagingDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *LegacyReportingUsageReportMessagingDeleteResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Legacy V2 MDR usage report response
-type LegacyReportingUsageReportMessagingDeleteResponseData struct {
-	// Identifies the resource
-	ID string `json:"id" format:"uuid"`
-	// Aggregation type: No aggregation = 0, By Messaging Profile = 1, By Tags = 2
-	AggregationType int64     `json:"aggregation_type"`
-	Connections     []int64   `json:"connections"`
-	CreatedAt       time.Time `json:"created_at" format:"date-time"`
-	EndTime         time.Time `json:"end_time" format:"date-time"`
-	// List of messaging profile IDs
-	Profiles   []string  `json:"profiles" format:"uuid"`
-	RecordType string    `json:"record_type"`
-	ReportURL  string    `json:"report_url"`
-	Result     any       `json:"result"`
-	StartTime  time.Time `json:"start_time" format:"date-time"`
-	// Status of the report (Pending = 1, Complete = 2, Failed = 3, Expired = 4)
-	Status    int64     `json:"status"`
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID              respjson.Field
-		AggregationType respjson.Field
-		Connections     respjson.Field
-		CreatedAt       respjson.Field
-		EndTime         respjson.Field
-		Profiles        respjson.Field
-		RecordType      respjson.Field
-		ReportURL       respjson.Field
-		Result          respjson.Field
-		StartTime       respjson.Field
-		Status          respjson.Field
-		UpdatedAt       respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LegacyReportingUsageReportMessagingDeleteResponseData) RawJSON() string { return r.JSON.raw }
-func (r *LegacyReportingUsageReportMessagingDeleteResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -19,12 +19,15 @@ func ValueOf[T Constant[T]]() T {
 }
 
 type Comparative string // Always "comparative"
+type Deepgram string    // Always "Deepgram"
 type Simple string      // Always "simple"
 
 func (c Comparative) Default() Comparative { return "comparative" }
+func (c Deepgram) Default() Deepgram       { return "Deepgram" }
 func (c Simple) Default() Simple           { return "simple" }
 
 func (c Comparative) MarshalJSON() ([]byte, error) { return marshalString(c) }
+func (c Deepgram) MarshalJSON() ([]byte, error)    { return marshalString(c) }
 func (c Simple) MarshalJSON() ([]byte, error)      { return marshalString(c) }
 
 type constant[T any] interface {
