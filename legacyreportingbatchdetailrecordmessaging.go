@@ -77,15 +77,31 @@ func (r *LegacyReportingBatchDetailRecordMessagingService) Delete(ctx context.Co
 	return
 }
 
-type MdrDetailReportResponse struct {
+type LegacyReportingBatchDetailRecordMessagingNewResponse struct {
+	Data LegacyReportingBatchDetailRecordMessagingNewResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingBatchDetailRecordMessagingNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *LegacyReportingBatchDetailRecordMessagingNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LegacyReportingBatchDetailRecordMessagingNewResponseData struct {
 	// Identifies the resource
 	ID          string    `json:"id" format:"uuid"`
 	Connections []int64   `json:"connections"`
 	CreatedAt   time.Time `json:"created_at" format:"date-time"`
 	// Any of "INBOUND", "OUTBOUND".
-	Directions []string  `json:"directions"`
-	EndDate    time.Time `json:"end_date" format:"date-time"`
-	Filters    []Filter  `json:"filters"`
+	Directions []string                                                         `json:"directions"`
+	EndDate    time.Time                                                        `json:"end_date" format:"date-time"`
+	Filters    []LegacyReportingBatchDetailRecordMessagingNewResponseDataFilter `json:"filters"`
 	// List of messaging profile IDs
 	Profiles   []string `json:"profiles" format:"uuid"`
 	RecordType string   `json:"record_type"`
@@ -95,8 +111,8 @@ type MdrDetailReportResponse struct {
 	ReportURL   string    `json:"report_url"`
 	StartDate   time.Time `json:"start_date" format:"date-time"`
 	// Any of "PENDING", "COMPLETE", "FAILED", "EXPIRED".
-	Status    MdrDetailReportResponseStatus `json:"status"`
-	UpdatedAt time.Time                     `json:"updated_at" format:"date-time"`
+	Status    string    `json:"status"`
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -119,38 +135,58 @@ type MdrDetailReportResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MdrDetailReportResponse) RawJSON() string { return r.JSON.raw }
-func (r *MdrDetailReportResponse) UnmarshalJSON(data []byte) error {
+func (r LegacyReportingBatchDetailRecordMessagingNewResponseData) RawJSON() string { return r.JSON.raw }
+func (r *LegacyReportingBatchDetailRecordMessagingNewResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type MdrDetailReportResponseStatus string
-
-const (
-	MdrDetailReportResponseStatusPending  MdrDetailReportResponseStatus = "PENDING"
-	MdrDetailReportResponseStatusComplete MdrDetailReportResponseStatus = "COMPLETE"
-	MdrDetailReportResponseStatusFailed   MdrDetailReportResponseStatus = "FAILED"
-	MdrDetailReportResponseStatusExpired  MdrDetailReportResponseStatus = "EXPIRED"
-)
-
-type LegacyReportingBatchDetailRecordMessagingNewResponse struct {
-	Data MdrDetailReportResponse `json:"data"`
+// Query filter criteria. Note: The first filter object must specify filter_type as
+// 'and'. You cannot follow an 'or' with another 'and'.
+type LegacyReportingBatchDetailRecordMessagingNewResponseDataFilter struct {
+	// Billing group UUID to filter by
+	BillingGroup string `json:"billing_group"`
+	// Called line identification (destination number)
+	Cld string `json:"cld"`
+	// Filter type for CLD matching
+	//
+	// Any of "contains", "starts_with", "ends_with".
+	CldFilter string `json:"cld_filter"`
+	// Calling line identification (caller ID)
+	Cli string `json:"cli"`
+	// Filter type for CLI matching
+	//
+	// Any of "contains", "starts_with", "ends_with".
+	CliFilter string `json:"cli_filter"`
+	// Logical operator for combining filters
+	//
+	// Any of "and", "or".
+	FilterType string `json:"filter_type"`
+	// Tag name to filter by
+	TagsList string `json:"tags_list"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		BillingGroup respjson.Field
+		Cld          respjson.Field
+		CldFilter    respjson.Field
+		Cli          respjson.Field
+		CliFilter    respjson.Field
+		FilterType   respjson.Field
+		TagsList     respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r LegacyReportingBatchDetailRecordMessagingNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *LegacyReportingBatchDetailRecordMessagingNewResponse) UnmarshalJSON(data []byte) error {
+func (r LegacyReportingBatchDetailRecordMessagingNewResponseDataFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *LegacyReportingBatchDetailRecordMessagingNewResponseDataFilter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type LegacyReportingBatchDetailRecordMessagingGetResponse struct {
-	Data MdrDetailReportResponse `json:"data"`
+	Data LegacyReportingBatchDetailRecordMessagingGetResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -165,9 +201,101 @@ func (r *LegacyReportingBatchDetailRecordMessagingGetResponse) UnmarshalJSON(dat
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type LegacyReportingBatchDetailRecordMessagingGetResponseData struct {
+	// Identifies the resource
+	ID          string    `json:"id" format:"uuid"`
+	Connections []int64   `json:"connections"`
+	CreatedAt   time.Time `json:"created_at" format:"date-time"`
+	// Any of "INBOUND", "OUTBOUND".
+	Directions []string                                                         `json:"directions"`
+	EndDate    time.Time                                                        `json:"end_date" format:"date-time"`
+	Filters    []LegacyReportingBatchDetailRecordMessagingGetResponseDataFilter `json:"filters"`
+	// List of messaging profile IDs
+	Profiles   []string `json:"profiles" format:"uuid"`
+	RecordType string   `json:"record_type"`
+	// Any of "INCOMPLETE", "COMPLETED", "ERRORS".
+	RecordTypes []string  `json:"record_types"`
+	ReportName  string    `json:"report_name"`
+	ReportURL   string    `json:"report_url"`
+	StartDate   time.Time `json:"start_date" format:"date-time"`
+	// Any of "PENDING", "COMPLETE", "FAILED", "EXPIRED".
+	Status    string    `json:"status"`
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Connections respjson.Field
+		CreatedAt   respjson.Field
+		Directions  respjson.Field
+		EndDate     respjson.Field
+		Filters     respjson.Field
+		Profiles    respjson.Field
+		RecordType  respjson.Field
+		RecordTypes respjson.Field
+		ReportName  respjson.Field
+		ReportURL   respjson.Field
+		StartDate   respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingBatchDetailRecordMessagingGetResponseData) RawJSON() string { return r.JSON.raw }
+func (r *LegacyReportingBatchDetailRecordMessagingGetResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Query filter criteria. Note: The first filter object must specify filter_type as
+// 'and'. You cannot follow an 'or' with another 'and'.
+type LegacyReportingBatchDetailRecordMessagingGetResponseDataFilter struct {
+	// Billing group UUID to filter by
+	BillingGroup string `json:"billing_group"`
+	// Called line identification (destination number)
+	Cld string `json:"cld"`
+	// Filter type for CLD matching
+	//
+	// Any of "contains", "starts_with", "ends_with".
+	CldFilter string `json:"cld_filter"`
+	// Calling line identification (caller ID)
+	Cli string `json:"cli"`
+	// Filter type for CLI matching
+	//
+	// Any of "contains", "starts_with", "ends_with".
+	CliFilter string `json:"cli_filter"`
+	// Logical operator for combining filters
+	//
+	// Any of "and", "or".
+	FilterType string `json:"filter_type"`
+	// Tag name to filter by
+	TagsList string `json:"tags_list"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BillingGroup respjson.Field
+		Cld          respjson.Field
+		CldFilter    respjson.Field
+		Cli          respjson.Field
+		CliFilter    respjson.Field
+		FilterType   respjson.Field
+		TagsList     respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingBatchDetailRecordMessagingGetResponseDataFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *LegacyReportingBatchDetailRecordMessagingGetResponseDataFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type LegacyReportingBatchDetailRecordMessagingListResponse struct {
-	Data []MdrDetailReportResponse                                 `json:"data"`
-	Meta LegacyReportingBatchDetailRecordMessagingListResponseMeta `json:"meta"`
+	Data []LegacyReportingBatchDetailRecordMessagingListResponseData `json:"data"`
+	Meta LegacyReportingBatchDetailRecordMessagingListResponseMeta   `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -180,6 +308,100 @@ type LegacyReportingBatchDetailRecordMessagingListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r LegacyReportingBatchDetailRecordMessagingListResponse) RawJSON() string { return r.JSON.raw }
 func (r *LegacyReportingBatchDetailRecordMessagingListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LegacyReportingBatchDetailRecordMessagingListResponseData struct {
+	// Identifies the resource
+	ID          string    `json:"id" format:"uuid"`
+	Connections []int64   `json:"connections"`
+	CreatedAt   time.Time `json:"created_at" format:"date-time"`
+	// Any of "INBOUND", "OUTBOUND".
+	Directions []string                                                          `json:"directions"`
+	EndDate    time.Time                                                         `json:"end_date" format:"date-time"`
+	Filters    []LegacyReportingBatchDetailRecordMessagingListResponseDataFilter `json:"filters"`
+	// List of messaging profile IDs
+	Profiles   []string `json:"profiles" format:"uuid"`
+	RecordType string   `json:"record_type"`
+	// Any of "INCOMPLETE", "COMPLETED", "ERRORS".
+	RecordTypes []string  `json:"record_types"`
+	ReportName  string    `json:"report_name"`
+	ReportURL   string    `json:"report_url"`
+	StartDate   time.Time `json:"start_date" format:"date-time"`
+	// Any of "PENDING", "COMPLETE", "FAILED", "EXPIRED".
+	Status    string    `json:"status"`
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Connections respjson.Field
+		CreatedAt   respjson.Field
+		Directions  respjson.Field
+		EndDate     respjson.Field
+		Filters     respjson.Field
+		Profiles    respjson.Field
+		RecordType  respjson.Field
+		RecordTypes respjson.Field
+		ReportName  respjson.Field
+		ReportURL   respjson.Field
+		StartDate   respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingBatchDetailRecordMessagingListResponseData) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *LegacyReportingBatchDetailRecordMessagingListResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Query filter criteria. Note: The first filter object must specify filter_type as
+// 'and'. You cannot follow an 'or' with another 'and'.
+type LegacyReportingBatchDetailRecordMessagingListResponseDataFilter struct {
+	// Billing group UUID to filter by
+	BillingGroup string `json:"billing_group"`
+	// Called line identification (destination number)
+	Cld string `json:"cld"`
+	// Filter type for CLD matching
+	//
+	// Any of "contains", "starts_with", "ends_with".
+	CldFilter string `json:"cld_filter"`
+	// Calling line identification (caller ID)
+	Cli string `json:"cli"`
+	// Filter type for CLI matching
+	//
+	// Any of "contains", "starts_with", "ends_with".
+	CliFilter string `json:"cli_filter"`
+	// Logical operator for combining filters
+	//
+	// Any of "and", "or".
+	FilterType string `json:"filter_type"`
+	// Tag name to filter by
+	TagsList string `json:"tags_list"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BillingGroup respjson.Field
+		Cld          respjson.Field
+		CldFilter    respjson.Field
+		Cli          respjson.Field
+		CliFilter    respjson.Field
+		FilterType   respjson.Field
+		TagsList     respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingBatchDetailRecordMessagingListResponseDataFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *LegacyReportingBatchDetailRecordMessagingListResponseDataFilter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -208,7 +430,7 @@ func (r *LegacyReportingBatchDetailRecordMessagingListResponseMeta) UnmarshalJSO
 }
 
 type LegacyReportingBatchDetailRecordMessagingDeleteResponse struct {
-	Data MdrDetailReportResponse `json:"data"`
+	Data LegacyReportingBatchDetailRecordMessagingDeleteResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -220,6 +442,100 @@ type LegacyReportingBatchDetailRecordMessagingDeleteResponse struct {
 // Returns the unmodified JSON received from the API
 func (r LegacyReportingBatchDetailRecordMessagingDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *LegacyReportingBatchDetailRecordMessagingDeleteResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LegacyReportingBatchDetailRecordMessagingDeleteResponseData struct {
+	// Identifies the resource
+	ID          string    `json:"id" format:"uuid"`
+	Connections []int64   `json:"connections"`
+	CreatedAt   time.Time `json:"created_at" format:"date-time"`
+	// Any of "INBOUND", "OUTBOUND".
+	Directions []string                                                            `json:"directions"`
+	EndDate    time.Time                                                           `json:"end_date" format:"date-time"`
+	Filters    []LegacyReportingBatchDetailRecordMessagingDeleteResponseDataFilter `json:"filters"`
+	// List of messaging profile IDs
+	Profiles   []string `json:"profiles" format:"uuid"`
+	RecordType string   `json:"record_type"`
+	// Any of "INCOMPLETE", "COMPLETED", "ERRORS".
+	RecordTypes []string  `json:"record_types"`
+	ReportName  string    `json:"report_name"`
+	ReportURL   string    `json:"report_url"`
+	StartDate   time.Time `json:"start_date" format:"date-time"`
+	// Any of "PENDING", "COMPLETE", "FAILED", "EXPIRED".
+	Status    string    `json:"status"`
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Connections respjson.Field
+		CreatedAt   respjson.Field
+		Directions  respjson.Field
+		EndDate     respjson.Field
+		Filters     respjson.Field
+		Profiles    respjson.Field
+		RecordType  respjson.Field
+		RecordTypes respjson.Field
+		ReportName  respjson.Field
+		ReportURL   respjson.Field
+		StartDate   respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingBatchDetailRecordMessagingDeleteResponseData) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *LegacyReportingBatchDetailRecordMessagingDeleteResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Query filter criteria. Note: The first filter object must specify filter_type as
+// 'and'. You cannot follow an 'or' with another 'and'.
+type LegacyReportingBatchDetailRecordMessagingDeleteResponseDataFilter struct {
+	// Billing group UUID to filter by
+	BillingGroup string `json:"billing_group"`
+	// Called line identification (destination number)
+	Cld string `json:"cld"`
+	// Filter type for CLD matching
+	//
+	// Any of "contains", "starts_with", "ends_with".
+	CldFilter string `json:"cld_filter"`
+	// Calling line identification (caller ID)
+	Cli string `json:"cli"`
+	// Filter type for CLI matching
+	//
+	// Any of "contains", "starts_with", "ends_with".
+	CliFilter string `json:"cli_filter"`
+	// Logical operator for combining filters
+	//
+	// Any of "and", "or".
+	FilterType string `json:"filter_type"`
+	// Tag name to filter by
+	TagsList string `json:"tags_list"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BillingGroup respjson.Field
+		Cld          respjson.Field
+		CldFilter    respjson.Field
+		Cli          respjson.Field
+		CliFilter    respjson.Field
+		FilterType   respjson.Field
+		TagsList     respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingBatchDetailRecordMessagingDeleteResponseDataFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *LegacyReportingBatchDetailRecordMessagingDeleteResponseDataFilter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -243,7 +559,7 @@ type LegacyReportingBatchDetailRecordMessagingNewParams struct {
 	// List of directions to filter by (Inbound = 1, Outbound = 2)
 	Directions []int64 `json:"directions,omitzero"`
 	// List of filters to apply
-	Filters []FilterParam `json:"filters,omitzero"`
+	Filters []LegacyReportingBatchDetailRecordMessagingNewParamsFilter `json:"filters,omitzero"`
 	// List of managed accounts to include
 	ManagedAccounts []string `json:"managed_accounts,omitzero" format:"uuid"`
 	// List of messaging profile IDs to filter by
@@ -259,4 +575,50 @@ func (r LegacyReportingBatchDetailRecordMessagingNewParams) MarshalJSON() (data 
 }
 func (r *LegacyReportingBatchDetailRecordMessagingNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Query filter criteria. Note: The first filter object must specify filter_type as
+// 'and'. You cannot follow an 'or' with another 'and'.
+type LegacyReportingBatchDetailRecordMessagingNewParamsFilter struct {
+	// Billing group UUID to filter by
+	BillingGroup param.Opt[string] `json:"billing_group,omitzero"`
+	// Called line identification (destination number)
+	Cld param.Opt[string] `json:"cld,omitzero"`
+	// Calling line identification (caller ID)
+	Cli param.Opt[string] `json:"cli,omitzero"`
+	// Tag name to filter by
+	TagsList param.Opt[string] `json:"tags_list,omitzero"`
+	// Filter type for CLD matching
+	//
+	// Any of "contains", "starts_with", "ends_with".
+	CldFilter string `json:"cld_filter,omitzero"`
+	// Filter type for CLI matching
+	//
+	// Any of "contains", "starts_with", "ends_with".
+	CliFilter string `json:"cli_filter,omitzero"`
+	// Logical operator for combining filters
+	//
+	// Any of "and", "or".
+	FilterType string `json:"filter_type,omitzero"`
+	paramObj
+}
+
+func (r LegacyReportingBatchDetailRecordMessagingNewParamsFilter) MarshalJSON() (data []byte, err error) {
+	type shadow LegacyReportingBatchDetailRecordMessagingNewParamsFilter
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LegacyReportingBatchDetailRecordMessagingNewParamsFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[LegacyReportingBatchDetailRecordMessagingNewParamsFilter](
+		"cld_filter", "contains", "starts_with", "ends_with",
+	)
+	apijson.RegisterFieldValidator[LegacyReportingBatchDetailRecordMessagingNewParamsFilter](
+		"cli_filter", "contains", "starts_with", "ends_with",
+	)
+	apijson.RegisterFieldValidator[LegacyReportingBatchDetailRecordMessagingNewParamsFilter](
+		"filter_type", "and", "or",
+	)
 }

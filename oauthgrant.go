@@ -70,7 +70,23 @@ func (r *OAuthGrantService) Delete(ctx context.Context, id string, opts ...optio
 	return
 }
 
-type OAuthGrant struct {
+type OAuthGrantGetResponse struct {
+	Data OAuthGrantGetResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r OAuthGrantGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *OAuthGrantGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type OAuthGrantGetResponseData struct {
 	// Unique identifier for the OAuth grant
 	ID string `json:"id,required" format:"uuid"`
 	// OAuth client identifier
@@ -80,7 +96,7 @@ type OAuthGrant struct {
 	// Record type identifier
 	//
 	// Any of "oauth_grant".
-	RecordType OAuthGrantRecordType `json:"record_type,required"`
+	RecordType string `json:"record_type,required"`
 	// List of granted OAuth scopes
 	Scopes []string `json:"scopes,required"`
 	// Timestamp when the grant was last used
@@ -99,37 +115,14 @@ type OAuthGrant struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r OAuthGrant) RawJSON() string { return r.JSON.raw }
-func (r *OAuthGrant) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Record type identifier
-type OAuthGrantRecordType string
-
-const (
-	OAuthGrantRecordTypeOAuthGrant OAuthGrantRecordType = "oauth_grant"
-)
-
-type OAuthGrantGetResponse struct {
-	Data OAuthGrant `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r OAuthGrantGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *OAuthGrantGetResponse) UnmarshalJSON(data []byte) error {
+func (r OAuthGrantGetResponseData) RawJSON() string { return r.JSON.raw }
+func (r *OAuthGrantGetResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type OAuthGrantListResponse struct {
-	Data []OAuthGrant               `json:"data"`
-	Meta OAuthGrantListResponseMeta `json:"meta"`
+	Data []OAuthGrantListResponseData `json:"data"`
+	Meta OAuthGrantListResponseMeta   `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -142,6 +135,40 @@ type OAuthGrantListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r OAuthGrantListResponse) RawJSON() string { return r.JSON.raw }
 func (r *OAuthGrantListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type OAuthGrantListResponseData struct {
+	// Unique identifier for the OAuth grant
+	ID string `json:"id,required" format:"uuid"`
+	// OAuth client identifier
+	ClientID string `json:"client_id,required"`
+	// Timestamp when the grant was created
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Record type identifier
+	//
+	// Any of "oauth_grant".
+	RecordType string `json:"record_type,required"`
+	// List of granted OAuth scopes
+	Scopes []string `json:"scopes,required"`
+	// Timestamp when the grant was last used
+	LastUsedAt time.Time `json:"last_used_at,nullable" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ClientID    respjson.Field
+		CreatedAt   respjson.Field
+		RecordType  respjson.Field
+		Scopes      respjson.Field
+		LastUsedAt  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r OAuthGrantListResponseData) RawJSON() string { return r.JSON.raw }
+func (r *OAuthGrantListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -172,7 +199,7 @@ func (r *OAuthGrantListResponseMeta) UnmarshalJSON(data []byte) error {
 }
 
 type OAuthGrantDeleteResponse struct {
-	Data OAuthGrant `json:"data"`
+	Data OAuthGrantDeleteResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -184,6 +211,40 @@ type OAuthGrantDeleteResponse struct {
 // Returns the unmodified JSON received from the API
 func (r OAuthGrantDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *OAuthGrantDeleteResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type OAuthGrantDeleteResponseData struct {
+	// Unique identifier for the OAuth grant
+	ID string `json:"id,required" format:"uuid"`
+	// OAuth client identifier
+	ClientID string `json:"client_id,required"`
+	// Timestamp when the grant was created
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Record type identifier
+	//
+	// Any of "oauth_grant".
+	RecordType string `json:"record_type,required"`
+	// List of granted OAuth scopes
+	Scopes []string `json:"scopes,required"`
+	// Timestamp when the grant was last used
+	LastUsedAt time.Time `json:"last_used_at,nullable" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ClientID    respjson.Field
+		CreatedAt   respjson.Field
+		RecordType  respjson.Field
+		Scopes      respjson.Field
+		LastUsedAt  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r OAuthGrantDeleteResponseData) RawJSON() string { return r.JSON.raw }
+func (r *OAuthGrantDeleteResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

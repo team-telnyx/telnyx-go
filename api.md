@@ -21,25 +21,18 @@
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3/shared#SimpleSimCard">SimpleSimCard</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3/shared#SubNumberOrderRegulatoryRequirementWithValue">SubNumberOrderRegulatoryRequirementWithValue</a>
 
+# telnyx
+
 # Legacy
 
 ## Reporting
 
 ### BatchDetailRecords
 
-Params Types:
-
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#FilterParam">FilterParam</a>
-
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#Filter">Filter</a>
-
 #### Messaging
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MdrDetailReportResponse">MdrDetailReportResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#LegacyReportingBatchDetailRecordMessagingNewResponse">LegacyReportingBatchDetailRecordMessagingNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#LegacyReportingBatchDetailRecordMessagingGetResponse">LegacyReportingBatchDetailRecordMessagingGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#LegacyReportingBatchDetailRecordMessagingListResponse">LegacyReportingBatchDetailRecordMessagingListResponse</a>
@@ -56,7 +49,6 @@ Methods:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#SttDetailReportResponse">SttDetailReportResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#LegacyReportingBatchDetailRecordSpeechToTextNewResponse">LegacyReportingBatchDetailRecordSpeechToTextNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#LegacyReportingBatchDetailRecordSpeechToTextGetResponse">LegacyReportingBatchDetailRecordSpeechToTextGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#LegacyReportingBatchDetailRecordSpeechToTextListResponse">LegacyReportingBatchDetailRecordSpeechToTextListResponse</a>
@@ -73,7 +65,6 @@ Methods:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CdrDetailedReqResponse">CdrDetailedReqResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#LegacyReportingBatchDetailRecordVoiceNewResponse">LegacyReportingBatchDetailRecordVoiceNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#LegacyReportingBatchDetailRecordVoiceGetResponse">LegacyReportingBatchDetailRecordVoiceGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#LegacyReportingBatchDetailRecordVoiceListResponse">LegacyReportingBatchDetailRecordVoiceListResponse</a>
@@ -102,7 +93,6 @@ Methods:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MdrUsageReportResponseLegacy">MdrUsageReportResponseLegacy</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#LegacyReportingUsageReportMessagingNewResponse">LegacyReportingUsageReportMessagingNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#LegacyReportingUsageReportMessagingGetResponse">LegacyReportingUsageReportMessagingGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#LegacyReportingUsageReportMessagingListResponse">LegacyReportingUsageReportMessagingListResponse</a>
@@ -128,7 +118,6 @@ Methods:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CdrUsageReportResponseLegacy">CdrUsageReportResponseLegacy</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#LegacyReportingUsageReportVoiceNewResponse">LegacyReportingUsageReportVoiceNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#LegacyReportingUsageReportVoiceGetResponse">LegacyReportingUsageReportVoiceGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#LegacyReportingUsageReportVoiceListResponse">LegacyReportingUsageReportVoiceListResponse</a>
@@ -166,7 +155,6 @@ Methods:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#OAuthClient">OAuthClient</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#OAuthClientNewResponse">OAuthClientNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#OAuthClientGetResponse">OAuthClientGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#OAuthClientUpdateResponse">OAuthClientUpdateResponse</a>
@@ -184,7 +172,6 @@ Methods:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#OAuthGrant">OAuthGrant</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#OAuthGrantGetResponse">OAuthGrantGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#OAuthGrantListResponse">OAuthGrantListResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#OAuthGrantDeleteResponse">OAuthGrantDeleteResponse</a>
@@ -4005,7 +3992,6 @@ Response Types:
 
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#VerifyProfile">VerifyProfile</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#VerifyProfileData">VerifyProfileData</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#VerifyProfileMessageTemplateResponse">VerifyProfileMessageTemplateResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#VerifyProfileListResponse">VerifyProfileListResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#VerifyProfileNewTemplateResponse">VerifyProfileNewTemplateResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#VerifyProfileGetTemplatesResponse">VerifyProfileGetTemplatesResponse</a>
