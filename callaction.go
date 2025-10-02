@@ -16,6 +16,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/option"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/shared/constant"
 )
 
 // CallActionService contains methods and other services that help with interacting
@@ -1156,18 +1157,18 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type TranscriptionStartRequestTranscriptionEngineConfigUnionParam struct {
-	OfGoogle                            *TranscriptionStartRequestTranscriptionEngineConfigGoogleParam                            `json:",omitzero,inline"`
-	OfTelnyx                            *TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam                            `json:",omitzero,inline"`
-	OfTranscriptionEngineDeepgramConfig *TranscriptionStartRequestTranscriptionEngineConfigTranscriptionEngineDeepgramConfigParam `json:",omitzero,inline"`
-	OfA                                 *TranscriptionEngineAConfigParam                                                          `json:",omitzero,inline"`
-	OfB                                 *TranscriptionEngineBConfigParam                                                          `json:",omitzero,inline"`
+	OfGoogle   *TranscriptionStartRequestTranscriptionEngineConfigGoogleParam   `json:",omitzero,inline"`
+	OfTelnyx   *TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam   `json:",omitzero,inline"`
+	OfDeepgram *TranscriptionStartRequestTranscriptionEngineConfigDeepgramParam `json:",omitzero,inline"`
+	OfA        *TranscriptionEngineAConfigParam                                 `json:",omitzero,inline"`
+	OfB        *TranscriptionEngineBConfigParam                                 `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfGoogle,
 		u.OfTelnyx,
-		u.OfTranscriptionEngineDeepgramConfig,
+		u.OfDeepgram,
 		u.OfA,
 		u.OfB)
 }
@@ -1180,8 +1181,8 @@ func (u *TranscriptionStartRequestTranscriptionEngineConfigUnionParam) asAny() a
 		return u.OfGoogle
 	} else if !param.IsOmitted(u.OfTelnyx) {
 		return u.OfTelnyx
-	} else if !param.IsOmitted(u.OfTranscriptionEngineDeepgramConfig) {
-		return u.OfTranscriptionEngineDeepgramConfig
+	} else if !param.IsOmitted(u.OfDeepgram) {
+		return u.OfDeepgram
 	} else if !param.IsOmitted(u.OfA) {
 		return u.OfA
 	} else if !param.IsOmitted(u.OfB) {
@@ -1216,8 +1217,8 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetLanguag
 		return (*string)(&vt.Language)
 	} else if vt := u.OfTelnyx; vt != nil {
 		return (*string)(&vt.Language)
-	} else if vt := u.OfTranscriptionEngineDeepgramConfig; vt != nil && vt.Language.Valid() {
-		return &vt.Language.Value
+	} else if vt := u.OfDeepgram; vt != nil {
+		return (*string)(&vt.Language)
 	} else if vt := u.OfA; vt != nil {
 		return (*string)(&vt.Language)
 	} else if vt := u.OfB; vt != nil {
@@ -1272,7 +1273,7 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscr
 		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfTelnyx; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
-	} else if vt := u.OfTranscriptionEngineDeepgramConfig; vt != nil {
+	} else if vt := u.OfDeepgram; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfA; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
@@ -1296,7 +1297,7 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetUseEnha
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscriptionModel() *string {
 	if vt := u.OfTelnyx; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
-	} else if vt := u.OfTranscriptionEngineDeepgramConfig; vt != nil {
+	} else if vt := u.OfDeepgram; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
 	} else if vt := u.OfB; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
@@ -1348,7 +1349,7 @@ func init() {
 		"transcription_engine",
 		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigGoogleParam]("Google"),
 		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam]("Telnyx"),
-		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigTranscriptionEngineDeepgramConfigParam]("Deepgram"),
+		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigDeepgramParam]("Deepgram"),
 		apijson.Discriminator[TranscriptionEngineAConfigParam]("A"),
 		apijson.Discriminator[TranscriptionEngineBConfigParam]("B"),
 	)
@@ -1469,37 +1470,103 @@ func init() {
 	)
 }
 
-type TranscriptionStartRequestTranscriptionEngineConfigTranscriptionEngineDeepgramConfigParam struct {
-	// Language to use for speech recognition. Available languages depend on the
-	// selected model.
-	Language param.Opt[string] `json:"language,omitzero"`
-	// Engine identifier for Deepgram transcription service
-	//
-	// Any of "Deepgram".
-	TranscriptionEngine string `json:"transcription_engine,omitzero"`
+// The properties TranscriptionEngine, TranscriptionModel are required.
+type TranscriptionStartRequestTranscriptionEngineConfigDeepgramParam struct {
 	// The model to use for transcription.
 	//
 	// Any of "deepgram/nova-2", "deepgram/nova-3".
-	TranscriptionModel string `json:"transcription_model,omitzero"`
+	TranscriptionModel string `json:"transcription_model,omitzero,required"`
+	// Language to use for speech recognition. Available languages depend on the
+	// selected model.
+	//
+	// Any of "bg", "ca", "zh", "zh-CN", "zh-Hans", "zh-TW", "zh-Hant", "zh-HK", "cs",
+	// "da", "da-DK", "nl", "en", "en-US", "en-AU", "en-GB", "en-NZ", "en-IN", "et",
+	// "fi", "nl-BE", "fr", "fr-CA", "de", "de-CH", "el", "hi", "hu", "id", "it", "ja",
+	// "ko", "ko-KR", "lv", "lt", "ms", "no", "pl", "pt", "pt-BR", "pt-PT", "ro", "ru",
+	// "sk", "es", "es-419", "sv", "sv-SE", "th", "th-TH", "tr", "uk", "vi",
+	// "auto_detect".
+	Language TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage `json:"language,omitzero"`
+	// Engine identifier for Deepgram transcription service
+	//
+	// This field can be elided, and will marshal its zero value as "Deepgram".
+	TranscriptionEngine constant.Deepgram `json:"transcription_engine,required"`
 	paramObj
 }
 
-func (r TranscriptionStartRequestTranscriptionEngineConfigTranscriptionEngineDeepgramConfigParam) MarshalJSON() (data []byte, err error) {
-	type shadow TranscriptionStartRequestTranscriptionEngineConfigTranscriptionEngineDeepgramConfigParam
+func (r TranscriptionStartRequestTranscriptionEngineConfigDeepgramParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionStartRequestTranscriptionEngineConfigDeepgramParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *TranscriptionStartRequestTranscriptionEngineConfigTranscriptionEngineDeepgramConfigParam) UnmarshalJSON(data []byte) error {
+func (r *TranscriptionStartRequestTranscriptionEngineConfigDeepgramParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigTranscriptionEngineDeepgramConfigParam](
-		"transcription_engine", "Deepgram",
-	)
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigTranscriptionEngineDeepgramConfigParam](
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigDeepgramParam](
 		"transcription_model", "deepgram/nova-2", "deepgram/nova-3",
 	)
 }
+
+// Language to use for speech recognition. Available languages depend on the
+// selected model.
+type TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage string
+
+const (
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageBg         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "bg"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageCa         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "ca"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageZh         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "zh"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageZhCn       TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "zh-CN"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageZhHans     TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "zh-Hans"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageZhTw       TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "zh-TW"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageZhHant     TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "zh-Hant"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageZhHk       TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "zh-HK"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageCs         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "cs"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageDa         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "da"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageDaDk       TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "da-DK"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageNl         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "nl"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageEn         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "en"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageEnUs       TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "en-US"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageEnAu       TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "en-AU"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageEnGB       TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "en-GB"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageEnNz       TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "en-NZ"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageEnIn       TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "en-IN"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageEt         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "et"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageFi         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "fi"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageNlBe       TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "nl-BE"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageFr         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "fr"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageFrCa       TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "fr-CA"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageDe         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "de"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageDeCh       TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "de-CH"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageEl         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "el"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageHi         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "hi"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageHu         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "hu"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageID         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "id"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageIt         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "it"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageJa         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "ja"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageKo         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "ko"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageKoKr       TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "ko-KR"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageLv         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "lv"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageLt         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "lt"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageMs         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "ms"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageNo         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "no"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguagePl         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "pl"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguagePt         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "pt"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguagePtBr       TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "pt-BR"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguagePtPt       TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "pt-PT"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageRo         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "ro"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageRu         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "ru"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageSk         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "sk"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageEs         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "es"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageEs419      TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "es-419"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageSv         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "sv"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageSvSe       TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "sv-SE"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageTh         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "th"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageThTh       TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "th-TH"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageTr         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "tr"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageUk         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "uk"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageVi         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "vi"
+	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageAutoDetect TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "auto_detect"
+)
 
 type CallActionAnswerResponse struct {
 	Data CallActionAnswerResponseData `json:"data"`

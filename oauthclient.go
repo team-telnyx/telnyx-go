@@ -91,8 +91,91 @@ func (r *OAuthClientService) Delete(ctx context.Context, id string, opts ...opti
 	return
 }
 
+type OAuthClient struct {
+	// OAuth client identifier
+	ClientID string `json:"client_id,required"`
+	// OAuth client type
+	//
+	// Any of "public", "confidential".
+	ClientType OAuthClientClientType `json:"client_type,required"`
+	// Timestamp when the client was created
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Human-readable name for the OAuth client
+	Name string `json:"name,required"`
+	// Organization ID that owns this OAuth client
+	OrgID string `json:"org_id,required"`
+	// Record type identifier
+	//
+	// Any of "oauth_client".
+	RecordType OAuthClientRecordType `json:"record_type,required"`
+	// Whether PKCE (Proof Key for Code Exchange) is required for this client
+	RequirePkce bool `json:"require_pkce,required"`
+	// Timestamp when the client was last updated
+	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	// User ID that created this OAuth client
+	UserID string `json:"user_id,required"`
+	// List of allowed OAuth grant types
+	//
+	// Any of "client_credentials", "authorization_code", "refresh_token".
+	AllowedGrantTypes []string `json:"allowed_grant_types"`
+	// List of allowed OAuth scopes
+	AllowedScopes []string `json:"allowed_scopes"`
+	// Client secret (only included when available, for confidential clients)
+	ClientSecret string `json:"client_secret,nullable"`
+	// URL of the client logo
+	LogoUri string `json:"logo_uri,nullable" format:"uri"`
+	// URL of the client's privacy policy
+	PolicyUri string `json:"policy_uri,nullable" format:"uri"`
+	// List of allowed redirect URIs
+	RedirectUris []string `json:"redirect_uris" format:"uri"`
+	// URL of the client's terms of service
+	TosUri string `json:"tos_uri,nullable" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ClientID          respjson.Field
+		ClientType        respjson.Field
+		CreatedAt         respjson.Field
+		Name              respjson.Field
+		OrgID             respjson.Field
+		RecordType        respjson.Field
+		RequirePkce       respjson.Field
+		UpdatedAt         respjson.Field
+		UserID            respjson.Field
+		AllowedGrantTypes respjson.Field
+		AllowedScopes     respjson.Field
+		ClientSecret      respjson.Field
+		LogoUri           respjson.Field
+		PolicyUri         respjson.Field
+		RedirectUris      respjson.Field
+		TosUri            respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r OAuthClient) RawJSON() string { return r.JSON.raw }
+func (r *OAuthClient) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// OAuth client type
+type OAuthClientClientType string
+
+const (
+	OAuthClientClientTypePublic       OAuthClientClientType = "public"
+	OAuthClientClientTypeConfidential OAuthClientClientType = "confidential"
+)
+
+// Record type identifier
+type OAuthClientRecordType string
+
+const (
+	OAuthClientRecordTypeOAuthClient OAuthClientRecordType = "oauth_client"
+)
+
 type OAuthClientNewResponse struct {
-	Data OAuthClientNewResponseData `json:"data"`
+	Data OAuthClient `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -107,76 +190,8 @@ func (r *OAuthClientNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type OAuthClientNewResponseData struct {
-	// OAuth client identifier
-	ClientID string `json:"client_id,required"`
-	// OAuth client type
-	//
-	// Any of "public", "confidential".
-	ClientType string `json:"client_type,required"`
-	// Timestamp when the client was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// Human-readable name for the OAuth client
-	Name string `json:"name,required"`
-	// Organization ID that owns this OAuth client
-	OrgID string `json:"org_id,required"`
-	// Record type identifier
-	//
-	// Any of "oauth_client".
-	RecordType string `json:"record_type,required"`
-	// Whether PKCE (Proof Key for Code Exchange) is required for this client
-	RequirePkce bool `json:"require_pkce,required"`
-	// Timestamp when the client was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// User ID that created this OAuth client
-	UserID string `json:"user_id,required"`
-	// List of allowed OAuth grant types
-	//
-	// Any of "client_credentials", "authorization_code", "refresh_token".
-	AllowedGrantTypes []string `json:"allowed_grant_types"`
-	// List of allowed OAuth scopes
-	AllowedScopes []string `json:"allowed_scopes"`
-	// Client secret (only included when available, for confidential clients)
-	ClientSecret string `json:"client_secret,nullable"`
-	// URL of the client logo
-	LogoUri string `json:"logo_uri,nullable" format:"uri"`
-	// URL of the client's privacy policy
-	PolicyUri string `json:"policy_uri,nullable" format:"uri"`
-	// List of allowed redirect URIs
-	RedirectUris []string `json:"redirect_uris" format:"uri"`
-	// URL of the client's terms of service
-	TosUri string `json:"tos_uri,nullable" format:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ClientID          respjson.Field
-		ClientType        respjson.Field
-		CreatedAt         respjson.Field
-		Name              respjson.Field
-		OrgID             respjson.Field
-		RecordType        respjson.Field
-		RequirePkce       respjson.Field
-		UpdatedAt         respjson.Field
-		UserID            respjson.Field
-		AllowedGrantTypes respjson.Field
-		AllowedScopes     respjson.Field
-		ClientSecret      respjson.Field
-		LogoUri           respjson.Field
-		PolicyUri         respjson.Field
-		RedirectUris      respjson.Field
-		TosUri            respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r OAuthClientNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *OAuthClientNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type OAuthClientGetResponse struct {
-	Data OAuthClientGetResponseData `json:"data"`
+	Data OAuthClient `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -191,76 +206,8 @@ func (r *OAuthClientGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type OAuthClientGetResponseData struct {
-	// OAuth client identifier
-	ClientID string `json:"client_id,required"`
-	// OAuth client type
-	//
-	// Any of "public", "confidential".
-	ClientType string `json:"client_type,required"`
-	// Timestamp when the client was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// Human-readable name for the OAuth client
-	Name string `json:"name,required"`
-	// Organization ID that owns this OAuth client
-	OrgID string `json:"org_id,required"`
-	// Record type identifier
-	//
-	// Any of "oauth_client".
-	RecordType string `json:"record_type,required"`
-	// Whether PKCE (Proof Key for Code Exchange) is required for this client
-	RequirePkce bool `json:"require_pkce,required"`
-	// Timestamp when the client was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// User ID that created this OAuth client
-	UserID string `json:"user_id,required"`
-	// List of allowed OAuth grant types
-	//
-	// Any of "client_credentials", "authorization_code", "refresh_token".
-	AllowedGrantTypes []string `json:"allowed_grant_types"`
-	// List of allowed OAuth scopes
-	AllowedScopes []string `json:"allowed_scopes"`
-	// Client secret (only included when available, for confidential clients)
-	ClientSecret string `json:"client_secret,nullable"`
-	// URL of the client logo
-	LogoUri string `json:"logo_uri,nullable" format:"uri"`
-	// URL of the client's privacy policy
-	PolicyUri string `json:"policy_uri,nullable" format:"uri"`
-	// List of allowed redirect URIs
-	RedirectUris []string `json:"redirect_uris" format:"uri"`
-	// URL of the client's terms of service
-	TosUri string `json:"tos_uri,nullable" format:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ClientID          respjson.Field
-		ClientType        respjson.Field
-		CreatedAt         respjson.Field
-		Name              respjson.Field
-		OrgID             respjson.Field
-		RecordType        respjson.Field
-		RequirePkce       respjson.Field
-		UpdatedAt         respjson.Field
-		UserID            respjson.Field
-		AllowedGrantTypes respjson.Field
-		AllowedScopes     respjson.Field
-		ClientSecret      respjson.Field
-		LogoUri           respjson.Field
-		PolicyUri         respjson.Field
-		RedirectUris      respjson.Field
-		TosUri            respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r OAuthClientGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *OAuthClientGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type OAuthClientUpdateResponse struct {
-	Data OAuthClientUpdateResponseData `json:"data"`
+	Data OAuthClient `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -275,77 +222,9 @@ func (r *OAuthClientUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type OAuthClientUpdateResponseData struct {
-	// OAuth client identifier
-	ClientID string `json:"client_id,required"`
-	// OAuth client type
-	//
-	// Any of "public", "confidential".
-	ClientType string `json:"client_type,required"`
-	// Timestamp when the client was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// Human-readable name for the OAuth client
-	Name string `json:"name,required"`
-	// Organization ID that owns this OAuth client
-	OrgID string `json:"org_id,required"`
-	// Record type identifier
-	//
-	// Any of "oauth_client".
-	RecordType string `json:"record_type,required"`
-	// Whether PKCE (Proof Key for Code Exchange) is required for this client
-	RequirePkce bool `json:"require_pkce,required"`
-	// Timestamp when the client was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// User ID that created this OAuth client
-	UserID string `json:"user_id,required"`
-	// List of allowed OAuth grant types
-	//
-	// Any of "client_credentials", "authorization_code", "refresh_token".
-	AllowedGrantTypes []string `json:"allowed_grant_types"`
-	// List of allowed OAuth scopes
-	AllowedScopes []string `json:"allowed_scopes"`
-	// Client secret (only included when available, for confidential clients)
-	ClientSecret string `json:"client_secret,nullable"`
-	// URL of the client logo
-	LogoUri string `json:"logo_uri,nullable" format:"uri"`
-	// URL of the client's privacy policy
-	PolicyUri string `json:"policy_uri,nullable" format:"uri"`
-	// List of allowed redirect URIs
-	RedirectUris []string `json:"redirect_uris" format:"uri"`
-	// URL of the client's terms of service
-	TosUri string `json:"tos_uri,nullable" format:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ClientID          respjson.Field
-		ClientType        respjson.Field
-		CreatedAt         respjson.Field
-		Name              respjson.Field
-		OrgID             respjson.Field
-		RecordType        respjson.Field
-		RequirePkce       respjson.Field
-		UpdatedAt         respjson.Field
-		UserID            respjson.Field
-		AllowedGrantTypes respjson.Field
-		AllowedScopes     respjson.Field
-		ClientSecret      respjson.Field
-		LogoUri           respjson.Field
-		PolicyUri         respjson.Field
-		RedirectUris      respjson.Field
-		TosUri            respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r OAuthClientUpdateResponseData) RawJSON() string { return r.JSON.raw }
-func (r *OAuthClientUpdateResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type OAuthClientListResponse struct {
-	Data []OAuthClientListResponseData `json:"data"`
-	Meta OAuthClientListResponseMeta   `json:"meta"`
+	Data []OAuthClient               `json:"data"`
+	Meta OAuthClientListResponseMeta `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -358,74 +237,6 @@ type OAuthClientListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r OAuthClientListResponse) RawJSON() string { return r.JSON.raw }
 func (r *OAuthClientListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type OAuthClientListResponseData struct {
-	// OAuth client identifier
-	ClientID string `json:"client_id,required"`
-	// OAuth client type
-	//
-	// Any of "public", "confidential".
-	ClientType string `json:"client_type,required"`
-	// Timestamp when the client was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// Human-readable name for the OAuth client
-	Name string `json:"name,required"`
-	// Organization ID that owns this OAuth client
-	OrgID string `json:"org_id,required"`
-	// Record type identifier
-	//
-	// Any of "oauth_client".
-	RecordType string `json:"record_type,required"`
-	// Whether PKCE (Proof Key for Code Exchange) is required for this client
-	RequirePkce bool `json:"require_pkce,required"`
-	// Timestamp when the client was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// User ID that created this OAuth client
-	UserID string `json:"user_id,required"`
-	// List of allowed OAuth grant types
-	//
-	// Any of "client_credentials", "authorization_code", "refresh_token".
-	AllowedGrantTypes []string `json:"allowed_grant_types"`
-	// List of allowed OAuth scopes
-	AllowedScopes []string `json:"allowed_scopes"`
-	// Client secret (only included when available, for confidential clients)
-	ClientSecret string `json:"client_secret,nullable"`
-	// URL of the client logo
-	LogoUri string `json:"logo_uri,nullable" format:"uri"`
-	// URL of the client's privacy policy
-	PolicyUri string `json:"policy_uri,nullable" format:"uri"`
-	// List of allowed redirect URIs
-	RedirectUris []string `json:"redirect_uris" format:"uri"`
-	// URL of the client's terms of service
-	TosUri string `json:"tos_uri,nullable" format:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ClientID          respjson.Field
-		ClientType        respjson.Field
-		CreatedAt         respjson.Field
-		Name              respjson.Field
-		OrgID             respjson.Field
-		RecordType        respjson.Field
-		RequirePkce       respjson.Field
-		UpdatedAt         respjson.Field
-		UserID            respjson.Field
-		AllowedGrantTypes respjson.Field
-		AllowedScopes     respjson.Field
-		ClientSecret      respjson.Field
-		LogoUri           respjson.Field
-		PolicyUri         respjson.Field
-		RedirectUris      respjson.Field
-		TosUri            respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r OAuthClientListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *OAuthClientListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
