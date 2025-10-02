@@ -1,5 +1,22 @@
 # Changelog
 
+## 3.1.0 (2025-10-02)
+
+Full Changelog: [v3.0.0...v3.1.0](https://github.com/team-telnyx/telnyx-go/compare/v3.0.0...v3.1.0)
+
+### Features
+
+* **api:** manual updates ([4b1795c](https://github.com/team-telnyx/telnyx-go/commit/4b1795c55b366192a56adcace1040571ee52c050))
+* Engdesk 44932 ([1f598f1](https://github.com/team-telnyx/telnyx-go/commit/1f598f1d138ea06138e6864082796c093919010c))
+* Fix listing deepgram languages for transcription start ([26297d6](https://github.com/team-telnyx/telnyx-go/commit/26297d6da9ea37e8acd38f8b3f668169eb37d2c8))
+* TELAPPS-5367: Update transcription start docs ([ed74c02](https://github.com/team-telnyx/telnyx-go/commit/ed74c02d5df98f587ea8ca51fcb60d9050beb007))
+
+
+### Chores
+
+* configure new SDK language ([621692e](https://github.com/team-telnyx/telnyx-go/commit/621692e2c21b74541d6167a5748729bab2f58832))
+* sync repo ([301e6e0](https://github.com/team-telnyx/telnyx-go/commit/301e6e0f3028bbdd6bbefc0edac334af09a677aa))
+
 ## 3.0.0 (2025-09-24)
 
 Full Changelog: [v0.0.1...v3.0.0](https://github.com/team-telnyx/telnyx-go/compare/v0.0.1...v3.0.0)
