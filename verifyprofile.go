@@ -276,24 +276,6 @@ func (r *VerifyProfileData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VerifyProfileMessageTemplateResponse struct {
-	ID   string `json:"id" format:"uuid"`
-	Text string `json:"text"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Text        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VerifyProfileMessageTemplateResponse) RawJSON() string { return r.JSON.raw }
-func (r *VerifyProfileMessageTemplateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // A paginated list of Verify profiles
 type VerifyProfileListResponse struct {
 	Data []VerifyProfile               `json:"data,required"`
@@ -336,7 +318,7 @@ func (r *VerifyProfileListResponseMeta) UnmarshalJSON(data []byte) error {
 }
 
 type VerifyProfileNewTemplateResponse struct {
-	Data VerifyProfileMessageTemplateResponse `json:"data"`
+	Data VerifyProfileNewTemplateResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -351,9 +333,27 @@ func (r *VerifyProfileNewTemplateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type VerifyProfileNewTemplateResponseData struct {
+	ID   string `json:"id" format:"uuid"`
+	Text string `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VerifyProfileNewTemplateResponseData) RawJSON() string { return r.JSON.raw }
+func (r *VerifyProfileNewTemplateResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // A list of Verify profile message templates
 type VerifyProfileGetTemplatesResponse struct {
-	Data []VerifyProfileMessageTemplateResponse `json:"data,required"`
+	Data []VerifyProfileGetTemplatesResponseData `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -368,8 +368,26 @@ func (r *VerifyProfileGetTemplatesResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type VerifyProfileGetTemplatesResponseData struct {
+	ID   string `json:"id" format:"uuid"`
+	Text string `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VerifyProfileGetTemplatesResponseData) RawJSON() string { return r.JSON.raw }
+func (r *VerifyProfileGetTemplatesResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type VerifyProfileUpdateTemplateResponse struct {
-	Data VerifyProfileMessageTemplateResponse `json:"data"`
+	Data VerifyProfileUpdateTemplateResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -381,6 +399,24 @@ type VerifyProfileUpdateTemplateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r VerifyProfileUpdateTemplateResponse) RawJSON() string { return r.JSON.raw }
 func (r *VerifyProfileUpdateTemplateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VerifyProfileUpdateTemplateResponseData struct {
+	ID   string `json:"id" format:"uuid"`
+	Text string `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VerifyProfileUpdateTemplateResponseData) RawJSON() string { return r.JSON.raw }
+func (r *VerifyProfileUpdateTemplateResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

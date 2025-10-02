@@ -1123,9 +1123,10 @@ type TranscriptionStartRequestParam struct {
 	// that requested the transcription, `outbound` for the other leg, and `both` for
 	// both legs of the call. Will default to `inbound`.
 	TranscriptionTracks param.Opt[string] `json:"transcription_tracks,omitzero"`
-	// Engine to use for speech recognition. `A` - `Google`, `B` - `Telnyx`.
+	// Engine to use for speech recognition. Legacy values `A` - `Google`, `B` -
+	// `Telnyx` are supported for backward compatibility.
 	//
-	// Any of "A", "B".
+	// Any of "Google", "Telnyx", "Deepgram", "A", "B".
 	TranscriptionEngine       TranscriptionStartRequestTranscriptionEngine                 `json:"transcription_engine,omitzero"`
 	TranscriptionEngineConfig TranscriptionStartRequestTranscriptionEngineConfigUnionParam `json:"transcription_engine_config,omitzero"`
 	paramObj
@@ -1139,32 +1140,49 @@ func (r *TranscriptionStartRequestParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Engine to use for speech recognition. `A` - `Google`, `B` - `Telnyx`.
+// Engine to use for speech recognition. Legacy values `A` - `Google`, `B` -
+// `Telnyx` are supported for backward compatibility.
 type TranscriptionStartRequestTranscriptionEngine string
 
 const (
-	TranscriptionStartRequestTranscriptionEngineA TranscriptionStartRequestTranscriptionEngine = "A"
-	TranscriptionStartRequestTranscriptionEngineB TranscriptionStartRequestTranscriptionEngine = "B"
+	TranscriptionStartRequestTranscriptionEngineGoogle   TranscriptionStartRequestTranscriptionEngine = "Google"
+	TranscriptionStartRequestTranscriptionEngineTelnyx   TranscriptionStartRequestTranscriptionEngine = "Telnyx"
+	TranscriptionStartRequestTranscriptionEngineDeepgram TranscriptionStartRequestTranscriptionEngine = "Deepgram"
+	TranscriptionStartRequestTranscriptionEngineA        TranscriptionStartRequestTranscriptionEngine = "A"
+	TranscriptionStartRequestTranscriptionEngineB        TranscriptionStartRequestTranscriptionEngine = "B"
 )
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type TranscriptionStartRequestTranscriptionEngineConfigUnionParam struct {
-	OfA *TranscriptionEngineAConfigParam `json:",omitzero,inline"`
-	OfB *TranscriptionEngineBConfigParam `json:",omitzero,inline"`
+	OfGoogle                            *TranscriptionStartRequestTranscriptionEngineConfigGoogleParam                            `json:",omitzero,inline"`
+	OfTelnyx                            *TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam                            `json:",omitzero,inline"`
+	OfTranscriptionEngineDeepgramConfig *TranscriptionStartRequestTranscriptionEngineConfigTranscriptionEngineDeepgramConfigParam `json:",omitzero,inline"`
+	OfA                                 *TranscriptionEngineAConfigParam                                                          `json:",omitzero,inline"`
+	OfB                                 *TranscriptionEngineBConfigParam                                                          `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfA, u.OfB)
+	return param.MarshalUnion(u, u.OfGoogle,
+		u.OfTelnyx,
+		u.OfTranscriptionEngineDeepgramConfig,
+		u.OfA,
+		u.OfB)
 }
 func (u *TranscriptionStartRequestTranscriptionEngineConfigUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *TranscriptionStartRequestTranscriptionEngineConfigUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfA) {
+	if !param.IsOmitted(u.OfGoogle) {
+		return u.OfGoogle
+	} else if !param.IsOmitted(u.OfTelnyx) {
+		return u.OfTelnyx
+	} else if !param.IsOmitted(u.OfTranscriptionEngineDeepgramConfig) {
+		return u.OfTranscriptionEngineDeepgramConfig
+	} else if !param.IsOmitted(u.OfA) {
 		return u.OfA
 	} else if !param.IsOmitted(u.OfB) {
 		return u.OfB
@@ -1174,31 +1192,45 @@ func (u *TranscriptionStartRequestTranscriptionEngineConfigUnionParam) asAny() a
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetEnableSpeakerDiarization() *bool {
-	if vt := u.OfA; vt != nil && vt.EnableSpeakerDiarization.Valid() {
+	if vt := u.OfGoogle; vt != nil && vt.EnableSpeakerDiarization.Valid() {
+		return &vt.EnableSpeakerDiarization.Value
+	} else if vt := u.OfA; vt != nil && vt.EnableSpeakerDiarization.Valid() {
 		return &vt.EnableSpeakerDiarization.Value
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetHints() []string {
-	if vt := u.OfA; vt != nil {
-		return vt.Hints
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetInterimResults() *bool {
-	if vt := u.OfA; vt != nil && vt.InterimResults.Valid() {
+	if vt := u.OfGoogle; vt != nil && vt.InterimResults.Valid() {
+		return &vt.InterimResults.Value
+	} else if vt := u.OfA; vt != nil && vt.InterimResults.Valid() {
 		return &vt.InterimResults.Value
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetLanguage() *string {
+	if vt := u.OfGoogle; vt != nil {
+		return (*string)(&vt.Language)
+	} else if vt := u.OfTelnyx; vt != nil {
+		return (*string)(&vt.Language)
+	} else if vt := u.OfTranscriptionEngineDeepgramConfig; vt != nil && vt.Language.Valid() {
+		return &vt.Language.Value
+	} else if vt := u.OfA; vt != nil {
+		return (*string)(&vt.Language)
+	} else if vt := u.OfB; vt != nil {
+		return (*string)(&vt.Language)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetMaxSpeakerCount() *int64 {
-	if vt := u.OfA; vt != nil && vt.MaxSpeakerCount.Valid() {
+	if vt := u.OfGoogle; vt != nil && vt.MaxSpeakerCount.Valid() {
+		return &vt.MaxSpeakerCount.Value
+	} else if vt := u.OfA; vt != nil && vt.MaxSpeakerCount.Valid() {
 		return &vt.MaxSpeakerCount.Value
 	}
 	return nil
@@ -1206,7 +1238,9 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetMaxSpea
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetMinSpeakerCount() *int64 {
-	if vt := u.OfA; vt != nil && vt.MinSpeakerCount.Valid() {
+	if vt := u.OfGoogle; vt != nil && vt.MinSpeakerCount.Valid() {
+		return &vt.MinSpeakerCount.Value
+	} else if vt := u.OfA; vt != nil && vt.MinSpeakerCount.Valid() {
 		return &vt.MinSpeakerCount.Value
 	}
 	return nil
@@ -1214,7 +1248,9 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetMinSpea
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetModel() *string {
-	if vt := u.OfA; vt != nil {
+	if vt := u.OfGoogle; vt != nil {
+		return (*string)(&vt.Model)
+	} else if vt := u.OfA; vt != nil {
 		return (*string)(&vt.Model)
 	}
 	return nil
@@ -1222,23 +1258,35 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetModel()
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetProfanityFilter() *bool {
-	if vt := u.OfA; vt != nil && vt.ProfanityFilter.Valid() {
+	if vt := u.OfGoogle; vt != nil && vt.ProfanityFilter.Valid() {
+		return &vt.ProfanityFilter.Value
+	} else if vt := u.OfA; vt != nil && vt.ProfanityFilter.Valid() {
 		return &vt.ProfanityFilter.Value
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetSpeechContext() []TranscriptionEngineAConfigSpeechContextParam {
-	if vt := u.OfA; vt != nil {
-		return vt.SpeechContext
+func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscriptionEngine() *string {
+	if vt := u.OfGoogle; vt != nil {
+		return (*string)(&vt.TranscriptionEngine)
+	} else if vt := u.OfTelnyx; vt != nil {
+		return (*string)(&vt.TranscriptionEngine)
+	} else if vt := u.OfTranscriptionEngineDeepgramConfig; vt != nil {
+		return (*string)(&vt.TranscriptionEngine)
+	} else if vt := u.OfA; vt != nil {
+		return (*string)(&vt.TranscriptionEngine)
+	} else if vt := u.OfB; vt != nil {
+		return (*string)(&vt.TranscriptionEngine)
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetUseEnhanced() *bool {
-	if vt := u.OfA; vt != nil && vt.UseEnhanced.Valid() {
+	if vt := u.OfGoogle; vt != nil && vt.UseEnhanced.Valid() {
+		return &vt.UseEnhanced.Value
+	} else if vt := u.OfA; vt != nil && vt.UseEnhanced.Valid() {
 		return &vt.UseEnhanced.Value
 	}
 	return nil
@@ -1246,37 +1294,210 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetUseEnha
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscriptionModel() *string {
-	if vt := u.OfB; vt != nil {
+	if vt := u.OfTelnyx; vt != nil {
+		return (*string)(&vt.TranscriptionModel)
+	} else if vt := u.OfTranscriptionEngineDeepgramConfig; vt != nil {
+		return (*string)(&vt.TranscriptionModel)
+	} else if vt := u.OfB; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
 	}
 	return nil
 }
 
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetLanguage() *string {
-	if vt := u.OfA; vt != nil {
-		return (*string)(&vt.Language)
-	} else if vt := u.OfB; vt != nil {
-		return (*string)(&vt.Language)
+// Returns a pointer to the underlying variant's Hints property, if present.
+func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetHints() []string {
+	if vt := u.OfGoogle; vt != nil {
+		return vt.Hints
+	} else if vt := u.OfA; vt != nil {
+		return vt.Hints
 	}
 	return nil
 }
 
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscriptionEngine() *string {
-	if vt := u.OfA; vt != nil {
-		return (*string)(&vt.TranscriptionEngine)
-	} else if vt := u.OfB; vt != nil {
-		return (*string)(&vt.TranscriptionEngine)
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetSpeechContext() (res transcriptionStartRequestTranscriptionEngineConfigUnionParamSpeechContext) {
+	if vt := u.OfGoogle; vt != nil {
+		res.any = &vt.SpeechContext
+	} else if vt := u.OfA; vt != nil {
+		res.any = &vt.SpeechContext
 	}
-	return nil
+	return
+}
+
+// Can have the runtime types
+// [_[]TranscriptionStartRequestTranscriptionEngineConfigGoogleSpeechContextParam],
+// [_[]TranscriptionEngineAConfigSpeechContextParam]
+type transcriptionStartRequestTranscriptionEngineConfigUnionParamSpeechContext struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *[]telnyx.TranscriptionStartRequestTranscriptionEngineConfigGoogleSpeechContextParam:
+//	case *[]telnyx.TranscriptionEngineAConfigSpeechContextParam:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u transcriptionStartRequestTranscriptionEngineConfigUnionParamSpeechContext) AsAny() any {
+	return u.any
 }
 
 func init() {
 	apijson.RegisterUnion[TranscriptionStartRequestTranscriptionEngineConfigUnionParam](
 		"transcription_engine",
+		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigGoogleParam]("Google"),
+		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam]("Telnyx"),
+		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigTranscriptionEngineDeepgramConfigParam]("Deepgram"),
 		apijson.Discriminator[TranscriptionEngineAConfigParam]("A"),
 		apijson.Discriminator[TranscriptionEngineBConfigParam]("B"),
+	)
+}
+
+type TranscriptionStartRequestTranscriptionEngineConfigGoogleParam struct {
+	// Enables speaker diarization.
+	EnableSpeakerDiarization param.Opt[bool] `json:"enable_speaker_diarization,omitzero"`
+	// Whether to send also interim results. If set to false, only final results will
+	// be sent.
+	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
+	// Defines maximum number of speakers in the conversation.
+	MaxSpeakerCount param.Opt[int64] `json:"max_speaker_count,omitzero"`
+	// Defines minimum number of speakers in the conversation.
+	MinSpeakerCount param.Opt[int64] `json:"min_speaker_count,omitzero"`
+	// Enables profanity_filter.
+	ProfanityFilter param.Opt[bool] `json:"profanity_filter,omitzero"`
+	// Enables enhanced transcription, this works for models `phone_call` and `video`.
+	UseEnhanced param.Opt[bool] `json:"use_enhanced,omitzero"`
+	// Hints to improve transcription accuracy.
+	Hints []string `json:"hints,omitzero"`
+	// Language to use for speech recognition
+	//
+	// Any of "af", "sq", "am", "ar", "hy", "az", "eu", "bn", "bs", "bg", "my", "ca",
+	// "yue", "zh", "hr", "cs", "da", "nl", "en", "et", "fil", "fi", "fr", "gl", "ka",
+	// "de", "el", "gu", "iw", "hi", "hu", "is", "id", "it", "ja", "jv", "kn", "kk",
+	// "km", "ko", "lo", "lv", "lt", "mk", "ms", "ml", "mr", "mn", "ne", "no", "fa",
+	// "pl", "pt", "pa", "ro", "ru", "rw", "sr", "si", "sk", "sl", "ss", "st", "es",
+	// "su", "sw", "sv", "ta", "te", "th", "tn", "tr", "ts", "uk", "ur", "uz", "ve",
+	// "vi", "xh", "zu".
+	Language GoogleTranscriptionLanguage `json:"language,omitzero"`
+	// The model to use for transcription.
+	//
+	// Any of "latest_long", "latest_short", "command_and_search", "phone_call",
+	// "video", "default", "medical_conversation", "medical_dictation".
+	Model string `json:"model,omitzero"`
+	// Speech context to improve transcription accuracy.
+	SpeechContext []TranscriptionStartRequestTranscriptionEngineConfigGoogleSpeechContextParam `json:"speech_context,omitzero"`
+	// Engine identifier for Google transcription service
+	//
+	// Any of "Google".
+	TranscriptionEngine string `json:"transcription_engine,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionStartRequestTranscriptionEngineConfigGoogleParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionStartRequestTranscriptionEngineConfigGoogleParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionStartRequestTranscriptionEngineConfigGoogleParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigGoogleParam](
+		"model", "latest_long", "latest_short", "command_and_search", "phone_call", "video", "default", "medical_conversation", "medical_dictation",
+	)
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigGoogleParam](
+		"transcription_engine", "Google",
+	)
+}
+
+type TranscriptionStartRequestTranscriptionEngineConfigGoogleSpeechContextParam struct {
+	// Boost factor for the speech context.
+	Boost   param.Opt[float64] `json:"boost,omitzero"`
+	Phrases []string           `json:"phrases,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionStartRequestTranscriptionEngineConfigGoogleSpeechContextParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionStartRequestTranscriptionEngineConfigGoogleSpeechContextParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionStartRequestTranscriptionEngineConfigGoogleSpeechContextParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam struct {
+	// Language to use for speech recognition
+	//
+	// Any of "en", "zh", "de", "es", "ru", "ko", "fr", "ja", "pt", "tr", "pl", "ca",
+	// "nl", "ar", "sv", "it", "id", "hi", "fi", "vi", "he", "uk", "el", "ms", "cs",
+	// "ro", "da", "hu", "ta", "no", "th", "ur", "hr", "bg", "lt", "la", "mi", "ml",
+	// "cy", "sk", "te", "fa", "lv", "bn", "sr", "az", "sl", "kn", "et", "mk", "br",
+	// "eu", "is", "hy", "ne", "mn", "bs", "kk", "sq", "sw", "gl", "mr", "pa", "si",
+	// "km", "sn", "yo", "so", "af", "oc", "ka", "be", "tg", "sd", "gu", "am", "yi",
+	// "lo", "uz", "fo", "ht", "ps", "tk", "nn", "mt", "sa", "lb", "my", "bo", "tl",
+	// "mg", "as", "tt", "haw", "ln", "ha", "ba", "jw", "su", "auto_detect".
+	Language string `json:"language,omitzero"`
+	// Engine identifier for Telnyx transcription service
+	//
+	// Any of "Telnyx".
+	TranscriptionEngine string `json:"transcription_engine,omitzero"`
+	// The model to use for transcription.
+	//
+	// Any of "openai/whisper-tiny", "openai/whisper-large-v3-turbo".
+	TranscriptionModel string `json:"transcription_model,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam](
+		"language", "en", "zh", "de", "es", "ru", "ko", "fr", "ja", "pt", "tr", "pl", "ca", "nl", "ar", "sv", "it", "id", "hi", "fi", "vi", "he", "uk", "el", "ms", "cs", "ro", "da", "hu", "ta", "no", "th", "ur", "hr", "bg", "lt", "la", "mi", "ml", "cy", "sk", "te", "fa", "lv", "bn", "sr", "az", "sl", "kn", "et", "mk", "br", "eu", "is", "hy", "ne", "mn", "bs", "kk", "sq", "sw", "gl", "mr", "pa", "si", "km", "sn", "yo", "so", "af", "oc", "ka", "be", "tg", "sd", "gu", "am", "yi", "lo", "uz", "fo", "ht", "ps", "tk", "nn", "mt", "sa", "lb", "my", "bo", "tl", "mg", "as", "tt", "haw", "ln", "ha", "ba", "jw", "su", "auto_detect",
+	)
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam](
+		"transcription_engine", "Telnyx",
+	)
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam](
+		"transcription_model", "openai/whisper-tiny", "openai/whisper-large-v3-turbo",
+	)
+}
+
+type TranscriptionStartRequestTranscriptionEngineConfigTranscriptionEngineDeepgramConfigParam struct {
+	// Language to use for speech recognition. Available languages depend on the
+	// selected model.
+	Language param.Opt[string] `json:"language,omitzero"`
+	// Engine identifier for Deepgram transcription service
+	//
+	// Any of "Deepgram".
+	TranscriptionEngine string `json:"transcription_engine,omitzero"`
+	// The model to use for transcription.
+	//
+	// Any of "deepgram/nova-2", "deepgram/nova-3".
+	TranscriptionModel string `json:"transcription_model,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionStartRequestTranscriptionEngineConfigTranscriptionEngineDeepgramConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionStartRequestTranscriptionEngineConfigTranscriptionEngineDeepgramConfigParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionStartRequestTranscriptionEngineConfigTranscriptionEngineDeepgramConfigParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigTranscriptionEngineDeepgramConfigParam](
+		"transcription_engine", "Deepgram",
+	)
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigTranscriptionEngineDeepgramConfigParam](
+		"transcription_model", "deepgram/nova-2", "deepgram/nova-3",
 	)
 }
 
