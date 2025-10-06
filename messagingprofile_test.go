@@ -35,6 +35,7 @@ func TestMessagingProfileNewWithOptionalParams(t *testing.T) {
 		Enabled:                 telnyx.Bool(true),
 		MmsFallBackToSMS:        telnyx.Bool(true),
 		MmsTranscoding:          telnyx.Bool(true),
+		MobileOnly:              telnyx.Bool(true),
 		NumberPoolSettings: telnyx.NumberPoolSettingsParam{
 			LongCodeWeight: 1,
 			SkipUnhealthy:  true,
@@ -107,6 +108,7 @@ func TestMessagingProfileUpdateWithOptionalParams(t *testing.T) {
 			Enabled:                telnyx.Bool(true),
 			MmsFallBackToSMS:       telnyx.Bool(true),
 			MmsTranscoding:         telnyx.Bool(true),
+			MobileOnly:             telnyx.Bool(true),
 			Name:                   telnyx.String("Updated Profile for Messages"),
 			NumberPoolSettings: telnyx.NumberPoolSettingsParam{
 				LongCodeWeight: 2,
