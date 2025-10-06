@@ -137,6 +137,8 @@ type MessagingProfile struct {
 	MmsFallBackToSMS bool `json:"mms_fall_back_to_sms"`
 	// enables automated resizing of MMS media.
 	MmsTranscoding bool `json:"mms_transcoding"`
+	// Send messages only to mobile phone numbers.
+	MobileOnly bool `json:"mobile_only"`
 	// A user friendly name for the messaging profile.
 	Name string `json:"name"`
 	// Number Pool allows you to send messages from a pool of numbers of different
@@ -185,6 +187,7 @@ type MessagingProfile struct {
 		Enabled                 respjson.Field
 		MmsFallBackToSMS        respjson.Field
 		MmsTranscoding          respjson.Field
+		MobileOnly              respjson.Field
 		Name                    respjson.Field
 		NumberPoolSettings      respjson.Field
 		RecordType              respjson.Field
@@ -550,6 +553,8 @@ type MessagingProfileNewParams struct {
 	MmsFallBackToSMS param.Opt[bool] `json:"mms_fall_back_to_sms,omitzero"`
 	// enables automated resizing of MMS media.
 	MmsTranscoding param.Opt[bool] `json:"mms_transcoding,omitzero"`
+	// Send messages only to mobile phone numbers.
+	MobileOnly param.Opt[bool] `json:"mobile_only,omitzero"`
 	// Number Pool allows you to send messages from a pool of numbers of different
 	// types, assigning weights to each type. The pool consists of all the long code
 	// and toll free numbers assigned to the messaging profile.
@@ -610,6 +615,8 @@ type MessagingProfileUpdateParams struct {
 	MmsFallBackToSMS param.Opt[bool] `json:"mms_fall_back_to_sms,omitzero"`
 	// enables automated resizing of MMS media.
 	MmsTranscoding param.Opt[bool] `json:"mms_transcoding,omitzero"`
+	// Send messages only to mobile phone numbers.
+	MobileOnly param.Opt[bool] `json:"mobile_only,omitzero"`
 	// A user friendly name for the messaging profile.
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Secret used to authenticate with v1 endpoints.
