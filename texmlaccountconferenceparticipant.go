@@ -613,6 +613,9 @@ type TexmlAccountConferenceParticipantParticipantsParams struct {
 	//
 	// Any of "trim-silence", "do-not-trim".
 	ConferenceTrim TexmlAccountConferenceParticipantParticipantsParamsConferenceTrim `json:"ConferenceTrim,omitzero"`
+	// Custom HTTP headers to be sent with the call. Each header should be an object
+	// with 'name' and 'value' properties.
+	CustomHeaders []TexmlAccountConferenceParticipantParticipantsParamsCustomHeader `json:"CustomHeaders,omitzero"`
 	// Whether to detect if a human or an answering machine picked up the call. Use
 	// `Enable` if you would like to ne notified as soon as the called party is
 	// identified. Use `DetectMessageEnd`, if you would like to leave a message on an
@@ -708,6 +711,23 @@ const (
 	TexmlAccountConferenceParticipantParticipantsParamsConferenceTrimTrimSilence TexmlAccountConferenceParticipantParticipantsParamsConferenceTrim = "trim-silence"
 	TexmlAccountConferenceParticipantParticipantsParamsConferenceTrimDoNotTrim   TexmlAccountConferenceParticipantParticipantsParamsConferenceTrim = "do-not-trim"
 )
+
+// The properties Name, Value are required.
+type TexmlAccountConferenceParticipantParticipantsParamsCustomHeader struct {
+	// The name of the custom header
+	Name string `json:"name,required"`
+	// The value of the custom header
+	Value string `json:"value,required"`
+	paramObj
+}
+
+func (r TexmlAccountConferenceParticipantParticipantsParamsCustomHeader) MarshalJSON() (data []byte, err error) {
+	type shadow TexmlAccountConferenceParticipantParticipantsParamsCustomHeader
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TexmlAccountConferenceParticipantParticipantsParamsCustomHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Whether to detect if a human or an answering machine picked up the call. Use
 // `Enable` if you would like to ne notified as soon as the called party is

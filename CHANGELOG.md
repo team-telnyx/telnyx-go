@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.2.0 (2025-10-06)
+
+Full Changelog: [v3.1.0...v3.2.0](https://github.com/team-telnyx/telnyx-go/compare/v3.1.0...v3.2.0)
+
+### Features
+
+* ENGDESK-45343: Add CustomHeaders documentation to TeXML Dial endpoints ([d88d857](https://github.com/team-telnyx/telnyx-go/commit/d88d8571a2e88f4616bd984278b647703115bd5c))
+* MSG-5944: added mobile_only field to messaging profiles ([ff50db2](https://github.com/team-telnyx/telnyx-go/commit/ff50db27726cec5faacda9df532d9fa103ca8260))
+
 ## 3.1.0 (2025-10-02)
 
 Full Changelog: [v3.0.0...v3.1.0](https://github.com/team-telnyx/telnyx-go/compare/v3.0.0...v3.1.0)

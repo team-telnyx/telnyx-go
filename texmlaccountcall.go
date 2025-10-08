@@ -744,6 +744,9 @@ type TexmlAccountCallCallsParams struct {
 	//
 	// Any of "GET", "POST".
 	AsyncAmdStatusCallbackMethod TexmlAccountCallCallsParamsAsyncAmdStatusCallbackMethod `json:"AsyncAmdStatusCallbackMethod,omitzero"`
+	// Custom HTTP headers to be sent with the call. Each header should be an object
+	// with 'name' and 'value' properties.
+	CustomHeaders []TexmlAccountCallCallsParamsCustomHeader `json:"CustomHeaders,omitzero"`
 	// Allows you to chose between Premium and Standard detections.
 	//
 	// Any of "Premium", "Regular".
@@ -802,6 +805,23 @@ const (
 	TexmlAccountCallCallsParamsAsyncAmdStatusCallbackMethodGet  TexmlAccountCallCallsParamsAsyncAmdStatusCallbackMethod = "GET"
 	TexmlAccountCallCallsParamsAsyncAmdStatusCallbackMethodPost TexmlAccountCallCallsParamsAsyncAmdStatusCallbackMethod = "POST"
 )
+
+// The properties Name, Value are required.
+type TexmlAccountCallCallsParamsCustomHeader struct {
+	// The name of the custom header
+	Name string `json:"name,required"`
+	// The value of the custom header
+	Value string `json:"value,required"`
+	paramObj
+}
+
+func (r TexmlAccountCallCallsParamsCustomHeader) MarshalJSON() (data []byte, err error) {
+	type shadow TexmlAccountCallCallsParamsCustomHeader
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TexmlAccountCallCallsParamsCustomHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Allows you to chose between Premium and Standard detections.
 type TexmlAccountCallCallsParamsDetectionMode string
