@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.3.0 (2025-10-09)
+
+Full Changelog: [v3.2.0...v3.3.0](https://github.com/team-telnyx/telnyx-go/compare/v3.2.0...v3.3.0)
+
+### Features
+
+* Retell assistants import ([f44fb16](https://github.com/team-telnyx/telnyx-go/commit/f44fb16c42564811398675d81458d7ad9c3fd5d3))
+
+
+### Bug Fixes
+
+* reference models more accurately ([1a21833](https://github.com/team-telnyx/telnyx-go/commit/1a2183324599d907964e597f528bd760c16eb28f))
+
 ## 3.2.0 (2025-10-06)
 
 Full Changelog: [v3.1.0...v3.2.0](https://github.com/team-telnyx/telnyx-go/compare/v3.1.0...v3.2.0)
