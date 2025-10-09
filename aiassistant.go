@@ -860,7 +860,7 @@ type ImportMetadata struct {
 	ImportID string `json:"import_id"`
 	// Provider the assistant was imported from.
 	//
-	// Any of "elevenlabs", "vapi".
+	// Any of "elevenlabs", "vapi", "retell".
 	ImportProvider ImportMetadataImportProvider `json:"import_provider"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -883,6 +883,7 @@ type ImportMetadataImportProvider string
 const (
 	ImportMetadataImportProviderElevenlabs ImportMetadataImportProvider = "elevenlabs"
 	ImportMetadataImportProviderVapi       ImportMetadataImportProvider = "vapi"
+	ImportMetadataImportProviderRetell     ImportMetadataImportProvider = "retell"
 )
 
 type InferenceEmbeddingBucketIDs struct {
@@ -2433,7 +2434,7 @@ type AIAssistantImportParams struct {
 	APIKeyRef string `json:"api_key_ref,required"`
 	// The external provider to import assistants from.
 	//
-	// Any of "elevenlabs", "vapi".
+	// Any of "elevenlabs", "vapi", "retell".
 	Provider AIAssistantImportParamsProvider `json:"provider,omitzero,required"`
 	paramObj
 }
@@ -2452,4 +2453,5 @@ type AIAssistantImportParamsProvider string
 const (
 	AIAssistantImportParamsProviderElevenlabs AIAssistantImportParamsProvider = "elevenlabs"
 	AIAssistantImportParamsProviderVapi       AIAssistantImportParamsProvider = "vapi"
+	AIAssistantImportParamsProviderRetell     AIAssistantImportParamsProvider = "retell"
 )
