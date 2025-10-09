@@ -71,9 +71,7 @@ func (r *NetworkCoverageListResponse) UnmarshalJSON(data []byte) error {
 
 type NetworkCoverageListResponseData struct {
 	// List of interface types supported in this region.
-	//
-	// Any of "cloud_vpn", "private_wireless_gateway", "virtual_cross_connect".
-	AvailableServices []string                                `json:"available_services"`
+	AvailableServices []AvailableService                      `json:"available_services"`
 	Location          NetworkCoverageListResponseDataLocation `json:"location"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
