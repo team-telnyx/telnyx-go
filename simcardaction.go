@@ -62,7 +62,7 @@ func (r *SimCardActionService) List(ctx context.Context, query SimCardActionList
 // This API triggers an asynchronous operation to set a public IP for each of the
 // specified SIM cards.<br/> For each SIM Card a SIM Card Action will be generated.
 // The status of the SIM Card Action can be followed through the
-// [List SIM Card Action](https://developersdev.telnyx.com/docs/api/v2/wireless/SIM-Card-Actions#ListSIMCardActions)
+// [List SIM Card Action](https://developers.telnyx.com/api/wireless/list-sim-card-actions)
 // API.
 func (r *SimCardActionService) BulkSetPublicIPs(ctx context.Context, body SimCardActionBulkSetPublicIPsParams, opts ...option.RequestOption) (res *SimCardActionBulkSetPublicIPsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -75,7 +75,7 @@ func (r *SimCardActionService) BulkSetPublicIPs(ctx context.Context, body SimCar
 // impossible to consume data.<br/> The API will trigger an asynchronous operation
 // called a SIM Card Action. Transitioning to the disabled state may take a period
 // of time. The status of the SIM Card Action can be followed through the
-// [List SIM Card Action](https://developersdev.telnyx.com/docs/api/v2/wireless/SIM-Card-Actions#ListSIMCardActions)
+// [List SIM Card Action](https://developers.telnyx.com/api/wireless/list-sim-card-actions)
 // API.
 func (r *SimCardActionService) Disable(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardActionDisableResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -93,7 +93,7 @@ func (r *SimCardActionService) Disable(ctx context.Context, id string, opts ...o
 // card group.<br/> The API will trigger an asynchronous operation called a SIM
 // Card Action. Transitioning to the enabled state may take a period of time. The
 // status of the SIM Card Action can be followed through the
-// [List SIM Card Action](https://developersdev.telnyx.com/docs/api/v2/wireless/SIM-Card-Actions#ListSIMCardActions)
+// [List SIM Card Action](https://developers.telnyx.com/api/wireless/list-sim-card-actions)
 // API.
 func (r *SimCardActionService) Enable(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardActionEnableResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -109,7 +109,7 @@ func (r *SimCardActionService) Enable(ctx context.Context, id string, opts ...op
 // This API removes an existing public IP from a SIM card. <br/><br/> The API will
 // trigger an asynchronous operation called a SIM Card Action. The status of the
 // SIM Card Action can be followed through the
-// [List SIM Card Action](https://developersdev.telnyx.com/docs/api/v2/wireless/SIM-Card-Actions#ListSIMCardActions)
+// [List SIM Card Action](https://developers.telnyx.com/api/wireless/list-sim-card-actions)
 // API.
 func (r *SimCardActionService) RemovePublicIP(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardActionRemovePublicIPResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -126,7 +126,7 @@ func (r *SimCardActionService) RemovePublicIP(ctx context.Context, id string, op
 // public IP to the SIM card. <br/><br/> The API will trigger an asynchronous
 // operation called a SIM Card Action. The status of the SIM Card Action can be
 // followed through the
-// [List SIM Card Action](https://developersdev.telnyx.com/docs/api/v2/wireless/SIM-Card-Actions#ListSIMCardActions)
+// [List SIM Card Action](https://developers.telnyx.com/api/wireless/list-sim-card-actions)
 // API. <br/><br/> Setting a Public IP to a SIM Card incurs a charge and will only
 // succeed if the account has sufficient funds.
 func (r *SimCardActionService) SetPublicIP(ctx context.Context, id string, body SimCardActionSetPublicIPParams, opts ...option.RequestOption) (res *SimCardActionSetPublicIPResponse, err error) {
@@ -146,7 +146,7 @@ func (r *SimCardActionService) SetPublicIP(ctx context.Context, id string, body 
 // API will trigger an asynchronous operation called a SIM Card Action.
 // Transitioning to the standby state may take a period of time. The status of the
 // SIM Card Action can be followed through the
-// [List SIM Card Action](https://developersdev.telnyx.com/docs/api/v2/wireless/SIM-Card-Actions#ListSIMCardActions)
+// [List SIM Card Action](https://developers.telnyx.com/api/wireless/list-sim-card-actions)
 // API.
 func (r *SimCardActionService) SetStandby(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardActionSetStandbyResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
