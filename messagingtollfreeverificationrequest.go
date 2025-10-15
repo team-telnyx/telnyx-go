@@ -209,10 +209,41 @@ type TfVerificationRequestParam struct {
 	UseCase UseCaseCategories `json:"useCase,omitzero,required"`
 	// Human-readable summary of the desired use-case
 	UseCaseSummary string `json:"useCaseSummary,required"`
+	// ISO 3166-1 alpha-2 country code of the issuing business authority. Must be
+	// exactly 2 letters. Automatically converted to uppercase. Required from
+	// January 2026.
+	BusinessRegistrationCountry param.Opt[string] `json:"businessRegistrationCountry,omitzero"`
+	// Official business registration number (e.g., Employer Identification Number
+	// (EIN) in the U.S.). Required from January 2026.
+	BusinessRegistrationNumber param.Opt[string] `json:"businessRegistrationNumber,omitzero"`
+	// Type of business registration being provided. Required from January 2026.
+	BusinessRegistrationType param.Opt[string] `json:"businessRegistrationType,omitzero"`
+	// Doing Business As (DBA) name if different from legal name
+	DoingBusinessAs param.Opt[string] `json:"doingBusinessAs,omitzero"`
+	// The message returned when users text 'HELP'
+	HelpMessageResponse param.Opt[string] `json:"helpMessageResponse,omitzero"`
+	// Message sent to users confirming their opt-in to receive messages
+	OptInConfirmationResponse param.Opt[string] `json:"optInConfirmationResponse,omitzero"`
+	// Keywords used to collect and process consumer opt-ins
+	OptInKeywords param.Opt[string] `json:"optInKeywords,omitzero"`
+	// URL pointing to the business's privacy policy. Plain string, no URL format
+	// validation.
+	PrivacyPolicyURL param.Opt[string] `json:"privacyPolicyURL,omitzero"`
+	// URL pointing to the business's terms and conditions. Plain string, no URL format
+	// validation.
+	TermsAndConditionURL param.Opt[string] `json:"termsAndConditionURL,omitzero"`
+	// Indicates if messaging content requires age gating (e.g., 18+). Defaults to
+	// false if not provided.
+	AgeGatedContent param.Opt[bool] `json:"ageGatedContent,omitzero"`
 	// Line 2 of the business address
 	BusinessAddr2 param.Opt[string] `json:"businessAddr2,omitzero"`
 	// URL that should receive webhooks relating to this verification request
 	WebhookURL param.Opt[string] `json:"webhookUrl,omitzero"`
+	// Business entity classification
+	//
+	// Any of "SOLE_PROPRIETOR", "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT",
+	// "GOVERNMENT".
+	EntityType TfVerificationRequestEntityType `json:"entityType,omitzero"`
 	paramObj
 }
 
@@ -223,6 +254,17 @@ func (r TfVerificationRequestParam) MarshalJSON() (data []byte, err error) {
 func (r *TfVerificationRequestParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Business entity classification
+type TfVerificationRequestEntityType string
+
+const (
+	TfVerificationRequestEntityTypeSoleProprietor TfVerificationRequestEntityType = "SOLE_PROPRIETOR"
+	TfVerificationRequestEntityTypePrivateProfit  TfVerificationRequestEntityType = "PRIVATE_PROFIT"
+	TfVerificationRequestEntityTypePublicProfit   TfVerificationRequestEntityType = "PUBLIC_PROFIT"
+	TfVerificationRequestEntityTypeNonProfit      TfVerificationRequestEntityType = "NON_PROFIT"
+	TfVerificationRequestEntityTypeGovernment     TfVerificationRequestEntityType = "GOVERNMENT"
+)
 
 // Tollfree verification status
 type TfVerificationStatus string
@@ -362,10 +404,25 @@ type VerificationRequestEgress struct {
 	// Services", "Repair and Diagnostics Alerts", "Rewards Program", "Surveys",
 	// "System Alerts", "Voting Reminders", "Waitlist Alerts", "Webinar Reminders",
 	// "Workshop Alerts".
-	UseCase               UseCaseCategories `json:"useCase,required"`
-	UseCaseSummary        string            `json:"useCaseSummary,required"`
-	VerificationRequestID string            `json:"verificationRequestId,required"`
-	BusinessAddr2         string            `json:"businessAddr2"`
+	UseCase                     UseCaseCategories `json:"useCase,required"`
+	UseCaseSummary              string            `json:"useCaseSummary,required"`
+	VerificationRequestID       string            `json:"verificationRequestId,required"`
+	AgeGatedContent             bool              `json:"ageGatedContent"`
+	BusinessAddr2               string            `json:"businessAddr2"`
+	BusinessRegistrationCountry string            `json:"businessRegistrationCountry"`
+	BusinessRegistrationNumber  string            `json:"businessRegistrationNumber"`
+	BusinessRegistrationType    string            `json:"businessRegistrationType"`
+	DoingBusinessAs             string            `json:"doingBusinessAs"`
+	// Business entity classification
+	//
+	// Any of "SOLE_PROPRIETOR", "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT",
+	// "GOVERNMENT".
+	EntityType                VerificationRequestEgressEntityType `json:"entityType"`
+	HelpMessageResponse       string                              `json:"helpMessageResponse"`
+	OptInConfirmationResponse string                              `json:"optInConfirmationResponse"`
+	OptInKeywords             string                              `json:"optInKeywords"`
+	PrivacyPolicyURL          string                              `json:"privacyPolicyURL"`
+	TermsAndConditionURL      string                              `json:"termsAndConditionURL"`
 	// Tollfree verification status
 	//
 	// Any of "Verified", "Rejected", "Waiting For Vendor", "Waiting For Customer",
@@ -374,32 +431,43 @@ type VerificationRequestEgress struct {
 	WebhookURL         string               `json:"webhookUrl"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                       respjson.Field
-		AdditionalInformation    respjson.Field
-		BusinessAddr1            respjson.Field
-		BusinessCity             respjson.Field
-		BusinessContactEmail     respjson.Field
-		BusinessContactFirstName respjson.Field
-		BusinessContactLastName  respjson.Field
-		BusinessContactPhone     respjson.Field
-		BusinessName             respjson.Field
-		BusinessState            respjson.Field
-		BusinessZip              respjson.Field
-		CorporateWebsite         respjson.Field
-		IsvReseller              respjson.Field
-		MessageVolume            respjson.Field
-		OptInWorkflow            respjson.Field
-		OptInWorkflowImageURLs   respjson.Field
-		PhoneNumbers             respjson.Field
-		ProductionMessageContent respjson.Field
-		UseCase                  respjson.Field
-		UseCaseSummary           respjson.Field
-		VerificationRequestID    respjson.Field
-		BusinessAddr2            respjson.Field
-		VerificationStatus       respjson.Field
-		WebhookURL               respjson.Field
-		ExtraFields              map[string]respjson.Field
-		raw                      string
+		ID                          respjson.Field
+		AdditionalInformation       respjson.Field
+		BusinessAddr1               respjson.Field
+		BusinessCity                respjson.Field
+		BusinessContactEmail        respjson.Field
+		BusinessContactFirstName    respjson.Field
+		BusinessContactLastName     respjson.Field
+		BusinessContactPhone        respjson.Field
+		BusinessName                respjson.Field
+		BusinessState               respjson.Field
+		BusinessZip                 respjson.Field
+		CorporateWebsite            respjson.Field
+		IsvReseller                 respjson.Field
+		MessageVolume               respjson.Field
+		OptInWorkflow               respjson.Field
+		OptInWorkflowImageURLs      respjson.Field
+		PhoneNumbers                respjson.Field
+		ProductionMessageContent    respjson.Field
+		UseCase                     respjson.Field
+		UseCaseSummary              respjson.Field
+		VerificationRequestID       respjson.Field
+		AgeGatedContent             respjson.Field
+		BusinessAddr2               respjson.Field
+		BusinessRegistrationCountry respjson.Field
+		BusinessRegistrationNumber  respjson.Field
+		BusinessRegistrationType    respjson.Field
+		DoingBusinessAs             respjson.Field
+		EntityType                  respjson.Field
+		HelpMessageResponse         respjson.Field
+		OptInConfirmationResponse   respjson.Field
+		OptInKeywords               respjson.Field
+		PrivacyPolicyURL            respjson.Field
+		TermsAndConditionURL        respjson.Field
+		VerificationStatus          respjson.Field
+		WebhookURL                  respjson.Field
+		ExtraFields                 map[string]respjson.Field
+		raw                         string
 	} `json:"-"`
 }
 
@@ -408,6 +476,17 @@ func (r VerificationRequestEgress) RawJSON() string { return r.JSON.raw }
 func (r *VerificationRequestEgress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Business entity classification
+type VerificationRequestEgressEntityType string
+
+const (
+	VerificationRequestEgressEntityTypeSoleProprietor VerificationRequestEgressEntityType = "SOLE_PROPRIETOR"
+	VerificationRequestEgressEntityTypePrivateProfit  VerificationRequestEgressEntityType = "PRIVATE_PROFIT"
+	VerificationRequestEgressEntityTypePublicProfit   VerificationRequestEgressEntityType = "PUBLIC_PROFIT"
+	VerificationRequestEgressEntityTypeNonProfit      VerificationRequestEgressEntityType = "NON_PROFIT"
+	VerificationRequestEgressEntityTypeGovernment     VerificationRequestEgressEntityType = "GOVERNMENT"
+)
 
 // A verification request and its status, suitable for returning to users
 type VerificationRequestStatus struct {
@@ -453,42 +532,68 @@ type VerificationRequestStatus struct {
 	//
 	// Any of "Verified", "Rejected", "Waiting For Vendor", "Waiting For Customer",
 	// "Waiting For Telnyx", "In Progress".
-	VerificationStatus TfVerificationStatus `json:"verificationStatus,required"`
-	BusinessAddr2      string               `json:"businessAddr2"`
-	CreatedAt          time.Time            `json:"createdAt" format:"date-time"`
-	Reason             string               `json:"reason"`
-	UpdatedAt          time.Time            `json:"updatedAt" format:"date-time"`
-	WebhookURL         string               `json:"webhookUrl"`
+	VerificationStatus          TfVerificationStatus `json:"verificationStatus,required"`
+	AgeGatedContent             bool                 `json:"ageGatedContent"`
+	BusinessAddr2               string               `json:"businessAddr2"`
+	BusinessRegistrationCountry string               `json:"businessRegistrationCountry"`
+	BusinessRegistrationNumber  string               `json:"businessRegistrationNumber"`
+	BusinessRegistrationType    string               `json:"businessRegistrationType"`
+	CreatedAt                   time.Time            `json:"createdAt" format:"date-time"`
+	DoingBusinessAs             string               `json:"doingBusinessAs"`
+	// Business entity classification
+	//
+	// Any of "SOLE_PROPRIETOR", "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT",
+	// "GOVERNMENT".
+	EntityType                VerificationRequestStatusEntityType `json:"entityType"`
+	HelpMessageResponse       string                              `json:"helpMessageResponse"`
+	OptInConfirmationResponse string                              `json:"optInConfirmationResponse"`
+	OptInKeywords             string                              `json:"optInKeywords"`
+	PrivacyPolicyURL          string                              `json:"privacyPolicyURL"`
+	Reason                    string                              `json:"reason"`
+	TermsAndConditionURL      string                              `json:"termsAndConditionURL"`
+	UpdatedAt                 time.Time                           `json:"updatedAt" format:"date-time"`
+	WebhookURL                string                              `json:"webhookUrl"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                       respjson.Field
-		AdditionalInformation    respjson.Field
-		BusinessAddr1            respjson.Field
-		BusinessCity             respjson.Field
-		BusinessContactEmail     respjson.Field
-		BusinessContactFirstName respjson.Field
-		BusinessContactLastName  respjson.Field
-		BusinessContactPhone     respjson.Field
-		BusinessName             respjson.Field
-		BusinessState            respjson.Field
-		BusinessZip              respjson.Field
-		CorporateWebsite         respjson.Field
-		IsvReseller              respjson.Field
-		MessageVolume            respjson.Field
-		OptInWorkflow            respjson.Field
-		OptInWorkflowImageURLs   respjson.Field
-		PhoneNumbers             respjson.Field
-		ProductionMessageContent respjson.Field
-		UseCase                  respjson.Field
-		UseCaseSummary           respjson.Field
-		VerificationStatus       respjson.Field
-		BusinessAddr2            respjson.Field
-		CreatedAt                respjson.Field
-		Reason                   respjson.Field
-		UpdatedAt                respjson.Field
-		WebhookURL               respjson.Field
-		ExtraFields              map[string]respjson.Field
-		raw                      string
+		ID                          respjson.Field
+		AdditionalInformation       respjson.Field
+		BusinessAddr1               respjson.Field
+		BusinessCity                respjson.Field
+		BusinessContactEmail        respjson.Field
+		BusinessContactFirstName    respjson.Field
+		BusinessContactLastName     respjson.Field
+		BusinessContactPhone        respjson.Field
+		BusinessName                respjson.Field
+		BusinessState               respjson.Field
+		BusinessZip                 respjson.Field
+		CorporateWebsite            respjson.Field
+		IsvReseller                 respjson.Field
+		MessageVolume               respjson.Field
+		OptInWorkflow               respjson.Field
+		OptInWorkflowImageURLs      respjson.Field
+		PhoneNumbers                respjson.Field
+		ProductionMessageContent    respjson.Field
+		UseCase                     respjson.Field
+		UseCaseSummary              respjson.Field
+		VerificationStatus          respjson.Field
+		AgeGatedContent             respjson.Field
+		BusinessAddr2               respjson.Field
+		BusinessRegistrationCountry respjson.Field
+		BusinessRegistrationNumber  respjson.Field
+		BusinessRegistrationType    respjson.Field
+		CreatedAt                   respjson.Field
+		DoingBusinessAs             respjson.Field
+		EntityType                  respjson.Field
+		HelpMessageResponse         respjson.Field
+		OptInConfirmationResponse   respjson.Field
+		OptInKeywords               respjson.Field
+		PrivacyPolicyURL            respjson.Field
+		Reason                      respjson.Field
+		TermsAndConditionURL        respjson.Field
+		UpdatedAt                   respjson.Field
+		WebhookURL                  respjson.Field
+		ExtraFields                 map[string]respjson.Field
+		raw                         string
 	} `json:"-"`
 }
 
@@ -497,6 +602,17 @@ func (r VerificationRequestStatus) RawJSON() string { return r.JSON.raw }
 func (r *VerificationRequestStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Business entity classification
+type VerificationRequestStatusEntityType string
+
+const (
+	VerificationRequestStatusEntityTypeSoleProprietor VerificationRequestStatusEntityType = "SOLE_PROPRIETOR"
+	VerificationRequestStatusEntityTypePrivateProfit  VerificationRequestStatusEntityType = "PRIVATE_PROFIT"
+	VerificationRequestStatusEntityTypePublicProfit   VerificationRequestStatusEntityType = "PUBLIC_PROFIT"
+	VerificationRequestStatusEntityTypeNonProfit      VerificationRequestStatusEntityType = "NON_PROFIT"
+	VerificationRequestStatusEntityTypeGovernment     VerificationRequestStatusEntityType = "GOVERNMENT"
+)
 
 // Message Volume Enums
 type Volume string
