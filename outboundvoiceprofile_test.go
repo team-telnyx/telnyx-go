@@ -35,6 +35,11 @@ func TestOutboundVoiceProfileNewWithOptionalParams(t *testing.T) {
 			CallRecordingFormat:             telnyx.OutboundCallRecordingCallRecordingFormatMP3,
 			CallRecordingType:               telnyx.OutboundCallRecordingCallRecordingTypeByCallerPhoneNumber,
 		},
+		CallingWindow: telnyx.OutboundVoiceProfileNewParamsCallingWindow{
+			CallsPerCld: telnyx.Int(5),
+			EndTime:     telnyx.Time("18:11:19.117Z"),
+			StartTime:   telnyx.Time("18:11:19.117Z"),
+		},
 		ConcurrentCallLimit:     telnyx.Int(10),
 		DailySpendLimit:         telnyx.String("100.00"),
 		DailySpendLimitEnabled:  telnyx.Bool(true),
@@ -102,6 +107,11 @@ func TestOutboundVoiceProfileUpdateWithOptionalParams(t *testing.T) {
 				CallRecordingChannels:           telnyx.OutboundCallRecordingCallRecordingChannelsDual,
 				CallRecordingFormat:             telnyx.OutboundCallRecordingCallRecordingFormatMP3,
 				CallRecordingType:               telnyx.OutboundCallRecordingCallRecordingTypeByCallerPhoneNumber,
+			},
+			CallingWindow: telnyx.OutboundVoiceProfileUpdateParamsCallingWindow{
+				CallsPerCld: telnyx.Int(5),
+				EndTime:     telnyx.Time("18:11:19.117Z"),
+				StartTime:   telnyx.Time("18:11:19.117Z"),
 			},
 			ConcurrentCallLimit:     telnyx.Int(10),
 			DailySpendLimit:         telnyx.String("100.00"),
