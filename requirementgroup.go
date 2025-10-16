@@ -111,7 +111,7 @@ type RequirementGroup struct {
 	PhoneNumberType        string                                  `json:"phone_number_type"`
 	RecordType             string                                  `json:"record_type"`
 	RegulatoryRequirements []RequirementGroupRegulatoryRequirement `json:"regulatory_requirements"`
-	// Any of "approved", "unapproved", "pending-approval", "declined".
+	// Any of "approved", "unapproved", "pending-approval", "declined", "expired".
 	Status    RequirementGroupStatus `json:"status"`
 	UpdatedAt time.Time              `json:"updated_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -143,7 +143,7 @@ type RequirementGroupRegulatoryRequirement struct {
 	FieldType     string    `json:"field_type"`
 	FieldValue    string    `json:"field_value"`
 	RequirementID string    `json:"requirement_id"`
-	// Any of "approved", "unapproved", "pending-approval", "declined".
+	// Any of "approved", "unapproved", "pending-approval", "declined", "expired".
 	Status    string    `json:"status"`
 	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -173,6 +173,7 @@ const (
 	RequirementGroupStatusUnapproved      RequirementGroupStatus = "unapproved"
 	RequirementGroupStatusPendingApproval RequirementGroupStatus = "pending-approval"
 	RequirementGroupStatusDeclined        RequirementGroupStatus = "declined"
+	RequirementGroupStatusExpired         RequirementGroupStatus = "expired"
 )
 
 type RequirementGroupNewParams struct {
@@ -292,7 +293,7 @@ type RequirementGroupListParamsFilter struct {
 	PhoneNumberType string `query:"phone_number_type,omitzero" json:"-"`
 	// Filter requirement groups by status
 	//
-	// Any of "approved", "unapproved", "pending-approval", "declined".
+	// Any of "approved", "unapproved", "pending-approval", "declined", "expired".
 	Status string `query:"status,omitzero" json:"-"`
 	paramObj
 }
