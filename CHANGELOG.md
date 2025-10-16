@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.4.0 (2025-10-16)
+
+Full Changelog: [v3.3.0...v3.4.0](https://github.com/team-telnyx/telnyx-go/compare/v3.3.0...v3.4.0)
+
+### Features
+
+* ENGDESK-45836: Document private endpoint for republishing account events ([67d8410](https://github.com/team-telnyx/telnyx-go/commit/67d84108da524ae639a03ba1129fd3e3ab695d20))
+* Fix broken link to List SIM card action ([3900660](https://github.com/team-telnyx/telnyx-go/commit/390066093def39560747c4fa07f4e26fd6cac499))
+* MSG-5978: Add BRN fields to toll-free verification OpenAPI specs ([8608b0e](https://github.com/team-telnyx/telnyx-go/commit/8608b0ec46429e8e4583c23eb051d94c0084e414))
+
 ## 3.3.0 (2025-10-09)
 
 Full Changelog: [v3.2.0...v3.3.0](https://github.com/team-telnyx/telnyx-go/compare/v3.2.0...v3.3.0)
