@@ -50,7 +50,7 @@ func NewAIAssistantService(opts ...option.RequestOption) (r AIAssistantService) 
 }
 
 // Create a new AI Assistant.
-func (r *AIAssistantService) New(ctx context.Context, body AIAssistantNewParams, opts ...option.RequestOption) (res *AIAssistantNewResponse, err error) {
+func (r *AIAssistantService) New(ctx context.Context, body AIAssistantNewParams, opts ...option.RequestOption) (res *InferenceEmbedding, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -58,7 +58,7 @@ func (r *AIAssistantService) New(ctx context.Context, body AIAssistantNewParams,
 }
 
 // Retrieve an AI Assistant configuration by `assistant_id`.
-func (r *AIAssistantService) Get(ctx context.Context, assistantID string, query AIAssistantGetParams, opts ...option.RequestOption) (res *AIAssistantGetResponse, err error) {
+func (r *AIAssistantService) Get(ctx context.Context, assistantID string, query AIAssistantGetParams, opts ...option.RequestOption) (res *InferenceEmbedding, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
@@ -121,7 +121,7 @@ func (r *AIAssistantService) Chat(ctx context.Context, assistantID string, body 
 }
 
 // Clone an existing assistant, excluding telephony and messaging settings.
-func (r *AIAssistantService) Clone(ctx context.Context, assistantID string, opts ...option.RequestOption) (res *AIAssistantCloneResponse, err error) {
+func (r *AIAssistantService) Clone(ctx context.Context, assistantID string, opts ...option.RequestOption) (res *InferenceEmbedding, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
@@ -668,7 +668,7 @@ func (r *AssistantToolDtmfTool) UnmarshalJSON(data []byte) error {
 }
 
 type AssistantsList struct {
-	Data []AssistantsListData `json:"data,required"`
+	Data []InferenceEmbedding `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -680,78 +680,6 @@ type AssistantsList struct {
 // Returns the unmodified JSON received from the API
 func (r AssistantsList) RawJSON() string { return r.JSON.raw }
 func (r *AssistantsList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AssistantsListData struct {
-	ID        string    `json:"id,required"`
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// System instructions for the assistant. These may be templated with
-	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
-	Instructions string `json:"instructions,required"`
-	// ID of the model to use. You can use the
-	// [Get models API](https://developers.telnyx.com/api/inference/inference-embedding/get-models-public-models-get)
-	// to see all of your available models,
-	Model       string `json:"model,required"`
-	Name        string `json:"name,required"`
-	Description string `json:"description"`
-	// Map of dynamic variables and their values
-	DynamicVariables map[string]any `json:"dynamic_variables"`
-	// If the dynamic_variables_webhook_url is set for the assistant, we will send a
-	// request at the start of the conversation. See our
-	// [guide](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
-	// for more information.
-	DynamicVariablesWebhookURL string            `json:"dynamic_variables_webhook_url"`
-	EnabledFeatures            []EnabledFeatures `json:"enabled_features"`
-	// Text that the assistant will use to start the conversation. This may be
-	// templated with
-	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
-	Greeting        string          `json:"greeting"`
-	ImportMetadata  ImportMetadata  `json:"import_metadata"`
-	InsightSettings InsightSettings `json:"insight_settings"`
-	// This is only needed when using third-party inference providers. The `identifier`
-	// for an integration secret
-	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
-	// that refers to your LLM provider's API key. Warning: Free plans are unlikely to
-	// work with this integration.
-	LlmAPIKeyRef      string            `json:"llm_api_key_ref"`
-	MessagingSettings MessagingSettings `json:"messaging_settings"`
-	PrivacySettings   PrivacySettings   `json:"privacy_settings"`
-	TelephonySettings TelephonySettings `json:"telephony_settings"`
-	// The tools that the assistant can use. These may be templated with
-	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
-	Tools         []AssistantToolUnion  `json:"tools"`
-	Transcription TranscriptionSettings `json:"transcription"`
-	VoiceSettings VoiceSettings         `json:"voice_settings"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                         respjson.Field
-		CreatedAt                  respjson.Field
-		Instructions               respjson.Field
-		Model                      respjson.Field
-		Name                       respjson.Field
-		Description                respjson.Field
-		DynamicVariables           respjson.Field
-		DynamicVariablesWebhookURL respjson.Field
-		EnabledFeatures            respjson.Field
-		Greeting                   respjson.Field
-		ImportMetadata             respjson.Field
-		InsightSettings            respjson.Field
-		LlmAPIKeyRef               respjson.Field
-		MessagingSettings          respjson.Field
-		PrivacySettings            respjson.Field
-		TelephonySettings          respjson.Field
-		Tools                      respjson.Field
-		Transcription              respjson.Field
-		VoiceSettings              respjson.Field
-		ExtraFields                map[string]respjson.Field
-		raw                        string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AssistantsListData) RawJSON() string { return r.JSON.raw }
-func (r *AssistantsListData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -885,6 +813,78 @@ const (
 	ImportMetadataImportProviderVapi       ImportMetadataImportProvider = "vapi"
 	ImportMetadataImportProviderRetell     ImportMetadataImportProvider = "retell"
 )
+
+type InferenceEmbedding struct {
+	ID        string    `json:"id,required"`
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// System instructions for the assistant. These may be templated with
+	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
+	Instructions string `json:"instructions,required"`
+	// ID of the model to use. You can use the
+	// [Get models API](https://developers.telnyx.com/api/inference/inference-embedding/get-models-public-models-get)
+	// to see all of your available models,
+	Model       string `json:"model,required"`
+	Name        string `json:"name,required"`
+	Description string `json:"description"`
+	// Map of dynamic variables and their values
+	DynamicVariables map[string]any `json:"dynamic_variables"`
+	// If the dynamic_variables_webhook_url is set for the assistant, we will send a
+	// request at the start of the conversation. See our
+	// [guide](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
+	// for more information.
+	DynamicVariablesWebhookURL string            `json:"dynamic_variables_webhook_url"`
+	EnabledFeatures            []EnabledFeatures `json:"enabled_features"`
+	// Text that the assistant will use to start the conversation. This may be
+	// templated with
+	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
+	Greeting        string          `json:"greeting"`
+	ImportMetadata  ImportMetadata  `json:"import_metadata"`
+	InsightSettings InsightSettings `json:"insight_settings"`
+	// This is only needed when using third-party inference providers. The `identifier`
+	// for an integration secret
+	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
+	// that refers to your LLM provider's API key. Warning: Free plans are unlikely to
+	// work with this integration.
+	LlmAPIKeyRef      string            `json:"llm_api_key_ref"`
+	MessagingSettings MessagingSettings `json:"messaging_settings"`
+	PrivacySettings   PrivacySettings   `json:"privacy_settings"`
+	TelephonySettings TelephonySettings `json:"telephony_settings"`
+	// The tools that the assistant can use. These may be templated with
+	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
+	Tools         []AssistantToolUnion  `json:"tools"`
+	Transcription TranscriptionSettings `json:"transcription"`
+	VoiceSettings VoiceSettings         `json:"voice_settings"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                         respjson.Field
+		CreatedAt                  respjson.Field
+		Instructions               respjson.Field
+		Model                      respjson.Field
+		Name                       respjson.Field
+		Description                respjson.Field
+		DynamicVariables           respjson.Field
+		DynamicVariablesWebhookURL respjson.Field
+		EnabledFeatures            respjson.Field
+		Greeting                   respjson.Field
+		ImportMetadata             respjson.Field
+		InsightSettings            respjson.Field
+		LlmAPIKeyRef               respjson.Field
+		MessagingSettings          respjson.Field
+		PrivacySettings            respjson.Field
+		TelephonySettings          respjson.Field
+		Tools                      respjson.Field
+		Transcription              respjson.Field
+		VoiceSettings              respjson.Field
+		ExtraFields                map[string]respjson.Field
+		raw                        string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbedding) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbedding) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type InferenceEmbeddingBucketIDs struct {
 	// List of
@@ -2037,150 +2037,6 @@ func (r *WebhookToolParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIAssistantNewResponse struct {
-	ID        string    `json:"id,required"`
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// System instructions for the assistant. These may be templated with
-	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
-	Instructions string `json:"instructions,required"`
-	// ID of the model to use. You can use the
-	// [Get models API](https://developers.telnyx.com/api/inference/inference-embedding/get-models-public-models-get)
-	// to see all of your available models,
-	Model       string `json:"model,required"`
-	Name        string `json:"name,required"`
-	Description string `json:"description"`
-	// Map of dynamic variables and their values
-	DynamicVariables map[string]any `json:"dynamic_variables"`
-	// If the dynamic_variables_webhook_url is set for the assistant, we will send a
-	// request at the start of the conversation. See our
-	// [guide](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
-	// for more information.
-	DynamicVariablesWebhookURL string            `json:"dynamic_variables_webhook_url"`
-	EnabledFeatures            []EnabledFeatures `json:"enabled_features"`
-	// Text that the assistant will use to start the conversation. This may be
-	// templated with
-	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
-	Greeting        string          `json:"greeting"`
-	ImportMetadata  ImportMetadata  `json:"import_metadata"`
-	InsightSettings InsightSettings `json:"insight_settings"`
-	// This is only needed when using third-party inference providers. The `identifier`
-	// for an integration secret
-	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
-	// that refers to your LLM provider's API key. Warning: Free plans are unlikely to
-	// work with this integration.
-	LlmAPIKeyRef      string            `json:"llm_api_key_ref"`
-	MessagingSettings MessagingSettings `json:"messaging_settings"`
-	PrivacySettings   PrivacySettings   `json:"privacy_settings"`
-	TelephonySettings TelephonySettings `json:"telephony_settings"`
-	// The tools that the assistant can use. These may be templated with
-	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
-	Tools         []AssistantToolUnion  `json:"tools"`
-	Transcription TranscriptionSettings `json:"transcription"`
-	VoiceSettings VoiceSettings         `json:"voice_settings"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                         respjson.Field
-		CreatedAt                  respjson.Field
-		Instructions               respjson.Field
-		Model                      respjson.Field
-		Name                       respjson.Field
-		Description                respjson.Field
-		DynamicVariables           respjson.Field
-		DynamicVariablesWebhookURL respjson.Field
-		EnabledFeatures            respjson.Field
-		Greeting                   respjson.Field
-		ImportMetadata             respjson.Field
-		InsightSettings            respjson.Field
-		LlmAPIKeyRef               respjson.Field
-		MessagingSettings          respjson.Field
-		PrivacySettings            respjson.Field
-		TelephonySettings          respjson.Field
-		Tools                      respjson.Field
-		Transcription              respjson.Field
-		VoiceSettings              respjson.Field
-		ExtraFields                map[string]respjson.Field
-		raw                        string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIAssistantNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIAssistantNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIAssistantGetResponse struct {
-	ID        string    `json:"id,required"`
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// System instructions for the assistant. These may be templated with
-	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
-	Instructions string `json:"instructions,required"`
-	// ID of the model to use. You can use the
-	// [Get models API](https://developers.telnyx.com/api/inference/inference-embedding/get-models-public-models-get)
-	// to see all of your available models,
-	Model       string `json:"model,required"`
-	Name        string `json:"name,required"`
-	Description string `json:"description"`
-	// Map of dynamic variables and their values
-	DynamicVariables map[string]any `json:"dynamic_variables"`
-	// If the dynamic_variables_webhook_url is set for the assistant, we will send a
-	// request at the start of the conversation. See our
-	// [guide](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
-	// for more information.
-	DynamicVariablesWebhookURL string            `json:"dynamic_variables_webhook_url"`
-	EnabledFeatures            []EnabledFeatures `json:"enabled_features"`
-	// Text that the assistant will use to start the conversation. This may be
-	// templated with
-	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
-	Greeting        string          `json:"greeting"`
-	ImportMetadata  ImportMetadata  `json:"import_metadata"`
-	InsightSettings InsightSettings `json:"insight_settings"`
-	// This is only needed when using third-party inference providers. The `identifier`
-	// for an integration secret
-	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
-	// that refers to your LLM provider's API key. Warning: Free plans are unlikely to
-	// work with this integration.
-	LlmAPIKeyRef      string            `json:"llm_api_key_ref"`
-	MessagingSettings MessagingSettings `json:"messaging_settings"`
-	PrivacySettings   PrivacySettings   `json:"privacy_settings"`
-	TelephonySettings TelephonySettings `json:"telephony_settings"`
-	// The tools that the assistant can use. These may be templated with
-	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
-	Tools         []AssistantToolUnion  `json:"tools"`
-	Transcription TranscriptionSettings `json:"transcription"`
-	VoiceSettings VoiceSettings         `json:"voice_settings"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                         respjson.Field
-		CreatedAt                  respjson.Field
-		Instructions               respjson.Field
-		Model                      respjson.Field
-		Name                       respjson.Field
-		Description                respjson.Field
-		DynamicVariables           respjson.Field
-		DynamicVariablesWebhookURL respjson.Field
-		EnabledFeatures            respjson.Field
-		Greeting                   respjson.Field
-		ImportMetadata             respjson.Field
-		InsightSettings            respjson.Field
-		LlmAPIKeyRef               respjson.Field
-		MessagingSettings          respjson.Field
-		PrivacySettings            respjson.Field
-		TelephonySettings          respjson.Field
-		Tools                      respjson.Field
-		Transcription              respjson.Field
-		VoiceSettings              respjson.Field
-		ExtraFields                map[string]respjson.Field
-		raw                        string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIAssistantGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIAssistantGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type AIAssistantUpdateResponse = any
 
 // Aligns with the OpenAI API:
@@ -2219,78 +2075,6 @@ type AIAssistantChatResponse struct {
 // Returns the unmodified JSON received from the API
 func (r AIAssistantChatResponse) RawJSON() string { return r.JSON.raw }
 func (r *AIAssistantChatResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIAssistantCloneResponse struct {
-	ID        string    `json:"id,required"`
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// System instructions for the assistant. These may be templated with
-	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
-	Instructions string `json:"instructions,required"`
-	// ID of the model to use. You can use the
-	// [Get models API](https://developers.telnyx.com/api/inference/inference-embedding/get-models-public-models-get)
-	// to see all of your available models,
-	Model       string `json:"model,required"`
-	Name        string `json:"name,required"`
-	Description string `json:"description"`
-	// Map of dynamic variables and their values
-	DynamicVariables map[string]any `json:"dynamic_variables"`
-	// If the dynamic_variables_webhook_url is set for the assistant, we will send a
-	// request at the start of the conversation. See our
-	// [guide](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
-	// for more information.
-	DynamicVariablesWebhookURL string            `json:"dynamic_variables_webhook_url"`
-	EnabledFeatures            []EnabledFeatures `json:"enabled_features"`
-	// Text that the assistant will use to start the conversation. This may be
-	// templated with
-	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
-	Greeting        string          `json:"greeting"`
-	ImportMetadata  ImportMetadata  `json:"import_metadata"`
-	InsightSettings InsightSettings `json:"insight_settings"`
-	// This is only needed when using third-party inference providers. The `identifier`
-	// for an integration secret
-	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
-	// that refers to your LLM provider's API key. Warning: Free plans are unlikely to
-	// work with this integration.
-	LlmAPIKeyRef      string            `json:"llm_api_key_ref"`
-	MessagingSettings MessagingSettings `json:"messaging_settings"`
-	PrivacySettings   PrivacySettings   `json:"privacy_settings"`
-	TelephonySettings TelephonySettings `json:"telephony_settings"`
-	// The tools that the assistant can use. These may be templated with
-	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
-	Tools         []AssistantToolUnion  `json:"tools"`
-	Transcription TranscriptionSettings `json:"transcription"`
-	VoiceSettings VoiceSettings         `json:"voice_settings"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                         respjson.Field
-		CreatedAt                  respjson.Field
-		Instructions               respjson.Field
-		Model                      respjson.Field
-		Name                       respjson.Field
-		Description                respjson.Field
-		DynamicVariables           respjson.Field
-		DynamicVariablesWebhookURL respjson.Field
-		EnabledFeatures            respjson.Field
-		Greeting                   respjson.Field
-		ImportMetadata             respjson.Field
-		InsightSettings            respjson.Field
-		LlmAPIKeyRef               respjson.Field
-		MessagingSettings          respjson.Field
-		PrivacySettings            respjson.Field
-		TelephonySettings          respjson.Field
-		Tools                      respjson.Field
-		Transcription              respjson.Field
-		VoiceSettings              respjson.Field
-		ExtraFields                map[string]respjson.Field
-		raw                        string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIAssistantCloneResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIAssistantCloneResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -77,6 +77,28 @@ func (r *LegacyReportingBatchDetailRecordMessagingService) Delete(ctx context.Co
 	return
 }
 
+type BatchCsvPaginationMeta struct {
+	PageNumber   int64 `json:"page_number"`
+	PageSize     int64 `json:"page_size"`
+	TotalPages   int64 `json:"total_pages"`
+	TotalResults int64 `json:"total_results"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BatchCsvPaginationMeta) RawJSON() string { return r.JSON.raw }
+func (r *BatchCsvPaginationMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type MdrDetailReportResponse struct {
 	// Identifies the resource
 	ID          string    `json:"id" format:"uuid"`
@@ -166,8 +188,8 @@ func (r *LegacyReportingBatchDetailRecordMessagingGetResponse) UnmarshalJSON(dat
 }
 
 type LegacyReportingBatchDetailRecordMessagingListResponse struct {
-	Data []MdrDetailReportResponse                                 `json:"data"`
-	Meta LegacyReportingBatchDetailRecordMessagingListResponseMeta `json:"meta"`
+	Data []MdrDetailReportResponse `json:"data"`
+	Meta BatchCsvPaginationMeta    `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -180,30 +202,6 @@ type LegacyReportingBatchDetailRecordMessagingListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r LegacyReportingBatchDetailRecordMessagingListResponse) RawJSON() string { return r.JSON.raw }
 func (r *LegacyReportingBatchDetailRecordMessagingListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type LegacyReportingBatchDetailRecordMessagingListResponseMeta struct {
-	PageNumber   int64 `json:"page_number"`
-	PageSize     int64 `json:"page_size"`
-	TotalPages   int64 `json:"total_pages"`
-	TotalResults int64 `json:"total_results"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageNumber   respjson.Field
-		PageSize     respjson.Field
-		TotalPages   respjson.Field
-		TotalResults respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LegacyReportingBatchDetailRecordMessagingListResponseMeta) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *LegacyReportingBatchDetailRecordMessagingListResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -90,7 +90,7 @@ func (r *VerifyProfileService) Delete(ctx context.Context, verifyProfileID strin
 }
 
 // Create a new Verify profile message template.
-func (r *VerifyProfileService) NewTemplate(ctx context.Context, body VerifyProfileNewTemplateParams, opts ...option.RequestOption) (res *VerifyProfileNewTemplateResponse, err error) {
+func (r *VerifyProfileService) NewTemplate(ctx context.Context, body VerifyProfileNewTemplateParams, opts ...option.RequestOption) (res *MessageTemplate, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "verify_profiles/templates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -106,7 +106,7 @@ func (r *VerifyProfileService) GetTemplates(ctx context.Context, opts ...option.
 }
 
 // Update an existing Verify profile message template.
-func (r *VerifyProfileService) UpdateTemplate(ctx context.Context, templateID string, body VerifyProfileUpdateTemplateParams, opts ...option.RequestOption) (res *VerifyProfileUpdateTemplateResponse, err error) {
+func (r *VerifyProfileService) UpdateTemplate(ctx context.Context, templateID string, body VerifyProfileUpdateTemplateParams, opts ...option.RequestOption) (res *MessageTemplate, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if templateID == "" {
 		err = errors.New("missing required template_id parameter")
@@ -115,6 +115,22 @@ func (r *VerifyProfileService) UpdateTemplate(ctx context.Context, templateID st
 	path := fmt.Sprintf("verify_profiles/templates/%s", templateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
+}
+
+type MessageTemplate struct {
+	Data VerifyProfileMessageTemplateResponse `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageTemplate) RawJSON() string { return r.JSON.raw }
+func (r *MessageTemplate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type VerifyProfile struct {
@@ -296,8 +312,8 @@ func (r *VerifyProfileMessageTemplateResponse) UnmarshalJSON(data []byte) error 
 
 // A paginated list of Verify profiles
 type VerifyProfileListResponse struct {
-	Data []VerifyProfile               `json:"data,required"`
-	Meta VerifyProfileListResponseMeta `json:"meta,required"`
+	Data []VerifyProfile `json:"data,required"`
+	Meta VerifyMeta      `json:"meta,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -310,44 +326,6 @@ type VerifyProfileListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r VerifyProfileListResponse) RawJSON() string { return r.JSON.raw }
 func (r *VerifyProfileListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VerifyProfileListResponseMeta struct {
-	PageNumber   int64 `json:"page_number"`
-	PageSize     int64 `json:"page_size"`
-	TotalPages   int64 `json:"total_pages"`
-	TotalResults int64 `json:"total_results"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageNumber   respjson.Field
-		PageSize     respjson.Field
-		TotalPages   respjson.Field
-		TotalResults respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VerifyProfileListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *VerifyProfileListResponseMeta) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VerifyProfileNewTemplateResponse struct {
-	Data VerifyProfileMessageTemplateResponse `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VerifyProfileNewTemplateResponse) RawJSON() string { return r.JSON.raw }
-func (r *VerifyProfileNewTemplateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -365,22 +343,6 @@ type VerifyProfileGetTemplatesResponse struct {
 // Returns the unmodified JSON received from the API
 func (r VerifyProfileGetTemplatesResponse) RawJSON() string { return r.JSON.raw }
 func (r *VerifyProfileGetTemplatesResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VerifyProfileUpdateTemplateResponse struct {
-	Data VerifyProfileMessageTemplateResponse `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VerifyProfileUpdateTemplateResponse) RawJSON() string { return r.JSON.raw }
-func (r *VerifyProfileUpdateTemplateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -48,25 +48,7 @@ func (r *VerificationByPhoneNumberService) List(ctx context.Context, phoneNumber
 	return
 }
 
-type VerificationByPhoneNumberListResponse struct {
-	Data []Verification                            `json:"data,required"`
-	Meta VerificationByPhoneNumberListResponseMeta `json:"meta,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VerificationByPhoneNumberListResponse) RawJSON() string { return r.JSON.raw }
-func (r *VerificationByPhoneNumberListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VerificationByPhoneNumberListResponseMeta struct {
+type VerifyMeta struct {
 	PageNumber   int64 `json:"page_number"`
 	PageSize     int64 `json:"page_size"`
 	TotalPages   int64 `json:"total_pages"`
@@ -83,7 +65,25 @@ type VerificationByPhoneNumberListResponseMeta struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VerificationByPhoneNumberListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *VerificationByPhoneNumberListResponseMeta) UnmarshalJSON(data []byte) error {
+func (r VerifyMeta) RawJSON() string { return r.JSON.raw }
+func (r *VerifyMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VerificationByPhoneNumberListResponse struct {
+	Data []Verification `json:"data,required"`
+	Meta VerifyMeta     `json:"meta,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VerificationByPhoneNumberListResponse) RawJSON() string { return r.JSON.raw }
+func (r *VerificationByPhoneNumberListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

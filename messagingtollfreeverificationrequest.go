@@ -243,7 +243,7 @@ type TfVerificationRequestParam struct {
 	//
 	// Any of "SOLE_PROPRIETOR", "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT",
 	// "GOVERNMENT".
-	EntityType TfVerificationRequestEntityType `json:"entityType,omitzero"`
+	EntityType TollFreeVerificationEntityType `json:"entityType,omitzero"`
 	paramObj
 }
 
@@ -255,17 +255,6 @@ func (r *TfVerificationRequestParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Business entity classification
-type TfVerificationRequestEntityType string
-
-const (
-	TfVerificationRequestEntityTypeSoleProprietor TfVerificationRequestEntityType = "SOLE_PROPRIETOR"
-	TfVerificationRequestEntityTypePrivateProfit  TfVerificationRequestEntityType = "PRIVATE_PROFIT"
-	TfVerificationRequestEntityTypePublicProfit   TfVerificationRequestEntityType = "PUBLIC_PROFIT"
-	TfVerificationRequestEntityTypeNonProfit      TfVerificationRequestEntityType = "NON_PROFIT"
-	TfVerificationRequestEntityTypeGovernment     TfVerificationRequestEntityType = "GOVERNMENT"
-)
-
 // Tollfree verification status
 type TfVerificationStatus string
 
@@ -276,6 +265,17 @@ const (
 	TfVerificationStatusWaitingForCustomer TfVerificationStatus = "Waiting For Customer"
 	TfVerificationStatusWaitingForTelnyx   TfVerificationStatus = "Waiting For Telnyx"
 	TfVerificationStatusInProgress         TfVerificationStatus = "In Progress"
+)
+
+// Business entity classification
+type TollFreeVerificationEntityType string
+
+const (
+	TollFreeVerificationEntityTypeSoleProprietor TollFreeVerificationEntityType = "SOLE_PROPRIETOR"
+	TollFreeVerificationEntityTypePrivateProfit  TollFreeVerificationEntityType = "PRIVATE_PROFIT"
+	TollFreeVerificationEntityTypePublicProfit   TollFreeVerificationEntityType = "PUBLIC_PROFIT"
+	TollFreeVerificationEntityTypeNonProfit      TollFreeVerificationEntityType = "NON_PROFIT"
+	TollFreeVerificationEntityTypeGovernment     TollFreeVerificationEntityType = "GOVERNMENT"
 )
 
 type URL struct {
@@ -417,12 +417,12 @@ type VerificationRequestEgress struct {
 	//
 	// Any of "SOLE_PROPRIETOR", "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT",
 	// "GOVERNMENT".
-	EntityType                VerificationRequestEgressEntityType `json:"entityType"`
-	HelpMessageResponse       string                              `json:"helpMessageResponse"`
-	OptInConfirmationResponse string                              `json:"optInConfirmationResponse"`
-	OptInKeywords             string                              `json:"optInKeywords"`
-	PrivacyPolicyURL          string                              `json:"privacyPolicyURL"`
-	TermsAndConditionURL      string                              `json:"termsAndConditionURL"`
+	EntityType                TollFreeVerificationEntityType `json:"entityType"`
+	HelpMessageResponse       string                         `json:"helpMessageResponse"`
+	OptInConfirmationResponse string                         `json:"optInConfirmationResponse"`
+	OptInKeywords             string                         `json:"optInKeywords"`
+	PrivacyPolicyURL          string                         `json:"privacyPolicyURL"`
+	TermsAndConditionURL      string                         `json:"termsAndConditionURL"`
 	// Tollfree verification status
 	//
 	// Any of "Verified", "Rejected", "Waiting For Vendor", "Waiting For Customer",
@@ -476,17 +476,6 @@ func (r VerificationRequestEgress) RawJSON() string { return r.JSON.raw }
 func (r *VerificationRequestEgress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Business entity classification
-type VerificationRequestEgressEntityType string
-
-const (
-	VerificationRequestEgressEntityTypeSoleProprietor VerificationRequestEgressEntityType = "SOLE_PROPRIETOR"
-	VerificationRequestEgressEntityTypePrivateProfit  VerificationRequestEgressEntityType = "PRIVATE_PROFIT"
-	VerificationRequestEgressEntityTypePublicProfit   VerificationRequestEgressEntityType = "PUBLIC_PROFIT"
-	VerificationRequestEgressEntityTypeNonProfit      VerificationRequestEgressEntityType = "NON_PROFIT"
-	VerificationRequestEgressEntityTypeGovernment     VerificationRequestEgressEntityType = "GOVERNMENT"
-)
 
 // A verification request and its status, suitable for returning to users
 type VerificationRequestStatus struct {
@@ -544,15 +533,15 @@ type VerificationRequestStatus struct {
 	//
 	// Any of "SOLE_PROPRIETOR", "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT",
 	// "GOVERNMENT".
-	EntityType                VerificationRequestStatusEntityType `json:"entityType"`
-	HelpMessageResponse       string                              `json:"helpMessageResponse"`
-	OptInConfirmationResponse string                              `json:"optInConfirmationResponse"`
-	OptInKeywords             string                              `json:"optInKeywords"`
-	PrivacyPolicyURL          string                              `json:"privacyPolicyURL"`
-	Reason                    string                              `json:"reason"`
-	TermsAndConditionURL      string                              `json:"termsAndConditionURL"`
-	UpdatedAt                 time.Time                           `json:"updatedAt" format:"date-time"`
-	WebhookURL                string                              `json:"webhookUrl"`
+	EntityType                TollFreeVerificationEntityType `json:"entityType"`
+	HelpMessageResponse       string                         `json:"helpMessageResponse"`
+	OptInConfirmationResponse string                         `json:"optInConfirmationResponse"`
+	OptInKeywords             string                         `json:"optInKeywords"`
+	PrivacyPolicyURL          string                         `json:"privacyPolicyURL"`
+	Reason                    string                         `json:"reason"`
+	TermsAndConditionURL      string                         `json:"termsAndConditionURL"`
+	UpdatedAt                 time.Time                      `json:"updatedAt" format:"date-time"`
+	WebhookURL                string                         `json:"webhookUrl"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                          respjson.Field
@@ -602,17 +591,6 @@ func (r VerificationRequestStatus) RawJSON() string { return r.JSON.raw }
 func (r *VerificationRequestStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Business entity classification
-type VerificationRequestStatusEntityType string
-
-const (
-	VerificationRequestStatusEntityTypeSoleProprietor VerificationRequestStatusEntityType = "SOLE_PROPRIETOR"
-	VerificationRequestStatusEntityTypePrivateProfit  VerificationRequestStatusEntityType = "PRIVATE_PROFIT"
-	VerificationRequestStatusEntityTypePublicProfit   VerificationRequestStatusEntityType = "PUBLIC_PROFIT"
-	VerificationRequestStatusEntityTypeNonProfit      VerificationRequestStatusEntityType = "NON_PROFIT"
-	VerificationRequestStatusEntityTypeGovernment     VerificationRequestStatusEntityType = "GOVERNMENT"
-)
 
 // Message Volume Enums
 type Volume string

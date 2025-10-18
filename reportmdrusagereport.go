@@ -190,6 +190,28 @@ const (
 	MdrUsageReportStatusExpired  MdrUsageReportStatus = "EXPIRED"
 )
 
+type PaginationMetaReporting struct {
+	PageNumber   int64 `json:"page_number"`
+	PageSize     int64 `json:"page_size"`
+	TotalPages   int64 `json:"total_pages"`
+	TotalResults int64 `json:"total_results"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaginationMetaReporting) RawJSON() string { return r.JSON.raw }
+func (r *PaginationMetaReporting) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ReportMdrUsageReportNewResponse struct {
 	Data MdrUsageReport `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -223,8 +245,8 @@ func (r *ReportMdrUsageReportGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ReportMdrUsageReportListResponse struct {
-	Data []MdrUsageReport                     `json:"data"`
-	Meta ReportMdrUsageReportListResponseMeta `json:"meta"`
+	Data []MdrUsageReport        `json:"data"`
+	Meta PaginationMetaReporting `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -237,28 +259,6 @@ type ReportMdrUsageReportListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ReportMdrUsageReportListResponse) RawJSON() string { return r.JSON.raw }
 func (r *ReportMdrUsageReportListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ReportMdrUsageReportListResponseMeta struct {
-	PageNumber   int64 `json:"page_number"`
-	PageSize     int64 `json:"page_size"`
-	TotalPages   int64 `json:"total_pages"`
-	TotalResults int64 `json:"total_results"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageNumber   respjson.Field
-		PageSize     respjson.Field
-		TotalPages   respjson.Field
-		TotalResults respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ReportMdrUsageReportListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *ReportMdrUsageReportListResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

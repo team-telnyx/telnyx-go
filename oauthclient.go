@@ -174,6 +174,32 @@ const (
 	OAuthClientRecordTypeOAuthClient OAuthClientRecordType = "oauth_client"
 )
 
+type PaginationMetaOAuth struct {
+	// Current page number
+	PageNumber int64 `json:"page_number"`
+	// Number of items per page
+	PageSize int64 `json:"page_size"`
+	// Total number of pages
+	TotalPages int64 `json:"total_pages"`
+	// Total number of results
+	TotalResults int64 `json:"total_results"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaginationMetaOAuth) RawJSON() string { return r.JSON.raw }
+func (r *PaginationMetaOAuth) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type OAuthClientNewResponse struct {
 	Data OAuthClient `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -223,8 +249,8 @@ func (r *OAuthClientUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type OAuthClientListResponse struct {
-	Data []OAuthClient               `json:"data"`
-	Meta OAuthClientListResponseMeta `json:"meta"`
+	Data []OAuthClient       `json:"data"`
+	Meta PaginationMetaOAuth `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -237,32 +263,6 @@ type OAuthClientListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r OAuthClientListResponse) RawJSON() string { return r.JSON.raw }
 func (r *OAuthClientListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type OAuthClientListResponseMeta struct {
-	// Current page number
-	PageNumber int64 `json:"page_number"`
-	// Number of items per page
-	PageSize int64 `json:"page_size"`
-	// Total number of pages
-	TotalPages int64 `json:"total_pages"`
-	// Total number of results
-	TotalResults int64 `json:"total_results"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageNumber   respjson.Field
-		PageSize     respjson.Field
-		TotalPages   respjson.Field
-		TotalResults respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r OAuthClientListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *OAuthClientListResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

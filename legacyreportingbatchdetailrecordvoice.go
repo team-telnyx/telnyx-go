@@ -186,8 +186,8 @@ func (r *LegacyReportingBatchDetailRecordVoiceGetResponse) UnmarshalJSON(data []
 }
 
 type LegacyReportingBatchDetailRecordVoiceListResponse struct {
-	Data []CdrDetailedReqResponse                              `json:"data"`
-	Meta LegacyReportingBatchDetailRecordVoiceListResponseMeta `json:"meta"`
+	Data []CdrDetailedReqResponse `json:"data"`
+	Meta BatchCsvPaginationMeta   `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -200,28 +200,6 @@ type LegacyReportingBatchDetailRecordVoiceListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r LegacyReportingBatchDetailRecordVoiceListResponse) RawJSON() string { return r.JSON.raw }
 func (r *LegacyReportingBatchDetailRecordVoiceListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type LegacyReportingBatchDetailRecordVoiceListResponseMeta struct {
-	PageNumber   int64 `json:"page_number"`
-	PageSize     int64 `json:"page_size"`
-	TotalPages   int64 `json:"total_pages"`
-	TotalResults int64 `json:"total_results"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageNumber   respjson.Field
-		PageSize     respjson.Field
-		TotalPages   respjson.Field
-		TotalResults respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LegacyReportingBatchDetailRecordVoiceListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *LegacyReportingBatchDetailRecordVoiceListResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
