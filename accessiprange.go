@@ -98,8 +98,8 @@ func (r *AccessIPRange) UnmarshalJSON(data []byte) error {
 }
 
 type AccessIPRangeListResponse struct {
-	Data []AccessIPRange               `json:"data,required"`
-	Meta AccessIPRangeListResponseMeta `json:"meta,required"`
+	Data []AccessIPRange                    `json:"data,required"`
+	Meta PaginationMetaCloudflareIPListSync `json:"meta,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -112,28 +112,6 @@ type AccessIPRangeListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r AccessIPRangeListResponse) RawJSON() string { return r.JSON.raw }
 func (r *AccessIPRangeListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AccessIPRangeListResponseMeta struct {
-	PageNumber   int64 `json:"page_number,required"`
-	PageSize     int64 `json:"page_size,required"`
-	TotalPages   int64 `json:"total_pages,required"`
-	TotalResults int64 `json:"total_results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageNumber   respjson.Field
-		PageSize     respjson.Field
-		TotalPages   respjson.Field
-		TotalResults respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AccessIPRangeListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *AccessIPRangeListResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

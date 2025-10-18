@@ -838,6 +838,112 @@ func (r *StopRecordingRequestParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Language to use for speech recognition
+type TelnyxTranscriptionLanguage string
+
+const (
+	TelnyxTranscriptionLanguageEn         TelnyxTranscriptionLanguage = "en"
+	TelnyxTranscriptionLanguageZh         TelnyxTranscriptionLanguage = "zh"
+	TelnyxTranscriptionLanguageDe         TelnyxTranscriptionLanguage = "de"
+	TelnyxTranscriptionLanguageEs         TelnyxTranscriptionLanguage = "es"
+	TelnyxTranscriptionLanguageRu         TelnyxTranscriptionLanguage = "ru"
+	TelnyxTranscriptionLanguageKo         TelnyxTranscriptionLanguage = "ko"
+	TelnyxTranscriptionLanguageFr         TelnyxTranscriptionLanguage = "fr"
+	TelnyxTranscriptionLanguageJa         TelnyxTranscriptionLanguage = "ja"
+	TelnyxTranscriptionLanguagePt         TelnyxTranscriptionLanguage = "pt"
+	TelnyxTranscriptionLanguageTr         TelnyxTranscriptionLanguage = "tr"
+	TelnyxTranscriptionLanguagePl         TelnyxTranscriptionLanguage = "pl"
+	TelnyxTranscriptionLanguageCa         TelnyxTranscriptionLanguage = "ca"
+	TelnyxTranscriptionLanguageNl         TelnyxTranscriptionLanguage = "nl"
+	TelnyxTranscriptionLanguageAr         TelnyxTranscriptionLanguage = "ar"
+	TelnyxTranscriptionLanguageSv         TelnyxTranscriptionLanguage = "sv"
+	TelnyxTranscriptionLanguageIt         TelnyxTranscriptionLanguage = "it"
+	TelnyxTranscriptionLanguageID         TelnyxTranscriptionLanguage = "id"
+	TelnyxTranscriptionLanguageHi         TelnyxTranscriptionLanguage = "hi"
+	TelnyxTranscriptionLanguageFi         TelnyxTranscriptionLanguage = "fi"
+	TelnyxTranscriptionLanguageVi         TelnyxTranscriptionLanguage = "vi"
+	TelnyxTranscriptionLanguageHe         TelnyxTranscriptionLanguage = "he"
+	TelnyxTranscriptionLanguageUk         TelnyxTranscriptionLanguage = "uk"
+	TelnyxTranscriptionLanguageEl         TelnyxTranscriptionLanguage = "el"
+	TelnyxTranscriptionLanguageMs         TelnyxTranscriptionLanguage = "ms"
+	TelnyxTranscriptionLanguageCs         TelnyxTranscriptionLanguage = "cs"
+	TelnyxTranscriptionLanguageRo         TelnyxTranscriptionLanguage = "ro"
+	TelnyxTranscriptionLanguageDa         TelnyxTranscriptionLanguage = "da"
+	TelnyxTranscriptionLanguageHu         TelnyxTranscriptionLanguage = "hu"
+	TelnyxTranscriptionLanguageTa         TelnyxTranscriptionLanguage = "ta"
+	TelnyxTranscriptionLanguageNo         TelnyxTranscriptionLanguage = "no"
+	TelnyxTranscriptionLanguageTh         TelnyxTranscriptionLanguage = "th"
+	TelnyxTranscriptionLanguageUr         TelnyxTranscriptionLanguage = "ur"
+	TelnyxTranscriptionLanguageHr         TelnyxTranscriptionLanguage = "hr"
+	TelnyxTranscriptionLanguageBg         TelnyxTranscriptionLanguage = "bg"
+	TelnyxTranscriptionLanguageLt         TelnyxTranscriptionLanguage = "lt"
+	TelnyxTranscriptionLanguageLa         TelnyxTranscriptionLanguage = "la"
+	TelnyxTranscriptionLanguageMi         TelnyxTranscriptionLanguage = "mi"
+	TelnyxTranscriptionLanguageMl         TelnyxTranscriptionLanguage = "ml"
+	TelnyxTranscriptionLanguageCy         TelnyxTranscriptionLanguage = "cy"
+	TelnyxTranscriptionLanguageSk         TelnyxTranscriptionLanguage = "sk"
+	TelnyxTranscriptionLanguageTe         TelnyxTranscriptionLanguage = "te"
+	TelnyxTranscriptionLanguageFa         TelnyxTranscriptionLanguage = "fa"
+	TelnyxTranscriptionLanguageLv         TelnyxTranscriptionLanguage = "lv"
+	TelnyxTranscriptionLanguageBn         TelnyxTranscriptionLanguage = "bn"
+	TelnyxTranscriptionLanguageSr         TelnyxTranscriptionLanguage = "sr"
+	TelnyxTranscriptionLanguageAz         TelnyxTranscriptionLanguage = "az"
+	TelnyxTranscriptionLanguageSl         TelnyxTranscriptionLanguage = "sl"
+	TelnyxTranscriptionLanguageKn         TelnyxTranscriptionLanguage = "kn"
+	TelnyxTranscriptionLanguageEt         TelnyxTranscriptionLanguage = "et"
+	TelnyxTranscriptionLanguageMk         TelnyxTranscriptionLanguage = "mk"
+	TelnyxTranscriptionLanguageBr         TelnyxTranscriptionLanguage = "br"
+	TelnyxTranscriptionLanguageEu         TelnyxTranscriptionLanguage = "eu"
+	TelnyxTranscriptionLanguageIs         TelnyxTranscriptionLanguage = "is"
+	TelnyxTranscriptionLanguageHy         TelnyxTranscriptionLanguage = "hy"
+	TelnyxTranscriptionLanguageNe         TelnyxTranscriptionLanguage = "ne"
+	TelnyxTranscriptionLanguageMn         TelnyxTranscriptionLanguage = "mn"
+	TelnyxTranscriptionLanguageBs         TelnyxTranscriptionLanguage = "bs"
+	TelnyxTranscriptionLanguageKk         TelnyxTranscriptionLanguage = "kk"
+	TelnyxTranscriptionLanguageSq         TelnyxTranscriptionLanguage = "sq"
+	TelnyxTranscriptionLanguageSw         TelnyxTranscriptionLanguage = "sw"
+	TelnyxTranscriptionLanguageGl         TelnyxTranscriptionLanguage = "gl"
+	TelnyxTranscriptionLanguageMr         TelnyxTranscriptionLanguage = "mr"
+	TelnyxTranscriptionLanguagePa         TelnyxTranscriptionLanguage = "pa"
+	TelnyxTranscriptionLanguageSi         TelnyxTranscriptionLanguage = "si"
+	TelnyxTranscriptionLanguageKm         TelnyxTranscriptionLanguage = "km"
+	TelnyxTranscriptionLanguageSn         TelnyxTranscriptionLanguage = "sn"
+	TelnyxTranscriptionLanguageYo         TelnyxTranscriptionLanguage = "yo"
+	TelnyxTranscriptionLanguageSo         TelnyxTranscriptionLanguage = "so"
+	TelnyxTranscriptionLanguageAf         TelnyxTranscriptionLanguage = "af"
+	TelnyxTranscriptionLanguageOc         TelnyxTranscriptionLanguage = "oc"
+	TelnyxTranscriptionLanguageKa         TelnyxTranscriptionLanguage = "ka"
+	TelnyxTranscriptionLanguageBe         TelnyxTranscriptionLanguage = "be"
+	TelnyxTranscriptionLanguageTg         TelnyxTranscriptionLanguage = "tg"
+	TelnyxTranscriptionLanguageSd         TelnyxTranscriptionLanguage = "sd"
+	TelnyxTranscriptionLanguageGu         TelnyxTranscriptionLanguage = "gu"
+	TelnyxTranscriptionLanguageAm         TelnyxTranscriptionLanguage = "am"
+	TelnyxTranscriptionLanguageYi         TelnyxTranscriptionLanguage = "yi"
+	TelnyxTranscriptionLanguageLo         TelnyxTranscriptionLanguage = "lo"
+	TelnyxTranscriptionLanguageUz         TelnyxTranscriptionLanguage = "uz"
+	TelnyxTranscriptionLanguageFo         TelnyxTranscriptionLanguage = "fo"
+	TelnyxTranscriptionLanguageHt         TelnyxTranscriptionLanguage = "ht"
+	TelnyxTranscriptionLanguagePs         TelnyxTranscriptionLanguage = "ps"
+	TelnyxTranscriptionLanguageTk         TelnyxTranscriptionLanguage = "tk"
+	TelnyxTranscriptionLanguageNn         TelnyxTranscriptionLanguage = "nn"
+	TelnyxTranscriptionLanguageMt         TelnyxTranscriptionLanguage = "mt"
+	TelnyxTranscriptionLanguageSa         TelnyxTranscriptionLanguage = "sa"
+	TelnyxTranscriptionLanguageLb         TelnyxTranscriptionLanguage = "lb"
+	TelnyxTranscriptionLanguageMy         TelnyxTranscriptionLanguage = "my"
+	TelnyxTranscriptionLanguageBo         TelnyxTranscriptionLanguage = "bo"
+	TelnyxTranscriptionLanguageTl         TelnyxTranscriptionLanguage = "tl"
+	TelnyxTranscriptionLanguageMg         TelnyxTranscriptionLanguage = "mg"
+	TelnyxTranscriptionLanguageAs         TelnyxTranscriptionLanguage = "as"
+	TelnyxTranscriptionLanguageTt         TelnyxTranscriptionLanguage = "tt"
+	TelnyxTranscriptionLanguageHaw        TelnyxTranscriptionLanguage = "haw"
+	TelnyxTranscriptionLanguageLn         TelnyxTranscriptionLanguage = "ln"
+	TelnyxTranscriptionLanguageHa         TelnyxTranscriptionLanguage = "ha"
+	TelnyxTranscriptionLanguageBa         TelnyxTranscriptionLanguage = "ba"
+	TelnyxTranscriptionLanguageJw         TelnyxTranscriptionLanguage = "jw"
+	TelnyxTranscriptionLanguageSu         TelnyxTranscriptionLanguage = "su"
+	TelnyxTranscriptionLanguageAutoDetect TelnyxTranscriptionLanguage = "auto_detect"
+)
+
 type TelnyxVoiceSettingsParam struct {
 	// The voice speed to be used for the voice. The voice speed must be between 0.1
 	// and 2.0. Default value is 1.0.
@@ -972,7 +1078,7 @@ type TranscriptionEngineBConfigParam struct {
 	// "km", "sn", "yo", "so", "af", "oc", "ka", "be", "tg", "sd", "gu", "am", "yi",
 	// "lo", "uz", "fo", "ht", "ps", "tk", "nn", "mt", "sa", "lb", "my", "bo", "tl",
 	// "mg", "as", "tt", "haw", "ln", "ha", "ba", "jw", "su", "auto_detect".
-	Language TranscriptionEngineBConfigLanguage `json:"language,omitzero"`
+	Language TelnyxTranscriptionLanguage `json:"language,omitzero"`
 	// Engine identifier for Telnyx transcription service
 	//
 	// Any of "B".
@@ -991,112 +1097,6 @@ func (r TranscriptionEngineBConfigParam) MarshalJSON() (data []byte, err error) 
 func (r *TranscriptionEngineBConfigParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Language to use for speech recognition
-type TranscriptionEngineBConfigLanguage string
-
-const (
-	TranscriptionEngineBConfigLanguageEn         TranscriptionEngineBConfigLanguage = "en"
-	TranscriptionEngineBConfigLanguageZh         TranscriptionEngineBConfigLanguage = "zh"
-	TranscriptionEngineBConfigLanguageDe         TranscriptionEngineBConfigLanguage = "de"
-	TranscriptionEngineBConfigLanguageEs         TranscriptionEngineBConfigLanguage = "es"
-	TranscriptionEngineBConfigLanguageRu         TranscriptionEngineBConfigLanguage = "ru"
-	TranscriptionEngineBConfigLanguageKo         TranscriptionEngineBConfigLanguage = "ko"
-	TranscriptionEngineBConfigLanguageFr         TranscriptionEngineBConfigLanguage = "fr"
-	TranscriptionEngineBConfigLanguageJa         TranscriptionEngineBConfigLanguage = "ja"
-	TranscriptionEngineBConfigLanguagePt         TranscriptionEngineBConfigLanguage = "pt"
-	TranscriptionEngineBConfigLanguageTr         TranscriptionEngineBConfigLanguage = "tr"
-	TranscriptionEngineBConfigLanguagePl         TranscriptionEngineBConfigLanguage = "pl"
-	TranscriptionEngineBConfigLanguageCa         TranscriptionEngineBConfigLanguage = "ca"
-	TranscriptionEngineBConfigLanguageNl         TranscriptionEngineBConfigLanguage = "nl"
-	TranscriptionEngineBConfigLanguageAr         TranscriptionEngineBConfigLanguage = "ar"
-	TranscriptionEngineBConfigLanguageSv         TranscriptionEngineBConfigLanguage = "sv"
-	TranscriptionEngineBConfigLanguageIt         TranscriptionEngineBConfigLanguage = "it"
-	TranscriptionEngineBConfigLanguageID         TranscriptionEngineBConfigLanguage = "id"
-	TranscriptionEngineBConfigLanguageHi         TranscriptionEngineBConfigLanguage = "hi"
-	TranscriptionEngineBConfigLanguageFi         TranscriptionEngineBConfigLanguage = "fi"
-	TranscriptionEngineBConfigLanguageVi         TranscriptionEngineBConfigLanguage = "vi"
-	TranscriptionEngineBConfigLanguageHe         TranscriptionEngineBConfigLanguage = "he"
-	TranscriptionEngineBConfigLanguageUk         TranscriptionEngineBConfigLanguage = "uk"
-	TranscriptionEngineBConfigLanguageEl         TranscriptionEngineBConfigLanguage = "el"
-	TranscriptionEngineBConfigLanguageMs         TranscriptionEngineBConfigLanguage = "ms"
-	TranscriptionEngineBConfigLanguageCs         TranscriptionEngineBConfigLanguage = "cs"
-	TranscriptionEngineBConfigLanguageRo         TranscriptionEngineBConfigLanguage = "ro"
-	TranscriptionEngineBConfigLanguageDa         TranscriptionEngineBConfigLanguage = "da"
-	TranscriptionEngineBConfigLanguageHu         TranscriptionEngineBConfigLanguage = "hu"
-	TranscriptionEngineBConfigLanguageTa         TranscriptionEngineBConfigLanguage = "ta"
-	TranscriptionEngineBConfigLanguageNo         TranscriptionEngineBConfigLanguage = "no"
-	TranscriptionEngineBConfigLanguageTh         TranscriptionEngineBConfigLanguage = "th"
-	TranscriptionEngineBConfigLanguageUr         TranscriptionEngineBConfigLanguage = "ur"
-	TranscriptionEngineBConfigLanguageHr         TranscriptionEngineBConfigLanguage = "hr"
-	TranscriptionEngineBConfigLanguageBg         TranscriptionEngineBConfigLanguage = "bg"
-	TranscriptionEngineBConfigLanguageLt         TranscriptionEngineBConfigLanguage = "lt"
-	TranscriptionEngineBConfigLanguageLa         TranscriptionEngineBConfigLanguage = "la"
-	TranscriptionEngineBConfigLanguageMi         TranscriptionEngineBConfigLanguage = "mi"
-	TranscriptionEngineBConfigLanguageMl         TranscriptionEngineBConfigLanguage = "ml"
-	TranscriptionEngineBConfigLanguageCy         TranscriptionEngineBConfigLanguage = "cy"
-	TranscriptionEngineBConfigLanguageSk         TranscriptionEngineBConfigLanguage = "sk"
-	TranscriptionEngineBConfigLanguageTe         TranscriptionEngineBConfigLanguage = "te"
-	TranscriptionEngineBConfigLanguageFa         TranscriptionEngineBConfigLanguage = "fa"
-	TranscriptionEngineBConfigLanguageLv         TranscriptionEngineBConfigLanguage = "lv"
-	TranscriptionEngineBConfigLanguageBn         TranscriptionEngineBConfigLanguage = "bn"
-	TranscriptionEngineBConfigLanguageSr         TranscriptionEngineBConfigLanguage = "sr"
-	TranscriptionEngineBConfigLanguageAz         TranscriptionEngineBConfigLanguage = "az"
-	TranscriptionEngineBConfigLanguageSl         TranscriptionEngineBConfigLanguage = "sl"
-	TranscriptionEngineBConfigLanguageKn         TranscriptionEngineBConfigLanguage = "kn"
-	TranscriptionEngineBConfigLanguageEt         TranscriptionEngineBConfigLanguage = "et"
-	TranscriptionEngineBConfigLanguageMk         TranscriptionEngineBConfigLanguage = "mk"
-	TranscriptionEngineBConfigLanguageBr         TranscriptionEngineBConfigLanguage = "br"
-	TranscriptionEngineBConfigLanguageEu         TranscriptionEngineBConfigLanguage = "eu"
-	TranscriptionEngineBConfigLanguageIs         TranscriptionEngineBConfigLanguage = "is"
-	TranscriptionEngineBConfigLanguageHy         TranscriptionEngineBConfigLanguage = "hy"
-	TranscriptionEngineBConfigLanguageNe         TranscriptionEngineBConfigLanguage = "ne"
-	TranscriptionEngineBConfigLanguageMn         TranscriptionEngineBConfigLanguage = "mn"
-	TranscriptionEngineBConfigLanguageBs         TranscriptionEngineBConfigLanguage = "bs"
-	TranscriptionEngineBConfigLanguageKk         TranscriptionEngineBConfigLanguage = "kk"
-	TranscriptionEngineBConfigLanguageSq         TranscriptionEngineBConfigLanguage = "sq"
-	TranscriptionEngineBConfigLanguageSw         TranscriptionEngineBConfigLanguage = "sw"
-	TranscriptionEngineBConfigLanguageGl         TranscriptionEngineBConfigLanguage = "gl"
-	TranscriptionEngineBConfigLanguageMr         TranscriptionEngineBConfigLanguage = "mr"
-	TranscriptionEngineBConfigLanguagePa         TranscriptionEngineBConfigLanguage = "pa"
-	TranscriptionEngineBConfigLanguageSi         TranscriptionEngineBConfigLanguage = "si"
-	TranscriptionEngineBConfigLanguageKm         TranscriptionEngineBConfigLanguage = "km"
-	TranscriptionEngineBConfigLanguageSn         TranscriptionEngineBConfigLanguage = "sn"
-	TranscriptionEngineBConfigLanguageYo         TranscriptionEngineBConfigLanguage = "yo"
-	TranscriptionEngineBConfigLanguageSo         TranscriptionEngineBConfigLanguage = "so"
-	TranscriptionEngineBConfigLanguageAf         TranscriptionEngineBConfigLanguage = "af"
-	TranscriptionEngineBConfigLanguageOc         TranscriptionEngineBConfigLanguage = "oc"
-	TranscriptionEngineBConfigLanguageKa         TranscriptionEngineBConfigLanguage = "ka"
-	TranscriptionEngineBConfigLanguageBe         TranscriptionEngineBConfigLanguage = "be"
-	TranscriptionEngineBConfigLanguageTg         TranscriptionEngineBConfigLanguage = "tg"
-	TranscriptionEngineBConfigLanguageSd         TranscriptionEngineBConfigLanguage = "sd"
-	TranscriptionEngineBConfigLanguageGu         TranscriptionEngineBConfigLanguage = "gu"
-	TranscriptionEngineBConfigLanguageAm         TranscriptionEngineBConfigLanguage = "am"
-	TranscriptionEngineBConfigLanguageYi         TranscriptionEngineBConfigLanguage = "yi"
-	TranscriptionEngineBConfigLanguageLo         TranscriptionEngineBConfigLanguage = "lo"
-	TranscriptionEngineBConfigLanguageUz         TranscriptionEngineBConfigLanguage = "uz"
-	TranscriptionEngineBConfigLanguageFo         TranscriptionEngineBConfigLanguage = "fo"
-	TranscriptionEngineBConfigLanguageHt         TranscriptionEngineBConfigLanguage = "ht"
-	TranscriptionEngineBConfigLanguagePs         TranscriptionEngineBConfigLanguage = "ps"
-	TranscriptionEngineBConfigLanguageTk         TranscriptionEngineBConfigLanguage = "tk"
-	TranscriptionEngineBConfigLanguageNn         TranscriptionEngineBConfigLanguage = "nn"
-	TranscriptionEngineBConfigLanguageMt         TranscriptionEngineBConfigLanguage = "mt"
-	TranscriptionEngineBConfigLanguageSa         TranscriptionEngineBConfigLanguage = "sa"
-	TranscriptionEngineBConfigLanguageLb         TranscriptionEngineBConfigLanguage = "lb"
-	TranscriptionEngineBConfigLanguageMy         TranscriptionEngineBConfigLanguage = "my"
-	TranscriptionEngineBConfigLanguageBo         TranscriptionEngineBConfigLanguage = "bo"
-	TranscriptionEngineBConfigLanguageTl         TranscriptionEngineBConfigLanguage = "tl"
-	TranscriptionEngineBConfigLanguageMg         TranscriptionEngineBConfigLanguage = "mg"
-	TranscriptionEngineBConfigLanguageAs         TranscriptionEngineBConfigLanguage = "as"
-	TranscriptionEngineBConfigLanguageTt         TranscriptionEngineBConfigLanguage = "tt"
-	TranscriptionEngineBConfigLanguageHaw        TranscriptionEngineBConfigLanguage = "haw"
-	TranscriptionEngineBConfigLanguageLn         TranscriptionEngineBConfigLanguage = "ln"
-	TranscriptionEngineBConfigLanguageHa         TranscriptionEngineBConfigLanguage = "ha"
-	TranscriptionEngineBConfigLanguageBa         TranscriptionEngineBConfigLanguage = "ba"
-	TranscriptionEngineBConfigLanguageJw         TranscriptionEngineBConfigLanguage = "jw"
-	TranscriptionEngineBConfigLanguageSu         TranscriptionEngineBConfigLanguage = "su"
-	TranscriptionEngineBConfigLanguageAutoDetect TranscriptionEngineBConfigLanguage = "auto_detect"
-)
 
 // Engine identifier for Telnyx transcription service
 type TranscriptionEngineBConfigTranscriptionEngine string
@@ -1438,7 +1438,7 @@ type TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam struct {
 	// "km", "sn", "yo", "so", "af", "oc", "ka", "be", "tg", "sd", "gu", "am", "yi",
 	// "lo", "uz", "fo", "ht", "ps", "tk", "nn", "mt", "sa", "lb", "my", "bo", "tl",
 	// "mg", "as", "tt", "haw", "ln", "ha", "ba", "jw", "su", "auto_detect".
-	Language string `json:"language,omitzero"`
+	Language TelnyxTranscriptionLanguage `json:"language,omitzero"`
 	// Engine identifier for Telnyx transcription service
 	//
 	// Any of "Telnyx".
@@ -1459,9 +1459,6 @@ func (r *TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam) Unmarsha
 }
 
 func init() {
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam](
-		"language", "en", "zh", "de", "es", "ru", "ko", "fr", "ja", "pt", "tr", "pl", "ca", "nl", "ar", "sv", "it", "id", "hi", "fi", "vi", "he", "uk", "el", "ms", "cs", "ro", "da", "hu", "ta", "no", "th", "ur", "hr", "bg", "lt", "la", "mi", "ml", "cy", "sk", "te", "fa", "lv", "bn", "sr", "az", "sl", "kn", "et", "mk", "br", "eu", "is", "hy", "ne", "mn", "bs", "kk", "sq", "sw", "gl", "mr", "pa", "si", "km", "sn", "yo", "so", "af", "oc", "ka", "be", "tg", "sd", "gu", "am", "yi", "lo", "uz", "fo", "ht", "ps", "tk", "nn", "mt", "sa", "lb", "my", "bo", "tl", "mg", "as", "tt", "haw", "ln", "ha", "ba", "jw", "su", "auto_detect",
-	)
 	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam](
 		"transcription_engine", "Telnyx",
 	)
