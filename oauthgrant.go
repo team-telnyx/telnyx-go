@@ -128,8 +128,8 @@ func (r *OAuthGrantGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type OAuthGrantListResponse struct {
-	Data []OAuthGrant               `json:"data"`
-	Meta OAuthGrantListResponseMeta `json:"meta"`
+	Data []OAuthGrant        `json:"data"`
+	Meta PaginationMetaOAuth `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -142,32 +142,6 @@ type OAuthGrantListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r OAuthGrantListResponse) RawJSON() string { return r.JSON.raw }
 func (r *OAuthGrantListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type OAuthGrantListResponseMeta struct {
-	// Current page number
-	PageNumber int64 `json:"page_number"`
-	// Number of items per page
-	PageSize int64 `json:"page_size"`
-	// Total number of pages
-	TotalPages int64 `json:"total_pages"`
-	// Total number of results
-	TotalResults int64 `json:"total_results"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageNumber   respjson.Field
-		PageSize     respjson.Field
-		TotalPages   respjson.Field
-		TotalResults respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r OAuthGrantListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *OAuthGrantListResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

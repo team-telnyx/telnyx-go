@@ -239,6 +239,17 @@ const (
 	StreamBidirectionalModeRtp StreamBidirectionalMode = "rtp"
 )
 
+// Audio sampling rate.
+type StreamBidirectionalSamplingRate int64
+
+const (
+	StreamBidirectionalSamplingRate8000  StreamBidirectionalSamplingRate = 8000
+	StreamBidirectionalSamplingRate16000 StreamBidirectionalSamplingRate = 16000
+	StreamBidirectionalSamplingRate22050 StreamBidirectionalSamplingRate = 22050
+	StreamBidirectionalSamplingRate24000 StreamBidirectionalSamplingRate = 24000
+	StreamBidirectionalSamplingRate48000 StreamBidirectionalSamplingRate = 48000
+)
+
 // Specifies which call legs should receive the bidirectional stream audio.
 type StreamBidirectionalTargetLegs string
 

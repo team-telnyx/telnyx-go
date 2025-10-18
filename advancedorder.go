@@ -4,12 +4,14 @@ package telnyx
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
@@ -74,6 +76,40 @@ func (r *AdvancedOrderService) UpdateRequirementGroup(ctx context.Context, advan
 	return
 }
 
+type AdvancedOrderParam struct {
+	AreaCode          param.Opt[string] `json:"area_code,omitzero"`
+	Comments          param.Opt[string] `json:"comments,omitzero"`
+	CountryCode       param.Opt[string] `json:"country_code,omitzero"`
+	CustomerReference param.Opt[string] `json:"customer_reference,omitzero"`
+	Quantity          param.Opt[int64]  `json:"quantity,omitzero"`
+	// The ID of the requirement group to associate with this advanced order
+	RequirementGroupID param.Opt[string] `json:"requirement_group_id,omitzero" format:"uuid"`
+	// Any of "sms", "mms", "voice", "fax", "emergency".
+	Features []string `json:"features,omitzero"`
+	// Any of "local", "mobile", "toll_free", "shared_cost", "national", "landline".
+	PhoneNumberType AdvancedOrderPhoneNumberType `json:"phone_number_type,omitzero"`
+	paramObj
+}
+
+func (r AdvancedOrderParam) MarshalJSON() (data []byte, err error) {
+	type shadow AdvancedOrderParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AdvancedOrderParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AdvancedOrderPhoneNumberType string
+
+const (
+	AdvancedOrderPhoneNumberTypeLocal      AdvancedOrderPhoneNumberType = "local"
+	AdvancedOrderPhoneNumberTypeMobile     AdvancedOrderPhoneNumberType = "mobile"
+	AdvancedOrderPhoneNumberTypeTollFree   AdvancedOrderPhoneNumberType = "toll_free"
+	AdvancedOrderPhoneNumberTypeSharedCost AdvancedOrderPhoneNumberType = "shared_cost"
+	AdvancedOrderPhoneNumberTypeNational   AdvancedOrderPhoneNumberType = "national"
+	AdvancedOrderPhoneNumberTypeLandline   AdvancedOrderPhoneNumberType = "landline"
+)
+
 type AdvancedOrderNewResponse = any
 
 type AdvancedOrderGetResponse = any
@@ -83,69 +119,25 @@ type AdvancedOrderListResponse = any
 type AdvancedOrderUpdateRequirementGroupResponse = any
 
 type AdvancedOrderNewParams struct {
-	AreaCode          param.Opt[string] `json:"area_code,omitzero"`
-	Comments          param.Opt[string] `json:"comments,omitzero"`
-	CountryCode       param.Opt[string] `json:"country_code,omitzero"`
-	CustomerReference param.Opt[string] `json:"customer_reference,omitzero"`
-	Quantity          param.Opt[int64]  `json:"quantity,omitzero"`
-	// The ID of the requirement group to associate with this advanced order
-	RequirementGroupID param.Opt[string] `json:"requirement_group_id,omitzero" format:"uuid"`
-	// Any of "sms", "mms", "voice", "fax", "emergency".
-	Features []string `json:"features,omitzero"`
-	// Any of "local", "mobile", "toll_free", "shared_cost", "national", "landline".
-	PhoneNumberType AdvancedOrderNewParamsPhoneNumberType `json:"phone_number_type,omitzero"`
+	AdvancedOrder AdvancedOrderParam
 	paramObj
 }
 
 func (r AdvancedOrderNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow AdvancedOrderNewParams
-	return param.MarshalObject(r, (*shadow)(&r))
+	return shimjson.Marshal(r.AdvancedOrder)
 }
 func (r *AdvancedOrderNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return json.Unmarshal(data, &r.AdvancedOrder)
 }
 
-type AdvancedOrderNewParamsPhoneNumberType string
-
-const (
-	AdvancedOrderNewParamsPhoneNumberTypeLocal      AdvancedOrderNewParamsPhoneNumberType = "local"
-	AdvancedOrderNewParamsPhoneNumberTypeMobile     AdvancedOrderNewParamsPhoneNumberType = "mobile"
-	AdvancedOrderNewParamsPhoneNumberTypeTollFree   AdvancedOrderNewParamsPhoneNumberType = "toll_free"
-	AdvancedOrderNewParamsPhoneNumberTypeSharedCost AdvancedOrderNewParamsPhoneNumberType = "shared_cost"
-	AdvancedOrderNewParamsPhoneNumberTypeNational   AdvancedOrderNewParamsPhoneNumberType = "national"
-	AdvancedOrderNewParamsPhoneNumberTypeLandline   AdvancedOrderNewParamsPhoneNumberType = "landline"
-)
-
 type AdvancedOrderUpdateRequirementGroupParams struct {
-	AreaCode          param.Opt[string] `json:"area_code,omitzero"`
-	Comments          param.Opt[string] `json:"comments,omitzero"`
-	CountryCode       param.Opt[string] `json:"country_code,omitzero"`
-	CustomerReference param.Opt[string] `json:"customer_reference,omitzero"`
-	Quantity          param.Opt[int64]  `json:"quantity,omitzero"`
-	// The ID of the requirement group to associate with this advanced order
-	RequirementGroupID param.Opt[string] `json:"requirement_group_id,omitzero" format:"uuid"`
-	// Any of "sms", "mms", "voice", "fax", "emergency".
-	Features []string `json:"features,omitzero"`
-	// Any of "local", "mobile", "toll_free", "shared_cost", "national", "landline".
-	PhoneNumberType AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType `json:"phone_number_type,omitzero"`
+	AdvancedOrder AdvancedOrderParam
 	paramObj
 }
 
 func (r AdvancedOrderUpdateRequirementGroupParams) MarshalJSON() (data []byte, err error) {
-	type shadow AdvancedOrderUpdateRequirementGroupParams
-	return param.MarshalObject(r, (*shadow)(&r))
+	return shimjson.Marshal(r.AdvancedOrder)
 }
 func (r *AdvancedOrderUpdateRequirementGroupParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return json.Unmarshal(data, &r.AdvancedOrder)
 }
-
-type AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType string
-
-const (
-	AdvancedOrderUpdateRequirementGroupParamsPhoneNumberTypeLocal      AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType = "local"
-	AdvancedOrderUpdateRequirementGroupParamsPhoneNumberTypeMobile     AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType = "mobile"
-	AdvancedOrderUpdateRequirementGroupParamsPhoneNumberTypeTollFree   AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType = "toll_free"
-	AdvancedOrderUpdateRequirementGroupParamsPhoneNumberTypeSharedCost AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType = "shared_cost"
-	AdvancedOrderUpdateRequirementGroupParamsPhoneNumberTypeNational   AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType = "national"
-	AdvancedOrderUpdateRequirementGroupParamsPhoneNumberTypeLandline   AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType = "landline"
-)
