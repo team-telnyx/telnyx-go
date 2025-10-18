@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.5.0 (2025-10-18)
+
+Full Changelog: [v3.4.0...v3.5.0](https://github.com/team-telnyx/telnyx-go/compare/v3.4.0...v3.5.0)
+
+### Features
+
+* define more models ([7bfb5c4](https://github.com/team-telnyx/telnyx-go/commit/7bfb5c4c22caa21403f7d42123c069c5c5af3561))
+
 ## 3.4.0 (2025-10-16)
 
 Full Changelog: [v3.3.0...v3.4.0](https://github.com/team-telnyx/telnyx-go/compare/v3.3.0...v3.4.0)
