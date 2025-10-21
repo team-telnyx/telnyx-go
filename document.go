@@ -116,6 +116,15 @@ func (r *DocumentService) GenerateDownloadLink(ctx context.Context, id string, o
 // 30 minutes or they will be automatically deleted.
 func (r *DocumentService) Upload(ctx context.Context, body DocumentUploadParams, opts ...option.RequestOption) (res *DocumentUploadResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
+	path := "documents?content-type=multipart"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
+// Upload a document.<br /><br />Uploaded files must be linked to a service within
+// 30 minutes or they will be automatically deleted.
+func (r *DocumentService) UploadJson(ctx context.Context, body DocumentUploadJsonParams, opts ...option.RequestOption) (res *DocumentUploadJsonResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
 	path := "documents"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -372,6 +381,22 @@ func (r *DocumentUploadResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type DocumentUploadJsonResponse struct {
+	Data DocServiceDocument `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DocumentUploadJsonResponse) RawJSON() string { return r.JSON.raw }
+func (r *DocumentUploadJsonResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type DocumentUpdateParams struct {
 	DocServiceDocument DocServiceDocumentParam
 	paramObj
@@ -551,5 +576,65 @@ func (r DocumentUploadParamsBodyDocServiceDocumentUploadInline) MarshalJSON() (d
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *DocumentUploadParamsBodyDocServiceDocumentUploadInline) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DocumentUploadJsonParams struct {
+
+	//
+	// Request body variants
+	//
+
+	// This field is a request body variant, only one variant field can be set.
+	OfDocServiceDocumentUploadURL *DocumentUploadJsonParamsBodyDocServiceDocumentUploadURL `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	OfDocServiceDocumentUploadInline *DocumentUploadJsonParamsBodyDocServiceDocumentUploadInline `json:",inline"`
+
+	paramObj
+}
+
+func (u DocumentUploadJsonParams) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfDocServiceDocumentUploadURL, u.OfDocServiceDocumentUploadInline)
+}
+func (r *DocumentUploadJsonParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property URL is required.
+type DocumentUploadJsonParamsBodyDocServiceDocumentUploadURL struct {
+	// If the file is already hosted publicly, you can provide a URL and have the
+	// documents service fetch it for you.
+	URL string `json:"url,required"`
+	// Optional reference string for customer tracking.
+	CustomerReference param.Opt[string] `json:"customer_reference,omitzero"`
+	// The filename of the document.
+	Filename param.Opt[string] `json:"filename,omitzero"`
+	paramObj
+}
+
+func (r DocumentUploadJsonParamsBodyDocServiceDocumentUploadURL) MarshalJSON() (data []byte, err error) {
+	type shadow DocumentUploadJsonParamsBodyDocServiceDocumentUploadURL
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DocumentUploadJsonParamsBodyDocServiceDocumentUploadURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property File is required.
+type DocumentUploadJsonParamsBodyDocServiceDocumentUploadInline struct {
+	// The Base64 encoded contents of the file you are uploading.
+	File string `json:"file,required" format:"byte"`
+	// A customer reference string for customer look ups.
+	CustomerReference param.Opt[string] `json:"customer_reference,omitzero"`
+	// The filename of the document.
+	Filename param.Opt[string] `json:"filename,omitzero"`
+	paramObj
+}
+
+func (r DocumentUploadJsonParamsBodyDocServiceDocumentUploadInline) MarshalJSON() (data []byte, err error) {
+	type shadow DocumentUploadJsonParamsBodyDocServiceDocumentUploadInline
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DocumentUploadJsonParamsBodyDocServiceDocumentUploadInline) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
