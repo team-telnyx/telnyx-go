@@ -273,3 +273,11 @@ func WithAPIKey(value string) RequestOption {
 		return r.Apply(WithHeader("authorization", fmt.Sprintf("Bearer %s", r.APIKey)))
 	})
 }
+
+// WithPublicKey returns a RequestOption that sets the client setting "public_key".
+func WithPublicKey(value string) RequestOption {
+	return requestconfig.PreRequestOptionFunc(func(r *requestconfig.RequestConfig) error {
+		r.PublicKey = value
+		return nil
+	})
+}
