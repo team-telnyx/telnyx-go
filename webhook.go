@@ -4,9 +4,14 @@ package telnyx
 
 import (
 	"encoding/json"
+	"errors"
+	"net/http"
+	"slices"
 	"time"
 
+	standardwebhooks "github.com/standard-webhooks/standard-webhooks/libraries/go"
 	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -39,9 +44,26 @@ func (r *WebhookService) UnsafeUnwrap(payload []byte, opts ...option.RequestOpti
 	return res, nil
 }
 
-func (r *WebhookService) Unwrap(payload []byte, opts ...option.RequestOption) (*UnwrapWebhookEventUnion, error) {
+func (r *WebhookService) Unwrap(payload []byte, headers http.Header, opts ...option.RequestOption) (*UnwrapWebhookEventUnion, error) {
+	opts = slices.Concat(r.Options, opts)
+	cfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return nil, err
+	}
+	key := cfg.PublicKey
+	if key == "" {
+		return nil, errors.New("The PublicKey option must be set in order to verify webhook headers")
+	}
+	wh, err := standardwebhooks.NewWebhook(key)
+	if err != nil {
+		return nil, err
+	}
+	err = wh.Verify(payload, headers)
+	if err != nil {
+		return nil, err
+	}
 	res := &UnwrapWebhookEventUnion{}
-	err := res.UnmarshalJSON(payload)
+	err = res.UnmarshalJSON(payload)
 	if err != nil {
 		return res, err
 	}
