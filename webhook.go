@@ -30,6 +30,15 @@ func NewWebhookService(opts ...option.RequestOption) (r WebhookService) {
 	return
 }
 
+func (r *WebhookService) UnsafeUnwrap(payload []byte, opts ...option.RequestOption) (*UnsafeUnwrapWebhookEventUnion, error) {
+	res := &UnsafeUnwrapWebhookEventUnion{}
+	err := res.UnmarshalJSON(payload)
+	if err != nil {
+		return res, err
+	}
+	return res, nil
+}
+
 func (r *WebhookService) Unwrap(payload []byte, opts ...option.RequestOption) (*UnwrapWebhookEventUnion, error) {
 	res := &UnwrapWebhookEventUnion{}
 	err := res.UnmarshalJSON(payload)
@@ -6224,6 +6233,1221 @@ type TranscriptionWebhookEventDataPayloadTranscriptionData struct {
 // Returns the unmodified JSON received from the API
 func (r TranscriptionWebhookEventDataPayloadTranscriptionData) RawJSON() string { return r.JSON.raw }
 func (r *TranscriptionWebhookEventDataPayloadTranscriptionData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnion contains all possible properties and values from
+// [CallAIGatherEndedWebhookEvent],
+// [CallAIGatherMessageHistoryUpdatedWebhookEvent],
+// [CallAIGatherPartialResultsWebhookEvent],
+// [CustomerServiceRecordStatusChangedWebhookEvent], [CallAnsweredWebhookEvent],
+// [CallBridgedWebhookEvent], [CallConversationEndedWebhookEvent],
+// [CallConversationInsightsGeneratedWebhookEvent], [CallDtmfReceivedWebhookEvent],
+// [CallEnqueuedWebhookEvent], [CallForkStartedWebhookEvent],
+// [CallForkStoppedWebhookEvent], [CallGatherEndedWebhookEvent],
+// [CallHangupWebhookEvent], [CallInitiatedWebhookEvent],
+// [CallLeftQueueWebhookEvent], [CallMachineDetectionEndedWebhookEvent],
+// [CallMachineGreetingEndedWebhookEvent],
+// [CallMachinePremiumDetectionEndedWebhookEvent],
+// [CallMachinePremiumGreetingEndedWebhookEvent], [CallPlaybackEndedWebhookEvent],
+// [CallPlaybackStartedWebhookEvent], [CallRecordingErrorWebhookEvent],
+// [CallRecordingSavedWebhookEvent], [CallRecordingTranscriptionSavedWebhookEvent],
+// [CallReferCompletedWebhookEvent], [CallReferFailedWebhookEvent],
+// [CallReferStartedWebhookEvent], [CallSiprecFailedWebhookEvent],
+// [CallSiprecStartedWebhookEvent], [CallSiprecStoppedWebhookEvent],
+// [CallSpeakEndedWebhookEvent], [CallSpeakStartedWebhookEvent],
+// [CallStreamingFailedWebhookEvent], [CallStreamingStartedWebhookEvent],
+// [CallStreamingStoppedWebhookEvent], [CampaignStatusUpdateWebhookEvent],
+// [ConferenceCreatedWebhookEvent], [ConferenceEndedWebhookEvent],
+// [ConferenceFloorChangedWebhookEvent], [ConferenceParticipantJoinedWebhookEvent],
+// [ConferenceParticipantLeftWebhookEvent],
+// [ConferenceParticipantPlaybackEndedWebhookEvent],
+// [ConferenceParticipantPlaybackStartedWebhookEvent],
+// [ConferenceParticipantSpeakEndedWebhookEvent],
+// [ConferenceParticipantSpeakStartedWebhookEvent],
+// [ConferencePlaybackEndedWebhookEvent], [ConferencePlaybackStartedWebhookEvent],
+// [ConferenceRecordingSavedWebhookEvent], [ConferenceSpeakEndedWebhookEvent],
+// [ConferenceSpeakStartedWebhookEvent], [DeliveryUpdateWebhookEvent],
+// [FaxDeliveredWebhookEvent], [FaxFailedWebhookEvent],
+// [FaxMediaProcessedWebhookEvent], [FaxQueuedWebhookEvent],
+// [FaxSendingStartedWebhookEvent], [InboundMessageWebhookEvent],
+// [NumberOrderStatusUpdateWebhookEvent], [ReplacedLinkClickWebhookEvent],
+// [StreamingFailedWebhookEvent], [StreamingStartedWebhookEvent],
+// [StreamingStoppedWebhookEvent], [TranscriptionWebhookEvent].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type UnsafeUnwrapWebhookEventUnion struct {
+	// This field is a union of [CallAIGatherEndedWebhookEventData],
+	// [CallAIGatherMessageHistoryUpdatedWebhookEventData],
+	// [CallAIGatherPartialResultsWebhookEventData],
+	// [CustomerServiceRecordStatusChangedWebhookEventData],
+	// [CallAnsweredWebhookEventData], [CallBridgedWebhookEventData],
+	// [CallConversationEndedWebhookEventData],
+	// [CallConversationInsightsGeneratedWebhookEventData],
+	// [CallDtmfReceivedWebhookEventData], [CallEnqueuedWebhookEventData],
+	// [CallForkStartedWebhookEventData], [CallForkStoppedWebhookEventData],
+	// [CallGatherEndedWebhookEventData], [CallHangupWebhookEventData],
+	// [CallInitiatedWebhookEventData], [CallLeftQueueWebhookEventData],
+	// [CallMachineDetectionEndedWebhookEventData],
+	// [CallMachineGreetingEndedWebhookEventData],
+	// [CallMachinePremiumDetectionEndedWebhookEventData],
+	// [CallMachinePremiumGreetingEndedWebhookEventData],
+	// [CallPlaybackEndedWebhookEventData], [CallPlaybackStartedWebhookEventData],
+	// [CallRecordingErrorWebhookEventData], [CallRecordingSavedWebhookEventData],
+	// [CallRecordingTranscriptionSavedWebhookEventData],
+	// [CallReferCompletedWebhookEventData], [CallReferFailedWebhookEventData],
+	// [CallReferStartedWebhookEventData], [CallSiprecFailedWebhookEventData],
+	// [CallSiprecStartedWebhookEventData], [CallSiprecStoppedWebhookEventData],
+	// [CallSpeakEndedWebhookEventData], [CallSpeakStartedWebhookEventData],
+	// [CallStreamingFailedWebhookEventData], [CallStreamingStartedWebhookEventData],
+	// [CallStreamingStoppedWebhookEventData], [ConferenceCreatedWebhookEventData],
+	// [ConferenceEndedWebhookEventData],
+	// [ConferenceParticipantJoinedWebhookEventData],
+	// [ConferenceParticipantLeftWebhookEventData],
+	// [ConferenceParticipantPlaybackEndedWebhookEventData],
+	// [ConferenceParticipantPlaybackStartedWebhookEventData],
+	// [ConferenceParticipantSpeakEndedWebhookEventData],
+	// [ConferenceParticipantSpeakStartedWebhookEventData],
+	// [ConferencePlaybackEndedWebhookEventData],
+	// [ConferencePlaybackStartedWebhookEventData],
+	// [ConferenceRecordingSavedWebhookEventData],
+	// [ConferenceSpeakEndedWebhookEventData],
+	// [ConferenceSpeakStartedWebhookEventData], [DeliveryUpdateWebhookEventData],
+	// [InboundMessageWebhookEventData], [NumberOrderStatusUpdateWebhookEventData],
+	// [ReplacedLinkClickWebhookEventData], [StreamingFailedWebhookEventData],
+	// [StreamingStartedWebhookEventData], [StreamingStoppedWebhookEventData],
+	// [TranscriptionWebhookEventData]
+	Data UnsafeUnwrapWebhookEventUnionData `json:"data"`
+	// This field is a union of [CustomerServiceRecordStatusChangedWebhookEventMeta],
+	// [DeliveryUpdateWebhookEventMeta], [NumberOrderStatusUpdateWebhookEventMeta]
+	Meta UnsafeUnwrapWebhookEventUnionMeta `json:"meta"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
+	BrandID string `json:"brandId"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
+	CampaignID string `json:"campaignId"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
+	CreateDate string `json:"createDate"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
+	CspID string `json:"cspId"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
+	IsTMobileRegistered bool   `json:"isTMobileRegistered"`
+	ID                  string `json:"id"`
+	EventType           string `json:"event_type"`
+	// This field is a union of [ConferenceFloorChangedWebhookEventPayload],
+	// [FaxDeliveredWebhookEventPayload], [FaxFailedWebhookEventPayload],
+	// [FaxMediaProcessedWebhookEventPayload], [FaxQueuedWebhookEventPayload],
+	// [FaxSendingStartedWebhookEventPayload]
+	Payload    UnsafeUnwrapWebhookEventUnionPayload `json:"payload"`
+	RecordType string                               `json:"record_type"`
+	JSON       struct {
+		Data                respjson.Field
+		Meta                respjson.Field
+		BrandID             respjson.Field
+		CampaignID          respjson.Field
+		CreateDate          respjson.Field
+		CspID               respjson.Field
+		IsTMobileRegistered respjson.Field
+		ID                  respjson.Field
+		EventType           respjson.Field
+		Payload             respjson.Field
+		RecordType          respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallAIGatherEndedEvent() (v CallAIGatherEndedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallAIGatherMessageHistoryUpdatedEvent() (v CallAIGatherMessageHistoryUpdatedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallAIGatherPartialResultsEvent() (v CallAIGatherPartialResultsWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCustomerServiceRecordStatusChangedWebhookEvent() (v CustomerServiceRecordStatusChangedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallAnsweredEvent() (v CallAnsweredWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallBridgedEvent() (v CallBridgedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallConversationEndedEvent() (v CallConversationEndedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallConversationInsightsGeneratedEvent() (v CallConversationInsightsGeneratedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallDtmfReceivedEvent() (v CallDtmfReceivedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallEnqueuedEvent() (v CallEnqueuedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallForkStartedEvent() (v CallForkStartedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallForkStoppedEvent() (v CallForkStoppedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallGatherEndedEvent() (v CallGatherEndedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallHangupEvent() (v CallHangupWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallInitiatedEvent() (v CallInitiatedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallLeftQueueEvent() (v CallLeftQueueWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallMachineDetectionEndedEvent() (v CallMachineDetectionEndedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallMachineGreetingEndedEvent() (v CallMachineGreetingEndedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallMachinePremiumDetectionEndedEvent() (v CallMachinePremiumDetectionEndedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallMachinePremiumGreetingEndedEvent() (v CallMachinePremiumGreetingEndedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallPlaybackEndedEvent() (v CallPlaybackEndedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallPlaybackStartedEvent() (v CallPlaybackStartedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallRecordingErrorEvent() (v CallRecordingErrorWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallRecordingSavedEvent() (v CallRecordingSavedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallRecordingTranscriptionSavedEvent() (v CallRecordingTranscriptionSavedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallReferCompletedEvent() (v CallReferCompletedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallReferFailedEvent() (v CallReferFailedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallReferStartedEvent() (v CallReferStartedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsSiprecFailedEvent() (v CallSiprecFailedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsSiprecStartedEvent() (v CallSiprecStartedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsSiprecStoppedEvent() (v CallSiprecStoppedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallSpeakEndedEvent() (v CallSpeakEndedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallSpeakStartedEvent() (v CallSpeakStartedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsStreamingFailedEvent() (v CallStreamingFailedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsStreamingStartedEvent() (v CallStreamingStartedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsStreamingStoppedEvent() (v CallStreamingStoppedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCampaignStatusUpdateEvent() (v CampaignStatusUpdateWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsConferenceCreatedEvent() (v ConferenceCreatedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsConferenceEndedEvent() (v ConferenceEndedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsConferenceFloorChanged() (v ConferenceFloorChangedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsConferenceParticipantJoinedEvent() (v ConferenceParticipantJoinedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsConferenceParticipantLeftEvent() (v ConferenceParticipantLeftWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsConferenceParticipantPlaybackEndedEvent() (v ConferenceParticipantPlaybackEndedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsConferenceParticipantPlaybackStartedEvent() (v ConferenceParticipantPlaybackStartedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsConferenceParticipantSpeakEndedEvent() (v ConferenceParticipantSpeakEndedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsConferenceParticipantSpeakStartedEvent() (v ConferenceParticipantSpeakStartedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsConferencePlaybackEndedEvent() (v ConferencePlaybackEndedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsConferencePlaybackStartedEvent() (v ConferencePlaybackStartedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsConferenceRecordingSavedEvent() (v ConferenceRecordingSavedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsConferenceSpeakEndedEvent() (v ConferenceSpeakEndedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsConferenceSpeakStartedEvent() (v ConferenceSpeakStartedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsDeliveryUpdateWebhookEvent() (v DeliveryUpdateWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsFaxDeliveredWebhookEvent() (v FaxDeliveredWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsFaxFailedWebhookEvent() (v FaxFailedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsFaxMediaProcessedWebhookEvent() (v FaxMediaProcessedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsFaxQueuedWebhookEvent() (v FaxQueuedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsFaxSendingStartedWebhookEvent() (v FaxSendingStartedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsInboundMessageWebhookEvent() (v InboundMessageWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsNumberOrderEvent() (v NumberOrderStatusUpdateWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsReplacedLinkClickWebhookEvent() (v ReplacedLinkClickWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsStreamingFailedWebhookEvent() (v StreamingFailedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsStreamingStartedWebhookEvent() (v StreamingStartedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsStreamingStoppedWebhookEvent() (v StreamingStoppedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsTranscriptionEvent() (v TranscriptionWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u UnsafeUnwrapWebhookEventUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *UnsafeUnwrapWebhookEventUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionData is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionData provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+type UnsafeUnwrapWebhookEventUnionData struct {
+	ID         string    `json:"id"`
+	EventType  string    `json:"event_type"`
+	OccurredAt time.Time `json:"occurred_at"`
+	// This field is a union of [CallAIGatherEndedWebhookEventDataPayload],
+	// [CallAIGatherMessageHistoryUpdatedWebhookEventDataPayload],
+	// [CallAIGatherPartialResultsWebhookEventDataPayload],
+	// [CustomerServiceRecordStatusChangedWebhookEventDataPayload],
+	// [CallAnsweredWebhookEventDataPayload], [CallBridgedWebhookEventDataPayload],
+	// [CallConversationEndedWebhookEventDataPayload],
+	// [CallConversationInsightsGeneratedWebhookEventDataPayload],
+	// [CallDtmfReceivedWebhookEventDataPayload],
+	// [CallEnqueuedWebhookEventDataPayload], [CallForkStartedWebhookEventDataPayload],
+	// [CallForkStoppedWebhookEventDataPayload],
+	// [CallGatherEndedWebhookEventDataPayload], [CallHangupWebhookEventDataPayload],
+	// [CallInitiatedWebhookEventDataPayload], [CallLeftQueueWebhookEventDataPayload],
+	// [CallMachineDetectionEndedWebhookEventDataPayload],
+	// [CallMachineGreetingEndedWebhookEventDataPayload],
+	// [CallMachinePremiumDetectionEndedWebhookEventDataPayload],
+	// [CallMachinePremiumGreetingEndedWebhookEventDataPayload],
+	// [CallPlaybackEndedWebhookEventDataPayload],
+	// [CallPlaybackStartedWebhookEventDataPayload],
+	// [CallRecordingErrorWebhookEventDataPayload],
+	// [CallRecordingSavedWebhookEventDataPayload],
+	// [CallRecordingTranscriptionSavedWebhookEventDataPayload],
+	// [CallReferCompletedWebhookEventDataPayload],
+	// [CallReferFailedWebhookEventDataPayload],
+	// [CallReferStartedWebhookEventDataPayload],
+	// [CallSiprecFailedWebhookEventDataPayload],
+	// [CallSiprecStartedWebhookEventDataPayload],
+	// [CallSiprecStoppedWebhookEventDataPayload],
+	// [CallSpeakEndedWebhookEventDataPayload],
+	// [CallSpeakStartedWebhookEventDataPayload],
+	// [CallStreamingFailedWebhookEventDataPayload],
+	// [CallStreamingStartedWebhookEventDataPayload],
+	// [CallStreamingStoppedWebhookEventDataPayload],
+	// [ConferenceCreatedWebhookEventDataPayload],
+	// [ConferenceEndedWebhookEventDataPayload],
+	// [ConferenceParticipantJoinedWebhookEventDataPayload],
+	// [ConferenceParticipantLeftWebhookEventDataPayload],
+	// [ConferenceParticipantPlaybackEndedWebhookEventDataPayload],
+	// [ConferenceParticipantPlaybackStartedWebhookEventDataPayload],
+	// [ConferenceParticipantSpeakEndedWebhookEventDataPayload],
+	// [ConferenceParticipantSpeakStartedWebhookEventDataPayload],
+	// [ConferencePlaybackEndedWebhookEventDataPayload],
+	// [ConferencePlaybackStartedWebhookEventDataPayload],
+	// [ConferenceRecordingSavedWebhookEventDataPayload],
+	// [ConferenceSpeakEndedWebhookEventDataPayload],
+	// [ConferenceSpeakStartedWebhookEventDataPayload], [OutboundMessagePayload],
+	// [InboundMessageWebhookEventDataPayload], [NumberOrderWithPhoneNumbers],
+	// [StreamingFailedWebhookEventDataPayload],
+	// [StreamingStartedWebhookEventDataPayload],
+	// [StreamingStoppedWebhookEventDataPayload],
+	// [TranscriptionWebhookEventDataPayload]
+	Payload    UnsafeUnwrapWebhookEventUnionDataPayload `json:"payload"`
+	RecordType string                                   `json:"record_type"`
+	// This field is from variant [CallConversationEndedWebhookEventData].
+	CreatedAt time.Time `json:"created_at"`
+	// This field is from variant [ReplacedLinkClickWebhookEventData].
+	MessageID string `json:"message_id"`
+	// This field is from variant [ReplacedLinkClickWebhookEventData].
+	TimeClicked time.Time `json:"time_clicked"`
+	// This field is from variant [ReplacedLinkClickWebhookEventData].
+	To string `json:"to"`
+	// This field is from variant [ReplacedLinkClickWebhookEventData].
+	URL  string `json:"url"`
+	JSON struct {
+		ID          respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		CreatedAt   respjson.Field
+		MessageID   respjson.Field
+		TimeClicked respjson.Field
+		To          respjson.Field
+		URL         respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionDataPayload is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionDataPayload
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+type UnsafeUnwrapWebhookEventUnionDataPayload struct {
+	CallControlID string `json:"call_control_id"`
+	CallLegID     string `json:"call_leg_id"`
+	CallSessionID string `json:"call_session_id"`
+	ClientState   string `json:"client_state"`
+	ConnectionID  string `json:"connection_id"`
+	// This field is a union of [string], [string], [string], [string], [string],
+	// [string], [string], [string], [string], [string], [string], [string], [string],
+	// [string], [string], [string], [string], [OutboundMessagePayloadFrom],
+	// [InboundMessageWebhookEventDataPayloadFrom]
+	From UnsafeUnwrapWebhookEventUnionDataPayloadFrom `json:"from"`
+	// This field is a union of
+	// [[]CallAIGatherEndedWebhookEventDataPayloadMessageHistory],
+	// [[]CallAIGatherMessageHistoryUpdatedWebhookEventDataPayloadMessageHistory],
+	// [[]CallAIGatherPartialResultsWebhookEventDataPayloadMessageHistory]
+	MessageHistory UnsafeUnwrapWebhookEventUnionDataPayloadMessageHistory `json:"message_history"`
+	// This field is a union of [any], [string], [string], [string], [string]
+	Result UnsafeUnwrapWebhookEventUnionDataPayloadResult `json:"result"`
+	Status string                                         `json:"status"`
+	// This field is a union of [string], [string], [string], [string], [string],
+	// [string], [string], [string], [string], [string], [string], [string], [string],
+	// [string], [string], [string], [string], [[]OutboundMessagePayloadTo],
+	// [[]InboundMessageWebhookEventDataPayloadTo]
+	To UnsafeUnwrapWebhookEventUnionDataPayloadTo `json:"to"`
+	// This field is from variant [CallAIGatherPartialResultsWebhookEventDataPayload].
+	PartialResults any    `json:"partial_results"`
+	ID             string `json:"id"`
+	// This field is from variant
+	// [CustomerServiceRecordStatusChangedWebhookEventDataPayload].
+	PhoneNumber   string            `json:"phone_number"`
+	UpdatedAt     time.Time         `json:"updated_at"`
+	CustomHeaders []CustomSipHeader `json:"custom_headers"`
+	SipHeaders    []SipHeader       `json:"sip_headers"`
+	StartTime     time.Time         `json:"start_time"`
+	State         string            `json:"state"`
+	Tags          []string          `json:"tags"`
+	// This field is from variant [CallConversationEndedWebhookEventDataPayload].
+	AssistantID      string `json:"assistant_id"`
+	CallingPartyType string `json:"calling_party_type"`
+	// This field is from variant [CallConversationEndedWebhookEventDataPayload].
+	ConversationID string `json:"conversation_id"`
+	// This field is from variant [CallConversationEndedWebhookEventDataPayload].
+	DurationSec int64 `json:"duration_sec"`
+	// This field is from variant [CallConversationEndedWebhookEventDataPayload].
+	LlmModel string `json:"llm_model"`
+	// This field is from variant [CallConversationEndedWebhookEventDataPayload].
+	SttModel string `json:"stt_model"`
+	// This field is from variant [CallConversationEndedWebhookEventDataPayload].
+	TtsModelID string `json:"tts_model_id"`
+	// This field is from variant [CallConversationEndedWebhookEventDataPayload].
+	TtsProvider string `json:"tts_provider"`
+	// This field is from variant [CallConversationEndedWebhookEventDataPayload].
+	TtsVoiceID string `json:"tts_voice_id"`
+	// This field is from variant
+	// [CallConversationInsightsGeneratedWebhookEventDataPayload].
+	InsightGroupID string `json:"insight_group_id"`
+	// This field is from variant
+	// [CallConversationInsightsGeneratedWebhookEventDataPayload].
+	Results []CallConversationInsightsGeneratedWebhookEventDataPayloadResult `json:"results"`
+	// This field is from variant [CallDtmfReceivedWebhookEventDataPayload].
+	Digit string `json:"digit"`
+	// This field is from variant [CallEnqueuedWebhookEventDataPayload].
+	CurrentPosition int64  `json:"current_position"`
+	Queue           string `json:"queue"`
+	// This field is from variant [CallEnqueuedWebhookEventDataPayload].
+	QueueAvgWaitTimeSecs int64  `json:"queue_avg_wait_time_secs"`
+	StreamType           string `json:"stream_type"`
+	// This field is from variant [CallGatherEndedWebhookEventDataPayload].
+	Digits string `json:"digits"`
+	// This field is from variant [CallHangupWebhookEventDataPayload].
+	CallQualityStats CallHangupWebhookEventDataPayloadCallQualityStats `json:"call_quality_stats"`
+	HangupCause      string                                            `json:"hangup_cause"`
+	// This field is from variant [CallHangupWebhookEventDataPayload].
+	HangupSource string `json:"hangup_source"`
+	// This field is from variant [CallHangupWebhookEventDataPayload].
+	SipHangupCause string `json:"sip_hangup_cause"`
+	// This field is from variant [CallInitiatedWebhookEventDataPayload].
+	CallScreeningResult string `json:"call_screening_result"`
+	// This field is from variant [CallInitiatedWebhookEventDataPayload].
+	CallerIDName string `json:"caller_id_name"`
+	// This field is from variant [CallInitiatedWebhookEventDataPayload].
+	ConnectionCodecs string `json:"connection_codecs"`
+	Direction        string `json:"direction"`
+	// This field is from variant [CallInitiatedWebhookEventDataPayload].
+	OfferedCodecs string `json:"offered_codecs"`
+	// This field is from variant [CallInitiatedWebhookEventDataPayload].
+	ShakenStirAttestation string `json:"shaken_stir_attestation"`
+	// This field is from variant [CallInitiatedWebhookEventDataPayload].
+	ShakenStirValidated bool `json:"shaken_stir_validated"`
+	// This field is from variant [CallLeftQueueWebhookEventDataPayload].
+	QueuePosition int64  `json:"queue_position"`
+	Reason        string `json:"reason"`
+	// This field is from variant [CallLeftQueueWebhookEventDataPayload].
+	WaitTimeSecs int64  `json:"wait_time_secs"`
+	MediaName    string `json:"media_name"`
+	MediaURL     string `json:"media_url"`
+	Overlay      bool   `json:"overlay"`
+	// This field is from variant [CallPlaybackEndedWebhookEventDataPayload].
+	StatusDetail string `json:"status_detail"`
+	Channels     string `json:"channels"`
+	// This field is a union of
+	// [CallRecordingSavedWebhookEventDataPayloadPublicRecordingURLs],
+	// [ConferenceRecordingSavedWebhookEventDataPayloadPublicRecordingURLs]
+	PublicRecordingURLs UnsafeUnwrapWebhookEventUnionDataPayloadPublicRecordingURLs `json:"public_recording_urls"`
+	RecordingEndedAt    time.Time                                                   `json:"recording_ended_at"`
+	RecordingStartedAt  time.Time                                                   `json:"recording_started_at"`
+	// This field is a union of
+	// [CallRecordingSavedWebhookEventDataPayloadRecordingURLs],
+	// [ConferenceRecordingSavedWebhookEventDataPayloadRecordingURLs]
+	RecordingURLs UnsafeUnwrapWebhookEventUnionDataPayloadRecordingURLs `json:"recording_urls"`
+	RecordingID   string                                                `json:"recording_id"`
+	// This field is from variant
+	// [CallRecordingTranscriptionSavedWebhookEventDataPayload].
+	RecordingTranscriptionID string `json:"recording_transcription_id"`
+	// This field is from variant
+	// [CallRecordingTranscriptionSavedWebhookEventDataPayload].
+	TranscriptionText string `json:"transcription_text"`
+	SipNotifyResponse int64  `json:"sip_notify_response"`
+	// This field is from variant [CallSiprecFailedWebhookEventDataPayload].
+	FailureCause  string `json:"failure_cause"`
+	FailureReason string `json:"failure_reason"`
+	StreamID      string `json:"stream_id"`
+	// This field is a union of
+	// [CallStreamingFailedWebhookEventDataPayloadStreamParams],
+	// [StreamingFailedWebhookEventDataPayloadStreamParams]
+	StreamParams         UnsafeUnwrapWebhookEventUnionDataPayloadStreamParams `json:"stream_params"`
+	StreamURL            string                                               `json:"stream_url"`
+	ConferenceID         string                                               `json:"conference_id"`
+	OccurredAt           time.Time                                            `json:"occurred_at"`
+	CreatorCallSessionID string                                               `json:"creator_call_session_id"`
+	// This field is from variant [ConferenceRecordingSavedWebhookEventDataPayload].
+	Format      string    `json:"format"`
+	CompletedAt time.Time `json:"completed_at"`
+	// This field is a union of [OutboundMessagePayloadCost],
+	// [InboundMessageWebhookEventDataPayloadCost]
+	Cost UnsafeUnwrapWebhookEventUnionDataPayloadCost `json:"cost"`
+	// This field is a union of [OutboundMessagePayloadCostBreakdown],
+	// [InboundMessageWebhookEventDataPayloadCostBreakdown]
+	CostBreakdown UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdown `json:"cost_breakdown"`
+	Encoding      string                                                `json:"encoding"`
+	Errors        []MessagingError                                      `json:"errors"`
+	// This field is a union of [[]OutboundMessagePayloadMedia],
+	// [[]InboundMessageWebhookEventDataPayloadMedia]
+	Media              UnsafeUnwrapWebhookEventUnionDataPayloadMedia `json:"media"`
+	MessagingProfileID string                                        `json:"messaging_profile_id"`
+	// This field is from variant [OutboundMessagePayload].
+	OrganizationID string    `json:"organization_id"`
+	Parts          int64     `json:"parts"`
+	ReceivedAt     time.Time `json:"received_at"`
+	RecordType     string    `json:"record_type"`
+	SentAt         time.Time `json:"sent_at"`
+	// This field is from variant [OutboundMessagePayload].
+	Subject               string    `json:"subject"`
+	TcrCampaignBillable   bool      `json:"tcr_campaign_billable"`
+	TcrCampaignID         string    `json:"tcr_campaign_id"`
+	TcrCampaignRegistered string    `json:"tcr_campaign_registered"`
+	Text                  string    `json:"text"`
+	Type                  string    `json:"type"`
+	ValidUntil            time.Time `json:"valid_until"`
+	WebhookFailoverURL    string    `json:"webhook_failover_url"`
+	WebhookURL            string    `json:"webhook_url"`
+	// This field is from variant [InboundMessageWebhookEventDataPayload].
+	Cc []InboundMessageWebhookEventDataPayloadCc `json:"cc"`
+	// This field is from variant [NumberOrderWithPhoneNumbers].
+	BillingGroupID string `json:"billing_group_id"`
+	// This field is from variant [NumberOrderWithPhoneNumbers].
+	CreatedAt time.Time `json:"created_at"`
+	// This field is from variant [NumberOrderWithPhoneNumbers].
+	CustomerReference string `json:"customer_reference"`
+	// This field is from variant [NumberOrderWithPhoneNumbers].
+	PhoneNumbers []PhoneNumber `json:"phone_numbers"`
+	// This field is from variant [NumberOrderWithPhoneNumbers].
+	PhoneNumbersCount int64 `json:"phone_numbers_count"`
+	// This field is from variant [NumberOrderWithPhoneNumbers].
+	RequirementsMet bool `json:"requirements_met"`
+	// This field is from variant [NumberOrderWithPhoneNumbers].
+	SubNumberOrdersIDs []string `json:"sub_number_orders_ids"`
+	// This field is from variant [TranscriptionWebhookEventDataPayload].
+	TranscriptionData TranscriptionWebhookEventDataPayloadTranscriptionData `json:"transcription_data"`
+	JSON              struct {
+		CallControlID            respjson.Field
+		CallLegID                respjson.Field
+		CallSessionID            respjson.Field
+		ClientState              respjson.Field
+		ConnectionID             respjson.Field
+		From                     respjson.Field
+		MessageHistory           respjson.Field
+		Result                   respjson.Field
+		Status                   respjson.Field
+		To                       respjson.Field
+		PartialResults           respjson.Field
+		ID                       respjson.Field
+		PhoneNumber              respjson.Field
+		UpdatedAt                respjson.Field
+		CustomHeaders            respjson.Field
+		SipHeaders               respjson.Field
+		StartTime                respjson.Field
+		State                    respjson.Field
+		Tags                     respjson.Field
+		AssistantID              respjson.Field
+		CallingPartyType         respjson.Field
+		ConversationID           respjson.Field
+		DurationSec              respjson.Field
+		LlmModel                 respjson.Field
+		SttModel                 respjson.Field
+		TtsModelID               respjson.Field
+		TtsProvider              respjson.Field
+		TtsVoiceID               respjson.Field
+		InsightGroupID           respjson.Field
+		Results                  respjson.Field
+		Digit                    respjson.Field
+		CurrentPosition          respjson.Field
+		Queue                    respjson.Field
+		QueueAvgWaitTimeSecs     respjson.Field
+		StreamType               respjson.Field
+		Digits                   respjson.Field
+		CallQualityStats         respjson.Field
+		HangupCause              respjson.Field
+		HangupSource             respjson.Field
+		SipHangupCause           respjson.Field
+		CallScreeningResult      respjson.Field
+		CallerIDName             respjson.Field
+		ConnectionCodecs         respjson.Field
+		Direction                respjson.Field
+		OfferedCodecs            respjson.Field
+		ShakenStirAttestation    respjson.Field
+		ShakenStirValidated      respjson.Field
+		QueuePosition            respjson.Field
+		Reason                   respjson.Field
+		WaitTimeSecs             respjson.Field
+		MediaName                respjson.Field
+		MediaURL                 respjson.Field
+		Overlay                  respjson.Field
+		StatusDetail             respjson.Field
+		Channels                 respjson.Field
+		PublicRecordingURLs      respjson.Field
+		RecordingEndedAt         respjson.Field
+		RecordingStartedAt       respjson.Field
+		RecordingURLs            respjson.Field
+		RecordingID              respjson.Field
+		RecordingTranscriptionID respjson.Field
+		TranscriptionText        respjson.Field
+		SipNotifyResponse        respjson.Field
+		FailureCause             respjson.Field
+		FailureReason            respjson.Field
+		StreamID                 respjson.Field
+		StreamParams             respjson.Field
+		StreamURL                respjson.Field
+		ConferenceID             respjson.Field
+		OccurredAt               respjson.Field
+		CreatorCallSessionID     respjson.Field
+		Format                   respjson.Field
+		CompletedAt              respjson.Field
+		Cost                     respjson.Field
+		CostBreakdown            respjson.Field
+		Encoding                 respjson.Field
+		Errors                   respjson.Field
+		Media                    respjson.Field
+		MessagingProfileID       respjson.Field
+		OrganizationID           respjson.Field
+		Parts                    respjson.Field
+		ReceivedAt               respjson.Field
+		RecordType               respjson.Field
+		SentAt                   respjson.Field
+		Subject                  respjson.Field
+		TcrCampaignBillable      respjson.Field
+		TcrCampaignID            respjson.Field
+		TcrCampaignRegistered    respjson.Field
+		Text                     respjson.Field
+		Type                     respjson.Field
+		ValidUntil               respjson.Field
+		WebhookFailoverURL       respjson.Field
+		WebhookURL               respjson.Field
+		Cc                       respjson.Field
+		BillingGroupID           respjson.Field
+		CreatedAt                respjson.Field
+		CustomerReference        respjson.Field
+		PhoneNumbers             respjson.Field
+		PhoneNumbersCount        respjson.Field
+		RequirementsMet          respjson.Field
+		SubNumberOrdersIDs       respjson.Field
+		TranscriptionData        respjson.Field
+		raw                      string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionDataPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionDataPayloadFrom is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionDataPayloadFrom
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString]
+type UnsafeUnwrapWebhookEventUnionDataPayloadFrom struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString    string `json:",inline"`
+	Carrier     string `json:"carrier"`
+	LineType    string `json:"line_type"`
+	PhoneNumber string `json:"phone_number"`
+	// This field is from variant [InboundMessageWebhookEventDataPayloadFrom].
+	Status string `json:"status"`
+	JSON   struct {
+		OfString    respjson.Field
+		Carrier     respjson.Field
+		LineType    respjson.Field
+		PhoneNumber respjson.Field
+		Status      respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionDataPayloadFrom) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionDataPayloadMessageHistory is an implicit subunion
+// of [UnsafeUnwrapWebhookEventUnion].
+// UnsafeUnwrapWebhookEventUnionDataPayloadMessageHistory provides convenient
+// access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfCallAIGatherEndedWebhookEventDataPayloadMessageHistoryArray
+// OfCallAIGatherMessageHistoryUpdatedWebhookEventDataPayloadMessageHistoryArray
+// OfCallAIGatherPartialResultsWebhookEventDataPayloadMessageHistoryArray]
+type UnsafeUnwrapWebhookEventUnionDataPayloadMessageHistory struct {
+	// This field will be present if the value is a
+	// [[]CallAIGatherEndedWebhookEventDataPayloadMessageHistory] instead of an object.
+	OfCallAIGatherEndedWebhookEventDataPayloadMessageHistoryArray []CallAIGatherEndedWebhookEventDataPayloadMessageHistory `json:",inline"`
+	// This field will be present if the value is a
+	// [[]CallAIGatherMessageHistoryUpdatedWebhookEventDataPayloadMessageHistory]
+	// instead of an object.
+	OfCallAIGatherMessageHistoryUpdatedWebhookEventDataPayloadMessageHistoryArray []CallAIGatherMessageHistoryUpdatedWebhookEventDataPayloadMessageHistory `json:",inline"`
+	// This field will be present if the value is a
+	// [[]CallAIGatherPartialResultsWebhookEventDataPayloadMessageHistory] instead of
+	// an object.
+	OfCallAIGatherPartialResultsWebhookEventDataPayloadMessageHistoryArray []CallAIGatherPartialResultsWebhookEventDataPayloadMessageHistory `json:",inline"`
+	JSON                                                                   struct {
+		OfCallAIGatherEndedWebhookEventDataPayloadMessageHistoryArray                 respjson.Field
+		OfCallAIGatherMessageHistoryUpdatedWebhookEventDataPayloadMessageHistoryArray respjson.Field
+		OfCallAIGatherPartialResultsWebhookEventDataPayloadMessageHistoryArray        respjson.Field
+		raw                                                                           string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionDataPayloadMessageHistory) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionDataPayloadResult is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionDataPayloadResult
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfCallAIGatherEndedWebhookEventDataPayloadResult
+// OfCallMachinePremiumGreetingEndedWebhookEventDataPayloadResult]
+type UnsafeUnwrapWebhookEventUnionDataPayloadResult struct {
+	// This field will be present if the value is a [any] instead of an object.
+	OfCallAIGatherEndedWebhookEventDataPayloadResult any `json:",inline"`
+	// This field will be present if the value is a [string] instead of an object.
+	OfCallMachinePremiumGreetingEndedWebhookEventDataPayloadResult string `json:",inline"`
+	JSON                                                           struct {
+		OfCallAIGatherEndedWebhookEventDataPayloadResult               respjson.Field
+		OfCallMachinePremiumGreetingEndedWebhookEventDataPayloadResult respjson.Field
+		raw                                                            string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionDataPayloadResult) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionDataPayloadTo is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionDataPayloadTo
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfOutboundMessagePayloadToArray
+// OfInboundMessageWebhookEventDataPayloadToArray]
+type UnsafeUnwrapWebhookEventUnionDataPayloadTo struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [[]OutboundMessagePayloadTo]
+	// instead of an object.
+	OfOutboundMessagePayloadToArray []OutboundMessagePayloadTo `json:",inline"`
+	// This field will be present if the value is a
+	// [[]InboundMessageWebhookEventDataPayloadTo] instead of an object.
+	OfInboundMessageWebhookEventDataPayloadToArray []InboundMessageWebhookEventDataPayloadTo `json:",inline"`
+	JSON                                           struct {
+		OfString                                       respjson.Field
+		OfOutboundMessagePayloadToArray                respjson.Field
+		OfInboundMessageWebhookEventDataPayloadToArray respjson.Field
+		raw                                            string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionDataPayloadTo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionDataPayloadPublicRecordingURLs is an implicit
+// subunion of [UnsafeUnwrapWebhookEventUnion].
+// UnsafeUnwrapWebhookEventUnionDataPayloadPublicRecordingURLs provides convenient
+// access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+type UnsafeUnwrapWebhookEventUnionDataPayloadPublicRecordingURLs struct {
+	MP3  string `json:"mp3"`
+	Wav  string `json:"wav"`
+	JSON struct {
+		MP3 respjson.Field
+		Wav respjson.Field
+		raw string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionDataPayloadPublicRecordingURLs) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionDataPayloadRecordingURLs is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion].
+// UnsafeUnwrapWebhookEventUnionDataPayloadRecordingURLs provides convenient access
+// to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+type UnsafeUnwrapWebhookEventUnionDataPayloadRecordingURLs struct {
+	MP3  string `json:"mp3"`
+	Wav  string `json:"wav"`
+	JSON struct {
+		MP3 respjson.Field
+		Wav respjson.Field
+		raw string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionDataPayloadRecordingURLs) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionDataPayloadStreamParams is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion].
+// UnsafeUnwrapWebhookEventUnionDataPayloadStreamParams provides convenient access
+// to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+type UnsafeUnwrapWebhookEventUnionDataPayloadStreamParams struct {
+	StreamURL string `json:"stream_url"`
+	Track     string `json:"track"`
+	JSON      struct {
+		StreamURL respjson.Field
+		Track     respjson.Field
+		raw       string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionDataPayloadStreamParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionDataPayloadCost is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionDataPayloadCost
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+type UnsafeUnwrapWebhookEventUnionDataPayloadCost struct {
+	Amount   string `json:"amount"`
+	Currency string `json:"currency"`
+	JSON     struct {
+		Amount   respjson.Field
+		Currency respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionDataPayloadCost) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdown is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion].
+// UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdown provides convenient access
+// to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+type UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdown struct {
+	// This field is a union of [OutboundMessagePayloadCostBreakdownCarrierFee],
+	// [InboundMessageWebhookEventDataPayloadCostBreakdownCarrierFee]
+	CarrierFee UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdownCarrierFee `json:"carrier_fee"`
+	// This field is a union of [OutboundMessagePayloadCostBreakdownRate],
+	// [InboundMessageWebhookEventDataPayloadCostBreakdownRate]
+	Rate UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdownRate `json:"rate"`
+	JSON struct {
+		CarrierFee respjson.Field
+		Rate       respjson.Field
+		raw        string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdown) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdownCarrierFee is an implicit
+// subunion of [UnsafeUnwrapWebhookEventUnion].
+// UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdownCarrierFee provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+type UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdownCarrierFee struct {
+	Amount   string `json:"amount"`
+	Currency string `json:"currency"`
+	JSON     struct {
+		Amount   respjson.Field
+		Currency respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdownCarrierFee) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdownRate is an implicit
+// subunion of [UnsafeUnwrapWebhookEventUnion].
+// UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdownRate provides convenient
+// access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+type UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdownRate struct {
+	Amount   string `json:"amount"`
+	Currency string `json:"currency"`
+	JSON     struct {
+		Amount   respjson.Field
+		Currency respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdownRate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionDataPayloadMedia is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionDataPayloadMedia
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfOutboundMessagePayloadMedia
+// OfInboundMessageWebhookEventDataPayloadMedia]
+type UnsafeUnwrapWebhookEventUnionDataPayloadMedia struct {
+	// This field will be present if the value is a [[]OutboundMessagePayloadMedia]
+	// instead of an object.
+	OfOutboundMessagePayloadMedia []OutboundMessagePayloadMedia `json:",inline"`
+	// This field will be present if the value is a
+	// [[]InboundMessageWebhookEventDataPayloadMedia] instead of an object.
+	OfInboundMessageWebhookEventDataPayloadMedia []InboundMessageWebhookEventDataPayloadMedia `json:",inline"`
+	JSON                                         struct {
+		OfOutboundMessagePayloadMedia                respjson.Field
+		OfInboundMessageWebhookEventDataPayloadMedia respjson.Field
+		raw                                          string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionDataPayloadMedia) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionMeta is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionMeta provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+type UnsafeUnwrapWebhookEventUnionMeta struct {
+	Attempt     int64  `json:"attempt"`
+	DeliveredTo string `json:"delivered_to"`
+	JSON        struct {
+		Attempt     respjson.Field
+		DeliveredTo respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionPayload is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionPayload provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+type UnsafeUnwrapWebhookEventUnionPayload struct {
+	// This field is from variant [ConferenceFloorChangedWebhookEventPayload].
+	CallControlID string `json:"call_control_id"`
+	// This field is from variant [ConferenceFloorChangedWebhookEventPayload].
+	CallLegID string `json:"call_leg_id"`
+	// This field is from variant [ConferenceFloorChangedWebhookEventPayload].
+	CallSessionID string `json:"call_session_id"`
+	ClientState   string `json:"client_state"`
+	// This field is from variant [ConferenceFloorChangedWebhookEventPayload].
+	ConferenceID string `json:"conference_id"`
+	ConnectionID string `json:"connection_id"`
+	// This field is from variant [ConferenceFloorChangedWebhookEventPayload].
+	OccurredAt time.Time `json:"occurred_at"`
+	// This field is from variant [FaxDeliveredWebhookEventPayload].
+	CallDurationSecs int64  `json:"call_duration_secs"`
+	Direction        string `json:"direction"`
+	FaxID            string `json:"fax_id"`
+	From             string `json:"from"`
+	MediaName        string `json:"media_name"`
+	OriginalMediaURL string `json:"original_media_url"`
+	// This field is from variant [FaxDeliveredWebhookEventPayload].
+	PageCount int64  `json:"page_count"`
+	Status    string `json:"status"`
+	To        string `json:"to"`
+	UserID    string `json:"user_id"`
+	// This field is from variant [FaxFailedWebhookEventPayload].
+	FailureReason string `json:"failure_reason"`
+	JSON          struct {
+		CallControlID    respjson.Field
+		CallLegID        respjson.Field
+		CallSessionID    respjson.Field
+		ClientState      respjson.Field
+		ConferenceID     respjson.Field
+		ConnectionID     respjson.Field
+		OccurredAt       respjson.Field
+		CallDurationSecs respjson.Field
+		Direction        respjson.Field
+		FaxID            respjson.Field
+		From             respjson.Field
+		MediaName        respjson.Field
+		OriginalMediaURL respjson.Field
+		PageCount        respjson.Field
+		Status           respjson.Field
+		To               respjson.Field
+		UserID           respjson.Field
+		FailureReason    respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionPayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
