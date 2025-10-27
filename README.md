@@ -6,8 +6,8 @@
 
 <!-- x-release-please-end -->
 
-The Telnyx Go library provides convenient access to the Telnyx REST API
-from applications written in Go.
+The official Telnyx Go SDK — providing APIs for Voice, SMS, MMS, WhatsApp, Fax, SIP Trunking, Wireless IoT, Call Control, Number Management, and more.  
+Build global communications applications on Telnyx’s private, carrier-grade network with simple Go bindings to the Telnyx REST API.
 
 It is generated with [Stainless](https://www.stainless.com/).
 
