@@ -620,10 +620,10 @@ func (r *CampaignDeactivateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type CampaignGetMnoMetadataResponse struct {
-	Number10999 CampaignGetMnoMetadataResponse10999 `json:"10999"`
+	Mno10999 mno_10999 `json:"10999"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Number10999 respjson.Field
+		Mno10999    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -635,7 +635,7 @@ func (r *CampaignGetMnoMetadataResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CampaignGetMnoMetadataResponse10999 struct {
+type mno_10999 struct {
 	MinMsgSamples       int64  `json:"minMsgSamples,required"`
 	Mno                 string `json:"mno,required"`
 	MnoReview           bool   `json:"mnoReview,required"`
@@ -664,8 +664,8 @@ type CampaignGetMnoMetadataResponse10999 struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CampaignGetMnoMetadataResponse10999) RawJSON() string { return r.JSON.raw }
-func (r *CampaignGetMnoMetadataResponse10999) UnmarshalJSON(data []byte) error {
+func (r mno_10999) RawJSON() string { return r.JSON.raw }
+func (r *mno_10999) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

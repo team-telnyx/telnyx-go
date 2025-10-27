@@ -119,25 +119,7 @@ const (
 	CloudflareSyncStatusAdded   CloudflareSyncStatus = "added"
 )
 
-type AccessIPAddressListResponse struct {
-	Data []AccessIPAddressResponse       `json:"data,required"`
-	Meta AccessIPAddressListResponseMeta `json:"meta,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AccessIPAddressListResponse) RawJSON() string { return r.JSON.raw }
-func (r *AccessIPAddressListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AccessIPAddressListResponseMeta struct {
+type PaginationMetaCloudflareIPListSync struct {
 	PageNumber   int64 `json:"page_number,required"`
 	PageSize     int64 `json:"page_size,required"`
 	TotalPages   int64 `json:"total_pages,required"`
@@ -154,8 +136,26 @@ type AccessIPAddressListResponseMeta struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccessIPAddressListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *AccessIPAddressListResponseMeta) UnmarshalJSON(data []byte) error {
+func (r PaginationMetaCloudflareIPListSync) RawJSON() string { return r.JSON.raw }
+func (r *PaginationMetaCloudflareIPListSync) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AccessIPAddressListResponse struct {
+	Data []AccessIPAddressResponse          `json:"data,required"`
+	Meta PaginationMetaCloudflareIPListSync `json:"meta,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AccessIPAddressListResponse) RawJSON() string { return r.JSON.raw }
+func (r *AccessIPAddressListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

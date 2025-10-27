@@ -449,16 +449,16 @@ func (r PortoutListRejectionCodesParamsFilter) URLQuery() (v url.Values, err err
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type PortoutListRejectionCodesParamsFilterCodeUnion struct {
-	OfInt      param.Opt[int64] `query:",omitzero,inline"`
-	OfIntArray []int64          `query:",omitzero,inline"`
+	OfInt         param.Opt[int64] `query:",omitzero,inline"`
+	OfListOfCodes []int64          `query:",omitzero,inline"`
 	paramUnion
 }
 
 func (u *PortoutListRejectionCodesParamsFilterCodeUnion) asAny() any {
 	if !param.IsOmitted(u.OfInt) {
 		return &u.OfInt.Value
-	} else if !param.IsOmitted(u.OfIntArray) {
-		return &u.OfIntArray
+	} else if !param.IsOmitted(u.OfListOfCodes) {
+		return &u.OfListOfCodes
 	}
 	return nil
 }

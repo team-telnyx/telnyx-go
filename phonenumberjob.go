@@ -143,8 +143,8 @@ func (r *PhoneNumbersJob) UnmarshalJSON(data []byte) error {
 
 type PhoneNumbersJobFailedOperation struct {
 	// The phone number's ID
-	ID     string                                `json:"id"`
-	Errors []PhoneNumbersJobFailedOperationError `json:"errors"`
+	ID     string     `json:"id"`
+	Errors []JobError `json:"errors"`
 	// The phone number in e164 format.
 	PhoneNumber string `json:"phone_number"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -160,67 +160,6 @@ type PhoneNumbersJobFailedOperation struct {
 // Returns the unmodified JSON received from the API
 func (r PhoneNumbersJobFailedOperation) RawJSON() string { return r.JSON.raw }
 func (r *PhoneNumbersJobFailedOperation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PhoneNumbersJobFailedOperationError struct {
-	Code   string                                    `json:"code,required"`
-	Title  string                                    `json:"title,required"`
-	Detail string                                    `json:"detail"`
-	Meta   PhoneNumbersJobFailedOperationErrorMeta   `json:"meta"`
-	Source PhoneNumbersJobFailedOperationErrorSource `json:"source"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Title       respjson.Field
-		Detail      respjson.Field
-		Meta        respjson.Field
-		Source      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PhoneNumbersJobFailedOperationError) RawJSON() string { return r.JSON.raw }
-func (r *PhoneNumbersJobFailedOperationError) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PhoneNumbersJobFailedOperationErrorMeta struct {
-	// URL with additional information on the error.
-	URL string `json:"url"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PhoneNumbersJobFailedOperationErrorMeta) RawJSON() string { return r.JSON.raw }
-func (r *PhoneNumbersJobFailedOperationErrorMeta) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PhoneNumbersJobFailedOperationErrorSource struct {
-	// Indicates which query parameter caused the error.
-	Parameter string `json:"parameter"`
-	// JSON pointer (RFC6901) to the offending entity.
-	Pointer string `json:"pointer"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Parameter   respjson.Field
-		Pointer     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PhoneNumbersJobFailedOperationErrorSource) RawJSON() string { return r.JSON.raw }
-func (r *PhoneNumbersJobFailedOperationErrorSource) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
