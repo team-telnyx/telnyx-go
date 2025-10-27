@@ -1,5 +1,23 @@
 # Changelog
 
+## 3.5.0 (2025-10-27)
+
+Full Changelog: [v3.4.0...v3.5.0](https://github.com/team-telnyx/telnyx-go/compare/v3.4.0...v3.5.0)
+
+### Features
+
+* **api:** add method to upload JSON documents ([615048c](https://github.com/team-telnyx/telnyx-go/commit/615048c0379fc70ec04590b6bf5a46cc340c1829))
+* **api:** added webhook public key ([cd05c9d](https://github.com/team-telnyx/telnyx-go/commit/cd05c9d02c81da3b9d0453ec26cd58f472b203ab))
+* **api:** manual updates ([840698d](https://github.com/team-telnyx/telnyx-go/commit/840698db717d114e98e6a6f475721429ea259b54))
+* **api:** manual updates ([f719b16](https://github.com/team-telnyx/telnyx-go/commit/f719b168ca5bf37cd9854eb2366d3832f2f19528))
+* **api:** manual updates ([15fba7a](https://github.com/team-telnyx/telnyx-go/commit/15fba7a16dabaefa71fe2f9feafab3649bee9b9d))
+* define more models ([7bfb5c4](https://github.com/team-telnyx/telnyx-go/commit/7bfb5c4c22caa21403f7d42123c069c5c5af3561))
+
+
+### Documentation
+
+* update README description with comprehensive SDK overview ([#3](https://github.com/team-telnyx/telnyx-go/issues/3)) ([636b60c](https://github.com/team-telnyx/telnyx-go/commit/636b60c80e542d309de4dc65416c125d4e79e613))
+
 ## 3.4.0 (2025-10-16)
 
 Full Changelog: [v3.3.0...v3.4.0](https://github.com/team-telnyx/telnyx-go/compare/v3.3.0...v3.4.0)
