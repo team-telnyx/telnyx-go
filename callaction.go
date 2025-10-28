@@ -4302,6 +4302,10 @@ type CallActionTransferParams struct {
 	// SIP headers to be added to the SIP INVITE. Currently only User-to-User header is
 	// supported.
 	SipHeaders []SipHeaderParam `json:"sip_headers,omitzero"`
+	// Defines the SIP region to be used for the call.
+	//
+	// Any of "US", "Europe", "Canada", "Australia", "Middle East".
+	SipRegion CallActionTransferParamsSipRegion `json:"sip_region,omitzero"`
 	// Defines SIP transport protocol to be used on the call.
 	//
 	// Any of "UDP", "TCP", "TLS".
@@ -4440,6 +4444,17 @@ type CallActionTransferParamsRecordTrim string
 
 const (
 	CallActionTransferParamsRecordTrimTrimSilence CallActionTransferParamsRecordTrim = "trim-silence"
+)
+
+// Defines the SIP region to be used for the call.
+type CallActionTransferParamsSipRegion string
+
+const (
+	CallActionTransferParamsSipRegionUs         CallActionTransferParamsSipRegion = "US"
+	CallActionTransferParamsSipRegionEurope     CallActionTransferParamsSipRegion = "Europe"
+	CallActionTransferParamsSipRegionCanada     CallActionTransferParamsSipRegion = "Canada"
+	CallActionTransferParamsSipRegionAustralia  CallActionTransferParamsSipRegion = "Australia"
+	CallActionTransferParamsSipRegionMiddleEast CallActionTransferParamsSipRegion = "Middle East"
 )
 
 // Defines SIP transport protocol to be used on the call.

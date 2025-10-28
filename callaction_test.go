@@ -1395,6 +1395,7 @@ func TestCallActionTransferWithOptionalParams(t *testing.T) {
 				Name:  telnyx.SipHeaderNameUserToUser,
 				Value: "value",
 			}},
+			SipRegion:            telnyx.CallActionTransferParamsSipRegionCanada,
 			SipTransportProtocol: telnyx.CallActionTransferParamsSipTransportProtocolTls,
 			SoundModifications: telnyx.SoundModificationsParam{
 				Octaves:  telnyx.Float(0.1),
