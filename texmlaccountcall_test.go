@@ -129,6 +129,7 @@ func TestTexmlAccountCallCallsWithOptionalParams(t *testing.T) {
 			SendRecordingURL:                   telnyx.Bool(false),
 			SipAuthPassword:                    telnyx.String("1234"),
 			SipAuthUsername:                    telnyx.String("user"),
+			SipRegion:                          telnyx.TexmlAccountCallCallsParamsSipRegionCanada,
 			StatusCallback:                     telnyx.String("https://www.example.com/statuscallback-listener"),
 			StatusCallbackEvent:                telnyx.TexmlAccountCallCallsParamsStatusCallbackEventInitiated,
 			StatusCallbackMethod:               telnyx.TexmlAccountCallCallsParamsStatusCallbackMethodGet,
