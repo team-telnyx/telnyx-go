@@ -34,6 +34,7 @@ func TestConferenceActionUpdateWithOptionalParams(t *testing.T) {
 				CallControlID:         "v3:MdI91X4lWFEs7IgbBEOT9M4AigoY08M0WWZFISt1Yw2axZ_IiE4pqg",
 				SupervisorRole:        telnyx.UpdateConferenceSupervisorRoleWhisper,
 				CommandID:             telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
+				Region:                telnyx.UpdateConferenceRegionUs,
 				WhisperCallControlIDs: []string{"v2:Sg1xxxQ_U3ixxxyXT_VDNI3xxxazZdg6Vxxxs4-GNYxxxVaJPOhFMRQ", "v2:qqpb0mmvd-ovhhBr0BUQQn0fld5jIboaaX3-De0DkqXHzbf8d75xkw"},
 			},
 		},
@@ -67,6 +68,7 @@ func TestConferenceActionHoldWithOptionalParams(t *testing.T) {
 			AudioURL:       telnyx.String("http://example.com/message.wav"),
 			CallControlIDs: []string{"v3:MdI91X4lWFEs7IgbBEOT9M4AigoY08M0WWZFISt1Yw2axZ_IiE4pqg"},
 			MediaName:      telnyx.String("my_media_uploaded_to_media_storage_api"),
+			Region:         telnyx.ConferenceActionHoldParamsRegionUs,
 		},
 	)
 	if err != nil {
@@ -104,6 +106,7 @@ func TestConferenceActionJoinWithOptionalParams(t *testing.T) {
 			HoldAudioURL:            telnyx.String("http://www.example.com/audio.wav"),
 			HoldMediaName:           telnyx.String("my_media_uploaded_to_media_storage_api"),
 			Mute:                    telnyx.Bool(true),
+			Region:                  telnyx.ConferenceActionJoinParamsRegionUs,
 			SoftEndConferenceOnExit: telnyx.Bool(true),
 			StartConferenceOnEnter:  telnyx.Bool(true),
 			SupervisorRole:          telnyx.ConferenceActionJoinParamsSupervisorRoleWhisper,
@@ -139,6 +142,7 @@ func TestConferenceActionLeaveWithOptionalParams(t *testing.T) {
 			CallControlID: "c46e06d7-b78f-4b13-96b6-c576af9640ff",
 			BeepEnabled:   telnyx.ConferenceActionLeaveParamsBeepEnabledNever,
 			CommandID:     telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
+			Region:        telnyx.ConferenceActionLeaveParamsRegionUs,
 		},
 	)
 	if err != nil {
@@ -168,6 +172,7 @@ func TestConferenceActionMuteWithOptionalParams(t *testing.T) {
 		"id",
 		telnyx.ConferenceActionMuteParams{
 			CallControlIDs: []string{"v3:MdI91X4lWFEs7IgbBEOT9M4AigoY08M0WWZFISt1Yw2axZ_IiE4pqg"},
+			Region:         telnyx.ConferenceActionMuteParamsRegionUs,
 		},
 	)
 	if err != nil {
@@ -202,6 +207,7 @@ func TestConferenceActionPlayWithOptionalParams(t *testing.T) {
 				OfString: telnyx.String("infinity"),
 			},
 			MediaName: telnyx.String("my_media_uploaded_to_media_storage_api"),
+			Region:    telnyx.ConferenceActionPlayParamsRegionUs,
 		},
 	)
 	if err != nil {
@@ -232,6 +238,7 @@ func TestConferenceActionRecordPauseWithOptionalParams(t *testing.T) {
 		telnyx.ConferenceActionRecordPauseParams{
 			CommandID:   telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
 			RecordingID: telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
+			Region:      telnyx.ConferenceActionRecordPauseParamsRegionUs,
 		},
 	)
 	if err != nil {
@@ -262,6 +269,7 @@ func TestConferenceActionRecordResumeWithOptionalParams(t *testing.T) {
 		telnyx.ConferenceActionRecordResumeParams{
 			CommandID:   telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
 			RecordingID: telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
+			Region:      telnyx.ConferenceActionRecordResumeParamsRegionUs,
 		},
 	)
 	if err != nil {
@@ -294,6 +302,7 @@ func TestConferenceActionRecordStartWithOptionalParams(t *testing.T) {
 			CommandID:      telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
 			CustomFileName: telnyx.String("my_recording_file_name"),
 			PlayBeep:       telnyx.Bool(true),
+			Region:         telnyx.ConferenceActionRecordStartParamsRegionUs,
 			Trim:           telnyx.ConferenceActionRecordStartParamsTrimTrimSilence,
 		},
 	)
@@ -323,11 +332,10 @@ func TestConferenceActionRecordStopWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		telnyx.ConferenceActionRecordStopParams{
-			StopRecordingRequest: telnyx.StopRecordingRequestParam{
-				ClientState: telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
-				CommandID:   telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
-				RecordingID: telnyx.String("6e00ab49-9487-4364-8ad6-23965965afb2"),
-			},
+			ClientState: telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
+			CommandID:   telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
+			RecordingID: telnyx.String("6e00ab49-9487-4364-8ad6-23965965afb2"),
+			Region:      telnyx.ConferenceActionRecordStopParamsRegionUs,
 		},
 	)
 	if err != nil {
@@ -362,6 +370,7 @@ func TestConferenceActionSpeakWithOptionalParams(t *testing.T) {
 			CommandID:      telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
 			Language:       telnyx.ConferenceActionSpeakParamsLanguageEnUs,
 			PayloadType:    telnyx.ConferenceActionSpeakParamsPayloadTypeText,
+			Region:         telnyx.ConferenceActionSpeakParamsRegionUs,
 			VoiceSettings: telnyx.ConferenceActionSpeakParamsVoiceSettingsUnion{
 				OfElevenLabsVoiceSettings: &telnyx.ElevenLabsVoiceSettingsParam{
 					APIKeyRef: telnyx.String("my_elevenlabs_api_key"),
@@ -396,6 +405,7 @@ func TestConferenceActionStopWithOptionalParams(t *testing.T) {
 		"id",
 		telnyx.ConferenceActionStopParams{
 			CallControlIDs: []string{"string"},
+			Region:         telnyx.ConferenceActionStopParamsRegionUs,
 		},
 	)
 	if err != nil {
@@ -407,7 +417,7 @@ func TestConferenceActionStopWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestConferenceActionUnhold(t *testing.T) {
+func TestConferenceActionUnholdWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -425,6 +435,7 @@ func TestConferenceActionUnhold(t *testing.T) {
 		"id",
 		telnyx.ConferenceActionUnholdParams{
 			CallControlIDs: []string{"v3:MdI91X4lWFEs7IgbBEOT9M4AigoY08M0WWZFISt1Yw2axZ_IiE4pqg"},
+			Region:         telnyx.ConferenceActionUnholdParamsRegionUs,
 		},
 	)
 	if err != nil {
@@ -454,6 +465,7 @@ func TestConferenceActionUnmuteWithOptionalParams(t *testing.T) {
 		"id",
 		telnyx.ConferenceActionUnmuteParams{
 			CallControlIDs: []string{"v3:MdI91X4lWFEs7IgbBEOT9M4AigoY08M0WWZFISt1Yw2axZ_IiE4pqg"},
+			Region:         telnyx.ConferenceActionUnmuteParamsRegionUs,
 		},
 	)
 	if err != nil {

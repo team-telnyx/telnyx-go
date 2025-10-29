@@ -61,14 +61,14 @@ func (r *ConferenceService) New(ctx context.Context, body ConferenceNewParams, o
 }
 
 // Retrieve an existing conference
-func (r *ConferenceService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ConferenceGetResponse, err error) {
+func (r *ConferenceService) Get(ctx context.Context, id string, query ConferenceGetParams, opts ...option.RequestOption) (res *ConferenceGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
 	}
 	path := fmt.Sprintf("conferences/%s", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
 }
 
@@ -380,6 +380,11 @@ type ConferenceNewParams struct {
 	//
 	// Any of "always", "never", "on_enter", "on_exit".
 	BeepEnabled ConferenceNewParamsBeepEnabled `json:"beep_enabled,omitzero"`
+	// Sets the region where the conference data will be hosted. Defaults to the region
+	// defined in user's data locality settings (Europe or US).
+	//
+	// Any of "Australia", "Europe", "Middle East", "US".
+	Region ConferenceNewParamsRegion `json:"region,omitzero"`
 	paramObj
 }
 
@@ -402,6 +407,43 @@ const (
 	ConferenceNewParamsBeepEnabledOnExit  ConferenceNewParamsBeepEnabled = "on_exit"
 )
 
+// Sets the region where the conference data will be hosted. Defaults to the region
+// defined in user's data locality settings (Europe or US).
+type ConferenceNewParamsRegion string
+
+const (
+	ConferenceNewParamsRegionAustralia  ConferenceNewParamsRegion = "Australia"
+	ConferenceNewParamsRegionEurope     ConferenceNewParamsRegion = "Europe"
+	ConferenceNewParamsRegionMiddleEast ConferenceNewParamsRegion = "Middle East"
+	ConferenceNewParamsRegionUs         ConferenceNewParamsRegion = "US"
+)
+
+type ConferenceGetParams struct {
+	// Region where the conference data is located
+	//
+	// Any of "Australia", "Europe", "Middle East", "US".
+	Region ConferenceGetParamsRegion `query:"region,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ConferenceGetParams]'s query parameters as `url.Values`.
+func (r ConferenceGetParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Region where the conference data is located
+type ConferenceGetParamsRegion string
+
+const (
+	ConferenceGetParamsRegionAustralia  ConferenceGetParamsRegion = "Australia"
+	ConferenceGetParamsRegionEurope     ConferenceGetParamsRegion = "Europe"
+	ConferenceGetParamsRegionMiddleEast ConferenceGetParamsRegion = "Middle East"
+	ConferenceGetParamsRegionUs         ConferenceGetParamsRegion = "US"
+)
+
 type ConferenceListParams struct {
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[application_name][contains], filter[outbound.outbound_voice_profile_id],
@@ -412,6 +454,10 @@ type ConferenceListParams struct {
 	// Consolidated page parameter (deepObject style). Originally: page[after],
 	// page[before], page[limit], page[size], page[number]
 	Page ConferenceListParamsPage `query:"page,omitzero" json:"-"`
+	// Region where the conference data is located
+	//
+	// Any of "Australia", "Europe", "Middle East", "US".
+	Region ConferenceListParamsRegion `query:"region,omitzero" json:"-"`
 	paramObj
 }
 
@@ -542,6 +588,16 @@ func (r ConferenceListParamsPage) URLQuery() (v url.Values, err error) {
 	})
 }
 
+// Region where the conference data is located
+type ConferenceListParamsRegion string
+
+const (
+	ConferenceListParamsRegionAustralia  ConferenceListParamsRegion = "Australia"
+	ConferenceListParamsRegionEurope     ConferenceListParamsRegion = "Europe"
+	ConferenceListParamsRegionMiddleEast ConferenceListParamsRegion = "Middle East"
+	ConferenceListParamsRegionUs         ConferenceListParamsRegion = "US"
+)
+
 type ConferenceListParticipantsParams struct {
 	// Consolidated filter parameter (deepObject style). Originally: filter[muted],
 	// filter[on_hold], filter[whispering]
@@ -549,6 +605,10 @@ type ConferenceListParticipantsParams struct {
 	// Consolidated page parameter (deepObject style). Originally: page[after],
 	// page[before], page[limit], page[size], page[number]
 	Page ConferenceListParticipantsParamsPage `query:"page,omitzero" json:"-"`
+	// Region where the conference data is located
+	//
+	// Any of "Australia", "Europe", "Middle East", "US".
+	Region ConferenceListParticipantsParamsRegion `query:"region,omitzero" json:"-"`
 	paramObj
 }
 
@@ -606,3 +666,13 @@ func (r ConferenceListParticipantsParamsPage) URLQuery() (v url.Values, err erro
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// Region where the conference data is located
+type ConferenceListParticipantsParamsRegion string
+
+const (
+	ConferenceListParticipantsParamsRegionAustralia  ConferenceListParticipantsParamsRegion = "Australia"
+	ConferenceListParticipantsParamsRegionEurope     ConferenceListParticipantsParamsRegion = "Europe"
+	ConferenceListParticipantsParamsRegionMiddleEast ConferenceListParticipantsParamsRegion = "Middle East"
+	ConferenceListParticipantsParamsRegionUs         ConferenceListParticipantsParamsRegion = "US"
+)
