@@ -788,6 +788,49 @@ Methods:
 - <code title="get /ai/fine_tuning/jobs">client.AI.FineTuning.Jobs.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIFineTuningJobService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIFineTuningJobListResponse">AIFineTuningJobListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /ai/fine_tuning/jobs/{job_id}/cancel">client.AI.FineTuning.Jobs.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIFineTuningJobService.Cancel">Cancel</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, jobID <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#FineTuningJob">FineTuningJob</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+## Integrations
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIIntegrationGetResponse">AIIntegrationGetResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIIntegrationListResponse">AIIntegrationListResponse</a>
+
+Methods:
+
+- <code title="get /ai/integrations/{integration_id}">client.AI.Integrations.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIIntegrationService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, integrationID <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIIntegrationGetResponse">AIIntegrationGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /ai/integrations">client.AI.Integrations.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIIntegrationService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIIntegrationListResponse">AIIntegrationListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+### Connections
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIIntegrationConnectionGetResponse">AIIntegrationConnectionGetResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIIntegrationConnectionListResponse">AIIntegrationConnectionListResponse</a>
+
+Methods:
+
+- <code title="get /ai/integrations/connections/{user_connection_id}">client.AI.Integrations.Connections.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIIntegrationConnectionService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, userConnectionID <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIIntegrationConnectionGetResponse">AIIntegrationConnectionGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /ai/integrations/connections">client.AI.Integrations.Connections.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIIntegrationConnectionService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIIntegrationConnectionListResponse">AIIntegrationConnectionListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /ai/integrations/connections/{user_connection_id}">client.AI.Integrations.Connections.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIIntegrationConnectionService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, userConnectionID <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+
+## McpServers
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIMcpServerNewResponse">AIMcpServerNewResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIMcpServerGetResponse">AIMcpServerGetResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIMcpServerUpdateResponse">AIMcpServerUpdateResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIMcpServerListResponse">AIMcpServerListResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIMcpServerDeleteResponse">AIMcpServerDeleteResponse</a>
+
+Methods:
+
+- <code title="post /ai/mcp_servers">client.AI.McpServers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIMcpServerService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIMcpServerNewParams">AIMcpServerNewParams</a>) (<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIMcpServerNewResponse">AIMcpServerNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /ai/mcp_servers/{mcp_server_id}">client.AI.McpServers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIMcpServerService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, mcpServerID <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIMcpServerGetResponse">AIMcpServerGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="put /ai/mcp_servers/{mcp_server_id}">client.AI.McpServers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIMcpServerService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, mcpServerID <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIMcpServerUpdateParams">AIMcpServerUpdateParams</a>) (<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIMcpServerUpdateResponse">AIMcpServerUpdateResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /ai/mcp_servers">client.AI.McpServers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIMcpServerService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIMcpServerListParams">AIMcpServerListParams</a>) ([]<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIMcpServerListResponse">AIMcpServerListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /ai/mcp_servers/{mcp_server_id}">client.AI.McpServers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIMcpServerService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, mcpServerID <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#AIMcpServerDeleteResponse">AIMcpServerDeleteResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # AuditEvents
 
 Response Types:
