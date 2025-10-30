@@ -767,6 +767,10 @@ type TexmlAccountCallCallsParams struct {
 	//
 	// Any of "inbound", "outbound", "both".
 	RecordingTrack TexmlAccountCallCallsParamsRecordingTrack `json:"RecordingTrack,omitzero"`
+	// Defines the SIP region to be used for the call.
+	//
+	// Any of "US", "Europe", "Canada", "Australia", "Middle East".
+	SipRegion TexmlAccountCallCallsParamsSipRegion `json:"SipRegion,omitzero"`
 	// The call events for which Telnyx should send a webhook. Multiple events can be
 	// defined when separated by a space.
 	//
@@ -863,6 +867,17 @@ const (
 	TexmlAccountCallCallsParamsRecordingTrackInbound  TexmlAccountCallCallsParamsRecordingTrack = "inbound"
 	TexmlAccountCallCallsParamsRecordingTrackOutbound TexmlAccountCallCallsParamsRecordingTrack = "outbound"
 	TexmlAccountCallCallsParamsRecordingTrackBoth     TexmlAccountCallCallsParamsRecordingTrack = "both"
+)
+
+// Defines the SIP region to be used for the call.
+type TexmlAccountCallCallsParamsSipRegion string
+
+const (
+	TexmlAccountCallCallsParamsSipRegionUs         TexmlAccountCallCallsParamsSipRegion = "US"
+	TexmlAccountCallCallsParamsSipRegionEurope     TexmlAccountCallCallsParamsSipRegion = "Europe"
+	TexmlAccountCallCallsParamsSipRegionCanada     TexmlAccountCallCallsParamsSipRegion = "Canada"
+	TexmlAccountCallCallsParamsSipRegionAustralia  TexmlAccountCallCallsParamsSipRegion = "Australia"
+	TexmlAccountCallCallsParamsSipRegionMiddleEast TexmlAccountCallCallsParamsSipRegion = "Middle East"
 )
 
 // The call events for which Telnyx should send a webhook. Multiple events can be

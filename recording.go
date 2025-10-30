@@ -246,7 +246,7 @@ type RecordingListParams struct {
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[conference_id], filter[created_at][gte], filter[created_at][lte],
 	// filter[call_leg_id], filter[call_session_id], filter[from], filter[to],
-	// filter[connection_id]
+	// filter[connection_id], filter[sip_call_id]
 	Filter RecordingListParamsFilter `query:"filter,omitzero" json:"-"`
 	// Consolidated page parameter (deepObject style). Originally: page[size],
 	// page[number]
@@ -265,7 +265,7 @@ func (r RecordingListParams) URLQuery() (v url.Values, err error) {
 // Consolidated filter parameter (deepObject style). Originally:
 // filter[conference_id], filter[created_at][gte], filter[created_at][lte],
 // filter[call_leg_id], filter[call_session_id], filter[from], filter[to],
-// filter[connection_id]
+// filter[connection_id], filter[sip_call_id]
 type RecordingListParamsFilter struct {
 	// If present, recordings will be filtered to those with a matching call_leg_id.
 	CallLegID param.Opt[string] `query:"call_leg_id,omitzero" format:"uuid" json:"-"`
@@ -280,6 +280,9 @@ type RecordingListParamsFilter struct {
 	// If present, recordings will be filtered to those with a matching `from`
 	// attribute (case-sensitive).
 	From param.Opt[string] `query:"from,omitzero" json:"-"`
+	// If present, recordings will be filtered to those with a matching `sip_call_id`
+	// attribute. Matching is case-sensitive
+	SipCallID param.Opt[string] `query:"sip_call_id,omitzero" json:"-"`
 	// If present, recordings will be filtered to those with a matching `to` attribute
 	// (case-sensitive).
 	To        param.Opt[string]                  `query:"to,omitzero" json:"-"`

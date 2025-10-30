@@ -53,6 +53,23 @@ func (r *QueueCallService) Get(ctx context.Context, callControlID string, query 
 	return
 }
 
+// Update queued call's keep_after_hangup flag
+func (r *QueueCallService) Update(ctx context.Context, callControlID string, params QueueCallUpdateParams, opts ...option.RequestOption) (err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	if params.QueueName == "" {
+		err = errors.New("missing required queue_name parameter")
+		return
+	}
+	if callControlID == "" {
+		err = errors.New("missing required call_control_id parameter")
+		return
+	}
+	path := fmt.Sprintf("queues/%s/calls/%s", params.QueueName, callControlID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, nil, opts...)
+	return
+}
+
 // Retrieve the list of calls in an existing queue
 func (r *QueueCallService) List(ctx context.Context, queueName string, query QueueCallListParams, opts ...option.RequestOption) (res *QueueCallListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -62,6 +79,24 @@ func (r *QueueCallService) List(ctx context.Context, queueName string, query Que
 	}
 	path := fmt.Sprintf("queues/%s/calls", queueName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
+}
+
+// Removes an inactive call from a queue. If the call is no longer active, use this
+// command to remove it from the queue.
+func (r *QueueCallService) Remove(ctx context.Context, callControlID string, body QueueCallRemoveParams, opts ...option.RequestOption) (err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	if body.QueueName == "" {
+		err = errors.New("missing required queue_name parameter")
+		return
+	}
+	if callControlID == "" {
+		err = errors.New("missing required call_control_id parameter")
+		return
+	}
+	path := fmt.Sprintf("queues/%s/calls/%s", body.QueueName, callControlID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
@@ -202,6 +237,21 @@ type QueueCallGetParams struct {
 	paramObj
 }
 
+type QueueCallUpdateParams struct {
+	QueueName string `path:"queue_name,required" json:"-"`
+	// Whether the call should remain in queue after hangup.
+	KeepAfterHangup param.Opt[bool] `json:"keep_after_hangup,omitzero"`
+	paramObj
+}
+
+func (r QueueCallUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow QueueCallUpdateParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *QueueCallUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type QueueCallListParams struct {
 	// Consolidated page parameter (deepObject style). Originally: page[after],
 	// page[before], page[limit], page[size], page[number]
@@ -240,4 +290,9 @@ func (r QueueCallListParamsPage) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type QueueCallRemoveParams struct {
+	QueueName string `path:"queue_name,required" json:"-"`
+	paramObj
 }

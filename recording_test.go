@@ -59,8 +59,9 @@ func TestRecordingListWithOptionalParams(t *testing.T) {
 				Gte: telnyx.String("2019-03-29T11:10:00Z"),
 				Lte: telnyx.String("2019-03-29T11:10:00Z"),
 			},
-			From: telnyx.String("1234567890"),
-			To:   telnyx.String("1234567890"),
+			From:      telnyx.String("1234567890"),
+			SipCallID: telnyx.String("428c31b6-7af4-4bcb-b7f5-5013ef9657c1"),
+			To:        telnyx.String("1234567890"),
 		},
 		Page: telnyx.RecordingListParamsPage{
 			Number: telnyx.Int(1),

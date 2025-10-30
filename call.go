@@ -555,6 +555,10 @@ type CallDialParams struct {
 	// SIP headers to be added to the SIP INVITE request. Currently only User-to-User
 	// header is supported.
 	SipHeaders []SipHeaderParam `json:"sip_headers,omitzero"`
+	// Defines the SIP region to be used for the call.
+	//
+	// Any of "US", "Europe", "Canada", "Australia", "Middle East".
+	SipRegion CallDialParamsSipRegion `json:"sip_region,omitzero"`
 	// Defines SIP transport protocol to be used on the call.
 	//
 	// Any of "UDP", "TCP", "TLS".
@@ -831,6 +835,17 @@ type CallDialParamsRecordTrim string
 
 const (
 	CallDialParamsRecordTrimTrimSilence CallDialParamsRecordTrim = "trim-silence"
+)
+
+// Defines the SIP region to be used for the call.
+type CallDialParamsSipRegion string
+
+const (
+	CallDialParamsSipRegionUs         CallDialParamsSipRegion = "US"
+	CallDialParamsSipRegionEurope     CallDialParamsSipRegion = "Europe"
+	CallDialParamsSipRegionCanada     CallDialParamsSipRegion = "Canada"
+	CallDialParamsSipRegionAustralia  CallDialParamsSipRegion = "Australia"
+	CallDialParamsSipRegionMiddleEast CallDialParamsSipRegion = "Middle East"
 )
 
 // Defines SIP transport protocol to be used on the call.

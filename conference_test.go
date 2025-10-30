@@ -37,6 +37,7 @@ func TestConferenceNewWithOptionalParams(t *testing.T) {
 		HoldAudioURL:            telnyx.String("http://www.example.com/audio.wav"),
 		HoldMediaName:           telnyx.String("my_media_uploaded_to_media_storage_api"),
 		MaxParticipants:         telnyx.Int(250),
+		Region:                  telnyx.ConferenceNewParamsRegionUs,
 		StartConferenceOnCreate: telnyx.Bool(false),
 	})
 	if err != nil {
@@ -48,7 +49,7 @@ func TestConferenceNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestConferenceGet(t *testing.T) {
+func TestConferenceGetWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -61,7 +62,13 @@ func TestConferenceGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Conferences.Get(context.TODO(), "id")
+	_, err := client.Conferences.Get(
+		context.TODO(),
+		"id",
+		telnyx.ConferenceGetParams{
+			Region: telnyx.ConferenceGetParamsRegionAustralia,
+		},
+	)
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -115,6 +122,7 @@ func TestConferenceListWithOptionalParams(t *testing.T) {
 			Number: telnyx.Int(1),
 			Size:   telnyx.Int(1),
 		},
+		Region: telnyx.ConferenceListParamsRegionAustralia,
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -154,6 +162,7 @@ func TestConferenceListParticipantsWithOptionalParams(t *testing.T) {
 				Number: telnyx.Int(1),
 				Size:   telnyx.Int(1),
 			},
+			Region: telnyx.ConferenceListParticipantsParamsRegionAustralia,
 		},
 	)
 	if err != nil {

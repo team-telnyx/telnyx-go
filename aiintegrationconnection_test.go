@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
-func TestQueueCallGet(t *testing.T) {
+func TestAIIntegrationConnectionGet(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,13 +26,7 @@ func TestQueueCallGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Queues.Calls.Get(
-		context.TODO(),
-		"call_control_id",
-		telnyx.QueueCallGetParams{
-			QueueName: "queue_name",
-		},
-	)
+	_, err := client.AI.Integrations.Connections.Get(context.TODO(), "user_connection_id")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -42,7 +36,7 @@ func TestQueueCallGet(t *testing.T) {
 	}
 }
 
-func TestQueueCallUpdateWithOptionalParams(t *testing.T) {
+func TestAIIntegrationConnectionList(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -55,14 +49,7 @@ func TestQueueCallUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Queues.Calls.Update(
-		context.TODO(),
-		"call_control_id",
-		telnyx.QueueCallUpdateParams{
-			QueueName:       "queue_name",
-			KeepAfterHangup: telnyx.Bool(true),
-		},
-	)
+	_, err := client.AI.Integrations.Connections.List(context.TODO())
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -72,7 +59,7 @@ func TestQueueCallUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestQueueCallListWithOptionalParams(t *testing.T) {
+func TestAIIntegrationConnectionDelete(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -85,48 +72,7 @@ func TestQueueCallListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Queues.Calls.List(
-		context.TODO(),
-		"queue_name",
-		telnyx.QueueCallListParams{
-			Page: telnyx.QueueCallListParamsPage{
-				After:  telnyx.String("after"),
-				Before: telnyx.String("before"),
-				Limit:  telnyx.Int(1),
-				Number: telnyx.Int(1),
-				Size:   telnyx.Int(1),
-			},
-		},
-	)
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestQueueCallRemove(t *testing.T) {
-	t.Skip("Prism tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	err := client.Queues.Calls.Remove(
-		context.TODO(),
-		"call_control_id",
-		telnyx.QueueCallRemoveParams{
-			QueueName: "queue_name",
-		},
-	)
+	err := client.AI.Integrations.Connections.Delete(context.TODO(), "user_connection_id")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

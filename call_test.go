@@ -100,6 +100,7 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 			Name:  telnyx.SipHeaderNameUserToUser,
 			Value: "12345",
 		}},
+		SipRegion:            telnyx.CallDialParamsSipRegionCanada,
 		SipTransportProtocol: telnyx.CallDialParamsSipTransportProtocolTls,
 		SoundModifications: telnyx.SoundModificationsParam{
 			Octaves:  telnyx.Float(0.1),

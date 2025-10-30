@@ -29,6 +29,8 @@ type AIService struct {
 	Conversations AIConversationService
 	Embeddings    AIEmbeddingService
 	FineTuning    AIFineTuningService
+	Integrations  AIIntegrationService
+	McpServers    AIMcpServerService
 }
 
 // NewAIService generates a new service that applies the given options to each
@@ -44,6 +46,8 @@ func NewAIService(opts ...option.RequestOption) (r AIService) {
 	r.Conversations = NewAIConversationService(opts...)
 	r.Embeddings = NewAIEmbeddingService(opts...)
 	r.FineTuning = NewAIFineTuningService(opts...)
+	r.Integrations = NewAIIntegrationService(opts...)
+	r.McpServers = NewAIMcpServerService(opts...)
 	return
 }
 

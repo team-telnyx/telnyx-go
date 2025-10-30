@@ -7,13 +7,14 @@ import (
 	"errors"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/team-telnyx/telnyx-go/v3"
 	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
 	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
-func TestQueueCallGet(t *testing.T) {
+func TestAIMcpServerNewWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,11 +27,69 @@ func TestQueueCallGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Queues.Calls.Get(
+	_, err := client.AI.McpServers.New(context.TODO(), telnyx.AIMcpServerNewParams{
+		Name:         "name",
+		Type:         "type",
+		URL:          "url",
+		AllowedTools: []string{"string"},
+		APIKeyRef:    telnyx.String("api_key_ref"),
+	})
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestAIMcpServerGet(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.AI.McpServers.Get(context.TODO(), "mcp_server_id")
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestAIMcpServerUpdateWithOptionalParams(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.AI.McpServers.Update(
 		context.TODO(),
-		"call_control_id",
-		telnyx.QueueCallGetParams{
-			QueueName: "queue_name",
+		"mcp_server_id",
+		telnyx.AIMcpServerUpdateParams{
+			ID:           telnyx.String("id"),
+			AllowedTools: []string{"string"},
+			APIKeyRef:    telnyx.String("api_key_ref"),
+			CreatedAt:    telnyx.Time(time.Now()),
+			Name:         telnyx.String("name"),
+			Type:         telnyx.String("type"),
+			URL:          telnyx.String("url"),
 		},
 	)
 	if err != nil {
@@ -42,7 +101,7 @@ func TestQueueCallGet(t *testing.T) {
 	}
 }
 
-func TestQueueCallUpdateWithOptionalParams(t *testing.T) {
+func TestAIMcpServerListWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -55,14 +114,12 @@ func TestQueueCallUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Queues.Calls.Update(
-		context.TODO(),
-		"call_control_id",
-		telnyx.QueueCallUpdateParams{
-			QueueName:       "queue_name",
-			KeepAfterHangup: telnyx.Bool(true),
-		},
-	)
+	_, err := client.AI.McpServers.List(context.TODO(), telnyx.AIMcpServerListParams{
+		PageNumber: telnyx.Int(1),
+		PageSize:   telnyx.Int(1),
+		Type:       telnyx.String("type"),
+		URL:        telnyx.String("url"),
+	})
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -72,7 +129,7 @@ func TestQueueCallUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestQueueCallListWithOptionalParams(t *testing.T) {
+func TestAIMcpServerDelete(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -85,48 +142,7 @@ func TestQueueCallListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Queues.Calls.List(
-		context.TODO(),
-		"queue_name",
-		telnyx.QueueCallListParams{
-			Page: telnyx.QueueCallListParamsPage{
-				After:  telnyx.String("after"),
-				Before: telnyx.String("before"),
-				Limit:  telnyx.Int(1),
-				Number: telnyx.Int(1),
-				Size:   telnyx.Int(1),
-			},
-		},
-	)
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestQueueCallRemove(t *testing.T) {
-	t.Skip("Prism tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	err := client.Queues.Calls.Remove(
-		context.TODO(),
-		"call_control_id",
-		telnyx.QueueCallRemoveParams{
-			QueueName: "queue_name",
-		},
-	)
+	_, err := client.AI.McpServers.Delete(context.TODO(), "mcp_server_id")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
