@@ -2576,6 +2576,10 @@ type CallActionEnqueueParams struct {
 	// Use this field to avoid duplicate commands. Telnyx will ignore any command with
 	// the same `command_id` for the same `call_control_id`.
 	CommandID param.Opt[string] `json:"command_id,omitzero"`
+	// If set to true, the call will remain in the queue after hangup. In this case
+	// bridging to such call will fail with necessary information needed to
+	// re-establish the call.
+	KeepAfterHangup param.Opt[bool] `json:"keep_after_hangup,omitzero"`
 	// The maximum number of calls allowed in the queue at a given time. Can't be
 	// modified for an existing queue.
 	MaxSize param.Opt[int64] `json:"max_size,omitzero"`
