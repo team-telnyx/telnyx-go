@@ -82,6 +82,24 @@ func (r *QueueCallService) List(ctx context.Context, queueName string, query Que
 	return
 }
 
+// Removes an inactive call from a queue. If the call is no longer active, use this
+// command to remove it from the queue.
+func (r *QueueCallService) Remove(ctx context.Context, callControlID string, body QueueCallRemoveParams, opts ...option.RequestOption) (err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	if body.QueueName == "" {
+		err = errors.New("missing required queue_name parameter")
+		return
+	}
+	if callControlID == "" {
+		err = errors.New("missing required call_control_id parameter")
+		return
+	}
+	path := fmt.Sprintf("queues/%s/calls/%s", body.QueueName, callControlID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
+	return
+}
+
 type QueueCallGetResponse struct {
 	Data QueueCallGetResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -272,4 +290,9 @@ func (r QueueCallListParamsPage) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type QueueCallRemoveParams struct {
+	QueueName string `path:"queue_name,required" json:"-"`
+	paramObj
 }
