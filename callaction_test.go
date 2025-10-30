@@ -170,6 +170,7 @@ func TestCallActionEnqueueWithOptionalParams(t *testing.T) {
 			QueueName:       "support",
 			ClientState:     telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
 			CommandID:       telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
+			KeepAfterHangup: telnyx.Bool(true),
 			MaxSize:         telnyx.Int(20),
 			MaxWaitTimeSecs: telnyx.Int(600),
 		},
