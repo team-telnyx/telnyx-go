@@ -1,5 +1,29 @@
 # Changelog
 
+## 3.6.0 (2025-11-03)
+
+Full Changelog: [v3.5.0...v3.6.0](https://github.com/team-telnyx/telnyx-go/compare/v3.5.0...v3.6.0)
+
+### Features
+
+* AI-1842: Add MCP Servers and Integrations sections ([9b90090](https://github.com/team-telnyx/telnyx-go/commit/9b90090aefad621c428224dab71bb84774ea57ae))
+* ENGDESK-44767 - Document force remove calls from queue ([7bafd94](https://github.com/team-telnyx/telnyx-go/commit/7bafd940693e16995a976696e548d9570dbe53c4))
+* ENGDESK-45429 - Add sip_region documentation for dial and transfer command ([676e3e6](https://github.com/team-telnyx/telnyx-go/commit/676e3e6a179adecd3b1112ea5777af5a49433578))
+* ENGDESK-46399 - Add sip_call_id filter for retreiving recordings ([b7fa58d](https://github.com/team-telnyx/telnyx-go/commit/b7fa58da7364610ae1dd79598c59431296c0e7a5))
+* TELAPPS-5399 Add region to conference commands ([f81c9c7](https://github.com/team-telnyx/telnyx-go/commit/f81c9c7705fd1805ec6f15121d75f5df857a75b9))
+* TELAPPS-ENGDESK-46395 Add keep_after_hangup to enqueue command ([1105462](https://github.com/team-telnyx/telnyx-go/commit/1105462342509db20c0d50f6480f966234e92bbb))
+* TELAPPS-ENGDESK-46395 Add PATCH /queues/{queue_name}/calls/{call_control_id} endpoint ([11a6b03](https://github.com/team-telnyx/telnyx-go/commit/11a6b03e6d95857c1ec882b1944ccd9c73c98fd2))
+
+
+### Bug Fixes
+
+* **client:** fix issue with example webhook payload ([e5a9631](https://github.com/team-telnyx/telnyx-go/commit/e5a9631ed59080df3fa2edb14de6b0f8169633fc))
+
+
+### Chores
+
+* **internal:** grammar fix (it's -&gt; its) ([64a41b0](https://github.com/team-telnyx/telnyx-go/commit/64a41b02454d68e38f48a65170e672d592e2d605))
+
 ## 3.5.0 (2025-10-27)
 
 Full Changelog: [v3.4.0...v3.5.0](https://github.com/team-telnyx/telnyx-go/compare/v3.4.0...v3.5.0)
