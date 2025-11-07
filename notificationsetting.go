@@ -166,26 +166,13 @@ const (
 )
 
 type NotificationSettingParam struct {
-	// A UUID.
-	ID                        param.Opt[string] `json:"id,omitzero"`
-	AssociatedRecordType      param.Opt[string] `json:"associated_record_type,omitzero"`
-	AssociatedRecordTypeValue param.Opt[string] `json:"associated_record_type_value,omitzero"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt param.Opt[time.Time] `json:"created_at,omitzero" format:"date-time"`
 	// A UUID reference to the associated Notification Channel.
 	NotificationChannelID param.Opt[string] `json:"notification_channel_id,omitzero"`
 	// A UUID reference to the associated Notification Event Condition.
 	NotificationEventConditionID param.Opt[string] `json:"notification_event_condition_id,omitzero"`
 	// A UUID reference to the associated Notification Profile.
-	NotificationProfileID param.Opt[string] `json:"notification_profile_id,omitzero"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt  param.Opt[time.Time]                `json:"updated_at,omitzero" format:"date-time"`
-	Parameters []NotificationSettingParameterParam `json:"parameters,omitzero"`
-	// Most preferences apply immediately; however, other may needs to propagate.
-	//
-	// Any of "enabled", "enable-received", "enable-pending", "enable-submtited",
-	// "delete-received", "delete-pending", "delete-submitted", "deleted".
-	Status NotificationSettingStatus `json:"status,omitzero"`
+	NotificationProfileID param.Opt[string]                   `json:"notification_profile_id,omitzero"`
+	Parameters            []NotificationSettingParameterParam `json:"parameters,omitzero"`
 	paramObj
 }
 
