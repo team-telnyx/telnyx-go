@@ -168,22 +168,7 @@ const (
 )
 
 type ReservedPhoneNumberParam struct {
-	ID param.Opt[string] `json:"id,omitzero" format:"uuid"`
-	// An ISO 8901 datetime string denoting when the individual number reservation was
-	// created.
-	CreatedAt param.Opt[time.Time] `json:"created_at,omitzero" format:"date-time"`
-	// An ISO 8901 datetime string for when the individual number reservation is going
-	// to expire
-	ExpiredAt   param.Opt[time.Time] `json:"expired_at,omitzero" format:"date-time"`
-	PhoneNumber param.Opt[string]    `json:"phone_number,omitzero"`
-	RecordType  param.Opt[string]    `json:"record_type,omitzero"`
-	// An ISO 8901 datetime string for when the the individual number reservation was
-	// updated.
-	UpdatedAt param.Opt[time.Time] `json:"updated_at,omitzero" format:"date-time"`
-	// The status of the phone number's reservation.
-	//
-	// Any of "pending", "success", "failure".
-	Status ReservedPhoneNumberStatus `json:"status,omitzero"`
+	PhoneNumber param.Opt[string] `json:"phone_number,omitzero"`
 	paramObj
 }
 

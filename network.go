@@ -118,8 +118,6 @@ const (
 type NetworkCreateParam struct {
 	// A user specified name for the network.
 	Name string `json:"name,required"`
-	// Identifies the type of the resource.
-	RecordType param.Opt[string] `json:"record_type,omitzero"`
 	RecordParam
 }
 
@@ -484,10 +482,6 @@ type NetworkListInterfacesParamsFilter struct {
 	Name param.Opt[string] `query:"name,omitzero" json:"-"`
 	// The interface type to filter on.
 	Type param.Opt[string] `query:"type,omitzero" json:"-"`
-	// The interface status to filter on.
-	//
-	// Any of "created", "provisioning", "provisioned", "deleting".
-	Status InterfaceStatus `query:"status,omitzero" json:"-"`
 	paramObj
 }
 
