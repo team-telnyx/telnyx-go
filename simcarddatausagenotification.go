@@ -156,15 +156,8 @@ func (r *SimCardDataUsageNotificationThreshold) UnmarshalJSON(data []byte) error
 
 // The SIM card individual data usage notification information.
 type SimCardDataUsageNotificationParam struct {
-	// Identifies the resource.
-	ID param.Opt[string] `json:"id,omitzero" format:"uuid"`
-	// ISO 8601 formatted date-time indicating when the resource was created.
-	CreatedAt  param.Opt[string] `json:"created_at,omitzero"`
-	RecordType param.Opt[string] `json:"record_type,omitzero"`
 	// The identification UUID of the related SIM card resource.
 	SimCardID param.Opt[string] `json:"sim_card_id,omitzero" format:"uuid"`
-	// ISO 8601 formatted date-time indicating when the resource was updated.
-	UpdatedAt param.Opt[string] `json:"updated_at,omitzero"`
 	// Data usage threshold that will trigger the notification.
 	Threshold SimCardDataUsageNotificationThresholdParam `json:"threshold,omitzero"`
 	paramObj
