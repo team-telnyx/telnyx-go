@@ -141,16 +141,8 @@ func (r GlobalIPAssignment) ToParam() GlobalIPAssignmentParam {
 type GlobalIPAssignmentParam struct {
 	// Global IP ID.
 	GlobalIPID param.Opt[string] `json:"global_ip_id,omitzero" format:"uuid"`
-	// Status of BGP announcement.
-	IsAnnounced param.Opt[bool] `json:"is_announced,omitzero"`
-	// Wireguard peer is connected.
-	IsConnected param.Opt[bool] `json:"is_connected,omitzero"`
 	// Enable/disable BGP announcement.
 	IsInMaintenance param.Opt[bool] `json:"is_in_maintenance,omitzero"`
-	// Identifies the type of the resource.
-	RecordType param.Opt[string] `json:"record_type,omitzero"`
-	// The current status of the interface deployment.
-	Status InterfaceStatus `json:"status,omitzero"`
 	// Wireguard peer ID.
 	WireguardPeerID param.Opt[string] `json:"wireguard_peer_id,omitzero" format:"uuid"`
 	RecordParam
@@ -197,14 +189,6 @@ func (r Record) ToParam() RecordParam {
 }
 
 type RecordParam struct {
-	// Identifies the resource.
-	ID param.Opt[string] `json:"id,omitzero" format:"uuid"`
-	// ISO 8601 formatted date-time indicating when the resource was created.
-	CreatedAt param.Opt[string] `json:"created_at,omitzero"`
-	// Identifies the type of the resource.
-	RecordType param.Opt[string] `json:"record_type,omitzero"`
-	// ISO 8601 formatted date-time indicating when the resource was updated.
-	UpdatedAt param.Opt[string] `json:"updated_at,omitzero"`
 	paramObj
 }
 
@@ -323,8 +307,6 @@ func (r *GlobalIPAssignmentUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type GlobalIPAssignmentUpdateParamsBody struct {
-	GlobalIPID      param.Opt[string] `json:"global_ip_id,omitzero"`
-	WireguardPeerID param.Opt[string] `json:"wireguard_peer_id,omitzero"`
 	GlobalIPAssignmentParam
 }
 

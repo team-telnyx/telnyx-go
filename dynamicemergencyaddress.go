@@ -168,30 +168,16 @@ const (
 type DynamicEmergencyAddressParam struct {
 	AdministrativeArea string `json:"administrative_area,required"`
 	// Any of "US", "CA", "PR".
-	CountryCode DynamicEmergencyAddressCountryCode `json:"country_code,omitzero,required"`
-	HouseNumber string                             `json:"house_number,required"`
-	Locality    string                             `json:"locality,required"`
-	PostalCode  string                             `json:"postal_code,required"`
-	StreetName  string                             `json:"street_name,required"`
-	ID          param.Opt[string]                  `json:"id,omitzero"`
-	// ISO 8601 formatted date of when the resource was created
-	CreatedAt       param.Opt[string] `json:"created_at,omitzero"`
-	ExtendedAddress param.Opt[string] `json:"extended_address,omitzero"`
-	HouseSuffix     param.Opt[string] `json:"house_suffix,omitzero"`
-	// Identifies the type of the resource.
-	RecordType param.Opt[string] `json:"record_type,omitzero"`
-	// Unique location reference string to be used in SIP INVITE from / p-asserted
-	// headers.
-	SipGeolocationID      param.Opt[string] `json:"sip_geolocation_id,omitzero"`
-	StreetPostDirectional param.Opt[string] `json:"street_post_directional,omitzero"`
-	StreetPreDirectional  param.Opt[string] `json:"street_pre_directional,omitzero"`
-	StreetSuffix          param.Opt[string] `json:"street_suffix,omitzero"`
-	// ISO 8601 formatted date of when the resource was last updated
-	UpdatedAt param.Opt[string] `json:"updated_at,omitzero"`
-	// Status of dynamic emergency address
-	//
-	// Any of "pending", "activated", "rejected".
-	Status DynamicEmergencyAddressStatus `json:"status,omitzero"`
+	CountryCode           DynamicEmergencyAddressCountryCode `json:"country_code,omitzero,required"`
+	HouseNumber           string                             `json:"house_number,required"`
+	Locality              string                             `json:"locality,required"`
+	PostalCode            string                             `json:"postal_code,required"`
+	StreetName            string                             `json:"street_name,required"`
+	ExtendedAddress       param.Opt[string]                  `json:"extended_address,omitzero"`
+	HouseSuffix           param.Opt[string]                  `json:"house_suffix,omitzero"`
+	StreetPostDirectional param.Opt[string]                  `json:"street_post_directional,omitzero"`
+	StreetPreDirectional  param.Opt[string]                  `json:"street_pre_directional,omitzero"`
+	StreetSuffix          param.Opt[string]                  `json:"street_suffix,omitzero"`
 	paramObj
 }
 

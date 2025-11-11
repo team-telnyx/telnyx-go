@@ -148,16 +148,10 @@ const (
 
 // A Notification Channel
 type NotificationChannelParam struct {
-	// A UUID.
-	ID param.Opt[string] `json:"id,omitzero"`
 	// The destination associated with the channel type.
 	ChannelDestination param.Opt[string] `json:"channel_destination,omitzero"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt param.Opt[time.Time] `json:"created_at,omitzero" format:"date-time"`
 	// A UUID reference to the associated Notification Profile.
 	NotificationProfileID param.Opt[string] `json:"notification_profile_id,omitzero"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt param.Opt[time.Time] `json:"updated_at,omitzero" format:"date-time"`
 	// A Channel Type ID
 	//
 	// Any of "sms", "voice", "email", "webhook".

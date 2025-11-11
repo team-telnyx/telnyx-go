@@ -153,27 +153,9 @@ type MigrationParams struct {
 	TargetBucketName string `json:"target_bucket_name,required"`
 	// Telnyx Cloud Storage region to migrate the data to.
 	TargetRegion string `json:"target_region,required"`
-	// Unique identifier for the data migration.
-	ID param.Opt[string] `json:"id,omitzero"`
-	// Total amount of data that has been succesfully migrated.
-	BytesMigrated param.Opt[int64] `json:"bytes_migrated,omitzero"`
-	// Total amount of data found in source bucket to migrate.
-	BytesToMigrate param.Opt[int64] `json:"bytes_to_migrate,omitzero"`
-	// Time when data migration was created
-	CreatedAt param.Opt[time.Time] `json:"created_at,omitzero" format:"date-time"`
-	// Estimated time the migration will complete.
-	Eta param.Opt[time.Time] `json:"eta,omitzero" format:"date-time"`
-	// Time when data migration was last copied from the source.
-	LastCopy param.Opt[time.Time] `json:"last_copy,omitzero" format:"date-time"`
 	// If true, will continue to poll the source bucket to ensure new data is
 	// continually migrated over.
 	Refresh param.Opt[bool] `json:"refresh,omitzero"`
-	// Current speed of the migration.
-	Speed param.Opt[int64] `json:"speed,omitzero"`
-	// Status of the migration.
-	//
-	// Any of "pending", "checking", "migrating", "complete", "error", "stopped".
-	Status MigrationParamsStatus `json:"status,omitzero"`
 	paramObj
 }
 

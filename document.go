@@ -216,28 +216,10 @@ const (
 )
 
 type DocServiceDocumentParam struct {
-	// Identifies the resource.
-	ID param.Opt[string] `json:"id,omitzero" format:"uuid"`
-	// The document's content_type.
-	ContentType param.Opt[string] `json:"content_type,omitzero"`
-	// ISO 8601 formatted date-time indicating when the resource was created.
-	CreatedAt param.Opt[string] `json:"created_at,omitzero"`
 	// Optional reference string for customer tracking.
 	CustomerReference param.Opt[string] `json:"customer_reference,omitzero"`
 	// The filename of the document.
 	Filename param.Opt[string] `json:"filename,omitzero"`
-	// Identifies the type of the resource.
-	RecordType param.Opt[string] `json:"record_type,omitzero"`
-	// The document's SHA256 hash provided for optional verification purposes.
-	Sha256 param.Opt[string] `json:"sha256,omitzero"`
-	// ISO 8601 formatted date-time indicating when the resource was updated.
-	UpdatedAt param.Opt[string] `json:"updated_at,omitzero"`
-	// Indicates the document's filesize
-	Size DocServiceDocumentSizeParam `json:"size,omitzero"`
-	// Indicates the current document reviewing status
-	//
-	// Any of "pending", "verified", "denied".
-	Status DocServiceDocumentStatus `json:"status,omitzero"`
 	paramObj
 }
 
@@ -251,10 +233,6 @@ func (r *DocServiceDocumentParam) UnmarshalJSON(data []byte) error {
 
 // Indicates the document's filesize
 type DocServiceDocumentSizeParam struct {
-	// The number of bytes
-	Amount param.Opt[int64] `json:"amount,omitzero"`
-	// Identifies the unit
-	Unit param.Opt[string] `json:"unit,omitzero"`
 	paramObj
 }
 
