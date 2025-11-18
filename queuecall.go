@@ -56,7 +56,7 @@ func (r *QueueCallService) Get(ctx context.Context, callControlID string, query 
 // Update queued call's keep_after_hangup flag
 func (r *QueueCallService) Update(ctx context.Context, callControlID string, params QueueCallUpdateParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if params.QueueName == "" {
 		err = errors.New("missing required queue_name parameter")
 		return
@@ -86,7 +86,7 @@ func (r *QueueCallService) List(ctx context.Context, queueName string, query Que
 // command to remove it from the queue.
 func (r *QueueCallService) Remove(ctx context.Context, callControlID string, body QueueCallRemoveParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.QueueName == "" {
 		err = errors.New("missing required queue_name parameter")
 		return

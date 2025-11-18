@@ -78,7 +78,7 @@ func (r *TexmlAccountConferenceParticipantService) Update(ctx context.Context, c
 // Deletes a conference participant
 func (r *TexmlAccountConferenceParticipantService) Delete(ctx context.Context, callSidOrParticipantLabel string, body TexmlAccountConferenceParticipantDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return

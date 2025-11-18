@@ -69,7 +69,7 @@ func (r *MobilePushCredentialService) List(ctx context.Context, query MobilePush
 // Deletes a mobile push credential based on the given `push_credential_id`
 func (r *MobilePushCredentialService) Delete(ctx context.Context, pushCredentialID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if pushCredentialID == "" {
 		err = errors.New("missing required push_credential_id parameter")
 		return
