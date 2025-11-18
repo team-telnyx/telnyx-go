@@ -70,7 +70,7 @@ func (r *RoomCompositionService) List(ctx context.Context, query RoomComposition
 // Synchronously delete a room composition.
 func (r *RoomCompositionService) Delete(ctx context.Context, roomCompositionID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if roomCompositionID == "" {
 		err = errors.New("missing required room_composition_id parameter")
 		return

@@ -65,7 +65,7 @@ func (r *PortingOrderAdditionalDocumentService) List(ctx context.Context, id str
 // Deletes an additional document for a porting order.
 func (r *PortingOrderAdditionalDocumentService) Delete(ctx context.Context, additionalDocumentID string, body PortingOrderAdditionalDocumentDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.ID == "" {
 		err = errors.New("missing required id parameter")
 		return

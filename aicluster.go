@@ -61,7 +61,7 @@ func (r *AIClusterService) List(ctx context.Context, query AIClusterListParams, 
 // Delete a cluster
 func (r *AIClusterService) Delete(ctx context.Context, taskID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if taskID == "" {
 		err = errors.New("missing required task_id parameter")
 		return

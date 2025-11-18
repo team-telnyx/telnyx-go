@@ -35,7 +35,7 @@ func NewTexmlAccountRecordingJsonService(opts ...option.RequestOption) (r TexmlA
 // Deletes recording resource identified by recording id.
 func (r *TexmlAccountRecordingJsonService) DeleteRecordingSidJson(ctx context.Context, recordingSid string, body TexmlAccountRecordingJsonDeleteRecordingSidJsonParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return

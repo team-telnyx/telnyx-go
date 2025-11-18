@@ -53,7 +53,7 @@ func (r *PortingOrderVerificationCodeService) List(ctx context.Context, id strin
 // Send the verification code for all porting phone numbers.
 func (r *PortingOrderVerificationCodeService) Send(ctx context.Context, id string, body PortingOrderVerificationCodeSendParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

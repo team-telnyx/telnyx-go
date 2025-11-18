@@ -61,7 +61,7 @@ func (r *RoomRecordingService) List(ctx context.Context, query RoomRecordingList
 // Synchronously delete a Room Recording.
 func (r *RoomRecordingService) Delete(ctx context.Context, roomRecordingID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if roomRecordingID == "" {
 		err = errors.New("missing required room_recording_id parameter")
 		return
