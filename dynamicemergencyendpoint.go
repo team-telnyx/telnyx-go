@@ -144,19 +144,7 @@ type DynamicEmergencyEndpointParam struct {
 	CallbackNumber string `json:"callback_number,required"`
 	CallerName     string `json:"caller_name,required"`
 	// An id of a currently active dynamic emergency location.
-	DynamicEmergencyAddressID string            `json:"dynamic_emergency_address_id,required"`
-	ID                        param.Opt[string] `json:"id,omitzero"`
-	// ISO 8601 formatted date of when the resource was created
-	CreatedAt param.Opt[string] `json:"created_at,omitzero"`
-	// Identifies the type of the resource.
-	RecordType param.Opt[string] `json:"record_type,omitzero"`
-	SipFromID  param.Opt[string] `json:"sip_from_id,omitzero"`
-	// ISO 8601 formatted date of when the resource was last updated
-	UpdatedAt param.Opt[string] `json:"updated_at,omitzero"`
-	// Status of dynamic emergency address
-	//
-	// Any of "pending", "activated", "rejected".
-	Status DynamicEmergencyEndpointStatus `json:"status,omitzero"`
+	DynamicEmergencyAddressID string `json:"dynamic_emergency_address_id,required"`
 	paramObj
 }
 

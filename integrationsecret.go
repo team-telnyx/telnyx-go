@@ -58,7 +58,7 @@ func (r *IntegrationSecretService) List(ctx context.Context, query IntegrationSe
 // Delete an integration secret given its ID.
 func (r *IntegrationSecretService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

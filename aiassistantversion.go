@@ -88,7 +88,7 @@ func (r *AIAssistantVersionService) List(ctx context.Context, assistantID string
 // version
 func (r *AIAssistantVersionService) Delete(ctx context.Context, versionID string, body AIAssistantVersionDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.AssistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return

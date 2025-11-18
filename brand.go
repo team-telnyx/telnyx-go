@@ -123,7 +123,7 @@ func (r *BrandService) GetFeedback(ctx context.Context, brandID string, opts ...
 // Resend brand 2FA email
 func (r *BrandService) Resend2faEmail(ctx context.Context, brandID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
 		return

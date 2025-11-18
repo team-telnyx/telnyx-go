@@ -57,7 +57,7 @@ func (r *AIIntegrationConnectionService) List(ctx context.Context, opts ...optio
 // Delete a specific integration connection.
 func (r *AIIntegrationConnectionService) Delete(ctx context.Context, userConnectionID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if userConnectionID == "" {
 		err = errors.New("missing required user_connection_id parameter")
 		return

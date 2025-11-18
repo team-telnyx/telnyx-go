@@ -35,7 +35,7 @@ func NewRecordingActionService(opts ...option.RequestOption) (r RecordingActionS
 // Permanently deletes a list of call recordings.
 func (r *RecordingActionService) Delete(ctx context.Context, body RecordingActionDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "recordings/actions/delete"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return

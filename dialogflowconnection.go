@@ -76,7 +76,7 @@ func (r *DialogflowConnectionService) Update(ctx context.Context, connectionID s
 // Deletes a stored Dialogflow Connection.
 func (r *DialogflowConnectionService) Delete(ctx context.Context, connectionID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
 		return

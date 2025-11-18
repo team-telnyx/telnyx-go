@@ -398,89 +398,16 @@ const (
 )
 
 type SimCardParam struct {
-	// The Embedded Identity Document (eID) for eSIM cards.
-	Eid param.Opt[string] `json:"eid,omitzero"`
-	// Identifies the resource.
-	ID param.Opt[string] `json:"id,omitzero" format:"uuid"`
-	// Indicate whether the SIM card has any pending (in-progress) actions.
-	ActionsInProgress param.Opt[bool] `json:"actions_in_progress,omitzero"`
-	// ISO 8601 formatted date-time indicating when the resource was created.
-	CreatedAt param.Opt[string] `json:"created_at,omitzero"`
-	// IMEI of the device where a given SIM card is currently being used.
-	CurrentImei param.Opt[string] `json:"current_imei,omitzero"`
-	// Mobile Country Code of the current network to which the SIM card is connected.
-	// It's a three decimal digit that identifies a country.<br/><br/> This code is
-	// commonly seen joined with a Mobile Network Code (MNC) in a tuple that allows
-	// identifying a carrier known as PLMN (Public Land Mobile Network) code.
-	CurrentMcc param.Opt[string] `json:"current_mcc,omitzero"`
-	// Mobile Network Code of the current network to which the SIM card is connected.
-	// It's a two to three decimal digits that identify a network.<br/><br/> This code
-	// is commonly seen joined with a Mobile Country Code (MCC) in a tuple that allows
-	// identifying a carrier known as PLMN (Public Land Mobile Network) code.
-	CurrentMnc param.Opt[string] `json:"current_mnc,omitzero"`
-	// The ICCID is the identifier of the specific SIM card/chip. Each SIM is
-	// internationally identified by its integrated circuit card identifier (ICCID).
-	// ICCIDs are stored in the SIM card's memory and are also engraved or printed on
-	// the SIM card body during a process called personalization.
-	Iccid param.Opt[string] `json:"iccid,omitzero"`
-	// SIM cards are identified on their individual network operators by a unique
-	// International Mobile Subscriber Identity (IMSI). <br/> Mobile network operators
-	// connect mobile phone calls and communicate with their market SIM cards using
-	// their IMSIs. The IMSI is stored in the Subscriber Identity Module (SIM) inside
-	// the device and is sent by the device to the appropriate network. It is used to
-	// acquire the details of the device in the Home Location Register (HLR) or the
-	// Visitor Location Register (VLR).
-	Imsi param.Opt[string] `json:"imsi,omitzero"`
-	// The SIM's address in the currently connected network. This IPv4 address is
-	// usually obtained dynamically, so it may vary according to the location or new
-	// connections.
-	Ipv4 param.Opt[string] `json:"ipv4,omitzero"`
-	// The SIM's address in the currently connected network. This IPv6 address is
-	// usually obtained dynamically, so it may vary according to the location or new
-	// connections.
-	Ipv6 param.Opt[string] `json:"ipv6,omitzero"`
-	// Mobile Station International Subscriber Directory Number (MSISDN) is a number
-	// used to identify a mobile phone number internationally. <br/> MSISDN is defined
-	// by the E.164 numbering plan. It includes a country code and a National
-	// Destination Code which identifies the subscriber's operator.
-	Msisdn     param.Opt[string] `json:"msisdn,omitzero"`
-	RecordType param.Opt[string] `json:"record_type,omitzero"`
 	// The group SIMCardGroup identification. This attribute can be <code>null</code>
 	// when it's present in an associated resource.
 	SimCardGroupID param.Opt[string] `json:"sim_card_group_id,omitzero" format:"uuid"`
-	// ISO 8601 formatted date-time indicating when the resource was updated.
-	UpdatedAt param.Opt[string] `json:"updated_at,omitzero"`
-	// The version of the SIM card.
-	Version param.Opt[string] `json:"version,omitzero"`
 	// List of IMEIs authorized to use a given SIM card.
 	AuthorizedImeis []string `json:"authorized_imeis,omitzero"`
-	// The installation status of the eSIM. Only applicable for eSIM cards.
-	//
-	// Any of "released", "disabled".
-	EsimInstallationStatus SimCardEsimInstallationStatus `json:"esim_installation_status,omitzero"`
-	// The SIM card consumption so far in the current billing cycle.
-	CurrentBillingPeriodConsumedData SimCardCurrentBillingPeriodConsumedDataParam `json:"current_billing_period_consumed_data,omitzero"`
-	// Current physical location data of a given SIM card. Accuracy is given in meters.
-	CurrentDeviceLocation SimCardCurrentDeviceLocationParam `json:"current_device_location,omitzero"`
 	// The SIM card individual data limit configuration.
-	DataLimit SimCardDataLimitParam `json:"data_limit,omitzero"`
-	// Indicates whether the device is actively connected to a network and able to run
-	// data.
-	//
-	// Any of "connected", "disconnected", "unknown".
-	LiveDataSession SimCardLiveDataSession `json:"live_data_session,omitzero"`
-	// PIN and PUK codes for the SIM card. Only available when
-	// include_pin_puk_codes=true is set in the request.
-	PinPukCodes SimCardPinPukCodesParam `json:"pin_puk_codes,omitzero"`
-	// List of resources with actions in progress.
-	ResourcesWithInProgressActions []any                     `json:"resources_with_in_progress_actions,omitzero"`
-	Status                         shared.SimCardStatusParam `json:"status,omitzero"`
+	DataLimit SimCardDataLimitParam     `json:"data_limit,omitzero"`
+	Status    shared.SimCardStatusParam `json:"status,omitzero"`
 	// Searchable tags associated with the SIM card
 	Tags []string `json:"tags,omitzero"`
-	// The type of SIM card
-	//
-	// Any of "physical", "esim".
-	Type SimCardType `json:"type,omitzero"`
 	paramObj
 }
 
@@ -549,19 +476,6 @@ func init() {
 // PIN and PUK codes for the SIM card. Only available when
 // include_pin_puk_codes=true is set in the request.
 type SimCardPinPukCodesParam struct {
-	// The primary Personal Identification Number (PIN) for the SIM card. This is a
-	// 4-digit code used to protect the SIM card from unauthorized use.
-	Pin1 param.Opt[string] `json:"pin1,omitzero"`
-	// The secondary Personal Identification Number (PIN2) for the SIM card. This is a
-	// 4-digit code used for additional security features.
-	Pin2 param.Opt[string] `json:"pin2,omitzero"`
-	// The primary Personal Unblocking Key (PUK1) for the SIM card. This is an 8-digit
-	// code used to unlock the SIM card if PIN1 is entered incorrectly multiple times.
-	Puk1 param.Opt[string] `json:"puk1,omitzero"`
-	// The secondary Personal Unblocking Key (PUK2) for the SIM card. This is an
-	// 8-digit code used to unlock the SIM card if PIN2 is entered incorrectly multiple
-	// times.
-	Puk2 param.Opt[string] `json:"puk2,omitzero"`
 	paramObj
 }
 

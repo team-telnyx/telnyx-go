@@ -88,7 +88,7 @@ func (r *RoomService) List(ctx context.Context, query RoomListParams, opts ...op
 // for that room.
 func (r *RoomService) Delete(ctx context.Context, roomID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if roomID == "" {
 		err = errors.New("missing required room_id parameter")
 		return

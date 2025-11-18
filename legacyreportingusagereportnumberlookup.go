@@ -41,7 +41,7 @@ func NewLegacyReportingUsageReportNumberLookupService(opts ...option.RequestOpti
 // Submit a new telco data usage report
 func (r *LegacyReportingUsageReportNumberLookupService) New(ctx context.Context, body LegacyReportingUsageReportNumberLookupNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "legacy/reporting/usage_reports/number_lookup"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -50,7 +50,7 @@ func (r *LegacyReportingUsageReportNumberLookupService) New(ctx context.Context,
 // Retrieve a specific telco data usage report by its ID
 func (r *LegacyReportingUsageReportNumberLookupService) Get(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -63,7 +63,7 @@ func (r *LegacyReportingUsageReportNumberLookupService) Get(ctx context.Context,
 // Retrieve a paginated list of telco data usage reports
 func (r *LegacyReportingUsageReportNumberLookupService) List(ctx context.Context, query LegacyReportingUsageReportNumberLookupListParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "legacy/reporting/usage_reports/number_lookup"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, nil, opts...)
 	return
@@ -72,7 +72,7 @@ func (r *LegacyReportingUsageReportNumberLookupService) List(ctx context.Context
 // Delete a specific telco data usage report by its ID
 func (r *LegacyReportingUsageReportNumberLookupService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

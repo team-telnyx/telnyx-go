@@ -38,7 +38,7 @@ func NewTexmlAccountTranscriptionJsonService(opts ...option.RequestOption) (r Te
 // Permanently deletes a recording transcription.
 func (r *TexmlAccountTranscriptionJsonService) DeleteRecordingTranscriptionSidJson(ctx context.Context, recordingTranscriptionSid string, body TexmlAccountTranscriptionJsonDeleteRecordingTranscriptionSidJsonParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return

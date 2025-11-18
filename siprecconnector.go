@@ -70,7 +70,7 @@ func (r *SiprecConnectorService) Update(ctx context.Context, connectorName strin
 // Deletes a stored SIPREC connector.
 func (r *SiprecConnectorService) Delete(ctx context.Context, connectorName string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if connectorName == "" {
 		err = errors.New("missing required connector_name parameter")
 		return

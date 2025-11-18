@@ -158,8 +158,6 @@ type MigrationSourceParams struct {
 	// Any of "aws", "telnyx".
 	Provider     MigrationSourceParamsProvider     `json:"provider,omitzero,required"`
 	ProviderAuth MigrationSourceParamsProviderAuth `json:"provider_auth,omitzero,required"`
-	// Unique identifier for the data migration source.
-	ID param.Opt[string] `json:"id,omitzero"`
 	// For intra-Telnyx buckets migration, specify the source bucket region in this
 	// field.
 	SourceRegion param.Opt[string] `json:"source_region,omitzero"`

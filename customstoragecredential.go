@@ -76,7 +76,7 @@ func (r *CustomStorageCredentialService) Update(ctx context.Context, connectionI
 // Deletes a stored custom credentials configuration.
 func (r *CustomStorageCredentialService) Delete(ctx context.Context, connectionID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
 		return

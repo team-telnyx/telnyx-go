@@ -91,7 +91,7 @@ func (r *AIConversationService) List(ctx context.Context, query AIConversationLi
 // Delete a specific conversation by its ID.
 func (r *AIConversationService) Delete(ctx context.Context, conversationID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if conversationID == "" {
 		err = errors.New("missing required conversation_id parameter")
 		return

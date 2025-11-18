@@ -89,7 +89,7 @@ func (r *AIAssistantCanaryDeployService) Update(ctx context.Context, assistantID
 // Removes all canary deploy configurations for the specified assistant.
 func (r *AIAssistantCanaryDeployService) Delete(ctx context.Context, assistantID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return

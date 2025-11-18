@@ -72,7 +72,7 @@ func (r *MediaService) List(ctx context.Context, query MediaListParams, opts ...
 // Deletes a stored media file.
 func (r *MediaService) Delete(ctx context.Context, mediaName string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if mediaName == "" {
 		err = errors.New("missing required media_name parameter")
 		return
