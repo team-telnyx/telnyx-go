@@ -1,5 +1,19 @@
 # Changelog
 
+## 3.6.1 (2025-11-18)
+
+Full Changelog: [v3.6.0...v3.6.1](https://github.com/team-telnyx/telnyx-go/compare/v3.6.0...v3.6.1)
+
+### Bug Fixes
+
+* **client:** correctly specify Accept header with */* instead of empty ([938766d](https://github.com/team-telnyx/telnyx-go/commit/938766d6634cb58bb4f8dd49b9e531195c0dd4d6))
+* remove readonly parameters from request params ([882538a](https://github.com/team-telnyx/telnyx-go/commit/882538a8830065cea3be9a19dfee2fef8fda2f5c))
+
+
+### Chores
+
+* bump gjson version ([b2d481b](https://github.com/team-telnyx/telnyx-go/commit/b2d481b629d03ea2b16952aa3f3f4748e8c4e6bf))
+
 ## 3.6.0 (2025-11-03)
 
 Full Changelog: [v3.5.0...v3.6.0](https://github.com/team-telnyx/telnyx-go/compare/v3.5.0...v3.6.0)
