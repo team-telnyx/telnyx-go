@@ -76,7 +76,7 @@ func (r *OAuthService) Register(ctx context.Context, body OAuthRegisterParams, o
 // OAuth 2.0 authorization endpoint for the authorization code flow
 func (r *OAuthService) GetAuthorize(ctx context.Context, query OAuthGetAuthorizeParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "oauth/authorize"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, nil, opts...)
 	return
