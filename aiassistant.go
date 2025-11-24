@@ -154,6 +154,28 @@ func (r *AIAssistantService) Import(ctx context.Context, body AIAssistantImportP
 	return
 }
 
+// Send an SMS message for an assistant. This endpoint:
+//
+//  1. Validates the assistant exists and has messaging profile configured
+//  2. If should_create_conversation is true, creates a new conversation with
+//     metadata
+//  3. Sends the SMS message (If `text` is set, this will be sent. Otherwise, if
+//     this is the first message in the conversation and the assistant has a
+//     `greeting` configured, this will be sent. Otherwise the assistant will
+//     generate the text to send.)
+//  4. Updates conversation metadata if provided
+//  5. Returns the conversation ID
+func (r *AIAssistantService) SendSMS(ctx context.Context, assistantID string, body AIAssistantSendSMSParams, opts ...option.RequestOption) (res *AIAssistantSendSMSResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if assistantID == "" {
+		err = errors.New("missing required assistant_id parameter")
+		return
+	}
+	path := fmt.Sprintf("ai/assistants/%s/chat/sms", assistantID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
 // Assistant configuration including choice of LLM, custom instructions, and tools.
 type AssistantParam struct {
 	// The system instructions that the voice assistant uses during the gather command
@@ -1650,22 +1672,29 @@ func (r *TelephonySettingsParam) UnmarshalJSON(data []byte) error {
 }
 
 type TranscriptionSettings struct {
-	// The language of the audio to be transcribed. This is only applicable for
-	// `openai/whisper-large-v3-turbo` model. If not set, of if set to `auto`, the
-	// model will automatically detect the language. For the full list of supported
-	// languages, see the
-	// [whisper tokenizer](https://github.com/openai/whisper/blob/main/whisper/tokenizer.py).
+	// The language of the audio to be transcribed. If not set, of if set to `auto`,
+	// the model will automatically detect the language.
 	Language string `json:"language"`
-	// The speech to text model to be used by the voice assistant.
+	// The speech to text model to be used by the voice assistant. All the deepgram
+	// models are run on-premise.
 	//
-	//   - `distil-whisper/distil-large-v2` is lower latency but English-only.
-	//   - `openai/whisper-large-v3-turbo` is multi-lingual with automatic language
-	//     detection but slightly higher latency.
-	Model string `json:"model"`
+	//   - `deepgram/flux` is optimized for turn-taking but is English-only.
+	//   - `deepgram/nova-3` is multi-lingual with automatic language detection but
+	//     slightly higher latency.
+	//
+	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
+	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
+	Model TranscriptionSettingsModel `json:"model"`
+	// Region on third party cloud providers (currently Azure) if using one of their
+	// models
+	Region   string                        `json:"region"`
+	Settings TranscriptionSettingsSettings `json:"settings"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Language    respjson.Field
 		Model       respjson.Field
+		Region      respjson.Field
+		Settings    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1686,19 +1715,67 @@ func (r TranscriptionSettings) ToParam() TranscriptionSettingsParam {
 	return param.Override[TranscriptionSettingsParam](json.RawMessage(r.RawJSON()))
 }
 
+// The speech to text model to be used by the voice assistant. All the deepgram
+// models are run on-premise.
+//
+//   - `deepgram/flux` is optimized for turn-taking but is English-only.
+//   - `deepgram/nova-3` is multi-lingual with automatic language detection but
+//     slightly higher latency.
+type TranscriptionSettingsModel string
+
+const (
+	TranscriptionSettingsModelDeepgramFlux               TranscriptionSettingsModel = "deepgram/flux"
+	TranscriptionSettingsModelDeepgramNova3              TranscriptionSettingsModel = "deepgram/nova-3"
+	TranscriptionSettingsModelDeepgramNova2              TranscriptionSettingsModel = "deepgram/nova-2"
+	TranscriptionSettingsModelAzureFast                  TranscriptionSettingsModel = "azure/fast"
+	TranscriptionSettingsModelDistilWhisperDistilLargeV2 TranscriptionSettingsModel = "distil-whisper/distil-large-v2"
+	TranscriptionSettingsModelOpenAIWhisperLargeV3Turbo  TranscriptionSettingsModel = "openai/whisper-large-v3-turbo"
+)
+
+type TranscriptionSettingsSettings struct {
+	// Available only for deepgram/flux. Confidence required to trigger an end of turn.
+	// Higher values = more reliable turn detection but slightly increased latency.
+	EotThreshold float64 `json:"eot_threshold"`
+	// Available only for deepgram/flux. Maximum milliseconds of silence before forcing
+	// an end of turn, regardless of confidence.
+	EotTimeoutMs int64 `json:"eot_timeout_ms"`
+	Numerals     bool  `json:"numerals"`
+	SmartFormat  bool  `json:"smart_format"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EotThreshold respjson.Field
+		EotTimeoutMs respjson.Field
+		Numerals     respjson.Field
+		SmartFormat  respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TranscriptionSettingsSettings) RawJSON() string { return r.JSON.raw }
+func (r *TranscriptionSettingsSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type TranscriptionSettingsParam struct {
-	// The language of the audio to be transcribed. This is only applicable for
-	// `openai/whisper-large-v3-turbo` model. If not set, of if set to `auto`, the
-	// model will automatically detect the language. For the full list of supported
-	// languages, see the
-	// [whisper tokenizer](https://github.com/openai/whisper/blob/main/whisper/tokenizer.py).
+	// The language of the audio to be transcribed. If not set, of if set to `auto`,
+	// the model will automatically detect the language.
 	Language param.Opt[string] `json:"language,omitzero"`
-	// The speech to text model to be used by the voice assistant.
+	// Region on third party cloud providers (currently Azure) if using one of their
+	// models
+	Region param.Opt[string] `json:"region,omitzero"`
+	// The speech to text model to be used by the voice assistant. All the deepgram
+	// models are run on-premise.
 	//
-	//   - `distil-whisper/distil-large-v2` is lower latency but English-only.
-	//   - `openai/whisper-large-v3-turbo` is multi-lingual with automatic language
-	//     detection but slightly higher latency.
-	Model param.Opt[string] `json:"model,omitzero"`
+	//   - `deepgram/flux` is optimized for turn-taking but is English-only.
+	//   - `deepgram/nova-3` is multi-lingual with automatic language detection but
+	//     slightly higher latency.
+	//
+	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
+	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
+	Model    TranscriptionSettingsModel         `json:"model,omitzero"`
+	Settings TranscriptionSettingsSettingsParam `json:"settings,omitzero"`
 	paramObj
 }
 
@@ -1707,6 +1784,26 @@ func (r TranscriptionSettingsParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *TranscriptionSettingsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TranscriptionSettingsSettingsParam struct {
+	// Available only for deepgram/flux. Confidence required to trigger an end of turn.
+	// Higher values = more reliable turn detection but slightly increased latency.
+	EotThreshold param.Opt[float64] `json:"eot_threshold,omitzero"`
+	// Available only for deepgram/flux. Maximum milliseconds of silence before forcing
+	// an end of turn, regardless of confidence.
+	EotTimeoutMs param.Opt[int64] `json:"eot_timeout_ms,omitzero"`
+	Numerals     param.Opt[bool]  `json:"numerals,omitzero"`
+	SmartFormat  param.Opt[bool]  `json:"smart_format,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionSettingsSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionSettingsSettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionSettingsSettingsParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2078,6 +2175,22 @@ func (r *AIAssistantChatResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type AIAssistantSendSMSResponse struct {
+	ConversationID string `json:"conversation_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ConversationID respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AIAssistantSendSMSResponse) RawJSON() string { return r.JSON.raw }
+func (r *AIAssistantSendSMSResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AIAssistantNewParams struct {
 	// System instructions for the assistant. These may be templated with
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
@@ -2239,3 +2352,48 @@ const (
 	AIAssistantImportParamsProviderVapi       AIAssistantImportParamsProvider = "vapi"
 	AIAssistantImportParamsProviderRetell     AIAssistantImportParamsProvider = "retell"
 )
+
+type AIAssistantSendSMSParams struct {
+	From                     string                                                       `json:"from,required"`
+	Text                     string                                                       `json:"text,required"`
+	To                       string                                                       `json:"to,required"`
+	ShouldCreateConversation param.Opt[bool]                                              `json:"should_create_conversation,omitzero"`
+	ConversationMetadata     map[string]AIAssistantSendSMSParamsConversationMetadataUnion `json:"conversation_metadata,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantSendSMSParams) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantSendSMSParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantSendSMSParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AIAssistantSendSMSParamsConversationMetadataUnion struct {
+	OfString param.Opt[string] `json:",omitzero,inline"`
+	OfInt    param.Opt[int64]  `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]   `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AIAssistantSendSMSParamsConversationMetadataUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfInt, u.OfBool)
+}
+func (u *AIAssistantSendSMSParamsConversationMetadataUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AIAssistantSendSMSParamsConversationMetadataUnion) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfInt) {
+		return &u.OfInt.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	}
+	return nil
+}

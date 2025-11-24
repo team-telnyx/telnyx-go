@@ -133,6 +133,10 @@ func (r *DocumentService) UploadJson(ctx context.Context, body DocumentUploadJso
 type DocServiceDocument struct {
 	// Identifies the resource.
 	ID string `json:"id" format:"uuid"`
+	// The antivirus scan status of the document.
+	//
+	// Any of "scanned", "infected", "pending_scan", "not_scanned".
+	AvScanStatus DocServiceDocumentAvScanStatus `json:"av_scan_status"`
 	// The document's content_type.
 	ContentType string `json:"content_type"`
 	// ISO 8601 formatted date-time indicating when the resource was created.
@@ -156,6 +160,7 @@ type DocServiceDocument struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                respjson.Field
+		AvScanStatus      respjson.Field
 		ContentType       respjson.Field
 		CreatedAt         respjson.Field
 		CustomerReference respjson.Field
@@ -184,6 +189,16 @@ func (r *DocServiceDocument) UnmarshalJSON(data []byte) error {
 func (r DocServiceDocument) ToParam() DocServiceDocumentParam {
 	return param.Override[DocServiceDocumentParam](json.RawMessage(r.RawJSON()))
 }
+
+// The antivirus scan status of the document.
+type DocServiceDocumentAvScanStatus string
+
+const (
+	DocServiceDocumentAvScanStatusScanned     DocServiceDocumentAvScanStatus = "scanned"
+	DocServiceDocumentAvScanStatusInfected    DocServiceDocumentAvScanStatus = "infected"
+	DocServiceDocumentAvScanStatusPendingScan DocServiceDocumentAvScanStatus = "pending_scan"
+	DocServiceDocumentAvScanStatusNotScanned  DocServiceDocumentAvScanStatus = "not_scanned"
+)
 
 // Indicates the document's filesize
 type DocServiceDocumentSize struct {

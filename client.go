@@ -170,6 +170,7 @@ type Client struct {
 	WirelessBlocklists                 WirelessBlocklistService
 	PartnerCampaigns                   PartnerCampaignService
 	WellKnown                          WellKnownService
+	InexplicitNumberOrders             InexplicitNumberOrderService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -351,6 +352,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.WirelessBlocklists = NewWirelessBlocklistService(opts...)
 	r.PartnerCampaigns = NewPartnerCampaignService(opts...)
 	r.WellKnown = NewWellKnownService(opts...)
+	r.InexplicitNumberOrders = NewInexplicitNumberOrderService(opts...)
 
 	return
 }

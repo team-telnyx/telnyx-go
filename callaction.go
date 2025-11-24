@@ -3482,11 +3482,13 @@ type CallActionStartNoiseSuppressionParams struct {
 	//
 	// Any of "inbound", "outbound", "both".
 	Direction CallActionStartNoiseSuppressionParamsDirection `json:"direction,omitzero"`
-	// The engine to use for noise suppression. A - rnnoise engine B - deepfilter
-	// engine.
+	// The engine to use for noise suppression. For backward compatibility, engines A
+	// and B are also supported, but are deprecated: A - Denoiser B - DeepFilterNet
 	//
-	// Any of "A", "B".
+	// Any of "Denoiser", "DeepFilterNet".
 	NoiseSuppressionEngine CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine `json:"noise_suppression_engine,omitzero"`
+	// Configuration parameters for noise suppression engines.
+	NoiseSuppressionEngineConfig CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineConfig `json:"noise_suppression_engine_config,omitzero"`
 	paramObj
 }
 
@@ -3507,14 +3509,30 @@ const (
 	CallActionStartNoiseSuppressionParamsDirectionBoth     CallActionStartNoiseSuppressionParamsDirection = "both"
 )
 
-// The engine to use for noise suppression. A - rnnoise engine B - deepfilter
-// engine.
+// The engine to use for noise suppression. For backward compatibility, engines A
+// and B are also supported, but are deprecated: A - Denoiser B - DeepFilterNet
 type CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine string
 
 const (
-	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineA CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "A"
-	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineB CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "B"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineDenoiser      CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "Denoiser"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineDeepFilterNet CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "DeepFilterNet"
 )
+
+// Configuration parameters for noise suppression engines.
+type CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineConfig struct {
+	// The attenuation limit for noise suppression (0-100). Only applicable for
+	// DeepFilterNet.
+	AttenuationLimit param.Opt[int64] `json:"attenuation_limit,omitzero"`
+	paramObj
+}
+
+func (r CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineConfig) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type CallActionStartPlaybackParams struct {
 	// The URL of a file to be played back on the call. The URL can point to either a

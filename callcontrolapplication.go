@@ -102,6 +102,9 @@ type CallControlApplication struct {
 	AnchorsiteOverride CallControlApplicationAnchorsiteOverride `json:"anchorsite_override"`
 	// A user-assigned name to help manage the application.
 	ApplicationName string `json:"application_name"`
+	// Specifies if call cost webhooks should be sent for this Call Control
+	// Application.
+	CallCostInWebhooks bool `json:"call_cost_in_webhooks"`
 	// ISO 8601 formatted date of when the resource was created
 	CreatedAt string `json:"created_at"`
 	// Sets the type of DTMF digits sent from Telnyx to this Connection. Note that DTMF
@@ -142,6 +145,7 @@ type CallControlApplication struct {
 		Active                  respjson.Field
 		AnchorsiteOverride      respjson.Field
 		ApplicationName         respjson.Field
+		CallCostInWebhooks      respjson.Field
 		CreatedAt               respjson.Field
 		DtmfType                respjson.Field
 		FirstCommandTimeout     respjson.Field
@@ -434,6 +438,9 @@ type CallControlApplicationNewParams struct {
 	WebhookTimeoutSecs param.Opt[int64] `json:"webhook_timeout_secs,omitzero"`
 	// Specifies whether the connection can be used.
 	Active param.Opt[bool] `json:"active,omitzero"`
+	// Specifies if call cost webhooks should be sent for this Call Control
+	// Application.
+	CallCostInWebhooks param.Opt[bool] `json:"call_cost_in_webhooks,omitzero"`
 	// Specifies whether calls to phone numbers associated with this connection should
 	// hangup after timing out.
 	FirstCommandTimeout param.Opt[bool] `json:"first_command_timeout,omitzero"`
@@ -515,6 +522,9 @@ type CallControlApplicationUpdateParams struct {
 	WebhookTimeoutSecs param.Opt[int64] `json:"webhook_timeout_secs,omitzero"`
 	// Specifies whether the connection can be used.
 	Active param.Opt[bool] `json:"active,omitzero"`
+	// Specifies if call cost webhooks should be sent for this Call Control
+	// Application.
+	CallCostInWebhooks param.Opt[bool] `json:"call_cost_in_webhooks,omitzero"`
 	// Specifies whether calls to phone numbers associated with this connection should
 	// hangup after timing out.
 	FirstCommandTimeout param.Opt[bool] `json:"first_command_timeout,omitzero"`
