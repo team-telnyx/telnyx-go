@@ -126,7 +126,14 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 				}},
 				Transcription: telnyx.TranscriptionSettingsParam{
 					Language: telnyx.String("language"),
-					Model:    telnyx.String("model"),
+					Model:    telnyx.TranscriptionSettingsModelDeepgramFlux,
+					Region:   telnyx.String("region"),
+					Settings: telnyx.TranscriptionSettingsSettingsParam{
+						EotThreshold: telnyx.Float(0),
+						EotTimeoutMs: telnyx.Int(0),
+						Numerals:     telnyx.Bool(true),
+						SmartFormat:  telnyx.Bool(true),
+					},
 				},
 				VoiceSettings: telnyx.VoiceSettingsParam{
 					Voice:     "voice",

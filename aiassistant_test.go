@@ -91,7 +91,14 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 		}},
 		Transcription: telnyx.TranscriptionSettingsParam{
 			Language: telnyx.String("language"),
-			Model:    telnyx.String("model"),
+			Model:    telnyx.TranscriptionSettingsModelDeepgramFlux,
+			Region:   telnyx.String("region"),
+			Settings: telnyx.TranscriptionSettingsSettingsParam{
+				EotThreshold: telnyx.Float(0),
+				EotTimeoutMs: telnyx.Int(0),
+				Numerals:     telnyx.Bool(true),
+				SmartFormat:  telnyx.Bool(true),
+			},
 		},
 		VoiceSettings: telnyx.VoiceSettingsParam{
 			Voice:     "voice",
@@ -228,7 +235,14 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 			}},
 			Transcription: telnyx.TranscriptionSettingsParam{
 				Language: telnyx.String("language"),
-				Model:    telnyx.String("model"),
+				Model:    telnyx.TranscriptionSettingsModelDeepgramFlux,
+				Region:   telnyx.String("region"),
+				Settings: telnyx.TranscriptionSettingsSettingsParam{
+					EotThreshold: telnyx.Float(0),
+					EotTimeoutMs: telnyx.Int(0),
+					Numerals:     telnyx.Bool(true),
+					SmartFormat:  telnyx.Bool(true),
+				},
 			},
 			VoiceSettings: telnyx.VoiceSettingsParam{
 				Voice:     "voice",
@@ -392,6 +406,43 @@ func TestAIAssistantImport(t *testing.T) {
 		APIKeyRef: "api_key_ref",
 		Provider:  telnyx.AIAssistantImportParamsProviderElevenlabs,
 	})
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestAIAssistantSendSMSWithOptionalParams(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.AI.Assistants.SendSMS(
+		context.TODO(),
+		"assistant_id",
+		telnyx.AIAssistantSendSMSParams{
+			From: "from",
+			Text: "text",
+			To:   "to",
+			ConversationMetadata: map[string]telnyx.AIAssistantSendSMSParamsConversationMetadataUnion{
+				"foo": {
+					OfString: telnyx.String("string"),
+				},
+			},
+			ShouldCreateConversation: telnyx.Bool(true),
+		},
+	)
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

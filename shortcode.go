@@ -51,7 +51,8 @@ func (r *ShortCodeService) Get(ctx context.Context, id string, opts ...option.Re
 }
 
 // Update the settings for a specific short code. To unbind a short code from a
-// profile, set the `messaging_profile_id` to `null` or an empty string.
+// profile, set the `messaging_profile_id` to `null` or an empty string. To add or
+// update tags, include the tags field as an array of strings.
 func (r *ShortCodeService) Update(ctx context.Context, id string, body ShortCodeUpdateParams, opts ...option.RequestOption) (res *ShortCodeUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

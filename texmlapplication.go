@@ -102,6 +102,8 @@ type TexmlApplication struct {
 	// Australia", "Amsterdam, Netherlands", "London, UK", "Toronto, Canada",
 	// "Vancouver, Canada", "Frankfurt, Germany".
 	AnchorsiteOverride AnchorsiteOverride `json:"anchorsite_override"`
+	// Specifies if call cost webhooks should be sent for this TeXML Application.
+	CallCostInWebhooks bool `json:"call_cost_in_webhooks"`
 	// ISO 8601 formatted date indicating when the resource was created.
 	CreatedAt string `json:"created_at"`
 	// Sets the type of DTMF digits sent from Telnyx to this Connection. Note that DTMF
@@ -146,6 +148,7 @@ type TexmlApplication struct {
 		ID                      respjson.Field
 		Active                  respjson.Field
 		AnchorsiteOverride      respjson.Field
+		CallCostInWebhooks      respjson.Field
 		CreatedAt               respjson.Field
 		DtmfType                respjson.Field
 		FirstCommandTimeout     respjson.Field
@@ -358,6 +361,8 @@ type TexmlApplicationNewParams struct {
 	VoiceURL string `json:"voice_url,required" format:"uri"`
 	// Specifies whether the connection can be used.
 	Active param.Opt[bool] `json:"active,omitzero"`
+	// Specifies if call cost webhooks should be sent for this TeXML Application.
+	CallCostInWebhooks param.Opt[bool] `json:"call_cost_in_webhooks,omitzero"`
 	// Specifies whether calls to phone numbers associated with this connection should
 	// hangup after timing out.
 	FirstCommandTimeout param.Opt[bool] `json:"first_command_timeout,omitzero"`
@@ -484,6 +489,8 @@ type TexmlApplicationUpdateParams struct {
 	VoiceURL string `json:"voice_url,required" format:"uri"`
 	// Specifies whether the connection can be used.
 	Active param.Opt[bool] `json:"active,omitzero"`
+	// Specifies if call cost webhooks should be sent for this TeXML Application.
+	CallCostInWebhooks param.Opt[bool] `json:"call_cost_in_webhooks,omitzero"`
 	// Specifies whether calls to phone numbers associated with this connection should
 	// hangup after timing out.
 	FirstCommandTimeout param.Opt[bool] `json:"first_command_timeout,omitzero"`
