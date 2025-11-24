@@ -343,7 +343,9 @@ type IPConnection struct {
 	// Australia", "Amsterdam, Netherlands", "London, UK", "Toronto, Canada",
 	// "Vancouver, Canada", "Frankfurt, Germany".
 	AnchorsiteOverride AnchorsiteOverride `json:"anchorsite_override"`
-	ConnectionName     string             `json:"connection_name"`
+	// Specifies if call cost webhooks should be sent for this connection.
+	CallCostInWebhooks bool   `json:"call_cost_in_webhooks"`
+	ConnectionName     string `json:"connection_name"`
 	// ISO 8601 formatted date indicating when the resource was created.
 	CreatedAt string `json:"created_at"`
 	// When enabled, Telnyx will generate comfort noise when you place the call on
@@ -398,6 +400,7 @@ type IPConnection struct {
 		ID                               respjson.Field
 		Active                           respjson.Field
 		AnchorsiteOverride               respjson.Field
+		CallCostInWebhooks               respjson.Field
 		ConnectionName                   respjson.Field
 		CreatedAt                        respjson.Field
 		DefaultOnHoldComfortNoiseEnabled respjson.Field
@@ -699,8 +702,10 @@ type IPConnectionNewParams struct {
 	// Specifies how many seconds to wait before timing out a webhook.
 	WebhookTimeoutSecs param.Opt[int64] `json:"webhook_timeout_secs,omitzero"`
 	// Defaults to true
-	Active         param.Opt[bool]   `json:"active,omitzero"`
-	ConnectionName param.Opt[string] `json:"connection_name,omitzero"`
+	Active param.Opt[bool] `json:"active,omitzero"`
+	// Specifies if call cost webhooks should be sent for this connection.
+	CallCostInWebhooks param.Opt[bool]   `json:"call_cost_in_webhooks,omitzero"`
+	ConnectionName     param.Opt[string] `json:"connection_name,omitzero"`
 	// When enabled, Telnyx will generate comfort noise when you place the call on
 	// hold. If disabled, you will need to generate comfort noise or on hold music to
 	// avoid RTP timeout.
@@ -873,8 +878,10 @@ type IPConnectionUpdateParams struct {
 	// Specifies how many seconds to wait before timing out a webhook.
 	WebhookTimeoutSecs param.Opt[int64] `json:"webhook_timeout_secs,omitzero"`
 	// Defaults to true
-	Active         param.Opt[bool]   `json:"active,omitzero"`
-	ConnectionName param.Opt[string] `json:"connection_name,omitzero"`
+	Active param.Opt[bool] `json:"active,omitzero"`
+	// Specifies if call cost webhooks should be sent for this connection.
+	CallCostInWebhooks param.Opt[bool]   `json:"call_cost_in_webhooks,omitzero"`
+	ConnectionName     param.Opt[string] `json:"connection_name,omitzero"`
 	// When enabled, Telnyx will generate comfort noise when you place the call on
 	// hold. If disabled, you will need to generate comfort noise or on hold music to
 	// avoid RTP timeout.

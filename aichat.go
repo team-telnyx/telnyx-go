@@ -75,10 +75,7 @@ type AIChatNewCompletionParams struct {
 	// [many prefer](https://github.com/huggingface/transformers/issues/27670). Must be
 	// in [0, 1].
 	MinP param.Opt[float64] `json:"min_p,omitzero"`
-	// The language model to chat with. If you are optimizing for speed + price, try
-	// `meta-llama/Meta-Llama-3.1-8B-Instruct`. For quality, try
-	// `meta-llama/Meta-Llama-3.1-70B-Instruct`. Or explore our
-	// [LLM Library](https://telnyx.com/products/llm-library).
+	// The language model to chat with.
 	Model param.Opt[string] `json:"model,omitzero"`
 	// This will return multiple choices for you instead of a single chat completion.
 	N param.Opt[float64] `json:"n,omitzero"`

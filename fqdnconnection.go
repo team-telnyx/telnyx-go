@@ -110,6 +110,8 @@ type FqdnConnection struct {
 	AnchorsiteOverride AnchorsiteOverride `json:"anchorsite_override"`
 	// Indicates whether call cost calculation is enabled.
 	CallCostEnabled bool `json:"call_cost_enabled"`
+	// Specifies if call cost webhooks should be sent for this connection.
+	CallCostInWebhooks bool `json:"call_cost_in_webhooks"`
 	// ISO 8601 formatted date indicating when the resource was created.
 	CreatedAt string `json:"created_at"`
 	// When enabled, Telnyx will generate comfort noise when you place the call on
@@ -191,6 +193,7 @@ type FqdnConnection struct {
 		AdjustDtmfTimestamp              respjson.Field
 		AnchorsiteOverride               respjson.Field
 		CallCostEnabled                  respjson.Field
+		CallCostInWebhooks               respjson.Field
 		CreatedAt                        respjson.Field
 		DefaultOnHoldComfortNoiseEnabled respjson.Field
 		DtmfType                         respjson.Field
@@ -762,6 +765,8 @@ type FqdnConnectionNewParams struct {
 	WebhookTimeoutSecs param.Opt[int64] `json:"webhook_timeout_secs,omitzero"`
 	// Defaults to true
 	Active param.Opt[bool] `json:"active,omitzero"`
+	// Specifies if call cost webhooks should be sent for this connection.
+	CallCostInWebhooks param.Opt[bool] `json:"call_cost_in_webhooks,omitzero"`
 	// When enabled, Telnyx will generate comfort noise when you place the call on
 	// hold. If disabled, you will need to generate comfort noise or on hold music to
 	// avoid RTP timeout.
@@ -834,6 +839,8 @@ type FqdnConnectionUpdateParams struct {
 	WebhookTimeoutSecs param.Opt[int64] `json:"webhook_timeout_secs,omitzero"`
 	// Defaults to true
 	Active param.Opt[bool] `json:"active,omitzero"`
+	// Specifies if call cost webhooks should be sent for this connection.
+	CallCostInWebhooks param.Opt[bool] `json:"call_cost_in_webhooks,omitzero"`
 	// A user-assigned name to help manage the connection.
 	ConnectionName param.Opt[string] `json:"connection_name,omitzero"`
 	// When enabled, Telnyx will generate comfort noise when you place the call on
