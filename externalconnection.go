@@ -435,7 +435,10 @@ func (r *ExternalConnectionNewParamsOutbound) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property OutboundVoiceProfileID is required.
 type ExternalConnectionNewParamsInbound struct {
+	// The ID of the outbound voice profile to use for inbound calls.
+	OutboundVoiceProfileID string `json:"outbound_voice_profile_id,required"`
 	// When set, this will limit the number of concurrent inbound calls to phone
 	// numbers associated with this connection.
 	ChannelLimit param.Opt[int64] `json:"channel_limit,omitzero"`

@@ -41,7 +41,7 @@ func TestCredentialConnectionNewWithOptionalParams(t *testing.T) {
 		Inbound: telnyx.CredentialInboundParam{
 			AniNumberFormat:          telnyx.CredentialInboundAniNumberFormatPlusE164,
 			ChannelLimit:             telnyx.Int(10),
-			Codecs:                   []string{"string"},
+			Codecs:                   []string{"G722"},
 			DnisNumberFormat:         telnyx.CredentialInboundDnisNumberFormatPlusE164,
 			GenerateRingbackTone:     telnyx.Bool(true),
 			IsupHeadersEnabled:       telnyx.Bool(true),
@@ -137,7 +137,7 @@ func TestCredentialConnectionUpdateWithOptionalParams(t *testing.T) {
 			Inbound: telnyx.CredentialInboundParam{
 				AniNumberFormat:          telnyx.CredentialInboundAniNumberFormatPlusE164,
 				ChannelLimit:             telnyx.Int(10),
-				Codecs:                   []string{"string"},
+				Codecs:                   []string{"G722"},
 				DnisNumberFormat:         telnyx.CredentialInboundDnisNumberFormatPlusE164,
 				GenerateRingbackTone:     telnyx.Bool(true),
 				IsupHeadersEnabled:       telnyx.Bool(true),
