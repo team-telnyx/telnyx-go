@@ -29,7 +29,7 @@ func TestAIConversationInsightNewWithOptionalParams(t *testing.T) {
 	_, err := client.AI.Conversations.Insights.New(context.TODO(), telnyx.AIConversationInsightNewParams{
 		Instructions: "instructions",
 		Name:         "name",
-		JsonSchema:   map[string]interface{}{},
+		JsonSchema:   map[string]any{},
 		Webhook:      telnyx.String("webhook"),
 	})
 	if err != nil {
@@ -82,7 +82,7 @@ func TestAIConversationInsightUpdateWithOptionalParams(t *testing.T) {
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.AIConversationInsightUpdateParams{
 			Instructions: telnyx.String("instructions"),
-			JsonSchema:   map[string]interface{}{},
+			JsonSchema:   map[string]any{},
 			Name:         telnyx.String("name"),
 			Webhook:      telnyx.String("webhook"),
 		},
