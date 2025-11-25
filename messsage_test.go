@@ -67,7 +67,7 @@ func TestMesssageRcsWithOptionalParams(t *testing.T) {
 										Description:     telnyx.String("description"),
 									},
 									PostbackData:        telnyx.String("postback_data"),
-									ShareLocationAction: map[string]interface{}{},
+									ShareLocationAction: map[string]any{},
 									Text:                telnyx.String("Hello world"),
 									ViewLocationAction: telnyx.RcsSuggestionActionViewLocationActionParam{
 										Label: telnyx.String("label"),
@@ -117,7 +117,7 @@ func TestMesssageRcsWithOptionalParams(t *testing.T) {
 										Description:     telnyx.String("description"),
 									},
 									PostbackData:        telnyx.String("postback_data"),
-									ShareLocationAction: map[string]interface{}{},
+									ShareLocationAction: map[string]any{},
 									Text:                telnyx.String("Hello world"),
 									ViewLocationAction: telnyx.RcsSuggestionActionViewLocationActionParam{
 										Label: telnyx.String("label"),
@@ -158,7 +158,7 @@ func TestMesssageRcsWithOptionalParams(t *testing.T) {
 							Description:     telnyx.String("description"),
 						},
 						PostbackData:        telnyx.String("postback_data"),
-						ShareLocationAction: map[string]interface{}{},
+						ShareLocationAction: map[string]any{},
 						Text:                telnyx.String("Hello world"),
 						ViewLocationAction: telnyx.RcsSuggestionActionViewLocationActionParam{
 							Label: telnyx.String("label"),
