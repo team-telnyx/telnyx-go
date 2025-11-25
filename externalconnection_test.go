@@ -34,7 +34,8 @@ func TestExternalConnectionNewWithOptionalParams(t *testing.T) {
 		},
 		Active: telnyx.Bool(false),
 		Inbound: telnyx.ExternalConnectionNewParamsInbound{
-			ChannelLimit: telnyx.Int(10),
+			OutboundVoiceProfileID: "12345678-1234-1234-1234-123456789012",
+			ChannelLimit:           telnyx.Int(10),
 		},
 		Tags:                    []string{"tag1", "tag2"},
 		WebhookEventFailoverURL: telnyx.String("https://failover.example.com"),
