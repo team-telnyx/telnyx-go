@@ -112,7 +112,7 @@ func TestAIConversationInsightListWithOptionalParams(t *testing.T) {
 	_, err := client.AI.Conversations.Insights.List(context.TODO(), telnyx.AIConversationInsightListParams{
 		Page: telnyx.AIConversationInsightListParamsPage{
 			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
+			Size:   telnyx.Int(0),
 		},
 	})
 	if err != nil {
