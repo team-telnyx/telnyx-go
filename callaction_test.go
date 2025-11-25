@@ -239,20 +239,20 @@ func TestCallActionGatherUsingAIWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"call_control_id",
 		telnyx.CallActionGatherUsingAIParams{
-			Parameters: map[string]interface{}{
-				"properties": map[string]interface{}{
-					"age": map[string]interface{}{
+			Parameters: map[string]any{
+				"properties": map[string]any{
+					"age": map[string]any{
 						"description": "The age of the customer.",
 						"type":        "integer",
 					},
-					"location": map[string]interface{}{
+					"location": map[string]any{
 						"description": "The location of the customer.",
 						"type":        "string",
 					},
 				},
-				"required": map[string]interface{}{
-					"0": "age",
-					"1": "location",
+				"required": []string{
+					"age",
+					"location",
 				},
 				"type": "object",
 			},

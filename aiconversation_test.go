@@ -185,7 +185,7 @@ func TestAIConversationAddMessageWithOptionalParams(t *testing.T) {
 			ToolCalls: []map[string]any{{
 				"foo": "bar",
 			}},
-			ToolChoice: map[string]interface{}{},
+			ToolChoice: map[string]any{},
 		},
 	)
 	if err != nil {
