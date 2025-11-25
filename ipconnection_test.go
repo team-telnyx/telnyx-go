@@ -39,7 +39,7 @@ func TestIPConnectionNewWithOptionalParams(t *testing.T) {
 		Inbound: telnyx.IPConnectionNewParamsInbound{
 			AniNumberFormat:             "+E.164",
 			ChannelLimit:                telnyx.Int(10),
-			Codecs:                      []string{"string"},
+			Codecs:                      []string{"G722"},
 			DefaultRoutingMethod:        "sequential",
 			DnisNumberFormat:            "+e164",
 			GenerateRingbackTone:        telnyx.Bool(true),
@@ -142,7 +142,7 @@ func TestIPConnectionUpdateWithOptionalParams(t *testing.T) {
 			Inbound: telnyx.InboundIPParam{
 				AniNumberFormat:             telnyx.InboundIPAniNumberFormatPlusE164,
 				ChannelLimit:                telnyx.Int(10),
-				Codecs:                      []string{"string"},
+				Codecs:                      []string{"G722"},
 				DefaultPrimaryIPID:          telnyx.String("192.168.0.0"),
 				DefaultRoutingMethod:        telnyx.InboundIPDefaultRoutingMethodSequential,
 				DefaultSecondaryIPID:        telnyx.String("192.168.0.0"),
