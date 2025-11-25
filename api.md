@@ -238,7 +238,7 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CallStreamingFailedWebhookEvent">CallStreamingFailedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CallStreamingStartedWebhookEvent">CallStreamingStartedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CallStreamingStoppedWebhookEvent">CallStreamingStoppedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CampaignStatusUpdateWebhookEvent">CampaignStatusUpdateWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CampaignStatusUpdateWebhookEventUnion">CampaignStatusUpdateWebhookEventUnion</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#ConferenceCreatedWebhookEvent">ConferenceCreatedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#ConferenceEndedWebhookEvent">ConferenceEndedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#ConferenceFloorChangedWebhookEvent">ConferenceFloorChangedWebhookEvent</a>
@@ -302,7 +302,7 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CallStreamingFailedWebhookEvent">CallStreamingFailedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CallStreamingStartedWebhookEvent">CallStreamingStartedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CallStreamingStoppedWebhookEvent">CallStreamingStoppedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CampaignStatusUpdateWebhookEvent">CampaignStatusUpdateWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CampaignStatusUpdateWebhookEventUnion">CampaignStatusUpdateWebhookEventUnion</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#ConferenceCreatedWebhookEvent">ConferenceCreatedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#ConferenceEndedWebhookEvent">ConferenceEndedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#ConferenceFloorChangedWebhookEvent">ConferenceFloorChangedWebhookEvent</a>
