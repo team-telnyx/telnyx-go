@@ -27,16 +27,19 @@ func TestAIAssistantTestNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.Assistants.Tests.New(context.TODO(), telnyx.AIAssistantTestNewParams{
-		Destination:  "x",
-		Instructions: "x",
-		Name:         "x",
+		Destination:  "+15551234567",
+		Instructions: "Act as a frustrated customer who received a damaged product. Ask for a refund and escalate if not satisfied with the initial response.",
+		Name:         "Customer Support Bot Test",
 		Rubric: []telnyx.AIAssistantTestNewParamsRubric{{
-			Criteria: "criteria",
-			Name:     "name",
+			Criteria: "Assistant responds within 30 seconds",
+			Name:     "Response Time",
+		}, {
+			Criteria: "Provides correct product information",
+			Name:     "Accuracy",
 		}},
 		Description:               telnyx.String("description"),
 		MaxDurationSeconds:        telnyx.Int(1),
-		TelnyxConversationChannel: telnyx.TelnyxConversationChannelPhoneCall,
+		TelnyxConversationChannel: telnyx.TelnyxConversationChannelWebChat,
 		TestSuite:                 telnyx.String("test_suite"),
 	})
 	if err != nil {
