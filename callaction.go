@@ -1127,7 +1127,7 @@ type TranscriptionStartRequestParam struct {
 	// Engine to use for speech recognition. Legacy values `A` - `Google`, `B` -
 	// `Telnyx` are supported for backward compatibility.
 	//
-	// Any of "Google", "Telnyx", "Deepgram", "A", "B".
+	// Any of "Google", "Telnyx", "Deepgram", "Azure", "A", "B".
 	TranscriptionEngine       TranscriptionStartRequestTranscriptionEngine                 `json:"transcription_engine,omitzero"`
 	TranscriptionEngineConfig TranscriptionStartRequestTranscriptionEngineConfigUnionParam `json:"transcription_engine_config,omitzero"`
 	paramObj
@@ -1149,6 +1149,7 @@ const (
 	TranscriptionStartRequestTranscriptionEngineGoogle   TranscriptionStartRequestTranscriptionEngine = "Google"
 	TranscriptionStartRequestTranscriptionEngineTelnyx   TranscriptionStartRequestTranscriptionEngine = "Telnyx"
 	TranscriptionStartRequestTranscriptionEngineDeepgram TranscriptionStartRequestTranscriptionEngine = "Deepgram"
+	TranscriptionStartRequestTranscriptionEngineAzure    TranscriptionStartRequestTranscriptionEngine = "Azure"
 	TranscriptionStartRequestTranscriptionEngineA        TranscriptionStartRequestTranscriptionEngine = "A"
 	TranscriptionStartRequestTranscriptionEngineB        TranscriptionStartRequestTranscriptionEngine = "B"
 )
@@ -1160,6 +1161,7 @@ type TranscriptionStartRequestTranscriptionEngineConfigUnionParam struct {
 	OfGoogle   *TranscriptionStartRequestTranscriptionEngineConfigGoogleParam   `json:",omitzero,inline"`
 	OfTelnyx   *TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam   `json:",omitzero,inline"`
 	OfDeepgram *TranscriptionStartRequestTranscriptionEngineConfigDeepgramParam `json:",omitzero,inline"`
+	OfAzure    *TranscriptionStartRequestTranscriptionEngineConfigAzureParam    `json:",omitzero,inline"`
 	OfA        *TranscriptionEngineAConfigParam                                 `json:",omitzero,inline"`
 	OfB        *TranscriptionEngineBConfigParam                                 `json:",omitzero,inline"`
 	paramUnion
@@ -1169,6 +1171,7 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) MarshalJSO
 	return param.MarshalUnion(u, u.OfGoogle,
 		u.OfTelnyx,
 		u.OfDeepgram,
+		u.OfAzure,
 		u.OfA,
 		u.OfB)
 }
@@ -1183,10 +1186,28 @@ func (u *TranscriptionStartRequestTranscriptionEngineConfigUnionParam) asAny() a
 		return u.OfTelnyx
 	} else if !param.IsOmitted(u.OfDeepgram) {
 		return u.OfDeepgram
+	} else if !param.IsOmitted(u.OfAzure) {
+		return u.OfAzure
 	} else if !param.IsOmitted(u.OfA) {
 		return u.OfA
 	} else if !param.IsOmitted(u.OfB) {
 		return u.OfB
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetRegion() *string {
+	if vt := u.OfAzure; vt != nil {
+		return &vt.Region
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetAPIKeyRef() *string {
+	if vt := u.OfAzure; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
 	}
 	return nil
 }
@@ -1218,6 +1239,8 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetLanguag
 	} else if vt := u.OfTelnyx; vt != nil {
 		return (*string)(&vt.Language)
 	} else if vt := u.OfDeepgram; vt != nil {
+		return (*string)(&vt.Language)
+	} else if vt := u.OfAzure; vt != nil {
 		return (*string)(&vt.Language)
 	} else if vt := u.OfA; vt != nil {
 		return (*string)(&vt.Language)
@@ -1274,6 +1297,8 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscr
 	} else if vt := u.OfTelnyx; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfDeepgram; vt != nil {
+		return (*string)(&vt.TranscriptionEngine)
+	} else if vt := u.OfAzure; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfA; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
@@ -1350,6 +1375,7 @@ func init() {
 		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigGoogleParam]("Google"),
 		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam]("Telnyx"),
 		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigDeepgramParam]("Deepgram"),
+		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigAzureParam]("Azure"),
 		apijson.Discriminator[TranscriptionEngineAConfigParam]("A"),
 		apijson.Discriminator[TranscriptionEngineBConfigParam]("B"),
 	)
@@ -1564,6 +1590,51 @@ const (
 	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageVi         TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "vi"
 	TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageAutoDetect TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguage = "auto_detect"
 )
+
+// The properties Region, TranscriptionEngine are required.
+type TranscriptionStartRequestTranscriptionEngineConfigAzureParam struct {
+	// Azure region to use for speech recognition
+	//
+	// Any of "australiaeast", "centralindia", "eastus", "northcentralus",
+	// "westeurope", "westus2".
+	Region string `json:"region,omitzero,required"`
+	// Reference to the API key for authentication. See
+	// [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
+	// for details. The parameter is optional as defaults are available for some
+	// regions.
+	APIKeyRef param.Opt[string] `json:"api_key_ref,omitzero"`
+	// Language to use for speech recognition
+	//
+	// Any of "af", "am", "ar", "bg", "bn", "bs", "ca", "cs", "cy", "da", "de", "el",
+	// "en", "es", "et", "eu", "fa", "fi", "fr", "ga", "gl", "gu", "he", "hi", "hr",
+	// "hu", "hy", "id", "is", "it", "ja", "ka", "kk", "km", "kn", "ko", "lo", "lt",
+	// "lv", "mk", "ml", "mn", "mr", "ms", "mt", "my", "nb", "ne", "nl", "pl", "ps",
+	// "pt", "ro", "ru", "si", "sk", "sl", "so", "sq", "sr", "sv", "sw", "ta", "te",
+	// "th", "tr", "uk", "ur", "uz", "vi", "wuu", "yue", "zh", "zu", "auto".
+	Language string `json:"language,omitzero"`
+	// Engine identifier for Azure transcription service
+	//
+	// This field can be elided, and will marshal its zero value as "Azure".
+	TranscriptionEngine constant.Azure `json:"transcription_engine,required"`
+	paramObj
+}
+
+func (r TranscriptionStartRequestTranscriptionEngineConfigAzureParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionStartRequestTranscriptionEngineConfigAzureParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionStartRequestTranscriptionEngineConfigAzureParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigAzureParam](
+		"region", "australiaeast", "centralindia", "eastus", "northcentralus", "westeurope", "westus2",
+	)
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigAzureParam](
+		"language", "af", "am", "ar", "bg", "bn", "bs", "ca", "cs", "cy", "da", "de", "el", "en", "es", "et", "eu", "fa", "fi", "fr", "ga", "gl", "gu", "he", "hi", "hr", "hu", "hy", "id", "is", "it", "ja", "ka", "kk", "km", "kn", "ko", "lo", "lt", "lv", "mk", "ml", "mn", "mr", "ms", "mt", "my", "nb", "ne", "nl", "pl", "ps", "pt", "ro", "ru", "si", "sk", "sl", "so", "sq", "sr", "sv", "sw", "ta", "te", "th", "tr", "uk", "ur", "uz", "vi", "wuu", "yue", "zh", "zu", "auto",
+	)
+}
 
 type CallActionAnswerResponse struct {
 	Data CallActionAnswerResponseData `json:"data"`
