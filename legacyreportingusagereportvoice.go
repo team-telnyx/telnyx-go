@@ -84,7 +84,7 @@ type CdrUsageReportResponseLegacy struct {
 	ID string `json:"id" format:"uuid"`
 	// Aggregation type: All = 0, By Connections = 1, By Tags = 2, By Billing Group = 3
 	AggregationType int64     `json:"aggregation_type"`
-	Connections     []int64   `json:"connections"`
+	Connections     []string  `json:"connections"`
 	CreatedAt       time.Time `json:"created_at" format:"date-time"`
 	EndTime         time.Time `json:"end_time" format:"date-time"`
 	// Product breakdown type: No breakdown = 0, DID vs Toll-free = 1, Country = 2, DID

@@ -73,7 +73,7 @@ func TestReportListWdrsWithOptionalParams(t *testing.T) {
 		SimCardID:    telnyx.String("877f80a6-e5b2-4687-9a04-88076265720f"),
 		SimGroupID:   telnyx.String("f05a189f-7c46-4531-ac56-1460dc465a42"),
 		SimGroupName: telnyx.String("sim name"),
-		Sort:         []string{"string"},
+		Sort:         []string{"created_at"},
 		StartDate:    telnyx.String("2021-05-01T00:00:00Z"),
 	})
 	if err != nil {
