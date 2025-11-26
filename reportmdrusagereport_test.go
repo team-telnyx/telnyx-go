@@ -130,7 +130,7 @@ func TestReportMdrUsageReportFetchSyncWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Reports.MdrUsageReports.FetchSync(context.TODO(), telnyx.ReportMdrUsageReportFetchSyncParams{
-		AggregationType: telnyx.ReportMdrUsageReportFetchSyncParamsAggregationTypeNoAggregation,
+		AggregationType: telnyx.ReportMdrUsageReportFetchSyncParamsAggregationTypeProfile,
 		EndDate:         telnyx.Time(time.Now()),
 		Profiles:        []string{"My profile"},
 		StartDate:       telnyx.Time(time.Now()),
