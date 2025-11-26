@@ -70,7 +70,7 @@ type NumberLookupGetResponseData struct {
 	// Region code that matches the specific country calling code
 	CountryCode string `json:"country_code"`
 	// Unused
-	Fraud string `json:"fraud"`
+	Fraud string `json:"fraud,nullable"`
 	// Hyphen-separated national number, preceded by the national destination code
 	// (NDC), with a 0 prefix, if an NDC is found
 	NationalFormat string `json:"national_format"`
@@ -123,7 +123,7 @@ func (r *NumberLookupGetResponseDataCallerName) UnmarshalJSON(data []byte) error
 
 type NumberLookupGetResponseDataCarrier struct {
 	// Unused
-	ErrorCode string `json:"error_code"`
+	ErrorCode string `json:"error_code,nullable"`
 	// Region code that matches the specific country calling code if the requested
 	// phone number type is mobile
 	MobileCountryCode string `json:"mobile_country_code"`
