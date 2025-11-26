@@ -36,7 +36,7 @@ func TestUsageReportListWithOptionalParams(t *testing.T) {
 		Format:          telnyx.UsageReportListParamsFormatCsv,
 		ManagedAccounts: telnyx.Bool(true),
 		Page: telnyx.UsageReportListParamsPage{
-			Number: telnyx.Int(2),
+			Number: telnyx.Int(1),
 			Size:   telnyx.Int(5000),
 		},
 		Sort:                []string{"string"},

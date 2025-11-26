@@ -85,7 +85,7 @@ type MdrUsageReportResponseLegacy struct {
 	ID string `json:"id" format:"uuid"`
 	// Aggregation type: No aggregation = 0, By Messaging Profile = 1, By Tags = 2
 	AggregationType int64     `json:"aggregation_type"`
-	Connections     []int64   `json:"connections"`
+	Connections     []string  `json:"connections"`
 	CreatedAt       time.Time `json:"created_at" format:"date-time"`
 	EndTime         time.Time `json:"end_time" format:"date-time"`
 	// List of messaging profile IDs
