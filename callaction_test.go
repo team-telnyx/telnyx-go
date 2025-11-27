@@ -56,7 +56,7 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 			}},
 			SoundModifications: telnyx.SoundModificationsParam{
 				Octaves:  telnyx.Float(0.1),
-				Pitch:    telnyx.Float(0),
+				Pitch:    telnyx.Float(0.8),
 				Semitone: telnyx.Float(-2),
 				Track:    telnyx.String("both"),
 			},
@@ -1403,7 +1403,7 @@ func TestCallActionTransferWithOptionalParams(t *testing.T) {
 			SipTransportProtocol: telnyx.CallActionTransferParamsSipTransportProtocolTls,
 			SoundModifications: telnyx.SoundModificationsParam{
 				Octaves:  telnyx.Float(0.1),
-				Pitch:    telnyx.Float(0),
+				Pitch:    telnyx.Float(0.8),
 				Semitone: telnyx.Float(-2),
 				Track:    telnyx.String("both"),
 			},

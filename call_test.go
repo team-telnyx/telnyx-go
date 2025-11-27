@@ -104,7 +104,7 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 		SipTransportProtocol: telnyx.CallDialParamsSipTransportProtocolTls,
 		SoundModifications: telnyx.SoundModificationsParam{
 			Octaves:  telnyx.Float(0.1),
-			Pitch:    telnyx.Float(0),
+			Pitch:    telnyx.Float(0.8),
 			Semitone: telnyx.Float(-2),
 			Track:    telnyx.String("both"),
 		},
