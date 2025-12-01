@@ -85,14 +85,15 @@ func (r *AIAssistantTestService) List(ctx context.Context, query AIAssistantTest
 }
 
 // Permanently removes an assistant test and all associated data
-func (r *AIAssistantTestService) Delete(ctx context.Context, testID string, opts ...option.RequestOption) (res *AIAssistantTestDeleteResponse, err error) {
+func (r *AIAssistantTestService) Delete(ctx context.Context, testID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if testID == "" {
 		err = errors.New("missing required test_id parameter")
 		return
 	}
 	path := fmt.Sprintf("ai/assistants/tests/%s", testID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
@@ -200,8 +201,6 @@ func (r AIAssistantTestListResponse) RawJSON() string { return r.JSON.raw }
 func (r *AIAssistantTestListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type AIAssistantTestDeleteResponse = any
 
 type AIAssistantTestNewParams struct {
 	// The target destination for the test conversation. Format depends on the channel:

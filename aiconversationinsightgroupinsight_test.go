@@ -26,7 +26,7 @@ func TestAIConversationInsightGroupInsightAssign(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Conversations.InsightGroups.Insights.Assign(
+	err := client.AI.Conversations.InsightGroups.Insights.Assign(
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.AIConversationInsightGroupInsightAssignParams{
@@ -55,7 +55,7 @@ func TestAIConversationInsightGroupInsightDeleteUnassign(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Conversations.InsightGroups.Insights.DeleteUnassign(
+	err := client.AI.Conversations.InsightGroups.Insights.DeleteUnassign(
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.AIConversationInsightGroupInsightDeleteUnassignParams{

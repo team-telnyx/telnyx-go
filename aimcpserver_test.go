@@ -142,7 +142,7 @@ func TestAIMcpServerDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.McpServers.Delete(context.TODO(), "mcp_server_id")
+	err := client.AI.McpServers.Delete(context.TODO(), "mcp_server_id")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

@@ -157,7 +157,7 @@ func TestAIAssistantTestDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Assistants.Tests.Delete(context.TODO(), "test_id")
+	err := client.AI.Assistants.Tests.Delete(context.TODO(), "test_id")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
