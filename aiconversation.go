@@ -103,14 +103,15 @@ func (r *AIConversationService) Delete(ctx context.Context, conversationID strin
 
 // Add a new message to the conversation. Used to insert a new messages to a
 // conversation manually ( without using chat endpoint )
-func (r *AIConversationService) AddMessage(ctx context.Context, conversationID string, body AIConversationAddMessageParams, opts ...option.RequestOption) (res *AIConversationAddMessageResponse, err error) {
+func (r *AIConversationService) AddMessage(ctx context.Context, conversationID string, body AIConversationAddMessageParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if conversationID == "" {
 		err = errors.New("missing required conversation_id parameter")
 		return
 	}
 	path := fmt.Sprintf("ai/conversations/%s/message", conversationID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
 }
 
@@ -201,8 +202,6 @@ func (r AIConversationListResponse) RawJSON() string { return r.JSON.raw }
 func (r *AIConversationListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type AIConversationAddMessageResponse = any
 
 type AIConversationGetConversationsInsightsResponse struct {
 	Data []AIConversationGetConversationsInsightsResponseData `json:"data,required"`

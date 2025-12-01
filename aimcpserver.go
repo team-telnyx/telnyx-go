@@ -79,14 +79,15 @@ func (r *AIMcpServerService) List(ctx context.Context, query AIMcpServerListPara
 }
 
 // Delete a specific MCP server.
-func (r *AIMcpServerService) Delete(ctx context.Context, mcpServerID string, opts ...option.RequestOption) (res *AIMcpServerDeleteResponse, err error) {
+func (r *AIMcpServerService) Delete(ctx context.Context, mcpServerID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if mcpServerID == "" {
 		err = errors.New("missing required mcp_server_id parameter")
 		return
 	}
 	path := fmt.Sprintf("ai/mcp_servers/%s", mcpServerID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
@@ -201,8 +202,6 @@ func (r AIMcpServerListResponse) RawJSON() string { return r.JSON.raw }
 func (r *AIMcpServerListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type AIMcpServerDeleteResponse = any
 
 type AIMcpServerNewParams struct {
 	Name         string            `json:"name,required"`

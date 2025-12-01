@@ -82,8 +82,9 @@ func (r *AIClusterService) Compute(ctx context.Context, body AIClusterComputePar
 }
 
 // Fetch a cluster visualization
-func (r *AIClusterService) FetchGraph(ctx context.Context, taskID string, query AIClusterFetchGraphParams, opts ...option.RequestOption) (res *AIClusterFetchGraphResponse, err error) {
+func (r *AIClusterService) FetchGraph(ctx context.Context, taskID string, query AIClusterFetchGraphParams, opts ...option.RequestOption) (res *http.Response, err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "image/png")}, opts...)
 	if taskID == "" {
 		err = errors.New("missing required task_id parameter")
 		return
@@ -255,8 +256,6 @@ func (r AIClusterComputeResponseData) RawJSON() string { return r.JSON.raw }
 func (r *AIClusterComputeResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type AIClusterFetchGraphResponse = any
 
 type AIClusterGetParams struct {
 	// Whether or not to include subclusters and their nodes in the response.

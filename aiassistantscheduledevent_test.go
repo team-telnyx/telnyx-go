@@ -129,7 +129,7 @@ func TestAIAssistantScheduledEventDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Assistants.ScheduledEvents.Delete(
+	err := client.AI.Assistants.ScheduledEvents.Delete(
 		context.TODO(),
 		"event_id",
 		telnyx.AIAssistantScheduledEventDeleteParams{

@@ -81,8 +81,9 @@ func (r *AIAssistantScheduledEventService) List(ctx context.Context, assistantID
 
 // If the event is pending, this will cancel the event. Otherwise, this will simply
 // remove the record of the event.
-func (r *AIAssistantScheduledEventService) Delete(ctx context.Context, eventID string, body AIAssistantScheduledEventDeleteParams, opts ...option.RequestOption) (res *AIAssistantScheduledEventDeleteResponse, err error) {
+func (r *AIAssistantScheduledEventService) Delete(ctx context.Context, eventID string, body AIAssistantScheduledEventDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.AssistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return
@@ -92,7 +93,7 @@ func (r *AIAssistantScheduledEventService) Delete(ctx context.Context, eventID s
 		return
 	}
 	path := fmt.Sprintf("ai/assistants/%s/scheduled_events/%s", body.AssistantID, eventID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
@@ -482,8 +483,6 @@ type AIAssistantScheduledEventListResponseDataUnionConversationMetadata struct {
 func (r *AIAssistantScheduledEventListResponseDataUnionConversationMetadata) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type AIAssistantScheduledEventDeleteResponse = any
 
 type AIAssistantScheduledEventNewParams struct {
 	// The datetime at which the event should be scheduled. Formatted as ISO 8601.
