@@ -70,7 +70,7 @@ func (r *AIAssistantService) Get(ctx context.Context, assistantID string, query 
 }
 
 // Update an AI Assistant's attributes.
-func (r *AIAssistantService) Update(ctx context.Context, assistantID string, body AIAssistantUpdateParams, opts ...option.RequestOption) (res *AIAssistantUpdateResponse, err error) {
+func (r *AIAssistantService) Update(ctx context.Context, assistantID string, body AIAssistantUpdateParams, opts ...option.RequestOption) (res *InferenceEmbedding, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
@@ -2133,8 +2133,6 @@ func (r WebhookToolParam) MarshalJSON() (data []byte, err error) {
 func (r *WebhookToolParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type AIAssistantUpdateResponse = any
 
 // Aligns with the OpenAI API:
 // https://platform.openai.com/docs/api-reference/assistants/deleteAssistant

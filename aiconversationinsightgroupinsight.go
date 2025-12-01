@@ -33,8 +33,9 @@ func NewAIConversationInsightGroupInsightService(opts ...option.RequestOption) (
 }
 
 // Assign an insight to a group
-func (r *AIConversationInsightGroupInsightService) Assign(ctx context.Context, insightID string, body AIConversationInsightGroupInsightAssignParams, opts ...option.RequestOption) (res *AIConversationInsightGroupInsightAssignResponse, err error) {
+func (r *AIConversationInsightGroupInsightService) Assign(ctx context.Context, insightID string, body AIConversationInsightGroupInsightAssignParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.GroupID == "" {
 		err = errors.New("missing required group_id parameter")
 		return
@@ -44,13 +45,14 @@ func (r *AIConversationInsightGroupInsightService) Assign(ctx context.Context, i
 		return
 	}
 	path := fmt.Sprintf("ai/conversations/insight-groups/%s/insights/%s/assign", body.GroupID, insightID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
 	return
 }
 
 // Remove an insight from a group
-func (r *AIConversationInsightGroupInsightService) DeleteUnassign(ctx context.Context, insightID string, body AIConversationInsightGroupInsightDeleteUnassignParams, opts ...option.RequestOption) (res *AIConversationInsightGroupInsightDeleteUnassignResponse, err error) {
+func (r *AIConversationInsightGroupInsightService) DeleteUnassign(ctx context.Context, insightID string, body AIConversationInsightGroupInsightDeleteUnassignParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.GroupID == "" {
 		err = errors.New("missing required group_id parameter")
 		return
@@ -60,13 +62,9 @@ func (r *AIConversationInsightGroupInsightService) DeleteUnassign(ctx context.Co
 		return
 	}
 	path := fmt.Sprintf("ai/conversations/insight-groups/%s/insights/%s/unassign", body.GroupID, insightID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
-
-type AIConversationInsightGroupInsightAssignResponse = any
-
-type AIConversationInsightGroupInsightDeleteUnassignResponse = any
 
 type AIConversationInsightGroupInsightAssignParams struct {
 	// The ID of the insight group

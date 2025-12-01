@@ -79,14 +79,15 @@ func (r *AIConversationInsightService) List(ctx context.Context, query AIConvers
 }
 
 // Delete insight by ID
-func (r *AIConversationInsightService) Delete(ctx context.Context, insightID string, opts ...option.RequestOption) (res *AIConversationInsightDeleteResponse, err error) {
+func (r *AIConversationInsightService) Delete(ctx context.Context, insightID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if insightID == "" {
 		err = errors.New("missing required insight_id parameter")
 		return
 	}
 	path := fmt.Sprintf("ai/conversations/insights/%s", insightID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
@@ -160,8 +161,6 @@ func (r AIConversationInsightListResponse) RawJSON() string { return r.JSON.raw 
 func (r *AIConversationInsightListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type AIConversationInsightDeleteResponse = any
 
 type AIConversationInsightNewParams struct {
 	Instructions string            `json:"instructions,required"`

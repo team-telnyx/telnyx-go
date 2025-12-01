@@ -168,7 +168,7 @@ func TestAIConversationAddMessageWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Conversations.AddMessage(
+	err := client.AI.Conversations.AddMessage(
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.AIConversationAddMessageParams{

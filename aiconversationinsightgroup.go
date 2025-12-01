@@ -65,14 +65,15 @@ func (r *AIConversationInsightGroupService) Update(ctx context.Context, groupID 
 }
 
 // Delete insight group by ID
-func (r *AIConversationInsightGroupService) Delete(ctx context.Context, groupID string, opts ...option.RequestOption) (res *AIConversationInsightGroupDeleteResponse, err error) {
+func (r *AIConversationInsightGroupService) Delete(ctx context.Context, groupID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if groupID == "" {
 		err = errors.New("missing required group_id parameter")
 		return
 	}
 	path := fmt.Sprintf("ai/conversations/insight-groups/%s", groupID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
@@ -133,8 +134,6 @@ func (r InsightTemplateGroupDetail) RawJSON() string { return r.JSON.raw }
 func (r *InsightTemplateGroupDetail) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type AIConversationInsightGroupDeleteResponse = any
 
 type AIConversationInsightGroupGetInsightGroupsResponse struct {
 	Data []InsightTemplateGroup `json:"data,required"`
