@@ -75,7 +75,7 @@ func TestPortingOrderPhoneNumberExtensionListWithOptionalParams(t *testing.T) {
 				Size:   telnyx.Int(1),
 			},
 			Sort: telnyx.PortingOrderPhoneNumberExtensionListParamsSort{
-				Value: "-created_at",
+				Value: "created_at",
 			},
 		},
 	)

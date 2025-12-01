@@ -122,7 +122,7 @@ type PortoutDetails struct {
 	Pon string `json:"pon"`
 	// The reason why the order is being rejected by the user. If the order is
 	// authorized, this field can be left null
-	Reason string `json:"reason"`
+	Reason string `json:"reason,nullable"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
 	// The rejection code for one of the valid rejections to reject a port out order

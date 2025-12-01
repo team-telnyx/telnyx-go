@@ -83,7 +83,7 @@ func TestPortingOrderPhoneNumberBlockListWithOptionalParams(t *testing.T) {
 				Size:   telnyx.Int(1),
 			},
 			Sort: telnyx.PortingOrderPhoneNumberBlockListParamsSort{
-				Value: "-created_at",
+				Value: "created_at",
 			},
 		},
 	)

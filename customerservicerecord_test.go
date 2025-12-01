@@ -28,7 +28,7 @@ func TestCustomerServiceRecordNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.CustomerServiceRecords.New(context.TODO(), telnyx.CustomerServiceRecordNewParams{
-		PhoneNumber: "+1234567890",
+		PhoneNumber: "+13035553000",
 		AdditionalData: telnyx.CustomerServiceRecordNewParamsAdditionalData{
 			AccountNumber:        telnyx.String("123456789"),
 			AddressLine1:         telnyx.String("123 Main St"),
@@ -134,7 +134,7 @@ func TestCustomerServiceRecordVerifyPhoneNumberCoverage(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.CustomerServiceRecords.VerifyPhoneNumberCoverage(context.TODO(), telnyx.CustomerServiceRecordVerifyPhoneNumberCoverageParams{
-		PhoneNumbers: []string{"+1234567890"},
+		PhoneNumbers: []string{"+13035553000"},
 	})
 	if err != nil {
 		var apierr *telnyx.Error
