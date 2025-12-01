@@ -1,5 +1,37 @@
 # Changelog
 
+## 3.7.0 (2025-12-01)
+
+Full Changelog: [v3.6.0...v3.7.0](https://github.com/team-telnyx/telnyx-go/compare/v3.6.0...v3.7.0)
+
+### Features
+
+* Ai 1967 ([75b3cd8](https://github.com/team-telnyx/telnyx-go/commit/75b3cd8c3fb25120c46a13b94285ba71e5b32487))
+* Ai 1967 part 2 ([778ec4f](https://github.com/team-telnyx/telnyx-go/commit/778ec4f83f6ae0a3cb4216f446801af3efc5979b))
+* ENGDESK-47508 - part 2 shared schema fixes ([f93c6b9](https://github.com/team-telnyx/telnyx-go/commit/f93c6b95d4dfd1e500521e86a32dc25ae59bb538))
+* ENGDESK-47518 document mobile number and mobile voice connection endpoints ([638701b](https://github.com/team-telnyx/telnyx-go/commit/638701b1a11ba8d7f0664740f96d0c5b5b06b22f))
+* Fix invalid responses ([ca7c8c5](https://github.com/team-telnyx/telnyx-go/commit/ca7c8c55c0e1ce1e07785cd6a35785f100453da1))
+* Fix Redocly linting errors and warnings in TDA reporting specs ([97d2790](https://github.com/team-telnyx/telnyx-go/commit/97d2790b41bcd4e1ed1c8bc66ea1ba249871cd0a))
+* Fix Redocly linting warnings in Number Lookup spec ([14a0460](https://github.com/team-telnyx/telnyx-go/commit/14a0460b6d09328cab63167546d4d49f99b415f5))
+* Fix Redocly linting warnings in OAuth and Integration Secrets specs ([32bfec3](https://github.com/team-telnyx/telnyx-go/commit/32bfec30fe2554d884c9bbc8177202b5f7109bfa))
+* Fixing lint errors ([5ff41bb](https://github.com/team-telnyx/telnyx-go/commit/5ff41bbe5e9af1a1f9d9e133465b9d61596253e4))
+* MSG-6076: webhook event for 10DLC campaign suspended status ([eabeebe](https://github.com/team-telnyx/telnyx-go/commit/eabeebedf20be16941a3fe981927252e5550f680))
+* Refactored README to only contain useful information and reflect accu… ([ca69114](https://github.com/team-telnyx/telnyx-go/commit/ca6911479dfea4cf8e40ebd5dd31732c8cd44ede))
+* TELAPPS-5459: Add Azure to transcription start ([b12b8e4](https://github.com/team-telnyx/telnyx-go/commit/b12b8e43a45cf3490706bceb2eb8e6ceb40e837b))
+* Updated README to include the step for make buildcontainer bundle to … ([8c6c1df](https://github.com/team-telnyx/telnyx-go/commit/8c6c1df6ffef43ec19916139f5b0cee0f3bd624e))
+
+
+### Bug Fixes
+
+* **client:** correctly specify Accept header with */* instead of empty ([938766d](https://github.com/team-telnyx/telnyx-go/commit/938766d6634cb58bb4f8dd49b9e531195c0dd4d6))
+* remove readonly parameters from request params ([882538a](https://github.com/team-telnyx/telnyx-go/commit/882538a8830065cea3be9a19dfee2fef8fda2f5c))
+
+
+### Chores
+
+* bump gjson version ([b2d481b](https://github.com/team-telnyx/telnyx-go/commit/b2d481b629d03ea2b16952aa3f3f4748e8c4e6bf))
+* fix empty interfaces ([9bd32a7](https://github.com/team-telnyx/telnyx-go/commit/9bd32a73a620e729412095dbc96bb8e54356067d))
+
 ## 3.6.0 (2025-11-03)
 
 Full Changelog: [v3.5.0...v3.6.0](https://github.com/team-telnyx/telnyx-go/compare/v3.5.0...v3.6.0)
