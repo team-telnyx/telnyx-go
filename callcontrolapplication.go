@@ -94,11 +94,13 @@ type CallControlApplication struct {
 	ID string `json:"id" format:"int64"`
 	// Specifies whether the connection can be used.
 	Active bool `json:"active"`
-	// `Latency` directs Telnyx to route media through the site with the lowest
-	// round-trip time to the user's connection. Telnyx calculates this time using ICMP
-	// ping messages. This can be disabled by specifying a site to handle all media.
+	// <code>Latency</code> directs Telnyx to route media through the site with the
+	// lowest round-trip time to the user's connection. Telnyx calculates this time
+	// using ICMP ping messages. This can be disabled by specifying a site to handle
+	// all media.
 	//
-	// Any of `"Latency"`, `"Chicago, IL"`, `"Ashburn, VA"`, `"San Jose, CA"`.
+	// Any of "Latency", "Chicago, IL", "Ashburn, VA", "San Jose, CA", "London, UK",
+	// "Chennai, IN", "Amsterdam, Netherlands", "Toronto, Canada", "Sydney, Australia".
 	AnchorsiteOverride CallControlApplicationAnchorsiteOverride `json:"anchorsite_override"`
 	// A user-assigned name to help manage the application.
 	ApplicationName string `json:"application_name"`
@@ -171,16 +173,22 @@ func (r *CallControlApplication) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// `Latency` directs Telnyx to route media through the site with the lowest
-// round-trip time to the user's connection. Telnyx calculates this time using ICMP
-// ping messages. This can be disabled by specifying a site to handle all media.
+// <code>Latency</code> directs Telnyx to route media through the site with the
+// lowest round-trip time to the user's connection. Telnyx calculates this time
+// using ICMP ping messages. This can be disabled by specifying a site to handle
+// all media.
 type CallControlApplicationAnchorsiteOverride string
 
 const (
-	CallControlApplicationAnchorsiteOverrideLatency   CallControlApplicationAnchorsiteOverride = `"Latency"`
-	CallControlApplicationAnchorsiteOverrideChicagoIl CallControlApplicationAnchorsiteOverride = `"Chicago, IL"`
-	CallControlApplicationAnchorsiteOverrideAshburnVa CallControlApplicationAnchorsiteOverride = `"Ashburn, VA"`
-	CallControlApplicationAnchorsiteOverrideSanJoseCa CallControlApplicationAnchorsiteOverride = `"San Jose, CA"`
+	CallControlApplicationAnchorsiteOverrideLatency              CallControlApplicationAnchorsiteOverride = "Latency"
+	CallControlApplicationAnchorsiteOverrideChicagoIl            CallControlApplicationAnchorsiteOverride = "Chicago, IL"
+	CallControlApplicationAnchorsiteOverrideAshburnVa            CallControlApplicationAnchorsiteOverride = "Ashburn, VA"
+	CallControlApplicationAnchorsiteOverrideSanJoseCa            CallControlApplicationAnchorsiteOverride = "San Jose, CA"
+	CallControlApplicationAnchorsiteOverrideLondonUk             CallControlApplicationAnchorsiteOverride = "London, UK"
+	CallControlApplicationAnchorsiteOverrideChennaiIn            CallControlApplicationAnchorsiteOverride = "Chennai, IN"
+	CallControlApplicationAnchorsiteOverrideAmsterdamNetherlands CallControlApplicationAnchorsiteOverride = "Amsterdam, Netherlands"
+	CallControlApplicationAnchorsiteOverrideTorontoCanada        CallControlApplicationAnchorsiteOverride = "Toronto, Canada"
+	CallControlApplicationAnchorsiteOverrideSydneyAustralia      CallControlApplicationAnchorsiteOverride = "Sydney, Australia"
 )
 
 // Sets the type of DTMF digits sent from Telnyx to this Connection. Note that DTMF
@@ -454,7 +462,8 @@ type CallControlApplicationNewParams struct {
 	// using ICMP ping messages. This can be disabled by specifying a site to handle
 	// all media.
 	//
-	// Any of `"Latency"`, `"Chicago, IL"`, `"Ashburn, VA"`, `"San Jose, CA"`.
+	// Any of "Latency", "Chicago, IL", "Ashburn, VA", "San Jose, CA", "London, UK",
+	// "Chennai, IN", "Amsterdam, Netherlands", "Toronto, Canada", "Sydney, Australia".
 	AnchorsiteOverride CallControlApplicationNewParamsAnchorsiteOverride `json:"anchorsite_override,omitzero"`
 	// Sets the type of DTMF digits sent from Telnyx to this Connection. Note that DTMF
 	// digits sent to Telnyx will be accepted in all formats.
@@ -485,10 +494,15 @@ func (r *CallControlApplicationNewParams) UnmarshalJSON(data []byte) error {
 type CallControlApplicationNewParamsAnchorsiteOverride string
 
 const (
-	CallControlApplicationNewParamsAnchorsiteOverrideLatency   CallControlApplicationNewParamsAnchorsiteOverride = `"Latency"`
-	CallControlApplicationNewParamsAnchorsiteOverrideChicagoIl CallControlApplicationNewParamsAnchorsiteOverride = `"Chicago, IL"`
-	CallControlApplicationNewParamsAnchorsiteOverrideAshburnVa CallControlApplicationNewParamsAnchorsiteOverride = `"Ashburn, VA"`
-	CallControlApplicationNewParamsAnchorsiteOverrideSanJoseCa CallControlApplicationNewParamsAnchorsiteOverride = `"San Jose, CA"`
+	CallControlApplicationNewParamsAnchorsiteOverrideLatency              CallControlApplicationNewParamsAnchorsiteOverride = "Latency"
+	CallControlApplicationNewParamsAnchorsiteOverrideChicagoIl            CallControlApplicationNewParamsAnchorsiteOverride = "Chicago, IL"
+	CallControlApplicationNewParamsAnchorsiteOverrideAshburnVa            CallControlApplicationNewParamsAnchorsiteOverride = "Ashburn, VA"
+	CallControlApplicationNewParamsAnchorsiteOverrideSanJoseCa            CallControlApplicationNewParamsAnchorsiteOverride = "San Jose, CA"
+	CallControlApplicationNewParamsAnchorsiteOverrideLondonUk             CallControlApplicationNewParamsAnchorsiteOverride = "London, UK"
+	CallControlApplicationNewParamsAnchorsiteOverrideChennaiIn            CallControlApplicationNewParamsAnchorsiteOverride = "Chennai, IN"
+	CallControlApplicationNewParamsAnchorsiteOverrideAmsterdamNetherlands CallControlApplicationNewParamsAnchorsiteOverride = "Amsterdam, Netherlands"
+	CallControlApplicationNewParamsAnchorsiteOverrideTorontoCanada        CallControlApplicationNewParamsAnchorsiteOverride = "Toronto, Canada"
+	CallControlApplicationNewParamsAnchorsiteOverrideSydneyAustralia      CallControlApplicationNewParamsAnchorsiteOverride = "Sydney, Australia"
 )
 
 // Sets the type of DTMF digits sent from Telnyx to this Connection. Note that DTMF
@@ -538,7 +552,8 @@ type CallControlApplicationUpdateParams struct {
 	// using ICMP ping messages. This can be disabled by specifying a site to handle
 	// all media.
 	//
-	// Any of `"Latency"`, `"Chicago, IL"`, `"Ashburn, VA"`, `"San Jose, CA"`.
+	// Any of "Latency", "Chicago, IL", "Ashburn, VA", "San Jose, CA", "London, UK",
+	// "Chennai, IN", "Amsterdam, Netherlands", "Toronto, Canada", "Sydney, Australia".
 	AnchorsiteOverride CallControlApplicationUpdateParamsAnchorsiteOverride `json:"anchorsite_override,omitzero"`
 	// Sets the type of DTMF digits sent from Telnyx to this Connection. Note that DTMF
 	// digits sent to Telnyx will be accepted in all formats.
@@ -571,10 +586,15 @@ func (r *CallControlApplicationUpdateParams) UnmarshalJSON(data []byte) error {
 type CallControlApplicationUpdateParamsAnchorsiteOverride string
 
 const (
-	CallControlApplicationUpdateParamsAnchorsiteOverrideLatency   CallControlApplicationUpdateParamsAnchorsiteOverride = `"Latency"`
-	CallControlApplicationUpdateParamsAnchorsiteOverrideChicagoIl CallControlApplicationUpdateParamsAnchorsiteOverride = `"Chicago, IL"`
-	CallControlApplicationUpdateParamsAnchorsiteOverrideAshburnVa CallControlApplicationUpdateParamsAnchorsiteOverride = `"Ashburn, VA"`
-	CallControlApplicationUpdateParamsAnchorsiteOverrideSanJoseCa CallControlApplicationUpdateParamsAnchorsiteOverride = `"San Jose, CA"`
+	CallControlApplicationUpdateParamsAnchorsiteOverrideLatency              CallControlApplicationUpdateParamsAnchorsiteOverride = "Latency"
+	CallControlApplicationUpdateParamsAnchorsiteOverrideChicagoIl            CallControlApplicationUpdateParamsAnchorsiteOverride = "Chicago, IL"
+	CallControlApplicationUpdateParamsAnchorsiteOverrideAshburnVa            CallControlApplicationUpdateParamsAnchorsiteOverride = "Ashburn, VA"
+	CallControlApplicationUpdateParamsAnchorsiteOverrideSanJoseCa            CallControlApplicationUpdateParamsAnchorsiteOverride = "San Jose, CA"
+	CallControlApplicationUpdateParamsAnchorsiteOverrideLondonUk             CallControlApplicationUpdateParamsAnchorsiteOverride = "London, UK"
+	CallControlApplicationUpdateParamsAnchorsiteOverrideChennaiIn            CallControlApplicationUpdateParamsAnchorsiteOverride = "Chennai, IN"
+	CallControlApplicationUpdateParamsAnchorsiteOverrideAmsterdamNetherlands CallControlApplicationUpdateParamsAnchorsiteOverride = "Amsterdam, Netherlands"
+	CallControlApplicationUpdateParamsAnchorsiteOverrideTorontoCanada        CallControlApplicationUpdateParamsAnchorsiteOverride = "Toronto, Canada"
+	CallControlApplicationUpdateParamsAnchorsiteOverrideSydneyAustralia      CallControlApplicationUpdateParamsAnchorsiteOverride = "Sydney, Australia"
 )
 
 // Sets the type of DTMF digits sent from Telnyx to this Connection. Note that DTMF
