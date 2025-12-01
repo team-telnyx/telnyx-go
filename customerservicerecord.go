@@ -81,14 +81,14 @@ type CustomerServiceRecord struct {
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// The error message in case status is `failed`. This field would be null in case
 	// of `pending` or `completed` status.
-	ErrorMessage string `json:"error_message"`
+	ErrorMessage string `json:"error_message,nullable"`
 	// The phone number of the customer service record.
 	PhoneNumber string `json:"phone_number"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
 	// The result of the CSR request. This field would be null in case of `pending` or
 	// `failed` status.
-	Result CustomerServiceRecordResult `json:"result"`
+	Result CustomerServiceRecordResult `json:"result,nullable"`
 	// The status of the customer service record
 	//
 	// Any of "pending", "completed", "failed".

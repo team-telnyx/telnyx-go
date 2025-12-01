@@ -104,10 +104,10 @@ func TestPortingOrderUpdateWithOptionalParams(t *testing.T) {
 				Admin: telnyx.PortingOrderEndUserAdminParam{
 					AccountNumber:      telnyx.String("123abc"),
 					AuthPersonName:     telnyx.String("Porter McPortersen II"),
-					BillingPhoneNumber: telnyx.String("billing_phone_number"),
+					BillingPhoneNumber: telnyx.String("13035551234"),
 					BusinessIdentifier: telnyx.String("abc123"),
 					EntityName:         telnyx.String("Porter McPortersen"),
-					PinPasscode:        telnyx.String("pin_passcode"),
+					PinPasscode:        telnyx.String("1234"),
 					TaxIdentifier:      telnyx.String("1234abcd"),
 				},
 				Location: telnyx.PortingOrderEndUserLocationParam{
