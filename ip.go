@@ -16,6 +16,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/option"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/shared"
 )
 
 // IPService contains methods and other services that help with interacting with
@@ -173,10 +174,12 @@ func (r *IPUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type IPListResponse struct {
-	Data []IP `json:"data"`
+	Data []IP                             `json:"data"`
+	Meta shared.ConnectionsPaginationMeta `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
+		Meta        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
