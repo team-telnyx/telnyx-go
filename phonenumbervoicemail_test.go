@@ -32,7 +32,7 @@ func TestPhoneNumberVoicemailNewWithOptionalParams(t *testing.T) {
 		telnyx.PhoneNumberVoicemailNewParams{
 			VoicemailRequest: telnyx.VoicemailRequestParam{
 				Enabled: telnyx.Bool(true),
-				Pin:     telnyx.String("pin"),
+				Pin:     telnyx.String("1234"),
 			},
 		},
 	)
@@ -87,7 +87,7 @@ func TestPhoneNumberVoicemailUpdateWithOptionalParams(t *testing.T) {
 		telnyx.PhoneNumberVoicemailUpdateParams{
 			VoicemailRequest: telnyx.VoicemailRequestParam{
 				Enabled: telnyx.Bool(true),
-				Pin:     telnyx.String("pin"),
+				Pin:     telnyx.String("1234"),
 			},
 		},
 	)
