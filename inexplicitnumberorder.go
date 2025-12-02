@@ -512,10 +512,16 @@ type InexplicitNumberOrderNewParamsOrderingGroup struct {
 	PhoneNumberType string `json:"phone_number_type,required"`
 	// Filter for phone numbers in a given state / province
 	AdministrativeArea param.Opt[string] `json:"administrative_area,omitzero"`
+	// Filter to exclude phone numbers that are currently on hold/reserved for your
+	// account.
+	ExcludeHeldNumbers param.Opt[bool] `json:"exclude_held_numbers,omitzero"`
 	// Filter for phone numbers in a given city / region / rate center
 	Locality param.Opt[string] `json:"locality,omitzero"`
 	// Filter by area code
 	NationalDestinationCode param.Opt[string] `json:"national_destination_code,omitzero"`
+	// Filter to exclude phone numbers that need additional time after to purchase to
+	// activate. Only applicable for +1 toll_free numbers.
+	Quickship param.Opt[bool] `json:"quickship,omitzero"`
 	// Filter for phone numbers that have the features to satisfy your use case (e.g.,
 	// ["voice"])
 	Features []string `json:"features,omitzero"`
