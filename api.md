@@ -202,8 +202,6 @@ Methods:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CampaignStatusUpdateEvent">CampaignStatusUpdateEvent</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CampaignSuspendedEvent">CampaignSuspendedEvent</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CallAIGatherEndedWebhookEvent">CallAIGatherEndedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CallAIGatherMessageHistoryUpdatedWebhookEvent">CallAIGatherMessageHistoryUpdatedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CallAIGatherPartialResultsWebhookEvent">CallAIGatherPartialResultsWebhookEvent</a>
