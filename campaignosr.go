@@ -44,4 +44,4 @@ func (r *CampaignOsrService) GetAttributes(ctx context.Context, campaignID strin
 	return
 }
 
-type CampaignOsrGetAttributesResponse = any
+type CampaignOsrGetAttributesResponse map[string]any

@@ -85,14 +85,15 @@ func (r *BrandService) List(ctx context.Context, query BrandListParams, opts ...
 // Delete Brand. This endpoint is used to delete a brand. Note the brand cannot be
 // deleted if it contains one or more active campaigns, the campaigns need to be
 // inactive and at least 3 months old due to billing purposes.
-func (r *BrandService) Delete(ctx context.Context, brandID string, opts ...option.RequestOption) (res *BrandDeleteResponse, err error) {
+func (r *BrandService) Delete(ctx context.Context, brandID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
 		return
 	}
 	path := fmt.Sprintf("brand/%s", brandID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
@@ -136,7 +137,7 @@ func (r *BrandService) Resend2faEmail(ctx context.Context, brandID string, opts 
 // This operation allows you to revet the brand. However, revetting is allowed once
 // after the successful brand registration and thereafter limited to once every 3
 // months.
-func (r *BrandService) Revet(ctx context.Context, brandID string, opts ...option.RequestOption) (res *BrandRevetResponse, err error) {
+func (r *BrandService) Revet(ctx context.Context, brandID string, opts ...option.RequestOption) (res *TelnyxBrand, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
@@ -512,8 +513,6 @@ func (r *BrandListResponseRecord) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type BrandDeleteResponse = any
-
 type BrandGetFeedbackResponse struct {
 	// ID of the brand being queried about
 	BrandID string `json:"brandId,required"`
@@ -559,8 +558,6 @@ func (r BrandGetFeedbackResponseCategory) RawJSON() string { return r.JSON.raw }
 func (r *BrandGetFeedbackResponseCategory) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type BrandRevetResponse = any
 
 type BrandNewParams struct {
 	// ISO2 2 characters country code. Example: US - United States
