@@ -597,7 +597,7 @@ func (r *CampaignListResponseRecord) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CampaignAcceptSharingResponse = any
+type CampaignAcceptSharingResponse map[string]any
 
 type CampaignDeactivateResponse struct {
 	Time       float64 `json:"time,required"`
@@ -669,7 +669,7 @@ func (r *mno_10999) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CampaignGetOperationStatusResponse = any
+type CampaignGetOperationStatusResponse map[string]any
 
 type CampaignGetSharingStatusResponse struct {
 	SharedByMe   CampaignSharingStatus `json:"sharedByMe"`

@@ -97,7 +97,7 @@ func (r *MessagingProfileAutorespConfigService) List(ctx context.Context, profil
 }
 
 // Delete Auto-Response Setting
-func (r *MessagingProfileAutorespConfigService) Delete(ctx context.Context, autorespCfgID string, body MessagingProfileAutorespConfigDeleteParams, opts ...option.RequestOption) (res *MessagingProfileAutorespConfigDeleteResponse, err error) {
+func (r *MessagingProfileAutorespConfigService) Delete(ctx context.Context, autorespCfgID string, body MessagingProfileAutorespConfigDeleteParams, opts ...option.RequestOption) (res *string, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if body.ProfileID == "" {
 		err = errors.New("missing required profile_id parameter")
@@ -209,8 +209,6 @@ func (r MessagingProfileAutorespConfigListResponse) RawJSON() string { return r.
 func (r *MessagingProfileAutorespConfigListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type MessagingProfileAutorespConfigDeleteResponse = any
 
 type MessagingProfileAutorespConfigNewParams struct {
 	AutoRespConfigCreate AutoRespConfigCreateParam

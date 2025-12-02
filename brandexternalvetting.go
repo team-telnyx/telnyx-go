@@ -36,7 +36,7 @@ func NewBrandExternalVettingService(opts ...option.RequestOption) (r BrandExtern
 }
 
 // Get list of valid external vetting record for a given brand
-func (r *BrandExternalVettingService) List(ctx context.Context, brandID string, opts ...option.RequestOption) (res *BrandExternalVettingListResponse, err error) {
+func (r *BrandExternalVettingService) List(ctx context.Context, brandID string, opts ...option.RequestOption) (res *[]BrandExternalVettingListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
@@ -74,7 +74,44 @@ func (r *BrandExternalVettingService) Order(ctx context.Context, brandID string,
 	return
 }
 
-type BrandExternalVettingListResponse = any
+type BrandExternalVettingListResponse struct {
+	// Vetting submission date. This is the date when the vetting request is generated
+	// in ISO 8601 format.
+	CreateDate string `json:"createDate"`
+	// External vetting provider ID for the brand.
+	EvpID string `json:"evpId"`
+	// Vetting effective date. This is the date when vetting was completed, or the
+	// starting effective date in ISO 8601 format. If this date is missing, then the
+	// vetting was not complete or not valid.
+	VettedDate string `json:"vettedDate"`
+	// Identifies the vetting classification.
+	VettingClass string `json:"vettingClass"`
+	// Unique ID that identifies a vetting transaction performed by a vetting provider.
+	// This ID is provided by the vetting provider at time of vetting.
+	VettingID string `json:"vettingId"`
+	// Vetting score ranging from 0-100.
+	VettingScore int64 `json:"vettingScore"`
+	// Required by some providers for vetting record confirmation.
+	VettingToken string `json:"vettingToken"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreateDate   respjson.Field
+		EvpID        respjson.Field
+		VettedDate   respjson.Field
+		VettingClass respjson.Field
+		VettingID    respjson.Field
+		VettingScore respjson.Field
+		VettingToken respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BrandExternalVettingListResponse) RawJSON() string { return r.JSON.raw }
+func (r *BrandExternalVettingListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type BrandExternalVettingImportResponse struct {
 	// Vetting submission date. This is the date when the vetting request is generated
@@ -115,7 +152,44 @@ func (r *BrandExternalVettingImportResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type BrandExternalVettingOrderResponse = any
+type BrandExternalVettingOrderResponse struct {
+	// Vetting submission date. This is the date when the vetting request is generated
+	// in ISO 8601 format.
+	CreateDate string `json:"createDate"`
+	// External vetting provider ID for the brand.
+	EvpID string `json:"evpId"`
+	// Vetting effective date. This is the date when vetting was completed, or the
+	// starting effective date in ISO 8601 format. If this date is missing, then the
+	// vetting was not complete or not valid.
+	VettedDate string `json:"vettedDate"`
+	// Identifies the vetting classification.
+	VettingClass string `json:"vettingClass"`
+	// Unique ID that identifies a vetting transaction performed by a vetting provider.
+	// This ID is provided by the vetting provider at time of vetting.
+	VettingID string `json:"vettingId"`
+	// Vetting score ranging from 0-100.
+	VettingScore int64 `json:"vettingScore"`
+	// Required by some providers for vetting record confirmation.
+	VettingToken string `json:"vettingToken"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreateDate   respjson.Field
+		EvpID        respjson.Field
+		VettedDate   respjson.Field
+		VettingClass respjson.Field
+		VettingID    respjson.Field
+		VettingScore respjson.Field
+		VettingToken respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BrandExternalVettingOrderResponse) RawJSON() string { return r.JSON.raw }
+func (r *BrandExternalVettingOrderResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type BrandExternalVettingImportParams struct {
 	// External vetting provider ID for the brand.

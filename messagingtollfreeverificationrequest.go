@@ -89,14 +89,15 @@ func (r *MessagingTollfreeVerificationRequestService) List(ctx context.Context, 
 // - `HTTP 200`: request successfully deleted
 // - `HTTP 400`: request exists but can't be deleted (i.e. not rejected)
 // - `HTTP 404`: request unknown or already deleted
-func (r *MessagingTollfreeVerificationRequestService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *MessagingTollfreeVerificationRequestDeleteResponse, err error) {
+func (r *MessagingTollfreeVerificationRequestService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
 	}
 	path := fmt.Sprintf("messaging_tollfree/verification/requests/%s", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
@@ -629,8 +630,6 @@ func (r MessagingTollfreeVerificationRequestListResponse) RawJSON() string { ret
 func (r *MessagingTollfreeVerificationRequestListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type MessagingTollfreeVerificationRequestDeleteResponse = any
 
 type MessagingTollfreeVerificationRequestNewParams struct {
 	// The body of a tollfree verification request

@@ -183,7 +183,7 @@ func TestBrandDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Brand.Delete(context.TODO(), "brandId")
+	err := client.Brand.Delete(context.TODO(), "brandId")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
