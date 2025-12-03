@@ -245,7 +245,7 @@ func (r *WebhookDeliveryGetResponseDataWebhook) UnmarshalJSON(data []byte) error
 
 type WebhookDeliveryListResponse struct {
 	Data []WebhookDeliveryListResponseData `json:"data"`
-	Meta WebhookDeliveryListResponseMeta   `json:"meta"`
+	Meta PaginationMetaSimple              `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -425,28 +425,6 @@ type WebhookDeliveryListResponseDataWebhook struct {
 // Returns the unmodified JSON received from the API
 func (r WebhookDeliveryListResponseDataWebhook) RawJSON() string { return r.JSON.raw }
 func (r *WebhookDeliveryListResponseDataWebhook) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WebhookDeliveryListResponseMeta struct {
-	PageNumber   int64 `json:"page_number"`
-	PageSize     int64 `json:"page_size"`
-	TotalPages   int64 `json:"total_pages"`
-	TotalResults int64 `json:"total_results"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageNumber   respjson.Field
-		PageSize     respjson.Field
-		TotalPages   respjson.Field
-		TotalResults respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WebhookDeliveryListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *WebhookDeliveryListResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -39,7 +39,7 @@ func NewStorageBucketSslCertificateService(opts ...option.RequestOption) (r Stor
 	return
 }
 
-// Uploads an SSL certificate and its matching secret so that you can use Telnyx’s
+// Uploads an SSL certificate and its matching secret so that you can use Telnyx's
 // storage as your CDN.
 func (r *StorageBucketSslCertificateService) New(ctx context.Context, bucketName string, body StorageBucketSslCertificateNewParams, opts ...option.RequestOption) (res *StorageBucketSslCertificateNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
