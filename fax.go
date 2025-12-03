@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -71,11 +72,26 @@ func (r *FaxService) Get(ctx context.Context, id string, opts ...option.RequestO
 }
 
 // View a list of faxes
-func (r *FaxService) List(ctx context.Context, query FaxListParams, opts ...option.RequestOption) (res *FaxListResponse, err error) {
+func (r *FaxService) List(ctx context.Context, query FaxListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[Fax], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "faxes"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// View a list of faxes
+func (r *FaxService) ListAutoPaging(ctx context.Context, query FaxListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[Fax] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a fax
@@ -256,24 +272,6 @@ func (r *FaxGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type FaxListResponse struct {
-	Data []Fax `json:"data"`
-	Meta any   `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r FaxListResponse) RawJSON() string { return r.JSON.raw }
-func (r *FaxListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type FaxNewParams struct {
 	// The connection ID to send the fax with.
 	ConnectionID string `json:"connection_id,required"`
@@ -352,13 +350,12 @@ const (
 )
 
 type FaxListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[created_at][gte], filter[created_at][gt], filter[created_at][lte],
 	// filter[created_at][lt], filter[direction][eq], filter[from][eq], filter[to][eq]
 	Filter FaxListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated pagination parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page FaxListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -456,24 +453,6 @@ type FaxListParamsFilterTo struct {
 
 // URLQuery serializes [FaxListParamsFilterTo]'s query parameters as `url.Values`.
 func (r FaxListParamsFilterTo) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated pagination parameter (deepObject style). Originally: page[size],
-// page[number]
-type FaxListParamsPage struct {
-	// Number of the page to be retrieved
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// Number of fax resources for the single page returned
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [FaxListParamsPage]'s query parameters as `url.Values`.
-func (r FaxListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

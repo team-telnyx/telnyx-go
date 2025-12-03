@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -51,11 +52,26 @@ func (r *InvoiceService) Get(ctx context.Context, id string, query InvoiceGetPar
 }
 
 // Retrieve a paginated list of invoices.
-func (r *InvoiceService) List(ctx context.Context, query InvoiceListParams, opts ...option.RequestOption) (res *InvoiceListResponse, err error) {
+func (r *InvoiceService) List(ctx context.Context, query InvoiceListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[InvoiceListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "invoices"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a paginated list of invoices.
+func (r *InvoiceService) ListAutoPaging(ctx context.Context, query InvoiceListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[InvoiceListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type InvoiceGetResponse struct {
@@ -104,24 +120,6 @@ func (r *InvoiceGetResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type InvoiceListResponse struct {
-	Data []InvoiceListResponseData `json:"data"`
-	Meta InvoiceListResponseMeta   `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InvoiceListResponse) RawJSON() string { return r.JSON.raw }
-func (r *InvoiceListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type InvoiceListResponseData struct {
 	FileID      string    `json:"file_id" format:"uuid"`
 	InvoiceID   string    `json:"invoice_id" format:"uuid"`
 	Paid        bool      `json:"paid"`
@@ -142,30 +140,8 @@ type InvoiceListResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InvoiceListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *InvoiceListResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type InvoiceListResponseMeta struct {
-	PageNumber   int64 `json:"page_number"`
-	PageSize     int64 `json:"page_size"`
-	TotalPages   int64 `json:"total_pages"`
-	TotalResults int64 `json:"total_results"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageNumber   respjson.Field
-		PageSize     respjson.Field
-		TotalPages   respjson.Field
-		TotalResults respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InvoiceListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *InvoiceListResponseMeta) UnmarshalJSON(data []byte) error {
+func (r InvoiceListResponse) RawJSON() string { return r.JSON.raw }
+func (r *InvoiceListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -194,9 +170,8 @@ const (
 )
 
 type InvoiceListParams struct {
-	// Consolidated page parameter (deepObject style). Originally: page[number],
-	// page[size]
-	Page InvoiceListParamsPage `query:"page,omitzero" json:"-"`
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Specifies the sort order for results.
 	//
 	// Any of "period_start", "-period_start".
@@ -206,24 +181,6 @@ type InvoiceListParams struct {
 
 // URLQuery serializes [InvoiceListParams]'s query parameters as `url.Values`.
 func (r InvoiceListParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[number],
-// page[size]
-type InvoiceListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [InvoiceListParamsPage]'s query parameters as `url.Values`.
-func (r InvoiceListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

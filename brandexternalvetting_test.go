@@ -36,7 +36,7 @@ func TestBrandExternalVettingList(t *testing.T) {
 	}
 }
 
-func TestBrandExternalVettingImportWithOptionalParams(t *testing.T) {
+func TestBrandExternalVettingImportsWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -49,10 +49,10 @@ func TestBrandExternalVettingImportWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Brand.ExternalVetting.Import(
+	_, err := client.Brand.ExternalVetting.Imports(
 		context.TODO(),
 		"brandId",
-		telnyx.BrandExternalVettingImportParams{
+		telnyx.BrandExternalVettingImportsParams{
 			EvpID:        "evpId",
 			VettingID:    "vettingId",
 			VettingToken: telnyx.String("vettingToken"),

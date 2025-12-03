@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -59,11 +60,26 @@ func (r *CustomerServiceRecordService) Get(ctx context.Context, customerServiceR
 }
 
 // List customer service records.
-func (r *CustomerServiceRecordService) List(ctx context.Context, query CustomerServiceRecordListParams, opts ...option.RequestOption) (res *CustomerServiceRecordListResponse, err error) {
+func (r *CustomerServiceRecordService) List(ctx context.Context, query CustomerServiceRecordListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[CustomerServiceRecord], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "customer_service_records"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List customer service records.
+func (r *CustomerServiceRecordService) ListAutoPaging(ctx context.Context, query CustomerServiceRecordListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[CustomerServiceRecord] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Verify the coverage for a list of phone numbers.
@@ -239,24 +255,6 @@ type CustomerServiceRecordGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r CustomerServiceRecordGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *CustomerServiceRecordGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CustomerServiceRecordListResponse struct {
-	Data []CustomerServiceRecord `json:"data"`
-	Meta PaginationMeta          `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CustomerServiceRecordListResponse) RawJSON() string { return r.JSON.raw }
-func (r *CustomerServiceRecordListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

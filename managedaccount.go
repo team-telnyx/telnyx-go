@@ -14,6 +14,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -74,11 +75,27 @@ func (r *ManagedAccountService) Update(ctx context.Context, id string, body Mana
 
 // Lists the accounts managed by the current user. Users need to be explictly
 // approved by Telnyx in order to become manager accounts.
-func (r *ManagedAccountService) List(ctx context.Context, query ManagedAccountListParams, opts ...option.RequestOption) (res *ManagedAccountListResponse, err error) {
+func (r *ManagedAccountService) List(ctx context.Context, query ManagedAccountListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[ManagedAccountListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "managed_accounts"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Lists the accounts managed by the current user. Users need to be explictly
+// approved by Telnyx in order to become manager accounts.
+func (r *ManagedAccountService) ListAutoPaging(ctx context.Context, query ManagedAccountListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[ManagedAccountListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Display information about allocatable global outbound channels for the current
@@ -259,24 +276,6 @@ func (r *ManagedAccountUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ManagedAccountListResponse struct {
-	Data []ManagedAccountListResponseData `json:"data"`
-	Meta PaginationMeta                   `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ManagedAccountListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ManagedAccountListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ManagedAccountListResponseData struct {
 	// Uniquely identifies the managed account.
 	ID string `json:"id,required" format:"uuid"`
 	// The manager account's email, which serves as the V1 API user identifier
@@ -290,7 +289,7 @@ type ManagedAccountListResponseData struct {
 	// Identifies the type of the resource.
 	//
 	// Any of "managed_account".
-	RecordType string `json:"record_type,required"`
+	RecordType ManagedAccountListResponseRecordType `json:"record_type,required"`
 	// ISO 8601 formatted date indicating when the resource was updated.
 	UpdatedAt string `json:"updated_at,required"`
 	// Boolean value that indicates if the managed account is able to have custom
@@ -325,10 +324,17 @@ type ManagedAccountListResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ManagedAccountListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *ManagedAccountListResponseData) UnmarshalJSON(data []byte) error {
+func (r ManagedAccountListResponse) RawJSON() string { return r.JSON.raw }
+func (r *ManagedAccountListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Identifies the type of the resource.
+type ManagedAccountListResponseRecordType string
+
+const (
+	ManagedAccountListResponseRecordTypeManagedAccount ManagedAccountListResponseRecordType = "managed_account"
+)
 
 type ManagedAccountGetAllocatableGlobalOutboundChannelsResponse struct {
 	Data ManagedAccountGetAllocatableGlobalOutboundChannelsResponseData `json:"data"`

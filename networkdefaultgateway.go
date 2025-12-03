@@ -36,13 +36,13 @@ func NewNetworkDefaultGatewayService(opts ...option.RequestOption) (r NetworkDef
 }
 
 // Create Default Gateway.
-func (r *NetworkDefaultGatewayService) New(ctx context.Context, id string, body NetworkDefaultGatewayNewParams, opts ...option.RequestOption) (res *NetworkDefaultGatewayNewResponse, err error) {
+func (r *NetworkDefaultGatewayService) New(ctx context.Context, networkIdentifier string, body NetworkDefaultGatewayNewParams, opts ...option.RequestOption) (res *NetworkDefaultGatewayNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	if id == "" {
-		err = errors.New("missing required id parameter")
+	if networkIdentifier == "" {
+		err = errors.New("missing required network_identifier parameter")
 		return
 	}
-	path := fmt.Sprintf("networks/%s/default_gateway", id)
+	path := fmt.Sprintf("networks/%s/default_gateway", networkIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -92,8 +92,6 @@ func (r *NetworkDefaultGatewayNewResponse) UnmarshalJSON(data []byte) error {
 type NetworkDefaultGatewayNewResponseData struct {
 	// Network ID.
 	NetworkID string `json:"network_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
 	// The current status of the interface deployment.
 	//
 	// Any of "created", "provisioning", "provisioned", "deleting".
@@ -103,7 +101,6 @@ type NetworkDefaultGatewayNewResponseData struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		NetworkID       respjson.Field
-		RecordType      respjson.Field
 		Status          respjson.Field
 		WireguardPeerID respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -139,8 +136,6 @@ func (r *NetworkDefaultGatewayGetResponse) UnmarshalJSON(data []byte) error {
 type NetworkDefaultGatewayGetResponseData struct {
 	// Network ID.
 	NetworkID string `json:"network_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
 	// The current status of the interface deployment.
 	//
 	// Any of "created", "provisioning", "provisioned", "deleting".
@@ -150,7 +145,6 @@ type NetworkDefaultGatewayGetResponseData struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		NetworkID       respjson.Field
-		RecordType      respjson.Field
 		Status          respjson.Field
 		WireguardPeerID respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -186,8 +180,6 @@ func (r *NetworkDefaultGatewayDeleteResponse) UnmarshalJSON(data []byte) error {
 type NetworkDefaultGatewayDeleteResponseData struct {
 	// Network ID.
 	NetworkID string `json:"network_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
 	// The current status of the interface deployment.
 	//
 	// Any of "created", "provisioning", "provisioned", "deleting".
@@ -197,7 +189,6 @@ type NetworkDefaultGatewayDeleteResponseData struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		NetworkID       respjson.Field
-		RecordType      respjson.Field
 		Status          respjson.Field
 		WireguardPeerID respjson.Field
 		ExtraFields     map[string]respjson.Field

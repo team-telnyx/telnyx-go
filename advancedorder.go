@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
 // AdvancedOrderService contains methods and other services that help with
@@ -110,13 +111,181 @@ const (
 	AdvancedOrderPhoneNumberTypeLandline   AdvancedOrderPhoneNumberType = "landline"
 )
 
-type AdvancedOrderNewResponse = any
+type AdvancedOrderNewResponse struct {
+	ID                string `json:"id" format:"uuid"`
+	AreaCode          string `json:"area_code"`
+	Comments          string `json:"comments"`
+	CountryCode       string `json:"country_code"`
+	CustomerReference string `json:"customer_reference"`
+	// Any of "sms", "mms", "voice", "fax", "emergency".
+	Features []string `json:"features"`
+	Orders   []string `json:"orders" format:"uuid"`
+	// Any of "local", "mobile", "toll_free", "shared_cost", "national", "landline".
+	PhoneNumberType []string `json:"phone_number_type"`
+	Quantity        int64    `json:"quantity"`
+	// The ID of the requirement group associated with this advanced order
+	RequirementGroupID string `json:"requirement_group_id" format:"uuid"`
+	// Any of "pending", "processing", "ordered".
+	Status []string `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                 respjson.Field
+		AreaCode           respjson.Field
+		Comments           respjson.Field
+		CountryCode        respjson.Field
+		CustomerReference  respjson.Field
+		Features           respjson.Field
+		Orders             respjson.Field
+		PhoneNumberType    respjson.Field
+		Quantity           respjson.Field
+		RequirementGroupID respjson.Field
+		Status             respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
 
-type AdvancedOrderGetResponse = any
+// Returns the unmodified JSON received from the API
+func (r AdvancedOrderNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *AdvancedOrderNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
-type AdvancedOrderListResponse = any
+type AdvancedOrderGetResponse struct {
+	ID                string `json:"id" format:"uuid"`
+	AreaCode          string `json:"area_code"`
+	Comments          string `json:"comments"`
+	CountryCode       string `json:"country_code"`
+	CustomerReference string `json:"customer_reference"`
+	// Any of "sms", "mms", "voice", "fax", "emergency".
+	Features []string `json:"features"`
+	Orders   []string `json:"orders" format:"uuid"`
+	// Any of "local", "mobile", "toll_free", "shared_cost", "national", "landline".
+	PhoneNumberType []string `json:"phone_number_type"`
+	Quantity        int64    `json:"quantity"`
+	// The ID of the requirement group associated with this advanced order
+	RequirementGroupID string `json:"requirement_group_id" format:"uuid"`
+	// Any of "pending", "processing", "ordered".
+	Status []string `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                 respjson.Field
+		AreaCode           respjson.Field
+		Comments           respjson.Field
+		CountryCode        respjson.Field
+		CustomerReference  respjson.Field
+		Features           respjson.Field
+		Orders             respjson.Field
+		PhoneNumberType    respjson.Field
+		Quantity           respjson.Field
+		RequirementGroupID respjson.Field
+		Status             respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
 
-type AdvancedOrderUpdateRequirementGroupResponse = any
+// Returns the unmodified JSON received from the API
+func (r AdvancedOrderGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *AdvancedOrderGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AdvancedOrderListResponse struct {
+	Data []AdvancedOrderListResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AdvancedOrderListResponse) RawJSON() string { return r.JSON.raw }
+func (r *AdvancedOrderListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AdvancedOrderListResponseData struct {
+	ID                string `json:"id" format:"uuid"`
+	AreaCode          string `json:"area_code"`
+	Comments          string `json:"comments"`
+	CountryCode       string `json:"country_code"`
+	CustomerReference string `json:"customer_reference"`
+	// Any of "sms", "mms", "voice", "fax", "emergency".
+	Features []string `json:"features"`
+	Orders   []string `json:"orders" format:"uuid"`
+	// Any of "local", "mobile", "toll_free", "shared_cost", "national", "landline".
+	PhoneNumberType []string `json:"phone_number_type"`
+	Quantity        int64    `json:"quantity"`
+	// The ID of the requirement group associated with this advanced order
+	RequirementGroupID string `json:"requirement_group_id" format:"uuid"`
+	// Any of "pending", "processing", "ordered".
+	Status []string `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                 respjson.Field
+		AreaCode           respjson.Field
+		Comments           respjson.Field
+		CountryCode        respjson.Field
+		CustomerReference  respjson.Field
+		Features           respjson.Field
+		Orders             respjson.Field
+		PhoneNumberType    respjson.Field
+		Quantity           respjson.Field
+		RequirementGroupID respjson.Field
+		Status             respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AdvancedOrderListResponseData) RawJSON() string { return r.JSON.raw }
+func (r *AdvancedOrderListResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AdvancedOrderUpdateRequirementGroupResponse struct {
+	ID                string `json:"id" format:"uuid"`
+	AreaCode          string `json:"area_code"`
+	Comments          string `json:"comments"`
+	CountryCode       string `json:"country_code"`
+	CustomerReference string `json:"customer_reference"`
+	// Any of "sms", "mms", "voice", "fax", "emergency".
+	Features []string `json:"features"`
+	Orders   []string `json:"orders" format:"uuid"`
+	// Any of "local", "mobile", "toll_free", "shared_cost", "national", "landline".
+	PhoneNumberType []string `json:"phone_number_type"`
+	Quantity        int64    `json:"quantity"`
+	// The ID of the requirement group associated with this advanced order
+	RequirementGroupID string `json:"requirement_group_id" format:"uuid"`
+	// Any of "pending", "processing", "ordered".
+	Status []string `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                 respjson.Field
+		AreaCode           respjson.Field
+		Comments           respjson.Field
+		CountryCode        respjson.Field
+		CustomerReference  respjson.Field
+		Features           respjson.Field
+		Orders             respjson.Field
+		PhoneNumberType    respjson.Field
+		Quantity           respjson.Field
+		RequirementGroupID respjson.Field
+		Status             respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AdvancedOrderUpdateRequirementGroupResponse) RawJSON() string { return r.JSON.raw }
+func (r *AdvancedOrderUpdateRequirementGroupResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type AdvancedOrderNewParams struct {
 	AdvancedOrder AdvancedOrderParam

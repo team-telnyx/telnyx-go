@@ -69,7 +69,6 @@ func TestAIChatNewCompletionWithOptionalParams(t *testing.T) {
 						"foo": "bar",
 					},
 				},
-				Type: "function",
 			},
 		}},
 		TopLogprobs:   telnyx.Int(0),

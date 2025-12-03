@@ -17,6 +17,7 @@ import (
 	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -53,23 +54,38 @@ func (r *DocumentService) Get(ctx context.Context, id string, opts ...option.Req
 }
 
 // Update a document.
-func (r *DocumentService) Update(ctx context.Context, id string, body DocumentUpdateParams, opts ...option.RequestOption) (res *DocumentUpdateResponse, err error) {
+func (r *DocumentService) Update(ctx context.Context, documentID string, body DocumentUpdateParams, opts ...option.RequestOption) (res *DocumentUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	if id == "" {
-		err = errors.New("missing required id parameter")
+	if documentID == "" {
+		err = errors.New("missing required document_id parameter")
 		return
 	}
-	path := fmt.Sprintf("documents/%s", id)
+	path := fmt.Sprintf("documents/%s", documentID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
 }
 
 // List all documents ordered by created_at descending.
-func (r *DocumentService) List(ctx context.Context, query DocumentListParams, opts ...option.RequestOption) (res *DocumentListResponse, err error) {
+func (r *DocumentService) List(ctx context.Context, query DocumentListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[DocServiceDocument], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "documents"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List all documents ordered by created_at descending.
+func (r *DocumentService) ListAutoPaging(ctx context.Context, query DocumentListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[DocServiceDocument] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a document.<br /><br />A document can only be deleted if it's not linked
@@ -89,7 +105,7 @@ func (r *DocumentService) Delete(ctx context.Context, id string, opts ...option.
 // Download a document.
 func (r *DocumentService) Download(ctx context.Context, id string, opts ...option.RequestOption) (res *http.Response, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -288,24 +304,6 @@ type DocumentUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r DocumentUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *DocumentUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DocumentListResponse struct {
-	Data []DocServiceDocument `json:"data"`
-	Meta PaginationMeta       `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DocumentListResponse) RawJSON() string { return r.JSON.raw }
-func (r *DocumentListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -519,9 +517,9 @@ type DocumentUploadParams struct {
 	//
 
 	// This field is a request body variant, only one variant field can be set.
-	OfDocServiceDocumentUploadURL *DocumentUploadParamsBodyDocServiceDocumentUploadURL `json:",inline"`
+	OfDocServiceDocumentUploadURL *DocumentUploadParamsDocumentDocServiceDocumentUploadURL `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	OfDocServiceDocumentUploadInline *DocumentUploadParamsBodyDocServiceDocumentUploadInline `json:",inline"`
+	OfDocServiceDocumentUploadInline *DocumentUploadParamsDocumentDocServiceDocumentUploadInline `json:",inline"`
 
 	paramObj
 }
@@ -534,7 +532,7 @@ func (r *DocumentUploadParams) UnmarshalJSON(data []byte) error {
 }
 
 // The property URL is required.
-type DocumentUploadParamsBodyDocServiceDocumentUploadURL struct {
+type DocumentUploadParamsDocumentDocServiceDocumentUploadURL struct {
 	// If the file is already hosted publicly, you can provide a URL and have the
 	// documents service fetch it for you.
 	URL string `json:"url,required"`
@@ -545,16 +543,16 @@ type DocumentUploadParamsBodyDocServiceDocumentUploadURL struct {
 	paramObj
 }
 
-func (r DocumentUploadParamsBodyDocServiceDocumentUploadURL) MarshalJSON() (data []byte, err error) {
-	type shadow DocumentUploadParamsBodyDocServiceDocumentUploadURL
+func (r DocumentUploadParamsDocumentDocServiceDocumentUploadURL) MarshalJSON() (data []byte, err error) {
+	type shadow DocumentUploadParamsDocumentDocServiceDocumentUploadURL
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *DocumentUploadParamsBodyDocServiceDocumentUploadURL) UnmarshalJSON(data []byte) error {
+func (r *DocumentUploadParamsDocumentDocServiceDocumentUploadURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property File is required.
-type DocumentUploadParamsBodyDocServiceDocumentUploadInline struct {
+type DocumentUploadParamsDocumentDocServiceDocumentUploadInline struct {
 	// The Base64 encoded contents of the file you are uploading.
 	File string `json:"file,required" format:"byte"`
 	// A customer reference string for customer look ups.
@@ -564,11 +562,11 @@ type DocumentUploadParamsBodyDocServiceDocumentUploadInline struct {
 	paramObj
 }
 
-func (r DocumentUploadParamsBodyDocServiceDocumentUploadInline) MarshalJSON() (data []byte, err error) {
-	type shadow DocumentUploadParamsBodyDocServiceDocumentUploadInline
+func (r DocumentUploadParamsDocumentDocServiceDocumentUploadInline) MarshalJSON() (data []byte, err error) {
+	type shadow DocumentUploadParamsDocumentDocServiceDocumentUploadInline
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *DocumentUploadParamsBodyDocServiceDocumentUploadInline) UnmarshalJSON(data []byte) error {
+func (r *DocumentUploadParamsDocumentDocServiceDocumentUploadInline) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -579,9 +577,9 @@ type DocumentUploadJsonParams struct {
 	//
 
 	// This field is a request body variant, only one variant field can be set.
-	OfDocServiceDocumentUploadURL *DocumentUploadJsonParamsBodyDocServiceDocumentUploadURL `json:",inline"`
+	OfDocServiceDocumentUploadURL *DocumentUploadJsonParamsDocumentDocServiceDocumentUploadURL `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	OfDocServiceDocumentUploadInline *DocumentUploadJsonParamsBodyDocServiceDocumentUploadInline `json:",inline"`
+	OfDocServiceDocumentUploadInline *DocumentUploadJsonParamsDocumentDocServiceDocumentUploadInline `json:",inline"`
 
 	paramObj
 }
@@ -594,7 +592,7 @@ func (r *DocumentUploadJsonParams) UnmarshalJSON(data []byte) error {
 }
 
 // The property URL is required.
-type DocumentUploadJsonParamsBodyDocServiceDocumentUploadURL struct {
+type DocumentUploadJsonParamsDocumentDocServiceDocumentUploadURL struct {
 	// If the file is already hosted publicly, you can provide a URL and have the
 	// documents service fetch it for you.
 	URL string `json:"url,required"`
@@ -605,16 +603,16 @@ type DocumentUploadJsonParamsBodyDocServiceDocumentUploadURL struct {
 	paramObj
 }
 
-func (r DocumentUploadJsonParamsBodyDocServiceDocumentUploadURL) MarshalJSON() (data []byte, err error) {
-	type shadow DocumentUploadJsonParamsBodyDocServiceDocumentUploadURL
+func (r DocumentUploadJsonParamsDocumentDocServiceDocumentUploadURL) MarshalJSON() (data []byte, err error) {
+	type shadow DocumentUploadJsonParamsDocumentDocServiceDocumentUploadURL
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *DocumentUploadJsonParamsBodyDocServiceDocumentUploadURL) UnmarshalJSON(data []byte) error {
+func (r *DocumentUploadJsonParamsDocumentDocServiceDocumentUploadURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property File is required.
-type DocumentUploadJsonParamsBodyDocServiceDocumentUploadInline struct {
+type DocumentUploadJsonParamsDocumentDocServiceDocumentUploadInline struct {
 	// The Base64 encoded contents of the file you are uploading.
 	File string `json:"file,required" format:"byte"`
 	// A customer reference string for customer look ups.
@@ -624,10 +622,10 @@ type DocumentUploadJsonParamsBodyDocServiceDocumentUploadInline struct {
 	paramObj
 }
 
-func (r DocumentUploadJsonParamsBodyDocServiceDocumentUploadInline) MarshalJSON() (data []byte, err error) {
-	type shadow DocumentUploadJsonParamsBodyDocServiceDocumentUploadInline
+func (r DocumentUploadJsonParamsDocumentDocServiceDocumentUploadInline) MarshalJSON() (data []byte, err error) {
+	type shadow DocumentUploadJsonParamsDocumentDocServiceDocumentUploadInline
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *DocumentUploadJsonParamsBodyDocServiceDocumentUploadInline) UnmarshalJSON(data []byte) error {
+func (r *DocumentUploadJsonParamsDocumentDocServiceDocumentUploadInline) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
