@@ -133,6 +133,9 @@ type InexplicitNumberOrderNewResponseDataOrderingGroup struct {
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Error reason if applicable
 	ErrorReason string `json:"error_reason"`
+	// Filter to exclude phone numbers that are currently on hold/reserved for your
+	// account.
+	ExcludeHeldNumbers bool `json:"exclude_held_numbers"`
 	// Filter by area code
 	NationalDestinationCode string `json:"national_destination_code"`
 	// Array of orders created to fulfill the inexplicit order
@@ -145,6 +148,9 @@ type InexplicitNumberOrderNewResponseDataOrderingGroup struct {
 	PhoneNumberEndsWith string `json:"phone_number[ends_with]"`
 	// Filter by the starting digits of the phone number
 	PhoneNumberStartsWith string `json:"phone_number[starts_with]"`
+	// Filter to exclude phone numbers that need additional time after to purchase to
+	// activate. Only applicable for +1 toll_free numbers.
+	Quickship bool `json:"quickship"`
 	// Status of the ordering group
 	//
 	// Any of "pending", "processing", "failed", "success", "partial_success".
@@ -163,12 +169,14 @@ type InexplicitNumberOrderNewResponseDataOrderingGroup struct {
 		CountryISO              respjson.Field
 		CreatedAt               respjson.Field
 		ErrorReason             respjson.Field
+		ExcludeHeldNumbers      respjson.Field
 		NationalDestinationCode respjson.Field
 		Orders                  respjson.Field
 		PhoneNumberType         respjson.Field
 		PhoneNumberContains     respjson.Field
 		PhoneNumberEndsWith     respjson.Field
 		PhoneNumberStartsWith   respjson.Field
+		Quickship               respjson.Field
 		Status                  respjson.Field
 		Strategy                respjson.Field
 		UpdatedAt               respjson.Field
@@ -269,6 +277,9 @@ type InexplicitNumberOrderGetResponseDataOrderingGroup struct {
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Error reason if applicable
 	ErrorReason string `json:"error_reason"`
+	// Filter to exclude phone numbers that are currently on hold/reserved for your
+	// account.
+	ExcludeHeldNumbers bool `json:"exclude_held_numbers"`
 	// Filter by area code
 	NationalDestinationCode string `json:"national_destination_code"`
 	// Array of orders created to fulfill the inexplicit order
@@ -281,6 +292,9 @@ type InexplicitNumberOrderGetResponseDataOrderingGroup struct {
 	PhoneNumberEndsWith string `json:"phone_number[ends_with]"`
 	// Filter by the starting digits of the phone number
 	PhoneNumberStartsWith string `json:"phone_number[starts_with]"`
+	// Filter to exclude phone numbers that need additional time after to purchase to
+	// activate. Only applicable for +1 toll_free numbers.
+	Quickship bool `json:"quickship"`
 	// Status of the ordering group
 	//
 	// Any of "pending", "processing", "failed", "success", "partial_success".
@@ -299,12 +313,14 @@ type InexplicitNumberOrderGetResponseDataOrderingGroup struct {
 		CountryISO              respjson.Field
 		CreatedAt               respjson.Field
 		ErrorReason             respjson.Field
+		ExcludeHeldNumbers      respjson.Field
 		NationalDestinationCode respjson.Field
 		Orders                  respjson.Field
 		PhoneNumberType         respjson.Field
 		PhoneNumberContains     respjson.Field
 		PhoneNumberEndsWith     respjson.Field
 		PhoneNumberStartsWith   respjson.Field
+		Quickship               respjson.Field
 		Status                  respjson.Field
 		Strategy                respjson.Field
 		UpdatedAt               respjson.Field
@@ -407,6 +423,9 @@ type InexplicitNumberOrderListResponseDataOrderingGroup struct {
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Error reason if applicable
 	ErrorReason string `json:"error_reason"`
+	// Filter to exclude phone numbers that are currently on hold/reserved for your
+	// account.
+	ExcludeHeldNumbers bool `json:"exclude_held_numbers"`
 	// Filter by area code
 	NationalDestinationCode string `json:"national_destination_code"`
 	// Array of orders created to fulfill the inexplicit order
@@ -419,6 +438,9 @@ type InexplicitNumberOrderListResponseDataOrderingGroup struct {
 	PhoneNumberEndsWith string `json:"phone_number[ends_with]"`
 	// Filter by the starting digits of the phone number
 	PhoneNumberStartsWith string `json:"phone_number[starts_with]"`
+	// Filter to exclude phone numbers that need additional time after to purchase to
+	// activate. Only applicable for +1 toll_free numbers.
+	Quickship bool `json:"quickship"`
 	// Status of the ordering group
 	//
 	// Any of "pending", "processing", "failed", "success", "partial_success".
@@ -437,12 +459,14 @@ type InexplicitNumberOrderListResponseDataOrderingGroup struct {
 		CountryISO              respjson.Field
 		CreatedAt               respjson.Field
 		ErrorReason             respjson.Field
+		ExcludeHeldNumbers      respjson.Field
 		NationalDestinationCode respjson.Field
 		Orders                  respjson.Field
 		PhoneNumberType         respjson.Field
 		PhoneNumberContains     respjson.Field
 		PhoneNumberEndsWith     respjson.Field
 		PhoneNumberStartsWith   respjson.Field
+		Quickship               respjson.Field
 		Status                  respjson.Field
 		Strategy                respjson.Field
 		UpdatedAt               respjson.Field
