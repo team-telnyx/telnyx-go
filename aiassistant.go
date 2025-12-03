@@ -18,7 +18,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/option"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v3/shared/constant"
 )
 
 // AIAssistantService contains methods and other services that help with
@@ -148,7 +147,7 @@ func (r *AIAssistantService) GetTexml(ctx context.Context, assistantID string, o
 // Import assistants from external providers. Any assistant that has already been
 // imported will be overwritten with its latest version from the importing
 // provider.
-func (r *AIAssistantService) Imports(ctx context.Context, body AIAssistantImportsParams, opts ...option.RequestOption) (res *AssistantsList, err error) {
+func (r *AIAssistantService) Import(ctx context.Context, body AIAssistantImportParams, opts ...option.RequestOption) (res *AssistantsList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants/import"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -206,55 +205,55 @@ func (r *AssistantParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type AssistantToolUnionParam struct {
-	OfBookAppointment   *AssistantToolBookAppointmentParam   `json:",omitzero,inline"`
-	OfCheckAvailability *AssistantToolCheckAvailabilityParam `json:",omitzero,inline"`
-	OfWebhook           *WebhookToolParam                    `json:",omitzero,inline"`
-	OfHangup            *HangupToolParam                     `json:",omitzero,inline"`
-	OfTransfer          *TransferToolParam                   `json:",omitzero,inline"`
-	OfRetrieval         *RetrievalToolParam                  `json:",omitzero,inline"`
+	OfBookAppointmentTool   *AssistantToolBookAppointmentToolParam   `json:",omitzero,inline"`
+	OfCheckAvailabilityTool *AssistantToolCheckAvailabilityToolParam `json:",omitzero,inline"`
+	OfWebhookTool           *WebhookToolParam                        `json:",omitzero,inline"`
+	OfHangupTool            *HangupToolParam                         `json:",omitzero,inline"`
+	OfTransferTool          *TransferToolParam                       `json:",omitzero,inline"`
+	OfRetrievalTool         *RetrievalToolParam                      `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u AssistantToolUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfBookAppointment,
-		u.OfCheckAvailability,
-		u.OfWebhook,
-		u.OfHangup,
-		u.OfTransfer,
-		u.OfRetrieval)
+	return param.MarshalUnion(u, u.OfBookAppointmentTool,
+		u.OfCheckAvailabilityTool,
+		u.OfWebhookTool,
+		u.OfHangupTool,
+		u.OfTransferTool,
+		u.OfRetrievalTool)
 }
 func (u *AssistantToolUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *AssistantToolUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfBookAppointment) {
-		return u.OfBookAppointment
-	} else if !param.IsOmitted(u.OfCheckAvailability) {
-		return u.OfCheckAvailability
-	} else if !param.IsOmitted(u.OfWebhook) {
-		return u.OfWebhook
-	} else if !param.IsOmitted(u.OfHangup) {
-		return u.OfHangup
-	} else if !param.IsOmitted(u.OfTransfer) {
-		return u.OfTransfer
-	} else if !param.IsOmitted(u.OfRetrieval) {
-		return u.OfRetrieval
+	if !param.IsOmitted(u.OfBookAppointmentTool) {
+		return u.OfBookAppointmentTool
+	} else if !param.IsOmitted(u.OfCheckAvailabilityTool) {
+		return u.OfCheckAvailabilityTool
+	} else if !param.IsOmitted(u.OfWebhookTool) {
+		return u.OfWebhookTool
+	} else if !param.IsOmitted(u.OfHangupTool) {
+		return u.OfHangupTool
+	} else if !param.IsOmitted(u.OfTransferTool) {
+		return u.OfTransferTool
+	} else if !param.IsOmitted(u.OfRetrievalTool) {
+		return u.OfRetrievalTool
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u AssistantToolUnionParam) GetBookAppointment() *AssistantToolBookAppointmentBookAppointmentParam {
-	if vt := u.OfBookAppointment; vt != nil {
+func (u AssistantToolUnionParam) GetBookAppointment() *AssistantToolBookAppointmentToolBookAppointmentParam {
+	if vt := u.OfBookAppointmentTool; vt != nil {
 		return &vt.BookAppointment
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u AssistantToolUnionParam) GetCheckAvailability() *AssistantToolCheckAvailabilityCheckAvailabilityParam {
-	if vt := u.OfCheckAvailability; vt != nil {
+func (u AssistantToolUnionParam) GetCheckAvailability() *AssistantToolCheckAvailabilityToolCheckAvailabilityParam {
+	if vt := u.OfCheckAvailabilityTool; vt != nil {
 		return &vt.CheckAvailability
 	}
 	return nil
@@ -262,7 +261,7 @@ func (u AssistantToolUnionParam) GetCheckAvailability() *AssistantToolCheckAvail
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u AssistantToolUnionParam) GetWebhook() *InferenceEmbeddingWebhookToolParams {
-	if vt := u.OfWebhook; vt != nil {
+	if vt := u.OfWebhookTool; vt != nil {
 		return &vt.Webhook
 	}
 	return nil
@@ -270,7 +269,7 @@ func (u AssistantToolUnionParam) GetWebhook() *InferenceEmbeddingWebhookToolPara
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u AssistantToolUnionParam) GetHangup() *HangupToolParams {
-	if vt := u.OfHangup; vt != nil {
+	if vt := u.OfHangupTool; vt != nil {
 		return &vt.Hangup
 	}
 	return nil
@@ -278,7 +277,7 @@ func (u AssistantToolUnionParam) GetHangup() *HangupToolParams {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u AssistantToolUnionParam) GetTransfer() *InferenceEmbeddingTransferToolParams {
-	if vt := u.OfTransfer; vt != nil {
+	if vt := u.OfTransferTool; vt != nil {
 		return &vt.Transfer
 	}
 	return nil
@@ -286,7 +285,7 @@ func (u AssistantToolUnionParam) GetTransfer() *InferenceEmbeddingTransferToolPa
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u AssistantToolUnionParam) GetRetrieval() *InferenceEmbeddingBucketIDsParam {
-	if vt := u.OfRetrieval; vt != nil {
+	if vt := u.OfRetrievalTool; vt != nil {
 		return &vt.Retrieval
 	}
 	return nil
@@ -294,52 +293,46 @@ func (u AssistantToolUnionParam) GetRetrieval() *InferenceEmbeddingBucketIDsPara
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u AssistantToolUnionParam) GetType() *string {
-	if vt := u.OfBookAppointment; vt != nil {
+	if vt := u.OfBookAppointmentTool; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfCheckAvailability; vt != nil {
+	} else if vt := u.OfCheckAvailabilityTool; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfWebhook; vt != nil {
+	} else if vt := u.OfWebhookTool; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfHangup; vt != nil {
+	} else if vt := u.OfHangupTool; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfTransfer; vt != nil {
+	} else if vt := u.OfTransferTool; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfRetrieval; vt != nil {
+	} else if vt := u.OfRetrievalTool; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
 }
 
-func init() {
-	apijson.RegisterUnion[AssistantToolUnionParam](
-		"type",
-		apijson.Discriminator[AssistantToolBookAppointmentParam]("book_appointment"),
-		apijson.Discriminator[AssistantToolCheckAvailabilityParam]("check_availability"),
-		apijson.Discriminator[WebhookToolParam]("webhook"),
-		apijson.Discriminator[HangupToolParam]("hangup"),
-		apijson.Discriminator[TransferToolParam]("transfer"),
-		apijson.Discriminator[RetrievalToolParam]("retrieval"),
-	)
-}
-
 // The properties BookAppointment, Type are required.
-type AssistantToolBookAppointmentParam struct {
-	BookAppointment AssistantToolBookAppointmentBookAppointmentParam `json:"book_appointment,omitzero,required"`
-	// This field can be elided, and will marshal its zero value as "book_appointment".
-	Type constant.BookAppointment `json:"type,required"`
+type AssistantToolBookAppointmentToolParam struct {
+	BookAppointment AssistantToolBookAppointmentToolBookAppointmentParam `json:"book_appointment,omitzero,required"`
+	// Any of "book_appointment".
+	Type string `json:"type,omitzero,required"`
 	paramObj
 }
 
-func (r AssistantToolBookAppointmentParam) MarshalJSON() (data []byte, err error) {
-	type shadow AssistantToolBookAppointmentParam
+func (r AssistantToolBookAppointmentToolParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolBookAppointmentToolParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AssistantToolBookAppointmentParam) UnmarshalJSON(data []byte) error {
+func (r *AssistantToolBookAppointmentToolParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func init() {
+	apijson.RegisterFieldValidator[AssistantToolBookAppointmentToolParam](
+		"type", "book_appointment",
+	)
+}
+
 // The properties APIKeyRef, EventTypeID are required.
-type AssistantToolBookAppointmentBookAppointmentParam struct {
+type AssistantToolBookAppointmentToolBookAppointmentParam struct {
 	// Reference to an integration secret that contains your Cal.com API key. You would
 	// pass the `identifier` for an integration secret
 	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
@@ -359,33 +352,38 @@ type AssistantToolBookAppointmentBookAppointmentParam struct {
 	paramObj
 }
 
-func (r AssistantToolBookAppointmentBookAppointmentParam) MarshalJSON() (data []byte, err error) {
-	type shadow AssistantToolBookAppointmentBookAppointmentParam
+func (r AssistantToolBookAppointmentToolBookAppointmentParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolBookAppointmentToolBookAppointmentParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AssistantToolBookAppointmentBookAppointmentParam) UnmarshalJSON(data []byte) error {
+func (r *AssistantToolBookAppointmentToolBookAppointmentParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties CheckAvailability, Type are required.
-type AssistantToolCheckAvailabilityParam struct {
-	CheckAvailability AssistantToolCheckAvailabilityCheckAvailabilityParam `json:"check_availability,omitzero,required"`
-	// This field can be elided, and will marshal its zero value as
-	// "check_availability".
-	Type constant.CheckAvailability `json:"type,required"`
+type AssistantToolCheckAvailabilityToolParam struct {
+	CheckAvailability AssistantToolCheckAvailabilityToolCheckAvailabilityParam `json:"check_availability,omitzero,required"`
+	// Any of "check_availability".
+	Type string `json:"type,omitzero,required"`
 	paramObj
 }
 
-func (r AssistantToolCheckAvailabilityParam) MarshalJSON() (data []byte, err error) {
-	type shadow AssistantToolCheckAvailabilityParam
+func (r AssistantToolCheckAvailabilityToolParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolCheckAvailabilityToolParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AssistantToolCheckAvailabilityParam) UnmarshalJSON(data []byte) error {
+func (r *AssistantToolCheckAvailabilityToolParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func init() {
+	apijson.RegisterFieldValidator[AssistantToolCheckAvailabilityToolParam](
+		"type", "check_availability",
+	)
+}
+
 // The properties APIKeyRef, EventTypeID are required.
-type AssistantToolCheckAvailabilityCheckAvailabilityParam struct {
+type AssistantToolCheckAvailabilityToolCheckAvailabilityParam struct {
 	// Reference to an integration secret that contains your Cal.com API key. You would
 	// pass the `identifier` for an integration secret
 	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
@@ -397,38 +395,34 @@ type AssistantToolCheckAvailabilityCheckAvailabilityParam struct {
 	paramObj
 }
 
-func (r AssistantToolCheckAvailabilityCheckAvailabilityParam) MarshalJSON() (data []byte, err error) {
-	type shadow AssistantToolCheckAvailabilityCheckAvailabilityParam
+func (r AssistantToolCheckAvailabilityToolCheckAvailabilityParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolCheckAvailabilityToolCheckAvailabilityParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AssistantToolCheckAvailabilityCheckAvailabilityParam) UnmarshalJSON(data []byte) error {
+func (r *AssistantToolCheckAvailabilityToolCheckAvailabilityParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // AssistantToolUnion contains all possible properties and values from
-// [WebhookTool], [RetrievalTool], [AssistantToolHandoff], [HangupTool],
-// [TransferTool], [AssistantToolRefer], [AssistantToolSendDtmf].
-//
-// Use the [AssistantToolUnion.AsAny] method to switch on the variant.
+// [WebhookTool], [RetrievalTool], [AssistantToolHandoffTool], [HangupTool],
+// [TransferTool], [AssistantToolSipReferTool], [AssistantToolDtmfTool].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AssistantToolUnion struct {
-	// Any of "webhook", "retrieval", "handoff", "hangup", "transfer", "refer",
-	// "send_dtmf".
 	Type string `json:"type"`
 	// This field is from variant [WebhookTool].
 	Webhook InferenceEmbeddingWebhookToolParamsResp `json:"webhook"`
 	// This field is from variant [RetrievalTool].
 	Retrieval InferenceEmbeddingBucketIDs `json:"retrieval"`
-	// This field is from variant [AssistantToolHandoff].
-	Handoff AssistantToolHandoffHandoff `json:"handoff"`
+	// This field is from variant [AssistantToolHandoffTool].
+	Handoff AssistantToolHandoffToolHandoff `json:"handoff"`
 	// This field is from variant [HangupTool].
 	Hangup HangupToolParamsResp `json:"hangup"`
 	// This field is from variant [TransferTool].
 	Transfer InferenceEmbeddingTransferToolParamsResp `json:"transfer"`
-	// This field is from variant [AssistantToolRefer].
-	Refer AssistantToolReferRefer `json:"refer"`
-	// This field is from variant [AssistantToolSendDtmf].
+	// This field is from variant [AssistantToolSipReferTool].
+	Refer AssistantToolSipReferToolRefer `json:"refer"`
+	// This field is from variant [AssistantToolDtmfTool].
 	SendDtmf map[string]any `json:"send_dtmf"`
 	JSON     struct {
 		Type      respjson.Field
@@ -443,84 +437,37 @@ type AssistantToolUnion struct {
 	} `json:"-"`
 }
 
-// anyAssistantTool is implemented by each variant of [AssistantToolUnion] to add
-// type safety for the return type of [AssistantToolUnion.AsAny]
-type anyAssistantTool interface {
-	implAssistantToolUnion()
-}
-
-func (WebhookTool) implAssistantToolUnion()           {}
-func (RetrievalTool) implAssistantToolUnion()         {}
-func (AssistantToolHandoff) implAssistantToolUnion()  {}
-func (HangupTool) implAssistantToolUnion()            {}
-func (TransferTool) implAssistantToolUnion()          {}
-func (AssistantToolRefer) implAssistantToolUnion()    {}
-func (AssistantToolSendDtmf) implAssistantToolUnion() {}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := AssistantToolUnion.AsAny().(type) {
-//	case telnyx.WebhookTool:
-//	case telnyx.RetrievalTool:
-//	case telnyx.AssistantToolHandoff:
-//	case telnyx.HangupTool:
-//	case telnyx.TransferTool:
-//	case telnyx.AssistantToolRefer:
-//	case telnyx.AssistantToolSendDtmf:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u AssistantToolUnion) AsAny() anyAssistantTool {
-	switch u.Type {
-	case "webhook":
-		return u.AsWebhook()
-	case "retrieval":
-		return u.AsRetrieval()
-	case "handoff":
-		return u.AsHandoff()
-	case "hangup":
-		return u.AsHangup()
-	case "transfer":
-		return u.AsTransfer()
-	case "refer":
-		return u.AsRefer()
-	case "send_dtmf":
-		return u.AsSendDtmf()
-	}
-	return nil
-}
-
-func (u AssistantToolUnion) AsWebhook() (v WebhookTool) {
+func (u AssistantToolUnion) AsWebhookTool() (v WebhookTool) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AssistantToolUnion) AsRetrieval() (v RetrievalTool) {
+func (u AssistantToolUnion) AsRetrievalTool() (v RetrievalTool) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AssistantToolUnion) AsHandoff() (v AssistantToolHandoff) {
+func (u AssistantToolUnion) AsHandoffTool() (v AssistantToolHandoffTool) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AssistantToolUnion) AsHangup() (v HangupTool) {
+func (u AssistantToolUnion) AsHangupTool() (v HangupTool) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AssistantToolUnion) AsTransfer() (v TransferTool) {
+func (u AssistantToolUnion) AsTransferTool() (v TransferTool) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AssistantToolUnion) AsRefer() (v AssistantToolRefer) {
+func (u AssistantToolUnion) AsSipReferTool() (v AssistantToolSipReferTool) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AssistantToolUnion) AsSendDtmf() (v AssistantToolSendDtmf) {
+func (u AssistantToolUnion) AsDtmfTool() (v AssistantToolDtmfTool) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -544,9 +491,10 @@ func (r AssistantToolUnion) ToParam() AssistantToolUnionParam {
 // The handoff tool allows the assistant to hand off control of the conversation to
 // another AI assistant. By default, this will happen transparently to the end
 // user.
-type AssistantToolHandoff struct {
-	Handoff AssistantToolHandoffHandoff `json:"handoff,required"`
-	Type    constant.Handoff            `json:"type,required"`
+type AssistantToolHandoffTool struct {
+	Handoff AssistantToolHandoffToolHandoff `json:"handoff,required"`
+	// Any of "handoff".
+	Type string `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Handoff     respjson.Field
@@ -557,14 +505,14 @@ type AssistantToolHandoff struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AssistantToolHandoff) RawJSON() string { return r.JSON.raw }
-func (r *AssistantToolHandoff) UnmarshalJSON(data []byte) error {
+func (r AssistantToolHandoffTool) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolHandoffTool) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AssistantToolHandoffHandoff struct {
+type AssistantToolHandoffToolHandoff struct {
 	// List of possible assistants that can receive a handoff.
-	AIAssistants []AssistantToolHandoffHandoffAIAssistant `json:"ai_assistants,required"`
+	AIAssistants []AssistantToolHandoffToolHandoffAIAssistant `json:"ai_assistants,required"`
 	// With the unified voice mode all assistants share the same voice, making the
 	// handoff transparent to the user. With the distinct voice mode all assistants
 	// retain their voice configuration, providing the experience of a conference call
@@ -582,12 +530,12 @@ type AssistantToolHandoffHandoff struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AssistantToolHandoffHandoff) RawJSON() string { return r.JSON.raw }
-func (r *AssistantToolHandoffHandoff) UnmarshalJSON(data []byte) error {
+func (r AssistantToolHandoffToolHandoff) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolHandoffToolHandoff) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AssistantToolHandoffHandoffAIAssistant struct {
+type AssistantToolHandoffToolHandoffAIAssistant struct {
 	// The ID of the assistant to hand off to.
 	ID string `json:"id,required"`
 	// Helpful name for giving context on when to handoff to the assistant.
@@ -602,14 +550,15 @@ type AssistantToolHandoffHandoffAIAssistant struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AssistantToolHandoffHandoffAIAssistant) RawJSON() string { return r.JSON.raw }
-func (r *AssistantToolHandoffHandoffAIAssistant) UnmarshalJSON(data []byte) error {
+func (r AssistantToolHandoffToolHandoffAIAssistant) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolHandoffToolHandoffAIAssistant) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AssistantToolRefer struct {
-	Refer AssistantToolReferRefer `json:"refer,required"`
-	Type  constant.Refer          `json:"type,required"`
+type AssistantToolSipReferTool struct {
+	Refer AssistantToolSipReferToolRefer `json:"refer,required"`
+	// Any of "refer".
+	Type string `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Refer       respjson.Field
@@ -620,20 +569,20 @@ type AssistantToolRefer struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AssistantToolRefer) RawJSON() string { return r.JSON.raw }
-func (r *AssistantToolRefer) UnmarshalJSON(data []byte) error {
+func (r AssistantToolSipReferTool) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolSipReferTool) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AssistantToolReferRefer struct {
+type AssistantToolSipReferToolRefer struct {
 	// The different possible targets of the SIP refer. The assistant will be able to
 	// choose one of the targets to refer the call to.
-	Targets []AssistantToolReferReferTarget `json:"targets,required"`
+	Targets []AssistantToolSipReferToolReferTarget `json:"targets,required"`
 	// Custom headers to be added to the SIP REFER.
-	CustomHeaders []AssistantToolReferReferCustomHeader `json:"custom_headers"`
+	CustomHeaders []AssistantToolSipReferToolReferCustomHeader `json:"custom_headers"`
 	// SIP headers to be added to the SIP REFER. Currently only User-to-User and
 	// Diversion headers are supported.
-	SipHeaders []AssistantToolReferReferSipHeader `json:"sip_headers"`
+	SipHeaders []AssistantToolSipReferToolReferSipHeader `json:"sip_headers"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Targets       respjson.Field
@@ -645,12 +594,12 @@ type AssistantToolReferRefer struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AssistantToolReferRefer) RawJSON() string { return r.JSON.raw }
-func (r *AssistantToolReferRefer) UnmarshalJSON(data []byte) error {
+func (r AssistantToolSipReferToolRefer) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolSipReferToolRefer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AssistantToolReferReferTarget struct {
+type AssistantToolSipReferToolReferTarget struct {
 	// The name of the target.
 	Name string `json:"name,required"`
 	// The SIP URI to which the call will be referred.
@@ -671,12 +620,12 @@ type AssistantToolReferReferTarget struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AssistantToolReferReferTarget) RawJSON() string { return r.JSON.raw }
-func (r *AssistantToolReferReferTarget) UnmarshalJSON(data []byte) error {
+func (r AssistantToolSipReferToolReferTarget) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolSipReferToolReferTarget) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AssistantToolReferReferCustomHeader struct {
+type AssistantToolSipReferToolReferCustomHeader struct {
 	Name string `json:"name"`
 	// The value of the header. Note that we support mustache templating for the value.
 	// For example you can use
@@ -693,12 +642,12 @@ type AssistantToolReferReferCustomHeader struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AssistantToolReferReferCustomHeader) RawJSON() string { return r.JSON.raw }
-func (r *AssistantToolReferReferCustomHeader) UnmarshalJSON(data []byte) error {
+func (r AssistantToolSipReferToolReferCustomHeader) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolSipReferToolReferCustomHeader) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AssistantToolReferReferSipHeader struct {
+type AssistantToolSipReferToolReferSipHeader struct {
 	// Any of "User-to-User", "Diversion".
 	Name string `json:"name"`
 	// The value of the header. Note that we support mustache templating for the value.
@@ -716,14 +665,15 @@ type AssistantToolReferReferSipHeader struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AssistantToolReferReferSipHeader) RawJSON() string { return r.JSON.raw }
-func (r *AssistantToolReferReferSipHeader) UnmarshalJSON(data []byte) error {
+func (r AssistantToolSipReferToolReferSipHeader) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolSipReferToolReferSipHeader) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AssistantToolSendDtmf struct {
-	SendDtmf map[string]any    `json:"send_dtmf,required"`
-	Type     constant.SendDtmf `json:"type,required"`
+type AssistantToolDtmfTool struct {
+	SendDtmf map[string]any `json:"send_dtmf,required"`
+	// Any of "send_dtmf".
+	Type string `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		SendDtmf    respjson.Field
@@ -734,8 +684,8 @@ type AssistantToolSendDtmf struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AssistantToolSendDtmf) RawJSON() string { return r.JSON.raw }
-func (r *AssistantToolSendDtmf) UnmarshalJSON(data []byte) error {
+func (r AssistantToolDtmfTool) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolDtmfTool) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1737,8 +1687,8 @@ type TranscriptionSettings struct {
 	Model TranscriptionSettingsModel `json:"model"`
 	// Region on third party cloud providers (currently Azure) if using one of their
 	// models
-	Region   string                      `json:"region"`
-	Settings TranscriptionSettingsConfig `json:"settings"`
+	Region   string                        `json:"region"`
+	Settings TranscriptionSettingsSettings `json:"settings"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Language    respjson.Field
@@ -1782,36 +1732,7 @@ const (
 	TranscriptionSettingsModelOpenAIWhisperLargeV3Turbo  TranscriptionSettingsModel = "openai/whisper-large-v3-turbo"
 )
 
-type TranscriptionSettingsParam struct {
-	// The language of the audio to be transcribed. If not set, of if set to `auto`,
-	// the model will automatically detect the language.
-	Language param.Opt[string] `json:"language,omitzero"`
-	// Region on third party cloud providers (currently Azure) if using one of their
-	// models
-	Region param.Opt[string] `json:"region,omitzero"`
-	// The speech to text model to be used by the voice assistant. All the deepgram
-	// models are run on-premise.
-	//
-	//   - `deepgram/flux` is optimized for turn-taking but is English-only.
-	//   - `deepgram/nova-3` is multi-lingual with automatic language detection but
-	//     slightly higher latency.
-	//
-	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
-	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
-	Model    TranscriptionSettingsModel       `json:"model,omitzero"`
-	Settings TranscriptionSettingsConfigParam `json:"settings,omitzero"`
-	paramObj
-}
-
-func (r TranscriptionSettingsParam) MarshalJSON() (data []byte, err error) {
-	type shadow TranscriptionSettingsParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscriptionSettingsParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TranscriptionSettingsConfig struct {
+type TranscriptionSettingsSettings struct {
 	// Available only for deepgram/flux. Confidence required to trigger an end of turn.
 	// Higher values = more reliable turn detection but slightly increased latency.
 	EotThreshold float64 `json:"eot_threshold"`
@@ -1832,22 +1753,41 @@ type TranscriptionSettingsConfig struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r TranscriptionSettingsConfig) RawJSON() string { return r.JSON.raw }
-func (r *TranscriptionSettingsConfig) UnmarshalJSON(data []byte) error {
+func (r TranscriptionSettingsSettings) RawJSON() string { return r.JSON.raw }
+func (r *TranscriptionSettingsSettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// ToParam converts this TranscriptionSettingsConfig to a
-// TranscriptionSettingsConfigParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// TranscriptionSettingsConfigParam.Overrides()
-func (r TranscriptionSettingsConfig) ToParam() TranscriptionSettingsConfigParam {
-	return param.Override[TranscriptionSettingsConfigParam](json.RawMessage(r.RawJSON()))
+type TranscriptionSettingsParam struct {
+	// The language of the audio to be transcribed. If not set, of if set to `auto`,
+	// the model will automatically detect the language.
+	Language param.Opt[string] `json:"language,omitzero"`
+	// Region on third party cloud providers (currently Azure) if using one of their
+	// models
+	Region param.Opt[string] `json:"region,omitzero"`
+	// The speech to text model to be used by the voice assistant. All the deepgram
+	// models are run on-premise.
+	//
+	//   - `deepgram/flux` is optimized for turn-taking but is English-only.
+	//   - `deepgram/nova-3` is multi-lingual with automatic language detection but
+	//     slightly higher latency.
+	//
+	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
+	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
+	Model    TranscriptionSettingsModel         `json:"model,omitzero"`
+	Settings TranscriptionSettingsSettingsParam `json:"settings,omitzero"`
+	paramObj
 }
 
-type TranscriptionSettingsConfigParam struct {
+func (r TranscriptionSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionSettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionSettingsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TranscriptionSettingsSettingsParam struct {
 	// Available only for deepgram/flux. Confidence required to trigger an end of turn.
 	// Higher values = more reliable turn detection but slightly increased latency.
 	EotThreshold param.Opt[float64] `json:"eot_threshold,omitzero"`
@@ -1859,11 +1799,11 @@ type TranscriptionSettingsConfigParam struct {
 	paramObj
 }
 
-func (r TranscriptionSettingsConfigParam) MarshalJSON() (data []byte, err error) {
-	type shadow TranscriptionSettingsConfigParam
+func (r TranscriptionSettingsSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionSettingsSettingsParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *TranscriptionSettingsConfigParam) UnmarshalJSON(data []byte) error {
+func (r *TranscriptionSettingsSettingsParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1966,16 +1906,14 @@ func (r VoiceSettings) ToParam() VoiceSettingsParam {
 }
 
 // VoiceSettingsBackgroundAudioUnion contains all possible properties and values
-// from [VoiceSettingsBackgroundAudioPredefinedMedia],
-// [VoiceSettingsBackgroundAudioMediaURL], [VoiceSettingsBackgroundAudioMediaName].
-//
-// Use the [VoiceSettingsBackgroundAudioUnion.AsAny] method to switch on the
-// variant.
+// from [VoiceSettingsBackgroundAudioObject], [VoiceSettingsBackgroundAudioObject],
+// [VoiceSettingsBackgroundAudioObject].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type VoiceSettingsBackgroundAudioUnion struct {
-	// Any of "predefined_media", "media_url", "media_name".
-	Type  string `json:"type"`
+	// This field is from variant [VoiceSettingsBackgroundAudioObject].
+	Type string `json:"type"`
+	// This field is from variant [VoiceSettingsBackgroundAudioObject].
 	Value string `json:"value"`
 	JSON  struct {
 		Type  respjson.Field
@@ -1984,49 +1922,17 @@ type VoiceSettingsBackgroundAudioUnion struct {
 	} `json:"-"`
 }
 
-// anyVoiceSettingsBackgroundAudio is implemented by each variant of
-// [VoiceSettingsBackgroundAudioUnion] to add type safety for the return type of
-// [VoiceSettingsBackgroundAudioUnion.AsAny]
-type anyVoiceSettingsBackgroundAudio interface {
-	implVoiceSettingsBackgroundAudioUnion()
-}
-
-func (VoiceSettingsBackgroundAudioPredefinedMedia) implVoiceSettingsBackgroundAudioUnion() {}
-func (VoiceSettingsBackgroundAudioMediaURL) implVoiceSettingsBackgroundAudioUnion()        {}
-func (VoiceSettingsBackgroundAudioMediaName) implVoiceSettingsBackgroundAudioUnion()       {}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := VoiceSettingsBackgroundAudioUnion.AsAny().(type) {
-//	case telnyx.VoiceSettingsBackgroundAudioPredefinedMedia:
-//	case telnyx.VoiceSettingsBackgroundAudioMediaURL:
-//	case telnyx.VoiceSettingsBackgroundAudioMediaName:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u VoiceSettingsBackgroundAudioUnion) AsAny() anyVoiceSettingsBackgroundAudio {
-	switch u.Type {
-	case "predefined_media":
-		return u.AsPredefinedMedia()
-	case "media_url":
-		return u.AsMediaURL()
-	case "media_name":
-		return u.AsMediaName()
-	}
-	return nil
-}
-
-func (u VoiceSettingsBackgroundAudioUnion) AsPredefinedMedia() (v VoiceSettingsBackgroundAudioPredefinedMedia) {
+func (u VoiceSettingsBackgroundAudioUnion) AsVoiceSettingsBackgroundAudioObject() (v VoiceSettingsBackgroundAudioObject) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u VoiceSettingsBackgroundAudioUnion) AsMediaURL() (v VoiceSettingsBackgroundAudioMediaURL) {
+func (u VoiceSettingsBackgroundAudioUnion) AsVariant2() (v VoiceSettingsBackgroundAudioObject) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u VoiceSettingsBackgroundAudioUnion) AsMediaName() (v VoiceSettingsBackgroundAudioMediaName) {
+func (u VoiceSettingsBackgroundAudioUnion) AsVariant3() (v VoiceSettingsBackgroundAudioObject) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -2038,9 +1944,11 @@ func (r *VoiceSettingsBackgroundAudioUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VoiceSettingsBackgroundAudioPredefinedMedia struct {
+type VoiceSettingsBackgroundAudioObject struct {
 	// Select from predefined media options.
-	Type constant.PredefinedMedia `json:"type,required"`
+	//
+	// Any of "predefined_media".
+	Type string `json:"type,required"`
 	// The predefined media to use. `silence` disables background audio.
 	//
 	// Any of "silence", "office".
@@ -2055,50 +1963,8 @@ type VoiceSettingsBackgroundAudioPredefinedMedia struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VoiceSettingsBackgroundAudioPredefinedMedia) RawJSON() string { return r.JSON.raw }
-func (r *VoiceSettingsBackgroundAudioPredefinedMedia) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VoiceSettingsBackgroundAudioMediaURL struct {
-	// Provide a direct URL to an MP3 file. The audio will loop during the call.
-	Type constant.MediaURL `json:"type,required"`
-	// HTTPS URL to an MP3 file.
-	Value string `json:"value,required" format:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Type        respjson.Field
-		Value       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VoiceSettingsBackgroundAudioMediaURL) RawJSON() string { return r.JSON.raw }
-func (r *VoiceSettingsBackgroundAudioMediaURL) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VoiceSettingsBackgroundAudioMediaName struct {
-	// Reference a previously uploaded media by its name from Telnyx Media Storage.
-	Type constant.MediaName `json:"type,required"`
-	// The `name` of a media asset created via
-	// [Media Storage API](https://developers.telnyx.com/api/media-storage/create-media-storage).
-	// The audio will loop during the call.
-	Value string `json:"value,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Type        respjson.Field
-		Value       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VoiceSettingsBackgroundAudioMediaName) RawJSON() string { return r.JSON.raw }
-func (r *VoiceSettingsBackgroundAudioMediaName) UnmarshalJSON(data []byte) error {
+func (r VoiceSettingsBackgroundAudioObject) RawJSON() string { return r.JSON.raw }
+func (r *VoiceSettingsBackgroundAudioObject) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2140,37 +2006,37 @@ func (r *VoiceSettingsParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type VoiceSettingsBackgroundAudioUnionParam struct {
-	OfPredefinedMedia *VoiceSettingsBackgroundAudioPredefinedMediaParam `json:",omitzero,inline"`
-	OfMediaURL        *VoiceSettingsBackgroundAudioMediaURLParam        `json:",omitzero,inline"`
-	OfMediaName       *VoiceSettingsBackgroundAudioMediaNameParam       `json:",omitzero,inline"`
+	OfVoiceSettingsBackgroundAudioObject *VoiceSettingsBackgroundAudioObjectParam `json:",omitzero,inline"`
+	OfVariant2                           *VoiceSettingsBackgroundAudioObjectParam `json:",omitzero,inline"`
+	OfVariant3                           *VoiceSettingsBackgroundAudioObjectParam `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u VoiceSettingsBackgroundAudioUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfPredefinedMedia, u.OfMediaURL, u.OfMediaName)
+	return param.MarshalUnion(u, u.OfVoiceSettingsBackgroundAudioObject, u.OfVariant2, u.OfVariant3)
 }
 func (u *VoiceSettingsBackgroundAudioUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *VoiceSettingsBackgroundAudioUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfPredefinedMedia) {
-		return u.OfPredefinedMedia
-	} else if !param.IsOmitted(u.OfMediaURL) {
-		return u.OfMediaURL
-	} else if !param.IsOmitted(u.OfMediaName) {
-		return u.OfMediaName
+	if !param.IsOmitted(u.OfVoiceSettingsBackgroundAudioObject) {
+		return u.OfVoiceSettingsBackgroundAudioObject
+	} else if !param.IsOmitted(u.OfVariant2) {
+		return u.OfVariant2
+	} else if !param.IsOmitted(u.OfVariant3) {
+		return u.OfVariant3
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u VoiceSettingsBackgroundAudioUnionParam) GetType() *string {
-	if vt := u.OfPredefinedMedia; vt != nil {
+	if vt := u.OfVoiceSettingsBackgroundAudioObject; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfMediaURL; vt != nil {
+	} else if vt := u.OfVariant2; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfMediaName; vt != nil {
+	} else if vt := u.OfVariant3; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -2178,90 +2044,44 @@ func (u VoiceSettingsBackgroundAudioUnionParam) GetType() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u VoiceSettingsBackgroundAudioUnionParam) GetValue() *string {
-	if vt := u.OfPredefinedMedia; vt != nil {
+	if vt := u.OfVoiceSettingsBackgroundAudioObject; vt != nil {
 		return (*string)(&vt.Value)
-	} else if vt := u.OfMediaURL; vt != nil {
+	} else if vt := u.OfVariant2; vt != nil {
 		return (*string)(&vt.Value)
-	} else if vt := u.OfMediaName; vt != nil {
+	} else if vt := u.OfVariant3; vt != nil {
 		return (*string)(&vt.Value)
 	}
 	return nil
 }
 
-func init() {
-	apijson.RegisterUnion[VoiceSettingsBackgroundAudioUnionParam](
-		"type",
-		apijson.Discriminator[VoiceSettingsBackgroundAudioPredefinedMediaParam]("predefined_media"),
-		apijson.Discriminator[VoiceSettingsBackgroundAudioMediaURLParam]("media_url"),
-		apijson.Discriminator[VoiceSettingsBackgroundAudioMediaNameParam]("media_name"),
-	)
-}
-
 // The properties Type, Value are required.
-type VoiceSettingsBackgroundAudioPredefinedMediaParam struct {
+type VoiceSettingsBackgroundAudioObjectParam struct {
+	// Select from predefined media options.
+	//
+	// Any of "predefined_media".
+	Type string `json:"type,omitzero,required"`
 	// The predefined media to use. `silence` disables background audio.
 	//
 	// Any of "silence", "office".
 	Value string `json:"value,omitzero,required"`
-	// Select from predefined media options.
-	//
-	// This field can be elided, and will marshal its zero value as "predefined_media".
-	Type constant.PredefinedMedia `json:"type,required"`
 	paramObj
 }
 
-func (r VoiceSettingsBackgroundAudioPredefinedMediaParam) MarshalJSON() (data []byte, err error) {
-	type shadow VoiceSettingsBackgroundAudioPredefinedMediaParam
+func (r VoiceSettingsBackgroundAudioObjectParam) MarshalJSON() (data []byte, err error) {
+	type shadow VoiceSettingsBackgroundAudioObjectParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *VoiceSettingsBackgroundAudioPredefinedMediaParam) UnmarshalJSON(data []byte) error {
+func (r *VoiceSettingsBackgroundAudioObjectParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[VoiceSettingsBackgroundAudioPredefinedMediaParam](
+	apijson.RegisterFieldValidator[VoiceSettingsBackgroundAudioObjectParam](
+		"type", "predefined_media",
+	)
+	apijson.RegisterFieldValidator[VoiceSettingsBackgroundAudioObjectParam](
 		"value", "silence", "office",
 	)
-}
-
-// The properties Type, Value are required.
-type VoiceSettingsBackgroundAudioMediaURLParam struct {
-	// HTTPS URL to an MP3 file.
-	Value string `json:"value,required" format:"uri"`
-	// Provide a direct URL to an MP3 file. The audio will loop during the call.
-	//
-	// This field can be elided, and will marshal its zero value as "media_url".
-	Type constant.MediaURL `json:"type,required"`
-	paramObj
-}
-
-func (r VoiceSettingsBackgroundAudioMediaURLParam) MarshalJSON() (data []byte, err error) {
-	type shadow VoiceSettingsBackgroundAudioMediaURLParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *VoiceSettingsBackgroundAudioMediaURLParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties Type, Value are required.
-type VoiceSettingsBackgroundAudioMediaNameParam struct {
-	// The `name` of a media asset created via
-	// [Media Storage API](https://developers.telnyx.com/api/media-storage/create-media-storage).
-	// The audio will loop during the call.
-	Value string `json:"value,required"`
-	// Reference a previously uploaded media by its name from Telnyx Media Storage.
-	//
-	// This field can be elided, and will marshal its zero value as "media_name".
-	Type constant.MediaName `json:"type,required"`
-	paramObj
-}
-
-func (r VoiceSettingsBackgroundAudioMediaNameParam) MarshalJSON() (data []byte, err error) {
-	type shadow VoiceSettingsBackgroundAudioMediaNameParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *VoiceSettingsBackgroundAudioMediaNameParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type WebhookTool struct {
@@ -2502,7 +2322,7 @@ func (r *AIAssistantChatParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIAssistantImportsParams struct {
+type AIAssistantImportParams struct {
 	// Integration secret pointer that refers to the API key for the external provider.
 	// This should be an identifier for an integration secret created via
 	// /v2/integration_secrets.
@@ -2510,25 +2330,25 @@ type AIAssistantImportsParams struct {
 	// The external provider to import assistants from.
 	//
 	// Any of "elevenlabs", "vapi", "retell".
-	Provider AIAssistantImportsParamsProvider `json:"provider,omitzero,required"`
+	Provider AIAssistantImportParamsProvider `json:"provider,omitzero,required"`
 	paramObj
 }
 
-func (r AIAssistantImportsParams) MarshalJSON() (data []byte, err error) {
-	type shadow AIAssistantImportsParams
+func (r AIAssistantImportParams) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantImportParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AIAssistantImportsParams) UnmarshalJSON(data []byte) error {
+func (r *AIAssistantImportParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The external provider to import assistants from.
-type AIAssistantImportsParamsProvider string
+type AIAssistantImportParamsProvider string
 
 const (
-	AIAssistantImportsParamsProviderElevenlabs AIAssistantImportsParamsProvider = "elevenlabs"
-	AIAssistantImportsParamsProviderVapi       AIAssistantImportsParamsProvider = "vapi"
-	AIAssistantImportsParamsProviderRetell     AIAssistantImportsParamsProvider = "retell"
+	AIAssistantImportParamsProviderElevenlabs AIAssistantImportParamsProvider = "elevenlabs"
+	AIAssistantImportParamsProviderVapi       AIAssistantImportParamsProvider = "vapi"
+	AIAssistantImportParamsProviderRetell     AIAssistantImportParamsProvider = "retell"
 )
 
 type AIAssistantSendSMSParams struct {

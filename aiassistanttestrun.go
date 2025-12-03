@@ -15,7 +15,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -57,31 +56,15 @@ func (r *AIAssistantTestRunService) Get(ctx context.Context, runID string, query
 
 // Retrieves paginated execution history for a specific assistant test with
 // filtering options
-func (r *AIAssistantTestRunService) List(ctx context.Context, testID string, query AIAssistantTestRunListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[TestRunResponse], err error) {
-	var raw *http.Response
+func (r *AIAssistantTestRunService) List(ctx context.Context, testID string, query AIAssistantTestRunListParams, opts ...option.RequestOption) (res *PaginatedTestRunList, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if testID == "" {
 		err = errors.New("missing required test_id parameter")
 		return
 	}
 	path := fmt.Sprintf("ai/assistants/tests/%s/runs", testID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Retrieves paginated execution history for a specific assistant test with
-// filtering options
-func (r *AIAssistantTestRunService) ListAutoPaging(ctx context.Context, testID string, query AIAssistantTestRunListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[TestRunResponse] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, testID, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Initiates immediate execution of a specific assistant test
@@ -214,16 +197,36 @@ type AIAssistantTestRunGetParams struct {
 }
 
 type AIAssistantTestRunListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Filter runs by execution status (pending, running, completed, failed, timeout)
 	Status param.Opt[string] `query:"status,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page AIAssistantTestRunListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [AIAssistantTestRunListParams]'s query parameters as
 // `url.Values`.
 func (r AIAssistantTestRunListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type AIAssistantTestRunListParamsPage struct {
+	// Page number to retrieve (1-based indexing)
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// Number of test runs to return per page (1-100)
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [AIAssistantTestRunListParamsPage]'s query parameters as
+// `url.Values`.
+func (r AIAssistantTestRunListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

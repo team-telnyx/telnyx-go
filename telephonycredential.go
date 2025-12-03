@@ -14,7 +14,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -71,26 +70,11 @@ func (r *TelephonyCredentialService) Update(ctx context.Context, id string, body
 }
 
 // List all On-demand Credentials.
-func (r *TelephonyCredentialService) List(ctx context.Context, query TelephonyCredentialListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[TelephonyCredential], err error) {
-	var raw *http.Response
+func (r *TelephonyCredentialService) List(ctx context.Context, query TelephonyCredentialListParams, opts ...option.RequestOption) (res *TelephonyCredentialListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "telephony_credentials"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// List all On-demand Credentials.
-func (r *TelephonyCredentialService) ListAutoPaging(ctx context.Context, query TelephonyCredentialListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[TelephonyCredential] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Delete an existing credential.
@@ -206,6 +190,24 @@ type TelephonyCredentialUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r TelephonyCredentialUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *TelephonyCredentialUpdateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TelephonyCredentialListResponse struct {
+	Data []TelephonyCredential `json:"data"`
+	Meta PaginationMeta        `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TelephonyCredentialListResponse) RawJSON() string { return r.JSON.raw }
+func (r *TelephonyCredentialListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

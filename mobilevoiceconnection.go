@@ -15,7 +15,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -72,26 +71,11 @@ func (r *MobileVoiceConnectionService) Update(ctx context.Context, id string, bo
 }
 
 // List Mobile Voice Connections
-func (r *MobileVoiceConnectionService) List(ctx context.Context, query MobileVoiceConnectionListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MobileVoiceConnection], err error) {
-	var raw *http.Response
+func (r *MobileVoiceConnectionService) List(ctx context.Context, query MobileVoiceConnectionListParams, opts ...option.RequestOption) (res *MobileVoiceConnectionListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v2/mobile_voice_connections"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// List Mobile Voice Connections
-func (r *MobileVoiceConnectionService) ListAutoPaging(ctx context.Context, query MobileVoiceConnectionListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MobileVoiceConnection] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Delete a Mobile Voice Connection
@@ -106,27 +90,43 @@ func (r *MobileVoiceConnectionService) Delete(ctx context.Context, id string, op
 	return
 }
 
-type MobileVoiceConnection struct {
+type MobileVoiceConnectionNewResponse struct {
+	Data MobileVoiceConnectionNewResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MobileVoiceConnectionNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *MobileVoiceConnectionNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MobileVoiceConnectionNewResponseData struct {
 	// Identifies the resource.
 	ID string `json:"id"`
 	// Indicates if the connection is active.
 	Active bool `json:"active"`
 	// The name of the connection.
-	ConnectionName string                        `json:"connection_name"`
-	CreatedAt      time.Time                     `json:"created_at" format:"date-time"`
-	Inbound        MobileVoiceConnectionInbound  `json:"inbound"`
-	Outbound       MobileVoiceConnectionOutbound `json:"outbound"`
+	ConnectionName string                                       `json:"connection_name"`
+	CreatedAt      time.Time                                    `json:"created_at" format:"date-time"`
+	Inbound        MobileVoiceConnectionNewResponseDataInbound  `json:"inbound"`
+	Outbound       MobileVoiceConnectionNewResponseDataOutbound `json:"outbound"`
 	// Identifies the type of the resource.
 	//
 	// Any of "mobile_voice_connection".
-	RecordType MobileVoiceConnectionRecordType `json:"record_type"`
+	RecordType string `json:"record_type"`
 	// A list of tags associated with the connection.
 	Tags      []string  `json:"tags"`
 	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
 	// The API version for webhooks.
 	//
 	// Any of "1", "2".
-	WebhookAPIVersion MobileVoiceConnectionWebhookAPIVersion `json:"webhook_api_version,nullable"`
+	WebhookAPIVersion string `json:"webhook_api_version,nullable"`
 	// The failover URL where webhooks are sent.
 	WebhookEventFailoverURL string `json:"webhook_event_failover_url,nullable"`
 	// The URL where webhooks are sent.
@@ -154,12 +154,12 @@ type MobileVoiceConnection struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MobileVoiceConnection) RawJSON() string { return r.JSON.raw }
-func (r *MobileVoiceConnection) UnmarshalJSON(data []byte) error {
+func (r MobileVoiceConnectionNewResponseData) RawJSON() string { return r.JSON.raw }
+func (r *MobileVoiceConnectionNewResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type MobileVoiceConnectionInbound struct {
+type MobileVoiceConnectionNewResponseDataInbound struct {
 	ChannelLimit int64 `json:"channel_limit,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -170,12 +170,12 @@ type MobileVoiceConnectionInbound struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MobileVoiceConnectionInbound) RawJSON() string { return r.JSON.raw }
-func (r *MobileVoiceConnectionInbound) UnmarshalJSON(data []byte) error {
+func (r MobileVoiceConnectionNewResponseDataInbound) RawJSON() string { return r.JSON.raw }
+func (r *MobileVoiceConnectionNewResponseDataInbound) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type MobileVoiceConnectionOutbound struct {
+type MobileVoiceConnectionNewResponseDataOutbound struct {
 	ChannelLimit           int64  `json:"channel_limit,nullable"`
 	OutboundVoiceProfileID string `json:"outbound_voice_profile_id,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -188,44 +188,13 @@ type MobileVoiceConnectionOutbound struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MobileVoiceConnectionOutbound) RawJSON() string { return r.JSON.raw }
-func (r *MobileVoiceConnectionOutbound) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Identifies the type of the resource.
-type MobileVoiceConnectionRecordType string
-
-const (
-	MobileVoiceConnectionRecordTypeMobileVoiceConnection MobileVoiceConnectionRecordType = "mobile_voice_connection"
-)
-
-// The API version for webhooks.
-type MobileVoiceConnectionWebhookAPIVersion string
-
-const (
-	MobileVoiceConnectionWebhookAPIVersionV1 MobileVoiceConnectionWebhookAPIVersion = "1"
-	MobileVoiceConnectionWebhookAPIVersionV2 MobileVoiceConnectionWebhookAPIVersion = "2"
-)
-
-type MobileVoiceConnectionNewResponse struct {
-	Data MobileVoiceConnection `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MobileVoiceConnectionNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *MobileVoiceConnectionNewResponse) UnmarshalJSON(data []byte) error {
+func (r MobileVoiceConnectionNewResponseDataOutbound) RawJSON() string { return r.JSON.raw }
+func (r *MobileVoiceConnectionNewResponseDataOutbound) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type MobileVoiceConnectionGetResponse struct {
-	Data MobileVoiceConnection `json:"data"`
+	Data MobileVoiceConnectionGetResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -240,8 +209,95 @@ func (r *MobileVoiceConnectionGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type MobileVoiceConnectionGetResponseData struct {
+	// Identifies the resource.
+	ID string `json:"id"`
+	// Indicates if the connection is active.
+	Active bool `json:"active"`
+	// The name of the connection.
+	ConnectionName string                                       `json:"connection_name"`
+	CreatedAt      time.Time                                    `json:"created_at" format:"date-time"`
+	Inbound        MobileVoiceConnectionGetResponseDataInbound  `json:"inbound"`
+	Outbound       MobileVoiceConnectionGetResponseDataOutbound `json:"outbound"`
+	// Identifies the type of the resource.
+	//
+	// Any of "mobile_voice_connection".
+	RecordType string `json:"record_type"`
+	// A list of tags associated with the connection.
+	Tags      []string  `json:"tags"`
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// The API version for webhooks.
+	//
+	// Any of "1", "2".
+	WebhookAPIVersion string `json:"webhook_api_version,nullable"`
+	// The failover URL where webhooks are sent.
+	WebhookEventFailoverURL string `json:"webhook_event_failover_url,nullable"`
+	// The URL where webhooks are sent.
+	WebhookEventURL string `json:"webhook_event_url,nullable"`
+	// The timeout for webhooks in seconds.
+	WebhookTimeoutSecs int64 `json:"webhook_timeout_secs,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                      respjson.Field
+		Active                  respjson.Field
+		ConnectionName          respjson.Field
+		CreatedAt               respjson.Field
+		Inbound                 respjson.Field
+		Outbound                respjson.Field
+		RecordType              respjson.Field
+		Tags                    respjson.Field
+		UpdatedAt               respjson.Field
+		WebhookAPIVersion       respjson.Field
+		WebhookEventFailoverURL respjson.Field
+		WebhookEventURL         respjson.Field
+		WebhookTimeoutSecs      respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MobileVoiceConnectionGetResponseData) RawJSON() string { return r.JSON.raw }
+func (r *MobileVoiceConnectionGetResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MobileVoiceConnectionGetResponseDataInbound struct {
+	ChannelLimit int64 `json:"channel_limit,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ChannelLimit respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MobileVoiceConnectionGetResponseDataInbound) RawJSON() string { return r.JSON.raw }
+func (r *MobileVoiceConnectionGetResponseDataInbound) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MobileVoiceConnectionGetResponseDataOutbound struct {
+	ChannelLimit           int64  `json:"channel_limit,nullable"`
+	OutboundVoiceProfileID string `json:"outbound_voice_profile_id,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ChannelLimit           respjson.Field
+		OutboundVoiceProfileID respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MobileVoiceConnectionGetResponseDataOutbound) RawJSON() string { return r.JSON.raw }
+func (r *MobileVoiceConnectionGetResponseDataOutbound) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type MobileVoiceConnectionUpdateResponse struct {
-	Data MobileVoiceConnection `json:"data"`
+	Data MobileVoiceConnectionUpdateResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -256,8 +312,222 @@ func (r *MobileVoiceConnectionUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type MobileVoiceConnectionUpdateResponseData struct {
+	// Identifies the resource.
+	ID string `json:"id"`
+	// Indicates if the connection is active.
+	Active bool `json:"active"`
+	// The name of the connection.
+	ConnectionName string                                          `json:"connection_name"`
+	CreatedAt      time.Time                                       `json:"created_at" format:"date-time"`
+	Inbound        MobileVoiceConnectionUpdateResponseDataInbound  `json:"inbound"`
+	Outbound       MobileVoiceConnectionUpdateResponseDataOutbound `json:"outbound"`
+	// Identifies the type of the resource.
+	//
+	// Any of "mobile_voice_connection".
+	RecordType string `json:"record_type"`
+	// A list of tags associated with the connection.
+	Tags      []string  `json:"tags"`
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// The API version for webhooks.
+	//
+	// Any of "1", "2".
+	WebhookAPIVersion string `json:"webhook_api_version,nullable"`
+	// The failover URL where webhooks are sent.
+	WebhookEventFailoverURL string `json:"webhook_event_failover_url,nullable"`
+	// The URL where webhooks are sent.
+	WebhookEventURL string `json:"webhook_event_url,nullable"`
+	// The timeout for webhooks in seconds.
+	WebhookTimeoutSecs int64 `json:"webhook_timeout_secs,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                      respjson.Field
+		Active                  respjson.Field
+		ConnectionName          respjson.Field
+		CreatedAt               respjson.Field
+		Inbound                 respjson.Field
+		Outbound                respjson.Field
+		RecordType              respjson.Field
+		Tags                    respjson.Field
+		UpdatedAt               respjson.Field
+		WebhookAPIVersion       respjson.Field
+		WebhookEventFailoverURL respjson.Field
+		WebhookEventURL         respjson.Field
+		WebhookTimeoutSecs      respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MobileVoiceConnectionUpdateResponseData) RawJSON() string { return r.JSON.raw }
+func (r *MobileVoiceConnectionUpdateResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MobileVoiceConnectionUpdateResponseDataInbound struct {
+	ChannelLimit int64 `json:"channel_limit,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ChannelLimit respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MobileVoiceConnectionUpdateResponseDataInbound) RawJSON() string { return r.JSON.raw }
+func (r *MobileVoiceConnectionUpdateResponseDataInbound) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MobileVoiceConnectionUpdateResponseDataOutbound struct {
+	ChannelLimit           int64  `json:"channel_limit,nullable"`
+	OutboundVoiceProfileID string `json:"outbound_voice_profile_id,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ChannelLimit           respjson.Field
+		OutboundVoiceProfileID respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MobileVoiceConnectionUpdateResponseDataOutbound) RawJSON() string { return r.JSON.raw }
+func (r *MobileVoiceConnectionUpdateResponseDataOutbound) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MobileVoiceConnectionListResponse struct {
+	Data []MobileVoiceConnectionListResponseData `json:"data"`
+	Meta MobileVoiceConnectionListResponseMeta   `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MobileVoiceConnectionListResponse) RawJSON() string { return r.JSON.raw }
+func (r *MobileVoiceConnectionListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MobileVoiceConnectionListResponseData struct {
+	// Identifies the resource.
+	ID string `json:"id"`
+	// Indicates if the connection is active.
+	Active bool `json:"active"`
+	// The name of the connection.
+	ConnectionName string                                        `json:"connection_name"`
+	CreatedAt      time.Time                                     `json:"created_at" format:"date-time"`
+	Inbound        MobileVoiceConnectionListResponseDataInbound  `json:"inbound"`
+	Outbound       MobileVoiceConnectionListResponseDataOutbound `json:"outbound"`
+	// Identifies the type of the resource.
+	//
+	// Any of "mobile_voice_connection".
+	RecordType string `json:"record_type"`
+	// A list of tags associated with the connection.
+	Tags      []string  `json:"tags"`
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// The API version for webhooks.
+	//
+	// Any of "1", "2".
+	WebhookAPIVersion string `json:"webhook_api_version,nullable"`
+	// The failover URL where webhooks are sent.
+	WebhookEventFailoverURL string `json:"webhook_event_failover_url,nullable"`
+	// The URL where webhooks are sent.
+	WebhookEventURL string `json:"webhook_event_url,nullable"`
+	// The timeout for webhooks in seconds.
+	WebhookTimeoutSecs int64 `json:"webhook_timeout_secs,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                      respjson.Field
+		Active                  respjson.Field
+		ConnectionName          respjson.Field
+		CreatedAt               respjson.Field
+		Inbound                 respjson.Field
+		Outbound                respjson.Field
+		RecordType              respjson.Field
+		Tags                    respjson.Field
+		UpdatedAt               respjson.Field
+		WebhookAPIVersion       respjson.Field
+		WebhookEventFailoverURL respjson.Field
+		WebhookEventURL         respjson.Field
+		WebhookTimeoutSecs      respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MobileVoiceConnectionListResponseData) RawJSON() string { return r.JSON.raw }
+func (r *MobileVoiceConnectionListResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MobileVoiceConnectionListResponseDataInbound struct {
+	ChannelLimit int64 `json:"channel_limit,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ChannelLimit respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MobileVoiceConnectionListResponseDataInbound) RawJSON() string { return r.JSON.raw }
+func (r *MobileVoiceConnectionListResponseDataInbound) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MobileVoiceConnectionListResponseDataOutbound struct {
+	ChannelLimit           int64  `json:"channel_limit,nullable"`
+	OutboundVoiceProfileID string `json:"outbound_voice_profile_id,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ChannelLimit           respjson.Field
+		OutboundVoiceProfileID respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MobileVoiceConnectionListResponseDataOutbound) RawJSON() string { return r.JSON.raw }
+func (r *MobileVoiceConnectionListResponseDataOutbound) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MobileVoiceConnectionListResponseMeta struct {
+	PageNumber   int64 `json:"page_number"`
+	PageSize     int64 `json:"page_size"`
+	TotalPages   int64 `json:"total_pages"`
+	TotalResults int64 `json:"total_results"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MobileVoiceConnectionListResponseMeta) RawJSON() string { return r.JSON.raw }
+func (r *MobileVoiceConnectionListResponseMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type MobileVoiceConnectionDeleteResponse struct {
-	Data MobileVoiceConnection `json:"data"`
+	Data MobileVoiceConnectionDeleteResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -269,6 +539,93 @@ type MobileVoiceConnectionDeleteResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MobileVoiceConnectionDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *MobileVoiceConnectionDeleteResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MobileVoiceConnectionDeleteResponseData struct {
+	// Identifies the resource.
+	ID string `json:"id"`
+	// Indicates if the connection is active.
+	Active bool `json:"active"`
+	// The name of the connection.
+	ConnectionName string                                          `json:"connection_name"`
+	CreatedAt      time.Time                                       `json:"created_at" format:"date-time"`
+	Inbound        MobileVoiceConnectionDeleteResponseDataInbound  `json:"inbound"`
+	Outbound       MobileVoiceConnectionDeleteResponseDataOutbound `json:"outbound"`
+	// Identifies the type of the resource.
+	//
+	// Any of "mobile_voice_connection".
+	RecordType string `json:"record_type"`
+	// A list of tags associated with the connection.
+	Tags      []string  `json:"tags"`
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// The API version for webhooks.
+	//
+	// Any of "1", "2".
+	WebhookAPIVersion string `json:"webhook_api_version,nullable"`
+	// The failover URL where webhooks are sent.
+	WebhookEventFailoverURL string `json:"webhook_event_failover_url,nullable"`
+	// The URL where webhooks are sent.
+	WebhookEventURL string `json:"webhook_event_url,nullable"`
+	// The timeout for webhooks in seconds.
+	WebhookTimeoutSecs int64 `json:"webhook_timeout_secs,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                      respjson.Field
+		Active                  respjson.Field
+		ConnectionName          respjson.Field
+		CreatedAt               respjson.Field
+		Inbound                 respjson.Field
+		Outbound                respjson.Field
+		RecordType              respjson.Field
+		Tags                    respjson.Field
+		UpdatedAt               respjson.Field
+		WebhookAPIVersion       respjson.Field
+		WebhookEventFailoverURL respjson.Field
+		WebhookEventURL         respjson.Field
+		WebhookTimeoutSecs      respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MobileVoiceConnectionDeleteResponseData) RawJSON() string { return r.JSON.raw }
+func (r *MobileVoiceConnectionDeleteResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MobileVoiceConnectionDeleteResponseDataInbound struct {
+	ChannelLimit int64 `json:"channel_limit,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ChannelLimit respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MobileVoiceConnectionDeleteResponseDataInbound) RawJSON() string { return r.JSON.raw }
+func (r *MobileVoiceConnectionDeleteResponseDataInbound) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MobileVoiceConnectionDeleteResponseDataOutbound struct {
+	ChannelLimit           int64  `json:"channel_limit,nullable"`
+	OutboundVoiceProfileID string `json:"outbound_voice_profile_id,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ChannelLimit           respjson.Field
+		OutboundVoiceProfileID respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MobileVoiceConnectionDeleteResponseDataOutbound) RawJSON() string { return r.JSON.raw }
+func (r *MobileVoiceConnectionDeleteResponseDataOutbound) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -324,8 +681,8 @@ func (r *MobileVoiceConnectionNewParamsOutbound) UnmarshalJSON(data []byte) erro
 type MobileVoiceConnectionNewParamsWebhookAPIVersion string
 
 const (
-	MobileVoiceConnectionNewParamsWebhookAPIVersionV1 MobileVoiceConnectionNewParamsWebhookAPIVersion = "1"
-	MobileVoiceConnectionNewParamsWebhookAPIVersionV2 MobileVoiceConnectionNewParamsWebhookAPIVersion = "2"
+	MobileVoiceConnectionNewParamsWebhookAPIVersion1 MobileVoiceConnectionNewParamsWebhookAPIVersion = "1"
+	MobileVoiceConnectionNewParamsWebhookAPIVersion2 MobileVoiceConnectionNewParamsWebhookAPIVersion = "2"
 )
 
 type MobileVoiceConnectionUpdateParams struct {
@@ -380,8 +737,8 @@ func (r *MobileVoiceConnectionUpdateParamsOutbound) UnmarshalJSON(data []byte) e
 type MobileVoiceConnectionUpdateParamsWebhookAPIVersion string
 
 const (
-	MobileVoiceConnectionUpdateParamsWebhookAPIVersionV1 MobileVoiceConnectionUpdateParamsWebhookAPIVersion = "1"
-	MobileVoiceConnectionUpdateParamsWebhookAPIVersionV2 MobileVoiceConnectionUpdateParamsWebhookAPIVersion = "2"
+	MobileVoiceConnectionUpdateParamsWebhookAPIVersion1 MobileVoiceConnectionUpdateParamsWebhookAPIVersion = "1"
+	MobileVoiceConnectionUpdateParamsWebhookAPIVersion2 MobileVoiceConnectionUpdateParamsWebhookAPIVersion = "2"
 )
 
 type MobileVoiceConnectionListParams struct {

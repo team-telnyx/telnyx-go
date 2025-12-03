@@ -15,7 +15,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -72,26 +71,11 @@ func (r *AIMcpServerService) Update(ctx context.Context, mcpServerID string, bod
 }
 
 // Retrieve a list of MCP servers.
-func (r *AIMcpServerService) List(ctx context.Context, query AIMcpServerListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPaginationTopLevelArray[AIMcpServerListResponse], err error) {
-	var raw *http.Response
+func (r *AIMcpServerService) List(ctx context.Context, query AIMcpServerListParams, opts ...option.RequestOption) (res *[]AIMcpServerListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "ai/mcp_servers"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Retrieve a list of MCP servers.
-func (r *AIMcpServerService) ListAutoPaging(ctx context.Context, query AIMcpServerListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationTopLevelArrayAutoPager[AIMcpServerListResponse] {
-	return pagination.NewDefaultFlatPaginationTopLevelArrayAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Delete a specific MCP server.

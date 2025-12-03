@@ -14,7 +14,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -59,26 +58,11 @@ func (r *GlobalIPService) Get(ctx context.Context, id string, opts ...option.Req
 }
 
 // List all Global IPs.
-func (r *GlobalIPService) List(ctx context.Context, query GlobalIPListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[GlobalIPListResponse], err error) {
-	var raw *http.Response
+func (r *GlobalIPService) List(ctx context.Context, query GlobalIPListParams, opts ...option.RequestOption) (res *GlobalIPListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "global_ips"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// List all Global IPs.
-func (r *GlobalIPService) ListAutoPaging(ctx context.Context, query GlobalIPListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[GlobalIPListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Delete a Global IP.
@@ -118,12 +102,15 @@ type GlobalIPNewResponseData struct {
 	Name string `json:"name"`
 	// A Global IP ports grouped by protocol code.
 	Ports map[string]any `json:"ports"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Description respjson.Field
 		IPAddress   respjson.Field
 		Name        respjson.Field
 		Ports       respjson.Field
+		RecordType  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -161,12 +148,15 @@ type GlobalIPGetResponseData struct {
 	Name string `json:"name"`
 	// A Global IP ports grouped by protocol code.
 	Ports map[string]any `json:"ports"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Description respjson.Field
 		IPAddress   respjson.Field
 		Name        respjson.Field
 		Ports       respjson.Field
+		RecordType  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -180,6 +170,24 @@ func (r *GlobalIPGetResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type GlobalIPListResponse struct {
+	Data []GlobalIPListResponseData `json:"data"`
+	Meta PaginationMeta             `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GlobalIPListResponse) RawJSON() string { return r.JSON.raw }
+func (r *GlobalIPListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type GlobalIPListResponseData struct {
 	// A user specified description for the address.
 	Description string `json:"description"`
 	// The Global IP address.
@@ -188,12 +196,15 @@ type GlobalIPListResponse struct {
 	Name string `json:"name"`
 	// A Global IP ports grouped by protocol code.
 	Ports map[string]any `json:"ports"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Description respjson.Field
 		IPAddress   respjson.Field
 		Name        respjson.Field
 		Ports       respjson.Field
+		RecordType  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -201,8 +212,8 @@ type GlobalIPListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r GlobalIPListResponse) RawJSON() string { return r.JSON.raw }
-func (r *GlobalIPListResponse) UnmarshalJSON(data []byte) error {
+func (r GlobalIPListResponseData) RawJSON() string { return r.JSON.raw }
+func (r *GlobalIPListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -231,12 +242,15 @@ type GlobalIPDeleteResponseData struct {
 	Name string `json:"name"`
 	// A Global IP ports grouped by protocol code.
 	Ports map[string]any `json:"ports"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Description respjson.Field
 		IPAddress   respjson.Field
 		Name        respjson.Field
 		Ports       respjson.Field
+		RecordType  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`

@@ -15,7 +15,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -60,26 +59,11 @@ func (r *AccessIPAddressService) Get(ctx context.Context, accessIPAddressID stri
 }
 
 // List all Access IP Addresses
-func (r *AccessIPAddressService) List(ctx context.Context, query AccessIPAddressListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[AccessIPAddressResponse], err error) {
-	var raw *http.Response
+func (r *AccessIPAddressService) List(ctx context.Context, query AccessIPAddressListParams, opts ...option.RequestOption) (res *AccessIPAddressListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "access_ip_address"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// List all Access IP Addresses
-func (r *AccessIPAddressService) ListAutoPaging(ctx context.Context, query AccessIPAddressListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[AccessIPAddressResponse] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Delete access IP address
@@ -157,6 +141,24 @@ func (r *PaginationMetaCloudflareIPListSync) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type AccessIPAddressListResponse struct {
+	Data []AccessIPAddressResponse          `json:"data,required"`
+	Meta PaginationMetaCloudflareIPListSync `json:"meta,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AccessIPAddressListResponse) RawJSON() string { return r.JSON.raw }
+func (r *AccessIPAddressListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AccessIPAddressNewParams struct {
 	IPAddress   string            `json:"ip_address,required"`
 	Description param.Opt[string] `json:"description,omitzero"`
@@ -172,12 +174,13 @@ func (r *AccessIPAddressNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type AccessIPAddressListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[ip_source],
 	// filter[ip_address], filter[created_at]. Supports complex bracket operations for
 	// dynamic filtering.
 	Filter AccessIPAddressListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page AccessIPAddressListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -247,6 +250,23 @@ type AccessIPAddressListParamsFilterCreatedAtDateRangeFilter struct {
 // URLQuery serializes [AccessIPAddressListParamsFilterCreatedAtDateRangeFilter]'s
 // query parameters as `url.Values`.
 func (r AccessIPAddressListParamsFilterCreatedAtDateRangeFilter) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type AccessIPAddressListParamsPage struct {
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	Size   param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [AccessIPAddressListParamsPage]'s query parameters as
+// `url.Values`.
+func (r AccessIPAddressListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

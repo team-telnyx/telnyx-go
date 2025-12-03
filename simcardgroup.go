@@ -14,7 +14,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -73,26 +72,11 @@ func (r *SimCardGroupService) Update(ctx context.Context, id string, body SimCar
 }
 
 // Get all SIM card groups belonging to the user that match the given filters.
-func (r *SimCardGroupService) List(ctx context.Context, query SimCardGroupListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[SimCardGroupListResponse], err error) {
-	var raw *http.Response
+func (r *SimCardGroupService) List(ctx context.Context, query SimCardGroupListParams, opts ...option.RequestOption) (res *SimCardGroupListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "sim_card_groups"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Get all SIM card groups belonging to the user that match the given filters.
-func (r *SimCardGroupService) ListAutoPaging(ctx context.Context, query SimCardGroupListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[SimCardGroupListResponse] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Permanently deletes a SIM card group
@@ -239,6 +223,24 @@ func (r *SimCardGroupUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type SimCardGroupListResponse struct {
+	Data []SimCardGroupListResponseData `json:"data"`
+	Meta PaginationMeta                 `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SimCardGroupListResponse) RawJSON() string { return r.JSON.raw }
+func (r *SimCardGroupListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SimCardGroupListResponseData struct {
 	// Identifies the resource.
 	ID string `json:"id" format:"uuid"`
 	// Represents the amount of data consumed.
@@ -246,7 +248,7 @@ type SimCardGroupListResponse struct {
 	// ISO 8601 formatted date-time indicating when the resource was created.
 	CreatedAt string `json:"created_at"`
 	// Upper limit on the amount of data the SIM cards, within the group, can use.
-	DataLimit SimCardGroupListResponseDataLimit `json:"data_limit"`
+	DataLimit SimCardGroupListResponseDataDataLimit `json:"data_limit"`
 	// Indicates whether the SIM card group is the users default group.<br/>The default
 	// group is created for the user and can not be removed.
 	Default bool `json:"default"`
@@ -281,13 +283,13 @@ type SimCardGroupListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r SimCardGroupListResponse) RawJSON() string { return r.JSON.raw }
-func (r *SimCardGroupListResponse) UnmarshalJSON(data []byte) error {
+func (r SimCardGroupListResponseData) RawJSON() string { return r.JSON.raw }
+func (r *SimCardGroupListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Upper limit on the amount of data the SIM cards, within the group, can use.
-type SimCardGroupListResponseDataLimit struct {
+type SimCardGroupListResponseDataDataLimit struct {
 	Amount string `json:"amount"`
 	Unit   string `json:"unit"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -300,8 +302,8 @@ type SimCardGroupListResponseDataLimit struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r SimCardGroupListResponseDataLimit) RawJSON() string { return r.JSON.raw }
-func (r *SimCardGroupListResponseDataLimit) UnmarshalJSON(data []byte) error {
+func (r SimCardGroupListResponseDataDataLimit) RawJSON() string { return r.JSON.raw }
+func (r *SimCardGroupListResponseDataDataLimit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

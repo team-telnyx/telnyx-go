@@ -15,7 +15,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -72,26 +71,11 @@ func (r *AuthenticationProviderService) Update(ctx context.Context, id string, b
 }
 
 // Returns a list of your SSO authentication providers.
-func (r *AuthenticationProviderService) List(ctx context.Context, query AuthenticationProviderListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[AuthenticationProvider], err error) {
-	var raw *http.Response
+func (r *AuthenticationProviderService) List(ctx context.Context, query AuthenticationProviderListParams, opts ...option.RequestOption) (res *AuthenticationProviderListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "authentication_providers"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Returns a list of your SSO authentication providers.
-func (r *AuthenticationProviderService) ListAutoPaging(ctx context.Context, query AuthenticationProviderListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[AuthenticationProvider] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Deletes an existing authentication provider.
@@ -296,6 +280,24 @@ func (r *AuthenticationProviderUpdateResponse) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type AuthenticationProviderListResponse struct {
+	Data []AuthenticationProvider `json:"data"`
+	Meta PaginationMeta           `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AuthenticationProviderListResponse) RawJSON() string { return r.JSON.raw }
+func (r *AuthenticationProviderListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AuthenticationProviderDeleteResponse struct {
 	Data AuthenticationProvider `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -361,8 +363,9 @@ func (r *AuthenticationProviderUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type AuthenticationProviderListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page AuthenticationProviderListParamsPage `query:"page,omitzero" json:"-"`
 	// Specifies the sort order for results. By default sorting direction is ascending.
 	// To have the results sorted in descending order add the <code>-</code>
 	// prefix.<br/><br/> That is: <ul>
@@ -387,6 +390,25 @@ type AuthenticationProviderListParams struct {
 // URLQuery serializes [AuthenticationProviderListParams]'s query parameters as
 // `url.Values`.
 func (r AuthenticationProviderListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type AuthenticationProviderListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [AuthenticationProviderListParamsPage]'s query parameters as
+// `url.Values`.
+func (r AuthenticationProviderListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

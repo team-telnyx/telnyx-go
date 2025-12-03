@@ -14,7 +14,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -68,30 +67,11 @@ func (r *PartnerCampaignService) Update(ctx context.Context, campaignID string, 
 // This endpoint is currently limited to only returning shared campaigns that
 // Telnyx has accepted. In other words, shared but pending campaigns are currently
 // omitted from the response from this endpoint.
-func (r *PartnerCampaignService) List(ctx context.Context, query PartnerCampaignListParams, opts ...option.RequestOption) (res *pagination.PerPagePaginationV2[TelnyxDownstreamCampaign], err error) {
-	var raw *http.Response
+func (r *PartnerCampaignService) List(ctx context.Context, query PartnerCampaignListParams, opts ...option.RequestOption) (res *PartnerCampaignListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "partner_campaigns"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Retrieve all partner campaigns you have shared to Telnyx in a paginated fashion.
-//
-// This endpoint is currently limited to only returning shared campaigns that
-// Telnyx has accepted. In other words, shared but pending campaigns are currently
-// omitted from the response from this endpoint.
-func (r *PartnerCampaignService) ListAutoPaging(ctx context.Context, query PartnerCampaignListParams, opts ...option.RequestOption) *pagination.PerPagePaginationV2AutoPager[TelnyxDownstreamCampaign] {
-	return pagination.NewPerPagePaginationV2AutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Get all partner campaigns you have shared to Telnyx in a paginated fashion
@@ -99,30 +79,11 @@ func (r *PartnerCampaignService) ListAutoPaging(ctx context.Context, query Partn
 // This endpoint is currently limited to only returning shared campaigns that
 // Telnyx has accepted. In other words, shared but pending campaigns are currently
 // omitted from the response from this endpoint.
-func (r *PartnerCampaignService) ListSharedByMe(ctx context.Context, query PartnerCampaignListSharedByMeParams, opts ...option.RequestOption) (res *pagination.PerPagePaginationV2[PartnerCampaignListSharedByMeResponse], err error) {
-	var raw *http.Response
+func (r *PartnerCampaignService) ListSharedByMe(ctx context.Context, query PartnerCampaignListSharedByMeParams, opts ...option.RequestOption) (res *PartnerCampaignListSharedByMeResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "partnerCampaign/sharedByMe"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Get all partner campaigns you have shared to Telnyx in a paginated fashion
-//
-// This endpoint is currently limited to only returning shared campaigns that
-// Telnyx has accepted. In other words, shared but pending campaigns are currently
-// omitted from the response from this endpoint.
-func (r *PartnerCampaignService) ListSharedByMeAutoPaging(ctx context.Context, query PartnerCampaignListSharedByMeParams, opts ...option.RequestOption) *pagination.PerPagePaginationV2AutoPager[PartnerCampaignListSharedByMeResponse] {
-	return pagination.NewPerPagePaginationV2AutoPager(r.ListSharedByMe(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Get Sharing Status
@@ -293,6 +254,46 @@ const (
 	TelnyxDownstreamCampaignCampaignStatusMnoProvisioningFailed TelnyxDownstreamCampaignCampaignStatus = "MNO_PROVISIONING_FAILED"
 )
 
+type PartnerCampaignListResponse struct {
+	Page         int64                      `json:"page"`
+	Records      []TelnyxDownstreamCampaign `json:"records"`
+	TotalRecords int64                      `json:"totalRecords"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Page         respjson.Field
+		Records      respjson.Field
+		TotalRecords respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PartnerCampaignListResponse) RawJSON() string { return r.JSON.raw }
+func (r *PartnerCampaignListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PartnerCampaignListSharedByMeResponse struct {
+	Page         int64                                         `json:"page"`
+	Records      []PartnerCampaignListSharedByMeResponseRecord `json:"records"`
+	TotalRecords int64                                         `json:"totalRecords"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Page         respjson.Field
+		Records      respjson.Field
+		TotalRecords respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PartnerCampaignListSharedByMeResponse) RawJSON() string { return r.JSON.raw }
+func (r *PartnerCampaignListSharedByMeResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Campaign is generated by the 10DLC registry once the corresponding campaign
 // request is approved. Each campaign is assigned a unique identifier -
 // **campaignId**. Once a campaign is activated, limited information is published
@@ -300,7 +301,7 @@ const (
 // campaign is suspended(reversible) or expired(non-reversible), campaign data is
 // deleted from the OSR service. Most attributes of campaignare immutable,
 // including **usecase**, **vertical**, **brandId** and **cspId**.
-type PartnerCampaignListSharedByMeResponse struct {
+type PartnerCampaignListSharedByMeResponseRecord struct {
 	// Alphanumeric identifier of the brand associated with this campaign.
 	BrandID string `json:"brandId,required"`
 	// Alphanumeric identifier assigned by the registry for a campaign. This identifier
@@ -327,8 +328,8 @@ type PartnerCampaignListSharedByMeResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PartnerCampaignListSharedByMeResponse) RawJSON() string { return r.JSON.raw }
-func (r *PartnerCampaignListSharedByMeResponse) UnmarshalJSON(data []byte) error {
+func (r PartnerCampaignListSharedByMeResponseRecord) RawJSON() string { return r.JSON.raw }
+func (r *PartnerCampaignListSharedByMeResponseRecord) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

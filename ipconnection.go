@@ -15,9 +15,9 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/shared"
 )
 
 // IPConnectionService contains methods and other services that help with
@@ -72,26 +72,11 @@ func (r *IPConnectionService) Update(ctx context.Context, id string, body IPConn
 }
 
 // Returns a list of your IP connections.
-func (r *IPConnectionService) List(ctx context.Context, query IPConnectionListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[IPConnection], err error) {
-	var raw *http.Response
+func (r *IPConnectionService) List(ctx context.Context, query IPConnectionListParams, opts ...option.RequestOption) (res *IPConnectionListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "ip_connections"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Returns a list of your IP connections.
-func (r *IPConnectionService) ListAutoPaging(ctx context.Context, query IPConnectionListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[IPConnection] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Deletes an existing IP connection.
@@ -459,8 +444,8 @@ const (
 type IPConnectionWebhookAPIVersion string
 
 const (
-	IPConnectionWebhookAPIVersionV1 IPConnectionWebhookAPIVersion = "1"
-	IPConnectionWebhookAPIVersionV2 IPConnectionWebhookAPIVersion = "2"
+	IPConnectionWebhookAPIVersion1 IPConnectionWebhookAPIVersion = "1"
+	IPConnectionWebhookAPIVersion2 IPConnectionWebhookAPIVersion = "2"
 )
 
 type OutboundIP struct {
@@ -672,6 +657,24 @@ func (r *IPConnectionUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type IPConnectionListResponse struct {
+	Data []IPConnection                   `json:"data"`
+	Meta shared.ConnectionsPaginationMeta `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r IPConnectionListResponse) RawJSON() string { return r.JSON.raw }
+func (r *IPConnectionListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type IPConnectionDeleteResponse struct {
 	Data IPConnection `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -860,8 +863,8 @@ const (
 type IPConnectionNewParamsWebhookAPIVersion string
 
 const (
-	IPConnectionNewParamsWebhookAPIVersionV1 IPConnectionNewParamsWebhookAPIVersion = "1"
-	IPConnectionNewParamsWebhookAPIVersionV2 IPConnectionNewParamsWebhookAPIVersion = "2"
+	IPConnectionNewParamsWebhookAPIVersion1 IPConnectionNewParamsWebhookAPIVersion = "1"
+	IPConnectionNewParamsWebhookAPIVersion2 IPConnectionNewParamsWebhookAPIVersion = "2"
 )
 
 type IPConnectionUpdateParams struct {
@@ -950,8 +953,8 @@ const (
 type IPConnectionUpdateParamsWebhookAPIVersion string
 
 const (
-	IPConnectionUpdateParamsWebhookAPIVersionV1 IPConnectionUpdateParamsWebhookAPIVersion = "1"
-	IPConnectionUpdateParamsWebhookAPIVersionV2 IPConnectionUpdateParamsWebhookAPIVersion = "2"
+	IPConnectionUpdateParamsWebhookAPIVersion1 IPConnectionUpdateParamsWebhookAPIVersion = "1"
+	IPConnectionUpdateParamsWebhookAPIVersion2 IPConnectionUpdateParamsWebhookAPIVersion = "2"
 )
 
 type IPConnectionListParams struct {

@@ -16,7 +16,6 @@ import (
 	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -74,26 +73,11 @@ func (r *WireguardPeerService) Update(ctx context.Context, id string, body Wireg
 }
 
 // List all WireGuard peers.
-func (r *WireguardPeerService) List(ctx context.Context, query WireguardPeerListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[WireguardPeerListResponse], err error) {
-	var raw *http.Response
+func (r *WireguardPeerService) List(ctx context.Context, query WireguardPeerListParams, opts ...option.RequestOption) (res *WireguardPeerListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "wireguard_peers"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// List all WireGuard peers.
-func (r *WireguardPeerService) ListAutoPaging(ctx context.Context, query WireguardPeerListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[WireguardPeerListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Delete the WireGuard peer.
@@ -188,12 +172,15 @@ type WireguardPeerNewResponseData struct {
 	// `private_key` is returned, you must save this immediately as we do not save it
 	// within Telnyx. If you lose your Private Key, it can not be recovered.
 	PrivateKey string `json:"private_key"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
 	// The id of the wireguard interface associated with the peer.
 	WireguardInterfaceID string `json:"wireguard_interface_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		LastSeen             respjson.Field
 		PrivateKey           respjson.Field
+		RecordType           respjson.Field
 		WireguardInterfaceID respjson.Field
 		ExtraFields          map[string]respjson.Field
 		raw                  string
@@ -233,12 +220,15 @@ type WireguardPeerGetResponseData struct {
 	// `private_key` is returned, you must save this immediately as we do not save it
 	// within Telnyx. If you lose your Private Key, it can not be recovered.
 	PrivateKey string `json:"private_key"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
 	// The id of the wireguard interface associated with the peer.
 	WireguardInterfaceID string `json:"wireguard_interface_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		LastSeen             respjson.Field
 		PrivateKey           respjson.Field
+		RecordType           respjson.Field
 		WireguardInterfaceID respjson.Field
 		ExtraFields          map[string]respjson.Field
 		raw                  string
@@ -278,12 +268,15 @@ type WireguardPeerUpdateResponseData struct {
 	// `private_key` is returned, you must save this immediately as we do not save it
 	// within Telnyx. If you lose your Private Key, it can not be recovered.
 	PrivateKey string `json:"private_key"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
 	// The id of the wireguard interface associated with the peer.
 	WireguardInterfaceID string `json:"wireguard_interface_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		LastSeen             respjson.Field
 		PrivateKey           respjson.Field
+		RecordType           respjson.Field
 		WireguardInterfaceID respjson.Field
 		ExtraFields          map[string]respjson.Field
 		raw                  string
@@ -299,6 +292,24 @@ func (r *WireguardPeerUpdateResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type WireguardPeerListResponse struct {
+	Data []WireguardPeerListResponseData `json:"data"`
+	Meta PaginationMeta                  `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WireguardPeerListResponse) RawJSON() string { return r.JSON.raw }
+func (r *WireguardPeerListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WireguardPeerListResponseData struct {
 	// ISO 8601 formatted date-time indicating when peer sent traffic last time.
 	LastSeen string `json:"last_seen"`
 	// Your WireGuard `Interface.PrivateKey`.<br /><br />This attribute is only ever
@@ -307,12 +318,15 @@ type WireguardPeerListResponse struct {
 	// `private_key` is returned, you must save this immediately as we do not save it
 	// within Telnyx. If you lose your Private Key, it can not be recovered.
 	PrivateKey string `json:"private_key"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
 	// The id of the wireguard interface associated with the peer.
 	WireguardInterfaceID string `json:"wireguard_interface_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		LastSeen             respjson.Field
 		PrivateKey           respjson.Field
+		RecordType           respjson.Field
 		WireguardInterfaceID respjson.Field
 		ExtraFields          map[string]respjson.Field
 		raw                  string
@@ -322,8 +336,8 @@ type WireguardPeerListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WireguardPeerListResponse) RawJSON() string { return r.JSON.raw }
-func (r *WireguardPeerListResponse) UnmarshalJSON(data []byte) error {
+func (r WireguardPeerListResponseData) RawJSON() string { return r.JSON.raw }
+func (r *WireguardPeerListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -352,12 +366,15 @@ type WireguardPeerDeleteResponseData struct {
 	// `private_key` is returned, you must save this immediately as we do not save it
 	// within Telnyx. If you lose your Private Key, it can not be recovered.
 	PrivateKey string `json:"private_key"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
 	// The id of the wireguard interface associated with the peer.
 	WireguardInterfaceID string `json:"wireguard_interface_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		LastSeen             respjson.Field
 		PrivateKey           respjson.Field
+		RecordType           respjson.Field
 		WireguardInterfaceID respjson.Field
 		ExtraFields          map[string]respjson.Field
 		raw                  string

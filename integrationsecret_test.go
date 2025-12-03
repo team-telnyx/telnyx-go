@@ -59,8 +59,10 @@ func TestIntegrationSecretListWithOptionalParams(t *testing.T) {
 		Filter: telnyx.IntegrationSecretListParamsFilter{
 			Type: "bearer",
 		},
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
+		Page: telnyx.IntegrationSecretListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(25),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

@@ -15,7 +15,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -56,32 +55,15 @@ func (r *PortingOrderAssociatedPhoneNumberService) New(ctx context.Context, port
 // Returns a list of all associated phone numbers for a porting order. Associated
 // phone numbers are used for partial porting in GB to specify which phone numbers
 // should be kept or disconnected.
-func (r *PortingOrderAssociatedPhoneNumberService) List(ctx context.Context, portingOrderID string, query PortingOrderAssociatedPhoneNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingAssociatedPhoneNumber], err error) {
-	var raw *http.Response
+func (r *PortingOrderAssociatedPhoneNumberService) List(ctx context.Context, portingOrderID string, query PortingOrderAssociatedPhoneNumberListParams, opts ...option.RequestOption) (res *PortingOrderAssociatedPhoneNumberListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if portingOrderID == "" {
 		err = errors.New("missing required porting_order_id parameter")
 		return
 	}
 	path := fmt.Sprintf("porting_orders/%s/associated_phone_numbers", portingOrderID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Returns a list of all associated phone numbers for a porting order. Associated
-// phone numbers are used for partial porting in GB to specify which phone numbers
-// should be kept or disconnected.
-func (r *PortingOrderAssociatedPhoneNumberService) ListAutoPaging(ctx context.Context, portingOrderID string, query PortingOrderAssociatedPhoneNumberListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingAssociatedPhoneNumber] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, portingOrderID, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Deletes an associated phone number from a porting order.
@@ -200,6 +182,24 @@ type PortingOrderAssociatedPhoneNumberNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r PortingOrderAssociatedPhoneNumberNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *PortingOrderAssociatedPhoneNumberNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PortingOrderAssociatedPhoneNumberListResponse struct {
+	Data []PortingAssociatedPhoneNumber `json:"data"`
+	Meta PaginationMeta                 `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingOrderAssociatedPhoneNumberListResponse) RawJSON() string { return r.JSON.raw }
+func (r *PortingOrderAssociatedPhoneNumberListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

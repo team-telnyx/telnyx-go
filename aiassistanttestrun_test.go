@@ -59,9 +59,11 @@ func TestAIAssistantTestRunListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"test_id",
 		telnyx.AIAssistantTestRunListParams{
-			PageNumber: telnyx.Int(0),
-			PageSize:   telnyx.Int(0),
-			Status:     telnyx.String("status"),
+			Page: telnyx.AIAssistantTestRunListParamsPage{
+				Number: telnyx.Int(1),
+				Size:   telnyx.Int(1),
+			},
+			Status: telnyx.String("status"),
 		},
 	)
 	if err != nil {

@@ -14,7 +14,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -53,26 +52,11 @@ func (r *RecordingService) Get(ctx context.Context, recordingID string, opts ...
 }
 
 // Returns a list of your call recordings.
-func (r *RecordingService) List(ctx context.Context, query RecordingListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[RecordingResponseData], err error) {
-	var raw *http.Response
+func (r *RecordingService) List(ctx context.Context, query RecordingListParams, opts ...option.RequestOption) (res *RecordingListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "recordings"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Returns a list of your call recordings.
-func (r *RecordingService) ListAutoPaging(ctx context.Context, query RecordingListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[RecordingResponseData] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Permanently deletes a call recording.
@@ -221,6 +205,24 @@ type RecordingGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r RecordingGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *RecordingGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type RecordingListResponse struct {
+	Data []RecordingResponseData `json:"data"`
+	Meta PaginationMeta          `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RecordingListResponse) RawJSON() string { return r.JSON.raw }
+func (r *RecordingListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

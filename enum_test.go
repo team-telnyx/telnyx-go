@@ -4,6 +4,7 @@ package telnyx_test
 
 import (
 	"context"
+	"errors"
 	"os"
 	"testing"
 
@@ -12,7 +13,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
-func TestAutoPagination(t *testing.T) {
+func TestEnumGet(t *testing.T) {
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -24,13 +26,12 @@ func TestAutoPagination(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	iter := client.AccessIPAddress.ListAutoPaging(context.TODO(), telnyx.AccessIPAddressListParams{})
-	// Prism mock isn't going to give us real pagination
-	for i := 0; i < 3 && iter.Next(); i++ {
-		accessIPAddress := iter.Current()
-		t.Logf("%+v\n", accessIPAddress.ID)
-	}
-	if err := iter.Err(); err != nil {
+	_, err := client.Enum.Get(context.TODO(), telnyx.EnumGetParamsEndpointMno)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
 }

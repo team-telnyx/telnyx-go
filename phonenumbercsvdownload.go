@@ -14,7 +14,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -59,26 +58,11 @@ func (r *PhoneNumberCsvDownloadService) Get(ctx context.Context, id string, opts
 }
 
 // List CSV downloads
-func (r *PhoneNumberCsvDownloadService) List(ctx context.Context, query PhoneNumberCsvDownloadListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[CsvDownload], err error) {
-	var raw *http.Response
+func (r *PhoneNumberCsvDownloadService) List(ctx context.Context, query PhoneNumberCsvDownloadListParams, opts ...option.RequestOption) (res *PhoneNumberCsvDownloadListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "phone_numbers/csv_downloads"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// List CSV downloads
-func (r *PhoneNumberCsvDownloadService) ListAutoPaging(ctx context.Context, query PhoneNumberCsvDownloadListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[CsvDownload] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 type CsvDownload struct {
@@ -150,6 +134,24 @@ type PhoneNumberCsvDownloadGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r PhoneNumberCsvDownloadGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *PhoneNumberCsvDownloadGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PhoneNumberCsvDownloadListResponse struct {
+	Data []CsvDownload  `json:"data"`
+	Meta PaginationMeta `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PhoneNumberCsvDownloadListResponse) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumberCsvDownloadListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

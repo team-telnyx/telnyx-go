@@ -14,7 +14,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -51,26 +50,11 @@ func (r *OtaUpdateService) Get(ctx context.Context, id string, opts ...option.Re
 }
 
 // List OTA updates
-func (r *OtaUpdateService) List(ctx context.Context, query OtaUpdateListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[OtaUpdateListResponse], err error) {
-	var raw *http.Response
+func (r *OtaUpdateService) List(ctx context.Context, query OtaUpdateListParams, opts ...option.RequestOption) (res *OtaUpdateListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "ota_updates"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// List OTA updates
-func (r *OtaUpdateService) ListAutoPaging(ctx context.Context, query OtaUpdateListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[OtaUpdateListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 type OtaUpdateGetResponse struct {
@@ -183,10 +167,28 @@ func (r *OtaUpdateGetResponseDataSettingsMobileNetworkOperatorsPreference) Unmar
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type OtaUpdateListResponse struct {
+	Data []OtaUpdateListResponseData `json:"data"`
+	Meta PaginationMeta              `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r OtaUpdateListResponse) RawJSON() string { return r.JSON.raw }
+func (r *OtaUpdateListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // This object represents an Over the Air (OTA) update request. It allows tracking
 // the current status of a operation that apply settings in a particular SIM card.
 // <br/><br/>
-type OtaUpdateListResponse struct {
+type OtaUpdateListResponseData struct {
 	// Identifies the resource.
 	ID string `json:"id" format:"uuid"`
 	// ISO 8601 formatted date-time indicating when the resource was created.
@@ -195,12 +197,12 @@ type OtaUpdateListResponse struct {
 	// The identification UUID of the related SIM card resource.
 	SimCardID string `json:"sim_card_id" format:"uuid"`
 	// Any of "in-progress", "completed", "failed".
-	Status OtaUpdateListResponseStatus `json:"status"`
+	Status string `json:"status"`
 	// Represents the type of the operation requested. This will relate directly to the
 	// source of the request.
 	//
 	// Any of "sim_card_network_preferences".
-	Type OtaUpdateListResponseType `json:"type"`
+	Type string `json:"type"`
 	// ISO 8601 formatted date-time indicating when the resource was updated.
 	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -218,26 +220,10 @@ type OtaUpdateListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r OtaUpdateListResponse) RawJSON() string { return r.JSON.raw }
-func (r *OtaUpdateListResponse) UnmarshalJSON(data []byte) error {
+func (r OtaUpdateListResponseData) RawJSON() string { return r.JSON.raw }
+func (r *OtaUpdateListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type OtaUpdateListResponseStatus string
-
-const (
-	OtaUpdateListResponseStatusInProgress OtaUpdateListResponseStatus = "in-progress"
-	OtaUpdateListResponseStatusCompleted  OtaUpdateListResponseStatus = "completed"
-	OtaUpdateListResponseStatusFailed     OtaUpdateListResponseStatus = "failed"
-)
-
-// Represents the type of the operation requested. This will relate directly to the
-// source of the request.
-type OtaUpdateListResponseType string
-
-const (
-	OtaUpdateListResponseTypeSimCardNetworkPreferences OtaUpdateListResponseType = "sim_card_network_preferences"
-)
 
 type OtaUpdateListParams struct {
 	// Consolidated filter parameter for OTA updates (deepObject style). Originally:

@@ -14,7 +14,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -61,26 +60,11 @@ func (r *AddressService) Get(ctx context.Context, id string, opts ...option.Requ
 }
 
 // Returns a list of your addresses.
-func (r *AddressService) List(ctx context.Context, query AddressListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[Address], err error) {
-	var raw *http.Response
+func (r *AddressService) List(ctx context.Context, query AddressListParams, opts ...option.RequestOption) (res *AddressListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "addresses"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Returns a list of your addresses.
-func (r *AddressService) ListAutoPaging(ctx context.Context, query AddressListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[Address] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Deletes an existing address.
@@ -209,6 +193,24 @@ type AddressGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r AddressGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *AddressGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AddressListResponse struct {
+	Data []Address      `json:"data"`
+	Meta PaginationMeta `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AddressListResponse) RawJSON() string { return r.JSON.raw }
+func (r *AddressListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -370,21 +372,21 @@ func (r AddressListParamsFilterAddressBook) URLQuery() (v url.Values, err error)
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type AddressListParamsFilterCustomerReferenceUnion struct {
-	OfString                   param.Opt[string]                                                 `query:",omitzero,inline"`
-	OfCustomerReferenceMatcher *AddressListParamsFilterCustomerReferenceCustomerReferenceMatcher `query:",omitzero,inline"`
+	OfString                                    param.Opt[string]                               `query:",omitzero,inline"`
+	OfAddressListsFilterCustomerReferenceObject *AddressListParamsFilterCustomerReferenceObject `query:",omitzero,inline"`
 	paramUnion
 }
 
 func (u *AddressListParamsFilterCustomerReferenceUnion) asAny() any {
 	if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
-	} else if !param.IsOmitted(u.OfCustomerReferenceMatcher) {
-		return u.OfCustomerReferenceMatcher
+	} else if !param.IsOmitted(u.OfAddressListsFilterCustomerReferenceObject) {
+		return u.OfAddressListsFilterCustomerReferenceObject
 	}
 	return nil
 }
 
-type AddressListParamsFilterCustomerReferenceCustomerReferenceMatcher struct {
+type AddressListParamsFilterCustomerReferenceObject struct {
 	// Partial match for customer_reference. Matching is not case-sensitive.
 	Contains param.Opt[string] `query:"contains,omitzero" json:"-"`
 	// Exact match for customer_reference.
@@ -392,10 +394,9 @@ type AddressListParamsFilterCustomerReferenceCustomerReferenceMatcher struct {
 	paramObj
 }
 
-// URLQuery serializes
-// [AddressListParamsFilterCustomerReferenceCustomerReferenceMatcher]'s query
+// URLQuery serializes [AddressListParamsFilterCustomerReferenceObject]'s query
 // parameters as `url.Values`.
-func (r AddressListParamsFilterCustomerReferenceCustomerReferenceMatcher) URLQuery() (v url.Values, err error) {
+func (r AddressListParamsFilterCustomerReferenceObject) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

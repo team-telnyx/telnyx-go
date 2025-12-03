@@ -16,7 +16,6 @@ import (
 	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -61,38 +60,23 @@ func (r *GlobalIPAssignmentService) Get(ctx context.Context, id string, opts ...
 }
 
 // Update a Global IP assignment.
-func (r *GlobalIPAssignmentService) Update(ctx context.Context, globalIPAssignmentID string, body GlobalIPAssignmentUpdateParams, opts ...option.RequestOption) (res *GlobalIPAssignmentUpdateResponse, err error) {
+func (r *GlobalIPAssignmentService) Update(ctx context.Context, id string, body GlobalIPAssignmentUpdateParams, opts ...option.RequestOption) (res *GlobalIPAssignmentUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	if globalIPAssignmentID == "" {
-		err = errors.New("missing required global_ip_assignment_id parameter")
+	if id == "" {
+		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("global_ip_assignments/%s", globalIPAssignmentID)
+	path := fmt.Sprintf("global_ip_assignments/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
 }
 
 // List all Global IP assignments.
-func (r *GlobalIPAssignmentService) List(ctx context.Context, query GlobalIPAssignmentListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[GlobalIPAssignment], err error) {
-	var raw *http.Response
+func (r *GlobalIPAssignmentService) List(ctx context.Context, query GlobalIPAssignmentListParams, opts ...option.RequestOption) (res *GlobalIPAssignmentListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "global_ip_assignments"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// List all Global IP assignments.
-func (r *GlobalIPAssignmentService) ListAutoPaging(ctx context.Context, query GlobalIPAssignmentListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[GlobalIPAssignment] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Delete a Global IP assignment.
@@ -108,23 +92,35 @@ func (r *GlobalIPAssignmentService) Delete(ctx context.Context, id string, opts 
 }
 
 type GlobalIPAssignment struct {
-	// Identifies the resource.
-	ID string `json:"id" format:"uuid"`
-	// ISO 8601 formatted date-time indicating when the resource was created.
-	CreatedAt string `json:"created_at"`
+	// Global IP ID.
+	GlobalIPID string `json:"global_ip_id" format:"uuid"`
+	// Status of BGP announcement.
+	IsAnnounced bool `json:"is_announced"`
+	// Wireguard peer is connected.
+	IsConnected bool `json:"is_connected"`
+	// Enable/disable BGP announcement.
+	IsInMaintenance bool `json:"is_in_maintenance"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date-time indicating when the resource was updated.
-	UpdatedAt string `json:"updated_at"`
+	// The current status of the interface deployment.
+	//
+	// Any of "created", "provisioning", "provisioned", "deleting".
+	Status InterfaceStatus `json:"status"`
+	// Wireguard peer ID.
+	WireguardPeerID string `json:"wireguard_peer_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		RecordType  respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		GlobalIPID      respjson.Field
+		IsAnnounced     respjson.Field
+		IsConnected     respjson.Field
+		IsInMaintenance respjson.Field
+		RecordType      respjson.Field
+		Status          respjson.Field
+		WireguardPeerID respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
 	} `json:"-"`
+	Record
 }
 
 // Returns the unmodified JSON received from the API
@@ -143,15 +139,18 @@ func (r GlobalIPAssignment) ToParam() GlobalIPAssignmentParam {
 }
 
 type GlobalIPAssignmentParam struct {
-	paramObj
+	// Global IP ID.
+	GlobalIPID param.Opt[string] `json:"global_ip_id,omitzero" format:"uuid"`
+	// Enable/disable BGP announcement.
+	IsInMaintenance param.Opt[bool] `json:"is_in_maintenance,omitzero"`
+	// Wireguard peer ID.
+	WireguardPeerID param.Opt[string] `json:"wireguard_peer_id,omitzero" format:"uuid"`
+	RecordParam
 }
 
 func (r GlobalIPAssignmentParam) MarshalJSON() (data []byte, err error) {
 	type shadow GlobalIPAssignmentParam
 	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *GlobalIPAssignmentParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type Record struct {
@@ -249,6 +248,24 @@ func (r *GlobalIPAssignmentUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type GlobalIPAssignmentListResponse struct {
+	Data []GlobalIPAssignment `json:"data"`
+	Meta PaginationMeta       `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GlobalIPAssignmentListResponse) RawJSON() string { return r.JSON.raw }
+func (r *GlobalIPAssignmentListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type GlobalIPAssignmentDeleteResponse struct {
 	Data GlobalIPAssignment `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -278,23 +295,23 @@ func (r *GlobalIPAssignmentNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type GlobalIPAssignmentUpdateParams struct {
-	GlobalIPAssignmentUpdateRequest GlobalIPAssignmentUpdateParamsGlobalIPAssignmentUpdateRequest
+	Body GlobalIPAssignmentUpdateParamsBody
 	paramObj
 }
 
 func (r GlobalIPAssignmentUpdateParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.GlobalIPAssignmentUpdateRequest)
+	return shimjson.Marshal(r.Body)
 }
 func (r *GlobalIPAssignmentUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.GlobalIPAssignmentUpdateRequest)
+	return json.Unmarshal(data, &r.Body)
 }
 
-type GlobalIPAssignmentUpdateParamsGlobalIPAssignmentUpdateRequest struct {
+type GlobalIPAssignmentUpdateParamsBody struct {
 	GlobalIPAssignmentParam
 }
 
-func (r GlobalIPAssignmentUpdateParamsGlobalIPAssignmentUpdateRequest) MarshalJSON() (data []byte, err error) {
-	type shadow GlobalIPAssignmentUpdateParamsGlobalIPAssignmentUpdateRequest
+func (r GlobalIPAssignmentUpdateParamsBody) MarshalJSON() (data []byte, err error) {
+	type shadow GlobalIPAssignmentUpdateParamsBody
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 

@@ -12,7 +12,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -41,33 +40,32 @@ func NewCallEventService(opts ...option.RequestOption) (r CallEventService) {
 // present, it only filters events from the last 24 hours.
 //
 // **Note**: Only one `filter[occurred_at]` can be passed.
-func (r *CallEventService) List(ctx context.Context, query CallEventListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[CallEventListResponse], err error) {
-	var raw *http.Response
+func (r *CallEventService) List(ctx context.Context, query CallEventListParams, opts ...option.RequestOption) (res *CallEventListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "call_events"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Filters call events by given filter parameters. Events are ordered by
-// `occurred_at`. If filter for `leg_id` or `application_session_id` is not
-// present, it only filters events from the last 24 hours.
-//
-// **Note**: Only one `filter[occurred_at]` can be passed.
-func (r *CallEventService) ListAutoPaging(ctx context.Context, query CallEventListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[CallEventListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 type CallEventListResponse struct {
+	Data []CallEventListResponseData `json:"data"`
+	Meta PaginationMeta              `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallEventListResponse) RawJSON() string { return r.JSON.raw }
+func (r *CallEventListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallEventListResponseData struct {
 	// Uniquely identifies an individual call leg.
 	CallLegID string `json:"call_leg_id,required"`
 	// Uniquely identifies the call control session. A session may include multiple
@@ -77,15 +75,15 @@ type CallEventListResponse struct {
 	EventTimestamp string `json:"event_timestamp,required"`
 	// Event metadata, which includes raw event, and extra information based on event
 	// type
-	Metadata map[string]any `json:"metadata,required"`
+	Metadata any `json:"metadata,required"`
 	// Event name
 	Name string `json:"name,required"`
 	// Any of "call_event".
-	RecordType CallEventListResponseRecordType `json:"record_type,required"`
+	RecordType string `json:"record_type,required"`
 	// Event type
 	//
 	// Any of "command", "webhook".
-	Type CallEventListResponseType `json:"type,required"`
+	Type string `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CallLegID      respjson.Field
@@ -101,24 +99,10 @@ type CallEventListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CallEventListResponse) RawJSON() string { return r.JSON.raw }
-func (r *CallEventListResponse) UnmarshalJSON(data []byte) error {
+func (r CallEventListResponseData) RawJSON() string { return r.JSON.raw }
+func (r *CallEventListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type CallEventListResponseRecordType string
-
-const (
-	CallEventListResponseRecordTypeCallEvent CallEventListResponseRecordType = "call_event"
-)
-
-// Event type
-type CallEventListResponseType string
-
-const (
-	CallEventListResponseTypeCommand CallEventListResponseType = "command"
-	CallEventListResponseTypeWebhook CallEventListResponseType = "webhook"
-)
 
 type CallEventListParams struct {
 	// Consolidated filter parameter (deepObject style). Originally:

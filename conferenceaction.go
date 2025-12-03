@@ -1109,12 +1109,11 @@ const (
 type ConferenceActionSpeakParamsVoiceSettingsUnion struct {
 	OfElevenLabsVoiceSettings *ElevenLabsVoiceSettingsParam `json:",omitzero,inline"`
 	OfTelnyxVoiceSettings     *TelnyxVoiceSettingsParam     `json:",omitzero,inline"`
-	OfAwsVoiceSettings        AwsVoiceSettings              `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u ConferenceActionSpeakParamsVoiceSettingsUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfElevenLabsVoiceSettings, u.OfTelnyxVoiceSettings, u.OfAwsVoiceSettings)
+	return param.MarshalUnion(u, u.OfElevenLabsVoiceSettings, u.OfTelnyxVoiceSettings)
 }
 func (u *ConferenceActionSpeakParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1125,8 +1124,6 @@ func (u *ConferenceActionSpeakParamsVoiceSettingsUnion) asAny() any {
 		return u.OfElevenLabsVoiceSettings
 	} else if !param.IsOmitted(u.OfTelnyxVoiceSettings) {
 		return u.OfTelnyxVoiceSettings
-	} else if !param.IsOmitted(u.OfAwsVoiceSettings) {
-		return &u.OfAwsVoiceSettings
 	}
 	return nil
 }
