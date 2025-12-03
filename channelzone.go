@@ -14,7 +14,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -58,30 +57,11 @@ func (r *ChannelZoneService) Update(ctx context.Context, channelZoneID string, b
 // <a href="https://support.telnyx.com/en/articles/8428806-global-channel-billing">Telnyx
 // Support Articles</a> section for full information and examples of how to utilize
 // Channel Billing.
-func (r *ChannelZoneService) List(ctx context.Context, query ChannelZoneListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[ChannelZoneListResponse], err error) {
-	var raw *http.Response
+func (r *ChannelZoneService) List(ctx context.Context, query ChannelZoneListParams, opts ...option.RequestOption) (res *ChannelZoneListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "channel_zones"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Returns the non-US voice channels for your account. voice channels allow you to
-// use Channel Billing for calls to your Telnyx phone numbers. Please check the
-// <a href="https://support.telnyx.com/en/articles/8428806-global-channel-billing">Telnyx
-// Support Articles</a> section for full information and examples of how to utilize
-// Channel Billing.
-func (r *ChannelZoneService) ListAutoPaging(ctx context.Context, query ChannelZoneListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[ChannelZoneListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 type ChannelZoneUpdateResponse struct {
@@ -124,6 +104,24 @@ const (
 )
 
 type ChannelZoneListResponse struct {
+	Data []ChannelZoneListResponseData `json:"data"`
+	Meta PaginationMeta                `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ChannelZoneListResponse) RawJSON() string { return r.JSON.raw }
+func (r *ChannelZoneListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ChannelZoneListResponseData struct {
 	ID       string `json:"id,required"`
 	Channels int64  `json:"channels,required"`
 	// List of countries (in ISO 3166-2, capitalized) members of the billing channel
@@ -131,7 +129,7 @@ type ChannelZoneListResponse struct {
 	Countries []string `json:"countries,required"`
 	Name      string   `json:"name,required"`
 	// Any of "channel_zone".
-	RecordType ChannelZoneListResponseRecordType `json:"record_type,required"`
+	RecordType string `json:"record_type,required"`
 	// ISO 8601 formatted date of when the channel zone was created
 	CreatedAt string `json:"created_at"`
 	// ISO 8601 formatted date of when the channel zone was updated
@@ -151,16 +149,10 @@ type ChannelZoneListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChannelZoneListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ChannelZoneListResponse) UnmarshalJSON(data []byte) error {
+func (r ChannelZoneListResponseData) RawJSON() string { return r.JSON.raw }
+func (r *ChannelZoneListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type ChannelZoneListResponseRecordType string
-
-const (
-	ChannelZoneListResponseRecordTypeChannelZone ChannelZoneListResponseRecordType = "channel_zone"
-)
 
 type ChannelZoneUpdateParams struct {
 	// The number of reserved channels

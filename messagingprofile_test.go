@@ -49,7 +49,7 @@ func TestMessagingProfileNewWithOptionalParams(t *testing.T) {
 			ReplaceBlacklistOnly: telnyx.Bool(true),
 			SendWebhooks:         telnyx.Bool(false),
 		},
-		WebhookAPIVersion:  telnyx.MessagingProfileNewParamsWebhookAPIVersionV2,
+		WebhookAPIVersion:  telnyx.MessagingProfileNewParamsWebhookAPIVersion2,
 		WebhookFailoverURL: telnyx.String("https://backup.example.com/hooks"),
 		WebhookURL:         telnyx.String("https://www.example.com/hooks"),
 	})
@@ -124,7 +124,7 @@ func TestMessagingProfileUpdateWithOptionalParams(t *testing.T) {
 				SendWebhooks:         telnyx.Bool(false),
 			},
 			V1Secret:                telnyx.String("rP1VamejkU2v0qIUxntqLW2c"),
-			WebhookAPIVersion:       telnyx.MessagingProfileUpdateParamsWebhookAPIVersionV2,
+			WebhookAPIVersion:       telnyx.MessagingProfileUpdateParamsWebhookAPIVersion2,
 			WebhookFailoverURL:      telnyx.String("https://backup.example.com/hooks"),
 			WebhookURL:              telnyx.String("https://www.example.com/hooks"),
 			WhitelistedDestinations: []string{"US"},

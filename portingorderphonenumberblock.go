@@ -15,7 +15,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -52,30 +51,15 @@ func (r *PortingOrderPhoneNumberBlockService) New(ctx context.Context, portingOr
 }
 
 // Returns a list of all phone number blocks of a porting order.
-func (r *PortingOrderPhoneNumberBlockService) List(ctx context.Context, portingOrderID string, query PortingOrderPhoneNumberBlockListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingPhoneNumberBlock], err error) {
-	var raw *http.Response
+func (r *PortingOrderPhoneNumberBlockService) List(ctx context.Context, portingOrderID string, query PortingOrderPhoneNumberBlockListParams, opts ...option.RequestOption) (res *PortingOrderPhoneNumberBlockListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if portingOrderID == "" {
 		err = errors.New("missing required porting_order_id parameter")
 		return
 	}
 	path := fmt.Sprintf("porting_orders/%s/phone_number_blocks", portingOrderID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Returns a list of all phone number blocks of a porting order.
-func (r *PortingOrderPhoneNumberBlockService) ListAutoPaging(ctx context.Context, portingOrderID string, query PortingOrderPhoneNumberBlockListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingPhoneNumberBlock] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, portingOrderID, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Deletes a phone number block.
@@ -206,6 +190,24 @@ type PortingOrderPhoneNumberBlockNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r PortingOrderPhoneNumberBlockNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *PortingOrderPhoneNumberBlockNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PortingOrderPhoneNumberBlockListResponse struct {
+	Data []PortingPhoneNumberBlock `json:"data"`
+	Meta PaginationMeta            `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingOrderPhoneNumberBlockListResponse) RawJSON() string { return r.JSON.raw }
+func (r *PortingOrderPhoneNumberBlockListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -342,15 +344,15 @@ func (r PortingOrderPhoneNumberBlockListParamsFilter) URLQuery() (v url.Values, 
 // Use [param.IsOmitted] to confirm if a field is set.
 type PortingOrderPhoneNumberBlockListParamsFilterStatusUnion struct {
 	// Check if union is this variant with
-	// !param.IsOmitted(union.OfPortingOrderSingleStatus)
-	OfPortingOrderSingleStatus                                    param.Opt[string] `query:",omitzero,inline"`
+	// !param.IsOmitted(union.OfPortingOrderPhoneNumberBlockListsFilterStatusString)
+	OfPortingOrderPhoneNumberBlockListsFilterStatusString         param.Opt[string] `query:",omitzero,inline"`
 	OfPortingOrderPhoneNumberBlockListsFilterStatusArrayItemArray []string          `query:",omitzero,inline"`
 	paramUnion
 }
 
 func (u *PortingOrderPhoneNumberBlockListParamsFilterStatusUnion) asAny() any {
-	if !param.IsOmitted(u.OfPortingOrderSingleStatus) {
-		return &u.OfPortingOrderSingleStatus
+	if !param.IsOmitted(u.OfPortingOrderPhoneNumberBlockListsFilterStatusString) {
+		return &u.OfPortingOrderPhoneNumberBlockListsFilterStatusString
 	} else if !param.IsOmitted(u.OfPortingOrderPhoneNumberBlockListsFilterStatusArrayItemArray) {
 		return &u.OfPortingOrderPhoneNumberBlockListsFilterStatusArrayItemArray
 	}
@@ -358,17 +360,17 @@ func (u *PortingOrderPhoneNumberBlockListParamsFilterStatusUnion) asAny() any {
 }
 
 // Filter by single status
-type PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatus string
+type PortingOrderPhoneNumberBlockListParamsFilterStatusString string
 
 const (
-	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatusDraft            PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatus = "draft"
-	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatusInProcess        PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatus = "in-process"
-	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatusSubmitted        PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatus = "submitted"
-	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatusException        PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatus = "exception"
-	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatusFocDateConfirmed PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatus = "foc-date-confirmed"
-	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatusCancelPending    PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatus = "cancel-pending"
-	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatusPorted           PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatus = "ported"
-	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatusCancelled        PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatus = "cancelled"
+	PortingOrderPhoneNumberBlockListParamsFilterStatusStringDraft            PortingOrderPhoneNumberBlockListParamsFilterStatusString = "draft"
+	PortingOrderPhoneNumberBlockListParamsFilterStatusStringInProcess        PortingOrderPhoneNumberBlockListParamsFilterStatusString = "in-process"
+	PortingOrderPhoneNumberBlockListParamsFilterStatusStringSubmitted        PortingOrderPhoneNumberBlockListParamsFilterStatusString = "submitted"
+	PortingOrderPhoneNumberBlockListParamsFilterStatusStringException        PortingOrderPhoneNumberBlockListParamsFilterStatusString = "exception"
+	PortingOrderPhoneNumberBlockListParamsFilterStatusStringFocDateConfirmed PortingOrderPhoneNumberBlockListParamsFilterStatusString = "foc-date-confirmed"
+	PortingOrderPhoneNumberBlockListParamsFilterStatusStringCancelPending    PortingOrderPhoneNumberBlockListParamsFilterStatusString = "cancel-pending"
+	PortingOrderPhoneNumberBlockListParamsFilterStatusStringPorted           PortingOrderPhoneNumberBlockListParamsFilterStatusString = "ported"
+	PortingOrderPhoneNumberBlockListParamsFilterStatusStringCancelled        PortingOrderPhoneNumberBlockListParamsFilterStatusString = "cancelled"
 )
 
 // Only one field can be non-zero.

@@ -14,7 +14,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -76,26 +75,11 @@ func (r *BrandService) Update(ctx context.Context, brandID string, body BrandUpd
 }
 
 // This endpoint is used to list all brands associated with your organization.
-func (r *BrandService) List(ctx context.Context, query BrandListParams, opts ...option.RequestOption) (res *pagination.PerPagePaginationV2[BrandListResponse], err error) {
-	var raw *http.Response
+func (r *BrandService) List(ctx context.Context, query BrandListParams, opts ...option.RequestOption) (res *BrandListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "brand"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// This endpoint is used to list all brands associated with your organization.
-func (r *BrandService) ListAutoPaging(ctx context.Context, query BrandListParams, opts ...option.RequestOption) *pagination.PerPagePaginationV2AutoPager[BrandListResponse] {
-	return pagination.NewPerPagePaginationV2AutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Delete Brand. This endpoint is used to delete a brand. Note the brand cannot be
@@ -451,6 +435,26 @@ func (r *BrandGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type BrandListResponse struct {
+	Page         int64                     `json:"page"`
+	Records      []BrandListResponseRecord `json:"records"`
+	TotalRecords int64                     `json:"totalRecords"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Page         respjson.Field
+		Records      respjson.Field
+		TotalRecords respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BrandListResponse) RawJSON() string { return r.JSON.raw }
+func (r *BrandListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type BrandListResponseRecord struct {
 	// Number of campaigns associated with the brand
 	AssignedCampaingsCount int64 `json:"assignedCampaingsCount"`
 	// Unique identifier assigned to the brand.
@@ -476,7 +480,7 @@ type BrandListResponse struct {
 	// Status of the brand
 	//
 	// Any of "OK", "REGISTRATION_PENDING", "REGISTRATION_FAILED".
-	Status BrandListResponseStatus `json:"status"`
+	Status string `json:"status"`
 	// Unique identifier assigned to the brand by the registry.
 	TcrBrandID string `json:"tcrBrandId"`
 	// Date and time that the brand was last updated at.
@@ -504,19 +508,10 @@ type BrandListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r BrandListResponse) RawJSON() string { return r.JSON.raw }
-func (r *BrandListResponse) UnmarshalJSON(data []byte) error {
+func (r BrandListResponseRecord) RawJSON() string { return r.JSON.raw }
+func (r *BrandListResponseRecord) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Status of the brand
-type BrandListResponseStatus string
-
-const (
-	BrandListResponseStatusOk                  BrandListResponseStatus = "OK"
-	BrandListResponseStatusRegistrationPending BrandListResponseStatus = "REGISTRATION_PENDING"
-	BrandListResponseStatusRegistrationFailed  BrandListResponseStatus = "REGISTRATION_FAILED"
-)
 
 type BrandGetFeedbackResponse struct {
 	// ID of the brand being queried about

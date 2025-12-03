@@ -51,7 +51,7 @@ func (r *BrandExternalVettingService) List(ctx context.Context, brandID string, 
 // TCR-approved vetting provider. If the vetting provider confirms validity of the
 // record, it will be saved with the brand and will be considered for future
 // campaign qualification.
-func (r *BrandExternalVettingService) Imports(ctx context.Context, brandID string, body BrandExternalVettingImportsParams, opts ...option.RequestOption) (res *BrandExternalVettingImportsResponse, err error) {
+func (r *BrandExternalVettingService) Import(ctx context.Context, brandID string, body BrandExternalVettingImportParams, opts ...option.RequestOption) (res *BrandExternalVettingImportResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
@@ -113,7 +113,7 @@ func (r *BrandExternalVettingListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type BrandExternalVettingImportsResponse struct {
+type BrandExternalVettingImportResponse struct {
 	// Vetting submission date. This is the date when the vetting request is generated
 	// in ISO 8601 format.
 	CreateDate string `json:"createDate"`
@@ -147,8 +147,8 @@ type BrandExternalVettingImportsResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r BrandExternalVettingImportsResponse) RawJSON() string { return r.JSON.raw }
-func (r *BrandExternalVettingImportsResponse) UnmarshalJSON(data []byte) error {
+func (r BrandExternalVettingImportResponse) RawJSON() string { return r.JSON.raw }
+func (r *BrandExternalVettingImportResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -191,7 +191,7 @@ func (r *BrandExternalVettingOrderResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type BrandExternalVettingImportsParams struct {
+type BrandExternalVettingImportParams struct {
 	// External vetting provider ID for the brand.
 	EvpID string `json:"evpId,required"`
 	// Unique ID that identifies a vetting transaction performed by a vetting provider.
@@ -202,11 +202,11 @@ type BrandExternalVettingImportsParams struct {
 	paramObj
 }
 
-func (r BrandExternalVettingImportsParams) MarshalJSON() (data []byte, err error) {
-	type shadow BrandExternalVettingImportsParams
+func (r BrandExternalVettingImportParams) MarshalJSON() (data []byte, err error) {
+	type shadow BrandExternalVettingImportParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *BrandExternalVettingImportsParams) UnmarshalJSON(data []byte) error {
+func (r *BrandExternalVettingImportParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

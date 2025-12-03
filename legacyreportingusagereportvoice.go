@@ -15,7 +15,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -60,26 +59,11 @@ func (r *LegacyReportingUsageReportVoiceService) Get(ctx context.Context, id str
 }
 
 // Fetch all previous requests for cdr usage reports.
-func (r *LegacyReportingUsageReportVoiceService) List(ctx context.Context, query LegacyReportingUsageReportVoiceListParams, opts ...option.RequestOption) (res *pagination.PerPagePagination[CdrUsageReportResponseLegacy], err error) {
-	var raw *http.Response
+func (r *LegacyReportingUsageReportVoiceService) List(ctx context.Context, query LegacyReportingUsageReportVoiceListParams, opts ...option.RequestOption) (res *LegacyReportingUsageReportVoiceListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "legacy/reporting/usage_reports/voice"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Fetch all previous requests for cdr usage reports.
-func (r *LegacyReportingUsageReportVoiceService) ListAutoPaging(ctx context.Context, query LegacyReportingUsageReportVoiceListParams, opts ...option.RequestOption) *pagination.PerPagePaginationAutoPager[CdrUsageReportResponseLegacy] {
-	return pagination.NewPerPagePaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Deletes a specific V2 legacy usage CDR report request by ID
@@ -105,11 +89,11 @@ type CdrUsageReportResponseLegacy struct {
 	EndTime         time.Time `json:"end_time" format:"date-time"`
 	// Product breakdown type: No breakdown = 0, DID vs Toll-free = 1, Country = 2, DID
 	// vs Toll-free per Country = 3
-	ProductBreakdown int64          `json:"product_breakdown"`
-	RecordType       string         `json:"record_type"`
-	ReportURL        string         `json:"report_url"`
-	Result           map[string]any `json:"result"`
-	StartTime        time.Time      `json:"start_time" format:"date-time"`
+	ProductBreakdown int64     `json:"product_breakdown"`
+	RecordType       string    `json:"record_type"`
+	ReportURL        string    `json:"report_url"`
+	Result           any       `json:"result"`
+	StartTime        time.Time `json:"start_time" format:"date-time"`
 	// Status of the report: Pending = 1, Complete = 2, Failed = 3, Expired = 4
 	Status    int64     `json:"status"`
 	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
@@ -169,6 +153,24 @@ type LegacyReportingUsageReportVoiceGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r LegacyReportingUsageReportVoiceGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *LegacyReportingUsageReportVoiceGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LegacyReportingUsageReportVoiceListResponse struct {
+	Data []CdrUsageReportResponseLegacy `json:"data"`
+	Meta StandardPaginationMeta         `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingUsageReportVoiceListResponse) RawJSON() string { return r.JSON.raw }
+func (r *LegacyReportingUsageReportVoiceListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

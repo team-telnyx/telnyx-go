@@ -27,7 +27,12 @@ func TestGlobalIPAssignmentNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.GlobalIPAssignments.New(context.TODO(), telnyx.GlobalIPAssignmentNewParams{
-		GlobalIPAssignment: telnyx.GlobalIPAssignmentParam{},
+		GlobalIPAssignment: telnyx.GlobalIPAssignmentParam{
+			RecordParam:     telnyx.RecordParam{},
+			GlobalIPID:      telnyx.String("a836125b-20b6-452e-9c03-2653f09c7ed7"),
+			IsInMaintenance: telnyx.Bool(true),
+			WireguardPeerID: telnyx.String("e66c496d-4a85-423b-8b2a-8e63fac20320"),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -78,8 +83,10 @@ func TestGlobalIPAssignmentUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"6a09cdc3-8948-47f0-aa62-74ac943d6c58",
 		telnyx.GlobalIPAssignmentUpdateParams{
-			GlobalIPAssignmentUpdateRequest: telnyx.GlobalIPAssignmentUpdateParamsGlobalIPAssignmentUpdateRequest{
-				GlobalIPAssignmentParam: telnyx.GlobalIPAssignmentParam{},
+			Body: telnyx.GlobalIPAssignmentUpdateParamsBody{
+				GlobalIPAssignmentParam: telnyx.GlobalIPAssignmentParam{
+					RecordParam: telnyx.RecordParam{},
+				},
 			},
 		},
 	)

@@ -27,10 +27,11 @@ func TestMobilePushCredentialNew(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.MobilePushCredentials.New(context.TODO(), telnyx.MobilePushCredentialNewParams{
-		OfIos: &telnyx.MobilePushCredentialNewParamsCreateMobilePushCredentialRequestIos{
+		OfCreateIOsPushCredentialRequest: &telnyx.MobilePushCredentialNewParamsBodyCreateIOsPushCredentialRequest{
 			Alias:       "LucyIosCredential",
 			Certificate: "-----BEGIN CERTIFICATE----- MIIGVDCCBTKCAQEAsNlRJVZn9ZvXcECQm65czs... -----END CERTIFICATE-----",
 			PrivateKey:  "-----BEGIN RSA PRIVATE KEY----- MIIEpQIBAAKCAQEAsNlRJVZn9ZvXcECQm65czs... -----END RSA PRIVATE KEY-----",
+			Type:        "ios",
 		},
 	})
 	if err != nil {

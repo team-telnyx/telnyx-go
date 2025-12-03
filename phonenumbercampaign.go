@@ -16,7 +16,6 @@ import (
 	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -61,38 +60,23 @@ func (r *PhoneNumberCampaignService) Get(ctx context.Context, phoneNumber string
 }
 
 // Create New Phone Number Campaign
-func (r *PhoneNumberCampaignService) Update(ctx context.Context, campaignPhoneNumber string, body PhoneNumberCampaignUpdateParams, opts ...option.RequestOption) (res *PhoneNumberCampaign, err error) {
+func (r *PhoneNumberCampaignService) Update(ctx context.Context, phoneNumber string, body PhoneNumberCampaignUpdateParams, opts ...option.RequestOption) (res *PhoneNumberCampaign, err error) {
 	opts = slices.Concat(r.Options, opts)
-	if campaignPhoneNumber == "" {
-		err = errors.New("missing required campaign_phone_number parameter")
+	if phoneNumber == "" {
+		err = errors.New("missing required phoneNumber parameter")
 		return
 	}
-	path := fmt.Sprintf("phone_number_campaigns/%s", campaignPhoneNumber)
+	path := fmt.Sprintf("phone_number_campaigns/%s", phoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
 }
 
 // Retrieve All Phone Number Campaigns
-func (r *PhoneNumberCampaignService) List(ctx context.Context, query PhoneNumberCampaignListParams, opts ...option.RequestOption) (res *pagination.PerPagePaginationV2[PhoneNumberCampaign], err error) {
-	var raw *http.Response
+func (r *PhoneNumberCampaignService) List(ctx context.Context, query PhoneNumberCampaignListParams, opts ...option.RequestOption) (res *PhoneNumberCampaignListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "phone_number_campaigns"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Retrieve All Phone Number Campaigns
-func (r *PhoneNumberCampaignService) ListAutoPaging(ctx context.Context, query PhoneNumberCampaignListParams, opts ...option.RequestOption) *pagination.PerPagePaginationV2AutoPager[PhoneNumberCampaign] {
-	return pagination.NewPerPagePaginationV2AutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // This endpoint allows you to remove a campaign assignment from the supplied
@@ -179,6 +163,26 @@ func (r PhoneNumberCampaignCreateParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *PhoneNumberCampaignCreateParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PhoneNumberCampaignListResponse struct {
+	Page         int64                 `json:"page,required"`
+	Records      []PhoneNumberCampaign `json:"records,required"`
+	TotalRecords int64                 `json:"totalRecords,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Page         respjson.Field
+		Records      respjson.Field
+		TotalRecords respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PhoneNumberCampaignListResponse) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumberCampaignListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

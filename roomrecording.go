@@ -15,7 +15,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -52,26 +51,11 @@ func (r *RoomRecordingService) Get(ctx context.Context, roomRecordingID string, 
 }
 
 // View a list of room recordings.
-func (r *RoomRecordingService) List(ctx context.Context, query RoomRecordingListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[RoomRecordingListResponse], err error) {
-	var raw *http.Response
+func (r *RoomRecordingService) List(ctx context.Context, query RoomRecordingListParams, opts ...option.RequestOption) (res *RoomRecordingListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "room_recordings"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// View a list of room recordings.
-func (r *RoomRecordingService) ListAutoPaging(ctx context.Context, query RoomRecordingListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[RoomRecordingListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Synchronously delete a Room Recording.
@@ -177,6 +161,24 @@ func (r *RoomRecordingGetResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type RoomRecordingListResponse struct {
+	Data []RoomRecordingListResponseData `json:"data"`
+	Meta PaginationMeta                  `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RoomRecordingListResponse) RawJSON() string { return r.JSON.raw }
+func (r *RoomRecordingListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type RoomRecordingListResponseData struct {
 	// A unique identifier for the room recording.
 	ID string `json:"id" format:"uuid"`
 	// Shows the codec used for the room recording.
@@ -205,11 +207,11 @@ type RoomRecordingListResponse struct {
 	// Shows the room recording status.
 	//
 	// Any of "completed", "processing".
-	Status RoomRecordingListResponseStatus `json:"status"`
+	Status string `json:"status"`
 	// Shows the room recording type.
 	//
 	// Any of "audio", "video".
-	Type RoomRecordingListResponseType `json:"type"`
+	Type string `json:"type"`
 	// ISO 8601 timestamp when the room recording was updated.
 	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -236,26 +238,10 @@ type RoomRecordingListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RoomRecordingListResponse) RawJSON() string { return r.JSON.raw }
-func (r *RoomRecordingListResponse) UnmarshalJSON(data []byte) error {
+func (r RoomRecordingListResponseData) RawJSON() string { return r.JSON.raw }
+func (r *RoomRecordingListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Shows the room recording status.
-type RoomRecordingListResponseStatus string
-
-const (
-	RoomRecordingListResponseStatusCompleted  RoomRecordingListResponseStatus = "completed"
-	RoomRecordingListResponseStatusProcessing RoomRecordingListResponseStatus = "processing"
-)
-
-// Shows the room recording type.
-type RoomRecordingListResponseType string
-
-const (
-	RoomRecordingListResponseTypeAudio RoomRecordingListResponseType = "audio"
-	RoomRecordingListResponseTypeVideo RoomRecordingListResponseType = "video"
-)
 
 type RoomRecordingDeleteBulkResponse struct {
 	Data RoomRecordingDeleteBulkResponseData `json:"data"`

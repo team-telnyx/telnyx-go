@@ -15,7 +15,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -72,30 +71,15 @@ func (r *PortingOrderActivationJobService) Update(ctx context.Context, activatio
 }
 
 // Returns a list of your porting activation jobs.
-func (r *PortingOrderActivationJobService) List(ctx context.Context, id string, query PortingOrderActivationJobListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingOrdersActivationJob], err error) {
-	var raw *http.Response
+func (r *PortingOrderActivationJobService) List(ctx context.Context, id string, query PortingOrderActivationJobListParams, opts ...option.RequestOption) (res *PortingOrderActivationJobListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
 	}
 	path := fmt.Sprintf("porting_orders/%s/activation_jobs", id)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Returns a list of your porting activation jobs.
-func (r *PortingOrderActivationJobService) ListAutoPaging(ctx context.Context, id string, query PortingOrderActivationJobListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingOrdersActivationJob] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, id, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 type PortingOrderActivationJobGetResponse struct {
@@ -127,6 +111,24 @@ type PortingOrderActivationJobUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r PortingOrderActivationJobUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *PortingOrderActivationJobUpdateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PortingOrderActivationJobListResponse struct {
+	Data []PortingOrdersActivationJob `json:"data"`
+	Meta PaginationMeta               `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingOrderActivationJobListResponse) RawJSON() string { return r.JSON.raw }
+func (r *PortingOrderActivationJobListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -528,7 +528,7 @@ type RcsSuggestionAction struct {
 	PostbackData string `json:"postback_data"`
 	// Opens the RCS app's location chooser so the user can pick a location to send
 	// back to the agent.
-	ShareLocationAction map[string]any `json:"share_location_action"`
+	ShareLocationAction any `json:"share_location_action"`
 	// Text that is shown in the suggested action. Maximum 25 characters.
 	Text string `json:"text"`
 	// Opens the user's default map app and selects the agent-specified location.
@@ -726,7 +726,7 @@ type RcsSuggestionActionParam struct {
 	OpenURLAction RcsSuggestionActionOpenURLActionParam `json:"open_url_action,omitzero"`
 	// Opens the RCS app's location chooser so the user can pick a location to send
 	// back to the agent.
-	ShareLocationAction map[string]any `json:"share_location_action,omitzero"`
+	ShareLocationAction any `json:"share_location_action,omitzero"`
 	// Opens the user's default map app and selects the agent-specified location.
 	ViewLocationAction RcsSuggestionActionViewLocationActionParam `json:"view_location_action,omitzero"`
 	paramObj

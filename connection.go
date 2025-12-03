@@ -14,9 +14,9 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/shared"
 )
 
 // ConnectionService contains methods and other services that help with interacting
@@ -52,57 +52,25 @@ func (r *ConnectionService) Get(ctx context.Context, id string, opts ...option.R
 }
 
 // Returns a list of your connections irrespective of type.
-func (r *ConnectionService) List(ctx context.Context, query ConnectionListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[ConnectionListResponse], err error) {
-	var raw *http.Response
+func (r *ConnectionService) List(ctx context.Context, query ConnectionListParams, opts ...option.RequestOption) (res *ConnectionListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "connections"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Returns a list of your connections irrespective of type.
-func (r *ConnectionService) ListAutoPaging(ctx context.Context, query ConnectionListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[ConnectionListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Lists all active calls for given connection. Acceptable connections are either
 // SIP connections with webhook_url or xml_request_url, call control or texml.
 // Returned results are cursor paginated.
-func (r *ConnectionService) ListActiveCalls(ctx context.Context, connectionID string, query ConnectionListActiveCallsParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[ConnectionListActiveCallsResponse], err error) {
-	var raw *http.Response
+func (r *ConnectionService) ListActiveCalls(ctx context.Context, connectionID string, query ConnectionListActiveCallsParams, opts ...option.RequestOption) (res *ConnectionListActiveCallsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
 		return
 	}
 	path := fmt.Sprintf("connections/%s/active_calls", connectionID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Lists all active calls for given connection. Acceptable connections are either
-// SIP connections with webhook_url or xml_request_url, call control or texml.
-// Returned results are cursor paginated.
-func (r *ConnectionService) ListActiveCallsAutoPaging(ctx context.Context, connectionID string, query ConnectionListActiveCallsParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[ConnectionListActiveCallsResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.ListActiveCalls(ctx, connectionID, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 type ConnectionGetResponse struct {
@@ -180,6 +148,24 @@ func (r *ConnectionGetResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type ConnectionListResponse struct {
+	Data []ConnectionListResponseData     `json:"data"`
+	Meta shared.ConnectionsPaginationMeta `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConnectionListResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConnectionListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConnectionListResponseData struct {
 	// Identifies the specific resource.
 	ID string `json:"id" format:"int64"`
 	// Defaults to true
@@ -206,7 +192,7 @@ type ConnectionListResponse struct {
 	// Determines which webhook format will be used, Telnyx API v1 or v2.
 	//
 	// Any of "1", "2".
-	WebhookAPIVersion ConnectionListResponseWebhookAPIVersion `json:"webhook_api_version"`
+	WebhookAPIVersion string `json:"webhook_api_version"`
 	// The failover URL where webhooks related to this connection will be sent if
 	// sending to the primary URL fails.
 	WebhookEventFailoverURL string `json:"webhook_event_failover_url,nullable" format:"uri"`
@@ -232,20 +218,30 @@ type ConnectionListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ConnectionListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ConnectionListResponse) UnmarshalJSON(data []byte) error {
+func (r ConnectionListResponseData) RawJSON() string { return r.JSON.raw }
+func (r *ConnectionListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Determines which webhook format will be used, Telnyx API v1 or v2.
-type ConnectionListResponseWebhookAPIVersion string
-
-const (
-	ConnectionListResponseWebhookAPIVersionV1 ConnectionListResponseWebhookAPIVersion = "1"
-	ConnectionListResponseWebhookAPIVersionV2 ConnectionListResponseWebhookAPIVersion = "2"
-)
-
 type ConnectionListActiveCallsResponse struct {
+	Data []ConnectionListActiveCallsResponseData `json:"data"`
+	Meta ConnectionListActiveCallsResponseMeta   `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConnectionListActiveCallsResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConnectionListActiveCallsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConnectionListActiveCallsResponseData struct {
 	// Unique identifier and token for controlling the call.
 	CallControlID string `json:"call_control_id,required"`
 	// Indicates the duration of the call in seconds
@@ -259,7 +255,7 @@ type ConnectionListActiveCallsResponse struct {
 	// State received from a command.
 	ClientState string `json:"client_state,required"`
 	// Any of "call".
-	RecordType ConnectionListActiveCallsResponseRecordType `json:"record_type,required"`
+	RecordType string `json:"record_type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CallControlID respjson.Field
@@ -274,16 +270,54 @@ type ConnectionListActiveCallsResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ConnectionListActiveCallsResponse) RawJSON() string { return r.JSON.raw }
-func (r *ConnectionListActiveCallsResponse) UnmarshalJSON(data []byte) error {
+func (r ConnectionListActiveCallsResponseData) RawJSON() string { return r.JSON.raw }
+func (r *ConnectionListActiveCallsResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ConnectionListActiveCallsResponseRecordType string
+type ConnectionListActiveCallsResponseMeta struct {
+	Cursors ConnectionListActiveCallsResponseMetaCursors `json:"cursors"`
+	// Path to next page.
+	Next string `json:"next"`
+	// Path to previous page.
+	Previous   string `json:"previous"`
+	TotalItems int64  `json:"total_items"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Cursors     respjson.Field
+		Next        respjson.Field
+		Previous    respjson.Field
+		TotalItems  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
 
-const (
-	ConnectionListActiveCallsResponseRecordTypeCall ConnectionListActiveCallsResponseRecordType = "call"
-)
+// Returns the unmodified JSON received from the API
+func (r ConnectionListActiveCallsResponseMeta) RawJSON() string { return r.JSON.raw }
+func (r *ConnectionListActiveCallsResponseMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConnectionListActiveCallsResponseMetaCursors struct {
+	// Opaque identifier of next page.
+	After string `json:"after"`
+	// Opaque identifier of previous page.
+	Before string `json:"before"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		After       respjson.Field
+		Before      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConnectionListActiveCallsResponseMetaCursors) RawJSON() string { return r.JSON.raw }
+func (r *ConnectionListActiveCallsResponseMetaCursors) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type ConnectionListParams struct {
 	// Consolidated filter parameter (deepObject style). Originally:

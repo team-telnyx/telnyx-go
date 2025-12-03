@@ -15,7 +15,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -69,26 +68,11 @@ func (r *CampaignService) Update(ctx context.Context, campaignID string, body Ca
 }
 
 // Retrieve a list of campaigns associated with a supplied `brandId`.
-func (r *CampaignService) List(ctx context.Context, query CampaignListParams, opts ...option.RequestOption) (res *pagination.PerPagePaginationV2[CampaignListResponse], err error) {
-	var raw *http.Response
+func (r *CampaignService) List(ctx context.Context, query CampaignListParams, opts ...option.RequestOption) (res *CampaignListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "campaign"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Retrieve a list of campaigns associated with a supplied `brandId`.
-func (r *CampaignService) ListAutoPaging(ctx context.Context, query CampaignListParams, opts ...option.RequestOption) *pagination.PerPagePaginationV2AutoPager[CampaignListResponse] {
-	return pagination.NewPerPagePaginationV2AutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Manually accept a campaign shared with Telnyx
@@ -311,7 +295,7 @@ type TelnyxCampaignCsp struct {
 	//
 	// This field is deprecated.
 	//
-	// Deprecated: This field is deprecated and will be removed soon
+	// Deprecated: deprecated
 	Vertical string `json:"vertical"`
 	// Failover webhook to which campaign status updates are sent.
 	WebhookFailoverURL string `json:"webhookFailoverURL"`
@@ -408,6 +392,26 @@ const (
 )
 
 type CampaignListResponse struct {
+	Page         int64                        `json:"page"`
+	Records      []CampaignListResponseRecord `json:"records"`
+	TotalRecords int64                        `json:"totalRecords"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Page         respjson.Field
+		Records      respjson.Field
+		TotalRecords respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CampaignListResponse) RawJSON() string { return r.JSON.raw }
+func (r *CampaignListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CampaignListResponseRecord struct {
 	// Age gated content in campaign.
 	AgeGated bool `json:"ageGated"`
 	// Number of phone numbers associated with the campaign
@@ -427,7 +431,7 @@ type CampaignListResponse struct {
 	// Any of "TCR_PENDING", "TCR_SUSPENDED", "TCR_EXPIRED", "TCR_ACCEPTED",
 	// "TCR_FAILED", "TELNYX_ACCEPTED", "TELNYX_FAILED", "MNO_PENDING", "MNO_ACCEPTED",
 	// "MNO_REJECTED", "MNO_PROVISIONED", "MNO_PROVISIONING_FAILED".
-	CampaignStatus CampaignListResponseCampaignStatus `json:"campaignStatus"`
+	CampaignStatus string `json:"campaignStatus"`
 	// Unix timestamp when campaign was created.
 	CreateDate string `json:"createDate"`
 	// Alphanumeric identifier of the CSP associated with this campaign.
@@ -496,7 +500,7 @@ type CampaignListResponse struct {
 	// Campaign submission status
 	//
 	// Any of "CREATED", "FAILED", "PENDING".
-	SubmissionStatus CampaignListResponseSubmissionStatus `json:"submissionStatus"`
+	SubmissionStatus string `json:"submissionStatus"`
 	// Does campaign responds to help keyword(s)?
 	SubscriberHelp bool `json:"subscriberHelp"`
 	// Does campaign require subscriber to opt-in before SMS is sent to subscriber?
@@ -523,7 +527,7 @@ type CampaignListResponse struct {
 	//
 	// This field is deprecated.
 	//
-	// Deprecated: This field is deprecated and will be removed soon
+	// Deprecated: deprecated
 	Vertical string `json:"vertical"`
 	// Failover webhook to which campaign status updates are sent.
 	WebhookFailoverURL string `json:"webhookFailoverURL"`
@@ -588,37 +592,10 @@ type CampaignListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CampaignListResponse) RawJSON() string { return r.JSON.raw }
-func (r *CampaignListResponse) UnmarshalJSON(data []byte) error {
+func (r CampaignListResponseRecord) RawJSON() string { return r.JSON.raw }
+func (r *CampaignListResponseRecord) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Campaign status
-type CampaignListResponseCampaignStatus string
-
-const (
-	CampaignListResponseCampaignStatusTcrPending            CampaignListResponseCampaignStatus = "TCR_PENDING"
-	CampaignListResponseCampaignStatusTcrSuspended          CampaignListResponseCampaignStatus = "TCR_SUSPENDED"
-	CampaignListResponseCampaignStatusTcrExpired            CampaignListResponseCampaignStatus = "TCR_EXPIRED"
-	CampaignListResponseCampaignStatusTcrAccepted           CampaignListResponseCampaignStatus = "TCR_ACCEPTED"
-	CampaignListResponseCampaignStatusTcrFailed             CampaignListResponseCampaignStatus = "TCR_FAILED"
-	CampaignListResponseCampaignStatusTelnyxAccepted        CampaignListResponseCampaignStatus = "TELNYX_ACCEPTED"
-	CampaignListResponseCampaignStatusTelnyxFailed          CampaignListResponseCampaignStatus = "TELNYX_FAILED"
-	CampaignListResponseCampaignStatusMnoPending            CampaignListResponseCampaignStatus = "MNO_PENDING"
-	CampaignListResponseCampaignStatusMnoAccepted           CampaignListResponseCampaignStatus = "MNO_ACCEPTED"
-	CampaignListResponseCampaignStatusMnoRejected           CampaignListResponseCampaignStatus = "MNO_REJECTED"
-	CampaignListResponseCampaignStatusMnoProvisioned        CampaignListResponseCampaignStatus = "MNO_PROVISIONED"
-	CampaignListResponseCampaignStatusMnoProvisioningFailed CampaignListResponseCampaignStatus = "MNO_PROVISIONING_FAILED"
-)
-
-// Campaign submission status
-type CampaignListResponseSubmissionStatus string
-
-const (
-	CampaignListResponseSubmissionStatusCreated CampaignListResponseSubmissionStatus = "CREATED"
-	CampaignListResponseSubmissionStatusFailed  CampaignListResponseSubmissionStatus = "FAILED"
-	CampaignListResponseSubmissionStatusPending CampaignListResponseSubmissionStatus = "PENDING"
-)
 
 type CampaignAcceptSharingResponse map[string]any
 

@@ -15,7 +15,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v3/shared"
@@ -77,26 +76,11 @@ func (r *RoomService) Update(ctx context.Context, roomID string, body RoomUpdate
 }
 
 // View a list of rooms.
-func (r *RoomService) List(ctx context.Context, query RoomListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[Room], err error) {
-	var raw *http.Response
+func (r *RoomService) List(ctx context.Context, query RoomListParams, opts ...option.RequestOption) (res *RoomListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "rooms"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// View a list of rooms.
-func (r *RoomService) ListAutoPaging(ctx context.Context, query RoomListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[Room] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Synchronously delete a Room. Participants from that room will be kicked out,
@@ -245,6 +229,24 @@ type RoomUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r RoomUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *RoomUpdateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type RoomListResponse struct {
+	Data []Room         `json:"data"`
+	Meta PaginationMeta `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RoomListResponse) RawJSON() string { return r.JSON.raw }
+func (r *RoomListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

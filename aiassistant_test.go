@@ -53,7 +53,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			SupportsUnauthenticatedWebCalls: telnyx.Bool(true),
 		},
 		Tools: []telnyx.AssistantToolUnionParam{{
-			OfWebhook: &telnyx.WebhookToolParam{
+			OfWebhookTool: &telnyx.WebhookToolParam{
 				Type: telnyx.WebhookToolTypeWebhook,
 				Webhook: telnyx.InferenceEmbeddingWebhookToolParams{
 					Description: "description",
@@ -93,7 +93,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			Language: telnyx.String("language"),
 			Model:    telnyx.TranscriptionSettingsModelDeepgramFlux,
 			Region:   telnyx.String("region"),
-			Settings: telnyx.TranscriptionSettingsConfigParam{
+			Settings: telnyx.TranscriptionSettingsSettingsParam{
 				EotThreshold: telnyx.Float(0),
 				EotTimeoutMs: telnyx.Int(0),
 				Numerals:     telnyx.Bool(true),
@@ -104,7 +104,8 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			Voice:     "voice",
 			APIKeyRef: telnyx.String("api_key_ref"),
 			BackgroundAudio: telnyx.VoiceSettingsBackgroundAudioUnionParam{
-				OfPredefinedMedia: &telnyx.VoiceSettingsBackgroundAudioPredefinedMediaParam{
+				OfVoiceSettingsBackgroundAudioObject: &telnyx.VoiceSettingsBackgroundAudioObjectParam{
+					Type:  "predefined_media",
 					Value: "silence",
 				},
 			},
@@ -196,7 +197,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				SupportsUnauthenticatedWebCalls: telnyx.Bool(true),
 			},
 			Tools: []telnyx.AssistantToolUnionParam{{
-				OfWebhook: &telnyx.WebhookToolParam{
+				OfWebhookTool: &telnyx.WebhookToolParam{
 					Type: telnyx.WebhookToolTypeWebhook,
 					Webhook: telnyx.InferenceEmbeddingWebhookToolParams{
 						Description: "description",
@@ -236,7 +237,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				Language: telnyx.String("language"),
 				Model:    telnyx.TranscriptionSettingsModelDeepgramFlux,
 				Region:   telnyx.String("region"),
-				Settings: telnyx.TranscriptionSettingsConfigParam{
+				Settings: telnyx.TranscriptionSettingsSettingsParam{
 					EotThreshold: telnyx.Float(0),
 					EotTimeoutMs: telnyx.Int(0),
 					Numerals:     telnyx.Bool(true),
@@ -247,7 +248,8 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				Voice:     "voice",
 				APIKeyRef: telnyx.String("api_key_ref"),
 				BackgroundAudio: telnyx.VoiceSettingsBackgroundAudioUnionParam{
-					OfPredefinedMedia: &telnyx.VoiceSettingsBackgroundAudioPredefinedMediaParam{
+					OfVoiceSettingsBackgroundAudioObject: &telnyx.VoiceSettingsBackgroundAudioObjectParam{
+						Type:  "predefined_media",
 						Value: "silence",
 					},
 				},
@@ -387,7 +389,7 @@ func TestAIAssistantGetTexml(t *testing.T) {
 	}
 }
 
-func TestAIAssistantImports(t *testing.T) {
+func TestAIAssistantImport(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -400,9 +402,9 @@ func TestAIAssistantImports(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Assistants.Imports(context.TODO(), telnyx.AIAssistantImportsParams{
+	_, err := client.AI.Assistants.Import(context.TODO(), telnyx.AIAssistantImportParams{
 		APIKeyRef: "api_key_ref",
-		Provider:  telnyx.AIAssistantImportsParamsProviderElevenlabs,
+		Provider:  telnyx.AIAssistantImportParamsProviderElevenlabs,
 	})
 	if err != nil {
 		var apierr *telnyx.Error

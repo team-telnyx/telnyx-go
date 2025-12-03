@@ -72,20 +72,20 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 				CommandID:           telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
 				TranscriptionEngine: telnyx.TranscriptionStartRequestTranscriptionEngineGoogle,
 				TranscriptionEngineConfig: telnyx.TranscriptionStartRequestTranscriptionEngineConfigUnionParam{
-					OfGoogle: &telnyx.TranscriptionEngineGoogleConfigParam{
+					OfGoogle: &telnyx.TranscriptionStartRequestTranscriptionEngineConfigGoogleParam{
 						EnableSpeakerDiarization: telnyx.Bool(true),
 						Hints:                    []string{"string"},
 						InterimResults:           telnyx.Bool(true),
 						Language:                 telnyx.GoogleTranscriptionLanguageEn,
 						MaxSpeakerCount:          telnyx.Int(4),
 						MinSpeakerCount:          telnyx.Int(4),
-						Model:                    telnyx.TranscriptionEngineGoogleConfigModelLatestLong,
+						Model:                    "latest_long",
 						ProfanityFilter:          telnyx.Bool(true),
-						SpeechContext: []telnyx.TranscriptionEngineGoogleConfigSpeechContextParam{{
+						SpeechContext: []telnyx.TranscriptionStartRequestTranscriptionEngineConfigGoogleSpeechContextParam{{
 							Boost:   telnyx.Float(1),
 							Phrases: []string{"string"},
 						}},
-						TranscriptionEngine: telnyx.TranscriptionEngineGoogleConfigTranscriptionEngineGoogle,
+						TranscriptionEngine: "Google",
 						UseEnhanced:         telnyx.Bool(true),
 					},
 				},
@@ -121,24 +121,24 @@ func TestCallActionBridgeWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"call_control_id",
 		telnyx.CallActionBridgeParams{
-			CallControlIDToBridgeWith: "v3:MdI91X4lWFEs7IgbBEOT9M4AigoY08M0WWZFISt1Yw2axZ_IiE4pqg",
-			ClientState:               telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
-			CommandID:                 telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
-			MuteDtmf:                  telnyx.CallActionBridgeParamsMuteDtmfOpposite,
-			ParkAfterUnbridge:         telnyx.String("self"),
-			PlayRingtone:              telnyx.Bool(true),
-			Queue:                     telnyx.String("support"),
-			Record:                    telnyx.CallActionBridgeParamsRecordRecordFromAnswer,
-			RecordChannels:            telnyx.CallActionBridgeParamsRecordChannelsSingle,
-			RecordCustomFileName:      telnyx.String("my_recording_file_name"),
-			RecordFormat:              telnyx.CallActionBridgeParamsRecordFormatWav,
-			RecordMaxLength:           telnyx.Int(1000),
-			RecordTimeoutSecs:         telnyx.Int(100),
-			RecordTrack:               telnyx.CallActionBridgeParamsRecordTrackOutbound,
-			RecordTrim:                telnyx.CallActionBridgeParamsRecordTrimTrimSilence,
-			Ringtone:                  telnyx.CallActionBridgeParamsRingtonePl,
-			VideoRoomContext:          telnyx.String("Alice"),
-			VideoRoomID:               telnyx.String("0ccc7b54-4df3-4bca-a65a-3da1ecc777f0"),
+			CallControlID:        "v3:MdI91X4lWFEs7IgbBEOT9M4AigoY08M0WWZFISt1Yw2axZ_IiE4pqg",
+			ClientState:          telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
+			CommandID:            telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
+			MuteDtmf:             telnyx.CallActionBridgeParamsMuteDtmfOpposite,
+			ParkAfterUnbridge:    telnyx.String("self"),
+			PlayRingtone:         telnyx.Bool(true),
+			Queue:                telnyx.String("support"),
+			Record:               telnyx.CallActionBridgeParamsRecordRecordFromAnswer,
+			RecordChannels:       telnyx.CallActionBridgeParamsRecordChannelsSingle,
+			RecordCustomFileName: telnyx.String("my_recording_file_name"),
+			RecordFormat:         telnyx.CallActionBridgeParamsRecordFormatWav,
+			RecordMaxLength:      telnyx.Int(1000),
+			RecordTimeoutSecs:    telnyx.Int(100),
+			RecordTrack:          telnyx.CallActionBridgeParamsRecordTrackOutbound,
+			RecordTrim:           telnyx.CallActionBridgeParamsRecordTrimTrimSilence,
+			Ringtone:             telnyx.CallActionBridgeParamsRingtonePl,
+			VideoRoomContext:     telnyx.String("Alice"),
+			VideoRoomID:          telnyx.String("0ccc7b54-4df3-4bca-a65a-3da1ecc777f0"),
 		},
 	)
 	if err != nil {
@@ -240,22 +240,35 @@ func TestCallActionGatherUsingAIWithOptionalParams(t *testing.T) {
 		"call_control_id",
 		telnyx.CallActionGatherUsingAIParams{
 			Parameters: map[string]any{
-				"properties": "bar",
-				"required":   "bar",
-				"type":       "bar",
+				"properties": map[string]any{
+					"age": map[string]any{
+						"description": "The age of the customer.",
+						"type":        "integer",
+					},
+					"location": map[string]any{
+						"description": "The location of the customer.",
+						"type":        "string",
+					},
+				},
+				"required": []string{
+					"age",
+					"location",
+				},
+				"type": "object",
 			},
 			Assistant: telnyx.AssistantParam{
 				Instructions:    telnyx.String("You are a friendly voice assistant."),
 				Model:           telnyx.String("meta-llama/Meta-Llama-3.1-70B-Instruct"),
 				OpenAIAPIKeyRef: telnyx.String("my_openai_api_key"),
 				Tools: []telnyx.AssistantToolUnionParam{{
-					OfBookAppointment: &telnyx.AssistantToolBookAppointmentParam{
-						BookAppointment: telnyx.AssistantToolBookAppointmentBookAppointmentParam{
+					OfBookAppointmentTool: &telnyx.AssistantToolBookAppointmentToolParam{
+						BookAppointment: telnyx.AssistantToolBookAppointmentToolBookAppointmentParam{
 							APIKeyRef:        "my_calcom_api_key",
 							EventTypeID:      0,
 							AttendeeName:     telnyx.String("attendee_name"),
 							AttendeeTimezone: telnyx.String("attendee_timezone"),
 						},
+						Type: "book_appointment",
 					},
 				}},
 			},
@@ -988,20 +1001,20 @@ func TestCallActionStartTranscriptionWithOptionalParams(t *testing.T) {
 				CommandID:           telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
 				TranscriptionEngine: telnyx.TranscriptionStartRequestTranscriptionEngineGoogle,
 				TranscriptionEngineConfig: telnyx.TranscriptionStartRequestTranscriptionEngineConfigUnionParam{
-					OfGoogle: &telnyx.TranscriptionEngineGoogleConfigParam{
+					OfGoogle: &telnyx.TranscriptionStartRequestTranscriptionEngineConfigGoogleParam{
 						EnableSpeakerDiarization: telnyx.Bool(true),
 						Hints:                    []string{"string"},
 						InterimResults:           telnyx.Bool(true),
 						Language:                 telnyx.GoogleTranscriptionLanguageEn,
 						MaxSpeakerCount:          telnyx.Int(4),
 						MinSpeakerCount:          telnyx.Int(4),
-						Model:                    telnyx.TranscriptionEngineGoogleConfigModelLatestLong,
+						Model:                    "latest_long",
 						ProfanityFilter:          telnyx.Bool(true),
-						SpeechContext: []telnyx.TranscriptionEngineGoogleConfigSpeechContextParam{{
+						SpeechContext: []telnyx.TranscriptionStartRequestTranscriptionEngineConfigGoogleSpeechContextParam{{
 							Boost:   telnyx.Float(1),
 							Phrases: []string{"string"},
 						}},
-						TranscriptionEngine: telnyx.TranscriptionEngineGoogleConfigTranscriptionEngineGoogle,
+						TranscriptionEngine: "Google",
 						UseEnhanced:         telnyx.Bool(true),
 					},
 				},
