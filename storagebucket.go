@@ -40,10 +40,10 @@ func NewStorageBucketService(opts ...option.RequestOption) (r StorageBucketServi
 	return
 }
 
-// Returns a timed and authenticated URL to get an object. This is the equivalent
-// to AWS S3’s “presigned” URL. Please note that Telnyx performs authentication
-// differently from AWS S3 and you MUST NOT use the presign method of AWS s3api CLI
-// or sdk to generate the presigned URL.
+// Returns a timed and authenticated URL to download (GET) or upload (PUT) an
+// object. This is the equivalent to AWS S3’s “presigned” URL. Please note that
+// Telnyx performs authentication differently from AWS S3 and you MUST NOT use the
+// presign method of AWS s3api CLI or SDK to generate the presigned URL.
 //
 // Refer to: https://developers.telnyx.com/docs/cloud-storage/presigned-urls
 func (r *StorageBucketService) NewPresignedURL(ctx context.Context, objectName string, params StorageBucketNewPresignedURLParams, opts ...option.RequestOption) (res *StorageBucketNewPresignedURLResponse, err error) {
