@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -51,11 +52,26 @@ func (r *OAuthGrantService) Get(ctx context.Context, id string, opts ...option.R
 }
 
 // Retrieve a paginated list of OAuth grants for the authenticated user
-func (r *OAuthGrantService) List(ctx context.Context, query OAuthGrantListParams, opts ...option.RequestOption) (res *OAuthGrantListResponse, err error) {
+func (r *OAuthGrantService) List(ctx context.Context, query OAuthGrantListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[OAuthGrant], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "oauth_grants"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a paginated list of OAuth grants for the authenticated user
+func (r *OAuthGrantService) ListAutoPaging(ctx context.Context, query OAuthGrantListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[OAuthGrant] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Revoke an OAuth grant
@@ -124,24 +140,6 @@ type OAuthGrantGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r OAuthGrantGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *OAuthGrantGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type OAuthGrantListResponse struct {
-	Data []OAuthGrant        `json:"data"`
-	Meta PaginationMetaOAuth `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r OAuthGrantListResponse) RawJSON() string { return r.JSON.raw }
-func (r *OAuthGrantListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

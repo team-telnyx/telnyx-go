@@ -18,20 +18,50 @@ func ValueOf[T Constant[T]]() T {
 	return t.Default()
 }
 
-type Azure string       // Always "Azure"
-type Comparative string // Always "comparative"
-type Deepgram string    // Always "Deepgram"
-type Simple string      // Always "simple"
+type Android string           // Always "android"
+type BookAppointment string   // Always "book_appointment"
+type CheckAvailability string // Always "check_availability"
+type Comparative string       // Always "comparative"
+type Function string          // Always "function"
+type Handoff string           // Always "handoff"
+type Ios string               // Always "ios"
+type MediaName string         // Always "media_name"
+type MediaURL string          // Always "media_url"
+type PredefinedMedia string   // Always "predefined_media"
+type Refer string             // Always "refer"
+type Retrieval string         // Always "retrieval"
+type SendDtmf string          // Always "send_dtmf"
+type Simple string            // Always "simple"
 
-func (c Azure) Default() Azure             { return "Azure" }
-func (c Comparative) Default() Comparative { return "comparative" }
-func (c Deepgram) Default() Deepgram       { return "Deepgram" }
-func (c Simple) Default() Simple           { return "simple" }
+func (c Android) Default() Android                     { return "android" }
+func (c BookAppointment) Default() BookAppointment     { return "book_appointment" }
+func (c CheckAvailability) Default() CheckAvailability { return "check_availability" }
+func (c Comparative) Default() Comparative             { return "comparative" }
+func (c Function) Default() Function                   { return "function" }
+func (c Handoff) Default() Handoff                     { return "handoff" }
+func (c Ios) Default() Ios                             { return "ios" }
+func (c MediaName) Default() MediaName                 { return "media_name" }
+func (c MediaURL) Default() MediaURL                   { return "media_url" }
+func (c PredefinedMedia) Default() PredefinedMedia     { return "predefined_media" }
+func (c Refer) Default() Refer                         { return "refer" }
+func (c Retrieval) Default() Retrieval                 { return "retrieval" }
+func (c SendDtmf) Default() SendDtmf                   { return "send_dtmf" }
+func (c Simple) Default() Simple                       { return "simple" }
 
-func (c Azure) MarshalJSON() ([]byte, error)       { return marshalString(c) }
-func (c Comparative) MarshalJSON() ([]byte, error) { return marshalString(c) }
-func (c Deepgram) MarshalJSON() ([]byte, error)    { return marshalString(c) }
-func (c Simple) MarshalJSON() ([]byte, error)      { return marshalString(c) }
+func (c Android) MarshalJSON() ([]byte, error)           { return marshalString(c) }
+func (c BookAppointment) MarshalJSON() ([]byte, error)   { return marshalString(c) }
+func (c CheckAvailability) MarshalJSON() ([]byte, error) { return marshalString(c) }
+func (c Comparative) MarshalJSON() ([]byte, error)       { return marshalString(c) }
+func (c Function) MarshalJSON() ([]byte, error)          { return marshalString(c) }
+func (c Handoff) MarshalJSON() ([]byte, error)           { return marshalString(c) }
+func (c Ios) MarshalJSON() ([]byte, error)               { return marshalString(c) }
+func (c MediaName) MarshalJSON() ([]byte, error)         { return marshalString(c) }
+func (c MediaURL) MarshalJSON() ([]byte, error)          { return marshalString(c) }
+func (c PredefinedMedia) MarshalJSON() ([]byte, error)   { return marshalString(c) }
+func (c Refer) MarshalJSON() ([]byte, error)             { return marshalString(c) }
+func (c Retrieval) MarshalJSON() ([]byte, error)         { return marshalString(c) }
+func (c SendDtmf) MarshalJSON() ([]byte, error)          { return marshalString(c) }
+func (c Simple) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 
 type constant[T any] interface {
 	Constant[T]

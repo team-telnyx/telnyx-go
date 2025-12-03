@@ -14,6 +14,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -70,11 +71,26 @@ func (r *TexmlApplicationService) Update(ctx context.Context, id string, body Te
 }
 
 // Returns a list of your TeXML Applications.
-func (r *TexmlApplicationService) List(ctx context.Context, query TexmlApplicationListParams, opts ...option.RequestOption) (res *TexmlApplicationListResponse, err error) {
+func (r *TexmlApplicationService) List(ctx context.Context, query TexmlApplicationListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[TexmlApplication], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "texml_applications"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Returns a list of your TeXML Applications.
+func (r *TexmlApplicationService) ListAutoPaging(ctx context.Context, query TexmlApplicationListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[TexmlApplication] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Deletes a TeXML Application.
@@ -295,46 +311,6 @@ type TexmlApplicationUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r TexmlApplicationUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *TexmlApplicationUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TexmlApplicationListResponse struct {
-	Data []TexmlApplication               `json:"data"`
-	Meta TexmlApplicationListResponseMeta `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TexmlApplicationListResponse) RawJSON() string { return r.JSON.raw }
-func (r *TexmlApplicationListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TexmlApplicationListResponseMeta struct {
-	PageNumber   int64 `json:"page_number"`
-	PageSize     int64 `json:"page_size"`
-	TotalPages   int64 `json:"total_pages"`
-	TotalResults int64 `json:"total_results"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageNumber   respjson.Field
-		PageSize     respjson.Field
-		TotalPages   respjson.Field
-		TotalResults respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TexmlApplicationListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *TexmlApplicationListResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

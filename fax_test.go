@@ -106,10 +106,8 @@ func TestFaxListWithOptionalParams(t *testing.T) {
 				Eq: telnyx.String("+13127367276"),
 			},
 		},
-		Page: telnyx.FaxListParamsPage{
-			Number: telnyx.Int(2),
-			Size:   telnyx.Int(2),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

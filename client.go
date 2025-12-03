@@ -58,7 +58,7 @@ type Client struct {
 	Documents                          DocumentService
 	DynamicEmergencyAddresses          DynamicEmergencyAddressService
 	DynamicEmergencyEndpoints          DynamicEmergencyEndpointService
-	Enum                               EnumService
+	Enumeration                        EnumerationService
 	ExternalConnections                ExternalConnectionService
 	FaxApplications                    FaxApplicationService
 	Faxes                              FaxService
@@ -176,8 +176,8 @@ type Client struct {
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
-// TELNYX_PUBLIC_KEY, TELNYX_BASE_URL). This should be used to initialize new
-// clients.
+// TELNYX_PUBLIC_KEY, TELNYX_CLIENT_ID, TELNYX_CLIENT_SECRET, TELNYX_BASE_URL).
+// This should be used to initialize new clients.
 func DefaultClientOptions() []option.RequestOption {
 	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
 	if o, ok := os.LookupEnv("TELNYX_BASE_URL"); ok {
@@ -189,13 +189,20 @@ func DefaultClientOptions() []option.RequestOption {
 	if o, ok := os.LookupEnv("TELNYX_PUBLIC_KEY"); ok {
 		defaults = append(defaults, option.WithPublicKey(o))
 	}
+	if o, ok := os.LookupEnv("TELNYX_CLIENT_ID"); ok {
+		defaults = append(defaults, option.WithClientID(o))
+	}
+	if o, ok := os.LookupEnv("TELNYX_CLIENT_SECRET"); ok {
+		defaults = append(defaults, option.WithClientSecret(o))
+	}
 	return defaults
 }
 
 // NewClient generates a new client with the default option read from the
-// environment (TELNYX_API_KEY, TELNYX_PUBLIC_KEY, TELNYX_BASE_URL). The option
-// passed in as arguments are applied after these default arguments, and all option
-// will be passed down to the services and requests that this client makes.
+// environment (TELNYX_API_KEY, TELNYX_PUBLIC_KEY, TELNYX_CLIENT_ID,
+// TELNYX_CLIENT_SECRET, TELNYX_BASE_URL). The option passed in as arguments are
+// applied after these default arguments, and all option will be passed down to the
+// services and requests that this client makes.
 func NewClient(opts ...option.RequestOption) (r Client) {
 	opts = append(DefaultClientOptions(), opts...)
 
@@ -242,7 +249,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Documents = NewDocumentService(opts...)
 	r.DynamicEmergencyAddresses = NewDynamicEmergencyAddressService(opts...)
 	r.DynamicEmergencyEndpoints = NewDynamicEmergencyEndpointService(opts...)
-	r.Enum = NewEnumService(opts...)
+	r.Enumeration = NewEnumerationService(opts...)
 	r.ExternalConnections = NewExternalConnectionService(opts...)
 	r.FaxApplications = NewFaxApplicationService(opts...)
 	r.Faxes = NewFaxService(opts...)

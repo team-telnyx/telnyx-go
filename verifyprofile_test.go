@@ -151,10 +151,8 @@ func TestVerifyProfileListWithOptionalParams(t *testing.T) {
 		Filter: telnyx.VerifyProfileListParamsFilter{
 			Name: telnyx.String("name"),
 		},
-		Page: telnyx.VerifyProfileListParamsPage{
-			Number: telnyx.Int(0),
-			Size:   telnyx.Int(0),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

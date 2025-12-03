@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -71,11 +72,26 @@ func (r *CallControlApplicationService) Update(ctx context.Context, id string, b
 }
 
 // Return a list of call control applications.
-func (r *CallControlApplicationService) List(ctx context.Context, query CallControlApplicationListParams, opts ...option.RequestOption) (res *CallControlApplicationListResponse, err error) {
+func (r *CallControlApplicationService) List(ctx context.Context, query CallControlApplicationListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[CallControlApplication], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "call_control_applications"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Return a list of call control applications.
+func (r *CallControlApplicationService) ListAutoPaging(ctx context.Context, query CallControlApplicationListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[CallControlApplication] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Deletes a call control application.
@@ -211,8 +227,8 @@ const (
 type CallControlApplicationWebhookAPIVersion string
 
 const (
-	CallControlApplicationWebhookAPIVersion1 CallControlApplicationWebhookAPIVersion = "1"
-	CallControlApplicationWebhookAPIVersion2 CallControlApplicationWebhookAPIVersion = "2"
+	CallControlApplicationWebhookAPIVersionV1 CallControlApplicationWebhookAPIVersion = "1"
+	CallControlApplicationWebhookAPIVersionV2 CallControlApplicationWebhookAPIVersion = "2"
 )
 
 type CallControlApplicationInbound struct {
@@ -399,24 +415,6 @@ func (r *CallControlApplicationUpdateResponse) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CallControlApplicationListResponse struct {
-	Data []CallControlApplication `json:"data"`
-	Meta PaginationMeta           `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CallControlApplicationListResponse) RawJSON() string { return r.JSON.raw }
-func (r *CallControlApplicationListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type CallControlApplicationDeleteResponse struct {
 	Data CallControlApplication `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -519,8 +517,8 @@ const (
 type CallControlApplicationNewParamsWebhookAPIVersion string
 
 const (
-	CallControlApplicationNewParamsWebhookAPIVersion1 CallControlApplicationNewParamsWebhookAPIVersion = "1"
-	CallControlApplicationNewParamsWebhookAPIVersion2 CallControlApplicationNewParamsWebhookAPIVersion = "2"
+	CallControlApplicationNewParamsWebhookAPIVersionV1 CallControlApplicationNewParamsWebhookAPIVersion = "1"
+	CallControlApplicationNewParamsWebhookAPIVersionV2 CallControlApplicationNewParamsWebhookAPIVersion = "2"
 )
 
 type CallControlApplicationUpdateParams struct {
@@ -611,8 +609,8 @@ const (
 type CallControlApplicationUpdateParamsWebhookAPIVersion string
 
 const (
-	CallControlApplicationUpdateParamsWebhookAPIVersion1 CallControlApplicationUpdateParamsWebhookAPIVersion = "1"
-	CallControlApplicationUpdateParamsWebhookAPIVersion2 CallControlApplicationUpdateParamsWebhookAPIVersion = "2"
+	CallControlApplicationUpdateParamsWebhookAPIVersionV1 CallControlApplicationUpdateParamsWebhookAPIVersion = "1"
+	CallControlApplicationUpdateParamsWebhookAPIVersionV2 CallControlApplicationUpdateParamsWebhookAPIVersion = "2"
 )
 
 type CallControlApplicationListParams struct {
