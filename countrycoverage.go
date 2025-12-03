@@ -55,7 +55,7 @@ func (r *CountryCoverageService) GetCountry(ctx context.Context, countryCode str
 }
 
 type CountryCoverageGetResponse struct {
-	Data []CountryCoverageGetResponseData `json:"data"`
+	Data map[string]CountryCoverageGetResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
