@@ -133,6 +133,8 @@ type MessagingProfile struct {
 	DailySpendLimitEnabled bool `json:"daily_spend_limit_enabled"`
 	// Specifies whether the messaging profile is enabled or not.
 	Enabled bool `json:"enabled"`
+	// DEPRECATED: health check url service checking
+	HealthWebhookURL string `json:"health_webhook_url,nullable" format:"url"`
 	// enables SMS fallback for MMS messages.
 	MmsFallBackToSMS bool `json:"mms_fall_back_to_sms"`
 	// enables automated resizing of MMS media.
@@ -151,6 +153,11 @@ type MessagingProfile struct {
 	//
 	// Any of "messaging_profile".
 	RecordType MessagingProfileRecordType `json:"record_type"`
+	// Indicates whether message content redaction is enabled for this profile.
+	RedactionEnabled bool `json:"redaction_enabled"`
+	// Determines how much information is redacted in messages for privacy or
+	// compliance purposes.
+	RedactionLevel int64 `json:"redaction_level"`
 	// ISO 8601 formatted date indicating when the resource was updated.
 	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
 	// The URL shortener feature allows automatic replacement of URLs that were
@@ -185,12 +192,15 @@ type MessagingProfile struct {
 		DailySpendLimit         respjson.Field
 		DailySpendLimitEnabled  respjson.Field
 		Enabled                 respjson.Field
+		HealthWebhookURL        respjson.Field
 		MmsFallBackToSMS        respjson.Field
 		MmsTranscoding          respjson.Field
 		MobileOnly              respjson.Field
 		Name                    respjson.Field
 		NumberPoolSettings      respjson.Field
 		RecordType              respjson.Field
+		RedactionEnabled        respjson.Field
+		RedactionLevel          respjson.Field
 		UpdatedAt               respjson.Field
 		URLShortenerSettings    respjson.Field
 		V1Secret                respjson.Field

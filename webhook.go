@@ -5577,6 +5577,8 @@ type InboundMessageWebhookEventDataPayload struct {
 	Media  []InboundMessageWebhookEventDataPayloadMedia `json:"media"`
 	// Unique identifier for a messaging profile.
 	MessagingProfileID string `json:"messaging_profile_id"`
+	// Unique identifier for a messaging profile.
+	OrganizationID string `json:"organization_id"`
 	// Number of parts into which the message's body must be split.
 	Parts int64 `json:"parts"`
 	// ISO 8601 formatted date indicating when the message request was received.
@@ -5587,6 +5589,8 @@ type InboundMessageWebhookEventDataPayload struct {
 	RecordType string `json:"record_type"`
 	// Not used for inbound messages.
 	SentAt time.Time `json:"sent_at,nullable" format:"date-time"`
+	// Message subject.
+	Subject string `json:"subject,nullable"`
 	// Tags associated with the resource.
 	Tags []string `json:"tags"`
 	// Indicates whether the TCR campaign is billable.
@@ -5624,10 +5628,12 @@ type InboundMessageWebhookEventDataPayload struct {
 		From                  respjson.Field
 		Media                 respjson.Field
 		MessagingProfileID    respjson.Field
+		OrganizationID        respjson.Field
 		Parts                 respjson.Field
 		ReceivedAt            respjson.Field
 		RecordType            respjson.Field
 		SentAt                respjson.Field
+		Subject               respjson.Field
 		Tags                  respjson.Field
 		TcrCampaignBillable   respjson.Field
 		TcrCampaignID         respjson.Field
@@ -7035,8 +7041,11 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	OccurredAt           time.Time                                            `json:"occurred_at"`
 	CreatorCallSessionID string                                               `json:"creator_call_session_id"`
 	// This field is from variant [ConferenceRecordingSavedWebhookEventDataPayload].
-	Format      string    `json:"format"`
-	CompletedAt time.Time `json:"completed_at"`
+	Format string `json:"format"`
+	// This field is a union of [[]OutboundMessagePayloadCc],
+	// [[]InboundMessageWebhookEventDataPayloadCc]
+	Cc          UnsafeUnwrapWebhookEventUnionDataPayloadCc `json:"cc"`
+	CompletedAt time.Time                                  `json:"completed_at"`
 	// This field is a union of [OutboundMessagePayloadCost],
 	// [InboundMessageWebhookEventDataPayloadCost]
 	Cost UnsafeUnwrapWebhookEventUnionDataPayloadCost `json:"cost"`
@@ -7047,26 +7056,22 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	Errors        []MessagingError                                      `json:"errors"`
 	// This field is a union of [[]OutboundMessagePayloadMedia],
 	// [[]InboundMessageWebhookEventDataPayloadMedia]
-	Media              UnsafeUnwrapWebhookEventUnionDataPayloadMedia `json:"media"`
-	MessagingProfileID string                                        `json:"messaging_profile_id"`
-	// This field is from variant [OutboundMessagePayload].
-	OrganizationID string    `json:"organization_id"`
-	Parts          int64     `json:"parts"`
-	ReceivedAt     time.Time `json:"received_at"`
-	RecordType     string    `json:"record_type"`
-	SentAt         time.Time `json:"sent_at"`
-	// This field is from variant [OutboundMessagePayload].
-	Subject               string    `json:"subject"`
-	TcrCampaignBillable   bool      `json:"tcr_campaign_billable"`
-	TcrCampaignID         string    `json:"tcr_campaign_id"`
-	TcrCampaignRegistered string    `json:"tcr_campaign_registered"`
-	Text                  string    `json:"text"`
-	Type                  string    `json:"type"`
-	ValidUntil            time.Time `json:"valid_until"`
-	WebhookFailoverURL    string    `json:"webhook_failover_url"`
-	WebhookURL            string    `json:"webhook_url"`
-	// This field is from variant [InboundMessageWebhookEventDataPayload].
-	Cc []InboundMessageWebhookEventDataPayloadCc `json:"cc"`
+	Media                 UnsafeUnwrapWebhookEventUnionDataPayloadMedia `json:"media"`
+	MessagingProfileID    string                                        `json:"messaging_profile_id"`
+	OrganizationID        string                                        `json:"organization_id"`
+	Parts                 int64                                         `json:"parts"`
+	ReceivedAt            time.Time                                     `json:"received_at"`
+	RecordType            string                                        `json:"record_type"`
+	SentAt                time.Time                                     `json:"sent_at"`
+	Subject               string                                        `json:"subject"`
+	TcrCampaignBillable   bool                                          `json:"tcr_campaign_billable"`
+	TcrCampaignID         string                                        `json:"tcr_campaign_id"`
+	TcrCampaignRegistered string                                        `json:"tcr_campaign_registered"`
+	Text                  string                                        `json:"text"`
+	Type                  string                                        `json:"type"`
+	ValidUntil            time.Time                                     `json:"valid_until"`
+	WebhookFailoverURL    string                                        `json:"webhook_failover_url"`
+	WebhookURL            string                                        `json:"webhook_url"`
 	// This field is from variant [NumberOrderWithPhoneNumbers].
 	BillingGroupID string `json:"billing_group_id"`
 	// This field is from variant [NumberOrderWithPhoneNumbers].
@@ -7156,6 +7161,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		OccurredAt               respjson.Field
 		CreatorCallSessionID     respjson.Field
 		Format                   respjson.Field
+		Cc                       respjson.Field
 		CompletedAt              respjson.Field
 		Cost                     respjson.Field
 		CostBreakdown            respjson.Field
@@ -7177,7 +7183,6 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		ValidUntil               respjson.Field
 		WebhookFailoverURL       respjson.Field
 		WebhookURL               respjson.Field
-		Cc                       respjson.Field
 		BillingGroupID           respjson.Field
 		CreatedAt                respjson.Field
 		CustomerReference        respjson.Field
@@ -7378,6 +7383,34 @@ type UnsafeUnwrapWebhookEventUnionDataPayloadStreamParams struct {
 }
 
 func (r *UnsafeUnwrapWebhookEventUnionDataPayloadStreamParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionDataPayloadCc is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionDataPayloadCc
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfOutboundMessagePayloadCcArray
+// OfInboundMessageWebhookEventDataPayloadCcArray]
+type UnsafeUnwrapWebhookEventUnionDataPayloadCc struct {
+	// This field will be present if the value is a [[]OutboundMessagePayloadCc]
+	// instead of an object.
+	OfOutboundMessagePayloadCcArray []OutboundMessagePayloadCc `json:",inline"`
+	// This field will be present if the value is a
+	// [[]InboundMessageWebhookEventDataPayloadCc] instead of an object.
+	OfInboundMessageWebhookEventDataPayloadCcArray []InboundMessageWebhookEventDataPayloadCc `json:",inline"`
+	JSON                                           struct {
+		OfOutboundMessagePayloadCcArray                respjson.Field
+		OfInboundMessageWebhookEventDataPayloadCcArray respjson.Field
+		raw                                            string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionDataPayloadCc) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8322,8 +8355,11 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	OccurredAt           time.Time                                      `json:"occurred_at"`
 	CreatorCallSessionID string                                         `json:"creator_call_session_id"`
 	// This field is from variant [ConferenceRecordingSavedWebhookEventDataPayload].
-	Format      string    `json:"format"`
-	CompletedAt time.Time `json:"completed_at"`
+	Format string `json:"format"`
+	// This field is a union of [[]OutboundMessagePayloadCc],
+	// [[]InboundMessageWebhookEventDataPayloadCc]
+	Cc          UnwrapWebhookEventUnionDataPayloadCc `json:"cc"`
+	CompletedAt time.Time                            `json:"completed_at"`
 	// This field is a union of [OutboundMessagePayloadCost],
 	// [InboundMessageWebhookEventDataPayloadCost]
 	Cost UnwrapWebhookEventUnionDataPayloadCost `json:"cost"`
@@ -8334,26 +8370,22 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	Errors        []MessagingError                                `json:"errors"`
 	// This field is a union of [[]OutboundMessagePayloadMedia],
 	// [[]InboundMessageWebhookEventDataPayloadMedia]
-	Media              UnwrapWebhookEventUnionDataPayloadMedia `json:"media"`
-	MessagingProfileID string                                  `json:"messaging_profile_id"`
-	// This field is from variant [OutboundMessagePayload].
-	OrganizationID string    `json:"organization_id"`
-	Parts          int64     `json:"parts"`
-	ReceivedAt     time.Time `json:"received_at"`
-	RecordType     string    `json:"record_type"`
-	SentAt         time.Time `json:"sent_at"`
-	// This field is from variant [OutboundMessagePayload].
-	Subject               string    `json:"subject"`
-	TcrCampaignBillable   bool      `json:"tcr_campaign_billable"`
-	TcrCampaignID         string    `json:"tcr_campaign_id"`
-	TcrCampaignRegistered string    `json:"tcr_campaign_registered"`
-	Text                  string    `json:"text"`
-	Type                  string    `json:"type"`
-	ValidUntil            time.Time `json:"valid_until"`
-	WebhookFailoverURL    string    `json:"webhook_failover_url"`
-	WebhookURL            string    `json:"webhook_url"`
-	// This field is from variant [InboundMessageWebhookEventDataPayload].
-	Cc []InboundMessageWebhookEventDataPayloadCc `json:"cc"`
+	Media                 UnwrapWebhookEventUnionDataPayloadMedia `json:"media"`
+	MessagingProfileID    string                                  `json:"messaging_profile_id"`
+	OrganizationID        string                                  `json:"organization_id"`
+	Parts                 int64                                   `json:"parts"`
+	ReceivedAt            time.Time                               `json:"received_at"`
+	RecordType            string                                  `json:"record_type"`
+	SentAt                time.Time                               `json:"sent_at"`
+	Subject               string                                  `json:"subject"`
+	TcrCampaignBillable   bool                                    `json:"tcr_campaign_billable"`
+	TcrCampaignID         string                                  `json:"tcr_campaign_id"`
+	TcrCampaignRegistered string                                  `json:"tcr_campaign_registered"`
+	Text                  string                                  `json:"text"`
+	Type                  string                                  `json:"type"`
+	ValidUntil            time.Time                               `json:"valid_until"`
+	WebhookFailoverURL    string                                  `json:"webhook_failover_url"`
+	WebhookURL            string                                  `json:"webhook_url"`
 	// This field is from variant [NumberOrderWithPhoneNumbers].
 	BillingGroupID string `json:"billing_group_id"`
 	// This field is from variant [NumberOrderWithPhoneNumbers].
@@ -8443,6 +8475,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		OccurredAt               respjson.Field
 		CreatorCallSessionID     respjson.Field
 		Format                   respjson.Field
+		Cc                       respjson.Field
 		CompletedAt              respjson.Field
 		Cost                     respjson.Field
 		CostBreakdown            respjson.Field
@@ -8464,7 +8497,6 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		ValidUntil               respjson.Field
 		WebhookFailoverURL       respjson.Field
 		WebhookURL               respjson.Field
-		Cc                       respjson.Field
 		BillingGroupID           respjson.Field
 		CreatedAt                respjson.Field
 		CustomerReference        respjson.Field
@@ -8661,6 +8693,34 @@ type UnwrapWebhookEventUnionDataPayloadStreamParams struct {
 }
 
 func (r *UnwrapWebhookEventUnionDataPayloadStreamParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnwrapWebhookEventUnionDataPayloadCc is an implicit subunion of
+// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataPayloadCc provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnwrapWebhookEventUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfOutboundMessagePayloadCcArray
+// OfInboundMessageWebhookEventDataPayloadCcArray]
+type UnwrapWebhookEventUnionDataPayloadCc struct {
+	// This field will be present if the value is a [[]OutboundMessagePayloadCc]
+	// instead of an object.
+	OfOutboundMessagePayloadCcArray []OutboundMessagePayloadCc `json:",inline"`
+	// This field will be present if the value is a
+	// [[]InboundMessageWebhookEventDataPayloadCc] instead of an object.
+	OfInboundMessageWebhookEventDataPayloadCcArray []InboundMessageWebhookEventDataPayloadCc `json:",inline"`
+	JSON                                           struct {
+		OfOutboundMessagePayloadCcArray                respjson.Field
+		OfInboundMessageWebhookEventDataPayloadCcArray respjson.Field
+		raw                                            string
+	} `json:"-"`
+}
+
+func (r *UnwrapWebhookEventUnionDataPayloadCc) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

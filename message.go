@@ -171,9 +171,10 @@ func (r *MessagingErrorSource) UnmarshalJSON(data []byte) error {
 
 type OutboundMessagePayload struct {
 	// Identifies the type of resource.
-	ID string `json:"id" format:"uuid"`
+	ID string                     `json:"id" format:"uuid"`
+	Cc []OutboundMessagePayloadCc `json:"cc"`
 	// ISO 8601 formatted date indicating when the message was finalized.
-	CompletedAt time.Time                  `json:"completed_at" format:"date-time"`
+	CompletedAt time.Time                  `json:"completed_at,nullable" format:"date-time"`
 	Cost        OutboundMessagePayloadCost `json:"cost,nullable"`
 	// Detailed breakdown of the message cost components.
 	CostBreakdown OutboundMessagePayloadCostBreakdown `json:"cost_breakdown,nullable"`
@@ -202,7 +203,7 @@ type OutboundMessagePayload struct {
 	// Any of "message".
 	RecordType OutboundMessagePayloadRecordType `json:"record_type"`
 	// ISO 8601 formatted date indicating when the message was sent.
-	SentAt time.Time `json:"sent_at" format:"date-time"`
+	SentAt time.Time `json:"sent_at,nullable" format:"date-time"`
 	// Subject of multimedia message
 	Subject string `json:"subject,nullable"`
 	// Tags associated with the resource.
@@ -234,6 +235,7 @@ type OutboundMessagePayload struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
+		Cc                    respjson.Field
 		CompletedAt           respjson.Field
 		Cost                  respjson.Field
 		CostBreakdown         respjson.Field
@@ -267,6 +269,35 @@ type OutboundMessagePayload struct {
 // Returns the unmodified JSON received from the API
 func (r OutboundMessagePayload) RawJSON() string { return r.JSON.raw }
 func (r *OutboundMessagePayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type OutboundMessagePayloadCc struct {
+	// The carrier of the receiver.
+	Carrier string `json:"carrier"`
+	// The line-type of the receiver.
+	//
+	// Any of "Wireline", "Wireless", "VoWiFi", "VoIP", "Pre-Paid Wireless", "".
+	LineType string `json:"line_type"`
+	// Receiving address (+E.164 formatted phone number or short code).
+	PhoneNumber string `json:"phone_number" format:"address"`
+	// Any of "queued", "sending", "sent", "delivered", "sending_failed",
+	// "delivery_failed", "delivery_unconfirmed".
+	Status string `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Carrier     respjson.Field
+		LineType    respjson.Field
+		PhoneNumber respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r OutboundMessagePayloadCc) RawJSON() string { return r.JSON.raw }
+func (r *OutboundMessagePayloadCc) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -476,8 +507,11 @@ func (r *MessageGetResponse) UnmarshalJSON(data []byte) error {
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type MessageGetResponseDataUnion struct {
-	ID          string    `json:"id"`
-	CompletedAt time.Time `json:"completed_at"`
+	ID string `json:"id"`
+	// This field is a union of [[]OutboundMessagePayloadCc],
+	// [[]MessageGetResponseDataInboundMessagePayloadCc]
+	Cc          MessageGetResponseDataUnionCc `json:"cc"`
+	CompletedAt time.Time                     `json:"completed_at"`
 	// This field is a union of [OutboundMessagePayloadCost],
 	// [MessageGetResponseDataInboundMessagePayloadCost]
 	Cost MessageGetResponseDataUnionCost `json:"cost"`
@@ -492,21 +526,19 @@ type MessageGetResponseDataUnion struct {
 	From MessageGetResponseDataUnionFrom `json:"from"`
 	// This field is a union of [[]OutboundMessagePayloadMedia],
 	// [[]MessageGetResponseDataInboundMessagePayloadMedia]
-	Media              MessageGetResponseDataUnionMedia `json:"media"`
-	MessagingProfileID string                           `json:"messaging_profile_id"`
-	// This field is from variant [OutboundMessagePayload].
-	OrganizationID string    `json:"organization_id"`
-	Parts          int64     `json:"parts"`
-	ReceivedAt     time.Time `json:"received_at"`
-	RecordType     string    `json:"record_type"`
-	SentAt         time.Time `json:"sent_at"`
-	// This field is from variant [OutboundMessagePayload].
-	Subject               string   `json:"subject"`
-	Tags                  []string `json:"tags"`
-	TcrCampaignBillable   bool     `json:"tcr_campaign_billable"`
-	TcrCampaignID         string   `json:"tcr_campaign_id"`
-	TcrCampaignRegistered string   `json:"tcr_campaign_registered"`
-	Text                  string   `json:"text"`
+	Media                 MessageGetResponseDataUnionMedia `json:"media"`
+	MessagingProfileID    string                           `json:"messaging_profile_id"`
+	OrganizationID        string                           `json:"organization_id"`
+	Parts                 int64                            `json:"parts"`
+	ReceivedAt            time.Time                        `json:"received_at"`
+	RecordType            string                           `json:"record_type"`
+	SentAt                time.Time                        `json:"sent_at"`
+	Subject               string                           `json:"subject"`
+	Tags                  []string                         `json:"tags"`
+	TcrCampaignBillable   bool                             `json:"tcr_campaign_billable"`
+	TcrCampaignID         string                           `json:"tcr_campaign_id"`
+	TcrCampaignRegistered string                           `json:"tcr_campaign_registered"`
+	Text                  string                           `json:"text"`
 	// This field is a union of [[]OutboundMessagePayloadTo],
 	// [[]MessageGetResponseDataInboundMessagePayloadTo]
 	To                 MessageGetResponseDataUnionTo `json:"to"`
@@ -514,10 +546,9 @@ type MessageGetResponseDataUnion struct {
 	ValidUntil         time.Time                     `json:"valid_until"`
 	WebhookFailoverURL string                        `json:"webhook_failover_url"`
 	WebhookURL         string                        `json:"webhook_url"`
-	// This field is from variant [MessageGetResponseDataInboundMessagePayload].
-	Cc   []MessageGetResponseDataInboundMessagePayloadCc `json:"cc"`
-	JSON struct {
+	JSON               struct {
 		ID                    respjson.Field
+		Cc                    respjson.Field
 		CompletedAt           respjson.Field
 		Cost                  respjson.Field
 		CostBreakdown         respjson.Field
@@ -543,7 +574,6 @@ type MessageGetResponseDataUnion struct {
 		ValidUntil            respjson.Field
 		WebhookFailoverURL    respjson.Field
 		WebhookURL            respjson.Field
-		Cc                    respjson.Field
 		raw                   string
 	} `json:"-"`
 }
@@ -562,6 +592,34 @@ func (u MessageGetResponseDataUnion) AsMessageGetResponseDataInboundMessagePaylo
 func (u MessageGetResponseDataUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *MessageGetResponseDataUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// MessageGetResponseDataUnionCc is an implicit subunion of
+// [MessageGetResponseDataUnion]. MessageGetResponseDataUnionCc provides convenient
+// access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [MessageGetResponseDataUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfOutboundMessagePayloadCcArray
+// OfMessageGetResponseDataInboundMessagePayloadCcArray]
+type MessageGetResponseDataUnionCc struct {
+	// This field will be present if the value is a [[]OutboundMessagePayloadCc]
+	// instead of an object.
+	OfOutboundMessagePayloadCcArray []OutboundMessagePayloadCc `json:",inline"`
+	// This field will be present if the value is a
+	// [[]MessageGetResponseDataInboundMessagePayloadCc] instead of an object.
+	OfMessageGetResponseDataInboundMessagePayloadCcArray []MessageGetResponseDataInboundMessagePayloadCc `json:",inline"`
+	JSON                                                 struct {
+		OfOutboundMessagePayloadCcArray                      respjson.Field
+		OfMessageGetResponseDataInboundMessagePayloadCcArray respjson.Field
+		raw                                                  string
+	} `json:"-"`
+}
+
+func (r *MessageGetResponseDataUnionCc) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -754,6 +812,8 @@ type MessageGetResponseDataInboundMessagePayload struct {
 	Media  []MessageGetResponseDataInboundMessagePayloadMedia `json:"media"`
 	// Unique identifier for a messaging profile.
 	MessagingProfileID string `json:"messaging_profile_id"`
+	// Unique identifier for a messaging profile.
+	OrganizationID string `json:"organization_id"`
 	// Number of parts into which the message's body must be split.
 	Parts int64 `json:"parts"`
 	// ISO 8601 formatted date indicating when the message request was received.
@@ -764,6 +824,8 @@ type MessageGetResponseDataInboundMessagePayload struct {
 	RecordType string `json:"record_type"`
 	// Not used for inbound messages.
 	SentAt time.Time `json:"sent_at,nullable" format:"date-time"`
+	// Message subject.
+	Subject string `json:"subject,nullable"`
 	// Tags associated with the resource.
 	Tags []string `json:"tags"`
 	// Indicates whether the TCR campaign is billable.
@@ -801,10 +863,12 @@ type MessageGetResponseDataInboundMessagePayload struct {
 		From                  respjson.Field
 		Media                 respjson.Field
 		MessagingProfileID    respjson.Field
+		OrganizationID        respjson.Field
 		Parts                 respjson.Field
 		ReceivedAt            respjson.Field
 		RecordType            respjson.Field
 		SentAt                respjson.Field
+		Subject               respjson.Field
 		Tags                  respjson.Field
 		TcrCampaignBillable   respjson.Field
 		TcrCampaignID         respjson.Field
@@ -1024,9 +1088,10 @@ func (r *MessageGetResponseDataInboundMessagePayloadTo) UnmarshalJSON(data []byt
 
 type MessageCancelScheduledResponse struct {
 	// Identifies the type of resource.
-	ID string `json:"id" format:"uuid"`
+	ID string                             `json:"id" format:"uuid"`
+	Cc []MessageCancelScheduledResponseCc `json:"cc"`
 	// ISO 8601 formatted date indicating when the message was finalized.
-	CompletedAt time.Time                          `json:"completed_at" format:"date-time"`
+	CompletedAt time.Time                          `json:"completed_at,nullable" format:"date-time"`
 	Cost        MessageCancelScheduledResponseCost `json:"cost,nullable"`
 	// Detailed breakdown of the message cost components.
 	CostBreakdown MessageCancelScheduledResponseCostBreakdown `json:"cost_breakdown,nullable"`
@@ -1055,7 +1120,7 @@ type MessageCancelScheduledResponse struct {
 	// Any of "message".
 	RecordType MessageCancelScheduledResponseRecordType `json:"record_type"`
 	// ISO 8601 formatted date indicating when the message was sent.
-	SentAt time.Time `json:"sent_at" format:"date-time"`
+	SentAt time.Time `json:"sent_at,nullable" format:"date-time"`
 	// Subject of multimedia message
 	Subject string `json:"subject,nullable"`
 	// Tags associated with the resource.
@@ -1087,6 +1152,7 @@ type MessageCancelScheduledResponse struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
+		Cc                    respjson.Field
 		CompletedAt           respjson.Field
 		Cost                  respjson.Field
 		CostBreakdown         respjson.Field
@@ -1120,6 +1186,37 @@ type MessageCancelScheduledResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MessageCancelScheduledResponse) RawJSON() string { return r.JSON.raw }
 func (r *MessageCancelScheduledResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageCancelScheduledResponseCc struct {
+	// The carrier of the receiver.
+	Carrier string `json:"carrier"`
+	// The line-type of the receiver.
+	//
+	// Any of "Wireline", "Wireless", "VoWiFi", "VoIP", "Pre-Paid Wireless", "".
+	LineType string `json:"line_type"`
+	// Receiving address (+E.164 formatted phone number or short code).
+	PhoneNumber string `json:"phone_number" format:"address"`
+	// The delivery status of the message.
+	//
+	// Any of "scheduled", "queued", "sending", "sent", "cancelled", "expired",
+	// "sending_failed", "delivery_unconfirmed", "delivered", "delivery_failed".
+	Status string `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Carrier     respjson.Field
+		LineType    respjson.Field
+		PhoneNumber respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageCancelScheduledResponseCc) RawJSON() string { return r.JSON.raw }
+func (r *MessageCancelScheduledResponseCc) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

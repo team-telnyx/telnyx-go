@@ -213,7 +213,7 @@ func TestMessageSendNumberPoolWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Messages.SendNumberPool(context.TODO(), telnyx.MessageSendNumberPoolParams{
 		MessagingProfileID: "abc85f64-5717-4562-b3fc-2c9600000000",
-		To:                 "to",
+		To:                 "+13125550002",
 		AutoDetect:         telnyx.Bool(true),
 		MediaURLs:          []string{"http://example.com"},
 		Subject:            telnyx.String("From Telnyx!"),
