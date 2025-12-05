@@ -659,6 +659,30 @@ func (r *CallActionService) UpdateClientState(ctx context.Context, callControlID
 	return
 }
 
+// The property Type is required.
+type AwsVoiceSettingsParam struct {
+	// Voice settings provider type
+	//
+	// Any of "aws".
+	Type AwsVoiceSettingsType `json:"type,omitzero,required"`
+	paramObj
+}
+
+func (r AwsVoiceSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow AwsVoiceSettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AwsVoiceSettingsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Voice settings provider type
+type AwsVoiceSettingsType string
+
+const (
+	AwsVoiceSettingsTypeAws AwsVoiceSettingsType = "aws"
+)
+
 type CallControlCommandResult struct {
 	Result string `json:"result"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -675,7 +699,12 @@ func (r *CallControlCommandResult) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property Type is required.
 type ElevenLabsVoiceSettingsParam struct {
+	// Voice settings provider type
+	//
+	// Any of "elevenlabs".
+	Type ElevenLabsVoiceSettingsType `json:"type,omitzero,required"`
 	// The `identifier` for an integration secret
 	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
 	// that refers to your ElevenLabs API key. Warning: Free plans are unlikely to work
@@ -691,6 +720,13 @@ func (r ElevenLabsVoiceSettingsParam) MarshalJSON() (data []byte, err error) {
 func (r *ElevenLabsVoiceSettingsParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Voice settings provider type
+type ElevenLabsVoiceSettingsType string
+
+const (
+	ElevenLabsVoiceSettingsTypeElevenlabs ElevenLabsVoiceSettingsType = "elevenlabs"
+)
 
 // Language to use for speech recognition
 type GoogleTranscriptionLanguage string
@@ -944,7 +980,12 @@ const (
 	TelnyxTranscriptionLanguageAutoDetect TelnyxTranscriptionLanguage = "auto_detect"
 )
 
+// The property Type is required.
 type TelnyxVoiceSettingsParam struct {
+	// Voice settings provider type
+	//
+	// Any of "telnyx".
+	Type TelnyxVoiceSettingsType `json:"type,omitzero,required"`
 	// The voice speed to be used for the voice. The voice speed must be between 0.1
 	// and 2.0. Default value is 1.0.
 	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
@@ -958,6 +999,13 @@ func (r TelnyxVoiceSettingsParam) MarshalJSON() (data []byte, err error) {
 func (r *TelnyxVoiceSettingsParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Voice settings provider type
+type TelnyxVoiceSettingsType string
+
+const (
+	TelnyxVoiceSettingsTypeTelnyx TelnyxVoiceSettingsType = "telnyx"
+)
 
 // The settings associated with speech to text for the voice assistant. This is
 // only relevant if the assistant uses a text-to-text language model. Any assistant
@@ -2819,25 +2867,65 @@ func init() {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CallActionGatherUsingAIParamsVoiceSettingsUnion struct {
-	OfElevenLabsVoiceSettings *ElevenLabsVoiceSettingsParam `json:",omitzero,inline"`
-	OfTelnyxVoiceSettings     *TelnyxVoiceSettingsParam     `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam     `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam        `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u CallActionGatherUsingAIParamsVoiceSettingsUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfElevenLabsVoiceSettings, u.OfTelnyxVoiceSettings)
+	return param.MarshalUnion(u, u.OfElevenlabs, u.OfTelnyx, u.OfAws)
 }
 func (u *CallActionGatherUsingAIParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *CallActionGatherUsingAIParamsVoiceSettingsUnion) asAny() any {
-	if !param.IsOmitted(u.OfElevenLabsVoiceSettings) {
-		return u.OfElevenLabsVoiceSettings
-	} else if !param.IsOmitted(u.OfTelnyxVoiceSettings) {
-		return u.OfTelnyxVoiceSettings
+	if !param.IsOmitted(u.OfElevenlabs) {
+		return u.OfElevenlabs
+	} else if !param.IsOmitted(u.OfTelnyx) {
+		return u.OfTelnyx
+	} else if !param.IsOmitted(u.OfAws) {
+		return u.OfAws
 	}
 	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingAIParamsVoiceSettingsUnion) GetAPIKeyRef() *string {
+	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingAIParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 {
+	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
+		return &vt.VoiceSpeed.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingAIParamsVoiceSettingsUnion) GetType() *string {
+	if vt := u.OfElevenlabs; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfTelnyx; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfAws; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[CallActionGatherUsingAIParamsVoiceSettingsUnion](
+		"type",
+		apijson.Discriminator[ElevenLabsVoiceSettingsParam]("elevenlabs"),
+		apijson.Discriminator[TelnyxVoiceSettingsParam]("telnyx"),
+		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
+	)
 }
 
 type CallActionGatherUsingAudioParams struct {
@@ -3044,25 +3132,65 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CallActionGatherUsingSpeakParamsVoiceSettingsUnion struct {
-	OfElevenLabsVoiceSettings *ElevenLabsVoiceSettingsParam `json:",omitzero,inline"`
-	OfTelnyxVoiceSettings     *TelnyxVoiceSettingsParam     `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam     `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam        `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfElevenLabsVoiceSettings, u.OfTelnyxVoiceSettings)
+	return param.MarshalUnion(u, u.OfElevenlabs, u.OfTelnyx, u.OfAws)
 }
 func (u *CallActionGatherUsingSpeakParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *CallActionGatherUsingSpeakParamsVoiceSettingsUnion) asAny() any {
-	if !param.IsOmitted(u.OfElevenLabsVoiceSettings) {
-		return u.OfElevenLabsVoiceSettings
-	} else if !param.IsOmitted(u.OfTelnyxVoiceSettings) {
-		return u.OfTelnyxVoiceSettings
+	if !param.IsOmitted(u.OfElevenlabs) {
+		return u.OfElevenlabs
+	} else if !param.IsOmitted(u.OfTelnyx) {
+		return u.OfTelnyx
+	} else if !param.IsOmitted(u.OfAws) {
+		return u.OfAws
 	}
 	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetAPIKeyRef() *string {
+	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 {
+	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
+		return &vt.VoiceSpeed.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetType() *string {
+	if vt := u.OfElevenlabs; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfTelnyx; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfAws; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[CallActionGatherUsingSpeakParamsVoiceSettingsUnion](
+		"type",
+		apijson.Discriminator[ElevenLabsVoiceSettingsParam]("elevenlabs"),
+		apijson.Discriminator[TelnyxVoiceSettingsParam]("telnyx"),
+		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
+	)
 }
 
 type CallActionHangupParams struct {
@@ -3380,25 +3508,65 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CallActionSpeakParamsVoiceSettingsUnion struct {
-	OfElevenLabsVoiceSettings *ElevenLabsVoiceSettingsParam `json:",omitzero,inline"`
-	OfTelnyxVoiceSettings     *TelnyxVoiceSettingsParam     `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam     `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam        `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u CallActionSpeakParamsVoiceSettingsUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfElevenLabsVoiceSettings, u.OfTelnyxVoiceSettings)
+	return param.MarshalUnion(u, u.OfElevenlabs, u.OfTelnyx, u.OfAws)
 }
 func (u *CallActionSpeakParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *CallActionSpeakParamsVoiceSettingsUnion) asAny() any {
-	if !param.IsOmitted(u.OfElevenLabsVoiceSettings) {
-		return u.OfElevenLabsVoiceSettings
-	} else if !param.IsOmitted(u.OfTelnyxVoiceSettings) {
-		return u.OfTelnyxVoiceSettings
+	if !param.IsOmitted(u.OfElevenlabs) {
+		return u.OfElevenlabs
+	} else if !param.IsOmitted(u.OfTelnyx) {
+		return u.OfTelnyx
+	} else if !param.IsOmitted(u.OfAws) {
+		return u.OfAws
 	}
 	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionSpeakParamsVoiceSettingsUnion) GetAPIKeyRef() *string {
+	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionSpeakParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 {
+	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
+		return &vt.VoiceSpeed.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionSpeakParamsVoiceSettingsUnion) GetType() *string {
+	if vt := u.OfElevenlabs; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfTelnyx; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfAws; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[CallActionSpeakParamsVoiceSettingsUnion](
+		"type",
+		apijson.Discriminator[ElevenLabsVoiceSettingsParam]("elevenlabs"),
+		apijson.Discriminator[TelnyxVoiceSettingsParam]("telnyx"),
+		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
+	)
 }
 
 type CallActionStartAIAssistantParams struct {
@@ -3482,25 +3650,65 @@ func (r *CallActionStartAIAssistantParamsAssistant) UnmarshalJSON(data []byte) e
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CallActionStartAIAssistantParamsVoiceSettingsUnion struct {
-	OfElevenLabsVoiceSettings *ElevenLabsVoiceSettingsParam `json:",omitzero,inline"`
-	OfTelnyxVoiceSettings     *TelnyxVoiceSettingsParam     `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam     `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam        `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfElevenLabsVoiceSettings, u.OfTelnyxVoiceSettings)
+	return param.MarshalUnion(u, u.OfElevenlabs, u.OfTelnyx, u.OfAws)
 }
 func (u *CallActionStartAIAssistantParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *CallActionStartAIAssistantParamsVoiceSettingsUnion) asAny() any {
-	if !param.IsOmitted(u.OfElevenLabsVoiceSettings) {
-		return u.OfElevenLabsVoiceSettings
-	} else if !param.IsOmitted(u.OfTelnyxVoiceSettings) {
-		return u.OfTelnyxVoiceSettings
+	if !param.IsOmitted(u.OfElevenlabs) {
+		return u.OfElevenlabs
+	} else if !param.IsOmitted(u.OfTelnyx) {
+		return u.OfTelnyx
+	} else if !param.IsOmitted(u.OfAws) {
+		return u.OfAws
 	}
 	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetAPIKeyRef() *string {
+	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 {
+	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
+		return &vt.VoiceSpeed.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetType() *string {
+	if vt := u.OfElevenlabs; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfTelnyx; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfAws; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[CallActionStartAIAssistantParamsVoiceSettingsUnion](
+		"type",
+		apijson.Discriminator[ElevenLabsVoiceSettingsParam]("elevenlabs"),
+		apijson.Discriminator[TelnyxVoiceSettingsParam]("telnyx"),
+		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
+	)
 }
 
 type CallActionStartForkingParams struct {

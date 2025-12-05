@@ -1107,25 +1107,65 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type ConferenceActionSpeakParamsVoiceSettingsUnion struct {
-	OfElevenLabsVoiceSettings *ElevenLabsVoiceSettingsParam `json:",omitzero,inline"`
-	OfTelnyxVoiceSettings     *TelnyxVoiceSettingsParam     `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam     `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam        `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u ConferenceActionSpeakParamsVoiceSettingsUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfElevenLabsVoiceSettings, u.OfTelnyxVoiceSettings)
+	return param.MarshalUnion(u, u.OfElevenlabs, u.OfTelnyx, u.OfAws)
 }
 func (u *ConferenceActionSpeakParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *ConferenceActionSpeakParamsVoiceSettingsUnion) asAny() any {
-	if !param.IsOmitted(u.OfElevenLabsVoiceSettings) {
-		return u.OfElevenLabsVoiceSettings
-	} else if !param.IsOmitted(u.OfTelnyxVoiceSettings) {
-		return u.OfTelnyxVoiceSettings
+	if !param.IsOmitted(u.OfElevenlabs) {
+		return u.OfElevenlabs
+	} else if !param.IsOmitted(u.OfTelnyx) {
+		return u.OfTelnyx
+	} else if !param.IsOmitted(u.OfAws) {
+		return u.OfAws
 	}
 	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetAPIKeyRef() *string {
+	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 {
+	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
+		return &vt.VoiceSpeed.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetType() *string {
+	if vt := u.OfElevenlabs; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfTelnyx; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfAws; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[ConferenceActionSpeakParamsVoiceSettingsUnion](
+		"type",
+		apijson.Discriminator[ElevenLabsVoiceSettingsParam]("elevenlabs"),
+		apijson.Discriminator[TelnyxVoiceSettingsParam]("telnyx"),
+		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
+	)
 }
 
 type ConferenceActionStopParams struct {
