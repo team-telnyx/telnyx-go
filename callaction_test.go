@@ -261,14 +261,13 @@ func TestCallActionGatherUsingAIWithOptionalParams(t *testing.T) {
 				Model:           telnyx.String("meta-llama/Meta-Llama-3.1-70B-Instruct"),
 				OpenAIAPIKeyRef: telnyx.String("my_openai_api_key"),
 				Tools: []telnyx.AssistantToolUnionParam{{
-					OfBookAppointmentTool: &telnyx.AssistantToolBookAppointmentToolParam{
-						BookAppointment: telnyx.AssistantToolBookAppointmentToolBookAppointmentParam{
+					OfBookAppointment: &telnyx.AssistantToolBookAppointmentParam{
+						BookAppointment: telnyx.AssistantToolBookAppointmentBookAppointmentParam{
 							APIKeyRef:        "my_calcom_api_key",
 							EventTypeID:      0,
 							AttendeeName:     telnyx.String("attendee_name"),
 							AttendeeTimezone: telnyx.String("attendee_timezone"),
 						},
-						Type: "book_appointment",
 					},
 				}},
 			},
@@ -294,7 +293,8 @@ func TestCallActionGatherUsingAIWithOptionalParams(t *testing.T) {
 			UserResponseTimeoutMs: telnyx.Int(5000),
 			Voice:                 telnyx.String("Telnyx.KokoroTTS.af"),
 			VoiceSettings: telnyx.CallActionGatherUsingAIParamsVoiceSettingsUnion{
-				OfElevenLabsVoiceSettings: &telnyx.ElevenLabsVoiceSettingsParam{
+				OfElevenlabs: &telnyx.ElevenLabsVoiceSettingsParam{
+					Type:      telnyx.ElevenLabsVoiceSettingsTypeElevenlabs,
 					APIKeyRef: telnyx.String("my_elevenlabs_api_key"),
 				},
 			},
@@ -383,7 +383,8 @@ func TestCallActionGatherUsingSpeakWithOptionalParams(t *testing.T) {
 			TimeoutMillis:           telnyx.Int(60000),
 			ValidDigits:             telnyx.String("123"),
 			VoiceSettings: telnyx.CallActionGatherUsingSpeakParamsVoiceSettingsUnion{
-				OfElevenLabsVoiceSettings: &telnyx.ElevenLabsVoiceSettingsParam{
+				OfElevenlabs: &telnyx.ElevenLabsVoiceSettingsParam{
+					Type:      telnyx.ElevenLabsVoiceSettingsTypeElevenlabs,
 					APIKeyRef: telnyx.String("my_elevenlabs_api_key"),
 				},
 			},
@@ -685,7 +686,8 @@ func TestCallActionSpeakWithOptionalParams(t *testing.T) {
 			ServiceLevel: telnyx.CallActionSpeakParamsServiceLevelBasic,
 			Stop:         telnyx.String("current"),
 			VoiceSettings: telnyx.CallActionSpeakParamsVoiceSettingsUnion{
-				OfElevenLabsVoiceSettings: &telnyx.ElevenLabsVoiceSettingsParam{
+				OfElevenlabs: &telnyx.ElevenLabsVoiceSettingsParam{
+					Type:      telnyx.ElevenLabsVoiceSettingsTypeElevenlabs,
 					APIKeyRef: telnyx.String("my_elevenlabs_api_key"),
 				},
 			},
@@ -733,7 +735,8 @@ func TestCallActionStartAIAssistantWithOptionalParams(t *testing.T) {
 			},
 			Voice: telnyx.String("Telnyx.KokoroTTS.af"),
 			VoiceSettings: telnyx.CallActionStartAIAssistantParamsVoiceSettingsUnion{
-				OfElevenLabsVoiceSettings: &telnyx.ElevenLabsVoiceSettingsParam{
+				OfElevenlabs: &telnyx.ElevenLabsVoiceSettingsParam{
+					Type:      telnyx.ElevenLabsVoiceSettingsTypeElevenlabs,
 					APIKeyRef: telnyx.String("my_elevenlabs_api_key"),
 				},
 			},
