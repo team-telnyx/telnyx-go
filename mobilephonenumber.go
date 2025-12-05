@@ -26,7 +26,8 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewMobilePhoneNumberService] method instead.
 type MobilePhoneNumberService struct {
-	Options []option.RequestOption
+	Options   []option.RequestOption
+	Messaging MobilePhoneNumberMessagingService
 }
 
 // NewMobilePhoneNumberService generates a new service that applies the given
@@ -35,6 +36,7 @@ type MobilePhoneNumberService struct {
 func NewMobilePhoneNumberService(opts ...option.RequestOption) (r MobilePhoneNumberService) {
 	r = MobilePhoneNumberService{}
 	r.Options = opts
+	r.Messaging = NewMobilePhoneNumberMessagingService(opts...)
 	return
 }
 

@@ -4325,6 +4325,18 @@ Methods:
 - <code title="patch /v2/mobile_phone_numbers/{id}">client.MobilePhoneNumbers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MobilePhoneNumberService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MobilePhoneNumberUpdateParams">MobilePhoneNumberUpdateParams</a>) (<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MobilePhoneNumberUpdateResponse">MobilePhoneNumberUpdateResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /v2/mobile_phone_numbers">client.MobilePhoneNumbers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MobilePhoneNumberService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MobilePhoneNumberListParams">MobilePhoneNumberListParams</a>) (<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MobilePhoneNumberListResponse">MobilePhoneNumberListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+## Messaging
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MobilePhoneNumberMessagingGetResponse">MobilePhoneNumberMessagingGetResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MobilePhoneNumberMessagingListResponse">MobilePhoneNumberMessagingListResponse</a>
+
+Methods:
+
+- <code title="get /mobile_phone_numbers/{id}/messaging">client.MobilePhoneNumbers.Messaging.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MobilePhoneNumberMessagingService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MobilePhoneNumberMessagingGetResponse">MobilePhoneNumberMessagingGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /mobile_phone_numbers/messaging">client.MobilePhoneNumbers.Messaging.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MobilePhoneNumberMessagingService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MobilePhoneNumberMessagingListParams">MobilePhoneNumberMessagingListParams</a>) (<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MobilePhoneNumberMessagingListResponse">MobilePhoneNumberMessagingListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # MobileVoiceConnections
 
 Response Types:
