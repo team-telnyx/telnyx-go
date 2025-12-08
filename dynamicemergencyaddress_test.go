@@ -30,7 +30,7 @@ func TestDynamicEmergencyAddressNewWithOptionalParams(t *testing.T) {
 		DynamicEmergencyAddress: telnyx.DynamicEmergencyAddressParam{
 			AdministrativeArea:    "TX",
 			CountryCode:           telnyx.DynamicEmergencyAddressCountryCodeUs,
-			HouseNumber:           "house_number",
+			HouseNumber:           "600",
 			Locality:              "Austin",
 			PostalCode:            "78701",
 			StreetName:            "Congress",
