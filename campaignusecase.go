@@ -37,7 +37,7 @@ func NewCampaignUsecaseService(opts ...option.RequestOption) (r CampaignUsecaseS
 // Get Campaign Cost
 func (r *CampaignUsecaseService) GetCost(ctx context.Context, query CampaignUsecaseGetCostParams, opts ...option.RequestOption) (res *CampaignUsecaseGetCostResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "campaign/usecase/cost"
+	path := "10dlc/campaign/usecase/cost"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
 }

@@ -42,7 +42,7 @@ func NewPhoneNumberCampaignService(opts ...option.RequestOption) (r PhoneNumberC
 // Create New Phone Number Campaign
 func (r *PhoneNumberCampaignService) New(ctx context.Context, body PhoneNumberCampaignNewParams, opts ...option.RequestOption) (res *PhoneNumberCampaign, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "phone_number_campaigns"
+	path := "10dlc/phone_number_campaigns"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -54,7 +54,7 @@ func (r *PhoneNumberCampaignService) Get(ctx context.Context, phoneNumber string
 		err = errors.New("missing required phoneNumber parameter")
 		return
 	}
-	path := fmt.Sprintf("phone_number_campaigns/%s", phoneNumber)
+	path := fmt.Sprintf("10dlc/phone_number_campaigns/%s", phoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -66,7 +66,7 @@ func (r *PhoneNumberCampaignService) Update(ctx context.Context, phoneNumber str
 		err = errors.New("missing required phoneNumber parameter")
 		return
 	}
-	path := fmt.Sprintf("phone_number_campaigns/%s", phoneNumber)
+	path := fmt.Sprintf("10dlc/phone_number_campaigns/%s", phoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
 }
@@ -74,7 +74,7 @@ func (r *PhoneNumberCampaignService) Update(ctx context.Context, phoneNumber str
 // Retrieve All Phone Number Campaigns
 func (r *PhoneNumberCampaignService) List(ctx context.Context, query PhoneNumberCampaignListParams, opts ...option.RequestOption) (res *PhoneNumberCampaignListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "phone_number_campaigns"
+	path := "10dlc/phone_number_campaigns"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
 }
@@ -87,7 +87,7 @@ func (r *PhoneNumberCampaignService) Delete(ctx context.Context, phoneNumber str
 		err = errors.New("missing required phoneNumber parameter")
 		return
 	}
-	path := fmt.Sprintf("phone_number_campaigns/%s", phoneNumber)
+	path := fmt.Sprintf("10dlc/phone_number_campaigns/%s", phoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }

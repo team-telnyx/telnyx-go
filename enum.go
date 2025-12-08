@@ -34,7 +34,7 @@ func NewEnumService(opts ...option.RequestOption) (r EnumService) {
 // Get Enum
 func (r *EnumService) Get(ctx context.Context, endpoint EnumGetParamsEndpoint, opts ...option.RequestOption) (res *[]any, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("enum/%v", endpoint)
+	path := fmt.Sprintf("10dlc/enum/%v", endpoint)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }

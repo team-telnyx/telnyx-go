@@ -44,7 +44,7 @@ func NewCampaignBuilderService(opts ...option.RequestOption) (r CampaignBuilderS
 // ([see 10DLC Costs section for details](https://developers.telnyx.com/docs/messaging/10dlc/concepts#10dlc-costs)).
 func (r *CampaignBuilderService) New(ctx context.Context, body CampaignBuilderNewParams, opts ...option.RequestOption) (res *TelnyxCampaignCsp, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "campaignBuilder"
+	path := "10dlc/campaignBuilder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }

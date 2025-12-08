@@ -47,7 +47,7 @@ func NewPhoneNumberAssignmentByProfileService(opts ...option.RequestOption) (r P
 // services), only provide `campaignId`, not `tcrCampaignId`.
 func (r *PhoneNumberAssignmentByProfileService) Assign(ctx context.Context, body PhoneNumberAssignmentByProfileAssignParams, opts ...option.RequestOption) (res *PhoneNumberAssignmentByProfileAssignResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "phoneNumberAssignmentByProfile"
+	path := "10dlc/phoneNumberAssignmentByProfile"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -60,7 +60,7 @@ func (r *PhoneNumberAssignmentByProfileService) GetPhoneNumberStatus(ctx context
 		err = errors.New("missing required taskId parameter")
 		return
 	}
-	path := fmt.Sprintf("phoneNumberAssignmentByProfile/%s/phoneNumbers", taskID)
+	path := fmt.Sprintf("10dlc/phoneNumberAssignmentByProfile/%s/phoneNumbers", taskID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
 }
@@ -73,7 +73,7 @@ func (r *PhoneNumberAssignmentByProfileService) GetStatus(ctx context.Context, t
 		err = errors.New("missing required taskId parameter")
 		return
 	}
-	path := fmt.Sprintf("phoneNumberAssignmentByProfile/%s", taskID)
+	path := fmt.Sprintf("10dlc/phoneNumberAssignmentByProfile/%s", taskID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }

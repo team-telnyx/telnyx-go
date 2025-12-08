@@ -44,7 +44,7 @@ func (r *PartnerCampaignService) Get(ctx context.Context, campaignID string, opt
 		err = errors.New("missing required campaignId parameter")
 		return
 	}
-	path := fmt.Sprintf("partner_campaigns/%s", campaignID)
+	path := fmt.Sprintf("10dlc/partner_campaigns/%s", campaignID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -57,7 +57,7 @@ func (r *PartnerCampaignService) Update(ctx context.Context, campaignID string, 
 		err = errors.New("missing required campaignId parameter")
 		return
 	}
-	path := fmt.Sprintf("partner_campaigns/%s", campaignID)
+	path := fmt.Sprintf("10dlc/partner_campaigns/%s", campaignID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
 }
@@ -69,7 +69,7 @@ func (r *PartnerCampaignService) Update(ctx context.Context, campaignID string, 
 // omitted from the response from this endpoint.
 func (r *PartnerCampaignService) List(ctx context.Context, query PartnerCampaignListParams, opts ...option.RequestOption) (res *PartnerCampaignListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "partner_campaigns"
+	path := "10dlc/partner_campaigns"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
 }
@@ -81,7 +81,7 @@ func (r *PartnerCampaignService) List(ctx context.Context, query PartnerCampaign
 // omitted from the response from this endpoint.
 func (r *PartnerCampaignService) ListSharedByMe(ctx context.Context, query PartnerCampaignListSharedByMeParams, opts ...option.RequestOption) (res *PartnerCampaignListSharedByMeResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "partnerCampaign/sharedByMe"
+	path := "10dlc/partnerCampaign/sharedByMe"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
 }
@@ -93,7 +93,7 @@ func (r *PartnerCampaignService) GetSharingStatus(ctx context.Context, campaignI
 		err = errors.New("missing required campaignId parameter")
 		return
 	}
-	path := fmt.Sprintf("partnerCampaign/%s/sharing", campaignID)
+	path := fmt.Sprintf("10dlc/partnerCampaign/%s/sharing", campaignID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }

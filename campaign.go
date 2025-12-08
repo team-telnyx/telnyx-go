@@ -49,7 +49,7 @@ func (r *CampaignService) Get(ctx context.Context, campaignID string, opts ...op
 		err = errors.New("missing required campaignId parameter")
 		return
 	}
-	path := fmt.Sprintf("campaign/%s", campaignID)
+	path := fmt.Sprintf("10dlc/campaign/%s", campaignID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -62,7 +62,7 @@ func (r *CampaignService) Update(ctx context.Context, campaignID string, body Ca
 		err = errors.New("missing required campaignId parameter")
 		return
 	}
-	path := fmt.Sprintf("campaign/%s", campaignID)
+	path := fmt.Sprintf("10dlc/campaign/%s", campaignID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
 }
@@ -70,7 +70,7 @@ func (r *CampaignService) Update(ctx context.Context, campaignID string, body Ca
 // Retrieve a list of campaigns associated with a supplied `brandId`.
 func (r *CampaignService) List(ctx context.Context, query CampaignListParams, opts ...option.RequestOption) (res *CampaignListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "campaign"
+	path := "10dlc/campaign"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
 }
@@ -82,7 +82,7 @@ func (r *CampaignService) AcceptSharing(ctx context.Context, campaignID string, 
 		err = errors.New("missing required campaignId parameter")
 		return
 	}
-	path := fmt.Sprintf("campaign/acceptSharing/%s", campaignID)
+	path := fmt.Sprintf("10dlc/campaign/acceptSharing/%s", campaignID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return
 }
@@ -94,7 +94,7 @@ func (r *CampaignService) Deactivate(ctx context.Context, campaignID string, opt
 		err = errors.New("missing required campaignId parameter")
 		return
 	}
-	path := fmt.Sprintf("campaign/%s", campaignID)
+	path := fmt.Sprintf("10dlc/campaign/%s", campaignID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -106,7 +106,7 @@ func (r *CampaignService) GetMnoMetadata(ctx context.Context, campaignID string,
 		err = errors.New("missing required campaignId parameter")
 		return
 	}
-	path := fmt.Sprintf("campaign/%s/mnoMetadata", campaignID)
+	path := fmt.Sprintf("10dlc/campaign/%s/mnoMetadata", campaignID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -118,7 +118,7 @@ func (r *CampaignService) GetOperationStatus(ctx context.Context, campaignID str
 		err = errors.New("missing required campaignId parameter")
 		return
 	}
-	path := fmt.Sprintf("campaign/%s/operationStatus", campaignID)
+	path := fmt.Sprintf("10dlc/campaign/%s/operationStatus", campaignID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -130,7 +130,7 @@ func (r *CampaignService) GetSharingStatus(ctx context.Context, campaignID strin
 		err = errors.New("missing required campaignId parameter")
 		return
 	}
-	path := fmt.Sprintf("campaign/%s/sharing", campaignID)
+	path := fmt.Sprintf("10dlc/campaign/%s/sharing", campaignID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -145,7 +145,7 @@ func (r *CampaignService) SubmitAppeal(ctx context.Context, campaignID string, b
 		err = errors.New("missing required campaignId parameter")
 		return
 	}
-	path := fmt.Sprintf("campaign/%s/appeal", campaignID)
+	path := fmt.Sprintf("10dlc/campaign/%s/appeal", campaignID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }

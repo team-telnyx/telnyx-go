@@ -46,7 +46,7 @@ func (r *CampaignBuilderBrandService) QualifyByUsecase(ctx context.Context, usec
 		err = errors.New("missing required usecase parameter")
 		return
 	}
-	path := fmt.Sprintf("campaignBuilder/brand/%s/usecase/%s", query.BrandID, usecase)
+	path := fmt.Sprintf("10dlc/campaignBuilder/brand/%s/usecase/%s", query.BrandID, usecase)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }

@@ -45,7 +45,7 @@ func NewBrandService(opts ...option.RequestOption) (r BrandService) {
 // will entail an upfront, non-refundable $4 expense.
 func (r *BrandService) New(ctx context.Context, body BrandNewParams, opts ...option.RequestOption) (res *TelnyxBrand, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "brand"
+	path := "10dlc/brand"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -57,7 +57,7 @@ func (r *BrandService) Get(ctx context.Context, brandID string, opts ...option.R
 		err = errors.New("missing required brandId parameter")
 		return
 	}
-	path := fmt.Sprintf("brand/%s", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -69,7 +69,7 @@ func (r *BrandService) Update(ctx context.Context, brandID string, body BrandUpd
 		err = errors.New("missing required brandId parameter")
 		return
 	}
-	path := fmt.Sprintf("brand/%s", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
 }
@@ -77,7 +77,7 @@ func (r *BrandService) Update(ctx context.Context, brandID string, body BrandUpd
 // This endpoint is used to list all brands associated with your organization.
 func (r *BrandService) List(ctx context.Context, query BrandListParams, opts ...option.RequestOption) (res *BrandListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "brand"
+	path := "10dlc/brand"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
 }
@@ -92,7 +92,7 @@ func (r *BrandService) Delete(ctx context.Context, brandID string, opts ...optio
 		err = errors.New("missing required brandId parameter")
 		return
 	}
-	path := fmt.Sprintf("brand/%s", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
@@ -116,7 +116,7 @@ func (r *BrandService) GetFeedback(ctx context.Context, brandID string, opts ...
 		err = errors.New("missing required brandId parameter")
 		return
 	}
-	path := fmt.Sprintf("brand/feedback/%s", brandID)
+	path := fmt.Sprintf("10dlc/brand/feedback/%s", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -129,7 +129,7 @@ func (r *BrandService) Resend2faEmail(ctx context.Context, brandID string, opts 
 		err = errors.New("missing required brandId parameter")
 		return
 	}
-	path := fmt.Sprintf("brand/%s/2faEmail", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s/2faEmail", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
 	return
 }
@@ -143,7 +143,7 @@ func (r *BrandService) Revet(ctx context.Context, brandID string, opts ...option
 		err = errors.New("missing required brandId parameter")
 		return
 	}
-	path := fmt.Sprintf("brand/%s/revet", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s/revet", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
 	return
 }
