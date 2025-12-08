@@ -42,7 +42,7 @@ func (r *BrandExternalVettingService) List(ctx context.Context, brandID string, 
 		err = errors.New("missing required brandId parameter")
 		return
 	}
-	path := fmt.Sprintf("brand/%s/externalVetting", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s/externalVetting", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -57,7 +57,7 @@ func (r *BrandExternalVettingService) Import(ctx context.Context, brandID string
 		err = errors.New("missing required brandId parameter")
 		return
 	}
-	path := fmt.Sprintf("brand/%s/externalVetting", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s/externalVetting", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
 }
@@ -69,7 +69,7 @@ func (r *BrandExternalVettingService) Order(ctx context.Context, brandID string,
 		err = errors.New("missing required brandId parameter")
 		return
 	}
-	path := fmt.Sprintf("brand/%s/externalVetting", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s/externalVetting", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }

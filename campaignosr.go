@@ -39,7 +39,7 @@ func (r *CampaignOsrService) GetAttributes(ctx context.Context, campaignID strin
 		err = errors.New("missing required campaignId parameter")
 		return
 	}
-	path := fmt.Sprintf("campaign/%s/osr/attributes", campaignID)
+	path := fmt.Sprintf("10dlc/campaign/%s/osr/attributes", campaignID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
