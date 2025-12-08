@@ -4,7 +4,6 @@ package telnyx
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -46,7 +45,7 @@ func NewPhoneNumberAssignmentByProfileService(opts ...option.RequestOption) (r P
 // only provide the parameter, `tcrCampaignId`, and not `campaignId`. In all other
 // cases (where the campaign you're assigning was created with Telnyx 10DLC
 // services), only provide `campaignId`, not `tcrCampaignId`.
-func (r *PhoneNumberAssignmentByProfileService) Assign(ctx context.Context, body PhoneNumberAssignmentByProfileAssignParams, opts ...option.RequestOption) (res *PhoneNumberAssignmentByProfileAssignResponseUnion, err error) {
+func (r *PhoneNumberAssignmentByProfileService) Assign(ctx context.Context, body PhoneNumberAssignmentByProfileAssignParams, opts ...option.RequestOption) (res *PhoneNumberAssignmentByProfileAssignResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "phoneNumberAssignmentByProfile"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -89,56 +88,7 @@ const (
 	TaskStatusFailed    TaskStatus = "failed"
 )
 
-// PhoneNumberAssignmentByProfileAssignResponseUnion contains all possible
-// properties and values from
-// [PhoneNumberAssignmentByProfileAssignResponseAssignProfileToCampaignResponse],
-// [PhoneNumberAssignmentByProfileAssignResponseSettingsDataErrorMessage].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type PhoneNumberAssignmentByProfileAssignResponseUnion struct {
-	// This field is from variant
-	// [PhoneNumberAssignmentByProfileAssignResponseAssignProfileToCampaignResponse].
-	MessagingProfileID string `json:"messagingProfileId"`
-	// This field is from variant
-	// [PhoneNumberAssignmentByProfileAssignResponseAssignProfileToCampaignResponse].
-	TaskID string `json:"taskId"`
-	// This field is from variant
-	// [PhoneNumberAssignmentByProfileAssignResponseAssignProfileToCampaignResponse].
-	CampaignID string `json:"campaignId"`
-	// This field is from variant
-	// [PhoneNumberAssignmentByProfileAssignResponseAssignProfileToCampaignResponse].
-	TcrCampaignID string `json:"tcrCampaignId"`
-	// This field is from variant
-	// [PhoneNumberAssignmentByProfileAssignResponseSettingsDataErrorMessage].
-	Message string `json:"message"`
-	JSON    struct {
-		MessagingProfileID respjson.Field
-		TaskID             respjson.Field
-		CampaignID         respjson.Field
-		TcrCampaignID      respjson.Field
-		Message            respjson.Field
-		raw                string
-	} `json:"-"`
-}
-
-func (u PhoneNumberAssignmentByProfileAssignResponseUnion) AsAssignProfileToCampaignResponse() (v PhoneNumberAssignmentByProfileAssignResponseAssignProfileToCampaignResponse) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u PhoneNumberAssignmentByProfileAssignResponseUnion) AsSettingsDataErrorMessage() (v PhoneNumberAssignmentByProfileAssignResponseSettingsDataErrorMessage) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u PhoneNumberAssignmentByProfileAssignResponseUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *PhoneNumberAssignmentByProfileAssignResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PhoneNumberAssignmentByProfileAssignResponseAssignProfileToCampaignResponse struct {
+type PhoneNumberAssignmentByProfileAssignResponse struct {
 	// The ID of the messaging profile that you want to link to the specified campaign.
 	MessagingProfileID string `json:"messagingProfileId,required"`
 	// The ID of the task associated with assigning a messaging profile to a campaign.
@@ -162,28 +112,8 @@ type PhoneNumberAssignmentByProfileAssignResponseAssignProfileToCampaignResponse
 }
 
 // Returns the unmodified JSON received from the API
-func (r PhoneNumberAssignmentByProfileAssignResponseAssignProfileToCampaignResponse) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PhoneNumberAssignmentByProfileAssignResponseAssignProfileToCampaignResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PhoneNumberAssignmentByProfileAssignResponseSettingsDataErrorMessage struct {
-	Message string `json:"message,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Message     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PhoneNumberAssignmentByProfileAssignResponseSettingsDataErrorMessage) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PhoneNumberAssignmentByProfileAssignResponseSettingsDataErrorMessage) UnmarshalJSON(data []byte) error {
+func (r PhoneNumberAssignmentByProfileAssignResponse) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumberAssignmentByProfileAssignResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

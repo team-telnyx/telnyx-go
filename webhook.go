@@ -3615,65 +3615,7 @@ func (r *CallStreamingStoppedWebhookEventDataPayload) UnmarshalJSON(data []byte)
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// CampaignStatusUpdateWebhookEventUnion contains all possible properties and
-// values from [CampaignStatusUpdateWebhookEventCampaignStatusUpdateEvent],
-// [CampaignStatusUpdateWebhookEventCampaignSuspendedEvent].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type CampaignStatusUpdateWebhookEventUnion struct {
-	// This field is from variant
-	// [CampaignStatusUpdateWebhookEventCampaignStatusUpdateEvent].
-	BrandID    string `json:"brandId"`
-	CampaignID string `json:"campaignId"`
-	// This field is from variant
-	// [CampaignStatusUpdateWebhookEventCampaignStatusUpdateEvent].
-	CreateDate string `json:"createDate"`
-	// This field is from variant
-	// [CampaignStatusUpdateWebhookEventCampaignStatusUpdateEvent].
-	CspID string `json:"cspId"`
-	// This field is from variant
-	// [CampaignStatusUpdateWebhookEventCampaignStatusUpdateEvent].
-	IsTMobileRegistered bool `json:"isTMobileRegistered"`
-	// This field is from variant
-	// [CampaignStatusUpdateWebhookEventCampaignSuspendedEvent].
-	Description string `json:"description"`
-	// This field is from variant
-	// [CampaignStatusUpdateWebhookEventCampaignSuspendedEvent].
-	Status string `json:"status"`
-	// This field is from variant
-	// [CampaignStatusUpdateWebhookEventCampaignSuspendedEvent].
-	Type string `json:"type"`
-	JSON struct {
-		BrandID             respjson.Field
-		CampaignID          respjson.Field
-		CreateDate          respjson.Field
-		CspID               respjson.Field
-		IsTMobileRegistered respjson.Field
-		Description         respjson.Field
-		Status              respjson.Field
-		Type                respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-func (u CampaignStatusUpdateWebhookEventUnion) AsCampaignStatusUpdateEvent() (v CampaignStatusUpdateWebhookEventCampaignStatusUpdateEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CampaignStatusUpdateWebhookEventUnion) AsCampaignSuspendedEvent() (v CampaignStatusUpdateWebhookEventCampaignSuspendedEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u CampaignStatusUpdateWebhookEventUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *CampaignStatusUpdateWebhookEventUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CampaignStatusUpdateWebhookEventCampaignStatusUpdateEvent struct {
+type CampaignStatusUpdateWebhookEvent struct {
 	// Brand ID associated with the campaign.
 	BrandID string `json:"brandId"`
 	// The ID of the campaign.
@@ -3682,55 +3624,61 @@ type CampaignStatusUpdateWebhookEventCampaignStatusUpdateEvent struct {
 	CreateDate string `json:"createDate"`
 	// Alphanumeric identifier of the CSP associated with this campaign.
 	CspID string `json:"cspId"`
+	// Description of the event.
+	Description string `json:"description"`
 	// Indicates whether the campaign is registered with T-Mobile.
 	IsTMobileRegistered bool `json:"isTMobileRegistered"`
+	// The status of the campaign.
+	//
+	// Any of "ACCEPTED", "REJECTED", "DORMANT", "success", "failed".
+	Status CampaignStatusUpdateWebhookEventStatus `json:"status"`
+	// Any of "TELNYX_EVENT", "REGISTRATION", "MNO_REVIEW", "TELNYX_REVIEW",
+	// "NUMBER_POOL_PROVISIONED", "NUMBER_POOL_DEPROVISIONED", "TCR_EVENT", "VERIFIED".
+	Type CampaignStatusUpdateWebhookEventType `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BrandID             respjson.Field
 		CampaignID          respjson.Field
 		CreateDate          respjson.Field
 		CspID               respjson.Field
+		Description         respjson.Field
 		IsTMobileRegistered respjson.Field
+		Status              respjson.Field
+		Type                respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r CampaignStatusUpdateWebhookEventCampaignStatusUpdateEvent) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *CampaignStatusUpdateWebhookEventCampaignStatusUpdateEvent) UnmarshalJSON(data []byte) error {
+func (r CampaignStatusUpdateWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *CampaignStatusUpdateWebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CampaignStatusUpdateWebhookEventCampaignSuspendedEvent struct {
-	// The ID of the campaign.
-	CampaignID string `json:"campaignId"`
-	// Description of the event.
-	Description string `json:"description"`
-	// The status of the campaign.
-	//
-	// Any of "DORMANT".
-	Status string `json:"status"`
-	// Any of "TELNYX_EVENT".
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CampaignID  respjson.Field
-		Description respjson.Field
-		Status      respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
+// The status of the campaign.
+type CampaignStatusUpdateWebhookEventStatus string
 
-// Returns the unmodified JSON received from the API
-func (r CampaignStatusUpdateWebhookEventCampaignSuspendedEvent) RawJSON() string { return r.JSON.raw }
-func (r *CampaignStatusUpdateWebhookEventCampaignSuspendedEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+const (
+	CampaignStatusUpdateWebhookEventStatusAccepted CampaignStatusUpdateWebhookEventStatus = "ACCEPTED"
+	CampaignStatusUpdateWebhookEventStatusRejected CampaignStatusUpdateWebhookEventStatus = "REJECTED"
+	CampaignStatusUpdateWebhookEventStatusDormant  CampaignStatusUpdateWebhookEventStatus = "DORMANT"
+	CampaignStatusUpdateWebhookEventStatusSuccess  CampaignStatusUpdateWebhookEventStatus = "success"
+	CampaignStatusUpdateWebhookEventStatusFailed   CampaignStatusUpdateWebhookEventStatus = "failed"
+)
+
+type CampaignStatusUpdateWebhookEventType string
+
+const (
+	CampaignStatusUpdateWebhookEventTypeTelnyxEvent             CampaignStatusUpdateWebhookEventType = "TELNYX_EVENT"
+	CampaignStatusUpdateWebhookEventTypeRegistration            CampaignStatusUpdateWebhookEventType = "REGISTRATION"
+	CampaignStatusUpdateWebhookEventTypeMnoReview               CampaignStatusUpdateWebhookEventType = "MNO_REVIEW"
+	CampaignStatusUpdateWebhookEventTypeTelnyxReview            CampaignStatusUpdateWebhookEventType = "TELNYX_REVIEW"
+	CampaignStatusUpdateWebhookEventTypeNumberPoolProvisioned   CampaignStatusUpdateWebhookEventType = "NUMBER_POOL_PROVISIONED"
+	CampaignStatusUpdateWebhookEventTypeNumberPoolDeprovisioned CampaignStatusUpdateWebhookEventType = "NUMBER_POOL_DEPROVISIONED"
+	CampaignStatusUpdateWebhookEventTypeTcrEvent                CampaignStatusUpdateWebhookEventType = "TCR_EVENT"
+	CampaignStatusUpdateWebhookEventTypeVerified                CampaignStatusUpdateWebhookEventType = "VERIFIED"
+)
 
 type ConferenceCreatedWebhookEvent struct {
 	Data ConferenceCreatedWebhookEventData `json:"data"`
@@ -6373,9 +6321,7 @@ func (r *TranscriptionWebhookEventDataPayloadTranscriptionData) UnmarshalJSON(da
 // [CallSiprecStartedWebhookEvent], [CallSiprecStoppedWebhookEvent],
 // [CallSpeakEndedWebhookEvent], [CallSpeakStartedWebhookEvent],
 // [CallStreamingFailedWebhookEvent], [CallStreamingStartedWebhookEvent],
-// [CallStreamingStoppedWebhookEvent],
-// [UnsafeUnwrapWebhookEventCampaignStatusUpdateEvent],
-// [UnsafeUnwrapWebhookEventCampaignSuspendedEvent],
+// [CallStreamingStoppedWebhookEvent], [CampaignStatusUpdateWebhookEvent],
 // [ConferenceCreatedWebhookEvent], [ConferenceEndedWebhookEvent],
 // [ConferenceFloorChangedWebhookEvent], [ConferenceParticipantJoinedWebhookEvent],
 // [ConferenceParticipantLeftWebhookEvent],
@@ -6439,23 +6385,24 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// This field is a union of [CustomerServiceRecordStatusChangedWebhookEventMeta],
 	// [DeliveryUpdateWebhookEventMeta], [NumberOrderStatusUpdateWebhookEventMeta]
 	Meta UnsafeUnwrapWebhookEventUnionMeta `json:"meta"`
-	// This field is from variant [UnsafeUnwrapWebhookEventCampaignStatusUpdateEvent].
-	BrandID    string `json:"brandId"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
+	BrandID string `json:"brandId"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
 	CampaignID string `json:"campaignId"`
-	// This field is from variant [UnsafeUnwrapWebhookEventCampaignStatusUpdateEvent].
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
 	CreateDate string `json:"createDate"`
-	// This field is from variant [UnsafeUnwrapWebhookEventCampaignStatusUpdateEvent].
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
 	CspID string `json:"cspId"`
-	// This field is from variant [UnsafeUnwrapWebhookEventCampaignStatusUpdateEvent].
-	IsTMobileRegistered bool `json:"isTMobileRegistered"`
-	// This field is from variant [UnsafeUnwrapWebhookEventCampaignSuspendedEvent].
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
 	Description string `json:"description"`
-	// This field is from variant [UnsafeUnwrapWebhookEventCampaignSuspendedEvent].
-	Status string `json:"status"`
-	// This field is from variant [UnsafeUnwrapWebhookEventCampaignSuspendedEvent].
-	Type      string `json:"type"`
-	ID        string `json:"id"`
-	EventType string `json:"event_type"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
+	IsTMobileRegistered bool `json:"isTMobileRegistered"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
+	Status CampaignStatusUpdateWebhookEventStatus `json:"status"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
+	Type      CampaignStatusUpdateWebhookEventType `json:"type"`
+	ID        string                               `json:"id"`
+	EventType string                               `json:"event_type"`
 	// This field is a union of [ConferenceFloorChangedWebhookEventPayload],
 	// [FaxDeliveredWebhookEventPayload], [FaxFailedWebhookEventPayload],
 	// [FaxMediaProcessedWebhookEventPayload], [FaxQueuedWebhookEventPayload],
@@ -6469,8 +6416,8 @@ type UnsafeUnwrapWebhookEventUnion struct {
 		CampaignID          respjson.Field
 		CreateDate          respjson.Field
 		CspID               respjson.Field
-		IsTMobileRegistered respjson.Field
 		Description         respjson.Field
+		IsTMobileRegistered respjson.Field
 		Status              respjson.Field
 		Type                respjson.Field
 		ID                  respjson.Field
@@ -6661,12 +6608,7 @@ func (u UnsafeUnwrapWebhookEventUnion) AsStreamingStoppedEvent() (v CallStreamin
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsCampaignStatusUpdateEvent() (v UnsafeUnwrapWebhookEventCampaignStatusUpdateEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UnsafeUnwrapWebhookEventUnion) AsCampaignSuspendedEvent() (v UnsafeUnwrapWebhookEventCampaignSuspendedEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsCampaignStatusUpdateEvent() (v CampaignStatusUpdateWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -7609,63 +7551,6 @@ func (r *UnsafeUnwrapWebhookEventUnionPayload) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type UnsafeUnwrapWebhookEventCampaignStatusUpdateEvent struct {
-	// Brand ID associated with the campaign.
-	BrandID string `json:"brandId"`
-	// The ID of the campaign.
-	CampaignID string `json:"campaignId"`
-	// Unix timestamp when campaign was created.
-	CreateDate string `json:"createDate"`
-	// Alphanumeric identifier of the CSP associated with this campaign.
-	CspID string `json:"cspId"`
-	// Indicates whether the campaign is registered with T-Mobile.
-	IsTMobileRegistered bool `json:"isTMobileRegistered"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		BrandID             respjson.Field
-		CampaignID          respjson.Field
-		CreateDate          respjson.Field
-		CspID               respjson.Field
-		IsTMobileRegistered respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UnsafeUnwrapWebhookEventCampaignStatusUpdateEvent) RawJSON() string { return r.JSON.raw }
-func (r *UnsafeUnwrapWebhookEventCampaignStatusUpdateEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UnsafeUnwrapWebhookEventCampaignSuspendedEvent struct {
-	// The ID of the campaign.
-	CampaignID string `json:"campaignId"`
-	// Description of the event.
-	Description string `json:"description"`
-	// The status of the campaign.
-	//
-	// Any of "DORMANT".
-	Status string `json:"status"`
-	// Any of "TELNYX_EVENT".
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CampaignID  respjson.Field
-		Description respjson.Field
-		Status      respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UnsafeUnwrapWebhookEventCampaignSuspendedEvent) RawJSON() string { return r.JSON.raw }
-func (r *UnsafeUnwrapWebhookEventCampaignSuspendedEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // UnwrapWebhookEventUnion contains all possible properties and values from
 // [CallAIGatherEndedWebhookEvent],
 // [CallAIGatherMessageHistoryUpdatedWebhookEvent],
@@ -7687,11 +7572,9 @@ func (r *UnsafeUnwrapWebhookEventCampaignSuspendedEvent) UnmarshalJSON(data []by
 // [CallSiprecStartedWebhookEvent], [CallSiprecStoppedWebhookEvent],
 // [CallSpeakEndedWebhookEvent], [CallSpeakStartedWebhookEvent],
 // [CallStreamingFailedWebhookEvent], [CallStreamingStartedWebhookEvent],
-// [CallStreamingStoppedWebhookEvent],
-// [UnwrapWebhookEventCampaignStatusUpdateEvent],
-// [UnwrapWebhookEventCampaignSuspendedEvent], [ConferenceCreatedWebhookEvent],
-// [ConferenceEndedWebhookEvent], [ConferenceFloorChangedWebhookEvent],
-// [ConferenceParticipantJoinedWebhookEvent],
+// [CallStreamingStoppedWebhookEvent], [CampaignStatusUpdateWebhookEvent],
+// [ConferenceCreatedWebhookEvent], [ConferenceEndedWebhookEvent],
+// [ConferenceFloorChangedWebhookEvent], [ConferenceParticipantJoinedWebhookEvent],
 // [ConferenceParticipantLeftWebhookEvent],
 // [ConferenceParticipantPlaybackEndedWebhookEvent],
 // [ConferenceParticipantPlaybackStartedWebhookEvent],
@@ -7753,23 +7636,24 @@ type UnwrapWebhookEventUnion struct {
 	// This field is a union of [CustomerServiceRecordStatusChangedWebhookEventMeta],
 	// [DeliveryUpdateWebhookEventMeta], [NumberOrderStatusUpdateWebhookEventMeta]
 	Meta UnwrapWebhookEventUnionMeta `json:"meta"`
-	// This field is from variant [UnwrapWebhookEventCampaignStatusUpdateEvent].
-	BrandID    string `json:"brandId"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
+	BrandID string `json:"brandId"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
 	CampaignID string `json:"campaignId"`
-	// This field is from variant [UnwrapWebhookEventCampaignStatusUpdateEvent].
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
 	CreateDate string `json:"createDate"`
-	// This field is from variant [UnwrapWebhookEventCampaignStatusUpdateEvent].
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
 	CspID string `json:"cspId"`
-	// This field is from variant [UnwrapWebhookEventCampaignStatusUpdateEvent].
-	IsTMobileRegistered bool `json:"isTMobileRegistered"`
-	// This field is from variant [UnwrapWebhookEventCampaignSuspendedEvent].
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
 	Description string `json:"description"`
-	// This field is from variant [UnwrapWebhookEventCampaignSuspendedEvent].
-	Status string `json:"status"`
-	// This field is from variant [UnwrapWebhookEventCampaignSuspendedEvent].
-	Type      string `json:"type"`
-	ID        string `json:"id"`
-	EventType string `json:"event_type"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
+	IsTMobileRegistered bool `json:"isTMobileRegistered"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
+	Status CampaignStatusUpdateWebhookEventStatus `json:"status"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
+	Type      CampaignStatusUpdateWebhookEventType `json:"type"`
+	ID        string                               `json:"id"`
+	EventType string                               `json:"event_type"`
 	// This field is a union of [ConferenceFloorChangedWebhookEventPayload],
 	// [FaxDeliveredWebhookEventPayload], [FaxFailedWebhookEventPayload],
 	// [FaxMediaProcessedWebhookEventPayload], [FaxQueuedWebhookEventPayload],
@@ -7783,8 +7667,8 @@ type UnwrapWebhookEventUnion struct {
 		CampaignID          respjson.Field
 		CreateDate          respjson.Field
 		CspID               respjson.Field
-		IsTMobileRegistered respjson.Field
 		Description         respjson.Field
+		IsTMobileRegistered respjson.Field
 		Status              respjson.Field
 		Type                respjson.Field
 		ID                  respjson.Field
@@ -7975,12 +7859,7 @@ func (u UnwrapWebhookEventUnion) AsStreamingStoppedEvent() (v CallStreamingStopp
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsCampaignStatusUpdateEvent() (v UnwrapWebhookEventCampaignStatusUpdateEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UnwrapWebhookEventUnion) AsCampaignSuspendedEvent() (v UnwrapWebhookEventCampaignSuspendedEvent) {
+func (u UnwrapWebhookEventUnion) AsCampaignStatusUpdateEvent() (v CampaignStatusUpdateWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -8914,62 +8793,5 @@ type UnwrapWebhookEventUnionPayload struct {
 }
 
 func (r *UnwrapWebhookEventUnionPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UnwrapWebhookEventCampaignStatusUpdateEvent struct {
-	// Brand ID associated with the campaign.
-	BrandID string `json:"brandId"`
-	// The ID of the campaign.
-	CampaignID string `json:"campaignId"`
-	// Unix timestamp when campaign was created.
-	CreateDate string `json:"createDate"`
-	// Alphanumeric identifier of the CSP associated with this campaign.
-	CspID string `json:"cspId"`
-	// Indicates whether the campaign is registered with T-Mobile.
-	IsTMobileRegistered bool `json:"isTMobileRegistered"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		BrandID             respjson.Field
-		CampaignID          respjson.Field
-		CreateDate          respjson.Field
-		CspID               respjson.Field
-		IsTMobileRegistered respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UnwrapWebhookEventCampaignStatusUpdateEvent) RawJSON() string { return r.JSON.raw }
-func (r *UnwrapWebhookEventCampaignStatusUpdateEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UnwrapWebhookEventCampaignSuspendedEvent struct {
-	// The ID of the campaign.
-	CampaignID string `json:"campaignId"`
-	// Description of the event.
-	Description string `json:"description"`
-	// The status of the campaign.
-	//
-	// Any of "DORMANT".
-	Status string `json:"status"`
-	// Any of "TELNYX_EVENT".
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CampaignID  respjson.Field
-		Description respjson.Field
-		Status      respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UnwrapWebhookEventCampaignSuspendedEvent) RawJSON() string { return r.JSON.raw }
-func (r *UnwrapWebhookEventCampaignSuspendedEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
