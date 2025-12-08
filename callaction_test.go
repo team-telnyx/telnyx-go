@@ -251,7 +251,7 @@ func TestCallActionGatherUsingAIWithOptionalParams(t *testing.T) {
 			},
 			Assistant: telnyx.AssistantParam{
 				Instructions:    telnyx.String("You are a friendly voice assistant."),
-				Model:           telnyx.String("meta-llama/Meta-Llama-3.1-70B-Instruct"),
+				Model:           telnyx.String("Qwen/Qwen3-235B-A22B"),
 				OpenAIAPIKeyRef: telnyx.String("my_openai_api_key"),
 				Tools: []telnyx.AssistantToolUnionParam{{
 					OfBookAppointment: &telnyx.AssistantToolBookAppointmentParam{
