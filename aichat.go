@@ -42,7 +42,7 @@ func (r *AIChatService) NewCompletion(ctx context.Context, body AIChatNewComplet
 	return
 }
 
-type AIChatNewCompletionResponse = any
+type AIChatNewCompletionResponse map[string]any
 
 type AIChatNewCompletionParams struct {
 	// A list of the previous chat messages for context.
