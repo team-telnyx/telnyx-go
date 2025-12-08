@@ -1245,6 +1245,14 @@ func (u *TranscriptionStartRequestTranscriptionEngineConfigUnionParam) asAny() a
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetKeywordsBoosting() map[string]float64 {
+	if vt := u.OfDeepgram; vt != nil {
+		return vt.KeywordsBoosting
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetRegion() *string {
 	if vt := u.OfAzure; vt != nil {
 		return &vt.Region
@@ -1547,6 +1555,10 @@ type TranscriptionStartRequestTranscriptionEngineConfigDeepgramParam struct {
 	//
 	// Any of "deepgram/nova-2", "deepgram/nova-3".
 	TranscriptionModel string `json:"transcription_model,omitzero,required"`
+	// Keywords and their respective intensifiers (boosting values) to improve
+	// transcription accuracy for specific words or phrases. The intensifier should be
+	// a numeric value. Example: `{"snuffleupagus": 5, "systrom": 2, "krieger": 1}`.
+	KeywordsBoosting map[string]float64 `json:"keywords_boosting,omitzero"`
 	// Language to use for speech recognition. Available languages depend on the
 	// selected model.
 	//

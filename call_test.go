@@ -124,23 +124,16 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 		TranscriptionConfig: telnyx.TranscriptionStartRequestParam{
 			ClientState:         telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
 			CommandID:           telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
-			TranscriptionEngine: telnyx.TranscriptionStartRequestTranscriptionEngineGoogle,
+			TranscriptionEngine: telnyx.TranscriptionStartRequestTranscriptionEngineDeepgram,
 			TranscriptionEngineConfig: telnyx.TranscriptionStartRequestTranscriptionEngineConfigUnionParam{
-				OfGoogle: &telnyx.TranscriptionStartRequestTranscriptionEngineConfigGoogleParam{
-					EnableSpeakerDiarization: telnyx.Bool(true),
-					Hints:                    []string{"string"},
-					InterimResults:           telnyx.Bool(true),
-					Language:                 telnyx.GoogleTranscriptionLanguageEn,
-					MaxSpeakerCount:          telnyx.Int(4),
-					MinSpeakerCount:          telnyx.Int(4),
-					Model:                    "latest_long",
-					ProfanityFilter:          telnyx.Bool(true),
-					SpeechContext: []telnyx.TranscriptionStartRequestTranscriptionEngineConfigGoogleSpeechContextParam{{
-						Boost:   telnyx.Float(1),
-						Phrases: []string{"string"},
-					}},
-					TranscriptionEngine: "Google",
-					UseEnhanced:         telnyx.Bool(true),
+				OfDeepgram: &telnyx.TranscriptionStartRequestTranscriptionEngineConfigDeepgramParam{
+					TranscriptionModel: "deepgram/nova-2",
+					KeywordsBoosting: map[string]float64{
+						"snuffleupagus": 5,
+						"systrom":       2,
+						"krieger":       1,
+					},
+					Language: telnyx.TranscriptionStartRequestTranscriptionEngineConfigDeepgramLanguageEn,
 				},
 			},
 			TranscriptionTracks: telnyx.String("both"),
