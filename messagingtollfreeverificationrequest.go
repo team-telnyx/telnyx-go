@@ -17,6 +17,7 @@ import (
 	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -75,11 +76,26 @@ func (r *MessagingTollfreeVerificationRequestService) Update(ctx context.Context
 }
 
 // Get a list of previously-submitted tollfree verification requests
-func (r *MessagingTollfreeVerificationRequestService) List(ctx context.Context, query MessagingTollfreeVerificationRequestListParams, opts ...option.RequestOption) (res *MessagingTollfreeVerificationRequestListResponse, err error) {
+func (r *MessagingTollfreeVerificationRequestService) List(ctx context.Context, query MessagingTollfreeVerificationRequestListParams, opts ...option.RequestOption) (res *pagination.DefaultPaginationForMessagingTollfree[VerificationRequestStatus], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "messaging_tollfree/verification/requests"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get a list of previously-submitted tollfree verification requests
+func (r *MessagingTollfreeVerificationRequestService) ListAutoPaging(ctx context.Context, query MessagingTollfreeVerificationRequestListParams, opts ...option.RequestOption) *pagination.DefaultPaginationForMessagingTollfreeAutoPager[VerificationRequestStatus] {
+	return pagination.NewDefaultPaginationForMessagingTollfreeAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a verification request
@@ -322,7 +338,7 @@ func (r *URLParam) UnmarshalJSON(data []byte) error {
 type UseCaseCategories string
 
 const (
-	UseCaseCategories2Fa                        UseCaseCategories = "2FA"
+	UseCaseCategoriesTwoFa                      UseCaseCategories = "2FA"
 	UseCaseCategoriesAppNotifications           UseCaseCategories = "App Notifications"
 	UseCaseCategoriesAppointments               UseCaseCategories = "Appointments"
 	UseCaseCategoriesAuctions                   UseCaseCategories = "Auctions"
@@ -597,39 +613,18 @@ func (r *VerificationRequestStatus) UnmarshalJSON(data []byte) error {
 type Volume string
 
 const (
-	Volume10         Volume = "10"
-	Volume100        Volume = "100"
-	Volume1_000      Volume = "1,000"
-	Volume10_000     Volume = "10,000"
-	Volume100_000    Volume = "100,000"
-	Volume250_000    Volume = "250,000"
-	Volume500_000    Volume = "500,000"
-	Volume750_000    Volume = "750,000"
-	Volume1_000_000  Volume = "1,000,000"
-	Volume5_000_000  Volume = "5,000,000"
-	Volume10_000_000 Volume = "10,000,000+"
+	VolumeV10           Volume = "10"
+	VolumeV100          Volume = "100"
+	VolumeV1000         Volume = "1,000"
+	VolumeV10000        Volume = "10,000"
+	VolumeV100000       Volume = "100,000"
+	VolumeV250000       Volume = "250,000"
+	VolumeV500000       Volume = "500,000"
+	VolumeV750000       Volume = "750,000"
+	VolumeV1000000      Volume = "1,000,000"
+	VolumeV5000000      Volume = "5,000,000"
+	VolumeV10000000Plus Volume = "10,000,000+"
 )
-
-// A paginated response
-type MessagingTollfreeVerificationRequestListResponse struct {
-	// The records yielded by this request
-	Records []VerificationRequestStatus `json:"records,required"`
-	// The total amount of records for these query parameters
-	TotalRecords int64 `json:"total_records,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Records      respjson.Field
-		TotalRecords respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessagingTollfreeVerificationRequestListResponse) RawJSON() string { return r.JSON.raw }
-func (r *MessagingTollfreeVerificationRequestListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 type MessagingTollfreeVerificationRequestNewParams struct {
 	// The body of a tollfree verification request

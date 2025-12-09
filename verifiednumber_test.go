@@ -77,10 +77,8 @@ func TestVerifiedNumberListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.VerifiedNumbers.List(context.TODO(), telnyx.VerifiedNumberListParams{
-		Page: telnyx.VerifiedNumberListParamsPage{
-			Number: telnyx.Int(0),
-			Size:   telnyx.Int(0),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

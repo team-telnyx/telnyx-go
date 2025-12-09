@@ -38,13 +38,13 @@ func NewAddressActionService(opts ...option.RequestOption) (r AddressActionServi
 
 // Accepts this address suggestion as a new emergency address for Operator Connect
 // and finishes the uploads of the numbers associated with it to Microsoft.
-func (r *AddressActionService) AcceptSuggestions(ctx context.Context, id string, body AddressActionAcceptSuggestionsParams, opts ...option.RequestOption) (res *AddressActionAcceptSuggestionsResponse, err error) {
+func (r *AddressActionService) AcceptSuggestions(ctx context.Context, addressUuid string, body AddressActionAcceptSuggestionsParams, opts ...option.RequestOption) (res *AddressActionAcceptSuggestionsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	if id == "" {
-		err = errors.New("missing required id parameter")
+	if addressUuid == "" {
+		err = errors.New("missing required address_uuid parameter")
 		return
 	}
-	path := fmt.Sprintf("addresses/%s/actions/accept_suggestions", id)
+	path := fmt.Sprintf("addresses/%s/actions/accept_suggestions", addressUuid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }

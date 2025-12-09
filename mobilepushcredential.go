@@ -15,8 +15,10 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/shared/constant"
 )
 
 // MobilePushCredentialService contains methods and other services that help with
@@ -59,11 +61,26 @@ func (r *MobilePushCredentialService) Get(ctx context.Context, pushCredentialID 
 }
 
 // List mobile push credentials
-func (r *MobilePushCredentialService) List(ctx context.Context, query MobilePushCredentialListParams, opts ...option.RequestOption) (res *MobilePushCredentialListResponse, err error) {
+func (r *MobilePushCredentialService) List(ctx context.Context, query MobilePushCredentialListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PushCredential], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "mobile_push_credentials"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List mobile push credentials
+func (r *MobilePushCredentialService) ListAutoPaging(ctx context.Context, query MobilePushCredentialListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PushCredential] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Deletes a mobile push credential based on the given `push_credential_id`
@@ -137,25 +154,6 @@ func (r *PushCredentialResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Mobile mobile push credentials
-type MobilePushCredentialListResponse struct {
-	Data []PushCredential `json:"data"`
-	Meta PaginationMeta   `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MobilePushCredentialListResponse) RawJSON() string { return r.JSON.raw }
-func (r *MobilePushCredentialListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type MobilePushCredentialNewParams struct {
 
 	//
@@ -163,22 +161,22 @@ type MobilePushCredentialNewParams struct {
 	//
 
 	// This field is a request body variant, only one variant field can be set.
-	OfCreateIOsPushCredentialRequest *MobilePushCredentialNewParamsBodyCreateIOsPushCredentialRequest `json:",inline"`
+	OfIos *MobilePushCredentialNewParamsCreateMobilePushCredentialRequestIos `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	OfCreateAndroidPushCredentialRequest *MobilePushCredentialNewParamsBodyCreateAndroidPushCredentialRequest `json:",inline"`
+	OfAndroid *MobilePushCredentialNewParamsCreateMobilePushCredentialRequestAndroid `json:",inline"`
 
 	paramObj
 }
 
 func (u MobilePushCredentialNewParams) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfCreateIOsPushCredentialRequest, u.OfCreateAndroidPushCredentialRequest)
+	return param.MarshalUnion(u, u.OfIos, u.OfAndroid)
 }
 func (r *MobilePushCredentialNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties Alias, Certificate, PrivateKey, Type are required.
-type MobilePushCredentialNewParamsBodyCreateIOsPushCredentialRequest struct {
+type MobilePushCredentialNewParamsCreateMobilePushCredentialRequestIos struct {
 	// Alias to uniquely identify the credential
 	Alias string `json:"alias,required"`
 	// Certificate as received from APNs
@@ -187,50 +185,38 @@ type MobilePushCredentialNewParamsBodyCreateIOsPushCredentialRequest struct {
 	PrivateKey string `json:"private_key,required"`
 	// Type of mobile push credential. Should be <code>ios</code> here
 	//
-	// Any of "ios".
-	Type string `json:"type,omitzero,required"`
+	// This field can be elided, and will marshal its zero value as "ios".
+	Type constant.Ios `json:"type,required"`
 	paramObj
 }
 
-func (r MobilePushCredentialNewParamsBodyCreateIOsPushCredentialRequest) MarshalJSON() (data []byte, err error) {
-	type shadow MobilePushCredentialNewParamsBodyCreateIOsPushCredentialRequest
+func (r MobilePushCredentialNewParamsCreateMobilePushCredentialRequestIos) MarshalJSON() (data []byte, err error) {
+	type shadow MobilePushCredentialNewParamsCreateMobilePushCredentialRequestIos
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *MobilePushCredentialNewParamsBodyCreateIOsPushCredentialRequest) UnmarshalJSON(data []byte) error {
+func (r *MobilePushCredentialNewParamsCreateMobilePushCredentialRequestIos) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[MobilePushCredentialNewParamsBodyCreateIOsPushCredentialRequest](
-		"type", "ios",
-	)
-}
-
 // The properties Alias, ProjectAccountJsonFile, Type are required.
-type MobilePushCredentialNewParamsBodyCreateAndroidPushCredentialRequest struct {
+type MobilePushCredentialNewParamsCreateMobilePushCredentialRequestAndroid struct {
 	// Alias to uniquely identify the credential
 	Alias string `json:"alias,required"`
 	// Private key file in JSON format
 	ProjectAccountJsonFile map[string]any `json:"project_account_json_file,omitzero,required"`
 	// Type of mobile push credential. Should be <code>android</code> here
 	//
-	// Any of "android".
-	Type string `json:"type,omitzero,required"`
+	// This field can be elided, and will marshal its zero value as "android".
+	Type constant.Android `json:"type,required"`
 	paramObj
 }
 
-func (r MobilePushCredentialNewParamsBodyCreateAndroidPushCredentialRequest) MarshalJSON() (data []byte, err error) {
-	type shadow MobilePushCredentialNewParamsBodyCreateAndroidPushCredentialRequest
+func (r MobilePushCredentialNewParamsCreateMobilePushCredentialRequestAndroid) MarshalJSON() (data []byte, err error) {
+	type shadow MobilePushCredentialNewParamsCreateMobilePushCredentialRequestAndroid
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *MobilePushCredentialNewParamsBodyCreateAndroidPushCredentialRequest) UnmarshalJSON(data []byte) error {
+func (r *MobilePushCredentialNewParamsCreateMobilePushCredentialRequestAndroid) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[MobilePushCredentialNewParamsBodyCreateAndroidPushCredentialRequest](
-		"type", "android",
-	)
 }
 
 type MobilePushCredentialListParams struct {

@@ -54,6 +54,19 @@ func (r *PhoneNumberAssignmentByProfileService) Assign(ctx context.Context, body
 
 // Check the status of the individual phone number/campaign assignments associated
 // with the supplied `taskId`.
+func (r *PhoneNumberAssignmentByProfileService) ListPhoneNumberStatus(ctx context.Context, taskID string, query PhoneNumberAssignmentByProfileListPhoneNumberStatusParams, opts ...option.RequestOption) (res *PhoneNumberAssignmentByProfileListPhoneNumberStatusResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if taskID == "" {
+		err = errors.New("missing required taskId parameter")
+		return
+	}
+	path := fmt.Sprintf("10dlc/phoneNumberAssignmentByProfile/%s/phoneNumbers", taskID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
+}
+
+// Check the status of the individual phone number/campaign assignments associated
+// with the supplied `taskId`.
 func (r *PhoneNumberAssignmentByProfileService) GetPhoneNumberStatus(ctx context.Context, taskID string, query PhoneNumberAssignmentByProfileGetPhoneNumberStatusParams, opts ...option.RequestOption) (res *PhoneNumberAssignmentByProfileGetPhoneNumberStatusResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
@@ -114,6 +127,49 @@ type PhoneNumberAssignmentByProfileAssignResponse struct {
 // Returns the unmodified JSON received from the API
 func (r PhoneNumberAssignmentByProfileAssignResponse) RawJSON() string { return r.JSON.raw }
 func (r *PhoneNumberAssignmentByProfileAssignResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PhoneNumberAssignmentByProfileListPhoneNumberStatusResponse struct {
+	Records []PhoneNumberAssignmentByProfileListPhoneNumberStatusResponseRecord `json:"records,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Records     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PhoneNumberAssignmentByProfileListPhoneNumberStatusResponse) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PhoneNumberAssignmentByProfileListPhoneNumberStatusResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PhoneNumberAssignmentByProfileListPhoneNumberStatusResponseRecord struct {
+	// The phone number that the status is being checked for.
+	PhoneNumber string `json:"phoneNumber,required"`
+	// The status of the associated phone number assignment.
+	Status string `json:"status,required"`
+	// The ID of the task associated with the phone number.
+	TaskID string `json:"taskId,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PhoneNumber respjson.Field
+		Status      respjson.Field
+		TaskID      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PhoneNumberAssignmentByProfileListPhoneNumberStatusResponseRecord) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PhoneNumberAssignmentByProfileListPhoneNumberStatusResponseRecord) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -214,6 +270,22 @@ func (r PhoneNumberAssignmentByProfileAssignParams) MarshalJSON() (data []byte, 
 }
 func (r *PhoneNumberAssignmentByProfileAssignParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type PhoneNumberAssignmentByProfileListPhoneNumberStatusParams struct {
+	Page           param.Opt[int64] `query:"page,omitzero" json:"-"`
+	RecordsPerPage param.Opt[int64] `query:"recordsPerPage,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes
+// [PhoneNumberAssignmentByProfileListPhoneNumberStatusParams]'s query parameters
+// as `url.Values`.
+func (r PhoneNumberAssignmentByProfileListPhoneNumberStatusParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
 type PhoneNumberAssignmentByProfileGetPhoneNumberStatusParams struct {

@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -47,11 +48,26 @@ func (r *AccessIPRangeService) New(ctx context.Context, body AccessIPRangeNewPar
 }
 
 // List all Access IP Ranges
-func (r *AccessIPRangeService) List(ctx context.Context, query AccessIPRangeListParams, opts ...option.RequestOption) (res *AccessIPRangeListResponse, err error) {
+func (r *AccessIPRangeService) List(ctx context.Context, query AccessIPRangeListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[AccessIPRange], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "access_ip_ranges"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List all Access IP Ranges
+func (r *AccessIPRangeService) ListAutoPaging(ctx context.Context, query AccessIPRangeListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[AccessIPRange] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete access IP ranges
@@ -97,24 +113,6 @@ func (r *AccessIPRange) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccessIPRangeListResponse struct {
-	Data []AccessIPRange                    `json:"data,required"`
-	Meta PaginationMetaCloudflareIPListSync `json:"meta,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AccessIPRangeListResponse) RawJSON() string { return r.JSON.raw }
-func (r *AccessIPRangeListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type AccessIPRangeNewParams struct {
 	CidrBlock   string            `json:"cidr_block,required"`
 	Description param.Opt[string] `json:"description,omitzero"`
@@ -130,14 +128,13 @@ func (r *AccessIPRangeNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type AccessIPRangeListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[cidr_block], filter[cidr_block][startswith],
 	// filter[cidr_block][endswith], filter[cidr_block][contains], filter[created_at].
 	// Supports complex bracket operations for dynamic filtering.
 	Filter AccessIPRangeListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[number],
-	// page[size]
-	Page AccessIPRangeListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -245,23 +242,6 @@ type AccessIPRangeListParamsFilterCreatedAtDateRangeFilter struct {
 // URLQuery serializes [AccessIPRangeListParamsFilterCreatedAtDateRangeFilter]'s
 // query parameters as `url.Values`.
 func (r AccessIPRangeListParamsFilterCreatedAtDateRangeFilter) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[number],
-// page[size]
-type AccessIPRangeListParamsPage struct {
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	Size   param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [AccessIPRangeListParamsPage]'s query parameters as
-// `url.Values`.
-func (r AccessIPRangeListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

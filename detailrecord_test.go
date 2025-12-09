@@ -31,11 +31,9 @@ func TestDetailRecordListWithOptionalParams(t *testing.T) {
 			RecordType: "ai-voice-assistant",
 			DateRange:  "yesterday",
 		},
-		Page: telnyx.DetailRecordListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
-		Sort: []string{"string"},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
+		Sort:       []string{"string"},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

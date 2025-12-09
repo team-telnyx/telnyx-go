@@ -13,6 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -37,14 +38,29 @@ func NewUsageReportService(opts ...option.RequestOption) (r UsageReportService) 
 }
 
 // Get Telnyx usage data by product, broken out by the specified dimensions
-func (r *UsageReportService) List(ctx context.Context, params UsageReportListParams, opts ...option.RequestOption) (res *UsageReportListResponse, err error) {
+func (r *UsageReportService) List(ctx context.Context, params UsageReportListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[UsageReportListResponse], err error) {
+	var raw *http.Response
 	if !param.IsOmitted(params.AuthorizationBearer) {
 		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%s", params.AuthorizationBearer.Value)))
 	}
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "usage_reports"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get Telnyx usage data by product, broken out by the specified dimensions
+func (r *UsageReportService) ListAutoPaging(ctx context.Context, params UsageReportListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[UsageReportListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, params, opts...))
 }
 
 // Get the Usage Reports options for querying usage, including the products
@@ -59,49 +75,7 @@ func (r *UsageReportService) GetOptions(ctx context.Context, params UsageReportG
 	return
 }
 
-type UsageReportListResponse struct {
-	Data []map[string]any            `json:"data"`
-	Meta UsageReportListResponseMeta `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UsageReportListResponse) RawJSON() string { return r.JSON.raw }
-func (r *UsageReportListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UsageReportListResponseMeta struct {
-	// Selected page number.
-	PageNumber int64 `json:"page_number"`
-	// Records per single page
-	PageSize int64 `json:"page_size"`
-	// Total number of pages.
-	TotalPages int64 `json:"total_pages"`
-	// Total number of results.
-	TotalResults int64 `json:"total_results"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageNumber   respjson.Field
-		PageSize     respjson.Field
-		TotalPages   respjson.Field
-		TotalResults respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UsageReportListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *UsageReportListResponseMeta) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+type UsageReportListResponse map[string]any
 
 // An object following one of the schemas published in
 // https://developers.telnyx.com/docs/api/v2/detail-records
@@ -192,7 +166,9 @@ type UsageReportListParams struct {
 	Filter param.Opt[string] `query:"filter,omitzero" json:"-"`
 	// Return the aggregations for all Managed Accounts under the user making the
 	// request.
-	ManagedAccounts param.Opt[bool] `query:"managed_accounts,omitzero" json:"-"`
+	ManagedAccounts param.Opt[bool]  `query:"managed_accounts,omitzero" json:"-"`
+	PageNumber      param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize        param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// The start date for the time range you are interested in. The maximum time range
 	// is 31 days. Format: YYYY-MM-DDTHH:mm:ssZ
 	StartDate param.Opt[string] `query:"start_date,omitzero" json:"-"`
@@ -203,9 +179,6 @@ type UsageReportListParams struct {
 	//
 	// Any of "csv", "json".
 	Format UsageReportListParamsFormat `query:"format,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[number],
-	// page[size]
-	Page UsageReportListParamsPage `query:"page,omitzero" json:"-"`
 	// Specifies the sort order for results
 	Sort []string `query:"sort,omitzero" json:"-"`
 	paramObj
@@ -227,23 +200,6 @@ const (
 	UsageReportListParamsFormatCsv  UsageReportListParamsFormat = "csv"
 	UsageReportListParamsFormatJson UsageReportListParamsFormat = "json"
 )
-
-// Consolidated page parameter (deepObject style). Originally: page[number],
-// page[size]
-type UsageReportListParamsPage struct {
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	Size   param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [UsageReportListParamsPage]'s query parameters as
-// `url.Values`.
-func (r UsageReportListParamsPage) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
 
 type UsageReportGetOptionsParams struct {
 	// Options (dimensions and metrics) for a given product. If none specified, all
