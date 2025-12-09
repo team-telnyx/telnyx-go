@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
-func TestPartnerCampaignGet(t *testing.T) {
+func TestNumber10dlcPhoneNumberCampaignNew(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,12 @@ func TestPartnerCampaignGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.PartnerCampaigns.Get(context.TODO(), "campaignId")
+	_, err := client.Number10dlc.PhoneNumberCampaigns.New(context.TODO(), telnyx.Number10dlcPhoneNumberCampaignNewParams{
+		PhoneNumberCampaignCreate: telnyx.PhoneNumberCampaignCreateParam{
+			CampaignID:  "4b300178-131c-d902-d54e-72d90ba1620j",
+			PhoneNumber: "+18005550199",
+		},
+	})
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -36,7 +41,7 @@ func TestPartnerCampaignGet(t *testing.T) {
 	}
 }
 
-func TestPartnerCampaignUpdateWithOptionalParams(t *testing.T) {
+func TestNumber10dlcPhoneNumberCampaignGet(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -49,12 +54,37 @@ func TestPartnerCampaignUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.PartnerCampaigns.Update(
+	_, err := client.Number10dlc.PhoneNumberCampaigns.Get(context.TODO(), "phoneNumber")
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestNumber10dlcPhoneNumberCampaignUpdate(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Number10dlc.PhoneNumberCampaigns.Update(
 		context.TODO(),
-		"campaignId",
-		telnyx.PartnerCampaignUpdateParams{
-			WebhookFailoverURL: telnyx.String("https://webhook.com/9010a453-4df8-4be6-a551-1070892888d6"),
-			WebhookURL:         telnyx.String("https://webhook.com/67ea78a8-9f32-4d04-b62d-f9502e8e5f93"),
+		"phoneNumber",
+		telnyx.Number10dlcPhoneNumberCampaignUpdateParams{
+			PhoneNumberCampaignCreate: telnyx.PhoneNumberCampaignCreateParam{
+				CampaignID:  "4b300178-131c-d902-d54e-72d90ba1620j",
+				PhoneNumber: "+18005550199",
+			},
 		},
 	)
 	if err != nil {
@@ -66,7 +96,7 @@ func TestPartnerCampaignUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestPartnerCampaignListWithOptionalParams(t *testing.T) {
+func TestNumber10dlcPhoneNumberCampaignListWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -79,10 +109,16 @@ func TestPartnerCampaignListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.PartnerCampaigns.List(context.TODO(), telnyx.PartnerCampaignListParams{
+	_, err := client.Number10dlc.PhoneNumberCampaigns.List(context.TODO(), telnyx.Number10dlcPhoneNumberCampaignListParams{
+		Filter: telnyx.Number10dlcPhoneNumberCampaignListParamsFilter{
+			TcrBrandID:       telnyx.String("BRANDID"),
+			TcrCampaignID:    telnyx.String("CAMPID3"),
+			TelnyxBrandID:    telnyx.String("f3575e15-32ce-400e-a4c0-dd78800c20b0"),
+			TelnyxCampaignID: telnyx.String("f3575e15-32ce-400e-a4c0-dd78800c20b0"),
+		},
 		Page:           telnyx.Int(0),
 		RecordsPerPage: telnyx.Int(0),
-		Sort:           telnyx.PartnerCampaignListParamsSortAssignedPhoneNumbersCount,
+		Sort:           telnyx.Number10dlcPhoneNumberCampaignListParamsSortAssignmentStatus,
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -93,7 +129,7 @@ func TestPartnerCampaignListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestPartnerCampaignListSharedByMeWithOptionalParams(t *testing.T) {
+func TestNumber10dlcPhoneNumberCampaignDelete(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -106,33 +142,7 @@ func TestPartnerCampaignListSharedByMeWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.PartnerCampaigns.ListSharedByMe(context.TODO(), telnyx.PartnerCampaignListSharedByMeParams{
-		Page:           telnyx.Int(0),
-		RecordsPerPage: telnyx.Int(0),
-	})
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestPartnerCampaignGetSharingStatus(t *testing.T) {
-	t.Skip("Prism tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.PartnerCampaigns.GetSharingStatus(context.TODO(), "campaignId")
+	_, err := client.Number10dlc.PhoneNumberCampaigns.Delete(context.TODO(), "phoneNumber")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

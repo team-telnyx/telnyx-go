@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
-func TestCampaignBuilderBrandQualifyByUsecase(t *testing.T) {
+func TestNumber10dlcCampaignBuilderBrandQualifyByUsecase(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,10 +26,10 @@ func TestCampaignBuilderBrandQualifyByUsecase(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.CampaignBuilder.Brand.QualifyByUsecase(
+	_, err := client.Number10dlc.CampaignBuilder.Brand.QualifyByUsecase(
 		context.TODO(),
 		"usecase",
-		telnyx.CampaignBuilderBrandQualifyByUsecaseParams{
+		telnyx.Number10dlcCampaignBuilderBrandQualifyByUsecaseParams{
 			BrandID: "brandId",
 		},
 	)

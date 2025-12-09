@@ -3,13 +3,6 @@
 package telnyx
 
 import (
-	"context"
-	"errors"
-	"fmt"
-	"net/http"
-	"slices"
-
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
@@ -31,17 +24,3 @@ func NewCampaignOsrService(opts ...option.RequestOption) (r CampaignOsrService) 
 	r.Options = opts
 	return
 }
-
-// Get My Osr Campaign Attributes
-func (r *CampaignOsrService) GetAttributes(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *CampaignOsrGetAttributesResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	if campaignID == "" {
-		err = errors.New("missing required campaignId parameter")
-		return
-	}
-	path := fmt.Sprintf("10dlc/campaign/%s/osr/attributes", campaignID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
-type CampaignOsrGetAttributesResponse map[string]any

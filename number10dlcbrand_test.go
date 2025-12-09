@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
-func TestBrandNewWithOptionalParams(t *testing.T) {
+func TestNumber10dlcBrandNewWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,7 @@ func TestBrandNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Brand.New(context.TODO(), telnyx.BrandNewParams{
+	_, err := client.Number10dlc.Brand.New(context.TODO(), telnyx.Number10dlcBrandNewParams{
 		Country:              "US",
 		DisplayName:          "ABC Mobile",
 		Email:                "email",
@@ -61,7 +61,7 @@ func TestBrandNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestBrandGet(t *testing.T) {
+func TestNumber10dlcBrandGet(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -74,7 +74,7 @@ func TestBrandGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Brand.Get(context.TODO(), "brandId")
+	_, err := client.Number10dlc.Brand.Get(context.TODO(), "brandId")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -84,7 +84,7 @@ func TestBrandGet(t *testing.T) {
 	}
 }
 
-func TestBrandUpdateWithOptionalParams(t *testing.T) {
+func TestNumber10dlcBrandUpdateWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -97,10 +97,10 @@ func TestBrandUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Brand.Update(
+	_, err := client.Number10dlc.Brand.Update(
 		context.TODO(),
 		"brandId",
-		telnyx.BrandUpdateParams{
+		telnyx.Number10dlcBrandUpdateParams{
 			Country:              "US",
 			DisplayName:          "ABC Mobile",
 			Email:                "email",
@@ -137,7 +137,7 @@ func TestBrandUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestBrandListWithOptionalParams(t *testing.T) {
+func TestNumber10dlcBrandListWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -150,14 +150,14 @@ func TestBrandListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Brand.List(context.TODO(), telnyx.BrandListParams{
+	_, err := client.Number10dlc.Brand.List(context.TODO(), telnyx.Number10dlcBrandListParams{
 		BrandID:        telnyx.String("826ef77a-348c-445b-81a5-a9b13c68fbfe"),
 		Country:        telnyx.String("country"),
 		DisplayName:    telnyx.String("displayName"),
 		EntityType:     telnyx.String("entityType"),
 		Page:           telnyx.Int(1),
 		RecordsPerPage: telnyx.Int(0),
-		Sort:           telnyx.BrandListParamsSortAssignedCampaignsCount,
+		Sort:           telnyx.Number10dlcBrandListParamsSortAssignedCampaignsCount,
 		State:          telnyx.String("state"),
 		TcrBrandID:     telnyx.String("BBAND1"),
 	})
@@ -170,7 +170,7 @@ func TestBrandListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestBrandDelete(t *testing.T) {
+func TestNumber10dlcBrandDelete(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -183,7 +183,7 @@ func TestBrandDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Brand.Delete(context.TODO(), "brandId")
+	err := client.Number10dlc.Brand.Delete(context.TODO(), "brandId")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -193,7 +193,7 @@ func TestBrandDelete(t *testing.T) {
 	}
 }
 
-func TestBrandGetFeedback(t *testing.T) {
+func TestNumber10dlcBrandGetFeedback(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -206,7 +206,7 @@ func TestBrandGetFeedback(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Brand.GetFeedback(context.TODO(), "brandId")
+	_, err := client.Number10dlc.Brand.GetFeedback(context.TODO(), "brandId")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -216,7 +216,7 @@ func TestBrandGetFeedback(t *testing.T) {
 	}
 }
 
-func TestBrandResend2faEmail(t *testing.T) {
+func TestNumber10dlcBrandResend2faEmail(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -229,7 +229,7 @@ func TestBrandResend2faEmail(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Brand.Resend2faEmail(context.TODO(), "brandId")
+	err := client.Number10dlc.Brand.Resend2faEmail(context.TODO(), "brandId")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -239,7 +239,7 @@ func TestBrandResend2faEmail(t *testing.T) {
 	}
 }
 
-func TestBrandRevet(t *testing.T) {
+func TestNumber10dlcBrandRevet(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -252,7 +252,7 @@ func TestBrandRevet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Brand.Revet(context.TODO(), "brandId")
+	_, err := client.Number10dlc.Brand.Revet(context.TODO(), "brandId")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
