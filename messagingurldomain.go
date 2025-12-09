@@ -45,7 +45,7 @@ func (r *MessagingURLDomainService) List(ctx context.Context, query MessagingURL
 
 type MessagingURLDomainListResponse struct {
 	Data []MessagingURLDomainListResponseData `json:"data"`
-	Meta PaginationMeta                       `json:"meta"`
+	Meta MessagingURLDomainListResponseMeta   `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -80,6 +80,28 @@ type MessagingURLDomainListResponseData struct {
 // Returns the unmodified JSON received from the API
 func (r MessagingURLDomainListResponseData) RawJSON() string { return r.JSON.raw }
 func (r *MessagingURLDomainListResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessagingURLDomainListResponseMeta struct {
+	PageNumber   int64 `json:"page_number,required"`
+	PageSize     int64 `json:"page_size,required"`
+	TotalPages   int64 `json:"total_pages,required"`
+	TotalResults int64 `json:"total_results,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingURLDomainListResponseMeta) RawJSON() string { return r.JSON.raw }
+func (r *MessagingURLDomainListResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

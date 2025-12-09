@@ -193,8 +193,8 @@ func (r *AutoRespConfigResponse) UnmarshalJSON(data []byte) error {
 
 // List of Auto-Response Settings
 type MessagingProfileAutorespConfigListResponse struct {
-	Data []AutoRespConfig `json:"data,required"`
-	Meta PaginationMeta   `json:"meta,required"`
+	Data []AutoRespConfig                               `json:"data,required"`
+	Meta MessagingProfileAutorespConfigListResponseMeta `json:"meta,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -207,6 +207,28 @@ type MessagingProfileAutorespConfigListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MessagingProfileAutorespConfigListResponse) RawJSON() string { return r.JSON.raw }
 func (r *MessagingProfileAutorespConfigListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessagingProfileAutorespConfigListResponseMeta struct {
+	PageNumber   int64 `json:"page_number,required"`
+	PageSize     int64 `json:"page_size,required"`
+	TotalPages   int64 `json:"total_pages,required"`
+	TotalResults int64 `json:"total_results,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingProfileAutorespConfigListResponseMeta) RawJSON() string { return r.JSON.raw }
+func (r *MessagingProfileAutorespConfigListResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

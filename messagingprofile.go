@@ -468,8 +468,8 @@ func (r *MessagingProfileUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MessagingProfileListResponse struct {
-	Data []MessagingProfile `json:"data"`
-	Meta PaginationMeta     `json:"meta"`
+	Data []MessagingProfile               `json:"data"`
+	Meta MessagingProfileListResponseMeta `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -482,6 +482,28 @@ type MessagingProfileListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MessagingProfileListResponse) RawJSON() string { return r.JSON.raw }
 func (r *MessagingProfileListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessagingProfileListResponseMeta struct {
+	PageNumber   int64 `json:"page_number,required"`
+	PageSize     int64 `json:"page_size,required"`
+	TotalPages   int64 `json:"total_pages,required"`
+	TotalResults int64 `json:"total_results,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingProfileListResponseMeta) RawJSON() string { return r.JSON.raw }
+func (r *MessagingProfileListResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -502,8 +524,8 @@ func (r *MessagingProfileDeleteResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MessagingProfileListPhoneNumbersResponse struct {
-	Data []shared.PhoneNumberWithMessagingSettings `json:"data"`
-	Meta PaginationMeta                            `json:"meta"`
+	Data []shared.PhoneNumberWithMessagingSettings    `json:"data"`
+	Meta MessagingProfileListPhoneNumbersResponseMeta `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -519,9 +541,31 @@ func (r *MessagingProfileListPhoneNumbersResponse) UnmarshalJSON(data []byte) er
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type MessagingProfileListPhoneNumbersResponseMeta struct {
+	PageNumber   int64 `json:"page_number,required"`
+	PageSize     int64 `json:"page_size,required"`
+	TotalPages   int64 `json:"total_pages,required"`
+	TotalResults int64 `json:"total_results,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingProfileListPhoneNumbersResponseMeta) RawJSON() string { return r.JSON.raw }
+func (r *MessagingProfileListPhoneNumbersResponseMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type MessagingProfileListShortCodesResponse struct {
-	Data []shared.ShortCode `json:"data"`
-	Meta PaginationMeta     `json:"meta"`
+	Data []shared.ShortCode                         `json:"data"`
+	Meta MessagingProfileListShortCodesResponseMeta `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -534,6 +578,28 @@ type MessagingProfileListShortCodesResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MessagingProfileListShortCodesResponse) RawJSON() string { return r.JSON.raw }
 func (r *MessagingProfileListShortCodesResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessagingProfileListShortCodesResponseMeta struct {
+	PageNumber   int64 `json:"page_number,required"`
+	PageSize     int64 `json:"page_size,required"`
+	TotalPages   int64 `json:"total_pages,required"`
+	TotalResults int64 `json:"total_results,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingProfileListShortCodesResponseMeta) RawJSON() string { return r.JSON.raw }
+func (r *MessagingProfileListShortCodesResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

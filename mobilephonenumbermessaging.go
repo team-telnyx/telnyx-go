@@ -146,7 +146,7 @@ func (r *MobilePhoneNumberMessagingGetResponseDataFeatures) UnmarshalJSON(data [
 
 type MobilePhoneNumberMessagingListResponse struct {
 	Data []MobilePhoneNumberMessagingListResponseData `json:"data"`
-	Meta PaginationMeta                               `json:"meta"`
+	Meta MobilePhoneNumberMessagingListResponseMeta   `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -228,6 +228,28 @@ type MobilePhoneNumberMessagingListResponseDataFeatures struct {
 // Returns the unmodified JSON received from the API
 func (r MobilePhoneNumberMessagingListResponseDataFeatures) RawJSON() string { return r.JSON.raw }
 func (r *MobilePhoneNumberMessagingListResponseDataFeatures) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MobilePhoneNumberMessagingListResponseMeta struct {
+	PageNumber   int64 `json:"page_number,required"`
+	PageSize     int64 `json:"page_size,required"`
+	TotalPages   int64 `json:"total_pages,required"`
+	TotalResults int64 `json:"total_results,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MobilePhoneNumberMessagingListResponseMeta) RawJSON() string { return r.JSON.raw }
+func (r *MobilePhoneNumberMessagingListResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
