@@ -226,7 +226,7 @@ type UserAddressNewParams struct {
 	// that might make the address correct, they will be present in the response as
 	// well. If this value is set to true, then the verification will not be attempted.
 	// Defaults to false (verification will be performed).
-	SkipAddressVerification param.Opt[string] `json:"skip_address_verification,omitzero"`
+	SkipAddressVerification param.Opt[bool] `json:"skip_address_verification,omitzero"`
 	paramObj
 }
 
