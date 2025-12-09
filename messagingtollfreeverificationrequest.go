@@ -613,9 +613,9 @@ const (
 // A paginated response
 type MessagingTollfreeVerificationRequestListResponse struct {
 	// The records yielded by this request
-	Records []VerificationRequestStatus `json:"records"`
+	Records []VerificationRequestStatus `json:"records,required"`
 	// The total amount of records for these query parameters
-	TotalRecords int64 `json:"total_records"`
+	TotalRecords int64 `json:"total_records,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Records      respjson.Field

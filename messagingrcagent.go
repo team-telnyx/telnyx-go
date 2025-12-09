@@ -70,8 +70,8 @@ func (r *MessagingRcAgentService) List(ctx context.Context, query MessagingRcAge
 }
 
 type MessagingRcAgentListResponse struct {
-	Data []RcsAgent     `json:"data"`
-	Meta PaginationMeta `json:"meta"`
+	Data []RcsAgent                       `json:"data"`
+	Meta MessagingRcAgentListResponseMeta `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -84,6 +84,28 @@ type MessagingRcAgentListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MessagingRcAgentListResponse) RawJSON() string { return r.JSON.raw }
 func (r *MessagingRcAgentListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessagingRcAgentListResponseMeta struct {
+	PageNumber   int64 `json:"page_number,required"`
+	PageSize     int64 `json:"page_size,required"`
+	TotalPages   int64 `json:"total_pages,required"`
+	TotalResults int64 `json:"total_results,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingRcAgentListResponseMeta) RawJSON() string { return r.JSON.raw }
+func (r *MessagingRcAgentListResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
