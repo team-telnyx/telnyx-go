@@ -85,7 +85,7 @@ func (r *NumberOrderPhoneNumberService) UpdateRequirements(ctx context.Context, 
 
 type NumberOrderPhoneNumber struct {
 	ID             string    `json:"id" format:"uuid"`
-	BundleID       string    `json:"bundle_id" format:"uuid"`
+	BundleID       string    `json:"bundle_id,nullable" format:"uuid"`
 	CountryCode    string    `json:"country_code"`
 	Deadline       time.Time `json:"deadline" format:"date-time"`
 	IsBlockNumber  bool      `json:"is_block_number"`
