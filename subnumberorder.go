@@ -323,7 +323,7 @@ func (r *SubNumberOrderUpdateRequirementGroupResponseData) UnmarshalJSON(data []
 
 type SubNumberOrderUpdateRequirementGroupResponseDataPhoneNumber struct {
 	ID                     string                                                                             `json:"id" format:"uuid"`
-	BundleID               string                                                                             `json:"bundle_id" format:"uuid"`
+	BundleID               string                                                                             `json:"bundle_id,nullable" format:"uuid"`
 	CountryCode            string                                                                             `json:"country_code"`
 	PhoneNumber            string                                                                             `json:"phone_number"`
 	PhoneNumberType        string                                                                             `json:"phone_number_type"`

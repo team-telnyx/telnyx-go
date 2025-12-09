@@ -31,7 +31,7 @@ func TestInventoryCoverageListWithOptionalParams(t *testing.T) {
 			AdministrativeArea: telnyx.String("administrative_area"),
 			Count:              telnyx.Bool(true),
 			CountryCode:        "AT",
-			Features:           []string{"sms"},
+			Features:           []string{"voice", "sms"},
 			GroupBy:            "locality",
 			Npa:                telnyx.Int(0),
 			Nxx:                telnyx.Int(0),

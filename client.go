@@ -173,6 +173,7 @@ type Client struct {
 	InexplicitNumberOrders             InexplicitNumberOrderService
 	MobilePhoneNumbers                 MobilePhoneNumberService
 	MobileVoiceConnections             MobileVoiceConnectionService
+	PartnerCampaign                    PartnerCampaignService
 	Number10dlc                        Number10dlcService
 }
 
@@ -358,6 +359,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.InexplicitNumberOrders = NewInexplicitNumberOrderService(opts...)
 	r.MobilePhoneNumbers = NewMobilePhoneNumberService(opts...)
 	r.MobileVoiceConnections = NewMobileVoiceConnectionService(opts...)
+	r.PartnerCampaign = NewPartnerCampaignService(opts...)
 	r.Number10dlc = NewNumber10dlcService(opts...)
 
 	return
