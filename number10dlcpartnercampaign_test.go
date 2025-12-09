@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
-func TestBrandExternalVettingList(t *testing.T) {
+func TestNumber10dlcPartnerCampaignGetSharedByMeWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,10 @@ func TestBrandExternalVettingList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Brand.ExternalVetting.List(context.TODO(), "brandId")
+	_, err := client.Number10dlc.PartnerCampaign.GetSharedByMe(context.TODO(), telnyx.Number10dlcPartnerCampaignGetSharedByMeParams{
+		Page:           telnyx.Int(0),
+		RecordsPerPage: telnyx.Int(0),
+	})
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -36,7 +39,7 @@ func TestBrandExternalVettingList(t *testing.T) {
 	}
 }
 
-func TestBrandExternalVettingImportWithOptionalParams(t *testing.T) {
+func TestNumber10dlcPartnerCampaignGetSharingStatus(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -49,45 +52,7 @@ func TestBrandExternalVettingImportWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Brand.ExternalVetting.Import(
-		context.TODO(),
-		"brandId",
-		telnyx.BrandExternalVettingImportParams{
-			EvpID:        "evpId",
-			VettingID:    "vettingId",
-			VettingToken: telnyx.String("vettingToken"),
-		},
-	)
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestBrandExternalVettingOrder(t *testing.T) {
-	t.Skip("Prism tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Brand.ExternalVetting.Order(
-		context.TODO(),
-		"brandId",
-		telnyx.BrandExternalVettingOrderParams{
-			EvpID:        "evpId",
-			VettingClass: "vettingClass",
-		},
-	)
+	_, err := client.Number10dlc.PartnerCampaign.GetSharingStatus(context.TODO(), "campaignId")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

@@ -3,12 +3,6 @@
 package telnyx
 
 import (
-	"context"
-	"fmt"
-	"net/http"
-	"slices"
-
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
@@ -30,32 +24,3 @@ func NewEnumService(opts ...option.RequestOption) (r EnumService) {
 	r.Options = opts
 	return
 }
-
-// Get Enum
-func (r *EnumService) Get(ctx context.Context, endpoint EnumGetParamsEndpoint, opts ...option.RequestOption) (res *[]any, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("10dlc/enum/%v", endpoint)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
-type EnumGetParamsEndpoint string
-
-const (
-	EnumGetParamsEndpointMno                   EnumGetParamsEndpoint = "mno"
-	EnumGetParamsEndpointOptionalAttributes    EnumGetParamsEndpoint = "optionalAttributes"
-	EnumGetParamsEndpointUsecase               EnumGetParamsEndpoint = "usecase"
-	EnumGetParamsEndpointVertical              EnumGetParamsEndpoint = "vertical"
-	EnumGetParamsEndpointAltBusinessIDType     EnumGetParamsEndpoint = "altBusinessIdType"
-	EnumGetParamsEndpointBrandIdentityStatus   EnumGetParamsEndpoint = "brandIdentityStatus"
-	EnumGetParamsEndpointBrandRelationship     EnumGetParamsEndpoint = "brandRelationship"
-	EnumGetParamsEndpointCampaignStatus        EnumGetParamsEndpoint = "campaignStatus"
-	EnumGetParamsEndpointEntityType            EnumGetParamsEndpoint = "entityType"
-	EnumGetParamsEndpointExtVettingProvider    EnumGetParamsEndpoint = "extVettingProvider"
-	EnumGetParamsEndpointVettingStatus         EnumGetParamsEndpoint = "vettingStatus"
-	EnumGetParamsEndpointBrandStatus           EnumGetParamsEndpoint = "brandStatus"
-	EnumGetParamsEndpointOperationStatus       EnumGetParamsEndpoint = "operationStatus"
-	EnumGetParamsEndpointApprovedPublicCompany EnumGetParamsEndpoint = "approvedPublicCompany"
-	EnumGetParamsEndpointStockExchange         EnumGetParamsEndpoint = "stockExchange"
-	EnumGetParamsEndpointVettingClass          EnumGetParamsEndpoint = "vettingClass"
-)
