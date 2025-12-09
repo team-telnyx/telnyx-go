@@ -40,7 +40,7 @@ func TestUserAddressNewWithOptionalParams(t *testing.T) {
 		Neighborhood:            telnyx.String("Ciudad de los deportes"),
 		PhoneNumber:             telnyx.String("+12125559000"),
 		PostalCode:              telnyx.String("78701"),
-		SkipAddressVerification: telnyx.String("skip_address_verification"),
+		SkipAddressVerification: telnyx.Bool(true),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
