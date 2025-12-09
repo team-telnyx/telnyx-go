@@ -11,6 +11,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v3/shared/constant"
 )
 
 // AIChatService contains methods and other services that help with interacting
@@ -278,11 +279,19 @@ func (u AIChatNewCompletionParamsToolUnion) GetType() *string {
 	return nil
 }
 
+func init() {
+	apijson.RegisterUnion[AIChatNewCompletionParamsToolUnion](
+		"type",
+		apijson.Discriminator[AIChatNewCompletionParamsToolFunction]("function"),
+		apijson.Discriminator[AIChatNewCompletionParamsToolRetrieval]("retrieval"),
+	)
+}
+
 // The properties Function, Type are required.
 type AIChatNewCompletionParamsToolFunction struct {
 	Function AIChatNewCompletionParamsToolFunctionFunction `json:"function,omitzero,required"`
-	// Any of "function".
-	Type string `json:"type,omitzero,required"`
+	// This field can be elided, and will marshal its zero value as "function".
+	Type constant.Function `json:"type,required"`
 	paramObj
 }
 
@@ -292,12 +301,6 @@ func (r AIChatNewCompletionParamsToolFunction) MarshalJSON() (data []byte, err e
 }
 func (r *AIChatNewCompletionParamsToolFunction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[AIChatNewCompletionParamsToolFunction](
-		"type", "function",
-	)
 }
 
 // The property Name is required.
@@ -319,8 +322,8 @@ func (r *AIChatNewCompletionParamsToolFunctionFunction) UnmarshalJSON(data []byt
 // The properties Retrieval, Type are required.
 type AIChatNewCompletionParamsToolRetrieval struct {
 	Retrieval InferenceEmbeddingBucketIDsParam `json:"retrieval,omitzero,required"`
-	// Any of "retrieval".
-	Type string `json:"type,omitzero,required"`
+	// This field can be elided, and will marshal its zero value as "retrieval".
+	Type constant.Retrieval `json:"type,required"`
 	paramObj
 }
 
@@ -330,10 +333,4 @@ func (r AIChatNewCompletionParamsToolRetrieval) MarshalJSON() (data []byte, err 
 }
 func (r *AIChatNewCompletionParamsToolRetrieval) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[AIChatNewCompletionParamsToolRetrieval](
-		"type", "retrieval",
-	)
 }

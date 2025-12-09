@@ -66,9 +66,11 @@ func TestMesssageRcsWithOptionalParams(t *testing.T) {
 										WebviewViewMode: "HALF",
 										Description:     telnyx.String("description"),
 									},
-									PostbackData:        telnyx.String("postback_data"),
-									ShareLocationAction: map[string]any{},
-									Text:                telnyx.String("Hello world"),
+									PostbackData: telnyx.String("postback_data"),
+									ShareLocationAction: map[string]any{
+										"foo": "bar",
+									},
+									Text: telnyx.String("Hello world"),
 									ViewLocationAction: telnyx.RcsSuggestionActionViewLocationActionParam{
 										Label: telnyx.String("label"),
 										LatLong: telnyx.RcsSuggestionActionViewLocationActionLatLongParam{
@@ -116,9 +118,11 @@ func TestMesssageRcsWithOptionalParams(t *testing.T) {
 										WebviewViewMode: "HALF",
 										Description:     telnyx.String("description"),
 									},
-									PostbackData:        telnyx.String("postback_data"),
-									ShareLocationAction: map[string]any{},
-									Text:                telnyx.String("Hello world"),
+									PostbackData: telnyx.String("postback_data"),
+									ShareLocationAction: map[string]any{
+										"foo": "bar",
+									},
+									Text: telnyx.String("Hello world"),
 									ViewLocationAction: telnyx.RcsSuggestionActionViewLocationActionParam{
 										Label: telnyx.String("label"),
 										LatLong: telnyx.RcsSuggestionActionViewLocationActionLatLongParam{
@@ -157,9 +161,11 @@ func TestMesssageRcsWithOptionalParams(t *testing.T) {
 							WebviewViewMode: "HALF",
 							Description:     telnyx.String("description"),
 						},
-						PostbackData:        telnyx.String("postback_data"),
-						ShareLocationAction: map[string]any{},
-						Text:                telnyx.String("Hello world"),
+						PostbackData: telnyx.String("postback_data"),
+						ShareLocationAction: map[string]any{
+							"foo": "bar",
+						},
+						Text: telnyx.String("Hello world"),
 						ViewLocationAction: telnyx.RcsSuggestionActionViewLocationActionParam{
 							Label: telnyx.String("label"),
 							LatLong: telnyx.RcsSuggestionActionViewLocationActionLatLongParam{

@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -60,11 +61,26 @@ func (r *LegacyReportingUsageReportMessagingService) Get(ctx context.Context, id
 }
 
 // Fetch all previous requests for MDR usage reports.
-func (r *LegacyReportingUsageReportMessagingService) List(ctx context.Context, query LegacyReportingUsageReportMessagingListParams, opts ...option.RequestOption) (res *LegacyReportingUsageReportMessagingListResponse, err error) {
+func (r *LegacyReportingUsageReportMessagingService) List(ctx context.Context, query LegacyReportingUsageReportMessagingListParams, opts ...option.RequestOption) (res *pagination.PerPagePagination[MdrUsageReportResponseLegacy], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "legacy/reporting/usage_reports/messaging"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Fetch all previous requests for MDR usage reports.
+func (r *LegacyReportingUsageReportMessagingService) ListAutoPaging(ctx context.Context, query LegacyReportingUsageReportMessagingListParams, opts ...option.RequestOption) *pagination.PerPagePaginationAutoPager[MdrUsageReportResponseLegacy] {
+	return pagination.NewPerPagePaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Deletes a specific V2 legacy usage MDR report request by ID
@@ -89,11 +105,11 @@ type MdrUsageReportResponseLegacy struct {
 	CreatedAt       time.Time `json:"created_at" format:"date-time"`
 	EndTime         time.Time `json:"end_time" format:"date-time"`
 	// List of messaging profile IDs
-	Profiles   []string  `json:"profiles" format:"uuid"`
-	RecordType string    `json:"record_type"`
-	ReportURL  string    `json:"report_url"`
-	Result     any       `json:"result"`
-	StartTime  time.Time `json:"start_time" format:"date-time"`
+	Profiles   []string       `json:"profiles" format:"uuid"`
+	RecordType string         `json:"record_type"`
+	ReportURL  string         `json:"report_url"`
+	Result     map[string]any `json:"result"`
+	StartTime  time.Time      `json:"start_time" format:"date-time"`
 	// Status of the report (Pending = 1, Complete = 2, Failed = 3, Expired = 4)
 	Status    int64     `json:"status"`
 	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
@@ -123,15 +139,15 @@ func (r *MdrUsageReportResponseLegacy) UnmarshalJSON(data []byte) error {
 }
 
 type StandardPaginationMeta struct {
-	PageNumber   int64 `json:"page_number"`
+	PageNumber   int64 `json:"page_number,required"`
+	TotalPages   int64 `json:"total_pages,required"`
 	PageSize     int64 `json:"page_size"`
-	TotalPages   int64 `json:"total_pages"`
 	TotalResults int64 `json:"total_results"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PageNumber   respjson.Field
-		PageSize     respjson.Field
 		TotalPages   respjson.Field
+		PageSize     respjson.Field
 		TotalResults respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -175,24 +191,6 @@ type LegacyReportingUsageReportMessagingGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r LegacyReportingUsageReportMessagingGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *LegacyReportingUsageReportMessagingGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type LegacyReportingUsageReportMessagingListResponse struct {
-	Data []MdrUsageReportResponseLegacy `json:"data"`
-	Meta StandardPaginationMeta         `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LegacyReportingUsageReportMessagingListResponse) RawJSON() string { return r.JSON.raw }
-func (r *LegacyReportingUsageReportMessagingListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

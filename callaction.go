@@ -66,13 +66,13 @@ func (r *CallActionService) Answer(ctx context.Context, callControlID string, bo
 //
 // - `call.bridged` for Leg A
 // - `call.bridged` for Leg B
-func (r *CallActionService) Bridge(ctx context.Context, callControlID string, body CallActionBridgeParams, opts ...option.RequestOption) (res *CallActionBridgeResponse, err error) {
+func (r *CallActionService) Bridge(ctx context.Context, callControlIDToBridge string, body CallActionBridgeParams, opts ...option.RequestOption) (res *CallActionBridgeResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	if callControlID == "" {
-		err = errors.New("missing required call_control_id parameter")
+	if callControlIDToBridge == "" {
+		err = errors.New("missing required call_control_id_to_bridge parameter")
 		return
 	}
-	path := fmt.Sprintf("calls/%s/actions/bridge", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/bridge", callControlIDToBridge)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -664,13 +664,14 @@ type AwsVoiceSettingsParam struct {
 	// Voice settings provider type
 	//
 	// Any of "aws".
-	Type AwsVoiceSettingsType `json:"type,omitzero,required"`
+	Type        AwsVoiceSettingsType `json:"type,omitzero,required"`
+	ExtraFields map[string]any       `json:"-"`
 	paramObj
 }
 
 func (r AwsVoiceSettingsParam) MarshalJSON() (data []byte, err error) {
 	type shadow AwsVoiceSettingsParam
-	return param.MarshalObject(r, (*shadow)(&r))
+	return param.MarshalWithExtras(r, (*shadow)(&r), r.ExtraFields)
 }
 func (r *AwsVoiceSettingsParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
@@ -833,21 +834,21 @@ func (r *InterruptionSettingsParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type LoopcountUnionParam struct {
-	OfString param.Opt[string] `json:",omitzero,inline"`
-	OfInt    param.Opt[int64]  `json:",omitzero,inline"`
+	OfLoopcountString param.Opt[string] `json:",omitzero,inline"`
+	OfInt             param.Opt[int64]  `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u LoopcountUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfString, u.OfInt)
+	return param.MarshalUnion(u, u.OfLoopcountString, u.OfInt)
 }
 func (u *LoopcountUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *LoopcountUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfString) {
-		return &u.OfString.Value
+	if !param.IsOmitted(u.OfLoopcountString) {
+		return &u.OfLoopcountString.Value
 	} else if !param.IsOmitted(u.OfInt) {
 		return &u.OfInt.Value
 	}
@@ -1115,6 +1116,142 @@ const (
 	TranscriptionEngineAConfigTranscriptionEngineA TranscriptionEngineAConfigTranscriptionEngine = "A"
 )
 
+// The properties Region, TranscriptionEngine are required.
+type TranscriptionEngineAzureConfigParam struct {
+	// Azure region to use for speech recognition
+	//
+	// Any of "australiaeast", "centralindia", "eastus", "northcentralus",
+	// "westeurope", "westus2".
+	Region TranscriptionEngineAzureConfigRegion `json:"region,omitzero,required"`
+	// Engine identifier for Azure transcription service
+	//
+	// Any of "Azure".
+	TranscriptionEngine TranscriptionEngineAzureConfigTranscriptionEngine `json:"transcription_engine,omitzero,required"`
+	// Reference to the API key for authentication. See
+	// [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
+	// for details. The parameter is optional as defaults are available for some
+	// regions.
+	APIKeyRef param.Opt[string] `json:"api_key_ref,omitzero"`
+	// Language to use for speech recognition
+	//
+	// Any of "af", "am", "ar", "bg", "bn", "bs", "ca", "cs", "cy", "da", "de", "el",
+	// "en", "es", "et", "eu", "fa", "fi", "fr", "ga", "gl", "gu", "he", "hi", "hr",
+	// "hu", "hy", "id", "is", "it", "ja", "ka", "kk", "km", "kn", "ko", "lo", "lt",
+	// "lv", "mk", "ml", "mn", "mr", "ms", "mt", "my", "nb", "ne", "nl", "pl", "ps",
+	// "pt", "ro", "ru", "si", "sk", "sl", "so", "sq", "sr", "sv", "sw", "ta", "te",
+	// "th", "tr", "uk", "ur", "uz", "vi", "wuu", "yue", "zh", "zu", "auto".
+	Language TranscriptionEngineAzureConfigLanguage `json:"language,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionEngineAzureConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionEngineAzureConfigParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionEngineAzureConfigParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Azure region to use for speech recognition
+type TranscriptionEngineAzureConfigRegion string
+
+const (
+	TranscriptionEngineAzureConfigRegionAustraliaeast  TranscriptionEngineAzureConfigRegion = "australiaeast"
+	TranscriptionEngineAzureConfigRegionCentralindia   TranscriptionEngineAzureConfigRegion = "centralindia"
+	TranscriptionEngineAzureConfigRegionEastus         TranscriptionEngineAzureConfigRegion = "eastus"
+	TranscriptionEngineAzureConfigRegionNorthcentralus TranscriptionEngineAzureConfigRegion = "northcentralus"
+	TranscriptionEngineAzureConfigRegionWesteurope     TranscriptionEngineAzureConfigRegion = "westeurope"
+	TranscriptionEngineAzureConfigRegionWestus2        TranscriptionEngineAzureConfigRegion = "westus2"
+)
+
+// Engine identifier for Azure transcription service
+type TranscriptionEngineAzureConfigTranscriptionEngine string
+
+const (
+	TranscriptionEngineAzureConfigTranscriptionEngineAzure TranscriptionEngineAzureConfigTranscriptionEngine = "Azure"
+)
+
+// Language to use for speech recognition
+type TranscriptionEngineAzureConfigLanguage string
+
+const (
+	TranscriptionEngineAzureConfigLanguageAf   TranscriptionEngineAzureConfigLanguage = "af"
+	TranscriptionEngineAzureConfigLanguageAm   TranscriptionEngineAzureConfigLanguage = "am"
+	TranscriptionEngineAzureConfigLanguageAr   TranscriptionEngineAzureConfigLanguage = "ar"
+	TranscriptionEngineAzureConfigLanguageBg   TranscriptionEngineAzureConfigLanguage = "bg"
+	TranscriptionEngineAzureConfigLanguageBn   TranscriptionEngineAzureConfigLanguage = "bn"
+	TranscriptionEngineAzureConfigLanguageBs   TranscriptionEngineAzureConfigLanguage = "bs"
+	TranscriptionEngineAzureConfigLanguageCa   TranscriptionEngineAzureConfigLanguage = "ca"
+	TranscriptionEngineAzureConfigLanguageCs   TranscriptionEngineAzureConfigLanguage = "cs"
+	TranscriptionEngineAzureConfigLanguageCy   TranscriptionEngineAzureConfigLanguage = "cy"
+	TranscriptionEngineAzureConfigLanguageDa   TranscriptionEngineAzureConfigLanguage = "da"
+	TranscriptionEngineAzureConfigLanguageDe   TranscriptionEngineAzureConfigLanguage = "de"
+	TranscriptionEngineAzureConfigLanguageEl   TranscriptionEngineAzureConfigLanguage = "el"
+	TranscriptionEngineAzureConfigLanguageEn   TranscriptionEngineAzureConfigLanguage = "en"
+	TranscriptionEngineAzureConfigLanguageEs   TranscriptionEngineAzureConfigLanguage = "es"
+	TranscriptionEngineAzureConfigLanguageEt   TranscriptionEngineAzureConfigLanguage = "et"
+	TranscriptionEngineAzureConfigLanguageEu   TranscriptionEngineAzureConfigLanguage = "eu"
+	TranscriptionEngineAzureConfigLanguageFa   TranscriptionEngineAzureConfigLanguage = "fa"
+	TranscriptionEngineAzureConfigLanguageFi   TranscriptionEngineAzureConfigLanguage = "fi"
+	TranscriptionEngineAzureConfigLanguageFr   TranscriptionEngineAzureConfigLanguage = "fr"
+	TranscriptionEngineAzureConfigLanguageGa   TranscriptionEngineAzureConfigLanguage = "ga"
+	TranscriptionEngineAzureConfigLanguageGl   TranscriptionEngineAzureConfigLanguage = "gl"
+	TranscriptionEngineAzureConfigLanguageGu   TranscriptionEngineAzureConfigLanguage = "gu"
+	TranscriptionEngineAzureConfigLanguageHe   TranscriptionEngineAzureConfigLanguage = "he"
+	TranscriptionEngineAzureConfigLanguageHi   TranscriptionEngineAzureConfigLanguage = "hi"
+	TranscriptionEngineAzureConfigLanguageHr   TranscriptionEngineAzureConfigLanguage = "hr"
+	TranscriptionEngineAzureConfigLanguageHu   TranscriptionEngineAzureConfigLanguage = "hu"
+	TranscriptionEngineAzureConfigLanguageHy   TranscriptionEngineAzureConfigLanguage = "hy"
+	TranscriptionEngineAzureConfigLanguageID   TranscriptionEngineAzureConfigLanguage = "id"
+	TranscriptionEngineAzureConfigLanguageIs   TranscriptionEngineAzureConfigLanguage = "is"
+	TranscriptionEngineAzureConfigLanguageIt   TranscriptionEngineAzureConfigLanguage = "it"
+	TranscriptionEngineAzureConfigLanguageJa   TranscriptionEngineAzureConfigLanguage = "ja"
+	TranscriptionEngineAzureConfigLanguageKa   TranscriptionEngineAzureConfigLanguage = "ka"
+	TranscriptionEngineAzureConfigLanguageKk   TranscriptionEngineAzureConfigLanguage = "kk"
+	TranscriptionEngineAzureConfigLanguageKm   TranscriptionEngineAzureConfigLanguage = "km"
+	TranscriptionEngineAzureConfigLanguageKn   TranscriptionEngineAzureConfigLanguage = "kn"
+	TranscriptionEngineAzureConfigLanguageKo   TranscriptionEngineAzureConfigLanguage = "ko"
+	TranscriptionEngineAzureConfigLanguageLo   TranscriptionEngineAzureConfigLanguage = "lo"
+	TranscriptionEngineAzureConfigLanguageLt   TranscriptionEngineAzureConfigLanguage = "lt"
+	TranscriptionEngineAzureConfigLanguageLv   TranscriptionEngineAzureConfigLanguage = "lv"
+	TranscriptionEngineAzureConfigLanguageMk   TranscriptionEngineAzureConfigLanguage = "mk"
+	TranscriptionEngineAzureConfigLanguageMl   TranscriptionEngineAzureConfigLanguage = "ml"
+	TranscriptionEngineAzureConfigLanguageMn   TranscriptionEngineAzureConfigLanguage = "mn"
+	TranscriptionEngineAzureConfigLanguageMr   TranscriptionEngineAzureConfigLanguage = "mr"
+	TranscriptionEngineAzureConfigLanguageMs   TranscriptionEngineAzureConfigLanguage = "ms"
+	TranscriptionEngineAzureConfigLanguageMt   TranscriptionEngineAzureConfigLanguage = "mt"
+	TranscriptionEngineAzureConfigLanguageMy   TranscriptionEngineAzureConfigLanguage = "my"
+	TranscriptionEngineAzureConfigLanguageNb   TranscriptionEngineAzureConfigLanguage = "nb"
+	TranscriptionEngineAzureConfigLanguageNe   TranscriptionEngineAzureConfigLanguage = "ne"
+	TranscriptionEngineAzureConfigLanguageNl   TranscriptionEngineAzureConfigLanguage = "nl"
+	TranscriptionEngineAzureConfigLanguagePl   TranscriptionEngineAzureConfigLanguage = "pl"
+	TranscriptionEngineAzureConfigLanguagePs   TranscriptionEngineAzureConfigLanguage = "ps"
+	TranscriptionEngineAzureConfigLanguagePt   TranscriptionEngineAzureConfigLanguage = "pt"
+	TranscriptionEngineAzureConfigLanguageRo   TranscriptionEngineAzureConfigLanguage = "ro"
+	TranscriptionEngineAzureConfigLanguageRu   TranscriptionEngineAzureConfigLanguage = "ru"
+	TranscriptionEngineAzureConfigLanguageSi   TranscriptionEngineAzureConfigLanguage = "si"
+	TranscriptionEngineAzureConfigLanguageSk   TranscriptionEngineAzureConfigLanguage = "sk"
+	TranscriptionEngineAzureConfigLanguageSl   TranscriptionEngineAzureConfigLanguage = "sl"
+	TranscriptionEngineAzureConfigLanguageSo   TranscriptionEngineAzureConfigLanguage = "so"
+	TranscriptionEngineAzureConfigLanguageSq   TranscriptionEngineAzureConfigLanguage = "sq"
+	TranscriptionEngineAzureConfigLanguageSr   TranscriptionEngineAzureConfigLanguage = "sr"
+	TranscriptionEngineAzureConfigLanguageSv   TranscriptionEngineAzureConfigLanguage = "sv"
+	TranscriptionEngineAzureConfigLanguageSw   TranscriptionEngineAzureConfigLanguage = "sw"
+	TranscriptionEngineAzureConfigLanguageTa   TranscriptionEngineAzureConfigLanguage = "ta"
+	TranscriptionEngineAzureConfigLanguageTe   TranscriptionEngineAzureConfigLanguage = "te"
+	TranscriptionEngineAzureConfigLanguageTh   TranscriptionEngineAzureConfigLanguage = "th"
+	TranscriptionEngineAzureConfigLanguageTr   TranscriptionEngineAzureConfigLanguage = "tr"
+	TranscriptionEngineAzureConfigLanguageUk   TranscriptionEngineAzureConfigLanguage = "uk"
+	TranscriptionEngineAzureConfigLanguageUr   TranscriptionEngineAzureConfigLanguage = "ur"
+	TranscriptionEngineAzureConfigLanguageUz   TranscriptionEngineAzureConfigLanguage = "uz"
+	TranscriptionEngineAzureConfigLanguageVi   TranscriptionEngineAzureConfigLanguage = "vi"
+	TranscriptionEngineAzureConfigLanguageWuu  TranscriptionEngineAzureConfigLanguage = "wuu"
+	TranscriptionEngineAzureConfigLanguageYue  TranscriptionEngineAzureConfigLanguage = "yue"
+	TranscriptionEngineAzureConfigLanguageZh   TranscriptionEngineAzureConfigLanguage = "zh"
+	TranscriptionEngineAzureConfigLanguageZu   TranscriptionEngineAzureConfigLanguage = "zu"
+	TranscriptionEngineAzureConfigLanguageAuto TranscriptionEngineAzureConfigLanguage = "auto"
+)
+
 type TranscriptionEngineBConfigParam struct {
 	// Language to use for speech recognition
 	//
@@ -1159,6 +1296,136 @@ type TranscriptionEngineBConfigTranscriptionModel string
 const (
 	TranscriptionEngineBConfigTranscriptionModelOpenAIWhisperTiny         TranscriptionEngineBConfigTranscriptionModel = "openai/whisper-tiny"
 	TranscriptionEngineBConfigTranscriptionModelOpenAIWhisperLargeV3Turbo TranscriptionEngineBConfigTranscriptionModel = "openai/whisper-large-v3-turbo"
+)
+
+type TranscriptionEngineGoogleConfigParam struct {
+	// Enables speaker diarization.
+	EnableSpeakerDiarization param.Opt[bool] `json:"enable_speaker_diarization,omitzero"`
+	// Whether to send also interim results. If set to false, only final results will
+	// be sent.
+	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
+	// Defines maximum number of speakers in the conversation.
+	MaxSpeakerCount param.Opt[int64] `json:"max_speaker_count,omitzero"`
+	// Defines minimum number of speakers in the conversation.
+	MinSpeakerCount param.Opt[int64] `json:"min_speaker_count,omitzero"`
+	// Enables profanity_filter.
+	ProfanityFilter param.Opt[bool] `json:"profanity_filter,omitzero"`
+	// Enables enhanced transcription, this works for models `phone_call` and `video`.
+	UseEnhanced param.Opt[bool] `json:"use_enhanced,omitzero"`
+	// Hints to improve transcription accuracy.
+	Hints []string `json:"hints,omitzero"`
+	// Language to use for speech recognition
+	//
+	// Any of "af", "sq", "am", "ar", "hy", "az", "eu", "bn", "bs", "bg", "my", "ca",
+	// "yue", "zh", "hr", "cs", "da", "nl", "en", "et", "fil", "fi", "fr", "gl", "ka",
+	// "de", "el", "gu", "iw", "hi", "hu", "is", "id", "it", "ja", "jv", "kn", "kk",
+	// "km", "ko", "lo", "lv", "lt", "mk", "ms", "ml", "mr", "mn", "ne", "no", "fa",
+	// "pl", "pt", "pa", "ro", "ru", "rw", "sr", "si", "sk", "sl", "ss", "st", "es",
+	// "su", "sw", "sv", "ta", "te", "th", "tn", "tr", "ts", "uk", "ur", "uz", "ve",
+	// "vi", "xh", "zu".
+	Language GoogleTranscriptionLanguage `json:"language,omitzero"`
+	// The model to use for transcription.
+	//
+	// Any of "latest_long", "latest_short", "command_and_search", "phone_call",
+	// "video", "default", "medical_conversation", "medical_dictation".
+	Model TranscriptionEngineGoogleConfigModel `json:"model,omitzero"`
+	// Speech context to improve transcription accuracy.
+	SpeechContext []TranscriptionEngineGoogleConfigSpeechContextParam `json:"speech_context,omitzero"`
+	// Engine identifier for Google transcription service
+	//
+	// Any of "Google".
+	TranscriptionEngine TranscriptionEngineGoogleConfigTranscriptionEngine `json:"transcription_engine,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionEngineGoogleConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionEngineGoogleConfigParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionEngineGoogleConfigParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The model to use for transcription.
+type TranscriptionEngineGoogleConfigModel string
+
+const (
+	TranscriptionEngineGoogleConfigModelLatestLong          TranscriptionEngineGoogleConfigModel = "latest_long"
+	TranscriptionEngineGoogleConfigModelLatestShort         TranscriptionEngineGoogleConfigModel = "latest_short"
+	TranscriptionEngineGoogleConfigModelCommandAndSearch    TranscriptionEngineGoogleConfigModel = "command_and_search"
+	TranscriptionEngineGoogleConfigModelPhoneCall           TranscriptionEngineGoogleConfigModel = "phone_call"
+	TranscriptionEngineGoogleConfigModelVideo               TranscriptionEngineGoogleConfigModel = "video"
+	TranscriptionEngineGoogleConfigModelDefault             TranscriptionEngineGoogleConfigModel = "default"
+	TranscriptionEngineGoogleConfigModelMedicalConversation TranscriptionEngineGoogleConfigModel = "medical_conversation"
+	TranscriptionEngineGoogleConfigModelMedicalDictation    TranscriptionEngineGoogleConfigModel = "medical_dictation"
+)
+
+type TranscriptionEngineGoogleConfigSpeechContextParam struct {
+	// Boost factor for the speech context.
+	Boost   param.Opt[float64] `json:"boost,omitzero"`
+	Phrases []string           `json:"phrases,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionEngineGoogleConfigSpeechContextParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionEngineGoogleConfigSpeechContextParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionEngineGoogleConfigSpeechContextParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Engine identifier for Google transcription service
+type TranscriptionEngineGoogleConfigTranscriptionEngine string
+
+const (
+	TranscriptionEngineGoogleConfigTranscriptionEngineGoogle TranscriptionEngineGoogleConfigTranscriptionEngine = "Google"
+)
+
+type TranscriptionEngineTelnyxConfigParam struct {
+	// Language to use for speech recognition
+	//
+	// Any of "en", "zh", "de", "es", "ru", "ko", "fr", "ja", "pt", "tr", "pl", "ca",
+	// "nl", "ar", "sv", "it", "id", "hi", "fi", "vi", "he", "uk", "el", "ms", "cs",
+	// "ro", "da", "hu", "ta", "no", "th", "ur", "hr", "bg", "lt", "la", "mi", "ml",
+	// "cy", "sk", "te", "fa", "lv", "bn", "sr", "az", "sl", "kn", "et", "mk", "br",
+	// "eu", "is", "hy", "ne", "mn", "bs", "kk", "sq", "sw", "gl", "mr", "pa", "si",
+	// "km", "sn", "yo", "so", "af", "oc", "ka", "be", "tg", "sd", "gu", "am", "yi",
+	// "lo", "uz", "fo", "ht", "ps", "tk", "nn", "mt", "sa", "lb", "my", "bo", "tl",
+	// "mg", "as", "tt", "haw", "ln", "ha", "ba", "jw", "su", "auto_detect".
+	Language TelnyxTranscriptionLanguage `json:"language,omitzero"`
+	// Engine identifier for Telnyx transcription service
+	//
+	// Any of "Telnyx".
+	TranscriptionEngine TranscriptionEngineTelnyxConfigTranscriptionEngine `json:"transcription_engine,omitzero"`
+	// The model to use for transcription.
+	//
+	// Any of "openai/whisper-tiny", "openai/whisper-large-v3-turbo".
+	TranscriptionModel TranscriptionEngineTelnyxConfigTranscriptionModel `json:"transcription_model,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionEngineTelnyxConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionEngineTelnyxConfigParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionEngineTelnyxConfigParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Engine identifier for Telnyx transcription service
+type TranscriptionEngineTelnyxConfigTranscriptionEngine string
+
+const (
+	TranscriptionEngineTelnyxConfigTranscriptionEngineTelnyx TranscriptionEngineTelnyxConfigTranscriptionEngine = "Telnyx"
+)
+
+// The model to use for transcription.
+type TranscriptionEngineTelnyxConfigTranscriptionModel string
+
+const (
+	TranscriptionEngineTelnyxConfigTranscriptionModelOpenAIWhisperTiny         TranscriptionEngineTelnyxConfigTranscriptionModel = "openai/whisper-tiny"
+	TranscriptionEngineTelnyxConfigTranscriptionModelOpenAIWhisperLargeV3Turbo TranscriptionEngineTelnyxConfigTranscriptionModel = "openai/whisper-large-v3-turbo"
 )
 
 type TranscriptionStartRequestParam struct {
@@ -1206,11 +1473,11 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type TranscriptionStartRequestTranscriptionEngineConfigUnionParam struct {
-	OfGoogle              *TranscriptionStartRequestTranscriptionEngineConfigGoogleParam              `json:",omitzero,inline"`
-	OfTelnyx              *TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam              `json:",omitzero,inline"`
+	OfGoogle              *TranscriptionEngineGoogleConfigParam                                       `json:",omitzero,inline"`
+	OfTelnyx              *TranscriptionEngineTelnyxConfigParam                                       `json:",omitzero,inline"`
 	OfDeepgramNova2Config *TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova2ConfigParam `json:",omitzero,inline"`
 	OfDeepgramNova3Config *TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova3ConfigParam `json:",omitzero,inline"`
-	OfAzure               *TranscriptionStartRequestTranscriptionEngineConfigAzureParam               `json:",omitzero,inline"`
+	OfAzure               *TranscriptionEngineAzureConfigParam                                        `json:",omitzero,inline"`
 	OfA                   *TranscriptionEngineAConfigParam                                            `json:",omitzero,inline"`
 	OfB                   *TranscriptionEngineBConfigParam                                            `json:",omitzero,inline"`
 	paramUnion
@@ -1251,7 +1518,7 @@ func (u *TranscriptionStartRequestTranscriptionEngineConfigUnionParam) asAny() a
 // Returns a pointer to the underlying variant's property, if present.
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetRegion() *string {
 	if vt := u.OfAzure; vt != nil {
-		return &vt.Region
+		return (*string)(&vt.Region)
 	}
 	return nil
 }
@@ -1411,14 +1678,14 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetSpeechC
 }
 
 // Can have the runtime types
-// [_[]TranscriptionStartRequestTranscriptionEngineConfigGoogleSpeechContextParam],
+// [_[]TranscriptionEngineGoogleConfigSpeechContextParam],
 // [_[]TranscriptionEngineAConfigSpeechContextParam]
 type transcriptionStartRequestTranscriptionEngineConfigUnionParamSpeechContext struct{ any }
 
 // Use the following switch statement to get the type of the union:
 //
 //	switch u.AsAny().(type) {
-//	case *[]telnyx.TranscriptionStartRequestTranscriptionEngineConfigGoogleSpeechContextParam:
+//	case *[]telnyx.TranscriptionEngineGoogleConfigSpeechContextParam:
 //	case *[]telnyx.TranscriptionEngineAConfigSpeechContextParam:
 //	default:
 //	    fmt.Errorf("not present")
@@ -1441,125 +1708,13 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetKeyword
 func init() {
 	apijson.RegisterUnion[TranscriptionStartRequestTranscriptionEngineConfigUnionParam](
 		"transcription_engine",
-		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigGoogleParam]("Google"),
-		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam]("Telnyx"),
+		apijson.Discriminator[TranscriptionEngineGoogleConfigParam]("Google"),
+		apijson.Discriminator[TranscriptionEngineTelnyxConfigParam]("Telnyx"),
 		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova2ConfigParam]("Deepgram"),
 		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova3ConfigParam]("Deepgram"),
-		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigAzureParam]("Azure"),
+		apijson.Discriminator[TranscriptionEngineAzureConfigParam]("Azure"),
 		apijson.Discriminator[TranscriptionEngineAConfigParam]("A"),
 		apijson.Discriminator[TranscriptionEngineBConfigParam]("B"),
-	)
-}
-
-type TranscriptionStartRequestTranscriptionEngineConfigGoogleParam struct {
-	// Enables speaker diarization.
-	EnableSpeakerDiarization param.Opt[bool] `json:"enable_speaker_diarization,omitzero"`
-	// Whether to send also interim results. If set to false, only final results will
-	// be sent.
-	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
-	// Defines maximum number of speakers in the conversation.
-	MaxSpeakerCount param.Opt[int64] `json:"max_speaker_count,omitzero"`
-	// Defines minimum number of speakers in the conversation.
-	MinSpeakerCount param.Opt[int64] `json:"min_speaker_count,omitzero"`
-	// Enables profanity_filter.
-	ProfanityFilter param.Opt[bool] `json:"profanity_filter,omitzero"`
-	// Enables enhanced transcription, this works for models `phone_call` and `video`.
-	UseEnhanced param.Opt[bool] `json:"use_enhanced,omitzero"`
-	// Hints to improve transcription accuracy.
-	Hints []string `json:"hints,omitzero"`
-	// Language to use for speech recognition
-	//
-	// Any of "af", "sq", "am", "ar", "hy", "az", "eu", "bn", "bs", "bg", "my", "ca",
-	// "yue", "zh", "hr", "cs", "da", "nl", "en", "et", "fil", "fi", "fr", "gl", "ka",
-	// "de", "el", "gu", "iw", "hi", "hu", "is", "id", "it", "ja", "jv", "kn", "kk",
-	// "km", "ko", "lo", "lv", "lt", "mk", "ms", "ml", "mr", "mn", "ne", "no", "fa",
-	// "pl", "pt", "pa", "ro", "ru", "rw", "sr", "si", "sk", "sl", "ss", "st", "es",
-	// "su", "sw", "sv", "ta", "te", "th", "tn", "tr", "ts", "uk", "ur", "uz", "ve",
-	// "vi", "xh", "zu".
-	Language GoogleTranscriptionLanguage `json:"language,omitzero"`
-	// The model to use for transcription.
-	//
-	// Any of "latest_long", "latest_short", "command_and_search", "phone_call",
-	// "video", "default", "medical_conversation", "medical_dictation".
-	Model string `json:"model,omitzero"`
-	// Speech context to improve transcription accuracy.
-	SpeechContext []TranscriptionStartRequestTranscriptionEngineConfigGoogleSpeechContextParam `json:"speech_context,omitzero"`
-	// Engine identifier for Google transcription service
-	//
-	// Any of "Google".
-	TranscriptionEngine string `json:"transcription_engine,omitzero"`
-	paramObj
-}
-
-func (r TranscriptionStartRequestTranscriptionEngineConfigGoogleParam) MarshalJSON() (data []byte, err error) {
-	type shadow TranscriptionStartRequestTranscriptionEngineConfigGoogleParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscriptionStartRequestTranscriptionEngineConfigGoogleParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigGoogleParam](
-		"model", "latest_long", "latest_short", "command_and_search", "phone_call", "video", "default", "medical_conversation", "medical_dictation",
-	)
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigGoogleParam](
-		"transcription_engine", "Google",
-	)
-}
-
-type TranscriptionStartRequestTranscriptionEngineConfigGoogleSpeechContextParam struct {
-	// Boost factor for the speech context.
-	Boost   param.Opt[float64] `json:"boost,omitzero"`
-	Phrases []string           `json:"phrases,omitzero"`
-	paramObj
-}
-
-func (r TranscriptionStartRequestTranscriptionEngineConfigGoogleSpeechContextParam) MarshalJSON() (data []byte, err error) {
-	type shadow TranscriptionStartRequestTranscriptionEngineConfigGoogleSpeechContextParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscriptionStartRequestTranscriptionEngineConfigGoogleSpeechContextParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam struct {
-	// Language to use for speech recognition
-	//
-	// Any of "en", "zh", "de", "es", "ru", "ko", "fr", "ja", "pt", "tr", "pl", "ca",
-	// "nl", "ar", "sv", "it", "id", "hi", "fi", "vi", "he", "uk", "el", "ms", "cs",
-	// "ro", "da", "hu", "ta", "no", "th", "ur", "hr", "bg", "lt", "la", "mi", "ml",
-	// "cy", "sk", "te", "fa", "lv", "bn", "sr", "az", "sl", "kn", "et", "mk", "br",
-	// "eu", "is", "hy", "ne", "mn", "bs", "kk", "sq", "sw", "gl", "mr", "pa", "si",
-	// "km", "sn", "yo", "so", "af", "oc", "ka", "be", "tg", "sd", "gu", "am", "yi",
-	// "lo", "uz", "fo", "ht", "ps", "tk", "nn", "mt", "sa", "lb", "my", "bo", "tl",
-	// "mg", "as", "tt", "haw", "ln", "ha", "ba", "jw", "su", "auto_detect".
-	Language TelnyxTranscriptionLanguage `json:"language,omitzero"`
-	// Engine identifier for Telnyx transcription service
-	//
-	// Any of "Telnyx".
-	TranscriptionEngine string `json:"transcription_engine,omitzero"`
-	// The model to use for transcription.
-	//
-	// Any of "openai/whisper-tiny", "openai/whisper-large-v3-turbo".
-	TranscriptionModel string `json:"transcription_model,omitzero"`
-	paramObj
-}
-
-func (r TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam) MarshalJSON() (data []byte, err error) {
-	type shadow TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam](
-		"transcription_engine", "Telnyx",
-	)
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigTelnyxParam](
-		"transcription_model", "openai/whisper-tiny", "openai/whisper-large-v3-turbo",
 	)
 }
 
@@ -1635,51 +1790,6 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova3ConfigParam](
 		"language", "en", "en-US", "en-AU", "en-GB", "en-IN", "en-NZ", "de", "nl", "sv", "sv-SE", "da", "da-DK", "es", "es-419", "fr", "fr-CA", "pt", "pt-BR", "pt-PT", "auto_detect",
-	)
-}
-
-// The properties Region, TranscriptionEngine are required.
-type TranscriptionStartRequestTranscriptionEngineConfigAzureParam struct {
-	// Azure region to use for speech recognition
-	//
-	// Any of "australiaeast", "centralindia", "eastus", "northcentralus",
-	// "westeurope", "westus2".
-	Region string `json:"region,omitzero,required"`
-	// Reference to the API key for authentication. See
-	// [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
-	// for details. The parameter is optional as defaults are available for some
-	// regions.
-	APIKeyRef param.Opt[string] `json:"api_key_ref,omitzero"`
-	// Language to use for speech recognition
-	//
-	// Any of "af", "am", "ar", "bg", "bn", "bs", "ca", "cs", "cy", "da", "de", "el",
-	// "en", "es", "et", "eu", "fa", "fi", "fr", "ga", "gl", "gu", "he", "hi", "hr",
-	// "hu", "hy", "id", "is", "it", "ja", "ka", "kk", "km", "kn", "ko", "lo", "lt",
-	// "lv", "mk", "ml", "mn", "mr", "ms", "mt", "my", "nb", "ne", "nl", "pl", "ps",
-	// "pt", "ro", "ru", "si", "sk", "sl", "so", "sq", "sr", "sv", "sw", "ta", "te",
-	// "th", "tr", "uk", "ur", "uz", "vi", "wuu", "yue", "zh", "zu", "auto".
-	Language string `json:"language,omitzero"`
-	// Engine identifier for Azure transcription service
-	//
-	// This field can be elided, and will marshal its zero value as "Azure".
-	TranscriptionEngine constant.Azure `json:"transcription_engine,required"`
-	paramObj
-}
-
-func (r TranscriptionStartRequestTranscriptionEngineConfigAzureParam) MarshalJSON() (data []byte, err error) {
-	type shadow TranscriptionStartRequestTranscriptionEngineConfigAzureParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscriptionStartRequestTranscriptionEngineConfigAzureParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigAzureParam](
-		"region", "australiaeast", "centralindia", "eastus", "northcentralus", "westeurope", "westus2",
-	)
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigAzureParam](
-		"language", "af", "am", "ar", "bg", "bn", "bs", "ca", "cs", "cy", "da", "de", "el", "en", "es", "et", "eu", "fa", "fi", "fr", "ga", "gl", "gu", "he", "hi", "hr", "hu", "hy", "id", "is", "it", "ja", "ka", "kk", "km", "kn", "ko", "lo", "lt", "lv", "mk", "ml", "mn", "mr", "ms", "mt", "my", "nb", "ne", "nl", "pl", "ps", "pt", "ro", "ru", "si", "sk", "sl", "so", "sq", "sr", "sv", "sw", "ta", "te", "th", "tr", "uk", "ur", "uz", "vi", "wuu", "yue", "zh", "zu", "auto",
 	)
 }
 
@@ -2494,7 +2604,7 @@ const (
 type CallActionBridgeParams struct {
 	// The Call Control ID of the call you want to bridge with, can't be used together
 	// with queue parameter or video_room_id parameter.
-	CallControlID string `json:"call_control_id,required"`
+	CallControlIDToBridgeWith string `json:"call_control_id,required"`
 	// Use this field to add state to every subsequent webhook. It must be a valid
 	// Base-64 encoded string.
 	ClientState param.Opt[string] `json:"client_state,omitzero"`
@@ -2756,7 +2866,7 @@ type CallActionGatherUsingAIParams struct {
 	// the voice assistant. See the
 	// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
 	// documentation about the format
-	Parameters any `json:"parameters,omitzero,required"`
+	Parameters map[string]any `json:"parameters,omitzero,required"`
 	// Use this field to add state to every subsequent webhook. It must be a valid
 	// Base-64 encoded string.
 	ClientState param.Opt[string] `json:"client_state,omitzero"`

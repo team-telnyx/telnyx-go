@@ -14,9 +14,9 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v3/shared"
 )
 
 // IPService contains methods and other services that help with interacting with
@@ -71,11 +71,26 @@ func (r *IPService) Update(ctx context.Context, id string, body IPUpdateParams, 
 }
 
 // Get all IPs belonging to the user that match the given filters.
-func (r *IPService) List(ctx context.Context, query IPListParams, opts ...option.RequestOption) (res *IPListResponse, err error) {
+func (r *IPService) List(ctx context.Context, query IPListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[IP], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "ips"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get all IPs belonging to the user that match the given filters.
+func (r *IPService) ListAutoPaging(ctx context.Context, query IPListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[IP] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete an IP.
@@ -170,24 +185,6 @@ type IPUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r IPUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *IPUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type IPListResponse struct {
-	Data []IP                             `json:"data"`
-	Meta shared.ConnectionsPaginationMeta `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r IPListResponse) RawJSON() string { return r.JSON.raw }
-func (r *IPListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

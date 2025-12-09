@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -71,11 +72,26 @@ func (r *BillingGroupService) Update(ctx context.Context, id string, body Billin
 }
 
 // List all billing groups
-func (r *BillingGroupService) List(ctx context.Context, query BillingGroupListParams, opts ...option.RequestOption) (res *BillingGroupListResponse, err error) {
+func (r *BillingGroupService) List(ctx context.Context, query BillingGroupListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[BillingGroup], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "billing_groups"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List all billing groups
+func (r *BillingGroupService) ListAutoPaging(ctx context.Context, query BillingGroupListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[BillingGroup] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a billing group
@@ -182,24 +198,6 @@ func (r *BillingGroupUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type BillingGroupListResponse struct {
-	Data []BillingGroup `json:"data"`
-	Meta PaginationMeta `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BillingGroupListResponse) RawJSON() string { return r.JSON.raw }
-func (r *BillingGroupListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type BillingGroupDeleteResponse struct {
 	Data BillingGroup `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -245,33 +243,13 @@ func (r *BillingGroupUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type BillingGroupListParams struct {
-	// Consolidated page parameter (deepObject style). Originally: page[number],
-	// page[size]
-	Page BillingGroupListParamsPage `query:"page,omitzero" json:"-"`
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [BillingGroupListParams]'s query parameters as `url.Values`.
 func (r BillingGroupListParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[number],
-// page[size]
-type BillingGroupListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [BillingGroupListParamsPage]'s query parameters as
-// `url.Values`.
-func (r BillingGroupListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

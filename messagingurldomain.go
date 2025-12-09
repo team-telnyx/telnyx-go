@@ -12,6 +12,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -36,32 +37,29 @@ func NewMessagingURLDomainService(opts ...option.RequestOption) (r MessagingURLD
 }
 
 // List messaging URL domains
-func (r *MessagingURLDomainService) List(ctx context.Context, query MessagingURLDomainListParams, opts ...option.RequestOption) (res *MessagingURLDomainListResponse, err error) {
+func (r *MessagingURLDomainService) List(ctx context.Context, query MessagingURLDomainListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[MessagingURLDomainListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "messaging_url_domains"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List messaging URL domains
+func (r *MessagingURLDomainService) ListAutoPaging(ctx context.Context, query MessagingURLDomainListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[MessagingURLDomainListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type MessagingURLDomainListResponse struct {
-	Data []MessagingURLDomainListResponseData `json:"data"`
-	Meta MessagingURLDomainListResponseMeta   `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessagingURLDomainListResponse) RawJSON() string { return r.JSON.raw }
-func (r *MessagingURLDomainListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessagingURLDomainListResponseData struct {
 	ID         string `json:"id"`
 	RecordType string `json:"record_type"`
 	URLDomain  string `json:"url_domain"`
@@ -78,30 +76,8 @@ type MessagingURLDomainListResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessagingURLDomainListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *MessagingURLDomainListResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessagingURLDomainListResponseMeta struct {
-	PageNumber   int64 `json:"page_number,required"`
-	PageSize     int64 `json:"page_size,required"`
-	TotalPages   int64 `json:"total_pages,required"`
-	TotalResults int64 `json:"total_results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageNumber   respjson.Field
-		PageSize     respjson.Field
-		TotalPages   respjson.Field
-		TotalResults respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessagingURLDomainListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *MessagingURLDomainListResponseMeta) UnmarshalJSON(data []byte) error {
+func (r MessagingURLDomainListResponse) RawJSON() string { return r.JSON.raw }
+func (r *MessagingURLDomainListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

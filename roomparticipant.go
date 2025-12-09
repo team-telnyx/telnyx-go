@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v3/shared"
@@ -52,11 +53,26 @@ func (r *RoomParticipantService) Get(ctx context.Context, roomParticipantID stri
 }
 
 // View a list of room participants.
-func (r *RoomParticipantService) List(ctx context.Context, query RoomParticipantListParams, opts ...option.RequestOption) (res *RoomParticipantListResponse, err error) {
+func (r *RoomParticipantService) List(ctx context.Context, query RoomParticipantListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[shared.RoomParticipant], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "room_participants"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// View a list of room participants.
+func (r *RoomParticipantService) ListAutoPaging(ctx context.Context, query RoomParticipantListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[shared.RoomParticipant] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type RoomParticipantGetResponse struct {
@@ -72,24 +88,6 @@ type RoomParticipantGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r RoomParticipantGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *RoomParticipantGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type RoomParticipantListResponse struct {
-	Data []shared.RoomParticipant `json:"data"`
-	Meta PaginationMeta           `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RoomParticipantListResponse) RawJSON() string { return r.JSON.raw }
-func (r *RoomParticipantListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

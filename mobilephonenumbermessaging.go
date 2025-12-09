@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v3/shared"
@@ -52,11 +53,26 @@ func (r *MobilePhoneNumberMessagingService) Get(ctx context.Context, id string, 
 }
 
 // List mobile phone numbers with messaging settings
-func (r *MobilePhoneNumberMessagingService) List(ctx context.Context, query MobilePhoneNumberMessagingListParams, opts ...option.RequestOption) (res *MobilePhoneNumberMessagingListResponse, err error) {
+func (r *MobilePhoneNumberMessagingService) List(ctx context.Context, query MobilePhoneNumberMessagingListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[MobilePhoneNumberMessagingListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "mobile_phone_numbers/messaging"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List mobile phone numbers with messaging settings
+func (r *MobilePhoneNumberMessagingService) ListAutoPaging(ctx context.Context, query MobilePhoneNumberMessagingListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[MobilePhoneNumberMessagingListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type MobilePhoneNumberMessagingGetResponse struct {
@@ -145,31 +161,13 @@ func (r *MobilePhoneNumberMessagingGetResponseDataFeatures) UnmarshalJSON(data [
 }
 
 type MobilePhoneNumberMessagingListResponse struct {
-	Data []MobilePhoneNumberMessagingListResponseData `json:"data"`
-	Meta MobilePhoneNumberMessagingListResponseMeta   `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MobilePhoneNumberMessagingListResponse) RawJSON() string { return r.JSON.raw }
-func (r *MobilePhoneNumberMessagingListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MobilePhoneNumberMessagingListResponseData struct {
 	// Identifies the type of resource.
 	ID string `json:"id"`
 	// ISO 3166-1 alpha-2 country code.
 	CountryCode string `json:"country_code"`
 	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time                                          `json:"created_at" format:"date-time"`
-	Features  MobilePhoneNumberMessagingListResponseDataFeatures `json:"features"`
+	CreatedAt time.Time                                      `json:"created_at" format:"date-time"`
+	Features  MobilePhoneNumberMessagingListResponseFeatures `json:"features"`
 	// The messaging product that the number is registered to use
 	MessagingProduct string `json:"messaging_product"`
 	// Unique identifier for a messaging profile.
@@ -179,13 +177,13 @@ type MobilePhoneNumberMessagingListResponseData struct {
 	// Identifies the type of the resource.
 	//
 	// Any of "messaging_phone_number", "messaging_settings".
-	RecordType string `json:"record_type"`
+	RecordType MobilePhoneNumberMessagingListResponseRecordType `json:"record_type"`
 	// The messaging traffic or use case for which the number is currently configured.
 	TrafficType string `json:"traffic_type"`
 	// The type of the phone number
 	//
 	// Any of "longcode".
-	Type string `json:"type"`
+	Type MobilePhoneNumberMessagingListResponseType `json:"type"`
 	// ISO 8601 formatted date indicating when the resource was updated.
 	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -207,12 +205,12 @@ type MobilePhoneNumberMessagingListResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MobilePhoneNumberMessagingListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *MobilePhoneNumberMessagingListResponseData) UnmarshalJSON(data []byte) error {
+func (r MobilePhoneNumberMessagingListResponse) RawJSON() string { return r.JSON.raw }
+func (r *MobilePhoneNumberMessagingListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type MobilePhoneNumberMessagingListResponseDataFeatures struct {
+type MobilePhoneNumberMessagingListResponseFeatures struct {
 	// The set of features available for a specific messaging use case (SMS or MMS).
 	// Features can vary depending on the characteristics the phone number, as well as
 	// its current product configuration.
@@ -226,32 +224,25 @@ type MobilePhoneNumberMessagingListResponseDataFeatures struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MobilePhoneNumberMessagingListResponseDataFeatures) RawJSON() string { return r.JSON.raw }
-func (r *MobilePhoneNumberMessagingListResponseDataFeatures) UnmarshalJSON(data []byte) error {
+func (r MobilePhoneNumberMessagingListResponseFeatures) RawJSON() string { return r.JSON.raw }
+func (r *MobilePhoneNumberMessagingListResponseFeatures) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type MobilePhoneNumberMessagingListResponseMeta struct {
-	PageNumber   int64 `json:"page_number,required"`
-	PageSize     int64 `json:"page_size,required"`
-	TotalPages   int64 `json:"total_pages,required"`
-	TotalResults int64 `json:"total_results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageNumber   respjson.Field
-		PageSize     respjson.Field
-		TotalPages   respjson.Field
-		TotalResults respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
+// Identifies the type of the resource.
+type MobilePhoneNumberMessagingListResponseRecordType string
 
-// Returns the unmodified JSON received from the API
-func (r MobilePhoneNumberMessagingListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *MobilePhoneNumberMessagingListResponseMeta) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+const (
+	MobilePhoneNumberMessagingListResponseRecordTypeMessagingPhoneNumber MobilePhoneNumberMessagingListResponseRecordType = "messaging_phone_number"
+	MobilePhoneNumberMessagingListResponseRecordTypeMessagingSettings    MobilePhoneNumberMessagingListResponseRecordType = "messaging_settings"
+)
+
+// The type of the phone number
+type MobilePhoneNumberMessagingListResponseType string
+
+const (
+	MobilePhoneNumberMessagingListResponseTypeLongcode MobilePhoneNumberMessagingListResponseType = "longcode"
+)
 
 type MobilePhoneNumberMessagingListParams struct {
 	// Consolidated page parameter (deepObject style). Originally: page[number],
