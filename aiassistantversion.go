@@ -154,9 +154,9 @@ type UpdateAssistantParam struct {
 	TelephonySettings TelephonySettingsParam `json:"telephony_settings,omitzero"`
 	// The tools that the assistant can use. These may be templated with
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
-	Tools         []AssistantToolsItemsUnionParam `json:"tools,omitzero"`
-	Transcription TranscriptionSettingsParam      `json:"transcription,omitzero"`
-	VoiceSettings VoiceSettingsParam              `json:"voice_settings,omitzero"`
+	Tools         []AssistantToolUnionParam  `json:"tools,omitzero"`
+	Transcription TranscriptionSettingsParam `json:"transcription,omitzero"`
+	VoiceSettings VoiceSettingsParam         `json:"voice_settings,omitzero"`
 	paramObj
 }
 

@@ -126,22 +126,22 @@ func (r *GlobalIPLatencyGetResponseDataMeanLatency) UnmarshalJSON(data []byte) e
 }
 
 type GlobalIPLatencyGetResponseDataPercentileLatency struct {
-	P0   P0   `json:"0"`
-	P100 P100 `json:"100"`
-	P25  P25  `json:"25"`
-	P50  P50  `json:"50"`
-	P75  P75  `json:"75"`
-	P90  P90  `json:"90"`
-	P99  P99  `json:"99"`
+	Number0   GlobalIPLatencyGetResponseDataPercentileLatency0   `json:"0"`
+	Number100 GlobalIPLatencyGetResponseDataPercentileLatency100 `json:"100"`
+	Number25  GlobalIPLatencyGetResponseDataPercentileLatency25  `json:"25"`
+	Number50  GlobalIPLatencyGetResponseDataPercentileLatency50  `json:"50"`
+	Number75  GlobalIPLatencyGetResponseDataPercentileLatency75  `json:"75"`
+	Number90  GlobalIPLatencyGetResponseDataPercentileLatency90  `json:"90"`
+	Number99  GlobalIPLatencyGetResponseDataPercentileLatency99  `json:"99"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		P0          respjson.Field
-		P100        respjson.Field
-		P25         respjson.Field
-		P50         respjson.Field
-		P75         respjson.Field
-		P90         respjson.Field
-		P99         respjson.Field
+		Number0     respjson.Field
+		Number100   respjson.Field
+		Number25    respjson.Field
+		Number50    respjson.Field
+		Number75    respjson.Field
+		Number90    respjson.Field
+		Number99    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -153,7 +153,7 @@ func (r *GlobalIPLatencyGetResponseDataPercentileLatency) UnmarshalJSON(data []b
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type P0 struct {
+type GlobalIPLatencyGetResponseDataPercentileLatency0 struct {
 	// The minimum latency.
 	Amount float64 `json:"amount"`
 	// The unit of the minimum latency.
@@ -168,12 +168,12 @@ type P0 struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r P0) RawJSON() string { return r.JSON.raw }
-func (r *P0) UnmarshalJSON(data []byte) error {
+func (r GlobalIPLatencyGetResponseDataPercentileLatency0) RawJSON() string { return r.JSON.raw }
+func (r *GlobalIPLatencyGetResponseDataPercentileLatency0) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type P100 struct {
+type GlobalIPLatencyGetResponseDataPercentileLatency100 struct {
 	// The maximum latency.
 	Amount float64 `json:"amount"`
 	// The unit of the maximum latency.
@@ -188,12 +188,12 @@ type P100 struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r P100) RawJSON() string { return r.JSON.raw }
-func (r *P100) UnmarshalJSON(data []byte) error {
+func (r GlobalIPLatencyGetResponseDataPercentileLatency100) RawJSON() string { return r.JSON.raw }
+func (r *GlobalIPLatencyGetResponseDataPercentileLatency100) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type P25 struct {
+type GlobalIPLatencyGetResponseDataPercentileLatency25 struct {
 	// The 25th percentile latency.
 	Amount float64 `json:"amount"`
 	// The unit of the 25th percentile latency.
@@ -208,12 +208,12 @@ type P25 struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r P25) RawJSON() string { return r.JSON.raw }
-func (r *P25) UnmarshalJSON(data []byte) error {
+func (r GlobalIPLatencyGetResponseDataPercentileLatency25) RawJSON() string { return r.JSON.raw }
+func (r *GlobalIPLatencyGetResponseDataPercentileLatency25) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type P50 struct {
+type GlobalIPLatencyGetResponseDataPercentileLatency50 struct {
 	// The 50th percentile latency.
 	Amount float64 `json:"amount"`
 	// The unit of the 50th percentile latency.
@@ -228,12 +228,12 @@ type P50 struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r P50) RawJSON() string { return r.JSON.raw }
-func (r *P50) UnmarshalJSON(data []byte) error {
+func (r GlobalIPLatencyGetResponseDataPercentileLatency50) RawJSON() string { return r.JSON.raw }
+func (r *GlobalIPLatencyGetResponseDataPercentileLatency50) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type P75 struct {
+type GlobalIPLatencyGetResponseDataPercentileLatency75 struct {
 	// The 75th percentile latency.
 	Amount float64 `json:"amount"`
 	// The unit of the 75th percentile latency.
@@ -248,12 +248,12 @@ type P75 struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r P75) RawJSON() string { return r.JSON.raw }
-func (r *P75) UnmarshalJSON(data []byte) error {
+func (r GlobalIPLatencyGetResponseDataPercentileLatency75) RawJSON() string { return r.JSON.raw }
+func (r *GlobalIPLatencyGetResponseDataPercentileLatency75) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type P90 struct {
+type GlobalIPLatencyGetResponseDataPercentileLatency90 struct {
 	// The 90th percentile latency.
 	Amount float64 `json:"amount"`
 	// The unit of the 90th percentile latency.
@@ -268,12 +268,12 @@ type P90 struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r P90) RawJSON() string { return r.JSON.raw }
-func (r *P90) UnmarshalJSON(data []byte) error {
+func (r GlobalIPLatencyGetResponseDataPercentileLatency90) RawJSON() string { return r.JSON.raw }
+func (r *GlobalIPLatencyGetResponseDataPercentileLatency90) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type P99 struct {
+type GlobalIPLatencyGetResponseDataPercentileLatency99 struct {
 	// The 99th percentile latency.
 	Amount float64 `json:"amount"`
 	// The unit of the 99th percentile latency.
@@ -288,8 +288,8 @@ type P99 struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r P99) RawJSON() string { return r.JSON.raw }
-func (r *P99) UnmarshalJSON(data []byte) error {
+func (r GlobalIPLatencyGetResponseDataPercentileLatency99) RawJSON() string { return r.JSON.raw }
+func (r *GlobalIPLatencyGetResponseDataPercentileLatency99) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

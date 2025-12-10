@@ -15,7 +15,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -52,26 +51,11 @@ func (r *AIClusterService) Get(ctx context.Context, taskID string, query AIClust
 }
 
 // List all clusters
-func (r *AIClusterService) List(ctx context.Context, query AIClusterListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[AIClusterListResponse], err error) {
-	var raw *http.Response
+func (r *AIClusterService) List(ctx context.Context, query AIClusterListParams, opts ...option.RequestOption) (res *AIClusterListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "ai/clusters"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// List all clusters
-func (r *AIClusterService) ListAutoPaging(ctx context.Context, query AIClusterListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[AIClusterListResponse] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Delete a cluster
@@ -195,6 +179,24 @@ func (r *AIClusterGetResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type AIClusterListResponse struct {
+	Data []AIClusterListResponseData `json:"data,required"`
+	Meta Meta                        `json:"meta,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AIClusterListResponse) RawJSON() string { return r.JSON.raw }
+func (r *AIClusterListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AIClusterListResponseData struct {
 	Bucket            string    `json:"bucket,required"`
 	CreatedAt         time.Time `json:"created_at,required" format:"date-time"`
 	FinishedAt        time.Time `json:"finished_at,required" format:"date-time"`
@@ -218,8 +220,8 @@ type AIClusterListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AIClusterListResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIClusterListResponse) UnmarshalJSON(data []byte) error {
+func (r AIClusterListResponseData) RawJSON() string { return r.JSON.raw }
+func (r *AIClusterListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -273,13 +275,31 @@ func (r AIClusterGetParams) URLQuery() (v url.Values, err error) {
 }
 
 type AIClusterListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page AIClusterListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [AIClusterListParams]'s query parameters as `url.Values`.
 func (r AIClusterListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type AIClusterListParamsPage struct {
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	Size   param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [AIClusterListParamsPage]'s query parameters as
+// `url.Values`.
+func (r AIClusterListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

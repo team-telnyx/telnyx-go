@@ -62,8 +62,10 @@ func TestAccessIPRangeListWithOptionalParams(t *testing.T) {
 				OfTime: telnyx.Time(time.Now()),
 			},
 		},
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
+		Page: telnyx.AccessIPRangeListParamsPage{
+			Number: telnyx.Int(0),
+			Size:   telnyx.Int(250),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

@@ -100,9 +100,11 @@ func TestAIAssistantScheduledEventListWithOptionalParams(t *testing.T) {
 		telnyx.AIAssistantScheduledEventListParams{
 			ConversationChannel: telnyx.ConversationChannelTypePhoneCall,
 			FromDate:            telnyx.Time(time.Now()),
-			PageNumber:          telnyx.Int(0),
-			PageSize:            telnyx.Int(0),
-			ToDate:              telnyx.Time(time.Now()),
+			Page: telnyx.AIAssistantScheduledEventListParamsPage{
+				Number: telnyx.Int(1),
+				Size:   telnyx.Int(1),
+			},
+			ToDate: telnyx.Time(time.Now()),
 		},
 	)
 	if err != nil {

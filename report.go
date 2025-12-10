@@ -13,7 +13,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -50,26 +49,11 @@ func (r *ReportService) ListMdrs(ctx context.Context, query ReportListMdrsParams
 }
 
 // Fetch all Wdr records
-func (r *ReportService) ListWdrs(ctx context.Context, query ReportListWdrsParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[ReportListWdrsResponse], err error) {
-	var raw *http.Response
+func (r *ReportService) ListWdrs(ctx context.Context, query ReportListWdrsParams, opts ...option.RequestOption) (res *ReportListWdrsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "reports/wdrs"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Fetch all Wdr records
-func (r *ReportService) ListWdrsAutoPaging(ctx context.Context, query ReportListWdrsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[ReportListWdrsResponse] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.ListWdrs(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 type ReportListMdrsResponse struct {
@@ -152,12 +136,30 @@ func (r *ReportListMdrsResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type ReportListWdrsResponse struct {
+	Data []ReportListWdrsResponseData `json:"data"`
+	Meta ReportListWdrsResponseMeta   `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ReportListWdrsResponse) RawJSON() string { return r.JSON.raw }
+func (r *ReportListWdrsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ReportListWdrsResponseData struct {
 	// WDR id
-	ID   string                     `json:"id"`
-	Cost ReportListWdrsResponseCost `json:"cost"`
+	ID   string                         `json:"id"`
+	Cost ReportListWdrsResponseDataCost `json:"cost"`
 	// Record created time
-	CreatedAt    time.Time                          `json:"created_at" format:"date-time"`
-	DownlinkData ReportListWdrsResponseDownlinkData `json:"downlink_data"`
+	CreatedAt    time.Time                              `json:"created_at" format:"date-time"`
+	DownlinkData ReportListWdrsResponseDataDownlinkData `json:"downlink_data"`
 	// Session duration in seconds.
 	DurationSeconds float64 `json:"duration_seconds"`
 	// International mobile subscriber identity.
@@ -167,16 +169,16 @@ type ReportListWdrsResponse struct {
 	// Mobile network code.
 	Mnc string `json:"mnc"`
 	// Phone number
-	PhoneNumber string                     `json:"phone_number"`
-	Rate        ReportListWdrsResponseRate `json:"rate"`
-	RecordType  string                     `json:"record_type"`
+	PhoneNumber string                         `json:"phone_number"`
+	Rate        ReportListWdrsResponseDataRate `json:"rate"`
+	RecordType  string                         `json:"record_type"`
 	// Sim card unique identifier
 	SimCardID string `json:"sim_card_id"`
 	// Sim group unique identifier
 	SimGroupID string `json:"sim_group_id"`
 	// Defined sim group name
-	SimGroupName string                           `json:"sim_group_name"`
-	UplinkData   ReportListWdrsResponseUplinkData `json:"uplink_data"`
+	SimGroupName string                               `json:"sim_group_name"`
+	UplinkData   ReportListWdrsResponseDataUplinkData `json:"uplink_data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -200,12 +202,12 @@ type ReportListWdrsResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ReportListWdrsResponse) RawJSON() string { return r.JSON.raw }
-func (r *ReportListWdrsResponse) UnmarshalJSON(data []byte) error {
+func (r ReportListWdrsResponseData) RawJSON() string { return r.JSON.raw }
+func (r *ReportListWdrsResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ReportListWdrsResponseCost struct {
+type ReportListWdrsResponseDataCost struct {
 	// Final cost. Cost is calculated as rate \* unit
 	Amount string `json:"amount"`
 	// Currency of the rate and cost
@@ -222,12 +224,12 @@ type ReportListWdrsResponseCost struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ReportListWdrsResponseCost) RawJSON() string { return r.JSON.raw }
-func (r *ReportListWdrsResponseCost) UnmarshalJSON(data []byte) error {
+func (r ReportListWdrsResponseDataCost) RawJSON() string { return r.JSON.raw }
+func (r *ReportListWdrsResponseDataCost) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ReportListWdrsResponseDownlinkData struct {
+type ReportListWdrsResponseDataDownlinkData struct {
 	// Downlink data
 	Amount float64 `json:"amount"`
 	// Transmission unit
@@ -244,12 +246,12 @@ type ReportListWdrsResponseDownlinkData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ReportListWdrsResponseDownlinkData) RawJSON() string { return r.JSON.raw }
-func (r *ReportListWdrsResponseDownlinkData) UnmarshalJSON(data []byte) error {
+func (r ReportListWdrsResponseDataDownlinkData) RawJSON() string { return r.JSON.raw }
+func (r *ReportListWdrsResponseDataDownlinkData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ReportListWdrsResponseRate struct {
+type ReportListWdrsResponseDataRate struct {
 	// Rate from which cost is calculated
 	Amount string `json:"amount"`
 	// Currency of the rate and cost
@@ -266,12 +268,12 @@ type ReportListWdrsResponseRate struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ReportListWdrsResponseRate) RawJSON() string { return r.JSON.raw }
-func (r *ReportListWdrsResponseRate) UnmarshalJSON(data []byte) error {
+func (r ReportListWdrsResponseDataRate) RawJSON() string { return r.JSON.raw }
+func (r *ReportListWdrsResponseDataRate) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ReportListWdrsResponseUplinkData struct {
+type ReportListWdrsResponseDataUplinkData struct {
 	// Uplink data
 	Amount float64 `json:"amount"`
 	// Transmission unit
@@ -288,8 +290,30 @@ type ReportListWdrsResponseUplinkData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ReportListWdrsResponseUplinkData) RawJSON() string { return r.JSON.raw }
-func (r *ReportListWdrsResponseUplinkData) UnmarshalJSON(data []byte) error {
+func (r ReportListWdrsResponseDataUplinkData) RawJSON() string { return r.JSON.raw }
+func (r *ReportListWdrsResponseDataUplinkData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ReportListWdrsResponseMeta struct {
+	PageNumber   int64 `json:"page_number"`
+	PageSize     int64 `json:"page_size"`
+	TotalPages   int64 `json:"total_pages"`
+	TotalResults int64 `json:"total_results"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ReportListWdrsResponseMeta) RawJSON() string { return r.JSON.raw }
+func (r *ReportListWdrsResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -369,9 +393,7 @@ type ReportListWdrsParams struct {
 	// Mobile country code
 	Mcc param.Opt[string] `query:"mcc,omitzero" json:"-"`
 	// Mobile network code
-	Mnc        param.Opt[string] `query:"mnc,omitzero" json:"-"`
-	PageNumber param.Opt[int64]  `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64]  `query:"page[size],omitzero" json:"-"`
+	Mnc param.Opt[string] `query:"mnc,omitzero" json:"-"`
 	// Phone number
 	PhoneNumber param.Opt[string] `query:"phone_number,omitzero" json:"-"`
 	// Sim card unique identifier
@@ -382,6 +404,9 @@ type ReportListWdrsParams struct {
 	SimGroupName param.Opt[string] `query:"sim_group_name,omitzero" json:"-"`
 	// Start date
 	StartDate param.Opt[string] `query:"start_date,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page ReportListWdrsParamsPage `query:"page,omitzero" json:"-"`
 	// Field used to order the data. If no field is specified, default value is
 	// 'created_at'
 	Sort []string `query:"sort,omitzero" json:"-"`
@@ -390,6 +415,25 @@ type ReportListWdrsParams struct {
 
 // URLQuery serializes [ReportListWdrsParams]'s query parameters as `url.Values`.
 func (r ReportListWdrsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type ReportListWdrsParamsPage struct {
+	// Page number
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// Size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ReportListWdrsParamsPage]'s query parameters as
+// `url.Values`.
+func (r ReportListWdrsParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

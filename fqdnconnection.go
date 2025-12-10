@@ -15,9 +15,9 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/shared"
 )
 
 // FqdnConnectionService contains methods and other services that help with
@@ -72,26 +72,11 @@ func (r *FqdnConnectionService) Update(ctx context.Context, id string, body Fqdn
 }
 
 // Returns a list of your FQDN connections.
-func (r *FqdnConnectionService) List(ctx context.Context, query FqdnConnectionListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[FqdnConnection], err error) {
-	var raw *http.Response
+func (r *FqdnConnectionService) List(ctx context.Context, query FqdnConnectionListParams, opts ...option.RequestOption) (res *FqdnConnectionListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "fqdn_connections"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Returns a list of your FQDN connections.
-func (r *FqdnConnectionService) ListAutoPaging(ctx context.Context, query FqdnConnectionListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[FqdnConnection] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Deletes an FQDN connection.
@@ -680,8 +665,8 @@ const (
 type WebhookAPIVersion string
 
 const (
-	WebhookAPIVersionV1 WebhookAPIVersion = "1"
-	WebhookAPIVersionV2 WebhookAPIVersion = "2"
+	WebhookAPIVersion1 WebhookAPIVersion = "1"
+	WebhookAPIVersion2 WebhookAPIVersion = "2"
 )
 
 type FqdnConnectionNewResponse struct {
@@ -729,6 +714,24 @@ type FqdnConnectionUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r FqdnConnectionUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *FqdnConnectionUpdateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FqdnConnectionListResponse struct {
+	Data []FqdnConnection                 `json:"data"`
+	Meta shared.ConnectionsPaginationMeta `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FqdnConnectionListResponse) RawJSON() string { return r.JSON.raw }
+func (r *FqdnConnectionListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

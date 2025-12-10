@@ -12,7 +12,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -41,33 +40,32 @@ func NewMobileNetworkOperatorService(opts ...option.RequestOption) (r MobileNetw
 // change over time. That means that this resource won't allow any write operations
 // for it. Still, it's available so it can be used as a support resource that can
 // be related to other resources or become a configuration option.
-func (r *MobileNetworkOperatorService) List(ctx context.Context, query MobileNetworkOperatorListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[MobileNetworkOperatorListResponse], err error) {
-	var raw *http.Response
+func (r *MobileNetworkOperatorService) List(ctx context.Context, query MobileNetworkOperatorListParams, opts ...option.RequestOption) (res *MobileNetworkOperatorListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "mobile_network_operators"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Telnyx has a set of GSM mobile operators partners that are available through our
-// mobile network roaming. This resource is entirely managed by Telnyx and may
-// change over time. That means that this resource won't allow any write operations
-// for it. Still, it's available so it can be used as a support resource that can
-// be related to other resources or become a configuration option.
-func (r *MobileNetworkOperatorService) ListAutoPaging(ctx context.Context, query MobileNetworkOperatorListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[MobileNetworkOperatorListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 type MobileNetworkOperatorListResponse struct {
+	Data []MobileNetworkOperatorListResponseData `json:"data"`
+	Meta PaginationMeta                          `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MobileNetworkOperatorListResponse) RawJSON() string { return r.JSON.raw }
+func (r *MobileNetworkOperatorListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MobileNetworkOperatorListResponseData struct {
 	// Identifies the resource.
 	ID string `json:"id" format:"uuid"`
 	// The mobile operator two-character (ISO 3166-1 alpha-2) origin country code.
@@ -108,8 +106,8 @@ type MobileNetworkOperatorListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MobileNetworkOperatorListResponse) RawJSON() string { return r.JSON.raw }
-func (r *MobileNetworkOperatorListResponse) UnmarshalJSON(data []byte) error {
+func (r MobileNetworkOperatorListResponseData) RawJSON() string { return r.JSON.raw }
+func (r *MobileNetworkOperatorListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

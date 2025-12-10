@@ -78,57 +78,25 @@ func (r *LegacyReportingUsageReportNumberLookupService) Delete(ctx context.Conte
 	return
 }
 
-type TelcoDataAggregation struct {
-	// Currency code
-	Currency string `json:"currency"`
-	// Total cost for this aggregation
-	TotalCost float64 `json:"total_cost"`
-	// Total number of lookups performed
-	TotalDips int64 `json:"total_dips"`
-	// Type of telco data lookup
-	Type string `json:"type"`
+type LegacyReportingUsageReportNumberLookupNewResponse struct {
+	// Telco data usage report response
+	Data LegacyReportingUsageReportNumberLookupNewResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Currency    respjson.Field
-		TotalCost   respjson.Field
-		TotalDips   respjson.Field
-		Type        respjson.Field
+		Data        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r TelcoDataAggregation) RawJSON() string { return r.JSON.raw }
-func (r *TelcoDataAggregation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TelcoDataUsageRecord struct {
-	// List of aggregations by lookup type
-	Aggregations []TelcoDataAggregation `json:"aggregations"`
-	// Record type identifier
-	RecordType string `json:"record_type"`
-	// User ID
-	UserID string `json:"user_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Aggregations respjson.Field
-		RecordType   respjson.Field
-		UserID       respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TelcoDataUsageRecord) RawJSON() string { return r.JSON.raw }
-func (r *TelcoDataUsageRecord) UnmarshalJSON(data []byte) error {
+func (r LegacyReportingUsageReportNumberLookupNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *LegacyReportingUsageReportNumberLookupNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Telco data usage report response
-type TelcoDataUsageReportResponse struct {
+type LegacyReportingUsageReportNumberLookupNewResponseData struct {
 	// Unique identifier for the report
 	ID string `json:"id" format:"uuid"`
 	// Type of aggregation used in the report
@@ -144,7 +112,7 @@ type TelcoDataUsageReportResponse struct {
 	// URL to download the complete report
 	ReportURL string `json:"report_url"`
 	// Array of usage records
-	Result []TelcoDataUsageRecord `json:"result"`
+	Result []LegacyReportingUsageReportNumberLookupNewResponseDataResult `json:"result"`
 	// Start date of the report period
 	StartDate time.Time `json:"start_date" format:"date"`
 	// Current status of the report
@@ -170,31 +138,67 @@ type TelcoDataUsageReportResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r TelcoDataUsageReportResponse) RawJSON() string { return r.JSON.raw }
-func (r *TelcoDataUsageReportResponse) UnmarshalJSON(data []byte) error {
+func (r LegacyReportingUsageReportNumberLookupNewResponseData) RawJSON() string { return r.JSON.raw }
+func (r *LegacyReportingUsageReportNumberLookupNewResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type LegacyReportingUsageReportNumberLookupNewResponse struct {
-	// Telco data usage report response
-	Data TelcoDataUsageReportResponse `json:"data"`
+type LegacyReportingUsageReportNumberLookupNewResponseDataResult struct {
+	// List of aggregations by lookup type
+	Aggregations []LegacyReportingUsageReportNumberLookupNewResponseDataResultAggregation `json:"aggregations"`
+	// Record type identifier
+	RecordType string `json:"record_type"`
+	// User ID
+	UserID string `json:"user_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
+		Aggregations respjson.Field
+		RecordType   respjson.Field
+		UserID       respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingUsageReportNumberLookupNewResponseDataResult) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *LegacyReportingUsageReportNumberLookupNewResponseDataResult) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LegacyReportingUsageReportNumberLookupNewResponseDataResultAggregation struct {
+	// Currency code
+	Currency string `json:"currency"`
+	// Total cost for this aggregation
+	TotalCost float64 `json:"total_cost"`
+	// Total number of lookups performed
+	TotalDips int64 `json:"total_dips"`
+	// Type of telco data lookup
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Currency    respjson.Field
+		TotalCost   respjson.Field
+		TotalDips   respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r LegacyReportingUsageReportNumberLookupNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *LegacyReportingUsageReportNumberLookupNewResponse) UnmarshalJSON(data []byte) error {
+func (r LegacyReportingUsageReportNumberLookupNewResponseDataResultAggregation) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *LegacyReportingUsageReportNumberLookupNewResponseDataResultAggregation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type LegacyReportingUsageReportNumberLookupGetResponse struct {
 	// Telco data usage report response
-	Data TelcoDataUsageReportResponse `json:"data"`
+	Data LegacyReportingUsageReportNumberLookupGetResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -209,9 +213,110 @@ func (r *LegacyReportingUsageReportNumberLookupGetResponse) UnmarshalJSON(data [
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Telco data usage report response
+type LegacyReportingUsageReportNumberLookupGetResponseData struct {
+	// Unique identifier for the report
+	ID string `json:"id" format:"uuid"`
+	// Type of aggregation used in the report
+	AggregationType string `json:"aggregation_type"`
+	// Timestamp when the report was created
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// End date of the report period
+	EndDate time.Time `json:"end_date" format:"date"`
+	// List of managed account IDs included in the report
+	ManagedAccounts []string `json:"managed_accounts"`
+	// Record type identifier
+	RecordType string `json:"record_type"`
+	// URL to download the complete report
+	ReportURL string `json:"report_url"`
+	// Array of usage records
+	Result []LegacyReportingUsageReportNumberLookupGetResponseDataResult `json:"result"`
+	// Start date of the report period
+	StartDate time.Time `json:"start_date" format:"date"`
+	// Current status of the report
+	Status string `json:"status"`
+	// Timestamp when the report was last updated
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID              respjson.Field
+		AggregationType respjson.Field
+		CreatedAt       respjson.Field
+		EndDate         respjson.Field
+		ManagedAccounts respjson.Field
+		RecordType      respjson.Field
+		ReportURL       respjson.Field
+		Result          respjson.Field
+		StartDate       respjson.Field
+		Status          respjson.Field
+		UpdatedAt       respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingUsageReportNumberLookupGetResponseData) RawJSON() string { return r.JSON.raw }
+func (r *LegacyReportingUsageReportNumberLookupGetResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LegacyReportingUsageReportNumberLookupGetResponseDataResult struct {
+	// List of aggregations by lookup type
+	Aggregations []LegacyReportingUsageReportNumberLookupGetResponseDataResultAggregation `json:"aggregations"`
+	// Record type identifier
+	RecordType string `json:"record_type"`
+	// User ID
+	UserID string `json:"user_id" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Aggregations respjson.Field
+		RecordType   respjson.Field
+		UserID       respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingUsageReportNumberLookupGetResponseDataResult) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *LegacyReportingUsageReportNumberLookupGetResponseDataResult) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LegacyReportingUsageReportNumberLookupGetResponseDataResultAggregation struct {
+	// Currency code
+	Currency string `json:"currency"`
+	// Total cost for this aggregation
+	TotalCost float64 `json:"total_cost"`
+	// Total number of lookups performed
+	TotalDips int64 `json:"total_dips"`
+	// Type of telco data lookup
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Currency    respjson.Field
+		TotalCost   respjson.Field
+		TotalDips   respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingUsageReportNumberLookupGetResponseDataResultAggregation) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *LegacyReportingUsageReportNumberLookupGetResponseDataResultAggregation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type LegacyReportingUsageReportNumberLookupListResponse struct {
-	Data []TelcoDataUsageReportResponse `json:"data"`
-	Meta StandardPaginationMeta         `json:"meta"`
+	Data []LegacyReportingUsageReportNumberLookupListResponseData `json:"data"`
+	Meta StandardPaginationMeta                                   `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -224,6 +329,107 @@ type LegacyReportingUsageReportNumberLookupListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r LegacyReportingUsageReportNumberLookupListResponse) RawJSON() string { return r.JSON.raw }
 func (r *LegacyReportingUsageReportNumberLookupListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Telco data usage report response
+type LegacyReportingUsageReportNumberLookupListResponseData struct {
+	// Unique identifier for the report
+	ID string `json:"id" format:"uuid"`
+	// Type of aggregation used in the report
+	AggregationType string `json:"aggregation_type"`
+	// Timestamp when the report was created
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// End date of the report period
+	EndDate time.Time `json:"end_date" format:"date"`
+	// List of managed account IDs included in the report
+	ManagedAccounts []string `json:"managed_accounts"`
+	// Record type identifier
+	RecordType string `json:"record_type"`
+	// URL to download the complete report
+	ReportURL string `json:"report_url"`
+	// Array of usage records
+	Result []LegacyReportingUsageReportNumberLookupListResponseDataResult `json:"result"`
+	// Start date of the report period
+	StartDate time.Time `json:"start_date" format:"date"`
+	// Current status of the report
+	Status string `json:"status"`
+	// Timestamp when the report was last updated
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID              respjson.Field
+		AggregationType respjson.Field
+		CreatedAt       respjson.Field
+		EndDate         respjson.Field
+		ManagedAccounts respjson.Field
+		RecordType      respjson.Field
+		ReportURL       respjson.Field
+		Result          respjson.Field
+		StartDate       respjson.Field
+		Status          respjson.Field
+		UpdatedAt       respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingUsageReportNumberLookupListResponseData) RawJSON() string { return r.JSON.raw }
+func (r *LegacyReportingUsageReportNumberLookupListResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LegacyReportingUsageReportNumberLookupListResponseDataResult struct {
+	// List of aggregations by lookup type
+	Aggregations []LegacyReportingUsageReportNumberLookupListResponseDataResultAggregation `json:"aggregations"`
+	// Record type identifier
+	RecordType string `json:"record_type"`
+	// User ID
+	UserID string `json:"user_id" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Aggregations respjson.Field
+		RecordType   respjson.Field
+		UserID       respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingUsageReportNumberLookupListResponseDataResult) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *LegacyReportingUsageReportNumberLookupListResponseDataResult) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LegacyReportingUsageReportNumberLookupListResponseDataResultAggregation struct {
+	// Currency code
+	Currency string `json:"currency"`
+	// Total cost for this aggregation
+	TotalCost float64 `json:"total_cost"`
+	// Total number of lookups performed
+	TotalDips int64 `json:"total_dips"`
+	// Type of telco data lookup
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Currency    respjson.Field
+		TotalCost   respjson.Field
+		TotalDips   respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LegacyReportingUsageReportNumberLookupListResponseDataResultAggregation) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *LegacyReportingUsageReportNumberLookupListResponseDataResultAggregation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

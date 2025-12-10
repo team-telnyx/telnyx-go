@@ -84,8 +84,10 @@ func TestAccessIPAddressListWithOptionalParams(t *testing.T) {
 			IPAddress: telnyx.String("ip_address"),
 			IPSource:  telnyx.String("ip_source"),
 		},
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
+		Page: telnyx.AccessIPAddressListParamsPage{
+			Number: telnyx.Int(0),
+			Size:   telnyx.Int(250),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

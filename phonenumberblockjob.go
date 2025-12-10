@@ -15,7 +15,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -52,26 +51,11 @@ func (r *PhoneNumberBlockJobService) Get(ctx context.Context, id string, opts ..
 }
 
 // Lists the phone number blocks jobs
-func (r *PhoneNumberBlockJobService) List(ctx context.Context, query PhoneNumberBlockJobListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[Job], err error) {
-	var raw *http.Response
+func (r *PhoneNumberBlockJobService) List(ctx context.Context, query PhoneNumberBlockJobListParams, opts ...option.RequestOption) (res *PhoneNumberBlockJobListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "phone_number_blocks/jobs"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Lists the phone number blocks jobs
-func (r *PhoneNumberBlockJobService) ListAutoPaging(ctx context.Context, query PhoneNumberBlockJobListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[Job] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Creates a new background job to delete all the phone numbers associated with the
@@ -264,6 +248,24 @@ type PhoneNumberBlockJobGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r PhoneNumberBlockJobGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *PhoneNumberBlockJobGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PhoneNumberBlockJobListResponse struct {
+	Data []Job          `json:"data"`
+	Meta PaginationMeta `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PhoneNumberBlockJobListResponse) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumberBlockJobListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

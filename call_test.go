@@ -126,20 +126,20 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 			CommandID:           telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
 			TranscriptionEngine: telnyx.TranscriptionStartRequestTranscriptionEngineGoogle,
 			TranscriptionEngineConfig: telnyx.TranscriptionStartRequestTranscriptionEngineConfigUnionParam{
-				OfGoogle: &telnyx.TranscriptionEngineGoogleConfigParam{
+				OfGoogle: &telnyx.TranscriptionStartRequestTranscriptionEngineConfigGoogleParam{
 					EnableSpeakerDiarization: telnyx.Bool(true),
 					Hints:                    []string{"string"},
 					InterimResults:           telnyx.Bool(true),
 					Language:                 telnyx.GoogleTranscriptionLanguageEn,
 					MaxSpeakerCount:          telnyx.Int(4),
 					MinSpeakerCount:          telnyx.Int(4),
-					Model:                    telnyx.TranscriptionEngineGoogleConfigModelLatestLong,
+					Model:                    "latest_long",
 					ProfanityFilter:          telnyx.Bool(true),
-					SpeechContext: []telnyx.TranscriptionEngineGoogleConfigSpeechContextParam{{
+					SpeechContext: []telnyx.TranscriptionStartRequestTranscriptionEngineConfigGoogleSpeechContextParam{{
 						Boost:   telnyx.Float(1),
 						Phrases: []string{"string"},
 					}},
-					TranscriptionEngine: telnyx.TranscriptionEngineGoogleConfigTranscriptionEngineGoogle,
+					TranscriptionEngine: "Google",
 					UseEnhanced:         telnyx.Bool(true),
 				},
 			},

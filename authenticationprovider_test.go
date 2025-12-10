@@ -122,9 +122,11 @@ func TestAuthenticationProviderListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AuthenticationProviders.List(context.TODO(), telnyx.AuthenticationProviderListParams{
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
-		Sort:       telnyx.AuthenticationProviderListParamsSortName,
+		Page: telnyx.AuthenticationProviderListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
+		Sort: telnyx.AuthenticationProviderListParamsSortName,
 	})
 	if err != nil {
 		var apierr *telnyx.Error
