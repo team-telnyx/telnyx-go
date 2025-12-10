@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
-func TestPartnerCampaignGet(t *testing.T) {
+func TestMessaging10dlcPartnerCampaignGet(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,7 @@ func TestPartnerCampaignGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.PartnerCampaigns.Get(context.TODO(), "campaignId")
+	_, err := client.Messaging10dlc.PartnerCampaigns.Get(context.TODO(), "campaignId")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -36,7 +36,7 @@ func TestPartnerCampaignGet(t *testing.T) {
 	}
 }
 
-func TestPartnerCampaignUpdateWithOptionalParams(t *testing.T) {
+func TestMessaging10dlcPartnerCampaignUpdateWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -49,10 +49,10 @@ func TestPartnerCampaignUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.PartnerCampaigns.Update(
+	_, err := client.Messaging10dlc.PartnerCampaigns.Update(
 		context.TODO(),
 		"campaignId",
-		telnyx.PartnerCampaignUpdateParams{
+		telnyx.Messaging10dlcPartnerCampaignUpdateParams{
 			WebhookFailoverURL: telnyx.String("https://webhook.com/9010a453-4df8-4be6-a551-1070892888d6"),
 			WebhookURL:         telnyx.String("https://webhook.com/67ea78a8-9f32-4d04-b62d-f9502e8e5f93"),
 		},
@@ -66,7 +66,7 @@ func TestPartnerCampaignUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestPartnerCampaignListWithOptionalParams(t *testing.T) {
+func TestMessaging10dlcPartnerCampaignListWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -79,10 +79,10 @@ func TestPartnerCampaignListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.PartnerCampaigns.List(context.TODO(), telnyx.PartnerCampaignListParams{
+	_, err := client.Messaging10dlc.PartnerCampaigns.List(context.TODO(), telnyx.Messaging10dlcPartnerCampaignListParams{
 		Page:           telnyx.Int(0),
 		RecordsPerPage: telnyx.Int(0),
-		Sort:           telnyx.PartnerCampaignListParamsSortAssignedPhoneNumbersCount,
+		Sort:           telnyx.Messaging10dlcPartnerCampaignListParamsSortAssignedPhoneNumbersCount,
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -93,7 +93,7 @@ func TestPartnerCampaignListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestPartnerCampaignListSharedByMeWithOptionalParams(t *testing.T) {
+func TestMessaging10dlcPartnerCampaignListSharedByMeWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -106,7 +106,7 @@ func TestPartnerCampaignListSharedByMeWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.PartnerCampaigns.ListSharedByMe(context.TODO(), telnyx.PartnerCampaignListSharedByMeParams{
+	_, err := client.Messaging10dlc.PartnerCampaigns.ListSharedByMe(context.TODO(), telnyx.Messaging10dlcPartnerCampaignListSharedByMeParams{
 		Page:           telnyx.Int(0),
 		RecordsPerPage: telnyx.Int(0),
 	})
@@ -119,7 +119,7 @@ func TestPartnerCampaignListSharedByMeWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestPartnerCampaignGetSharingStatus(t *testing.T) {
+func TestMessaging10dlcPartnerCampaignGetSharingStatus(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -132,7 +132,7 @@ func TestPartnerCampaignGetSharingStatus(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.PartnerCampaigns.GetSharingStatus(context.TODO(), "campaignId")
+	_, err := client.Messaging10dlc.PartnerCampaigns.GetSharingStatus(context.TODO(), "campaignId")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

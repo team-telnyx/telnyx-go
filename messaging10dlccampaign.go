@@ -20,31 +20,31 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
-// Number10dlcCampaignService contains methods and other services that help with
+// Messaging10dlcCampaignService contains methods and other services that help with
 // interacting with the telnyx API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewNumber10dlcCampaignService] method instead.
-type Number10dlcCampaignService struct {
+// the [NewMessaging10dlcCampaignService] method instead.
+type Messaging10dlcCampaignService struct {
 	Options []option.RequestOption
-	Usecase Number10dlcCampaignUsecaseService
-	Osr     Number10dlcCampaignOsrService
+	Usecase Messaging10dlcCampaignUsecaseService
+	Osr     Messaging10dlcCampaignOsrService
 }
 
-// NewNumber10dlcCampaignService generates a new service that applies the given
+// NewMessaging10dlcCampaignService generates a new service that applies the given
 // options to each request. These options are applied after the parent client's
 // options (if there is one), and before any request-specific options.
-func NewNumber10dlcCampaignService(opts ...option.RequestOption) (r Number10dlcCampaignService) {
-	r = Number10dlcCampaignService{}
+func NewMessaging10dlcCampaignService(opts ...option.RequestOption) (r Messaging10dlcCampaignService) {
+	r = Messaging10dlcCampaignService{}
 	r.Options = opts
-	r.Usecase = NewNumber10dlcCampaignUsecaseService(opts...)
-	r.Osr = NewNumber10dlcCampaignOsrService(opts...)
+	r.Usecase = NewMessaging10dlcCampaignUsecaseService(opts...)
+	r.Osr = NewMessaging10dlcCampaignOsrService(opts...)
 	return
 }
 
 // Retrieve campaign details by `campaignId`.
-func (r *Number10dlcCampaignService) Get(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *TelnyxCampaignCsp, err error) {
+func (r *Messaging10dlcCampaignService) Get(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *TelnyxCampaignCsp, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
@@ -57,7 +57,7 @@ func (r *Number10dlcCampaignService) Get(ctx context.Context, campaignID string,
 
 // Update a campaign's properties by `campaignId`. **Please note:** only sample
 // messages are editable.
-func (r *Number10dlcCampaignService) Update(ctx context.Context, campaignID string, body Number10dlcCampaignUpdateParams, opts ...option.RequestOption) (res *TelnyxCampaignCsp, err error) {
+func (r *Messaging10dlcCampaignService) Update(ctx context.Context, campaignID string, body Messaging10dlcCampaignUpdateParams, opts ...option.RequestOption) (res *TelnyxCampaignCsp, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
@@ -69,7 +69,7 @@ func (r *Number10dlcCampaignService) Update(ctx context.Context, campaignID stri
 }
 
 // Retrieve a list of campaigns associated with a supplied `brandId`.
-func (r *Number10dlcCampaignService) List(ctx context.Context, query Number10dlcCampaignListParams, opts ...option.RequestOption) (res *pagination.PerPagePaginationV2[Number10dlcCampaignListResponse], err error) {
+func (r *Messaging10dlcCampaignService) List(ctx context.Context, query Messaging10dlcCampaignListParams, opts ...option.RequestOption) (res *pagination.PerPagePaginationV2[Messaging10dlcCampaignListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -87,12 +87,12 @@ func (r *Number10dlcCampaignService) List(ctx context.Context, query Number10dlc
 }
 
 // Retrieve a list of campaigns associated with a supplied `brandId`.
-func (r *Number10dlcCampaignService) ListAutoPaging(ctx context.Context, query Number10dlcCampaignListParams, opts ...option.RequestOption) *pagination.PerPagePaginationV2AutoPager[Number10dlcCampaignListResponse] {
+func (r *Messaging10dlcCampaignService) ListAutoPaging(ctx context.Context, query Messaging10dlcCampaignListParams, opts ...option.RequestOption) *pagination.PerPagePaginationV2AutoPager[Messaging10dlcCampaignListResponse] {
 	return pagination.NewPerPagePaginationV2AutoPager(r.List(ctx, query, opts...))
 }
 
 // Manually accept a campaign shared with Telnyx
-func (r *Number10dlcCampaignService) AcceptSharing(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *Number10dlcCampaignAcceptSharingResponse, err error) {
+func (r *Messaging10dlcCampaignService) AcceptSharing(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *Messaging10dlcCampaignAcceptSharingResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
@@ -104,7 +104,7 @@ func (r *Number10dlcCampaignService) AcceptSharing(ctx context.Context, campaign
 }
 
 // Terminate a campaign. Note that once deactivated, a campaign cannot be restored.
-func (r *Number10dlcCampaignService) Deactivate(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *Number10dlcCampaignDeactivateResponse, err error) {
+func (r *Messaging10dlcCampaignService) Deactivate(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *Messaging10dlcCampaignDeactivateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
@@ -116,7 +116,7 @@ func (r *Number10dlcCampaignService) Deactivate(ctx context.Context, campaignID 
 }
 
 // Get the campaign metadata for each MNO it was submitted to.
-func (r *Number10dlcCampaignService) GetMnoMetadata(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *Number10dlcCampaignGetMnoMetadataResponse, err error) {
+func (r *Messaging10dlcCampaignService) GetMnoMetadata(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *Messaging10dlcCampaignGetMnoMetadataResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
@@ -128,7 +128,7 @@ func (r *Number10dlcCampaignService) GetMnoMetadata(ctx context.Context, campaig
 }
 
 // Retrieve campaign's operation status at MNO level.
-func (r *Number10dlcCampaignService) GetOperationStatus(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *Number10dlcCampaignGetOperationStatusResponse, err error) {
+func (r *Messaging10dlcCampaignService) GetOperationStatus(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *Messaging10dlcCampaignGetOperationStatusResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
@@ -140,7 +140,7 @@ func (r *Number10dlcCampaignService) GetOperationStatus(ctx context.Context, cam
 }
 
 // Get Sharing Status
-func (r *Number10dlcCampaignService) GetSharingStatus(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *Number10dlcCampaignGetSharingStatusResponse, err error) {
+func (r *Messaging10dlcCampaignService) GetSharingStatus(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *Messaging10dlcCampaignGetSharingStatusResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
@@ -155,7 +155,7 @@ func (r *Number10dlcCampaignService) GetSharingStatus(ctx context.Context, campa
 // status. The appeal is recorded for manual compliance team review and the
 // campaign status is reset to TCR_ACCEPTED. Note: Appeal forwarding is handled
 // manually to allow proper review before incurring upstream charges.
-func (r *Number10dlcCampaignService) SubmitAppeal(ctx context.Context, campaignID string, body Number10dlcCampaignSubmitAppealParams, opts ...option.RequestOption) (res *Number10dlcCampaignSubmitAppealResponse, err error) {
+func (r *Messaging10dlcCampaignService) SubmitAppeal(ctx context.Context, campaignID string, body Messaging10dlcCampaignSubmitAppealParams, opts ...option.RequestOption) (res *Messaging10dlcCampaignSubmitAppealResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
@@ -407,7 +407,7 @@ const (
 	TelnyxCampaignCspSubmissionStatusPending TelnyxCampaignCspSubmissionStatus = "PENDING"
 )
 
-type Number10dlcCampaignListResponse struct {
+type Messaging10dlcCampaignListResponse struct {
 	// Age gated content in campaign.
 	AgeGated bool `json:"ageGated"`
 	// Number of phone numbers associated with the campaign
@@ -427,7 +427,7 @@ type Number10dlcCampaignListResponse struct {
 	// Any of "TCR_PENDING", "TCR_SUSPENDED", "TCR_EXPIRED", "TCR_ACCEPTED",
 	// "TCR_FAILED", "TELNYX_ACCEPTED", "TELNYX_FAILED", "MNO_PENDING", "MNO_ACCEPTED",
 	// "MNO_REJECTED", "MNO_PROVISIONED", "MNO_PROVISIONING_FAILED".
-	CampaignStatus Number10dlcCampaignListResponseCampaignStatus `json:"campaignStatus"`
+	CampaignStatus Messaging10dlcCampaignListResponseCampaignStatus `json:"campaignStatus"`
 	// Unix timestamp when campaign was created.
 	CreateDate string `json:"createDate"`
 	// Alphanumeric identifier of the CSP associated with this campaign.
@@ -496,7 +496,7 @@ type Number10dlcCampaignListResponse struct {
 	// Campaign submission status
 	//
 	// Any of "CREATED", "FAILED", "PENDING".
-	SubmissionStatus Number10dlcCampaignListResponseSubmissionStatus `json:"submissionStatus"`
+	SubmissionStatus Messaging10dlcCampaignListResponseSubmissionStatus `json:"submissionStatus"`
 	// Does campaign responds to help keyword(s)?
 	SubscriberHelp bool `json:"subscriberHelp"`
 	// Does campaign require subscriber to opt-in before SMS is sent to subscriber?
@@ -588,41 +588,41 @@ type Number10dlcCampaignListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r Number10dlcCampaignListResponse) RawJSON() string { return r.JSON.raw }
-func (r *Number10dlcCampaignListResponse) UnmarshalJSON(data []byte) error {
+func (r Messaging10dlcCampaignListResponse) RawJSON() string { return r.JSON.raw }
+func (r *Messaging10dlcCampaignListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Campaign status
-type Number10dlcCampaignListResponseCampaignStatus string
+type Messaging10dlcCampaignListResponseCampaignStatus string
 
 const (
-	Number10dlcCampaignListResponseCampaignStatusTcrPending            Number10dlcCampaignListResponseCampaignStatus = "TCR_PENDING"
-	Number10dlcCampaignListResponseCampaignStatusTcrSuspended          Number10dlcCampaignListResponseCampaignStatus = "TCR_SUSPENDED"
-	Number10dlcCampaignListResponseCampaignStatusTcrExpired            Number10dlcCampaignListResponseCampaignStatus = "TCR_EXPIRED"
-	Number10dlcCampaignListResponseCampaignStatusTcrAccepted           Number10dlcCampaignListResponseCampaignStatus = "TCR_ACCEPTED"
-	Number10dlcCampaignListResponseCampaignStatusTcrFailed             Number10dlcCampaignListResponseCampaignStatus = "TCR_FAILED"
-	Number10dlcCampaignListResponseCampaignStatusTelnyxAccepted        Number10dlcCampaignListResponseCampaignStatus = "TELNYX_ACCEPTED"
-	Number10dlcCampaignListResponseCampaignStatusTelnyxFailed          Number10dlcCampaignListResponseCampaignStatus = "TELNYX_FAILED"
-	Number10dlcCampaignListResponseCampaignStatusMnoPending            Number10dlcCampaignListResponseCampaignStatus = "MNO_PENDING"
-	Number10dlcCampaignListResponseCampaignStatusMnoAccepted           Number10dlcCampaignListResponseCampaignStatus = "MNO_ACCEPTED"
-	Number10dlcCampaignListResponseCampaignStatusMnoRejected           Number10dlcCampaignListResponseCampaignStatus = "MNO_REJECTED"
-	Number10dlcCampaignListResponseCampaignStatusMnoProvisioned        Number10dlcCampaignListResponseCampaignStatus = "MNO_PROVISIONED"
-	Number10dlcCampaignListResponseCampaignStatusMnoProvisioningFailed Number10dlcCampaignListResponseCampaignStatus = "MNO_PROVISIONING_FAILED"
+	Messaging10dlcCampaignListResponseCampaignStatusTcrPending            Messaging10dlcCampaignListResponseCampaignStatus = "TCR_PENDING"
+	Messaging10dlcCampaignListResponseCampaignStatusTcrSuspended          Messaging10dlcCampaignListResponseCampaignStatus = "TCR_SUSPENDED"
+	Messaging10dlcCampaignListResponseCampaignStatusTcrExpired            Messaging10dlcCampaignListResponseCampaignStatus = "TCR_EXPIRED"
+	Messaging10dlcCampaignListResponseCampaignStatusTcrAccepted           Messaging10dlcCampaignListResponseCampaignStatus = "TCR_ACCEPTED"
+	Messaging10dlcCampaignListResponseCampaignStatusTcrFailed             Messaging10dlcCampaignListResponseCampaignStatus = "TCR_FAILED"
+	Messaging10dlcCampaignListResponseCampaignStatusTelnyxAccepted        Messaging10dlcCampaignListResponseCampaignStatus = "TELNYX_ACCEPTED"
+	Messaging10dlcCampaignListResponseCampaignStatusTelnyxFailed          Messaging10dlcCampaignListResponseCampaignStatus = "TELNYX_FAILED"
+	Messaging10dlcCampaignListResponseCampaignStatusMnoPending            Messaging10dlcCampaignListResponseCampaignStatus = "MNO_PENDING"
+	Messaging10dlcCampaignListResponseCampaignStatusMnoAccepted           Messaging10dlcCampaignListResponseCampaignStatus = "MNO_ACCEPTED"
+	Messaging10dlcCampaignListResponseCampaignStatusMnoRejected           Messaging10dlcCampaignListResponseCampaignStatus = "MNO_REJECTED"
+	Messaging10dlcCampaignListResponseCampaignStatusMnoProvisioned        Messaging10dlcCampaignListResponseCampaignStatus = "MNO_PROVISIONED"
+	Messaging10dlcCampaignListResponseCampaignStatusMnoProvisioningFailed Messaging10dlcCampaignListResponseCampaignStatus = "MNO_PROVISIONING_FAILED"
 )
 
 // Campaign submission status
-type Number10dlcCampaignListResponseSubmissionStatus string
+type Messaging10dlcCampaignListResponseSubmissionStatus string
 
 const (
-	Number10dlcCampaignListResponseSubmissionStatusCreated Number10dlcCampaignListResponseSubmissionStatus = "CREATED"
-	Number10dlcCampaignListResponseSubmissionStatusFailed  Number10dlcCampaignListResponseSubmissionStatus = "FAILED"
-	Number10dlcCampaignListResponseSubmissionStatusPending Number10dlcCampaignListResponseSubmissionStatus = "PENDING"
+	Messaging10dlcCampaignListResponseSubmissionStatusCreated Messaging10dlcCampaignListResponseSubmissionStatus = "CREATED"
+	Messaging10dlcCampaignListResponseSubmissionStatusFailed  Messaging10dlcCampaignListResponseSubmissionStatus = "FAILED"
+	Messaging10dlcCampaignListResponseSubmissionStatusPending Messaging10dlcCampaignListResponseSubmissionStatus = "PENDING"
 )
 
-type Number10dlcCampaignAcceptSharingResponse map[string]any
+type Messaging10dlcCampaignAcceptSharingResponse map[string]any
 
-type Number10dlcCampaignDeactivateResponse struct {
+type Messaging10dlcCampaignDeactivateResponse struct {
 	Time       float64 `json:"time,required"`
 	Message    string  `json:"message"`
 	RecordType string  `json:"record_type"`
@@ -637,12 +637,12 @@ type Number10dlcCampaignDeactivateResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r Number10dlcCampaignDeactivateResponse) RawJSON() string { return r.JSON.raw }
-func (r *Number10dlcCampaignDeactivateResponse) UnmarshalJSON(data []byte) error {
+func (r Messaging10dlcCampaignDeactivateResponse) RawJSON() string { return r.JSON.raw }
+func (r *Messaging10dlcCampaignDeactivateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type Number10dlcCampaignGetMnoMetadataResponse struct {
+type Messaging10dlcCampaignGetMnoMetadataResponse struct {
 	Mno10999    Mno10999       `json:"10999"`
 	ExtraFields map[string]any `json:",extras"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -654,8 +654,8 @@ type Number10dlcCampaignGetMnoMetadataResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r Number10dlcCampaignGetMnoMetadataResponse) RawJSON() string { return r.JSON.raw }
-func (r *Number10dlcCampaignGetMnoMetadataResponse) UnmarshalJSON(data []byte) error {
+func (r Messaging10dlcCampaignGetMnoMetadataResponse) RawJSON() string { return r.JSON.raw }
+func (r *Messaging10dlcCampaignGetMnoMetadataResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -693,9 +693,9 @@ func (r *Mno10999) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type Number10dlcCampaignGetOperationStatusResponse map[string]any
+type Messaging10dlcCampaignGetOperationStatusResponse map[string]any
 
-type Number10dlcCampaignGetSharingStatusResponse struct {
+type Messaging10dlcCampaignGetSharingStatusResponse struct {
 	SharedByMe   CampaignSharingStatus `json:"sharedByMe"`
 	SharedWithMe CampaignSharingStatus `json:"sharedWithMe"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -708,12 +708,12 @@ type Number10dlcCampaignGetSharingStatusResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r Number10dlcCampaignGetSharingStatusResponse) RawJSON() string { return r.JSON.raw }
-func (r *Number10dlcCampaignGetSharingStatusResponse) UnmarshalJSON(data []byte) error {
+func (r Messaging10dlcCampaignGetSharingStatusResponse) RawJSON() string { return r.JSON.raw }
+func (r *Messaging10dlcCampaignGetSharingStatusResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type Number10dlcCampaignSubmitAppealResponse struct {
+type Messaging10dlcCampaignSubmitAppealResponse struct {
 	// Timestamp when the appeal was submitted
 	AppealedAt time.Time `json:"appealed_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -725,12 +725,12 @@ type Number10dlcCampaignSubmitAppealResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r Number10dlcCampaignSubmitAppealResponse) RawJSON() string { return r.JSON.raw }
-func (r *Number10dlcCampaignSubmitAppealResponse) UnmarshalJSON(data []byte) error {
+func (r Messaging10dlcCampaignSubmitAppealResponse) RawJSON() string { return r.JSON.raw }
+func (r *Messaging10dlcCampaignSubmitAppealResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type Number10dlcCampaignUpdateParams struct {
+type Messaging10dlcCampaignUpdateParams struct {
 	// Help message of the campaign.
 	AutoRenewal param.Opt[bool] `json:"autoRenewal,omitzero"`
 	// Help message of the campaign.
@@ -757,15 +757,15 @@ type Number10dlcCampaignUpdateParams struct {
 	paramObj
 }
 
-func (r Number10dlcCampaignUpdateParams) MarshalJSON() (data []byte, err error) {
-	type shadow Number10dlcCampaignUpdateParams
+func (r Messaging10dlcCampaignUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow Messaging10dlcCampaignUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *Number10dlcCampaignUpdateParams) UnmarshalJSON(data []byte) error {
+func (r *Messaging10dlcCampaignUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type Number10dlcCampaignListParams struct {
+type Messaging10dlcCampaignListParams struct {
 	BrandID string `query:"brandId,required" json:"-"`
 	// The 1-indexed page number to get. The default value is `1`.
 	Page param.Opt[int64] `query:"page,omitzero" json:"-"`
@@ -778,13 +778,13 @@ type Number10dlcCampaignListParams struct {
 	// Any of "assignedPhoneNumbersCount", "-assignedPhoneNumbersCount", "campaignId",
 	// "-campaignId", "createdAt", "-createdAt", "status", "-status", "tcrCampaignId",
 	// "-tcrCampaignId".
-	Sort Number10dlcCampaignListParamsSort `query:"sort,omitzero" json:"-"`
+	Sort Messaging10dlcCampaignListParamsSort `query:"sort,omitzero" json:"-"`
 	paramObj
 }
 
-// URLQuery serializes [Number10dlcCampaignListParams]'s query parameters as
+// URLQuery serializes [Messaging10dlcCampaignListParams]'s query parameters as
 // `url.Values`.
-func (r Number10dlcCampaignListParams) URLQuery() (v url.Values, err error) {
+func (r Messaging10dlcCampaignListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
@@ -793,32 +793,32 @@ func (r Number10dlcCampaignListParams) URLQuery() (v url.Values, err error) {
 
 // Specifies the sort order for results. If not given, results are sorted by
 // createdAt in descending order.
-type Number10dlcCampaignListParamsSort string
+type Messaging10dlcCampaignListParamsSort string
 
 const (
-	Number10dlcCampaignListParamsSortAssignedPhoneNumbersCount     Number10dlcCampaignListParamsSort = "assignedPhoneNumbersCount"
-	Number10dlcCampaignListParamsSortAssignedPhoneNumbersCountDesc Number10dlcCampaignListParamsSort = "-assignedPhoneNumbersCount"
-	Number10dlcCampaignListParamsSortCampaignID                    Number10dlcCampaignListParamsSort = "campaignId"
-	Number10dlcCampaignListParamsSortCampaignIDDesc                Number10dlcCampaignListParamsSort = "-campaignId"
-	Number10dlcCampaignListParamsSortCreatedAt                     Number10dlcCampaignListParamsSort = "createdAt"
-	Number10dlcCampaignListParamsSortCreatedAtDesc                 Number10dlcCampaignListParamsSort = "-createdAt"
-	Number10dlcCampaignListParamsSortStatus                        Number10dlcCampaignListParamsSort = "status"
-	Number10dlcCampaignListParamsSortStatusDesc                    Number10dlcCampaignListParamsSort = "-status"
-	Number10dlcCampaignListParamsSortTcrCampaignID                 Number10dlcCampaignListParamsSort = "tcrCampaignId"
-	Number10dlcCampaignListParamsSortTcrCampaignIDDesc             Number10dlcCampaignListParamsSort = "-tcrCampaignId"
+	Messaging10dlcCampaignListParamsSortAssignedPhoneNumbersCount     Messaging10dlcCampaignListParamsSort = "assignedPhoneNumbersCount"
+	Messaging10dlcCampaignListParamsSortAssignedPhoneNumbersCountDesc Messaging10dlcCampaignListParamsSort = "-assignedPhoneNumbersCount"
+	Messaging10dlcCampaignListParamsSortCampaignID                    Messaging10dlcCampaignListParamsSort = "campaignId"
+	Messaging10dlcCampaignListParamsSortCampaignIDDesc                Messaging10dlcCampaignListParamsSort = "-campaignId"
+	Messaging10dlcCampaignListParamsSortCreatedAt                     Messaging10dlcCampaignListParamsSort = "createdAt"
+	Messaging10dlcCampaignListParamsSortCreatedAtDesc                 Messaging10dlcCampaignListParamsSort = "-createdAt"
+	Messaging10dlcCampaignListParamsSortStatus                        Messaging10dlcCampaignListParamsSort = "status"
+	Messaging10dlcCampaignListParamsSortStatusDesc                    Messaging10dlcCampaignListParamsSort = "-status"
+	Messaging10dlcCampaignListParamsSortTcrCampaignID                 Messaging10dlcCampaignListParamsSort = "tcrCampaignId"
+	Messaging10dlcCampaignListParamsSortTcrCampaignIDDesc             Messaging10dlcCampaignListParamsSort = "-tcrCampaignId"
 )
 
-type Number10dlcCampaignSubmitAppealParams struct {
+type Messaging10dlcCampaignSubmitAppealParams struct {
 	// Detailed explanation of why the campaign should be reconsidered and what changes
 	// have been made to address the rejection reason.
 	AppealReason string `json:"appeal_reason,required"`
 	paramObj
 }
 
-func (r Number10dlcCampaignSubmitAppealParams) MarshalJSON() (data []byte, err error) {
-	type shadow Number10dlcCampaignSubmitAppealParams
+func (r Messaging10dlcCampaignSubmitAppealParams) MarshalJSON() (data []byte, err error) {
+	type shadow Messaging10dlcCampaignSubmitAppealParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *Number10dlcCampaignSubmitAppealParams) UnmarshalJSON(data []byte) error {
+func (r *Messaging10dlcCampaignSubmitAppealParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
