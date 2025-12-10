@@ -19,21 +19,22 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
-// PhoneNumberAssignmentByProfileService contains methods and other services that
-// help with interacting with the telnyx API.
+// Messaging10dlcPhoneNumberAssignmentByProfileService contains methods and other
+// services that help with interacting with the telnyx API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewPhoneNumberAssignmentByProfileService] method instead.
-type PhoneNumberAssignmentByProfileService struct {
+// the [NewMessaging10dlcPhoneNumberAssignmentByProfileService] method instead.
+type Messaging10dlcPhoneNumberAssignmentByProfileService struct {
 	Options []option.RequestOption
 }
 
-// NewPhoneNumberAssignmentByProfileService generates a new service that applies
-// the given options to each request. These options are applied after the parent
-// client's options (if there is one), and before any request-specific options.
-func NewPhoneNumberAssignmentByProfileService(opts ...option.RequestOption) (r PhoneNumberAssignmentByProfileService) {
-	r = PhoneNumberAssignmentByProfileService{}
+// NewMessaging10dlcPhoneNumberAssignmentByProfileService generates a new service
+// that applies the given options to each request. These options are applied after
+// the parent client's options (if there is one), and before any request-specific
+// options.
+func NewMessaging10dlcPhoneNumberAssignmentByProfileService(opts ...option.RequestOption) (r Messaging10dlcPhoneNumberAssignmentByProfileService) {
+	r = Messaging10dlcPhoneNumberAssignmentByProfileService{}
 	r.Options = opts
 	return
 }
@@ -45,7 +46,7 @@ func NewPhoneNumberAssignmentByProfileService(opts ...option.RequestOption) (r P
 // only provide the parameter, `tcrCampaignId`, and not `campaignId`. In all other
 // cases (where the campaign you're assigning was created with Telnyx 10DLC
 // services), only provide `campaignId`, not `tcrCampaignId`.
-func (r *PhoneNumberAssignmentByProfileService) Assign(ctx context.Context, body PhoneNumberAssignmentByProfileAssignParams, opts ...option.RequestOption) (res *PhoneNumberAssignmentByProfileAssignResponse, err error) {
+func (r *Messaging10dlcPhoneNumberAssignmentByProfileService) Assign(ctx context.Context, body Messaging10dlcPhoneNumberAssignmentByProfileAssignParams, opts ...option.RequestOption) (res *Messaging10dlcPhoneNumberAssignmentByProfileAssignResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "10dlc/phoneNumberAssignmentByProfile"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -54,7 +55,7 @@ func (r *PhoneNumberAssignmentByProfileService) Assign(ctx context.Context, body
 
 // Check the status of the individual phone number/campaign assignments associated
 // with the supplied `taskId`.
-func (r *PhoneNumberAssignmentByProfileService) ListPhoneNumberStatus(ctx context.Context, taskID string, query PhoneNumberAssignmentByProfileListPhoneNumberStatusParams, opts ...option.RequestOption) (res *PhoneNumberAssignmentByProfileListPhoneNumberStatusResponse, err error) {
+func (r *Messaging10dlcPhoneNumberAssignmentByProfileService) ListPhoneNumberStatus(ctx context.Context, taskID string, query Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusParams, opts ...option.RequestOption) (res *Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
 		err = errors.New("missing required taskId parameter")
@@ -67,7 +68,7 @@ func (r *PhoneNumberAssignmentByProfileService) ListPhoneNumberStatus(ctx contex
 
 // Check the status of the individual phone number/campaign assignments associated
 // with the supplied `taskId`.
-func (r *PhoneNumberAssignmentByProfileService) GetPhoneNumberStatus(ctx context.Context, taskID string, query PhoneNumberAssignmentByProfileGetPhoneNumberStatusParams, opts ...option.RequestOption) (res *PhoneNumberAssignmentByProfileGetPhoneNumberStatusResponse, err error) {
+func (r *Messaging10dlcPhoneNumberAssignmentByProfileService) GetPhoneNumberStatus(ctx context.Context, taskID string, query Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusParams, opts ...option.RequestOption) (res *Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
 		err = errors.New("missing required taskId parameter")
@@ -80,7 +81,7 @@ func (r *PhoneNumberAssignmentByProfileService) GetPhoneNumberStatus(ctx context
 
 // Check the status of the task associated with assigning all phone numbers on a
 // messaging profile to a campaign by `taskId`.
-func (r *PhoneNumberAssignmentByProfileService) GetStatus(ctx context.Context, taskID string, opts ...option.RequestOption) (res *PhoneNumberAssignmentByProfileGetStatusResponse, err error) {
+func (r *Messaging10dlcPhoneNumberAssignmentByProfileService) GetStatus(ctx context.Context, taskID string, opts ...option.RequestOption) (res *Messaging10dlcPhoneNumberAssignmentByProfileGetStatusResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
 		err = errors.New("missing required taskId parameter")
@@ -101,7 +102,7 @@ const (
 	TaskStatusFailed    TaskStatus = "failed"
 )
 
-type PhoneNumberAssignmentByProfileAssignResponse struct {
+type Messaging10dlcPhoneNumberAssignmentByProfileAssignResponse struct {
 	// The ID of the messaging profile that you want to link to the specified campaign.
 	MessagingProfileID string `json:"messagingProfileId,required"`
 	// The ID of the task associated with assigning a messaging profile to a campaign.
@@ -125,13 +126,15 @@ type PhoneNumberAssignmentByProfileAssignResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PhoneNumberAssignmentByProfileAssignResponse) RawJSON() string { return r.JSON.raw }
-func (r *PhoneNumberAssignmentByProfileAssignResponse) UnmarshalJSON(data []byte) error {
+func (r Messaging10dlcPhoneNumberAssignmentByProfileAssignResponse) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *Messaging10dlcPhoneNumberAssignmentByProfileAssignResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PhoneNumberAssignmentByProfileListPhoneNumberStatusResponse struct {
-	Records []PhoneNumberAssignmentByProfileListPhoneNumberStatusResponseRecord `json:"records,required"`
+type Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusResponse struct {
+	Records []Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusResponseRecord `json:"records,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Records     respjson.Field
@@ -141,14 +144,14 @@ type PhoneNumberAssignmentByProfileListPhoneNumberStatusResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PhoneNumberAssignmentByProfileListPhoneNumberStatusResponse) RawJSON() string {
+func (r Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusResponse) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *PhoneNumberAssignmentByProfileListPhoneNumberStatusResponse) UnmarshalJSON(data []byte) error {
+func (r *Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PhoneNumberAssignmentByProfileListPhoneNumberStatusResponseRecord struct {
+type Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusResponseRecord struct {
 	// The phone number that the status is being checked for.
 	PhoneNumber string `json:"phoneNumber,required"`
 	// The status of the associated phone number assignment.
@@ -166,15 +169,15 @@ type PhoneNumberAssignmentByProfileListPhoneNumberStatusResponseRecord struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PhoneNumberAssignmentByProfileListPhoneNumberStatusResponseRecord) RawJSON() string {
+func (r Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusResponseRecord) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *PhoneNumberAssignmentByProfileListPhoneNumberStatusResponseRecord) UnmarshalJSON(data []byte) error {
+func (r *Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusResponseRecord) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PhoneNumberAssignmentByProfileGetPhoneNumberStatusResponse struct {
-	Records []PhoneNumberAssignmentByProfileGetPhoneNumberStatusResponseRecord `json:"records,required"`
+type Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusResponse struct {
+	Records []Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusResponseRecord `json:"records,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Records     respjson.Field
@@ -184,14 +187,14 @@ type PhoneNumberAssignmentByProfileGetPhoneNumberStatusResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PhoneNumberAssignmentByProfileGetPhoneNumberStatusResponse) RawJSON() string {
+func (r Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusResponse) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *PhoneNumberAssignmentByProfileGetPhoneNumberStatusResponse) UnmarshalJSON(data []byte) error {
+func (r *Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PhoneNumberAssignmentByProfileGetPhoneNumberStatusResponseRecord struct {
+type Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusResponseRecord struct {
 	// The phone number that the status is being checked for.
 	PhoneNumber string `json:"phoneNumber,required"`
 	// The status of the associated phone number assignment.
@@ -209,21 +212,21 @@ type PhoneNumberAssignmentByProfileGetPhoneNumberStatusResponseRecord struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PhoneNumberAssignmentByProfileGetPhoneNumberStatusResponseRecord) RawJSON() string {
+func (r Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusResponseRecord) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *PhoneNumberAssignmentByProfileGetPhoneNumberStatusResponseRecord) UnmarshalJSON(data []byte) error {
+func (r *Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusResponseRecord) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PhoneNumberAssignmentByProfileGetStatusResponse struct {
+type Messaging10dlcPhoneNumberAssignmentByProfileGetStatusResponse struct {
 	// An enumeration.
 	//
 	// Any of "pending", "processing", "completed", "failed".
-	Status    PhoneNumberAssignmentByProfileGetStatusResponseStatus `json:"status,required"`
-	TaskID    string                                                `json:"taskId,required"`
-	CreatedAt time.Time                                             `json:"createdAt" format:"date-time"`
-	UpdatedAt time.Time                                             `json:"updatedAt" format:"date-time"`
+	Status    Messaging10dlcPhoneNumberAssignmentByProfileGetStatusResponseStatus `json:"status,required"`
+	TaskID    string                                                              `json:"taskId,required"`
+	CreatedAt time.Time                                                           `json:"createdAt" format:"date-time"`
+	UpdatedAt time.Time                                                           `json:"updatedAt" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Status      respjson.Field
@@ -236,22 +239,24 @@ type PhoneNumberAssignmentByProfileGetStatusResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PhoneNumberAssignmentByProfileGetStatusResponse) RawJSON() string { return r.JSON.raw }
-func (r *PhoneNumberAssignmentByProfileGetStatusResponse) UnmarshalJSON(data []byte) error {
+func (r Messaging10dlcPhoneNumberAssignmentByProfileGetStatusResponse) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *Messaging10dlcPhoneNumberAssignmentByProfileGetStatusResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // An enumeration.
-type PhoneNumberAssignmentByProfileGetStatusResponseStatus string
+type Messaging10dlcPhoneNumberAssignmentByProfileGetStatusResponseStatus string
 
 const (
-	PhoneNumberAssignmentByProfileGetStatusResponseStatusPending    PhoneNumberAssignmentByProfileGetStatusResponseStatus = "pending"
-	PhoneNumberAssignmentByProfileGetStatusResponseStatusProcessing PhoneNumberAssignmentByProfileGetStatusResponseStatus = "processing"
-	PhoneNumberAssignmentByProfileGetStatusResponseStatusCompleted  PhoneNumberAssignmentByProfileGetStatusResponseStatus = "completed"
-	PhoneNumberAssignmentByProfileGetStatusResponseStatusFailed     PhoneNumberAssignmentByProfileGetStatusResponseStatus = "failed"
+	Messaging10dlcPhoneNumberAssignmentByProfileGetStatusResponseStatusPending    Messaging10dlcPhoneNumberAssignmentByProfileGetStatusResponseStatus = "pending"
+	Messaging10dlcPhoneNumberAssignmentByProfileGetStatusResponseStatusProcessing Messaging10dlcPhoneNumberAssignmentByProfileGetStatusResponseStatus = "processing"
+	Messaging10dlcPhoneNumberAssignmentByProfileGetStatusResponseStatusCompleted  Messaging10dlcPhoneNumberAssignmentByProfileGetStatusResponseStatus = "completed"
+	Messaging10dlcPhoneNumberAssignmentByProfileGetStatusResponseStatusFailed     Messaging10dlcPhoneNumberAssignmentByProfileGetStatusResponseStatus = "failed"
 )
 
-type PhoneNumberAssignmentByProfileAssignParams struct {
+type Messaging10dlcPhoneNumberAssignmentByProfileAssignParams struct {
 	// The ID of the messaging profile that you want to link to the specified campaign.
 	MessagingProfileID string `json:"messagingProfileId,required"`
 	// The ID of the campaign you want to link to the specified messaging profile. If
@@ -264,39 +269,40 @@ type PhoneNumberAssignmentByProfileAssignParams struct {
 	paramObj
 }
 
-func (r PhoneNumberAssignmentByProfileAssignParams) MarshalJSON() (data []byte, err error) {
-	type shadow PhoneNumberAssignmentByProfileAssignParams
+func (r Messaging10dlcPhoneNumberAssignmentByProfileAssignParams) MarshalJSON() (data []byte, err error) {
+	type shadow Messaging10dlcPhoneNumberAssignmentByProfileAssignParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *PhoneNumberAssignmentByProfileAssignParams) UnmarshalJSON(data []byte) error {
+func (r *Messaging10dlcPhoneNumberAssignmentByProfileAssignParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PhoneNumberAssignmentByProfileListPhoneNumberStatusParams struct {
+type Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusParams struct {
 	Page           param.Opt[int64] `query:"page,omitzero" json:"-"`
 	RecordsPerPage param.Opt[int64] `query:"recordsPerPage,omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes
-// [PhoneNumberAssignmentByProfileListPhoneNumberStatusParams]'s query parameters
-// as `url.Values`.
-func (r PhoneNumberAssignmentByProfileListPhoneNumberStatusParams) URLQuery() (v url.Values, err error) {
+// [Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusParams]'s
+// query parameters as `url.Values`.
+func (r Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 
-type PhoneNumberAssignmentByProfileGetPhoneNumberStatusParams struct {
+type Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusParams struct {
 	Page           param.Opt[int64] `query:"page,omitzero" json:"-"`
 	RecordsPerPage param.Opt[int64] `query:"recordsPerPage,omitzero" json:"-"`
 	paramObj
 }
 
-// URLQuery serializes [PhoneNumberAssignmentByProfileGetPhoneNumberStatusParams]'s
-// query parameters as `url.Values`.
-func (r PhoneNumberAssignmentByProfileGetPhoneNumberStatusParams) URLQuery() (v url.Values, err error) {
+// URLQuery serializes
+// [Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusParams]'s query
+// parameters as `url.Values`.
+func (r Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
