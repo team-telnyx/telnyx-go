@@ -16,7 +16,6 @@ import (
 	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -63,38 +62,23 @@ func (r *NetworkService) Get(ctx context.Context, id string, opts ...option.Requ
 }
 
 // Update a Network.
-func (r *NetworkService) Update(ctx context.Context, networkID string, body NetworkUpdateParams, opts ...option.RequestOption) (res *NetworkUpdateResponse, err error) {
+func (r *NetworkService) Update(ctx context.Context, id string, body NetworkUpdateParams, opts ...option.RequestOption) (res *NetworkUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	if networkID == "" {
-		err = errors.New("missing required network_id parameter")
+	if id == "" {
+		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("networks/%s", networkID)
+	path := fmt.Sprintf("networks/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
 }
 
 // List all Networks.
-func (r *NetworkService) List(ctx context.Context, query NetworkListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[NetworkListResponse], err error) {
-	var raw *http.Response
+func (r *NetworkService) List(ctx context.Context, query NetworkListParams, opts ...option.RequestOption) (res *NetworkListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "networks"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// List all Networks.
-func (r *NetworkService) ListAutoPaging(ctx context.Context, query NetworkListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[NetworkListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Delete a Network.
@@ -110,30 +94,15 @@ func (r *NetworkService) Delete(ctx context.Context, id string, opts ...option.R
 }
 
 // List all Interfaces for a Network.
-func (r *NetworkService) ListInterfaces(ctx context.Context, id string, query NetworkListInterfacesParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[NetworkListInterfacesResponse], err error) {
-	var raw *http.Response
+func (r *NetworkService) ListInterfaces(ctx context.Context, id string, query NetworkListInterfacesParams, opts ...option.RequestOption) (res *NetworkListInterfacesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
 	}
 	path := fmt.Sprintf("networks/%s/network_interfaces", id)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// List all Interfaces for a Network.
-func (r *NetworkService) ListInterfacesAutoPaging(ctx context.Context, id string, query NetworkListInterfacesParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[NetworkListInterfacesResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.ListInterfaces(ctx, id, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // The current status of the interface deployment.
@@ -176,9 +145,12 @@ func (r *NetworkNewResponse) UnmarshalJSON(data []byte) error {
 type NetworkNewResponseData struct {
 	// A user specified name for the network.
 	Name string `json:"name"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
+		RecordType  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -210,9 +182,12 @@ func (r *NetworkGetResponse) UnmarshalJSON(data []byte) error {
 type NetworkGetResponseData struct {
 	// A user specified name for the network.
 	Name string `json:"name"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
+		RecordType  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -244,9 +219,12 @@ func (r *NetworkUpdateResponse) UnmarshalJSON(data []byte) error {
 type NetworkUpdateResponseData struct {
 	// A user specified name for the network.
 	Name string `json:"name"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
+		RecordType  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -260,11 +238,32 @@ func (r *NetworkUpdateResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type NetworkListResponse struct {
+	Data []NetworkListResponseData `json:"data"`
+	Meta PaginationMeta            `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NetworkListResponse) RawJSON() string { return r.JSON.raw }
+func (r *NetworkListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NetworkListResponseData struct {
 	// A user specified name for the network.
 	Name string `json:"name"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
+		RecordType  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -272,8 +271,8 @@ type NetworkListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r NetworkListResponse) RawJSON() string { return r.JSON.raw }
-func (r *NetworkListResponse) UnmarshalJSON(data []byte) error {
+func (r NetworkListResponseData) RawJSON() string { return r.JSON.raw }
+func (r *NetworkListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -296,9 +295,12 @@ func (r *NetworkDeleteResponse) UnmarshalJSON(data []byte) error {
 type NetworkDeleteResponseData struct {
 	// A user specified name for the network.
 	Name string `json:"name"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
+		RecordType  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -312,9 +314,27 @@ func (r *NetworkDeleteResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type NetworkListInterfacesResponse struct {
+	Data []NetworkListInterfacesResponseData `json:"data"`
+	Meta PaginationMeta                      `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NetworkListInterfacesResponse) RawJSON() string { return r.JSON.raw }
+func (r *NetworkListInterfacesResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NetworkListInterfacesResponseData struct {
 	// Identifies the type of the resource.
-	RecordType string                              `json:"record_type"`
-	Region     NetworkListInterfacesResponseRegion `json:"region"`
+	RecordType string                                  `json:"record_type"`
+	Region     NetworkListInterfacesResponseDataRegion `json:"region"`
 	// The region interface is deployed to.
 	RegionCode string `json:"region_code"`
 	// Identifies the type of the interface.
@@ -329,16 +349,16 @@ type NetworkListInterfacesResponse struct {
 		raw         string
 	} `json:"-"`
 	Record
-	NetworkInterface
+	Interface
 }
 
 // Returns the unmodified JSON received from the API
-func (r NetworkListInterfacesResponse) RawJSON() string { return r.JSON.raw }
-func (r *NetworkListInterfacesResponse) UnmarshalJSON(data []byte) error {
+func (r NetworkListInterfacesResponseData) RawJSON() string { return r.JSON.raw }
+func (r *NetworkListInterfacesResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type NetworkListInterfacesResponseRegion struct {
+type NetworkListInterfacesResponseDataRegion struct {
 	// Region code of the interface.
 	Code string `json:"code"`
 	// Region name of the interface.
@@ -356,8 +376,8 @@ type NetworkListInterfacesResponseRegion struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r NetworkListInterfacesResponseRegion) RawJSON() string { return r.JSON.raw }
-func (r *NetworkListInterfacesResponseRegion) UnmarshalJSON(data []byte) error {
+func (r NetworkListInterfacesResponseDataRegion) RawJSON() string { return r.JSON.raw }
+func (r *NetworkListInterfacesResponseDataRegion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -17,7 +17,6 @@ import (
 	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -62,26 +61,11 @@ func (r *NotificationSettingService) Get(ctx context.Context, id string, opts ..
 }
 
 // List notification settings.
-func (r *NotificationSettingService) List(ctx context.Context, query NotificationSettingListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[NotificationSetting], err error) {
-	var raw *http.Response
+func (r *NotificationSettingService) List(ctx context.Context, query NotificationSettingListParams, opts ...option.RequestOption) (res *NotificationSettingListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "notification_settings"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// List notification settings.
-func (r *NotificationSettingService) ListAutoPaging(ctx context.Context, query NotificationSettingListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[NotificationSetting] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Delete a notification setting.
@@ -243,6 +227,24 @@ type NotificationSettingGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r NotificationSettingGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *NotificationSettingGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NotificationSettingListResponse struct {
+	Data []NotificationSetting `json:"data"`
+	Meta PaginationMeta        `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NotificationSettingListResponse) RawJSON() string { return r.JSON.raw }
+func (r *NotificationSettingListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

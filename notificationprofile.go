@@ -17,7 +17,6 @@ import (
 	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -62,38 +61,23 @@ func (r *NotificationProfileService) Get(ctx context.Context, id string, opts ..
 }
 
 // Update a notification profile.
-func (r *NotificationProfileService) Update(ctx context.Context, notificationProfileID string, body NotificationProfileUpdateParams, opts ...option.RequestOption) (res *NotificationProfileUpdateResponse, err error) {
+func (r *NotificationProfileService) Update(ctx context.Context, id string, body NotificationProfileUpdateParams, opts ...option.RequestOption) (res *NotificationProfileUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	if notificationProfileID == "" {
-		err = errors.New("missing required notification_profile_id parameter")
+	if id == "" {
+		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("notification_profiles/%s", notificationProfileID)
+	path := fmt.Sprintf("notification_profiles/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
 }
 
 // Returns a list of your notifications profiles.
-func (r *NotificationProfileService) List(ctx context.Context, query NotificationProfileListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[NotificationProfile], err error) {
-	var raw *http.Response
+func (r *NotificationProfileService) List(ctx context.Context, query NotificationProfileListParams, opts ...option.RequestOption) (res *NotificationProfileListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "notification_profiles"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Returns a list of your notifications profiles.
-func (r *NotificationProfileService) ListAutoPaging(ctx context.Context, query NotificationProfileListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[NotificationProfile] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Delete a notification profile.
@@ -207,6 +191,24 @@ type NotificationProfileUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r NotificationProfileUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *NotificationProfileUpdateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NotificationProfileListResponse struct {
+	Data []NotificationProfile `json:"data"`
+	Meta PaginationMeta        `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NotificationProfileListResponse) RawJSON() string { return r.JSON.raw }
+func (r *NotificationProfileListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

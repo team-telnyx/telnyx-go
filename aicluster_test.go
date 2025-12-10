@@ -61,8 +61,10 @@ func TestAIClusterListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.Clusters.List(context.TODO(), telnyx.AIClusterListParams{
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
+		Page: telnyx.AIClusterListParamsPage{
+			Number: telnyx.Int(0),
+			Size:   telnyx.Int(0),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

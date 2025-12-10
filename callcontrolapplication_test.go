@@ -46,7 +46,7 @@ func TestCallControlApplicationNewWithOptionalParams(t *testing.T) {
 			OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
 		},
 		RedactDtmfDebugLogging:  telnyx.Bool(true),
-		WebhookAPIVersion:       telnyx.CallControlApplicationNewParamsWebhookAPIVersionV1,
+		WebhookAPIVersion:       telnyx.CallControlApplicationNewParamsWebhookAPIVersion1,
 		WebhookEventFailoverURL: telnyx.String("https://failover.example.com"),
 		WebhookTimeoutSecs:      telnyx.Int(25),
 	})
@@ -119,7 +119,7 @@ func TestCallControlApplicationUpdateWithOptionalParams(t *testing.T) {
 			},
 			RedactDtmfDebugLogging:  telnyx.Bool(true),
 			Tags:                    []string{"tag1", "tag2"},
-			WebhookAPIVersion:       telnyx.CallControlApplicationUpdateParamsWebhookAPIVersionV1,
+			WebhookAPIVersion:       telnyx.CallControlApplicationUpdateParamsWebhookAPIVersion1,
 			WebhookEventFailoverURL: telnyx.String("https://failover.example.com"),
 			WebhookTimeoutSecs:      telnyx.Int(25),
 		},

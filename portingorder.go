@@ -16,7 +16,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v3/shared"
@@ -102,26 +101,11 @@ func (r *PortingOrderService) Update(ctx context.Context, id string, body Portin
 }
 
 // Returns a list of your porting order.
-func (r *PortingOrderService) List(ctx context.Context, query PortingOrderListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingOrder], err error) {
-	var raw *http.Response
+func (r *PortingOrderService) List(ctx context.Context, query PortingOrderListParams, opts ...option.RequestOption) (res *PortingOrderListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "porting_orders"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Returns a list of your porting order.
-func (r *PortingOrderService) ListAutoPaging(ctx context.Context, query PortingOrderListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingOrder] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Deletes an existing porting order. This operation is restrict to porting orders
@@ -173,31 +157,15 @@ func (r *PortingOrderService) GetLoaTemplate(ctx context.Context, id string, que
 
 // Returns a list of all requirements based on country/number type for this porting
 // order.
-func (r *PortingOrderService) GetRequirements(ctx context.Context, id string, query PortingOrderGetRequirementsParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingOrderGetRequirementsResponse], err error) {
-	var raw *http.Response
+func (r *PortingOrderService) GetRequirements(ctx context.Context, id string, query PortingOrderGetRequirementsParams, opts ...option.RequestOption) (res *PortingOrderGetRequirementsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
 	}
 	path := fmt.Sprintf("porting_orders/%s/requirements", id)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Returns a list of all requirements based on country/number type for this porting
-// order.
-func (r *PortingOrderService) GetRequirementsAutoPaging(ctx context.Context, id string, query PortingOrderGetRequirementsParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingOrderGetRequirementsResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.GetRequirements(ctx, id, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Retrieve the associated V1 sub_request_id and port_request_id
@@ -1034,6 +1002,24 @@ func (r *PortingOrderUpdateResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type PortingOrderListResponse struct {
+	Data []PortingOrder `json:"data"`
+	Meta PaginationMeta `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingOrderListResponse) RawJSON() string { return r.JSON.raw }
+func (r *PortingOrderListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type PortingOrderGetAllowedFocWindowsResponse struct {
 	Data []PortingOrderGetAllowedFocWindowsResponseData `json:"data"`
 	Meta PaginationMeta                                 `json:"meta"`
@@ -1092,10 +1078,28 @@ func (r *PortingOrderGetExceptionTypesResponse) UnmarshalJSON(data []byte) error
 }
 
 type PortingOrderGetRequirementsResponse struct {
+	Data []PortingOrderGetRequirementsResponseData `json:"data"`
+	Meta PaginationMeta                            `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingOrderGetRequirementsResponse) RawJSON() string { return r.JSON.raw }
+func (r *PortingOrderGetRequirementsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PortingOrderGetRequirementsResponseData struct {
 	// Type of value expected on field_value field
 	//
 	// Any of "document", "textual".
-	FieldType PortingOrderGetRequirementsResponseFieldType `json:"field_type"`
+	FieldType string `json:"field_type"`
 	// Identifies the document that satisfies this requirement
 	FieldValue string `json:"field_value"`
 	// Identifies the type of the resource.
@@ -1103,7 +1107,7 @@ type PortingOrderGetRequirementsResponse struct {
 	// Status of the requirement
 	RequirementStatus string `json:"requirement_status"`
 	// Identifies the requirement type that meets this requirement
-	RequirementType PortingOrderGetRequirementsResponseRequirementType `json:"requirement_type"`
+	RequirementType PortingOrderGetRequirementsResponseDataRequirementType `json:"requirement_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FieldType         respjson.Field
@@ -1117,21 +1121,13 @@ type PortingOrderGetRequirementsResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PortingOrderGetRequirementsResponse) RawJSON() string { return r.JSON.raw }
-func (r *PortingOrderGetRequirementsResponse) UnmarshalJSON(data []byte) error {
+func (r PortingOrderGetRequirementsResponseData) RawJSON() string { return r.JSON.raw }
+func (r *PortingOrderGetRequirementsResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Type of value expected on field_value field
-type PortingOrderGetRequirementsResponseFieldType string
-
-const (
-	PortingOrderGetRequirementsResponseFieldTypeDocument PortingOrderGetRequirementsResponseFieldType = "document"
-	PortingOrderGetRequirementsResponseFieldTypeTextual  PortingOrderGetRequirementsResponseFieldType = "textual"
-)
-
 // Identifies the requirement type that meets this requirement
-type PortingOrderGetRequirementsResponseRequirementType struct {
+type PortingOrderGetRequirementsResponseDataRequirementType struct {
 	// Identifies the requirement type
 	ID string `json:"id"`
 	// The acceptance criteria for the requirement type
@@ -1158,8 +1154,8 @@ type PortingOrderGetRequirementsResponseRequirementType struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PortingOrderGetRequirementsResponseRequirementType) RawJSON() string { return r.JSON.raw }
-func (r *PortingOrderGetRequirementsResponseRequirementType) UnmarshalJSON(data []byte) error {
+func (r PortingOrderGetRequirementsResponseDataRequirementType) RawJSON() string { return r.JSON.raw }
+func (r *PortingOrderGetRequirementsResponseDataRequirementType) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

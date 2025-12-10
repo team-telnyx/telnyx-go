@@ -14,7 +14,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -54,28 +53,11 @@ func (r *SimCardGroupActionService) Get(ctx context.Context, id string, opts ...
 // This API allows listing a paginated collection a SIM card group actions. It
 // allows to explore a collection of existing asynchronous operation using specific
 // filters.
-func (r *SimCardGroupActionService) List(ctx context.Context, query SimCardGroupActionListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[SimCardGroupAction], err error) {
-	var raw *http.Response
+func (r *SimCardGroupActionService) List(ctx context.Context, query SimCardGroupActionListParams, opts ...option.RequestOption) (res *SimCardGroupActionListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "sim_card_group_actions"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// This API allows listing a paginated collection a SIM card group actions. It
-// allows to explore a collection of existing asynchronous operation using specific
-// filters.
-func (r *SimCardGroupActionService) ListAutoPaging(ctx context.Context, query SimCardGroupActionListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[SimCardGroupAction] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // This action will asynchronously remove an existing Private Wireless Gateway
@@ -232,6 +214,24 @@ type SimCardGroupActionGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r SimCardGroupActionGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *SimCardGroupActionGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SimCardGroupActionListResponse struct {
+	Data []SimCardGroupAction `json:"data"`
+	Meta PaginationMeta       `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SimCardGroupActionListResponse) RawJSON() string { return r.JSON.raw }
+func (r *SimCardGroupActionListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

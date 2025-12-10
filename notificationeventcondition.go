@@ -13,7 +13,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -38,45 +37,48 @@ func NewNotificationEventConditionService(opts ...option.RequestOption) (r Notif
 }
 
 // Returns a list of your notifications events conditions.
-func (r *NotificationEventConditionService) List(ctx context.Context, query NotificationEventConditionListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[NotificationEventConditionListResponse], err error) {
-	var raw *http.Response
+func (r *NotificationEventConditionService) List(ctx context.Context, query NotificationEventConditionListParams, opts ...option.RequestOption) (res *NotificationEventConditionListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "notification_event_conditions"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Returns a list of your notifications events conditions.
-func (r *NotificationEventConditionService) ListAutoPaging(ctx context.Context, query NotificationEventConditionListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[NotificationEventConditionListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 type NotificationEventConditionListResponse struct {
+	Data []NotificationEventConditionListResponseData `json:"data"`
+	Meta PaginationMeta                               `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NotificationEventConditionListResponse) RawJSON() string { return r.JSON.raw }
+func (r *NotificationEventConditionListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NotificationEventConditionListResponseData struct {
 	// A UUID.
 	ID string `json:"id"`
 	// Dictates whether a notification channel id needs to be provided when creating a
 	// notficiation setting.
 	AllowMultipleChannels bool `json:"allow_multiple_channels"`
 	// Any of "account", "phone_number".
-	AssociatedRecordType NotificationEventConditionListResponseAssociatedRecordType `json:"associated_record_type"`
+	AssociatedRecordType string `json:"associated_record_type"`
 	// Dictates whether a notification setting will take effect immediately.
 	Asynchronous bool `json:"asynchronous"`
 	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt           time.Time                                         `json:"created_at" format:"date-time"`
-	Description         string                                            `json:"description"`
-	Enabled             bool                                              `json:"enabled"`
-	Name                string                                            `json:"name"`
-	NotificationEventID string                                            `json:"notification_event_id"`
-	Parameters          []NotificationEventConditionListResponseParameter `json:"parameters"`
+	CreatedAt           time.Time                                             `json:"created_at" format:"date-time"`
+	Description         string                                                `json:"description"`
+	Enabled             bool                                                  `json:"enabled"`
+	Name                string                                                `json:"name"`
+	NotificationEventID string                                                `json:"notification_event_id"`
+	Parameters          []NotificationEventConditionListResponseDataParameter `json:"parameters"`
 	// Dictates the supported notification channel types that can be emitted.
 	SupportedChannels []string `json:"supported_channels"`
 	// ISO 8601 formatted date indicating when the resource was updated.
@@ -101,19 +103,12 @@ type NotificationEventConditionListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r NotificationEventConditionListResponse) RawJSON() string { return r.JSON.raw }
-func (r *NotificationEventConditionListResponse) UnmarshalJSON(data []byte) error {
+func (r NotificationEventConditionListResponseData) RawJSON() string { return r.JSON.raw }
+func (r *NotificationEventConditionListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type NotificationEventConditionListResponseAssociatedRecordType string
-
-const (
-	NotificationEventConditionListResponseAssociatedRecordTypeAccount     NotificationEventConditionListResponseAssociatedRecordType = "account"
-	NotificationEventConditionListResponseAssociatedRecordTypePhoneNumber NotificationEventConditionListResponseAssociatedRecordType = "phone_number"
-)
-
-type NotificationEventConditionListResponseParameter struct {
+type NotificationEventConditionListResponseDataParameter struct {
 	DataType string `json:"data_type"`
 	Name     string `json:"name"`
 	Optional bool   `json:"optional"`
@@ -128,8 +123,8 @@ type NotificationEventConditionListResponseParameter struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r NotificationEventConditionListResponseParameter) RawJSON() string { return r.JSON.raw }
-func (r *NotificationEventConditionListResponseParameter) UnmarshalJSON(data []byte) error {
+func (r NotificationEventConditionListResponseDataParameter) RawJSON() string { return r.JSON.raw }
+func (r *NotificationEventConditionListResponseDataParameter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

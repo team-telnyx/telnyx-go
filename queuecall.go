@@ -14,7 +14,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -72,30 +71,15 @@ func (r *QueueCallService) Update(ctx context.Context, callControlID string, par
 }
 
 // Retrieve the list of calls in an existing queue
-func (r *QueueCallService) List(ctx context.Context, queueName string, query QueueCallListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[QueueCallListResponse], err error) {
-	var raw *http.Response
+func (r *QueueCallService) List(ctx context.Context, queueName string, query QueueCallListParams, opts ...option.RequestOption) (res *QueueCallListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if queueName == "" {
 		err = errors.New("missing required queue_name parameter")
 		return
 	}
 	path := fmt.Sprintf("queues/%s/calls", queueName)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Retrieve the list of calls in an existing queue
-func (r *QueueCallService) ListAutoPaging(ctx context.Context, queueName string, query QueueCallListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[QueueCallListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, queueName, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Removes an inactive call from a queue. If the call is no longer active, use this
@@ -182,6 +166,24 @@ func (r *QueueCallGetResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type QueueCallListResponse struct {
+	Data []QueueCallListResponseData `json:"data"`
+	Meta PaginationMeta              `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r QueueCallListResponse) RawJSON() string { return r.JSON.raw }
+func (r *QueueCallListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type QueueCallListResponseData struct {
 	// Unique identifier and token for controlling the call.
 	CallControlID string `json:"call_control_id,required"`
 	// ID that is unique to the call and can be used to correlate webhook events
@@ -201,7 +203,7 @@ type QueueCallListResponse struct {
 	// Current position of the call in the queue
 	QueuePosition int64 `json:"queue_position,required"`
 	// Any of "queue_call".
-	RecordType QueueCallListResponseRecordType `json:"record_type,required"`
+	RecordType string `json:"record_type,required"`
 	// Destination number or SIP URI of the call.
 	To string `json:"to,required"`
 	// The time the call has been waiting in the queue, given in seconds
@@ -225,16 +227,10 @@ type QueueCallListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r QueueCallListResponse) RawJSON() string { return r.JSON.raw }
-func (r *QueueCallListResponse) UnmarshalJSON(data []byte) error {
+func (r QueueCallListResponseData) RawJSON() string { return r.JSON.raw }
+func (r *QueueCallListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type QueueCallListResponseRecordType string
-
-const (
-	QueueCallListResponseRecordTypeQueueCall QueueCallListResponseRecordType = "queue_call"
-)
 
 type QueueCallGetParams struct {
 	QueueName string `path:"queue_name,required" json:"-"`

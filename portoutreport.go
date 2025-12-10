@@ -16,7 +16,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -61,26 +60,11 @@ func (r *PortoutReportService) Get(ctx context.Context, id string, opts ...optio
 }
 
 // List the reports generated about port-out operations.
-func (r *PortoutReportService) List(ctx context.Context, query PortoutReportListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortoutReport], err error) {
-	var raw *http.Response
+func (r *PortoutReportService) List(ctx context.Context, query PortoutReportListParams, opts ...option.RequestOption) (res *PortoutReportListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "portouts/reports"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// List the reports generated about port-out operations.
-func (r *PortoutReportService) ListAutoPaging(ctx context.Context, query PortoutReportListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortoutReport] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // The parameters for generating a port-outs CSV report.
@@ -278,6 +262,24 @@ type PortoutReportGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r PortoutReportGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *PortoutReportGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PortoutReportListResponse struct {
+	Data []PortoutReport `json:"data"`
+	Meta PaginationMeta  `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortoutReportListResponse) RawJSON() string { return r.JSON.raw }
+func (r *PortoutReportListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

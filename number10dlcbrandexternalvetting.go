@@ -51,7 +51,7 @@ func (r *Number10dlcBrandExternalVettingService) List(ctx context.Context, brand
 // TCR-approved vetting provider. If the vetting provider confirms validity of the
 // record, it will be saved with the brand and will be considered for future
 // campaign qualification.
-func (r *Number10dlcBrandExternalVettingService) Imports(ctx context.Context, brandID string, body Number10dlcBrandExternalVettingImportsParams, opts ...option.RequestOption) (res *Number10dlcBrandExternalVettingImportsResponse, err error) {
+func (r *Number10dlcBrandExternalVettingService) Import(ctx context.Context, brandID string, body Number10dlcBrandExternalVettingImportParams, opts ...option.RequestOption) (res *Number10dlcBrandExternalVettingImportResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
@@ -113,7 +113,7 @@ func (r *Number10dlcBrandExternalVettingListResponse) UnmarshalJSON(data []byte)
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type Number10dlcBrandExternalVettingImportsResponse struct {
+type Number10dlcBrandExternalVettingImportResponse struct {
 	// Vetting submission date. This is the date when the vetting request is generated
 	// in ISO 8601 format.
 	CreateDate string `json:"createDate"`
@@ -147,8 +147,8 @@ type Number10dlcBrandExternalVettingImportsResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r Number10dlcBrandExternalVettingImportsResponse) RawJSON() string { return r.JSON.raw }
-func (r *Number10dlcBrandExternalVettingImportsResponse) UnmarshalJSON(data []byte) error {
+func (r Number10dlcBrandExternalVettingImportResponse) RawJSON() string { return r.JSON.raw }
+func (r *Number10dlcBrandExternalVettingImportResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -191,7 +191,7 @@ func (r *Number10dlcBrandExternalVettingOrderResponse) UnmarshalJSON(data []byte
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type Number10dlcBrandExternalVettingImportsParams struct {
+type Number10dlcBrandExternalVettingImportParams struct {
 	// External vetting provider ID for the brand.
 	EvpID string `json:"evpId,required"`
 	// Unique ID that identifies a vetting transaction performed by a vetting provider.
@@ -202,11 +202,11 @@ type Number10dlcBrandExternalVettingImportsParams struct {
 	paramObj
 }
 
-func (r Number10dlcBrandExternalVettingImportsParams) MarshalJSON() (data []byte, err error) {
-	type shadow Number10dlcBrandExternalVettingImportsParams
+func (r Number10dlcBrandExternalVettingImportParams) MarshalJSON() (data []byte, err error) {
+	type shadow Number10dlcBrandExternalVettingImportParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *Number10dlcBrandExternalVettingImportsParams) UnmarshalJSON(data []byte) error {
+func (r *Number10dlcBrandExternalVettingImportParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

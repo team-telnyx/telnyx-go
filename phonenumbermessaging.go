@@ -14,7 +14,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v3/shared"
@@ -64,26 +63,11 @@ func (r *PhoneNumberMessagingService) Update(ctx context.Context, id string, bod
 }
 
 // List phone numbers with messaging settings
-func (r *PhoneNumberMessagingService) List(ctx context.Context, query PhoneNumberMessagingListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[shared.PhoneNumberWithMessagingSettings], err error) {
-	var raw *http.Response
+func (r *PhoneNumberMessagingService) List(ctx context.Context, query PhoneNumberMessagingListParams, opts ...option.RequestOption) (res *PhoneNumberMessagingListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "phone_numbers/messaging"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// List phone numbers with messaging settings
-func (r *PhoneNumberMessagingService) ListAutoPaging(ctx context.Context, query PhoneNumberMessagingListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[shared.PhoneNumberWithMessagingSettings] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 type PhoneNumberMessagingGetResponse struct {
@@ -115,6 +99,46 @@ type PhoneNumberMessagingUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r PhoneNumberMessagingUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *PhoneNumberMessagingUpdateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PhoneNumberMessagingListResponse struct {
+	Data []shared.PhoneNumberWithMessagingSettings `json:"data"`
+	Meta PhoneNumberMessagingListResponseMeta      `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PhoneNumberMessagingListResponse) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumberMessagingListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PhoneNumberMessagingListResponseMeta struct {
+	PageNumber   int64 `json:"page_number,required"`
+	PageSize     int64 `json:"page_size,required"`
+	TotalPages   int64 `json:"total_pages,required"`
+	TotalResults int64 `json:"total_results,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PhoneNumberMessagingListResponseMeta) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumberMessagingListResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

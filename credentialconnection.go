@@ -15,9 +15,9 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/shared"
 )
 
 // CredentialConnectionService contains methods and other services that help with
@@ -74,26 +74,11 @@ func (r *CredentialConnectionService) Update(ctx context.Context, id string, bod
 }
 
 // Returns a list of your credential connections.
-func (r *CredentialConnectionService) List(ctx context.Context, query CredentialConnectionListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[CredentialConnection], err error) {
-	var raw *http.Response
+func (r *CredentialConnectionService) List(ctx context.Context, query CredentialConnectionListParams, opts ...option.RequestOption) (res *CredentialConnectionListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "credential_connections"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Returns a list of your credential connections.
-func (r *CredentialConnectionService) ListAutoPaging(ctx context.Context, query CredentialConnectionListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[CredentialConnection] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Deletes an existing credential connection.
@@ -321,8 +306,8 @@ const (
 type CredentialConnectionWebhookAPIVersion string
 
 const (
-	CredentialConnectionWebhookAPIVersionV1 CredentialConnectionWebhookAPIVersion = "1"
-	CredentialConnectionWebhookAPIVersionV2 CredentialConnectionWebhookAPIVersion = "2"
+	CredentialConnectionWebhookAPIVersion1 CredentialConnectionWebhookAPIVersion = "1"
+	CredentialConnectionWebhookAPIVersion2 CredentialConnectionWebhookAPIVersion = "2"
 )
 
 type CredentialInbound struct {
@@ -662,6 +647,24 @@ func (r *CredentialConnectionUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type CredentialConnectionListResponse struct {
+	Data []CredentialConnection           `json:"data"`
+	Meta shared.ConnectionsPaginationMeta `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CredentialConnectionListResponse) RawJSON() string { return r.JSON.raw }
+func (r *CredentialConnectionListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type CredentialConnectionDeleteResponse struct {
 	Data CredentialConnection `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -781,8 +784,8 @@ const (
 type CredentialConnectionNewParamsWebhookAPIVersion string
 
 const (
-	CredentialConnectionNewParamsWebhookAPIVersionV1    CredentialConnectionNewParamsWebhookAPIVersion = "1"
-	CredentialConnectionNewParamsWebhookAPIVersionV2    CredentialConnectionNewParamsWebhookAPIVersion = "2"
+	CredentialConnectionNewParamsWebhookAPIVersion1     CredentialConnectionNewParamsWebhookAPIVersion = "1"
+	CredentialConnectionNewParamsWebhookAPIVersion2     CredentialConnectionNewParamsWebhookAPIVersion = "2"
 	CredentialConnectionNewParamsWebhookAPIVersionTexml CredentialConnectionNewParamsWebhookAPIVersion = "texml"
 )
 
@@ -885,8 +888,8 @@ const (
 type CredentialConnectionUpdateParamsWebhookAPIVersion string
 
 const (
-	CredentialConnectionUpdateParamsWebhookAPIVersionV1 CredentialConnectionUpdateParamsWebhookAPIVersion = "1"
-	CredentialConnectionUpdateParamsWebhookAPIVersionV2 CredentialConnectionUpdateParamsWebhookAPIVersion = "2"
+	CredentialConnectionUpdateParamsWebhookAPIVersion1 CredentialConnectionUpdateParamsWebhookAPIVersion = "1"
+	CredentialConnectionUpdateParamsWebhookAPIVersion2 CredentialConnectionUpdateParamsWebhookAPIVersion = "2"
 )
 
 type CredentialConnectionListParams struct {

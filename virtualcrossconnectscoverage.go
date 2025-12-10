@@ -12,7 +12,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -39,31 +38,32 @@ func NewVirtualCrossConnectsCoverageService(opts ...option.RequestOption) (r Vir
 // List Virtual Cross Connects Cloud Coverage.<br /><br />This endpoint shows which
 // cloud regions are available for the `location_code` your Virtual Cross Connect
 // will be provisioned in.
-func (r *VirtualCrossConnectsCoverageService) List(ctx context.Context, query VirtualCrossConnectsCoverageListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[VirtualCrossConnectsCoverageListResponse], err error) {
-	var raw *http.Response
+func (r *VirtualCrossConnectsCoverageService) List(ctx context.Context, query VirtualCrossConnectsCoverageListParams, opts ...option.RequestOption) (res *VirtualCrossConnectsCoverageListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "virtual_cross_connects_coverage"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// List Virtual Cross Connects Cloud Coverage.<br /><br />This endpoint shows which
-// cloud regions are available for the `location_code` your Virtual Cross Connect
-// will be provisioned in.
-func (r *VirtualCrossConnectsCoverageService) ListAutoPaging(ctx context.Context, query VirtualCrossConnectsCoverageListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[VirtualCrossConnectsCoverageListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 type VirtualCrossConnectsCoverageListResponse struct {
+	Data []VirtualCrossConnectsCoverageListResponseData `json:"data"`
+	Meta PaginationMeta                                 `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VirtualCrossConnectsCoverageListResponse) RawJSON() string { return r.JSON.raw }
+func (r *VirtualCrossConnectsCoverageListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VirtualCrossConnectsCoverageListResponseData struct {
 	// The available throughput in Megabits per Second (Mbps) for your Virtual Cross
 	// Connect.
 	AvailableBandwidth []float64 `json:"available_bandwidth"`
@@ -71,12 +71,12 @@ type VirtualCrossConnectsCoverageListResponse struct {
 	// connect.
 	//
 	// Any of "aws", "azure", "gce".
-	CloudProvider VirtualCrossConnectsCoverageListResponseCloudProvider `json:"cloud_provider"`
+	CloudProvider string `json:"cloud_provider"`
 	// The region where your Virtual Private Cloud hosts are located. Should be
 	// identical to how the cloud provider names region, i.e. us-east-1 for AWS but
 	// Frankfurt for Azure
-	CloudProviderRegion string                                           `json:"cloud_provider_region"`
-	Location            VirtualCrossConnectsCoverageListResponseLocation `json:"location"`
+	CloudProviderRegion string                                               `json:"cloud_provider_region"`
+	Location            VirtualCrossConnectsCoverageListResponseDataLocation `json:"location"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -92,22 +92,12 @@ type VirtualCrossConnectsCoverageListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VirtualCrossConnectsCoverageListResponse) RawJSON() string { return r.JSON.raw }
-func (r *VirtualCrossConnectsCoverageListResponse) UnmarshalJSON(data []byte) error {
+func (r VirtualCrossConnectsCoverageListResponseData) RawJSON() string { return r.JSON.raw }
+func (r *VirtualCrossConnectsCoverageListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The Virtual Private Cloud with which you would like to establish a cross
-// connect.
-type VirtualCrossConnectsCoverageListResponseCloudProvider string
-
-const (
-	VirtualCrossConnectsCoverageListResponseCloudProviderAws   VirtualCrossConnectsCoverageListResponseCloudProvider = "aws"
-	VirtualCrossConnectsCoverageListResponseCloudProviderAzure VirtualCrossConnectsCoverageListResponseCloudProvider = "azure"
-	VirtualCrossConnectsCoverageListResponseCloudProviderGce   VirtualCrossConnectsCoverageListResponseCloudProvider = "gce"
-)
-
-type VirtualCrossConnectsCoverageListResponseLocation struct {
+type VirtualCrossConnectsCoverageListResponseDataLocation struct {
 	// Location code.
 	Code string `json:"code"`
 	// Human readable name of location.
@@ -131,8 +121,8 @@ type VirtualCrossConnectsCoverageListResponseLocation struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VirtualCrossConnectsCoverageListResponseLocation) RawJSON() string { return r.JSON.raw }
-func (r *VirtualCrossConnectsCoverageListResponseLocation) UnmarshalJSON(data []byte) error {
+func (r VirtualCrossConnectsCoverageListResponseDataLocation) RawJSON() string { return r.JSON.raw }
+func (r *VirtualCrossConnectsCoverageListResponseDataLocation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

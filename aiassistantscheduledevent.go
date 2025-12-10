@@ -16,7 +16,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -69,30 +68,15 @@ func (r *AIAssistantScheduledEventService) Get(ctx context.Context, eventID stri
 }
 
 // Get scheduled events for an assistant with pagination and filtering
-func (r *AIAssistantScheduledEventService) List(ctx context.Context, assistantID string, query AIAssistantScheduledEventListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[AIAssistantScheduledEventListResponseUnion], err error) {
-	var raw *http.Response
+func (r *AIAssistantScheduledEventService) List(ctx context.Context, assistantID string, query AIAssistantScheduledEventListParams, opts ...option.RequestOption) (res *AIAssistantScheduledEventListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return
 	}
 	path := fmt.Sprintf("ai/assistants/%s/scheduled_events", assistantID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Get scheduled events for an assistant with pagination and filtering
-func (r *AIAssistantScheduledEventService) ListAutoPaging(ctx context.Context, assistantID string, query AIAssistantScheduledEventListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[AIAssistantScheduledEventListResponseUnion] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, assistantID, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // If the event is pending, this will cancel the event. Otherwise, this will simply
@@ -132,14 +116,12 @@ const (
 // ScheduledEventResponseUnion contains all possible properties and values from
 // [ScheduledPhoneCallEventResponse], [ScheduledSMSEventResponse].
 //
-// Use the [ScheduledEventResponseUnion.AsAny] method to switch on the variant.
-//
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type ScheduledEventResponseUnion struct {
 	AssistantID              string    `json:"assistant_id"`
 	ScheduledAtFixedDatetime time.Time `json:"scheduled_at_fixed_datetime"`
 	TelnyxAgentTarget        string    `json:"telnyx_agent_target"`
-	// Any of nil, nil.
+	// This field is from variant [ScheduledPhoneCallEventResponse].
 	TelnyxConversationChannel ConversationChannelType `json:"telnyx_conversation_channel"`
 	TelnyxEndUserTarget       string                  `json:"telnyx_end_user_target"`
 	ConversationID            string                  `json:"conversation_id"`
@@ -393,27 +375,42 @@ func (r *ScheduledSMSEventResponseConversationMetadataUnion) UnmarshalJSON(data 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// AIAssistantScheduledEventListResponseUnion contains all possible properties and
-// values from [ScheduledPhoneCallEventResponse], [ScheduledSMSEventResponse].
-//
-// Use the [AIAssistantScheduledEventListResponseUnion.AsAny] method to switch on
-// the variant.
+type AIAssistantScheduledEventListResponse struct {
+	Data []AIAssistantScheduledEventListResponseDataUnion `json:"data,required"`
+	Meta Meta                                             `json:"meta,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AIAssistantScheduledEventListResponse) RawJSON() string { return r.JSON.raw }
+func (r *AIAssistantScheduledEventListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// AIAssistantScheduledEventListResponseDataUnion contains all possible properties
+// and values from [ScheduledPhoneCallEventResponse], [ScheduledSMSEventResponse].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
-type AIAssistantScheduledEventListResponseUnion struct {
+type AIAssistantScheduledEventListResponseDataUnion struct {
 	AssistantID              string    `json:"assistant_id"`
 	ScheduledAtFixedDatetime time.Time `json:"scheduled_at_fixed_datetime"`
 	TelnyxAgentTarget        string    `json:"telnyx_agent_target"`
-	// Any of nil, nil.
+	// This field is from variant [ScheduledPhoneCallEventResponse].
 	TelnyxConversationChannel ConversationChannelType `json:"telnyx_conversation_channel"`
 	TelnyxEndUserTarget       string                  `json:"telnyx_end_user_target"`
 	ConversationID            string                  `json:"conversation_id"`
 	// This field is a union of
 	// [map[string]ScheduledPhoneCallEventResponseConversationMetadataUnion],
 	// [map[string]ScheduledSMSEventResponseConversationMetadataUnion]
-	ConversationMetadata AIAssistantScheduledEventListResponseUnionConversationMetadata `json:"conversation_metadata"`
-	CreatedAt            time.Time                                                      `json:"created_at"`
-	Errors               []string                                                       `json:"errors"`
+	ConversationMetadata AIAssistantScheduledEventListResponseDataUnionConversationMetadata `json:"conversation_metadata"`
+	CreatedAt            time.Time                                                          `json:"created_at"`
+	Errors               []string                                                           `json:"errors"`
 	// This field is from variant [ScheduledPhoneCallEventResponse].
 	RetryAttempts    int64  `json:"retry_attempts"`
 	RetryCount       int64  `json:"retry_count"`
@@ -441,34 +438,34 @@ type AIAssistantScheduledEventListResponseUnion struct {
 	} `json:"-"`
 }
 
-func (u AIAssistantScheduledEventListResponseUnion) AsScheduledPhoneCallEventResponse() (v ScheduledPhoneCallEventResponse) {
+func (u AIAssistantScheduledEventListResponseDataUnion) AsScheduledPhoneCallEventResponse() (v ScheduledPhoneCallEventResponse) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AIAssistantScheduledEventListResponseUnion) AsScheduledSMSEventResponse() (v ScheduledSMSEventResponse) {
+func (u AIAssistantScheduledEventListResponseDataUnion) AsScheduledSMSEventResponse() (v ScheduledSMSEventResponse) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u AIAssistantScheduledEventListResponseUnion) RawJSON() string { return u.JSON.raw }
+func (u AIAssistantScheduledEventListResponseDataUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *AIAssistantScheduledEventListResponseUnion) UnmarshalJSON(data []byte) error {
+func (r *AIAssistantScheduledEventListResponseDataUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// AIAssistantScheduledEventListResponseUnionConversationMetadata is an implicit
-// subunion of [AIAssistantScheduledEventListResponseUnion].
-// AIAssistantScheduledEventListResponseUnionConversationMetadata provides
+// AIAssistantScheduledEventListResponseDataUnionConversationMetadata is an
+// implicit subunion of [AIAssistantScheduledEventListResponseDataUnion].
+// AIAssistantScheduledEventListResponseDataUnionConversationMetadata provides
 // convenient access to the sub-properties of the union.
 //
 // For type safety it is recommended to directly use a variant of the
-// [AIAssistantScheduledEventListResponseUnion].
+// [AIAssistantScheduledEventListResponseDataUnion].
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfString OfInt OfBool]
-type AIAssistantScheduledEventListResponseUnionConversationMetadata struct {
+type AIAssistantScheduledEventListResponseDataUnionConversationMetadata struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a [int64] instead of an object.
@@ -483,7 +480,7 @@ type AIAssistantScheduledEventListResponseUnionConversationMetadata struct {
 	} `json:"-"`
 }
 
-func (r *AIAssistantScheduledEventListResponseUnionConversationMetadata) UnmarshalJSON(data []byte) error {
+func (r *AIAssistantScheduledEventListResponseDataUnionConversationMetadata) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -546,18 +543,36 @@ type AIAssistantScheduledEventGetParams struct {
 }
 
 type AIAssistantScheduledEventListParams struct {
-	FromDate   param.Opt[time.Time] `query:"from_date,omitzero" format:"date-time" json:"-"`
-	PageNumber param.Opt[int64]     `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64]     `query:"page[size],omitzero" json:"-"`
-	ToDate     param.Opt[time.Time] `query:"to_date,omitzero" format:"date-time" json:"-"`
+	FromDate param.Opt[time.Time] `query:"from_date,omitzero" format:"date-time" json:"-"`
+	ToDate   param.Opt[time.Time] `query:"to_date,omitzero" format:"date-time" json:"-"`
 	// Any of "phone_call", "sms_chat".
 	ConversationChannel ConversationChannelType `query:"conversation_channel,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page AIAssistantScheduledEventListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [AIAssistantScheduledEventListParams]'s query parameters as
 // `url.Values`.
 func (r AIAssistantScheduledEventListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type AIAssistantScheduledEventListParamsPage struct {
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	Size   param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [AIAssistantScheduledEventListParamsPage]'s query parameters
+// as `url.Values`.
+func (r AIAssistantScheduledEventListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

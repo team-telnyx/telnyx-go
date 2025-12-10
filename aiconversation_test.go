@@ -185,9 +185,7 @@ func TestAIConversationAddMessageWithOptionalParams(t *testing.T) {
 			ToolCalls: []map[string]any{{
 				"foo": "bar",
 			}},
-			ToolChoice: telnyx.AIConversationAddMessageParamsToolChoiceUnion{
-				OfString: telnyx.String("string"),
-			},
+			ToolChoice: map[string]any{},
 		},
 	)
 	if err != nil {

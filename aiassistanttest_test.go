@@ -127,9 +127,11 @@ func TestAIAssistantTestListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.Assistants.Tests.List(context.TODO(), telnyx.AIAssistantTestListParams{
-		Destination:               telnyx.String("destination"),
-		PageNumber:                telnyx.Int(0),
-		PageSize:                  telnyx.Int(0),
+		Destination: telnyx.String("destination"),
+		Page: telnyx.AIAssistantTestListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
 		TelnyxConversationChannel: telnyx.String("telnyx_conversation_channel"),
 		TestSuite:                 telnyx.String("test_suite"),
 	})

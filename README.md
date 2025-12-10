@@ -291,39 +291,8 @@ This library provides some conveniences for working with paginated list endpoint
 
 You can use `.ListAutoPaging()` methods to iterate through items across all pages:
 
-```go
-iter := client.AccessIPAddress.ListAutoPaging(context.TODO(), telnyx.AccessIPAddressListParams{
-	PageNumber: telnyx.Int(1),
-	PageSize:   telnyx.Int(50),
-})
-// Automatically fetches more pages as needed.
-for iter.Next() {
-	accessIPAddressResponse := iter.Current()
-	fmt.Printf("%+v\n", accessIPAddressResponse)
-}
-if err := iter.Err(); err != nil {
-	panic(err.Error())
-}
-```
-
 Or you can use simple `.List()` methods to fetch a single page and receive a standard response object
 with additional helper methods like `.GetNextPage()`, e.g.:
-
-```go
-page, err := client.AccessIPAddress.List(context.TODO(), telnyx.AccessIPAddressListParams{
-	PageNumber: telnyx.Int(1),
-	PageSize:   telnyx.Int(50),
-})
-for page != nil {
-	for _, accessIPAddress := range page.Data {
-		fmt.Printf("%+v\n", accessIPAddress)
-	}
-	page, err = page.GetNextPage()
-}
-if err != nil {
-	panic(err.Error())
-}
-```
 
 ### Errors
 

@@ -209,7 +209,7 @@ func TestDocumentUploadWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Documents.Upload(context.TODO(), telnyx.DocumentUploadParams{
-		OfDocServiceDocumentUploadURL: &telnyx.DocumentUploadParamsDocumentDocServiceDocumentUploadURL{
+		OfDocServiceDocumentUploadURL: &telnyx.DocumentUploadParamsBodyDocServiceDocumentUploadURL{
 			URL:               "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
 			CustomerReference: telnyx.String("MY REF 001"),
 			Filename:          telnyx.String("test-document.pdf"),
@@ -238,7 +238,7 @@ func TestDocumentUploadJsonWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Documents.UploadJson(context.TODO(), telnyx.DocumentUploadJsonParams{
-		OfDocServiceDocumentUploadURL: &telnyx.DocumentUploadJsonParamsDocumentDocServiceDocumentUploadURL{
+		OfDocServiceDocumentUploadURL: &telnyx.DocumentUploadJsonParamsBodyDocServiceDocumentUploadURL{
 			URL:               "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
 			CustomerReference: telnyx.String("MY REF 001"),
 			Filename:          telnyx.String("test-document.pdf"),

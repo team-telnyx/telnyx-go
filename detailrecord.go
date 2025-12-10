@@ -14,7 +14,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -39,181 +38,187 @@ func NewDetailRecordService(opts ...option.RequestOption) (r DetailRecordService
 }
 
 // Search for any detail record across the Telnyx Platform
-func (r *DetailRecordService) List(ctx context.Context, query DetailRecordListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[DetailRecordListResponseUnion], err error) {
-	var raw *http.Response
+func (r *DetailRecordService) List(ctx context.Context, query DetailRecordListParams, opts ...option.RequestOption) (res *DetailRecordListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "detail_records"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
-// Search for any detail record across the Telnyx Platform
-func (r *DetailRecordService) ListAutoPaging(ctx context.Context, query DetailRecordListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[DetailRecordListResponseUnion] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+type DetailRecordListResponse struct {
+	Data []DetailRecordListResponseDataUnion `json:"data"`
+	Meta DetailRecordListResponseMeta        `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// DetailRecordListResponseUnion contains all possible properties and values from
-// [DetailRecordListResponseMessage], [DetailRecordListResponseConference],
-// [DetailRecordListResponseConferenceParticipant], [DetailRecordListResponseAmd],
-// [DetailRecordListResponseVerify2Fa], [DetailRecordListResponseSimCardUsage],
-// [DetailRecordListResponseMediaStorage].
+// Returns the unmodified JSON received from the API
+func (r DetailRecordListResponse) RawJSON() string { return r.JSON.raw }
+func (r *DetailRecordListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DetailRecordListResponseDataUnion contains all possible properties and values
+// from [DetailRecordListResponseDataMessage],
+// [DetailRecordListResponseDataConference],
+// [DetailRecordListResponseDataConferenceParticipant],
+// [DetailRecordListResponseDataAmd], [DetailRecordListResponseDataVerify2Fa],
+// [DetailRecordListResponseDataSimCardUsage],
+// [DetailRecordListResponseDataMediaStorage].
 //
-// Use the [DetailRecordListResponseUnion.AsAny] method to switch on the variant.
+// Use the [DetailRecordListResponseDataUnion.AsAny] method to switch on the
+// variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
-type DetailRecordListResponseUnion struct {
+type DetailRecordListResponseDataUnion struct {
 	// Any of nil, nil, nil, nil, nil, nil, nil.
 	RecordType string `json:"record_type"`
-	// This field is from variant [DetailRecordListResponseMessage].
+	// This field is from variant [DetailRecordListResponseDataMessage].
 	Carrier string `json:"carrier"`
-	// This field is from variant [DetailRecordListResponseMessage].
+	// This field is from variant [DetailRecordListResponseDataMessage].
 	CarrierFee string `json:"carrier_fee"`
-	// This field is from variant [DetailRecordListResponseMessage].
+	// This field is from variant [DetailRecordListResponseDataMessage].
 	Cld string `json:"cld"`
-	// This field is from variant [DetailRecordListResponseMessage].
+	// This field is from variant [DetailRecordListResponseDataMessage].
 	Cli string `json:"cli"`
-	// This field is from variant [DetailRecordListResponseMessage].
+	// This field is from variant [DetailRecordListResponseDataMessage].
 	CompletedAt time.Time `json:"completed_at"`
 	Cost        string    `json:"cost"`
-	// This field is from variant [DetailRecordListResponseMessage].
+	// This field is from variant [DetailRecordListResponseDataMessage].
 	CountryCode    string    `json:"country_code"`
 	CreatedAt      time.Time `json:"created_at"`
 	Currency       string    `json:"currency"`
 	DeliveryStatus string    `json:"delivery_status"`
-	// This field is from variant [DetailRecordListResponseMessage].
+	// This field is from variant [DetailRecordListResponseDataMessage].
 	DeliveryStatusFailoverURL string `json:"delivery_status_failover_url"`
-	// This field is from variant [DetailRecordListResponseMessage].
+	// This field is from variant [DetailRecordListResponseDataMessage].
 	DeliveryStatusWebhookURL string `json:"delivery_status_webhook_url"`
-	// This field is from variant [DetailRecordListResponseMessage].
+	// This field is from variant [DetailRecordListResponseDataMessage].
 	Direction string `json:"direction"`
-	// This field is from variant [DetailRecordListResponseMessage].
+	// This field is from variant [DetailRecordListResponseDataMessage].
 	Errors []string `json:"errors"`
-	// This field is from variant [DetailRecordListResponseMessage].
+	// This field is from variant [DetailRecordListResponseDataMessage].
 	Fteu bool   `json:"fteu"`
 	Mcc  string `json:"mcc"`
-	// This field is from variant [DetailRecordListResponseMessage].
+	// This field is from variant [DetailRecordListResponseDataMessage].
 	MessageType string `json:"message_type"`
 	Mnc         string `json:"mnc"`
-	// This field is from variant [DetailRecordListResponseMessage].
+	// This field is from variant [DetailRecordListResponseDataMessage].
 	OnNet bool `json:"on_net"`
-	// This field is from variant [DetailRecordListResponseMessage].
+	// This field is from variant [DetailRecordListResponseDataMessage].
 	Parts int64 `json:"parts"`
-	// This field is from variant [DetailRecordListResponseMessage].
+	// This field is from variant [DetailRecordListResponseDataMessage].
 	ProfileID string `json:"profile_id"`
-	// This field is from variant [DetailRecordListResponseMessage].
+	// This field is from variant [DetailRecordListResponseDataMessage].
 	ProfileName string `json:"profile_name"`
 	Rate        string `json:"rate"`
-	// This field is from variant [DetailRecordListResponseMessage].
+	// This field is from variant [DetailRecordListResponseDataMessage].
 	SentAt time.Time `json:"sent_at"`
-	// This field is from variant [DetailRecordListResponseMessage].
+	// This field is from variant [DetailRecordListResponseDataMessage].
 	SourceCountryCode string    `json:"source_country_code"`
 	Status            string    `json:"status"`
 	Tags              string    `json:"tags"`
 	UpdatedAt         time.Time `json:"updated_at"`
 	UserID            string    `json:"user_id"`
-	// This field is from variant [DetailRecordListResponseMessage].
+	// This field is from variant [DetailRecordListResponseDataMessage].
 	Uuid          string `json:"uuid"`
 	ID            string `json:"id"`
 	CallLegID     string `json:"call_leg_id"`
 	CallSec       int64  `json:"call_sec"`
 	CallSessionID string `json:"call_session_id"`
 	ConnectionID  string `json:"connection_id"`
-	// This field is from variant [DetailRecordListResponseConference].
+	// This field is from variant [DetailRecordListResponseDataConference].
 	EndedAt time.Time `json:"ended_at"`
-	// This field is from variant [DetailRecordListResponseConference].
+	// This field is from variant [DetailRecordListResponseDataConference].
 	ExpiresAt        time.Time `json:"expires_at"`
 	IsTelnyxBillable bool      `json:"is_telnyx_billable"`
-	// This field is from variant [DetailRecordListResponseConference].
+	// This field is from variant [DetailRecordListResponseDataConference].
 	Name string `json:"name"`
-	// This field is from variant [DetailRecordListResponseConference].
+	// This field is from variant [DetailRecordListResponseDataConference].
 	ParticipantCallSec int64 `json:"participant_call_sec"`
-	// This field is from variant [DetailRecordListResponseConference].
+	// This field is from variant [DetailRecordListResponseDataConference].
 	ParticipantCount int64 `json:"participant_count"`
-	// This field is from variant [DetailRecordListResponseConference].
+	// This field is from variant [DetailRecordListResponseDataConference].
 	Region string `json:"region"`
-	// This field is from variant [DetailRecordListResponseConference].
+	// This field is from variant [DetailRecordListResponseDataConference].
 	StartedAt time.Time `json:"started_at"`
-	// This field is from variant [DetailRecordListResponseConferenceParticipant].
+	// This field is from variant [DetailRecordListResponseDataConferenceParticipant].
 	BilledSec int64 `json:"billed_sec"`
-	// This field is from variant [DetailRecordListResponseConferenceParticipant].
+	// This field is from variant [DetailRecordListResponseDataConferenceParticipant].
 	ConferenceID string `json:"conference_id"`
-	// This field is from variant [DetailRecordListResponseConferenceParticipant].
+	// This field is from variant [DetailRecordListResponseDataConferenceParticipant].
 	DestinationNumber string `json:"destination_number"`
-	// This field is from variant [DetailRecordListResponseConferenceParticipant].
+	// This field is from variant [DetailRecordListResponseDataConferenceParticipant].
 	JoinedAt time.Time `json:"joined_at"`
-	// This field is from variant [DetailRecordListResponseConferenceParticipant].
+	// This field is from variant [DetailRecordListResponseDataConferenceParticipant].
 	LeftAt time.Time `json:"left_at"`
-	// This field is from variant [DetailRecordListResponseConferenceParticipant].
+	// This field is from variant [DetailRecordListResponseDataConferenceParticipant].
 	OriginatingNumber string `json:"originating_number"`
 	RateMeasuredIn    string `json:"rate_measured_in"`
-	// This field is from variant [DetailRecordListResponseAmd].
+	// This field is from variant [DetailRecordListResponseDataAmd].
 	BillingGroupID string `json:"billing_group_id"`
-	// This field is from variant [DetailRecordListResponseAmd].
+	// This field is from variant [DetailRecordListResponseDataAmd].
 	BillingGroupName string `json:"billing_group_name"`
-	// This field is from variant [DetailRecordListResponseAmd].
+	// This field is from variant [DetailRecordListResponseDataAmd].
 	ConnectionName string `json:"connection_name"`
-	// This field is from variant [DetailRecordListResponseAmd].
+	// This field is from variant [DetailRecordListResponseDataAmd].
 	Feature string `json:"feature"`
-	// This field is from variant [DetailRecordListResponseAmd].
+	// This field is from variant [DetailRecordListResponseDataAmd].
 	InvokedAt time.Time `json:"invoked_at"`
-	// This field is from variant [DetailRecordListResponseVerify2Fa].
+	// This field is from variant [DetailRecordListResponseDataVerify2Fa].
 	DestinationPhoneNumber string `json:"destination_phone_number"`
-	// This field is from variant [DetailRecordListResponseVerify2Fa].
+	// This field is from variant [DetailRecordListResponseDataVerify2Fa].
 	VerificationStatus string `json:"verification_status"`
-	// This field is from variant [DetailRecordListResponseVerify2Fa].
+	// This field is from variant [DetailRecordListResponseDataVerify2Fa].
 	VerifyChannelID string `json:"verify_channel_id"`
-	// This field is from variant [DetailRecordListResponseVerify2Fa].
+	// This field is from variant [DetailRecordListResponseDataVerify2Fa].
 	VerifyChannelType string `json:"verify_channel_type"`
-	// This field is from variant [DetailRecordListResponseVerify2Fa].
+	// This field is from variant [DetailRecordListResponseDataVerify2Fa].
 	VerifyProfileID string `json:"verify_profile_id"`
-	// This field is from variant [DetailRecordListResponseVerify2Fa].
+	// This field is from variant [DetailRecordListResponseDataVerify2Fa].
 	VerifyUsageFee string `json:"verify_usage_fee"`
-	// This field is from variant [DetailRecordListResponseSimCardUsage].
+	// This field is from variant [DetailRecordListResponseDataSimCardUsage].
 	ClosedAt time.Time `json:"closed_at"`
-	// This field is from variant [DetailRecordListResponseSimCardUsage].
+	// This field is from variant [DetailRecordListResponseDataSimCardUsage].
 	DataCost float64 `json:"data_cost"`
-	// This field is from variant [DetailRecordListResponseSimCardUsage].
+	// This field is from variant [DetailRecordListResponseDataSimCardUsage].
 	DataRate string `json:"data_rate"`
-	// This field is from variant [DetailRecordListResponseSimCardUsage].
+	// This field is from variant [DetailRecordListResponseDataSimCardUsage].
 	DataUnit string `json:"data_unit"`
-	// This field is from variant [DetailRecordListResponseSimCardUsage].
+	// This field is from variant [DetailRecordListResponseDataSimCardUsage].
 	DownlinkData float64 `json:"downlink_data"`
-	// This field is from variant [DetailRecordListResponseSimCardUsage].
+	// This field is from variant [DetailRecordListResponseDataSimCardUsage].
 	Imsi string `json:"imsi"`
-	// This field is from variant [DetailRecordListResponseSimCardUsage].
+	// This field is from variant [DetailRecordListResponseDataSimCardUsage].
 	IPAddress string `json:"ip_address"`
-	// This field is from variant [DetailRecordListResponseSimCardUsage].
+	// This field is from variant [DetailRecordListResponseDataSimCardUsage].
 	PhoneNumber string `json:"phone_number"`
-	// This field is from variant [DetailRecordListResponseSimCardUsage].
+	// This field is from variant [DetailRecordListResponseDataSimCardUsage].
 	SimCardID string `json:"sim_card_id"`
-	// This field is from variant [DetailRecordListResponseSimCardUsage].
+	// This field is from variant [DetailRecordListResponseDataSimCardUsage].
 	SimCardTags string `json:"sim_card_tags"`
-	// This field is from variant [DetailRecordListResponseSimCardUsage].
+	// This field is from variant [DetailRecordListResponseDataSimCardUsage].
 	SimGroupID string `json:"sim_group_id"`
-	// This field is from variant [DetailRecordListResponseSimCardUsage].
+	// This field is from variant [DetailRecordListResponseDataSimCardUsage].
 	SimGroupName string `json:"sim_group_name"`
-	// This field is from variant [DetailRecordListResponseSimCardUsage].
+	// This field is from variant [DetailRecordListResponseDataSimCardUsage].
 	UplinkData float64 `json:"uplink_data"`
-	// This field is from variant [DetailRecordListResponseMediaStorage].
+	// This field is from variant [DetailRecordListResponseDataMediaStorage].
 	ActionType string `json:"action_type"`
-	// This field is from variant [DetailRecordListResponseMediaStorage].
+	// This field is from variant [DetailRecordListResponseDataMediaStorage].
 	AssetID string `json:"asset_id"`
-	// This field is from variant [DetailRecordListResponseMediaStorage].
+	// This field is from variant [DetailRecordListResponseDataMediaStorage].
 	LinkChannelID string `json:"link_channel_id"`
-	// This field is from variant [DetailRecordListResponseMediaStorage].
+	// This field is from variant [DetailRecordListResponseDataMediaStorage].
 	LinkChannelType string `json:"link_channel_type"`
-	// This field is from variant [DetailRecordListResponseMediaStorage].
+	// This field is from variant [DetailRecordListResponseDataMediaStorage].
 	OrgID string `json:"org_id"`
-	// This field is from variant [DetailRecordListResponseMediaStorage].
+	// This field is from variant [DetailRecordListResponseDataMediaStorage].
 	WebhookID string `json:"webhook_id"`
 	JSON      struct {
 		RecordType                respjson.Field
@@ -301,49 +306,49 @@ type DetailRecordListResponseUnion struct {
 	} `json:"-"`
 }
 
-func (u DetailRecordListResponseUnion) AsMessage() (v DetailRecordListResponseMessage) {
+func (u DetailRecordListResponseDataUnion) AsMessage() (v DetailRecordListResponseDataMessage) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u DetailRecordListResponseUnion) AsConference() (v DetailRecordListResponseConference) {
+func (u DetailRecordListResponseDataUnion) AsConference() (v DetailRecordListResponseDataConference) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u DetailRecordListResponseUnion) AsConferenceParticipant() (v DetailRecordListResponseConferenceParticipant) {
+func (u DetailRecordListResponseDataUnion) AsConferenceParticipant() (v DetailRecordListResponseDataConferenceParticipant) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u DetailRecordListResponseUnion) AsAmd() (v DetailRecordListResponseAmd) {
+func (u DetailRecordListResponseDataUnion) AsAmd() (v DetailRecordListResponseDataAmd) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u DetailRecordListResponseUnion) AsVerify2Fa() (v DetailRecordListResponseVerify2Fa) {
+func (u DetailRecordListResponseDataUnion) AsVerify2Fa() (v DetailRecordListResponseDataVerify2Fa) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u DetailRecordListResponseUnion) AsSimCardUsage() (v DetailRecordListResponseSimCardUsage) {
+func (u DetailRecordListResponseDataUnion) AsSimCardUsage() (v DetailRecordListResponseDataSimCardUsage) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u DetailRecordListResponseUnion) AsMediaStorage() (v DetailRecordListResponseMediaStorage) {
+func (u DetailRecordListResponseDataUnion) AsMediaStorage() (v DetailRecordListResponseDataMediaStorage) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u DetailRecordListResponseUnion) RawJSON() string { return u.JSON.raw }
+func (u DetailRecordListResponseDataUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *DetailRecordListResponseUnion) UnmarshalJSON(data []byte) error {
+func (r *DetailRecordListResponseDataUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type DetailRecordListResponseMessage struct {
+type DetailRecordListResponseDataMessage struct {
 	// Identifies the record schema
 	RecordType string `json:"record_type,required"`
 	// Country-specific carrier used to send or receive the message
@@ -462,12 +467,12 @@ type DetailRecordListResponseMessage struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DetailRecordListResponseMessage) RawJSON() string { return r.JSON.raw }
-func (r *DetailRecordListResponseMessage) UnmarshalJSON(data []byte) error {
+func (r DetailRecordListResponseDataMessage) RawJSON() string { return r.JSON.raw }
+func (r *DetailRecordListResponseDataMessage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type DetailRecordListResponseConference struct {
+type DetailRecordListResponseDataConference struct {
 	RecordType string `json:"record_type,required"`
 	// Conference id
 	ID string `json:"id"`
@@ -520,12 +525,12 @@ type DetailRecordListResponseConference struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DetailRecordListResponseConference) RawJSON() string { return r.JSON.raw }
-func (r *DetailRecordListResponseConference) UnmarshalJSON(data []byte) error {
+func (r DetailRecordListResponseDataConference) RawJSON() string { return r.JSON.raw }
+func (r *DetailRecordListResponseDataConference) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type DetailRecordListResponseConferenceParticipant struct {
+type DetailRecordListResponseDataConferenceParticipant struct {
 	RecordType string `json:"record_type,required"`
 	// Participant id
 	ID string `json:"id"`
@@ -584,12 +589,12 @@ type DetailRecordListResponseConferenceParticipant struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DetailRecordListResponseConferenceParticipant) RawJSON() string { return r.JSON.raw }
-func (r *DetailRecordListResponseConferenceParticipant) UnmarshalJSON(data []byte) error {
+func (r DetailRecordListResponseDataConferenceParticipant) RawJSON() string { return r.JSON.raw }
+func (r *DetailRecordListResponseDataConferenceParticipant) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type DetailRecordListResponseAmd struct {
+type DetailRecordListResponseDataAmd struct {
 	RecordType string `json:"record_type,required"`
 	// Feature invocation id
 	ID string `json:"id"`
@@ -647,12 +652,12 @@ type DetailRecordListResponseAmd struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DetailRecordListResponseAmd) RawJSON() string { return r.JSON.raw }
-func (r *DetailRecordListResponseAmd) UnmarshalJSON(data []byte) error {
+func (r DetailRecordListResponseDataAmd) RawJSON() string { return r.JSON.raw }
+func (r *DetailRecordListResponseDataAmd) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type DetailRecordListResponseVerify2Fa struct {
+type DetailRecordListResponseDataVerify2Fa struct {
 	RecordType string `json:"record_type,required"`
 	// Unique ID of the verification
 	ID        string    `json:"id" format:"uuid"`
@@ -709,12 +714,12 @@ type DetailRecordListResponseVerify2Fa struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DetailRecordListResponseVerify2Fa) RawJSON() string { return r.JSON.raw }
-func (r *DetailRecordListResponseVerify2Fa) UnmarshalJSON(data []byte) error {
+func (r DetailRecordListResponseDataVerify2Fa) RawJSON() string { return r.JSON.raw }
+func (r *DetailRecordListResponseDataVerify2Fa) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type DetailRecordListResponseSimCardUsage struct {
+type DetailRecordListResponseDataSimCardUsage struct {
 	RecordType string `json:"record_type,required"`
 	// Unique identifier for this SIM Card Usage
 	ID string `json:"id" format:"uuid"`
@@ -779,12 +784,12 @@ type DetailRecordListResponseSimCardUsage struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DetailRecordListResponseSimCardUsage) RawJSON() string { return r.JSON.raw }
-func (r *DetailRecordListResponseSimCardUsage) UnmarshalJSON(data []byte) error {
+func (r DetailRecordListResponseDataSimCardUsage) RawJSON() string { return r.JSON.raw }
+func (r *DetailRecordListResponseDataSimCardUsage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type DetailRecordListResponseMediaStorage struct {
+type DetailRecordListResponseDataMediaStorage struct {
 	RecordType string `json:"record_type,required"`
 	// Unique identifier for the Media Storage Event
 	ID string `json:"id"`
@@ -837,17 +842,40 @@ type DetailRecordListResponseMediaStorage struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DetailRecordListResponseMediaStorage) RawJSON() string { return r.JSON.raw }
-func (r *DetailRecordListResponseMediaStorage) UnmarshalJSON(data []byte) error {
+func (r DetailRecordListResponseDataMediaStorage) RawJSON() string { return r.JSON.raw }
+func (r *DetailRecordListResponseDataMediaStorage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DetailRecordListResponseMeta struct {
+	PageNumber   int64 `json:"page_number"`
+	PageSize     int64 `json:"page_size"`
+	TotalPages   int64 `json:"total_pages"`
+	TotalResults int64 `json:"total_results"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DetailRecordListResponseMeta) RawJSON() string { return r.JSON.raw }
+func (r *DetailRecordListResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type DetailRecordListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Filter records on a given record attribute and value. <br/>Example:
 	// filter[status]=delivered. <br/>Required: filter[record_type] must be specified.
 	Filter DetailRecordListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page DetailRecordListParamsPage `query:"page,omitzero" json:"-"`
 	// Specifies the sort order for results. <br/>Example: sort=-created_at
 	Sort []string `query:"sort,omitzero" json:"-"`
 	paramObj
@@ -887,6 +915,25 @@ type DetailRecordListParamsFilter struct {
 // URLQuery serializes [DetailRecordListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r DetailRecordListParamsFilter) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type DetailRecordListParamsPage struct {
+	// Page number
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// Page size
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [DetailRecordListParamsPage]'s query parameters as
+// `url.Values`.
+func (r DetailRecordListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

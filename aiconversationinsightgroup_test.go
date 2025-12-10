@@ -131,8 +131,10 @@ func TestAIConversationInsightGroupGetInsightGroupsWithOptionalParams(t *testing
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.Conversations.InsightGroups.GetInsightGroups(context.TODO(), telnyx.AIConversationInsightGroupGetInsightGroupsParams{
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
+		Page: telnyx.AIConversationInsightGroupGetInsightGroupsParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(0),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

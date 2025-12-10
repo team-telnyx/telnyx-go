@@ -15,7 +15,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -62,27 +61,11 @@ func (r *ReportMdrUsageReportService) Get(ctx context.Context, id string, opts .
 
 // Fetch all messaging usage reports. Usage reports are aggregated messaging data
 // for specified time period and breakdown
-func (r *ReportMdrUsageReportService) List(ctx context.Context, query ReportMdrUsageReportListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MdrUsageReport], err error) {
-	var raw *http.Response
+func (r *ReportMdrUsageReportService) List(ctx context.Context, query ReportMdrUsageReportListParams, opts ...option.RequestOption) (res *ReportMdrUsageReportListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "reports/mdr_usage_reports"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Fetch all messaging usage reports. Usage reports are aggregated messaging data
-// for specified time period and breakdown
-func (r *ReportMdrUsageReportService) ListAutoPaging(ctx context.Context, query ReportMdrUsageReportListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MdrUsageReport] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Delete messaging usage report by id
@@ -208,15 +191,15 @@ const (
 )
 
 type PaginationMetaReporting struct {
-	PageNumber   int64 `json:"page_number,required"`
-	TotalPages   int64 `json:"total_pages,required"`
+	PageNumber   int64 `json:"page_number"`
 	PageSize     int64 `json:"page_size"`
+	TotalPages   int64 `json:"total_pages"`
 	TotalResults int64 `json:"total_results"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PageNumber   respjson.Field
-		TotalPages   respjson.Field
 		PageSize     respjson.Field
+		TotalPages   respjson.Field
 		TotalResults respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -258,6 +241,24 @@ type ReportMdrUsageReportGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ReportMdrUsageReportGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *ReportMdrUsageReportGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ReportMdrUsageReportListResponse struct {
+	Data []MdrUsageReport        `json:"data"`
+	Meta PaginationMetaReporting `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ReportMdrUsageReportListResponse) RawJSON() string { return r.JSON.raw }
+func (r *ReportMdrUsageReportListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -319,14 +320,34 @@ const (
 )
 
 type ReportMdrUsageReportListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page ReportMdrUsageReportListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [ReportMdrUsageReportListParams]'s query parameters as
 // `url.Values`.
 func (r ReportMdrUsageReportListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type ReportMdrUsageReportListParamsPage struct {
+	// Page number
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// Size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ReportMdrUsageReportListParamsPage]'s query parameters as
+// `url.Values`.
+func (r ReportMdrUsageReportListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

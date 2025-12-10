@@ -15,7 +15,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -52,30 +51,15 @@ func (r *PortingOrderCommentService) New(ctx context.Context, id string, body Po
 }
 
 // Returns a list of all comments of a porting order.
-func (r *PortingOrderCommentService) List(ctx context.Context, id string, query PortingOrderCommentListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingOrderCommentListResponse], err error) {
-	var raw *http.Response
+func (r *PortingOrderCommentService) List(ctx context.Context, id string, query PortingOrderCommentListParams, opts ...option.RequestOption) (res *PortingOrderCommentListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
 	}
 	path := fmt.Sprintf("porting_orders/%s/comments", id)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Returns a list of all comments of a porting order.
-func (r *PortingOrderCommentService) ListAutoPaging(ctx context.Context, id string, query PortingOrderCommentListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingOrderCommentListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, id, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 type PortingOrderCommentNewResponse struct {
@@ -127,6 +111,24 @@ func (r *PortingOrderCommentNewResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type PortingOrderCommentListResponse struct {
+	Data []PortingOrderCommentListResponseData `json:"data"`
+	Meta PaginationMeta                        `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingOrderCommentListResponse) RawJSON() string { return r.JSON.raw }
+func (r *PortingOrderCommentListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PortingOrderCommentListResponseData struct {
 	ID string `json:"id" format:"uuid"`
 	// Body of comment
 	Body string `json:"body"`
@@ -138,7 +140,7 @@ type PortingOrderCommentListResponse struct {
 	// Indicates whether this comment was created by a Telnyx Admin, user, or system
 	//
 	// Any of "admin", "user", "system".
-	UserType PortingOrderCommentListResponseUserType `json:"user_type"`
+	UserType string `json:"user_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -153,19 +155,10 @@ type PortingOrderCommentListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PortingOrderCommentListResponse) RawJSON() string { return r.JSON.raw }
-func (r *PortingOrderCommentListResponse) UnmarshalJSON(data []byte) error {
+func (r PortingOrderCommentListResponseData) RawJSON() string { return r.JSON.raw }
+func (r *PortingOrderCommentListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Indicates whether this comment was created by a Telnyx Admin, user, or system
-type PortingOrderCommentListResponseUserType string
-
-const (
-	PortingOrderCommentListResponseUserTypeAdmin  PortingOrderCommentListResponseUserType = "admin"
-	PortingOrderCommentListResponseUserTypeUser   PortingOrderCommentListResponseUserType = "user"
-	PortingOrderCommentListResponseUserTypeSystem PortingOrderCommentListResponseUserType = "system"
-)
 
 type PortingOrderCommentNewParams struct {
 	Body param.Opt[string] `json:"body,omitzero"`
