@@ -188,6 +188,65 @@ func (r *Number10dlcBrandService) Revet(ctx context.Context, brandID string, opt
 	return
 }
 
+// Trigger or re-trigger an SMS OTP (One-Time Password) for Sole Proprietor brand
+// verification.
+//
+// **Important Notes:**
+//
+//   - Only allowed for Sole Proprietor (`SOLE_PROPRIETOR`) brands
+//   - Triggers generation of a one-time password sent to the `mobilePhone` number in
+//     the brand's profile
+//   - Campaigns cannot be created until OTP verification is complete
+//   - US/CA numbers only for real OTPs; mock brands can use non-US/CA numbers for
+//     testing
+//   - Returns a `referenceId` that can be used to check OTP status via the GET
+//     `/10dlc/brand/smsOtp/{referenceId}` endpoint
+//
+// **Use Cases:**
+//
+// - Initial OTP trigger after Sole Proprietor brand creation
+// - Re-triggering OTP if the user didn't receive or needs a new code
+func (r *Number10dlcBrandService) TriggerSMSOtp(ctx context.Context, brandID string, body Number10dlcBrandTriggerSMSOtpParams, opts ...option.RequestOption) (res *Number10dlcBrandTriggerSMSOtpResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if brandID == "" {
+		err = errors.New("missing required brandId parameter")
+		return
+	}
+	path := fmt.Sprintf("10dlc/brand/%s/smsOtp", brandID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
+// Verify the SMS OTP (One-Time Password) for Sole Proprietor brand verification.
+//
+// **Verification Flow:**
+//
+// 1. User receives OTP via SMS after triggering
+// 2. User submits the OTP pin through this endpoint
+// 3. Upon successful verification:
+//   - A `BRAND_OTP_VERIFIED` webhook event is sent to the CSP
+//   - The brand's `identityStatus` changes to `VERIFIED`
+//   - Campaigns can now be created for this brand
+//
+// **Error Handling:**
+//
+// Provides proper error responses for:
+//
+// - Invalid OTP pins
+// - Expired OTPs
+// - OTP verification failures
+func (r *Number10dlcBrandService) VerifySMSOtp(ctx context.Context, brandID string, body Number10dlcBrandVerifySMSOtpParams, opts ...option.RequestOption) (err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	if brandID == "" {
+		err = errors.New("missing required brandId parameter")
+		return
+	}
+	path := fmt.Sprintf("10dlc/brand/%s/smsOtp", brandID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, nil, opts...)
+	return
+}
+
 // An enumeration.
 type AltBusinessIDType string
 
@@ -631,6 +690,27 @@ func (r *Number10dlcBrandGetSMSOtpStatusResponse) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Response after successfully triggering a Brand SMS OTP
+type Number10dlcBrandTriggerSMSOtpResponse struct {
+	// The Brand ID for which the OTP was triggered
+	BrandID string `json:"brandId,required"`
+	// The reference ID that can be used to check OTP status
+	ReferenceID string `json:"referenceId,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BrandID     respjson.Field
+		ReferenceID respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Number10dlcBrandTriggerSMSOtpResponse) RawJSON() string { return r.JSON.raw }
+func (r *Number10dlcBrandTriggerSMSOtpResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type Number10dlcBrandNewParams struct {
 	// ISO2 2 characters country code. Example: US - United States
 	Country string `json:"country,required"`
@@ -853,4 +933,35 @@ func (r Number10dlcBrandGetSMSOtpStatusParams) URLQuery() (v url.Values, err err
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type Number10dlcBrandTriggerSMSOtpParams struct {
+	// SMS message template to send the OTP. Must include `@OTP_PIN@` placeholder which
+	// will be replaced with the actual PIN
+	PinSMS string `json:"pinSms,required"`
+	// SMS message to send upon successful OTP verification
+	SuccessSMS string `json:"successSms,required"`
+	paramObj
+}
+
+func (r Number10dlcBrandTriggerSMSOtpParams) MarshalJSON() (data []byte, err error) {
+	type shadow Number10dlcBrandTriggerSMSOtpParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *Number10dlcBrandTriggerSMSOtpParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type Number10dlcBrandVerifySMSOtpParams struct {
+	// The OTP PIN received via SMS
+	OtpPin string `json:"otpPin,required"`
+	paramObj
+}
+
+func (r Number10dlcBrandVerifySMSOtpParams) MarshalJSON() (data []byte, err error) {
+	type shadow Number10dlcBrandVerifySMSOtpParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *Number10dlcBrandVerifySMSOtpParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
