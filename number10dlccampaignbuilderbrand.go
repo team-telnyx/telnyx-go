@@ -15,29 +15,28 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
-// Messaging10dlcCampaignBuilderBrandService contains methods and other services
-// that help with interacting with the telnyx API.
+// Number10dlcCampaignBuilderBrandService contains methods and other services that
+// help with interacting with the telnyx API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewMessaging10dlcCampaignBuilderBrandService] method instead.
-type Messaging10dlcCampaignBuilderBrandService struct {
+// the [NewNumber10dlcCampaignBuilderBrandService] method instead.
+type Number10dlcCampaignBuilderBrandService struct {
 	Options []option.RequestOption
 }
 
-// NewMessaging10dlcCampaignBuilderBrandService generates a new service that
-// applies the given options to each request. These options are applied after the
-// parent client's options (if there is one), and before any request-specific
-// options.
-func NewMessaging10dlcCampaignBuilderBrandService(opts ...option.RequestOption) (r Messaging10dlcCampaignBuilderBrandService) {
-	r = Messaging10dlcCampaignBuilderBrandService{}
+// NewNumber10dlcCampaignBuilderBrandService generates a new service that applies
+// the given options to each request. These options are applied after the parent
+// client's options (if there is one), and before any request-specific options.
+func NewNumber10dlcCampaignBuilderBrandService(opts ...option.RequestOption) (r Number10dlcCampaignBuilderBrandService) {
+	r = Number10dlcCampaignBuilderBrandService{}
 	r.Options = opts
 	return
 }
 
 // This endpoint allows you to see whether or not the supplied brand is suitable
 // for your desired campaign use case.
-func (r *Messaging10dlcCampaignBuilderBrandService) QualifyByUsecase(ctx context.Context, usecase string, query Messaging10dlcCampaignBuilderBrandQualifyByUsecaseParams, opts ...option.RequestOption) (res *Messaging10dlcCampaignBuilderBrandQualifyByUsecaseResponse, err error) {
+func (r *Number10dlcCampaignBuilderBrandService) QualifyByUsecase(ctx context.Context, usecase string, query Number10dlcCampaignBuilderBrandQualifyByUsecaseParams, opts ...option.RequestOption) (res *Number10dlcCampaignBuilderBrandQualifyByUsecaseResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.BrandID == "" {
 		err = errors.New("missing required brandId parameter")
@@ -52,7 +51,7 @@ func (r *Messaging10dlcCampaignBuilderBrandService) QualifyByUsecase(ctx context
 	return
 }
 
-type Messaging10dlcCampaignBuilderBrandQualifyByUsecaseResponse struct {
+type Number10dlcCampaignBuilderBrandQualifyByUsecaseResponse struct {
 	// Campaign annual subscription fee
 	AnnualFee float64 `json:"annualFee"`
 	// Maximum number of sub-usecases declaration required.
@@ -83,14 +82,12 @@ type Messaging10dlcCampaignBuilderBrandQualifyByUsecaseResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r Messaging10dlcCampaignBuilderBrandQualifyByUsecaseResponse) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *Messaging10dlcCampaignBuilderBrandQualifyByUsecaseResponse) UnmarshalJSON(data []byte) error {
+func (r Number10dlcCampaignBuilderBrandQualifyByUsecaseResponse) RawJSON() string { return r.JSON.raw }
+func (r *Number10dlcCampaignBuilderBrandQualifyByUsecaseResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type Messaging10dlcCampaignBuilderBrandQualifyByUsecaseParams struct {
+type Number10dlcCampaignBuilderBrandQualifyByUsecaseParams struct {
 	BrandID string `path:"brandId,required" json:"-"`
 	paramObj
 }

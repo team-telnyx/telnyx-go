@@ -19,27 +19,27 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
-// Messaging10dlcPartnerCampaignService contains methods and other services that
-// help with interacting with the telnyx API.
+// PartnerCampaignService contains methods and other services that help with
+// interacting with the telnyx API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewMessaging10dlcPartnerCampaignService] method instead.
-type Messaging10dlcPartnerCampaignService struct {
+// the [NewPartnerCampaignService] method instead.
+type PartnerCampaignService struct {
 	Options []option.RequestOption
 }
 
-// NewMessaging10dlcPartnerCampaignService generates a new service that applies the
-// given options to each request. These options are applied after the parent
-// client's options (if there is one), and before any request-specific options.
-func NewMessaging10dlcPartnerCampaignService(opts ...option.RequestOption) (r Messaging10dlcPartnerCampaignService) {
-	r = Messaging10dlcPartnerCampaignService{}
+// NewPartnerCampaignService generates a new service that applies the given options
+// to each request. These options are applied after the parent client's options (if
+// there is one), and before any request-specific options.
+func NewPartnerCampaignService(opts ...option.RequestOption) (r PartnerCampaignService) {
+	r = PartnerCampaignService{}
 	r.Options = opts
 	return
 }
 
 // Retrieve campaign details by `campaignId`.
-func (r *Messaging10dlcPartnerCampaignService) Get(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *TelnyxDownstreamCampaign, err error) {
+func (r *PartnerCampaignService) Get(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *TelnyxDownstreamCampaign, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
@@ -52,7 +52,7 @@ func (r *Messaging10dlcPartnerCampaignService) Get(ctx context.Context, campaign
 
 // Update campaign details by `campaignId`. **Please note:** Only webhook urls are
 // editable.
-func (r *Messaging10dlcPartnerCampaignService) Update(ctx context.Context, campaignID string, body Messaging10dlcPartnerCampaignUpdateParams, opts ...option.RequestOption) (res *TelnyxDownstreamCampaign, err error) {
+func (r *PartnerCampaignService) Update(ctx context.Context, campaignID string, body PartnerCampaignUpdateParams, opts ...option.RequestOption) (res *TelnyxDownstreamCampaign, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
@@ -68,7 +68,7 @@ func (r *Messaging10dlcPartnerCampaignService) Update(ctx context.Context, campa
 // This endpoint is currently limited to only returning shared campaigns that
 // Telnyx has accepted. In other words, shared but pending campaigns are currently
 // omitted from the response from this endpoint.
-func (r *Messaging10dlcPartnerCampaignService) List(ctx context.Context, query Messaging10dlcPartnerCampaignListParams, opts ...option.RequestOption) (res *pagination.PerPagePaginationV2[TelnyxDownstreamCampaign], err error) {
+func (r *PartnerCampaignService) List(ctx context.Context, query PartnerCampaignListParams, opts ...option.RequestOption) (res *pagination.PerPagePaginationV2[TelnyxDownstreamCampaign], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -90,7 +90,7 @@ func (r *Messaging10dlcPartnerCampaignService) List(ctx context.Context, query M
 // This endpoint is currently limited to only returning shared campaigns that
 // Telnyx has accepted. In other words, shared but pending campaigns are currently
 // omitted from the response from this endpoint.
-func (r *Messaging10dlcPartnerCampaignService) ListAutoPaging(ctx context.Context, query Messaging10dlcPartnerCampaignListParams, opts ...option.RequestOption) *pagination.PerPagePaginationV2AutoPager[TelnyxDownstreamCampaign] {
+func (r *PartnerCampaignService) ListAutoPaging(ctx context.Context, query PartnerCampaignListParams, opts ...option.RequestOption) *pagination.PerPagePaginationV2AutoPager[TelnyxDownstreamCampaign] {
 	return pagination.NewPerPagePaginationV2AutoPager(r.List(ctx, query, opts...))
 }
 
@@ -99,7 +99,7 @@ func (r *Messaging10dlcPartnerCampaignService) ListAutoPaging(ctx context.Contex
 // This endpoint is currently limited to only returning shared campaigns that
 // Telnyx has accepted. In other words, shared but pending campaigns are currently
 // omitted from the response from this endpoint.
-func (r *Messaging10dlcPartnerCampaignService) ListSharedByMe(ctx context.Context, query Messaging10dlcPartnerCampaignListSharedByMeParams, opts ...option.RequestOption) (res *pagination.PerPagePaginationV2[Messaging10dlcPartnerCampaignListSharedByMeResponse], err error) {
+func (r *PartnerCampaignService) ListSharedByMe(ctx context.Context, query PartnerCampaignListSharedByMeParams, opts ...option.RequestOption) (res *pagination.PerPagePaginationV2[PartnerCampaignListSharedByMeResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -121,12 +121,12 @@ func (r *Messaging10dlcPartnerCampaignService) ListSharedByMe(ctx context.Contex
 // This endpoint is currently limited to only returning shared campaigns that
 // Telnyx has accepted. In other words, shared but pending campaigns are currently
 // omitted from the response from this endpoint.
-func (r *Messaging10dlcPartnerCampaignService) ListSharedByMeAutoPaging(ctx context.Context, query Messaging10dlcPartnerCampaignListSharedByMeParams, opts ...option.RequestOption) *pagination.PerPagePaginationV2AutoPager[Messaging10dlcPartnerCampaignListSharedByMeResponse] {
+func (r *PartnerCampaignService) ListSharedByMeAutoPaging(ctx context.Context, query PartnerCampaignListSharedByMeParams, opts ...option.RequestOption) *pagination.PerPagePaginationV2AutoPager[PartnerCampaignListSharedByMeResponse] {
 	return pagination.NewPerPagePaginationV2AutoPager(r.ListSharedByMe(ctx, query, opts...))
 }
 
 // Get Sharing Status
-func (r *Messaging10dlcPartnerCampaignService) GetSharingStatus(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *Messaging10dlcPartnerCampaignGetSharingStatusResponse, err error) {
+func (r *PartnerCampaignService) GetSharingStatus(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *PartnerCampaignGetSharingStatusResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
@@ -300,7 +300,7 @@ const (
 // campaign is suspended(reversible) or expired(non-reversible), campaign data is
 // deleted from the OSR service. Most attributes of campaignare immutable,
 // including **usecase**, **vertical**, **brandId** and **cspId**.
-type Messaging10dlcPartnerCampaignListSharedByMeResponse struct {
+type PartnerCampaignListSharedByMeResponse struct {
 	// Alphanumeric identifier of the brand associated with this campaign.
 	BrandID string `json:"brandId,required"`
 	// Alphanumeric identifier assigned by the registry for a campaign. This identifier
@@ -327,14 +327,14 @@ type Messaging10dlcPartnerCampaignListSharedByMeResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r Messaging10dlcPartnerCampaignListSharedByMeResponse) RawJSON() string { return r.JSON.raw }
-func (r *Messaging10dlcPartnerCampaignListSharedByMeResponse) UnmarshalJSON(data []byte) error {
+func (r PartnerCampaignListSharedByMeResponse) RawJSON() string { return r.JSON.raw }
+func (r *PartnerCampaignListSharedByMeResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type Messaging10dlcPartnerCampaignGetSharingStatusResponse map[string]CampaignSharingStatus
+type PartnerCampaignGetSharingStatusResponse map[string]CampaignSharingStatus
 
-type Messaging10dlcPartnerCampaignUpdateParams struct {
+type PartnerCampaignUpdateParams struct {
 	// Webhook failover to which campaign status updates are sent.
 	WebhookFailoverURL param.Opt[string] `json:"webhookFailoverURL,omitzero"`
 	// Webhook to which campaign status updates are sent.
@@ -342,15 +342,15 @@ type Messaging10dlcPartnerCampaignUpdateParams struct {
 	paramObj
 }
 
-func (r Messaging10dlcPartnerCampaignUpdateParams) MarshalJSON() (data []byte, err error) {
-	type shadow Messaging10dlcPartnerCampaignUpdateParams
+func (r PartnerCampaignUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow PartnerCampaignUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *Messaging10dlcPartnerCampaignUpdateParams) UnmarshalJSON(data []byte) error {
+func (r *PartnerCampaignUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type Messaging10dlcPartnerCampaignListParams struct {
+type PartnerCampaignListParams struct {
 	// The 1-indexed page number to get. The default value is `1`.
 	Page param.Opt[int64] `query:"page,omitzero" json:"-"`
 	// The amount of records per page, limited to between 1 and 500 inclusive. The
@@ -363,13 +363,13 @@ type Messaging10dlcPartnerCampaignListParams struct {
 	// "brandDisplayName", "-brandDisplayName", "tcrBrandId", "-tcrBranId",
 	// "tcrCampaignId", "-tcrCampaignId", "createdAt", "-createdAt", "campaignStatus",
 	// "-campaignStatus".
-	Sort Messaging10dlcPartnerCampaignListParamsSort `query:"sort,omitzero" json:"-"`
+	Sort PartnerCampaignListParamsSort `query:"sort,omitzero" json:"-"`
 	paramObj
 }
 
-// URLQuery serializes [Messaging10dlcPartnerCampaignListParams]'s query parameters
-// as `url.Values`.
-func (r Messaging10dlcPartnerCampaignListParams) URLQuery() (v url.Values, err error) {
+// URLQuery serializes [PartnerCampaignListParams]'s query parameters as
+// `url.Values`.
+func (r PartnerCampaignListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
@@ -378,24 +378,24 @@ func (r Messaging10dlcPartnerCampaignListParams) URLQuery() (v url.Values, err e
 
 // Specifies the sort order for results. If not given, results are sorted by
 // createdAt in descending order.
-type Messaging10dlcPartnerCampaignListParamsSort string
+type PartnerCampaignListParamsSort string
 
 const (
-	Messaging10dlcPartnerCampaignListParamsSortAssignedPhoneNumbersCount     Messaging10dlcPartnerCampaignListParamsSort = "assignedPhoneNumbersCount"
-	Messaging10dlcPartnerCampaignListParamsSortAssignedPhoneNumbersCountDesc Messaging10dlcPartnerCampaignListParamsSort = "-assignedPhoneNumbersCount"
-	Messaging10dlcPartnerCampaignListParamsSortBrandDisplayName              Messaging10dlcPartnerCampaignListParamsSort = "brandDisplayName"
-	Messaging10dlcPartnerCampaignListParamsSortBrandDisplayNameDesc          Messaging10dlcPartnerCampaignListParamsSort = "-brandDisplayName"
-	Messaging10dlcPartnerCampaignListParamsSortTcrBrandID                    Messaging10dlcPartnerCampaignListParamsSort = "tcrBrandId"
-	Messaging10dlcPartnerCampaignListParamsSortTcrBranIDDesc                 Messaging10dlcPartnerCampaignListParamsSort = "-tcrBranId"
-	Messaging10dlcPartnerCampaignListParamsSortTcrCampaignID                 Messaging10dlcPartnerCampaignListParamsSort = "tcrCampaignId"
-	Messaging10dlcPartnerCampaignListParamsSortTcrCampaignIDDesc             Messaging10dlcPartnerCampaignListParamsSort = "-tcrCampaignId"
-	Messaging10dlcPartnerCampaignListParamsSortCreatedAt                     Messaging10dlcPartnerCampaignListParamsSort = "createdAt"
-	Messaging10dlcPartnerCampaignListParamsSortCreatedAtDesc                 Messaging10dlcPartnerCampaignListParamsSort = "-createdAt"
-	Messaging10dlcPartnerCampaignListParamsSortCampaignStatus                Messaging10dlcPartnerCampaignListParamsSort = "campaignStatus"
-	Messaging10dlcPartnerCampaignListParamsSortCampaignStatusDesc            Messaging10dlcPartnerCampaignListParamsSort = "-campaignStatus"
+	PartnerCampaignListParamsSortAssignedPhoneNumbersCount     PartnerCampaignListParamsSort = "assignedPhoneNumbersCount"
+	PartnerCampaignListParamsSortAssignedPhoneNumbersCountDesc PartnerCampaignListParamsSort = "-assignedPhoneNumbersCount"
+	PartnerCampaignListParamsSortBrandDisplayName              PartnerCampaignListParamsSort = "brandDisplayName"
+	PartnerCampaignListParamsSortBrandDisplayNameDesc          PartnerCampaignListParamsSort = "-brandDisplayName"
+	PartnerCampaignListParamsSortTcrBrandID                    PartnerCampaignListParamsSort = "tcrBrandId"
+	PartnerCampaignListParamsSortTcrBranIDDesc                 PartnerCampaignListParamsSort = "-tcrBranId"
+	PartnerCampaignListParamsSortTcrCampaignID                 PartnerCampaignListParamsSort = "tcrCampaignId"
+	PartnerCampaignListParamsSortTcrCampaignIDDesc             PartnerCampaignListParamsSort = "-tcrCampaignId"
+	PartnerCampaignListParamsSortCreatedAt                     PartnerCampaignListParamsSort = "createdAt"
+	PartnerCampaignListParamsSortCreatedAtDesc                 PartnerCampaignListParamsSort = "-createdAt"
+	PartnerCampaignListParamsSortCampaignStatus                PartnerCampaignListParamsSort = "campaignStatus"
+	PartnerCampaignListParamsSortCampaignStatusDesc            PartnerCampaignListParamsSort = "-campaignStatus"
 )
 
-type Messaging10dlcPartnerCampaignListSharedByMeParams struct {
+type PartnerCampaignListSharedByMeParams struct {
 	// The 1-indexed page number to get. The default value is `1`.
 	Page param.Opt[int64] `query:"page,omitzero" json:"-"`
 	// The amount of records per page, limited to between 1 and 500 inclusive. The
@@ -404,9 +404,9 @@ type Messaging10dlcPartnerCampaignListSharedByMeParams struct {
 	paramObj
 }
 
-// URLQuery serializes [Messaging10dlcPartnerCampaignListSharedByMeParams]'s query
-// parameters as `url.Values`.
-func (r Messaging10dlcPartnerCampaignListSharedByMeParams) URLQuery() (v url.Values, err error) {
+// URLQuery serializes [PartnerCampaignListSharedByMeParams]'s query parameters as
+// `url.Values`.
+func (r PartnerCampaignListSharedByMeParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

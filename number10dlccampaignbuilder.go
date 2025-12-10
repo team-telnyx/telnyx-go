@@ -13,24 +13,24 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 )
 
-// Messaging10dlcCampaignBuilderService contains methods and other services that
-// help with interacting with the telnyx API.
+// Number10dlcCampaignBuilderService contains methods and other services that help
+// with interacting with the telnyx API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewMessaging10dlcCampaignBuilderService] method instead.
-type Messaging10dlcCampaignBuilderService struct {
+// the [NewNumber10dlcCampaignBuilderService] method instead.
+type Number10dlcCampaignBuilderService struct {
 	Options []option.RequestOption
-	Brand   Messaging10dlcCampaignBuilderBrandService
+	Brand   Number10dlcCampaignBuilderBrandService
 }
 
-// NewMessaging10dlcCampaignBuilderService generates a new service that applies the
+// NewNumber10dlcCampaignBuilderService generates a new service that applies the
 // given options to each request. These options are applied after the parent
 // client's options (if there is one), and before any request-specific options.
-func NewMessaging10dlcCampaignBuilderService(opts ...option.RequestOption) (r Messaging10dlcCampaignBuilderService) {
-	r = Messaging10dlcCampaignBuilderService{}
+func NewNumber10dlcCampaignBuilderService(opts ...option.RequestOption) (r Number10dlcCampaignBuilderService) {
+	r = Number10dlcCampaignBuilderService{}
 	r.Options = opts
-	r.Brand = NewMessaging10dlcCampaignBuilderBrandService(opts...)
+	r.Brand = NewNumber10dlcCampaignBuilderBrandService(opts...)
 	return
 }
 
@@ -42,14 +42,14 @@ func NewMessaging10dlcCampaignBuilderService(opts ...option.RequestOption) (r Me
 // will entail an upfront, non-refundable three month's cost that will depend on
 // the campaign's use case
 // ([see 10DLC Costs section for details](https://developers.telnyx.com/docs/messaging/10dlc/concepts#10dlc-costs)).
-func (r *Messaging10dlcCampaignBuilderService) Submit(ctx context.Context, body Messaging10dlcCampaignBuilderSubmitParams, opts ...option.RequestOption) (res *TelnyxCampaignCsp, err error) {
+func (r *Number10dlcCampaignBuilderService) Submit(ctx context.Context, body Number10dlcCampaignBuilderSubmitParams, opts ...option.RequestOption) (res *TelnyxCampaignCsp, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "10dlc/campaignBuilder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
-type Messaging10dlcCampaignBuilderSubmitParams struct {
+type Number10dlcCampaignBuilderSubmitParams struct {
 	// Alphanumeric identifier of the brand associated with this campaign.
 	BrandID string `json:"brandId,required"`
 	// Summary description of this campaign.
@@ -131,10 +131,10 @@ type Messaging10dlcCampaignBuilderSubmitParams struct {
 	paramObj
 }
 
-func (r Messaging10dlcCampaignBuilderSubmitParams) MarshalJSON() (data []byte, err error) {
-	type shadow Messaging10dlcCampaignBuilderSubmitParams
+func (r Number10dlcCampaignBuilderSubmitParams) MarshalJSON() (data []byte, err error) {
+	type shadow Number10dlcCampaignBuilderSubmitParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *Messaging10dlcCampaignBuilderSubmitParams) UnmarshalJSON(data []byte) error {
+func (r *Number10dlcCampaignBuilderSubmitParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
