@@ -841,7 +841,8 @@ type SimCardListParams struct {
 	// Sorts SIM cards by the given field. Defaults to ascending order unless field is
 	// prefixed with a minus sign.
 	//
-	// Any of "current_billing_period_consumed_data.amount".
+	// Any of "current_billing_period_consumed_data.amount",
+	// "-current_billing_period_consumed_data.amount".
 	Sort SimCardListParamsSort `query:"sort,omitzero" json:"-"`
 	paramObj
 }
@@ -910,7 +911,8 @@ func (r SimCardListParamsPage) URLQuery() (v url.Values, err error) {
 type SimCardListParamsSort string
 
 const (
-	SimCardListParamsSortCurrentBillingPeriodConsumedDataAmount SimCardListParamsSort = "current_billing_period_consumed_data.amount"
+	SimCardListParamsSortCurrentBillingPeriodConsumedDataAmount      SimCardListParamsSort = "current_billing_period_consumed_data.amount"
+	SimCardListParamsSortMinusCurrentBillingPeriodConsumedDataAmount SimCardListParamsSort = "-current_billing_period_consumed_data.amount"
 )
 
 type SimCardDeleteParams struct {
