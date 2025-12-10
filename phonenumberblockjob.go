@@ -191,18 +191,18 @@ const (
 )
 
 type JobError struct {
-	Code   string         `json:"code,required"`
-	Title  string         `json:"title,required"`
+	Code   string         `json:"code"`
 	Detail string         `json:"detail"`
 	Meta   JobErrorMeta   `json:"meta"`
 	Source JobErrorSource `json:"source"`
+	Title  string         `json:"title"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Code        respjson.Field
-		Title       respjson.Field
 		Detail      respjson.Field
 		Meta        respjson.Field
 		Source      respjson.Field
+		Title       respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`

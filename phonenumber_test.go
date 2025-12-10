@@ -108,6 +108,7 @@ func TestPhoneNumberListWithOptionalParams(t *testing.T) {
 			VoiceUsagePaymentMethod: "channel",
 			WithoutTags:             "true",
 		},
+		HandleMessagingProfileError: telnyx.PhoneNumberListParamsHandleMessagingProfileErrorFalse,
 		Page: telnyx.PhoneNumberListParamsPage{
 			Number: telnyx.Int(1),
 			Size:   telnyx.Int(1),
