@@ -30,10 +30,8 @@ func TestAIAssistantTestTestSuiteRunListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"suite_name",
 		telnyx.AIAssistantTestTestSuiteRunListParams{
-			Page: telnyx.AIAssistantTestTestSuiteRunListParamsPage{
-				Number: telnyx.Int(1),
-				Size:   telnyx.Int(1),
-			},
+			PageNumber:     telnyx.Int(0),
+			PageSize:       telnyx.Int(0),
 			Status:         telnyx.String("status"),
 			TestSuiteRunID: telnyx.String("test_suite_run_id"),
 		},

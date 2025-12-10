@@ -34,14 +34,11 @@ type Client struct {
 	AvailablePhoneNumbers              AvailablePhoneNumberService
 	Balance                            BalanceService
 	BillingGroups                      BillingGroupService
-	Brand                              BrandService
 	BulkSimCardActions                 BulkSimCardActionService
 	BundlePricing                      BundlePricingService
 	CallControlApplications            CallControlApplicationService
 	CallEvents                         CallEventService
 	Calls                              CallService
-	Campaign                           CampaignService
-	CampaignBuilder                    CampaignBuilderService
 	ChannelZones                       ChannelZoneService
 	ChargesBreakdown                   ChargesBreakdownService
 	ChargesSummary                     ChargesSummaryService
@@ -58,7 +55,6 @@ type Client struct {
 	Documents                          DocumentService
 	DynamicEmergencyAddresses          DynamicEmergencyAddressService
 	DynamicEmergencyEndpoints          DynamicEmergencyEndpointService
-	Enum                               EnumService
 	ExternalConnections                ExternalConnectionService
 	FaxApplications                    FaxApplicationService
 	Faxes                              FaxService
@@ -115,7 +111,6 @@ type Client struct {
 	Payment                            PaymentService
 	PhoneNumberAssignmentByProfile     PhoneNumberAssignmentByProfileService
 	PhoneNumberBlocks                  PhoneNumberBlockService
-	PhoneNumberCampaigns               PhoneNumberCampaignService
 	PhoneNumbers                       PhoneNumberService
 	PhoneNumbersRegulatoryRequirements PhoneNumbersRegulatoryRequirementService
 	PortabilityChecks                  PortabilityCheckService
@@ -173,13 +168,12 @@ type Client struct {
 	InexplicitNumberOrders             InexplicitNumberOrderService
 	MobilePhoneNumbers                 MobilePhoneNumberService
 	MobileVoiceConnections             MobileVoiceConnectionService
-	Public                             PublicService
 	Number10dlc                        Number10dlcService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
-// TELNYX_PUBLIC_KEY, TELNYX_BASE_URL). This should be used to initialize new
-// clients.
+// TELNYX_PUBLIC_KEY, TELNYX_CLIENT_ID, TELNYX_CLIENT_SECRET, TELNYX_BASE_URL).
+// This should be used to initialize new clients.
 func DefaultClientOptions() []option.RequestOption {
 	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
 	if o, ok := os.LookupEnv("TELNYX_BASE_URL"); ok {
@@ -191,13 +185,20 @@ func DefaultClientOptions() []option.RequestOption {
 	if o, ok := os.LookupEnv("TELNYX_PUBLIC_KEY"); ok {
 		defaults = append(defaults, option.WithPublicKey(o))
 	}
+	if o, ok := os.LookupEnv("TELNYX_CLIENT_ID"); ok {
+		defaults = append(defaults, option.WithClientID(o))
+	}
+	if o, ok := os.LookupEnv("TELNYX_CLIENT_SECRET"); ok {
+		defaults = append(defaults, option.WithClientSecret(o))
+	}
 	return defaults
 }
 
 // NewClient generates a new client with the default option read from the
-// environment (TELNYX_API_KEY, TELNYX_PUBLIC_KEY, TELNYX_BASE_URL). The option
-// passed in as arguments are applied after these default arguments, and all option
-// will be passed down to the services and requests that this client makes.
+// environment (TELNYX_API_KEY, TELNYX_PUBLIC_KEY, TELNYX_CLIENT_ID,
+// TELNYX_CLIENT_SECRET, TELNYX_BASE_URL). The option passed in as arguments are
+// applied after these default arguments, and all option will be passed down to the
+// services and requests that this client makes.
 func NewClient(opts ...option.RequestOption) (r Client) {
 	opts = append(DefaultClientOptions(), opts...)
 
@@ -220,14 +221,11 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.AvailablePhoneNumbers = NewAvailablePhoneNumberService(opts...)
 	r.Balance = NewBalanceService(opts...)
 	r.BillingGroups = NewBillingGroupService(opts...)
-	r.Brand = NewBrandService(opts...)
 	r.BulkSimCardActions = NewBulkSimCardActionService(opts...)
 	r.BundlePricing = NewBundlePricingService(opts...)
 	r.CallControlApplications = NewCallControlApplicationService(opts...)
 	r.CallEvents = NewCallEventService(opts...)
 	r.Calls = NewCallService(opts...)
-	r.Campaign = NewCampaignService(opts...)
-	r.CampaignBuilder = NewCampaignBuilderService(opts...)
 	r.ChannelZones = NewChannelZoneService(opts...)
 	r.ChargesBreakdown = NewChargesBreakdownService(opts...)
 	r.ChargesSummary = NewChargesSummaryService(opts...)
@@ -244,7 +242,6 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Documents = NewDocumentService(opts...)
 	r.DynamicEmergencyAddresses = NewDynamicEmergencyAddressService(opts...)
 	r.DynamicEmergencyEndpoints = NewDynamicEmergencyEndpointService(opts...)
-	r.Enum = NewEnumService(opts...)
 	r.ExternalConnections = NewExternalConnectionService(opts...)
 	r.FaxApplications = NewFaxApplicationService(opts...)
 	r.Faxes = NewFaxService(opts...)
@@ -301,7 +298,6 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Payment = NewPaymentService(opts...)
 	r.PhoneNumberAssignmentByProfile = NewPhoneNumberAssignmentByProfileService(opts...)
 	r.PhoneNumberBlocks = NewPhoneNumberBlockService(opts...)
-	r.PhoneNumberCampaigns = NewPhoneNumberCampaignService(opts...)
 	r.PhoneNumbers = NewPhoneNumberService(opts...)
 	r.PhoneNumbersRegulatoryRequirements = NewPhoneNumbersRegulatoryRequirementService(opts...)
 	r.PortabilityChecks = NewPortabilityCheckService(opts...)
@@ -359,7 +355,6 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.InexplicitNumberOrders = NewInexplicitNumberOrderService(opts...)
 	r.MobilePhoneNumbers = NewMobilePhoneNumberService(opts...)
 	r.MobileVoiceConnections = NewMobileVoiceConnectionService(opts...)
-	r.Public = NewPublicService(opts...)
 	r.Number10dlc = NewNumber10dlcService(opts...)
 
 	return

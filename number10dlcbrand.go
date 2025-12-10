@@ -9,11 +9,13 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
+	"time"
 
 	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -26,7 +28,6 @@ import (
 // the [NewNumber10dlcBrandService] method instead.
 type Number10dlcBrandService struct {
 	Options         []option.RequestOption
-	SMSOtp          Number10dlcBrandSMSOtpService
 	ExternalVetting Number10dlcBrandExternalVettingService
 }
 
@@ -36,7 +37,6 @@ type Number10dlcBrandService struct {
 func NewNumber10dlcBrandService(opts ...option.RequestOption) (r Number10dlcBrandService) {
 	r = Number10dlcBrandService{}
 	r.Options = opts
-	r.SMSOtp = NewNumber10dlcBrandSMSOtpService(opts...)
 	r.ExternalVetting = NewNumber10dlcBrandExternalVettingService(opts...)
 	return
 }
@@ -77,11 +77,26 @@ func (r *Number10dlcBrandService) Update(ctx context.Context, brandID string, bo
 }
 
 // This endpoint is used to list all brands associated with your organization.
-func (r *Number10dlcBrandService) List(ctx context.Context, query Number10dlcBrandListParams, opts ...option.RequestOption) (res *Number10dlcBrandListResponse, err error) {
+func (r *Number10dlcBrandService) List(ctx context.Context, query Number10dlcBrandListParams, opts ...option.RequestOption) (res *pagination.PerPagePaginationV2[Number10dlcBrandListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "10dlc/brand"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// This endpoint is used to list all brands associated with your organization.
+func (r *Number10dlcBrandService) ListAutoPaging(ctx context.Context, query Number10dlcBrandListParams, opts ...option.RequestOption) *pagination.PerPagePaginationV2AutoPager[Number10dlcBrandListResponse] {
+	return pagination.NewPerPagePaginationV2AutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete Brand. This endpoint is used to delete a brand. Note the brand cannot be
@@ -136,6 +151,29 @@ func (r *Number10dlcBrandService) Resend2faEmail(ctx context.Context, brandID st
 	return
 }
 
+// Query the status of an SMS OTP (One-Time Password) for Sole Proprietor brand
+// verification.
+//
+// This endpoint allows you to check the delivery and verification status of an OTP
+// sent during the Sole Proprietor brand verification process. You can query by
+// either:
+//
+// - `referenceId` - The reference ID returned when the OTP was initially triggered
+// - `brandId` - Query parameter for portal users to look up OTP status by Brand ID
+//
+// The response includes delivery status, verification dates, and detailed delivery
+// information.
+func (r *Number10dlcBrandService) GetSMSOtpStatus(ctx context.Context, referenceID string, query Number10dlcBrandGetSMSOtpStatusParams, opts ...option.RequestOption) (res *Number10dlcBrandGetSMSOtpStatusResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if referenceID == "" {
+		err = errors.New("missing required referenceId parameter")
+		return
+	}
+	path := fmt.Sprintf("10dlc/brand/smsOtp/%s", referenceID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
+}
+
 // This operation allows you to revet the brand. However, revetting is allowed once
 // after the successful brand registration and thereafter limited to once every 3
 // months.
@@ -149,6 +187,275 @@ func (r *Number10dlcBrandService) Revet(ctx context.Context, brandID string, opt
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
 	return
 }
+
+// An enumeration.
+type AltBusinessIDType string
+
+const (
+	AltBusinessIDTypeNone AltBusinessIDType = "NONE"
+	AltBusinessIDTypeDuns AltBusinessIDType = "DUNS"
+	AltBusinessIDTypeGiin AltBusinessIDType = "GIIN"
+	AltBusinessIDTypeLei  AltBusinessIDType = "LEI"
+)
+
+// The verification status of an active brand
+type BrandIdentityStatus string
+
+const (
+	BrandIdentityStatusVerified       BrandIdentityStatus = "VERIFIED"
+	BrandIdentityStatusUnverified     BrandIdentityStatus = "UNVERIFIED"
+	BrandIdentityStatusSelfDeclared   BrandIdentityStatus = "SELF_DECLARED"
+	BrandIdentityStatusVettedVerified BrandIdentityStatus = "VETTED_VERIFIED"
+)
+
+// Entity type behind the brand. This is the form of business establishment.
+type EntityType string
+
+const (
+	EntityTypePrivateProfit  EntityType = "PRIVATE_PROFIT"
+	EntityTypePublicProfit   EntityType = "PUBLIC_PROFIT"
+	EntityTypeNonProfit      EntityType = "NON_PROFIT"
+	EntityTypeGovernment     EntityType = "GOVERNMENT"
+	EntityTypeSoleProprietor EntityType = "SOLE_PROPRIETOR"
+)
+
+// (Required for public company) stock exchange.
+type StockExchange string
+
+const (
+	StockExchangeNone   StockExchange = "NONE"
+	StockExchangeNasdaq StockExchange = "NASDAQ"
+	StockExchangeNyse   StockExchange = "NYSE"
+	StockExchangeAmex   StockExchange = "AMEX"
+	StockExchangeAmx    StockExchange = "AMX"
+	StockExchangeAsx    StockExchange = "ASX"
+	StockExchangeB3     StockExchange = "B3"
+	StockExchangeBme    StockExchange = "BME"
+	StockExchangeBse    StockExchange = "BSE"
+	StockExchangeFra    StockExchange = "FRA"
+	StockExchangeIcex   StockExchange = "ICEX"
+	StockExchangeJpx    StockExchange = "JPX"
+	StockExchangeJse    StockExchange = "JSE"
+	StockExchangeKrx    StockExchange = "KRX"
+	StockExchangeLon    StockExchange = "LON"
+	StockExchangeNse    StockExchange = "NSE"
+	StockExchangeOmx    StockExchange = "OMX"
+	StockExchangeSehk   StockExchange = "SEHK"
+	StockExchangeSse    StockExchange = "SSE"
+	StockExchangeSto    StockExchange = "STO"
+	StockExchangeSwx    StockExchange = "SWX"
+	StockExchangeSzse   StockExchange = "SZSE"
+	StockExchangeTsx    StockExchange = "TSX"
+	StockExchangeTwse   StockExchange = "TWSE"
+	StockExchangeVse    StockExchange = "VSE"
+)
+
+// Telnyx-specific extensions to The Campaign Registry's `Brand` type
+type TelnyxBrand struct {
+	// Brand relationship to the CSP.
+	//
+	// Any of "BASIC_ACCOUNT", "SMALL_ACCOUNT", "MEDIUM_ACCOUNT", "LARGE_ACCOUNT",
+	// "KEY_ACCOUNT".
+	BrandRelationship TelnyxBrandBrandRelationship `json:"brandRelationship,required"`
+	// ISO2 2 characters country code. Example: US - United States
+	Country string `json:"country,required"`
+	// Display or marketing name of the brand.
+	DisplayName string `json:"displayName,required"`
+	// Valid email address of brand support contact.
+	Email string `json:"email,required"`
+	// Entity type behind the brand. This is the form of business establishment.
+	//
+	// Any of "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT", "GOVERNMENT",
+	// "SOLE_PROPRIETOR".
+	EntityType EntityType `json:"entityType,required"`
+	// Vertical or industry segment of the brand.
+	Vertical string `json:"vertical,required"`
+	// Alternate business identifier such as DUNS, LEI, or GIIN
+	AltBusinessID string `json:"altBusinessId"`
+	// An enumeration.
+	//
+	// Any of "NONE", "DUNS", "GIIN", "LEI".
+	AltBusinessIDType AltBusinessIDType `json:"altBusinessIdType"`
+	// Unique identifier assigned to the brand.
+	BrandID string `json:"brandId"`
+	// Business contact email.
+	//
+	// Required if `entityType` is `PUBLIC_PROFIT`.
+	BusinessContactEmail string `json:"businessContactEmail"`
+	// City name
+	City string `json:"city"`
+	// (Required for Non-profit/private/public) Legal company name.
+	CompanyName string `json:"companyName"`
+	// Date and time that the brand was created at.
+	CreatedAt string `json:"createdAt"`
+	// Unique identifier assigned to the csp by the registry.
+	CspID string `json:"cspId"`
+	// (Required for Non-profit) Government assigned corporate tax ID. EIN is 9-digits
+	// in U.S.
+	Ein string `json:"ein"`
+	// Failure reasons for brand
+	FailureReasons string `json:"failureReasons"`
+	// First name of business contact.
+	FirstName string `json:"firstName"`
+	// The verification status of an active brand
+	//
+	// Any of "VERIFIED", "UNVERIFIED", "SELF_DECLARED", "VETTED_VERIFIED".
+	IdentityStatus BrandIdentityStatus `json:"identityStatus"`
+	// IP address of the browser requesting to create brand identity.
+	IPAddress string `json:"ipAddress"`
+	// Indicates whether this brand is known to be a reseller
+	IsReseller bool `json:"isReseller"`
+	// Last name of business contact.
+	LastName string `json:"lastName"`
+	// Valid mobile phone number in e.164 international format.
+	MobilePhone string `json:"mobilePhone"`
+	// Mock brand for testing purposes
+	Mock               bool                          `json:"mock"`
+	OptionalAttributes TelnyxBrandOptionalAttributes `json:"optionalAttributes"`
+	// Valid phone number in e.164 international format.
+	Phone string `json:"phone"`
+	// Postal codes. Use 5 digit zipcode for United States
+	PostalCode string `json:"postalCode"`
+	// Unique identifier Telnyx assigned to the brand - the brandId
+	ReferenceID string `json:"referenceId"`
+	// State. Must be 2 letters code for United States.
+	State string `json:"state"`
+	// Status of the brand
+	//
+	// Any of "OK", "REGISTRATION_PENDING", "REGISTRATION_FAILED".
+	Status TelnyxBrandStatus `json:"status"`
+	// (Required for public company) stock exchange.
+	//
+	// Any of "NONE", "NASDAQ", "NYSE", "AMEX", "AMX", "ASX", "B3", "BME", "BSE",
+	// "FRA", "ICEX", "JPX", "JSE", "KRX", "LON", "NSE", "OMX", "SEHK", "SSE", "STO",
+	// "SWX", "SZSE", "TSX", "TWSE", "VSE".
+	StockExchange StockExchange `json:"stockExchange"`
+	// (Required for public company) stock symbol.
+	StockSymbol string `json:"stockSymbol"`
+	// Street number and name.
+	Street string `json:"street"`
+	// Unique identifier assigned to the brand by the registry.
+	TcrBrandID string `json:"tcrBrandId"`
+	// Universal EIN of Brand, Read Only.
+	UniversalEin string `json:"universalEin"`
+	// Date and time that the brand was last updated at.
+	UpdatedAt string `json:"updatedAt"`
+	// Failover webhook to which brand status updates are sent.
+	WebhookFailoverURL string `json:"webhookFailoverURL"`
+	// Webhook to which brand status updates are sent.
+	WebhookURL string `json:"webhookURL"`
+	// Brand website URL.
+	Website string `json:"website"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BrandRelationship    respjson.Field
+		Country              respjson.Field
+		DisplayName          respjson.Field
+		Email                respjson.Field
+		EntityType           respjson.Field
+		Vertical             respjson.Field
+		AltBusinessID        respjson.Field
+		AltBusinessIDType    respjson.Field
+		BrandID              respjson.Field
+		BusinessContactEmail respjson.Field
+		City                 respjson.Field
+		CompanyName          respjson.Field
+		CreatedAt            respjson.Field
+		CspID                respjson.Field
+		Ein                  respjson.Field
+		FailureReasons       respjson.Field
+		FirstName            respjson.Field
+		IdentityStatus       respjson.Field
+		IPAddress            respjson.Field
+		IsReseller           respjson.Field
+		LastName             respjson.Field
+		MobilePhone          respjson.Field
+		Mock                 respjson.Field
+		OptionalAttributes   respjson.Field
+		Phone                respjson.Field
+		PostalCode           respjson.Field
+		ReferenceID          respjson.Field
+		State                respjson.Field
+		Status               respjson.Field
+		StockExchange        respjson.Field
+		StockSymbol          respjson.Field
+		Street               respjson.Field
+		TcrBrandID           respjson.Field
+		UniversalEin         respjson.Field
+		UpdatedAt            respjson.Field
+		WebhookFailoverURL   respjson.Field
+		WebhookURL           respjson.Field
+		Website              respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TelnyxBrand) RawJSON() string { return r.JSON.raw }
+func (r *TelnyxBrand) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Brand relationship to the CSP.
+type TelnyxBrandBrandRelationship string
+
+const (
+	TelnyxBrandBrandRelationshipBasicAccount  TelnyxBrandBrandRelationship = "BASIC_ACCOUNT"
+	TelnyxBrandBrandRelationshipSmallAccount  TelnyxBrandBrandRelationship = "SMALL_ACCOUNT"
+	TelnyxBrandBrandRelationshipMediumAccount TelnyxBrandBrandRelationship = "MEDIUM_ACCOUNT"
+	TelnyxBrandBrandRelationshipLargeAccount  TelnyxBrandBrandRelationship = "LARGE_ACCOUNT"
+	TelnyxBrandBrandRelationshipKeyAccount    TelnyxBrandBrandRelationship = "KEY_ACCOUNT"
+)
+
+type TelnyxBrandOptionalAttributes struct {
+	// The tax exempt status of the brand
+	TaxExemptStatus string `json:"taxExemptStatus"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		TaxExemptStatus respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TelnyxBrandOptionalAttributes) RawJSON() string { return r.JSON.raw }
+func (r *TelnyxBrandOptionalAttributes) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Status of the brand
+type TelnyxBrandStatus string
+
+const (
+	TelnyxBrandStatusOk                  TelnyxBrandStatus = "OK"
+	TelnyxBrandStatusRegistrationPending TelnyxBrandStatus = "REGISTRATION_PENDING"
+	TelnyxBrandStatusRegistrationFailed  TelnyxBrandStatus = "REGISTRATION_FAILED"
+)
+
+// Vertical or industry segment of the brand or campaign.
+type Vertical string
+
+const (
+	VerticalRealEstate    Vertical = "REAL_ESTATE"
+	VerticalHealthcare    Vertical = "HEALTHCARE"
+	VerticalEnergy        Vertical = "ENERGY"
+	VerticalEntertainment Vertical = "ENTERTAINMENT"
+	VerticalRetail        Vertical = "RETAIL"
+	VerticalAgriculture   Vertical = "AGRICULTURE"
+	VerticalInsurance     Vertical = "INSURANCE"
+	VerticalEducation     Vertical = "EDUCATION"
+	VerticalHospitality   Vertical = "HOSPITALITY"
+	VerticalFinancial     Vertical = "FINANCIAL"
+	VerticalGambling      Vertical = "GAMBLING"
+	VerticalConstruction  Vertical = "CONSTRUCTION"
+	VerticalNgo           Vertical = "NGO"
+	VerticalManufacturing Vertical = "MANUFACTURING"
+	VerticalGovernment    Vertical = "GOVERNMENT"
+	VerticalTechnology    Vertical = "TECHNOLOGY"
+	VerticalCommunication Vertical = "COMMUNICATION"
+)
 
 // Telnyx-specific extensions to The Campaign Registry's `Brand` type
 type Number10dlcBrandGetResponse struct {
@@ -170,26 +477,6 @@ func (r *Number10dlcBrandGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type Number10dlcBrandListResponse struct {
-	Page         int64                                `json:"page"`
-	Records      []Number10dlcBrandListResponseRecord `json:"records"`
-	TotalRecords int64                                `json:"totalRecords"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Page         respjson.Field
-		Records      respjson.Field
-		TotalRecords respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r Number10dlcBrandListResponse) RawJSON() string { return r.JSON.raw }
-func (r *Number10dlcBrandListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type Number10dlcBrandListResponseRecord struct {
 	// Number of campaigns associated with the brand
 	AssignedCampaingsCount int64 `json:"assignedCampaingsCount"`
 	// Unique identifier assigned to the brand.
@@ -216,7 +503,7 @@ type Number10dlcBrandListResponseRecord struct {
 	// Status of the brand
 	//
 	// Any of "OK", "REGISTRATION_PENDING", "REGISTRATION_FAILED".
-	Status string `json:"status"`
+	Status Number10dlcBrandListResponseStatus `json:"status"`
 	// Unique identifier assigned to the brand by the registry.
 	TcrBrandID string `json:"tcrBrandId"`
 	// Date and time that the brand was last updated at.
@@ -244,10 +531,19 @@ type Number10dlcBrandListResponseRecord struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r Number10dlcBrandListResponseRecord) RawJSON() string { return r.JSON.raw }
-func (r *Number10dlcBrandListResponseRecord) UnmarshalJSON(data []byte) error {
+func (r Number10dlcBrandListResponse) RawJSON() string { return r.JSON.raw }
+func (r *Number10dlcBrandListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Status of the brand
+type Number10dlcBrandListResponseStatus string
+
+const (
+	Number10dlcBrandListResponseStatusOk                  Number10dlcBrandListResponseStatus = "OK"
+	Number10dlcBrandListResponseStatusRegistrationPending Number10dlcBrandListResponseStatus = "REGISTRATION_PENDING"
+	Number10dlcBrandListResponseStatusRegistrationFailed  Number10dlcBrandListResponseStatus = "REGISTRATION_FAILED"
+)
 
 type Number10dlcBrandGetFeedbackResponse struct {
 	// ID of the brand being queried about
@@ -292,6 +588,46 @@ type Number10dlcBrandGetFeedbackResponseCategory struct {
 // Returns the unmodified JSON received from the API
 func (r Number10dlcBrandGetFeedbackResponseCategory) RawJSON() string { return r.JSON.raw }
 func (r *Number10dlcBrandGetFeedbackResponseCategory) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Status information for an SMS OTP sent during Sole Proprietor brand verification
+type Number10dlcBrandGetSMSOtpStatusResponse struct {
+	// The Brand ID associated with this OTP request
+	BrandID string `json:"brandId,required"`
+	// The current delivery status of the OTP SMS message. Common values include:
+	// `DELIVERED_HANDSET`, `PENDING`, `FAILED`, `EXPIRED`
+	DeliveryStatus string `json:"deliveryStatus,required"`
+	// The mobile phone number where the OTP was sent, in E.164 format
+	MobilePhone string `json:"mobilePhone,required"`
+	// The reference ID for this OTP request, used for status queries
+	ReferenceID string `json:"referenceId,required"`
+	// The timestamp when the OTP request was initiated
+	RequestDate time.Time `json:"requestDate,required" format:"date-time"`
+	// The timestamp when the delivery status was last updated
+	DeliveryStatusDate time.Time `json:"deliveryStatusDate" format:"date-time"`
+	// Additional details about the delivery status
+	DeliveryStatusDetails string `json:"deliveryStatusDetails"`
+	// The timestamp when the OTP was successfully verified (if applicable)
+	VerifyDate time.Time `json:"verifyDate" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BrandID               respjson.Field
+		DeliveryStatus        respjson.Field
+		MobilePhone           respjson.Field
+		ReferenceID           respjson.Field
+		RequestDate           respjson.Field
+		DeliveryStatusDate    respjson.Field
+		DeliveryStatusDetails respjson.Field
+		VerifyDate            respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Number10dlcBrandGetSMSOtpStatusResponse) RawJSON() string { return r.JSON.raw }
+func (r *Number10dlcBrandGetSMSOtpStatusResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -503,3 +839,18 @@ const (
 	Number10dlcBrandListParamsSortTcrBrandID                 Number10dlcBrandListParamsSort = "tcrBrandId"
 	Number10dlcBrandListParamsSortTcrBrandIDDesc             Number10dlcBrandListParamsSort = "-tcrBrandId"
 )
+
+type Number10dlcBrandGetSMSOtpStatusParams struct {
+	// Filter by Brand ID for easier lookup in portal applications
+	BrandID param.Opt[string] `query:"brandId,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [Number10dlcBrandGetSMSOtpStatusParams]'s query parameters
+// as `url.Values`.
+func (r Number10dlcBrandGetSMSOtpStatusParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}

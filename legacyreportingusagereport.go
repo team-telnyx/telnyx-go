@@ -52,7 +52,7 @@ func (r *LegacyReportingUsageReportService) GetSpeechToText(ctx context.Context,
 }
 
 type LegacyReportingUsageReportGetSpeechToTextResponse struct {
-	Data any `json:"data"`
+	Data map[string]any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

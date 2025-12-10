@@ -22,14 +22,11 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewNumber10dlcService] method instead.
 type Number10dlcService struct {
-	Options                        []option.RequestOption
-	Brand                          Number10dlcBrandService
-	Campaign                       Number10dlcCampaignService
-	CampaignBuilder                Number10dlcCampaignBuilderService
-	PartnerCampaign                Number10dlcPartnerCampaignService
-	PartnerCampaigns               Number10dlcPartnerCampaignService
-	PhoneNumberAssignmentByProfile Number10dlcPhoneNumberAssignmentByProfileService
-	PhoneNumberCampaigns           Number10dlcPhoneNumberCampaignService
+	Options              []option.RequestOption
+	Brand                Number10dlcBrandService
+	Campaign             Number10dlcCampaignService
+	CampaignBuilder      Number10dlcCampaignBuilderService
+	PhoneNumberCampaigns Number10dlcPhoneNumberCampaignService
 }
 
 // NewNumber10dlcService generates a new service that applies the given options to
@@ -41,9 +38,6 @@ func NewNumber10dlcService(opts ...option.RequestOption) (r Number10dlcService) 
 	r.Brand = NewNumber10dlcBrandService(opts...)
 	r.Campaign = NewNumber10dlcCampaignService(opts...)
 	r.CampaignBuilder = NewNumber10dlcCampaignBuilderService(opts...)
-	r.PartnerCampaign = NewNumber10dlcPartnerCampaignService(opts...)
-	r.PartnerCampaigns = NewNumber10dlcPartnerCampaignService(opts...)
-	r.PhoneNumberAssignmentByProfile = NewNumber10dlcPhoneNumberAssignmentByProfileService(opts...)
 	r.PhoneNumberCampaigns = NewNumber10dlcPhoneNumberCampaignService(opts...)
 	return
 }

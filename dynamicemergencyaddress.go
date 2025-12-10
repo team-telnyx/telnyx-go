@@ -16,9 +16,9 @@ import (
 	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v3/shared"
 )
 
 // DynamicEmergencyAddressService contains methods and other services that help
@@ -61,11 +61,26 @@ func (r *DynamicEmergencyAddressService) Get(ctx context.Context, id string, opt
 }
 
 // Returns the dynamic emergency addresses according to filters
-func (r *DynamicEmergencyAddressService) List(ctx context.Context, query DynamicEmergencyAddressListParams, opts ...option.RequestOption) (res *DynamicEmergencyAddressListResponse, err error) {
+func (r *DynamicEmergencyAddressService) List(ctx context.Context, query DynamicEmergencyAddressListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[DynamicEmergencyAddress], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "dynamic_emergency_addresses"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Returns the dynamic emergency addresses according to filters
+func (r *DynamicEmergencyAddressService) ListAutoPaging(ctx context.Context, query DynamicEmergencyAddressListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[DynamicEmergencyAddress] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Deletes the dynamic emergency address based on the ID provided
@@ -218,24 +233,6 @@ type DynamicEmergencyAddressGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r DynamicEmergencyAddressGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *DynamicEmergencyAddressGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DynamicEmergencyAddressListResponse struct {
-	Data []DynamicEmergencyAddress `json:"data"`
-	Meta shared.Metadata           `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DynamicEmergencyAddressListResponse) RawJSON() string { return r.JSON.raw }
-func (r *DynamicEmergencyAddressListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
