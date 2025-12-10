@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -65,14 +66,29 @@ func (r *BundlePricingUserBundleService) Get(ctx context.Context, userBundleID s
 }
 
 // Get a paginated list of user bundles.
-func (r *BundlePricingUserBundleService) List(ctx context.Context, params BundlePricingUserBundleListParams, opts ...option.RequestOption) (res *BundlePricingUserBundleListResponse, err error) {
+func (r *BundlePricingUserBundleService) List(ctx context.Context, params BundlePricingUserBundleListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[UserBundle], err error) {
+	var raw *http.Response
 	if !param.IsOmitted(params.AuthorizationBearer) {
 		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%s", params.AuthorizationBearer.Value)))
 	}
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "bundle_pricing/user_bundles"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get a paginated list of user bundles.
+func (r *BundlePricingUserBundleService) ListAutoPaging(ctx context.Context, params BundlePricingUserBundleListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[UserBundle] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, params, opts...))
 }
 
 // Deactivates a user bundle by its ID.
@@ -207,24 +223,6 @@ type BundlePricingUserBundleGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r BundlePricingUserBundleGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *BundlePricingUserBundleGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type BundlePricingUserBundleListResponse struct {
-	Data []UserBundle       `json:"data,required"`
-	Meta PaginationResponse `json:"meta,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BundlePricingUserBundleListResponse) RawJSON() string { return r.JSON.raw }
-func (r *BundlePricingUserBundleListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

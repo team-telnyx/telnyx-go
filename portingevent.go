@@ -16,6 +16,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v3/shared"
@@ -53,11 +54,26 @@ func (r *PortingEventService) Get(ctx context.Context, id string, opts ...option
 }
 
 // Returns a list of all porting events.
-func (r *PortingEventService) List(ctx context.Context, query PortingEventListParams, opts ...option.RequestOption) (res *PortingEventListResponse, err error) {
+func (r *PortingEventService) List(ctx context.Context, query PortingEventListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingEventListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "porting/events"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Returns a list of all porting events.
+func (r *PortingEventService) ListAutoPaging(ctx context.Context, query PortingEventListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingEventListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Republish a specific porting event.
@@ -502,24 +518,6 @@ func (r *PortingEventGetResponseDataPayloadWebhookPortingOrderSplitPayloadTo) Un
 }
 
 type PortingEventListResponse struct {
-	Data []PortingEventListResponseData `json:"data"`
-	Meta PaginationMeta                 `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventListResponse) RawJSON() string { return r.JSON.raw }
-func (r *PortingEventListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingEventListResponseData struct {
 	// Uniquely identifies the event.
 	ID string `json:"id" format:"uuid"`
 	// Indicates the notification methods used.
@@ -534,13 +532,13 @@ type PortingEventListResponseData struct {
 	// "porting_order.messaging_changed", "porting_order.status_changed",
 	// "porting_order.sharing_token_expired", "porting_order.new_comment",
 	// "porting_order.split".
-	EventType string `json:"event_type"`
+	EventType PortingEventListResponseEventType `json:"event_type"`
 	// The webhook payload for the porting_order.deleted event
-	Payload PortingEventListResponseDataPayloadUnion `json:"payload"`
+	Payload PortingEventListResponsePayloadUnion `json:"payload"`
 	// The status of the payload generation.
 	//
 	// Any of "created", "completed".
-	PayloadStatus string `json:"payload_status"`
+	PayloadStatus PortingEventListResponsePayloadStatus `json:"payload_status"`
 	// Identifies the porting order associated with the event.
 	PortingOrderID string `json:"porting_order_id" format:"uuid"`
 	// Identifies the type of the resource.
@@ -564,54 +562,66 @@ type PortingEventListResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PortingEventListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *PortingEventListResponseData) UnmarshalJSON(data []byte) error {
+func (r PortingEventListResponse) RawJSON() string { return r.JSON.raw }
+func (r *PortingEventListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// PortingEventListResponseDataPayloadUnion contains all possible properties and
-// values from
-// [PortingEventListResponseDataPayloadWebhookPortingOrderDeletedPayload],
-// [PortingEventListResponseDataPayloadWebhookPortingOrderMessagingChangedPayload],
-// [PortingEventListResponseDataPayloadWebhookPortingOrderStatusChangedPayload],
-// [PortingEventListResponseDataPayloadWebhookPortingOrderNewCommentPayload],
-// [PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayload].
+// Identifies the event type
+type PortingEventListResponseEventType string
+
+const (
+	PortingEventListResponseEventTypePortingOrderDeleted             PortingEventListResponseEventType = "porting_order.deleted"
+	PortingEventListResponseEventTypePortingOrderLoaUpdated          PortingEventListResponseEventType = "porting_order.loa_updated"
+	PortingEventListResponseEventTypePortingOrderMessagingChanged    PortingEventListResponseEventType = "porting_order.messaging_changed"
+	PortingEventListResponseEventTypePortingOrderStatusChanged       PortingEventListResponseEventType = "porting_order.status_changed"
+	PortingEventListResponseEventTypePortingOrderSharingTokenExpired PortingEventListResponseEventType = "porting_order.sharing_token_expired"
+	PortingEventListResponseEventTypePortingOrderNewComment          PortingEventListResponseEventType = "porting_order.new_comment"
+	PortingEventListResponseEventTypePortingOrderSplit               PortingEventListResponseEventType = "porting_order.split"
+)
+
+// PortingEventListResponsePayloadUnion contains all possible properties and values
+// from [PortingEventListResponsePayloadWebhookPortingOrderDeletedPayload],
+// [PortingEventListResponsePayloadWebhookPortingOrderMessagingChangedPayload],
+// [PortingEventListResponsePayloadWebhookPortingOrderStatusChangedPayload],
+// [PortingEventListResponsePayloadWebhookPortingOrderNewCommentPayload],
+// [PortingEventListResponsePayloadWebhookPortingOrderSplitPayload].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
-type PortingEventListResponseDataPayloadUnion struct {
+type PortingEventListResponsePayloadUnion struct {
 	ID                string `json:"id"`
 	CustomerReference string `json:"customer_reference"`
 	// This field is from variant
-	// [PortingEventListResponseDataPayloadWebhookPortingOrderDeletedPayload].
+	// [PortingEventListResponsePayloadWebhookPortingOrderDeletedPayload].
 	DeletedAt time.Time `json:"deleted_at"`
 	// This field is from variant
-	// [PortingEventListResponseDataPayloadWebhookPortingOrderMessagingChangedPayload].
-	Messaging  PortingEventListResponseDataPayloadWebhookPortingOrderMessagingChangedPayloadMessaging `json:"messaging"`
-	SupportKey string                                                                                 `json:"support_key"`
+	// [PortingEventListResponsePayloadWebhookPortingOrderMessagingChangedPayload].
+	Messaging  PortingEventListResponsePayloadWebhookPortingOrderMessagingChangedPayloadMessaging `json:"messaging"`
+	SupportKey string                                                                             `json:"support_key"`
 	// This field is from variant
-	// [PortingEventListResponseDataPayloadWebhookPortingOrderStatusChangedPayload].
+	// [PortingEventListResponsePayloadWebhookPortingOrderStatusChangedPayload].
 	Status shared.PortingOrderStatus `json:"status"`
 	// This field is from variant
-	// [PortingEventListResponseDataPayloadWebhookPortingOrderStatusChangedPayload].
+	// [PortingEventListResponsePayloadWebhookPortingOrderStatusChangedPayload].
 	UpdatedAt time.Time `json:"updated_at"`
 	// This field is from variant
-	// [PortingEventListResponseDataPayloadWebhookPortingOrderStatusChangedPayload].
+	// [PortingEventListResponsePayloadWebhookPortingOrderStatusChangedPayload].
 	WebhookURL string `json:"webhook_url"`
 	// This field is from variant
-	// [PortingEventListResponseDataPayloadWebhookPortingOrderNewCommentPayload].
-	Comment PortingEventListResponseDataPayloadWebhookPortingOrderNewCommentPayloadComment `json:"comment"`
+	// [PortingEventListResponsePayloadWebhookPortingOrderNewCommentPayload].
+	Comment PortingEventListResponsePayloadWebhookPortingOrderNewCommentPayloadComment `json:"comment"`
 	// This field is from variant
-	// [PortingEventListResponseDataPayloadWebhookPortingOrderNewCommentPayload].
+	// [PortingEventListResponsePayloadWebhookPortingOrderNewCommentPayload].
 	PortingOrderID string `json:"porting_order_id"`
 	// This field is from variant
-	// [PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayload].
-	From PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayloadFrom `json:"from"`
+	// [PortingEventListResponsePayloadWebhookPortingOrderSplitPayload].
+	From PortingEventListResponsePayloadWebhookPortingOrderSplitPayloadFrom `json:"from"`
 	// This field is from variant
-	// [PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayload].
-	PortingPhoneNumbers []PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayloadPortingPhoneNumber `json:"porting_phone_numbers"`
+	// [PortingEventListResponsePayloadWebhookPortingOrderSplitPayload].
+	PortingPhoneNumbers []PortingEventListResponsePayloadWebhookPortingOrderSplitPayloadPortingPhoneNumber `json:"porting_phone_numbers"`
 	// This field is from variant
-	// [PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayload].
-	To   PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayloadTo `json:"to"`
+	// [PortingEventListResponsePayloadWebhookPortingOrderSplitPayload].
+	To   PortingEventListResponsePayloadWebhookPortingOrderSplitPayloadTo `json:"to"`
 	JSON struct {
 		ID                  respjson.Field
 		CustomerReference   respjson.Field
@@ -630,40 +640,40 @@ type PortingEventListResponseDataPayloadUnion struct {
 	} `json:"-"`
 }
 
-func (u PortingEventListResponseDataPayloadUnion) AsPortingEventListResponseDataPayloadWebhookPortingOrderDeletedPayload() (v PortingEventListResponseDataPayloadWebhookPortingOrderDeletedPayload) {
+func (u PortingEventListResponsePayloadUnion) AsPortingEventListResponsePayloadWebhookPortingOrderDeletedPayload() (v PortingEventListResponsePayloadWebhookPortingOrderDeletedPayload) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortingEventListResponseDataPayloadUnion) AsPortingEventListResponseDataPayloadWebhookPortingOrderMessagingChangedPayload() (v PortingEventListResponseDataPayloadWebhookPortingOrderMessagingChangedPayload) {
+func (u PortingEventListResponsePayloadUnion) AsPortingEventListResponsePayloadWebhookPortingOrderMessagingChangedPayload() (v PortingEventListResponsePayloadWebhookPortingOrderMessagingChangedPayload) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortingEventListResponseDataPayloadUnion) AsPortingEventListResponseDataPayloadWebhookPortingOrderStatusChangedPayload() (v PortingEventListResponseDataPayloadWebhookPortingOrderStatusChangedPayload) {
+func (u PortingEventListResponsePayloadUnion) AsPortingEventListResponsePayloadWebhookPortingOrderStatusChangedPayload() (v PortingEventListResponsePayloadWebhookPortingOrderStatusChangedPayload) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortingEventListResponseDataPayloadUnion) AsPortingEventListResponseDataPayloadWebhookPortingOrderNewCommentPayload() (v PortingEventListResponseDataPayloadWebhookPortingOrderNewCommentPayload) {
+func (u PortingEventListResponsePayloadUnion) AsPortingEventListResponsePayloadWebhookPortingOrderNewCommentPayload() (v PortingEventListResponsePayloadWebhookPortingOrderNewCommentPayload) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortingEventListResponseDataPayloadUnion) AsPortingEventListResponseDataPayloadWebhookPortingOrderSplitPayload() (v PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayload) {
+func (u PortingEventListResponsePayloadUnion) AsPortingEventListResponsePayloadWebhookPortingOrderSplitPayload() (v PortingEventListResponsePayloadWebhookPortingOrderSplitPayload) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u PortingEventListResponseDataPayloadUnion) RawJSON() string { return u.JSON.raw }
+func (u PortingEventListResponsePayloadUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *PortingEventListResponseDataPayloadUnion) UnmarshalJSON(data []byte) error {
+func (r *PortingEventListResponsePayloadUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The webhook payload for the porting_order.deleted event
-type PortingEventListResponseDataPayloadWebhookPortingOrderDeletedPayload struct {
+type PortingEventListResponsePayloadWebhookPortingOrderDeletedPayload struct {
 	// Identifies the porting order that was deleted.
 	ID string `json:"id" format:"uuid"`
 	// Identifies the customer reference associated with the porting order.
@@ -681,21 +691,21 @@ type PortingEventListResponseDataPayloadWebhookPortingOrderDeletedPayload struct
 }
 
 // Returns the unmodified JSON received from the API
-func (r PortingEventListResponseDataPayloadWebhookPortingOrderDeletedPayload) RawJSON() string {
+func (r PortingEventListResponsePayloadWebhookPortingOrderDeletedPayload) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *PortingEventListResponseDataPayloadWebhookPortingOrderDeletedPayload) UnmarshalJSON(data []byte) error {
+func (r *PortingEventListResponsePayloadWebhookPortingOrderDeletedPayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The webhook payload for the porting_order.messaging_changed event
-type PortingEventListResponseDataPayloadWebhookPortingOrderMessagingChangedPayload struct {
+type PortingEventListResponsePayloadWebhookPortingOrderMessagingChangedPayload struct {
 	// Identifies the porting order that was moved.
 	ID string `json:"id" format:"uuid"`
 	// Identifies the customer reference associated with the porting order.
 	CustomerReference string `json:"customer_reference"`
 	// The messaging portability status of the porting order.
-	Messaging PortingEventListResponseDataPayloadWebhookPortingOrderMessagingChangedPayloadMessaging `json:"messaging"`
+	Messaging PortingEventListResponsePayloadWebhookPortingOrderMessagingChangedPayloadMessaging `json:"messaging"`
 	// Identifies the support key associated with the porting order.
 	SupportKey string `json:"support_key"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -710,15 +720,15 @@ type PortingEventListResponseDataPayloadWebhookPortingOrderMessagingChangedPaylo
 }
 
 // Returns the unmodified JSON received from the API
-func (r PortingEventListResponseDataPayloadWebhookPortingOrderMessagingChangedPayload) RawJSON() string {
+func (r PortingEventListResponsePayloadWebhookPortingOrderMessagingChangedPayload) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *PortingEventListResponseDataPayloadWebhookPortingOrderMessagingChangedPayload) UnmarshalJSON(data []byte) error {
+func (r *PortingEventListResponsePayloadWebhookPortingOrderMessagingChangedPayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The messaging portability status of the porting order.
-type PortingEventListResponseDataPayloadWebhookPortingOrderMessagingChangedPayloadMessaging struct {
+type PortingEventListResponsePayloadWebhookPortingOrderMessagingChangedPayloadMessaging struct {
 	// Indicates whether Telnyx will port messaging capabilities from the losing
 	// carrier. If false, any messaging capabilities will stay with their current
 	// provider.
@@ -744,15 +754,15 @@ type PortingEventListResponseDataPayloadWebhookPortingOrderMessagingChangedPaylo
 }
 
 // Returns the unmodified JSON received from the API
-func (r PortingEventListResponseDataPayloadWebhookPortingOrderMessagingChangedPayloadMessaging) RawJSON() string {
+func (r PortingEventListResponsePayloadWebhookPortingOrderMessagingChangedPayloadMessaging) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *PortingEventListResponseDataPayloadWebhookPortingOrderMessagingChangedPayloadMessaging) UnmarshalJSON(data []byte) error {
+func (r *PortingEventListResponsePayloadWebhookPortingOrderMessagingChangedPayloadMessaging) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The webhook payload for the porting_order.status_changed event
-type PortingEventListResponseDataPayloadWebhookPortingOrderStatusChangedPayload struct {
+type PortingEventListResponsePayloadWebhookPortingOrderStatusChangedPayload struct {
 	// Identifies the porting order that was moved.
 	ID string `json:"id" format:"uuid"`
 	// Identifies the customer reference associated with the porting order.
@@ -779,17 +789,17 @@ type PortingEventListResponseDataPayloadWebhookPortingOrderStatusChangedPayload 
 }
 
 // Returns the unmodified JSON received from the API
-func (r PortingEventListResponseDataPayloadWebhookPortingOrderStatusChangedPayload) RawJSON() string {
+func (r PortingEventListResponsePayloadWebhookPortingOrderStatusChangedPayload) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *PortingEventListResponseDataPayloadWebhookPortingOrderStatusChangedPayload) UnmarshalJSON(data []byte) error {
+func (r *PortingEventListResponsePayloadWebhookPortingOrderStatusChangedPayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The webhook payload for the porting_order.new_comment event
-type PortingEventListResponseDataPayloadWebhookPortingOrderNewCommentPayload struct {
+type PortingEventListResponsePayloadWebhookPortingOrderNewCommentPayload struct {
 	// The comment that was added to the porting order.
-	Comment PortingEventListResponseDataPayloadWebhookPortingOrderNewCommentPayloadComment `json:"comment"`
+	Comment PortingEventListResponsePayloadWebhookPortingOrderNewCommentPayloadComment `json:"comment"`
 	// Identifies the porting order that the comment was added to.
 	PortingOrderID string `json:"porting_order_id" format:"uuid"`
 	// Identifies the support key associated with the porting order.
@@ -805,15 +815,15 @@ type PortingEventListResponseDataPayloadWebhookPortingOrderNewCommentPayload str
 }
 
 // Returns the unmodified JSON received from the API
-func (r PortingEventListResponseDataPayloadWebhookPortingOrderNewCommentPayload) RawJSON() string {
+func (r PortingEventListResponsePayloadWebhookPortingOrderNewCommentPayload) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *PortingEventListResponseDataPayloadWebhookPortingOrderNewCommentPayload) UnmarshalJSON(data []byte) error {
+func (r *PortingEventListResponsePayloadWebhookPortingOrderNewCommentPayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The comment that was added to the porting order.
-type PortingEventListResponseDataPayloadWebhookPortingOrderNewCommentPayloadComment struct {
+type PortingEventListResponsePayloadWebhookPortingOrderNewCommentPayloadComment struct {
 	// Identifies the comment.
 	ID string `json:"id" format:"uuid"`
 	// The body of the comment.
@@ -839,21 +849,21 @@ type PortingEventListResponseDataPayloadWebhookPortingOrderNewCommentPayloadComm
 }
 
 // Returns the unmodified JSON received from the API
-func (r PortingEventListResponseDataPayloadWebhookPortingOrderNewCommentPayloadComment) RawJSON() string {
+func (r PortingEventListResponsePayloadWebhookPortingOrderNewCommentPayloadComment) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *PortingEventListResponseDataPayloadWebhookPortingOrderNewCommentPayloadComment) UnmarshalJSON(data []byte) error {
+func (r *PortingEventListResponsePayloadWebhookPortingOrderNewCommentPayloadComment) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The webhook payload for the porting_order.split event
-type PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayload struct {
+type PortingEventListResponsePayloadWebhookPortingOrderSplitPayload struct {
 	// The porting order that was split.
-	From PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayloadFrom `json:"from"`
+	From PortingEventListResponsePayloadWebhookPortingOrderSplitPayloadFrom `json:"from"`
 	// The list of porting phone numbers that were moved to the new porting order.
-	PortingPhoneNumbers []PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayloadPortingPhoneNumber `json:"porting_phone_numbers"`
+	PortingPhoneNumbers []PortingEventListResponsePayloadWebhookPortingOrderSplitPayloadPortingPhoneNumber `json:"porting_phone_numbers"`
 	// The new porting order that the phone numbers was moved to.
-	To PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayloadTo `json:"to"`
+	To PortingEventListResponsePayloadWebhookPortingOrderSplitPayloadTo `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		From                respjson.Field
@@ -865,15 +875,15 @@ type PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayload struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayload) RawJSON() string {
+func (r PortingEventListResponsePayloadWebhookPortingOrderSplitPayload) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayload) UnmarshalJSON(data []byte) error {
+func (r *PortingEventListResponsePayloadWebhookPortingOrderSplitPayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The porting order that was split.
-type PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayloadFrom struct {
+type PortingEventListResponsePayloadWebhookPortingOrderSplitPayloadFrom struct {
 	// Identifies the porting order that was split.
 	ID string `json:"id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -885,14 +895,14 @@ type PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayloadFrom stru
 }
 
 // Returns the unmodified JSON received from the API
-func (r PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayloadFrom) RawJSON() string {
+func (r PortingEventListResponsePayloadWebhookPortingOrderSplitPayloadFrom) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayloadFrom) UnmarshalJSON(data []byte) error {
+func (r *PortingEventListResponsePayloadWebhookPortingOrderSplitPayloadFrom) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayloadPortingPhoneNumber struct {
+type PortingEventListResponsePayloadWebhookPortingOrderSplitPayloadPortingPhoneNumber struct {
 	// Identifies the porting phone number that was moved.
 	ID string `json:"id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -904,15 +914,15 @@ type PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayloadPortingPh
 }
 
 // Returns the unmodified JSON received from the API
-func (r PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayloadPortingPhoneNumber) RawJSON() string {
+func (r PortingEventListResponsePayloadWebhookPortingOrderSplitPayloadPortingPhoneNumber) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayloadPortingPhoneNumber) UnmarshalJSON(data []byte) error {
+func (r *PortingEventListResponsePayloadWebhookPortingOrderSplitPayloadPortingPhoneNumber) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The new porting order that the phone numbers was moved to.
-type PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayloadTo struct {
+type PortingEventListResponsePayloadWebhookPortingOrderSplitPayloadTo struct {
 	// Identifies the porting order that was split.
 	ID string `json:"id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -924,12 +934,20 @@ type PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayloadTo struct
 }
 
 // Returns the unmodified JSON received from the API
-func (r PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayloadTo) RawJSON() string {
+func (r PortingEventListResponsePayloadWebhookPortingOrderSplitPayloadTo) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *PortingEventListResponseDataPayloadWebhookPortingOrderSplitPayloadTo) UnmarshalJSON(data []byte) error {
+func (r *PortingEventListResponsePayloadWebhookPortingOrderSplitPayloadTo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// The status of the payload generation.
+type PortingEventListResponsePayloadStatus string
+
+const (
+	PortingEventListResponsePayloadStatusCreated   PortingEventListResponsePayloadStatus = "created"
+	PortingEventListResponsePayloadStatusCompleted PortingEventListResponsePayloadStatus = "completed"
+)
 
 type PortingEventListParams struct {
 	// Consolidated filter parameter (deepObject style). Originally: filter[type],

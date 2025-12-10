@@ -16,6 +16,7 @@ import (
 	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -60,23 +61,38 @@ func (r *Number10dlcPhoneNumberCampaignService) Get(ctx context.Context, phoneNu
 }
 
 // Create New Phone Number Campaign
-func (r *Number10dlcPhoneNumberCampaignService) Update(ctx context.Context, phoneNumber string, body Number10dlcPhoneNumberCampaignUpdateParams, opts ...option.RequestOption) (res *PhoneNumberCampaign, err error) {
+func (r *Number10dlcPhoneNumberCampaignService) Update(ctx context.Context, campaignPhoneNumber string, body Number10dlcPhoneNumberCampaignUpdateParams, opts ...option.RequestOption) (res *PhoneNumberCampaign, err error) {
 	opts = slices.Concat(r.Options, opts)
-	if phoneNumber == "" {
-		err = errors.New("missing required phoneNumber parameter")
+	if campaignPhoneNumber == "" {
+		err = errors.New("missing required campaign_phone_number parameter")
 		return
 	}
-	path := fmt.Sprintf("10dlc/phone_number_campaigns/%s", phoneNumber)
+	path := fmt.Sprintf("10dlc/phone_number_campaigns/%s", campaignPhoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
 }
 
 // Retrieve All Phone Number Campaigns
-func (r *Number10dlcPhoneNumberCampaignService) List(ctx context.Context, query Number10dlcPhoneNumberCampaignListParams, opts ...option.RequestOption) (res *Number10dlcPhoneNumberCampaignListResponse, err error) {
+func (r *Number10dlcPhoneNumberCampaignService) List(ctx context.Context, query Number10dlcPhoneNumberCampaignListParams, opts ...option.RequestOption) (res *pagination.PerPagePaginationV2[PhoneNumberCampaign], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "10dlc/phone_number_campaigns"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve All Phone Number Campaigns
+func (r *Number10dlcPhoneNumberCampaignService) ListAutoPaging(ctx context.Context, query Number10dlcPhoneNumberCampaignListParams, opts ...option.RequestOption) *pagination.PerPagePaginationV2AutoPager[PhoneNumberCampaign] {
+	return pagination.NewPerPagePaginationV2AutoPager(r.List(ctx, query, opts...))
 }
 
 // This endpoint allows you to remove a campaign assignment from the supplied
@@ -92,23 +108,77 @@ func (r *Number10dlcPhoneNumberCampaignService) Delete(ctx context.Context, phon
 	return
 }
 
-type Number10dlcPhoneNumberCampaignListResponse struct {
-	Page         int64                 `json:"page,required"`
-	Records      []PhoneNumberCampaign `json:"records,required"`
-	TotalRecords int64                 `json:"totalRecords,required"`
+type PhoneNumberCampaign struct {
+	// For shared campaigns, this is the TCR campaign ID, otherwise it is the campaign
+	// ID
+	CampaignID  string `json:"campaignId,required"`
+	CreatedAt   string `json:"createdAt,required"`
+	PhoneNumber string `json:"phoneNumber,required"`
+	UpdatedAt   string `json:"updatedAt,required"`
+	// The assignment status of the number.
+	//
+	// Any of "FAILED_ASSIGNMENT", "PENDING_ASSIGNMENT", "ASSIGNED",
+	// "PENDING_UNASSIGNMENT", "FAILED_UNASSIGNMENT".
+	AssignmentStatus PhoneNumberCampaignAssignmentStatus `json:"assignmentStatus"`
+	// Brand ID. Empty if the number is associated to a shared campaign.
+	BrandID string `json:"brandId"`
+	// Extra info about a failure to assign/unassign a number. Relevant only if the
+	// assignmentStatus is either FAILED_ASSIGNMENT or FAILED_UNASSIGNMENT
+	FailureReasons string `json:"failureReasons"`
+	// TCR's alphanumeric ID for the brand.
+	TcrBrandID string `json:"tcrBrandId"`
+	// TCR's alphanumeric ID for the campaign.
+	TcrCampaignID string `json:"tcrCampaignId"`
+	// Campaign ID. Empty if the number is associated to a shared campaign.
+	TelnyxCampaignID string `json:"telnyxCampaignId"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Page         respjson.Field
-		Records      respjson.Field
-		TotalRecords respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		CampaignID       respjson.Field
+		CreatedAt        respjson.Field
+		PhoneNumber      respjson.Field
+		UpdatedAt        respjson.Field
+		AssignmentStatus respjson.Field
+		BrandID          respjson.Field
+		FailureReasons   respjson.Field
+		TcrBrandID       respjson.Field
+		TcrCampaignID    respjson.Field
+		TelnyxCampaignID respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r Number10dlcPhoneNumberCampaignListResponse) RawJSON() string { return r.JSON.raw }
-func (r *Number10dlcPhoneNumberCampaignListResponse) UnmarshalJSON(data []byte) error {
+func (r PhoneNumberCampaign) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumberCampaign) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The assignment status of the number.
+type PhoneNumberCampaignAssignmentStatus string
+
+const (
+	PhoneNumberCampaignAssignmentStatusFailedAssignment    PhoneNumberCampaignAssignmentStatus = "FAILED_ASSIGNMENT"
+	PhoneNumberCampaignAssignmentStatusPendingAssignment   PhoneNumberCampaignAssignmentStatus = "PENDING_ASSIGNMENT"
+	PhoneNumberCampaignAssignmentStatusAssigned            PhoneNumberCampaignAssignmentStatus = "ASSIGNED"
+	PhoneNumberCampaignAssignmentStatusPendingUnassignment PhoneNumberCampaignAssignmentStatus = "PENDING_UNASSIGNMENT"
+	PhoneNumberCampaignAssignmentStatusFailedUnassignment  PhoneNumberCampaignAssignmentStatus = "FAILED_UNASSIGNMENT"
+)
+
+// The properties CampaignID, PhoneNumber are required.
+type PhoneNumberCampaignCreateParam struct {
+	// The ID of the campaign you want to link to the specified phone number.
+	CampaignID string `json:"campaignId,required"`
+	// The phone number you want to link to a specified campaign.
+	PhoneNumber string `json:"phoneNumber,required"`
+	paramObj
+}
+
+func (r PhoneNumberCampaignCreateParam) MarshalJSON() (data []byte, err error) {
+	type shadow PhoneNumberCampaignCreateParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PhoneNumberCampaignCreateParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

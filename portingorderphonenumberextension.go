@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -51,15 +52,30 @@ func (r *PortingOrderPhoneNumberExtensionService) New(ctx context.Context, porti
 }
 
 // Returns a list of all phone number extensions of a porting order.
-func (r *PortingOrderPhoneNumberExtensionService) List(ctx context.Context, portingOrderID string, query PortingOrderPhoneNumberExtensionListParams, opts ...option.RequestOption) (res *PortingOrderPhoneNumberExtensionListResponse, err error) {
+func (r *PortingOrderPhoneNumberExtensionService) List(ctx context.Context, portingOrderID string, query PortingOrderPhoneNumberExtensionListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingPhoneNumberExtension], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if portingOrderID == "" {
 		err = errors.New("missing required porting_order_id parameter")
 		return
 	}
 	path := fmt.Sprintf("porting_orders/%s/phone_number_extensions", portingOrderID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Returns a list of all phone number extensions of a porting order.
+func (r *PortingOrderPhoneNumberExtensionService) ListAutoPaging(ctx context.Context, portingOrderID string, query PortingOrderPhoneNumberExtensionListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingPhoneNumberExtension] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, portingOrderID, query, opts...))
 }
 
 // Deletes a phone number extension.
@@ -174,24 +190,6 @@ type PortingOrderPhoneNumberExtensionNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r PortingOrderPhoneNumberExtensionNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *PortingOrderPhoneNumberExtensionNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingOrderPhoneNumberExtensionListResponse struct {
-	Data []PortingPhoneNumberExtension `json:"data"`
-	Meta PaginationMeta                `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingOrderPhoneNumberExtensionListResponse) RawJSON() string { return r.JSON.raw }
-func (r *PortingOrderPhoneNumberExtensionListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -14,6 +14,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/option"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v3/shared"
 )
 
 // AvailablePhoneNumberService contains methods and other services that help with
@@ -44,9 +45,9 @@ func (r *AvailablePhoneNumberService) List(ctx context.Context, query AvailableP
 }
 
 type AvailablePhoneNumberListResponse struct {
-	Data     []AvailablePhoneNumberListResponseData   `json:"data"`
-	Meta     AvailablePhoneNumberListResponseMeta     `json:"meta"`
-	Metadata AvailablePhoneNumberListResponseMetadata `json:"metadata"`
+	Data     []AvailablePhoneNumberListResponseData `json:"data"`
+	Meta     shared.AvailablePhoneNumbersMetadata   `json:"meta"`
+	Metadata shared.AvailablePhoneNumbersMetadata   `json:"metadata"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -154,42 +155,6 @@ type AvailablePhoneNumberListResponseDataRegionInformation struct {
 // Returns the unmodified JSON received from the API
 func (r AvailablePhoneNumberListResponseDataRegionInformation) RawJSON() string { return r.JSON.raw }
 func (r *AvailablePhoneNumberListResponseDataRegionInformation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AvailablePhoneNumberListResponseMeta struct {
-	BestEffortResults int64 `json:"best_effort_results"`
-	TotalResults      int64 `json:"total_results"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		BestEffortResults respjson.Field
-		TotalResults      respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AvailablePhoneNumberListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *AvailablePhoneNumberListResponseMeta) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AvailablePhoneNumberListResponseMetadata struct {
-	BestEffortResults int64 `json:"best_effort_results"`
-	TotalResults      int64 `json:"total_results"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		BestEffortResults respjson.Field
-		TotalResults      respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AvailablePhoneNumberListResponseMetadata) RawJSON() string { return r.JSON.raw }
-func (r *AvailablePhoneNumberListResponseMetadata) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

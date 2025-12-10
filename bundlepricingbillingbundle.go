@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -54,14 +55,29 @@ func (r *BundlePricingBillingBundleService) Get(ctx context.Context, bundleID st
 }
 
 // Get all allowed bundles.
-func (r *BundlePricingBillingBundleService) List(ctx context.Context, params BundlePricingBillingBundleListParams, opts ...option.RequestOption) (res *BundlePricingBillingBundleListResponse, err error) {
+func (r *BundlePricingBillingBundleService) List(ctx context.Context, params BundlePricingBillingBundleListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[BillingBundleSummary], err error) {
+	var raw *http.Response
 	if !param.IsOmitted(params.AuthorizationBearer) {
 		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%s", params.AuthorizationBearer.Value)))
 	}
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "bundle_pricing/billing_bundles"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get all allowed bundles.
+func (r *BundlePricingBillingBundleService) ListAutoPaging(ctx context.Context, params BundlePricingBillingBundleListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[BillingBundleSummary] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, params, opts...))
 }
 
 type BillingBundleSummary struct {
@@ -192,7 +208,7 @@ type BundlePricingBillingBundleGetResponseDataBundleLimit struct {
 	BillingService string    `json:"billing_service"`
 	// Use country_iso instead
 	//
-	// Deprecated: deprecated
+	// Deprecated: Use country_iso instead
 	Country     string `json:"country"`
 	CountryCode int64  `json:"country_code"`
 	CountryISO  string `json:"country_iso"`
@@ -226,24 +242,6 @@ type BundlePricingBillingBundleGetResponseDataBundleLimit struct {
 // Returns the unmodified JSON received from the API
 func (r BundlePricingBillingBundleGetResponseDataBundleLimit) RawJSON() string { return r.JSON.raw }
 func (r *BundlePricingBillingBundleGetResponseDataBundleLimit) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type BundlePricingBillingBundleListResponse struct {
-	Data []BillingBundleSummary `json:"data,required"`
-	Meta PaginationResponse     `json:"meta,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BundlePricingBillingBundleListResponse) RawJSON() string { return r.JSON.raw }
-func (r *BundlePricingBillingBundleListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

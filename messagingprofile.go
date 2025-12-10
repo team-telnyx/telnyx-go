@@ -16,6 +16,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v3/shared"
@@ -51,71 +52,116 @@ func (r *MessagingProfileService) New(ctx context.Context, body MessagingProfile
 }
 
 // Retrieve a messaging profile
-func (r *MessagingProfileService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *MessagingProfileGetResponse, err error) {
+func (r *MessagingProfileService) Get(ctx context.Context, messagingProfileID string, opts ...option.RequestOption) (res *MessagingProfileGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	if id == "" {
-		err = errors.New("missing required id parameter")
+	if messagingProfileID == "" {
+		err = errors.New("missing required messaging_profile_id parameter")
 		return
 	}
-	path := fmt.Sprintf("messaging_profiles/%s", id)
+	path := fmt.Sprintf("messaging_profiles/%s", messagingProfileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Update a messaging profile
-func (r *MessagingProfileService) Update(ctx context.Context, id string, body MessagingProfileUpdateParams, opts ...option.RequestOption) (res *MessagingProfileUpdateResponse, err error) {
+func (r *MessagingProfileService) Update(ctx context.Context, messagingProfileID string, body MessagingProfileUpdateParams, opts ...option.RequestOption) (res *MessagingProfileUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	if id == "" {
-		err = errors.New("missing required id parameter")
+	if messagingProfileID == "" {
+		err = errors.New("missing required messaging_profile_id parameter")
 		return
 	}
-	path := fmt.Sprintf("messaging_profiles/%s", id)
+	path := fmt.Sprintf("messaging_profiles/%s", messagingProfileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
 }
 
 // List messaging profiles
-func (r *MessagingProfileService) List(ctx context.Context, query MessagingProfileListParams, opts ...option.RequestOption) (res *MessagingProfileListResponse, err error) {
+func (r *MessagingProfileService) List(ctx context.Context, query MessagingProfileListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[MessagingProfile], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "messaging_profiles"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List messaging profiles
+func (r *MessagingProfileService) ListAutoPaging(ctx context.Context, query MessagingProfileListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[MessagingProfile] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a messaging profile
-func (r *MessagingProfileService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *MessagingProfileDeleteResponse, err error) {
+func (r *MessagingProfileService) Delete(ctx context.Context, messagingProfileID string, opts ...option.RequestOption) (res *MessagingProfileDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	if id == "" {
-		err = errors.New("missing required id parameter")
+	if messagingProfileID == "" {
+		err = errors.New("missing required messaging_profile_id parameter")
 		return
 	}
-	path := fmt.Sprintf("messaging_profiles/%s", id)
+	path := fmt.Sprintf("messaging_profiles/%s", messagingProfileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
 // List phone numbers associated with a messaging profile
-func (r *MessagingProfileService) ListPhoneNumbers(ctx context.Context, id string, query MessagingProfileListPhoneNumbersParams, opts ...option.RequestOption) (res *MessagingProfileListPhoneNumbersResponse, err error) {
+func (r *MessagingProfileService) ListPhoneNumbers(ctx context.Context, messagingProfileID string, query MessagingProfileListPhoneNumbersParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[shared.PhoneNumberWithMessagingSettings], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
-	if id == "" {
-		err = errors.New("missing required id parameter")
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	if messagingProfileID == "" {
+		err = errors.New("missing required messaging_profile_id parameter")
 		return
 	}
-	path := fmt.Sprintf("messaging_profiles/%s/phone_numbers", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	path := fmt.Sprintf("messaging_profiles/%s/phone_numbers", messagingProfileID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List phone numbers associated with a messaging profile
+func (r *MessagingProfileService) ListPhoneNumbersAutoPaging(ctx context.Context, messagingProfileID string, query MessagingProfileListPhoneNumbersParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[shared.PhoneNumberWithMessagingSettings] {
+	return pagination.NewDefaultPaginationAutoPager(r.ListPhoneNumbers(ctx, messagingProfileID, query, opts...))
 }
 
 // List short codes associated with a messaging profile
-func (r *MessagingProfileService) ListShortCodes(ctx context.Context, id string, query MessagingProfileListShortCodesParams, opts ...option.RequestOption) (res *MessagingProfileListShortCodesResponse, err error) {
+func (r *MessagingProfileService) ListShortCodes(ctx context.Context, messagingProfileID string, query MessagingProfileListShortCodesParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[shared.ShortCode], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
-	if id == "" {
-		err = errors.New("missing required id parameter")
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	if messagingProfileID == "" {
+		err = errors.New("missing required messaging_profile_id parameter")
 		return
 	}
-	path := fmt.Sprintf("messaging_profiles/%s/short_codes", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	path := fmt.Sprintf("messaging_profiles/%s/short_codes", messagingProfileID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List short codes associated with a messaging profile
+func (r *MessagingProfileService) ListShortCodesAutoPaging(ctx context.Context, messagingProfileID string, query MessagingProfileListShortCodesParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[shared.ShortCode] {
+	return pagination.NewDefaultPaginationAutoPager(r.ListShortCodes(ctx, messagingProfileID, query, opts...))
 }
 
 type MessagingProfile struct {
@@ -231,9 +277,9 @@ const (
 type MessagingProfileWebhookAPIVersion string
 
 const (
-	MessagingProfileWebhookAPIVersion1          MessagingProfileWebhookAPIVersion = "1"
-	MessagingProfileWebhookAPIVersion2          MessagingProfileWebhookAPIVersion = "2"
-	MessagingProfileWebhookAPIVersion2010_04_01 MessagingProfileWebhookAPIVersion = "2010-04-01"
+	MessagingProfileWebhookAPIVersionV1          MessagingProfileWebhookAPIVersion = "1"
+	MessagingProfileWebhookAPIVersionV2          MessagingProfileWebhookAPIVersion = "2"
+	MessagingProfileWebhookAPIVersionV2010_04_01 MessagingProfileWebhookAPIVersion = "2010-04-01"
 )
 
 // Number Pool allows you to send messages from a pool of numbers of different
@@ -467,46 +513,6 @@ func (r *MessagingProfileUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type MessagingProfileListResponse struct {
-	Data []MessagingProfile               `json:"data"`
-	Meta MessagingProfileListResponseMeta `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessagingProfileListResponse) RawJSON() string { return r.JSON.raw }
-func (r *MessagingProfileListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessagingProfileListResponseMeta struct {
-	PageNumber   int64 `json:"page_number,required"`
-	PageSize     int64 `json:"page_size,required"`
-	TotalPages   int64 `json:"total_pages,required"`
-	TotalResults int64 `json:"total_results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageNumber   respjson.Field
-		PageSize     respjson.Field
-		TotalPages   respjson.Field
-		TotalResults respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessagingProfileListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *MessagingProfileListResponseMeta) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type MessagingProfileDeleteResponse struct {
 	Data MessagingProfile `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -520,86 +526,6 @@ type MessagingProfileDeleteResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MessagingProfileDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *MessagingProfileDeleteResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessagingProfileListPhoneNumbersResponse struct {
-	Data []shared.PhoneNumberWithMessagingSettings    `json:"data"`
-	Meta MessagingProfileListPhoneNumbersResponseMeta `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessagingProfileListPhoneNumbersResponse) RawJSON() string { return r.JSON.raw }
-func (r *MessagingProfileListPhoneNumbersResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessagingProfileListPhoneNumbersResponseMeta struct {
-	PageNumber   int64 `json:"page_number,required"`
-	PageSize     int64 `json:"page_size,required"`
-	TotalPages   int64 `json:"total_pages,required"`
-	TotalResults int64 `json:"total_results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageNumber   respjson.Field
-		PageSize     respjson.Field
-		TotalPages   respjson.Field
-		TotalResults respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessagingProfileListPhoneNumbersResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *MessagingProfileListPhoneNumbersResponseMeta) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessagingProfileListShortCodesResponse struct {
-	Data []shared.ShortCode                         `json:"data"`
-	Meta MessagingProfileListShortCodesResponseMeta `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessagingProfileListShortCodesResponse) RawJSON() string { return r.JSON.raw }
-func (r *MessagingProfileListShortCodesResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessagingProfileListShortCodesResponseMeta struct {
-	PageNumber   int64 `json:"page_number,required"`
-	PageSize     int64 `json:"page_size,required"`
-	TotalPages   int64 `json:"total_pages,required"`
-	TotalResults int64 `json:"total_results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageNumber   respjson.Field
-		PageSize     respjson.Field
-		TotalPages   respjson.Field
-		TotalResults respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessagingProfileListShortCodesResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *MessagingProfileListShortCodesResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -666,9 +592,9 @@ func (r *MessagingProfileNewParams) UnmarshalJSON(data []byte) error {
 type MessagingProfileNewParamsWebhookAPIVersion string
 
 const (
-	MessagingProfileNewParamsWebhookAPIVersion1          MessagingProfileNewParamsWebhookAPIVersion = "1"
-	MessagingProfileNewParamsWebhookAPIVersion2          MessagingProfileNewParamsWebhookAPIVersion = "2"
-	MessagingProfileNewParamsWebhookAPIVersion2010_04_01 MessagingProfileNewParamsWebhookAPIVersion = "2010-04-01"
+	MessagingProfileNewParamsWebhookAPIVersionV1          MessagingProfileNewParamsWebhookAPIVersion = "1"
+	MessagingProfileNewParamsWebhookAPIVersionV2          MessagingProfileNewParamsWebhookAPIVersion = "2"
+	MessagingProfileNewParamsWebhookAPIVersionV2010_04_01 MessagingProfileNewParamsWebhookAPIVersion = "2010-04-01"
 )
 
 type MessagingProfileUpdateParams struct {
@@ -738,9 +664,9 @@ func (r *MessagingProfileUpdateParams) UnmarshalJSON(data []byte) error {
 type MessagingProfileUpdateParamsWebhookAPIVersion string
 
 const (
-	MessagingProfileUpdateParamsWebhookAPIVersion1          MessagingProfileUpdateParamsWebhookAPIVersion = "1"
-	MessagingProfileUpdateParamsWebhookAPIVersion2          MessagingProfileUpdateParamsWebhookAPIVersion = "2"
-	MessagingProfileUpdateParamsWebhookAPIVersion2010_04_01 MessagingProfileUpdateParamsWebhookAPIVersion = "2010-04-01"
+	MessagingProfileUpdateParamsWebhookAPIVersionV1          MessagingProfileUpdateParamsWebhookAPIVersion = "1"
+	MessagingProfileUpdateParamsWebhookAPIVersionV2          MessagingProfileUpdateParamsWebhookAPIVersion = "2"
+	MessagingProfileUpdateParamsWebhookAPIVersionV2010_04_01 MessagingProfileUpdateParamsWebhookAPIVersion = "2010-04-01"
 )
 
 type MessagingProfileListParams struct {

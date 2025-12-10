@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -51,15 +52,30 @@ func (r *PortingOrderAdditionalDocumentService) New(ctx context.Context, id stri
 }
 
 // Returns a list of additional documents for a porting order.
-func (r *PortingOrderAdditionalDocumentService) List(ctx context.Context, id string, query PortingOrderAdditionalDocumentListParams, opts ...option.RequestOption) (res *PortingOrderAdditionalDocumentListResponse, err error) {
+func (r *PortingOrderAdditionalDocumentService) List(ctx context.Context, id string, query PortingOrderAdditionalDocumentListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingOrderAdditionalDocumentListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
 	}
 	path := fmt.Sprintf("porting_orders/%s/additional_documents", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Returns a list of additional documents for a porting order.
+func (r *PortingOrderAdditionalDocumentService) ListAutoPaging(ctx context.Context, id string, query PortingOrderAdditionalDocumentListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingOrderAdditionalDocumentListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, id, query, opts...))
 }
 
 // Deletes an additional document for a porting order.
@@ -139,24 +155,6 @@ func (r *PortingOrderAdditionalDocumentNewResponseData) UnmarshalJSON(data []byt
 }
 
 type PortingOrderAdditionalDocumentListResponse struct {
-	Data []PortingOrderAdditionalDocumentListResponseData `json:"data"`
-	Meta PaginationMeta                                   `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingOrderAdditionalDocumentListResponse) RawJSON() string { return r.JSON.raw }
-func (r *PortingOrderAdditionalDocumentListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingOrderAdditionalDocumentListResponseData struct {
 	// Uniquely identifies this additional document
 	ID string `json:"id" format:"uuid"`
 	// The content type of the related document.
@@ -168,7 +166,7 @@ type PortingOrderAdditionalDocumentListResponseData struct {
 	// Identifies the type of additional document
 	//
 	// Any of "loa", "invoice", "csr", "other".
-	DocumentType string `json:"document_type"`
+	DocumentType PortingOrderAdditionalDocumentListResponseDocumentType `json:"document_type"`
 	// The filename of the related document.
 	Filename string `json:"filename"`
 	// Identifies the associated porting order
@@ -194,10 +192,20 @@ type PortingOrderAdditionalDocumentListResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PortingOrderAdditionalDocumentListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *PortingOrderAdditionalDocumentListResponseData) UnmarshalJSON(data []byte) error {
+func (r PortingOrderAdditionalDocumentListResponse) RawJSON() string { return r.JSON.raw }
+func (r *PortingOrderAdditionalDocumentListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Identifies the type of additional document
+type PortingOrderAdditionalDocumentListResponseDocumentType string
+
+const (
+	PortingOrderAdditionalDocumentListResponseDocumentTypeLoa     PortingOrderAdditionalDocumentListResponseDocumentType = "loa"
+	PortingOrderAdditionalDocumentListResponseDocumentTypeInvoice PortingOrderAdditionalDocumentListResponseDocumentType = "invoice"
+	PortingOrderAdditionalDocumentListResponseDocumentTypeCsr     PortingOrderAdditionalDocumentListResponseDocumentType = "csr"
+	PortingOrderAdditionalDocumentListResponseDocumentTypeOther   PortingOrderAdditionalDocumentListResponseDocumentType = "other"
+)
 
 type PortingOrderAdditionalDocumentNewParams struct {
 	AdditionalDocuments []PortingOrderAdditionalDocumentNewParamsAdditionalDocument `json:"additional_documents,omitzero"`

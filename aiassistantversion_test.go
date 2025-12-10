@@ -87,8 +87,8 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					DefaultTexmlAppID:               telnyx.String("default_texml_app_id"),
 					SupportsUnauthenticatedWebCalls: telnyx.Bool(true),
 				},
-				Tools: []telnyx.AssistantToolUnionParam{{
-					OfWebhookTool: &telnyx.WebhookToolParam{
+				Tools: []telnyx.AssistantToolsItemsUnionParam{{
+					OfWebhook: &telnyx.WebhookToolParam{
 						Type: telnyx.WebhookToolTypeWebhook,
 						Webhook: telnyx.InferenceEmbeddingWebhookToolParams{
 							Description: "description",
@@ -128,7 +128,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					Language: telnyx.String("language"),
 					Model:    telnyx.TranscriptionSettingsModelDeepgramFlux,
 					Region:   telnyx.String("region"),
-					Settings: telnyx.TranscriptionSettingsSettingsParam{
+					Settings: telnyx.TranscriptionSettingsConfigParam{
 						EotThreshold: telnyx.Float(0),
 						EotTimeoutMs: telnyx.Int(0),
 						Numerals:     telnyx.Bool(true),
@@ -139,8 +139,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					Voice:     "voice",
 					APIKeyRef: telnyx.String("api_key_ref"),
 					BackgroundAudio: telnyx.VoiceSettingsBackgroundAudioUnionParam{
-						OfVoiceSettingsBackgroundAudioObject: &telnyx.VoiceSettingsBackgroundAudioObjectParam{
-							Type:  "predefined_media",
+						OfPredefinedMedia: &telnyx.VoiceSettingsBackgroundAudioPredefinedMediaParam{
 							Value: "silence",
 						},
 					},

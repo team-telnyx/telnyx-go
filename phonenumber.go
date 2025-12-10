@@ -14,6 +14,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v3/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v3/packages/param"
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
@@ -62,23 +63,38 @@ func (r *PhoneNumberService) Get(ctx context.Context, id string, opts ...option.
 }
 
 // Update a phone number
-func (r *PhoneNumberService) Update(ctx context.Context, id string, body PhoneNumberUpdateParams, opts ...option.RequestOption) (res *PhoneNumberUpdateResponse, err error) {
+func (r *PhoneNumberService) Update(ctx context.Context, phoneNumberID string, body PhoneNumberUpdateParams, opts ...option.RequestOption) (res *PhoneNumberUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	if id == "" {
-		err = errors.New("missing required id parameter")
+	if phoneNumberID == "" {
+		err = errors.New("missing required phone_number_id parameter")
 		return
 	}
-	path := fmt.Sprintf("phone_numbers/%s", id)
+	path := fmt.Sprintf("phone_numbers/%s", phoneNumberID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
 }
 
 // List phone numbers
-func (r *PhoneNumberService) List(ctx context.Context, query PhoneNumberListParams, opts ...option.RequestOption) (res *PhoneNumberListResponse, err error) {
+func (r *PhoneNumberService) List(ctx context.Context, query PhoneNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PhoneNumberDetailed], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "phone_numbers"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List phone numbers
+func (r *PhoneNumberService) ListAutoPaging(ctx context.Context, query PhoneNumberListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PhoneNumberDetailed] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a phone number
@@ -95,11 +111,27 @@ func (r *PhoneNumberService) Delete(ctx context.Context, id string, opts ...opti
 
 // List phone numbers, This endpoint is a lighter version of the /phone_numbers
 // endpoint having higher performance and rate limit.
-func (r *PhoneNumberService) SlimList(ctx context.Context, query PhoneNumberSlimListParams, opts ...option.RequestOption) (res *PhoneNumberSlimListResponse, err error) {
+func (r *PhoneNumberService) SlimList(ctx context.Context, query PhoneNumberSlimListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PhoneNumberSlimListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "phone_numbers/slim"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List phone numbers, This endpoint is a lighter version of the /phone_numbers
+// endpoint having higher performance and rate limit.
+func (r *PhoneNumberService) SlimListAutoPaging(ctx context.Context, query PhoneNumberSlimListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PhoneNumberSlimListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.SlimList(ctx, query, opts...))
 }
 
 type PhoneNumberDetailed struct {
@@ -331,24 +363,6 @@ func (r *PhoneNumberUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PhoneNumberListResponse struct {
-	Data []PhoneNumberDetailed `json:"data"`
-	Meta PaginationMeta        `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PhoneNumberListResponse) RawJSON() string { return r.JSON.raw }
-func (r *PhoneNumberListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type PhoneNumberDeleteResponse struct {
 	Data PhoneNumberDeleteResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -466,24 +480,6 @@ func (r *PhoneNumberDeleteResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type PhoneNumberSlimListResponse struct {
-	Data []PhoneNumberSlimListResponseData `json:"data"`
-	Meta PaginationMeta                    `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PhoneNumberSlimListResponse) RawJSON() string { return r.JSON.raw }
-func (r *PhoneNumberSlimListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PhoneNumberSlimListResponseData struct {
 	// Identifies the resource.
 	ID string `json:"id"`
 	// Identifies the billing group associated with the phone number.
@@ -517,7 +513,7 @@ type PhoneNumberSlimListResponseData struct {
 	//
 	// Any of "active", "deprovisioning", "disabled", "provisioning",
 	// "provisioning-failed".
-	EmergencyStatus string `json:"emergency_status"`
+	EmergencyStatus PhoneNumberSlimListResponseEmergencyStatus `json:"emergency_status"`
 	// If someone attempts to port your phone number away from Telnyx and your phone
 	// number has an external PIN set, Telnyx will attempt to verify that you provided
 	// the correct external PIN to the winning carrier. Note that not all carriers
@@ -529,7 +525,7 @@ type PhoneNumberSlimListResponseData struct {
 	// feature has an additional per-number monthly cost associated with it.
 	//
 	// Any of "disabled", "reject_calls", "flag_calls".
-	InboundCallScreening string `json:"inbound_call_screening"`
+	InboundCallScreening PhoneNumberSlimListResponseInboundCallScreening `json:"inbound_call_screening"`
 	// The +E.164-formatted phone number associated with this record.
 	PhoneNumber string `json:"phone_number"`
 	// The phone number's type. Note: For numbers purchased prior to July 2023 or when
@@ -538,7 +534,7 @@ type PhoneNumberSlimListResponseData struct {
 	//
 	// Any of "local", "toll_free", "mobile", "national", "shared_cost", "landline",
 	// "tollfree", "shortcode", "longcode".
-	PhoneNumberType string `json:"phone_number_type"`
+	PhoneNumberType PhoneNumberSlimListResponsePhoneNumberType `json:"phone_number_type"`
 	// ISO 8601 formatted date indicating when the resource was purchased.
 	PurchasedAt string `json:"purchased_at"`
 	// Identifies the type of the resource.
@@ -549,7 +545,7 @@ type PhoneNumberSlimListResponseData struct {
 	// "active", "deleted", "emergency-only", "ported-out", "port-out-pending",
 	// "requirement-info-pending", "requirement-info-under-review",
 	// "requirement-info-exception", "provision-pending".
-	Status string `json:"status"`
+	Status PhoneNumberSlimListResponseStatus `json:"status"`
 	// Indicates whether T38 Fax Gateway for inbound calls to this number.
 	T38FaxGatewayEnabled bool `json:"t38_fax_gateway_enabled"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -581,10 +577,72 @@ type PhoneNumberSlimListResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PhoneNumberSlimListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *PhoneNumberSlimListResponseData) UnmarshalJSON(data []byte) error {
+func (r PhoneNumberSlimListResponse) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumberSlimListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Indicates the status of the provisioning of emergency services for the phone
+// number. This field contains information about activity that may be ongoing for a
+// number where it either is being provisioned or deprovisioned but is not yet
+// enabled/disabled.
+type PhoneNumberSlimListResponseEmergencyStatus string
+
+const (
+	PhoneNumberSlimListResponseEmergencyStatusActive             PhoneNumberSlimListResponseEmergencyStatus = "active"
+	PhoneNumberSlimListResponseEmergencyStatusDeprovisioning     PhoneNumberSlimListResponseEmergencyStatus = "deprovisioning"
+	PhoneNumberSlimListResponseEmergencyStatusDisabled           PhoneNumberSlimListResponseEmergencyStatus = "disabled"
+	PhoneNumberSlimListResponseEmergencyStatusProvisioning       PhoneNumberSlimListResponseEmergencyStatus = "provisioning"
+	PhoneNumberSlimListResponseEmergencyStatusProvisioningFailed PhoneNumberSlimListResponseEmergencyStatus = "provisioning-failed"
+)
+
+// The inbound_call_screening setting is a phone number configuration option
+// variable that allows users to configure their settings to block or flag
+// fraudulent calls. It can be set to disabled, reject_calls, or flag_calls. This
+// feature has an additional per-number monthly cost associated with it.
+type PhoneNumberSlimListResponseInboundCallScreening string
+
+const (
+	PhoneNumberSlimListResponseInboundCallScreeningDisabled    PhoneNumberSlimListResponseInboundCallScreening = "disabled"
+	PhoneNumberSlimListResponseInboundCallScreeningRejectCalls PhoneNumberSlimListResponseInboundCallScreening = "reject_calls"
+	PhoneNumberSlimListResponseInboundCallScreeningFlagCalls   PhoneNumberSlimListResponseInboundCallScreening = "flag_calls"
+)
+
+// The phone number's type. Note: For numbers purchased prior to July 2023 or when
+// fetching a number's details immediately after a purchase completes, the legacy
+// values `tollfree`, `shortcode` or `longcode` may be returned instead.
+type PhoneNumberSlimListResponsePhoneNumberType string
+
+const (
+	PhoneNumberSlimListResponsePhoneNumberTypeLocal      PhoneNumberSlimListResponsePhoneNumberType = "local"
+	PhoneNumberSlimListResponsePhoneNumberTypeTollFree   PhoneNumberSlimListResponsePhoneNumberType = "toll_free"
+	PhoneNumberSlimListResponsePhoneNumberTypeMobile     PhoneNumberSlimListResponsePhoneNumberType = "mobile"
+	PhoneNumberSlimListResponsePhoneNumberTypeNational   PhoneNumberSlimListResponsePhoneNumberType = "national"
+	PhoneNumberSlimListResponsePhoneNumberTypeSharedCost PhoneNumberSlimListResponsePhoneNumberType = "shared_cost"
+	PhoneNumberSlimListResponsePhoneNumberTypeLandline   PhoneNumberSlimListResponsePhoneNumberType = "landline"
+	PhoneNumberSlimListResponsePhoneNumberTypeTollfree   PhoneNumberSlimListResponsePhoneNumberType = "tollfree"
+	PhoneNumberSlimListResponsePhoneNumberTypeShortcode  PhoneNumberSlimListResponsePhoneNumberType = "shortcode"
+	PhoneNumberSlimListResponsePhoneNumberTypeLongcode   PhoneNumberSlimListResponsePhoneNumberType = "longcode"
+)
+
+// The phone number's current status.
+type PhoneNumberSlimListResponseStatus string
+
+const (
+	PhoneNumberSlimListResponseStatusPurchasePending            PhoneNumberSlimListResponseStatus = "purchase-pending"
+	PhoneNumberSlimListResponseStatusPurchaseFailed             PhoneNumberSlimListResponseStatus = "purchase-failed"
+	PhoneNumberSlimListResponseStatusPortPending                PhoneNumberSlimListResponseStatus = "port-pending"
+	PhoneNumberSlimListResponseStatusPortFailed                 PhoneNumberSlimListResponseStatus = "port-failed"
+	PhoneNumberSlimListResponseStatusActive                     PhoneNumberSlimListResponseStatus = "active"
+	PhoneNumberSlimListResponseStatusDeleted                    PhoneNumberSlimListResponseStatus = "deleted"
+	PhoneNumberSlimListResponseStatusEmergencyOnly              PhoneNumberSlimListResponseStatus = "emergency-only"
+	PhoneNumberSlimListResponseStatusPortedOut                  PhoneNumberSlimListResponseStatus = "ported-out"
+	PhoneNumberSlimListResponseStatusPortOutPending             PhoneNumberSlimListResponseStatus = "port-out-pending"
+	PhoneNumberSlimListResponseStatusRequirementInfoPending     PhoneNumberSlimListResponseStatus = "requirement-info-pending"
+	PhoneNumberSlimListResponseStatusRequirementInfoUnderReview PhoneNumberSlimListResponseStatus = "requirement-info-under-review"
+	PhoneNumberSlimListResponseStatusRequirementInfoException   PhoneNumberSlimListResponseStatus = "requirement-info-exception"
+	PhoneNumberSlimListResponseStatusProvisionPending           PhoneNumberSlimListResponseStatus = "provision-pending"
+)
 
 type PhoneNumberUpdateParams struct {
 	// Identifies the billing group associated with the phone number.
