@@ -169,7 +169,7 @@ type WebhookDeliveryGetResponseDataAttemptHTTP struct {
 	// Request details.
 	Request WebhookDeliveryGetResponseDataAttemptHTTPRequest `json:"request"`
 	// Response details, optional.
-	Response WebhookDeliveryGetResponseDataAttemptHTTPResponse `json:"response,nullable"`
+	Response WebhookDeliveryGetResponseDataAttemptHTTPResponse `json:"response"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Request     respjson.Field
@@ -336,7 +336,7 @@ type WebhookDeliveryListResponseAttemptHTTP struct {
 	// Request details.
 	Request WebhookDeliveryListResponseAttemptHTTPRequest `json:"request"`
 	// Response details, optional.
-	Response WebhookDeliveryListResponseAttemptHTTPResponse `json:"response,nullable"`
+	Response WebhookDeliveryListResponseAttemptHTTPResponse `json:"response"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Request     respjson.Field
