@@ -109,7 +109,6 @@ type Client struct {
 	OtaUpdates                         OtaUpdateService
 	OutboundVoiceProfiles              OutboundVoiceProfileService
 	Payment                            PaymentService
-	PhoneNumberAssignmentByProfile     PhoneNumberAssignmentByProfileService
 	PhoneNumberBlocks                  PhoneNumberBlockService
 	PhoneNumbers                       PhoneNumberService
 	PhoneNumbersRegulatoryRequirements PhoneNumbersRegulatoryRequirementService
@@ -163,18 +162,11 @@ type Client struct {
 	Wireless                           WirelessService
 	WirelessBlocklistValues            WirelessBlocklistValueService
 	WirelessBlocklists                 WirelessBlocklistService
-	PartnerCampaigns                   PartnerCampaignService
 	WellKnown                          WellKnownService
 	InexplicitNumberOrders             InexplicitNumberOrderService
 	MobilePhoneNumbers                 MobilePhoneNumberService
 	MobileVoiceConnections             MobileVoiceConnectionService
-	Number10dlc                        Number10dlcService
-	Brand                              BrandService
-	Campaign                           CampaignService
-	CampaignBuilder                    CampaignBuilderService
-	Enum                               EnumService
-	PartnerCampaign                    PartnerCampaignService
-	PhoneNumberCampaigns               PhoneNumberCampaignService
+	Messaging10dlc                     Messaging10dlcService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -302,7 +294,6 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.OtaUpdates = NewOtaUpdateService(opts...)
 	r.OutboundVoiceProfiles = NewOutboundVoiceProfileService(opts...)
 	r.Payment = NewPaymentService(opts...)
-	r.PhoneNumberAssignmentByProfile = NewPhoneNumberAssignmentByProfileService(opts...)
 	r.PhoneNumberBlocks = NewPhoneNumberBlockService(opts...)
 	r.PhoneNumbers = NewPhoneNumberService(opts...)
 	r.PhoneNumbersRegulatoryRequirements = NewPhoneNumbersRegulatoryRequirementService(opts...)
@@ -356,18 +347,11 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Wireless = NewWirelessService(opts...)
 	r.WirelessBlocklistValues = NewWirelessBlocklistValueService(opts...)
 	r.WirelessBlocklists = NewWirelessBlocklistService(opts...)
-	r.PartnerCampaigns = NewPartnerCampaignService(opts...)
 	r.WellKnown = NewWellKnownService(opts...)
 	r.InexplicitNumberOrders = NewInexplicitNumberOrderService(opts...)
 	r.MobilePhoneNumbers = NewMobilePhoneNumberService(opts...)
 	r.MobileVoiceConnections = NewMobileVoiceConnectionService(opts...)
-	r.Number10dlc = NewNumber10dlcService(opts...)
-	r.Brand = NewBrandService(opts...)
-	r.Campaign = NewCampaignService(opts...)
-	r.CampaignBuilder = NewCampaignBuilderService(opts...)
-	r.Enum = NewEnumService(opts...)
-	r.PartnerCampaign = NewPartnerCampaignService(opts...)
-	r.PhoneNumberCampaigns = NewPhoneNumberCampaignService(opts...)
+	r.Messaging10dlc = NewMessaging10dlcService(opts...)
 
 	return
 }
