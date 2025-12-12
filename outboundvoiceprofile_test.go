@@ -37,8 +37,8 @@ func TestOutboundVoiceProfileNewWithOptionalParams(t *testing.T) {
 		},
 		CallingWindow: telnyx.OutboundVoiceProfileNewParamsCallingWindow{
 			CallsPerCld: telnyx.Int(5),
-			EndTime:     telnyx.Time("18:11:19.117Z"),
-			StartTime:   telnyx.Time("18:11:19.117Z"),
+			EndTime:     telnyx.Time("20:00:00.00Z"),
+			StartTime:   telnyx.Time("08:00:00.00Z"),
 		},
 		ConcurrentCallLimit:     telnyx.Int(10),
 		DailySpendLimit:         telnyx.String("100.00"),
@@ -110,8 +110,8 @@ func TestOutboundVoiceProfileUpdateWithOptionalParams(t *testing.T) {
 			},
 			CallingWindow: telnyx.OutboundVoiceProfileUpdateParamsCallingWindow{
 				CallsPerCld: telnyx.Int(5),
-				EndTime:     telnyx.Time("18:11:19.117Z"),
-				StartTime:   telnyx.Time("18:11:19.117Z"),
+				EndTime:     telnyx.Time("20:00:00.00Z"),
+				StartTime:   telnyx.Time("08:00:00.00Z"),
 			},
 			ConcurrentCallLimit:     telnyx.Int(10),
 			DailySpendLimit:         telnyx.String("100.00"),
