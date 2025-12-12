@@ -204,7 +204,7 @@ func TestConferenceActionPlayWithOptionalParams(t *testing.T) {
 			AudioURL:       telnyx.String("http://www.example.com/sounds/greeting.wav"),
 			CallControlIDs: []string{"string"},
 			Loop: telnyx.LoopcountUnionParam{
-				OfLoopcountString: telnyx.String("infinity"),
+				OfString: telnyx.String("infinity"),
 			},
 			MediaName: telnyx.String("my_media_uploaded_to_media_storage_api"),
 			Region:    telnyx.ConferenceActionPlayParamsRegionUs,
