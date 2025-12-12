@@ -98,7 +98,7 @@ func TestTexmlAccountCallCallsWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"account_sid",
 		telnyx.TexmlAccountCallCallsParams{
-			ApplicationSid:                   "ApplicationSid",
+			ApplicationSid:                   "example-app-sid",
 			From:                             "+13120001234",
 			To:                               "+13121230000",
 			AsyncAmd:                         telnyx.Bool(true),
