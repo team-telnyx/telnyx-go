@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
-func TestMessaging10dlcCampaignBuilderSubmitWithOptionalParams(t *testing.T) {
+func TestNumber10dlcCampaignBuilderSubmitWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,7 @@ func TestMessaging10dlcCampaignBuilderSubmitWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Messaging10dlc.CampaignBuilder.Submit(context.TODO(), telnyx.Messaging10dlcCampaignBuilderSubmitParams{
+	_, err := client.Number10dlc.CampaignBuilder.Submit(context.TODO(), telnyx.Number10dlcCampaignBuilderSubmitParams{
 		BrandID:                "brandId",
 		Description:            "description",
 		Usecase:                "usecase",

@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/option"
 )
 
-func TestMessaging10dlcPhoneNumberAssignmentByProfileAssignWithOptionalParams(t *testing.T) {
+func TestPhoneNumberAssignmentByProfileAssignWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,7 @@ func TestMessaging10dlcPhoneNumberAssignmentByProfileAssignWithOptionalParams(t 
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Messaging10dlc.PhoneNumberAssignmentByProfile.Assign(context.TODO(), telnyx.Messaging10dlcPhoneNumberAssignmentByProfileAssignParams{
+	_, err := client.PhoneNumberAssignmentByProfile.Assign(context.TODO(), telnyx.PhoneNumberAssignmentByProfileAssignParams{
 		MessagingProfileID: "4001767e-ce0f-4cae-9d5f-0d5e636e7809",
 		CampaignID:         telnyx.String("4b300178-131c-d902-d54e-72d90ba1620j"),
 		TcrCampaignID:      telnyx.String("CWZTFH1"),
@@ -40,7 +40,7 @@ func TestMessaging10dlcPhoneNumberAssignmentByProfileAssignWithOptionalParams(t 
 	}
 }
 
-func TestMessaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusWithOptionalParams(t *testing.T) {
+func TestPhoneNumberAssignmentByProfileGetPhoneNumberStatusWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -53,10 +53,10 @@ func TestMessaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusWithOp
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Messaging10dlc.PhoneNumberAssignmentByProfile.ListPhoneNumberStatus(
+	_, err := client.PhoneNumberAssignmentByProfile.GetPhoneNumberStatus(
 		context.TODO(),
 		"taskId",
-		telnyx.Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusParams{
+		telnyx.PhoneNumberAssignmentByProfileGetPhoneNumberStatusParams{
 			Page:           telnyx.Int(0),
 			RecordsPerPage: telnyx.Int(0),
 		},
@@ -70,7 +70,7 @@ func TestMessaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusWithOp
 	}
 }
 
-func TestMessaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusWithOptionalParams(t *testing.T) {
+func TestPhoneNumberAssignmentByProfileGetStatus(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -83,37 +83,7 @@ func TestMessaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusWithOpt
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Messaging10dlc.PhoneNumberAssignmentByProfile.GetPhoneNumberStatus(
-		context.TODO(),
-		"taskId",
-		telnyx.Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusParams{
-			Page:           telnyx.Int(0),
-			RecordsPerPage: telnyx.Int(0),
-		},
-	)
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestMessaging10dlcPhoneNumberAssignmentByProfileGetStatus(t *testing.T) {
-	t.Skip("Prism tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Messaging10dlc.PhoneNumberAssignmentByProfile.GetStatus(context.TODO(), "taskId")
+	_, err := client.PhoneNumberAssignmentByProfile.GetStatus(context.TODO(), "taskId")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

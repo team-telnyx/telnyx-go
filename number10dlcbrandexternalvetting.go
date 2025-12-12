@@ -16,28 +16,27 @@ import (
 	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
 )
 
-// Messaging10dlcBrandExternalVettingService contains methods and other services
-// that help with interacting with the telnyx API.
+// Number10dlcBrandExternalVettingService contains methods and other services that
+// help with interacting with the telnyx API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewMessaging10dlcBrandExternalVettingService] method instead.
-type Messaging10dlcBrandExternalVettingService struct {
+// the [NewNumber10dlcBrandExternalVettingService] method instead.
+type Number10dlcBrandExternalVettingService struct {
 	Options []option.RequestOption
 }
 
-// NewMessaging10dlcBrandExternalVettingService generates a new service that
-// applies the given options to each request. These options are applied after the
-// parent client's options (if there is one), and before any request-specific
-// options.
-func NewMessaging10dlcBrandExternalVettingService(opts ...option.RequestOption) (r Messaging10dlcBrandExternalVettingService) {
-	r = Messaging10dlcBrandExternalVettingService{}
+// NewNumber10dlcBrandExternalVettingService generates a new service that applies
+// the given options to each request. These options are applied after the parent
+// client's options (if there is one), and before any request-specific options.
+func NewNumber10dlcBrandExternalVettingService(opts ...option.RequestOption) (r Number10dlcBrandExternalVettingService) {
+	r = Number10dlcBrandExternalVettingService{}
 	r.Options = opts
 	return
 }
 
 // Get list of valid external vetting record for a given brand
-func (r *Messaging10dlcBrandExternalVettingService) List(ctx context.Context, brandID string, opts ...option.RequestOption) (res *[]Messaging10dlcBrandExternalVettingListResponse, err error) {
+func (r *Number10dlcBrandExternalVettingService) List(ctx context.Context, brandID string, opts ...option.RequestOption) (res *[]Number10dlcBrandExternalVettingListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
@@ -52,7 +51,7 @@ func (r *Messaging10dlcBrandExternalVettingService) List(ctx context.Context, br
 // TCR-approved vetting provider. If the vetting provider confirms validity of the
 // record, it will be saved with the brand and will be considered for future
 // campaign qualification.
-func (r *Messaging10dlcBrandExternalVettingService) Imports(ctx context.Context, brandID string, body Messaging10dlcBrandExternalVettingImportsParams, opts ...option.RequestOption) (res *Messaging10dlcBrandExternalVettingImportsResponse, err error) {
+func (r *Number10dlcBrandExternalVettingService) Imports(ctx context.Context, brandID string, body Number10dlcBrandExternalVettingImportsParams, opts ...option.RequestOption) (res *Number10dlcBrandExternalVettingImportsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
@@ -64,7 +63,7 @@ func (r *Messaging10dlcBrandExternalVettingService) Imports(ctx context.Context,
 }
 
 // Order new external vetting for a brand
-func (r *Messaging10dlcBrandExternalVettingService) Order(ctx context.Context, brandID string, body Messaging10dlcBrandExternalVettingOrderParams, opts ...option.RequestOption) (res *Messaging10dlcBrandExternalVettingOrderResponse, err error) {
+func (r *Number10dlcBrandExternalVettingService) Order(ctx context.Context, brandID string, body Number10dlcBrandExternalVettingOrderParams, opts ...option.RequestOption) (res *Number10dlcBrandExternalVettingOrderResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
@@ -75,7 +74,7 @@ func (r *Messaging10dlcBrandExternalVettingService) Order(ctx context.Context, b
 	return
 }
 
-type Messaging10dlcBrandExternalVettingListResponse struct {
+type Number10dlcBrandExternalVettingListResponse struct {
 	// Vetting submission date. This is the date when the vetting request is generated
 	// in ISO 8601 format.
 	CreateDate string `json:"createDate"`
@@ -109,12 +108,12 @@ type Messaging10dlcBrandExternalVettingListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r Messaging10dlcBrandExternalVettingListResponse) RawJSON() string { return r.JSON.raw }
-func (r *Messaging10dlcBrandExternalVettingListResponse) UnmarshalJSON(data []byte) error {
+func (r Number10dlcBrandExternalVettingListResponse) RawJSON() string { return r.JSON.raw }
+func (r *Number10dlcBrandExternalVettingListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type Messaging10dlcBrandExternalVettingImportsResponse struct {
+type Number10dlcBrandExternalVettingImportsResponse struct {
 	// Vetting submission date. This is the date when the vetting request is generated
 	// in ISO 8601 format.
 	CreateDate string `json:"createDate"`
@@ -148,12 +147,12 @@ type Messaging10dlcBrandExternalVettingImportsResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r Messaging10dlcBrandExternalVettingImportsResponse) RawJSON() string { return r.JSON.raw }
-func (r *Messaging10dlcBrandExternalVettingImportsResponse) UnmarshalJSON(data []byte) error {
+func (r Number10dlcBrandExternalVettingImportsResponse) RawJSON() string { return r.JSON.raw }
+func (r *Number10dlcBrandExternalVettingImportsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type Messaging10dlcBrandExternalVettingOrderResponse struct {
+type Number10dlcBrandExternalVettingOrderResponse struct {
 	// Vetting submission date. This is the date when the vetting request is generated
 	// in ISO 8601 format.
 	CreateDate string `json:"createDate"`
@@ -187,12 +186,12 @@ type Messaging10dlcBrandExternalVettingOrderResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r Messaging10dlcBrandExternalVettingOrderResponse) RawJSON() string { return r.JSON.raw }
-func (r *Messaging10dlcBrandExternalVettingOrderResponse) UnmarshalJSON(data []byte) error {
+func (r Number10dlcBrandExternalVettingOrderResponse) RawJSON() string { return r.JSON.raw }
+func (r *Number10dlcBrandExternalVettingOrderResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type Messaging10dlcBrandExternalVettingImportsParams struct {
+type Number10dlcBrandExternalVettingImportsParams struct {
 	// External vetting provider ID for the brand.
 	EvpID string `json:"evpId,required"`
 	// Unique ID that identifies a vetting transaction performed by a vetting provider.
@@ -203,15 +202,15 @@ type Messaging10dlcBrandExternalVettingImportsParams struct {
 	paramObj
 }
 
-func (r Messaging10dlcBrandExternalVettingImportsParams) MarshalJSON() (data []byte, err error) {
-	type shadow Messaging10dlcBrandExternalVettingImportsParams
+func (r Number10dlcBrandExternalVettingImportsParams) MarshalJSON() (data []byte, err error) {
+	type shadow Number10dlcBrandExternalVettingImportsParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *Messaging10dlcBrandExternalVettingImportsParams) UnmarshalJSON(data []byte) error {
+func (r *Number10dlcBrandExternalVettingImportsParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type Messaging10dlcBrandExternalVettingOrderParams struct {
+type Number10dlcBrandExternalVettingOrderParams struct {
 	// External vetting provider ID for the brand.
 	EvpID string `json:"evpId,required"`
 	// Identifies the vetting classification.
@@ -219,10 +218,10 @@ type Messaging10dlcBrandExternalVettingOrderParams struct {
 	paramObj
 }
 
-func (r Messaging10dlcBrandExternalVettingOrderParams) MarshalJSON() (data []byte, err error) {
-	type shadow Messaging10dlcBrandExternalVettingOrderParams
+func (r Number10dlcBrandExternalVettingOrderParams) MarshalJSON() (data []byte, err error) {
+	type shadow Number10dlcBrandExternalVettingOrderParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *Messaging10dlcBrandExternalVettingOrderParams) UnmarshalJSON(data []byte) error {
+func (r *Number10dlcBrandExternalVettingOrderParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
