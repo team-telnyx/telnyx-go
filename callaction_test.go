@@ -830,7 +830,7 @@ func TestCallActionStartPlaybackWithOptionalParams(t *testing.T) {
 			ClientState: telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
 			CommandID:   telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
 			Loop: telnyx.LoopcountUnionParam{
-				OfLoopcountString: telnyx.String("infinity"),
+				OfString: telnyx.String("infinity"),
 			},
 			MediaName:       telnyx.String("my_media_uploaded_to_media_storage_api"),
 			Overlay:         telnyx.Bool(true),
