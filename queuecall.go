@@ -157,6 +157,8 @@ type QueueCallGetResponseData struct {
 	To string `json:"to,required"`
 	// The time the call has been waiting in the queue, given in seconds
 	WaitTimeSecs int64 `json:"wait_time_secs,required"`
+	// Indicates whether the call is still active in the queue.
+	IsAlive bool `json:"is_alive"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CallControlID respjson.Field
@@ -170,6 +172,7 @@ type QueueCallGetResponseData struct {
 		RecordType    respjson.Field
 		To            respjson.Field
 		WaitTimeSecs  respjson.Field
+		IsAlive       respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
@@ -206,6 +209,8 @@ type QueueCallListResponse struct {
 	To string `json:"to,required"`
 	// The time the call has been waiting in the queue, given in seconds
 	WaitTimeSecs int64 `json:"wait_time_secs,required"`
+	// Indicates whether the call is still active in the queue.
+	IsAlive bool `json:"is_alive"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CallControlID respjson.Field
@@ -219,6 +224,7 @@ type QueueCallListResponse struct {
 		RecordType    respjson.Field
 		To            respjson.Field
 		WaitTimeSecs  respjson.Field
+		IsAlive       respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`

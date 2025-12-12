@@ -834,21 +834,21 @@ func (r *InterruptionSettingsParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type LoopcountUnionParam struct {
-	OfString param.Opt[string] `json:",omitzero,inline"`
-	OfInt    param.Opt[int64]  `json:",omitzero,inline"`
+	OfLoopcountString param.Opt[string] `json:",omitzero,inline"`
+	OfInt             param.Opt[int64]  `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u LoopcountUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfString, u.OfInt)
+	return param.MarshalUnion(u, u.OfLoopcountString, u.OfInt)
 }
 func (u *LoopcountUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *LoopcountUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfString) {
-		return &u.OfString.Value
+	if !param.IsOmitted(u.OfLoopcountString) {
+		return &u.OfLoopcountString.Value
 	} else if !param.IsOmitted(u.OfInt) {
 		return &u.OfInt.Value
 	}

@@ -70,7 +70,7 @@ func TestTexmlAccountConferenceParticipantUpdateWithOptionalParams(t *testing.T)
 			EndConferenceOnExit: telnyx.Bool(false),
 			Hold:                telnyx.Bool(true),
 			HoldMethod:          telnyx.TexmlAccountConferenceParticipantUpdateParamsHoldMethodPost,
-			HoldURL:             telnyx.String("HoldUrl"),
+			HoldURL:             telnyx.String("https://www.example.com/hold-music.xml"),
 			Muted:               telnyx.Bool(true),
 			WaitURL:             telnyx.String("https://www.example.com/wait_music.mp3"),
 		},

@@ -1754,11 +1754,11 @@ type CallHangupWebhookEventDataPayload struct {
 	// Number or SIP URI placing the call.
 	From string `json:"from"`
 	// The reason the call was ended (`call_rejected`, `normal_clearing`,
-	// `originator_cancel`, `timeout`, `time_limit`, `user_busy`, `not_found` or
-	// `unspecified`).
+	// `originator_cancel`, `timeout`, `time_limit`, `user_busy`, `not_found`,
+	// `no_answer` or `unspecified`).
 	//
 	// Any of "call_rejected", "normal_clearing", "originator_cancel", "timeout",
-	// "time_limit", "user_busy", "not_found", "unspecified".
+	// "time_limit", "user_busy", "not_found", "no_answer", "unspecified".
 	HangupCause string `json:"hangup_cause"`
 	// The party who ended the call (`callee`, `caller`, `unknown`).
 	//
