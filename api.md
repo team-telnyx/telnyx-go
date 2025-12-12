@@ -216,7 +216,6 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CallAIGatherEndedWebhookEvent">CallAIGatherEndedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CallAIGatherMessageHistoryUpdatedWebhookEvent">CallAIGatherMessageHistoryUpdatedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CallAIGatherPartialResultsWebhookEvent">CallAIGatherPartialResultsWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CustomerServiceRecordStatusChangedWebhookEvent">CustomerServiceRecordStatusChangedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CallAnsweredWebhookEvent">CallAnsweredWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CallBridgedWebhookEvent">CallBridgedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CallConversationEndedWebhookEvent">CallConversationEndedWebhookEvent</a>
@@ -280,7 +279,6 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CallAIGatherEndedWebhookEvent">CallAIGatherEndedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CallAIGatherMessageHistoryUpdatedWebhookEvent">CallAIGatherMessageHistoryUpdatedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CallAIGatherPartialResultsWebhookEvent">CallAIGatherPartialResultsWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CustomerServiceRecordStatusChangedWebhookEvent">CustomerServiceRecordStatusChangedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CallAnsweredWebhookEvent">CallAnsweredWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CallBridgedWebhookEvent">CallBridgedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#CallConversationEndedWebhookEvent">CallConversationEndedWebhookEvent</a>
