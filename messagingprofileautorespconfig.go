@@ -41,7 +41,7 @@ func NewMessagingProfileAutorespConfigService(opts ...option.RequestOption) (r M
 	return
 }
 
-// Create Auto-Reponse Setting
+// Create auto-response setting
 func (r *MessagingProfileAutorespConfigService) New(ctx context.Context, profileID string, body MessagingProfileAutorespConfigNewParams, opts ...option.RequestOption) (res *AutoRespConfigResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if profileID == "" {
