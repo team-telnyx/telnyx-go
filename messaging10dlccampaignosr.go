@@ -32,7 +32,7 @@ func NewMessaging10dlcCampaignOsrService(opts ...option.RequestOption) (r Messag
 	return
 }
 
-// Get OSR campaign attributes
+// Get My Osr Campaign Attributes
 func (r *Messaging10dlcCampaignOsrService) GetAttributes(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *Messaging10dlcCampaignOsrGetAttributesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {

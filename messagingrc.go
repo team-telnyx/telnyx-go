@@ -53,7 +53,7 @@ func (r *MessagingRcService) InviteTestNumber(ctx context.Context, phoneNumber s
 	return
 }
 
-// Check RCS capabilities (batch)
+// List RCS capabilities of a given batch of phone numbers
 func (r *MessagingRcService) ListBulkCapabilities(ctx context.Context, body MessagingRcListBulkCapabilitiesParams, opts ...option.RequestOption) (res *MessagingRcListBulkCapabilitiesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "messaging/rcs/bulk_capabilities"
@@ -61,7 +61,7 @@ func (r *MessagingRcService) ListBulkCapabilities(ctx context.Context, body Mess
 	return
 }
 
-// Check RCS capabilities
+// List RCS capabilities of a phone number
 func (r *MessagingRcService) GetCapabilities(ctx context.Context, phoneNumber string, query MessagingRcGetCapabilitiesParams, opts ...option.RequestOption) (res *MessagingRcGetCapabilitiesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.AgentID == "" {

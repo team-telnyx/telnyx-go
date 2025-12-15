@@ -35,7 +35,7 @@ func NewMessagingNumbersBulkUpdateService(opts ...option.RequestOption) (r Messa
 	return
 }
 
-// Bulk update phone number profiles
+// Update the messaging profile of multiple phone numbers
 func (r *MessagingNumbersBulkUpdateService) New(ctx context.Context, body MessagingNumbersBulkUpdateNewParams, opts ...option.RequestOption) (res *MessagingNumbersBulkUpdateNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "messaging_numbers_bulk_updates"
