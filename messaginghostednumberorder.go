@@ -96,7 +96,7 @@ func (r *MessagingHostedNumberOrderService) Delete(ctx context.Context, id strin
 	return
 }
 
-// Check hosted messaging eligibility
+// Check eligibility of phone numbers for hosted messaging
 func (r *MessagingHostedNumberOrderService) CheckEligibility(ctx context.Context, body MessagingHostedNumberOrderCheckEligibilityParams, opts ...option.RequestOption) (res *MessagingHostedNumberOrderCheckEligibilityResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "messaging_hosted_number_orders/eligibility_numbers_check"
