@@ -89,7 +89,6 @@ type Client struct {
 	MessagingProfiles                  MessagingProfileService
 	MessagingTollfree                  MessagingTollfreeService
 	MessagingURLDomains                MessagingURLDomainService
-	Messsages                          MesssageService
 	MobileNetworkOperators             MobileNetworkOperatorService
 	MobilePushCredentials              MobilePushCredentialService
 	NetworkCoverage                    NetworkCoverageService
@@ -274,7 +273,6 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.MessagingProfiles = NewMessagingProfileService(opts...)
 	r.MessagingTollfree = NewMessagingTollfreeService(opts...)
 	r.MessagingURLDomains = NewMessagingURLDomainService(opts...)
-	r.Messsages = NewMesssageService(opts...)
 	r.MobileNetworkOperators = NewMobileNetworkOperatorService(opts...)
 	r.MobilePushCredentials = NewMobilePushCredentialService(opts...)
 	r.NetworkCoverage = NewNetworkCoverageService(opts...)

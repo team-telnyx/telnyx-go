@@ -2129,31 +2129,6 @@ Methods:
 
 - <code title="get /messaging_url_domains">client.MessagingURLDomains.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MessagingURLDomainService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MessagingURLDomainListParams">MessagingURLDomainListParams</a>) (<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3/packages/pagination#DefaultPagination">DefaultPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MessagingURLDomainListResponse">MessagingURLDomainListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
-# Messsages
-
-Params Types:
-
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#RcsAgentMessageParam">RcsAgentMessageParam</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#RcsCardContentParam">RcsCardContentParam</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#RcsContentInfoParam">RcsContentInfoParam</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#RcsSuggestionParam">RcsSuggestionParam</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#WhatsappMediaParam">WhatsappMediaParam</a>
-
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#RcsAgentMessage">RcsAgentMessage</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#RcsCardContent">RcsCardContent</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#RcsContentInfo">RcsContentInfo</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#RcsSuggestion">RcsSuggestion</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#WhatsappMedia">WhatsappMedia</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MesssageRcsResponse">MesssageRcsResponse</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MesssageWhatsappResponse">MesssageWhatsappResponse</a>
-
-Methods:
-
-- <code title="post /messsages/rcs">client.Messsages.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MesssageService.Rcs">Rcs</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MesssageRcsParams">MesssageRcsParams</a>) (<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MesssageRcsResponse">MesssageRcsResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="post /messsages/whatsapp">client.Messsages.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MesssageService.Whatsapp">Whatsapp</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MesssageWhatsappParams">MesssageWhatsappParams</a>) (<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MesssageWhatsappResponse">MesssageWhatsappResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-
 # MobileNetworkOperators
 
 Response Types:
