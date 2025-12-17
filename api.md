@@ -1949,6 +1949,8 @@ Methods:
 
 - <code title="get /messages/rcs/deeplinks/{agent_id}">client.Messages.Rcs.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MessageRcService.GenerateDeeplink">GenerateDeeplink</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, agentID <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MessageRcGenerateDeeplinkParams">MessageRcGenerateDeeplinkParams</a>) (<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3#MessageRcGenerateDeeplinkResponse">MessageRcGenerateDeeplinkResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+## Whatsapp
+
 # Messaging
 
 ## Rcs
