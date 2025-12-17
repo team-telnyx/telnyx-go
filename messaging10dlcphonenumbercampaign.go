@@ -72,7 +72,7 @@ func (r *Messaging10dlcPhoneNumberCampaignService) Update(ctx context.Context, c
 	return
 }
 
-// Retrieve All Phone Number Campaigns
+// List phone number campaigns
 func (r *Messaging10dlcPhoneNumberCampaignService) List(ctx context.Context, query Messaging10dlcPhoneNumberCampaignListParams, opts ...option.RequestOption) (res *pagination.PerPagePaginationV2[PhoneNumberCampaign], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -90,7 +90,7 @@ func (r *Messaging10dlcPhoneNumberCampaignService) List(ctx context.Context, que
 	return res, nil
 }
 
-// Retrieve All Phone Number Campaigns
+// List phone number campaigns
 func (r *Messaging10dlcPhoneNumberCampaignService) ListAutoPaging(ctx context.Context, query Messaging10dlcPhoneNumberCampaignListParams, opts ...option.RequestOption) *pagination.PerPagePaginationV2AutoPager[PhoneNumberCampaign] {
 	return pagination.NewPerPagePaginationV2AutoPager(r.List(ctx, query, opts...))
 }
