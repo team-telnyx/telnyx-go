@@ -283,7 +283,7 @@ func TestMessageSendWhatsappWithOptionalParams(t *testing.T) {
 		From: "+13125551234",
 		To:   "+13125551234",
 		WhatsappMessage: telnyx.MessageSendWhatsappParamsWhatsappMessage{
-			Audio: telnyx.MessageSendWhatsappParamsWhatsappMessageAudio{
+			Audio: telnyx.WhatsappMediaParam{
 				Caption:  telnyx.String("caption"),
 				Filename: telnyx.String("filename"),
 				Link:     telnyx.String("http://example.com/media.jpg"),
@@ -321,13 +321,13 @@ func TestMessageSendWhatsappWithOptionalParams(t *testing.T) {
 					URL:  telnyx.String("url"),
 				}},
 			}},
-			Document: telnyx.MessageSendWhatsappParamsWhatsappMessageDocument{
+			Document: telnyx.WhatsappMediaParam{
 				Caption:  telnyx.String("caption"),
 				Filename: telnyx.String("filename"),
 				Link:     telnyx.String("http://example.com/media.jpg"),
 				Voice:    telnyx.Bool(true),
 			},
-			Image: telnyx.MessageSendWhatsappParamsWhatsappMessageImage{
+			Image: telnyx.WhatsappMediaParam{
 				Caption:  telnyx.String("caption"),
 				Filename: telnyx.String("filename"),
 				Link:     telnyx.String("http://example.com/media.jpg"),
@@ -353,14 +353,14 @@ func TestMessageSendWhatsappWithOptionalParams(t *testing.T) {
 						},
 						CardIndex: telnyx.Int(0),
 						Header: telnyx.MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardHeader{
-							Image: telnyx.MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardHeaderImage{
+							Image: telnyx.WhatsappMediaParam{
 								Caption:  telnyx.String("caption"),
 								Filename: telnyx.String("filename"),
 								Link:     telnyx.String("http://example.com/media.jpg"),
 								Voice:    telnyx.Bool(true),
 							},
 							Type: "image",
-							Video: telnyx.MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardHeaderVideo{
+							Video: telnyx.WhatsappMediaParam{
 								Caption:  telnyx.String("caption"),
 								Filename: telnyx.String("filename"),
 								Link:     telnyx.String("http://example.com/media.jpg"),
@@ -396,13 +396,13 @@ func TestMessageSendWhatsappWithOptionalParams(t *testing.T) {
 					Text: telnyx.String("text"),
 				},
 				Header: telnyx.MessageSendWhatsappParamsWhatsappMessageInteractiveHeader{
-					Document: telnyx.MessageSendWhatsappParamsWhatsappMessageInteractiveHeaderDocument{
+					Document: telnyx.WhatsappMediaParam{
 						Caption:  telnyx.String("caption"),
 						Filename: telnyx.String("filename"),
 						Link:     telnyx.String("http://example.com/media.jpg"),
 						Voice:    telnyx.Bool(true),
 					},
-					Image: telnyx.MessageSendWhatsappParamsWhatsappMessageInteractiveHeaderImage{
+					Image: telnyx.WhatsappMediaParam{
 						Caption:  telnyx.String("caption"),
 						Filename: telnyx.String("filename"),
 						Link:     telnyx.String("http://example.com/media.jpg"),
@@ -410,7 +410,7 @@ func TestMessageSendWhatsappWithOptionalParams(t *testing.T) {
 					},
 					SubText: telnyx.String("sub_text"),
 					Text:    telnyx.String("text"),
-					Video: telnyx.MessageSendWhatsappParamsWhatsappMessageInteractiveHeaderVideo{
+					Video: telnyx.WhatsappMediaParam{
 						Caption:  telnyx.String("caption"),
 						Filename: telnyx.String("filename"),
 						Link:     telnyx.String("http://example.com/media.jpg"),
@@ -429,14 +429,14 @@ func TestMessageSendWhatsappWithOptionalParams(t *testing.T) {
 				Emoji:     telnyx.String("emoji"),
 				MessageID: telnyx.String("message_id"),
 			},
-			Sticker: telnyx.MessageSendWhatsappParamsWhatsappMessageSticker{
+			Sticker: telnyx.WhatsappMediaParam{
 				Caption:  telnyx.String("caption"),
 				Filename: telnyx.String("filename"),
 				Link:     telnyx.String("http://example.com/media.jpg"),
 				Voice:    telnyx.Bool(true),
 			},
 			Type: "audio",
-			Video: telnyx.MessageSendWhatsappParamsWhatsappMessageVideo{
+			Video: telnyx.WhatsappMediaParam{
 				Caption:  telnyx.String("caption"),
 				Filename: telnyx.String("filename"),
 				Link:     telnyx.String("http://example.com/media.jpg"),
