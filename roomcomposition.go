@@ -135,12 +135,12 @@ type RoomComposition struct {
 	VideoLayout map[string]VideoRegion `json:"video_layout"`
 	// The failover URL where webhooks related to this room composition will be sent if
 	// sending to the primary URL fails. Must include a scheme, such as 'https'.
-	WebhookEventFailoverURL string `json:"webhook_event_failover_url,nullable" format:"uri"`
+	WebhookEventFailoverURL string `json:"webhook_event_failover_url" format:"uri"`
 	// The URL where webhooks related to this room composition will be sent. Must
 	// include a scheme, such as 'https'.
 	WebhookEventURL string `json:"webhook_event_url" format:"uri"`
 	// Specifies how many seconds to wait before timing out a webhook.
-	WebhookTimeoutSecs int64 `json:"webhook_timeout_secs,nullable"`
+	WebhookTimeoutSecs int64 `json:"webhook_timeout_secs"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                      respjson.Field
@@ -191,27 +191,27 @@ const (
 
 type VideoRegion struct {
 	// Height of the video region
-	Height int64 `json:"height,nullable"`
+	Height int64 `json:"height"`
 	// Maximum number of columns of the region's placement grid. By default, the region
 	// has as many columns as needed to layout all the specified video sources.
-	MaxColumns int64 `json:"max_columns,nullable"`
+	MaxColumns int64 `json:"max_columns"`
 	// Maximum number of rows of the region's placement grid. By default, the region
 	// has as many rows as needed to layout all the specified video sources.
-	MaxRows int64 `json:"max_rows,nullable"`
+	MaxRows int64 `json:"max_rows"`
 	// Array of video recording ids to be composed in the region. Can be "\*" to
 	// specify all video recordings in the session
 	VideoSources []string `json:"video_sources" format:"uuid"`
 	// Width of the video region
-	Width int64 `json:"width,nullable"`
+	Width int64 `json:"width"`
 	// X axis value (in pixels) of the region's upper left corner relative to the upper
 	// left corner of the whole room composition viewport.
-	XPos int64 `json:"x_pos,nullable"`
+	XPos int64 `json:"x_pos"`
 	// Y axis value (in pixels) of the region's upper left corner relative to the upper
 	// left corner of the whole room composition viewport.
-	YPos int64 `json:"y_pos,nullable"`
+	YPos int64 `json:"y_pos"`
 	// Regions with higher z_pos values are stacked on top of regions with lower z_pos
 	// values
-	ZPos int64 `json:"z_pos,nullable"`
+	ZPos int64 `json:"z_pos"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Height       respjson.Field
@@ -320,11 +320,11 @@ type RoomCompositionNewParams struct {
 	// The failover URL where webhooks related to this room composition will be sent if
 	// sending to the primary URL fails. Must include a scheme, such as 'https'.
 	WebhookEventFailoverURL param.Opt[string] `json:"webhook_event_failover_url,omitzero" format:"uri"`
-	// Specifies how many seconds to wait before timing out a webhook.
-	WebhookTimeoutSecs param.Opt[int64] `json:"webhook_timeout_secs,omitzero"`
 	// The URL where webhooks related to this room composition will be sent. Must
 	// include a scheme, such as 'https'.
 	WebhookEventURL param.Opt[string] `json:"webhook_event_url,omitzero" format:"uri"`
+	// Specifies how many seconds to wait before timing out a webhook.
+	WebhookTimeoutSecs param.Opt[int64] `json:"webhook_timeout_secs,omitzero"`
 	// Describes the video layout of the room composition in terms of regions.
 	VideoLayout map[string]VideoRegionParam `json:"video_layout,omitzero"`
 	paramObj

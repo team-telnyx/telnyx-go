@@ -737,6 +737,10 @@ type TexmlAccountCallCallsParams struct {
 	SipAuthUsername param.Opt[string] `json:"SipAuthUsername,omitzero"`
 	// URL destination for Telnyx to send status callback events to for the call.
 	StatusCallback param.Opt[string] `json:"StatusCallback,omitzero"`
+	// The call control ID of the existing call to supervise. When provided, the
+	// created leg will be added to the specified call in supervising mode. Status
+	// callbacks and action callbacks will NOT be sent for the supervising leg.
+	SuperviseCallSid param.Opt[string] `json:"SuperviseCallSid,omitzero"`
 	// The URL from which Telnyx will retrieve the TeXML call instructions.
 	URL param.Opt[string] `json:"Url,omitzero"`
 	// HTTP request type used for `AsyncAmdStatusCallback`. The default value is
@@ -780,6 +784,12 @@ type TexmlAccountCallCallsParams struct {
 	//
 	// Any of "GET", "POST".
 	StatusCallbackMethod TexmlAccountCallCallsParamsStatusCallbackMethod `json:"StatusCallbackMethod,omitzero"`
+	// The supervising role for the new leg. Determines the audio behavior: barge (hear
+	// both sides), whisper (only hear supervisor), monitor (hear both sides but
+	// supervisor muted). Default: barge
+	//
+	// Any of "barge", "whisper", "monitor".
+	SupervisingRole TexmlAccountCallCallsParamsSupervisingRole `json:"SupervisingRole,omitzero"`
 	// Whether to trim any leading and trailing silence from the recording. Defaults to
 	// `trim-silence`.
 	//
@@ -897,6 +907,17 @@ type TexmlAccountCallCallsParamsStatusCallbackMethod string
 const (
 	TexmlAccountCallCallsParamsStatusCallbackMethodGet  TexmlAccountCallCallsParamsStatusCallbackMethod = "GET"
 	TexmlAccountCallCallsParamsStatusCallbackMethodPost TexmlAccountCallCallsParamsStatusCallbackMethod = "POST"
+)
+
+// The supervising role for the new leg. Determines the audio behavior: barge (hear
+// both sides), whisper (only hear supervisor), monitor (hear both sides but
+// supervisor muted). Default: barge
+type TexmlAccountCallCallsParamsSupervisingRole string
+
+const (
+	TexmlAccountCallCallsParamsSupervisingRoleBarge   TexmlAccountCallCallsParamsSupervisingRole = "barge"
+	TexmlAccountCallCallsParamsSupervisingRoleWhisper TexmlAccountCallCallsParamsSupervisingRole = "whisper"
+	TexmlAccountCallCallsParamsSupervisingRoleMonitor TexmlAccountCallCallsParamsSupervisingRole = "monitor"
 )
 
 // Whether to trim any leading and trailing silence from the recording. Defaults to

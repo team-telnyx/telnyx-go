@@ -26,9 +26,8 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewMessageService] method instead.
 type MessageService struct {
-	Options  []option.RequestOption
-	Rcs      MessageRcService
-	Whatsapp MessageWhatsappService
+	Options []option.RequestOption
+	Rcs     MessageRcService
 }
 
 // NewMessageService generates a new service that applies the given options to each
@@ -38,7 +37,6 @@ func NewMessageService(opts ...option.RequestOption) (r MessageService) {
 	r = MessageService{}
 	r.Options = opts
 	r.Rcs = NewMessageRcService(opts...)
-	r.Whatsapp = NewMessageWhatsappService(opts...)
 	return
 }
 
@@ -124,6 +122,14 @@ func (r *MessageService) SendNumberPool(ctx context.Context, body MessageSendNum
 func (r *MessageService) SendShortCode(ctx context.Context, body MessageSendShortCodeParams, opts ...option.RequestOption) (res *MessageSendShortCodeResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/short_code"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
+// Send a Whatsapp message
+func (r *MessageService) SendWhatsapp(ctx context.Context, body MessageSendWhatsappParams, opts ...option.RequestOption) (res *MessageSendWhatsappResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "messages/whatsapp"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -1234,6 +1240,928 @@ func (r *MessageSendShortCodeResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type MessageSendWhatsappResponse struct {
+	Data MessageSendWhatsappResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponse) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseData struct {
+	// message ID
+	ID                 string                              `json:"id"`
+	Body               MessageSendWhatsappResponseDataBody `json:"body"`
+	Direction          string                              `json:"direction"`
+	Encoding           string                              `json:"encoding"`
+	From               MessageSendWhatsappResponseDataFrom `json:"from"`
+	MessagingProfileID string                              `json:"messaging_profile_id"`
+	OrganizationID     string                              `json:"organization_id"`
+	ReceivedAt         time.Time                           `json:"received_at" format:"date-time"`
+	RecordType         string                              `json:"record_type"`
+	To                 []MessageSendWhatsappResponseDataTo `json:"to"`
+	Type               string                              `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                 respjson.Field
+		Body               respjson.Field
+		Direction          respjson.Field
+		Encoding           respjson.Field
+		From               respjson.Field
+		MessagingProfileID respjson.Field
+		OrganizationID     respjson.Field
+		ReceivedAt         respjson.Field
+		RecordType         respjson.Field
+		To                 respjson.Field
+		Type               respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseData) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBody struct {
+	Audio MessageSendWhatsappResponseDataBodyAudio `json:"audio"`
+	// custom data to return with status update
+	BizOpaqueCallbackData string                                         `json:"biz_opaque_callback_data"`
+	Contacts              []MessageSendWhatsappResponseDataBodyContact   `json:"contacts"`
+	Document              MessageSendWhatsappResponseDataBodyDocument    `json:"document"`
+	Image                 MessageSendWhatsappResponseDataBodyImage       `json:"image"`
+	Interactive           MessageSendWhatsappResponseDataBodyInteractive `json:"interactive"`
+	Location              MessageSendWhatsappResponseDataBodyLocation    `json:"location"`
+	Reaction              MessageSendWhatsappResponseDataBodyReaction    `json:"reaction"`
+	Sticker               MessageSendWhatsappResponseDataBodySticker     `json:"sticker"`
+	// Any of "audio", "document", "image", "sticker", "video", "interactive",
+	// "location", "template", "reaction", "contacts".
+	Type  string                                   `json:"type"`
+	Video MessageSendWhatsappResponseDataBodyVideo `json:"video"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Audio                 respjson.Field
+		BizOpaqueCallbackData respjson.Field
+		Contacts              respjson.Field
+		Document              respjson.Field
+		Image                 respjson.Field
+		Interactive           respjson.Field
+		Location              respjson.Field
+		Reaction              respjson.Field
+		Sticker               respjson.Field
+		Type                  respjson.Field
+		Video                 respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBody) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseDataBody) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyAudio struct {
+	// media caption
+	Caption string `json:"caption"`
+	// file name with extension
+	Filename string `json:"filename"`
+	// media URL
+	Link string `json:"link" format:"url"`
+	// true if voice message
+	Voice bool `json:"voice"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Caption     respjson.Field
+		Filename    respjson.Field
+		Link        respjson.Field
+		Voice       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyAudio) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseDataBodyAudio) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyContact struct {
+	Addresses []MessageSendWhatsappResponseDataBodyContactAddress `json:"addresses"`
+	Birthday  string                                              `json:"birthday"`
+	Emails    []MessageSendWhatsappResponseDataBodyContactEmail   `json:"emails"`
+	Name      string                                              `json:"name"`
+	Org       MessageSendWhatsappResponseDataBodyContactOrg       `json:"org"`
+	Phones    []MessageSendWhatsappResponseDataBodyContactPhone   `json:"phones"`
+	URLs      []MessageSendWhatsappResponseDataBodyContactURL     `json:"urls"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Addresses   respjson.Field
+		Birthday    respjson.Field
+		Emails      respjson.Field
+		Name        respjson.Field
+		Org         respjson.Field
+		Phones      respjson.Field
+		URLs        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyContact) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseDataBodyContact) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyContactAddress struct {
+	City        string `json:"city"`
+	Country     string `json:"country"`
+	CountryCode string `json:"country_code"`
+	State       string `json:"state"`
+	Street      string `json:"street"`
+	Type        string `json:"type"`
+	Zip         string `json:"zip"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		City        respjson.Field
+		Country     respjson.Field
+		CountryCode respjson.Field
+		State       respjson.Field
+		Street      respjson.Field
+		Type        respjson.Field
+		Zip         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyContactAddress) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseDataBodyContactAddress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyContactEmail struct {
+	Email string `json:"email"`
+	Type  string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Email       respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyContactEmail) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseDataBodyContactEmail) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyContactOrg struct {
+	Company    string `json:"company"`
+	Department string `json:"department"`
+	Title      string `json:"title"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Company     respjson.Field
+		Department  respjson.Field
+		Title       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyContactOrg) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseDataBodyContactOrg) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyContactPhone struct {
+	Phone string `json:"phone" format:"E+164"`
+	Type  string `json:"type"`
+	WaID  string `json:"wa_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Phone       respjson.Field
+		Type        respjson.Field
+		WaID        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyContactPhone) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseDataBodyContactPhone) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyContactURL struct {
+	Type string `json:"type"`
+	URL  string `json:"url" format:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyContactURL) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseDataBodyContactURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyDocument struct {
+	// media caption
+	Caption string `json:"caption"`
+	// file name with extension
+	Filename string `json:"filename"`
+	// media URL
+	Link string `json:"link" format:"url"`
+	// true if voice message
+	Voice bool `json:"voice"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Caption     respjson.Field
+		Filename    respjson.Field
+		Link        respjson.Field
+		Voice       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyDocument) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseDataBodyDocument) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyImage struct {
+	// media caption
+	Caption string `json:"caption"`
+	// file name with extension
+	Filename string `json:"filename"`
+	// media URL
+	Link string `json:"link" format:"url"`
+	// true if voice message
+	Voice bool `json:"voice"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Caption     respjson.Field
+		Filename    respjson.Field
+		Link        respjson.Field
+		Voice       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyImage) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseDataBodyImage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyInteractive struct {
+	Action MessageSendWhatsappResponseDataBodyInteractiveAction `json:"action"`
+	Body   MessageSendWhatsappResponseDataBodyInteractiveBody   `json:"body"`
+	Footer MessageSendWhatsappResponseDataBodyInteractiveFooter `json:"footer"`
+	Header MessageSendWhatsappResponseDataBodyInteractiveHeader `json:"header"`
+	// Any of "cta_url", "list", "carousel", "button", "location_request_message".
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Action      respjson.Field
+		Body        respjson.Field
+		Footer      respjson.Field
+		Header      respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyInteractive) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseDataBodyInteractive) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyInteractiveAction struct {
+	Button            string                                                         `json:"button"`
+	Buttons           []MessageSendWhatsappResponseDataBodyInteractiveActionButton   `json:"buttons"`
+	Cards             []MessageSendWhatsappResponseDataBodyInteractiveActionCard     `json:"cards"`
+	CatalogID         string                                                         `json:"catalog_id"`
+	Mode              string                                                         `json:"mode"`
+	Name              string                                                         `json:"name"`
+	Parameters        MessageSendWhatsappResponseDataBodyInteractiveActionParameters `json:"parameters"`
+	ProductRetailerID string                                                         `json:"product_retailer_id"`
+	Sections          []MessageSendWhatsappResponseDataBodyInteractiveActionSection  `json:"sections"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Button            respjson.Field
+		Buttons           respjson.Field
+		Cards             respjson.Field
+		CatalogID         respjson.Field
+		Mode              respjson.Field
+		Name              respjson.Field
+		Parameters        respjson.Field
+		ProductRetailerID respjson.Field
+		Sections          respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyInteractiveAction) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseDataBodyInteractiveAction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyInteractiveActionButton struct {
+	Reply MessageSendWhatsappResponseDataBodyInteractiveActionButtonReply `json:"reply"`
+	// Any of "reply".
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Reply       respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyInteractiveActionButton) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *MessageSendWhatsappResponseDataBodyInteractiveActionButton) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyInteractiveActionButtonReply struct {
+	// unique identifier for each button, 256 character maximum
+	ID string `json:"id"`
+	// button label, 20 character maximum
+	Title string `json:"title"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Title       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyInteractiveActionButtonReply) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *MessageSendWhatsappResponseDataBodyInteractiveActionButtonReply) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyInteractiveActionCard struct {
+	Action MessageSendWhatsappResponseDataBodyInteractiveActionCardAction `json:"action"`
+	Body   MessageSendWhatsappResponseDataBodyInteractiveActionCardBody   `json:"body"`
+	// unique index for each card (0-9)
+	CardIndex int64                                                          `json:"card_index"`
+	Header    MessageSendWhatsappResponseDataBodyInteractiveActionCardHeader `json:"header"`
+	// Any of "cta_url".
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Action      respjson.Field
+		Body        respjson.Field
+		CardIndex   respjson.Field
+		Header      respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyInteractiveActionCard) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseDataBodyInteractiveActionCard) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyInteractiveActionCardAction struct {
+	// the unique ID of the catalog
+	CatalogID string `json:"catalog_id"`
+	// the unique retailer ID of the product
+	ProductRetailerID string `json:"product_retailer_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CatalogID         respjson.Field
+		ProductRetailerID respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyInteractiveActionCardAction) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *MessageSendWhatsappResponseDataBodyInteractiveActionCardAction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyInteractiveActionCardBody struct {
+	// 160 character maximum, up to 2 line breaks
+	Text string `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyInteractiveActionCardBody) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *MessageSendWhatsappResponseDataBodyInteractiveActionCardBody) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyInteractiveActionCardHeader struct {
+	Image MessageSendWhatsappResponseDataBodyInteractiveActionCardHeaderImage `json:"image"`
+	// Any of "image", "video".
+	Type  string                                                              `json:"type"`
+	Video MessageSendWhatsappResponseDataBodyInteractiveActionCardHeaderVideo `json:"video"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Image       respjson.Field
+		Type        respjson.Field
+		Video       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyInteractiveActionCardHeader) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *MessageSendWhatsappResponseDataBodyInteractiveActionCardHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyInteractiveActionCardHeaderImage struct {
+	// media caption
+	Caption string `json:"caption"`
+	// file name with extension
+	Filename string `json:"filename"`
+	// media URL
+	Link string `json:"link" format:"url"`
+	// true if voice message
+	Voice bool `json:"voice"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Caption     respjson.Field
+		Filename    respjson.Field
+		Link        respjson.Field
+		Voice       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyInteractiveActionCardHeaderImage) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *MessageSendWhatsappResponseDataBodyInteractiveActionCardHeaderImage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyInteractiveActionCardHeaderVideo struct {
+	// media caption
+	Caption string `json:"caption"`
+	// file name with extension
+	Filename string `json:"filename"`
+	// media URL
+	Link string `json:"link" format:"url"`
+	// true if voice message
+	Voice bool `json:"voice"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Caption     respjson.Field
+		Filename    respjson.Field
+		Link        respjson.Field
+		Voice       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyInteractiveActionCardHeaderVideo) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *MessageSendWhatsappResponseDataBodyInteractiveActionCardHeaderVideo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyInteractiveActionParameters struct {
+	// button label text, 20 character maximum
+	DisplayText string `json:"display_text"`
+	// button URL to load when tapped by the user
+	URL string `json:"url" format:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DisplayText respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyInteractiveActionParameters) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *MessageSendWhatsappResponseDataBodyInteractiveActionParameters) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyInteractiveActionSection struct {
+	ProductItems []MessageSendWhatsappResponseDataBodyInteractiveActionSectionProductItem `json:"product_items"`
+	Rows         []MessageSendWhatsappResponseDataBodyInteractiveActionSectionRow         `json:"rows"`
+	// section title, 24 character maximum
+	Title string `json:"title"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ProductItems respjson.Field
+		Rows         respjson.Field
+		Title        respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyInteractiveActionSection) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *MessageSendWhatsappResponseDataBodyInteractiveActionSection) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyInteractiveActionSectionProductItem struct {
+	ProductRetailerID string `json:"product_retailer_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ProductRetailerID respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyInteractiveActionSectionProductItem) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *MessageSendWhatsappResponseDataBodyInteractiveActionSectionProductItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyInteractiveActionSectionRow struct {
+	// arbitrary string identifying the row, 200 character maximum
+	ID string `json:"id"`
+	// row description, 72 character maximum
+	Description string `json:"description"`
+	// row title, 24 character maximum
+	Title string `json:"title"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Description respjson.Field
+		Title       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyInteractiveActionSectionRow) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *MessageSendWhatsappResponseDataBodyInteractiveActionSectionRow) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyInteractiveBody struct {
+	// body text, 1024 character maximum
+	Text string `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyInteractiveBody) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseDataBodyInteractiveBody) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyInteractiveFooter struct {
+	// footer text, 60 character maximum
+	Text string `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyInteractiveFooter) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseDataBodyInteractiveFooter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyInteractiveHeader struct {
+	Document MessageSendWhatsappResponseDataBodyInteractiveHeaderDocument `json:"document"`
+	Image    MessageSendWhatsappResponseDataBodyInteractiveHeaderImage    `json:"image"`
+	SubText  string                                                       `json:"sub_text"`
+	// header text, 60 character maximum
+	Text  string                                                    `json:"text"`
+	Video MessageSendWhatsappResponseDataBodyInteractiveHeaderVideo `json:"video"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Document    respjson.Field
+		Image       respjson.Field
+		SubText     respjson.Field
+		Text        respjson.Field
+		Video       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyInteractiveHeader) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseDataBodyInteractiveHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyInteractiveHeaderDocument struct {
+	// media caption
+	Caption string `json:"caption"`
+	// file name with extension
+	Filename string `json:"filename"`
+	// media URL
+	Link string `json:"link" format:"url"`
+	// true if voice message
+	Voice bool `json:"voice"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Caption     respjson.Field
+		Filename    respjson.Field
+		Link        respjson.Field
+		Voice       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyInteractiveHeaderDocument) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *MessageSendWhatsappResponseDataBodyInteractiveHeaderDocument) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyInteractiveHeaderImage struct {
+	// media caption
+	Caption string `json:"caption"`
+	// file name with extension
+	Filename string `json:"filename"`
+	// media URL
+	Link string `json:"link" format:"url"`
+	// true if voice message
+	Voice bool `json:"voice"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Caption     respjson.Field
+		Filename    respjson.Field
+		Link        respjson.Field
+		Voice       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyInteractiveHeaderImage) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *MessageSendWhatsappResponseDataBodyInteractiveHeaderImage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyInteractiveHeaderVideo struct {
+	// media caption
+	Caption string `json:"caption"`
+	// file name with extension
+	Filename string `json:"filename"`
+	// media URL
+	Link string `json:"link" format:"url"`
+	// true if voice message
+	Voice bool `json:"voice"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Caption     respjson.Field
+		Filename    respjson.Field
+		Link        respjson.Field
+		Voice       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyInteractiveHeaderVideo) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *MessageSendWhatsappResponseDataBodyInteractiveHeaderVideo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyLocation struct {
+	Address   string `json:"address"`
+	Latitude  string `json:"latitude"`
+	Longitude string `json:"longitude"`
+	Name      string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Address     respjson.Field
+		Latitude    respjson.Field
+		Longitude   respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyLocation) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseDataBodyLocation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyReaction struct {
+	Emoji     string `json:"emoji"`
+	MessageID string `json:"message_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Emoji       respjson.Field
+		MessageID   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyReaction) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseDataBodyReaction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodySticker struct {
+	// media caption
+	Caption string `json:"caption"`
+	// file name with extension
+	Filename string `json:"filename"`
+	// media URL
+	Link string `json:"link" format:"url"`
+	// true if voice message
+	Voice bool `json:"voice"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Caption     respjson.Field
+		Filename    respjson.Field
+		Link        respjson.Field
+		Voice       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodySticker) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseDataBodySticker) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataBodyVideo struct {
+	// media caption
+	Caption string `json:"caption"`
+	// file name with extension
+	Filename string `json:"filename"`
+	// media URL
+	Link string `json:"link" format:"url"`
+	// true if voice message
+	Voice bool `json:"voice"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Caption     respjson.Field
+		Filename    respjson.Field
+		Link        respjson.Field
+		Voice       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataBodyVideo) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseDataBodyVideo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataFrom struct {
+	// The carrier of the sender.
+	Carrier string `json:"carrier"`
+	// The line-type of the sender.
+	//
+	// Any of "Wireline", "Wireless", "VoWiFi", "VoIP", "Pre-Paid Wireless", "".
+	LineType string `json:"line_type"`
+	// Sending address (+E.164 formatted phone number, alphanumeric sender ID, or short
+	// code).
+	PhoneNumber string `json:"phone_number" format:"address"`
+	// Any of "received", "delivered".
+	Status string `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Carrier     respjson.Field
+		LineType    respjson.Field
+		PhoneNumber respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataFrom) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseDataFrom) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappResponseDataTo struct {
+	Carrier     string `json:"carrier"`
+	LineType    string `json:"line_type"`
+	PhoneNumber string `json:"phone_number"`
+	Status      string `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Carrier     respjson.Field
+		LineType    respjson.Field
+		PhoneNumber respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWhatsappResponseDataTo) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWhatsappResponseDataTo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type MessageScheduleParams struct {
 	// Receiving address (+E.164 formatted phone number or short code).
 	To string `json:"to,required" format:"address"`
@@ -1535,4 +2463,660 @@ type MessageSendShortCodeParamsType string
 const (
 	MessageSendShortCodeParamsTypeSMS MessageSendShortCodeParamsType = "SMS"
 	MessageSendShortCodeParamsTypeMms MessageSendShortCodeParamsType = "MMS"
+)
+
+type MessageSendWhatsappParams struct {
+	// Phone number in +E.164 format associated with Whatsapp account
+	From string `json:"from,required"`
+	// Phone number in +E.164 format
+	To              string                                   `json:"to,required"`
+	WhatsappMessage MessageSendWhatsappParamsWhatsappMessage `json:"whatsapp_message,omitzero,required"`
+	// The URL where webhooks related to this message will be sent.
+	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	// Message type - must be set to "WHATSAPP"
+	//
+	// Any of "WHATSAPP".
+	Type MessageSendWhatsappParamsType `json:"type,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParams) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessage struct {
+	// custom data to return with status update
+	BizOpaqueCallbackData param.Opt[string]                                   `json:"biz_opaque_callback_data,omitzero"`
+	Audio                 MessageSendWhatsappParamsWhatsappMessageAudio       `json:"audio,omitzero"`
+	Contacts              []MessageSendWhatsappParamsWhatsappMessageContact   `json:"contacts,omitzero"`
+	Document              MessageSendWhatsappParamsWhatsappMessageDocument    `json:"document,omitzero"`
+	Image                 MessageSendWhatsappParamsWhatsappMessageImage       `json:"image,omitzero"`
+	Interactive           MessageSendWhatsappParamsWhatsappMessageInteractive `json:"interactive,omitzero"`
+	Location              MessageSendWhatsappParamsWhatsappMessageLocation    `json:"location,omitzero"`
+	Reaction              MessageSendWhatsappParamsWhatsappMessageReaction    `json:"reaction,omitzero"`
+	Sticker               MessageSendWhatsappParamsWhatsappMessageSticker     `json:"sticker,omitzero"`
+	// Any of "audio", "document", "image", "sticker", "video", "interactive",
+	// "location", "template", "reaction", "contacts".
+	Type  string                                        `json:"type,omitzero"`
+	Video MessageSendWhatsappParamsWhatsappMessageVideo `json:"video,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessage) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessage
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[MessageSendWhatsappParamsWhatsappMessage](
+		"type", "audio", "document", "image", "sticker", "video", "interactive", "location", "template", "reaction", "contacts",
+	)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageAudio struct {
+	// media caption
+	Caption param.Opt[string] `json:"caption,omitzero"`
+	// file name with extension
+	Filename param.Opt[string] `json:"filename,omitzero"`
+	// media URL
+	Link param.Opt[string] `json:"link,omitzero" format:"url"`
+	// true if voice message
+	Voice param.Opt[bool] `json:"voice,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageAudio) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageAudio
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageAudio) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageContact struct {
+	Birthday  param.Opt[string]                                        `json:"birthday,omitzero"`
+	Name      param.Opt[string]                                        `json:"name,omitzero"`
+	Addresses []MessageSendWhatsappParamsWhatsappMessageContactAddress `json:"addresses,omitzero"`
+	Emails    []MessageSendWhatsappParamsWhatsappMessageContactEmail   `json:"emails,omitzero"`
+	Org       MessageSendWhatsappParamsWhatsappMessageContactOrg       `json:"org,omitzero"`
+	Phones    []MessageSendWhatsappParamsWhatsappMessageContactPhone   `json:"phones,omitzero"`
+	URLs      []MessageSendWhatsappParamsWhatsappMessageContactURL     `json:"urls,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageContact) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageContact
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageContact) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageContactAddress struct {
+	City        param.Opt[string] `json:"city,omitzero"`
+	Country     param.Opt[string] `json:"country,omitzero"`
+	CountryCode param.Opt[string] `json:"country_code,omitzero"`
+	State       param.Opt[string] `json:"state,omitzero"`
+	Street      param.Opt[string] `json:"street,omitzero"`
+	Type        param.Opt[string] `json:"type,omitzero"`
+	Zip         param.Opt[string] `json:"zip,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageContactAddress) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageContactAddress
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageContactAddress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageContactEmail struct {
+	Email param.Opt[string] `json:"email,omitzero"`
+	Type  param.Opt[string] `json:"type,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageContactEmail) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageContactEmail
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageContactEmail) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageContactOrg struct {
+	Company    param.Opt[string] `json:"company,omitzero"`
+	Department param.Opt[string] `json:"department,omitzero"`
+	Title      param.Opt[string] `json:"title,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageContactOrg) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageContactOrg
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageContactOrg) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageContactPhone struct {
+	Phone param.Opt[string] `json:"phone,omitzero" format:"E+164"`
+	Type  param.Opt[string] `json:"type,omitzero"`
+	WaID  param.Opt[string] `json:"wa_id,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageContactPhone) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageContactPhone
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageContactPhone) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageContactURL struct {
+	Type param.Opt[string] `json:"type,omitzero"`
+	URL  param.Opt[string] `json:"url,omitzero" format:"url"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageContactURL) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageContactURL
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageContactURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageDocument struct {
+	// media caption
+	Caption param.Opt[string] `json:"caption,omitzero"`
+	// file name with extension
+	Filename param.Opt[string] `json:"filename,omitzero"`
+	// media URL
+	Link param.Opt[string] `json:"link,omitzero" format:"url"`
+	// true if voice message
+	Voice param.Opt[bool] `json:"voice,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageDocument) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageDocument
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageDocument) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageImage struct {
+	// media caption
+	Caption param.Opt[string] `json:"caption,omitzero"`
+	// file name with extension
+	Filename param.Opt[string] `json:"filename,omitzero"`
+	// media URL
+	Link param.Opt[string] `json:"link,omitzero" format:"url"`
+	// true if voice message
+	Voice param.Opt[bool] `json:"voice,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageImage) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageImage
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageImage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageInteractive struct {
+	Action MessageSendWhatsappParamsWhatsappMessageInteractiveAction `json:"action,omitzero"`
+	Body   MessageSendWhatsappParamsWhatsappMessageInteractiveBody   `json:"body,omitzero"`
+	Footer MessageSendWhatsappParamsWhatsappMessageInteractiveFooter `json:"footer,omitzero"`
+	Header MessageSendWhatsappParamsWhatsappMessageInteractiveHeader `json:"header,omitzero"`
+	// Any of "cta_url", "list", "carousel", "button", "location_request_message".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageInteractive) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageInteractive
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageInteractive) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[MessageSendWhatsappParamsWhatsappMessageInteractive](
+		"type", "cta_url", "list", "carousel", "button", "location_request_message",
+	)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageInteractiveAction struct {
+	Button            param.Opt[string]                                                   `json:"button,omitzero"`
+	CatalogID         param.Opt[string]                                                   `json:"catalog_id,omitzero"`
+	Mode              param.Opt[string]                                                   `json:"mode,omitzero"`
+	Name              param.Opt[string]                                                   `json:"name,omitzero"`
+	ProductRetailerID param.Opt[string]                                                   `json:"product_retailer_id,omitzero"`
+	Buttons           []MessageSendWhatsappParamsWhatsappMessageInteractiveActionButton   `json:"buttons,omitzero"`
+	Cards             []MessageSendWhatsappParamsWhatsappMessageInteractiveActionCard     `json:"cards,omitzero"`
+	Parameters        MessageSendWhatsappParamsWhatsappMessageInteractiveActionParameters `json:"parameters,omitzero"`
+	Sections          []MessageSendWhatsappParamsWhatsappMessageInteractiveActionSection  `json:"sections,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageInteractiveAction) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageInteractiveAction
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageInteractiveAction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageInteractiveActionButton struct {
+	Reply MessageSendWhatsappParamsWhatsappMessageInteractiveActionButtonReply `json:"reply,omitzero"`
+	// Any of "reply".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageInteractiveActionButton) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageInteractiveActionButton
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageInteractiveActionButton) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[MessageSendWhatsappParamsWhatsappMessageInteractiveActionButton](
+		"type", "reply",
+	)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageInteractiveActionButtonReply struct {
+	// unique identifier for each button, 256 character maximum
+	ID param.Opt[string] `json:"id,omitzero"`
+	// button label, 20 character maximum
+	Title param.Opt[string] `json:"title,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageInteractiveActionButtonReply) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageInteractiveActionButtonReply
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageInteractiveActionButtonReply) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageInteractiveActionCard struct {
+	// unique index for each card (0-9)
+	CardIndex param.Opt[int64]                                                    `json:"card_index,omitzero"`
+	Action    MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardAction `json:"action,omitzero"`
+	Body      MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardBody   `json:"body,omitzero"`
+	Header    MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardHeader `json:"header,omitzero"`
+	// Any of "cta_url".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageInteractiveActionCard) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageInteractiveActionCard
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageInteractiveActionCard) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[MessageSendWhatsappParamsWhatsappMessageInteractiveActionCard](
+		"type", "cta_url",
+	)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardAction struct {
+	// the unique ID of the catalog
+	CatalogID param.Opt[string] `json:"catalog_id,omitzero"`
+	// the unique retailer ID of the product
+	ProductRetailerID param.Opt[string] `json:"product_retailer_id,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardAction) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardAction
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardAction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardBody struct {
+	// 160 character maximum, up to 2 line breaks
+	Text param.Opt[string] `json:"text,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardBody) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardBody
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardBody) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardHeader struct {
+	Image MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardHeaderImage `json:"image,omitzero"`
+	// Any of "image", "video".
+	Type  string                                                                   `json:"type,omitzero"`
+	Video MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardHeaderVideo `json:"video,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardHeader) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardHeader
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardHeader](
+		"type", "image", "video",
+	)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardHeaderImage struct {
+	// media caption
+	Caption param.Opt[string] `json:"caption,omitzero"`
+	// file name with extension
+	Filename param.Opt[string] `json:"filename,omitzero"`
+	// media URL
+	Link param.Opt[string] `json:"link,omitzero" format:"url"`
+	// true if voice message
+	Voice param.Opt[bool] `json:"voice,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardHeaderImage) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardHeaderImage
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardHeaderImage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardHeaderVideo struct {
+	// media caption
+	Caption param.Opt[string] `json:"caption,omitzero"`
+	// file name with extension
+	Filename param.Opt[string] `json:"filename,omitzero"`
+	// media URL
+	Link param.Opt[string] `json:"link,omitzero" format:"url"`
+	// true if voice message
+	Voice param.Opt[bool] `json:"voice,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardHeaderVideo) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardHeaderVideo
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageInteractiveActionCardHeaderVideo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageInteractiveActionParameters struct {
+	// button label text, 20 character maximum
+	DisplayText param.Opt[string] `json:"display_text,omitzero"`
+	// button URL to load when tapped by the user
+	URL param.Opt[string] `json:"url,omitzero" format:"url"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageInteractiveActionParameters) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageInteractiveActionParameters
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageInteractiveActionParameters) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageInteractiveActionSection struct {
+	// section title, 24 character maximum
+	Title        param.Opt[string]                                                             `json:"title,omitzero"`
+	ProductItems []MessageSendWhatsappParamsWhatsappMessageInteractiveActionSectionProductItem `json:"product_items,omitzero"`
+	Rows         []MessageSendWhatsappParamsWhatsappMessageInteractiveActionSectionRow         `json:"rows,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageInteractiveActionSection) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageInteractiveActionSection
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageInteractiveActionSection) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageInteractiveActionSectionProductItem struct {
+	ProductRetailerID param.Opt[string] `json:"product_retailer_id,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageInteractiveActionSectionProductItem) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageInteractiveActionSectionProductItem
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageInteractiveActionSectionProductItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageInteractiveActionSectionRow struct {
+	// arbitrary string identifying the row, 200 character maximum
+	ID param.Opt[string] `json:"id,omitzero"`
+	// row description, 72 character maximum
+	Description param.Opt[string] `json:"description,omitzero"`
+	// row title, 24 character maximum
+	Title param.Opt[string] `json:"title,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageInteractiveActionSectionRow) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageInteractiveActionSectionRow
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageInteractiveActionSectionRow) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageInteractiveBody struct {
+	// body text, 1024 character maximum
+	Text param.Opt[string] `json:"text,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageInteractiveBody) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageInteractiveBody
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageInteractiveBody) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageInteractiveFooter struct {
+	// footer text, 60 character maximum
+	Text param.Opt[string] `json:"text,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageInteractiveFooter) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageInteractiveFooter
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageInteractiveFooter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageInteractiveHeader struct {
+	SubText param.Opt[string] `json:"sub_text,omitzero"`
+	// header text, 60 character maximum
+	Text     param.Opt[string]                                                 `json:"text,omitzero"`
+	Document MessageSendWhatsappParamsWhatsappMessageInteractiveHeaderDocument `json:"document,omitzero"`
+	Image    MessageSendWhatsappParamsWhatsappMessageInteractiveHeaderImage    `json:"image,omitzero"`
+	Video    MessageSendWhatsappParamsWhatsappMessageInteractiveHeaderVideo    `json:"video,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageInteractiveHeader) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageInteractiveHeader
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageInteractiveHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageInteractiveHeaderDocument struct {
+	// media caption
+	Caption param.Opt[string] `json:"caption,omitzero"`
+	// file name with extension
+	Filename param.Opt[string] `json:"filename,omitzero"`
+	// media URL
+	Link param.Opt[string] `json:"link,omitzero" format:"url"`
+	// true if voice message
+	Voice param.Opt[bool] `json:"voice,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageInteractiveHeaderDocument) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageInteractiveHeaderDocument
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageInteractiveHeaderDocument) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageInteractiveHeaderImage struct {
+	// media caption
+	Caption param.Opt[string] `json:"caption,omitzero"`
+	// file name with extension
+	Filename param.Opt[string] `json:"filename,omitzero"`
+	// media URL
+	Link param.Opt[string] `json:"link,omitzero" format:"url"`
+	// true if voice message
+	Voice param.Opt[bool] `json:"voice,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageInteractiveHeaderImage) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageInteractiveHeaderImage
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageInteractiveHeaderImage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageInteractiveHeaderVideo struct {
+	// media caption
+	Caption param.Opt[string] `json:"caption,omitzero"`
+	// file name with extension
+	Filename param.Opt[string] `json:"filename,omitzero"`
+	// media URL
+	Link param.Opt[string] `json:"link,omitzero" format:"url"`
+	// true if voice message
+	Voice param.Opt[bool] `json:"voice,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageInteractiveHeaderVideo) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageInteractiveHeaderVideo
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageInteractiveHeaderVideo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageLocation struct {
+	Address   param.Opt[string] `json:"address,omitzero"`
+	Latitude  param.Opt[string] `json:"latitude,omitzero"`
+	Longitude param.Opt[string] `json:"longitude,omitzero"`
+	Name      param.Opt[string] `json:"name,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageLocation) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageLocation
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageLocation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageReaction struct {
+	Emoji     param.Opt[string] `json:"emoji,omitzero"`
+	MessageID param.Opt[string] `json:"message_id,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageReaction) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageReaction
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageReaction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageSticker struct {
+	// media caption
+	Caption param.Opt[string] `json:"caption,omitzero"`
+	// file name with extension
+	Filename param.Opt[string] `json:"filename,omitzero"`
+	// media URL
+	Link param.Opt[string] `json:"link,omitzero" format:"url"`
+	// true if voice message
+	Voice param.Opt[bool] `json:"voice,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageSticker) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageSticker
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageSticker) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWhatsappParamsWhatsappMessageVideo struct {
+	// media caption
+	Caption param.Opt[string] `json:"caption,omitzero"`
+	// file name with extension
+	Filename param.Opt[string] `json:"filename,omitzero"`
+	// media URL
+	Link param.Opt[string] `json:"link,omitzero" format:"url"`
+	// true if voice message
+	Voice param.Opt[bool] `json:"voice,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWhatsappParamsWhatsappMessageVideo) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWhatsappParamsWhatsappMessageVideo
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWhatsappParamsWhatsappMessageVideo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Message type - must be set to "WHATSAPP"
+type MessageSendWhatsappParamsType string
+
+const (
+	MessageSendWhatsappParamsTypeWhatsapp MessageSendWhatsappParamsType = "WHATSAPP"
 )

@@ -367,15 +367,15 @@ func (r *AIConversationAddMessageParams) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type AIConversationAddMessageParamsMetadataUnion struct {
-	OfString        param.Opt[string]                                      `json:",omitzero,inline"`
-	OfInt           param.Opt[int64]                                       `json:",omitzero,inline"`
-	OfBool          param.Opt[bool]                                        `json:",omitzero,inline"`
-	OfMetadataArray []AIConversationAddMessageParamsMetadataArrayItemUnion `json:",omitzero,inline"`
+	OfString                                 param.Opt[string]                                      `json:",omitzero,inline"`
+	OfInt                                    param.Opt[int64]                                       `json:",omitzero,inline"`
+	OfBool                                   param.Opt[bool]                                        `json:",omitzero,inline"`
+	OfAIConversationAddMessagesMetadataArray []AIConversationAddMessageParamsMetadataArrayItemUnion `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u AIConversationAddMessageParamsMetadataUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfString, u.OfInt, u.OfBool, u.OfMetadataArray)
+	return param.MarshalUnion(u, u.OfString, u.OfInt, u.OfBool, u.OfAIConversationAddMessagesMetadataArray)
 }
 func (u *AIConversationAddMessageParamsMetadataUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -388,8 +388,8 @@ func (u *AIConversationAddMessageParamsMetadataUnion) asAny() any {
 		return &u.OfInt.Value
 	} else if !param.IsOmitted(u.OfBool) {
 		return &u.OfBool.Value
-	} else if !param.IsOmitted(u.OfMetadataArray) {
-		return &u.OfMetadataArray
+	} else if !param.IsOmitted(u.OfAIConversationAddMessagesMetadataArray) {
+		return &u.OfAIConversationAddMessagesMetadataArray
 	}
 	return nil
 }

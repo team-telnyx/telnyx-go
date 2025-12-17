@@ -133,12 +133,12 @@ type Room struct {
 	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
 	// The failover URL where webhooks related to this room will be sent if sending to
 	// the primary URL fails. Must include a scheme, such as 'https'.
-	WebhookEventFailoverURL string `json:"webhook_event_failover_url,nullable" format:"uri"`
+	WebhookEventFailoverURL string `json:"webhook_event_failover_url" format:"uri"`
 	// The URL where webhooks related to this room will be sent. Must include a scheme,
 	// such as 'https'.
 	WebhookEventURL string `json:"webhook_event_url" format:"uri"`
 	// Specifies how many seconds to wait before timing out a webhook.
-	WebhookTimeoutSecs int64 `json:"webhook_timeout_secs,nullable"`
+	WebhookTimeoutSecs int64 `json:"webhook_timeout_secs"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                      respjson.Field
@@ -249,11 +249,6 @@ func (r *RoomUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type RoomNewParams struct {
-	// The failover URL where webhooks related to this room will be sent if sending to
-	// the primary URL fails. Must include a scheme, such as 'https'.
-	WebhookEventFailoverURL param.Opt[string] `json:"webhook_event_failover_url,omitzero" format:"uri"`
-	// Specifies how many seconds to wait before timing out a webhook.
-	WebhookTimeoutSecs param.Opt[int64] `json:"webhook_timeout_secs,omitzero"`
 	// Enable or disable recording for that room.
 	EnableRecording param.Opt[bool] `json:"enable_recording,omitzero"`
 	// The maximum amount of participants allowed in a room. If new participants try to
@@ -261,9 +256,14 @@ type RoomNewParams struct {
 	MaxParticipants param.Opt[int64] `json:"max_participants,omitzero"`
 	// The unique (within the Telnyx account scope) name of the room.
 	UniqueName param.Opt[string] `json:"unique_name,omitzero"`
+	// The failover URL where webhooks related to this room will be sent if sending to
+	// the primary URL fails. Must include a scheme, such as 'https'.
+	WebhookEventFailoverURL param.Opt[string] `json:"webhook_event_failover_url,omitzero" format:"uri"`
 	// The URL where webhooks related to this room will be sent. Must include a scheme,
 	// such as 'https'.
 	WebhookEventURL param.Opt[string] `json:"webhook_event_url,omitzero" format:"uri"`
+	// Specifies how many seconds to wait before timing out a webhook.
+	WebhookTimeoutSecs param.Opt[int64] `json:"webhook_timeout_secs,omitzero"`
 	paramObj
 }
 
@@ -290,11 +290,6 @@ func (r RoomGetParams) URLQuery() (v url.Values, err error) {
 }
 
 type RoomUpdateParams struct {
-	// The failover URL where webhooks related to this room will be sent if sending to
-	// the primary URL fails. Must include a scheme, such as 'https'.
-	WebhookEventFailoverURL param.Opt[string] `json:"webhook_event_failover_url,omitzero" format:"uri"`
-	// Specifies how many seconds to wait before timing out a webhook.
-	WebhookTimeoutSecs param.Opt[int64] `json:"webhook_timeout_secs,omitzero"`
 	// Enable or disable recording for that room.
 	EnableRecording param.Opt[bool] `json:"enable_recording,omitzero"`
 	// The maximum amount of participants allowed in a room. If new participants try to
@@ -302,9 +297,14 @@ type RoomUpdateParams struct {
 	MaxParticipants param.Opt[int64] `json:"max_participants,omitzero"`
 	// The unique (within the Telnyx account scope) name of the room.
 	UniqueName param.Opt[string] `json:"unique_name,omitzero"`
+	// The failover URL where webhooks related to this room will be sent if sending to
+	// the primary URL fails. Must include a scheme, such as 'https'.
+	WebhookEventFailoverURL param.Opt[string] `json:"webhook_event_failover_url,omitzero" format:"uri"`
 	// The URL where webhooks related to this room will be sent. Must include a scheme,
 	// such as 'https'.
 	WebhookEventURL param.Opt[string] `json:"webhook_event_url,omitzero" format:"uri"`
+	// Specifies how many seconds to wait before timing out a webhook.
+	WebhookTimeoutSecs param.Opt[int64] `json:"webhook_timeout_secs,omitzero"`
 	paramObj
 }
 
