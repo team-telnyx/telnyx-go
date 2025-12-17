@@ -26,8 +26,9 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewMessageService] method instead.
 type MessageService struct {
-	Options []option.RequestOption
-	Rcs     MessageRcService
+	Options  []option.RequestOption
+	Rcs      MessageRcService
+	Whatsapp MessageWhatsappService
 }
 
 // NewMessageService generates a new service that applies the given options to each
@@ -37,6 +38,7 @@ func NewMessageService(opts ...option.RequestOption) (r MessageService) {
 	r = MessageService{}
 	r.Options = opts
 	r.Rcs = NewMessageRcService(opts...)
+	r.Whatsapp = NewMessageWhatsappService(opts...)
 	return
 }
 
