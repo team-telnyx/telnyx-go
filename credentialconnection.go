@@ -352,6 +352,10 @@ type CredentialInbound struct {
 	// Shaken/Stir data in the SIP INVITE message of inbound calls, even when using UDP
 	// transport.
 	ShakenStirEnabled bool `json:"shaken_stir_enabled"`
+	// When enabled, allows multiple devices to ring simultaneously on incoming calls.
+	//
+	// Any of "disabled", "enabled".
+	SimultaneousRinging CredentialInboundSimultaneousRinging `json:"simultaneous_ringing"`
 	// Defaults to true.
 	SipCompactHeadersEnabled bool `json:"sip_compact_headers_enabled"`
 	// Time(sec) before aborting if connection is not made.
@@ -368,6 +372,7 @@ type CredentialInbound struct {
 		IsupHeadersEnabled       respjson.Field
 		PrackEnabled             respjson.Field
 		ShakenStirEnabled        respjson.Field
+		SimultaneousRinging      respjson.Field
 		SipCompactHeadersEnabled respjson.Field
 		Timeout1xxSecs           respjson.Field
 		Timeout2xxSecs           respjson.Field
@@ -411,6 +416,14 @@ const (
 	CredentialInboundDnisNumberFormatSipUsername CredentialInboundDnisNumberFormat = "sip_username"
 )
 
+// When enabled, allows multiple devices to ring simultaneously on incoming calls.
+type CredentialInboundSimultaneousRinging string
+
+const (
+	CredentialInboundSimultaneousRingingDisabled CredentialInboundSimultaneousRinging = "disabled"
+	CredentialInboundSimultaneousRingingEnabled  CredentialInboundSimultaneousRinging = "enabled"
+)
+
 type CredentialInboundParam struct {
 	// When set, this will limit the total number of inbound calls to phone numbers
 	// associated with this connection.
@@ -444,6 +457,10 @@ type CredentialInboundParam struct {
 	Codecs []string `json:"codecs,omitzero"`
 	// Any of "+e164", "e164", "national", "sip_username".
 	DnisNumberFormat CredentialInboundDnisNumberFormat `json:"dnis_number_format,omitzero"`
+	// When enabled, allows multiple devices to ring simultaneously on incoming calls.
+	//
+	// Any of "disabled", "enabled".
+	SimultaneousRinging CredentialInboundSimultaneousRinging `json:"simultaneous_ringing,omitzero"`
 	paramObj
 }
 
