@@ -23,6 +23,8 @@ type BookAppointment string   // Always "book_appointment"
 type CheckAvailability string // Always "check_availability"
 type Comparative string       // Always "comparative"
 type Deepgram string          // Always "Deepgram"
+type DeepgramNova2 string     // Always "deepgram/nova-2"
+type DeepgramNova3 string     // Always "deepgram/nova-3"
 type Function string          // Always "function"
 type Handoff string           // Always "handoff"
 type Ios string               // Always "ios"
@@ -39,6 +41,8 @@ func (c BookAppointment) Default() BookAppointment     { return "book_appointmen
 func (c CheckAvailability) Default() CheckAvailability { return "check_availability" }
 func (c Comparative) Default() Comparative             { return "comparative" }
 func (c Deepgram) Default() Deepgram                   { return "Deepgram" }
+func (c DeepgramNova2) Default() DeepgramNova2         { return "deepgram/nova-2" }
+func (c DeepgramNova3) Default() DeepgramNova3         { return "deepgram/nova-3" }
 func (c Function) Default() Function                   { return "function" }
 func (c Handoff) Default() Handoff                     { return "handoff" }
 func (c Ios) Default() Ios                             { return "ios" }
@@ -55,6 +59,8 @@ func (c BookAppointment) MarshalJSON() ([]byte, error)   { return marshalString(
 func (c CheckAvailability) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c Comparative) MarshalJSON() ([]byte, error)       { return marshalString(c) }
 func (c Deepgram) MarshalJSON() ([]byte, error)          { return marshalString(c) }
+func (c DeepgramNova2) MarshalJSON() ([]byte, error)     { return marshalString(c) }
+func (c DeepgramNova3) MarshalJSON() ([]byte, error)     { return marshalString(c) }
 func (c Function) MarshalJSON() ([]byte, error)          { return marshalString(c) }
 func (c Handoff) MarshalJSON() ([]byte, error)           { return marshalString(c) }
 func (c Ios) MarshalJSON() ([]byte, error)               { return marshalString(c) }
