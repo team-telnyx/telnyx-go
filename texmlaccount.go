@@ -31,6 +31,7 @@ type TexmlAccountService struct {
 	Conferences    TexmlAccountConferenceService
 	Recordings     TexmlAccountRecordingService
 	Transcriptions TexmlAccountTranscriptionService
+	Queues         TexmlAccountQueueService
 }
 
 // NewTexmlAccountService generates a new service that applies the given options to
@@ -43,6 +44,7 @@ func NewTexmlAccountService(opts ...option.RequestOption) (r TexmlAccountService
 	r.Conferences = NewTexmlAccountConferenceService(opts...)
 	r.Recordings = NewTexmlAccountRecordingService(opts...)
 	r.Transcriptions = NewTexmlAccountTranscriptionService(opts...)
+	r.Queues = NewTexmlAccountQueueService(opts...)
 	return
 }
 
