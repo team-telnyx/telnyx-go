@@ -153,8 +153,11 @@ type NetworkCreateParam struct {
 }
 
 func (r NetworkCreateParam) MarshalJSON() (data []byte, err error) {
-	type shadow NetworkCreateParam
-	return param.MarshalObject(r, (*shadow)(&r))
+	type shadow struct {
+		*NetworkCreateParam
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
 
 type NetworkNewResponse struct {

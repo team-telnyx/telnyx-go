@@ -294,8 +294,11 @@ type GlobalIPAssignmentUpdateParamsGlobalIPAssignmentUpdateRequest struct {
 }
 
 func (r GlobalIPAssignmentUpdateParamsGlobalIPAssignmentUpdateRequest) MarshalJSON() (data []byte, err error) {
-	type shadow GlobalIPAssignmentUpdateParamsGlobalIPAssignmentUpdateRequest
-	return param.MarshalObject(r, (*shadow)(&r))
+	type shadow struct {
+		*GlobalIPAssignmentUpdateParamsGlobalIPAssignmentUpdateRequest
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
 
 type GlobalIPAssignmentListParams struct {
