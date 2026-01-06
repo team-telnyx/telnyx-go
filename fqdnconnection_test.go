@@ -56,8 +56,13 @@ func TestFqdnConnectionNewWithOptionalParams(t *testing.T) {
 			Timeout1xxSecs:              telnyx.Int(10),
 			Timeout2xxSecs:              telnyx.Int(10),
 		},
-		IosPushCredentialID:        telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
-		MicrosoftTeamsSbc:          telnyx.Bool(true),
+		IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
+		MicrosoftTeamsSbc:   telnyx.Bool(true),
+		NoiseSuppression:    telnyx.FqdnConnectionNewParamsNoiseSuppressionBoth,
+		NoiseSuppressionDetails: telnyx.FqdnConnectionNewParamsNoiseSuppressionDetails{
+			AttenuationLimit: telnyx.Int(80),
+			Engine:           "deep_filter_net",
+		},
 		OnnetT38PassthroughEnabled: telnyx.Bool(true),
 		Outbound: telnyx.OutboundFqdnParam{
 			AniOverride:            telnyx.String("+1234567890"),
@@ -166,7 +171,12 @@ func TestFqdnConnectionUpdateWithOptionalParams(t *testing.T) {
 				Timeout1xxSecs:              telnyx.Int(10),
 				Timeout2xxSecs:              telnyx.Int(10),
 			},
-			IosPushCredentialID:        telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
+			IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
+			NoiseSuppression:    telnyx.FqdnConnectionUpdateParamsNoiseSuppressionBoth,
+			NoiseSuppressionDetails: telnyx.FqdnConnectionUpdateParamsNoiseSuppressionDetails{
+				AttenuationLimit: telnyx.Int(80),
+				Engine:           "deep_filter_net",
+			},
 			OnnetT38PassthroughEnabled: telnyx.Bool(true),
 			Outbound: telnyx.OutboundFqdnParam{
 				AniOverride:            telnyx.String("ani_override"),
