@@ -210,11 +210,11 @@ type TelnyxCampaignCsp struct {
 	// upstream CNP.
 	Mock bool `json:"mock,required"`
 	// Campaign sub-usecases. Must be of defined valid sub-usecase types. Use
-	// `/registry/enum/usecase` operation to retrieve list of valid sub-usecases
+	// `/10dlc/enum/usecase` operation to retrieve list of valid sub-usecases
 	SubUsecases []string `json:"subUsecases,required"`
 	// Is terms & conditions accepted?
 	TermsAndConditions bool `json:"termsAndConditions,required"`
-	// Campaign usecase. Must be of defined valid types. Use `/registry/enum/usecase`
+	// Campaign usecase. Must be of defined valid types. Use `/10dlc/enum/usecase`
 	// operation to retrieve usecases available for given brand.
 	Usecase string `json:"usecase,required"`
 	// Age gated content in campaign.
@@ -504,7 +504,7 @@ type Messaging10dlcCampaignListResponse struct {
 	// Does campaign support subscriber opt-out keyword(s)?
 	SubscriberOptout bool `json:"subscriberOptout"`
 	// Campaign sub-usecases. Must be of defined valid sub-usecase types. Use
-	// `/registry/enum/usecase` operation to retrieve list of valid sub-usecases
+	// `/10dlc/enum/usecase` operation to retrieve list of valid sub-usecases
 	SubUsecases []string `json:"subUsecases"`
 	// Unique identifier assigned to the brand by the registry.
 	TcrBrandID string `json:"tcrBrandId"`
@@ -514,7 +514,7 @@ type Messaging10dlcCampaignListResponse struct {
 	TermsAndConditions bool `json:"termsAndConditions"`
 	// Link to the campaign's terms and conditions.
 	TermsAndConditionsLink string `json:"termsAndConditionsLink"`
-	// Campaign usecase. Must be of defined valid types. Use `/registry/enum/usecase`
+	// Campaign usecase. Must be of defined valid types. Use `/10dlc/enum/usecase`
 	// operation to retrieve usecases available for given brand.
 	Usecase string `json:"usecase"`
 	// Business/industry segment of this campaign (Deprecated). Must be of defined

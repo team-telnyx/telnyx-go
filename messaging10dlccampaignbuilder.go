@@ -54,7 +54,7 @@ type Messaging10dlcCampaignBuilderSubmitParams struct {
 	BrandID string `json:"brandId,required"`
 	// Summary description of this campaign.
 	Description string `json:"description,required"`
-	// Campaign usecase. Must be of defined valid types. Use `/registry/enum/usecase`
+	// Campaign usecase. Must be of defined valid types. Use `/10dlc/enum/usecase`
 	// operation to retrieve usecases available for given brand.
 	Usecase string `json:"usecase,required"`
 	// Age gated message content in campaign.
@@ -124,7 +124,7 @@ type Messaging10dlcCampaignBuilderSubmitParams struct {
 	// if no value provided.
 	MnoIDs []int64 `json:"mnoIds,omitzero"`
 	// Campaign sub-usecases. Must be of defined valid sub-usecase types. Use
-	// `/registry/enum/usecase` operation to retrieve list of valid sub-usecases
+	// `/10dlc/enum/usecase` operation to retrieve list of valid sub-usecases
 	SubUsecases []string `json:"subUsecases,omitzero"`
 	// Tags to be set on the Campaign.
 	Tag []string `json:"tag,omitzero"`

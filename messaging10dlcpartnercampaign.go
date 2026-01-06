@@ -210,7 +210,7 @@ type TelnyxDownstreamCampaign struct {
 	// Does campaign support subscriber opt-out keyword(s)?
 	SubscriberOptout bool `json:"subscriberOptout"`
 	// Campaign sub-usecases. Must be of defined valid sub-usecase types. Use
-	// `/registry/enum/usecase` operation to retrieve list of valid sub-usecases
+	// `/10dlc/enum/usecase` operation to retrieve list of valid sub-usecases
 	SubUsecases []string `json:"subUsecases"`
 	// Is terms & conditions accepted?
 	TermsAndConditions bool `json:"termsAndConditions"`
@@ -218,7 +218,7 @@ type TelnyxDownstreamCampaign struct {
 	TermsAndConditionsLink string `json:"termsAndConditionsLink"`
 	// Date and time that the brand was last updated at.
 	UpdatedAt string `json:"updatedAt"`
-	// Campaign usecase. Must be of defined valid types. Use `/registry/enum/usecase`
+	// Campaign usecase. Must be of defined valid types. Use `/10dlc/enum/usecase`
 	// operation to retrieve usecases available for given brand.
 	Usecase string `json:"usecase"`
 	// Failover webhook to which campaign status updates are sent.
@@ -306,7 +306,7 @@ type Messaging10dlcPartnerCampaignListSharedByMeResponse struct {
 	// Alphanumeric identifier assigned by the registry for a campaign. This identifier
 	// is required by the NetNumber OSR SMS enabling process of 10DLC.
 	CampaignID string `json:"campaignId,required"`
-	// Campaign usecase. Must be of defined valid types. Use `/registry/enum/usecase`
+	// Campaign usecase. Must be of defined valid types. Use `/10dlc/enum/usecase`
 	// operation to retrieve usecases available for given brand.
 	Usecase string `json:"usecase,required"`
 	// Unix timestamp when campaign was created.
