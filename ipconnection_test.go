@@ -53,7 +53,12 @@ func TestIPConnectionNewWithOptionalParams(t *testing.T) {
 			Timeout1xxSecs:              telnyx.Int(10),
 			Timeout2xxSecs:              telnyx.Int(20),
 		},
-		IosPushCredentialID:        telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
+		IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
+		NoiseSuppression:    telnyx.IPConnectionNewParamsNoiseSuppressionBoth,
+		NoiseSuppressionDetails: telnyx.IPConnectionNewParamsNoiseSuppressionDetails{
+			AttenuationLimit: telnyx.Int(80),
+			Engine:           "deep_filter_net",
+		},
 		OnnetT38PassthroughEnabled: telnyx.Bool(false),
 		Outbound: telnyx.OutboundIPParam{
 			AniOverride:            telnyx.String("string"),
@@ -159,7 +164,12 @@ func TestIPConnectionUpdateWithOptionalParams(t *testing.T) {
 				Timeout1xxSecs:              telnyx.Int(10),
 				Timeout2xxSecs:              telnyx.Int(20),
 			},
-			IosPushCredentialID:        telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
+			IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
+			NoiseSuppression:    telnyx.IPConnectionUpdateParamsNoiseSuppressionBoth,
+			NoiseSuppressionDetails: telnyx.IPConnectionUpdateParamsNoiseSuppressionDetails{
+				AttenuationLimit: telnyx.Int(80),
+				Engine:           "deep_filter_net",
+			},
 			OnnetT38PassthroughEnabled: telnyx.Bool(false),
 			Outbound: telnyx.OutboundIPParam{
 				AniOverride:            telnyx.String("string"),

@@ -153,8 +153,18 @@ type FqdnConnection struct {
 	Inbound       InboundFqdn `json:"inbound"`
 	// The connection is enabled for Microsoft Teams Direct Routing.
 	MicrosoftTeamsSbc bool `json:"microsoft_teams_sbc"`
-	// Indicates whether noise suppression is enabled.
-	NoiseSuppression bool `json:"noise_suppression"`
+	// Controls when noise suppression is applied to calls. When set to 'inbound',
+	// noise suppression is applied to incoming audio. When set to 'outbound', it's
+	// applied to outgoing audio. When set to 'both', it's applied in both directions.
+	// When set to 'disabled', noise suppression is turned off.
+	//
+	// Any of "inbound", "outbound", "both", "disabled".
+	NoiseSuppression FqdnConnectionNoiseSuppression `json:"noise_suppression"`
+	// Configuration options for noise suppression. These settings are stored
+	// regardless of the noise_suppression value, but only take effect when
+	// noise_suppression is not 'disabled'. If you disable noise suppression and later
+	// re-enable it, the previously configured settings will be used.
+	NoiseSuppressionDetails FqdnConnectionNoiseSuppressionDetails `json:"noise_suppression_details"`
 	// Enable on-net T38 if you prefer that the sender and receiver negotiate T38
 	// directly when both are on the Telnyx network. If this is disabled, Telnyx will
 	// be able to use T38 on just one leg of the call according to each leg's settings.
@@ -219,6 +229,7 @@ type FqdnConnection struct {
 		Inbound                          respjson.Field
 		MicrosoftTeamsSbc                respjson.Field
 		NoiseSuppression                 respjson.Field
+		NoiseSuppressionDetails          respjson.Field
 		OnnetT38PassthroughEnabled       respjson.Field
 		Outbound                         respjson.Field
 		Password                         respjson.Field
@@ -246,6 +257,53 @@ type FqdnConnection struct {
 // Returns the unmodified JSON received from the API
 func (r FqdnConnection) RawJSON() string { return r.JSON.raw }
 func (r *FqdnConnection) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Controls when noise suppression is applied to calls. When set to 'inbound',
+// noise suppression is applied to incoming audio. When set to 'outbound', it's
+// applied to outgoing audio. When set to 'both', it's applied in both directions.
+// When set to 'disabled', noise suppression is turned off.
+type FqdnConnectionNoiseSuppression string
+
+const (
+	FqdnConnectionNoiseSuppressionInbound  FqdnConnectionNoiseSuppression = "inbound"
+	FqdnConnectionNoiseSuppressionOutbound FqdnConnectionNoiseSuppression = "outbound"
+	FqdnConnectionNoiseSuppressionBoth     FqdnConnectionNoiseSuppression = "both"
+	FqdnConnectionNoiseSuppressionDisabled FqdnConnectionNoiseSuppression = "disabled"
+)
+
+// Configuration options for noise suppression. These settings are stored
+// regardless of the noise_suppression value, but only take effect when
+// noise_suppression is not 'disabled'. If you disable noise suppression and later
+// re-enable it, the previously configured settings will be used.
+type FqdnConnectionNoiseSuppressionDetails struct {
+	// The attenuation limit value for the selected engine. Default values vary by
+	// engine: 0 for 'denoiser', 80 for 'deep_filter_net', 'deep_filter_net_large', and
+	// all Krisp engines ('krisp_viva_tel', 'krisp_viva_tel_lite',
+	// 'krisp_viva_promodel', 'krisp_viva_ss').
+	AttenuationLimit int64 `json:"attenuation_limit"`
+	// The noise suppression engine to use. 'denoiser' is the default engine.
+	// 'deep_filter_net' and 'deep_filter_net_large' are alternative engines with
+	// different performance characteristics. Krisp engines ('krisp_viva_tel',
+	// 'krisp_viva_tel_lite', 'krisp_viva_promodel', 'krisp_viva_ss') provide advanced
+	// noise suppression capabilities.
+	//
+	// Any of "denoiser", "deep_filter_net", "deep_filter_net_large", "krisp_viva_tel",
+	// "krisp_viva_tel_lite", "krisp_viva_promodel", "krisp_viva_ss".
+	Engine string `json:"engine"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AttenuationLimit respjson.Field
+		Engine           respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FqdnConnectionNoiseSuppressionDetails) RawJSON() string { return r.JSON.raw }
+func (r *FqdnConnectionNoiseSuppressionDetails) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -798,10 +856,22 @@ type FqdnConnectionNewParams struct {
 	// digits sent to Telnyx will be accepted in all formats.
 	//
 	// Any of "RFC 2833", "Inband", "SIP INFO".
-	DtmfType     DtmfType                    `json:"dtmf_type,omitzero"`
-	Inbound      InboundFqdnParam            `json:"inbound,omitzero"`
-	Outbound     OutboundFqdnParam           `json:"outbound,omitzero"`
-	RtcpSettings ConnectionRtcpSettingsParam `json:"rtcp_settings,omitzero"`
+	DtmfType DtmfType         `json:"dtmf_type,omitzero"`
+	Inbound  InboundFqdnParam `json:"inbound,omitzero"`
+	// Controls when noise suppression is applied to calls. When set to 'inbound',
+	// noise suppression is applied to incoming audio. When set to 'outbound', it's
+	// applied to outgoing audio. When set to 'both', it's applied in both directions.
+	// When set to 'disabled', noise suppression is turned off.
+	//
+	// Any of "inbound", "outbound", "both", "disabled".
+	NoiseSuppression FqdnConnectionNewParamsNoiseSuppression `json:"noise_suppression,omitzero"`
+	// Configuration options for noise suppression. These settings are stored
+	// regardless of the noise_suppression value, but only take effect when
+	// noise_suppression is not 'disabled'. If you disable noise suppression and later
+	// re-enable it, the previously configured settings will be used.
+	NoiseSuppressionDetails FqdnConnectionNewParamsNoiseSuppressionDetails `json:"noise_suppression_details,omitzero"`
+	Outbound                OutboundFqdnParam                              `json:"outbound,omitzero"`
+	RtcpSettings            ConnectionRtcpSettingsParam                    `json:"rtcp_settings,omitzero"`
 	// Tags associated with the connection.
 	Tags []string `json:"tags,omitzero"`
 	// One of UDP, TLS, or TCP. Applies only to connections with IP authentication or
@@ -822,6 +892,55 @@ func (r FqdnConnectionNewParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *FqdnConnectionNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Controls when noise suppression is applied to calls. When set to 'inbound',
+// noise suppression is applied to incoming audio. When set to 'outbound', it's
+// applied to outgoing audio. When set to 'both', it's applied in both directions.
+// When set to 'disabled', noise suppression is turned off.
+type FqdnConnectionNewParamsNoiseSuppression string
+
+const (
+	FqdnConnectionNewParamsNoiseSuppressionInbound  FqdnConnectionNewParamsNoiseSuppression = "inbound"
+	FqdnConnectionNewParamsNoiseSuppressionOutbound FqdnConnectionNewParamsNoiseSuppression = "outbound"
+	FqdnConnectionNewParamsNoiseSuppressionBoth     FqdnConnectionNewParamsNoiseSuppression = "both"
+	FqdnConnectionNewParamsNoiseSuppressionDisabled FqdnConnectionNewParamsNoiseSuppression = "disabled"
+)
+
+// Configuration options for noise suppression. These settings are stored
+// regardless of the noise_suppression value, but only take effect when
+// noise_suppression is not 'disabled'. If you disable noise suppression and later
+// re-enable it, the previously configured settings will be used.
+type FqdnConnectionNewParamsNoiseSuppressionDetails struct {
+	// The attenuation limit value for the selected engine. Default values vary by
+	// engine: 0 for 'denoiser', 80 for 'deep_filter_net', 'deep_filter_net_large', and
+	// all Krisp engines ('krisp_viva_tel', 'krisp_viva_tel_lite',
+	// 'krisp_viva_promodel', 'krisp_viva_ss').
+	AttenuationLimit param.Opt[int64] `json:"attenuation_limit,omitzero"`
+	// The noise suppression engine to use. 'denoiser' is the default engine.
+	// 'deep_filter_net' and 'deep_filter_net_large' are alternative engines with
+	// different performance characteristics. Krisp engines ('krisp_viva_tel',
+	// 'krisp_viva_tel_lite', 'krisp_viva_promodel', 'krisp_viva_ss') provide advanced
+	// noise suppression capabilities.
+	//
+	// Any of "denoiser", "deep_filter_net", "deep_filter_net_large", "krisp_viva_tel",
+	// "krisp_viva_tel_lite", "krisp_viva_promodel", "krisp_viva_ss".
+	Engine string `json:"engine,omitzero"`
+	paramObj
+}
+
+func (r FqdnConnectionNewParamsNoiseSuppressionDetails) MarshalJSON() (data []byte, err error) {
+	type shadow FqdnConnectionNewParamsNoiseSuppressionDetails
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FqdnConnectionNewParamsNoiseSuppressionDetails) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[FqdnConnectionNewParamsNoiseSuppressionDetails](
+		"engine", "denoiser", "deep_filter_net", "deep_filter_net_large", "krisp_viva_tel", "krisp_viva_tel_lite", "krisp_viva_promodel", "krisp_viva_ss",
+	)
 }
 
 type FqdnConnectionUpdateParams struct {
@@ -871,10 +990,22 @@ type FqdnConnectionUpdateParams struct {
 	// digits sent to Telnyx will be accepted in all formats.
 	//
 	// Any of "RFC 2833", "Inband", "SIP INFO".
-	DtmfType     DtmfType                    `json:"dtmf_type,omitzero"`
-	Inbound      InboundFqdnParam            `json:"inbound,omitzero"`
-	Outbound     OutboundFqdnParam           `json:"outbound,omitzero"`
-	RtcpSettings ConnectionRtcpSettingsParam `json:"rtcp_settings,omitzero"`
+	DtmfType DtmfType         `json:"dtmf_type,omitzero"`
+	Inbound  InboundFqdnParam `json:"inbound,omitzero"`
+	// Controls when noise suppression is applied to calls. When set to 'inbound',
+	// noise suppression is applied to incoming audio. When set to 'outbound', it's
+	// applied to outgoing audio. When set to 'both', it's applied in both directions.
+	// When set to 'disabled', noise suppression is turned off.
+	//
+	// Any of "inbound", "outbound", "both", "disabled".
+	NoiseSuppression FqdnConnectionUpdateParamsNoiseSuppression `json:"noise_suppression,omitzero"`
+	// Configuration options for noise suppression. These settings are stored
+	// regardless of the noise_suppression value, but only take effect when
+	// noise_suppression is not 'disabled'. If you disable noise suppression and later
+	// re-enable it, the previously configured settings will be used.
+	NoiseSuppressionDetails FqdnConnectionUpdateParamsNoiseSuppressionDetails `json:"noise_suppression_details,omitzero"`
+	Outbound                OutboundFqdnParam                                 `json:"outbound,omitzero"`
+	RtcpSettings            ConnectionRtcpSettingsParam                       `json:"rtcp_settings,omitzero"`
 	// Tags associated with the connection.
 	Tags []string `json:"tags,omitzero"`
 	// One of UDP, TLS, or TCP. Applies only to connections with IP authentication or
@@ -895,6 +1026,55 @@ func (r FqdnConnectionUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *FqdnConnectionUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Controls when noise suppression is applied to calls. When set to 'inbound',
+// noise suppression is applied to incoming audio. When set to 'outbound', it's
+// applied to outgoing audio. When set to 'both', it's applied in both directions.
+// When set to 'disabled', noise suppression is turned off.
+type FqdnConnectionUpdateParamsNoiseSuppression string
+
+const (
+	FqdnConnectionUpdateParamsNoiseSuppressionInbound  FqdnConnectionUpdateParamsNoiseSuppression = "inbound"
+	FqdnConnectionUpdateParamsNoiseSuppressionOutbound FqdnConnectionUpdateParamsNoiseSuppression = "outbound"
+	FqdnConnectionUpdateParamsNoiseSuppressionBoth     FqdnConnectionUpdateParamsNoiseSuppression = "both"
+	FqdnConnectionUpdateParamsNoiseSuppressionDisabled FqdnConnectionUpdateParamsNoiseSuppression = "disabled"
+)
+
+// Configuration options for noise suppression. These settings are stored
+// regardless of the noise_suppression value, but only take effect when
+// noise_suppression is not 'disabled'. If you disable noise suppression and later
+// re-enable it, the previously configured settings will be used.
+type FqdnConnectionUpdateParamsNoiseSuppressionDetails struct {
+	// The attenuation limit value for the selected engine. Default values vary by
+	// engine: 0 for 'denoiser', 80 for 'deep_filter_net', 'deep_filter_net_large', and
+	// all Krisp engines ('krisp_viva_tel', 'krisp_viva_tel_lite',
+	// 'krisp_viva_promodel', 'krisp_viva_ss').
+	AttenuationLimit param.Opt[int64] `json:"attenuation_limit,omitzero"`
+	// The noise suppression engine to use. 'denoiser' is the default engine.
+	// 'deep_filter_net' and 'deep_filter_net_large' are alternative engines with
+	// different performance characteristics. Krisp engines ('krisp_viva_tel',
+	// 'krisp_viva_tel_lite', 'krisp_viva_promodel', 'krisp_viva_ss') provide advanced
+	// noise suppression capabilities.
+	//
+	// Any of "denoiser", "deep_filter_net", "deep_filter_net_large", "krisp_viva_tel",
+	// "krisp_viva_tel_lite", "krisp_viva_promodel", "krisp_viva_ss".
+	Engine string `json:"engine,omitzero"`
+	paramObj
+}
+
+func (r FqdnConnectionUpdateParamsNoiseSuppressionDetails) MarshalJSON() (data []byte, err error) {
+	type shadow FqdnConnectionUpdateParamsNoiseSuppressionDetails
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FqdnConnectionUpdateParamsNoiseSuppressionDetails) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[FqdnConnectionUpdateParamsNoiseSuppressionDetails](
+		"engine", "denoiser", "deep_filter_net", "deep_filter_net_large", "krisp_viva_tel", "krisp_viva_tel_lite", "krisp_viva_promodel", "krisp_viva_ss",
+	)
 }
 
 type FqdnConnectionListParams struct {
