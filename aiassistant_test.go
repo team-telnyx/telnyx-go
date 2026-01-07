@@ -49,8 +49,14 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			DataRetention: telnyx.Bool(true),
 		},
 		TelephonySettings: telnyx.TelephonySettingsParam{
-			DefaultTexmlAppID:               telnyx.String("default_texml_app_id"),
+			DefaultTexmlAppID: telnyx.String("default_texml_app_id"),
+			NoiseSuppression:  telnyx.TelephonySettingsNoiseSuppressionDeepfilternet,
+			NoiseSuppressionConfig: telnyx.TelephonySettingsNoiseSuppressionConfigParam{
+				AttenuationLimit: telnyx.Int(0),
+				Mode:             "advanced",
+			},
 			SupportsUnauthenticatedWebCalls: telnyx.Bool(true),
+			TimeLimitSecs:                   telnyx.Int(30),
 		},
 		Tools: []telnyx.AssistantToolsItemsUnionParam{{
 			OfWebhook: &telnyx.WebhookToolParam{
@@ -94,10 +100,11 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			Model:    telnyx.TranscriptionSettingsModelDeepgramFlux,
 			Region:   telnyx.String("region"),
 			Settings: telnyx.TranscriptionSettingsConfigParam{
-				EotThreshold: telnyx.Float(0),
-				EotTimeoutMs: telnyx.Int(0),
-				Numerals:     telnyx.Bool(true),
-				SmartFormat:  telnyx.Bool(true),
+				EagerEotThreshold: telnyx.Float(0.3),
+				EotThreshold:      telnyx.Float(0),
+				EotTimeoutMs:      telnyx.Int(0),
+				Numerals:          telnyx.Bool(true),
+				SmartFormat:       telnyx.Bool(true),
 			},
 		},
 		VoiceSettings: telnyx.VoiceSettingsParam{
@@ -108,7 +115,12 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 					Value: "silence",
 				},
 			},
-			VoiceSpeed: telnyx.Float(0),
+			SimilarityBoost: telnyx.Float(0),
+			Speed:           telnyx.Float(0),
+			Style:           telnyx.Float(0),
+			Temperature:     telnyx.Float(0),
+			UseSpeakerBoost: telnyx.Bool(true),
+			VoiceSpeed:      telnyx.Float(0),
 		},
 	})
 	if err != nil {
@@ -192,8 +204,14 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 			},
 			PromoteToMain: telnyx.Bool(true),
 			TelephonySettings: telnyx.TelephonySettingsParam{
-				DefaultTexmlAppID:               telnyx.String("default_texml_app_id"),
+				DefaultTexmlAppID: telnyx.String("default_texml_app_id"),
+				NoiseSuppression:  telnyx.TelephonySettingsNoiseSuppressionDeepfilternet,
+				NoiseSuppressionConfig: telnyx.TelephonySettingsNoiseSuppressionConfigParam{
+					AttenuationLimit: telnyx.Int(0),
+					Mode:             "advanced",
+				},
 				SupportsUnauthenticatedWebCalls: telnyx.Bool(true),
+				TimeLimitSecs:                   telnyx.Int(30),
 			},
 			Tools: []telnyx.AssistantToolsItemsUnionParam{{
 				OfWebhook: &telnyx.WebhookToolParam{
@@ -237,10 +255,11 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				Model:    telnyx.TranscriptionSettingsModelDeepgramFlux,
 				Region:   telnyx.String("region"),
 				Settings: telnyx.TranscriptionSettingsConfigParam{
-					EotThreshold: telnyx.Float(0),
-					EotTimeoutMs: telnyx.Int(0),
-					Numerals:     telnyx.Bool(true),
-					SmartFormat:  telnyx.Bool(true),
+					EagerEotThreshold: telnyx.Float(0.3),
+					EotThreshold:      telnyx.Float(0),
+					EotTimeoutMs:      telnyx.Int(0),
+					Numerals:          telnyx.Bool(true),
+					SmartFormat:       telnyx.Bool(true),
 				},
 			},
 			VoiceSettings: telnyx.VoiceSettingsParam{
@@ -251,7 +270,12 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 						Value: "silence",
 					},
 				},
-				VoiceSpeed: telnyx.Float(0),
+				SimilarityBoost: telnyx.Float(0),
+				Speed:           telnyx.Float(0),
+				Style:           telnyx.Float(0),
+				Temperature:     telnyx.Float(0),
+				UseSpeakerBoost: telnyx.Bool(true),
+				VoiceSpeed:      telnyx.Float(0),
 			},
 		},
 	)
