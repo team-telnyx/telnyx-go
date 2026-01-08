@@ -6431,7 +6431,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	// [shared.InboundMessagePayloadCostBreakdown]
 	CostBreakdown UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdown `json:"cost_breakdown"`
 	Encoding      string                                                `json:"encoding"`
-	Errors        []MessagingError                                      `json:"errors"`
+	Errors        []shared.MessagingError                               `json:"errors"`
 	// This field is a union of [[]OutboundMessagePayloadMedia],
 	// [[]shared.InboundMessagePayloadMedia]
 	Media                 UnsafeUnwrapWebhookEventUnionDataPayloadMedia `json:"media"`
@@ -7640,7 +7640,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	// [shared.InboundMessagePayloadCostBreakdown]
 	CostBreakdown UnwrapWebhookEventUnionDataPayloadCostBreakdown `json:"cost_breakdown"`
 	Encoding      string                                          `json:"encoding"`
-	Errors        []MessagingError                                `json:"errors"`
+	Errors        []shared.MessagingError                         `json:"errors"`
 	// This field is a union of [[]OutboundMessagePayloadMedia],
 	// [[]shared.InboundMessagePayloadMedia]
 	Media                 UnwrapWebhookEventUnionDataPayloadMedia `json:"media"`

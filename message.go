@@ -134,50 +134,6 @@ func (r *MessageService) SendWhatsapp(ctx context.Context, body MessageSendWhats
 	return
 }
 
-type MessagingError struct {
-	Code   string               `json:"code,required" format:"integer"`
-	Title  string               `json:"title,required"`
-	Detail string               `json:"detail"`
-	Meta   map[string]any       `json:"meta"`
-	Source MessagingErrorSource `json:"source"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Title       respjson.Field
-		Detail      respjson.Field
-		Meta        respjson.Field
-		Source      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessagingError) RawJSON() string { return r.JSON.raw }
-func (r *MessagingError) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessagingErrorSource struct {
-	// Indicates which query parameter caused the error.
-	Parameter string `json:"parameter"`
-	// JSON pointer (RFC6901) to the offending entity.
-	Pointer string `json:"pointer" format:"json-pointer"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Parameter   respjson.Field
-		Pointer     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessagingErrorSource) RawJSON() string { return r.JSON.raw }
-func (r *MessagingErrorSource) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type OutboundMessagePayload struct {
 	// Identifies the type of resource.
 	ID string                     `json:"id" format:"uuid"`
@@ -196,7 +152,7 @@ type OutboundMessagePayload struct {
 	Encoding string `json:"encoding"`
 	// These errors may point at addressees when referring to unsuccessful/unconfirmed
 	// delivery statuses.
-	Errors []MessagingError              `json:"errors"`
+	Errors []shared.MessagingError       `json:"errors"`
 	From   OutboundMessagePayloadFrom    `json:"from"`
 	Media  []OutboundMessagePayloadMedia `json:"media"`
 	// Unique identifier for a messaging profile.
@@ -1405,9 +1361,9 @@ type MessageGetResponseDataUnion struct {
 	// [shared.InboundMessagePayloadCostBreakdown]
 	CostBreakdown MessageGetResponseDataUnionCostBreakdown `json:"cost_breakdown"`
 	// Any of "outbound", "inbound".
-	Direction string           `json:"direction"`
-	Encoding  string           `json:"encoding"`
-	Errors    []MessagingError `json:"errors"`
+	Direction string                  `json:"direction"`
+	Encoding  string                  `json:"encoding"`
+	Errors    []shared.MessagingError `json:"errors"`
 	// This field is a union of [OutboundMessagePayloadFrom],
 	// [shared.InboundMessagePayloadFrom]
 	From MessageGetResponseDataUnionFrom `json:"from"`
@@ -1718,7 +1674,7 @@ type MessageCancelScheduledResponse struct {
 	Encoding string `json:"encoding"`
 	// These errors may point at addressees when referring to unsuccessful/unconfirmed
 	// delivery statuses.
-	Errors []MessagingError                      `json:"errors"`
+	Errors []shared.MessagingError               `json:"errors"`
 	From   MessageCancelScheduledResponseFrom    `json:"from"`
 	Media  []MessageCancelScheduledResponseMedia `json:"media"`
 	// Unique identifier for a messaging profile.
