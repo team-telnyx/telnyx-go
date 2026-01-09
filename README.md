@@ -2,7 +2,7 @@
 
 <!-- x-release-please-start-version -->
 
-<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v3"><img src="https://pkg.go.dev/badge/github.com/team-telnyx/telnyx-go.svg" alt="Go Reference"></a>
+<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4"><img src="https://pkg.go.dev/badge/github.com/team-telnyx/telnyx-go.svg" alt="Go Reference"></a>
 
 <!-- x-release-please-end -->
 
@@ -26,7 +26,7 @@ Use the Telnyx MCP Server to enable AI assistants to interact with this API, all
 
 ```go
 import (
-	"github.com/team-telnyx/telnyx-go/v3" // imported as telnyx
+	"github.com/team-telnyx/telnyx-go/v4" // imported as telnyx
 )
 ```
 
@@ -37,7 +37,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/team-telnyx/telnyx-go@v3.7.0'
+go get -u 'github.com/team-telnyx/telnyx-go@v4.0.0'
 ```
 
 <!-- x-release-please-end -->
@@ -57,8 +57,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func main() {

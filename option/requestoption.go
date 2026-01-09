@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/tidwall/sjson"
 )
 
