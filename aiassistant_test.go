@@ -455,7 +455,6 @@ func TestAIAssistantSendSMSWithOptionalParams(t *testing.T) {
 		"assistant_id",
 		telnyx.AIAssistantSendSMSParams{
 			From: "from",
-			Text: "text",
 			To:   "to",
 			ConversationMetadata: map[string]telnyx.AIAssistantSendSMSParamsConversationMetadataUnion{
 				"foo": {
@@ -463,6 +462,7 @@ func TestAIAssistantSendSMSWithOptionalParams(t *testing.T) {
 				},
 			},
 			ShouldCreateConversation: telnyx.Bool(true),
+			Text:                     telnyx.String("text"),
 		},
 	)
 	if err != nil {
