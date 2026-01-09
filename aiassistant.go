@@ -3105,9 +3105,9 @@ const (
 
 type AIAssistantSendSMSParams struct {
 	From                     string                                                       `json:"from,required"`
-	Text                     string                                                       `json:"text,required"`
 	To                       string                                                       `json:"to,required"`
 	ShouldCreateConversation param.Opt[bool]                                              `json:"should_create_conversation,omitzero"`
+	Text                     param.Opt[string]                                            `json:"text,omitzero"`
 	ConversationMetadata     map[string]AIAssistantSendSMSParamsConversationMetadataUnion `json:"conversation_metadata,omitzero"`
 	paramObj
 }
