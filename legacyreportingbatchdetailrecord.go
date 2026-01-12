@@ -5,10 +5,10 @@ package telnyx
 import (
 	"encoding/json"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // LegacyReportingBatchDetailRecordService contains methods and other services that

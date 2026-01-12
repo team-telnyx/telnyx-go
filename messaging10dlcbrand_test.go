@@ -8,12 +8,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestBrandNewWithOptionalParams(t *testing.T) {
+func TestMessaging10dlcBrandNewWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,7 @@ func TestBrandNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Brand.New(context.TODO(), telnyx.BrandNewParams{
+	_, err := client.Messaging10dlc.Brand.New(context.TODO(), telnyx.Messaging10dlcBrandNewParams{
 		Country:              "US",
 		DisplayName:          "ABC Mobile",
 		Email:                "email",
@@ -61,7 +61,7 @@ func TestBrandNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestBrandGet(t *testing.T) {
+func TestMessaging10dlcBrandGet(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -74,7 +74,7 @@ func TestBrandGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Brand.Get(context.TODO(), "brandId")
+	_, err := client.Messaging10dlc.Brand.Get(context.TODO(), "brandId")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -84,7 +84,7 @@ func TestBrandGet(t *testing.T) {
 	}
 }
 
-func TestBrandUpdateWithOptionalParams(t *testing.T) {
+func TestMessaging10dlcBrandUpdateWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -97,10 +97,10 @@ func TestBrandUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Brand.Update(
+	_, err := client.Messaging10dlc.Brand.Update(
 		context.TODO(),
 		"brandId",
-		telnyx.BrandUpdateParams{
+		telnyx.Messaging10dlcBrandUpdateParams{
 			Country:              "US",
 			DisplayName:          "ABC Mobile",
 			Email:                "email",
@@ -137,7 +137,7 @@ func TestBrandUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestBrandListWithOptionalParams(t *testing.T) {
+func TestMessaging10dlcBrandListWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -150,14 +150,14 @@ func TestBrandListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Brand.List(context.TODO(), telnyx.BrandListParams{
+	_, err := client.Messaging10dlc.Brand.List(context.TODO(), telnyx.Messaging10dlcBrandListParams{
 		BrandID:        telnyx.String("826ef77a-348c-445b-81a5-a9b13c68fbfe"),
 		Country:        telnyx.String("country"),
 		DisplayName:    telnyx.String("displayName"),
 		EntityType:     telnyx.String("entityType"),
 		Page:           telnyx.Int(1),
 		RecordsPerPage: telnyx.Int(0),
-		Sort:           telnyx.BrandListParamsSortAssignedCampaignsCount,
+		Sort:           telnyx.Messaging10dlcBrandListParamsSortAssignedCampaignsCount,
 		State:          telnyx.String("state"),
 		TcrBrandID:     telnyx.String("BBAND1"),
 	})
@@ -170,7 +170,7 @@ func TestBrandListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestBrandDelete(t *testing.T) {
+func TestMessaging10dlcBrandDelete(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -183,7 +183,7 @@ func TestBrandDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Brand.Delete(context.TODO(), "brandId")
+	err := client.Messaging10dlc.Brand.Delete(context.TODO(), "brandId")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -193,7 +193,7 @@ func TestBrandDelete(t *testing.T) {
 	}
 }
 
-func TestBrandGetFeedback(t *testing.T) {
+func TestMessaging10dlcBrandGetFeedback(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -206,7 +206,7 @@ func TestBrandGetFeedback(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Brand.GetFeedback(context.TODO(), "brandId")
+	_, err := client.Messaging10dlc.Brand.GetFeedback(context.TODO(), "brandId")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -216,7 +216,7 @@ func TestBrandGetFeedback(t *testing.T) {
 	}
 }
 
-func TestBrandResend2faEmail(t *testing.T) {
+func TestMessaging10dlcBrandResend2faEmail(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -229,7 +229,7 @@ func TestBrandResend2faEmail(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Brand.Resend2faEmail(context.TODO(), "brandId")
+	err := client.Messaging10dlc.Brand.Resend2faEmail(context.TODO(), "brandId")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -239,7 +239,7 @@ func TestBrandResend2faEmail(t *testing.T) {
 	}
 }
 
-func TestBrandRevet(t *testing.T) {
+func TestMessaging10dlcBrandGetSMSOtpStatusWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -252,7 +252,95 @@ func TestBrandRevet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Brand.Revet(context.TODO(), "brandId")
+	_, err := client.Messaging10dlc.Brand.GetSMSOtpStatus(
+		context.TODO(),
+		"OTP4B2001",
+		telnyx.Messaging10dlcBrandGetSMSOtpStatusParams{
+			BrandID: telnyx.String("B123ABC"),
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestMessaging10dlcBrandRevet(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Messaging10dlc.Brand.Revet(context.TODO(), "brandId")
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestMessaging10dlcBrandTriggerSMSOtp(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Messaging10dlc.Brand.TriggerSMSOtp(
+		context.TODO(),
+		"4b20019b-043a-78f8-0657-b3be3f4b4002",
+		telnyx.Messaging10dlcBrandTriggerSMSOtpParams{
+			PinSMS:     "Your PIN is @OTP_PIN@",
+			SuccessSMS: "Verification successful!",
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestMessaging10dlcBrandVerifySMSOtp(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	err := client.Messaging10dlc.Brand.VerifySMSOtp(
+		context.TODO(),
+		"4b20019b-043a-78f8-0657-b3be3f4b4002",
+		telnyx.Messaging10dlcBrandVerifySMSOtpParams{
+			OtpPin: "123456",
+		},
+	)
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

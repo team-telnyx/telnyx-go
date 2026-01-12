@@ -10,12 +10,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // ConferenceService contains methods and other services that help with interacting
@@ -76,23 +77,56 @@ func (r *ConferenceService) Get(ctx context.Context, id string, query Conference
 // participants have left the conference or after 4 hours regardless of the number
 // of active participants. Conferences are listed in descending order by
 // `expires_at`.
-func (r *ConferenceService) List(ctx context.Context, query ConferenceListParams, opts ...option.RequestOption) (res *ConferenceListResponse, err error) {
+func (r *ConferenceService) List(ctx context.Context, query ConferenceListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[Conference], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "conferences"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Lists conferences. Conferences are created on demand, and will expire after all
+// participants have left the conference or after 4 hours regardless of the number
+// of active participants. Conferences are listed in descending order by
+// `expires_at`.
+func (r *ConferenceService) ListAutoPaging(ctx context.Context, query ConferenceListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[Conference] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Lists conference participants
-func (r *ConferenceService) ListParticipants(ctx context.Context, conferenceID string, query ConferenceListParticipantsParams, opts ...option.RequestOption) (res *ConferenceListParticipantsResponse, err error) {
+func (r *ConferenceService) ListParticipants(ctx context.Context, conferenceID string, query ConferenceListParticipantsParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[ConferenceListParticipantsResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if conferenceID == "" {
 		err = errors.New("missing required conference_id parameter")
 		return
 	}
 	path := fmt.Sprintf("conferences/%s/participants", conferenceID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Lists conference participants
+func (r *ConferenceService) ListParticipantsAutoPaging(ctx context.Context, conferenceID string, query ConferenceListParticipantsParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[ConferenceListParticipantsResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.ListParticipants(ctx, conferenceID, query, opts...))
 }
 
 type Conference struct {
@@ -226,43 +260,7 @@ func (r *ConferenceGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ConferenceListResponse struct {
-	Data []Conference   `json:"data"`
-	Meta PaginationMeta `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ConferenceListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ConferenceListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type ConferenceListParticipantsResponse struct {
-	Data []ConferenceListParticipantsResponseData `json:"data"`
-	Meta PaginationMeta                           `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ConferenceListParticipantsResponse) RawJSON() string { return r.JSON.raw }
-func (r *ConferenceListParticipantsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ConferenceListParticipantsResponseData struct {
 	// Uniquely identifies the participant
 	ID string `json:"id,required"`
 	// Call Control ID associated with the partiipant of the conference
@@ -270,7 +268,7 @@ type ConferenceListParticipantsResponseData struct {
 	// Uniquely identifies the call leg associated with the participant
 	CallLegID string `json:"call_leg_id,required"`
 	// Info about the conference that the participant is in
-	Conference ConferenceListParticipantsResponseDataConference `json:"conference,required"`
+	Conference ConferenceListParticipantsResponseConference `json:"conference,required"`
 	// ISO 8601 formatted date of when the participant was created
 	CreatedAt string `json:"created_at,required"`
 	// Whether the conference will end and all remaining participants be hung up after
@@ -281,14 +279,14 @@ type ConferenceListParticipantsResponseData struct {
 	// Whether the participant is put on_hold.
 	OnHold bool `json:"on_hold,required"`
 	// Any of "participant".
-	RecordType string `json:"record_type,required"`
+	RecordType ConferenceListParticipantsResponseRecordType `json:"record_type,required"`
 	// Whether the conference will end after the participant leaves the conference.
 	SoftEndConferenceOnExit bool `json:"soft_end_conference_on_exit,required"`
 	// The status of the participant with respect to the lifecycle within the
 	// conference
 	//
 	// Any of "joining", "joined", "left".
-	Status string `json:"status,required"`
+	Status ConferenceListParticipantsResponseStatus `json:"status,required"`
 	// ISO 8601 formatted date of when the participant was last updated
 	UpdatedAt string `json:"updated_at,required"`
 	// Array of unique call_control_ids the participant can whisper to..
@@ -314,13 +312,13 @@ type ConferenceListParticipantsResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ConferenceListParticipantsResponseData) RawJSON() string { return r.JSON.raw }
-func (r *ConferenceListParticipantsResponseData) UnmarshalJSON(data []byte) error {
+func (r ConferenceListParticipantsResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConferenceListParticipantsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Info about the conference that the participant is in
-type ConferenceListParticipantsResponseDataConference struct {
+type ConferenceListParticipantsResponseConference struct {
 	// Uniquely identifies the conference
 	ID string `json:"id"`
 	// Name of the conference
@@ -335,10 +333,26 @@ type ConferenceListParticipantsResponseDataConference struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ConferenceListParticipantsResponseDataConference) RawJSON() string { return r.JSON.raw }
-func (r *ConferenceListParticipantsResponseDataConference) UnmarshalJSON(data []byte) error {
+func (r ConferenceListParticipantsResponseConference) RawJSON() string { return r.JSON.raw }
+func (r *ConferenceListParticipantsResponseConference) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type ConferenceListParticipantsResponseRecordType string
+
+const (
+	ConferenceListParticipantsResponseRecordTypeParticipant ConferenceListParticipantsResponseRecordType = "participant"
+)
+
+// The status of the participant with respect to the lifecycle within the
+// conference
+type ConferenceListParticipantsResponseStatus string
+
+const (
+	ConferenceListParticipantsResponseStatusJoining ConferenceListParticipantsResponseStatus = "joining"
+	ConferenceListParticipantsResponseStatusJoined  ConferenceListParticipantsResponseStatus = "joined"
+	ConferenceListParticipantsResponseStatusLeft    ConferenceListParticipantsResponseStatus = "left"
+)
 
 type ConferenceNewParams struct {
 	// Unique identifier and token for controlling the call

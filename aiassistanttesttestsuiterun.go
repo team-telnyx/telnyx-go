@@ -10,12 +10,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // AIAssistantTestTestSuiteRunService contains methods and other services that help
@@ -39,15 +40,31 @@ func NewAIAssistantTestTestSuiteRunService(opts ...option.RequestOption) (r AIAs
 
 // Retrieves paginated history of test runs for a specific test suite with
 // filtering options
-func (r *AIAssistantTestTestSuiteRunService) List(ctx context.Context, suiteName string, query AIAssistantTestTestSuiteRunListParams, opts ...option.RequestOption) (res *PaginatedTestRunList, err error) {
+func (r *AIAssistantTestTestSuiteRunService) List(ctx context.Context, suiteName string, query AIAssistantTestTestSuiteRunListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[TestRunResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if suiteName == "" {
 		err = errors.New("missing required suite_name parameter")
 		return
 	}
 	path := fmt.Sprintf("ai/assistants/tests/test-suites/%s/runs", suiteName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieves paginated history of test runs for a specific test suite with
+// filtering options
+func (r *AIAssistantTestTestSuiteRunService) ListAutoPaging(ctx context.Context, suiteName string, query AIAssistantTestTestSuiteRunListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[TestRunResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, suiteName, query, opts...))
 }
 
 // Executes all tests within a specific test suite as a batch operation
@@ -109,38 +126,18 @@ func (r *PaginatedTestRunList) UnmarshalJSON(data []byte) error {
 }
 
 type AIAssistantTestTestSuiteRunListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Filter runs by execution status (pending, running, completed, failed, timeout)
 	Status param.Opt[string] `query:"status,omitzero" json:"-"`
 	// Filter runs by specific suite execution batch ID
 	TestSuiteRunID param.Opt[string] `query:"test_suite_run_id,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page AIAssistantTestTestSuiteRunListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [AIAssistantTestTestSuiteRunListParams]'s query parameters
 // as `url.Values`.
 func (r AIAssistantTestTestSuiteRunListParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type AIAssistantTestTestSuiteRunListParamsPage struct {
-	// Page number to retrieve (1-based indexing)
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// Number of test runs to return per page (1-100)
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [AIAssistantTestTestSuiteRunListParamsPage]'s query
-// parameters as `url.Values`.
-func (r AIAssistantTestTestSuiteRunListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

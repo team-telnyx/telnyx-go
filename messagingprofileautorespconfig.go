@@ -12,13 +12,14 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // MessagingProfileAutorespConfigService contains methods and other services that
@@ -40,7 +41,7 @@ func NewMessagingProfileAutorespConfigService(opts ...option.RequestOption) (r M
 	return
 }
 
-// Create Auto-Reponse Setting
+// Create auto-response setting
 func (r *MessagingProfileAutorespConfigService) New(ctx context.Context, profileID string, body MessagingProfileAutorespConfigNewParams, opts ...option.RequestOption) (res *AutoRespConfigResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if profileID == "" {
@@ -97,7 +98,7 @@ func (r *MessagingProfileAutorespConfigService) List(ctx context.Context, profil
 }
 
 // Delete Auto-Response Setting
-func (r *MessagingProfileAutorespConfigService) Delete(ctx context.Context, autorespCfgID string, body MessagingProfileAutorespConfigDeleteParams, opts ...option.RequestOption) (res *MessagingProfileAutorespConfigDeleteResponse, err error) {
+func (r *MessagingProfileAutorespConfigService) Delete(ctx context.Context, autorespCfgID string, body MessagingProfileAutorespConfigDeleteParams, opts ...option.RequestOption) (res *string, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if body.ProfileID == "" {
 		err = errors.New("missing required profile_id parameter")
@@ -193,8 +194,8 @@ func (r *AutoRespConfigResponse) UnmarshalJSON(data []byte) error {
 
 // List of Auto-Response Settings
 type MessagingProfileAutorespConfigListResponse struct {
-	Data []AutoRespConfig `json:"data,required"`
-	Meta PaginationMeta   `json:"meta,required"`
+	Data []AutoRespConfig               `json:"data,required"`
+	Meta shared.MessagingPaginationMeta `json:"meta,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -209,8 +210,6 @@ func (r MessagingProfileAutorespConfigListResponse) RawJSON() string { return r.
 func (r *MessagingProfileAutorespConfigListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type MessagingProfileAutorespConfigDeleteResponse = any
 
 type MessagingProfileAutorespConfigNewParams struct {
 	AutoRespConfigCreate AutoRespConfigCreateParam

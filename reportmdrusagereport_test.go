@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestReportMdrUsageReportNewWithOptionalParams(t *testing.T) {
@@ -79,10 +79,8 @@ func TestReportMdrUsageReportListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Reports.MdrUsageReports.List(context.TODO(), telnyx.ReportMdrUsageReportListParams{
-		Page: telnyx.ReportMdrUsageReportListParamsPage{
-			Number: telnyx.Int(0),
-			Size:   telnyx.Int(0),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

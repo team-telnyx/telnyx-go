@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestMobileVoiceConnectionNewWithOptionalParams(t *testing.T) {
@@ -37,7 +37,7 @@ func TestMobileVoiceConnectionNewWithOptionalParams(t *testing.T) {
 			OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
 		},
 		Tags:                    []string{"string"},
-		WebhookAPIVersion:       telnyx.MobileVoiceConnectionNewParamsWebhookAPIVersion1,
+		WebhookAPIVersion:       telnyx.MobileVoiceConnectionNewParamsWebhookAPIVersionV1,
 		WebhookEventFailoverURL: telnyx.String("webhook_event_failover_url"),
 		WebhookEventURL:         telnyx.String("webhook_event_url"),
 		WebhookTimeoutSecs:      telnyx.Int(0),
@@ -101,7 +101,7 @@ func TestMobileVoiceConnectionUpdateWithOptionalParams(t *testing.T) {
 				OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
 			},
 			Tags:                    []string{"string"},
-			WebhookAPIVersion:       telnyx.MobileVoiceConnectionUpdateParamsWebhookAPIVersion1,
+			WebhookAPIVersion:       telnyx.MobileVoiceConnectionUpdateParamsWebhookAPIVersionV1,
 			WebhookEventFailoverURL: telnyx.String("webhook_event_failover_url"),
 			WebhookEventURL:         telnyx.String("webhook_event_url"),
 			WebhookTimeoutSecs:      telnyx.Int(0),

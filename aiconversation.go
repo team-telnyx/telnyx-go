@@ -11,12 +11,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // AIConversationService contains methods and other services that help with
@@ -351,7 +351,7 @@ type AIConversationAddMessageParams struct {
 	ToolCallID param.Opt[string]                                      `json:"tool_call_id,omitzero"`
 	Metadata   map[string]AIConversationAddMessageParamsMetadataUnion `json:"metadata,omitzero"`
 	ToolCalls  []map[string]any                                       `json:"tool_calls,omitzero"`
-	ToolChoice any                                                    `json:"tool_choice,omitzero"`
+	ToolChoice AIConversationAddMessageParamsToolChoiceUnion          `json:"tool_choice,omitzero"`
 	paramObj
 }
 
@@ -418,6 +418,31 @@ func (u *AIConversationAddMessageParamsMetadataArrayItemUnion) asAny() any {
 		return &u.OfInt.Value
 	} else if !param.IsOmitted(u.OfBool) {
 		return &u.OfBool.Value
+	}
+	return nil
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AIConversationAddMessageParamsToolChoiceUnion struct {
+	OfString           param.Opt[string] `json:",omitzero,inline"`
+	OfToolChoiceObject map[string]any    `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AIConversationAddMessageParamsToolChoiceUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfToolChoiceObject)
+}
+func (u *AIConversationAddMessageParamsToolChoiceUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AIConversationAddMessageParamsToolChoiceUnion) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfToolChoiceObject) {
+		return &u.OfToolChoiceObject
 	}
 	return nil
 }

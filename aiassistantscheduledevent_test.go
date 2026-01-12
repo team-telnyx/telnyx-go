@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestAIAssistantScheduledEventNewWithOptionalParams(t *testing.T) {
@@ -100,11 +100,9 @@ func TestAIAssistantScheduledEventListWithOptionalParams(t *testing.T) {
 		telnyx.AIAssistantScheduledEventListParams{
 			ConversationChannel: telnyx.ConversationChannelTypePhoneCall,
 			FromDate:            telnyx.Time(time.Now()),
-			Page: telnyx.AIAssistantScheduledEventListParamsPage{
-				Number: telnyx.Int(1),
-				Size:   telnyx.Int(1),
-			},
-			ToDate: telnyx.Time(time.Now()),
+			PageNumber:          telnyx.Int(0),
+			PageSize:            telnyx.Int(0),
+			ToDate:              telnyx.Time(time.Now()),
 		},
 	)
 	if err != nil {

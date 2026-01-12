@@ -8,12 +8,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestCampaignUsecaseGetCost(t *testing.T) {
+func TestMessaging10dlcCampaignOsrGetAttributes(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,9 +26,7 @@ func TestCampaignUsecaseGetCost(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Campaign.Usecase.GetCost(context.TODO(), telnyx.CampaignUsecaseGetCostParams{
-		Usecase: "usecase",
-	})
+	_, err := client.Messaging10dlc.Campaign.Osr.GetAttributes(context.TODO(), "campaignId")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

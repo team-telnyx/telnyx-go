@@ -11,12 +11,13 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // IntegrationSecretService contains methods and other services that help with
@@ -48,11 +49,26 @@ func (r *IntegrationSecretService) New(ctx context.Context, body IntegrationSecr
 }
 
 // Retrieve a list of all integration secrets configured by the user.
-func (r *IntegrationSecretService) List(ctx context.Context, query IntegrationSecretListParams, opts ...option.RequestOption) (res *IntegrationSecretListResponse, err error) {
+func (r *IntegrationSecretService) List(ctx context.Context, query IntegrationSecretListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[IntegrationSecret], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "integration_secrets"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of all integration secrets configured by the user.
+func (r *IntegrationSecretService) ListAutoPaging(ctx context.Context, query IntegrationSecretListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[IntegrationSecret] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete an integration secret given its ID.
@@ -108,46 +124,6 @@ func (r *IntegrationSecretNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type IntegrationSecretListResponse struct {
-	Data []IntegrationSecret               `json:"data,required"`
-	Meta IntegrationSecretListResponseMeta `json:"meta,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r IntegrationSecretListResponse) RawJSON() string { return r.JSON.raw }
-func (r *IntegrationSecretListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type IntegrationSecretListResponseMeta struct {
-	PageNumber   int64 `json:"page_number,required"`
-	PageSize     int64 `json:"page_size,required"`
-	TotalPages   int64 `json:"total_pages,required"`
-	TotalResults int64 `json:"total_results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageNumber   respjson.Field
-		PageSize     respjson.Field
-		TotalPages   respjson.Field
-		TotalResults respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r IntegrationSecretListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *IntegrationSecretListResponseMeta) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type IntegrationSecretNewParams struct {
 	// The unique identifier of the secret.
 	Identifier string `json:"identifier,required"`
@@ -181,11 +157,10 @@ const (
 )
 
 type IntegrationSecretListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[type]
 	Filter IntegrationSecretListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page IntegrationSecretListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -208,23 +183,6 @@ type IntegrationSecretListParamsFilter struct {
 // URLQuery serializes [IntegrationSecretListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r IntegrationSecretListParamsFilter) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type IntegrationSecretListParamsPage struct {
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	Size   param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [IntegrationSecretListParamsPage]'s query parameters as
-// `url.Values`.
-func (r IntegrationSecretListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

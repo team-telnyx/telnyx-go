@@ -9,10 +9,10 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // VerificationByPhoneNumberService contains methods and other services that help
@@ -49,10 +49,10 @@ func (r *VerificationByPhoneNumberService) List(ctx context.Context, phoneNumber
 }
 
 type VerifyMeta struct {
-	PageNumber   int64 `json:"page_number"`
-	PageSize     int64 `json:"page_size"`
-	TotalPages   int64 `json:"total_pages"`
-	TotalResults int64 `json:"total_results"`
+	PageNumber   int64 `json:"page_number,required"`
+	PageSize     int64 `json:"page_size,required"`
+	TotalPages   int64 `json:"total_pages,required"`
+	TotalResults int64 `json:"total_results,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PageNumber   respjson.Field

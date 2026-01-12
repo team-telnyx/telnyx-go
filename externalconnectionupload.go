@@ -10,12 +10,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // ExternalConnectionUploadService contains methods and other services that help
@@ -68,15 +69,30 @@ func (r *ExternalConnectionUploadService) Get(ctx context.Context, ticketID stri
 }
 
 // Returns a list of your Upload requests for the given external connection.
-func (r *ExternalConnectionUploadService) List(ctx context.Context, id string, query ExternalConnectionUploadListParams, opts ...option.RequestOption) (res *ExternalConnectionUploadListResponse, err error) {
+func (r *ExternalConnectionUploadService) List(ctx context.Context, id string, query ExternalConnectionUploadListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[Upload], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
 	}
 	path := fmt.Sprintf("external_connections/%s/uploads", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Returns a list of your Upload requests for the given external connection.
+func (r *ExternalConnectionUploadService) ListAutoPaging(ctx context.Context, id string, query ExternalConnectionUploadListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[Upload] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, id, query, opts...))
 }
 
 // Returns the count of all pending upload requests for the given external
@@ -292,24 +308,6 @@ type ExternalConnectionUploadGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ExternalConnectionUploadGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *ExternalConnectionUploadGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ExternalConnectionUploadListResponse struct {
-	Data []Upload                                `json:"data"`
-	Meta ExternalVoiceIntegrationsPaginationMeta `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExternalConnectionUploadListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionUploadListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -8,12 +8,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestEnumGet(t *testing.T) {
+func TestMessaging10dlcGetEnum(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,7 @@ func TestEnumGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Enum.Get(context.TODO(), telnyx.EnumGetParamsEndpointMno)
+	_, err := client.Messaging10dlc.GetEnum(context.TODO(), telnyx.Messaging10dlcGetEnumParamsEndpointMno)
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

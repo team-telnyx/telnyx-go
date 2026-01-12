@@ -10,12 +10,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // ExternalConnectionReleaseService contains methods and other services that help
@@ -56,15 +57,32 @@ func (r *ExternalConnectionReleaseService) Get(ctx context.Context, releaseID st
 // Returns a list of your Releases for the given external connection. These are
 // automatically created when you change the `connection_id` of a phone number that
 // is currently on Microsoft Teams.
-func (r *ExternalConnectionReleaseService) List(ctx context.Context, id string, query ExternalConnectionReleaseListParams, opts ...option.RequestOption) (res *ExternalConnectionReleaseListResponse, err error) {
+func (r *ExternalConnectionReleaseService) List(ctx context.Context, id string, query ExternalConnectionReleaseListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[ExternalConnectionReleaseListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
 	}
 	path := fmt.Sprintf("external_connections/%s/releases", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Returns a list of your Releases for the given external connection. These are
+// automatically created when you change the `connection_id` of a phone number that
+// is currently on Microsoft Teams.
+func (r *ExternalConnectionReleaseService) ListAutoPaging(ctx context.Context, id string, query ExternalConnectionReleaseListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[ExternalConnectionReleaseListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, id, query, opts...))
 }
 
 type ExternalConnectionReleaseGetResponse struct {
@@ -137,24 +155,6 @@ func (r *ExternalConnectionReleaseGetResponseDataTelephoneNumber) UnmarshalJSON(
 }
 
 type ExternalConnectionReleaseListResponse struct {
-	Data []ExternalConnectionReleaseListResponseData `json:"data"`
-	Meta ExternalVoiceIntegrationsPaginationMeta     `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExternalConnectionReleaseListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionReleaseListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ExternalConnectionReleaseListResponseData struct {
 	// ISO 8601 formatted date indicating when the resource was created.
 	CreatedAt string `json:"created_at"`
 	// A message set if there is an error with the upload process.
@@ -163,9 +163,9 @@ type ExternalConnectionReleaseListResponseData struct {
 	//
 	// Any of "pending_upload", "pending", "in_progress", "complete", "failed",
 	// "expired", "unknown".
-	Status           string                                                     `json:"status"`
-	TelephoneNumbers []ExternalConnectionReleaseListResponseDataTelephoneNumber `json:"telephone_numbers"`
-	TenantID         string                                                     `json:"tenant_id" format:"uuid"`
+	Status           ExternalConnectionReleaseListResponseStatus            `json:"status"`
+	TelephoneNumbers []ExternalConnectionReleaseListResponseTelephoneNumber `json:"telephone_numbers"`
+	TenantID         string                                                 `json:"tenant_id" format:"uuid"`
 	// Uniquely identifies the resource.
 	TicketID string `json:"ticket_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -182,12 +182,25 @@ type ExternalConnectionReleaseListResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ExternalConnectionReleaseListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionReleaseListResponseData) UnmarshalJSON(data []byte) error {
+func (r ExternalConnectionReleaseListResponse) RawJSON() string { return r.JSON.raw }
+func (r *ExternalConnectionReleaseListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ExternalConnectionReleaseListResponseDataTelephoneNumber struct {
+// Represents the status of the release on Microsoft Teams.
+type ExternalConnectionReleaseListResponseStatus string
+
+const (
+	ExternalConnectionReleaseListResponseStatusPendingUpload ExternalConnectionReleaseListResponseStatus = "pending_upload"
+	ExternalConnectionReleaseListResponseStatusPending       ExternalConnectionReleaseListResponseStatus = "pending"
+	ExternalConnectionReleaseListResponseStatusInProgress    ExternalConnectionReleaseListResponseStatus = "in_progress"
+	ExternalConnectionReleaseListResponseStatusComplete      ExternalConnectionReleaseListResponseStatus = "complete"
+	ExternalConnectionReleaseListResponseStatusFailed        ExternalConnectionReleaseListResponseStatus = "failed"
+	ExternalConnectionReleaseListResponseStatusExpired       ExternalConnectionReleaseListResponseStatus = "expired"
+	ExternalConnectionReleaseListResponseStatusUnknown       ExternalConnectionReleaseListResponseStatus = "unknown"
+)
+
+type ExternalConnectionReleaseListResponseTelephoneNumber struct {
 	// Phone number ID from the Telnyx API.
 	NumberID string `json:"number_id"`
 	// Phone number in E164 format.
@@ -202,8 +215,8 @@ type ExternalConnectionReleaseListResponseDataTelephoneNumber struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ExternalConnectionReleaseListResponseDataTelephoneNumber) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionReleaseListResponseDataTelephoneNumber) UnmarshalJSON(data []byte) error {
+func (r ExternalConnectionReleaseListResponseTelephoneNumber) RawJSON() string { return r.JSON.raw }
+func (r *ExternalConnectionReleaseListResponseTelephoneNumber) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestDetailRecordListWithOptionalParams(t *testing.T) {
@@ -31,11 +31,9 @@ func TestDetailRecordListWithOptionalParams(t *testing.T) {
 			RecordType: "ai-voice-assistant",
 			DateRange:  "yesterday",
 		},
-		Page: telnyx.DetailRecordListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
-		Sort: []string{"string"},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
+		Sort:       []string{"string"},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

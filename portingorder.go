@@ -12,13 +12,14 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v3/shared"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // PortingOrderService contains methods and other services that help with
@@ -101,11 +102,26 @@ func (r *PortingOrderService) Update(ctx context.Context, id string, body Portin
 }
 
 // Returns a list of your porting order.
-func (r *PortingOrderService) List(ctx context.Context, query PortingOrderListParams, opts ...option.RequestOption) (res *PortingOrderListResponse, err error) {
+func (r *PortingOrderService) List(ctx context.Context, query PortingOrderListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingOrder], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "porting_orders"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Returns a list of your porting order.
+func (r *PortingOrderService) ListAutoPaging(ctx context.Context, query PortingOrderListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingOrder] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Deletes an existing porting order. This operation is restrict to porting orders
@@ -157,15 +173,31 @@ func (r *PortingOrderService) GetLoaTemplate(ctx context.Context, id string, que
 
 // Returns a list of all requirements based on country/number type for this porting
 // order.
-func (r *PortingOrderService) GetRequirements(ctx context.Context, id string, query PortingOrderGetRequirementsParams, opts ...option.RequestOption) (res *PortingOrderGetRequirementsResponse, err error) {
+func (r *PortingOrderService) GetRequirements(ctx context.Context, id string, query PortingOrderGetRequirementsParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingOrderGetRequirementsResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
 	}
 	path := fmt.Sprintf("porting_orders/%s/requirements", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Returns a list of all requirements based on country/number type for this porting
+// order.
+func (r *PortingOrderService) GetRequirementsAutoPaging(ctx context.Context, id string, query PortingOrderGetRequirementsParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingOrderGetRequirementsResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.GetRequirements(ctx, id, query, opts...))
 }
 
 // Retrieve the associated V1 sub_request_id and port_request_id
@@ -192,9 +224,9 @@ type PortingOrder struct {
 	// ISO 8601 formatted date indicating when the resource was created.
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// A customer-specified group reference for customer bookkeeping purposes
-	CustomerGroupReference string `json:"customer_group_reference"`
+	CustomerGroupReference string `json:"customer_group_reference,nullable"`
 	// A customer-specified reference number for customer bookkeeping purposes
-	CustomerReference string `json:"customer_reference"`
+	CustomerReference string `json:"customer_reference,nullable"`
 	// A description of the porting order
 	Description string `json:"description"`
 	// Can be specified directly or via the `requirement_group_id` parameter.
@@ -202,12 +234,12 @@ type PortingOrder struct {
 	EndUser   PortingOrderEndUser   `json:"end_user"`
 	// Information about messaging porting process.
 	Messaging PortingOrderMessaging `json:"messaging"`
-	Misc      PortingOrderMisc      `json:"misc"`
+	Misc      PortingOrderMisc      `json:"misc,nullable"`
 	// Identifies the old service provider
 	OldServiceProviderOcn string `json:"old_service_provider_ocn"`
 	// A key to reference for the porting order group when contacting Telnyx customer
 	// support. This information is not available for porting orders in `draft` state
-	ParentSupportKey         string                               `json:"parent_support_key"`
+	ParentSupportKey         string                               `json:"parent_support_key,nullable"`
 	PhoneNumberConfiguration PortingOrderPhoneNumberConfiguration `json:"phone_number_configuration"`
 	// The type of the phone number
 	//
@@ -226,13 +258,13 @@ type PortingOrder struct {
 	Status shared.PortingOrderStatus `json:"status"`
 	// A key to reference this porting order when contacting Telnyx customer support.
 	// This information is not available in draft porting orders.
-	SupportKey string `json:"support_key"`
+	SupportKey string `json:"support_key,nullable"`
 	// ISO 8601 formatted date indicating when the resource was created.
 	UpdatedAt    time.Time                `json:"updated_at" format:"date-time"`
 	UserFeedback PortingOrderUserFeedback `json:"user_feedback"`
 	// Identifies the user (or organization) who requested the porting order
 	UserID     string `json:"user_id" format:"uuid"`
-	WebhookURL string `json:"webhook_url" format:"uri"`
+	WebhookURL string `json:"webhook_url,nullable" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                       respjson.Field
@@ -289,13 +321,13 @@ type PortingOrderActivationSettings struct {
 	// Any of "New", "Pending", "Conflict", "Cancel Pending", "Failed", "Concurred",
 	// "Activate RDY", "Disconnect Pending", "Concurrence Sent", "Old", "Sending",
 	// "Active", "Cancelled".
-	ActivationStatus PortingOrderActivationSettingsActivationStatus `json:"activation_status"`
+	ActivationStatus PortingOrderActivationSettingsActivationStatus `json:"activation_status,nullable"`
 	// Indicates whether this porting order is eligible for FastPort
 	FastPortEligible bool `json:"fast_port_eligible"`
 	// ISO 8601 formatted Date/Time of the FOC date
-	FocDatetimeActual time.Time `json:"foc_datetime_actual" format:"date-time"`
+	FocDatetimeActual time.Time `json:"foc_datetime_actual,nullable" format:"date-time"`
 	// ISO 8601 formatted Date/Time requested for the FOC date
-	FocDatetimeRequested time.Time `json:"foc_datetime_requested" format:"date-time"`
+	FocDatetimeRequested time.Time `json:"foc_datetime_requested,nullable" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ActivationStatus     respjson.Field
@@ -335,9 +367,9 @@ const (
 // Can be specified directly or via the `requirement_group_id` parameter.
 type PortingOrderDocuments struct {
 	// Returned ID of the submitted Invoice via the Documents endpoint
-	Invoice string `json:"invoice" format:"uuid"`
+	Invoice string `json:"invoice,nullable" format:"uuid"`
 	// Returned ID of the submitted LOA via the Documents endpoint
-	Loa string `json:"loa" format:"uuid"`
+	Loa string `json:"loa,nullable" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Invoice     respjson.Field
@@ -422,20 +454,20 @@ func (r *PortingOrderEndUserParam) UnmarshalJSON(data []byte) error {
 
 type PortingOrderEndUserAdmin struct {
 	// The authorized person's account number with the current service provider
-	AccountNumber string `json:"account_number"`
+	AccountNumber string `json:"account_number,nullable"`
 	// Name of person authorizing the porting order
-	AuthPersonName string `json:"auth_person_name"`
+	AuthPersonName string `json:"auth_person_name,nullable"`
 	// Billing phone number associated with these phone numbers
-	BillingPhoneNumber string `json:"billing_phone_number"`
+	BillingPhoneNumber string `json:"billing_phone_number,nullable"`
 	// European business identification number. Applicable only in the European Union
-	BusinessIdentifier string `json:"business_identifier"`
+	BusinessIdentifier string `json:"business_identifier,nullable"`
 	// Person Name or Company name requesting the port
-	EntityName string `json:"entity_name"`
+	EntityName string `json:"entity_name,nullable"`
 	// PIN/passcode possibly required by the old service provider for extra
 	// verification
-	PinPasscode string `json:"pin_passcode"`
+	PinPasscode string `json:"pin_passcode,nullable"`
 	// European tax identification number. Applicable only in the European Union
-	TaxIdentifier string `json:"tax_identifier"`
+	TaxIdentifier string `json:"tax_identifier,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AccountNumber      respjson.Field
@@ -495,17 +527,17 @@ func (r *PortingOrderEndUserAdminParam) UnmarshalJSON(data []byte) error {
 
 type PortingOrderEndUserLocation struct {
 	// State, province, or similar of billing address
-	AdministrativeArea string `json:"administrative_area"`
+	AdministrativeArea string `json:"administrative_area,nullable"`
 	// ISO3166-1 alpha-2 country code of billing address
-	CountryCode string `json:"country_code"`
+	CountryCode string `json:"country_code,nullable"`
 	// Second line of billing address
-	ExtendedAddress string `json:"extended_address"`
+	ExtendedAddress string `json:"extended_address,nullable"`
 	// City or municipality of billing address
-	Locality string `json:"locality"`
+	Locality string `json:"locality,nullable"`
 	// Postal Code of billing address
-	PostalCode string `json:"postal_code"`
+	PostalCode string `json:"postal_code,nullable"`
 	// First line of billing address
-	StreetAddress string `json:"street_address"`
+	StreetAddress string `json:"street_address,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AdministrativeArea respjson.Field
@@ -609,13 +641,13 @@ type PortingOrderMisc struct {
 	// billing phone number is being ported to Telnyx. This will be set on your account
 	// with your current service provider and should be one of the numbers remaining on
 	// that account.
-	NewBillingPhoneNumber string `json:"new_billing_phone_number"`
+	NewBillingPhoneNumber string `json:"new_billing_phone_number,nullable"`
 	// Remaining numbers can be either kept with their current service provider or
 	// disconnected. 'new_billing_telephone_number' is required when
 	// 'remaining_numbers_action' is 'keep'.
 	//
 	// Any of "keep", "disconnect".
-	RemainingNumbersAction PortingOrderMiscRemainingNumbersAction `json:"remaining_numbers_action"`
+	RemainingNumbersAction PortingOrderMiscRemainingNumbersAction `json:"remaining_numbers_action,nullable"`
 	// A port can be either 'full' or 'partial'. When type is 'full' the other
 	// attributes should be omitted.
 	//
@@ -686,13 +718,13 @@ func (r *PortingOrderMiscParam) UnmarshalJSON(data []byte) error {
 
 type PortingOrderPhoneNumberConfiguration struct {
 	// identifies the billing group to set on the numbers when ported
-	BillingGroupID string `json:"billing_group_id"`
+	BillingGroupID string `json:"billing_group_id,nullable"`
 	// identifies the connection to set on the numbers when ported
-	ConnectionID string `json:"connection_id"`
+	ConnectionID string `json:"connection_id,nullable"`
 	// identifies the emergency address to set on the numbers when ported
-	EmergencyAddressID string `json:"emergency_address_id"`
+	EmergencyAddressID string `json:"emergency_address_id,nullable"`
 	// identifies the messaging profile to set on the numbers when ported
-	MessagingProfileID string   `json:"messaging_profile_id"`
+	MessagingProfileID string   `json:"messaging_profile_id,nullable"`
 	Tags               []string `json:"tags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -789,10 +821,10 @@ const (
 
 type PortingOrderUserFeedback struct {
 	// A comment related to the customer rating.
-	UserComment string `json:"user_comment"`
+	UserComment string `json:"user_comment,nullable"`
 	// Once an order is ported, cancellation is requested or the request is cancelled,
 	// the user may rate their experience
-	UserRating int64 `json:"user_rating"`
+	UserRating int64 `json:"user_rating,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		UserComment respjson.Field
@@ -1002,24 +1034,6 @@ func (r *PortingOrderUpdateResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PortingOrderListResponse struct {
-	Data []PortingOrder `json:"data"`
-	Meta PaginationMeta `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingOrderListResponse) RawJSON() string { return r.JSON.raw }
-func (r *PortingOrderListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type PortingOrderGetAllowedFocWindowsResponse struct {
 	Data []PortingOrderGetAllowedFocWindowsResponseData `json:"data"`
 	Meta PaginationMeta                                 `json:"meta"`
@@ -1078,28 +1092,10 @@ func (r *PortingOrderGetExceptionTypesResponse) UnmarshalJSON(data []byte) error
 }
 
 type PortingOrderGetRequirementsResponse struct {
-	Data []PortingOrderGetRequirementsResponseData `json:"data"`
-	Meta PaginationMeta                            `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingOrderGetRequirementsResponse) RawJSON() string { return r.JSON.raw }
-func (r *PortingOrderGetRequirementsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingOrderGetRequirementsResponseData struct {
 	// Type of value expected on field_value field
 	//
 	// Any of "document", "textual".
-	FieldType string `json:"field_type"`
+	FieldType PortingOrderGetRequirementsResponseFieldType `json:"field_type"`
 	// Identifies the document that satisfies this requirement
 	FieldValue string `json:"field_value"`
 	// Identifies the type of the resource.
@@ -1107,7 +1103,7 @@ type PortingOrderGetRequirementsResponseData struct {
 	// Status of the requirement
 	RequirementStatus string `json:"requirement_status"`
 	// Identifies the requirement type that meets this requirement
-	RequirementType PortingOrderGetRequirementsResponseDataRequirementType `json:"requirement_type"`
+	RequirementType PortingOrderGetRequirementsResponseRequirementType `json:"requirement_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FieldType         respjson.Field
@@ -1121,13 +1117,21 @@ type PortingOrderGetRequirementsResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PortingOrderGetRequirementsResponseData) RawJSON() string { return r.JSON.raw }
-func (r *PortingOrderGetRequirementsResponseData) UnmarshalJSON(data []byte) error {
+func (r PortingOrderGetRequirementsResponse) RawJSON() string { return r.JSON.raw }
+func (r *PortingOrderGetRequirementsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Type of value expected on field_value field
+type PortingOrderGetRequirementsResponseFieldType string
+
+const (
+	PortingOrderGetRequirementsResponseFieldTypeDocument PortingOrderGetRequirementsResponseFieldType = "document"
+	PortingOrderGetRequirementsResponseFieldTypeTextual  PortingOrderGetRequirementsResponseFieldType = "textual"
+)
+
 // Identifies the requirement type that meets this requirement
-type PortingOrderGetRequirementsResponseDataRequirementType struct {
+type PortingOrderGetRequirementsResponseRequirementType struct {
 	// Identifies the requirement type
 	ID string `json:"id"`
 	// The acceptance criteria for the requirement type
@@ -1154,8 +1158,8 @@ type PortingOrderGetRequirementsResponseDataRequirementType struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PortingOrderGetRequirementsResponseDataRequirementType) RawJSON() string { return r.JSON.raw }
-func (r *PortingOrderGetRequirementsResponseDataRequirementType) UnmarshalJSON(data []byte) error {
+func (r PortingOrderGetRequirementsResponseRequirementType) RawJSON() string { return r.JSON.raw }
+func (r *PortingOrderGetRequirementsResponseRequirementType) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1198,10 +1202,10 @@ func (r *PortingOrderGetSubRequestResponseData) UnmarshalJSON(data []byte) error
 type PortingOrderNewParams struct {
 	// The list of +E.164 formatted phone numbers
 	PhoneNumbers []string `json:"phone_numbers,omitzero,required"`
-	// A customer-specified group reference for customer bookkeeping purposes
-	CustomerGroupReference param.Opt[string] `json:"customer_group_reference,omitzero"`
 	// A customer-specified reference number for customer bookkeeping purposes
 	CustomerReference param.Opt[string] `json:"customer_reference,omitzero"`
+	// A customer-specified group reference for customer bookkeeping purposes
+	CustomerGroupReference param.Opt[string] `json:"customer_group_reference,omitzero"`
 	paramObj
 }
 

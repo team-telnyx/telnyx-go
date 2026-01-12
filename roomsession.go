@@ -11,13 +11,14 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v3/shared"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // RoomSessionService contains methods and other services that help with
@@ -54,35 +55,80 @@ func (r *RoomSessionService) Get(ctx context.Context, roomSessionID string, quer
 }
 
 // View a list of room sessions.
-func (r *RoomSessionService) List0(ctx context.Context, query RoomSessionList0Params, opts ...option.RequestOption) (res *RoomSessionList0Response, err error) {
+func (r *RoomSessionService) List0(ctx context.Context, query RoomSessionList0Params, opts ...option.RequestOption) (res *pagination.DefaultPagination[RoomSession], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "room_sessions"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
 }
 
 // View a list of room sessions.
-func (r *RoomSessionService) List1(ctx context.Context, roomID string, query RoomSessionList1Params, opts ...option.RequestOption) (res *RoomSessionList1Response, err error) {
+func (r *RoomSessionService) List0AutoPaging(ctx context.Context, query RoomSessionList0Params, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[RoomSession] {
+	return pagination.NewDefaultPaginationAutoPager(r.List0(ctx, query, opts...))
+}
+
+// View a list of room sessions.
+func (r *RoomSessionService) List1(ctx context.Context, roomID string, query RoomSessionList1Params, opts ...option.RequestOption) (res *pagination.DefaultPagination[RoomSession], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if roomID == "" {
 		err = errors.New("missing required room_id parameter")
 		return
 	}
 	path := fmt.Sprintf("rooms/%s/sessions", roomID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// View a list of room sessions.
+func (r *RoomSessionService) List1AutoPaging(ctx context.Context, roomID string, query RoomSessionList1Params, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[RoomSession] {
+	return pagination.NewDefaultPaginationAutoPager(r.List1(ctx, roomID, query, opts...))
 }
 
 // View a list of room participants.
-func (r *RoomSessionService) GetParticipants(ctx context.Context, roomSessionID string, query RoomSessionGetParticipantsParams, opts ...option.RequestOption) (res *RoomSessionGetParticipantsResponse, err error) {
+func (r *RoomSessionService) GetParticipants(ctx context.Context, roomSessionID string, query RoomSessionGetParticipantsParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[shared.RoomParticipant], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if roomSessionID == "" {
 		err = errors.New("missing required room_session_id parameter")
 		return
 	}
 	path := fmt.Sprintf("room_sessions/%s/participants", roomSessionID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// View a list of room participants.
+func (r *RoomSessionService) GetParticipantsAutoPaging(ctx context.Context, roomSessionID string, query RoomSessionGetParticipantsParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[shared.RoomParticipant] {
+	return pagination.NewDefaultPaginationAutoPager(r.GetParticipants(ctx, roomSessionID, query, opts...))
 }
 
 type RoomSessionGetResponse struct {
@@ -98,60 +144,6 @@ type RoomSessionGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r RoomSessionGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *RoomSessionGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type RoomSessionList0Response struct {
-	Data []RoomSession  `json:"data"`
-	Meta PaginationMeta `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RoomSessionList0Response) RawJSON() string { return r.JSON.raw }
-func (r *RoomSessionList0Response) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type RoomSessionList1Response struct {
-	Data []RoomSession  `json:"data"`
-	Meta PaginationMeta `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RoomSessionList1Response) RawJSON() string { return r.JSON.raw }
-func (r *RoomSessionList1Response) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type RoomSessionGetParticipantsResponse struct {
-	Data []shared.RoomParticipant `json:"data"`
-	Meta PaginationMeta           `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RoomSessionGetParticipantsResponse) RawJSON() string { return r.JSON.raw }
-func (r *RoomSessionGetParticipantsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

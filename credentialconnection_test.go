@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestCredentialConnectionNewWithOptionalParams(t *testing.T) {
@@ -47,11 +47,17 @@ func TestCredentialConnectionNewWithOptionalParams(t *testing.T) {
 			IsupHeadersEnabled:       telnyx.Bool(true),
 			PrackEnabled:             telnyx.Bool(true),
 			ShakenStirEnabled:        telnyx.Bool(true),
+			SimultaneousRinging:      telnyx.CredentialInboundSimultaneousRingingDisabled,
 			SipCompactHeadersEnabled: telnyx.Bool(true),
 			Timeout1xxSecs:           telnyx.Int(10),
 			Timeout2xxSecs:           telnyx.Int(20),
 		},
-		IosPushCredentialID:        telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
+		IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
+		NoiseSuppression:    telnyx.CredentialConnectionNewParamsNoiseSuppressionBoth,
+		NoiseSuppressionDetails: telnyx.CredentialConnectionNewParamsNoiseSuppressionDetails{
+			AttenuationLimit: telnyx.Int(80),
+			Engine:           "deep_filter_net",
+		},
 		OnnetT38PassthroughEnabled: telnyx.Bool(true),
 		Outbound: telnyx.CredentialOutboundParam{
 			AniOverride:            telnyx.String("always"),
@@ -71,7 +77,7 @@ func TestCredentialConnectionNewWithOptionalParams(t *testing.T) {
 		},
 		SipUriCallingPreference: telnyx.CredentialConnectionNewParamsSipUriCallingPreferenceDisabled,
 		Tags:                    []string{"tag1", "tag2"},
-		WebhookAPIVersion:       telnyx.CredentialConnectionNewParamsWebhookAPIVersion1,
+		WebhookAPIVersion:       telnyx.CredentialConnectionNewParamsWebhookAPIVersionV1,
 		WebhookEventFailoverURL: telnyx.String("https://failover.example.com"),
 		WebhookEventURL:         telnyx.String("https://example.com"),
 		WebhookTimeoutSecs:      telnyx.Int(25),
@@ -143,11 +149,17 @@ func TestCredentialConnectionUpdateWithOptionalParams(t *testing.T) {
 				IsupHeadersEnabled:       telnyx.Bool(true),
 				PrackEnabled:             telnyx.Bool(true),
 				ShakenStirEnabled:        telnyx.Bool(true),
+				SimultaneousRinging:      telnyx.CredentialInboundSimultaneousRingingDisabled,
 				SipCompactHeadersEnabled: telnyx.Bool(true),
 				Timeout1xxSecs:           telnyx.Int(10),
 				Timeout2xxSecs:           telnyx.Int(20),
 			},
-			IosPushCredentialID:        telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
+			IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
+			NoiseSuppression:    telnyx.CredentialConnectionUpdateParamsNoiseSuppressionBoth,
+			NoiseSuppressionDetails: telnyx.CredentialConnectionUpdateParamsNoiseSuppressionDetails{
+				AttenuationLimit: telnyx.Int(80),
+				Engine:           "deep_filter_net",
+			},
 			OnnetT38PassthroughEnabled: telnyx.Bool(true),
 			Outbound: telnyx.CredentialOutboundParam{
 				AniOverride:            telnyx.String("always"),
@@ -169,7 +181,7 @@ func TestCredentialConnectionUpdateWithOptionalParams(t *testing.T) {
 			SipUriCallingPreference: telnyx.CredentialConnectionUpdateParamsSipUriCallingPreferenceDisabled,
 			Tags:                    []string{"tag1", "tag2"},
 			UserName:                telnyx.String("myusername123"),
-			WebhookAPIVersion:       telnyx.CredentialConnectionUpdateParamsWebhookAPIVersion1,
+			WebhookAPIVersion:       telnyx.CredentialConnectionUpdateParamsWebhookAPIVersionV1,
 			WebhookEventFailoverURL: telnyx.String("https://failover.example.com"),
 			WebhookEventURL:         telnyx.String("https://example.com"),
 			WebhookTimeoutSecs:      telnyx.Int(25),

@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestAIConversationNewWithOptionalParams(t *testing.T) {
@@ -185,7 +185,9 @@ func TestAIConversationAddMessageWithOptionalParams(t *testing.T) {
 			ToolCalls: []map[string]any{{
 				"foo": "bar",
 			}},
-			ToolChoice: map[string]any{},
+			ToolChoice: telnyx.AIConversationAddMessageParamsToolChoiceUnion{
+				OfString: telnyx.String("string"),
+			},
 		},
 	)
 	if err != nil {

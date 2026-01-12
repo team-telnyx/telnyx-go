@@ -9,33 +9,35 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
+	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
-// BrandService contains methods and other services that help with interacting with
-// the telnyx API.
+// Messaging10dlcBrandService contains methods and other services that help with
+// interacting with the telnyx API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewBrandService] method instead.
-type BrandService struct {
+// the [NewMessaging10dlcBrandService] method instead.
+type Messaging10dlcBrandService struct {
 	Options         []option.RequestOption
-	ExternalVetting BrandExternalVettingService
+	ExternalVetting Messaging10dlcBrandExternalVettingService
 }
 
-// NewBrandService generates a new service that applies the given options to each
-// request. These options are applied after the parent client's options (if there
-// is one), and before any request-specific options.
-func NewBrandService(opts ...option.RequestOption) (r BrandService) {
-	r = BrandService{}
+// NewMessaging10dlcBrandService generates a new service that applies the given
+// options to each request. These options are applied after the parent client's
+// options (if there is one), and before any request-specific options.
+func NewMessaging10dlcBrandService(opts ...option.RequestOption) (r Messaging10dlcBrandService) {
+	r = Messaging10dlcBrandService{}
 	r.Options = opts
-	r.ExternalVetting = NewBrandExternalVettingService(opts...)
+	r.ExternalVetting = NewMessaging10dlcBrandExternalVettingService(opts...)
 	return
 }
 
@@ -43,56 +45,72 @@ func NewBrandService(opts ...option.RequestOption) (r BrandService) {
 // Campaign Registry (TCR) that represents an organization or a company. It is this
 // entity that TCR created campaigns will be associated with. Each brand creation
 // will entail an upfront, non-refundable $4 expense.
-func (r *BrandService) New(ctx context.Context, body BrandNewParams, opts ...option.RequestOption) (res *TelnyxBrand, err error) {
+func (r *Messaging10dlcBrandService) New(ctx context.Context, body Messaging10dlcBrandNewParams, opts ...option.RequestOption) (res *TelnyxBrand, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "brand"
+	path := "10dlc/brand"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
 // Retrieve a brand by `brandId`.
-func (r *BrandService) Get(ctx context.Context, brandID string, opts ...option.RequestOption) (res *BrandGetResponse, err error) {
+func (r *Messaging10dlcBrandService) Get(ctx context.Context, brandID string, opts ...option.RequestOption) (res *Messaging10dlcBrandGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
 		return
 	}
-	path := fmt.Sprintf("brand/%s", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Update a brand's attributes by `brandId`.
-func (r *BrandService) Update(ctx context.Context, brandID string, body BrandUpdateParams, opts ...option.RequestOption) (res *TelnyxBrand, err error) {
+func (r *Messaging10dlcBrandService) Update(ctx context.Context, brandID string, body Messaging10dlcBrandUpdateParams, opts ...option.RequestOption) (res *TelnyxBrand, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
 		return
 	}
-	path := fmt.Sprintf("brand/%s", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
 }
 
 // This endpoint is used to list all brands associated with your organization.
-func (r *BrandService) List(ctx context.Context, query BrandListParams, opts ...option.RequestOption) (res *BrandListResponse, err error) {
+func (r *Messaging10dlcBrandService) List(ctx context.Context, query Messaging10dlcBrandListParams, opts ...option.RequestOption) (res *pagination.PerPagePaginationV2[Messaging10dlcBrandListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
-	path := "brand"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	path := "10dlc/brand"
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// This endpoint is used to list all brands associated with your organization.
+func (r *Messaging10dlcBrandService) ListAutoPaging(ctx context.Context, query Messaging10dlcBrandListParams, opts ...option.RequestOption) *pagination.PerPagePaginationV2AutoPager[Messaging10dlcBrandListResponse] {
+	return pagination.NewPerPagePaginationV2AutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete Brand. This endpoint is used to delete a brand. Note the brand cannot be
 // deleted if it contains one or more active campaigns, the campaigns need to be
 // inactive and at least 3 months old due to billing purposes.
-func (r *BrandService) Delete(ctx context.Context, brandID string, opts ...option.RequestOption) (res *BrandDeleteResponse, err error) {
+func (r *Messaging10dlcBrandService) Delete(ctx context.Context, brandID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
 		return
 	}
-	path := fmt.Sprintf("brand/%s", brandID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	path := fmt.Sprintf("10dlc/brand/%s", brandID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
@@ -109,41 +127,123 @@ func (r *BrandService) Delete(ctx context.Context, brandID string, opts ...optio
 //   - `NONPROFIT` - Not a recognized non-profit entity. No IRS tax-exempt status
 //     found.
 //   - `OTHERS` - Details of the data misrepresentation if any.
-func (r *BrandService) GetFeedback(ctx context.Context, brandID string, opts ...option.RequestOption) (res *BrandGetFeedbackResponse, err error) {
+func (r *Messaging10dlcBrandService) GetFeedback(ctx context.Context, brandID string, opts ...option.RequestOption) (res *Messaging10dlcBrandGetFeedbackResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
 		return
 	}
-	path := fmt.Sprintf("brand/feedback/%s", brandID)
+	path := fmt.Sprintf("10dlc/brand/feedback/%s", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Resend brand 2FA email
-func (r *BrandService) Resend2faEmail(ctx context.Context, brandID string, opts ...option.RequestOption) (err error) {
+func (r *Messaging10dlcBrandService) Resend2faEmail(ctx context.Context, brandID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
 		return
 	}
-	path := fmt.Sprintf("brand/%s/2faEmail", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s/2faEmail", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
+	return
+}
+
+// Query the status of an SMS OTP (One-Time Password) for Sole Proprietor brand
+// verification.
+//
+// This endpoint allows you to check the delivery and verification status of an OTP
+// sent during the Sole Proprietor brand verification process. You can query by
+// either:
+//
+// - `referenceId` - The reference ID returned when the OTP was initially triggered
+// - `brandId` - Query parameter for portal users to look up OTP status by Brand ID
+//
+// The response includes delivery status, verification dates, and detailed delivery
+// information.
+func (r *Messaging10dlcBrandService) GetSMSOtpStatus(ctx context.Context, referenceID string, query Messaging10dlcBrandGetSMSOtpStatusParams, opts ...option.RequestOption) (res *Messaging10dlcBrandGetSMSOtpStatusResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if referenceID == "" {
+		err = errors.New("missing required referenceId parameter")
+		return
+	}
+	path := fmt.Sprintf("10dlc/brand/smsOtp/%s", referenceID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
 }
 
 // This operation allows you to revet the brand. However, revetting is allowed once
 // after the successful brand registration and thereafter limited to once every 3
 // months.
-func (r *BrandService) Revet(ctx context.Context, brandID string, opts ...option.RequestOption) (res *BrandRevetResponse, err error) {
+func (r *Messaging10dlcBrandService) Revet(ctx context.Context, brandID string, opts ...option.RequestOption) (res *TelnyxBrand, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
 		return
 	}
-	path := fmt.Sprintf("brand/%s/revet", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s/revet", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
+	return
+}
+
+// Trigger or re-trigger an SMS OTP (One-Time Password) for Sole Proprietor brand
+// verification.
+//
+// **Important Notes:**
+//
+//   - Only allowed for Sole Proprietor (`SOLE_PROPRIETOR`) brands
+//   - Triggers generation of a one-time password sent to the `mobilePhone` number in
+//     the brand's profile
+//   - Campaigns cannot be created until OTP verification is complete
+//   - US/CA numbers only for real OTPs; mock brands can use non-US/CA numbers for
+//     testing
+//   - Returns a `referenceId` that can be used to check OTP status via the GET
+//     `/10dlc/brand/smsOtp/{referenceId}` endpoint
+//
+// **Use Cases:**
+//
+// - Initial OTP trigger after Sole Proprietor brand creation
+// - Re-triggering OTP if the user didn't receive or needs a new code
+func (r *Messaging10dlcBrandService) TriggerSMSOtp(ctx context.Context, brandID string, body Messaging10dlcBrandTriggerSMSOtpParams, opts ...option.RequestOption) (res *Messaging10dlcBrandTriggerSMSOtpResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if brandID == "" {
+		err = errors.New("missing required brandId parameter")
+		return
+	}
+	path := fmt.Sprintf("10dlc/brand/%s/smsOtp", brandID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
+// Verify the SMS OTP (One-Time Password) for Sole Proprietor brand verification.
+//
+// **Verification Flow:**
+//
+// 1. User receives OTP via SMS after triggering
+// 2. User submits the OTP pin through this endpoint
+// 3. Upon successful verification:
+//   - A `BRAND_OTP_VERIFIED` webhook event is sent to the CSP
+//   - The brand's `identityStatus` changes to `VERIFIED`
+//   - Campaigns can now be created for this brand
+//
+// **Error Handling:**
+//
+// Provides proper error responses for:
+//
+// - Invalid OTP pins
+// - Expired OTPs
+// - OTP verification failures
+func (r *Messaging10dlcBrandService) VerifySMSOtp(ctx context.Context, brandID string, body Messaging10dlcBrandVerifySMSOtpParams, opts ...option.RequestOption) (err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	if brandID == "" {
+		err = errors.New("missing required brandId parameter")
+		return
+	}
+	path := fmt.Sprintf("10dlc/brand/%s/smsOtp", brandID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, nil, opts...)
 	return
 }
 
@@ -171,10 +271,11 @@ const (
 type EntityType string
 
 const (
-	EntityTypePrivateProfit EntityType = "PRIVATE_PROFIT"
-	EntityTypePublicProfit  EntityType = "PUBLIC_PROFIT"
-	EntityTypeNonProfit     EntityType = "NON_PROFIT"
-	EntityTypeGovernment    EntityType = "GOVERNMENT"
+	EntityTypePrivateProfit  EntityType = "PRIVATE_PROFIT"
+	EntityTypePublicProfit   EntityType = "PUBLIC_PROFIT"
+	EntityTypeNonProfit      EntityType = "NON_PROFIT"
+	EntityTypeGovernment     EntityType = "GOVERNMENT"
+	EntityTypeSoleProprietor EntityType = "SOLE_PROPRIETOR"
 )
 
 // (Required for public company) stock exchange.
@@ -223,7 +324,8 @@ type TelnyxBrand struct {
 	Email string `json:"email,required"`
 	// Entity type behind the brand. This is the form of business establishment.
 	//
-	// Any of "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT", "GOVERNMENT".
+	// Any of "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT", "GOVERNMENT",
+	// "SOLE_PROPRIETOR".
 	EntityType EntityType `json:"entityType,required"`
 	// Vertical or industry segment of the brand.
 	Vertical string `json:"vertical,required"`
@@ -415,7 +517,7 @@ const (
 )
 
 // Telnyx-specific extensions to The Campaign Registry's `Brand` type
-type BrandGetResponse struct {
+type Messaging10dlcBrandGetResponse struct {
 	// Number of campaigns associated with the brand
 	AssignedCampaignsCount float64 `json:"assignedCampaignsCount"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -428,32 +530,12 @@ type BrandGetResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r BrandGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *BrandGetResponse) UnmarshalJSON(data []byte) error {
+func (r Messaging10dlcBrandGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *Messaging10dlcBrandGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type BrandListResponse struct {
-	Page         int64                     `json:"page"`
-	Records      []BrandListResponseRecord `json:"records"`
-	TotalRecords int64                     `json:"totalRecords"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Page         respjson.Field
-		Records      respjson.Field
-		TotalRecords respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BrandListResponse) RawJSON() string { return r.JSON.raw }
-func (r *BrandListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type BrandListResponseRecord struct {
+type Messaging10dlcBrandListResponse struct {
 	// Number of campaigns associated with the brand
 	AssignedCampaingsCount int64 `json:"assignedCampaingsCount"`
 	// Unique identifier assigned to the brand.
@@ -468,7 +550,8 @@ type BrandListResponseRecord struct {
 	Email string `json:"email"`
 	// Entity type behind the brand. This is the form of business establishment.
 	//
-	// Any of "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT", "GOVERNMENT".
+	// Any of "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT", "GOVERNMENT",
+	// "SOLE_PROPRIETOR".
 	EntityType EntityType `json:"entityType"`
 	// Failure reasons for brand
 	FailureReasons string `json:"failureReasons"`
@@ -479,7 +562,7 @@ type BrandListResponseRecord struct {
 	// Status of the brand
 	//
 	// Any of "OK", "REGISTRATION_PENDING", "REGISTRATION_FAILED".
-	Status string `json:"status"`
+	Status Messaging10dlcBrandListResponseStatus `json:"status"`
 	// Unique identifier assigned to the brand by the registry.
 	TcrBrandID string `json:"tcrBrandId"`
 	// Date and time that the brand was last updated at.
@@ -507,18 +590,25 @@ type BrandListResponseRecord struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r BrandListResponseRecord) RawJSON() string { return r.JSON.raw }
-func (r *BrandListResponseRecord) UnmarshalJSON(data []byte) error {
+func (r Messaging10dlcBrandListResponse) RawJSON() string { return r.JSON.raw }
+func (r *Messaging10dlcBrandListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type BrandDeleteResponse = any
+// Status of the brand
+type Messaging10dlcBrandListResponseStatus string
 
-type BrandGetFeedbackResponse struct {
+const (
+	Messaging10dlcBrandListResponseStatusOk                  Messaging10dlcBrandListResponseStatus = "OK"
+	Messaging10dlcBrandListResponseStatusRegistrationPending Messaging10dlcBrandListResponseStatus = "REGISTRATION_PENDING"
+	Messaging10dlcBrandListResponseStatusRegistrationFailed  Messaging10dlcBrandListResponseStatus = "REGISTRATION_FAILED"
+)
+
+type Messaging10dlcBrandGetFeedbackResponse struct {
 	// ID of the brand being queried about
 	BrandID string `json:"brandId,required"`
 	// A list of reasons why brand creation/revetting didn't go as planned
-	Category []BrandGetFeedbackResponseCategory `json:"category,required"`
+	Category []Messaging10dlcBrandGetFeedbackResponseCategory `json:"category,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BrandID     respjson.Field
@@ -529,12 +619,12 @@ type BrandGetFeedbackResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r BrandGetFeedbackResponse) RawJSON() string { return r.JSON.raw }
-func (r *BrandGetFeedbackResponse) UnmarshalJSON(data []byte) error {
+func (r Messaging10dlcBrandGetFeedbackResponse) RawJSON() string { return r.JSON.raw }
+func (r *Messaging10dlcBrandGetFeedbackResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type BrandGetFeedbackResponseCategory struct {
+type Messaging10dlcBrandGetFeedbackResponseCategory struct {
 	// One of `TAX_ID`, `STOCK_SYMBOL`, `GOVERNMENT_ENTITY`, `NONPROFIT`, and `OTHERS`
 	ID string `json:"id,required"`
 	// Long-form description of the feedback with additional information
@@ -555,14 +645,73 @@ type BrandGetFeedbackResponseCategory struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r BrandGetFeedbackResponseCategory) RawJSON() string { return r.JSON.raw }
-func (r *BrandGetFeedbackResponseCategory) UnmarshalJSON(data []byte) error {
+func (r Messaging10dlcBrandGetFeedbackResponseCategory) RawJSON() string { return r.JSON.raw }
+func (r *Messaging10dlcBrandGetFeedbackResponseCategory) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type BrandRevetResponse = any
+// Status information for an SMS OTP sent during Sole Proprietor brand verification
+type Messaging10dlcBrandGetSMSOtpStatusResponse struct {
+	// The Brand ID associated with this OTP request
+	BrandID string `json:"brandId,required"`
+	// The current delivery status of the OTP SMS message. Common values include:
+	// `DELIVERED_HANDSET`, `PENDING`, `FAILED`, `EXPIRED`
+	DeliveryStatus string `json:"deliveryStatus,required"`
+	// The mobile phone number where the OTP was sent, in E.164 format
+	MobilePhone string `json:"mobilePhone,required"`
+	// The reference ID for this OTP request, used for status queries
+	ReferenceID string `json:"referenceId,required"`
+	// The timestamp when the OTP request was initiated
+	RequestDate time.Time `json:"requestDate,required" format:"date-time"`
+	// The timestamp when the delivery status was last updated
+	DeliveryStatusDate time.Time `json:"deliveryStatusDate" format:"date-time"`
+	// Additional details about the delivery status
+	DeliveryStatusDetails string `json:"deliveryStatusDetails"`
+	// The timestamp when the OTP was successfully verified (if applicable)
+	VerifyDate time.Time `json:"verifyDate" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BrandID               respjson.Field
+		DeliveryStatus        respjson.Field
+		MobilePhone           respjson.Field
+		ReferenceID           respjson.Field
+		RequestDate           respjson.Field
+		DeliveryStatusDate    respjson.Field
+		DeliveryStatusDetails respjson.Field
+		VerifyDate            respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+}
 
-type BrandNewParams struct {
+// Returns the unmodified JSON received from the API
+func (r Messaging10dlcBrandGetSMSOtpStatusResponse) RawJSON() string { return r.JSON.raw }
+func (r *Messaging10dlcBrandGetSMSOtpStatusResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Response after successfully triggering a Brand SMS OTP
+type Messaging10dlcBrandTriggerSMSOtpResponse struct {
+	// The Brand ID for which the OTP was triggered
+	BrandID string `json:"brandId,required"`
+	// The reference ID that can be used to check OTP status
+	ReferenceID string `json:"referenceId,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BrandID     respjson.Field
+		ReferenceID respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Messaging10dlcBrandTriggerSMSOtpResponse) RawJSON() string { return r.JSON.raw }
+func (r *Messaging10dlcBrandTriggerSMSOtpResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type Messaging10dlcBrandNewParams struct {
 	// ISO2 2 characters country code. Example: US - United States
 	Country string `json:"country,required"`
 	// Display name, marketing name, or DBA name of the brand.
@@ -571,7 +720,8 @@ type BrandNewParams struct {
 	Email string `json:"email,required"`
 	// Entity type behind the brand. This is the form of business establishment.
 	//
-	// Any of "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT", "GOVERNMENT".
+	// Any of "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT", "GOVERNMENT",
+	// "SOLE_PROPRIETOR".
 	EntityType EntityType `json:"entityType,omitzero,required"`
 	// Vertical or industry segment of the brand or campaign.
 	//
@@ -628,15 +778,15 @@ type BrandNewParams struct {
 	paramObj
 }
 
-func (r BrandNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow BrandNewParams
+func (r Messaging10dlcBrandNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow Messaging10dlcBrandNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *BrandNewParams) UnmarshalJSON(data []byte) error {
+func (r *Messaging10dlcBrandNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type BrandUpdateParams struct {
+type Messaging10dlcBrandUpdateParams struct {
 	// ISO2 2 characters country code. Example: US - United States
 	Country string `json:"country,required"`
 	// Display or marketing name of the brand.
@@ -645,7 +795,8 @@ type BrandUpdateParams struct {
 	Email string `json:"email,required"`
 	// Entity type behind the brand. This is the form of business establishment.
 	//
-	// Any of "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT", "GOVERNMENT".
+	// Any of "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT", "GOVERNMENT",
+	// "SOLE_PROPRIETOR".
 	EntityType EntityType `json:"entityType,omitzero,required"`
 	// Vertical or industry segment of the brand or campaign.
 	//
@@ -708,15 +859,15 @@ type BrandUpdateParams struct {
 	paramObj
 }
 
-func (r BrandUpdateParams) MarshalJSON() (data []byte, err error) {
-	type shadow BrandUpdateParams
+func (r Messaging10dlcBrandUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow Messaging10dlcBrandUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *BrandUpdateParams) UnmarshalJSON(data []byte) error {
+func (r *Messaging10dlcBrandUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type BrandListParams struct {
+type Messaging10dlcBrandListParams struct {
 	// Filter results by the Telnyx Brand id
 	BrandID     param.Opt[string] `query:"brandId,omitzero" json:"-"`
 	Country     param.Opt[string] `query:"country,omitzero" json:"-"`
@@ -735,12 +886,13 @@ type BrandListParams struct {
 	// "-brandId", "createdAt", "-createdAt", "displayName", "-displayName",
 	// "identityStatus", "-identityStatus", "status", "-status", "tcrBrandId",
 	// "-tcrBrandId".
-	Sort BrandListParamsSort `query:"sort,omitzero" json:"-"`
+	Sort Messaging10dlcBrandListParamsSort `query:"sort,omitzero" json:"-"`
 	paramObj
 }
 
-// URLQuery serializes [BrandListParams]'s query parameters as `url.Values`.
-func (r BrandListParams) URLQuery() (v url.Values, err error) {
+// URLQuery serializes [Messaging10dlcBrandListParams]'s query parameters as
+// `url.Values`.
+func (r Messaging10dlcBrandListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
@@ -749,21 +901,67 @@ func (r BrandListParams) URLQuery() (v url.Values, err error) {
 
 // Specifies the sort order for results. If not given, results are sorted by
 // createdAt in descending order.
-type BrandListParamsSort string
+type Messaging10dlcBrandListParamsSort string
 
 const (
-	BrandListParamsSortAssignedCampaignsCount     BrandListParamsSort = "assignedCampaignsCount"
-	BrandListParamsSortAssignedCampaignsCountDesc BrandListParamsSort = "-assignedCampaignsCount"
-	BrandListParamsSortBrandID                    BrandListParamsSort = "brandId"
-	BrandListParamsSortBrandIDDesc                BrandListParamsSort = "-brandId"
-	BrandListParamsSortCreatedAt                  BrandListParamsSort = "createdAt"
-	BrandListParamsSortCreatedAtDesc              BrandListParamsSort = "-createdAt"
-	BrandListParamsSortDisplayName                BrandListParamsSort = "displayName"
-	BrandListParamsSortDisplayNameDesc            BrandListParamsSort = "-displayName"
-	BrandListParamsSortIdentityStatus             BrandListParamsSort = "identityStatus"
-	BrandListParamsSortIdentityStatusDesc         BrandListParamsSort = "-identityStatus"
-	BrandListParamsSortStatus                     BrandListParamsSort = "status"
-	BrandListParamsSortStatusDesc                 BrandListParamsSort = "-status"
-	BrandListParamsSortTcrBrandID                 BrandListParamsSort = "tcrBrandId"
-	BrandListParamsSortTcrBrandIDDesc             BrandListParamsSort = "-tcrBrandId"
+	Messaging10dlcBrandListParamsSortAssignedCampaignsCount     Messaging10dlcBrandListParamsSort = "assignedCampaignsCount"
+	Messaging10dlcBrandListParamsSortAssignedCampaignsCountDesc Messaging10dlcBrandListParamsSort = "-assignedCampaignsCount"
+	Messaging10dlcBrandListParamsSortBrandID                    Messaging10dlcBrandListParamsSort = "brandId"
+	Messaging10dlcBrandListParamsSortBrandIDDesc                Messaging10dlcBrandListParamsSort = "-brandId"
+	Messaging10dlcBrandListParamsSortCreatedAt                  Messaging10dlcBrandListParamsSort = "createdAt"
+	Messaging10dlcBrandListParamsSortCreatedAtDesc              Messaging10dlcBrandListParamsSort = "-createdAt"
+	Messaging10dlcBrandListParamsSortDisplayName                Messaging10dlcBrandListParamsSort = "displayName"
+	Messaging10dlcBrandListParamsSortDisplayNameDesc            Messaging10dlcBrandListParamsSort = "-displayName"
+	Messaging10dlcBrandListParamsSortIdentityStatus             Messaging10dlcBrandListParamsSort = "identityStatus"
+	Messaging10dlcBrandListParamsSortIdentityStatusDesc         Messaging10dlcBrandListParamsSort = "-identityStatus"
+	Messaging10dlcBrandListParamsSortStatus                     Messaging10dlcBrandListParamsSort = "status"
+	Messaging10dlcBrandListParamsSortStatusDesc                 Messaging10dlcBrandListParamsSort = "-status"
+	Messaging10dlcBrandListParamsSortTcrBrandID                 Messaging10dlcBrandListParamsSort = "tcrBrandId"
+	Messaging10dlcBrandListParamsSortTcrBrandIDDesc             Messaging10dlcBrandListParamsSort = "-tcrBrandId"
 )
+
+type Messaging10dlcBrandGetSMSOtpStatusParams struct {
+	// Filter by Brand ID for easier lookup in portal applications
+	BrandID param.Opt[string] `query:"brandId,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [Messaging10dlcBrandGetSMSOtpStatusParams]'s query
+// parameters as `url.Values`.
+func (r Messaging10dlcBrandGetSMSOtpStatusParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type Messaging10dlcBrandTriggerSMSOtpParams struct {
+	// SMS message template to send the OTP. Must include `@OTP_PIN@` placeholder which
+	// will be replaced with the actual PIN
+	PinSMS string `json:"pinSms,required"`
+	// SMS message to send upon successful OTP verification
+	SuccessSMS string `json:"successSms,required"`
+	paramObj
+}
+
+func (r Messaging10dlcBrandTriggerSMSOtpParams) MarshalJSON() (data []byte, err error) {
+	type shadow Messaging10dlcBrandTriggerSMSOtpParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *Messaging10dlcBrandTriggerSMSOtpParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type Messaging10dlcBrandVerifySMSOtpParams struct {
+	// The OTP PIN received via SMS
+	OtpPin string `json:"otpPin,required"`
+	paramObj
+}
+
+func (r Messaging10dlcBrandVerifySMSOtpParams) MarshalJSON() (data []byte, err error) {
+	type shadow Messaging10dlcBrandVerifySMSOtpParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *Messaging10dlcBrandVerifySMSOtpParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}

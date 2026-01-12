@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestMessagingTollfreeVerificationRequestNewWithOptionalParams(t *testing.T) {
@@ -41,7 +41,7 @@ func TestMessagingTollfreeVerificationRequestNewWithOptionalParams(t *testing.T)
 			BusinessZip:              "78701",
 			CorporateWebsite:         "http://example.com",
 			IsvReseller:              "isvReseller",
-			MessageVolume:            telnyx.Volume100_000,
+			MessageVolume:            telnyx.VolumeV100000,
 			OptInWorkflow:            "User signs into the Telnyx portal, enters a number and is prompted to select whether they want to use 2FA verification for security purposes. If they've opted in a confirmation message is sent out to the handset",
 			OptInWorkflowImageURLs: []telnyx.URLParam{{
 				URL: "https://telnyx.com/sign-up",
@@ -54,7 +54,7 @@ func TestMessagingTollfreeVerificationRequestNewWithOptionalParams(t *testing.T)
 				PhoneNumber: "+18773554399",
 			}},
 			ProductionMessageContent:    "Your Telnyx OTP is XXXX",
-			UseCase:                     telnyx.UseCaseCategories2Fa,
+			UseCase:                     telnyx.UseCaseCategoriesTwoFa,
 			UseCaseSummary:              "This is a use case where Telnyx sends out 2FA codes to portal users to verify their identity in order to sign into the portal",
 			AgeGatedContent:             telnyx.Bool(true),
 			BusinessAddr2:               telnyx.String("14th Floor"),
@@ -133,7 +133,7 @@ func TestMessagingTollfreeVerificationRequestUpdateWithOptionalParams(t *testing
 				BusinessZip:              "78701",
 				CorporateWebsite:         "http://example.com",
 				IsvReseller:              "isvReseller",
-				MessageVolume:            telnyx.Volume100_000,
+				MessageVolume:            telnyx.VolumeV100000,
 				OptInWorkflow:            "User signs into the Telnyx portal, enters a number and is prompted to select whether they want to use 2FA verification for security purposes. If they've opted in a confirmation message is sent out to the handset",
 				OptInWorkflowImageURLs: []telnyx.URLParam{{
 					URL: "https://telnyx.com/sign-up",
@@ -146,7 +146,7 @@ func TestMessagingTollfreeVerificationRequestUpdateWithOptionalParams(t *testing
 					PhoneNumber: "+18773554399",
 				}},
 				ProductionMessageContent:    "Your Telnyx OTP is XXXX",
-				UseCase:                     telnyx.UseCaseCategories2Fa,
+				UseCase:                     telnyx.UseCaseCategoriesTwoFa,
 				UseCaseSummary:              "This is a use case where Telnyx sends out 2FA codes to portal users to verify their identity in order to sign into the portal",
 				AgeGatedContent:             telnyx.Bool(true),
 				BusinessAddr2:               telnyx.String("14th Floor"),
@@ -216,7 +216,7 @@ func TestMessagingTollfreeVerificationRequestDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.MessagingTollfree.Verification.Requests.Delete(context.TODO(), "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+	err := client.MessagingTollfree.Verification.Requests.Delete(context.TODO(), "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

@@ -11,12 +11,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // TexmlAccountService contains methods and other services that help with
@@ -31,6 +31,7 @@ type TexmlAccountService struct {
 	Conferences    TexmlAccountConferenceService
 	Recordings     TexmlAccountRecordingService
 	Transcriptions TexmlAccountTranscriptionService
+	Queues         TexmlAccountQueueService
 }
 
 // NewTexmlAccountService generates a new service that applies the given options to
@@ -43,6 +44,7 @@ func NewTexmlAccountService(opts ...option.RequestOption) (r TexmlAccountService
 	r.Conferences = NewTexmlAccountConferenceService(opts...)
 	r.Recordings = NewTexmlAccountRecordingService(opts...)
 	r.Transcriptions = NewTexmlAccountTranscriptionService(opts...)
+	r.Queues = NewTexmlAccountQueueService(opts...)
 	return
 }
 

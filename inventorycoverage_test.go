@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestInventoryCoverageListWithOptionalParams(t *testing.T) {
@@ -31,7 +31,7 @@ func TestInventoryCoverageListWithOptionalParams(t *testing.T) {
 			AdministrativeArea: telnyx.String("administrative_area"),
 			Count:              telnyx.Bool(true),
 			CountryCode:        "AT",
-			Features:           []string{"sms"},
+			Features:           []string{"voice", "sms"},
 			GroupBy:            "locality",
 			Npa:                telnyx.Int(0),
 			Nxx:                telnyx.Int(0),

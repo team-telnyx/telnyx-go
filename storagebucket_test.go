@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestStorageBucketNewPresignedURLWithOptionalParams(t *testing.T) {
@@ -31,7 +31,7 @@ func TestStorageBucketNewPresignedURLWithOptionalParams(t *testing.T) {
 		"",
 		telnyx.StorageBucketNewPresignedURLParams{
 			BucketName: "",
-			Ttl:        telnyx.Int(1),
+			Ttl:        telnyx.Int(60),
 		},
 	)
 	if err != nil {

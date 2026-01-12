@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestPortingOrderPhoneNumberBlockNew(t *testing.T) {
@@ -72,7 +72,7 @@ func TestPortingOrderPhoneNumberBlockListWithOptionalParams(t *testing.T) {
 				PortabilityStatus: "confirmed",
 				PortingOrderID:    []string{"f3575e15-32ce-400e-a4c0-dd78800c20b0"},
 				Status: telnyx.PortingOrderPhoneNumberBlockListParamsFilterStatusUnion{
-					OfPortingOrderPhoneNumberBlockListsFilterStatusString: telnyx.String("in-process"),
+					OfPortingOrderSingleStatus: telnyx.String("in-process"),
 				},
 				SupportKey: telnyx.PortingOrderPhoneNumberBlockListParamsFilterSupportKeyUnion{
 					OfString: telnyx.String("sr_a12345"),
@@ -83,7 +83,7 @@ func TestPortingOrderPhoneNumberBlockListWithOptionalParams(t *testing.T) {
 				Size:   telnyx.Int(1),
 			},
 			Sort: telnyx.PortingOrderPhoneNumberBlockListParamsSort{
-				Value: "-created_at",
+				Value: "created_at",
 			},
 		},
 	)

@@ -10,12 +10,12 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // RoomSessionActionService contains methods and other services that help with
@@ -106,33 +106,32 @@ func (r *ActionsParticipantsRequestParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type ActionsParticipantsRequestParticipantsUnionParam struct {
-	// Check if union is this variant with
-	// !param.IsOmitted(union.OfActionsParticipantsRequestParticipantsString)
-	OfActionsParticipantsRequestParticipantsString param.Opt[string] `json:",omitzero,inline"`
-	OfStringArray                                  []string          `json:",omitzero,inline"`
+	// Check if union is this variant with !param.IsOmitted(union.OfAllParticipants)
+	OfAllParticipants param.Opt[string] `json:",omitzero,inline"`
+	OfStringArray     []string          `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u ActionsParticipantsRequestParticipantsUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfActionsParticipantsRequestParticipantsString, u.OfStringArray)
+	return param.MarshalUnion(u, u.OfAllParticipants, u.OfStringArray)
 }
 func (u *ActionsParticipantsRequestParticipantsUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *ActionsParticipantsRequestParticipantsUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfActionsParticipantsRequestParticipantsString) {
-		return &u.OfActionsParticipantsRequestParticipantsString
+	if !param.IsOmitted(u.OfAllParticipants) {
+		return &u.OfAllParticipants
 	} else if !param.IsOmitted(u.OfStringArray) {
 		return &u.OfStringArray
 	}
 	return nil
 }
 
-type ActionsParticipantsRequestParticipantsString string
+type ActionsParticipantsRequestParticipantsAllParticipants string
 
 const (
-	ActionsParticipantsRequestParticipantsStringAll ActionsParticipantsRequestParticipantsString = "all"
+	ActionsParticipantsRequestParticipantsAllParticipantsAll ActionsParticipantsRequestParticipantsAllParticipants = "all"
 )
 
 type RoomSessionActionEndResponse struct {

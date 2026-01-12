@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestWireguardInterfaceNewWithOptionalParams(t *testing.T) {
@@ -27,10 +27,10 @@ func TestWireguardInterfaceNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.WireguardInterfaces.New(context.TODO(), telnyx.WireguardInterfaceNewParams{
-		NetworkID:         "6a09cdc3-8948-47f0-aa62-74ac943d6c58",
 		RegionCode:        "ashburn-va",
 		EnableSipTrunking: telnyx.Bool(false),
 		Name:              telnyx.String("test interface"),
+		NetworkID:         telnyx.String("6a09cdc3-8948-47f0-aa62-74ac943d6c58"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

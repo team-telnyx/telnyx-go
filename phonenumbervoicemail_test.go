@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestPhoneNumberVoicemailNewWithOptionalParams(t *testing.T) {
@@ -32,7 +32,7 @@ func TestPhoneNumberVoicemailNewWithOptionalParams(t *testing.T) {
 		telnyx.PhoneNumberVoicemailNewParams{
 			VoicemailRequest: telnyx.VoicemailRequestParam{
 				Enabled: telnyx.Bool(true),
-				Pin:     telnyx.String("pin"),
+				Pin:     telnyx.String("1234"),
 			},
 		},
 	)
@@ -87,7 +87,7 @@ func TestPhoneNumberVoicemailUpdateWithOptionalParams(t *testing.T) {
 		telnyx.PhoneNumberVoicemailUpdateParams{
 			VoicemailRequest: telnyx.VoicemailRequestParam{
 				Enabled: telnyx.Bool(true),
-				Pin:     telnyx.String("pin"),
+				Pin:     telnyx.String("1234"),
 			},
 		},
 	)

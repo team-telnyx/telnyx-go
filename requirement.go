@@ -10,13 +10,14 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v3/shared"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // RequirementService contains methods and other services that help with
@@ -51,11 +52,26 @@ func (r *RequirementService) Get(ctx context.Context, id string, opts ...option.
 }
 
 // List all requirements with filtering, sorting, and pagination
-func (r *RequirementService) List(ctx context.Context, query RequirementListParams, opts ...option.RequestOption) (res *RequirementListResponse, err error) {
+func (r *RequirementService) List(ctx context.Context, query RequirementListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[RequirementListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "requirements"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List all requirements with filtering, sorting, and pagination
+func (r *RequirementService) ListAutoPaging(ctx context.Context, query RequirementListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[RequirementListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type RequirementGetResponse struct {
@@ -122,31 +138,13 @@ func (r *RequirementGetResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type RequirementListResponse struct {
-	Data []RequirementListResponseData `json:"data"`
-	Meta PaginationMeta                `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RequirementListResponse) RawJSON() string { return r.JSON.raw }
-func (r *RequirementListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type RequirementListResponseData struct {
 	// Identifies the associated document
 	ID string `json:"id" format:"uuid"`
 	// Indicates whether this requirement applies to branded_calling, ordering,
 	// porting, or both ordering and porting
 	//
 	// Any of "both", "branded_calling", "ordering", "porting".
-	Action string `json:"action"`
+	Action RequirementListResponseAction `json:"action"`
 	// The 2-character (ISO 3166-1 alpha-2) country code where this requirement applies
 	CountryCode string `json:"country_code"`
 	// ISO 8601 formatted date-time indicating when the resource was created.
@@ -157,7 +155,7 @@ type RequirementListResponseData struct {
 	// requirement applies to all number_types.
 	//
 	// Any of "local", "national", "toll_free".
-	PhoneNumberType string `json:"phone_number_type"`
+	PhoneNumberType RequirementListResponsePhoneNumberType `json:"phone_number_type"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
 	// Lists the requirement types necessary to fulfill this requirement
@@ -181,10 +179,31 @@ type RequirementListResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RequirementListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *RequirementListResponseData) UnmarshalJSON(data []byte) error {
+func (r RequirementListResponse) RawJSON() string { return r.JSON.raw }
+func (r *RequirementListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Indicates whether this requirement applies to branded_calling, ordering,
+// porting, or both ordering and porting
+type RequirementListResponseAction string
+
+const (
+	RequirementListResponseActionBoth           RequirementListResponseAction = "both"
+	RequirementListResponseActionBrandedCalling RequirementListResponseAction = "branded_calling"
+	RequirementListResponseActionOrdering       RequirementListResponseAction = "ordering"
+	RequirementListResponseActionPorting        RequirementListResponseAction = "porting"
+)
+
+// Indicates the phone_number_type this requirement applies to. Leave blank if this
+// requirement applies to all number_types.
+type RequirementListResponsePhoneNumberType string
+
+const (
+	RequirementListResponsePhoneNumberTypeLocal    RequirementListResponsePhoneNumberType = "local"
+	RequirementListResponsePhoneNumberTypeNational RequirementListResponsePhoneNumberType = "national"
+	RequirementListResponsePhoneNumberTypeTollFree RequirementListResponsePhoneNumberType = "toll_free"
+)
 
 type RequirementListParams struct {
 	// Consolidated filter parameter for requirements (deepObject style). Originally:

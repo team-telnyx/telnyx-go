@@ -13,9 +13,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestDocumentGet(t *testing.T) {
@@ -209,10 +209,11 @@ func TestDocumentUploadWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Documents.Upload(context.TODO(), telnyx.DocumentUploadParams{
-		OfDocServiceDocumentUploadURL: &telnyx.DocumentUploadParamsBodyDocServiceDocumentUploadURL{
-			URL:               "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+		Document: telnyx.DocumentUploadParamsDocument{
 			CustomerReference: telnyx.String("MY REF 001"),
+			File:              telnyx.String("ZXhhbXBsZSBvZiBlbmNvZGVkIGNvbnRlbnQ="),
 			Filename:          telnyx.String("test-document.pdf"),
+			URL:               telnyx.String("https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"),
 		},
 	})
 	if err != nil {
@@ -238,10 +239,11 @@ func TestDocumentUploadJsonWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Documents.UploadJson(context.TODO(), telnyx.DocumentUploadJsonParams{
-		OfDocServiceDocumentUploadURL: &telnyx.DocumentUploadJsonParamsBodyDocServiceDocumentUploadURL{
-			URL:               "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+		Document: telnyx.DocumentUploadJsonParamsDocument{
 			CustomerReference: telnyx.String("MY REF 001"),
+			File:              telnyx.String("ZXhhbXBsZSBvZiBlbmNvZGVkIGNvbnRlbnQ="),
 			Filename:          telnyx.String("test-document.pdf"),
+			URL:               telnyx.String("https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"),
 		},
 	})
 	if err != nil {

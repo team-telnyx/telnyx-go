@@ -9,11 +9,11 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // MessagingNumbersBulkUpdateService contains methods and other services that help
@@ -35,7 +35,7 @@ func NewMessagingNumbersBulkUpdateService(opts ...option.RequestOption) (r Messa
 	return
 }
 
-// Update the messaging profile of multiple phone numbers
+// Bulk update phone number profiles
 func (r *MessagingNumbersBulkUpdateService) New(ctx context.Context, body MessagingNumbersBulkUpdateNewParams, opts ...option.RequestOption) (res *MessagingNumbersBulkUpdateNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "messaging_numbers_bulk_updates"

@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestAIAssistantTestTestSuiteRunListWithOptionalParams(t *testing.T) {
@@ -30,10 +30,8 @@ func TestAIAssistantTestTestSuiteRunListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"suite_name",
 		telnyx.AIAssistantTestTestSuiteRunListParams{
-			Page: telnyx.AIAssistantTestTestSuiteRunListParamsPage{
-				Number: telnyx.Int(1),
-				Size:   telnyx.Int(1),
-			},
+			PageNumber:     telnyx.Int(0),
+			PageSize:       telnyx.Int(0),
 			Status:         telnyx.String("status"),
 			TestSuiteRunID: telnyx.String("test_suite_run_id"),
 		},

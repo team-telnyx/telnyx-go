@@ -10,11 +10,11 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // CallService contains methods and other services that help with interacting with
@@ -243,11 +243,11 @@ const (
 type StreamBidirectionalSamplingRate int64
 
 const (
-	StreamBidirectionalSamplingRate8000  StreamBidirectionalSamplingRate = 8000
-	StreamBidirectionalSamplingRate16000 StreamBidirectionalSamplingRate = 16000
-	StreamBidirectionalSamplingRate22050 StreamBidirectionalSamplingRate = 22050
-	StreamBidirectionalSamplingRate24000 StreamBidirectionalSamplingRate = 24000
-	StreamBidirectionalSamplingRate48000 StreamBidirectionalSamplingRate = 48000
+	StreamBidirectionalSamplingRateRate8000  StreamBidirectionalSamplingRate = 8000
+	StreamBidirectionalSamplingRateRate16000 StreamBidirectionalSamplingRate = 16000
+	StreamBidirectionalSamplingRateRate22050 StreamBidirectionalSamplingRate = 22050
+	StreamBidirectionalSamplingRateRate24000 StreamBidirectionalSamplingRate = 24000
+	StreamBidirectionalSamplingRateRate48000 StreamBidirectionalSamplingRate = 48000
 )
 
 // Specifies which call legs should receive the bidirectional stream audio.

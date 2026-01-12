@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestSimCardGroupNewWithOptionalParams(t *testing.T) {
@@ -118,7 +118,7 @@ func TestSimCardGroupListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.SimCardGroups.List(context.TODO(), telnyx.SimCardGroupListParams{
-		FilterName:                     telnyx.String("My Test Group"),
+		FilterName:                     telnyx.String("1119e3cb-f39d-4254-ad38-9080d5fe90a9"),
 		FilterPrivateWirelessGatewayID: telnyx.String("7606c6d3-ff7c-49c1-943d-68879e9d584d"),
 		FilterWirelessBlocklistID:      telnyx.String("0f3f490e-c4d3-4cf5-838a-9970f10ee259"),
 		PageNumber:                     telnyx.Int(1),

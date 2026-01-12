@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestUsageReportListWithOptionalParams(t *testing.T) {
@@ -27,18 +27,16 @@ func TestUsageReportListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.UsageReports.List(context.TODO(), telnyx.UsageReportListParams{
-		Dimensions:      []string{"string"},
-		Metrics:         []string{"string"},
-		Product:         "product",
-		DateRange:       telnyx.String("date_range"),
-		EndDate:         telnyx.String("end_date"),
-		Filter:          telnyx.String("filter"),
-		Format:          telnyx.UsageReportListParamsFormatCsv,
-		ManagedAccounts: telnyx.Bool(true),
-		Page: telnyx.UsageReportListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(5000),
-		},
+		Dimensions:          []string{"string"},
+		Metrics:             []string{"string"},
+		Product:             "product",
+		DateRange:           telnyx.String("date_range"),
+		EndDate:             telnyx.String("end_date"),
+		Filter:              telnyx.String("filter"),
+		Format:              telnyx.UsageReportListParamsFormatCsv,
+		ManagedAccounts:     telnyx.Bool(true),
+		PageNumber:          telnyx.Int(0),
+		PageSize:            telnyx.Int(0),
 		Sort:                []string{"string"},
 		StartDate:           telnyx.String("start_date"),
 		AuthorizationBearer: telnyx.String("authorization_bearer"),

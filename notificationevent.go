@@ -9,12 +9,13 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // NotificationEventService contains methods and other services that help with
@@ -37,33 +38,30 @@ func NewNotificationEventService(opts ...option.RequestOption) (r NotificationEv
 }
 
 // Returns a list of your notifications events.
-func (r *NotificationEventService) List(ctx context.Context, query NotificationEventListParams, opts ...option.RequestOption) (res *NotificationEventListResponse, err error) {
+func (r *NotificationEventService) List(ctx context.Context, query NotificationEventListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[NotificationEventListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "notification_events"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
 }
 
-type NotificationEventListResponse struct {
-	Data []NotificationEventListResponseData `json:"data"`
-	Meta PaginationMeta                      `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r NotificationEventListResponse) RawJSON() string { return r.JSON.raw }
-func (r *NotificationEventListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+// Returns a list of your notifications events.
+func (r *NotificationEventService) ListAutoPaging(ctx context.Context, query NotificationEventListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[NotificationEventListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // An object representing the available notifications.
-type NotificationEventListResponseData struct {
+type NotificationEventListResponse struct {
 	// A UUID.
 	ID string `json:"id"`
 	// ISO 8601 formatted date indicating when the resource was created.
@@ -88,8 +86,8 @@ type NotificationEventListResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r NotificationEventListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *NotificationEventListResponseData) UnmarshalJSON(data []byte) error {
+func (r NotificationEventListResponse) RawJSON() string { return r.JSON.raw }
+func (r *NotificationEventListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

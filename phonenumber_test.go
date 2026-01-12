@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestPhoneNumberGet(t *testing.T) {
@@ -108,6 +108,7 @@ func TestPhoneNumberListWithOptionalParams(t *testing.T) {
 			VoiceUsagePaymentMethod: "channel",
 			WithoutTags:             "true",
 		},
+		HandleMessagingProfileError: telnyx.PhoneNumberListParamsHandleMessagingProfileErrorFalse,
 		Page: telnyx.PhoneNumberListParamsPage{
 			Number: telnyx.Int(1),
 			Size:   telnyx.Int(1),

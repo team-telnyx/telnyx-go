@@ -11,13 +11,14 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v3/shared"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // NumberOrderService contains methods and other services that help with
@@ -72,11 +73,26 @@ func (r *NumberOrderService) Update(ctx context.Context, numberOrderID string, b
 }
 
 // Get a paginated list of number orders.
-func (r *NumberOrderService) List(ctx context.Context, query NumberOrderListParams, opts ...option.RequestOption) (res *NumberOrderListResponse, err error) {
+func (r *NumberOrderService) List(ctx context.Context, query NumberOrderListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[NumberOrderListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "number_orders"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get a paginated list of number orders.
+func (r *NumberOrderService) ListAutoPaging(ctx context.Context, query NumberOrderListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[NumberOrderListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type NumberOrderWithPhoneNumbers struct {
@@ -271,24 +287,6 @@ func (r *NumberOrderUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type NumberOrderListResponse struct {
-	Data []NumberOrderListResponseData `json:"data"`
-	Meta PaginationMeta                `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r NumberOrderListResponse) RawJSON() string { return r.JSON.raw }
-func (r *NumberOrderListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type NumberOrderListResponseData struct {
 	ID string `json:"id" format:"uuid"`
 	// Identifies the messaging profile associated with the phone number.
 	BillingGroupID string `json:"billing_group_id"`
@@ -299,8 +297,8 @@ type NumberOrderListResponseData struct {
 	// A customer reference string for customer look ups.
 	CustomerReference string `json:"customer_reference"`
 	// Identifies the messaging profile associated with the phone number.
-	MessagingProfileID string                                   `json:"messaging_profile_id"`
-	PhoneNumbers       []NumberOrderListResponseDataPhoneNumber `json:"phone_numbers"`
+	MessagingProfileID string                               `json:"messaging_profile_id"`
+	PhoneNumbers       []NumberOrderListResponsePhoneNumber `json:"phone_numbers"`
 	// The count of phone numbers in the number order.
 	PhoneNumbersCount int64  `json:"phone_numbers_count"`
 	RecordType        string `json:"record_type"`
@@ -309,8 +307,8 @@ type NumberOrderListResponseData struct {
 	// The status of the order.
 	//
 	// Any of "pending", "success", "failure".
-	Status             string   `json:"status"`
-	SubNumberOrdersIDs []string `json:"sub_number_orders_ids"`
+	Status             NumberOrderListResponseStatus `json:"status"`
+	SubNumberOrdersIDs []string                      `json:"sub_number_orders_ids"`
 	// An ISO 8901 datetime string for when the number order was updated.
 	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -334,13 +332,13 @@ type NumberOrderListResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r NumberOrderListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *NumberOrderListResponseData) UnmarshalJSON(data []byte) error {
+func (r NumberOrderListResponse) RawJSON() string { return r.JSON.raw }
+func (r *NumberOrderListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The unique phone numbers given as arguments in the job creation.
-type NumberOrderListResponseDataPhoneNumber struct {
+type NumberOrderListResponsePhoneNumber struct {
 	// The phone number's ID
 	ID string `json:"id"`
 	// The phone number in e164 format.
@@ -355,10 +353,19 @@ type NumberOrderListResponseDataPhoneNumber struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r NumberOrderListResponseDataPhoneNumber) RawJSON() string { return r.JSON.raw }
-func (r *NumberOrderListResponseDataPhoneNumber) UnmarshalJSON(data []byte) error {
+func (r NumberOrderListResponsePhoneNumber) RawJSON() string { return r.JSON.raw }
+func (r *NumberOrderListResponsePhoneNumber) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// The status of the order.
+type NumberOrderListResponseStatus string
+
+const (
+	NumberOrderListResponseStatusPending NumberOrderListResponseStatus = "pending"
+	NumberOrderListResponseStatusSuccess NumberOrderListResponseStatus = "success"
+	NumberOrderListResponseStatusFailure NumberOrderListResponseStatus = "failure"
+)
 
 type NumberOrderNewParams struct {
 	// Identifies the billing group associated with the phone number.

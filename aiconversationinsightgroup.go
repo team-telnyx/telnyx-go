@@ -11,12 +11,13 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // AIConversationInsightGroupService contains methods and other services that help
@@ -86,11 +87,26 @@ func (r *AIConversationInsightGroupService) InsightGroups(ctx context.Context, b
 }
 
 // Get all insight groups
-func (r *AIConversationInsightGroupService) GetInsightGroups(ctx context.Context, query AIConversationInsightGroupGetInsightGroupsParams, opts ...option.RequestOption) (res *AIConversationInsightGroupGetInsightGroupsResponse, err error) {
+func (r *AIConversationInsightGroupService) GetInsightGroups(ctx context.Context, query AIConversationInsightGroupGetInsightGroupsParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[InsightTemplateGroup], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "ai/conversations/insight-groups"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get all insight groups
+func (r *AIConversationInsightGroupService) GetInsightGroupsAutoPaging(ctx context.Context, query AIConversationInsightGroupGetInsightGroupsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[InsightTemplateGroup] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.GetInsightGroups(ctx, query, opts...))
 }
 
 type InsightTemplateGroup struct {
@@ -135,24 +151,6 @@ func (r *InsightTemplateGroupDetail) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIConversationInsightGroupGetInsightGroupsResponse struct {
-	Data []InsightTemplateGroup `json:"data,required"`
-	Meta Meta                   `json:"meta,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIConversationInsightGroupGetInsightGroupsResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIConversationInsightGroupGetInsightGroupsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type AIConversationInsightGroupUpdateParams struct {
 	Description param.Opt[string] `json:"description,omitzero"`
 	Name        param.Opt[string] `json:"name,omitzero"`
@@ -184,34 +182,14 @@ func (r *AIConversationInsightGroupInsightGroupsParams) UnmarshalJSON(data []byt
 }
 
 type AIConversationInsightGroupGetInsightGroupsParams struct {
-	// Consolidated page parameter (deepObject style). Originally: page[number],
-	// page[size]
-	Page AIConversationInsightGroupGetInsightGroupsParamsPage `query:"page,omitzero" json:"-"`
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [AIConversationInsightGroupGetInsightGroupsParams]'s query
 // parameters as `url.Values`.
 func (r AIConversationInsightGroupGetInsightGroupsParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[number],
-// page[size]
-type AIConversationInsightGroupGetInsightGroupsParamsPage struct {
-	// Page number (0-based)
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// Number of items per page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [AIConversationInsightGroupGetInsightGroupsParamsPage]'s
-// query parameters as `url.Values`.
-func (r AIConversationInsightGroupGetInsightGroupsParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

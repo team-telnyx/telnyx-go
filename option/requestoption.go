@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/tidwall/sjson"
 )
 
@@ -278,6 +278,26 @@ func WithAPIKey(value string) RequestOption {
 func WithPublicKey(value string) RequestOption {
 	return requestconfig.PreRequestOptionFunc(func(r *requestconfig.RequestConfig) error {
 		r.PublicKey = value
+		return nil
+	})
+}
+
+// WithClientID returns a RequestOption that sets the client setting "client_id".
+func WithClientID(value string) RequestOption {
+	oauthState := requestconfig.OAuth2Cache["https://api.telnyx.com/v2/oauth/token"]
+	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
+		r.ClientID = value
+		r.OAuth2State = oauthState
+		return nil
+	})
+}
+
+// WithClientSecret returns a RequestOption that sets the client setting "client_secret".
+func WithClientSecret(value string) RequestOption {
+	oauthState := requestconfig.OAuth2Cache["https://api.telnyx.com/v2/oauth/token"]
+	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
+		r.ClientSecret = value
+		r.OAuth2State = oauthState
 		return nil
 	})
 }

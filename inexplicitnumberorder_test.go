@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestInexplicitNumberOrderNewWithOptionalParams(t *testing.T) {
@@ -32,6 +32,7 @@ func TestInexplicitNumberOrderNewWithOptionalParams(t *testing.T) {
 			CountryISO:              "US",
 			PhoneNumberType:         "phone_number_type",
 			AdministrativeArea:      telnyx.String("administrative_area"),
+			ExcludeHeldNumbers:      telnyx.Bool(true),
 			Features:                []string{"string"},
 			Locality:                telnyx.String("locality"),
 			NationalDestinationCode: telnyx.String("national_destination_code"),
@@ -40,7 +41,8 @@ func TestInexplicitNumberOrderNewWithOptionalParams(t *testing.T) {
 				EndsWith:   telnyx.String("ends_with"),
 				StartsWith: telnyx.String("starts_with"),
 			},
-			Strategy: "always",
+			Quickship: telnyx.Bool(true),
+			Strategy:  "always",
 		}},
 		BillingGroupID:     telnyx.String("billing_group_id"),
 		ConnectionID:       telnyx.String("connection_id"),

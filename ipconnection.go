@@ -11,13 +11,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v3/shared"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // IPConnectionService contains methods and other services that help with
@@ -72,11 +72,26 @@ func (r *IPConnectionService) Update(ctx context.Context, id string, body IPConn
 }
 
 // Returns a list of your IP connections.
-func (r *IPConnectionService) List(ctx context.Context, query IPConnectionListParams, opts ...option.RequestOption) (res *IPConnectionListResponse, err error) {
+func (r *IPConnectionService) List(ctx context.Context, query IPConnectionListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[IPConnection], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "ip_connections"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Returns a list of your IP connections.
+func (r *IPConnectionService) ListAutoPaging(ctx context.Context, query IPConnectionListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[IPConnection] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Deletes an existing IP connection.
@@ -366,6 +381,18 @@ type IPConnection struct {
 	// Any of "SRTP".
 	EncryptedMedia EncryptedMedia `json:"encrypted_media,nullable"`
 	Inbound        InboundIP      `json:"inbound"`
+	// Controls when noise suppression is applied to calls. When set to 'inbound',
+	// noise suppression is applied to incoming audio. When set to 'outbound', it's
+	// applied to outgoing audio. When set to 'both', it's applied in both directions.
+	// When set to 'disabled', noise suppression is turned off.
+	//
+	// Any of "inbound", "outbound", "both", "disabled".
+	NoiseSuppression IPConnectionNoiseSuppression `json:"noise_suppression"`
+	// Configuration options for noise suppression. These settings are stored
+	// regardless of the noise_suppression value, but only take effect when
+	// noise_suppression is not 'disabled'. If you disable noise suppression and later
+	// re-enable it, the previously configured settings will be used.
+	NoiseSuppressionDetails IPConnectionNoiseSuppressionDetails `json:"noise_suppression_details"`
 	// Enable on-net T38 if you prefer the sender and receiver negotiating T38 directly
 	// if both are on the Telnyx network. If this is disabled, Telnyx will be able to
 	// use T38 on just one leg of the call depending on each leg's settings.
@@ -408,6 +435,8 @@ type IPConnection struct {
 		EncodeContactHeaderEnabled       respjson.Field
 		EncryptedMedia                   respjson.Field
 		Inbound                          respjson.Field
+		NoiseSuppression                 respjson.Field
+		NoiseSuppressionDetails          respjson.Field
 		OnnetT38PassthroughEnabled       respjson.Field
 		Outbound                         respjson.Field
 		RecordType                       respjson.Field
@@ -430,6 +459,53 @@ func (r *IPConnection) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Controls when noise suppression is applied to calls. When set to 'inbound',
+// noise suppression is applied to incoming audio. When set to 'outbound', it's
+// applied to outgoing audio. When set to 'both', it's applied in both directions.
+// When set to 'disabled', noise suppression is turned off.
+type IPConnectionNoiseSuppression string
+
+const (
+	IPConnectionNoiseSuppressionInbound  IPConnectionNoiseSuppression = "inbound"
+	IPConnectionNoiseSuppressionOutbound IPConnectionNoiseSuppression = "outbound"
+	IPConnectionNoiseSuppressionBoth     IPConnectionNoiseSuppression = "both"
+	IPConnectionNoiseSuppressionDisabled IPConnectionNoiseSuppression = "disabled"
+)
+
+// Configuration options for noise suppression. These settings are stored
+// regardless of the noise_suppression value, but only take effect when
+// noise_suppression is not 'disabled'. If you disable noise suppression and later
+// re-enable it, the previously configured settings will be used.
+type IPConnectionNoiseSuppressionDetails struct {
+	// The attenuation limit value for the selected engine. Default values vary by
+	// engine: 0 for 'denoiser', 80 for 'deep_filter_net', 'deep_filter_net_large', and
+	// all Krisp engines ('krisp_viva_tel', 'krisp_viva_tel_lite',
+	// 'krisp_viva_promodel', 'krisp_viva_ss').
+	AttenuationLimit int64 `json:"attenuation_limit"`
+	// The noise suppression engine to use. 'denoiser' is the default engine.
+	// 'deep_filter_net' and 'deep_filter_net_large' are alternative engines with
+	// different performance characteristics. Krisp engines ('krisp_viva_tel',
+	// 'krisp_viva_tel_lite', 'krisp_viva_promodel', 'krisp_viva_ss') provide advanced
+	// noise suppression capabilities.
+	//
+	// Any of "denoiser", "deep_filter_net", "deep_filter_net_large", "krisp_viva_tel",
+	// "krisp_viva_tel_lite", "krisp_viva_promodel", "krisp_viva_ss".
+	Engine string `json:"engine"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AttenuationLimit respjson.Field
+		Engine           respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r IPConnectionNoiseSuppressionDetails) RawJSON() string { return r.JSON.raw }
+func (r *IPConnectionNoiseSuppressionDetails) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // One of UDP, TLS, or TCP. Applies only to connections with IP authentication or
 // FQDN authentication.
 type IPConnectionTransportProtocol string
@@ -444,8 +520,8 @@ const (
 type IPConnectionWebhookAPIVersion string
 
 const (
-	IPConnectionWebhookAPIVersion1 IPConnectionWebhookAPIVersion = "1"
-	IPConnectionWebhookAPIVersion2 IPConnectionWebhookAPIVersion = "2"
+	IPConnectionWebhookAPIVersionV1 IPConnectionWebhookAPIVersion = "1"
+	IPConnectionWebhookAPIVersionV2 IPConnectionWebhookAPIVersion = "2"
 )
 
 type OutboundIP struct {
@@ -657,24 +733,6 @@ func (r *IPConnectionUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type IPConnectionListResponse struct {
-	Data []IPConnection                   `json:"data"`
-	Meta shared.ConnectionsPaginationMeta `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r IPConnectionListResponse) RawJSON() string { return r.JSON.raw }
-func (r *IPConnectionListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type IPConnectionDeleteResponse struct {
 	Data IPConnection `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -737,10 +795,22 @@ type IPConnectionNewParams struct {
 	// digits sent to Telnyx will be accepted in all formats.
 	//
 	// Any of "RFC 2833", "Inband", "SIP INFO".
-	DtmfType     DtmfType                     `json:"dtmf_type,omitzero"`
-	Inbound      IPConnectionNewParamsInbound `json:"inbound,omitzero"`
-	Outbound     OutboundIPParam              `json:"outbound,omitzero"`
-	RtcpSettings ConnectionRtcpSettingsParam  `json:"rtcp_settings,omitzero"`
+	DtmfType DtmfType                     `json:"dtmf_type,omitzero"`
+	Inbound  IPConnectionNewParamsInbound `json:"inbound,omitzero"`
+	// Controls when noise suppression is applied to calls. When set to 'inbound',
+	// noise suppression is applied to incoming audio. When set to 'outbound', it's
+	// applied to outgoing audio. When set to 'both', it's applied in both directions.
+	// When set to 'disabled', noise suppression is turned off.
+	//
+	// Any of "inbound", "outbound", "both", "disabled".
+	NoiseSuppression IPConnectionNewParamsNoiseSuppression `json:"noise_suppression,omitzero"`
+	// Configuration options for noise suppression. These settings are stored
+	// regardless of the noise_suppression value, but only take effect when
+	// noise_suppression is not 'disabled'. If you disable noise suppression and later
+	// re-enable it, the previously configured settings will be used.
+	NoiseSuppressionDetails IPConnectionNewParamsNoiseSuppressionDetails `json:"noise_suppression_details,omitzero"`
+	Outbound                OutboundIPParam                              `json:"outbound,omitzero"`
+	RtcpSettings            ConnectionRtcpSettingsParam                  `json:"rtcp_settings,omitzero"`
 	// Tags associated with the connection.
 	Tags []string `json:"tags,omitzero"`
 	// One of UDP, TLS, or TCP. Applies only to connections with IP authentication or
@@ -849,6 +919,55 @@ func init() {
 	)
 }
 
+// Controls when noise suppression is applied to calls. When set to 'inbound',
+// noise suppression is applied to incoming audio. When set to 'outbound', it's
+// applied to outgoing audio. When set to 'both', it's applied in both directions.
+// When set to 'disabled', noise suppression is turned off.
+type IPConnectionNewParamsNoiseSuppression string
+
+const (
+	IPConnectionNewParamsNoiseSuppressionInbound  IPConnectionNewParamsNoiseSuppression = "inbound"
+	IPConnectionNewParamsNoiseSuppressionOutbound IPConnectionNewParamsNoiseSuppression = "outbound"
+	IPConnectionNewParamsNoiseSuppressionBoth     IPConnectionNewParamsNoiseSuppression = "both"
+	IPConnectionNewParamsNoiseSuppressionDisabled IPConnectionNewParamsNoiseSuppression = "disabled"
+)
+
+// Configuration options for noise suppression. These settings are stored
+// regardless of the noise_suppression value, but only take effect when
+// noise_suppression is not 'disabled'. If you disable noise suppression and later
+// re-enable it, the previously configured settings will be used.
+type IPConnectionNewParamsNoiseSuppressionDetails struct {
+	// The attenuation limit value for the selected engine. Default values vary by
+	// engine: 0 for 'denoiser', 80 for 'deep_filter_net', 'deep_filter_net_large', and
+	// all Krisp engines ('krisp_viva_tel', 'krisp_viva_tel_lite',
+	// 'krisp_viva_promodel', 'krisp_viva_ss').
+	AttenuationLimit param.Opt[int64] `json:"attenuation_limit,omitzero"`
+	// The noise suppression engine to use. 'denoiser' is the default engine.
+	// 'deep_filter_net' and 'deep_filter_net_large' are alternative engines with
+	// different performance characteristics. Krisp engines ('krisp_viva_tel',
+	// 'krisp_viva_tel_lite', 'krisp_viva_promodel', 'krisp_viva_ss') provide advanced
+	// noise suppression capabilities.
+	//
+	// Any of "denoiser", "deep_filter_net", "deep_filter_net_large", "krisp_viva_tel",
+	// "krisp_viva_tel_lite", "krisp_viva_promodel", "krisp_viva_ss".
+	Engine string `json:"engine,omitzero"`
+	paramObj
+}
+
+func (r IPConnectionNewParamsNoiseSuppressionDetails) MarshalJSON() (data []byte, err error) {
+	type shadow IPConnectionNewParamsNoiseSuppressionDetails
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *IPConnectionNewParamsNoiseSuppressionDetails) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[IPConnectionNewParamsNoiseSuppressionDetails](
+		"engine", "denoiser", "deep_filter_net", "deep_filter_net_large", "krisp_viva_tel", "krisp_viva_tel_lite", "krisp_viva_promodel", "krisp_viva_ss",
+	)
+}
+
 // One of UDP, TLS, or TCP. Applies only to connections with IP authentication or
 // FQDN authentication.
 type IPConnectionNewParamsTransportProtocol string
@@ -863,8 +982,8 @@ const (
 type IPConnectionNewParamsWebhookAPIVersion string
 
 const (
-	IPConnectionNewParamsWebhookAPIVersion1 IPConnectionNewParamsWebhookAPIVersion = "1"
-	IPConnectionNewParamsWebhookAPIVersion2 IPConnectionNewParamsWebhookAPIVersion = "2"
+	IPConnectionNewParamsWebhookAPIVersionV1 IPConnectionNewParamsWebhookAPIVersion = "1"
+	IPConnectionNewParamsWebhookAPIVersionV2 IPConnectionNewParamsWebhookAPIVersion = "2"
 )
 
 type IPConnectionUpdateParams struct {
@@ -913,10 +1032,22 @@ type IPConnectionUpdateParams struct {
 	// digits sent to Telnyx will be accepted in all formats.
 	//
 	// Any of "RFC 2833", "Inband", "SIP INFO".
-	DtmfType     DtmfType                    `json:"dtmf_type,omitzero"`
-	Inbound      InboundIPParam              `json:"inbound,omitzero"`
-	Outbound     OutboundIPParam             `json:"outbound,omitzero"`
-	RtcpSettings ConnectionRtcpSettingsParam `json:"rtcp_settings,omitzero"`
+	DtmfType DtmfType       `json:"dtmf_type,omitzero"`
+	Inbound  InboundIPParam `json:"inbound,omitzero"`
+	// Controls when noise suppression is applied to calls. When set to 'inbound',
+	// noise suppression is applied to incoming audio. When set to 'outbound', it's
+	// applied to outgoing audio. When set to 'both', it's applied in both directions.
+	// When set to 'disabled', noise suppression is turned off.
+	//
+	// Any of "inbound", "outbound", "both", "disabled".
+	NoiseSuppression IPConnectionUpdateParamsNoiseSuppression `json:"noise_suppression,omitzero"`
+	// Configuration options for noise suppression. These settings are stored
+	// regardless of the noise_suppression value, but only take effect when
+	// noise_suppression is not 'disabled'. If you disable noise suppression and later
+	// re-enable it, the previously configured settings will be used.
+	NoiseSuppressionDetails IPConnectionUpdateParamsNoiseSuppressionDetails `json:"noise_suppression_details,omitzero"`
+	Outbound                OutboundIPParam                                 `json:"outbound,omitzero"`
+	RtcpSettings            ConnectionRtcpSettingsParam                     `json:"rtcp_settings,omitzero"`
 	// Tags associated with the connection.
 	Tags []string `json:"tags,omitzero"`
 	// One of UDP, TLS, or TCP. Applies only to connections with IP authentication or
@@ -939,6 +1070,55 @@ func (r *IPConnectionUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Controls when noise suppression is applied to calls. When set to 'inbound',
+// noise suppression is applied to incoming audio. When set to 'outbound', it's
+// applied to outgoing audio. When set to 'both', it's applied in both directions.
+// When set to 'disabled', noise suppression is turned off.
+type IPConnectionUpdateParamsNoiseSuppression string
+
+const (
+	IPConnectionUpdateParamsNoiseSuppressionInbound  IPConnectionUpdateParamsNoiseSuppression = "inbound"
+	IPConnectionUpdateParamsNoiseSuppressionOutbound IPConnectionUpdateParamsNoiseSuppression = "outbound"
+	IPConnectionUpdateParamsNoiseSuppressionBoth     IPConnectionUpdateParamsNoiseSuppression = "both"
+	IPConnectionUpdateParamsNoiseSuppressionDisabled IPConnectionUpdateParamsNoiseSuppression = "disabled"
+)
+
+// Configuration options for noise suppression. These settings are stored
+// regardless of the noise_suppression value, but only take effect when
+// noise_suppression is not 'disabled'. If you disable noise suppression and later
+// re-enable it, the previously configured settings will be used.
+type IPConnectionUpdateParamsNoiseSuppressionDetails struct {
+	// The attenuation limit value for the selected engine. Default values vary by
+	// engine: 0 for 'denoiser', 80 for 'deep_filter_net', 'deep_filter_net_large', and
+	// all Krisp engines ('krisp_viva_tel', 'krisp_viva_tel_lite',
+	// 'krisp_viva_promodel', 'krisp_viva_ss').
+	AttenuationLimit param.Opt[int64] `json:"attenuation_limit,omitzero"`
+	// The noise suppression engine to use. 'denoiser' is the default engine.
+	// 'deep_filter_net' and 'deep_filter_net_large' are alternative engines with
+	// different performance characteristics. Krisp engines ('krisp_viva_tel',
+	// 'krisp_viva_tel_lite', 'krisp_viva_promodel', 'krisp_viva_ss') provide advanced
+	// noise suppression capabilities.
+	//
+	// Any of "denoiser", "deep_filter_net", "deep_filter_net_large", "krisp_viva_tel",
+	// "krisp_viva_tel_lite", "krisp_viva_promodel", "krisp_viva_ss".
+	Engine string `json:"engine,omitzero"`
+	paramObj
+}
+
+func (r IPConnectionUpdateParamsNoiseSuppressionDetails) MarshalJSON() (data []byte, err error) {
+	type shadow IPConnectionUpdateParamsNoiseSuppressionDetails
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *IPConnectionUpdateParamsNoiseSuppressionDetails) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[IPConnectionUpdateParamsNoiseSuppressionDetails](
+		"engine", "denoiser", "deep_filter_net", "deep_filter_net_large", "krisp_viva_tel", "krisp_viva_tel_lite", "krisp_viva_promodel", "krisp_viva_ss",
+	)
+}
+
 // One of UDP, TLS, or TCP. Applies only to connections with IP authentication or
 // FQDN authentication.
 type IPConnectionUpdateParamsTransportProtocol string
@@ -953,8 +1133,8 @@ const (
 type IPConnectionUpdateParamsWebhookAPIVersion string
 
 const (
-	IPConnectionUpdateParamsWebhookAPIVersion1 IPConnectionUpdateParamsWebhookAPIVersion = "1"
-	IPConnectionUpdateParamsWebhookAPIVersion2 IPConnectionUpdateParamsWebhookAPIVersion = "2"
+	IPConnectionUpdateParamsWebhookAPIVersionV1 IPConnectionUpdateParamsWebhookAPIVersion = "1"
+	IPConnectionUpdateParamsWebhookAPIVersionV2 IPConnectionUpdateParamsWebhookAPIVersion = "2"
 )
 
 type IPConnectionListParams struct {

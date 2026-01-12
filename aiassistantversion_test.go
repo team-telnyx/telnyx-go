@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestAIAssistantVersionGetWithOptionalParams(t *testing.T) {
@@ -84,11 +84,17 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					DataRetention: telnyx.Bool(true),
 				},
 				TelephonySettings: telnyx.TelephonySettingsParam{
-					DefaultTexmlAppID:               telnyx.String("default_texml_app_id"),
+					DefaultTexmlAppID: telnyx.String("default_texml_app_id"),
+					NoiseSuppression:  telnyx.TelephonySettingsNoiseSuppressionDeepfilternet,
+					NoiseSuppressionConfig: telnyx.TelephonySettingsNoiseSuppressionConfigParam{
+						AttenuationLimit: telnyx.Int(0),
+						Mode:             "advanced",
+					},
 					SupportsUnauthenticatedWebCalls: telnyx.Bool(true),
+					TimeLimitSecs:                   telnyx.Int(30),
 				},
-				Tools: []telnyx.AssistantToolUnionParam{{
-					OfWebhookTool: &telnyx.WebhookToolParam{
+				Tools: []telnyx.AssistantToolsItemsUnionParam{{
+					OfWebhook: &telnyx.WebhookToolParam{
 						Type: telnyx.WebhookToolTypeWebhook,
 						Webhook: telnyx.InferenceEmbeddingWebhookToolParams{
 							Description: "description",
@@ -128,23 +134,28 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					Language: telnyx.String("language"),
 					Model:    telnyx.TranscriptionSettingsModelDeepgramFlux,
 					Region:   telnyx.String("region"),
-					Settings: telnyx.TranscriptionSettingsSettingsParam{
-						EotThreshold: telnyx.Float(0),
-						EotTimeoutMs: telnyx.Int(0),
-						Numerals:     telnyx.Bool(true),
-						SmartFormat:  telnyx.Bool(true),
+					Settings: telnyx.TranscriptionSettingsConfigParam{
+						EagerEotThreshold: telnyx.Float(0.3),
+						EotThreshold:      telnyx.Float(0),
+						EotTimeoutMs:      telnyx.Int(0),
+						Numerals:          telnyx.Bool(true),
+						SmartFormat:       telnyx.Bool(true),
 					},
 				},
 				VoiceSettings: telnyx.VoiceSettingsParam{
 					Voice:     "voice",
 					APIKeyRef: telnyx.String("api_key_ref"),
 					BackgroundAudio: telnyx.VoiceSettingsBackgroundAudioUnionParam{
-						OfVoiceSettingsBackgroundAudioObject: &telnyx.VoiceSettingsBackgroundAudioObjectParam{
-							Type:  "predefined_media",
+						OfPredefinedMedia: &telnyx.VoiceSettingsBackgroundAudioPredefinedMediaParam{
 							Value: "silence",
 						},
 					},
-					VoiceSpeed: telnyx.Float(0),
+					SimilarityBoost: telnyx.Float(0),
+					Speed:           telnyx.Float(0),
+					Style:           telnyx.Float(0),
+					Temperature:     telnyx.Float(0),
+					UseSpeakerBoost: telnyx.Bool(true),
+					VoiceSpeed:      telnyx.Float(0),
 				},
 			},
 		},

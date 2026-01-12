@@ -11,13 +11,13 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v3/shared"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // PortoutService contains methods and other services that help with interacting
@@ -60,11 +60,26 @@ func (r *PortoutService) Get(ctx context.Context, id string, opts ...option.Requ
 }
 
 // Returns the portout requests according to filters
-func (r *PortoutService) List(ctx context.Context, query PortoutListParams, opts ...option.RequestOption) (res *PortoutListResponse, err error) {
+func (r *PortoutService) List(ctx context.Context, query PortoutListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortoutDetails], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "portouts"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Returns the portout requests according to filters
+func (r *PortoutService) ListAutoPaging(ctx context.Context, query PortoutListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortoutDetails] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Given a port-out ID, list rejection codes that are eligible for that port-out
@@ -122,7 +137,7 @@ type PortoutDetails struct {
 	Pon string `json:"pon"`
 	// The reason why the order is being rejected by the user. If the order is
 	// authorized, this field can be left null
-	Reason string `json:"reason"`
+	Reason string `json:"reason,nullable"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
 	// The rejection code for one of the valid rejections to reject a port out order
@@ -215,24 +230,6 @@ type PortoutGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r PortoutGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *PortoutGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortoutListResponse struct {
-	Data []PortoutDetails `json:"data"`
-	Meta shared.Metadata  `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortoutListResponse) RawJSON() string { return r.JSON.raw }
-func (r *PortoutListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

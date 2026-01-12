@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestTexmlAccountConferenceParticipantGet(t *testing.T) {
@@ -70,7 +70,7 @@ func TestTexmlAccountConferenceParticipantUpdateWithOptionalParams(t *testing.T)
 			EndConferenceOnExit: telnyx.Bool(false),
 			Hold:                telnyx.Bool(true),
 			HoldMethod:          telnyx.TexmlAccountConferenceParticipantUpdateParamsHoldMethodPost,
-			HoldURL:             telnyx.String("HoldUrl"),
+			HoldURL:             telnyx.String("https://www.example.com/hold-music.xml"),
 			Muted:               telnyx.Bool(true),
 			WaitURL:             telnyx.String("https://www.example.com/wait_music.mp3"),
 		},

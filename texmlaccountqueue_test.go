@@ -8,12 +8,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestPhoneNumberAssignmentByProfileAssignWithOptionalParams(t *testing.T) {
+func TestTexmlAccountQueueNewWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,39 +26,12 @@ func TestPhoneNumberAssignmentByProfileAssignWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.PhoneNumberAssignmentByProfile.Assign(context.TODO(), telnyx.PhoneNumberAssignmentByProfileAssignParams{
-		MessagingProfileID: "4001767e-ce0f-4cae-9d5f-0d5e636e7809",
-		CampaignID:         telnyx.String("4b300178-131c-d902-d54e-72d90ba1620j"),
-		TcrCampaignID:      telnyx.String("CWZTFH1"),
-	})
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestPhoneNumberAssignmentByProfileGetPhoneNumberStatusWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.PhoneNumberAssignmentByProfile.GetPhoneNumberStatus(
+	_, err := client.Texml.Accounts.Queues.New(
 		context.TODO(),
-		"taskId",
-		telnyx.PhoneNumberAssignmentByProfileGetPhoneNumberStatusParams{
-			Page:           telnyx.Int(0),
-			RecordsPerPage: telnyx.Int(0),
+		"account_sid",
+		telnyx.TexmlAccountQueueNewParams{
+			FriendlyName: telnyx.String("Support Queue"),
+			MaxSize:      telnyx.Int(10),
 		},
 	)
 	if err != nil {
@@ -70,7 +43,7 @@ func TestPhoneNumberAssignmentByProfileGetPhoneNumberStatusWithOptionalParams(t 
 	}
 }
 
-func TestPhoneNumberAssignmentByProfileGetStatus(t *testing.T) {
+func TestTexmlAccountQueueGet(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -83,7 +56,72 @@ func TestPhoneNumberAssignmentByProfileGetStatus(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.PhoneNumberAssignmentByProfile.GetStatus(context.TODO(), "taskId")
+	_, err := client.Texml.Accounts.Queues.Get(
+		context.TODO(),
+		"queue_sid",
+		telnyx.TexmlAccountQueueGetParams{
+			AccountSid: "account_sid",
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestTexmlAccountQueueUpdateWithOptionalParams(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Texml.Accounts.Queues.Update(
+		context.TODO(),
+		"queue_sid",
+		telnyx.TexmlAccountQueueUpdateParams{
+			AccountSid: "account_sid",
+			MaxSize:    telnyx.Int(10),
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestTexmlAccountQueueDelete(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	err := client.Texml.Accounts.Queues.Delete(
+		context.TODO(),
+		"queue_sid",
+		telnyx.TexmlAccountQueueDeleteParams{
+			AccountSid: "account_sid",
+		},
+	)
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

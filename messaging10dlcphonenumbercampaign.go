@@ -11,83 +11,99 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
-// PhoneNumberCampaignService contains methods and other services that help with
-// interacting with the telnyx API.
+// Messaging10dlcPhoneNumberCampaignService contains methods and other services
+// that help with interacting with the telnyx API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewPhoneNumberCampaignService] method instead.
-type PhoneNumberCampaignService struct {
+// the [NewMessaging10dlcPhoneNumberCampaignService] method instead.
+type Messaging10dlcPhoneNumberCampaignService struct {
 	Options []option.RequestOption
 }
 
-// NewPhoneNumberCampaignService generates a new service that applies the given
-// options to each request. These options are applied after the parent client's
-// options (if there is one), and before any request-specific options.
-func NewPhoneNumberCampaignService(opts ...option.RequestOption) (r PhoneNumberCampaignService) {
-	r = PhoneNumberCampaignService{}
+// NewMessaging10dlcPhoneNumberCampaignService generates a new service that applies
+// the given options to each request. These options are applied after the parent
+// client's options (if there is one), and before any request-specific options.
+func NewMessaging10dlcPhoneNumberCampaignService(opts ...option.RequestOption) (r Messaging10dlcPhoneNumberCampaignService) {
+	r = Messaging10dlcPhoneNumberCampaignService{}
 	r.Options = opts
 	return
 }
 
 // Create New Phone Number Campaign
-func (r *PhoneNumberCampaignService) New(ctx context.Context, body PhoneNumberCampaignNewParams, opts ...option.RequestOption) (res *PhoneNumberCampaign, err error) {
+func (r *Messaging10dlcPhoneNumberCampaignService) New(ctx context.Context, body Messaging10dlcPhoneNumberCampaignNewParams, opts ...option.RequestOption) (res *PhoneNumberCampaign, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "phone_number_campaigns"
+	path := "10dlc/phone_number_campaigns"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
 // Retrieve an individual phone number/campaign assignment by `phoneNumber`.
-func (r *PhoneNumberCampaignService) Get(ctx context.Context, phoneNumber string, opts ...option.RequestOption) (res *PhoneNumberCampaign, err error) {
+func (r *Messaging10dlcPhoneNumberCampaignService) Get(ctx context.Context, phoneNumber string, opts ...option.RequestOption) (res *PhoneNumberCampaign, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
 		err = errors.New("missing required phoneNumber parameter")
 		return
 	}
-	path := fmt.Sprintf("phone_number_campaigns/%s", phoneNumber)
+	path := fmt.Sprintf("10dlc/phone_number_campaigns/%s", phoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Create New Phone Number Campaign
-func (r *PhoneNumberCampaignService) Update(ctx context.Context, phoneNumber string, body PhoneNumberCampaignUpdateParams, opts ...option.RequestOption) (res *PhoneNumberCampaign, err error) {
+func (r *Messaging10dlcPhoneNumberCampaignService) Update(ctx context.Context, campaignPhoneNumber string, body Messaging10dlcPhoneNumberCampaignUpdateParams, opts ...option.RequestOption) (res *PhoneNumberCampaign, err error) {
 	opts = slices.Concat(r.Options, opts)
-	if phoneNumber == "" {
-		err = errors.New("missing required phoneNumber parameter")
+	if campaignPhoneNumber == "" {
+		err = errors.New("missing required campaign_phone_number parameter")
 		return
 	}
-	path := fmt.Sprintf("phone_number_campaigns/%s", phoneNumber)
+	path := fmt.Sprintf("10dlc/phone_number_campaigns/%s", campaignPhoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
 }
 
-// Retrieve All Phone Number Campaigns
-func (r *PhoneNumberCampaignService) List(ctx context.Context, query PhoneNumberCampaignListParams, opts ...option.RequestOption) (res *PhoneNumberCampaignListResponse, err error) {
+// List phone number campaigns
+func (r *Messaging10dlcPhoneNumberCampaignService) List(ctx context.Context, query Messaging10dlcPhoneNumberCampaignListParams, opts ...option.RequestOption) (res *pagination.PerPagePaginationV2[PhoneNumberCampaign], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
-	path := "phone_number_campaigns"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	path := "10dlc/phone_number_campaigns"
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List phone number campaigns
+func (r *Messaging10dlcPhoneNumberCampaignService) ListAutoPaging(ctx context.Context, query Messaging10dlcPhoneNumberCampaignListParams, opts ...option.RequestOption) *pagination.PerPagePaginationV2AutoPager[PhoneNumberCampaign] {
+	return pagination.NewPerPagePaginationV2AutoPager(r.List(ctx, query, opts...))
 }
 
 // This endpoint allows you to remove a campaign assignment from the supplied
 // `phoneNumber`.
-func (r *PhoneNumberCampaignService) Delete(ctx context.Context, phoneNumber string, opts ...option.RequestOption) (res *PhoneNumberCampaign, err error) {
+func (r *Messaging10dlcPhoneNumberCampaignService) Delete(ctx context.Context, phoneNumber string, opts ...option.RequestOption) (res *PhoneNumberCampaign, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
 		err = errors.New("missing required phoneNumber parameter")
 		return
 	}
-	path := fmt.Sprintf("phone_number_campaigns/%s", phoneNumber)
+	path := fmt.Sprintf("10dlc/phone_number_campaigns/%s", phoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -166,69 +182,49 @@ func (r *PhoneNumberCampaignCreateParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PhoneNumberCampaignListResponse struct {
-	Page         int64                 `json:"page,required"`
-	Records      []PhoneNumberCampaign `json:"records,required"`
-	TotalRecords int64                 `json:"totalRecords,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Page         respjson.Field
-		Records      respjson.Field
-		TotalRecords respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PhoneNumberCampaignListResponse) RawJSON() string { return r.JSON.raw }
-func (r *PhoneNumberCampaignListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PhoneNumberCampaignNewParams struct {
+type Messaging10dlcPhoneNumberCampaignNewParams struct {
 	PhoneNumberCampaignCreate PhoneNumberCampaignCreateParam
 	paramObj
 }
 
-func (r PhoneNumberCampaignNewParams) MarshalJSON() (data []byte, err error) {
+func (r Messaging10dlcPhoneNumberCampaignNewParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.PhoneNumberCampaignCreate)
 }
-func (r *PhoneNumberCampaignNewParams) UnmarshalJSON(data []byte) error {
+func (r *Messaging10dlcPhoneNumberCampaignNewParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.PhoneNumberCampaignCreate)
 }
 
-type PhoneNumberCampaignUpdateParams struct {
+type Messaging10dlcPhoneNumberCampaignUpdateParams struct {
 	PhoneNumberCampaignCreate PhoneNumberCampaignCreateParam
 	paramObj
 }
 
-func (r PhoneNumberCampaignUpdateParams) MarshalJSON() (data []byte, err error) {
+func (r Messaging10dlcPhoneNumberCampaignUpdateParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.PhoneNumberCampaignCreate)
 }
-func (r *PhoneNumberCampaignUpdateParams) UnmarshalJSON(data []byte) error {
+func (r *Messaging10dlcPhoneNumberCampaignUpdateParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.PhoneNumberCampaignCreate)
 }
 
-type PhoneNumberCampaignListParams struct {
+type Messaging10dlcPhoneNumberCampaignListParams struct {
 	Page           param.Opt[int64] `query:"page,omitzero" json:"-"`
 	RecordsPerPage param.Opt[int64] `query:"recordsPerPage,omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[telnyx_campaign_id], filter[telnyx_brand_id], filter[tcr_campaign_id],
 	// filter[tcr_brand_id]
-	Filter PhoneNumberCampaignListParamsFilter `query:"filter,omitzero" json:"-"`
+	Filter Messaging10dlcPhoneNumberCampaignListParamsFilter `query:"filter,omitzero" json:"-"`
 	// Specifies the sort order for results. If not given, results are sorted by
 	// createdAt in descending order.
 	//
 	// Any of "assignmentStatus", "-assignmentStatus", "createdAt", "-createdAt",
 	// "phoneNumber", "-phoneNumber".
-	Sort PhoneNumberCampaignListParamsSort `query:"sort,omitzero" json:"-"`
+	Sort Messaging10dlcPhoneNumberCampaignListParamsSort `query:"sort,omitzero" json:"-"`
 	paramObj
 }
 
-// URLQuery serializes [PhoneNumberCampaignListParams]'s query parameters as
-// `url.Values`.
-func (r PhoneNumberCampaignListParams) URLQuery() (v url.Values, err error) {
+// URLQuery serializes [Messaging10dlcPhoneNumberCampaignListParams]'s query
+// parameters as `url.Values`.
+func (r Messaging10dlcPhoneNumberCampaignListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
@@ -238,7 +234,7 @@ func (r PhoneNumberCampaignListParams) URLQuery() (v url.Values, err error) {
 // Consolidated filter parameter (deepObject style). Originally:
 // filter[telnyx_campaign_id], filter[telnyx_brand_id], filter[tcr_campaign_id],
 // filter[tcr_brand_id]
-type PhoneNumberCampaignListParamsFilter struct {
+type Messaging10dlcPhoneNumberCampaignListParamsFilter struct {
 	// Filter results by the TCR Brand id
 	TcrBrandID param.Opt[string] `query:"tcr_brand_id,omitzero" json:"-"`
 	// Filter results by the TCR Campaign id
@@ -250,9 +246,9 @@ type PhoneNumberCampaignListParamsFilter struct {
 	paramObj
 }
 
-// URLQuery serializes [PhoneNumberCampaignListParamsFilter]'s query parameters as
-// `url.Values`.
-func (r PhoneNumberCampaignListParamsFilter) URLQuery() (v url.Values, err error) {
+// URLQuery serializes [Messaging10dlcPhoneNumberCampaignListParamsFilter]'s query
+// parameters as `url.Values`.
+func (r Messaging10dlcPhoneNumberCampaignListParamsFilter) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
@@ -261,13 +257,13 @@ func (r PhoneNumberCampaignListParamsFilter) URLQuery() (v url.Values, err error
 
 // Specifies the sort order for results. If not given, results are sorted by
 // createdAt in descending order.
-type PhoneNumberCampaignListParamsSort string
+type Messaging10dlcPhoneNumberCampaignListParamsSort string
 
 const (
-	PhoneNumberCampaignListParamsSortAssignmentStatus     PhoneNumberCampaignListParamsSort = "assignmentStatus"
-	PhoneNumberCampaignListParamsSortAssignmentStatusDesc PhoneNumberCampaignListParamsSort = "-assignmentStatus"
-	PhoneNumberCampaignListParamsSortCreatedAt            PhoneNumberCampaignListParamsSort = "createdAt"
-	PhoneNumberCampaignListParamsSortCreatedAtDesc        PhoneNumberCampaignListParamsSort = "-createdAt"
-	PhoneNumberCampaignListParamsSortPhoneNumber          PhoneNumberCampaignListParamsSort = "phoneNumber"
-	PhoneNumberCampaignListParamsSortPhoneNumberDesc      PhoneNumberCampaignListParamsSort = "-phoneNumber"
+	Messaging10dlcPhoneNumberCampaignListParamsSortAssignmentStatus     Messaging10dlcPhoneNumberCampaignListParamsSort = "assignmentStatus"
+	Messaging10dlcPhoneNumberCampaignListParamsSortAssignmentStatusDesc Messaging10dlcPhoneNumberCampaignListParamsSort = "-assignmentStatus"
+	Messaging10dlcPhoneNumberCampaignListParamsSortCreatedAt            Messaging10dlcPhoneNumberCampaignListParamsSort = "createdAt"
+	Messaging10dlcPhoneNumberCampaignListParamsSortCreatedAtDesc        Messaging10dlcPhoneNumberCampaignListParamsSort = "-createdAt"
+	Messaging10dlcPhoneNumberCampaignListParamsSortPhoneNumber          Messaging10dlcPhoneNumberCampaignListParamsSort = "phoneNumber"
+	Messaging10dlcPhoneNumberCampaignListParamsSortPhoneNumberDesc      Messaging10dlcPhoneNumberCampaignListParamsSort = "-phoneNumber"
 )

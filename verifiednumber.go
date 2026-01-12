@@ -10,12 +10,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // VerifiedNumberService contains methods and other services that help with
@@ -61,11 +62,26 @@ func (r *VerifiedNumberService) Get(ctx context.Context, phoneNumber string, opt
 }
 
 // Gets a paginated list of Verified Numbers.
-func (r *VerifiedNumberService) List(ctx context.Context, query VerifiedNumberListParams, opts ...option.RequestOption) (res *VerifiedNumberListResponse, err error) {
+func (r *VerifiedNumberService) List(ctx context.Context, query VerifiedNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[VerifiedNumber], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "verified_numbers"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Gets a paginated list of Verified Numbers.
+func (r *VerifiedNumberService) ListAutoPaging(ctx context.Context, query VerifiedNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[VerifiedNumber] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a verified number
@@ -144,47 +160,6 @@ func (r *VerifiedNumberNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A paginated list of Verified Numbers
-type VerifiedNumberListResponse struct {
-	Data []VerifiedNumber               `json:"data,required"`
-	Meta VerifiedNumberListResponseMeta `json:"meta,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VerifiedNumberListResponse) RawJSON() string { return r.JSON.raw }
-func (r *VerifiedNumberListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VerifiedNumberListResponseMeta struct {
-	PageNumber   int64 `json:"page_number"`
-	PageSize     int64 `json:"page_size"`
-	TotalPages   int64 `json:"total_pages"`
-	TotalResults int64 `json:"total_results"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageNumber   respjson.Field
-		PageSize     respjson.Field
-		TotalPages   respjson.Field
-		TotalResults respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VerifiedNumberListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *VerifiedNumberListResponseMeta) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type VerifiedNumberNewParams struct {
 	PhoneNumber string `json:"phone_number,required"`
 	// Verification method.
@@ -217,32 +192,14 @@ const (
 )
 
 type VerifiedNumberListParams struct {
-	// Consolidated page parameter (deepObject style). Use page[size] and page[number]
-	// in the query string. Originally: page[size], page[number]
-	Page VerifiedNumberListParamsPage `query:"page,omitzero" json:"-"`
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [VerifiedNumberListParams]'s query parameters as
 // `url.Values`.
 func (r VerifiedNumberListParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Use page[size] and page[number]
-// in the query string. Originally: page[size], page[number]
-type VerifiedNumberListParamsPage struct {
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	Size   param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [VerifiedNumberListParamsPage]'s query parameters as
-// `url.Values`.
-func (r VerifiedNumberListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

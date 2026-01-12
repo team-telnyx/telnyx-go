@@ -11,12 +11,13 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // AIMcpServerService contains methods and other services that help with
@@ -71,11 +72,26 @@ func (r *AIMcpServerService) Update(ctx context.Context, mcpServerID string, bod
 }
 
 // Retrieve a list of MCP servers.
-func (r *AIMcpServerService) List(ctx context.Context, query AIMcpServerListParams, opts ...option.RequestOption) (res *[]AIMcpServerListResponse, err error) {
+func (r *AIMcpServerService) List(ctx context.Context, query AIMcpServerListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPaginationTopLevelArray[AIMcpServerListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "ai/mcp_servers"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of MCP servers.
+func (r *AIMcpServerService) ListAutoPaging(ctx context.Context, query AIMcpServerListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationTopLevelArrayAutoPager[AIMcpServerListResponse] {
+	return pagination.NewDefaultFlatPaginationTopLevelArrayAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a specific MCP server.

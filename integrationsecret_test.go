@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestIntegrationSecretNewWithOptionalParams(t *testing.T) {
@@ -59,10 +59,8 @@ func TestIntegrationSecretListWithOptionalParams(t *testing.T) {
 		Filter: telnyx.IntegrationSecretListParamsFilter{
 			Type: "bearer",
 		},
-		Page: telnyx.IntegrationSecretListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(25),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

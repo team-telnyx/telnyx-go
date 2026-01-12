@@ -11,12 +11,12 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 )
 
 // AIAssistantVersionService contains methods and other services that help with
@@ -154,9 +154,9 @@ type UpdateAssistantParam struct {
 	TelephonySettings TelephonySettingsParam `json:"telephony_settings,omitzero"`
 	// The tools that the assistant can use. These may be templated with
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
-	Tools         []AssistantToolUnionParam  `json:"tools,omitzero"`
-	Transcription TranscriptionSettingsParam `json:"transcription,omitzero"`
-	VoiceSettings VoiceSettingsParam         `json:"voice_settings,omitzero"`
+	Tools         []AssistantToolsItemsUnionParam `json:"tools,omitzero"`
+	Transcription TranscriptionSettingsParam      `json:"transcription,omitzero"`
+	VoiceSettings VoiceSettingsParam              `json:"voice_settings,omitzero"`
 	paramObj
 }
 

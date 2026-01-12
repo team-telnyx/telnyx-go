@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestSimCardOrderNew(t *testing.T) {
@@ -78,22 +78,18 @@ func TestSimCardOrderListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.SimCardOrders.List(context.TODO(), telnyx.SimCardOrderListParams{
 		Filter: telnyx.SimCardOrderListParamsFilter{
-			Address: telnyx.SimCardOrderListParamsFilterAddress{
-				ID:                 telnyx.String("1293384261075731499"),
-				AdministrativeArea: telnyx.String("TX"),
-				CountryCode:        telnyx.String("US"),
-				ExtendedAddress:    telnyx.String("14th Floor"),
-				Locality:           telnyx.String("Austin"),
-				PostalCode:         telnyx.String("78701"),
-				StreetAddress:      telnyx.String("600 Congress Avenue"),
-			},
-			Cost: telnyx.SimCardOrderListParamsFilterCost{
-				Amount:   telnyx.String("2.53"),
-				Currency: telnyx.String("USD"),
-			},
-			CreatedAt: telnyx.Time(time.Now()),
-			Quantity:  telnyx.Int(21),
-			UpdatedAt: telnyx.Time(time.Now()),
+			AddressAdministrativeArea: telnyx.String("TX"),
+			AddressCountryCode:        telnyx.String("US"),
+			AddressExtendedAddress:    telnyx.String("14th Floor"),
+			AddressID:                 telnyx.String("1293384261075731499"),
+			AddressLocality:           telnyx.String("Austin"),
+			AddressPostalCode:         telnyx.String("78701"),
+			AddressStreetAddress:      telnyx.String("600 Congress Avenue"),
+			CostAmount:                telnyx.String("2.53"),
+			CostCurrency:              telnyx.String("USD"),
+			CreatedAt:                 telnyx.Time(time.Now()),
+			Quantity:                  telnyx.Int(21),
+			UpdatedAt:                 telnyx.Time(time.Now()),
 		},
 		Page: telnyx.SimCardOrderListParamsPage{
 			Number: telnyx.Int(1),

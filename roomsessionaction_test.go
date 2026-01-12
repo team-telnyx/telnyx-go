@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestRoomSessionActionEnd(t *testing.T) {
@@ -56,7 +56,7 @@ func TestRoomSessionActionKickWithOptionalParams(t *testing.T) {
 			ActionsParticipantsRequest: telnyx.ActionsParticipantsRequestParam{
 				Exclude: []string{"7b61621f-62e0-4aad-ab11-9fd19e272e73"},
 				Participants: telnyx.ActionsParticipantsRequestParticipantsUnionParam{
-					OfActionsParticipantsRequestParticipantsString: telnyx.String("all"),
+					OfAllParticipants: telnyx.String("all"),
 				},
 			},
 		},
@@ -90,7 +90,7 @@ func TestRoomSessionActionMuteWithOptionalParams(t *testing.T) {
 			ActionsParticipantsRequest: telnyx.ActionsParticipantsRequestParam{
 				Exclude: []string{"7b61621f-62e0-4aad-ab11-9fd19e272e73"},
 				Participants: telnyx.ActionsParticipantsRequestParticipantsUnionParam{
-					OfActionsParticipantsRequestParticipantsString: telnyx.String("all"),
+					OfAllParticipants: telnyx.String("all"),
 				},
 			},
 		},
@@ -124,7 +124,7 @@ func TestRoomSessionActionUnmuteWithOptionalParams(t *testing.T) {
 			ActionsParticipantsRequest: telnyx.ActionsParticipantsRequestParam{
 				Exclude: []string{"7b61621f-62e0-4aad-ab11-9fd19e272e73"},
 				Participants: telnyx.ActionsParticipantsRequestParticipantsUnionParam{
-					OfActionsParticipantsRequestParticipantsString: telnyx.String("all"),
+					OfAllParticipants: telnyx.String("all"),
 				},
 			},
 		},

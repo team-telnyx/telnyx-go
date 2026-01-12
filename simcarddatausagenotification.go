@@ -11,13 +11,14 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // SimCardDataUsageNotificationService contains methods and other services that
@@ -60,24 +61,40 @@ func (r *SimCardDataUsageNotificationService) Get(ctx context.Context, id string
 }
 
 // Updates information for a SIM Card Data Usage Notification.
-func (r *SimCardDataUsageNotificationService) Update(ctx context.Context, id string, body SimCardDataUsageNotificationUpdateParams, opts ...option.RequestOption) (res *SimCardDataUsageNotificationUpdateResponse, err error) {
+func (r *SimCardDataUsageNotificationService) Update(ctx context.Context, simCardDataUsageNotificationID string, body SimCardDataUsageNotificationUpdateParams, opts ...option.RequestOption) (res *SimCardDataUsageNotificationUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	if id == "" {
-		err = errors.New("missing required id parameter")
+	if simCardDataUsageNotificationID == "" {
+		err = errors.New("missing required sim_card_data_usage_notification_id parameter")
 		return
 	}
-	path := fmt.Sprintf("sim_card_data_usage_notifications/%s", id)
+	path := fmt.Sprintf("sim_card_data_usage_notifications/%s", simCardDataUsageNotificationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
 }
 
 // Lists a paginated collection of SIM card data usage notifications. It enables
 // exploring the collection using specific filters.
-func (r *SimCardDataUsageNotificationService) List(ctx context.Context, query SimCardDataUsageNotificationListParams, opts ...option.RequestOption) (res *SimCardDataUsageNotificationListResponse, err error) {
+func (r *SimCardDataUsageNotificationService) List(ctx context.Context, query SimCardDataUsageNotificationListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[SimCardDataUsageNotification], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "sim_card_data_usage_notifications"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Lists a paginated collection of SIM card data usage notifications. It enables
+// exploring the collection using specific filters.
+func (r *SimCardDataUsageNotificationService) ListAutoPaging(ctx context.Context, query SimCardDataUsageNotificationListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[SimCardDataUsageNotification] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete the SIM Card Data Usage Notification.
@@ -241,24 +258,6 @@ type SimCardDataUsageNotificationUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r SimCardDataUsageNotificationUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *SimCardDataUsageNotificationUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SimCardDataUsageNotificationListResponse struct {
-	Data []SimCardDataUsageNotification `json:"data"`
-	Meta PaginationMeta                 `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SimCardDataUsageNotificationListResponse) RawJSON() string { return r.JSON.raw }
-func (r *SimCardDataUsageNotificationListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

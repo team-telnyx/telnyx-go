@@ -7,54 +7,54 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 )
 
-// CampaignBuilderService contains methods and other services that help with
-// interacting with the telnyx API.
+// Messaging10dlcCampaignBuilderService contains methods and other services that
+// help with interacting with the telnyx API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewCampaignBuilderService] method instead.
-type CampaignBuilderService struct {
+// the [NewMessaging10dlcCampaignBuilderService] method instead.
+type Messaging10dlcCampaignBuilderService struct {
 	Options []option.RequestOption
-	Brand   CampaignBuilderBrandService
+	Brand   Messaging10dlcCampaignBuilderBrandService
 }
 
-// NewCampaignBuilderService generates a new service that applies the given options
-// to each request. These options are applied after the parent client's options (if
-// there is one), and before any request-specific options.
-func NewCampaignBuilderService(opts ...option.RequestOption) (r CampaignBuilderService) {
-	r = CampaignBuilderService{}
+// NewMessaging10dlcCampaignBuilderService generates a new service that applies the
+// given options to each request. These options are applied after the parent
+// client's options (if there is one), and before any request-specific options.
+func NewMessaging10dlcCampaignBuilderService(opts ...option.RequestOption) (r Messaging10dlcCampaignBuilderService) {
+	r = Messaging10dlcCampaignBuilderService{}
 	r.Options = opts
-	r.Brand = NewCampaignBuilderBrandService(opts...)
+	r.Brand = NewMessaging10dlcCampaignBuilderBrandService(opts...)
 	return
 }
 
 // Before creating a campaign, use the
-// [Qualify By Usecase endpoint](https://developers.telnyx.com/api/messaging/10dlc/get-usecase-qualification)
+// [Qualify By Usecase endpoint](https://developers.telnyx.com/api-reference/campaign/qualify-by-usecase)
 // to ensure that the brand you want to assign a new campaign to is qualified for
 // the desired use case of that campaign. **Please note:** After campaign creation,
 // you'll only be able to edit the campaign's sample messages. Creating a campaign
 // will entail an upfront, non-refundable three month's cost that will depend on
 // the campaign's use case
-// ([see 10DLC Costs section for details](https://developers.telnyx.com/docs/messaging/10dlc/concepts#10dlc-costs)).
-func (r *CampaignBuilderService) New(ctx context.Context, body CampaignBuilderNewParams, opts ...option.RequestOption) (res *TelnyxCampaignCsp, err error) {
+// ([see 10DLC Costs section for details](https://developers.telnyx.com/api-reference/campaign/get-campaign-cost)).
+func (r *Messaging10dlcCampaignBuilderService) Submit(ctx context.Context, body Messaging10dlcCampaignBuilderSubmitParams, opts ...option.RequestOption) (res *TelnyxCampaignCsp, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "campaignBuilder"
+	path := "10dlc/campaignBuilder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
-type CampaignBuilderNewParams struct {
+type Messaging10dlcCampaignBuilderSubmitParams struct {
 	// Alphanumeric identifier of the brand associated with this campaign.
 	BrandID string `json:"brandId,required"`
 	// Summary description of this campaign.
 	Description string `json:"description,required"`
-	// Campaign usecase. Must be of defined valid types. Use `/registry/enum/usecase`
+	// Campaign usecase. Must be of defined valid types. Use `/10dlc/enum/usecase`
 	// operation to retrieve usecases available for given brand.
 	Usecase string `json:"usecase,required"`
 	// Age gated message content in campaign.
@@ -124,17 +124,17 @@ type CampaignBuilderNewParams struct {
 	// if no value provided.
 	MnoIDs []int64 `json:"mnoIds,omitzero"`
 	// Campaign sub-usecases. Must be of defined valid sub-usecase types. Use
-	// `/registry/enum/usecase` operation to retrieve list of valid sub-usecases
+	// `/10dlc/enum/usecase` operation to retrieve list of valid sub-usecases
 	SubUsecases []string `json:"subUsecases,omitzero"`
 	// Tags to be set on the Campaign.
 	Tag []string `json:"tag,omitzero"`
 	paramObj
 }
 
-func (r CampaignBuilderNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow CampaignBuilderNewParams
+func (r Messaging10dlcCampaignBuilderSubmitParams) MarshalJSON() (data []byte, err error) {
+	type shadow Messaging10dlcCampaignBuilderSubmitParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *CampaignBuilderNewParams) UnmarshalJSON(data []byte) error {
+func (r *Messaging10dlcCampaignBuilderSubmitParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

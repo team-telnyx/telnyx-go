@@ -11,12 +11,13 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // NumberBlockOrderService contains methods and other services that help with
@@ -59,11 +60,26 @@ func (r *NumberBlockOrderService) Get(ctx context.Context, numberBlockOrderID st
 }
 
 // Get a paginated list of number block orders.
-func (r *NumberBlockOrderService) List(ctx context.Context, query NumberBlockOrderListParams, opts ...option.RequestOption) (res *NumberBlockOrderListResponse, err error) {
+func (r *NumberBlockOrderService) List(ctx context.Context, query NumberBlockOrderListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[NumberBlockOrder], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "number_block_orders"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get a paginated list of number block orders.
+func (r *NumberBlockOrderService) ListAutoPaging(ctx context.Context, query NumberBlockOrderListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[NumberBlockOrder] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type NumberBlockOrder struct {
@@ -155,24 +171,6 @@ type NumberBlockOrderGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r NumberBlockOrderGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *NumberBlockOrderGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type NumberBlockOrderListResponse struct {
-	Data []NumberBlockOrder `json:"data"`
-	Meta PaginationMeta     `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r NumberBlockOrderListResponse) RawJSON() string { return r.JSON.raw }
-func (r *NumberBlockOrderListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

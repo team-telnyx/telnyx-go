@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestConferenceActionUpdateWithOptionalParams(t *testing.T) {
@@ -372,7 +372,8 @@ func TestConferenceActionSpeakWithOptionalParams(t *testing.T) {
 			PayloadType:    telnyx.ConferenceActionSpeakParamsPayloadTypeText,
 			Region:         telnyx.ConferenceActionSpeakParamsRegionUs,
 			VoiceSettings: telnyx.ConferenceActionSpeakParamsVoiceSettingsUnion{
-				OfElevenLabsVoiceSettings: &telnyx.ElevenLabsVoiceSettingsParam{
+				OfElevenlabs: &telnyx.ElevenLabsVoiceSettingsParam{
+					Type:      telnyx.ElevenLabsVoiceSettingsTypeElevenlabs,
 					APIKeyRef: telnyx.String("my_elevenlabs_api_key"),
 				},
 			},

@@ -8,12 +8,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // DocumentLinkService contains methods and other services that help with
@@ -36,32 +37,29 @@ func NewDocumentLinkService(opts ...option.RequestOption) (r DocumentLinkService
 }
 
 // List all documents links ordered by created_at descending.
-func (r *DocumentLinkService) List(ctx context.Context, query DocumentLinkListParams, opts ...option.RequestOption) (res *DocumentLinkListResponse, err error) {
+func (r *DocumentLinkService) List(ctx context.Context, query DocumentLinkListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[DocumentLinkListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "document_links"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List all documents links ordered by created_at descending.
+func (r *DocumentLinkService) ListAutoPaging(ctx context.Context, query DocumentLinkListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[DocumentLinkListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type DocumentLinkListResponse struct {
-	Data []DocumentLinkListResponseData `json:"data"`
-	Meta PaginationMeta                 `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DocumentLinkListResponse) RawJSON() string { return r.JSON.raw }
-func (r *DocumentLinkListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DocumentLinkListResponseData struct {
 	// Identifies the resource.
 	ID string `json:"id" format:"uuid"`
 	// ISO 8601 formatted date-time indicating when the resource was created.
@@ -91,8 +89,8 @@ type DocumentLinkListResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DocumentLinkListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *DocumentLinkListResponseData) UnmarshalJSON(data []byte) error {
+func (r DocumentLinkListResponse) RawJSON() string { return r.JSON.raw }
+func (r *DocumentLinkListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

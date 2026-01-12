@@ -10,12 +10,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // VerifyProfileService contains methods and other services that help with
@@ -70,11 +71,26 @@ func (r *VerifyProfileService) Update(ctx context.Context, verifyProfileID strin
 }
 
 // Gets a paginated list of Verify profiles.
-func (r *VerifyProfileService) List(ctx context.Context, query VerifyProfileListParams, opts ...option.RequestOption) (res *VerifyProfileListResponse, err error) {
+func (r *VerifyProfileService) List(ctx context.Context, query VerifyProfileListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[VerifyProfile], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "verify_profiles"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Gets a paginated list of Verify profiles.
+func (r *VerifyProfileService) ListAutoPaging(ctx context.Context, query VerifyProfileListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[VerifyProfile] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete Verify profile
@@ -310,25 +326,6 @@ func (r *VerifyProfileMessageTemplateResponse) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A paginated list of Verify profiles
-type VerifyProfileListResponse struct {
-	Data []VerifyProfile `json:"data,required"`
-	Meta VerifyMeta      `json:"meta,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VerifyProfileListResponse) RawJSON() string { return r.JSON.raw }
-func (r *VerifyProfileListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // A list of Verify profile message templates
 type VerifyProfileGetTemplatesResponse struct {
 	Data []VerifyProfileMessageTemplateResponse `json:"data,required"`
@@ -552,11 +549,10 @@ func (r *VerifyProfileUpdateParamsSMS) UnmarshalJSON(data []byte) error {
 }
 
 type VerifyProfileListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[name]
 	Filter VerifyProfileListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page VerifyProfileListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -579,23 +575,6 @@ type VerifyProfileListParamsFilter struct {
 // URLQuery serializes [VerifyProfileListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r VerifyProfileListParamsFilter) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type VerifyProfileListParamsPage struct {
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	Size   param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [VerifyProfileListParamsPage]'s query parameters as
-// `url.Values`.
-func (r VerifyProfileListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

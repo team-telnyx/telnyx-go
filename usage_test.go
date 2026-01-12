@@ -7,9 +7,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestUsage(t *testing.T) {
@@ -24,6 +24,7 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
+	t.Skip("Prism tests are disabled")
 	response, err := client.Calls.Dial(context.TODO(), telnyx.CallDialParams{
 		ConnectionID: "conn12345",
 		From:         "+15557654321",

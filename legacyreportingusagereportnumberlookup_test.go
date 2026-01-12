@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestLegacyReportingUsageReportNumberLookupNewWithOptionalParams(t *testing.T) {
@@ -27,7 +27,7 @@ func TestLegacyReportingUsageReportNumberLookupNewWithOptionalParams(t *testing.
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Legacy.Reporting.UsageReports.NumberLookup.New(context.TODO(), telnyx.LegacyReportingUsageReportNumberLookupNewParams{
+	_, err := client.Legacy.Reporting.UsageReports.NumberLookup.New(context.TODO(), telnyx.LegacyReportingUsageReportNumberLookupNewParams{
 		AggregationType: telnyx.LegacyReportingUsageReportNumberLookupNewParamsAggregationTypeAll,
 		EndDate:         telnyx.Time(time.Now()),
 		ManagedAccounts: []string{"f47ac10b-58cc-4372-a567-0e02b2c3d479", "6ba7b810-9dad-11d1-80b4-00c04fd430c8"},
@@ -55,7 +55,7 @@ func TestLegacyReportingUsageReportNumberLookupGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Legacy.Reporting.UsageReports.NumberLookup.Get(context.TODO(), "id")
+	_, err := client.Legacy.Reporting.UsageReports.NumberLookup.Get(context.TODO(), "id")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -65,7 +65,7 @@ func TestLegacyReportingUsageReportNumberLookupGet(t *testing.T) {
 	}
 }
 
-func TestLegacyReportingUsageReportNumberLookupListWithOptionalParams(t *testing.T) {
+func TestLegacyReportingUsageReportNumberLookupList(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -78,10 +78,7 @@ func TestLegacyReportingUsageReportNumberLookupListWithOptionalParams(t *testing
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Legacy.Reporting.UsageReports.NumberLookup.List(context.TODO(), telnyx.LegacyReportingUsageReportNumberLookupListParams{
-		Page:    telnyx.Int(0),
-		PerPage: telnyx.Int(0),
-	})
+	_, err := client.Legacy.Reporting.UsageReports.NumberLookup.List(context.TODO())
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

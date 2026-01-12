@@ -12,12 +12,12 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiform"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v3/shared"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiform"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // MessagingHostedNumberOrderActionService contains methods and other services that
@@ -39,7 +39,7 @@ func NewMessagingHostedNumberOrderActionService(opts ...option.RequestOption) (r
 	return
 }
 
-// Upload file required for a messaging hosted number order
+// Upload hosted number document
 func (r *MessagingHostedNumberOrderActionService) UploadFile(ctx context.Context, id string, body MessagingHostedNumberOrderActionUploadFileParams, opts ...option.RequestOption) (res *MessagingHostedNumberOrderActionUploadFileResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

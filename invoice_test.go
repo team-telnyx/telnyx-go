@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestInvoiceGetWithOptionalParams(t *testing.T) {
@@ -56,11 +56,9 @@ func TestInvoiceListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Invoices.List(context.TODO(), telnyx.InvoiceListParams{
-		Page: telnyx.InvoiceListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
-		Sort: telnyx.InvoiceListParamsSortPeriodStart,
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
+		Sort:       telnyx.InvoiceListParamsSortPeriodStart,
 	})
 	if err != nil {
 		var apierr *telnyx.Error

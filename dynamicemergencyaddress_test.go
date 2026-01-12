@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestDynamicEmergencyAddressNewWithOptionalParams(t *testing.T) {
@@ -30,7 +30,7 @@ func TestDynamicEmergencyAddressNewWithOptionalParams(t *testing.T) {
 		DynamicEmergencyAddress: telnyx.DynamicEmergencyAddressParam{
 			AdministrativeArea:    "TX",
 			CountryCode:           telnyx.DynamicEmergencyAddressCountryCodeUs,
-			HouseNumber:           "house_number",
+			HouseNumber:           "600",
 			Locality:              "Austin",
 			PostalCode:            "78701",
 			StreetName:            "Congress",

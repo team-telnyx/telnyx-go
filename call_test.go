@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestCallDialWithOptionalParams(t *testing.T) {
@@ -126,20 +126,20 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 			CommandID:           telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
 			TranscriptionEngine: telnyx.TranscriptionStartRequestTranscriptionEngineGoogle,
 			TranscriptionEngineConfig: telnyx.TranscriptionStartRequestTranscriptionEngineConfigUnionParam{
-				OfGoogle: &telnyx.TranscriptionStartRequestTranscriptionEngineConfigGoogleParam{
+				OfGoogle: &telnyx.TranscriptionEngineGoogleConfigParam{
 					EnableSpeakerDiarization: telnyx.Bool(true),
 					Hints:                    []string{"string"},
 					InterimResults:           telnyx.Bool(true),
 					Language:                 telnyx.GoogleTranscriptionLanguageEn,
 					MaxSpeakerCount:          telnyx.Int(4),
 					MinSpeakerCount:          telnyx.Int(4),
-					Model:                    "latest_long",
+					Model:                    telnyx.TranscriptionEngineGoogleConfigModelLatestLong,
 					ProfanityFilter:          telnyx.Bool(true),
-					SpeechContext: []telnyx.TranscriptionStartRequestTranscriptionEngineConfigGoogleSpeechContextParam{{
+					SpeechContext: []telnyx.TranscriptionEngineGoogleConfigSpeechContextParam{{
 						Boost:   telnyx.Float(1),
 						Phrases: []string{"string"},
 					}},
-					TranscriptionEngine: "Google",
+					TranscriptionEngine: telnyx.TranscriptionEngineGoogleConfigTranscriptionEngineGoogle,
 					UseEnhanced:         telnyx.Bool(true),
 				},
 			},

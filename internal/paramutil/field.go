@@ -1,8 +1,8 @@
 package paramutil
 
 import (
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 func AddrIfPresent[T comparable](v param.Opt[T]) *T {

@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestPortingOrderPhoneNumberExtensionNew(t *testing.T) {
@@ -75,7 +75,7 @@ func TestPortingOrderPhoneNumberExtensionListWithOptionalParams(t *testing.T) {
 				Size:   telnyx.Int(1),
 			},
 			Sort: telnyx.PortingOrderPhoneNumberExtensionListParamsSort{
-				Value: "-created_at",
+				Value: "created_at",
 			},
 		},
 	)

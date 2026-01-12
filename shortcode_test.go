@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestShortCodeGet(t *testing.T) {
@@ -36,7 +36,7 @@ func TestShortCodeGet(t *testing.T) {
 	}
 }
 
-func TestShortCodeUpdate(t *testing.T) {
+func TestShortCodeUpdateWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -54,6 +54,7 @@ func TestShortCodeUpdate(t *testing.T) {
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.ShortCodeUpdateParams{
 			MessagingProfileID: "abc85f64-5717-4562-b3fc-2c9600000000",
+			Tags:               []string{"test_customer"},
 		},
 	)
 	if err != nil {

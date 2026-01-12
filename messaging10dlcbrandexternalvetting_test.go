@@ -8,12 +8,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestBrandExternalVettingList(t *testing.T) {
+func TestMessaging10dlcBrandExternalVettingList(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,7 @@ func TestBrandExternalVettingList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Brand.ExternalVetting.List(context.TODO(), "brandId")
+	_, err := client.Messaging10dlc.Brand.ExternalVetting.List(context.TODO(), "brandId")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -36,7 +36,7 @@ func TestBrandExternalVettingList(t *testing.T) {
 	}
 }
 
-func TestBrandExternalVettingImportWithOptionalParams(t *testing.T) {
+func TestMessaging10dlcBrandExternalVettingImportsWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -49,10 +49,10 @@ func TestBrandExternalVettingImportWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Brand.ExternalVetting.Import(
+	_, err := client.Messaging10dlc.Brand.ExternalVetting.Imports(
 		context.TODO(),
 		"brandId",
-		telnyx.BrandExternalVettingImportParams{
+		telnyx.Messaging10dlcBrandExternalVettingImportsParams{
 			EvpID:        "evpId",
 			VettingID:    "vettingId",
 			VettingToken: telnyx.String("vettingToken"),
@@ -67,7 +67,7 @@ func TestBrandExternalVettingImportWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestBrandExternalVettingOrder(t *testing.T) {
+func TestMessaging10dlcBrandExternalVettingOrder(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -80,10 +80,10 @@ func TestBrandExternalVettingOrder(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Brand.ExternalVetting.Order(
+	_, err := client.Messaging10dlc.Brand.ExternalVetting.Order(
 		context.TODO(),
 		"brandId",
-		telnyx.BrandExternalVettingOrderParams{
+		telnyx.Messaging10dlcBrandExternalVettingOrderParams{
 			EvpID:        "evpId",
 			VettingClass: "vettingClass",
 		},

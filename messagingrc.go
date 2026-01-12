@@ -9,11 +9,11 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // MessagingRcService contains methods and other services that help with
@@ -53,7 +53,7 @@ func (r *MessagingRcService) InviteTestNumber(ctx context.Context, phoneNumber s
 	return
 }
 
-// List RCS capabilities of a given batch of phone numbers
+// Check RCS capabilities (batch)
 func (r *MessagingRcService) ListBulkCapabilities(ctx context.Context, body MessagingRcListBulkCapabilitiesParams, opts ...option.RequestOption) (res *MessagingRcListBulkCapabilitiesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "messaging/rcs/bulk_capabilities"
@@ -61,7 +61,7 @@ func (r *MessagingRcService) ListBulkCapabilities(ctx context.Context, body Mess
 	return
 }
 
-// List RCS capabilities of a phone number
+// Check RCS capabilities
 func (r *MessagingRcService) GetCapabilities(ctx context.Context, phoneNumber string, query MessagingRcGetCapabilitiesParams, opts ...option.RequestOption) (res *MessagingRcGetCapabilitiesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.AgentID == "" {

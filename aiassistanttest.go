@@ -11,12 +11,13 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // AIAssistantTestService contains methods and other services that help with
@@ -77,11 +78,27 @@ func (r *AIAssistantTestService) Update(ctx context.Context, testID string, body
 
 // Retrieves a paginated list of assistant tests with optional filtering
 // capabilities
-func (r *AIAssistantTestService) List(ctx context.Context, query AIAssistantTestListParams, opts ...option.RequestOption) (res *AIAssistantTestListResponse, err error) {
+func (r *AIAssistantTestService) List(ctx context.Context, query AIAssistantTestListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[AssistantTest], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "ai/assistants/tests"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieves a paginated list of assistant tests with optional filtering
+// capabilities
+func (r *AIAssistantTestService) ListAutoPaging(ctx context.Context, query AIAssistantTestListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[AssistantTest] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Permanently removes an assistant test and all associated data
@@ -177,30 +194,6 @@ const (
 	TelnyxConversationChannelSMSChat   TelnyxConversationChannel = "sms_chat"
 	TelnyxConversationChannelWebChat   TelnyxConversationChannel = "web_chat"
 )
-
-// Paginated list of assistant tests with metadata.
-//
-// Returns a subset of tests based on pagination parameters along with metadata for
-// implementing pagination controls in the UI.
-type AIAssistantTestListResponse struct {
-	// Array of assistant test objects for the current page.
-	Data []AssistantTest `json:"data,required"`
-	// Pagination metadata including total counts and current page info.
-	Meta Meta `json:"meta,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIAssistantTestListResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIAssistantTestListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 type AIAssistantTestNewParams struct {
 	// The target destination for the test conversation. Format depends on the channel:
@@ -309,38 +302,18 @@ func (r *AIAssistantTestUpdateParamsRubric) UnmarshalJSON(data []byte) error {
 type AIAssistantTestListParams struct {
 	// Filter tests by destination (phone number, webhook URL, etc.)
 	Destination param.Opt[string] `query:"destination,omitzero" json:"-"`
+	PageNumber  param.Opt[int64]  `query:"page[number],omitzero" json:"-"`
+	PageSize    param.Opt[int64]  `query:"page[size],omitzero" json:"-"`
 	// Filter tests by communication channel (e.g., 'web_chat', 'sms')
 	TelnyxConversationChannel param.Opt[string] `query:"telnyx_conversation_channel,omitzero" json:"-"`
 	// Filter tests by test suite name
 	TestSuite param.Opt[string] `query:"test_suite,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page AIAssistantTestListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [AIAssistantTestListParams]'s query parameters as
 // `url.Values`.
 func (r AIAssistantTestListParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type AIAssistantTestListParamsPage struct {
-	// Page number to retrieve (1-based indexing)
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// Number of tests to return per page (1-100)
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [AIAssistantTestListParamsPage]'s query parameters as
-// `url.Values`.
-func (r AIAssistantTestListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

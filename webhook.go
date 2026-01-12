@@ -10,10 +10,11 @@ import (
 	"time"
 
 	standardwebhooks "github.com/standard-webhooks/standard-webhooks/libraries/go"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // WebhookService contains methods and other services that help with interacting
@@ -69,6 +70,280 @@ func (r *WebhookService) Unwrap(payload []byte, headers http.Header, opts ...opt
 	}
 	return res, nil
 }
+
+type CallStreamingFailed struct {
+	// Identifies the type of resource.
+	ID string `json:"id" format:"uuid"`
+	// The type of event being delivered.
+	//
+	// Any of "streaming.failed".
+	EventType CallStreamingFailedEventType `json:"event_type"`
+	// ISO 8601 datetime of when the event occurred.
+	OccurredAt time.Time                  `json:"occurred_at" format:"date-time"`
+	Payload    CallStreamingFailedPayload `json:"payload"`
+	// Identifies the resource.
+	//
+	// Any of "event".
+	RecordType CallStreamingFailedRecordType `json:"record_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallStreamingFailed) RawJSON() string { return r.JSON.raw }
+func (r *CallStreamingFailed) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The type of event being delivered.
+type CallStreamingFailedEventType string
+
+const (
+	CallStreamingFailedEventTypeStreamingFailed CallStreamingFailedEventType = "streaming.failed"
+)
+
+type CallStreamingFailedPayload struct {
+	// Call ID used to issue commands via Call Control API.
+	CallControlID string `json:"call_control_id"`
+	// ID that is unique to the call and can be used to correlate webhook events.
+	CallLegID string `json:"call_leg_id"`
+	// ID that is unique to the call session and can be used to correlate webhook
+	// events. Call session is a group of related call legs that logically belong to
+	// the same phone call, e.g. an inbound and outbound leg of a transferred call.
+	CallSessionID string `json:"call_session_id"`
+	// State received from a command.
+	ClientState string `json:"client_state"`
+	// Call Control App ID (formerly Telnyx connection ID) used in the call.
+	ConnectionID string `json:"connection_id"`
+	// A short description explaning why the media streaming failed.
+	FailureReason string `json:"failure_reason"`
+	// Identifies the streaming.
+	StreamID string `json:"stream_id" format:"uuid"`
+	// Streaming parameters as they were originally given to the Call Control API.
+	StreamParams CallStreamingFailedPayloadStreamParams `json:"stream_params"`
+	// The type of stream connection the stream is performing.
+	//
+	// Any of "websocket", "dialogflow".
+	StreamType string `json:"stream_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CallControlID respjson.Field
+		CallLegID     respjson.Field
+		CallSessionID respjson.Field
+		ClientState   respjson.Field
+		ConnectionID  respjson.Field
+		FailureReason respjson.Field
+		StreamID      respjson.Field
+		StreamParams  respjson.Field
+		StreamType    respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallStreamingFailedPayload) RawJSON() string { return r.JSON.raw }
+func (r *CallStreamingFailedPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Streaming parameters as they were originally given to the Call Control API.
+type CallStreamingFailedPayloadStreamParams struct {
+	// The destination WebSocket address where the stream is going to be delivered.
+	StreamURL string `json:"stream_url"`
+	// Specifies which track should be streamed.
+	//
+	// Any of "inbound_track", "outbound_track", "both_tracks".
+	Track string `json:"track"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		StreamURL   respjson.Field
+		Track       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallStreamingFailedPayloadStreamParams) RawJSON() string { return r.JSON.raw }
+func (r *CallStreamingFailedPayloadStreamParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies the resource.
+type CallStreamingFailedRecordType string
+
+const (
+	CallStreamingFailedRecordTypeEvent CallStreamingFailedRecordType = "event"
+)
+
+type CallStreamingStarted struct {
+	// Identifies the type of resource.
+	ID string `json:"id" format:"uuid"`
+	// The type of event being delivered.
+	//
+	// Any of "streaming.started".
+	EventType CallStreamingStartedEventType `json:"event_type"`
+	// ISO 8601 datetime of when the event occurred.
+	OccurredAt time.Time                   `json:"occurred_at" format:"date-time"`
+	Payload    CallStreamingStartedPayload `json:"payload"`
+	// Identifies the type of the resource.
+	//
+	// Any of "event".
+	RecordType CallStreamingStartedRecordType `json:"record_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallStreamingStarted) RawJSON() string { return r.JSON.raw }
+func (r *CallStreamingStarted) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The type of event being delivered.
+type CallStreamingStartedEventType string
+
+const (
+	CallStreamingStartedEventTypeStreamingStarted CallStreamingStartedEventType = "streaming.started"
+)
+
+type CallStreamingStartedPayload struct {
+	// Call ID used to issue commands via Call Control API.
+	CallControlID string `json:"call_control_id"`
+	// ID that is unique to the call and can be used to correlate webhook events.
+	CallLegID string `json:"call_leg_id"`
+	// ID that is unique to the call session and can be used to correlate webhook
+	// events. Call session is a group of related call legs that logically belong to
+	// the same phone call, e.g. an inbound and outbound leg of a transferred call.
+	CallSessionID string `json:"call_session_id"`
+	// State received from a command.
+	ClientState string `json:"client_state"`
+	// Call Control App ID (formerly Telnyx connection ID) used in the call.
+	ConnectionID string `json:"connection_id"`
+	// Destination WebSocket address where the stream is going to be delivered.
+	StreamURL string `json:"stream_url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CallControlID respjson.Field
+		CallLegID     respjson.Field
+		CallSessionID respjson.Field
+		ClientState   respjson.Field
+		ConnectionID  respjson.Field
+		StreamURL     respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallStreamingStartedPayload) RawJSON() string { return r.JSON.raw }
+func (r *CallStreamingStartedPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies the type of the resource.
+type CallStreamingStartedRecordType string
+
+const (
+	CallStreamingStartedRecordTypeEvent CallStreamingStartedRecordType = "event"
+)
+
+type CallStreamingStopped struct {
+	// Identifies the type of resource.
+	ID string `json:"id" format:"uuid"`
+	// The type of event being delivered.
+	//
+	// Any of "streaming.stopped".
+	EventType CallStreamingStoppedEventType `json:"event_type"`
+	// ISO 8601 datetime of when the event occurred.
+	OccurredAt time.Time                   `json:"occurred_at" format:"date-time"`
+	Payload    CallStreamingStoppedPayload `json:"payload"`
+	// Identifies the type of the resource.
+	//
+	// Any of "event".
+	RecordType CallStreamingStoppedRecordType `json:"record_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallStreamingStopped) RawJSON() string { return r.JSON.raw }
+func (r *CallStreamingStopped) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The type of event being delivered.
+type CallStreamingStoppedEventType string
+
+const (
+	CallStreamingStoppedEventTypeStreamingStopped CallStreamingStoppedEventType = "streaming.stopped"
+)
+
+type CallStreamingStoppedPayload struct {
+	// Call ID used to issue commands via Call Control API.
+	CallControlID string `json:"call_control_id"`
+	// ID that is unique to the call and can be used to correlate webhook events.
+	CallLegID string `json:"call_leg_id"`
+	// ID that is unique to the call session and can be used to correlate webhook
+	// events. Call session is a group of related call legs that logically belong to
+	// the same phone call, e.g. an inbound and outbound leg of a transferred call.
+	CallSessionID string `json:"call_session_id"`
+	// State received from a command.
+	ClientState string `json:"client_state"`
+	// Call Control App ID (formerly Telnyx connection ID) used in the call.
+	ConnectionID string `json:"connection_id"`
+	// Destination WebSocket address where the stream is going to be delivered.
+	StreamURL string `json:"stream_url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CallControlID respjson.Field
+		CallLegID     respjson.Field
+		CallSessionID respjson.Field
+		ClientState   respjson.Field
+		ConnectionID  respjson.Field
+		StreamURL     respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallStreamingStoppedPayload) RawJSON() string { return r.JSON.raw }
+func (r *CallStreamingStoppedPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies the type of the resource.
+type CallStreamingStoppedRecordType string
+
+const (
+	CallStreamingStoppedRecordTypeEvent CallStreamingStoppedRecordType = "event"
+)
 
 type CallAIGatherEndedWebhookEvent struct {
 	Data CallAIGatherEndedWebhookEventData `json:"data"`
@@ -137,7 +412,7 @@ type CallAIGatherEndedWebhookEventDataPayload struct {
 	MessageHistory []CallAIGatherEndedWebhookEventDataPayloadMessageHistory `json:"message_history"`
 	// The result of the AI gather, its type depends of the `parameters` provided in
 	// the command
-	Result any `json:"result"`
+	Result map[string]any `json:"result"`
 	// Reflects how command ended.
 	//
 	// Any of "valid", "invalid".
@@ -368,7 +643,7 @@ type CallAIGatherPartialResultsWebhookEventDataPayload struct {
 	MessageHistory []CallAIGatherPartialResultsWebhookEventDataPayloadMessageHistory `json:"message_history"`
 	// The partial result of the AI gather, its type depends of the `parameters`
 	// provided in the command
-	PartialResults any `json:"partial_results"`
+	PartialResults map[string]any `json:"partial_results"`
 	// Destination number or SIP URI of the call.
 	To string `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -414,106 +689,6 @@ func (r CallAIGatherPartialResultsWebhookEventDataPayloadMessageHistory) RawJSON
 	return r.JSON.raw
 }
 func (r *CallAIGatherPartialResultsWebhookEventDataPayloadMessageHistory) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CustomerServiceRecordStatusChangedWebhookEvent struct {
-	Data CustomerServiceRecordStatusChangedWebhookEventData `json:"data"`
-	Meta CustomerServiceRecordStatusChangedWebhookEventMeta `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CustomerServiceRecordStatusChangedWebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *CustomerServiceRecordStatusChangedWebhookEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CustomerServiceRecordStatusChangedWebhookEventData struct {
-	// Uniquely identifies the callback event.
-	ID string `json:"id" format:"uuid"`
-	// The type of the callback event.
-	//
-	// Any of "customer_service_record.status_changed".
-	EventType string `json:"event_type"`
-	// ISO 8601 formatted date indicating when the callback event occurred.
-	OccurredAt time.Time                                                 `json:"occurred_at" format:"date-time"`
-	Payload    CustomerServiceRecordStatusChangedWebhookEventDataPayload `json:"payload"`
-	// Identifies the type of the resource.
-	//
-	// Any of "event".
-	RecordType string `json:"record_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		EventType   respjson.Field
-		OccurredAt  respjson.Field
-		Payload     respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CustomerServiceRecordStatusChangedWebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *CustomerServiceRecordStatusChangedWebhookEventData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CustomerServiceRecordStatusChangedWebhookEventDataPayload struct {
-	// Uniquely identifies the customer service record.
-	ID string `json:"id" format:"uuid"`
-	// The phone number of the customer service record.
-	PhoneNumber string `json:"phone_number"`
-	// The status of the customer service record
-	//
-	// Any of "pending", "completed", "failed".
-	Status string `json:"status"`
-	// ISO 8601 formatted date indicating the last time where the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		PhoneNumber respjson.Field
-		Status      respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CustomerServiceRecordStatusChangedWebhookEventDataPayload) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *CustomerServiceRecordStatusChangedWebhookEventDataPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CustomerServiceRecordStatusChangedWebhookEventMeta struct {
-	// The number of times the callback webhook has been attempted.
-	Attempt int64 `json:"attempt"`
-	// The URL that the callback webhook was delivered to.
-	DeliveredTo string `json:"delivered_to"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Attempt     respjson.Field
-		DeliveredTo respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CustomerServiceRecordStatusChangedWebhookEventMeta) RawJSON() string { return r.JSON.raw }
-func (r *CustomerServiceRecordStatusChangedWebhookEventMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -913,7 +1088,7 @@ type CallConversationInsightsGeneratedWebhookEventDataPayloadResult struct {
 	// ID that is unique to the insight result being generated for the call.
 	InsightID string `json:"insight_id"`
 	// The result of the insight.
-	Result any `json:"result"`
+	Result CallConversationInsightsGeneratedWebhookEventDataPayloadResultResultUnion `json:"result"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		InsightID   respjson.Field
@@ -928,6 +1103,46 @@ func (r CallConversationInsightsGeneratedWebhookEventDataPayloadResult) RawJSON(
 	return r.JSON.raw
 }
 func (r *CallConversationInsightsGeneratedWebhookEventDataPayloadResult) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// CallConversationInsightsGeneratedWebhookEventDataPayloadResultResultUnion
+// contains all possible properties and values from [map[string]any], [string].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid:
+// OfCallConversationInsightsGeneratedWebhookEventDataPayloadResultResultInsightObjectResultItem
+// OfString]
+type CallConversationInsightsGeneratedWebhookEventDataPayloadResultResultUnion struct {
+	// This field will be present if the value is a [any] instead of an object.
+	OfCallConversationInsightsGeneratedWebhookEventDataPayloadResultResultInsightObjectResultItem any `json:",inline"`
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	JSON     struct {
+		OfCallConversationInsightsGeneratedWebhookEventDataPayloadResultResultInsightObjectResultItem respjson.Field
+		OfString                                                                                      respjson.Field
+		raw                                                                                           string
+	} `json:"-"`
+}
+
+func (u CallConversationInsightsGeneratedWebhookEventDataPayloadResultResultUnion) AsInsightObjectResult() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u CallConversationInsightsGeneratedWebhookEventDataPayloadResultResultUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u CallConversationInsightsGeneratedWebhookEventDataPayloadResultResultUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *CallConversationInsightsGeneratedWebhookEventDataPayloadResultResultUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1439,11 +1654,11 @@ type CallHangupWebhookEventDataPayload struct {
 	// Number or SIP URI placing the call.
 	From string `json:"from"`
 	// The reason the call was ended (`call_rejected`, `normal_clearing`,
-	// `originator_cancel`, `timeout`, `time_limit`, `user_busy`, `not_found` or
-	// `unspecified`).
+	// `originator_cancel`, `timeout`, `time_limit`, `user_busy`, `not_found`,
+	// `no_answer` or `unspecified`).
 	//
 	// Any of "call_rejected", "normal_clearing", "originator_cancel", "timeout",
-	// "time_limit", "user_busy", "not_found", "unspecified".
+	// "time_limit", "user_busy", "not_found", "no_answer", "unspecified".
 	HangupCause string `json:"hangup_cause"`
 	// The party who ended the call (`callee`, `caller`, `unknown`).
 	//
@@ -3336,7 +3551,7 @@ func (r *CallSpeakStartedWebhookEventDataPayload) UnmarshalJSON(data []byte) err
 }
 
 type CallStreamingFailedWebhookEvent struct {
-	Data CallStreamingFailedWebhookEventData `json:"data"`
+	Data CallStreamingFailed `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -3351,108 +3566,8 @@ func (r *CallStreamingFailedWebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CallStreamingFailedWebhookEventData struct {
-	// Identifies the type of resource.
-	ID string `json:"id" format:"uuid"`
-	// The type of event being delivered.
-	//
-	// Any of "streaming.failed".
-	EventType string `json:"event_type"`
-	// ISO 8601 datetime of when the event occurred.
-	OccurredAt time.Time                                  `json:"occurred_at" format:"date-time"`
-	Payload    CallStreamingFailedWebhookEventDataPayload `json:"payload"`
-	// Identifies the resource.
-	//
-	// Any of "event".
-	RecordType string `json:"record_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		EventType   respjson.Field
-		OccurredAt  respjson.Field
-		Payload     respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CallStreamingFailedWebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *CallStreamingFailedWebhookEventData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CallStreamingFailedWebhookEventDataPayload struct {
-	// Call ID used to issue commands via Call Control API.
-	CallControlID string `json:"call_control_id"`
-	// ID that is unique to the call and can be used to correlate webhook events.
-	CallLegID string `json:"call_leg_id"`
-	// ID that is unique to the call session and can be used to correlate webhook
-	// events. Call session is a group of related call legs that logically belong to
-	// the same phone call, e.g. an inbound and outbound leg of a transferred call.
-	CallSessionID string `json:"call_session_id"`
-	// State received from a command.
-	ClientState string `json:"client_state"`
-	// Call Control App ID (formerly Telnyx connection ID) used in the call.
-	ConnectionID string `json:"connection_id"`
-	// A short description explaning why the media streaming failed.
-	FailureReason string `json:"failure_reason"`
-	// Identifies the streaming.
-	StreamID string `json:"stream_id" format:"uuid"`
-	// Streaming parameters as they were originally given to the Call Control API.
-	StreamParams CallStreamingFailedWebhookEventDataPayloadStreamParams `json:"stream_params"`
-	// The type of stream connection the stream is performing.
-	//
-	// Any of "websocket", "dialogflow".
-	StreamType string `json:"stream_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CallControlID respjson.Field
-		CallLegID     respjson.Field
-		CallSessionID respjson.Field
-		ClientState   respjson.Field
-		ConnectionID  respjson.Field
-		FailureReason respjson.Field
-		StreamID      respjson.Field
-		StreamParams  respjson.Field
-		StreamType    respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CallStreamingFailedWebhookEventDataPayload) RawJSON() string { return r.JSON.raw }
-func (r *CallStreamingFailedWebhookEventDataPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Streaming parameters as they were originally given to the Call Control API.
-type CallStreamingFailedWebhookEventDataPayloadStreamParams struct {
-	// The destination WebSocket address where the stream is going to be delivered.
-	StreamURL string `json:"stream_url"`
-	// Specifies which track should be streamed.
-	//
-	// Any of "inbound_track", "outbound_track", "both_tracks".
-	Track string `json:"track"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		StreamURL   respjson.Field
-		Track       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CallStreamingFailedWebhookEventDataPayloadStreamParams) RawJSON() string { return r.JSON.raw }
-func (r *CallStreamingFailedWebhookEventDataPayloadStreamParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type CallStreamingStartedWebhookEvent struct {
-	Data CallStreamingStartedWebhookEventData `json:"data"`
+	Data CallStreamingStarted `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -3467,74 +3582,8 @@ func (r *CallStreamingStartedWebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CallStreamingStartedWebhookEventData struct {
-	// Identifies the type of resource.
-	ID string `json:"id" format:"uuid"`
-	// The type of event being delivered.
-	//
-	// Any of "streaming.started".
-	EventType string `json:"event_type"`
-	// ISO 8601 datetime of when the event occurred.
-	OccurredAt time.Time                                   `json:"occurred_at" format:"date-time"`
-	Payload    CallStreamingStartedWebhookEventDataPayload `json:"payload"`
-	// Identifies the type of the resource.
-	//
-	// Any of "event".
-	RecordType string `json:"record_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		EventType   respjson.Field
-		OccurredAt  respjson.Field
-		Payload     respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CallStreamingStartedWebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *CallStreamingStartedWebhookEventData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CallStreamingStartedWebhookEventDataPayload struct {
-	// Call ID used to issue commands via Call Control API.
-	CallControlID string `json:"call_control_id"`
-	// ID that is unique to the call and can be used to correlate webhook events.
-	CallLegID string `json:"call_leg_id"`
-	// ID that is unique to the call session and can be used to correlate webhook
-	// events. Call session is a group of related call legs that logically belong to
-	// the same phone call, e.g. an inbound and outbound leg of a transferred call.
-	CallSessionID string `json:"call_session_id"`
-	// State received from a command.
-	ClientState string `json:"client_state"`
-	// Call Control App ID (formerly Telnyx connection ID) used in the call.
-	ConnectionID string `json:"connection_id"`
-	// Destination WebSocket address where the stream is going to be delivered.
-	StreamURL string `json:"stream_url"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CallControlID respjson.Field
-		CallLegID     respjson.Field
-		CallSessionID respjson.Field
-		ClientState   respjson.Field
-		ConnectionID  respjson.Field
-		StreamURL     respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CallStreamingStartedWebhookEventDataPayload) RawJSON() string { return r.JSON.raw }
-func (r *CallStreamingStartedWebhookEventDataPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type CallStreamingStoppedWebhookEvent struct {
-	Data CallStreamingStoppedWebhookEventData `json:"data"`
+	Data CallStreamingStopped `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -3549,131 +3598,7 @@ func (r *CallStreamingStoppedWebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CallStreamingStoppedWebhookEventData struct {
-	// Identifies the type of resource.
-	ID string `json:"id" format:"uuid"`
-	// The type of event being delivered.
-	//
-	// Any of "streaming.stopped".
-	EventType string `json:"event_type"`
-	// ISO 8601 datetime of when the event occurred.
-	OccurredAt time.Time                                   `json:"occurred_at" format:"date-time"`
-	Payload    CallStreamingStoppedWebhookEventDataPayload `json:"payload"`
-	// Identifies the type of the resource.
-	//
-	// Any of "event".
-	RecordType string `json:"record_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		EventType   respjson.Field
-		OccurredAt  respjson.Field
-		Payload     respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CallStreamingStoppedWebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *CallStreamingStoppedWebhookEventData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CallStreamingStoppedWebhookEventDataPayload struct {
-	// Call ID used to issue commands via Call Control API.
-	CallControlID string `json:"call_control_id"`
-	// ID that is unique to the call and can be used to correlate webhook events.
-	CallLegID string `json:"call_leg_id"`
-	// ID that is unique to the call session and can be used to correlate webhook
-	// events. Call session is a group of related call legs that logically belong to
-	// the same phone call, e.g. an inbound and outbound leg of a transferred call.
-	CallSessionID string `json:"call_session_id"`
-	// State received from a command.
-	ClientState string `json:"client_state"`
-	// Call Control App ID (formerly Telnyx connection ID) used in the call.
-	ConnectionID string `json:"connection_id"`
-	// Destination WebSocket address where the stream is going to be delivered.
-	StreamURL string `json:"stream_url"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CallControlID respjson.Field
-		CallLegID     respjson.Field
-		CallSessionID respjson.Field
-		ClientState   respjson.Field
-		ConnectionID  respjson.Field
-		StreamURL     respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CallStreamingStoppedWebhookEventDataPayload) RawJSON() string { return r.JSON.raw }
-func (r *CallStreamingStoppedWebhookEventDataPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// CampaignStatusUpdateWebhookEventUnion contains all possible properties and
-// values from [CampaignStatusUpdateWebhookEventCampaignStatusUpdateEvent],
-// [CampaignStatusUpdateWebhookEventCampaignSuspendedEvent].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type CampaignStatusUpdateWebhookEventUnion struct {
-	// This field is from variant
-	// [CampaignStatusUpdateWebhookEventCampaignStatusUpdateEvent].
-	BrandID    string `json:"brandId"`
-	CampaignID string `json:"campaignId"`
-	// This field is from variant
-	// [CampaignStatusUpdateWebhookEventCampaignStatusUpdateEvent].
-	CreateDate string `json:"createDate"`
-	// This field is from variant
-	// [CampaignStatusUpdateWebhookEventCampaignStatusUpdateEvent].
-	CspID string `json:"cspId"`
-	// This field is from variant
-	// [CampaignStatusUpdateWebhookEventCampaignStatusUpdateEvent].
-	IsTMobileRegistered bool `json:"isTMobileRegistered"`
-	// This field is from variant
-	// [CampaignStatusUpdateWebhookEventCampaignSuspendedEvent].
-	Description string `json:"description"`
-	// This field is from variant
-	// [CampaignStatusUpdateWebhookEventCampaignSuspendedEvent].
-	Status string `json:"status"`
-	// This field is from variant
-	// [CampaignStatusUpdateWebhookEventCampaignSuspendedEvent].
-	Type string `json:"type"`
-	JSON struct {
-		BrandID             respjson.Field
-		CampaignID          respjson.Field
-		CreateDate          respjson.Field
-		CspID               respjson.Field
-		IsTMobileRegistered respjson.Field
-		Description         respjson.Field
-		Status              respjson.Field
-		Type                respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-func (u CampaignStatusUpdateWebhookEventUnion) AsCampaignStatusUpdateEvent() (v CampaignStatusUpdateWebhookEventCampaignStatusUpdateEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CampaignStatusUpdateWebhookEventUnion) AsCampaignSuspendedEvent() (v CampaignStatusUpdateWebhookEventCampaignSuspendedEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u CampaignStatusUpdateWebhookEventUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *CampaignStatusUpdateWebhookEventUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CampaignStatusUpdateWebhookEventCampaignStatusUpdateEvent struct {
+type CampaignStatusUpdateWebhookEvent struct {
 	// Brand ID associated with the campaign.
 	BrandID string `json:"brandId"`
 	// The ID of the campaign.
@@ -3682,55 +3607,61 @@ type CampaignStatusUpdateWebhookEventCampaignStatusUpdateEvent struct {
 	CreateDate string `json:"createDate"`
 	// Alphanumeric identifier of the CSP associated with this campaign.
 	CspID string `json:"cspId"`
+	// Description of the event.
+	Description string `json:"description"`
 	// Indicates whether the campaign is registered with T-Mobile.
 	IsTMobileRegistered bool `json:"isTMobileRegistered"`
+	// The status of the campaign.
+	//
+	// Any of "ACCEPTED", "REJECTED", "DORMANT", "success", "failed".
+	Status CampaignStatusUpdateWebhookEventStatus `json:"status"`
+	// Any of "TELNYX_EVENT", "REGISTRATION", "MNO_REVIEW", "TELNYX_REVIEW",
+	// "NUMBER_POOL_PROVISIONED", "NUMBER_POOL_DEPROVISIONED", "TCR_EVENT", "VERIFIED".
+	Type CampaignStatusUpdateWebhookEventType `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BrandID             respjson.Field
 		CampaignID          respjson.Field
 		CreateDate          respjson.Field
 		CspID               respjson.Field
+		Description         respjson.Field
 		IsTMobileRegistered respjson.Field
+		Status              respjson.Field
+		Type                respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r CampaignStatusUpdateWebhookEventCampaignStatusUpdateEvent) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *CampaignStatusUpdateWebhookEventCampaignStatusUpdateEvent) UnmarshalJSON(data []byte) error {
+func (r CampaignStatusUpdateWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *CampaignStatusUpdateWebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CampaignStatusUpdateWebhookEventCampaignSuspendedEvent struct {
-	// The ID of the campaign.
-	CampaignID string `json:"campaignId"`
-	// Description of the event.
-	Description string `json:"description"`
-	// The status of the campaign.
-	//
-	// Any of "DORMANT".
-	Status string `json:"status"`
-	// Any of "TELNYX_EVENT".
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CampaignID  respjson.Field
-		Description respjson.Field
-		Status      respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
+// The status of the campaign.
+type CampaignStatusUpdateWebhookEventStatus string
 
-// Returns the unmodified JSON received from the API
-func (r CampaignStatusUpdateWebhookEventCampaignSuspendedEvent) RawJSON() string { return r.JSON.raw }
-func (r *CampaignStatusUpdateWebhookEventCampaignSuspendedEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+const (
+	CampaignStatusUpdateWebhookEventStatusAccepted CampaignStatusUpdateWebhookEventStatus = "ACCEPTED"
+	CampaignStatusUpdateWebhookEventStatusRejected CampaignStatusUpdateWebhookEventStatus = "REJECTED"
+	CampaignStatusUpdateWebhookEventStatusDormant  CampaignStatusUpdateWebhookEventStatus = "DORMANT"
+	CampaignStatusUpdateWebhookEventStatusSuccess  CampaignStatusUpdateWebhookEventStatus = "success"
+	CampaignStatusUpdateWebhookEventStatusFailed   CampaignStatusUpdateWebhookEventStatus = "failed"
+)
+
+type CampaignStatusUpdateWebhookEventType string
+
+const (
+	CampaignStatusUpdateWebhookEventTypeTelnyxEvent             CampaignStatusUpdateWebhookEventType = "TELNYX_EVENT"
+	CampaignStatusUpdateWebhookEventTypeRegistration            CampaignStatusUpdateWebhookEventType = "REGISTRATION"
+	CampaignStatusUpdateWebhookEventTypeMnoReview               CampaignStatusUpdateWebhookEventType = "MNO_REVIEW"
+	CampaignStatusUpdateWebhookEventTypeTelnyxReview            CampaignStatusUpdateWebhookEventType = "TELNYX_REVIEW"
+	CampaignStatusUpdateWebhookEventTypeNumberPoolProvisioned   CampaignStatusUpdateWebhookEventType = "NUMBER_POOL_PROVISIONED"
+	CampaignStatusUpdateWebhookEventTypeNumberPoolDeprovisioned CampaignStatusUpdateWebhookEventType = "NUMBER_POOL_DEPROVISIONED"
+	CampaignStatusUpdateWebhookEventTypeTcrEvent                CampaignStatusUpdateWebhookEventType = "TCR_EVENT"
+	CampaignStatusUpdateWebhookEventTypeVerified                CampaignStatusUpdateWebhookEventType = "VERIFIED"
+)
 
 type ConferenceCreatedWebhookEvent struct {
 	Data ConferenceCreatedWebhookEventData `json:"data"`
@@ -5530,8 +5461,8 @@ type InboundMessageWebhookEventData struct {
 	// Any of "message.received".
 	EventType string `json:"event_type"`
 	// ISO 8601 formatted date indicating when the resource was created.
-	OccurredAt time.Time                             `json:"occurred_at" format:"date-time"`
-	Payload    InboundMessageWebhookEventDataPayload `json:"payload"`
+	OccurredAt time.Time                    `json:"occurred_at" format:"date-time"`
+	Payload    shared.InboundMessagePayload `json:"payload"`
 	// Identifies the type of the resource.
 	//
 	// Any of "event".
@@ -5551,295 +5482,6 @@ type InboundMessageWebhookEventData struct {
 // Returns the unmodified JSON received from the API
 func (r InboundMessageWebhookEventData) RawJSON() string { return r.JSON.raw }
 func (r *InboundMessageWebhookEventData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type InboundMessageWebhookEventDataPayload struct {
-	// Identifies the type of resource.
-	ID string                                    `json:"id" format:"uuid"`
-	Cc []InboundMessageWebhookEventDataPayloadCc `json:"cc"`
-	// Not used for inbound messages.
-	CompletedAt time.Time                                 `json:"completed_at,nullable" format:"date-time"`
-	Cost        InboundMessageWebhookEventDataPayloadCost `json:"cost,nullable"`
-	// Detailed breakdown of the message cost components.
-	CostBreakdown InboundMessageWebhookEventDataPayloadCostBreakdown `json:"cost_breakdown,nullable"`
-	// The direction of the message. Inbound messages are sent to you whereas outbound
-	// messages are sent from you.
-	//
-	// Any of "inbound".
-	Direction string `json:"direction"`
-	// Encoding scheme used for the message body.
-	Encoding string `json:"encoding"`
-	// These errors may point at addressees when referring to unsuccessful/unconfirmed
-	// delivery statuses.
-	Errors []MessagingError                             `json:"errors"`
-	From   InboundMessageWebhookEventDataPayloadFrom    `json:"from"`
-	Media  []InboundMessageWebhookEventDataPayloadMedia `json:"media"`
-	// Unique identifier for a messaging profile.
-	MessagingProfileID string `json:"messaging_profile_id"`
-	// Number of parts into which the message's body must be split.
-	Parts int64 `json:"parts"`
-	// ISO 8601 formatted date indicating when the message request was received.
-	ReceivedAt time.Time `json:"received_at" format:"date-time"`
-	// Identifies the type of the resource.
-	//
-	// Any of "message".
-	RecordType string `json:"record_type"`
-	// Not used for inbound messages.
-	SentAt time.Time `json:"sent_at,nullable" format:"date-time"`
-	// Tags associated with the resource.
-	Tags []string `json:"tags"`
-	// Indicates whether the TCR campaign is billable.
-	TcrCampaignBillable bool `json:"tcr_campaign_billable"`
-	// The Campaign Registry (TCR) campaign ID associated with the message.
-	TcrCampaignID string `json:"tcr_campaign_id,nullable"`
-	// The registration status of the TCR campaign.
-	TcrCampaignRegistered string `json:"tcr_campaign_registered,nullable"`
-	// Message body (i.e., content) as a non-empty string.
-	//
-	// **Required for SMS**
-	Text string                                    `json:"text"`
-	To   []InboundMessageWebhookEventDataPayloadTo `json:"to"`
-	// The type of message. This value can be either 'sms' or 'mms'.
-	//
-	// Any of "SMS", "MMS".
-	Type string `json:"type"`
-	// Not used for inbound messages.
-	ValidUntil time.Time `json:"valid_until,nullable" format:"date-time"`
-	// The failover URL where webhooks related to this message will be sent if sending
-	// to the primary URL fails.
-	WebhookFailoverURL string `json:"webhook_failover_url,nullable" format:"url"`
-	// The URL where webhooks related to this message will be sent.
-	WebhookURL string `json:"webhook_url,nullable" format:"url"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                    respjson.Field
-		Cc                    respjson.Field
-		CompletedAt           respjson.Field
-		Cost                  respjson.Field
-		CostBreakdown         respjson.Field
-		Direction             respjson.Field
-		Encoding              respjson.Field
-		Errors                respjson.Field
-		From                  respjson.Field
-		Media                 respjson.Field
-		MessagingProfileID    respjson.Field
-		Parts                 respjson.Field
-		ReceivedAt            respjson.Field
-		RecordType            respjson.Field
-		SentAt                respjson.Field
-		Tags                  respjson.Field
-		TcrCampaignBillable   respjson.Field
-		TcrCampaignID         respjson.Field
-		TcrCampaignRegistered respjson.Field
-		Text                  respjson.Field
-		To                    respjson.Field
-		Type                  respjson.Field
-		ValidUntil            respjson.Field
-		WebhookFailoverURL    respjson.Field
-		WebhookURL            respjson.Field
-		ExtraFields           map[string]respjson.Field
-		raw                   string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InboundMessageWebhookEventDataPayload) RawJSON() string { return r.JSON.raw }
-func (r *InboundMessageWebhookEventDataPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type InboundMessageWebhookEventDataPayloadCc struct {
-	// The carrier of the receiver.
-	Carrier string `json:"carrier"`
-	// The line-type of the receiver.
-	//
-	// Any of "Wireline", "Wireless", "VoWiFi", "VoIP", "Pre-Paid Wireless", "".
-	LineType string `json:"line_type"`
-	// Receiving address (+E.164 formatted phone number or short code).
-	PhoneNumber string `json:"phone_number" format:"address"`
-	// Any of "queued", "sending", "sent", "delivered", "sending_failed",
-	// "delivery_failed", "delivery_unconfirmed".
-	Status string `json:"status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Carrier     respjson.Field
-		LineType    respjson.Field
-		PhoneNumber respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InboundMessageWebhookEventDataPayloadCc) RawJSON() string { return r.JSON.raw }
-func (r *InboundMessageWebhookEventDataPayloadCc) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type InboundMessageWebhookEventDataPayloadCost struct {
-	// The amount deducted from your account.
-	Amount string `json:"amount" format:"decimal"`
-	// The ISO 4217 currency identifier.
-	Currency string `json:"currency" format:"iso4217"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Amount      respjson.Field
-		Currency    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InboundMessageWebhookEventDataPayloadCost) RawJSON() string { return r.JSON.raw }
-func (r *InboundMessageWebhookEventDataPayloadCost) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Detailed breakdown of the message cost components.
-type InboundMessageWebhookEventDataPayloadCostBreakdown struct {
-	CarrierFee InboundMessageWebhookEventDataPayloadCostBreakdownCarrierFee `json:"carrier_fee"`
-	Rate       InboundMessageWebhookEventDataPayloadCostBreakdownRate       `json:"rate"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CarrierFee  respjson.Field
-		Rate        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InboundMessageWebhookEventDataPayloadCostBreakdown) RawJSON() string { return r.JSON.raw }
-func (r *InboundMessageWebhookEventDataPayloadCostBreakdown) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type InboundMessageWebhookEventDataPayloadCostBreakdownCarrierFee struct {
-	// The carrier fee amount.
-	Amount string `json:"amount" format:"decimal"`
-	// The ISO 4217 currency identifier.
-	Currency string `json:"currency" format:"iso4217"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Amount      respjson.Field
-		Currency    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InboundMessageWebhookEventDataPayloadCostBreakdownCarrierFee) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *InboundMessageWebhookEventDataPayloadCostBreakdownCarrierFee) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type InboundMessageWebhookEventDataPayloadCostBreakdownRate struct {
-	// The rate amount applied.
-	Amount string `json:"amount" format:"decimal"`
-	// The ISO 4217 currency identifier.
-	Currency string `json:"currency" format:"iso4217"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Amount      respjson.Field
-		Currency    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InboundMessageWebhookEventDataPayloadCostBreakdownRate) RawJSON() string { return r.JSON.raw }
-func (r *InboundMessageWebhookEventDataPayloadCostBreakdownRate) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type InboundMessageWebhookEventDataPayloadFrom struct {
-	// The carrier of the sender.
-	Carrier string `json:"carrier"`
-	// The line-type of the sender.
-	//
-	// Any of "Wireline", "Wireless", "VoWiFi", "VoIP", "Pre-Paid Wireless", "".
-	LineType string `json:"line_type"`
-	// Sending address (+E.164 formatted phone number, alphanumeric sender ID, or short
-	// code).
-	PhoneNumber string `json:"phone_number" format:"address"`
-	// Any of "received", "delivered".
-	Status string `json:"status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Carrier     respjson.Field
-		LineType    respjson.Field
-		PhoneNumber respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InboundMessageWebhookEventDataPayloadFrom) RawJSON() string { return r.JSON.raw }
-func (r *InboundMessageWebhookEventDataPayloadFrom) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type InboundMessageWebhookEventDataPayloadMedia struct {
-	// The MIME type of the requested media.
-	ContentType string `json:"content_type" format:"mime-type"`
-	// The SHA256 hash of the requested media.
-	HashSha256 string `json:"hash_sha256"`
-	// The size of the requested media.
-	Size int64 `json:"size"`
-	// The url of the media requested to be sent.
-	URL string `json:"url" format:"url"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ContentType respjson.Field
-		HashSha256  respjson.Field
-		Size        respjson.Field
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InboundMessageWebhookEventDataPayloadMedia) RawJSON() string { return r.JSON.raw }
-func (r *InboundMessageWebhookEventDataPayloadMedia) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type InboundMessageWebhookEventDataPayloadTo struct {
-	// The carrier of the receiver.
-	Carrier string `json:"carrier"`
-	// The line-type of the receiver.
-	//
-	// Any of "Wireline", "Wireless", "VoWiFi", "VoIP", "Pre-Paid Wireless", "".
-	LineType string `json:"line_type"`
-	// Receiving address (+E.164 formatted phone number or short code).
-	PhoneNumber string `json:"phone_number" format:"address"`
-	// Any of "queued", "sending", "sent", "delivered", "sending_failed",
-	// "delivery_failed", "delivery_unconfirmed", "webhook_delivered".
-	Status string `json:"status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Carrier     respjson.Field
-		LineType    respjson.Field
-		PhoneNumber respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InboundMessageWebhookEventDataPayloadTo) RawJSON() string { return r.JSON.raw }
-func (r *InboundMessageWebhookEventDataPayloadTo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -5956,7 +5598,7 @@ func (r *ReplacedLinkClickWebhookEventData) UnmarshalJSON(data []byte) error {
 }
 
 type StreamingFailedWebhookEvent struct {
-	Data StreamingFailedWebhookEventData `json:"data"`
+	Data CallStreamingFailed `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -5971,108 +5613,8 @@ func (r *StreamingFailedWebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type StreamingFailedWebhookEventData struct {
-	// Identifies the type of resource.
-	ID string `json:"id" format:"uuid"`
-	// The type of event being delivered.
-	//
-	// Any of "streaming.failed".
-	EventType string `json:"event_type"`
-	// ISO 8601 datetime of when the event occurred.
-	OccurredAt time.Time                              `json:"occurred_at" format:"date-time"`
-	Payload    StreamingFailedWebhookEventDataPayload `json:"payload"`
-	// Identifies the resource.
-	//
-	// Any of "event".
-	RecordType string `json:"record_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		EventType   respjson.Field
-		OccurredAt  respjson.Field
-		Payload     respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StreamingFailedWebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *StreamingFailedWebhookEventData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type StreamingFailedWebhookEventDataPayload struct {
-	// Call ID used to issue commands via Call Control API.
-	CallControlID string `json:"call_control_id"`
-	// ID that is unique to the call and can be used to correlate webhook events.
-	CallLegID string `json:"call_leg_id"`
-	// ID that is unique to the call session and can be used to correlate webhook
-	// events. Call session is a group of related call legs that logically belong to
-	// the same phone call, e.g. an inbound and outbound leg of a transferred call.
-	CallSessionID string `json:"call_session_id"`
-	// State received from a command.
-	ClientState string `json:"client_state"`
-	// Call Control App ID (formerly Telnyx connection ID) used in the call.
-	ConnectionID string `json:"connection_id"`
-	// A short description explaning why the media streaming failed.
-	FailureReason string `json:"failure_reason"`
-	// Identifies the streaming.
-	StreamID string `json:"stream_id" format:"uuid"`
-	// Streaming parameters as they were originally given to the Call Control API.
-	StreamParams StreamingFailedWebhookEventDataPayloadStreamParams `json:"stream_params"`
-	// The type of stream connection the stream is performing.
-	//
-	// Any of "websocket", "dialogflow".
-	StreamType string `json:"stream_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CallControlID respjson.Field
-		CallLegID     respjson.Field
-		CallSessionID respjson.Field
-		ClientState   respjson.Field
-		ConnectionID  respjson.Field
-		FailureReason respjson.Field
-		StreamID      respjson.Field
-		StreamParams  respjson.Field
-		StreamType    respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StreamingFailedWebhookEventDataPayload) RawJSON() string { return r.JSON.raw }
-func (r *StreamingFailedWebhookEventDataPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Streaming parameters as they were originally given to the Call Control API.
-type StreamingFailedWebhookEventDataPayloadStreamParams struct {
-	// The destination WebSocket address where the stream is going to be delivered.
-	StreamURL string `json:"stream_url"`
-	// Specifies which track should be streamed.
-	//
-	// Any of "inbound_track", "outbound_track", "both_tracks".
-	Track string `json:"track"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		StreamURL   respjson.Field
-		Track       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StreamingFailedWebhookEventDataPayloadStreamParams) RawJSON() string { return r.JSON.raw }
-func (r *StreamingFailedWebhookEventDataPayloadStreamParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type StreamingStartedWebhookEvent struct {
-	Data StreamingStartedWebhookEventData `json:"data"`
+	Data CallStreamingStarted `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -6087,74 +5629,8 @@ func (r *StreamingStartedWebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type StreamingStartedWebhookEventData struct {
-	// Identifies the type of resource.
-	ID string `json:"id" format:"uuid"`
-	// The type of event being delivered.
-	//
-	// Any of "streaming.started".
-	EventType string `json:"event_type"`
-	// ISO 8601 datetime of when the event occurred.
-	OccurredAt time.Time                               `json:"occurred_at" format:"date-time"`
-	Payload    StreamingStartedWebhookEventDataPayload `json:"payload"`
-	// Identifies the type of the resource.
-	//
-	// Any of "event".
-	RecordType string `json:"record_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		EventType   respjson.Field
-		OccurredAt  respjson.Field
-		Payload     respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StreamingStartedWebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *StreamingStartedWebhookEventData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type StreamingStartedWebhookEventDataPayload struct {
-	// Call ID used to issue commands via Call Control API.
-	CallControlID string `json:"call_control_id"`
-	// ID that is unique to the call and can be used to correlate webhook events.
-	CallLegID string `json:"call_leg_id"`
-	// ID that is unique to the call session and can be used to correlate webhook
-	// events. Call session is a group of related call legs that logically belong to
-	// the same phone call, e.g. an inbound and outbound leg of a transferred call.
-	CallSessionID string `json:"call_session_id"`
-	// State received from a command.
-	ClientState string `json:"client_state"`
-	// Call Control App ID (formerly Telnyx connection ID) used in the call.
-	ConnectionID string `json:"connection_id"`
-	// Destination WebSocket address where the stream is going to be delivered.
-	StreamURL string `json:"stream_url"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CallControlID respjson.Field
-		CallLegID     respjson.Field
-		CallSessionID respjson.Field
-		ClientState   respjson.Field
-		ConnectionID  respjson.Field
-		StreamURL     respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StreamingStartedWebhookEventDataPayload) RawJSON() string { return r.JSON.raw }
-func (r *StreamingStartedWebhookEventDataPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type StreamingStoppedWebhookEvent struct {
-	Data StreamingStoppedWebhookEventData `json:"data"`
+	Data CallStreamingStopped `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -6166,72 +5642,6 @@ type StreamingStoppedWebhookEvent struct {
 // Returns the unmodified JSON received from the API
 func (r StreamingStoppedWebhookEvent) RawJSON() string { return r.JSON.raw }
 func (r *StreamingStoppedWebhookEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type StreamingStoppedWebhookEventData struct {
-	// Identifies the type of resource.
-	ID string `json:"id" format:"uuid"`
-	// The type of event being delivered.
-	//
-	// Any of "streaming.stopped".
-	EventType string `json:"event_type"`
-	// ISO 8601 datetime of when the event occurred.
-	OccurredAt time.Time                               `json:"occurred_at" format:"date-time"`
-	Payload    StreamingStoppedWebhookEventDataPayload `json:"payload"`
-	// Identifies the type of the resource.
-	//
-	// Any of "event".
-	RecordType string `json:"record_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		EventType   respjson.Field
-		OccurredAt  respjson.Field
-		Payload     respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StreamingStoppedWebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *StreamingStoppedWebhookEventData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type StreamingStoppedWebhookEventDataPayload struct {
-	// Call ID used to issue commands via Call Control API.
-	CallControlID string `json:"call_control_id"`
-	// ID that is unique to the call and can be used to correlate webhook events.
-	CallLegID string `json:"call_leg_id"`
-	// ID that is unique to the call session and can be used to correlate webhook
-	// events. Call session is a group of related call legs that logically belong to
-	// the same phone call, e.g. an inbound and outbound leg of a transferred call.
-	CallSessionID string `json:"call_session_id"`
-	// State received from a command.
-	ClientState string `json:"client_state"`
-	// Call Control App ID (formerly Telnyx connection ID) used in the call.
-	ConnectionID string `json:"connection_id"`
-	// Destination WebSocket address where the stream is going to be delivered.
-	StreamURL string `json:"stream_url"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CallControlID respjson.Field
-		CallLegID     respjson.Field
-		CallSessionID respjson.Field
-		ClientState   respjson.Field
-		ConnectionID  respjson.Field
-		StreamURL     respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StreamingStoppedWebhookEventDataPayload) RawJSON() string { return r.JSON.raw }
-func (r *StreamingStoppedWebhookEventDataPayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -6349,8 +5759,7 @@ func (r *TranscriptionWebhookEventDataPayloadTranscriptionData) UnmarshalJSON(da
 // UnsafeUnwrapWebhookEventUnion contains all possible properties and values from
 // [CallAIGatherEndedWebhookEvent],
 // [CallAIGatherMessageHistoryUpdatedWebhookEvent],
-// [CallAIGatherPartialResultsWebhookEvent],
-// [CustomerServiceRecordStatusChangedWebhookEvent], [CallAnsweredWebhookEvent],
+// [CallAIGatherPartialResultsWebhookEvent], [CallAnsweredWebhookEvent],
 // [CallBridgedWebhookEvent], [CallConversationEndedWebhookEvent],
 // [CallConversationInsightsGeneratedWebhookEvent], [CallDtmfReceivedWebhookEvent],
 // [CallEnqueuedWebhookEvent], [CallForkStartedWebhookEvent],
@@ -6367,9 +5776,7 @@ func (r *TranscriptionWebhookEventDataPayloadTranscriptionData) UnmarshalJSON(da
 // [CallSiprecStartedWebhookEvent], [CallSiprecStoppedWebhookEvent],
 // [CallSpeakEndedWebhookEvent], [CallSpeakStartedWebhookEvent],
 // [CallStreamingFailedWebhookEvent], [CallStreamingStartedWebhookEvent],
-// [CallStreamingStoppedWebhookEvent],
-// [UnsafeUnwrapWebhookEventCampaignStatusUpdateEvent],
-// [UnsafeUnwrapWebhookEventCampaignSuspendedEvent],
+// [CallStreamingStoppedWebhookEvent], [CampaignStatusUpdateWebhookEvent],
 // [ConferenceCreatedWebhookEvent], [ConferenceEndedWebhookEvent],
 // [ConferenceFloorChangedWebhookEvent], [ConferenceParticipantJoinedWebhookEvent],
 // [ConferenceParticipantLeftWebhookEvent],
@@ -6391,10 +5798,8 @@ func (r *TranscriptionWebhookEventDataPayloadTranscriptionData) UnmarshalJSON(da
 type UnsafeUnwrapWebhookEventUnion struct {
 	// This field is a union of [CallAIGatherEndedWebhookEventData],
 	// [CallAIGatherMessageHistoryUpdatedWebhookEventData],
-	// [CallAIGatherPartialResultsWebhookEventData],
-	// [CustomerServiceRecordStatusChangedWebhookEventData],
-	// [CallAnsweredWebhookEventData], [CallBridgedWebhookEventData],
-	// [CallConversationEndedWebhookEventData],
+	// [CallAIGatherPartialResultsWebhookEventData], [CallAnsweredWebhookEventData],
+	// [CallBridgedWebhookEventData], [CallConversationEndedWebhookEventData],
 	// [CallConversationInsightsGeneratedWebhookEventData],
 	// [CallDtmfReceivedWebhookEventData], [CallEnqueuedWebhookEventData],
 	// [CallForkStartedWebhookEventData], [CallForkStoppedWebhookEventData],
@@ -6411,9 +5816,8 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// [CallReferStartedWebhookEventData], [CallSiprecFailedWebhookEventData],
 	// [CallSiprecStartedWebhookEventData], [CallSiprecStoppedWebhookEventData],
 	// [CallSpeakEndedWebhookEventData], [CallSpeakStartedWebhookEventData],
-	// [CallStreamingFailedWebhookEventData], [CallStreamingStartedWebhookEventData],
-	// [CallStreamingStoppedWebhookEventData], [ConferenceCreatedWebhookEventData],
-	// [ConferenceEndedWebhookEventData],
+	// [CallStreamingFailed], [CallStreamingStarted], [CallStreamingStopped],
+	// [ConferenceCreatedWebhookEventData], [ConferenceEndedWebhookEventData],
 	// [ConferenceParticipantJoinedWebhookEventData],
 	// [ConferenceParticipantLeftWebhookEventData],
 	// [ConferenceParticipantPlaybackEndedWebhookEventData],
@@ -6426,51 +5830,50 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// [ConferenceSpeakEndedWebhookEventData],
 	// [ConferenceSpeakStartedWebhookEventData], [DeliveryUpdateWebhookEventData],
 	// [InboundMessageWebhookEventData], [NumberOrderStatusUpdateWebhookEventData],
-	// [ReplacedLinkClickWebhookEventData], [StreamingFailedWebhookEventData],
-	// [StreamingStartedWebhookEventData], [StreamingStoppedWebhookEventData],
-	// [TranscriptionWebhookEventData]
+	// [ReplacedLinkClickWebhookEventData], [TranscriptionWebhookEventData]
 	Data UnsafeUnwrapWebhookEventUnionData `json:"data"`
-	// This field is a union of [CustomerServiceRecordStatusChangedWebhookEventMeta],
-	// [DeliveryUpdateWebhookEventMeta], [NumberOrderStatusUpdateWebhookEventMeta]
-	Meta UnsafeUnwrapWebhookEventUnionMeta `json:"meta"`
-	// This field is from variant [UnsafeUnwrapWebhookEventCampaignStatusUpdateEvent].
-	BrandID    string `json:"brandId"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
+	BrandID string `json:"brandId"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
 	CampaignID string `json:"campaignId"`
-	// This field is from variant [UnsafeUnwrapWebhookEventCampaignStatusUpdateEvent].
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
 	CreateDate string `json:"createDate"`
-	// This field is from variant [UnsafeUnwrapWebhookEventCampaignStatusUpdateEvent].
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
 	CspID string `json:"cspId"`
-	// This field is from variant [UnsafeUnwrapWebhookEventCampaignStatusUpdateEvent].
-	IsTMobileRegistered bool `json:"isTMobileRegistered"`
-	// This field is from variant [UnsafeUnwrapWebhookEventCampaignSuspendedEvent].
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
 	Description string `json:"description"`
-	// This field is from variant [UnsafeUnwrapWebhookEventCampaignSuspendedEvent].
-	Status string `json:"status"`
-	// This field is from variant [UnsafeUnwrapWebhookEventCampaignSuspendedEvent].
-	Type      string `json:"type"`
-	ID        string `json:"id"`
-	EventType string `json:"event_type"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
+	IsTMobileRegistered bool `json:"isTMobileRegistered"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
+	Status CampaignStatusUpdateWebhookEventStatus `json:"status"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
+	Type      CampaignStatusUpdateWebhookEventType `json:"type"`
+	ID        string                               `json:"id"`
+	EventType string                               `json:"event_type"`
 	// This field is a union of [ConferenceFloorChangedWebhookEventPayload],
 	// [FaxDeliveredWebhookEventPayload], [FaxFailedWebhookEventPayload],
 	// [FaxMediaProcessedWebhookEventPayload], [FaxQueuedWebhookEventPayload],
 	// [FaxSendingStartedWebhookEventPayload]
 	Payload    UnsafeUnwrapWebhookEventUnionPayload `json:"payload"`
 	RecordType string                               `json:"record_type"`
-	JSON       struct {
+	// This field is a union of [DeliveryUpdateWebhookEventMeta],
+	// [NumberOrderStatusUpdateWebhookEventMeta]
+	Meta UnsafeUnwrapWebhookEventUnionMeta `json:"meta"`
+	JSON struct {
 		Data                respjson.Field
-		Meta                respjson.Field
 		BrandID             respjson.Field
 		CampaignID          respjson.Field
 		CreateDate          respjson.Field
 		CspID               respjson.Field
-		IsTMobileRegistered respjson.Field
 		Description         respjson.Field
+		IsTMobileRegistered respjson.Field
 		Status              respjson.Field
 		Type                respjson.Field
 		ID                  respjson.Field
 		EventType           respjson.Field
 		Payload             respjson.Field
 		RecordType          respjson.Field
+		Meta                respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -6486,11 +5889,6 @@ func (u UnsafeUnwrapWebhookEventUnion) AsCallAIGatherMessageHistoryUpdatedEvent(
 }
 
 func (u UnsafeUnwrapWebhookEventUnion) AsCallAIGatherPartialResultsEvent() (v CallAIGatherPartialResultsWebhookEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UnsafeUnwrapWebhookEventUnion) AsCustomerServiceRecordStatusChangedWebhookEvent() (v CustomerServiceRecordStatusChangedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -6655,12 +6053,7 @@ func (u UnsafeUnwrapWebhookEventUnion) AsStreamingStoppedEvent() (v CallStreamin
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsCampaignStatusUpdateEvent() (v UnsafeUnwrapWebhookEventCampaignStatusUpdateEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UnsafeUnwrapWebhookEventUnion) AsCampaignSuspendedEvent() (v UnsafeUnwrapWebhookEventCampaignSuspendedEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsCampaignStatusUpdateEvent() (v CampaignStatusUpdateWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -6820,7 +6213,6 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	// This field is a union of [CallAIGatherEndedWebhookEventDataPayload],
 	// [CallAIGatherMessageHistoryUpdatedWebhookEventDataPayload],
 	// [CallAIGatherPartialResultsWebhookEventDataPayload],
-	// [CustomerServiceRecordStatusChangedWebhookEventDataPayload],
 	// [CallAnsweredWebhookEventDataPayload], [CallBridgedWebhookEventDataPayload],
 	// [CallConversationEndedWebhookEventDataPayload],
 	// [CallConversationInsightsGeneratedWebhookEventDataPayload],
@@ -6845,10 +6237,8 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	// [CallSiprecStartedWebhookEventDataPayload],
 	// [CallSiprecStoppedWebhookEventDataPayload],
 	// [CallSpeakEndedWebhookEventDataPayload],
-	// [CallSpeakStartedWebhookEventDataPayload],
-	// [CallStreamingFailedWebhookEventDataPayload],
-	// [CallStreamingStartedWebhookEventDataPayload],
-	// [CallStreamingStoppedWebhookEventDataPayload],
+	// [CallSpeakStartedWebhookEventDataPayload], [CallStreamingFailedPayload],
+	// [CallStreamingStartedPayload], [CallStreamingStoppedPayload],
 	// [ConferenceCreatedWebhookEventDataPayload],
 	// [ConferenceEndedWebhookEventDataPayload],
 	// [ConferenceParticipantJoinedWebhookEventDataPayload],
@@ -6862,10 +6252,7 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	// [ConferenceRecordingSavedWebhookEventDataPayload],
 	// [ConferenceSpeakEndedWebhookEventDataPayload],
 	// [ConferenceSpeakStartedWebhookEventDataPayload], [OutboundMessagePayload],
-	// [InboundMessageWebhookEventDataPayload], [NumberOrderWithPhoneNumbers],
-	// [StreamingFailedWebhookEventDataPayload],
-	// [StreamingStartedWebhookEventDataPayload],
-	// [StreamingStoppedWebhookEventDataPayload],
+	// [shared.InboundMessagePayload], [NumberOrderWithPhoneNumbers],
 	// [TranscriptionWebhookEventDataPayload]
 	Payload    UnsafeUnwrapWebhookEventUnionDataPayload `json:"payload"`
 	RecordType string                                   `json:"record_type"`
@@ -6913,33 +6300,29 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	// This field is a union of [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [OutboundMessagePayloadFrom],
-	// [InboundMessageWebhookEventDataPayloadFrom]
+	// [shared.InboundMessagePayloadFrom]
 	From UnsafeUnwrapWebhookEventUnionDataPayloadFrom `json:"from"`
 	// This field is a union of
 	// [[]CallAIGatherEndedWebhookEventDataPayloadMessageHistory],
 	// [[]CallAIGatherMessageHistoryUpdatedWebhookEventDataPayloadMessageHistory],
 	// [[]CallAIGatherPartialResultsWebhookEventDataPayloadMessageHistory]
 	MessageHistory UnsafeUnwrapWebhookEventUnionDataPayloadMessageHistory `json:"message_history"`
-	// This field is a union of [any], [string], [string], [string], [string]
+	// This field is a union of [map[string]any], [string], [string], [string],
+	// [string]
 	Result UnsafeUnwrapWebhookEventUnionDataPayloadResult `json:"result"`
 	Status string                                         `json:"status"`
 	// This field is a union of [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [[]OutboundMessagePayloadTo],
-	// [[]InboundMessageWebhookEventDataPayloadTo]
+	// [[]shared.InboundMessagePayloadTo]
 	To UnsafeUnwrapWebhookEventUnionDataPayloadTo `json:"to"`
 	// This field is from variant [CallAIGatherPartialResultsWebhookEventDataPayload].
-	PartialResults any    `json:"partial_results"`
-	ID             string `json:"id"`
-	// This field is from variant
-	// [CustomerServiceRecordStatusChangedWebhookEventDataPayload].
-	PhoneNumber   string            `json:"phone_number"`
-	UpdatedAt     time.Time         `json:"updated_at"`
-	CustomHeaders []CustomSipHeader `json:"custom_headers"`
-	SipHeaders    []SipHeader       `json:"sip_headers"`
-	StartTime     time.Time         `json:"start_time"`
-	State         string            `json:"state"`
-	Tags          []string          `json:"tags"`
+	PartialResults map[string]any    `json:"partial_results"`
+	CustomHeaders  []CustomSipHeader `json:"custom_headers"`
+	SipHeaders     []SipHeader       `json:"sip_headers"`
+	StartTime      time.Time         `json:"start_time"`
+	State          string            `json:"state"`
+	Tags           []string          `json:"tags"`
 	// This field is from variant [CallConversationEndedWebhookEventDataPayload].
 	AssistantID      string `json:"assistant_id"`
 	CallingPartyType string `json:"calling_party_type"`
@@ -7023,50 +6406,50 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	TranscriptionText string `json:"transcription_text"`
 	SipNotifyResponse int64  `json:"sip_notify_response"`
 	// This field is from variant [CallSiprecFailedWebhookEventDataPayload].
-	FailureCause  string `json:"failure_cause"`
+	FailureCause string `json:"failure_cause"`
+	// This field is from variant [CallStreamingFailedPayload].
 	FailureReason string `json:"failure_reason"`
-	StreamID      string `json:"stream_id"`
-	// This field is a union of
-	// [CallStreamingFailedWebhookEventDataPayloadStreamParams],
-	// [StreamingFailedWebhookEventDataPayloadStreamParams]
-	StreamParams         UnsafeUnwrapWebhookEventUnionDataPayloadStreamParams `json:"stream_params"`
-	StreamURL            string                                               `json:"stream_url"`
-	ConferenceID         string                                               `json:"conference_id"`
-	OccurredAt           time.Time                                            `json:"occurred_at"`
-	CreatorCallSessionID string                                               `json:"creator_call_session_id"`
+	// This field is from variant [CallStreamingFailedPayload].
+	StreamID string `json:"stream_id"`
+	// This field is from variant [CallStreamingFailedPayload].
+	StreamParams         CallStreamingFailedPayloadStreamParams `json:"stream_params"`
+	StreamURL            string                                 `json:"stream_url"`
+	ConferenceID         string                                 `json:"conference_id"`
+	OccurredAt           time.Time                              `json:"occurred_at"`
+	CreatorCallSessionID string                                 `json:"creator_call_session_id"`
 	// This field is from variant [ConferenceRecordingSavedWebhookEventDataPayload].
-	Format      string    `json:"format"`
-	CompletedAt time.Time `json:"completed_at"`
+	Format string `json:"format"`
+	ID     string `json:"id"`
+	// This field is a union of [[]OutboundMessagePayloadCc],
+	// [[]shared.InboundMessagePayloadCc]
+	Cc          UnsafeUnwrapWebhookEventUnionDataPayloadCc `json:"cc"`
+	CompletedAt time.Time                                  `json:"completed_at"`
 	// This field is a union of [OutboundMessagePayloadCost],
-	// [InboundMessageWebhookEventDataPayloadCost]
+	// [shared.InboundMessagePayloadCost]
 	Cost UnsafeUnwrapWebhookEventUnionDataPayloadCost `json:"cost"`
 	// This field is a union of [OutboundMessagePayloadCostBreakdown],
-	// [InboundMessageWebhookEventDataPayloadCostBreakdown]
+	// [shared.InboundMessagePayloadCostBreakdown]
 	CostBreakdown UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdown `json:"cost_breakdown"`
 	Encoding      string                                                `json:"encoding"`
-	Errors        []MessagingError                                      `json:"errors"`
+	Errors        []shared.MessagingError                               `json:"errors"`
 	// This field is a union of [[]OutboundMessagePayloadMedia],
-	// [[]InboundMessageWebhookEventDataPayloadMedia]
-	Media              UnsafeUnwrapWebhookEventUnionDataPayloadMedia `json:"media"`
-	MessagingProfileID string                                        `json:"messaging_profile_id"`
-	// This field is from variant [OutboundMessagePayload].
-	OrganizationID string    `json:"organization_id"`
-	Parts          int64     `json:"parts"`
-	ReceivedAt     time.Time `json:"received_at"`
-	RecordType     string    `json:"record_type"`
-	SentAt         time.Time `json:"sent_at"`
-	// This field is from variant [OutboundMessagePayload].
-	Subject               string    `json:"subject"`
-	TcrCampaignBillable   bool      `json:"tcr_campaign_billable"`
-	TcrCampaignID         string    `json:"tcr_campaign_id"`
-	TcrCampaignRegistered string    `json:"tcr_campaign_registered"`
-	Text                  string    `json:"text"`
-	Type                  string    `json:"type"`
-	ValidUntil            time.Time `json:"valid_until"`
-	WebhookFailoverURL    string    `json:"webhook_failover_url"`
-	WebhookURL            string    `json:"webhook_url"`
-	// This field is from variant [InboundMessageWebhookEventDataPayload].
-	Cc []InboundMessageWebhookEventDataPayloadCc `json:"cc"`
+	// [[]shared.InboundMessagePayloadMedia]
+	Media                 UnsafeUnwrapWebhookEventUnionDataPayloadMedia `json:"media"`
+	MessagingProfileID    string                                        `json:"messaging_profile_id"`
+	OrganizationID        string                                        `json:"organization_id"`
+	Parts                 int64                                         `json:"parts"`
+	ReceivedAt            time.Time                                     `json:"received_at"`
+	RecordType            string                                        `json:"record_type"`
+	SentAt                time.Time                                     `json:"sent_at"`
+	Subject               string                                        `json:"subject"`
+	TcrCampaignBillable   bool                                          `json:"tcr_campaign_billable"`
+	TcrCampaignID         string                                        `json:"tcr_campaign_id"`
+	TcrCampaignRegistered string                                        `json:"tcr_campaign_registered"`
+	Text                  string                                        `json:"text"`
+	Type                  string                                        `json:"type"`
+	ValidUntil            time.Time                                     `json:"valid_until"`
+	WebhookFailoverURL    string                                        `json:"webhook_failover_url"`
+	WebhookURL            string                                        `json:"webhook_url"`
 	// This field is from variant [NumberOrderWithPhoneNumbers].
 	BillingGroupID string `json:"billing_group_id"`
 	// This field is from variant [NumberOrderWithPhoneNumbers].
@@ -7081,6 +6464,8 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	RequirementsMet bool `json:"requirements_met"`
 	// This field is from variant [NumberOrderWithPhoneNumbers].
 	SubNumberOrdersIDs []string `json:"sub_number_orders_ids"`
+	// This field is from variant [NumberOrderWithPhoneNumbers].
+	UpdatedAt time.Time `json:"updated_at"`
 	// This field is from variant [TranscriptionWebhookEventDataPayload].
 	TranscriptionData TranscriptionWebhookEventDataPayloadTranscriptionData `json:"transcription_data"`
 	JSON              struct {
@@ -7095,9 +6480,6 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		Status                   respjson.Field
 		To                       respjson.Field
 		PartialResults           respjson.Field
-		ID                       respjson.Field
-		PhoneNumber              respjson.Field
-		UpdatedAt                respjson.Field
 		CustomHeaders            respjson.Field
 		SipHeaders               respjson.Field
 		StartTime                respjson.Field
@@ -7156,6 +6538,8 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		OccurredAt               respjson.Field
 		CreatorCallSessionID     respjson.Field
 		Format                   respjson.Field
+		ID                       respjson.Field
+		Cc                       respjson.Field
 		CompletedAt              respjson.Field
 		Cost                     respjson.Field
 		CostBreakdown            respjson.Field
@@ -7177,7 +6561,6 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		ValidUntil               respjson.Field
 		WebhookFailoverURL       respjson.Field
 		WebhookURL               respjson.Field
-		Cc                       respjson.Field
 		BillingGroupID           respjson.Field
 		CreatedAt                respjson.Field
 		CustomerReference        respjson.Field
@@ -7185,6 +6568,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		PhoneNumbersCount        respjson.Field
 		RequirementsMet          respjson.Field
 		SubNumberOrdersIDs       respjson.Field
+		UpdatedAt                respjson.Field
 		TranscriptionData        respjson.Field
 		raw                      string
 	} `json:"-"`
@@ -7209,7 +6593,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayloadFrom struct {
 	Carrier     string `json:"carrier"`
 	LineType    string `json:"line_type"`
 	PhoneNumber string `json:"phone_number"`
-	// This field is from variant [InboundMessageWebhookEventDataPayloadFrom].
+	// This field is from variant [shared.InboundMessagePayloadFrom].
 	Status string `json:"status"`
 	JSON   struct {
 		OfString    respjson.Field
@@ -7296,21 +6680,21 @@ func (r *UnsafeUnwrapWebhookEventUnionDataPayloadResult) UnmarshalJSON(data []by
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfString OfOutboundMessagePayloadToArray
-// OfInboundMessageWebhookEventDataPayloadToArray]
+// OfInboundMessagePayloadToArray]
 type UnsafeUnwrapWebhookEventUnionDataPayloadTo struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a [[]OutboundMessagePayloadTo]
 	// instead of an object.
 	OfOutboundMessagePayloadToArray []OutboundMessagePayloadTo `json:",inline"`
-	// This field will be present if the value is a
-	// [[]InboundMessageWebhookEventDataPayloadTo] instead of an object.
-	OfInboundMessageWebhookEventDataPayloadToArray []InboundMessageWebhookEventDataPayloadTo `json:",inline"`
-	JSON                                           struct {
-		OfString                                       respjson.Field
-		OfOutboundMessagePayloadToArray                respjson.Field
-		OfInboundMessageWebhookEventDataPayloadToArray respjson.Field
-		raw                                            string
+	// This field will be present if the value is a [[]shared.InboundMessagePayloadTo]
+	// instead of an object.
+	OfInboundMessagePayloadToArray []shared.InboundMessagePayloadTo `json:",inline"`
+	JSON                           struct {
+		OfString                        respjson.Field
+		OfOutboundMessagePayloadToArray respjson.Field
+		OfInboundMessagePayloadToArray  respjson.Field
+		raw                             string
 	} `json:"-"`
 }
 
@@ -7360,24 +6744,30 @@ func (r *UnsafeUnwrapWebhookEventUnionDataPayloadRecordingURLs) UnmarshalJSON(da
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// UnsafeUnwrapWebhookEventUnionDataPayloadStreamParams is an implicit subunion of
-// [UnsafeUnwrapWebhookEventUnion].
-// UnsafeUnwrapWebhookEventUnionDataPayloadStreamParams provides convenient access
-// to the sub-properties of the union.
+// UnsafeUnwrapWebhookEventUnionDataPayloadCc is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionDataPayloadCc
+// provides convenient access to the sub-properties of the union.
 //
 // For type safety it is recommended to directly use a variant of the
 // [UnsafeUnwrapWebhookEventUnion].
-type UnsafeUnwrapWebhookEventUnionDataPayloadStreamParams struct {
-	StreamURL string `json:"stream_url"`
-	Track     string `json:"track"`
-	JSON      struct {
-		StreamURL respjson.Field
-		Track     respjson.Field
-		raw       string
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfOutboundMessagePayloadCcArray OfInboundMessagePayloadCcArray]
+type UnsafeUnwrapWebhookEventUnionDataPayloadCc struct {
+	// This field will be present if the value is a [[]OutboundMessagePayloadCc]
+	// instead of an object.
+	OfOutboundMessagePayloadCcArray []OutboundMessagePayloadCc `json:",inline"`
+	// This field will be present if the value is a [[]shared.InboundMessagePayloadCc]
+	// instead of an object.
+	OfInboundMessagePayloadCcArray []shared.InboundMessagePayloadCc `json:",inline"`
+	JSON                           struct {
+		OfOutboundMessagePayloadCcArray respjson.Field
+		OfInboundMessagePayloadCcArray  respjson.Field
+		raw                             string
 	} `json:"-"`
 }
 
-func (r *UnsafeUnwrapWebhookEventUnionDataPayloadStreamParams) UnmarshalJSON(data []byte) error {
+func (r *UnsafeUnwrapWebhookEventUnionDataPayloadCc) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -7410,10 +6800,10 @@ func (r *UnsafeUnwrapWebhookEventUnionDataPayloadCost) UnmarshalJSON(data []byte
 // [UnsafeUnwrapWebhookEventUnion].
 type UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdown struct {
 	// This field is a union of [OutboundMessagePayloadCostBreakdownCarrierFee],
-	// [InboundMessageWebhookEventDataPayloadCostBreakdownCarrierFee]
+	// [shared.InboundMessagePayloadCostBreakdownCarrierFee]
 	CarrierFee UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdownCarrierFee `json:"carrier_fee"`
 	// This field is a union of [OutboundMessagePayloadCostBreakdownRate],
-	// [InboundMessageWebhookEventDataPayloadCostBreakdownRate]
+	// [shared.InboundMessagePayloadCostBreakdownRate]
 	Rate UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdownRate `json:"rate"`
 	JSON struct {
 		CarrierFee respjson.Field
@@ -7476,43 +6866,22 @@ func (r *UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdownRate) UnmarshalJSO
 // [UnsafeUnwrapWebhookEventUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfOutboundMessagePayloadMedia
-// OfInboundMessageWebhookEventDataPayloadMedia]
+// will be valid: OfOutboundMessagePayloadMedia OfInboundMessagePayloadMedia]
 type UnsafeUnwrapWebhookEventUnionDataPayloadMedia struct {
 	// This field will be present if the value is a [[]OutboundMessagePayloadMedia]
 	// instead of an object.
 	OfOutboundMessagePayloadMedia []OutboundMessagePayloadMedia `json:",inline"`
 	// This field will be present if the value is a
-	// [[]InboundMessageWebhookEventDataPayloadMedia] instead of an object.
-	OfInboundMessageWebhookEventDataPayloadMedia []InboundMessageWebhookEventDataPayloadMedia `json:",inline"`
-	JSON                                         struct {
-		OfOutboundMessagePayloadMedia                respjson.Field
-		OfInboundMessageWebhookEventDataPayloadMedia respjson.Field
-		raw                                          string
+	// [[]shared.InboundMessagePayloadMedia] instead of an object.
+	OfInboundMessagePayloadMedia []shared.InboundMessagePayloadMedia `json:",inline"`
+	JSON                         struct {
+		OfOutboundMessagePayloadMedia respjson.Field
+		OfInboundMessagePayloadMedia  respjson.Field
+		raw                           string
 	} `json:"-"`
 }
 
 func (r *UnsafeUnwrapWebhookEventUnionDataPayloadMedia) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UnsafeUnwrapWebhookEventUnionMeta is an implicit subunion of
-// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionMeta provides
-// convenient access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [UnsafeUnwrapWebhookEventUnion].
-type UnsafeUnwrapWebhookEventUnionMeta struct {
-	Attempt     int64  `json:"attempt"`
-	DeliveredTo string `json:"delivered_to"`
-	JSON        struct {
-		Attempt     respjson.Field
-		DeliveredTo respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-func (r *UnsafeUnwrapWebhookEventUnionMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -7576,68 +6945,30 @@ func (r *UnsafeUnwrapWebhookEventUnionPayload) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type UnsafeUnwrapWebhookEventCampaignStatusUpdateEvent struct {
-	// Brand ID associated with the campaign.
-	BrandID string `json:"brandId"`
-	// The ID of the campaign.
-	CampaignID string `json:"campaignId"`
-	// Unix timestamp when campaign was created.
-	CreateDate string `json:"createDate"`
-	// Alphanumeric identifier of the CSP associated with this campaign.
-	CspID string `json:"cspId"`
-	// Indicates whether the campaign is registered with T-Mobile.
-	IsTMobileRegistered bool `json:"isTMobileRegistered"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		BrandID             respjson.Field
-		CampaignID          respjson.Field
-		CreateDate          respjson.Field
-		CspID               respjson.Field
-		IsTMobileRegistered respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UnsafeUnwrapWebhookEventCampaignStatusUpdateEvent) RawJSON() string { return r.JSON.raw }
-func (r *UnsafeUnwrapWebhookEventCampaignStatusUpdateEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UnsafeUnwrapWebhookEventCampaignSuspendedEvent struct {
-	// The ID of the campaign.
-	CampaignID string `json:"campaignId"`
-	// Description of the event.
-	Description string `json:"description"`
-	// The status of the campaign.
-	//
-	// Any of "DORMANT".
-	Status string `json:"status"`
-	// Any of "TELNYX_EVENT".
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CampaignID  respjson.Field
-		Description respjson.Field
-		Status      respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
+// UnsafeUnwrapWebhookEventUnionMeta is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionMeta provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+type UnsafeUnwrapWebhookEventUnionMeta struct {
+	Attempt     int64  `json:"attempt"`
+	DeliveredTo string `json:"delivered_to"`
+	JSON        struct {
+		Attempt     respjson.Field
+		DeliveredTo respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
-func (r UnsafeUnwrapWebhookEventCampaignSuspendedEvent) RawJSON() string { return r.JSON.raw }
-func (r *UnsafeUnwrapWebhookEventCampaignSuspendedEvent) UnmarshalJSON(data []byte) error {
+func (r *UnsafeUnwrapWebhookEventUnionMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // UnwrapWebhookEventUnion contains all possible properties and values from
 // [CallAIGatherEndedWebhookEvent],
 // [CallAIGatherMessageHistoryUpdatedWebhookEvent],
-// [CallAIGatherPartialResultsWebhookEvent],
-// [CustomerServiceRecordStatusChangedWebhookEvent], [CallAnsweredWebhookEvent],
+// [CallAIGatherPartialResultsWebhookEvent], [CallAnsweredWebhookEvent],
 // [CallBridgedWebhookEvent], [CallConversationEndedWebhookEvent],
 // [CallConversationInsightsGeneratedWebhookEvent], [CallDtmfReceivedWebhookEvent],
 // [CallEnqueuedWebhookEvent], [CallForkStartedWebhookEvent],
@@ -7654,11 +6985,9 @@ func (r *UnsafeUnwrapWebhookEventCampaignSuspendedEvent) UnmarshalJSON(data []by
 // [CallSiprecStartedWebhookEvent], [CallSiprecStoppedWebhookEvent],
 // [CallSpeakEndedWebhookEvent], [CallSpeakStartedWebhookEvent],
 // [CallStreamingFailedWebhookEvent], [CallStreamingStartedWebhookEvent],
-// [CallStreamingStoppedWebhookEvent],
-// [UnwrapWebhookEventCampaignStatusUpdateEvent],
-// [UnwrapWebhookEventCampaignSuspendedEvent], [ConferenceCreatedWebhookEvent],
-// [ConferenceEndedWebhookEvent], [ConferenceFloorChangedWebhookEvent],
-// [ConferenceParticipantJoinedWebhookEvent],
+// [CallStreamingStoppedWebhookEvent], [CampaignStatusUpdateWebhookEvent],
+// [ConferenceCreatedWebhookEvent], [ConferenceEndedWebhookEvent],
+// [ConferenceFloorChangedWebhookEvent], [ConferenceParticipantJoinedWebhookEvent],
 // [ConferenceParticipantLeftWebhookEvent],
 // [ConferenceParticipantPlaybackEndedWebhookEvent],
 // [ConferenceParticipantPlaybackStartedWebhookEvent],
@@ -7678,10 +7007,8 @@ func (r *UnsafeUnwrapWebhookEventCampaignSuspendedEvent) UnmarshalJSON(data []by
 type UnwrapWebhookEventUnion struct {
 	// This field is a union of [CallAIGatherEndedWebhookEventData],
 	// [CallAIGatherMessageHistoryUpdatedWebhookEventData],
-	// [CallAIGatherPartialResultsWebhookEventData],
-	// [CustomerServiceRecordStatusChangedWebhookEventData],
-	// [CallAnsweredWebhookEventData], [CallBridgedWebhookEventData],
-	// [CallConversationEndedWebhookEventData],
+	// [CallAIGatherPartialResultsWebhookEventData], [CallAnsweredWebhookEventData],
+	// [CallBridgedWebhookEventData], [CallConversationEndedWebhookEventData],
 	// [CallConversationInsightsGeneratedWebhookEventData],
 	// [CallDtmfReceivedWebhookEventData], [CallEnqueuedWebhookEventData],
 	// [CallForkStartedWebhookEventData], [CallForkStoppedWebhookEventData],
@@ -7698,9 +7025,8 @@ type UnwrapWebhookEventUnion struct {
 	// [CallReferStartedWebhookEventData], [CallSiprecFailedWebhookEventData],
 	// [CallSiprecStartedWebhookEventData], [CallSiprecStoppedWebhookEventData],
 	// [CallSpeakEndedWebhookEventData], [CallSpeakStartedWebhookEventData],
-	// [CallStreamingFailedWebhookEventData], [CallStreamingStartedWebhookEventData],
-	// [CallStreamingStoppedWebhookEventData], [ConferenceCreatedWebhookEventData],
-	// [ConferenceEndedWebhookEventData],
+	// [CallStreamingFailed], [CallStreamingStarted], [CallStreamingStopped],
+	// [ConferenceCreatedWebhookEventData], [ConferenceEndedWebhookEventData],
 	// [ConferenceParticipantJoinedWebhookEventData],
 	// [ConferenceParticipantLeftWebhookEventData],
 	// [ConferenceParticipantPlaybackEndedWebhookEventData],
@@ -7713,51 +7039,50 @@ type UnwrapWebhookEventUnion struct {
 	// [ConferenceSpeakEndedWebhookEventData],
 	// [ConferenceSpeakStartedWebhookEventData], [DeliveryUpdateWebhookEventData],
 	// [InboundMessageWebhookEventData], [NumberOrderStatusUpdateWebhookEventData],
-	// [ReplacedLinkClickWebhookEventData], [StreamingFailedWebhookEventData],
-	// [StreamingStartedWebhookEventData], [StreamingStoppedWebhookEventData],
-	// [TranscriptionWebhookEventData]
+	// [ReplacedLinkClickWebhookEventData], [TranscriptionWebhookEventData]
 	Data UnwrapWebhookEventUnionData `json:"data"`
-	// This field is a union of [CustomerServiceRecordStatusChangedWebhookEventMeta],
-	// [DeliveryUpdateWebhookEventMeta], [NumberOrderStatusUpdateWebhookEventMeta]
-	Meta UnwrapWebhookEventUnionMeta `json:"meta"`
-	// This field is from variant [UnwrapWebhookEventCampaignStatusUpdateEvent].
-	BrandID    string `json:"brandId"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
+	BrandID string `json:"brandId"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
 	CampaignID string `json:"campaignId"`
-	// This field is from variant [UnwrapWebhookEventCampaignStatusUpdateEvent].
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
 	CreateDate string `json:"createDate"`
-	// This field is from variant [UnwrapWebhookEventCampaignStatusUpdateEvent].
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
 	CspID string `json:"cspId"`
-	// This field is from variant [UnwrapWebhookEventCampaignStatusUpdateEvent].
-	IsTMobileRegistered bool `json:"isTMobileRegistered"`
-	// This field is from variant [UnwrapWebhookEventCampaignSuspendedEvent].
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
 	Description string `json:"description"`
-	// This field is from variant [UnwrapWebhookEventCampaignSuspendedEvent].
-	Status string `json:"status"`
-	// This field is from variant [UnwrapWebhookEventCampaignSuspendedEvent].
-	Type      string `json:"type"`
-	ID        string `json:"id"`
-	EventType string `json:"event_type"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
+	IsTMobileRegistered bool `json:"isTMobileRegistered"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
+	Status CampaignStatusUpdateWebhookEventStatus `json:"status"`
+	// This field is from variant [CampaignStatusUpdateWebhookEvent].
+	Type      CampaignStatusUpdateWebhookEventType `json:"type"`
+	ID        string                               `json:"id"`
+	EventType string                               `json:"event_type"`
 	// This field is a union of [ConferenceFloorChangedWebhookEventPayload],
 	// [FaxDeliveredWebhookEventPayload], [FaxFailedWebhookEventPayload],
 	// [FaxMediaProcessedWebhookEventPayload], [FaxQueuedWebhookEventPayload],
 	// [FaxSendingStartedWebhookEventPayload]
 	Payload    UnwrapWebhookEventUnionPayload `json:"payload"`
 	RecordType string                         `json:"record_type"`
-	JSON       struct {
+	// This field is a union of [DeliveryUpdateWebhookEventMeta],
+	// [NumberOrderStatusUpdateWebhookEventMeta]
+	Meta UnwrapWebhookEventUnionMeta `json:"meta"`
+	JSON struct {
 		Data                respjson.Field
-		Meta                respjson.Field
 		BrandID             respjson.Field
 		CampaignID          respjson.Field
 		CreateDate          respjson.Field
 		CspID               respjson.Field
-		IsTMobileRegistered respjson.Field
 		Description         respjson.Field
+		IsTMobileRegistered respjson.Field
 		Status              respjson.Field
 		Type                respjson.Field
 		ID                  respjson.Field
 		EventType           respjson.Field
 		Payload             respjson.Field
 		RecordType          respjson.Field
+		Meta                respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -7773,11 +7098,6 @@ func (u UnwrapWebhookEventUnion) AsCallAIGatherMessageHistoryUpdatedEvent() (v C
 }
 
 func (u UnwrapWebhookEventUnion) AsCallAIGatherPartialResultsEvent() (v CallAIGatherPartialResultsWebhookEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UnwrapWebhookEventUnion) AsCustomerServiceRecordStatusChangedWebhookEvent() (v CustomerServiceRecordStatusChangedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -7942,12 +7262,7 @@ func (u UnwrapWebhookEventUnion) AsStreamingStoppedEvent() (v CallStreamingStopp
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsCampaignStatusUpdateEvent() (v UnwrapWebhookEventCampaignStatusUpdateEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UnwrapWebhookEventUnion) AsCampaignSuspendedEvent() (v UnwrapWebhookEventCampaignSuspendedEvent) {
+func (u UnwrapWebhookEventUnion) AsCampaignStatusUpdateEvent() (v CampaignStatusUpdateWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -8107,7 +7422,6 @@ type UnwrapWebhookEventUnionData struct {
 	// This field is a union of [CallAIGatherEndedWebhookEventDataPayload],
 	// [CallAIGatherMessageHistoryUpdatedWebhookEventDataPayload],
 	// [CallAIGatherPartialResultsWebhookEventDataPayload],
-	// [CustomerServiceRecordStatusChangedWebhookEventDataPayload],
 	// [CallAnsweredWebhookEventDataPayload], [CallBridgedWebhookEventDataPayload],
 	// [CallConversationEndedWebhookEventDataPayload],
 	// [CallConversationInsightsGeneratedWebhookEventDataPayload],
@@ -8132,10 +7446,8 @@ type UnwrapWebhookEventUnionData struct {
 	// [CallSiprecStartedWebhookEventDataPayload],
 	// [CallSiprecStoppedWebhookEventDataPayload],
 	// [CallSpeakEndedWebhookEventDataPayload],
-	// [CallSpeakStartedWebhookEventDataPayload],
-	// [CallStreamingFailedWebhookEventDataPayload],
-	// [CallStreamingStartedWebhookEventDataPayload],
-	// [CallStreamingStoppedWebhookEventDataPayload],
+	// [CallSpeakStartedWebhookEventDataPayload], [CallStreamingFailedPayload],
+	// [CallStreamingStartedPayload], [CallStreamingStoppedPayload],
 	// [ConferenceCreatedWebhookEventDataPayload],
 	// [ConferenceEndedWebhookEventDataPayload],
 	// [ConferenceParticipantJoinedWebhookEventDataPayload],
@@ -8149,10 +7461,7 @@ type UnwrapWebhookEventUnionData struct {
 	// [ConferenceRecordingSavedWebhookEventDataPayload],
 	// [ConferenceSpeakEndedWebhookEventDataPayload],
 	// [ConferenceSpeakStartedWebhookEventDataPayload], [OutboundMessagePayload],
-	// [InboundMessageWebhookEventDataPayload], [NumberOrderWithPhoneNumbers],
-	// [StreamingFailedWebhookEventDataPayload],
-	// [StreamingStartedWebhookEventDataPayload],
-	// [StreamingStoppedWebhookEventDataPayload],
+	// [shared.InboundMessagePayload], [NumberOrderWithPhoneNumbers],
 	// [TranscriptionWebhookEventDataPayload]
 	Payload    UnwrapWebhookEventUnionDataPayload `json:"payload"`
 	RecordType string                             `json:"record_type"`
@@ -8200,33 +7509,29 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	// This field is a union of [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [OutboundMessagePayloadFrom],
-	// [InboundMessageWebhookEventDataPayloadFrom]
+	// [shared.InboundMessagePayloadFrom]
 	From UnwrapWebhookEventUnionDataPayloadFrom `json:"from"`
 	// This field is a union of
 	// [[]CallAIGatherEndedWebhookEventDataPayloadMessageHistory],
 	// [[]CallAIGatherMessageHistoryUpdatedWebhookEventDataPayloadMessageHistory],
 	// [[]CallAIGatherPartialResultsWebhookEventDataPayloadMessageHistory]
 	MessageHistory UnwrapWebhookEventUnionDataPayloadMessageHistory `json:"message_history"`
-	// This field is a union of [any], [string], [string], [string], [string]
+	// This field is a union of [map[string]any], [string], [string], [string],
+	// [string]
 	Result UnwrapWebhookEventUnionDataPayloadResult `json:"result"`
 	Status string                                   `json:"status"`
 	// This field is a union of [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [[]OutboundMessagePayloadTo],
-	// [[]InboundMessageWebhookEventDataPayloadTo]
+	// [[]shared.InboundMessagePayloadTo]
 	To UnwrapWebhookEventUnionDataPayloadTo `json:"to"`
 	// This field is from variant [CallAIGatherPartialResultsWebhookEventDataPayload].
-	PartialResults any    `json:"partial_results"`
-	ID             string `json:"id"`
-	// This field is from variant
-	// [CustomerServiceRecordStatusChangedWebhookEventDataPayload].
-	PhoneNumber   string            `json:"phone_number"`
-	UpdatedAt     time.Time         `json:"updated_at"`
-	CustomHeaders []CustomSipHeader `json:"custom_headers"`
-	SipHeaders    []SipHeader       `json:"sip_headers"`
-	StartTime     time.Time         `json:"start_time"`
-	State         string            `json:"state"`
-	Tags          []string          `json:"tags"`
+	PartialResults map[string]any    `json:"partial_results"`
+	CustomHeaders  []CustomSipHeader `json:"custom_headers"`
+	SipHeaders     []SipHeader       `json:"sip_headers"`
+	StartTime      time.Time         `json:"start_time"`
+	State          string            `json:"state"`
+	Tags           []string          `json:"tags"`
 	// This field is from variant [CallConversationEndedWebhookEventDataPayload].
 	AssistantID      string `json:"assistant_id"`
 	CallingPartyType string `json:"calling_party_type"`
@@ -8310,50 +7615,50 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	TranscriptionText string `json:"transcription_text"`
 	SipNotifyResponse int64  `json:"sip_notify_response"`
 	// This field is from variant [CallSiprecFailedWebhookEventDataPayload].
-	FailureCause  string `json:"failure_cause"`
+	FailureCause string `json:"failure_cause"`
+	// This field is from variant [CallStreamingFailedPayload].
 	FailureReason string `json:"failure_reason"`
-	StreamID      string `json:"stream_id"`
-	// This field is a union of
-	// [CallStreamingFailedWebhookEventDataPayloadStreamParams],
-	// [StreamingFailedWebhookEventDataPayloadStreamParams]
-	StreamParams         UnwrapWebhookEventUnionDataPayloadStreamParams `json:"stream_params"`
-	StreamURL            string                                         `json:"stream_url"`
-	ConferenceID         string                                         `json:"conference_id"`
-	OccurredAt           time.Time                                      `json:"occurred_at"`
-	CreatorCallSessionID string                                         `json:"creator_call_session_id"`
+	// This field is from variant [CallStreamingFailedPayload].
+	StreamID string `json:"stream_id"`
+	// This field is from variant [CallStreamingFailedPayload].
+	StreamParams         CallStreamingFailedPayloadStreamParams `json:"stream_params"`
+	StreamURL            string                                 `json:"stream_url"`
+	ConferenceID         string                                 `json:"conference_id"`
+	OccurredAt           time.Time                              `json:"occurred_at"`
+	CreatorCallSessionID string                                 `json:"creator_call_session_id"`
 	// This field is from variant [ConferenceRecordingSavedWebhookEventDataPayload].
-	Format      string    `json:"format"`
-	CompletedAt time.Time `json:"completed_at"`
+	Format string `json:"format"`
+	ID     string `json:"id"`
+	// This field is a union of [[]OutboundMessagePayloadCc],
+	// [[]shared.InboundMessagePayloadCc]
+	Cc          UnwrapWebhookEventUnionDataPayloadCc `json:"cc"`
+	CompletedAt time.Time                            `json:"completed_at"`
 	// This field is a union of [OutboundMessagePayloadCost],
-	// [InboundMessageWebhookEventDataPayloadCost]
+	// [shared.InboundMessagePayloadCost]
 	Cost UnwrapWebhookEventUnionDataPayloadCost `json:"cost"`
 	// This field is a union of [OutboundMessagePayloadCostBreakdown],
-	// [InboundMessageWebhookEventDataPayloadCostBreakdown]
+	// [shared.InboundMessagePayloadCostBreakdown]
 	CostBreakdown UnwrapWebhookEventUnionDataPayloadCostBreakdown `json:"cost_breakdown"`
 	Encoding      string                                          `json:"encoding"`
-	Errors        []MessagingError                                `json:"errors"`
+	Errors        []shared.MessagingError                         `json:"errors"`
 	// This field is a union of [[]OutboundMessagePayloadMedia],
-	// [[]InboundMessageWebhookEventDataPayloadMedia]
-	Media              UnwrapWebhookEventUnionDataPayloadMedia `json:"media"`
-	MessagingProfileID string                                  `json:"messaging_profile_id"`
-	// This field is from variant [OutboundMessagePayload].
-	OrganizationID string    `json:"organization_id"`
-	Parts          int64     `json:"parts"`
-	ReceivedAt     time.Time `json:"received_at"`
-	RecordType     string    `json:"record_type"`
-	SentAt         time.Time `json:"sent_at"`
-	// This field is from variant [OutboundMessagePayload].
-	Subject               string    `json:"subject"`
-	TcrCampaignBillable   bool      `json:"tcr_campaign_billable"`
-	TcrCampaignID         string    `json:"tcr_campaign_id"`
-	TcrCampaignRegistered string    `json:"tcr_campaign_registered"`
-	Text                  string    `json:"text"`
-	Type                  string    `json:"type"`
-	ValidUntil            time.Time `json:"valid_until"`
-	WebhookFailoverURL    string    `json:"webhook_failover_url"`
-	WebhookURL            string    `json:"webhook_url"`
-	// This field is from variant [InboundMessageWebhookEventDataPayload].
-	Cc []InboundMessageWebhookEventDataPayloadCc `json:"cc"`
+	// [[]shared.InboundMessagePayloadMedia]
+	Media                 UnwrapWebhookEventUnionDataPayloadMedia `json:"media"`
+	MessagingProfileID    string                                  `json:"messaging_profile_id"`
+	OrganizationID        string                                  `json:"organization_id"`
+	Parts                 int64                                   `json:"parts"`
+	ReceivedAt            time.Time                               `json:"received_at"`
+	RecordType            string                                  `json:"record_type"`
+	SentAt                time.Time                               `json:"sent_at"`
+	Subject               string                                  `json:"subject"`
+	TcrCampaignBillable   bool                                    `json:"tcr_campaign_billable"`
+	TcrCampaignID         string                                  `json:"tcr_campaign_id"`
+	TcrCampaignRegistered string                                  `json:"tcr_campaign_registered"`
+	Text                  string                                  `json:"text"`
+	Type                  string                                  `json:"type"`
+	ValidUntil            time.Time                               `json:"valid_until"`
+	WebhookFailoverURL    string                                  `json:"webhook_failover_url"`
+	WebhookURL            string                                  `json:"webhook_url"`
 	// This field is from variant [NumberOrderWithPhoneNumbers].
 	BillingGroupID string `json:"billing_group_id"`
 	// This field is from variant [NumberOrderWithPhoneNumbers].
@@ -8368,6 +7673,8 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	RequirementsMet bool `json:"requirements_met"`
 	// This field is from variant [NumberOrderWithPhoneNumbers].
 	SubNumberOrdersIDs []string `json:"sub_number_orders_ids"`
+	// This field is from variant [NumberOrderWithPhoneNumbers].
+	UpdatedAt time.Time `json:"updated_at"`
 	// This field is from variant [TranscriptionWebhookEventDataPayload].
 	TranscriptionData TranscriptionWebhookEventDataPayloadTranscriptionData `json:"transcription_data"`
 	JSON              struct {
@@ -8382,9 +7689,6 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		Status                   respjson.Field
 		To                       respjson.Field
 		PartialResults           respjson.Field
-		ID                       respjson.Field
-		PhoneNumber              respjson.Field
-		UpdatedAt                respjson.Field
 		CustomHeaders            respjson.Field
 		SipHeaders               respjson.Field
 		StartTime                respjson.Field
@@ -8443,6 +7747,8 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		OccurredAt               respjson.Field
 		CreatorCallSessionID     respjson.Field
 		Format                   respjson.Field
+		ID                       respjson.Field
+		Cc                       respjson.Field
 		CompletedAt              respjson.Field
 		Cost                     respjson.Field
 		CostBreakdown            respjson.Field
@@ -8464,7 +7770,6 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		ValidUntil               respjson.Field
 		WebhookFailoverURL       respjson.Field
 		WebhookURL               respjson.Field
-		Cc                       respjson.Field
 		BillingGroupID           respjson.Field
 		CreatedAt                respjson.Field
 		CustomerReference        respjson.Field
@@ -8472,6 +7777,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		PhoneNumbersCount        respjson.Field
 		RequirementsMet          respjson.Field
 		SubNumberOrdersIDs       respjson.Field
+		UpdatedAt                respjson.Field
 		TranscriptionData        respjson.Field
 		raw                      string
 	} `json:"-"`
@@ -8496,7 +7802,7 @@ type UnwrapWebhookEventUnionDataPayloadFrom struct {
 	Carrier     string `json:"carrier"`
 	LineType    string `json:"line_type"`
 	PhoneNumber string `json:"phone_number"`
-	// This field is from variant [InboundMessageWebhookEventDataPayloadFrom].
+	// This field is from variant [shared.InboundMessagePayloadFrom].
 	Status string `json:"status"`
 	JSON   struct {
 		OfString    respjson.Field
@@ -8582,21 +7888,21 @@ func (r *UnwrapWebhookEventUnionDataPayloadResult) UnmarshalJSON(data []byte) er
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfString OfOutboundMessagePayloadToArray
-// OfInboundMessageWebhookEventDataPayloadToArray]
+// OfInboundMessagePayloadToArray]
 type UnwrapWebhookEventUnionDataPayloadTo struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a [[]OutboundMessagePayloadTo]
 	// instead of an object.
 	OfOutboundMessagePayloadToArray []OutboundMessagePayloadTo `json:",inline"`
-	// This field will be present if the value is a
-	// [[]InboundMessageWebhookEventDataPayloadTo] instead of an object.
-	OfInboundMessageWebhookEventDataPayloadToArray []InboundMessageWebhookEventDataPayloadTo `json:",inline"`
-	JSON                                           struct {
-		OfString                                       respjson.Field
-		OfOutboundMessagePayloadToArray                respjson.Field
-		OfInboundMessageWebhookEventDataPayloadToArray respjson.Field
-		raw                                            string
+	// This field will be present if the value is a [[]shared.InboundMessagePayloadTo]
+	// instead of an object.
+	OfInboundMessagePayloadToArray []shared.InboundMessagePayloadTo `json:",inline"`
+	JSON                           struct {
+		OfString                        respjson.Field
+		OfOutboundMessagePayloadToArray respjson.Field
+		OfInboundMessagePayloadToArray  respjson.Field
+		raw                             string
 	} `json:"-"`
 }
 
@@ -8644,23 +7950,30 @@ func (r *UnwrapWebhookEventUnionDataPayloadRecordingURLs) UnmarshalJSON(data []b
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// UnwrapWebhookEventUnionDataPayloadStreamParams is an implicit subunion of
-// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataPayloadStreamParams
-// provides convenient access to the sub-properties of the union.
+// UnwrapWebhookEventUnionDataPayloadCc is an implicit subunion of
+// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataPayloadCc provides
+// convenient access to the sub-properties of the union.
 //
 // For type safety it is recommended to directly use a variant of the
 // [UnwrapWebhookEventUnion].
-type UnwrapWebhookEventUnionDataPayloadStreamParams struct {
-	StreamURL string `json:"stream_url"`
-	Track     string `json:"track"`
-	JSON      struct {
-		StreamURL respjson.Field
-		Track     respjson.Field
-		raw       string
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfOutboundMessagePayloadCcArray OfInboundMessagePayloadCcArray]
+type UnwrapWebhookEventUnionDataPayloadCc struct {
+	// This field will be present if the value is a [[]OutboundMessagePayloadCc]
+	// instead of an object.
+	OfOutboundMessagePayloadCcArray []OutboundMessagePayloadCc `json:",inline"`
+	// This field will be present if the value is a [[]shared.InboundMessagePayloadCc]
+	// instead of an object.
+	OfInboundMessagePayloadCcArray []shared.InboundMessagePayloadCc `json:",inline"`
+	JSON                           struct {
+		OfOutboundMessagePayloadCcArray respjson.Field
+		OfInboundMessagePayloadCcArray  respjson.Field
+		raw                             string
 	} `json:"-"`
 }
 
-func (r *UnwrapWebhookEventUnionDataPayloadStreamParams) UnmarshalJSON(data []byte) error {
+func (r *UnwrapWebhookEventUnionDataPayloadCc) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8692,10 +8005,10 @@ func (r *UnwrapWebhookEventUnionDataPayloadCost) UnmarshalJSON(data []byte) erro
 // [UnwrapWebhookEventUnion].
 type UnwrapWebhookEventUnionDataPayloadCostBreakdown struct {
 	// This field is a union of [OutboundMessagePayloadCostBreakdownCarrierFee],
-	// [InboundMessageWebhookEventDataPayloadCostBreakdownCarrierFee]
+	// [shared.InboundMessagePayloadCostBreakdownCarrierFee]
 	CarrierFee UnwrapWebhookEventUnionDataPayloadCostBreakdownCarrierFee `json:"carrier_fee"`
 	// This field is a union of [OutboundMessagePayloadCostBreakdownRate],
-	// [InboundMessageWebhookEventDataPayloadCostBreakdownRate]
+	// [shared.InboundMessagePayloadCostBreakdownRate]
 	Rate UnwrapWebhookEventUnionDataPayloadCostBreakdownRate `json:"rate"`
 	JSON struct {
 		CarrierFee respjson.Field
@@ -8757,43 +8070,22 @@ func (r *UnwrapWebhookEventUnionDataPayloadCostBreakdownRate) UnmarshalJSON(data
 // [UnwrapWebhookEventUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfOutboundMessagePayloadMedia
-// OfInboundMessageWebhookEventDataPayloadMedia]
+// will be valid: OfOutboundMessagePayloadMedia OfInboundMessagePayloadMedia]
 type UnwrapWebhookEventUnionDataPayloadMedia struct {
 	// This field will be present if the value is a [[]OutboundMessagePayloadMedia]
 	// instead of an object.
 	OfOutboundMessagePayloadMedia []OutboundMessagePayloadMedia `json:",inline"`
 	// This field will be present if the value is a
-	// [[]InboundMessageWebhookEventDataPayloadMedia] instead of an object.
-	OfInboundMessageWebhookEventDataPayloadMedia []InboundMessageWebhookEventDataPayloadMedia `json:",inline"`
-	JSON                                         struct {
-		OfOutboundMessagePayloadMedia                respjson.Field
-		OfInboundMessageWebhookEventDataPayloadMedia respjson.Field
-		raw                                          string
+	// [[]shared.InboundMessagePayloadMedia] instead of an object.
+	OfInboundMessagePayloadMedia []shared.InboundMessagePayloadMedia `json:",inline"`
+	JSON                         struct {
+		OfOutboundMessagePayloadMedia respjson.Field
+		OfInboundMessagePayloadMedia  respjson.Field
+		raw                           string
 	} `json:"-"`
 }
 
 func (r *UnwrapWebhookEventUnionDataPayloadMedia) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UnwrapWebhookEventUnionMeta is an implicit subunion of
-// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionMeta provides convenient
-// access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [UnwrapWebhookEventUnion].
-type UnwrapWebhookEventUnionMeta struct {
-	Attempt     int64  `json:"attempt"`
-	DeliveredTo string `json:"delivered_to"`
-	JSON        struct {
-		Attempt     respjson.Field
-		DeliveredTo respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-func (r *UnwrapWebhookEventUnionMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8857,59 +8149,22 @@ func (r *UnwrapWebhookEventUnionPayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type UnwrapWebhookEventCampaignStatusUpdateEvent struct {
-	// Brand ID associated with the campaign.
-	BrandID string `json:"brandId"`
-	// The ID of the campaign.
-	CampaignID string `json:"campaignId"`
-	// Unix timestamp when campaign was created.
-	CreateDate string `json:"createDate"`
-	// Alphanumeric identifier of the CSP associated with this campaign.
-	CspID string `json:"cspId"`
-	// Indicates whether the campaign is registered with T-Mobile.
-	IsTMobileRegistered bool `json:"isTMobileRegistered"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		BrandID             respjson.Field
-		CampaignID          respjson.Field
-		CreateDate          respjson.Field
-		CspID               respjson.Field
-		IsTMobileRegistered respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UnwrapWebhookEventCampaignStatusUpdateEvent) RawJSON() string { return r.JSON.raw }
-func (r *UnwrapWebhookEventCampaignStatusUpdateEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UnwrapWebhookEventCampaignSuspendedEvent struct {
-	// The ID of the campaign.
-	CampaignID string `json:"campaignId"`
-	// Description of the event.
-	Description string `json:"description"`
-	// The status of the campaign.
-	//
-	// Any of "DORMANT".
-	Status string `json:"status"`
-	// Any of "TELNYX_EVENT".
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CampaignID  respjson.Field
-		Description respjson.Field
-		Status      respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
+// UnwrapWebhookEventUnionMeta is an implicit subunion of
+// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionMeta provides convenient
+// access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnwrapWebhookEventUnion].
+type UnwrapWebhookEventUnionMeta struct {
+	Attempt     int64  `json:"attempt"`
+	DeliveredTo string `json:"delivered_to"`
+	JSON        struct {
+		Attempt     respjson.Field
+		DeliveredTo respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
-// Returns the unmodified JSON received from the API
-func (r UnwrapWebhookEventCampaignSuspendedEvent) RawJSON() string { return r.JSON.raw }
-func (r *UnwrapWebhookEventCampaignSuspendedEvent) UnmarshalJSON(data []byte) error {
+func (r *UnwrapWebhookEventUnionMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

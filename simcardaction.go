@@ -10,12 +10,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // SimCardActionService contains methods and other services that help with
@@ -52,11 +53,27 @@ func (r *SimCardActionService) Get(ctx context.Context, id string, opts ...optio
 
 // This API lists a paginated collection of SIM card actions. It enables exploring
 // a collection of existing asynchronous operations using specific filters.
-func (r *SimCardActionService) List(ctx context.Context, query SimCardActionListParams, opts ...option.RequestOption) (res *SimCardActionListResponse, err error) {
+func (r *SimCardActionService) List(ctx context.Context, query SimCardActionListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[SimCardAction], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "sim_card_actions"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// This API lists a paginated collection of SIM card actions. It enables exploring
+// a collection of existing asynchronous operations using specific filters.
+func (r *SimCardActionService) ListAutoPaging(ctx context.Context, query SimCardActionListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[SimCardAction] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // This API triggers an asynchronous operation to set a public IP for each of the
@@ -273,24 +290,6 @@ type SimCardActionGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r SimCardActionGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *SimCardActionGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SimCardActionListResponse struct {
-	Data []SimCardAction `json:"data"`
-	Meta PaginationMeta  `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SimCardActionListResponse) RawJSON() string { return r.JSON.raw }
-func (r *SimCardActionListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

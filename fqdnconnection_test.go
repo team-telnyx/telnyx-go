@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestFqdnConnectionNewWithOptionalParams(t *testing.T) {
@@ -56,8 +56,13 @@ func TestFqdnConnectionNewWithOptionalParams(t *testing.T) {
 			Timeout1xxSecs:              telnyx.Int(10),
 			Timeout2xxSecs:              telnyx.Int(10),
 		},
-		IosPushCredentialID:        telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
-		MicrosoftTeamsSbc:          telnyx.Bool(true),
+		IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
+		MicrosoftTeamsSbc:   telnyx.Bool(true),
+		NoiseSuppression:    telnyx.FqdnConnectionNewParamsNoiseSuppressionBoth,
+		NoiseSuppressionDetails: telnyx.FqdnConnectionNewParamsNoiseSuppressionDetails{
+			AttenuationLimit: telnyx.Int(80),
+			Engine:           "deep_filter_net",
+		},
 		OnnetT38PassthroughEnabled: telnyx.Bool(true),
 		Outbound: telnyx.OutboundFqdnParam{
 			AniOverride:            telnyx.String("+1234567890"),
@@ -83,7 +88,7 @@ func TestFqdnConnectionNewWithOptionalParams(t *testing.T) {
 		},
 		Tags:                    []string{"tag1", "tag2"},
 		TransportProtocol:       telnyx.TransportProtocolUdp,
-		WebhookAPIVersion:       telnyx.WebhookAPIVersion1,
+		WebhookAPIVersion:       telnyx.WebhookAPIVersionV1,
 		WebhookEventFailoverURL: telnyx.String("https://failover.example.com"),
 		WebhookEventURL:         telnyx.String("https://example.com"),
 		WebhookTimeoutSecs:      telnyx.Int(25),
@@ -166,7 +171,12 @@ func TestFqdnConnectionUpdateWithOptionalParams(t *testing.T) {
 				Timeout1xxSecs:              telnyx.Int(10),
 				Timeout2xxSecs:              telnyx.Int(10),
 			},
-			IosPushCredentialID:        telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
+			IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
+			NoiseSuppression:    telnyx.FqdnConnectionUpdateParamsNoiseSuppressionBoth,
+			NoiseSuppressionDetails: telnyx.FqdnConnectionUpdateParamsNoiseSuppressionDetails{
+				AttenuationLimit: telnyx.Int(80),
+				Engine:           "deep_filter_net",
+			},
 			OnnetT38PassthroughEnabled: telnyx.Bool(true),
 			Outbound: telnyx.OutboundFqdnParam{
 				AniOverride:            telnyx.String("ani_override"),
@@ -192,7 +202,7 @@ func TestFqdnConnectionUpdateWithOptionalParams(t *testing.T) {
 			},
 			Tags:                    []string{"tag1", "tag2"},
 			TransportProtocol:       telnyx.TransportProtocolUdp,
-			WebhookAPIVersion:       telnyx.WebhookAPIVersion1,
+			WebhookAPIVersion:       telnyx.WebhookAPIVersionV1,
 			WebhookEventFailoverURL: telnyx.String("https://failover.example.com"),
 			WebhookEventURL:         telnyx.String("https://example.com"),
 			WebhookTimeoutSecs:      telnyx.Int(25),

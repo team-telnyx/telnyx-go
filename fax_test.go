@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestFaxNewWithOptionalParams(t *testing.T) {
@@ -106,10 +106,8 @@ func TestFaxListWithOptionalParams(t *testing.T) {
 				Eq: telnyx.String("+13127367276"),
 			},
 		},
-		Page: telnyx.FaxListParamsPage{
-			Number: telnyx.Int(2),
-			Size:   telnyx.Int(2),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

@@ -9,12 +9,13 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // MessagingOptoutService contains methods and other services that help with
@@ -37,32 +38,29 @@ func NewMessagingOptoutService(opts ...option.RequestOption) (r MessagingOptoutS
 }
 
 // Retrieve a list of opt-out blocks.
-func (r *MessagingOptoutService) List(ctx context.Context, query MessagingOptoutListParams, opts ...option.RequestOption) (res *MessagingOptoutListResponse, err error) {
+func (r *MessagingOptoutService) List(ctx context.Context, query MessagingOptoutListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[MessagingOptoutListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "messaging_optouts"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of opt-out blocks.
+func (r *MessagingOptoutService) ListAutoPaging(ctx context.Context, query MessagingOptoutListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[MessagingOptoutListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type MessagingOptoutListResponse struct {
-	Data []MessagingOptoutListResponseData `json:"data"`
-	Meta PaginationMeta                    `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessagingOptoutListResponse) RawJSON() string { return r.JSON.raw }
-func (r *MessagingOptoutListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessagingOptoutListResponseData struct {
 	// The timestamp when the opt-out was created
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Sending address (+E.164 formatted phone number, alphanumeric sender ID, or short
@@ -87,8 +85,8 @@ type MessagingOptoutListResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessagingOptoutListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *MessagingOptoutListResponseData) UnmarshalJSON(data []byte) error {
+func (r MessagingOptoutListResponse) RawJSON() string { return r.JSON.raw }
+func (r *MessagingOptoutListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

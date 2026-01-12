@@ -10,12 +10,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // PrivateWirelessGatewayService contains methods and other services that help with
@@ -60,11 +61,26 @@ func (r *PrivateWirelessGatewayService) Get(ctx context.Context, id string, opts
 }
 
 // Get all Private Wireless Gateways belonging to the user.
-func (r *PrivateWirelessGatewayService) List(ctx context.Context, query PrivateWirelessGatewayListParams, opts ...option.RequestOption) (res *PrivateWirelessGatewayListResponse, err error) {
+func (r *PrivateWirelessGatewayService) List(ctx context.Context, query PrivateWirelessGatewayListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PrivateWirelessGateway], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "private_wireless_gateways"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get all Private Wireless Gateways belonging to the user.
+func (r *PrivateWirelessGatewayService) ListAutoPaging(ctx context.Context, query PrivateWirelessGatewayListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PrivateWirelessGateway] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Deletes the Private Wireless Gateway.
@@ -126,9 +142,9 @@ func (r *PrivateWirelessGateway) UnmarshalJSON(data []byte) error {
 type PrivateWirelessGatewayStatus struct {
 	// This attribute is an [error code](https://developers.telnyx.com/api/errors)
 	// related to the failure reason.
-	ErrorCode string `json:"error_code"`
+	ErrorCode string `json:"error_code,nullable"`
 	// This attribute provides a human-readable explanation of why a failure happened.
-	ErrorDescription string `json:"error_description"`
+	ErrorDescription string `json:"error_description,nullable"`
 	// The current status or failure details of the Private Wireless Gateway. <ul>
 	//
 	//	<li><code>provisioning</code> - the Private Wireless Gateway is being provisioned.</li>
@@ -224,24 +240,6 @@ type PrivateWirelessGatewayGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r PrivateWirelessGatewayGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *PrivateWirelessGatewayGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PrivateWirelessGatewayListResponse struct {
-	Data []PrivateWirelessGateway `json:"data"`
-	Meta PaginationMeta           `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PrivateWirelessGatewayListResponse) RawJSON() string { return r.JSON.raw }
-func (r *PrivateWirelessGatewayListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

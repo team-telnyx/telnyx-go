@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestOutboundVoiceProfileNewWithOptionalParams(t *testing.T) {
@@ -37,8 +37,8 @@ func TestOutboundVoiceProfileNewWithOptionalParams(t *testing.T) {
 		},
 		CallingWindow: telnyx.OutboundVoiceProfileNewParamsCallingWindow{
 			CallsPerCld: telnyx.Int(5),
-			EndTime:     telnyx.Time("18:11:19.117Z"),
-			StartTime:   telnyx.Time("18:11:19.117Z"),
+			EndTime:     telnyx.String("20:00:00.00Z"),
+			StartTime:   telnyx.String("08:00:00.00Z"),
 		},
 		ConcurrentCallLimit:     telnyx.Int(10),
 		DailySpendLimit:         telnyx.String("100.00"),
@@ -110,8 +110,8 @@ func TestOutboundVoiceProfileUpdateWithOptionalParams(t *testing.T) {
 			},
 			CallingWindow: telnyx.OutboundVoiceProfileUpdateParamsCallingWindow{
 				CallsPerCld: telnyx.Int(5),
-				EndTime:     telnyx.Time("18:11:19.117Z"),
-				StartTime:   telnyx.Time("18:11:19.117Z"),
+				EndTime:     telnyx.String("20:00:00.00Z"),
+				StartTime:   telnyx.String("08:00:00.00Z"),
 			},
 			ConcurrentCallLimit:     telnyx.Int(10),
 			DailySpendLimit:         telnyx.String("100.00"),

@@ -11,12 +11,13 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // SimCardOrderService contains methods and other services that help with
@@ -59,11 +60,26 @@ func (r *SimCardOrderService) Get(ctx context.Context, id string, opts ...option
 }
 
 // Get all SIM card orders according to filters.
-func (r *SimCardOrderService) List(ctx context.Context, query SimCardOrderListParams, opts ...option.RequestOption) (res *SimCardOrderListResponse, err error) {
+func (r *SimCardOrderService) List(ctx context.Context, query SimCardOrderListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[SimCardOrder], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "sim_card_orders"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get all SIM card orders according to filters.
+func (r *SimCardOrderService) ListAutoPaging(ctx context.Context, query SimCardOrderListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[SimCardOrder] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type SimCardOrder struct {
@@ -236,24 +252,6 @@ func (r *SimCardOrderGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type SimCardOrderListResponse struct {
-	Data []SimCardOrder `json:"data"`
-	Meta PaginationMeta `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SimCardOrderListResponse) RawJSON() string { return r.JSON.raw }
-func (r *SimCardOrderListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type SimCardOrderNewParams struct {
 	// Uniquely identifies the address for the order.
 	AddressID string `json:"address_id,required"`
@@ -299,6 +297,26 @@ func (r SimCardOrderListParams) URLQuery() (v url.Values, err error) {
 // filter[address.locality], filter[address.administrative_area],
 // filter[address.country_code], filter[address.postal_code]
 type SimCardOrderListParamsFilter struct {
+	// Filter by state or province where the address is located.
+	AddressAdministrativeArea param.Opt[string] `query:"address.administrative_area,omitzero" json:"-"`
+	// Filter by the mobile operator two-character (ISO 3166-1 alpha-2) origin country
+	// code.
+	AddressCountryCode param.Opt[string] `query:"address.country_code,omitzero" json:"-"`
+	// Returns entries with matching name of the supplemental field for address
+	// information.
+	AddressExtendedAddress param.Opt[string] `query:"address.extended_address,omitzero" json:"-"`
+	// Uniquely identifies the address for the order.
+	AddressID param.Opt[string] `query:"address.id,omitzero" json:"-"`
+	// Filter by the name of the city where the address is located.
+	AddressLocality param.Opt[string] `query:"address.locality,omitzero" json:"-"`
+	// Filter by postal code for the address.
+	AddressPostalCode param.Opt[string] `query:"address.postal_code,omitzero" json:"-"`
+	// Returns entries with matching name of the street where the address is located.
+	AddressStreetAddress param.Opt[string] `query:"address.street_address,omitzero" json:"-"`
+	// The total monetary amount of the order.
+	CostAmount param.Opt[string] `query:"cost.amount,omitzero" json:"-"`
+	// Filter by ISO 4217 currency string.
+	CostCurrency param.Opt[string] `query:"cost.currency,omitzero" json:"-"`
 	// Filter by ISO 8601 formatted date-time string matching resource creation
 	// date-time.
 	CreatedAt param.Opt[time.Time] `query:"created_at,omitzero" format:"date-time" json:"-"`
@@ -306,61 +324,13 @@ type SimCardOrderListParamsFilter struct {
 	Quantity param.Opt[int64] `query:"quantity,omitzero" json:"-"`
 	// Filter by ISO 8601 formatted date-time string matching resource last update
 	// date-time.
-	UpdatedAt param.Opt[time.Time]                `query:"updated_at,omitzero" format:"date-time" json:"-"`
-	Address   SimCardOrderListParamsFilterAddress `query:"address,omitzero" json:"-"`
-	Cost      SimCardOrderListParamsFilterCost    `query:"cost,omitzero" json:"-"`
+	UpdatedAt param.Opt[time.Time] `query:"updated_at,omitzero" format:"date-time" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [SimCardOrderListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r SimCardOrderListParamsFilter) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-type SimCardOrderListParamsFilterAddress struct {
-	// Uniquely identifies the address for the order.
-	ID param.Opt[string] `query:"id,omitzero" json:"-"`
-	// Filter by state or province where the address is located.
-	AdministrativeArea param.Opt[string] `query:"administrative_area,omitzero" json:"-"`
-	// Filter by the mobile operator two-character (ISO 3166-1 alpha-2) origin country
-	// code.
-	CountryCode param.Opt[string] `query:"country_code,omitzero" json:"-"`
-	// Returns entries with matching name of the supplemental field for address
-	// information.
-	ExtendedAddress param.Opt[string] `query:"extended_address,omitzero" json:"-"`
-	// Filter by the name of the city where the address is located.
-	Locality param.Opt[string] `query:"locality,omitzero" json:"-"`
-	// Filter by postal code for the address.
-	PostalCode param.Opt[string] `query:"postal_code,omitzero" json:"-"`
-	// Returns entries with matching name of the street where the address is located.
-	StreetAddress param.Opt[string] `query:"street_address,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [SimCardOrderListParamsFilterAddress]'s query parameters as
-// `url.Values`.
-func (r SimCardOrderListParamsFilterAddress) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-type SimCardOrderListParamsFilterCost struct {
-	// The total monetary amount of the order.
-	Amount param.Opt[string] `query:"amount,omitzero" json:"-"`
-	// Filter by ISO 4217 currency string.
-	Currency param.Opt[string] `query:"currency,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [SimCardOrderListParamsFilterCost]'s query parameters as
-// `url.Values`.
-func (r SimCardOrderListParamsFilterCost) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

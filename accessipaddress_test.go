@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestAccessIPAddressNewWithOptionalParams(t *testing.T) {
@@ -84,10 +84,8 @@ func TestAccessIPAddressListWithOptionalParams(t *testing.T) {
 			IPAddress: telnyx.String("ip_address"),
 			IPSource:  telnyx.String("ip_source"),
 		},
-		Page: telnyx.AccessIPAddressListParamsPage{
-			Number: telnyx.Int(0),
-			Size:   telnyx.Int(250),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

@@ -12,9 +12,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestAIClusterGetWithOptionalParams(t *testing.T) {
@@ -61,10 +61,8 @@ func TestAIClusterListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.Clusters.List(context.TODO(), telnyx.AIClusterListParams{
-		Page: telnyx.AIClusterListParamsPage{
-			Number: telnyx.Int(0),
-			Size:   telnyx.Int(0),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

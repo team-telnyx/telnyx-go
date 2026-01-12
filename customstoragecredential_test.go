@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestCustomStorageCredentialNew(t *testing.T) {
@@ -33,7 +33,8 @@ func TestCustomStorageCredentialNew(t *testing.T) {
 			CustomStorageConfiguration: telnyx.CustomStorageConfigurationParam{
 				Backend: telnyx.CustomStorageConfigurationBackendGcs,
 				Configuration: telnyx.CustomStorageConfigurationConfigurationUnionParam{
-					OfGoogleCloudStorageConfigurationData: &telnyx.GcsConfigurationDataParam{
+					OfGcs: &telnyx.GcsConfigurationDataParam{
+						Backend:     telnyx.GcsConfigurationDataBackendGcs,
 						Bucket:      telnyx.String("example-bucket"),
 						Credentials: telnyx.String("OPAQUE_CREDENTIALS_TOKEN"),
 					},
@@ -93,7 +94,8 @@ func TestCustomStorageCredentialUpdate(t *testing.T) {
 			CustomStorageConfiguration: telnyx.CustomStorageConfigurationParam{
 				Backend: telnyx.CustomStorageConfigurationBackendGcs,
 				Configuration: telnyx.CustomStorageConfigurationConfigurationUnionParam{
-					OfGoogleCloudStorageConfigurationData: &telnyx.GcsConfigurationDataParam{
+					OfGcs: &telnyx.GcsConfigurationDataParam{
+						Backend:     telnyx.GcsConfigurationDataBackendGcs,
 						Bucket:      telnyx.String("example-bucket"),
 						Credentials: telnyx.String("OPAQUE_CREDENTIALS_TOKEN"),
 					},

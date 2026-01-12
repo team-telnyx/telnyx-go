@@ -9,10 +9,10 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // CountryCoverageService contains methods and other services that help with
@@ -55,7 +55,7 @@ func (r *CountryCoverageService) GetCountry(ctx context.Context, countryCode str
 }
 
 type CountryCoverageGetResponse struct {
-	Data []CountryCoverageGetResponseData `json:"data"`
+	Data map[string]CountryCoverageGetResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

@@ -10,12 +10,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // UserAddressService contains methods and other services that help with
@@ -58,11 +59,26 @@ func (r *UserAddressService) Get(ctx context.Context, id string, opts ...option.
 }
 
 // Returns a list of your user addresses.
-func (r *UserAddressService) List(ctx context.Context, query UserAddressListParams, opts ...option.RequestOption) (res *UserAddressListResponse, err error) {
+func (r *UserAddressService) List(ctx context.Context, query UserAddressListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[UserAddress], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "user_addresses"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Returns a list of your user addresses.
+func (r *UserAddressService) ListAutoPaging(ctx context.Context, query UserAddressListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[UserAddress] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type UserAddress struct {
@@ -167,24 +183,6 @@ func (r *UserAddressGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type UserAddressListResponse struct {
-	Data []UserAddress  `json:"data"`
-	Meta PaginationMeta `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UserAddressListResponse) RawJSON() string { return r.JSON.raw }
-func (r *UserAddressListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type UserAddressNewParams struct {
 	// The business name associated with the user address.
 	BusinessName string `json:"business_name,required"`
@@ -228,7 +226,7 @@ type UserAddressNewParams struct {
 	// that might make the address correct, they will be present in the response as
 	// well. If this value is set to true, then the verification will not be attempted.
 	// Defaults to false (verification will be performed).
-	SkipAddressVerification param.Opt[string] `json:"skip_address_verification,omitzero"`
+	SkipAddressVerification param.Opt[bool] `json:"skip_address_verification,omitzero"`
 	paramObj
 }
 

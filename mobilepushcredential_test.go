@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestMobilePushCredentialNew(t *testing.T) {
@@ -27,11 +27,10 @@ func TestMobilePushCredentialNew(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.MobilePushCredentials.New(context.TODO(), telnyx.MobilePushCredentialNewParams{
-		OfCreateIOsPushCredentialRequest: &telnyx.MobilePushCredentialNewParamsBodyCreateIOsPushCredentialRequest{
+		OfIos: &telnyx.MobilePushCredentialNewParamsCreateMobilePushCredentialRequestIos{
 			Alias:       "LucyIosCredential",
 			Certificate: "-----BEGIN CERTIFICATE----- MIIGVDCCBTKCAQEAsNlRJVZn9ZvXcECQm65czs... -----END CERTIFICATE-----",
 			PrivateKey:  "-----BEGIN RSA PRIVATE KEY----- MIIEpQIBAAKCAQEAsNlRJVZn9ZvXcECQm65czs... -----END RSA PRIVATE KEY-----",
-			Type:        "ios",
 		},
 	})
 	if err != nil {

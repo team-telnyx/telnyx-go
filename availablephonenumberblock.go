@@ -8,12 +8,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // AvailablePhoneNumberBlockService contains methods and other services that help
@@ -45,7 +46,7 @@ func (r *AvailablePhoneNumberBlockService) List(ctx context.Context, query Avail
 
 type AvailablePhoneNumberBlockListResponse struct {
 	Data []AvailablePhoneNumberBlockListResponseData `json:"data"`
-	Meta AvailablePhoneNumberBlockListResponseMeta   `json:"meta"`
+	Meta shared.AvailablePhoneNumbersMetadata        `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -143,24 +144,6 @@ func (r AvailablePhoneNumberBlockListResponseDataRegionInformation) RawJSON() st
 	return r.JSON.raw
 }
 func (r *AvailablePhoneNumberBlockListResponseDataRegionInformation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AvailablePhoneNumberBlockListResponseMeta struct {
-	BestEffortResults int64 `json:"best_effort_results"`
-	TotalResults      int64 `json:"total_results"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		BestEffortResults respjson.Field
-		TotalResults      respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AvailablePhoneNumberBlockListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *AvailablePhoneNumberBlockListResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

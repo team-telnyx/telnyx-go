@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestTexmlAccountCallGet(t *testing.T) {
@@ -98,7 +98,7 @@ func TestTexmlAccountCallCallsWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"account_sid",
 		telnyx.TexmlAccountCallCallsParams{
-			ApplicationSid:                   "ApplicationSid",
+			ApplicationSid:                   "example-app-sid",
 			From:                             "+13120001234",
 			To:                               "+13121230000",
 			AsyncAmd:                         telnyx.Bool(true),
@@ -133,6 +133,8 @@ func TestTexmlAccountCallCallsWithOptionalParams(t *testing.T) {
 			StatusCallback:                     telnyx.String("https://www.example.com/statuscallback-listener"),
 			StatusCallbackEvent:                telnyx.TexmlAccountCallCallsParamsStatusCallbackEventInitiated,
 			StatusCallbackMethod:               telnyx.TexmlAccountCallCallsParamsStatusCallbackMethodGet,
+			SuperviseCallSid:                   telnyx.String("v3:MdI91X4lWFEs7IgbBEOT9M4AigoY08M0WWZFISt1Yw2axZ_IiE4pqg"),
+			SupervisingRole:                    telnyx.TexmlAccountCallCallsParamsSupervisingRoleMonitor,
 			Trim:                               telnyx.TexmlAccountCallCallsParamsTrimTrimSilence,
 			URL:                                telnyx.String("https://www.example.com/texml.xml"),
 			URLMethod:                          telnyx.TexmlAccountCallCallsParamsURLMethodGet,

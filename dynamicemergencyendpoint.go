@@ -11,14 +11,14 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v3/shared"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // DynamicEmergencyEndpointService contains methods and other services that help
@@ -61,11 +61,26 @@ func (r *DynamicEmergencyEndpointService) Get(ctx context.Context, id string, op
 }
 
 // Returns the dynamic emergency endpoints according to filters
-func (r *DynamicEmergencyEndpointService) List(ctx context.Context, query DynamicEmergencyEndpointListParams, opts ...option.RequestOption) (res *DynamicEmergencyEndpointListResponse, err error) {
+func (r *DynamicEmergencyEndpointService) List(ctx context.Context, query DynamicEmergencyEndpointListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[DynamicEmergencyEndpoint], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "dynamic_emergency_endpoints"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Returns the dynamic emergency endpoints according to filters
+func (r *DynamicEmergencyEndpointService) ListAutoPaging(ctx context.Context, query DynamicEmergencyEndpointListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[DynamicEmergencyEndpoint] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Deletes the dynamic emergency endpoint based on the ID provided
@@ -185,24 +200,6 @@ type DynamicEmergencyEndpointGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r DynamicEmergencyEndpointGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *DynamicEmergencyEndpointGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DynamicEmergencyEndpointListResponse struct {
-	Data []DynamicEmergencyEndpoint `json:"data"`
-	Meta shared.Metadata            `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DynamicEmergencyEndpointListResponse) RawJSON() string { return r.JSON.raw }
-func (r *DynamicEmergencyEndpointListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

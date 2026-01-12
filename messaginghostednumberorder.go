@@ -4,20 +4,20 @@ package telnyx
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v3/shared"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // MessagingHostedNumberOrderService contains methods and other services that help
@@ -62,11 +62,26 @@ func (r *MessagingHostedNumberOrderService) Get(ctx context.Context, id string, 
 }
 
 // List messaging hosted number orders
-func (r *MessagingHostedNumberOrderService) List(ctx context.Context, query MessagingHostedNumberOrderListParams, opts ...option.RequestOption) (res *MessagingHostedNumberOrderListResponse, err error) {
+func (r *MessagingHostedNumberOrderService) List(ctx context.Context, query MessagingHostedNumberOrderListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[shared.MessagingHostedNumberOrder], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "messaging_hosted_number_orders"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List messaging hosted number orders
+func (r *MessagingHostedNumberOrderService) ListAutoPaging(ctx context.Context, query MessagingHostedNumberOrderListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[shared.MessagingHostedNumberOrder] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a messaging hosted number order and all associated phone numbers.
@@ -81,7 +96,7 @@ func (r *MessagingHostedNumberOrderService) Delete(ctx context.Context, id strin
 	return
 }
 
-// Check eligibility of phone numbers for hosted messaging
+// Check hosted messaging eligibility
 func (r *MessagingHostedNumberOrderService) CheckEligibility(ctx context.Context, body MessagingHostedNumberOrderCheckEligibilityParams, opts ...option.RequestOption) (res *MessagingHostedNumberOrderCheckEligibilityResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "messaging_hosted_number_orders/eligibility_numbers_check"
@@ -144,24 +159,6 @@ type MessagingHostedNumberOrderGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MessagingHostedNumberOrderGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *MessagingHostedNumberOrderGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessagingHostedNumberOrderListResponse struct {
-	Data []shared.MessagingHostedNumberOrder `json:"data"`
-	Meta PaginationMeta                      `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessagingHostedNumberOrderListResponse) RawJSON() string { return r.JSON.raw }
-func (r *MessagingHostedNumberOrderListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -234,7 +231,7 @@ func (r *MessagingHostedNumberOrderCheckEligibilityResponsePhoneNumber) Unmarsha
 }
 
 type MessagingHostedNumberOrderNewVerificationCodesResponse struct {
-	Data []MessagingHostedNumberOrderNewVerificationCodesResponseDataUnion `json:"data,required"`
+	Data []MessagingHostedNumberOrderNewVerificationCodesResponseData `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -249,64 +246,22 @@ func (r *MessagingHostedNumberOrderNewVerificationCodesResponse) UnmarshalJSON(d
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// MessagingHostedNumberOrderNewVerificationCodesResponseDataUnion contains all
-// possible properties and values from
-// [MessagingHostedNumberOrderNewVerificationCodesResponseDataVerificationCodeSuccess],
-// [MessagingHostedNumberOrderNewVerificationCodesResponseDataVerificationCodeError].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type MessagingHostedNumberOrderNewVerificationCodesResponseDataUnion struct {
-	PhoneNumber string `json:"phone_number"`
-	// This field is from variant
-	// [MessagingHostedNumberOrderNewVerificationCodesResponseDataVerificationCodeSuccess].
-	Type string `json:"type"`
-	// This field is from variant
-	// [MessagingHostedNumberOrderNewVerificationCodesResponseDataVerificationCodeSuccess].
-	VerificationCodeID string `json:"verification_code_id"`
-	// This field is from variant
-	// [MessagingHostedNumberOrderNewVerificationCodesResponseDataVerificationCodeError].
-	Error string `json:"error"`
-	JSON  struct {
-		PhoneNumber        respjson.Field
-		Type               respjson.Field
-		VerificationCodeID respjson.Field
-		Error              respjson.Field
-		raw                string
-	} `json:"-"`
-}
-
-func (u MessagingHostedNumberOrderNewVerificationCodesResponseDataUnion) AsVerificationCodeSuccess() (v MessagingHostedNumberOrderNewVerificationCodesResponseDataVerificationCodeSuccess) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u MessagingHostedNumberOrderNewVerificationCodesResponseDataUnion) AsVerificationCodeError() (v MessagingHostedNumberOrderNewVerificationCodesResponseDataVerificationCodeError) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u MessagingHostedNumberOrderNewVerificationCodesResponseDataUnion) RawJSON() string {
-	return u.JSON.raw
-}
-
-func (r *MessagingHostedNumberOrderNewVerificationCodesResponseDataUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Successful verification code creation response
-type MessagingHostedNumberOrderNewVerificationCodesResponseDataVerificationCodeSuccess struct {
+// Verification code result response
+type MessagingHostedNumberOrderNewVerificationCodesResponseData struct {
 	// Phone number for which the verification code was created
 	PhoneNumber string `json:"phone_number,required" format:"+E.164"`
+	// Error message describing why the verification code creation failed
+	Error string `json:"error"`
 	// Type of verification method used
 	//
 	// Any of "sms", "call", "flashcall".
-	Type string `json:"type,required"`
+	Type string `json:"type"`
 	// Unique identifier for the verification code
-	VerificationCodeID string `json:"verification_code_id,required" format:"uuid"`
+	VerificationCodeID string `json:"verification_code_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PhoneNumber        respjson.Field
+		Error              respjson.Field
 		Type               respjson.Field
 		VerificationCodeID respjson.Field
 		ExtraFields        map[string]respjson.Field
@@ -315,33 +270,10 @@ type MessagingHostedNumberOrderNewVerificationCodesResponseDataVerificationCodeS
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessagingHostedNumberOrderNewVerificationCodesResponseDataVerificationCodeSuccess) RawJSON() string {
+func (r MessagingHostedNumberOrderNewVerificationCodesResponseData) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *MessagingHostedNumberOrderNewVerificationCodesResponseDataVerificationCodeSuccess) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Failed verification code creation response
-type MessagingHostedNumberOrderNewVerificationCodesResponseDataVerificationCodeError struct {
-	// Error message describing why the verification code creation failed
-	Error string `json:"error,required"`
-	// Phone number for which the verification code creation failed
-	PhoneNumber string `json:"phone_number,required" format:"+E.164"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Error       respjson.Field
-		PhoneNumber respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessagingHostedNumberOrderNewVerificationCodesResponseDataVerificationCodeError) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *MessagingHostedNumberOrderNewVerificationCodesResponseDataVerificationCodeError) UnmarshalJSON(data []byte) error {
+func (r *MessagingHostedNumberOrderNewVerificationCodesResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

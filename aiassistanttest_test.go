@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/team-telnyx/telnyx-go/v3"
-	"github.com/team-telnyx/telnyx-go/v3/internal/testutil"
-	"github.com/team-telnyx/telnyx-go/v3/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestAIAssistantTestNewWithOptionalParams(t *testing.T) {
@@ -127,11 +127,9 @@ func TestAIAssistantTestListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.Assistants.Tests.List(context.TODO(), telnyx.AIAssistantTestListParams{
-		Destination: telnyx.String("destination"),
-		Page: telnyx.AIAssistantTestListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
+		Destination:               telnyx.String("destination"),
+		PageNumber:                telnyx.Int(0),
+		PageSize:                  telnyx.Int(0),
 		TelnyxConversationChannel: telnyx.String("telnyx_conversation_channel"),
 		TestSuite:                 telnyx.String("test_suite"),
 	})

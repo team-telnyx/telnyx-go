@@ -10,12 +10,12 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 )
 
 // MessagingRcAgentService contains methods and other services that help with
@@ -62,29 +62,26 @@ func (r *MessagingRcAgentService) Update(ctx context.Context, id string, body Me
 }
 
 // List all RCS agents
-func (r *MessagingRcAgentService) List(ctx context.Context, query MessagingRcAgentListParams, opts ...option.RequestOption) (res *MessagingRcAgentListResponse, err error) {
+func (r *MessagingRcAgentService) List(ctx context.Context, query MessagingRcAgentListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[RcsAgent], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "messaging/rcs/agents"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
 }
 
-type MessagingRcAgentListResponse struct {
-	Data []RcsAgent     `json:"data"`
-	Meta PaginationMeta `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessagingRcAgentListResponse) RawJSON() string { return r.JSON.raw }
-func (r *MessagingRcAgentListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+// List all RCS agents
+func (r *MessagingRcAgentService) ListAutoPaging(ctx context.Context, query MessagingRcAgentListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[RcsAgent] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type MessagingRcAgentUpdateParams struct {

@@ -9,34 +9,35 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
-// CampaignBuilderBrandService contains methods and other services that help with
-// interacting with the telnyx API.
+// Messaging10dlcCampaignBuilderBrandService contains methods and other services
+// that help with interacting with the telnyx API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewCampaignBuilderBrandService] method instead.
-type CampaignBuilderBrandService struct {
+// the [NewMessaging10dlcCampaignBuilderBrandService] method instead.
+type Messaging10dlcCampaignBuilderBrandService struct {
 	Options []option.RequestOption
 }
 
-// NewCampaignBuilderBrandService generates a new service that applies the given
-// options to each request. These options are applied after the parent client's
-// options (if there is one), and before any request-specific options.
-func NewCampaignBuilderBrandService(opts ...option.RequestOption) (r CampaignBuilderBrandService) {
-	r = CampaignBuilderBrandService{}
+// NewMessaging10dlcCampaignBuilderBrandService generates a new service that
+// applies the given options to each request. These options are applied after the
+// parent client's options (if there is one), and before any request-specific
+// options.
+func NewMessaging10dlcCampaignBuilderBrandService(opts ...option.RequestOption) (r Messaging10dlcCampaignBuilderBrandService) {
+	r = Messaging10dlcCampaignBuilderBrandService{}
 	r.Options = opts
 	return
 }
 
 // This endpoint allows you to see whether or not the supplied brand is suitable
 // for your desired campaign use case.
-func (r *CampaignBuilderBrandService) QualifyByUsecase(ctx context.Context, usecase string, query CampaignBuilderBrandQualifyByUsecaseParams, opts ...option.RequestOption) (res *CampaignBuilderBrandQualifyByUsecaseResponse, err error) {
+func (r *Messaging10dlcCampaignBuilderBrandService) QualifyByUsecase(ctx context.Context, usecase string, query Messaging10dlcCampaignBuilderBrandQualifyByUsecaseParams, opts ...option.RequestOption) (res *Messaging10dlcCampaignBuilderBrandQualifyByUsecaseResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.BrandID == "" {
 		err = errors.New("missing required brandId parameter")
@@ -46,12 +47,12 @@ func (r *CampaignBuilderBrandService) QualifyByUsecase(ctx context.Context, usec
 		err = errors.New("missing required usecase parameter")
 		return
 	}
-	path := fmt.Sprintf("campaignBuilder/brand/%s/usecase/%s", query.BrandID, usecase)
+	path := fmt.Sprintf("10dlc/campaignBuilder/brand/%s/usecase/%s", query.BrandID, usecase)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
-type CampaignBuilderBrandQualifyByUsecaseResponse struct {
+type Messaging10dlcCampaignBuilderBrandQualifyByUsecaseResponse struct {
 	// Campaign annual subscription fee
 	AnnualFee float64 `json:"annualFee"`
 	// Maximum number of sub-usecases declaration required.
@@ -82,12 +83,14 @@ type CampaignBuilderBrandQualifyByUsecaseResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CampaignBuilderBrandQualifyByUsecaseResponse) RawJSON() string { return r.JSON.raw }
-func (r *CampaignBuilderBrandQualifyByUsecaseResponse) UnmarshalJSON(data []byte) error {
+func (r Messaging10dlcCampaignBuilderBrandQualifyByUsecaseResponse) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *Messaging10dlcCampaignBuilderBrandQualifyByUsecaseResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CampaignBuilderBrandQualifyByUsecaseParams struct {
+type Messaging10dlcCampaignBuilderBrandQualifyByUsecaseParams struct {
 	BrandID string `path:"brandId,required" json:"-"`
 	paramObj
 }

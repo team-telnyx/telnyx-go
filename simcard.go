@@ -11,14 +11,15 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v3/shared"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // SimCardService contains methods and other services that help with interacting
@@ -55,23 +56,38 @@ func (r *SimCardService) Get(ctx context.Context, id string, query SimCardGetPar
 }
 
 // Updates SIM card data
-func (r *SimCardService) Update(ctx context.Context, id string, body SimCardUpdateParams, opts ...option.RequestOption) (res *SimCardUpdateResponse, err error) {
+func (r *SimCardService) Update(ctx context.Context, simCardID string, body SimCardUpdateParams, opts ...option.RequestOption) (res *SimCardUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	if id == "" {
-		err = errors.New("missing required id parameter")
+	if simCardID == "" {
+		err = errors.New("missing required sim_card_id parameter")
 		return
 	}
-	path := fmt.Sprintf("sim_cards/%s", id)
+	path := fmt.Sprintf("sim_cards/%s", simCardID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
 }
 
 // Get all SIM cards belonging to the user that match the given filters.
-func (r *SimCardService) List(ctx context.Context, query SimCardListParams, opts ...option.RequestOption) (res *SimCardListResponse, err error) {
+func (r *SimCardService) List(ctx context.Context, query SimCardListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[shared.SimpleSimCard], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "sim_cards"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Get all SIM cards belonging to the user that match the given filters.
+func (r *SimCardService) ListAutoPaging(ctx context.Context, query SimCardListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[shared.SimpleSimCard] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // The SIM card will be decommissioned, removed from your account and you will stop
@@ -132,15 +148,31 @@ func (r *SimCardService) GetPublicIP(ctx context.Context, id string, opts ...opt
 
 // This API allows listing a paginated collection of Wireless Connectivity Logs
 // associated with a SIM Card, for troubleshooting purposes.
-func (r *SimCardService) ListWirelessConnectivityLogs(ctx context.Context, id string, query SimCardListWirelessConnectivityLogsParams, opts ...option.RequestOption) (res *SimCardListWirelessConnectivityLogsResponse, err error) {
+func (r *SimCardService) ListWirelessConnectivityLogs(ctx context.Context, id string, query SimCardListWirelessConnectivityLogsParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[SimCardListWirelessConnectivityLogsResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
 	}
 	path := fmt.Sprintf("sim_cards/%s/wireless_connectivity_logs", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// This API allows listing a paginated collection of Wireless Connectivity Logs
+// associated with a SIM Card, for troubleshooting purposes.
+func (r *SimCardService) ListWirelessConnectivityLogsAutoPaging(ctx context.Context, id string, query SimCardListWirelessConnectivityLogsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[SimCardListWirelessConnectivityLogsResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.ListWirelessConnectivityLogs(ctx, id, query, opts...))
 }
 
 type SimCard struct {
@@ -212,7 +244,7 @@ type SimCard struct {
 	PinPukCodes SimCardPinPukCodes `json:"pin_puk_codes"`
 	RecordType  string             `json:"record_type"`
 	// List of resources with actions in progress.
-	ResourcesWithInProgressActions []any `json:"resources_with_in_progress_actions"`
+	ResourcesWithInProgressActions []map[string]any `json:"resources_with_in_progress_actions"`
 	// The group SIMCardGroup identification. This attribute can be <code>null</code>
 	// when it's present in an associated resource.
 	SimCardGroupID string               `json:"sim_card_group_id" format:"uuid"`
@@ -519,24 +551,6 @@ func (r *SimCardUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type SimCardListResponse struct {
-	Data []shared.SimpleSimCard `json:"data"`
-	Meta PaginationMeta         `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SimCardListResponse) RawJSON() string { return r.JSON.raw }
-func (r *SimCardListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type SimCardDeleteResponse struct {
 	Data SimCard `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -684,28 +698,10 @@ func (r *SimCardGetPublicIPResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type SimCardListWirelessConnectivityLogsResponse struct {
-	Data []SimCardListWirelessConnectivityLogsResponseData `json:"data"`
-	Meta PaginationMeta                                    `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SimCardListWirelessConnectivityLogsResponse) RawJSON() string { return r.JSON.raw }
-func (r *SimCardListWirelessConnectivityLogsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // This object represents a wireless connectivity session log that happened through
 // a SIM card. It aids in finding out potential problems when the SIM is not able
 // to attach properly.
-type SimCardListWirelessConnectivityLogsResponseData struct {
+type SimCardListWirelessConnectivityLogsResponse struct {
 	// Uniquely identifies the session.
 	ID int64 `json:"id"`
 	// The Access Point Name (APN) identifies the packet data network that a mobile
@@ -741,7 +737,7 @@ type SimCardListWirelessConnectivityLogsResponseData struct {
 	// and 'data' the actual data transfer sessions.
 	//
 	// Any of "registration", "data".
-	LogType string `json:"log_type"`
+	LogType SimCardListWirelessConnectivityLogsResponseLogType `json:"log_type"`
 	// It's a three decimal digit that identifies a country.<br/><br/> This code is
 	// commonly seen joined with a Mobile Network Code (MNC) in a tuple that allows
 	// identifying a carrier known as PLMN (Public Land Mobile Network) code.
@@ -787,10 +783,19 @@ type SimCardListWirelessConnectivityLogsResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r SimCardListWirelessConnectivityLogsResponseData) RawJSON() string { return r.JSON.raw }
-func (r *SimCardListWirelessConnectivityLogsResponseData) UnmarshalJSON(data []byte) error {
+func (r SimCardListWirelessConnectivityLogsResponse) RawJSON() string { return r.JSON.raw }
+func (r *SimCardListWirelessConnectivityLogsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// The type of the session, 'registration' being the initial authentication session
+// and 'data' the actual data transfer sessions.
+type SimCardListWirelessConnectivityLogsResponseLogType string
+
+const (
+	SimCardListWirelessConnectivityLogsResponseLogTypeRegistration SimCardListWirelessConnectivityLogsResponseLogType = "registration"
+	SimCardListWirelessConnectivityLogsResponseLogTypeData         SimCardListWirelessConnectivityLogsResponseLogType = "data"
+)
 
 type SimCardGetParams struct {
 	// When set to true, includes the PIN and PUK codes in the response. These codes
@@ -836,7 +841,8 @@ type SimCardListParams struct {
 	// Sorts SIM cards by the given field. Defaults to ascending order unless field is
 	// prefixed with a minus sign.
 	//
-	// Any of "current_billing_period_consumed_data.amount".
+	// Any of "current_billing_period_consumed_data.amount",
+	// "-current_billing_period_consumed_data.amount".
 	Sort SimCardListParamsSort `query:"sort,omitzero" json:"-"`
 	paramObj
 }
@@ -905,7 +911,8 @@ func (r SimCardListParamsPage) URLQuery() (v url.Values, err error) {
 type SimCardListParamsSort string
 
 const (
-	SimCardListParamsSortCurrentBillingPeriodConsumedDataAmount SimCardListParamsSort = "current_billing_period_consumed_data.amount"
+	SimCardListParamsSortCurrentBillingPeriodConsumedDataAmount      SimCardListParamsSort = "current_billing_period_consumed_data.amount"
+	SimCardListParamsSortMinusCurrentBillingPeriodConsumedDataAmount SimCardListParamsSort = "-current_billing_period_consumed_data.amount"
 )
 
 type SimCardDeleteParams struct {

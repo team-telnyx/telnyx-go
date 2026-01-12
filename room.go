@@ -11,13 +11,14 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v3/shared"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // RoomService contains methods and other services that help with interacting with
@@ -76,11 +77,26 @@ func (r *RoomService) Update(ctx context.Context, roomID string, body RoomUpdate
 }
 
 // View a list of rooms.
-func (r *RoomService) List(ctx context.Context, query RoomListParams, opts ...option.RequestOption) (res *RoomListResponse, err error) {
+func (r *RoomService) List(ctx context.Context, query RoomListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[Room], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "rooms"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// View a list of rooms.
+func (r *RoomService) ListAutoPaging(ctx context.Context, query RoomListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[Room] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Synchronously delete a Room. Participants from that room will be kicked out,
@@ -117,12 +133,12 @@ type Room struct {
 	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
 	// The failover URL where webhooks related to this room will be sent if sending to
 	// the primary URL fails. Must include a scheme, such as 'https'.
-	WebhookEventFailoverURL string `json:"webhook_event_failover_url,nullable" format:"uri"`
+	WebhookEventFailoverURL string `json:"webhook_event_failover_url" format:"uri"`
 	// The URL where webhooks related to this room will be sent. Must include a scheme,
 	// such as 'https'.
 	WebhookEventURL string `json:"webhook_event_url" format:"uri"`
 	// Specifies how many seconds to wait before timing out a webhook.
-	WebhookTimeoutSecs int64 `json:"webhook_timeout_secs,nullable"`
+	WebhookTimeoutSecs int64 `json:"webhook_timeout_secs"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                      respjson.Field
@@ -232,30 +248,7 @@ func (r *RoomUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RoomListResponse struct {
-	Data []Room         `json:"data"`
-	Meta PaginationMeta `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RoomListResponse) RawJSON() string { return r.JSON.raw }
-func (r *RoomListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type RoomNewParams struct {
-	// The failover URL where webhooks related to this room will be sent if sending to
-	// the primary URL fails. Must include a scheme, such as 'https'.
-	WebhookEventFailoverURL param.Opt[string] `json:"webhook_event_failover_url,omitzero" format:"uri"`
-	// Specifies how many seconds to wait before timing out a webhook.
-	WebhookTimeoutSecs param.Opt[int64] `json:"webhook_timeout_secs,omitzero"`
 	// Enable or disable recording for that room.
 	EnableRecording param.Opt[bool] `json:"enable_recording,omitzero"`
 	// The maximum amount of participants allowed in a room. If new participants try to
@@ -263,9 +256,14 @@ type RoomNewParams struct {
 	MaxParticipants param.Opt[int64] `json:"max_participants,omitzero"`
 	// The unique (within the Telnyx account scope) name of the room.
 	UniqueName param.Opt[string] `json:"unique_name,omitzero"`
+	// The failover URL where webhooks related to this room will be sent if sending to
+	// the primary URL fails. Must include a scheme, such as 'https'.
+	WebhookEventFailoverURL param.Opt[string] `json:"webhook_event_failover_url,omitzero" format:"uri"`
 	// The URL where webhooks related to this room will be sent. Must include a scheme,
 	// such as 'https'.
 	WebhookEventURL param.Opt[string] `json:"webhook_event_url,omitzero" format:"uri"`
+	// Specifies how many seconds to wait before timing out a webhook.
+	WebhookTimeoutSecs param.Opt[int64] `json:"webhook_timeout_secs,omitzero"`
 	paramObj
 }
 
@@ -292,11 +290,6 @@ func (r RoomGetParams) URLQuery() (v url.Values, err error) {
 }
 
 type RoomUpdateParams struct {
-	// The failover URL where webhooks related to this room will be sent if sending to
-	// the primary URL fails. Must include a scheme, such as 'https'.
-	WebhookEventFailoverURL param.Opt[string] `json:"webhook_event_failover_url,omitzero" format:"uri"`
-	// Specifies how many seconds to wait before timing out a webhook.
-	WebhookTimeoutSecs param.Opt[int64] `json:"webhook_timeout_secs,omitzero"`
 	// Enable or disable recording for that room.
 	EnableRecording param.Opt[bool] `json:"enable_recording,omitzero"`
 	// The maximum amount of participants allowed in a room. If new participants try to
@@ -304,9 +297,14 @@ type RoomUpdateParams struct {
 	MaxParticipants param.Opt[int64] `json:"max_participants,omitzero"`
 	// The unique (within the Telnyx account scope) name of the room.
 	UniqueName param.Opt[string] `json:"unique_name,omitzero"`
+	// The failover URL where webhooks related to this room will be sent if sending to
+	// the primary URL fails. Must include a scheme, such as 'https'.
+	WebhookEventFailoverURL param.Opt[string] `json:"webhook_event_failover_url,omitzero" format:"uri"`
 	// The URL where webhooks related to this room will be sent. Must include a scheme,
 	// such as 'https'.
 	WebhookEventURL param.Opt[string] `json:"webhook_event_url,omitzero" format:"uri"`
+	// Specifies how many seconds to wait before timing out a webhook.
+	WebhookTimeoutSecs param.Opt[int64] `json:"webhook_timeout_secs,omitzero"`
 	paramObj
 }
 

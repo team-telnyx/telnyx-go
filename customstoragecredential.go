@@ -10,12 +10,12 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // CustomStorageCredentialService contains methods and other services that help
@@ -87,6 +87,10 @@ func (r *CustomStorageCredentialService) Delete(ctx context.Context, connectionI
 }
 
 type AzureConfigurationData struct {
+	// Storage backend type
+	//
+	// Any of "azure".
+	Backend AzureConfigurationDataBackend `json:"backend,required"`
 	// Azure Blob Storage account key.
 	AccountKey string `json:"account_key"`
 	// Azure Blob Storage account name.
@@ -95,6 +99,7 @@ type AzureConfigurationData struct {
 	Bucket string `json:"bucket"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Backend     respjson.Field
 		AccountKey  respjson.Field
 		AccountName respjson.Field
 		Bucket      respjson.Field
@@ -118,7 +123,19 @@ func (r AzureConfigurationData) ToParam() AzureConfigurationDataParam {
 	return param.Override[AzureConfigurationDataParam](json.RawMessage(r.RawJSON()))
 }
 
+// Storage backend type
+type AzureConfigurationDataBackend string
+
+const (
+	AzureConfigurationDataBackendAzure AzureConfigurationDataBackend = "azure"
+)
+
+// The property Backend is required.
 type AzureConfigurationDataParam struct {
+	// Storage backend type
+	//
+	// Any of "azure".
+	Backend AzureConfigurationDataBackend `json:"backend,omitzero,required"`
 	// Azure Blob Storage account key.
 	AccountKey param.Opt[string] `json:"account_key,omitzero"`
 	// Azure Blob Storage account name.
@@ -177,9 +194,14 @@ const (
 // and values from [GcsConfigurationData], [S3ConfigurationData],
 // [AzureConfigurationData].
 //
+// Use the [CustomStorageConfigurationConfigurationUnion.AsAny] method to switch on
+// the variant.
+//
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type CustomStorageConfigurationConfigurationUnion struct {
-	Bucket string `json:"bucket"`
+	// Any of "gcs", "s3", "azure".
+	Backend string `json:"backend"`
+	Bucket  string `json:"bucket"`
 	// This field is from variant [GcsConfigurationData].
 	Credentials string `json:"credentials"`
 	// This field is from variant [S3ConfigurationData].
@@ -193,6 +215,7 @@ type CustomStorageConfigurationConfigurationUnion struct {
 	// This field is from variant [AzureConfigurationData].
 	AccountName string `json:"account_name"`
 	JSON        struct {
+		Backend            respjson.Field
 		Bucket             respjson.Field
 		Credentials        respjson.Field
 		AwsAccessKeyID     respjson.Field
@@ -204,17 +227,49 @@ type CustomStorageConfigurationConfigurationUnion struct {
 	} `json:"-"`
 }
 
-func (u CustomStorageConfigurationConfigurationUnion) AsGoogleCloudStorageConfigurationData() (v GcsConfigurationData) {
+// anyCustomStorageConfigurationConfiguration is implemented by each variant of
+// [CustomStorageConfigurationConfigurationUnion] to add type safety for the return
+// type of [CustomStorageConfigurationConfigurationUnion.AsAny]
+type anyCustomStorageConfigurationConfiguration interface {
+	implCustomStorageConfigurationConfigurationUnion()
+}
+
+func (GcsConfigurationData) implCustomStorageConfigurationConfigurationUnion()   {}
+func (S3ConfigurationData) implCustomStorageConfigurationConfigurationUnion()    {}
+func (AzureConfigurationData) implCustomStorageConfigurationConfigurationUnion() {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := CustomStorageConfigurationConfigurationUnion.AsAny().(type) {
+//	case telnyx.GcsConfigurationData:
+//	case telnyx.S3ConfigurationData:
+//	case telnyx.AzureConfigurationData:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u CustomStorageConfigurationConfigurationUnion) AsAny() anyCustomStorageConfigurationConfiguration {
+	switch u.Backend {
+	case "gcs":
+		return u.AsGcs()
+	case "s3":
+		return u.AsS3()
+	case "azure":
+		return u.AsAzure()
+	}
+	return nil
+}
+
+func (u CustomStorageConfigurationConfigurationUnion) AsGcs() (v GcsConfigurationData) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u CustomStorageConfigurationConfigurationUnion) AsAwsS3StorageConfigurationData() (v S3ConfigurationData) {
+func (u CustomStorageConfigurationConfigurationUnion) AsS3() (v S3ConfigurationData) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u CustomStorageConfigurationConfigurationUnion) AsAzureBlobStorageConfigurationData() (v AzureConfigurationData) {
+func (u CustomStorageConfigurationConfigurationUnion) AsAzure() (v AzureConfigurationData) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -246,33 +301,33 @@ func (r *CustomStorageConfigurationParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CustomStorageConfigurationConfigurationUnionParam struct {
-	OfGoogleCloudStorageConfigurationData *GcsConfigurationDataParam   `json:",omitzero,inline"`
-	OfAwsS3StorageConfigurationData       *S3ConfigurationDataParam    `json:",omitzero,inline"`
-	OfAzureBlobStorageConfigurationData   *AzureConfigurationDataParam `json:",omitzero,inline"`
+	OfGcs   *GcsConfigurationDataParam   `json:",omitzero,inline"`
+	OfS3    *S3ConfigurationDataParam    `json:",omitzero,inline"`
+	OfAzure *AzureConfigurationDataParam `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u CustomStorageConfigurationConfigurationUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfGoogleCloudStorageConfigurationData, u.OfAwsS3StorageConfigurationData, u.OfAzureBlobStorageConfigurationData)
+	return param.MarshalUnion(u, u.OfGcs, u.OfS3, u.OfAzure)
 }
 func (u *CustomStorageConfigurationConfigurationUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *CustomStorageConfigurationConfigurationUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfGoogleCloudStorageConfigurationData) {
-		return u.OfGoogleCloudStorageConfigurationData
-	} else if !param.IsOmitted(u.OfAwsS3StorageConfigurationData) {
-		return u.OfAwsS3StorageConfigurationData
-	} else if !param.IsOmitted(u.OfAzureBlobStorageConfigurationData) {
-		return u.OfAzureBlobStorageConfigurationData
+	if !param.IsOmitted(u.OfGcs) {
+		return u.OfGcs
+	} else if !param.IsOmitted(u.OfS3) {
+		return u.OfS3
+	} else if !param.IsOmitted(u.OfAzure) {
+		return u.OfAzure
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CustomStorageConfigurationConfigurationUnionParam) GetCredentials() *string {
-	if vt := u.OfGoogleCloudStorageConfigurationData; vt != nil && vt.Credentials.Valid() {
+	if vt := u.OfGcs; vt != nil && vt.Credentials.Valid() {
 		return &vt.Credentials.Value
 	}
 	return nil
@@ -280,7 +335,7 @@ func (u CustomStorageConfigurationConfigurationUnionParam) GetCredentials() *str
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CustomStorageConfigurationConfigurationUnionParam) GetAwsAccessKeyID() *string {
-	if vt := u.OfAwsS3StorageConfigurationData; vt != nil && vt.AwsAccessKeyID.Valid() {
+	if vt := u.OfS3; vt != nil && vt.AwsAccessKeyID.Valid() {
 		return &vt.AwsAccessKeyID.Value
 	}
 	return nil
@@ -288,7 +343,7 @@ func (u CustomStorageConfigurationConfigurationUnionParam) GetAwsAccessKeyID() *
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CustomStorageConfigurationConfigurationUnionParam) GetAwsSecretAccessKey() *string {
-	if vt := u.OfAwsS3StorageConfigurationData; vt != nil && vt.AwsSecretAccessKey.Valid() {
+	if vt := u.OfS3; vt != nil && vt.AwsSecretAccessKey.Valid() {
 		return &vt.AwsSecretAccessKey.Value
 	}
 	return nil
@@ -296,7 +351,7 @@ func (u CustomStorageConfigurationConfigurationUnionParam) GetAwsSecretAccessKey
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CustomStorageConfigurationConfigurationUnionParam) GetRegion() *string {
-	if vt := u.OfAwsS3StorageConfigurationData; vt != nil && vt.Region.Valid() {
+	if vt := u.OfS3; vt != nil && vt.Region.Valid() {
 		return &vt.Region.Value
 	}
 	return nil
@@ -304,7 +359,7 @@ func (u CustomStorageConfigurationConfigurationUnionParam) GetRegion() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CustomStorageConfigurationConfigurationUnionParam) GetAccountKey() *string {
-	if vt := u.OfAzureBlobStorageConfigurationData; vt != nil && vt.AccountKey.Valid() {
+	if vt := u.OfAzure; vt != nil && vt.AccountKey.Valid() {
 		return &vt.AccountKey.Value
 	}
 	return nil
@@ -312,25 +367,50 @@ func (u CustomStorageConfigurationConfigurationUnionParam) GetAccountKey() *stri
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CustomStorageConfigurationConfigurationUnionParam) GetAccountName() *string {
-	if vt := u.OfAzureBlobStorageConfigurationData; vt != nil && vt.AccountName.Valid() {
+	if vt := u.OfAzure; vt != nil && vt.AccountName.Valid() {
 		return &vt.AccountName.Value
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u CustomStorageConfigurationConfigurationUnionParam) GetBackend() *string {
+	if vt := u.OfGcs; vt != nil {
+		return (*string)(&vt.Backend)
+	} else if vt := u.OfS3; vt != nil {
+		return (*string)(&vt.Backend)
+	} else if vt := u.OfAzure; vt != nil {
+		return (*string)(&vt.Backend)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u CustomStorageConfigurationConfigurationUnionParam) GetBucket() *string {
-	if vt := u.OfGoogleCloudStorageConfigurationData; vt != nil && vt.Bucket.Valid() {
+	if vt := u.OfGcs; vt != nil && vt.Bucket.Valid() {
 		return &vt.Bucket.Value
-	} else if vt := u.OfAwsS3StorageConfigurationData; vt != nil && vt.Bucket.Valid() {
+	} else if vt := u.OfS3; vt != nil && vt.Bucket.Valid() {
 		return &vt.Bucket.Value
-	} else if vt := u.OfAzureBlobStorageConfigurationData; vt != nil && vt.Bucket.Valid() {
+	} else if vt := u.OfAzure; vt != nil && vt.Bucket.Valid() {
 		return &vt.Bucket.Value
 	}
 	return nil
 }
 
+func init() {
+	apijson.RegisterUnion[CustomStorageConfigurationConfigurationUnionParam](
+		"backend",
+		apijson.Discriminator[GcsConfigurationDataParam]("gcs"),
+		apijson.Discriminator[S3ConfigurationDataParam]("s3"),
+		apijson.Discriminator[AzureConfigurationDataParam]("azure"),
+	)
+}
+
 type GcsConfigurationData struct {
+	// Storage backend type
+	//
+	// Any of "gcs".
+	Backend GcsConfigurationDataBackend `json:"backend,required"`
 	// Name of the bucket to be used to store recording files.
 	Bucket string `json:"bucket"`
 	// Opaque credential token used to authenticate and authorize with storage
@@ -338,6 +418,7 @@ type GcsConfigurationData struct {
 	Credentials string `json:"credentials"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Backend     respjson.Field
 		Bucket      respjson.Field
 		Credentials respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -360,7 +441,19 @@ func (r GcsConfigurationData) ToParam() GcsConfigurationDataParam {
 	return param.Override[GcsConfigurationDataParam](json.RawMessage(r.RawJSON()))
 }
 
+// Storage backend type
+type GcsConfigurationDataBackend string
+
+const (
+	GcsConfigurationDataBackendGcs GcsConfigurationDataBackend = "gcs"
+)
+
+// The property Backend is required.
 type GcsConfigurationDataParam struct {
+	// Storage backend type
+	//
+	// Any of "gcs".
+	Backend GcsConfigurationDataBackend `json:"backend,omitzero,required"`
 	// Name of the bucket to be used to store recording files.
 	Bucket param.Opt[string] `json:"bucket,omitzero"`
 	// Opaque credential token used to authenticate and authorize with storage
@@ -378,6 +471,10 @@ func (r *GcsConfigurationDataParam) UnmarshalJSON(data []byte) error {
 }
 
 type S3ConfigurationData struct {
+	// Storage backend type
+	//
+	// Any of "s3".
+	Backend S3ConfigurationDataBackend `json:"backend,required"`
 	// AWS credentials access key id.
 	AwsAccessKeyID string `json:"aws_access_key_id"`
 	// AWS secret access key.
@@ -388,6 +485,7 @@ type S3ConfigurationData struct {
 	Region string `json:"region"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Backend            respjson.Field
 		AwsAccessKeyID     respjson.Field
 		AwsSecretAccessKey respjson.Field
 		Bucket             respjson.Field
@@ -412,7 +510,19 @@ func (r S3ConfigurationData) ToParam() S3ConfigurationDataParam {
 	return param.Override[S3ConfigurationDataParam](json.RawMessage(r.RawJSON()))
 }
 
+// Storage backend type
+type S3ConfigurationDataBackend string
+
+const (
+	S3ConfigurationDataBackendS3 S3ConfigurationDataBackend = "s3"
+)
+
+// The property Backend is required.
 type S3ConfigurationDataParam struct {
+	// Storage backend type
+	//
+	// Any of "s3".
+	Backend S3ConfigurationDataBackend `json:"backend,omitzero,required"`
 	// AWS credentials access key id.
 	AwsAccessKeyID param.Opt[string] `json:"aws_access_key_id,omitzero"`
 	// AWS secret access key.

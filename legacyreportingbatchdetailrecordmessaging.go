@@ -10,11 +10,11 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // LegacyReportingBatchDetailRecordMessagingService contains methods and other
@@ -78,15 +78,15 @@ func (r *LegacyReportingBatchDetailRecordMessagingService) Delete(ctx context.Co
 }
 
 type BatchCsvPaginationMeta struct {
-	PageNumber   int64 `json:"page_number"`
+	PageNumber   int64 `json:"page_number,required"`
+	TotalPages   int64 `json:"total_pages,required"`
 	PageSize     int64 `json:"page_size"`
-	TotalPages   int64 `json:"total_pages"`
 	TotalResults int64 `json:"total_results"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PageNumber   respjson.Field
-		PageSize     respjson.Field
 		TotalPages   respjson.Field
+		PageSize     respjson.Field
 		TotalResults respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string

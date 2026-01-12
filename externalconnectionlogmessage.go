@@ -10,12 +10,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // ExternalConnectionLogMessageService contains methods and other services that
@@ -51,11 +52,27 @@ func (r *ExternalConnectionLogMessageService) Get(ctx context.Context, id string
 
 // Retrieve a list of log messages for all external connections associated with
 // your account.
-func (r *ExternalConnectionLogMessageService) List(ctx context.Context, query ExternalConnectionLogMessageListParams, opts ...option.RequestOption) (res *ExternalConnectionLogMessageListResponse, err error) {
+func (r *ExternalConnectionLogMessageService) List(ctx context.Context, query ExternalConnectionLogMessageListParams, opts ...option.RequestOption) (res *pagination.DefaultPaginationForLogMessages[ExternalConnectionLogMessageListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "external_connections/log_messages"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of log messages for all external connections associated with
+// your account.
+func (r *ExternalConnectionLogMessageService) ListAutoPaging(ctx context.Context, query ExternalConnectionLogMessageListParams, opts ...option.RequestOption) *pagination.DefaultPaginationForLogMessagesAutoPager[ExternalConnectionLogMessageListResponse] {
+	return pagination.NewDefaultPaginationForLogMessagesAutoPager(r.List(ctx, query, opts...))
 }
 
 // Dismiss a log message for an external connection associated with your account.
@@ -151,29 +168,11 @@ func (r *ExternalConnectionLogMessageGetResponseLogMessageSource) UnmarshalJSON(
 }
 
 type ExternalConnectionLogMessageListResponse struct {
-	LogMessages []ExternalConnectionLogMessageListResponseLogMessage `json:"log_messages"`
-	Meta        ExternalVoiceIntegrationsPaginationMeta              `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		LogMessages respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExternalConnectionLogMessageListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionLogMessageListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ExternalConnectionLogMessageListResponseLogMessage struct {
-	Code   string                                                   `json:"code,required" format:"int64"`
-	Title  string                                                   `json:"title,required"`
-	Detail string                                                   `json:"detail"`
-	Meta   ExternalConnectionLogMessageListResponseLogMessageMeta   `json:"meta"`
-	Source ExternalConnectionLogMessageListResponseLogMessageSource `json:"source"`
+	Code   string                                         `json:"code,required" format:"int64"`
+	Title  string                                         `json:"title,required"`
+	Detail string                                         `json:"detail"`
+	Meta   ExternalConnectionLogMessageListResponseMeta   `json:"meta"`
+	Source ExternalConnectionLogMessageListResponseSource `json:"source"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Code        respjson.Field
@@ -187,12 +186,12 @@ type ExternalConnectionLogMessageListResponseLogMessage struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ExternalConnectionLogMessageListResponseLogMessage) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionLogMessageListResponseLogMessage) UnmarshalJSON(data []byte) error {
+func (r ExternalConnectionLogMessageListResponse) RawJSON() string { return r.JSON.raw }
+func (r *ExternalConnectionLogMessageListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ExternalConnectionLogMessageListResponseLogMessageMeta struct {
+type ExternalConnectionLogMessageListResponseMeta struct {
 	// The external connection the log message is associated with, if any.
 	ExternalConnectionID string `json:"external_connection_id" format:"int64"`
 	// The telephone number the log message is associated with, if any.
@@ -210,12 +209,12 @@ type ExternalConnectionLogMessageListResponseLogMessageMeta struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ExternalConnectionLogMessageListResponseLogMessageMeta) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionLogMessageListResponseLogMessageMeta) UnmarshalJSON(data []byte) error {
+func (r ExternalConnectionLogMessageListResponseMeta) RawJSON() string { return r.JSON.raw }
+func (r *ExternalConnectionLogMessageListResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ExternalConnectionLogMessageListResponseLogMessageSource struct {
+type ExternalConnectionLogMessageListResponseSource struct {
 	// JSON pointer (RFC6901) to the offending entity.
 	Pointer string `json:"pointer" format:"json-pointer"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -227,8 +226,8 @@ type ExternalConnectionLogMessageListResponseLogMessageSource struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ExternalConnectionLogMessageListResponseLogMessageSource) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionLogMessageListResponseLogMessageSource) UnmarshalJSON(data []byte) error {
+func (r ExternalConnectionLogMessageListResponseSource) RawJSON() string { return r.JSON.raw }
+func (r *ExternalConnectionLogMessageListResponseSource) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -10,12 +10,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // ExternalConnectionPhoneNumberService contains methods and other services that
@@ -73,15 +74,31 @@ func (r *ExternalConnectionPhoneNumberService) Update(ctx context.Context, phone
 
 // Returns a list of all active phone numbers associated with the given external
 // connection.
-func (r *ExternalConnectionPhoneNumberService) List(ctx context.Context, id string, query ExternalConnectionPhoneNumberListParams, opts ...option.RequestOption) (res *ExternalConnectionPhoneNumberListResponse, err error) {
+func (r *ExternalConnectionPhoneNumberService) List(ctx context.Context, id string, query ExternalConnectionPhoneNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[ExternalConnectionPhoneNumber], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
 	}
 	path := fmt.Sprintf("external_connections/%s/phone_numbers", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Returns a list of all active phone numbers associated with the given external
+// connection.
+func (r *ExternalConnectionPhoneNumberService) ListAutoPaging(ctx context.Context, id string, query ExternalConnectionPhoneNumberListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[ExternalConnectionPhoneNumber] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, id, query, opts...))
 }
 
 type ExternalConnectionPhoneNumber struct {
@@ -150,24 +167,6 @@ type ExternalConnectionPhoneNumberUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ExternalConnectionPhoneNumberUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *ExternalConnectionPhoneNumberUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ExternalConnectionPhoneNumberListResponse struct {
-	Data []ExternalConnectionPhoneNumber         `json:"data"`
-	Meta ExternalVoiceIntegrationsPaginationMeta `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExternalConnectionPhoneNumberListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionPhoneNumberListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

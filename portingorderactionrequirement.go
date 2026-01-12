@@ -11,12 +11,13 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // PortingOrderActionRequirementService contains methods and other services that
@@ -39,15 +40,30 @@ func NewPortingOrderActionRequirementService(opts ...option.RequestOption) (r Po
 }
 
 // Returns a list of action requirements for a specific porting order.
-func (r *PortingOrderActionRequirementService) List(ctx context.Context, portingOrderID string, query PortingOrderActionRequirementListParams, opts ...option.RequestOption) (res *PortingOrderActionRequirementListResponse, err error) {
+func (r *PortingOrderActionRequirementService) List(ctx context.Context, portingOrderID string, query PortingOrderActionRequirementListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingOrderActionRequirementListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if portingOrderID == "" {
 		err = errors.New("missing required porting_order_id parameter")
 		return
 	}
 	path := fmt.Sprintf("porting_orders/%s/action_requirements", portingOrderID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Returns a list of action requirements for a specific porting order.
+func (r *PortingOrderActionRequirementService) ListAutoPaging(ctx context.Context, portingOrderID string, query PortingOrderActionRequirementListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingOrderActionRequirementListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, portingOrderID, query, opts...))
 }
 
 // Initiates a specific action requirement for a porting order.
@@ -67,24 +83,6 @@ func (r *PortingOrderActionRequirementService) Initiate(ctx context.Context, id 
 }
 
 type PortingOrderActionRequirementListResponse struct {
-	Data []PortingOrderActionRequirementListResponseData `json:"data"`
-	Meta PaginationMeta                                  `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingOrderActionRequirementListResponse) RawJSON() string { return r.JSON.raw }
-func (r *PortingOrderActionRequirementListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingOrderActionRequirementListResponseData struct {
 	// Identifies the action requirement
 	ID string `json:"id"`
 	// The type of action required
@@ -100,13 +98,13 @@ type PortingOrderActionRequirementListResponseData struct {
 	// Identifies the type of the resource
 	//
 	// Any of "porting_action_requirement".
-	RecordType string `json:"record_type"`
+	RecordType PortingOrderActionRequirementListResponseRecordType `json:"record_type"`
 	// The ID of the requirement type
 	RequirementTypeID string `json:"requirement_type_id"`
 	// Current status of the action requirement
 	//
 	// Any of "created", "pending", "completed", "cancelled", "failed".
-	Status string `json:"status"`
+	Status PortingOrderActionRequirementListResponseStatus `json:"status"`
 	// ISO 8601 formatted date-time indicating when the resource was updated
 	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -127,10 +125,28 @@ type PortingOrderActionRequirementListResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PortingOrderActionRequirementListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *PortingOrderActionRequirementListResponseData) UnmarshalJSON(data []byte) error {
+func (r PortingOrderActionRequirementListResponse) RawJSON() string { return r.JSON.raw }
+func (r *PortingOrderActionRequirementListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Identifies the type of the resource
+type PortingOrderActionRequirementListResponseRecordType string
+
+const (
+	PortingOrderActionRequirementListResponseRecordTypePortingActionRequirement PortingOrderActionRequirementListResponseRecordType = "porting_action_requirement"
+)
+
+// Current status of the action requirement
+type PortingOrderActionRequirementListResponseStatus string
+
+const (
+	PortingOrderActionRequirementListResponseStatusCreated   PortingOrderActionRequirementListResponseStatus = "created"
+	PortingOrderActionRequirementListResponseStatusPending   PortingOrderActionRequirementListResponseStatus = "pending"
+	PortingOrderActionRequirementListResponseStatusCompleted PortingOrderActionRequirementListResponseStatus = "completed"
+	PortingOrderActionRequirementListResponseStatusCancelled PortingOrderActionRequirementListResponseStatus = "cancelled"
+	PortingOrderActionRequirementListResponseStatusFailed    PortingOrderActionRequirementListResponseStatus = "failed"
+)
 
 type PortingOrderActionRequirementInitiateResponse struct {
 	Data PortingOrderActionRequirementInitiateResponseData `json:"data"`

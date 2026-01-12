@@ -18,10 +18,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apierror"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiform"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apierror"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiform"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
 )
 
 func getDefaultHeaders() map[string]string {
@@ -214,6 +214,10 @@ type RequestConfig struct {
 	Middlewares    []middleware
 	APIKey         string
 	PublicKey      string
+	ClientID       string
+	ClientSecret   string
+	// OAuth2State holds the OAuth2 provider configuration and cached token information
+	OAuth2State *OAuth2State
 	// If ResponseBodyInto not nil, then we will attempt to deserialize into
 	// ResponseBodyInto. If Destination is a []byte, then it will return the body as
 	// is.
@@ -411,6 +415,15 @@ func (cfg *RequestConfig) Execute() (err error) {
 		}
 	}
 
+	if cfg.OAuth2State != nil && cfg.Request.Header.Get("Authorization") == "" {
+		token, err := cfg.OAuth2State.GetToken(cfg)
+		if err != nil {
+			return err
+		}
+
+		cfg.Request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+	}
+
 	handler := cfg.HTTPClient.Do
 	if cfg.CustomHTTPDoer != nil {
 		handler = cfg.CustomHTTPDoer.Do
@@ -587,6 +600,8 @@ func (cfg *RequestConfig) Clone(ctx context.Context) *RequestConfig {
 		Middlewares:    cfg.Middlewares,
 		APIKey:         cfg.APIKey,
 		PublicKey:      cfg.PublicKey,
+		ClientID:       cfg.ClientID,
+		ClientSecret:   cfg.ClientSecret,
 	}
 
 	return new

@@ -12,13 +12,14 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // NotificationChannelService contains methods and other services that help with
@@ -61,23 +62,38 @@ func (r *NotificationChannelService) Get(ctx context.Context, id string, opts ..
 }
 
 // Update a notification channel.
-func (r *NotificationChannelService) Update(ctx context.Context, id string, body NotificationChannelUpdateParams, opts ...option.RequestOption) (res *NotificationChannelUpdateResponse, err error) {
+func (r *NotificationChannelService) Update(ctx context.Context, notificationChannelID string, body NotificationChannelUpdateParams, opts ...option.RequestOption) (res *NotificationChannelUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	if id == "" {
-		err = errors.New("missing required id parameter")
+	if notificationChannelID == "" {
+		err = errors.New("missing required notification_channel_id parameter")
 		return
 	}
-	path := fmt.Sprintf("notification_channels/%s", id)
+	path := fmt.Sprintf("notification_channels/%s", notificationChannelID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
 }
 
 // List notification channels.
-func (r *NotificationChannelService) List(ctx context.Context, query NotificationChannelListParams, opts ...option.RequestOption) (res *NotificationChannelListResponse, err error) {
+func (r *NotificationChannelService) List(ctx context.Context, query NotificationChannelListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[NotificationChannel], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "notification_channels"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List notification channels.
+func (r *NotificationChannelService) ListAutoPaging(ctx context.Context, query NotificationChannelListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[NotificationChannel] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a notification channel.
@@ -215,24 +231,6 @@ type NotificationChannelUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r NotificationChannelUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *NotificationChannelUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type NotificationChannelListResponse struct {
-	Data []NotificationChannel `json:"data"`
-	Meta PaginationMeta        `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r NotificationChannelListResponse) RawJSON() string { return r.JSON.raw }
-func (r *NotificationChannelListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

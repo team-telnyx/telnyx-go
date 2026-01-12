@@ -9,12 +9,13 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // PortingOrderPhoneNumberConfigurationService contains methods and other services
@@ -46,11 +47,26 @@ func (r *PortingOrderPhoneNumberConfigurationService) New(ctx context.Context, b
 }
 
 // Returns a list of phone number configurations paginated.
-func (r *PortingOrderPhoneNumberConfigurationService) List(ctx context.Context, query PortingOrderPhoneNumberConfigurationListParams, opts ...option.RequestOption) (res *PortingOrderPhoneNumberConfigurationListResponse, err error) {
+func (r *PortingOrderPhoneNumberConfigurationService) List(ctx context.Context, query PortingOrderPhoneNumberConfigurationListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingOrderPhoneNumberConfigurationListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "porting_orders/phone_number_configurations"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Returns a list of phone number configurations paginated.
+func (r *PortingOrderPhoneNumberConfigurationService) ListAutoPaging(ctx context.Context, query PortingOrderPhoneNumberConfigurationListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingOrderPhoneNumberConfigurationListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type PortingOrderPhoneNumberConfigurationNewResponse struct {
@@ -102,24 +118,6 @@ func (r *PortingOrderPhoneNumberConfigurationNewResponseData) UnmarshalJSON(data
 }
 
 type PortingOrderPhoneNumberConfigurationListResponse struct {
-	Data []PortingOrderPhoneNumberConfigurationListResponseData `json:"data"`
-	Meta PaginationMeta                                         `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingOrderPhoneNumberConfigurationListResponse) RawJSON() string { return r.JSON.raw }
-func (r *PortingOrderPhoneNumberConfigurationListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingOrderPhoneNumberConfigurationListResponseData struct {
 	// Uniquely identifies this phone number configuration
 	ID string `json:"id" format:"uuid"`
 	// ISO 8601 formatted date indicating when the resource was created.
@@ -146,8 +144,8 @@ type PortingOrderPhoneNumberConfigurationListResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PortingOrderPhoneNumberConfigurationListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *PortingOrderPhoneNumberConfigurationListResponseData) UnmarshalJSON(data []byte) error {
+func (r PortingOrderPhoneNumberConfigurationListResponse) RawJSON() string { return r.JSON.raw }
+func (r *PortingOrderPhoneNumberConfigurationListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

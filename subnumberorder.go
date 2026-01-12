@@ -11,12 +11,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v3/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v3/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v3/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v3/option"
-	"github.com/team-telnyx/telnyx-go/v3/packages/param"
-	"github.com/team-telnyx/telnyx-go/v3/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // SubNumberOrderService contains methods and other services that help with
@@ -323,7 +323,7 @@ func (r *SubNumberOrderUpdateRequirementGroupResponseData) UnmarshalJSON(data []
 
 type SubNumberOrderUpdateRequirementGroupResponseDataPhoneNumber struct {
 	ID                     string                                                                             `json:"id" format:"uuid"`
-	BundleID               string                                                                             `json:"bundle_id" format:"uuid"`
+	BundleID               string                                                                             `json:"bundle_id,nullable" format:"uuid"`
 	CountryCode            string                                                                             `json:"country_code"`
 	PhoneNumber            string                                                                             `json:"phone_number"`
 	PhoneNumberType        string                                                                             `json:"phone_number_type"`
