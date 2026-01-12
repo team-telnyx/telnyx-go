@@ -14,7 +14,7 @@ import (
 	"encoding"
 	"encoding/base64"
 	"fmt"
-	"github.com/team-telnyx/telnyx-go/v3/internal/encoding/json/shims"
+	"github.com/team-telnyx/telnyx-go/v4/internal/encoding/json/shims"
 	"reflect"
 	"strconv"
 	"strings"

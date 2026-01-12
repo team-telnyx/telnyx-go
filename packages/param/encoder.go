@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	shimjson "github.com/team-telnyx/telnyx-go/v3/internal/encoding/json"
+	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
 
 	"github.com/tidwall/sjson"
 )
