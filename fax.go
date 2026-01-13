@@ -279,6 +279,9 @@ type FaxNewParams struct {
 	From string `json:"from,required"`
 	// The phone number, in E.164 format, the fax will be sent to or SIP URI
 	To string `json:"to,required"`
+	// The black threshold percentage for monochrome faxes. Only applicable if
+	// `monochrome` is set to `true`.
+	BlackThreshold param.Opt[int64] `json:"black_threshold,omitzero"`
 	// Use this field to add state to every subsequent webhook. It must be a valid
 	// Base-64 encoded string.
 	ClientState param.Opt[string] `json:"client_state,omitzero"`
