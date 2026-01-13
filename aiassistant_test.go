@@ -122,6 +122,22 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			UseSpeakerBoost: telnyx.Bool(true),
 			VoiceSpeed:      telnyx.Float(0),
 		},
+		WidgetSettings: telnyx.AIAssistantNewParamsWidgetSettings{
+			AgentThinkingText: telnyx.String("agent_thinking_text"),
+			AudioVisualizerConfig: telnyx.AIAssistantNewParamsWidgetSettingsAudioVisualizerConfig{
+				Color:  "verdant",
+				Preset: telnyx.String("preset"),
+			},
+			DefaultState:         "expanded",
+			GiveFeedbackURL:      telnyx.String("give_feedback_url"),
+			LogoIconURL:          telnyx.String("logo_icon_url"),
+			Position:             "fixed",
+			ReportIssueURL:       telnyx.String("report_issue_url"),
+			SpeakToInterruptText: telnyx.String("speak_to_interrupt_text"),
+			StartCallText:        telnyx.String("start_call_text"),
+			Theme:                "light",
+			ViewHistoryURL:       telnyx.String("view_history_url"),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -277,6 +293,22 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				UseSpeakerBoost: telnyx.Bool(true),
 				VoiceSpeed:      telnyx.Float(0),
 			},
+			WidgetSettings: telnyx.AIAssistantUpdateParamsWidgetSettings{
+				AgentThinkingText: telnyx.String("agent_thinking_text"),
+				AudioVisualizerConfig: telnyx.AIAssistantUpdateParamsWidgetSettingsAudioVisualizerConfig{
+					Color:  "verdant",
+					Preset: telnyx.String("preset"),
+				},
+				DefaultState:         "expanded",
+				GiveFeedbackURL:      telnyx.String("give_feedback_url"),
+				LogoIconURL:          telnyx.String("logo_icon_url"),
+				Position:             "fixed",
+				ReportIssueURL:       telnyx.String("report_issue_url"),
+				SpeakToInterruptText: telnyx.String("speak_to_interrupt_text"),
+				StartCallText:        telnyx.String("start_call_text"),
+				Theme:                "light",
+				ViewHistoryURL:       telnyx.String("view_history_url"),
+			},
 		},
 	)
 	if err != nil {
@@ -411,7 +443,7 @@ func TestAIAssistantGetTexml(t *testing.T) {
 	}
 }
 
-func TestAIAssistantImports(t *testing.T) {
+func TestAIAssistantImportsWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -427,6 +459,7 @@ func TestAIAssistantImports(t *testing.T) {
 	_, err := client.AI.Assistants.Imports(context.TODO(), telnyx.AIAssistantImportsParams{
 		APIKeyRef: "api_key_ref",
 		Provider:  telnyx.AIAssistantImportsParamsProviderElevenlabs,
+		ImportIDs: []string{"string"},
 	})
 	if err != nil {
 		var apierr *telnyx.Error
