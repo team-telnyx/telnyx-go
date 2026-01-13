@@ -3,7 +3,7 @@ module github.com/team-telnyx/telnyx-go/v4
 go 1.22
 
 require (
-	github.com/standard-webhooks/standard-webhooks/libraries v0.0.0-20251210175704-b03a68fe8b19
+	github.com/standard-webhooks/standard-webhooks/libraries v0.0.0-20260113211855-b57537b4939a
 	github.com/tidwall/gjson v1.18.0
 	github.com/tidwall/sjson v1.2.5
 )

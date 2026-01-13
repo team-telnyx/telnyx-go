@@ -1362,6 +1362,8 @@ type InferenceEmbedding struct {
 	Tools         []AssistantToolsItemsUnion `json:"tools"`
 	Transcription TranscriptionSettings      `json:"transcription"`
 	VoiceSettings VoiceSettings              `json:"voice_settings"`
+	// Configuration settings for the assistant's web widget.
+	WidgetSettings InferenceEmbeddingWidgetSettings `json:"widget_settings"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                         respjson.Field
@@ -1383,6 +1385,7 @@ type InferenceEmbedding struct {
 		Tools                      respjson.Field
 		Transcription              respjson.Field
 		VoiceSettings              respjson.Field
+		WidgetSettings             respjson.Field
 		ExtraFields                map[string]respjson.Field
 		raw                        string
 	} `json:"-"`
@@ -1391,6 +1394,81 @@ type InferenceEmbedding struct {
 // Returns the unmodified JSON received from the API
 func (r InferenceEmbedding) RawJSON() string { return r.JSON.raw }
 func (r *InferenceEmbedding) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration settings for the assistant's web widget.
+type InferenceEmbeddingWidgetSettings struct {
+	// Text displayed while the agent is processing.
+	AgentThinkingText     string                                                `json:"agent_thinking_text"`
+	AudioVisualizerConfig InferenceEmbeddingWidgetSettingsAudioVisualizerConfig `json:"audio_visualizer_config"`
+	// The default state of the widget.
+	//
+	// Any of "expanded", "collapsed".
+	DefaultState string `json:"default_state"`
+	// URL for users to give feedback.
+	GiveFeedbackURL string `json:"give_feedback_url,nullable"`
+	// URL to a custom logo icon for the widget.
+	LogoIconURL string `json:"logo_icon_url,nullable"`
+	// The positioning style for the widget.
+	//
+	// Any of "fixed", "static".
+	Position string `json:"position"`
+	// URL for users to report issues.
+	ReportIssueURL string `json:"report_issue_url,nullable"`
+	// Text prompting users to speak to interrupt.
+	SpeakToInterruptText string `json:"speak_to_interrupt_text"`
+	// Custom text displayed on the start call button.
+	StartCallText string `json:"start_call_text"`
+	// The visual theme for the widget.
+	//
+	// Any of "light", "dark".
+	Theme string `json:"theme"`
+	// URL to view conversation history.
+	ViewHistoryURL string `json:"view_history_url,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AgentThinkingText     respjson.Field
+		AudioVisualizerConfig respjson.Field
+		DefaultState          respjson.Field
+		GiveFeedbackURL       respjson.Field
+		LogoIconURL           respjson.Field
+		Position              respjson.Field
+		ReportIssueURL        respjson.Field
+		SpeakToInterruptText  respjson.Field
+		StartCallText         respjson.Field
+		Theme                 respjson.Field
+		ViewHistoryURL        respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingWidgetSettings) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingWidgetSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InferenceEmbeddingWidgetSettingsAudioVisualizerConfig struct {
+	// The color theme for the audio visualizer.
+	//
+	// Any of "verdant", "twilight", "bloom", "mystic", "flare", "glacier".
+	Color string `json:"color"`
+	// The preset style for the audio visualizer.
+	Preset string `json:"preset"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Color       respjson.Field
+		Preset      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingWidgetSettingsAudioVisualizerConfig) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingWidgetSettingsAudioVisualizerConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2978,6 +3056,8 @@ type AIAssistantNewParams struct {
 	Tools         []AssistantToolsItemsUnionParam `json:"tools,omitzero"`
 	Transcription TranscriptionSettingsParam      `json:"transcription,omitzero"`
 	VoiceSettings VoiceSettingsParam              `json:"voice_settings,omitzero"`
+	// Configuration settings for the assistant's web widget.
+	WidgetSettings AIAssistantNewParamsWidgetSettings `json:"widget_settings,omitzero"`
 	paramObj
 }
 
@@ -2987,6 +3067,82 @@ func (r AIAssistantNewParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *AIAssistantNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration settings for the assistant's web widget.
+type AIAssistantNewParamsWidgetSettings struct {
+	// URL for users to give feedback.
+	GiveFeedbackURL param.Opt[string] `json:"give_feedback_url,omitzero"`
+	// URL to a custom logo icon for the widget.
+	LogoIconURL param.Opt[string] `json:"logo_icon_url,omitzero"`
+	// URL for users to report issues.
+	ReportIssueURL param.Opt[string] `json:"report_issue_url,omitzero"`
+	// URL to view conversation history.
+	ViewHistoryURL param.Opt[string] `json:"view_history_url,omitzero"`
+	// Text displayed while the agent is processing.
+	AgentThinkingText param.Opt[string] `json:"agent_thinking_text,omitzero"`
+	// Text prompting users to speak to interrupt.
+	SpeakToInterruptText param.Opt[string] `json:"speak_to_interrupt_text,omitzero"`
+	// Custom text displayed on the start call button.
+	StartCallText         param.Opt[string]                                       `json:"start_call_text,omitzero"`
+	AudioVisualizerConfig AIAssistantNewParamsWidgetSettingsAudioVisualizerConfig `json:"audio_visualizer_config,omitzero"`
+	// The default state of the widget.
+	//
+	// Any of "expanded", "collapsed".
+	DefaultState string `json:"default_state,omitzero"`
+	// The positioning style for the widget.
+	//
+	// Any of "fixed", "static".
+	Position string `json:"position,omitzero"`
+	// The visual theme for the widget.
+	//
+	// Any of "light", "dark".
+	Theme string `json:"theme,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsWidgetSettings) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsWidgetSettings
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsWidgetSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantNewParamsWidgetSettings](
+		"default_state", "expanded", "collapsed",
+	)
+	apijson.RegisterFieldValidator[AIAssistantNewParamsWidgetSettings](
+		"position", "fixed", "static",
+	)
+	apijson.RegisterFieldValidator[AIAssistantNewParamsWidgetSettings](
+		"theme", "light", "dark",
+	)
+}
+
+type AIAssistantNewParamsWidgetSettingsAudioVisualizerConfig struct {
+	// The preset style for the audio visualizer.
+	Preset param.Opt[string] `json:"preset,omitzero"`
+	// The color theme for the audio visualizer.
+	//
+	// Any of "verdant", "twilight", "bloom", "mystic", "flare", "glacier".
+	Color string `json:"color,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsWidgetSettingsAudioVisualizerConfig) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsWidgetSettingsAudioVisualizerConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsWidgetSettingsAudioVisualizerConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantNewParamsWidgetSettingsAudioVisualizerConfig](
+		"color", "verdant", "twilight", "bloom", "mystic", "flare", "glacier",
+	)
 }
 
 type AIAssistantGetParams struct {
@@ -3045,6 +3201,8 @@ type AIAssistantUpdateParams struct {
 	Tools         []AssistantToolsItemsUnionParam `json:"tools,omitzero"`
 	Transcription TranscriptionSettingsParam      `json:"transcription,omitzero"`
 	VoiceSettings VoiceSettingsParam              `json:"voice_settings,omitzero"`
+	// Configuration settings for the assistant's web widget.
+	WidgetSettings AIAssistantUpdateParamsWidgetSettings `json:"widget_settings,omitzero"`
 	paramObj
 }
 
@@ -3054,6 +3212,82 @@ func (r AIAssistantUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *AIAssistantUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration settings for the assistant's web widget.
+type AIAssistantUpdateParamsWidgetSettings struct {
+	// URL for users to give feedback.
+	GiveFeedbackURL param.Opt[string] `json:"give_feedback_url,omitzero"`
+	// URL to a custom logo icon for the widget.
+	LogoIconURL param.Opt[string] `json:"logo_icon_url,omitzero"`
+	// URL for users to report issues.
+	ReportIssueURL param.Opt[string] `json:"report_issue_url,omitzero"`
+	// URL to view conversation history.
+	ViewHistoryURL param.Opt[string] `json:"view_history_url,omitzero"`
+	// Text displayed while the agent is processing.
+	AgentThinkingText param.Opt[string] `json:"agent_thinking_text,omitzero"`
+	// Text prompting users to speak to interrupt.
+	SpeakToInterruptText param.Opt[string] `json:"speak_to_interrupt_text,omitzero"`
+	// Custom text displayed on the start call button.
+	StartCallText         param.Opt[string]                                          `json:"start_call_text,omitzero"`
+	AudioVisualizerConfig AIAssistantUpdateParamsWidgetSettingsAudioVisualizerConfig `json:"audio_visualizer_config,omitzero"`
+	// The default state of the widget.
+	//
+	// Any of "expanded", "collapsed".
+	DefaultState string `json:"default_state,omitzero"`
+	// The positioning style for the widget.
+	//
+	// Any of "fixed", "static".
+	Position string `json:"position,omitzero"`
+	// The visual theme for the widget.
+	//
+	// Any of "light", "dark".
+	Theme string `json:"theme,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsWidgetSettings) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsWidgetSettings
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsWidgetSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantUpdateParamsWidgetSettings](
+		"default_state", "expanded", "collapsed",
+	)
+	apijson.RegisterFieldValidator[AIAssistantUpdateParamsWidgetSettings](
+		"position", "fixed", "static",
+	)
+	apijson.RegisterFieldValidator[AIAssistantUpdateParamsWidgetSettings](
+		"theme", "light", "dark",
+	)
+}
+
+type AIAssistantUpdateParamsWidgetSettingsAudioVisualizerConfig struct {
+	// The preset style for the audio visualizer.
+	Preset param.Opt[string] `json:"preset,omitzero"`
+	// The color theme for the audio visualizer.
+	//
+	// Any of "verdant", "twilight", "bloom", "mystic", "flare", "glacier".
+	Color string `json:"color,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsWidgetSettingsAudioVisualizerConfig) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsWidgetSettingsAudioVisualizerConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsWidgetSettingsAudioVisualizerConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantUpdateParamsWidgetSettingsAudioVisualizerConfig](
+		"color", "verdant", "twilight", "bloom", "mystic", "flare", "glacier",
+	)
 }
 
 type AIAssistantChatParams struct {
@@ -3083,6 +3317,9 @@ type AIAssistantImportsParams struct {
 	//
 	// Any of "elevenlabs", "vapi", "retell".
 	Provider AIAssistantImportsParamsProvider `json:"provider,omitzero,required"`
+	// Optional list of assistant IDs to import from the external provider. If not
+	// provided, all assistants will be imported.
+	ImportIDs []string `json:"import_ids,omitzero"`
 	paramObj
 }
 
