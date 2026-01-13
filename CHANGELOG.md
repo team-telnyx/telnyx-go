@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.1.0 (2026-01-13)
+
+Full Changelog: [v4.0.0...v4.1.0](https://github.com/team-telnyx/telnyx-go/compare/v4.0.0...v4.1.0)
+
+### Features
+
+* **api:** manual updates ([04a604f](https://github.com/team-telnyx/telnyx-go/commit/04a604f6eb9db097d3e7c19621817e81aa278f69))
+* TELAPPS Add GET /texml/Accounts/{account_sid}/Queues endpoint ([30157cd](https://github.com/team-telnyx/telnyx-go/commit/30157cdc59e45769a71fb672a88bfdf1211b6def))
+* TELAPPS-ENGDESK-47967 Add black_threshold parameter to send_fax request ([e975cbb](https://github.com/team-telnyx/telnyx-go/commit/e975cbb078ebde59775c24319f2751da16fdadd4))
+
 ## 4.0.0 (2026-01-09)
 
 Full Changelog: [v3.7.0...v4.0.0](https://github.com/team-telnyx/telnyx-go/compare/v3.7.0...v4.0.0)
