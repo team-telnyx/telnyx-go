@@ -157,6 +157,22 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					UseSpeakerBoost: telnyx.Bool(true),
 					VoiceSpeed:      telnyx.Float(0),
 				},
+				WidgetSettings: telnyx.UpdateAssistantWidgetSettingsParam{
+					AgentThinkingText: telnyx.String("agent_thinking_text"),
+					AudioVisualizerConfig: telnyx.UpdateAssistantWidgetSettingsAudioVisualizerConfigParam{
+						Color:  "verdant",
+						Preset: telnyx.String("preset"),
+					},
+					DefaultState:         "expanded",
+					GiveFeedbackURL:      telnyx.String("give_feedback_url"),
+					LogoIconURL:          telnyx.String("logo_icon_url"),
+					Position:             "fixed",
+					ReportIssueURL:       telnyx.String("report_issue_url"),
+					SpeakToInterruptText: telnyx.String("speak_to_interrupt_text"),
+					StartCallText:        telnyx.String("start_call_text"),
+					Theme:                "light",
+					ViewHistoryURL:       telnyx.String("view_history_url"),
+				},
 			},
 		},
 	)
