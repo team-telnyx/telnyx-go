@@ -7,9 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
@@ -76,6 +78,18 @@ func (r *TexmlAccountQueueService) Update(ctx context.Context, queueSid string, 
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Queues/%s", params.AccountSid, queueSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	return
+}
+
+// Lists queue resources.
+func (r *TexmlAccountQueueService) List(ctx context.Context, accountSid string, query TexmlAccountQueueListParams, opts ...option.RequestOption) (res *TexmlAccountQueueListResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if accountSid == "" {
+		err = errors.New("missing required account_sid parameter")
+		return
+	}
+	path := fmt.Sprintf("texml/Accounts/%s/Queues", accountSid)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
 }
 
@@ -219,6 +233,84 @@ func (r *TexmlAccountQueueUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type TexmlAccountQueueListResponse struct {
+	// The number of the last element on the page, zero-indexed.
+	End int64 `json:"end"`
+	// /v2/texml/Accounts/61bf923e-5e4d-4595-a110-56190ea18a1b/Queues.json?Page=0&PageSize=1
+	FirstPageUri string `json:"first_page_uri"`
+	// /v2/texml/Accounts/61bf923e-5e4d-4595-a110-56190ea18a1b/Queues.json?Page=1&PageSize=1&PageToken=MTY4AjgyNDkwNzIxMQ
+	NextPageUri string `json:"next_page_uri"`
+	// Current page number, zero-indexed.
+	Page int64 `json:"page"`
+	// The number of items on the page
+	PageSize int64                                `json:"page_size"`
+	Queues   []TexmlAccountQueueListResponseQueue `json:"queues"`
+	// The number of the first element on the page, zero-indexed.
+	Start int64 `json:"start"`
+	// The URI of the current page.
+	Uri string `json:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		End          respjson.Field
+		FirstPageUri respjson.Field
+		NextPageUri  respjson.Field
+		Page         respjson.Field
+		PageSize     respjson.Field
+		Queues       respjson.Field
+		Start        respjson.Field
+		Uri          respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TexmlAccountQueueListResponse) RawJSON() string { return r.JSON.raw }
+func (r *TexmlAccountQueueListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TexmlAccountQueueListResponseQueue struct {
+	// The id of the account the resource belongs to.
+	AccountSid string `json:"account_sid"`
+	// The average wait time in seconds for members in the queue.
+	AverageWaitTime int64 `json:"average_wait_time"`
+	// The current number of members in the queue.
+	CurrentSize int64 `json:"current_size"`
+	// The timestamp of when the resource was created.
+	DateCreated string `json:"date_created"`
+	// The timestamp of when the resource was last updated.
+	DateUpdated string `json:"date_updated"`
+	// The maximum size of the queue.
+	MaxSize int64 `json:"max_size"`
+	// The unique identifier of the queue.
+	Sid string `json:"sid"`
+	// A list of related resources identified by their relative URIs.
+	SubresourceUris map[string]any `json:"subresource_uris"`
+	// The relative URI for this queue.
+	Uri string `json:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AccountSid      respjson.Field
+		AverageWaitTime respjson.Field
+		CurrentSize     respjson.Field
+		DateCreated     respjson.Field
+		DateUpdated     respjson.Field
+		MaxSize         respjson.Field
+		Sid             respjson.Field
+		SubresourceUris respjson.Field
+		Uri             respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TexmlAccountQueueListResponseQueue) RawJSON() string { return r.JSON.raw }
+func (r *TexmlAccountQueueListResponseQueue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type TexmlAccountQueueNewParams struct {
 	// A human readable name for the queue.
 	FriendlyName param.Opt[string] `json:"FriendlyName,omitzero"`
@@ -253,6 +345,32 @@ func (r TexmlAccountQueueUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *TexmlAccountQueueUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type TexmlAccountQueueListParams struct {
+	// Filters conferences by the creation date. Expected format is YYYY-MM-DD. Also
+	// accepts inequality operators, e.g. DateCreated>=2023-05-22.
+	DateCreated param.Opt[string] `query:"DateCreated,omitzero" json:"-"`
+	// Filters conferences by the time they were last updated. Expected format is
+	// YYYY-MM-DD. Also accepts inequality operators, e.g. DateUpdated>=2023-05-22.
+	DateUpdated param.Opt[string] `query:"DateUpdated,omitzero" json:"-"`
+	// The number of the page to be displayed, zero-indexed, should be used in
+	// conjuction with PageToken.
+	Page param.Opt[int64] `query:"Page,omitzero" json:"-"`
+	// The number of records to be displayed on a page
+	PageSize param.Opt[int64] `query:"PageSize,omitzero" json:"-"`
+	// Used to request the next page of results.
+	PageToken param.Opt[string] `query:"PageToken,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [TexmlAccountQueueListParams]'s query parameters as
+// `url.Values`.
+func (r TexmlAccountQueueListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
 type TexmlAccountQueueDeleteParams struct {
