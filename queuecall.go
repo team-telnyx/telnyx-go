@@ -72,7 +72,7 @@ func (r *QueueCallService) Update(ctx context.Context, callControlID string, par
 }
 
 // Retrieve the list of calls in an existing queue
-func (r *QueueCallService) List(ctx context.Context, queueName string, query QueueCallListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[QueueCallListResponse], err error) {
+func (r *QueueCallService) List(ctx context.Context, queueName string, query QueueCallListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[QueueCallListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -94,8 +94,8 @@ func (r *QueueCallService) List(ctx context.Context, queueName string, query Que
 }
 
 // Retrieve the list of calls in an existing queue
-func (r *QueueCallService) ListAutoPaging(ctx context.Context, queueName string, query QueueCallListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[QueueCallListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, queueName, query, opts...))
+func (r *QueueCallService) ListAutoPaging(ctx context.Context, queueName string, query QueueCallListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[QueueCallListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, queueName, query, opts...))
 }
 
 // Removes an inactive call from a queue. If the call is no longer active, use this
@@ -263,6 +263,8 @@ func (r *QueueCallUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type QueueCallListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated page parameter (deepObject style). Originally: page[after],
 	// page[before], page[limit], page[size], page[number]
 	Page QueueCallListParamsPage `query:"page,omitzero" json:"-"`
@@ -286,10 +288,6 @@ type QueueCallListParamsPage struct {
 	Before param.Opt[string] `query:"before,omitzero" json:"-"`
 	// Limit of records per single page
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
 	paramObj
 }
 

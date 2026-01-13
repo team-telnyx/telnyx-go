@@ -77,7 +77,7 @@ func (r *ConnectionService) ListAutoPaging(ctx context.Context, query Connection
 // Lists all active calls for given connection. Acceptable connections are either
 // SIP connections with webhook_url or xml_request_url, call control or texml.
 // Returned results are cursor paginated.
-func (r *ConnectionService) ListActiveCalls(ctx context.Context, connectionID string, query ConnectionListActiveCallsParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[ConnectionListActiveCallsResponse], err error) {
+func (r *ConnectionService) ListActiveCalls(ctx context.Context, connectionID string, query ConnectionListActiveCallsParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[ConnectionListActiveCallsResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -101,8 +101,8 @@ func (r *ConnectionService) ListActiveCalls(ctx context.Context, connectionID st
 // Lists all active calls for given connection. Acceptable connections are either
 // SIP connections with webhook_url or xml_request_url, call control or texml.
 // Returned results are cursor paginated.
-func (r *ConnectionService) ListActiveCallsAutoPaging(ctx context.Context, connectionID string, query ConnectionListActiveCallsParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[ConnectionListActiveCallsResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.ListActiveCalls(ctx, connectionID, query, opts...))
+func (r *ConnectionService) ListActiveCallsAutoPaging(ctx context.Context, connectionID string, query ConnectionListActiveCallsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[ConnectionListActiveCallsResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.ListActiveCalls(ctx, connectionID, query, opts...))
 }
 
 type ConnectionGetResponse struct {
@@ -406,6 +406,8 @@ const (
 )
 
 type ConnectionListActiveCallsParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated page parameter (deepObject style). Originally: page[after],
 	// page[before], page[limit], page[size], page[number]
 	Page ConnectionListActiveCallsParamsPage `query:"page,omitzero" json:"-"`
@@ -430,10 +432,6 @@ type ConnectionListActiveCallsParamsPage struct {
 	Before param.Opt[string] `query:"before,omitzero" json:"-"`
 	// Limit of records per single page
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
 	paramObj
 }
 
