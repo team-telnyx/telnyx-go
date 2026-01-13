@@ -77,7 +77,7 @@ func (r *ConferenceService) Get(ctx context.Context, id string, query Conference
 // participants have left the conference or after 4 hours regardless of the number
 // of active participants. Conferences are listed in descending order by
 // `expires_at`.
-func (r *ConferenceService) List(ctx context.Context, query ConferenceListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[Conference], err error) {
+func (r *ConferenceService) List(ctx context.Context, query ConferenceListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[Conference], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -98,12 +98,12 @@ func (r *ConferenceService) List(ctx context.Context, query ConferenceListParams
 // participants have left the conference or after 4 hours regardless of the number
 // of active participants. Conferences are listed in descending order by
 // `expires_at`.
-func (r *ConferenceService) ListAutoPaging(ctx context.Context, query ConferenceListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[Conference] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *ConferenceService) ListAutoPaging(ctx context.Context, query ConferenceListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[Conference] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Lists conference participants
-func (r *ConferenceService) ListParticipants(ctx context.Context, conferenceID string, query ConferenceListParticipantsParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[ConferenceListParticipantsResponse], err error) {
+func (r *ConferenceService) ListParticipants(ctx context.Context, conferenceID string, query ConferenceListParticipantsParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[ConferenceListParticipantsResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -125,8 +125,8 @@ func (r *ConferenceService) ListParticipants(ctx context.Context, conferenceID s
 }
 
 // Lists conference participants
-func (r *ConferenceService) ListParticipantsAutoPaging(ctx context.Context, conferenceID string, query ConferenceListParticipantsParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[ConferenceListParticipantsResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.ListParticipants(ctx, conferenceID, query, opts...))
+func (r *ConferenceService) ListParticipantsAutoPaging(ctx context.Context, conferenceID string, query ConferenceListParticipantsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[ConferenceListParticipantsResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.ListParticipants(ctx, conferenceID, query, opts...))
 }
 
 type Conference struct {
@@ -459,6 +459,8 @@ const (
 )
 
 type ConferenceListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[application_name][contains], filter[outbound.outbound_voice_profile_id],
 	// filter[leg_id], filter[application_session_id], filter[connection_id],
@@ -586,10 +588,6 @@ type ConferenceListParamsPage struct {
 	Before param.Opt[string] `query:"before,omitzero" json:"-"`
 	// Limit of records per single page
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
 	paramObj
 }
 
@@ -613,6 +611,8 @@ const (
 )
 
 type ConferenceListParticipantsParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[muted],
 	// filter[on_hold], filter[whispering]
 	Filter ConferenceListParticipantsParamsFilter `query:"filter,omitzero" json:"-"`
@@ -665,10 +665,6 @@ type ConferenceListParticipantsParamsPage struct {
 	Before param.Opt[string] `query:"before,omitzero" json:"-"`
 	// Limit of records per single page
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
 	paramObj
 }
 

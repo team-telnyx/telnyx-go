@@ -41,7 +41,7 @@ func NewCallEventService(opts ...option.RequestOption) (r CallEventService) {
 // present, it only filters events from the last 24 hours.
 //
 // **Note**: Only one `filter[occurred_at]` can be passed.
-func (r *CallEventService) List(ctx context.Context, query CallEventListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[CallEventListResponse], err error) {
+func (r *CallEventService) List(ctx context.Context, query CallEventListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[CallEventListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -63,8 +63,8 @@ func (r *CallEventService) List(ctx context.Context, query CallEventListParams, 
 // present, it only filters events from the last 24 hours.
 //
 // **Note**: Only one `filter[occurred_at]` can be passed.
-func (r *CallEventService) ListAutoPaging(ctx context.Context, query CallEventListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[CallEventListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *CallEventService) ListAutoPaging(ctx context.Context, query CallEventListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[CallEventListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type CallEventListResponse struct {
@@ -121,6 +121,8 @@ const (
 )
 
 type CallEventListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[application_name][contains], filter[outbound.outbound_voice_profile_id],
 	// filter[leg_id], filter[application_session_id], filter[connection_id],
@@ -244,10 +246,6 @@ type CallEventListParamsPage struct {
 	Before param.Opt[string] `query:"before,omitzero" json:"-"`
 	// Limit of records per single page
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
 	paramObj
 }
 

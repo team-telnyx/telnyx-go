@@ -72,7 +72,7 @@ func (r *CallControlApplicationService) Update(ctx context.Context, id string, b
 }
 
 // Return a list of call control applications.
-func (r *CallControlApplicationService) List(ctx context.Context, query CallControlApplicationListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[CallControlApplication], err error) {
+func (r *CallControlApplicationService) List(ctx context.Context, query CallControlApplicationListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[CallControlApplication], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -90,8 +90,8 @@ func (r *CallControlApplicationService) List(ctx context.Context, query CallCont
 }
 
 // Return a list of call control applications.
-func (r *CallControlApplicationService) ListAutoPaging(ctx context.Context, query CallControlApplicationListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[CallControlApplication] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *CallControlApplicationService) ListAutoPaging(ctx context.Context, query CallControlApplicationListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[CallControlApplication] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Deletes a call control application.
@@ -614,6 +614,8 @@ const (
 )
 
 type CallControlApplicationListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[application_name][contains], filter[outbound.outbound_voice_profile_id],
 	// filter[leg_id], filter[application_session_id], filter[connection_id],
@@ -756,10 +758,6 @@ type CallControlApplicationListParamsPage struct {
 	Before param.Opt[string] `query:"before,omitzero" json:"-"`
 	// Limit of records per single page
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
 	paramObj
 }
 
