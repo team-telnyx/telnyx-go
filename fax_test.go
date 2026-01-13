@@ -31,6 +31,7 @@ func TestFaxNewWithOptionalParams(t *testing.T) {
 		ConnectionID:    "234423",
 		From:            "+13125790015",
 		To:              "+13127367276",
+		BlackThreshold:  telnyx.Int(1),
 		ClientState:     telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
 		FromDisplayName: telnyx.String("Company Name"),
 		MediaName:       telnyx.String("my_media_uploaded_to_media_storage_api"),
