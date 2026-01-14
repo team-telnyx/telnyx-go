@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.2.0 (2026-01-14)
+
+Full Changelog: [v4.1.0...v4.2.0](https://github.com/team-telnyx/telnyx-go/compare/v4.1.0...v4.2.0)
+
+### Features
+
+* Add widget_settings to AI Assistant and import_ids to ImportAssistant… ([1540c3b](https://github.com/team-telnyx/telnyx-go/commit/1540c3b35a65ac050a6c8b6c1c2e10a4b02344df))
+* **api:** fix default pagination by correctly using nested params ([bf475c0](https://github.com/team-telnyx/telnyx-go/commit/bf475c02def137869f3226f845fa2c03b1fff9b2))
+
 ## 4.1.0 (2026-01-13)
 
 Full Changelog: [v4.0.0...v4.1.0](https://github.com/team-telnyx/telnyx-go/compare/v4.0.0...v4.1.0)
