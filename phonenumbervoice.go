@@ -65,7 +65,7 @@ func (r *PhoneNumberVoiceService) Update(ctx context.Context, id string, body Ph
 }
 
 // List phone numbers with voice settings
-func (r *PhoneNumberVoiceService) List(ctx context.Context, query PhoneNumberVoiceListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PhoneNumberWithVoiceSettings], err error) {
+func (r *PhoneNumberVoiceService) List(ctx context.Context, query PhoneNumberVoiceListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PhoneNumberWithVoiceSettings], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -83,8 +83,8 @@ func (r *PhoneNumberVoiceService) List(ctx context.Context, query PhoneNumberVoi
 }
 
 // List phone numbers with voice settings
-func (r *PhoneNumberVoiceService) ListAutoPaging(ctx context.Context, query PhoneNumberVoiceListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PhoneNumberWithVoiceSettings] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *PhoneNumberVoiceService) ListAutoPaging(ctx context.Context, query PhoneNumberVoiceListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PhoneNumberWithVoiceSettings] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // The call forwarding settings for a phone number.
@@ -455,13 +455,12 @@ func (r *PhoneNumberVoiceUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type PhoneNumberVoiceListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[phone_number], filter[connection_name], filter[customer_reference],
 	// filter[voice.usage_payment_method]
 	Filter PhoneNumberVoiceListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page PhoneNumberVoiceListParamsPage `query:"page,omitzero" json:"-"`
 	// Specifies the sort order for results. If not given, results are sorted by
 	// created_at in descending order.
 	//
@@ -517,25 +516,6 @@ type PhoneNumberVoiceListParamsFilterConnectionName struct {
 // URLQuery serializes [PhoneNumberVoiceListParamsFilterConnectionName]'s query
 // parameters as `url.Values`.
 func (r PhoneNumberVoiceListParamsFilterConnectionName) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type PhoneNumberVoiceListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [PhoneNumberVoiceListParamsPage]'s query parameters as
-// `url.Values`.
-func (r PhoneNumberVoiceListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

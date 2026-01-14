@@ -66,7 +66,7 @@ func (r *DocumentService) Update(ctx context.Context, documentID string, body Do
 }
 
 // List all documents ordered by created_at descending.
-func (r *DocumentService) List(ctx context.Context, query DocumentListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[DocServiceDocument], err error) {
+func (r *DocumentService) List(ctx context.Context, query DocumentListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[DocServiceDocument], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -84,8 +84,8 @@ func (r *DocumentService) List(ctx context.Context, query DocumentListParams, op
 }
 
 // List all documents ordered by created_at descending.
-func (r *DocumentService) ListAutoPaging(ctx context.Context, query DocumentListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[DocServiceDocument] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *DocumentService) ListAutoPaging(ctx context.Context, query DocumentListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[DocServiceDocument] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a document.<br /><br />A document can only be deleted if it's not linked
@@ -401,13 +401,12 @@ func (r *DocumentUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type DocumentListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter for documents (deepObject style). Originally:
 	// filter[filename][contains], filter[customer_reference][eq],
 	// filter[customer_reference][in][], filter[created_at][gt], filter[created_at][lt]
 	Filter DocumentListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page DocumentListParamsPage `query:"page,omitzero" json:"-"`
 	// Consolidated sort parameter for documents (deepObject style). Originally: sort[]
 	//
 	// Any of "filename", "created_at", "updated_at", "-filename", "-created_at",
@@ -486,24 +485,6 @@ type DocumentListParamsFilterFilename struct {
 // URLQuery serializes [DocumentListParamsFilterFilename]'s query parameters as
 // `url.Values`.
 func (r DocumentListParamsFilterFilename) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type DocumentListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [DocumentListParamsPage]'s query parameters as `url.Values`.
-func (r DocumentListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

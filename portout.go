@@ -60,7 +60,7 @@ func (r *PortoutService) Get(ctx context.Context, id string, opts ...option.Requ
 }
 
 // Returns the portout requests according to filters
-func (r *PortoutService) List(ctx context.Context, query PortoutListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortoutDetails], err error) {
+func (r *PortoutService) List(ctx context.Context, query PortoutListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortoutDetails], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -78,8 +78,8 @@ func (r *PortoutService) List(ctx context.Context, query PortoutListParams, opts
 }
 
 // Returns the portout requests according to filters
-func (r *PortoutService) ListAutoPaging(ctx context.Context, query PortoutListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortoutDetails] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *PortoutService) ListAutoPaging(ctx context.Context, query PortoutListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortoutDetails] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Given a port-out ID, list rejection codes that are eligible for that port-out
@@ -286,15 +286,14 @@ func (r *PortoutUpdateStatusResponse) UnmarshalJSON(data []byte) error {
 }
 
 type PortoutListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[carrier_name], filter[country_code], filter[country_code_in],
 	// filter[foc_date], filter[inserted_at], filter[phone_number], filter[pon],
 	// filter[ported_out_at], filter[spid], filter[status], filter[status_in],
 	// filter[support_key]
 	Filter PortoutListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[number],
-	// page[size]
-	Page PortoutListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -385,24 +384,6 @@ type PortoutListParamsFilterPortedOutAt struct {
 // URLQuery serializes [PortoutListParamsFilterPortedOutAt]'s query parameters as
 // `url.Values`.
 func (r PortoutListParamsFilterPortedOutAt) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[number],
-// page[size]
-type PortoutListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [PortoutListParamsPage]'s query parameters as `url.Values`.
-func (r PortoutListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

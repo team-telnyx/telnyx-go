@@ -101,11 +101,9 @@ func TestAddressListWithOptionalParams(t *testing.T) {
 			},
 			UsedAsEmergency: telnyx.String("used_as_emergency"),
 		},
-		Page: telnyx.AddressListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
-		Sort: telnyx.AddressListParamsSortStreetAddress,
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
+		Sort:       telnyx.AddressListParamsSortStreetAddress,
 	})
 	if err != nil {
 		var apierr *telnyx.Error

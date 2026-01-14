@@ -53,7 +53,7 @@ func (r *MobilePhoneNumberMessagingService) Get(ctx context.Context, id string, 
 }
 
 // List mobile phone numbers with messaging settings
-func (r *MobilePhoneNumberMessagingService) List(ctx context.Context, query MobilePhoneNumberMessagingListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[MobilePhoneNumberMessagingListResponse], err error) {
+func (r *MobilePhoneNumberMessagingService) List(ctx context.Context, query MobilePhoneNumberMessagingListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MobilePhoneNumberMessagingListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -71,8 +71,8 @@ func (r *MobilePhoneNumberMessagingService) List(ctx context.Context, query Mobi
 }
 
 // List mobile phone numbers with messaging settings
-func (r *MobilePhoneNumberMessagingService) ListAutoPaging(ctx context.Context, query MobilePhoneNumberMessagingListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[MobilePhoneNumberMessagingListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *MobilePhoneNumberMessagingService) ListAutoPaging(ctx context.Context, query MobilePhoneNumberMessagingListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MobilePhoneNumberMessagingListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type MobilePhoneNumberMessagingGetResponse struct {
@@ -245,34 +245,14 @@ const (
 )
 
 type MobilePhoneNumberMessagingListParams struct {
-	// Consolidated page parameter (deepObject style). Originally: page[number],
-	// page[size]
-	Page MobilePhoneNumberMessagingListParamsPage `query:"page,omitzero" json:"-"`
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [MobilePhoneNumberMessagingListParams]'s query parameters as
 // `url.Values`.
 func (r MobilePhoneNumberMessagingListParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[number],
-// page[size]
-type MobilePhoneNumberMessagingListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [MobilePhoneNumberMessagingListParamsPage]'s query
-// parameters as `url.Values`.
-func (r MobilePhoneNumberMessagingListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

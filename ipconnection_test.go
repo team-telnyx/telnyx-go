@@ -228,11 +228,9 @@ func TestIPConnectionListWithOptionalParams(t *testing.T) {
 			Fqdn:                   telnyx.String("fqdn"),
 			OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
 		},
-		Page: telnyx.IPConnectionListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
-		Sort: telnyx.IPConnectionListParamsSortConnectionName,
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
+		Sort:       telnyx.IPConnectionListParamsSortConnectionName,
 	})
 	if err != nil {
 		var apierr *telnyx.Error

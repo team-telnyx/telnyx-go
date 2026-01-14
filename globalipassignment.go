@@ -73,7 +73,7 @@ func (r *GlobalIPAssignmentService) Update(ctx context.Context, globalIPAssignme
 }
 
 // List all Global IP assignments.
-func (r *GlobalIPAssignmentService) List(ctx context.Context, query GlobalIPAssignmentListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[GlobalIPAssignment], err error) {
+func (r *GlobalIPAssignmentService) List(ctx context.Context, query GlobalIPAssignmentListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[GlobalIPAssignment], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -91,8 +91,8 @@ func (r *GlobalIPAssignmentService) List(ctx context.Context, query GlobalIPAssi
 }
 
 // List all Global IP assignments.
-func (r *GlobalIPAssignmentService) ListAutoPaging(ctx context.Context, query GlobalIPAssignmentListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[GlobalIPAssignment] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *GlobalIPAssignmentService) ListAutoPaging(ctx context.Context, query GlobalIPAssignmentListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[GlobalIPAssignment] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a Global IP assignment.
@@ -302,34 +302,14 @@ func (r GlobalIPAssignmentUpdateParamsGlobalIPAssignmentUpdateRequest) MarshalJS
 }
 
 type GlobalIPAssignmentListParams struct {
-	// Consolidated page parameter (deepObject style). Originally: page[number],
-	// page[size]
-	Page GlobalIPAssignmentListParamsPage `query:"page,omitzero" json:"-"`
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [GlobalIPAssignmentListParams]'s query parameters as
 // `url.Values`.
 func (r GlobalIPAssignmentListParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[number],
-// page[size]
-type GlobalIPAssignmentListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [GlobalIPAssignmentListParamsPage]'s query parameters as
-// `url.Values`.
-func (r GlobalIPAssignmentListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

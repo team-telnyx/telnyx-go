@@ -152,11 +152,9 @@ func TestTexmlApplicationListWithOptionalParams(t *testing.T) {
 			FriendlyName:           telnyx.String("friendly_name"),
 			OutboundVoiceProfileID: telnyx.String("1293384261075731499"),
 		},
-		Page: telnyx.TexmlApplicationListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
-		Sort: telnyx.TexmlApplicationListParamsSortFriendlyName,
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
+		Sort:       telnyx.TexmlApplicationListParamsSortFriendlyName,
 	})
 	if err != nil {
 		var apierr *telnyx.Error
