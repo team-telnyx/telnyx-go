@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.2.1 (2026-01-14)
+
+Full Changelog: [v4.2.0...v4.2.1](https://github.com/team-telnyx/telnyx-go/compare/v4.2.0...v4.2.1)
+
+### Bug Fixes
+
+* **client:** invalid URL ([4895700](https://github.com/team-telnyx/telnyx-go/commit/48957003021a0cb61f582c90630d7c16c46fd1ef))
+
 ## 4.2.0 (2026-01-14)
 
 Full Changelog: [v4.1.0...v4.2.0](https://github.com/team-telnyx/telnyx-go/compare/v4.1.0...v4.2.0)
