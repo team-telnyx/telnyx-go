@@ -59,7 +59,7 @@ func (r *GlobalIPService) Get(ctx context.Context, id string, opts ...option.Req
 }
 
 // List all Global IPs.
-func (r *GlobalIPService) List(ctx context.Context, query GlobalIPListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[GlobalIPListResponse], err error) {
+func (r *GlobalIPService) List(ctx context.Context, query GlobalIPListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[GlobalIPListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -77,8 +77,8 @@ func (r *GlobalIPService) List(ctx context.Context, query GlobalIPListParams, op
 }
 
 // List all Global IPs.
-func (r *GlobalIPService) ListAutoPaging(ctx context.Context, query GlobalIPListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[GlobalIPListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *GlobalIPService) ListAutoPaging(ctx context.Context, query GlobalIPListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[GlobalIPListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a Global IP.
@@ -268,32 +268,13 @@ func (r *GlobalIPNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type GlobalIPListParams struct {
-	// Consolidated page parameter (deepObject style). Originally: page[number],
-	// page[size]
-	Page GlobalIPListParamsPage `query:"page,omitzero" json:"-"`
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [GlobalIPListParams]'s query parameters as `url.Values`.
 func (r GlobalIPListParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[number],
-// page[size]
-type GlobalIPListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [GlobalIPListParamsPage]'s query parameters as `url.Values`.
-func (r GlobalIPListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

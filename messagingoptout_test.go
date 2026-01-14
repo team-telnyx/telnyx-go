@@ -36,10 +36,8 @@ func TestMessagingOptoutListWithOptionalParams(t *testing.T) {
 			From:               telnyx.String("from"),
 			MessagingProfileID: telnyx.String("messaging_profile_id"),
 		},
-		Page: telnyx.MessagingOptoutListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
+		PageNumber:       telnyx.Int(0),
+		PageSize:         telnyx.Int(0),
 		RedactionEnabled: telnyx.String("redaction_enabled"),
 	})
 	if err != nil {

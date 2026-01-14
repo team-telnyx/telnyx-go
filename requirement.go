@@ -52,7 +52,7 @@ func (r *RequirementService) Get(ctx context.Context, id string, opts ...option.
 }
 
 // List all requirements with filtering, sorting, and pagination
-func (r *RequirementService) List(ctx context.Context, query RequirementListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[RequirementListResponse], err error) {
+func (r *RequirementService) List(ctx context.Context, query RequirementListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[RequirementListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -70,8 +70,8 @@ func (r *RequirementService) List(ctx context.Context, query RequirementListPara
 }
 
 // List all requirements with filtering, sorting, and pagination
-func (r *RequirementService) ListAutoPaging(ctx context.Context, query RequirementListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[RequirementListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *RequirementService) ListAutoPaging(ctx context.Context, query RequirementListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[RequirementListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type RequirementGetResponse struct {
@@ -206,12 +206,11 @@ const (
 )
 
 type RequirementListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter for requirements (deepObject style). Originally:
 	// filter[country_code], filter[phone_number_type], filter[action]
 	Filter RequirementListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page RequirementListParamsPage `query:"page,omitzero" json:"-"`
 	// Consolidated sort parameter for requirements (deepObject style). Originally:
 	// sort[]
 	//
@@ -249,25 +248,6 @@ type RequirementListParamsFilter struct {
 // URLQuery serializes [RequirementListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r RequirementListParamsFilter) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type RequirementListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [RequirementListParamsPage]'s query parameters as
-// `url.Values`.
-func (r RequirementListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

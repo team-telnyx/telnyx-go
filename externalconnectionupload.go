@@ -69,7 +69,7 @@ func (r *ExternalConnectionUploadService) Get(ctx context.Context, ticketID stri
 }
 
 // Returns a list of your Upload requests for the given external connection.
-func (r *ExternalConnectionUploadService) List(ctx context.Context, id string, query ExternalConnectionUploadListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[Upload], err error) {
+func (r *ExternalConnectionUploadService) List(ctx context.Context, id string, query ExternalConnectionUploadListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[Upload], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -91,8 +91,8 @@ func (r *ExternalConnectionUploadService) List(ctx context.Context, id string, q
 }
 
 // Returns a list of your Upload requests for the given external connection.
-func (r *ExternalConnectionUploadService) ListAutoPaging(ctx context.Context, id string, query ExternalConnectionUploadListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[Upload] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, id, query, opts...))
+func (r *ExternalConnectionUploadService) ListAutoPaging(ctx context.Context, id string, query ExternalConnectionUploadListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[Upload] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, id, query, opts...))
 }
 
 // Returns the count of all pending upload requests for the given external
@@ -420,12 +420,11 @@ type ExternalConnectionUploadGetParams struct {
 }
 
 type ExternalConnectionUploadListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Filter parameter for uploads (deepObject style). Supports filtering by status,
 	// civic_address_id, location_id, and phone_number with eq/contains operations.
 	Filter ExternalConnectionUploadListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page ExternalConnectionUploadListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -515,25 +514,6 @@ type ExternalConnectionUploadListParamsFilterStatus struct {
 // URLQuery serializes [ExternalConnectionUploadListParamsFilterStatus]'s query
 // parameters as `url.Values`.
 func (r ExternalConnectionUploadListParamsFilterStatus) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type ExternalConnectionUploadListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [ExternalConnectionUploadListParamsPage]'s query parameters
-// as `url.Values`.
-func (r ExternalConnectionUploadListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

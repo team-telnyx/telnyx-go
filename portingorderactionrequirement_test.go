@@ -36,10 +36,8 @@ func TestPortingOrderActionRequirementListWithOptionalParams(t *testing.T) {
 				RequirementTypeID: telnyx.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 				Status:            "created",
 			},
-			Page: telnyx.PortingOrderActionRequirementListParamsPage{
-				Number: telnyx.Int(1),
-				Size:   telnyx.Int(1),
-			},
+			PageNumber: telnyx.Int(0),
+			PageSize:   telnyx.Int(0),
 			Sort: telnyx.PortingOrderActionRequirementListParamsSort{
 				Value: "created_at",
 			},

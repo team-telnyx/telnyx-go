@@ -60,10 +60,8 @@ func TestBundlePricingBillingBundleListWithOptionalParams(t *testing.T) {
 			CountryISO: []string{"US"},
 			Resource:   []string{"+15617819942"},
 		},
-		Page: telnyx.BundlePricingBillingBundleListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
+		PageNumber:          telnyx.Int(0),
+		PageSize:            telnyx.Int(0),
 		AuthorizationBearer: telnyx.String("authorization_bearer"),
 	})
 	if err != nil {

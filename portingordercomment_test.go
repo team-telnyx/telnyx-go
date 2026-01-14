@@ -59,10 +59,8 @@ func TestPortingOrderCommentListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.PortingOrderCommentListParams{
-			Page: telnyx.PortingOrderCommentListParamsPage{
-				Number: telnyx.Int(1),
-				Size:   telnyx.Int(1),
-			},
+			PageNumber: telnyx.Int(0),
+			PageSize:   telnyx.Int(0),
 		},
 	)
 	if err != nil {

@@ -71,7 +71,7 @@ func (r *FqdnService) Update(ctx context.Context, id string, body FqdnUpdatePara
 }
 
 // Get all FQDNs belonging to the user that match the given filters.
-func (r *FqdnService) List(ctx context.Context, query FqdnListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[Fqdn], err error) {
+func (r *FqdnService) List(ctx context.Context, query FqdnListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[Fqdn], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -89,8 +89,8 @@ func (r *FqdnService) List(ctx context.Context, query FqdnListParams, opts ...op
 }
 
 // Get all FQDNs belonging to the user that match the given filters.
-func (r *FqdnService) ListAutoPaging(ctx context.Context, query FqdnListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[Fqdn] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *FqdnService) ListAutoPaging(ctx context.Context, query FqdnListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[Fqdn] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete an FQDN.
@@ -257,12 +257,11 @@ func (r *FqdnUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type FqdnListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[connection_id], filter[fqdn], filter[port], filter[dns_record_type]
 	Filter FqdnListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page FqdnListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -290,24 +289,6 @@ type FqdnListParamsFilter struct {
 
 // URLQuery serializes [FqdnListParamsFilter]'s query parameters as `url.Values`.
 func (r FqdnListParamsFilter) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type FqdnListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [FqdnListParamsPage]'s query parameters as `url.Values`.
-func (r FqdnListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

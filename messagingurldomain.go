@@ -37,7 +37,7 @@ func NewMessagingURLDomainService(opts ...option.RequestOption) (r MessagingURLD
 }
 
 // List messaging URL domains
-func (r *MessagingURLDomainService) List(ctx context.Context, query MessagingURLDomainListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[MessagingURLDomainListResponse], err error) {
+func (r *MessagingURLDomainService) List(ctx context.Context, query MessagingURLDomainListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MessagingURLDomainListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -55,8 +55,8 @@ func (r *MessagingURLDomainService) List(ctx context.Context, query MessagingURL
 }
 
 // List messaging URL domains
-func (r *MessagingURLDomainService) ListAutoPaging(ctx context.Context, query MessagingURLDomainListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[MessagingURLDomainListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *MessagingURLDomainService) ListAutoPaging(ctx context.Context, query MessagingURLDomainListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MessagingURLDomainListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type MessagingURLDomainListResponse struct {
@@ -82,34 +82,14 @@ func (r *MessagingURLDomainListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MessagingURLDomainListParams struct {
-	// Consolidated page parameter (deepObject style). Originally: page[number],
-	// page[size]
-	Page MessagingURLDomainListParamsPage `query:"page,omitzero" json:"-"`
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [MessagingURLDomainListParams]'s query parameters as
 // `url.Values`.
 func (r MessagingURLDomainListParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[number],
-// page[size]
-type MessagingURLDomainListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [MessagingURLDomainListParamsPage]'s query parameters as
-// `url.Values`.
-func (r MessagingURLDomainListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
