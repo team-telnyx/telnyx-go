@@ -77,7 +77,7 @@ func (r *RoomService) Update(ctx context.Context, roomID string, body RoomUpdate
 }
 
 // View a list of rooms.
-func (r *RoomService) List(ctx context.Context, query RoomListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[Room], err error) {
+func (r *RoomService) List(ctx context.Context, query RoomListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[Room], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -95,8 +95,8 @@ func (r *RoomService) List(ctx context.Context, query RoomListParams, opts ...op
 }
 
 // View a list of rooms.
-func (r *RoomService) ListAutoPaging(ctx context.Context, query RoomListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[Room] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *RoomService) ListAutoPaging(ctx context.Context, query RoomListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[Room] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Synchronously delete a Room. Participants from that room will be kicked out,
@@ -318,15 +318,14 @@ func (r *RoomUpdateParams) UnmarshalJSON(data []byte) error {
 
 type RoomListParams struct {
 	// To decide if room sessions should be included in the response.
-	IncludeSessions param.Opt[bool] `query:"include_sessions,omitzero" json:"-"`
+	IncludeSessions param.Opt[bool]  `query:"include_sessions,omitzero" json:"-"`
+	PageNumber      param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize        param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[date_created_at][eq], filter[date_created_at][gte],
 	// filter[date_created_at][lte], filter[date_updated_at][eq],
 	// filter[date_updated_at][gte], filter[date_updated_at][lte], filter[unique_name]
 	Filter RoomListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page RoomListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -390,24 +389,6 @@ type RoomListParamsFilterDateUpdatedAt struct {
 // URLQuery serializes [RoomListParamsFilterDateUpdatedAt]'s query parameters as
 // `url.Values`.
 func (r RoomListParamsFilterDateUpdatedAt) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type RoomListParamsPage struct {
-	// The page number to load.
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page.
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [RoomListParamsPage]'s query parameters as `url.Values`.
-func (r RoomListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

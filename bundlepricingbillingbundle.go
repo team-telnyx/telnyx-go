@@ -55,7 +55,7 @@ func (r *BundlePricingBillingBundleService) Get(ctx context.Context, bundleID st
 }
 
 // Get all allowed bundles.
-func (r *BundlePricingBillingBundleService) List(ctx context.Context, params BundlePricingBillingBundleListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[BillingBundleSummary], err error) {
+func (r *BundlePricingBillingBundleService) List(ctx context.Context, params BundlePricingBillingBundleListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[BillingBundleSummary], err error) {
 	var raw *http.Response
 	if !param.IsOmitted(params.AuthorizationBearer) {
 		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%s", params.AuthorizationBearer.Value)))
@@ -76,8 +76,8 @@ func (r *BundlePricingBillingBundleService) List(ctx context.Context, params Bun
 }
 
 // Get all allowed bundles.
-func (r *BundlePricingBillingBundleService) ListAutoPaging(ctx context.Context, params BundlePricingBillingBundleListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[BillingBundleSummary] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, params, opts...))
+func (r *BundlePricingBillingBundleService) ListAutoPaging(ctx context.Context, params BundlePricingBillingBundleListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[BillingBundleSummary] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, params, opts...))
 }
 
 type BillingBundleSummary struct {
@@ -252,15 +252,14 @@ type BundlePricingBillingBundleGetParams struct {
 }
 
 type BundlePricingBillingBundleListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Authenticates the request with your Telnyx API V2 KEY
 	AuthorizationBearer param.Opt[string] `header:"authorization_bearer,omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Supports filtering by
 	// country_iso and resource. Examples: filter[country_iso]=US or
 	// filter[resource]=+15617819942
 	Filter BundlePricingBillingBundleListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page BundlePricingBillingBundleListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -287,25 +286,6 @@ type BundlePricingBillingBundleListParamsFilter struct {
 // URLQuery serializes [BundlePricingBillingBundleListParamsFilter]'s query
 // parameters as `url.Values`.
 func (r BundlePricingBillingBundleListParamsFilter) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type BundlePricingBillingBundleListParamsPage struct {
-	// The page number to load.
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page.
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [BundlePricingBillingBundleListParamsPage]'s query
-// parameters as `url.Values`.
-func (r BundlePricingBillingBundleListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

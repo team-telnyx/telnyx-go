@@ -60,7 +60,7 @@ func (r *CustomerServiceRecordService) Get(ctx context.Context, customerServiceR
 }
 
 // List customer service records.
-func (r *CustomerServiceRecordService) List(ctx context.Context, query CustomerServiceRecordListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[CustomerServiceRecord], err error) {
+func (r *CustomerServiceRecordService) List(ctx context.Context, query CustomerServiceRecordListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[CustomerServiceRecord], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -78,8 +78,8 @@ func (r *CustomerServiceRecordService) List(ctx context.Context, query CustomerS
 }
 
 // List customer service records.
-func (r *CustomerServiceRecordService) ListAutoPaging(ctx context.Context, query CustomerServiceRecordListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[CustomerServiceRecord] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *CustomerServiceRecordService) ListAutoPaging(ctx context.Context, query CustomerServiceRecordListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[CustomerServiceRecord] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Verify the coverage for a list of phone numbers.
@@ -360,13 +360,12 @@ func (r *CustomerServiceRecordNewParamsAdditionalData) UnmarshalJSON(data []byte
 }
 
 type CustomerServiceRecordListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[phone_number][eq], filter[phone_number][in][], filter[status][eq],
 	// filter[status][in][], filter[created_at][lt], filter[created_at][gt]
 	Filter CustomerServiceRecordListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page CustomerServiceRecordListParamsPage `query:"page,omitzero" json:"-"`
 	// Consolidated sort parameter (deepObject style). Originally: sort[value]
 	Sort CustomerServiceRecordListParamsSort `query:"sort,omitzero" json:"-"`
 	paramObj
@@ -449,25 +448,6 @@ type CustomerServiceRecordListParamsFilterStatus struct {
 // URLQuery serializes [CustomerServiceRecordListParamsFilterStatus]'s query
 // parameters as `url.Values`.
 func (r CustomerServiceRecordListParamsFilterStatus) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type CustomerServiceRecordListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [CustomerServiceRecordListParamsPage]'s query parameters as
-// `url.Values`.
-func (r CustomerServiceRecordListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

@@ -103,10 +103,8 @@ func TestCustomerServiceRecordListWithOptionalParams(t *testing.T) {
 				In: []string{"pending"},
 			},
 		},
-		Page: telnyx.CustomerServiceRecordListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 		Sort: telnyx.CustomerServiceRecordListParamsSort{
 			Value: "created_at",
 		},

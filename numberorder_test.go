@@ -130,10 +130,8 @@ func TestNumberOrderListWithOptionalParams(t *testing.T) {
 			RequirementsMet:   telnyx.Bool(true),
 			Status:            telnyx.String("status"),
 		},
-		Page: telnyx.NumberOrderListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
