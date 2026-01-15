@@ -37,7 +37,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/team-telnyx/telnyx-go/v4@v4.2.0'
+go get -u 'github.com/team-telnyx/telnyx-go/v4@v4.2.1'
 ```
 
 <!-- x-release-please-end -->
