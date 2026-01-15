@@ -204,6 +204,10 @@ type MessagingProfile struct {
 	// Determines how much information is redacted in messages for privacy or
 	// compliance purposes.
 	RedactionLevel int64 `json:"redaction_level"`
+	// Enables automatic character encoding optimization for SMS messages. When
+	// enabled, the system automatically selects the most efficient encoding (GSM-7 or
+	// UCS-2) based on message content to maximize character limits and minimize costs.
+	SmartEncoding bool `json:"smart_encoding"`
 	// ISO 8601 formatted date indicating when the resource was updated.
 	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
 	// The URL shortener feature allows automatic replacement of URLs that were
@@ -247,6 +251,7 @@ type MessagingProfile struct {
 		RecordType              respjson.Field
 		RedactionEnabled        respjson.Field
 		RedactionLevel          respjson.Field
+		SmartEncoding           respjson.Field
 		UpdatedAt               respjson.Field
 		URLShortenerSettings    respjson.Field
 		V1Secret                respjson.Field
@@ -557,6 +562,10 @@ type MessagingProfileNewParams struct {
 	MmsTranscoding param.Opt[bool] `json:"mms_transcoding,omitzero"`
 	// Send messages only to mobile phone numbers.
 	MobileOnly param.Opt[bool] `json:"mobile_only,omitzero"`
+	// Enables automatic character encoding optimization for SMS messages. When
+	// enabled, the system automatically selects the most efficient encoding (GSM-7 or
+	// UCS-2) based on message content to maximize character limits and minimize costs.
+	SmartEncoding param.Opt[bool] `json:"smart_encoding,omitzero"`
 	// Number Pool allows you to send messages from a pool of numbers of different
 	// types, assigning weights to each type. The pool consists of all the long code
 	// and toll free numbers assigned to the messaging profile.
@@ -621,6 +630,10 @@ type MessagingProfileUpdateParams struct {
 	MobileOnly param.Opt[bool] `json:"mobile_only,omitzero"`
 	// A user friendly name for the messaging profile.
 	Name param.Opt[string] `json:"name,omitzero"`
+	// Enables automatic character encoding optimization for SMS messages. When
+	// enabled, the system automatically selects the most efficient encoding (GSM-7 or
+	// UCS-2) based on message content to maximize character limits and minimize costs.
+	SmartEncoding param.Opt[bool] `json:"smart_encoding,omitzero"`
 	// Secret used to authenticate with v1 endpoints.
 	V1Secret param.Opt[string] `json:"v1_secret,omitzero"`
 	// Number Pool allows you to send messages from a pool of numbers of different
