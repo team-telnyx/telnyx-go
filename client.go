@@ -167,6 +167,7 @@ type Client struct {
 	MobileVoiceConnections             MobileVoiceConnectionService
 	Messaging10dlc                     Messaging10dlcService
 	SpeechToText                       SpeechToTextService
+	Organizations                      OrganizationService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -352,6 +353,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.MobileVoiceConnections = NewMobileVoiceConnectionService(opts...)
 	r.Messaging10dlc = NewMessaging10dlcService(opts...)
 	r.SpeechToText = NewSpeechToTextService(opts...)
+	r.Organizations = NewOrganizationService(opts...)
 
 	return
 }
