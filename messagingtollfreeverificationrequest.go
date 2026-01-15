@@ -235,6 +235,10 @@ type TfVerificationRequestParam struct {
 	BusinessRegistrationNumber param.Opt[string] `json:"businessRegistrationNumber,omitzero"`
 	// Type of business registration being provided. Required from January 2026.
 	BusinessRegistrationType param.Opt[string] `json:"businessRegistrationType,omitzero"`
+	// Campaign Verify Authorization Token required for Political use case submissions
+	// starting February 17, 2026. This token is validated by Zipwhip and must be
+	// provided for all Political use case verifications after the deadline.
+	CampaignVerifyAuthorizationToken param.Opt[string] `json:"campaignVerifyAuthorizationToken,omitzero"`
 	// Doing Business As (DBA) name if different from legal name
 	DoingBusinessAs param.Opt[string] `json:"doingBusinessAs,omitzero"`
 	// The message returned when users text 'HELP'
@@ -429,7 +433,10 @@ type VerificationRequestEgress struct {
 	BusinessRegistrationCountry string            `json:"businessRegistrationCountry"`
 	BusinessRegistrationNumber  string            `json:"businessRegistrationNumber"`
 	BusinessRegistrationType    string            `json:"businessRegistrationType"`
-	DoingBusinessAs             string            `json:"doingBusinessAs"`
+	// Campaign Verify Authorization Token required for Political use case submissions
+	// starting February 17, 2026
+	CampaignVerifyAuthorizationToken string `json:"campaignVerifyAuthorizationToken,nullable"`
+	DoingBusinessAs                  string `json:"doingBusinessAs"`
 	// Business entity classification
 	//
 	// Any of "SOLE_PROPRIETOR", "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT",
@@ -448,43 +455,44 @@ type VerificationRequestEgress struct {
 	WebhookURL         string               `json:"webhookUrl"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                          respjson.Field
-		AdditionalInformation       respjson.Field
-		BusinessAddr1               respjson.Field
-		BusinessCity                respjson.Field
-		BusinessContactEmail        respjson.Field
-		BusinessContactFirstName    respjson.Field
-		BusinessContactLastName     respjson.Field
-		BusinessContactPhone        respjson.Field
-		BusinessName                respjson.Field
-		BusinessState               respjson.Field
-		BusinessZip                 respjson.Field
-		CorporateWebsite            respjson.Field
-		IsvReseller                 respjson.Field
-		MessageVolume               respjson.Field
-		OptInWorkflow               respjson.Field
-		OptInWorkflowImageURLs      respjson.Field
-		PhoneNumbers                respjson.Field
-		ProductionMessageContent    respjson.Field
-		UseCase                     respjson.Field
-		UseCaseSummary              respjson.Field
-		VerificationRequestID       respjson.Field
-		AgeGatedContent             respjson.Field
-		BusinessAddr2               respjson.Field
-		BusinessRegistrationCountry respjson.Field
-		BusinessRegistrationNumber  respjson.Field
-		BusinessRegistrationType    respjson.Field
-		DoingBusinessAs             respjson.Field
-		EntityType                  respjson.Field
-		HelpMessageResponse         respjson.Field
-		OptInConfirmationResponse   respjson.Field
-		OptInKeywords               respjson.Field
-		PrivacyPolicyURL            respjson.Field
-		TermsAndConditionURL        respjson.Field
-		VerificationStatus          respjson.Field
-		WebhookURL                  respjson.Field
-		ExtraFields                 map[string]respjson.Field
-		raw                         string
+		ID                               respjson.Field
+		AdditionalInformation            respjson.Field
+		BusinessAddr1                    respjson.Field
+		BusinessCity                     respjson.Field
+		BusinessContactEmail             respjson.Field
+		BusinessContactFirstName         respjson.Field
+		BusinessContactLastName          respjson.Field
+		BusinessContactPhone             respjson.Field
+		BusinessName                     respjson.Field
+		BusinessState                    respjson.Field
+		BusinessZip                      respjson.Field
+		CorporateWebsite                 respjson.Field
+		IsvReseller                      respjson.Field
+		MessageVolume                    respjson.Field
+		OptInWorkflow                    respjson.Field
+		OptInWorkflowImageURLs           respjson.Field
+		PhoneNumbers                     respjson.Field
+		ProductionMessageContent         respjson.Field
+		UseCase                          respjson.Field
+		UseCaseSummary                   respjson.Field
+		VerificationRequestID            respjson.Field
+		AgeGatedContent                  respjson.Field
+		BusinessAddr2                    respjson.Field
+		BusinessRegistrationCountry      respjson.Field
+		BusinessRegistrationNumber       respjson.Field
+		BusinessRegistrationType         respjson.Field
+		CampaignVerifyAuthorizationToken respjson.Field
+		DoingBusinessAs                  respjson.Field
+		EntityType                       respjson.Field
+		HelpMessageResponse              respjson.Field
+		OptInConfirmationResponse        respjson.Field
+		OptInKeywords                    respjson.Field
+		PrivacyPolicyURL                 respjson.Field
+		TermsAndConditionURL             respjson.Field
+		VerificationStatus               respjson.Field
+		WebhookURL                       respjson.Field
+		ExtraFields                      map[string]respjson.Field
+		raw                              string
 	} `json:"-"`
 }
 
@@ -544,8 +552,11 @@ type VerificationRequestStatus struct {
 	BusinessRegistrationCountry string               `json:"businessRegistrationCountry"`
 	BusinessRegistrationNumber  string               `json:"businessRegistrationNumber"`
 	BusinessRegistrationType    string               `json:"businessRegistrationType"`
-	CreatedAt                   time.Time            `json:"createdAt" format:"date-time"`
-	DoingBusinessAs             string               `json:"doingBusinessAs"`
+	// Campaign Verify Authorization Token required for Political use case submissions
+	// starting February 17, 2026
+	CampaignVerifyAuthorizationToken string    `json:"campaignVerifyAuthorizationToken,nullable"`
+	CreatedAt                        time.Time `json:"createdAt" format:"date-time"`
+	DoingBusinessAs                  string    `json:"doingBusinessAs"`
 	// Business entity classification
 	//
 	// Any of "SOLE_PROPRIETOR", "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT",
@@ -561,45 +572,46 @@ type VerificationRequestStatus struct {
 	WebhookURL                string                         `json:"webhookUrl"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                          respjson.Field
-		AdditionalInformation       respjson.Field
-		BusinessAddr1               respjson.Field
-		BusinessCity                respjson.Field
-		BusinessContactEmail        respjson.Field
-		BusinessContactFirstName    respjson.Field
-		BusinessContactLastName     respjson.Field
-		BusinessContactPhone        respjson.Field
-		BusinessName                respjson.Field
-		BusinessState               respjson.Field
-		BusinessZip                 respjson.Field
-		CorporateWebsite            respjson.Field
-		IsvReseller                 respjson.Field
-		MessageVolume               respjson.Field
-		OptInWorkflow               respjson.Field
-		OptInWorkflowImageURLs      respjson.Field
-		PhoneNumbers                respjson.Field
-		ProductionMessageContent    respjson.Field
-		UseCase                     respjson.Field
-		UseCaseSummary              respjson.Field
-		VerificationStatus          respjson.Field
-		AgeGatedContent             respjson.Field
-		BusinessAddr2               respjson.Field
-		BusinessRegistrationCountry respjson.Field
-		BusinessRegistrationNumber  respjson.Field
-		BusinessRegistrationType    respjson.Field
-		CreatedAt                   respjson.Field
-		DoingBusinessAs             respjson.Field
-		EntityType                  respjson.Field
-		HelpMessageResponse         respjson.Field
-		OptInConfirmationResponse   respjson.Field
-		OptInKeywords               respjson.Field
-		PrivacyPolicyURL            respjson.Field
-		Reason                      respjson.Field
-		TermsAndConditionURL        respjson.Field
-		UpdatedAt                   respjson.Field
-		WebhookURL                  respjson.Field
-		ExtraFields                 map[string]respjson.Field
-		raw                         string
+		ID                               respjson.Field
+		AdditionalInformation            respjson.Field
+		BusinessAddr1                    respjson.Field
+		BusinessCity                     respjson.Field
+		BusinessContactEmail             respjson.Field
+		BusinessContactFirstName         respjson.Field
+		BusinessContactLastName          respjson.Field
+		BusinessContactPhone             respjson.Field
+		BusinessName                     respjson.Field
+		BusinessState                    respjson.Field
+		BusinessZip                      respjson.Field
+		CorporateWebsite                 respjson.Field
+		IsvReseller                      respjson.Field
+		MessageVolume                    respjson.Field
+		OptInWorkflow                    respjson.Field
+		OptInWorkflowImageURLs           respjson.Field
+		PhoneNumbers                     respjson.Field
+		ProductionMessageContent         respjson.Field
+		UseCase                          respjson.Field
+		UseCaseSummary                   respjson.Field
+		VerificationStatus               respjson.Field
+		AgeGatedContent                  respjson.Field
+		BusinessAddr2                    respjson.Field
+		BusinessRegistrationCountry      respjson.Field
+		BusinessRegistrationNumber       respjson.Field
+		BusinessRegistrationType         respjson.Field
+		CampaignVerifyAuthorizationToken respjson.Field
+		CreatedAt                        respjson.Field
+		DoingBusinessAs                  respjson.Field
+		EntityType                       respjson.Field
+		HelpMessageResponse              respjson.Field
+		OptInConfirmationResponse        respjson.Field
+		OptInKeywords                    respjson.Field
+		PrivacyPolicyURL                 respjson.Field
+		Reason                           respjson.Field
+		TermsAndConditionURL             respjson.Field
+		UpdatedAt                        respjson.Field
+		WebhookURL                       respjson.Field
+		ExtraFields                      map[string]respjson.Field
+		raw                              string
 	} `json:"-"`
 }
 

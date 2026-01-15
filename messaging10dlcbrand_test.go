@@ -239,7 +239,7 @@ func TestMessaging10dlcBrandResend2faEmail(t *testing.T) {
 	}
 }
 
-func TestMessaging10dlcBrandGetSMSOtpStatusWithOptionalParams(t *testing.T) {
+func TestMessaging10dlcBrandGetSMSOtpStatus(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -252,13 +252,7 @@ func TestMessaging10dlcBrandGetSMSOtpStatusWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Messaging10dlc.Brand.GetSMSOtpStatus(
-		context.TODO(),
-		"OTP4B2001",
-		telnyx.Messaging10dlcBrandGetSMSOtpStatusParams{
-			BrandID: telnyx.String("B123ABC"),
-		},
-	)
+	_, err := client.Messaging10dlc.Brand.GetSMSOtpStatus(context.TODO(), "4b20019b-043a-78f8-0657-b3be3f4b4002")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
