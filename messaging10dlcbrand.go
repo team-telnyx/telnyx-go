@@ -152,25 +152,25 @@ func (r *Messaging10dlcBrandService) Resend2faEmail(ctx context.Context, brandID
 }
 
 // Query the status of an SMS OTP (One-Time Password) for Sole Proprietor brand
-// verification.
+// verification using the Brand ID.
 //
 // This endpoint allows you to check the delivery and verification status of an OTP
-// sent during the Sole Proprietor brand verification process. You can query by
-// either:
-//
-// - `referenceId` - The reference ID returned when the OTP was initially triggered
-// - `brandId` - Query parameter for portal users to look up OTP status by Brand ID
+// sent during the Sole Proprietor brand verification process by looking it up with
+// the brand ID.
 //
 // The response includes delivery status, verification dates, and detailed delivery
 // information.
-func (r *Messaging10dlcBrandService) GetSMSOtpStatus(ctx context.Context, referenceID string, query Messaging10dlcBrandGetSMSOtpStatusParams, opts ...option.RequestOption) (res *Messaging10dlcBrandGetSMSOtpStatusResponse, err error) {
+//
+// **Note:** This is an alternative to the `/10dlc/brand/smsOtp/{referenceId}`
+// endpoint when you have the Brand ID but not the reference ID.
+func (r *Messaging10dlcBrandService) GetSMSOtpStatus(ctx context.Context, brandID string, opts ...option.RequestOption) (res *Messaging10dlcBrandGetSMSOtpStatusResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	if referenceID == "" {
-		err = errors.New("missing required referenceId parameter")
+	if brandID == "" {
+		err = errors.New("missing required brandId parameter")
 		return
 	}
-	path := fmt.Sprintf("10dlc/brand/smsOtp/%s", referenceID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	path := fmt.Sprintf("10dlc/brand/%s/smsOtp", brandID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
@@ -919,21 +919,6 @@ const (
 	Messaging10dlcBrandListParamsSortTcrBrandID                 Messaging10dlcBrandListParamsSort = "tcrBrandId"
 	Messaging10dlcBrandListParamsSortTcrBrandIDDesc             Messaging10dlcBrandListParamsSort = "-tcrBrandId"
 )
-
-type Messaging10dlcBrandGetSMSOtpStatusParams struct {
-	// Filter by Brand ID for easier lookup in portal applications
-	BrandID param.Opt[string] `query:"brandId,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [Messaging10dlcBrandGetSMSOtpStatusParams]'s query
-// parameters as `url.Values`.
-func (r Messaging10dlcBrandGetSMSOtpStatusParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
 
 type Messaging10dlcBrandTriggerSMSOtpParams struct {
 	// SMS message template to send the OTP. Must include `@OTP_PIN@` placeholder which
