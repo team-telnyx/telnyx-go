@@ -5597,54 +5597,6 @@ func (r *ReplacedLinkClickWebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type StreamingFailedWebhookEvent struct {
-	Data CallStreamingFailed `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StreamingFailedWebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *StreamingFailedWebhookEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type StreamingStartedWebhookEvent struct {
-	Data CallStreamingStarted `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StreamingStartedWebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *StreamingStartedWebhookEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type StreamingStoppedWebhookEvent struct {
-	Data CallStreamingStopped `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StreamingStoppedWebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *StreamingStoppedWebhookEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type TranscriptionWebhookEvent struct {
 	Data TranscriptionWebhookEventData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -5791,8 +5743,7 @@ func (r *TranscriptionWebhookEventDataPayloadTranscriptionData) UnmarshalJSON(da
 // [FaxMediaProcessedWebhookEvent], [FaxQueuedWebhookEvent],
 // [FaxSendingStartedWebhookEvent], [InboundMessageWebhookEvent],
 // [NumberOrderStatusUpdateWebhookEvent], [ReplacedLinkClickWebhookEvent],
-// [StreamingFailedWebhookEvent], [StreamingStartedWebhookEvent],
-// [StreamingStoppedWebhookEvent], [TranscriptionWebhookEvent].
+// [TranscriptionWebhookEvent].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnsafeUnwrapWebhookEventUnion struct {
@@ -6169,21 +6120,6 @@ func (u UnsafeUnwrapWebhookEventUnion) AsNumberOrderEvent() (v NumberOrderStatus
 }
 
 func (u UnsafeUnwrapWebhookEventUnion) AsReplacedLinkClickWebhookEvent() (v ReplacedLinkClickWebhookEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UnsafeUnwrapWebhookEventUnion) AsStreamingFailedWebhookEvent() (v StreamingFailedWebhookEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UnsafeUnwrapWebhookEventUnion) AsStreamingStartedWebhookEvent() (v StreamingStartedWebhookEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UnsafeUnwrapWebhookEventUnion) AsStreamingStoppedWebhookEvent() (v StreamingStoppedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -7000,8 +6936,7 @@ func (r *UnsafeUnwrapWebhookEventUnionMeta) UnmarshalJSON(data []byte) error {
 // [FaxMediaProcessedWebhookEvent], [FaxQueuedWebhookEvent],
 // [FaxSendingStartedWebhookEvent], [InboundMessageWebhookEvent],
 // [NumberOrderStatusUpdateWebhookEvent], [ReplacedLinkClickWebhookEvent],
-// [StreamingFailedWebhookEvent], [StreamingStartedWebhookEvent],
-// [StreamingStoppedWebhookEvent], [TranscriptionWebhookEvent].
+// [TranscriptionWebhookEvent].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnwrapWebhookEventUnion struct {
@@ -7378,21 +7313,6 @@ func (u UnwrapWebhookEventUnion) AsNumberOrderEvent() (v NumberOrderStatusUpdate
 }
 
 func (u UnwrapWebhookEventUnion) AsReplacedLinkClickWebhookEvent() (v ReplacedLinkClickWebhookEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UnwrapWebhookEventUnion) AsStreamingFailedWebhookEvent() (v StreamingFailedWebhookEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UnwrapWebhookEventUnion) AsStreamingStartedWebhookEvent() (v StreamingStartedWebhookEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UnwrapWebhookEventUnion) AsStreamingStoppedWebhookEvent() (v StreamingStoppedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
