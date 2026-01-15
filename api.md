@@ -4304,3 +4304,29 @@ Methods:
 Methods:
 
 - <code title="get /speech-to-text/transcription">client.SpeechToText.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SpeechToTextService.Transcribe">Transcribe</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SpeechToTextTranscribeParams">SpeechToTextTranscribeParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+
+# Organizations
+
+## Users
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#OrganizationUserGetResponse">OrganizationUserGetResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#OrganizationUserListResponse">OrganizationUserListResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#OrganizationUserGetGroupsReportResponse">OrganizationUserGetGroupsReportResponse</a>
+
+Methods:
+
+- <code title="get /organizations/users/{id}">client.Organizations.Users.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#OrganizationUserService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#OrganizationUserGetParams">OrganizationUserGetParams</a>) (<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#OrganizationUserGetResponse">OrganizationUserGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /organizations/users">client.Organizations.Users.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#OrganizationUserService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#OrganizationUserListParams">OrganizationUserListParams</a>) (<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#OrganizationUserListResponse">OrganizationUserListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /organizations/users/users_groups_report">client.Organizations.Users.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#OrganizationUserService.GetGroupsReport">GetGroupsReport</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#OrganizationUserGetGroupsReportParams">OrganizationUserGetGroupsReportParams</a>) (<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#OrganizationUserGetGroupsReportResponse">OrganizationUserGetGroupsReportResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+### Actions
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#OrganizationUserActionRemoveResponse">OrganizationUserActionRemoveResponse</a>
+
+Methods:
+
+- <code title="post /organizations/users/{id}/actions/remove">client.Organizations.Users.Actions.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#OrganizationUserActionService.Remove">Remove</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#OrganizationUserActionRemoveResponse">OrganizationUserActionRemoveResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
