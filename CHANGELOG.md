@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.3.0 (2026-01-15)
+
+Full Changelog: [v4.2.1...v4.3.0](https://github.com/team-telnyx/telnyx-go/compare/v4.2.1...v4.3.0)
+
+### Features
+
+* jira-engdesk-48800 add organizations-related docs to the external api… ([87dd437](https://github.com/team-telnyx/telnyx-go/commit/87dd437c7df7d63e6a13028793edf3069da2e576))
+* MSG-6148: adding the new campaignVerifyAuthorizationToken field and missing GET OTP endpoint ([ff821b7](https://github.com/team-telnyx/telnyx-go/commit/ff821b75c902a9cfab7a80d9e4a6165cb70a3730))
+* MSG-6228: MSG-6228: Add smart_encoding option for SMS character encoding optimization ([796ab2b](https://github.com/team-telnyx/telnyx-go/commit/796ab2b4d643f934336ebb9489b798659ae52e57))
+* TELAPPS-ENGDESK-48790 Remove duplicated webhooks ([d3615f5](https://github.com/team-telnyx/telnyx-go/commit/d3615f5e2dcecbf959ccaa428968e0fa595c05ca))
+
 ## 4.2.1 (2026-01-14)
 
 Full Changelog: [v4.2.0...v4.2.1](https://github.com/team-telnyx/telnyx-go/compare/v4.2.0...v4.2.1)
