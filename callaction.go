@@ -3870,10 +3870,11 @@ type CallActionStartNoiseSuppressionParams struct {
 	//
 	// Any of "inbound", "outbound", "both".
 	Direction CallActionStartNoiseSuppressionParamsDirection `json:"direction,omitzero"`
-	// The engine to use for noise suppression. For backward compatibility, engines A
-	// and B are also supported, but are deprecated: A - Denoiser B - DeepFilterNet
+	// The engine to use for noise suppression. For backward compatibility, engines A,
+	// B, and C are also supported, but are deprecated: A - Denoiser B - DeepFilterNet
+	// C - Krisp
 	//
-	// Any of "Denoiser", "DeepFilterNet".
+	// Any of "Denoiser", "DeepFilterNet", "Krisp".
 	NoiseSuppressionEngine CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine `json:"noise_suppression_engine,omitzero"`
 	// Configuration parameters for noise suppression engines.
 	NoiseSuppressionEngineConfig CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineConfig `json:"noise_suppression_engine_config,omitzero"`
@@ -3897,13 +3898,15 @@ const (
 	CallActionStartNoiseSuppressionParamsDirectionBoth     CallActionStartNoiseSuppressionParamsDirection = "both"
 )
 
-// The engine to use for noise suppression. For backward compatibility, engines A
-// and B are also supported, but are deprecated: A - Denoiser B - DeepFilterNet
+// The engine to use for noise suppression. For backward compatibility, engines A,
+// B, and C are also supported, but are deprecated: A - Denoiser B - DeepFilterNet
+// C - Krisp
 type CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine string
 
 const (
 	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineDenoiser      CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "Denoiser"
 	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineDeepFilterNet CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "DeepFilterNet"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineKrisp         CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "Krisp"
 )
 
 // Configuration parameters for noise suppression engines.
