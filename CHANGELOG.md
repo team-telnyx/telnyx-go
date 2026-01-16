@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.4.0 (2026-01-16)
+
+Full Changelog: [v4.3.0...v4.4.0](https://github.com/team-telnyx/telnyx-go/compare/v4.3.0...v4.4.0)
+
+### Features
+
+* fix links ([1895c7d](https://github.com/team-telnyx/telnyx-go/commit/1895c7dd27347dea734cc9e310698a99f4afdd72))
+
+
+### Chores
+
+* **internal:** update `actions/checkout` version ([45e94d7](https://github.com/team-telnyx/telnyx-go/commit/45e94d7f80a619535edd62d379281fc46dfa5689))
+
 ## 4.3.0 (2026-01-15)
 
 Full Changelog: [v4.2.1...v4.3.0](https://github.com/team-telnyx/telnyx-go/compare/v4.2.1...v4.3.0)
