@@ -88,7 +88,7 @@ func (r *AIClusterService) Delete(ctx context.Context, taskID string, opts ...op
 }
 
 // Starts a background task to compute how the data in an
-// [embedded storage bucket](https://developers.telnyx.com/api/inference/inference-embedding/post-embedding)
+// [embedded storage bucket](https://developers.telnyx.com/api-reference/embeddings/embed-documents)
 // is clustered. This helps identify common themes and patterns in the data.
 func (r *AIClusterService) Compute(ctx context.Context, body AIClusterComputeParams, opts ...option.RequestOption) (res *AIClusterComputeResponse, err error) {
 	opts = slices.Concat(r.Options, opts)

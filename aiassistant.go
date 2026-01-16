@@ -105,11 +105,11 @@ func (r *AIAssistantService) Delete(ctx context.Context, assistantID string, opt
 // This endpoint allows a client to send a chat message to a specific AI Assistant.
 // The assistant processes the message and returns a relevant reply based on the
 // current conversation context. Refer to the Conversation API to
-// [create a conversation](https://developers.telnyx.com/api/inference/inference-embedding/create-new-conversation-public-conversations-post),
-// [filter existing conversations](https://developers.telnyx.com/api/inference/inference-embedding/get-conversations-public-conversations-get),
-// [fetch messages for a conversation](https://developers.telnyx.com/api/inference/inference-embedding/get-conversations-public-conversation-id-messages-get),
+// [create a conversation](https://developers.telnyx.com/api-reference/conversations/create-a-conversation),
+// [filter existing conversations](https://developers.telnyx.com/api-reference/conversations/list-conversations),
+// [fetch messages for a conversation](https://developers.telnyx.com/api-reference/conversations/get-conversation-messages),
 // and
-// [manually add messages to a conversation](https://developers.telnyx.com/api/inference/inference-embedding/add-new-message).
+// [manually add messages to a conversation](https://developers.telnyx.com/api-reference/conversations/create-message).
 func (r *AIAssistantService) Chat(ctx context.Context, assistantID string, body AIAssistantChatParams, opts ...option.RequestOption) (res *AIAssistantChatResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
@@ -1329,7 +1329,7 @@ type InferenceEmbedding struct {
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
 	Instructions string `json:"instructions,required"`
 	// ID of the model to use. You can use the
-	// [Get models API](https://developers.telnyx.com/api/inference/inference-embedding/get-models-public-models-get)
+	// [Get models API](https://developers.telnyx.com/api-reference/chat/get-available-models)
 	// to see all of your available models,
 	Model       string `json:"model,required"`
 	Name        string `json:"name,required"`
@@ -1350,7 +1350,7 @@ type InferenceEmbedding struct {
 	InsightSettings InsightSettings `json:"insight_settings"`
 	// This is only needed when using third-party inference providers. The `identifier`
 	// for an integration secret
-	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
+	// [/v2/integration_secrets](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
 	// that refers to your LLM provider's API key. Warning: Free plans are unlikely to
 	// work with this integration.
 	LlmAPIKeyRef      string            `json:"llm_api_key_ref"`
@@ -1474,7 +1474,7 @@ func (r *InferenceEmbeddingWidgetSettingsAudioVisualizerConfig) UnmarshalJSON(da
 
 type InferenceEmbeddingBucketIDs struct {
 	// List of
-	// [embedded storage buckets](https://developers.telnyx.com/api/inference/inference-embedding/post-embedding)
+	// [embedded storage buckets](https://developers.telnyx.com/api-reference/embeddings/embed-documents)
 	// to use for retrieval-augmented generation.
 	BucketIDs []string `json:"bucket_ids,required"`
 	// The maximum number of results to retrieve as context for the language model.
@@ -1507,7 +1507,7 @@ func (r InferenceEmbeddingBucketIDs) ToParam() InferenceEmbeddingBucketIDsParam 
 // The property BucketIDs is required.
 type InferenceEmbeddingBucketIDsParam struct {
 	// List of
-	// [embedded storage buckets](https://developers.telnyx.com/api/inference/inference-embedding/post-embedding)
+	// [embedded storage buckets](https://developers.telnyx.com/api-reference/embeddings/embed-documents)
 	// to use for retrieval-augmented generation.
 	BucketIDs []string `json:"bucket_ids,omitzero,required"`
 	// The maximum number of results to retrieve as context for the language model.
@@ -2533,7 +2533,7 @@ type VoiceSettings struct {
 	// [available voices](https://developers.telnyx.com/api/call-control/list-text-to-speech-voices)
 	// via our voices API. To use ElevenLabs, you must reference your ElevenLabs API
 	// key as an integration secret under the `api_key_ref` field. See
-	// [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
+	// [integration secrets documentation](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
 	// for details. For Telnyx voices, use `Telnyx.<model_id>.<voice_id>` (e.g.
 	// Telnyx.KokoroTTS.af_heart)
 	Voice string `json:"voice,required"`
@@ -2741,7 +2741,7 @@ type VoiceSettingsParam struct {
 	// [available voices](https://developers.telnyx.com/api/call-control/list-text-to-speech-voices)
 	// via our voices API. To use ElevenLabs, you must reference your ElevenLabs API
 	// key as an integration secret under the `api_key_ref` field. See
-	// [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
+	// [integration secrets documentation](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
 	// for details. For Telnyx voices, use `Telnyx.<model_id>.<voice_id>` (e.g.
 	// Telnyx.KokoroTTS.af_heart)
 	Voice string `json:"voice,required"`
@@ -3024,7 +3024,7 @@ type AIAssistantNewParams struct {
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
 	Instructions string `json:"instructions,required"`
 	// ID of the model to use. You can use the
-	// [Get models API](https://developers.telnyx.com/api/inference/inference-embedding/get-models-public-models-get)
+	// [Get models API](https://developers.telnyx.com/api-reference/chat/get-available-models)
 	// to see all of your available models,
 	Model       string            `json:"model,required"`
 	Name        string            `json:"name,required"`
@@ -3040,7 +3040,7 @@ type AIAssistantNewParams struct {
 	Greeting param.Opt[string] `json:"greeting,omitzero"`
 	// This is only needed when using third-party inference providers. The `identifier`
 	// for an integration secret
-	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
+	// [/v2/integration_secrets](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
 	// that refers to your LLM provider's API key. Warning: Free plans are unlikely to
 	// work with this integration.
 	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
@@ -3177,12 +3177,12 @@ type AIAssistantUpdateParams struct {
 	Instructions param.Opt[string] `json:"instructions,omitzero"`
 	// This is only needed when using third-party inference providers. The `identifier`
 	// for an integration secret
-	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
+	// [/v2/integration_secrets](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
 	// that refers to your LLM provider's API key. Warning: Free plans are unlikely to
 	// work with this integration.
 	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
 	// ID of the model to use. You can use the
-	// [Get models API](https://developers.telnyx.com/api/inference/inference-embedding/get-models-public-models-get)
+	// [Get models API](https://developers.telnyx.com/api-reference/chat/get-available-models)
 	// to see all of your available models,
 	Model param.Opt[string] `json:"model,omitzero"`
 	Name  param.Opt[string] `json:"name,omitzero"`
