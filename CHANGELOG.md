@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.5.1 (2026-01-16)
+
+Full Changelog: [v4.5.0...v4.5.1](https://github.com/team-telnyx/telnyx-go/compare/v4.5.0...v4.5.1)
+
+### Bug Fixes
+
+* **docs:** add missing pointer prefix to api.md return types ([13fd1fc](https://github.com/team-telnyx/telnyx-go/commit/13fd1fc13f04b602c427a2415753d21a3b2d9cb5))
+
 ## 4.5.0 (2026-01-16)
 
 Full Changelog: [v4.4.0...v4.5.0](https://github.com/team-telnyx/telnyx-go/compare/v4.4.0...v4.5.0)
