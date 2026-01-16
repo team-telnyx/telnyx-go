@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.5.0 (2026-01-16)
+
+Full Changelog: [v4.4.0...v4.5.0](https://github.com/team-telnyx/telnyx-go/compare/v4.4.0...v4.5.0)
+
+### Features
+
+* TELAPPS-5507: Add Krisp engine description for noise suppression ([bfe119a](https://github.com/team-telnyx/telnyx-go/commit/bfe119abb2ee2d660666ddd5659cd6122161f247))
+
+
+### Bug Fixes
+
+* update broken MDR report link in GetMessage endpoint ([94302bd](https://github.com/team-telnyx/telnyx-go/commit/94302bd7a7bb1e1a2a694e01b19e693aa4f68422))
+
 ## 4.4.0 (2026-01-16)
 
 Full Changelog: [v4.3.0...v4.4.0](https://github.com/team-telnyx/telnyx-go/compare/v4.3.0...v4.4.0)
