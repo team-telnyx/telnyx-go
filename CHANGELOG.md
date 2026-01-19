@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.6.0 (2026-01-19)
+
+Full Changelog: [v4.5.1...v4.6.0](https://github.com/team-telnyx/telnyx-go/compare/v4.5.1...v4.6.0)
+
+### Features
+
+* Add AI Assistant spec updates for FE tickets ([956d588](https://github.com/team-telnyx/telnyx-go/commit/956d588e576efdf85e5769f45c18d7c88ae16f1c))
+* fix-external-connection-link ([7d5af93](https://github.com/team-telnyx/telnyx-go/commit/7d5af9395216e821bdcc325218c2f61d7ac6f5fc))
+
 ## 4.5.1 (2026-01-16)
 
 Full Changelog: [v4.5.0...v4.5.1](https://github.com/team-telnyx/telnyx-go/compare/v4.5.0...v4.5.1)
