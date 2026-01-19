@@ -75,8 +75,9 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 				Instructions: telnyx.String("instructions"),
 				LlmAPIKeyRef: telnyx.String("llm_api_key_ref"),
 				MessagingSettings: telnyx.MessagingSettingsParam{
-					DefaultMessagingProfileID: telnyx.String("default_messaging_profile_id"),
-					DeliveryStatusWebhookURL:  telnyx.String("delivery_status_webhook_url"),
+					ConversationInactivityMinutes: telnyx.Int(1),
+					DefaultMessagingProfileID:     telnyx.String("default_messaging_profile_id"),
+					DeliveryStatusWebhookURL:      telnyx.String("delivery_status_webhook_url"),
 				},
 				Model: telnyx.String("model"),
 				Name:  telnyx.String("name"),
@@ -85,13 +86,24 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 				},
 				TelephonySettings: telnyx.TelephonySettingsParam{
 					DefaultTexmlAppID: telnyx.String("default_texml_app_id"),
-					NoiseSuppression:  telnyx.TelephonySettingsNoiseSuppressionDeepfilternet,
+					NoiseSuppression:  telnyx.TelephonySettingsNoiseSuppressionKrisp,
 					NoiseSuppressionConfig: telnyx.TelephonySettingsNoiseSuppressionConfigParam{
 						AttenuationLimit: telnyx.Int(0),
 						Mode:             "advanced",
 					},
 					SupportsUnauthenticatedWebCalls: telnyx.Bool(true),
 					TimeLimitSecs:                   telnyx.Int(30),
+					UserIdleTimeoutSecs:             telnyx.Int(30),
+					VoicemailDetection: telnyx.TelephonySettingsVoicemailDetectionParam{
+						OnVoicemailDetected: telnyx.TelephonySettingsVoicemailDetectionOnVoicemailDetectedParam{
+							Action: "stop_assistant",
+							VoicemailMessage: telnyx.TelephonySettingsVoicemailDetectionOnVoicemailDetectedVoicemailMessageParam{
+								Message: telnyx.String("message"),
+								Prompt:  telnyx.String("prompt"),
+								Type:    "prompt",
+							},
+						},
+					},
 				},
 				Tools: []telnyx.AssistantToolsItemsUnionParam{{
 					OfWebhook: &telnyx.WebhookToolParam{
@@ -100,6 +112,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 							Description: "description",
 							Name:        "name",
 							URL:         "https://example.com/api/v1/function",
+							Async:       telnyx.Bool(true),
 							BodyParameters: telnyx.InferenceEmbeddingWebhookToolParamsBodyParameters{
 								Properties: map[string]any{
 									"age":      "bar",
@@ -127,6 +140,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 								Required: []string{"page"},
 								Type:     "object",
 							},
+							TimeoutMs: telnyx.Int(500),
 						},
 					},
 				}},
