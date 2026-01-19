@@ -36,7 +36,7 @@ func NewOperatorConnectActionService(opts ...option.RequestOption) (r OperatorCo
 // integration with Microsoft Teams for the current user. This will create new
 // external connections on the user's account if needed, and/or report the
 // integration results as
-// [log messages](https://developers.telnyx.com/api/external-voice-integrations/list-external-connection-log-messages).
+// [log messages](https://developers.telnyx.com/api-reference/external-connections/list-all-log-messages#list-all-log-messages).
 func (r *OperatorConnectActionService) Refresh(ctx context.Context, opts ...option.RequestOption) (res *OperatorConnectActionRefreshResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "operator_connect/actions/refresh"
