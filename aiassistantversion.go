@@ -129,7 +129,10 @@ type UpdateAssistantParam struct {
 	DynamicVariablesWebhookURL param.Opt[string] `json:"dynamic_variables_webhook_url,omitzero"`
 	// Text that the assistant will use to start the conversation. This may be
 	// templated with
-	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
+	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables).
+	// Use an empty string to have the assistant wait for the user to speak first. Use
+	// the special value `<assistant-speaks-first-with-model-generated-message>` to
+	// have the assistant generate the greeting based on the system instructions.
 	Greeting param.Opt[string] `json:"greeting,omitzero"`
 	// System instructions for the assistant. These may be templated with
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
