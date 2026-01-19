@@ -1344,7 +1344,10 @@ type InferenceEmbedding struct {
 	EnabledFeatures            []EnabledFeatures `json:"enabled_features"`
 	// Text that the assistant will use to start the conversation. This may be
 	// templated with
-	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
+	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables).
+	// Use an empty string to have the assistant wait for the user to speak first. Use
+	// the special value `<assistant-speaks-first-with-model-generated-message>` to
+	// have the assistant generate the greeting based on the system instructions.
 	Greeting        string          `json:"greeting"`
 	ImportMetadata  ImportMetadata  `json:"import_metadata"`
 	InsightSettings InsightSettings `json:"insight_settings"`
@@ -1670,6 +1673,9 @@ type InferenceEmbeddingWebhookToolParamsResp struct {
 	// where `{id}` is a placeholder for a value that will be provided by the assistant
 	// if `path_parameters` are provided with the `id` attribute.
 	URL string `json:"url,required"`
+	// If async, the assistant will move forward without waiting for your server to
+	// respond.
+	Async bool `json:"async"`
 	// The body parameters the webhook tool accepts, described as a JSON Schema object.
 	// These parameters will be passed to the webhook as the body of the request. See
 	// the [JSON Schema reference](https://json-schema.org/understanding-json-schema)
@@ -1693,16 +1699,21 @@ type InferenceEmbeddingWebhookToolParamsResp struct {
 	// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
 	// documentation about the format
 	QueryParameters InferenceEmbeddingWebhookToolParamsQueryParametersResp `json:"query_parameters"`
+	// The maximum number of milliseconds to wait for the webhook to respond. Only
+	// applicable when async is false.
+	TimeoutMs int64 `json:"timeout_ms"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Description     respjson.Field
 		Name            respjson.Field
 		URL             respjson.Field
+		Async           respjson.Field
 		BodyParameters  respjson.Field
 		Headers         respjson.Field
 		Method          respjson.Field
 		PathParameters  respjson.Field
 		QueryParameters respjson.Field
+		TimeoutMs       respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
@@ -1853,6 +1864,12 @@ type InferenceEmbeddingWebhookToolParams struct {
 	// where `{id}` is a placeholder for a value that will be provided by the assistant
 	// if `path_parameters` are provided with the `id` attribute.
 	URL string `json:"url,required"`
+	// If async, the assistant will move forward without waiting for your server to
+	// respond.
+	Async param.Opt[bool] `json:"async,omitzero"`
+	// The maximum number of milliseconds to wait for the webhook to respond. Only
+	// applicable when async is false.
+	TimeoutMs param.Opt[int64] `json:"timeout_ms,omitzero"`
 	// The body parameters the webhook tool accepts, described as a JSON Schema object.
 	// These parameters will be passed to the webhook as the body of the request. See
 	// the [JSON Schema reference](https://json-schema.org/understanding-json-schema)
@@ -2036,6 +2053,9 @@ func (r *InsightSettingsParam) UnmarshalJSON(data []byte) error {
 }
 
 type MessagingSettings struct {
+	// If more than this many minutes have passed since the last message, the assistant
+	// will start a new conversation instead of continuing the existing one.
+	ConversationInactivityMinutes int64 `json:"conversation_inactivity_minutes"`
 	// Default Messaging Profile used for messaging exchanges with your assistant. This
 	// will be created automatically on assistant creation.
 	DefaultMessagingProfileID string `json:"default_messaging_profile_id"`
@@ -2044,10 +2064,11 @@ type MessagingSettings struct {
 	DeliveryStatusWebhookURL string `json:"delivery_status_webhook_url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		DefaultMessagingProfileID respjson.Field
-		DeliveryStatusWebhookURL  respjson.Field
-		ExtraFields               map[string]respjson.Field
-		raw                       string
+		ConversationInactivityMinutes respjson.Field
+		DefaultMessagingProfileID     respjson.Field
+		DeliveryStatusWebhookURL      respjson.Field
+		ExtraFields                   map[string]respjson.Field
+		raw                           string
 	} `json:"-"`
 }
 
@@ -2067,6 +2088,9 @@ func (r MessagingSettings) ToParam() MessagingSettingsParam {
 }
 
 type MessagingSettingsParam struct {
+	// If more than this many minutes have passed since the last message, the assistant
+	// will start a new conversation instead of continuing the existing one.
+	ConversationInactivityMinutes param.Opt[int64] `json:"conversation_inactivity_minutes,omitzero"`
 	// Default Messaging Profile used for messaging exchanges with your assistant. This
 	// will be created automatically on assistant creation.
 	DefaultMessagingProfileID param.Opt[string] `json:"default_messaging_profile_id,omitzero"`
@@ -2191,7 +2215,7 @@ type TelephonySettings struct {
 	// The noise suppression engine to use. Use 'disabled' to turn off noise
 	// suppression.
 	//
-	// Any of "deepfilternet", "disabled".
+	// Any of "krisp", "deepfilternet", "disabled".
 	NoiseSuppression TelephonySettingsNoiseSuppression `json:"noise_suppression"`
 	// Configuration for noise suppression. Only applicable when noise_suppression is
 	// 'deepfilternet'.
@@ -2205,6 +2229,14 @@ type TelephonySettings struct {
 	// apply to portions of a call without an active assistant (for instance, a call
 	// transferred to a human representative).
 	TimeLimitSecs int64 `json:"time_limit_secs"`
+	// Maximum duration in seconds of end user silence on the call. When this limit is
+	// reached the assistant will be stopped. This limit does not apply to portions of
+	// a call without an active assistant (for instance, a call transferred to a human
+	// representative).
+	UserIdleTimeoutSecs int64 `json:"user_idle_timeout_secs"`
+	// Configuration for voicemail detection (AMD - Answering Machine Detection) on
+	// outgoing calls.
+	VoicemailDetection TelephonySettingsVoicemailDetection `json:"voicemail_detection"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DefaultTexmlAppID               respjson.Field
@@ -2212,6 +2244,8 @@ type TelephonySettings struct {
 		NoiseSuppressionConfig          respjson.Field
 		SupportsUnauthenticatedWebCalls respjson.Field
 		TimeLimitSecs                   respjson.Field
+		UserIdleTimeoutSecs             respjson.Field
+		VoicemailDetection              respjson.Field
 		ExtraFields                     map[string]respjson.Field
 		raw                             string
 	} `json:"-"`
@@ -2237,6 +2271,7 @@ func (r TelephonySettings) ToParam() TelephonySettingsParam {
 type TelephonySettingsNoiseSuppression string
 
 const (
+	TelephonySettingsNoiseSuppressionKrisp         TelephonySettingsNoiseSuppression = "krisp"
 	TelephonySettingsNoiseSuppressionDeepfilternet TelephonySettingsNoiseSuppression = "deepfilternet"
 	TelephonySettingsNoiseSuppressionDisabled      TelephonySettingsNoiseSuppression = "disabled"
 )
@@ -2265,6 +2300,82 @@ func (r *TelephonySettingsNoiseSuppressionConfig) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Configuration for voicemail detection (AMD - Answering Machine Detection) on
+// outgoing calls.
+type TelephonySettingsVoicemailDetection struct {
+	// Action to take when voicemail is detected.
+	OnVoicemailDetected TelephonySettingsVoicemailDetectionOnVoicemailDetected `json:"on_voicemail_detected"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		OnVoicemailDetected respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TelephonySettingsVoicemailDetection) RawJSON() string { return r.JSON.raw }
+func (r *TelephonySettingsVoicemailDetection) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Action to take when voicemail is detected.
+type TelephonySettingsVoicemailDetectionOnVoicemailDetected struct {
+	// The action to take when voicemail is detected.
+	//
+	// Any of "stop_assistant", "leave_message_and_stop_assistant",
+	// "continue_assistant".
+	Action string `json:"action"`
+	// Configuration for the voicemail message to leave. Only applicable when action is
+	// 'leave_message_and_stop_assistant'.
+	VoicemailMessage TelephonySettingsVoicemailDetectionOnVoicemailDetectedVoicemailMessage `json:"voicemail_message"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Action           respjson.Field
+		VoicemailMessage respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TelephonySettingsVoicemailDetectionOnVoicemailDetected) RawJSON() string { return r.JSON.raw }
+func (r *TelephonySettingsVoicemailDetectionOnVoicemailDetected) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration for the voicemail message to leave. Only applicable when action is
+// 'leave_message_and_stop_assistant'.
+type TelephonySettingsVoicemailDetectionOnVoicemailDetectedVoicemailMessage struct {
+	// The specific message to leave as voicemail. Only applicable when type is
+	// 'message'.
+	Message string `json:"message"`
+	// The prompt to use for generating the voicemail message. Only applicable when
+	// type is 'prompt'.
+	Prompt string `json:"prompt"`
+	// The type of voicemail message. Use 'prompt' to have the assistant generate a
+	// message based on a prompt, or 'message' to leave a specific message.
+	//
+	// Any of "prompt", "message".
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Message     respjson.Field
+		Prompt      respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TelephonySettingsVoicemailDetectionOnVoicemailDetectedVoicemailMessage) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *TelephonySettingsVoicemailDetectionOnVoicemailDetectedVoicemailMessage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type TelephonySettingsParam struct {
 	// Default Texml App used for voice calls with your assistant. This will be created
 	// automatically on assistant creation.
@@ -2278,14 +2389,22 @@ type TelephonySettingsParam struct {
 	// apply to portions of a call without an active assistant (for instance, a call
 	// transferred to a human representative).
 	TimeLimitSecs param.Opt[int64] `json:"time_limit_secs,omitzero"`
+	// Maximum duration in seconds of end user silence on the call. When this limit is
+	// reached the assistant will be stopped. This limit does not apply to portions of
+	// a call without an active assistant (for instance, a call transferred to a human
+	// representative).
+	UserIdleTimeoutSecs param.Opt[int64] `json:"user_idle_timeout_secs,omitzero"`
 	// The noise suppression engine to use. Use 'disabled' to turn off noise
 	// suppression.
 	//
-	// Any of "deepfilternet", "disabled".
+	// Any of "krisp", "deepfilternet", "disabled".
 	NoiseSuppression TelephonySettingsNoiseSuppression `json:"noise_suppression,omitzero"`
 	// Configuration for noise suppression. Only applicable when noise_suppression is
 	// 'deepfilternet'.
 	NoiseSuppressionConfig TelephonySettingsNoiseSuppressionConfigParam `json:"noise_suppression_config,omitzero"`
+	// Configuration for voicemail detection (AMD - Answering Machine Detection) on
+	// outgoing calls.
+	VoicemailDetection TelephonySettingsVoicemailDetectionParam `json:"voicemail_detection,omitzero"`
 	paramObj
 }
 
@@ -2320,6 +2439,80 @@ func (r *TelephonySettingsNoiseSuppressionConfigParam) UnmarshalJSON(data []byte
 func init() {
 	apijson.RegisterFieldValidator[TelephonySettingsNoiseSuppressionConfigParam](
 		"mode", "advanced",
+	)
+}
+
+// Configuration for voicemail detection (AMD - Answering Machine Detection) on
+// outgoing calls.
+type TelephonySettingsVoicemailDetectionParam struct {
+	// Action to take when voicemail is detected.
+	OnVoicemailDetected TelephonySettingsVoicemailDetectionOnVoicemailDetectedParam `json:"on_voicemail_detected,omitzero"`
+	paramObj
+}
+
+func (r TelephonySettingsVoicemailDetectionParam) MarshalJSON() (data []byte, err error) {
+	type shadow TelephonySettingsVoicemailDetectionParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TelephonySettingsVoicemailDetectionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Action to take when voicemail is detected.
+type TelephonySettingsVoicemailDetectionOnVoicemailDetectedParam struct {
+	// The action to take when voicemail is detected.
+	//
+	// Any of "stop_assistant", "leave_message_and_stop_assistant",
+	// "continue_assistant".
+	Action string `json:"action,omitzero"`
+	// Configuration for the voicemail message to leave. Only applicable when action is
+	// 'leave_message_and_stop_assistant'.
+	VoicemailMessage TelephonySettingsVoicemailDetectionOnVoicemailDetectedVoicemailMessageParam `json:"voicemail_message,omitzero"`
+	paramObj
+}
+
+func (r TelephonySettingsVoicemailDetectionOnVoicemailDetectedParam) MarshalJSON() (data []byte, err error) {
+	type shadow TelephonySettingsVoicemailDetectionOnVoicemailDetectedParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TelephonySettingsVoicemailDetectionOnVoicemailDetectedParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TelephonySettingsVoicemailDetectionOnVoicemailDetectedParam](
+		"action", "stop_assistant", "leave_message_and_stop_assistant", "continue_assistant",
+	)
+}
+
+// Configuration for the voicemail message to leave. Only applicable when action is
+// 'leave_message_and_stop_assistant'.
+type TelephonySettingsVoicemailDetectionOnVoicemailDetectedVoicemailMessageParam struct {
+	// The specific message to leave as voicemail. Only applicable when type is
+	// 'message'.
+	Message param.Opt[string] `json:"message,omitzero"`
+	// The prompt to use for generating the voicemail message. Only applicable when
+	// type is 'prompt'.
+	Prompt param.Opt[string] `json:"prompt,omitzero"`
+	// The type of voicemail message. Use 'prompt' to have the assistant generate a
+	// message based on a prompt, or 'message' to leave a specific message.
+	//
+	// Any of "prompt", "message".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r TelephonySettingsVoicemailDetectionOnVoicemailDetectedVoicemailMessageParam) MarshalJSON() (data []byte, err error) {
+	type shadow TelephonySettingsVoicemailDetectionOnVoicemailDetectedVoicemailMessageParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TelephonySettingsVoicemailDetectionOnVoicemailDetectedVoicemailMessageParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TelephonySettingsVoicemailDetectionOnVoicemailDetectedVoicemailMessageParam](
+		"type", "prompt", "message",
 	)
 }
 
@@ -3036,7 +3229,10 @@ type AIAssistantNewParams struct {
 	DynamicVariablesWebhookURL param.Opt[string] `json:"dynamic_variables_webhook_url,omitzero"`
 	// Text that the assistant will use to start the conversation. This may be
 	// templated with
-	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
+	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables).
+	// Use an empty string to have the assistant wait for the user to speak first. Use
+	// the special value `<assistant-speaks-first-with-model-generated-message>` to
+	// have the assistant generate the greeting based on the system instructions.
 	Greeting param.Opt[string] `json:"greeting,omitzero"`
 	// This is only needed when using third-party inference providers. The `identifier`
 	// for an integration secret
@@ -3170,7 +3366,10 @@ type AIAssistantUpdateParams struct {
 	DynamicVariablesWebhookURL param.Opt[string] `json:"dynamic_variables_webhook_url,omitzero"`
 	// Text that the assistant will use to start the conversation. This may be
 	// templated with
-	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
+	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables).
+	// Use an empty string to have the assistant wait for the user to speak first. Use
+	// the special value `<assistant-speaks-first-with-model-generated-message>` to
+	// have the assistant generate the greeting based on the system instructions.
 	Greeting param.Opt[string] `json:"greeting,omitzero"`
 	// System instructions for the assistant. These may be templated with
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
