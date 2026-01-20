@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.7.0 (2026-01-20)
+
+Full Changelog: [v4.6.0...v4.7.0](https://github.com/team-telnyx/telnyx-go/compare/v4.6.0...v4.7.0)
+
+### Features
+
+* Update voicemail_detection description with AMD enablement info ([b68557b](https://github.com/team-telnyx/telnyx-go/commit/b68557bc78d56a7fb6b4057c74eac4bf62d374f6))
+
+
+### Bug Fixes
+
+* correct broken link to List SIM Card Actions endpoint in SIM car… ([6927bbd](https://github.com/team-telnyx/telnyx-go/commit/6927bbd57669a6e1d13a987baa3acbf39fd77a5f))
+
 ## 4.6.0 (2026-01-19)
 
 Full Changelog: [v4.5.1...v4.6.0](https://github.com/team-telnyx/telnyx-go/compare/v4.5.1...v4.6.0)
