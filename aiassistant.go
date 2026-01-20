@@ -2235,7 +2235,11 @@ type TelephonySettings struct {
 	// representative).
 	UserIdleTimeoutSecs int64 `json:"user_idle_timeout_secs"`
 	// Configuration for voicemail detection (AMD - Answering Machine Detection) on
-	// outgoing calls.
+	// outgoing calls. These settings only apply if AMD is enabled on the Dial command.
+	// See
+	// [TeXML Dial documentation](https://developers.telnyx.com/api-reference/texml-rest-commands/initiate-an-outbound-call)
+	// for enabling AMD. Recommended settings: MachineDetection=Enable, AsyncAmd=true,
+	// DetectionMode=Premium.
 	VoicemailDetection TelephonySettingsVoicemailDetection `json:"voicemail_detection"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2301,7 +2305,11 @@ func (r *TelephonySettingsNoiseSuppressionConfig) UnmarshalJSON(data []byte) err
 }
 
 // Configuration for voicemail detection (AMD - Answering Machine Detection) on
-// outgoing calls.
+// outgoing calls. These settings only apply if AMD is enabled on the Dial command.
+// See
+// [TeXML Dial documentation](https://developers.telnyx.com/api-reference/texml-rest-commands/initiate-an-outbound-call)
+// for enabling AMD. Recommended settings: MachineDetection=Enable, AsyncAmd=true,
+// DetectionMode=Premium.
 type TelephonySettingsVoicemailDetection struct {
 	// Action to take when voicemail is detected.
 	OnVoicemailDetected TelephonySettingsVoicemailDetectionOnVoicemailDetected `json:"on_voicemail_detected"`
@@ -2403,7 +2411,11 @@ type TelephonySettingsParam struct {
 	// 'deepfilternet'.
 	NoiseSuppressionConfig TelephonySettingsNoiseSuppressionConfigParam `json:"noise_suppression_config,omitzero"`
 	// Configuration for voicemail detection (AMD - Answering Machine Detection) on
-	// outgoing calls.
+	// outgoing calls. These settings only apply if AMD is enabled on the Dial command.
+	// See
+	// [TeXML Dial documentation](https://developers.telnyx.com/api-reference/texml-rest-commands/initiate-an-outbound-call)
+	// for enabling AMD. Recommended settings: MachineDetection=Enable, AsyncAmd=true,
+	// DetectionMode=Premium.
 	VoicemailDetection TelephonySettingsVoicemailDetectionParam `json:"voicemail_detection,omitzero"`
 	paramObj
 }
@@ -2443,7 +2455,11 @@ func init() {
 }
 
 // Configuration for voicemail detection (AMD - Answering Machine Detection) on
-// outgoing calls.
+// outgoing calls. These settings only apply if AMD is enabled on the Dial command.
+// See
+// [TeXML Dial documentation](https://developers.telnyx.com/api-reference/texml-rest-commands/initiate-an-outbound-call)
+// for enabling AMD. Recommended settings: MachineDetection=Enable, AsyncAmd=true,
+// DetectionMode=Premium.
 type TelephonySettingsVoicemailDetectionParam struct {
 	// Action to take when voicemail is detected.
 	OnVoicemailDetected TelephonySettingsVoicemailDetectionOnVoicemailDetectedParam `json:"on_voicemail_detected,omitzero"`
