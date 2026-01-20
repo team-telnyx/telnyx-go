@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.8.0 (2026-01-20)
+
+Full Changelog: [v4.7.0...v4.8.0](https://github.com/team-telnyx/telnyx-go/compare/v4.7.0...v4.8.0)
+
+### Features
+
+* Add Post /v2/calls/:call_control_id/actions/ai_assistant_add_messages ([2f0be16](https://github.com/team-telnyx/telnyx-go/commit/2f0be16ab18549b188b2a4698dc2aad0ccefd7fc))
+
 ## 4.7.0 (2026-01-20)
 
 Full Changelog: [v4.6.0...v4.7.0](https://github.com/team-telnyx/telnyx-go/compare/v4.6.0...v4.7.0)
