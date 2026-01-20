@@ -19,12 +19,14 @@ func ValueOf[T Constant[T]]() T {
 }
 
 type Android string           // Always "android"
+type Assistant string         // Always "assistant"
 type BookAppointment string   // Always "book_appointment"
 type CheckAvailability string // Always "check_availability"
 type Comparative string       // Always "comparative"
 type Deepgram string          // Always "Deepgram"
 type DeepgramNova2 string     // Always "deepgram/nova-2"
 type DeepgramNova3 string     // Always "deepgram/nova-3"
+type Developer string         // Always "developer"
 type Function string          // Always "function"
 type Handoff string           // Always "handoff"
 type Ios string               // Always "ios"
@@ -36,14 +38,19 @@ type Retrieval string         // Always "retrieval"
 type SendDtmf string          // Always "send_dtmf"
 type SendMessage string       // Always "send_message"
 type Simple string            // Always "simple"
+type System string            // Always "system"
+type Tool string              // Always "tool"
+type User string              // Always "user"
 
 func (c Android) Default() Android                     { return "android" }
+func (c Assistant) Default() Assistant                 { return "assistant" }
 func (c BookAppointment) Default() BookAppointment     { return "book_appointment" }
 func (c CheckAvailability) Default() CheckAvailability { return "check_availability" }
 func (c Comparative) Default() Comparative             { return "comparative" }
 func (c Deepgram) Default() Deepgram                   { return "Deepgram" }
 func (c DeepgramNova2) Default() DeepgramNova2         { return "deepgram/nova-2" }
 func (c DeepgramNova3) Default() DeepgramNova3         { return "deepgram/nova-3" }
+func (c Developer) Default() Developer                 { return "developer" }
 func (c Function) Default() Function                   { return "function" }
 func (c Handoff) Default() Handoff                     { return "handoff" }
 func (c Ios) Default() Ios                             { return "ios" }
@@ -55,14 +62,19 @@ func (c Retrieval) Default() Retrieval                 { return "retrieval" }
 func (c SendDtmf) Default() SendDtmf                   { return "send_dtmf" }
 func (c SendMessage) Default() SendMessage             { return "send_message" }
 func (c Simple) Default() Simple                       { return "simple" }
+func (c System) Default() System                       { return "system" }
+func (c Tool) Default() Tool                           { return "tool" }
+func (c User) Default() User                           { return "user" }
 
 func (c Android) MarshalJSON() ([]byte, error)           { return marshalString(c) }
+func (c Assistant) MarshalJSON() ([]byte, error)         { return marshalString(c) }
 func (c BookAppointment) MarshalJSON() ([]byte, error)   { return marshalString(c) }
 func (c CheckAvailability) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c Comparative) MarshalJSON() ([]byte, error)       { return marshalString(c) }
 func (c Deepgram) MarshalJSON() ([]byte, error)          { return marshalString(c) }
 func (c DeepgramNova2) MarshalJSON() ([]byte, error)     { return marshalString(c) }
 func (c DeepgramNova3) MarshalJSON() ([]byte, error)     { return marshalString(c) }
+func (c Developer) MarshalJSON() ([]byte, error)         { return marshalString(c) }
 func (c Function) MarshalJSON() ([]byte, error)          { return marshalString(c) }
 func (c Handoff) MarshalJSON() ([]byte, error)           { return marshalString(c) }
 func (c Ios) MarshalJSON() ([]byte, error)               { return marshalString(c) }
@@ -74,6 +86,9 @@ func (c Retrieval) MarshalJSON() ([]byte, error)         { return marshalString(
 func (c SendDtmf) MarshalJSON() ([]byte, error)          { return marshalString(c) }
 func (c SendMessage) MarshalJSON() ([]byte, error)       { return marshalString(c) }
 func (c Simple) MarshalJSON() ([]byte, error)            { return marshalString(c) }
+func (c System) MarshalJSON() ([]byte, error)            { return marshalString(c) }
+func (c Tool) MarshalJSON() ([]byte, error)              { return marshalString(c) }
+func (c User) MarshalJSON() ([]byte, error)              { return marshalString(c) }
 
 type constant[T any] interface {
 	Constant[T]
