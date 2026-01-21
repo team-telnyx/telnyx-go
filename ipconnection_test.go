@@ -11,6 +11,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4"
 	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 func TestIPConnectionNewWithOptionalParams(t *testing.T) {
@@ -55,9 +56,9 @@ func TestIPConnectionNewWithOptionalParams(t *testing.T) {
 		},
 		IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
 		NoiseSuppression:    telnyx.IPConnectionNewParamsNoiseSuppressionBoth,
-		NoiseSuppressionDetails: telnyx.IPConnectionNewParamsNoiseSuppressionDetails{
+		NoiseSuppressionDetails: shared.ConnectionNoiseSuppressionDetailsParam{
 			AttenuationLimit: telnyx.Int(80),
-			Engine:           "deep_filter_net",
+			Engine:           shared.ConnectionNoiseSuppressionDetailsEngineDeepFilterNet,
 		},
 		OnnetT38PassthroughEnabled: telnyx.Bool(false),
 		Outbound: telnyx.OutboundIPParam{
@@ -166,9 +167,9 @@ func TestIPConnectionUpdateWithOptionalParams(t *testing.T) {
 			},
 			IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
 			NoiseSuppression:    telnyx.IPConnectionUpdateParamsNoiseSuppressionBoth,
-			NoiseSuppressionDetails: telnyx.IPConnectionUpdateParamsNoiseSuppressionDetails{
+			NoiseSuppressionDetails: shared.ConnectionNoiseSuppressionDetailsParam{
 				AttenuationLimit: telnyx.Int(80),
-				Engine:           "deep_filter_net",
+				Engine:           shared.ConnectionNoiseSuppressionDetailsEngineDeepFilterNet,
 			},
 			OnnetT38PassthroughEnabled: telnyx.Bool(false),
 			Outbound: telnyx.OutboundIPParam{

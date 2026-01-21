@@ -4,6 +4,7 @@ package telnyx
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"slices"
 
@@ -11,6 +12,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
@@ -41,6 +43,56 @@ func (r *AIChatService) NewCompletion(ctx context.Context, body AIChatNewComplet
 	path := "ai/chat/completions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
+}
+
+type BucketIDs struct {
+	// List of
+	// [embedded storage buckets](https://developers.telnyx.com/api-reference/embeddings/embed-documents)
+	// to use for retrieval-augmented generation.
+	BucketIDs []string `json:"bucket_ids,required"`
+	// The maximum number of results to retrieve as context for the language model.
+	MaxNumResults int64 `json:"max_num_results"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BucketIDs     respjson.Field
+		MaxNumResults respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BucketIDs) RawJSON() string { return r.JSON.raw }
+func (r *BucketIDs) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this BucketIDs to a BucketIDsParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// BucketIDsParam.Overrides()
+func (r BucketIDs) ToParam() BucketIDsParam {
+	return param.Override[BucketIDsParam](json.RawMessage(r.RawJSON()))
+}
+
+// The property BucketIDs is required.
+type BucketIDsParam struct {
+	// List of
+	// [embedded storage buckets](https://developers.telnyx.com/api-reference/embeddings/embed-documents)
+	// to use for retrieval-augmented generation.
+	BucketIDs []string `json:"bucket_ids,omitzero,required"`
+	// The maximum number of results to retrieve as context for the language model.
+	MaxNumResults param.Opt[int64] `json:"max_num_results,omitzero"`
+	paramObj
+}
+
+func (r BucketIDsParam) MarshalJSON() (data []byte, err error) {
+	type shadow BucketIDsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BucketIDsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type AIChatNewCompletionResponse map[string]any
@@ -262,7 +314,7 @@ func (u AIChatNewCompletionParamsToolUnion) GetFunction() *AIChatNewCompletionPa
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u AIChatNewCompletionParamsToolUnion) GetRetrieval() *InferenceEmbeddingBucketIDsParam {
+func (u AIChatNewCompletionParamsToolUnion) GetRetrieval() *BucketIDsParam {
 	if vt := u.OfRetrieval; vt != nil {
 		return &vt.Retrieval
 	}
@@ -321,7 +373,7 @@ func (r *AIChatNewCompletionParamsToolFunctionFunction) UnmarshalJSON(data []byt
 
 // The properties Retrieval, Type are required.
 type AIChatNewCompletionParamsToolRetrieval struct {
-	Retrieval InferenceEmbeddingBucketIDsParam `json:"retrieval,omitzero,required"`
+	Retrieval BucketIDsParam `json:"retrieval,omitzero,required"`
 	// This field can be elided, and will marshal its zero value as "retrieval".
 	Type constant.Retrieval `json:"type,required"`
 	paramObj
