@@ -71,14 +71,14 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			},
 		},
 		Tools: []telnyx.AssistantToolsItemsUnionParam{{
-			OfWebhook: &telnyx.WebhookToolParam{
-				Type: telnyx.WebhookToolTypeWebhook,
-				Webhook: telnyx.InferenceEmbeddingWebhookToolParams{
+			OfWebhook: &telnyx.InferenceEmbeddingWebhookToolParams{
+				Type: telnyx.InferenceEmbeddingWebhookToolParamsTypeWebhook,
+				Webhook: telnyx.InferenceEmbeddingWebhookToolParamsWebhook{
 					Description: "description",
 					Name:        "name",
 					URL:         "https://example.com/api/v1/function",
 					Async:       telnyx.Bool(true),
-					BodyParameters: telnyx.InferenceEmbeddingWebhookToolParamsBodyParameters{
+					BodyParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookBodyParameters{
 						Properties: map[string]any{
 							"age":      "bar",
 							"location": "bar",
@@ -86,19 +86,19 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 						Required: []string{"age", "location"},
 						Type:     "object",
 					},
-					Headers: []telnyx.InferenceEmbeddingWebhookToolParamsHeader{{
+					Headers: []telnyx.InferenceEmbeddingWebhookToolParamsWebhookHeader{{
 						Name:  telnyx.String("name"),
 						Value: telnyx.String("value"),
 					}},
-					Method: telnyx.InferenceEmbeddingWebhookToolParamsMethodGet,
-					PathParameters: telnyx.InferenceEmbeddingWebhookToolParamsPathParameters{
+					Method: "GET",
+					PathParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookPathParameters{
 						Properties: map[string]any{
 							"id": "bar",
 						},
 						Required: []string{"id"},
 						Type:     "object",
 					},
-					QueryParameters: telnyx.InferenceEmbeddingWebhookToolParamsQueryParameters{
+					QueryParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookQueryParameters{
 						Properties: map[string]any{
 							"page": "bar",
 						},
@@ -136,20 +136,20 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			UseSpeakerBoost: telnyx.Bool(true),
 			VoiceSpeed:      telnyx.Float(0),
 		},
-		WidgetSettings: telnyx.AIAssistantNewParamsWidgetSettings{
+		WidgetSettings: telnyx.WidgetSettingsParam{
 			AgentThinkingText: telnyx.String("agent_thinking_text"),
-			AudioVisualizerConfig: telnyx.AIAssistantNewParamsWidgetSettingsAudioVisualizerConfig{
+			AudioVisualizerConfig: telnyx.WidgetSettingsAudioVisualizerConfigParam{
 				Color:  "verdant",
 				Preset: telnyx.String("preset"),
 			},
-			DefaultState:         "expanded",
+			DefaultState:         telnyx.WidgetSettingsDefaultStateExpanded,
 			GiveFeedbackURL:      telnyx.String("give_feedback_url"),
 			LogoIconURL:          telnyx.String("logo_icon_url"),
-			Position:             "fixed",
+			Position:             telnyx.WidgetSettingsPositionFixed,
 			ReportIssueURL:       telnyx.String("report_issue_url"),
 			SpeakToInterruptText: telnyx.String("speak_to_interrupt_text"),
 			StartCallText:        telnyx.String("start_call_text"),
-			Theme:                "light",
+			Theme:                telnyx.WidgetSettingsThemeLight,
 			ViewHistoryURL:       telnyx.String("view_history_url"),
 		},
 	})
@@ -256,14 +256,14 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				},
 			},
 			Tools: []telnyx.AssistantToolsItemsUnionParam{{
-				OfWebhook: &telnyx.WebhookToolParam{
-					Type: telnyx.WebhookToolTypeWebhook,
-					Webhook: telnyx.InferenceEmbeddingWebhookToolParams{
+				OfWebhook: &telnyx.InferenceEmbeddingWebhookToolParams{
+					Type: telnyx.InferenceEmbeddingWebhookToolParamsTypeWebhook,
+					Webhook: telnyx.InferenceEmbeddingWebhookToolParamsWebhook{
 						Description: "description",
 						Name:        "name",
 						URL:         "https://example.com/api/v1/function",
 						Async:       telnyx.Bool(true),
-						BodyParameters: telnyx.InferenceEmbeddingWebhookToolParamsBodyParameters{
+						BodyParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookBodyParameters{
 							Properties: map[string]any{
 								"age":      "bar",
 								"location": "bar",
@@ -271,19 +271,19 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 							Required: []string{"age", "location"},
 							Type:     "object",
 						},
-						Headers: []telnyx.InferenceEmbeddingWebhookToolParamsHeader{{
+						Headers: []telnyx.InferenceEmbeddingWebhookToolParamsWebhookHeader{{
 							Name:  telnyx.String("name"),
 							Value: telnyx.String("value"),
 						}},
-						Method: telnyx.InferenceEmbeddingWebhookToolParamsMethodGet,
-						PathParameters: telnyx.InferenceEmbeddingWebhookToolParamsPathParameters{
+						Method: "GET",
+						PathParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookPathParameters{
 							Properties: map[string]any{
 								"id": "bar",
 							},
 							Required: []string{"id"},
 							Type:     "object",
 						},
-						QueryParameters: telnyx.InferenceEmbeddingWebhookToolParamsQueryParameters{
+						QueryParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookQueryParameters{
 							Properties: map[string]any{
 								"page": "bar",
 							},
@@ -321,20 +321,20 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				UseSpeakerBoost: telnyx.Bool(true),
 				VoiceSpeed:      telnyx.Float(0),
 			},
-			WidgetSettings: telnyx.AIAssistantUpdateParamsWidgetSettings{
+			WidgetSettings: telnyx.WidgetSettingsParam{
 				AgentThinkingText: telnyx.String("agent_thinking_text"),
-				AudioVisualizerConfig: telnyx.AIAssistantUpdateParamsWidgetSettingsAudioVisualizerConfig{
+				AudioVisualizerConfig: telnyx.WidgetSettingsAudioVisualizerConfigParam{
 					Color:  "verdant",
 					Preset: telnyx.String("preset"),
 				},
-				DefaultState:         "expanded",
+				DefaultState:         telnyx.WidgetSettingsDefaultStateExpanded,
 				GiveFeedbackURL:      telnyx.String("give_feedback_url"),
 				LogoIconURL:          telnyx.String("logo_icon_url"),
-				Position:             "fixed",
+				Position:             telnyx.WidgetSettingsPositionFixed,
 				ReportIssueURL:       telnyx.String("report_issue_url"),
 				SpeakToInterruptText: telnyx.String("speak_to_interrupt_text"),
 				StartCallText:        telnyx.String("start_call_text"),
-				Theme:                "light",
+				Theme:                telnyx.WidgetSettingsThemeLight,
 				ViewHistoryURL:       telnyx.String("view_history_url"),
 			},
 		},
