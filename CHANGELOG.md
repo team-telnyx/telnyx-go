@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.9.0 (2026-01-21)
+
+Full Changelog: [v4.8.0...v4.9.0](https://github.com/team-telnyx/telnyx-go/compare/v4.8.0...v4.9.0)
+
+### Features
+
+* fix-redocly-lint-issues ([45d63d8](https://github.com/team-telnyx/telnyx-go/commit/45d63d8ac47fd3830ae09e2e7f32747d1e38e0a1))
+
 ## 4.8.0 (2026-01-20)
 
 Full Changelog: [v4.7.0...v4.8.0](https://github.com/team-telnyx/telnyx-go/compare/v4.7.0...v4.8.0)
