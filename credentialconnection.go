@@ -18,6 +18,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // CredentialConnectionService contains methods and other services that help with
@@ -239,7 +240,7 @@ type CredentialConnection struct {
 	// regardless of the noise_suppression value, but only take effect when
 	// noise_suppression is not 'disabled'. If you disable noise suppression and later
 	// re-enable it, the previously configured settings will be used.
-	NoiseSuppressionDetails CredentialConnectionNoiseSuppressionDetails `json:"noise_suppression_details"`
+	NoiseSuppressionDetails shared.ConnectionNoiseSuppressionDetails `json:"noise_suppression_details"`
 	// Enable on-net T38 if you prefer the sender and receiver negotiating T38 directly
 	// if both are on the Telnyx network. If this is disabled, Telnyx will be able to
 	// use T38 on just one leg of the call depending on each leg's settings.
@@ -330,40 +331,6 @@ const (
 	CredentialConnectionNoiseSuppressionBoth     CredentialConnectionNoiseSuppression = "both"
 	CredentialConnectionNoiseSuppressionDisabled CredentialConnectionNoiseSuppression = "disabled"
 )
-
-// Configuration options for noise suppression. These settings are stored
-// regardless of the noise_suppression value, but only take effect when
-// noise_suppression is not 'disabled'. If you disable noise suppression and later
-// re-enable it, the previously configured settings will be used.
-type CredentialConnectionNoiseSuppressionDetails struct {
-	// The attenuation limit value for the selected engine. Default values vary by
-	// engine: 0 for 'denoiser', 80 for 'deep_filter_net', 'deep_filter_net_large', and
-	// all Krisp engines ('krisp_viva_tel', 'krisp_viva_tel_lite',
-	// 'krisp_viva_promodel', 'krisp_viva_ss').
-	AttenuationLimit int64 `json:"attenuation_limit"`
-	// The noise suppression engine to use. 'denoiser' is the default engine.
-	// 'deep_filter_net' and 'deep_filter_net_large' are alternative engines with
-	// different performance characteristics. Krisp engines ('krisp_viva_tel',
-	// 'krisp_viva_tel_lite', 'krisp_viva_promodel', 'krisp_viva_ss') provide advanced
-	// noise suppression capabilities.
-	//
-	// Any of "denoiser", "deep_filter_net", "deep_filter_net_large", "krisp_viva_tel",
-	// "krisp_viva_tel_lite", "krisp_viva_promodel", "krisp_viva_ss".
-	Engine string `json:"engine"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AttenuationLimit respjson.Field
-		Engine           respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CredentialConnectionNoiseSuppressionDetails) RawJSON() string { return r.JSON.raw }
-func (r *CredentialConnectionNoiseSuppressionDetails) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 // This feature enables inbound SIP URI calls to your Credential Auth Connection.
 // If enabled for all (unrestricted) then anyone who calls the SIP URI
@@ -822,9 +789,9 @@ type CredentialConnectionNewParams struct {
 	// regardless of the noise_suppression value, but only take effect when
 	// noise_suppression is not 'disabled'. If you disable noise suppression and later
 	// re-enable it, the previously configured settings will be used.
-	NoiseSuppressionDetails CredentialConnectionNewParamsNoiseSuppressionDetails `json:"noise_suppression_details,omitzero"`
-	Outbound                CredentialOutboundParam                              `json:"outbound,omitzero"`
-	RtcpSettings            ConnectionRtcpSettingsParam                          `json:"rtcp_settings,omitzero"`
+	NoiseSuppressionDetails shared.ConnectionNoiseSuppressionDetailsParam `json:"noise_suppression_details,omitzero"`
+	Outbound                CredentialOutboundParam                       `json:"outbound,omitzero"`
+	RtcpSettings            ConnectionRtcpSettingsParam                   `json:"rtcp_settings,omitzero"`
 	// This feature enables inbound SIP URI calls to your Credential Auth Connection.
 	// If enabled for all (unrestricted) then anyone who calls the SIP URI
 	// <your-username>@telnyx.com will be connected to your Connection. You can also
@@ -864,42 +831,6 @@ const (
 	CredentialConnectionNewParamsNoiseSuppressionBoth     CredentialConnectionNewParamsNoiseSuppression = "both"
 	CredentialConnectionNewParamsNoiseSuppressionDisabled CredentialConnectionNewParamsNoiseSuppression = "disabled"
 )
-
-// Configuration options for noise suppression. These settings are stored
-// regardless of the noise_suppression value, but only take effect when
-// noise_suppression is not 'disabled'. If you disable noise suppression and later
-// re-enable it, the previously configured settings will be used.
-type CredentialConnectionNewParamsNoiseSuppressionDetails struct {
-	// The attenuation limit value for the selected engine. Default values vary by
-	// engine: 0 for 'denoiser', 80 for 'deep_filter_net', 'deep_filter_net_large', and
-	// all Krisp engines ('krisp_viva_tel', 'krisp_viva_tel_lite',
-	// 'krisp_viva_promodel', 'krisp_viva_ss').
-	AttenuationLimit param.Opt[int64] `json:"attenuation_limit,omitzero"`
-	// The noise suppression engine to use. 'denoiser' is the default engine.
-	// 'deep_filter_net' and 'deep_filter_net_large' are alternative engines with
-	// different performance characteristics. Krisp engines ('krisp_viva_tel',
-	// 'krisp_viva_tel_lite', 'krisp_viva_promodel', 'krisp_viva_ss') provide advanced
-	// noise suppression capabilities.
-	//
-	// Any of "denoiser", "deep_filter_net", "deep_filter_net_large", "krisp_viva_tel",
-	// "krisp_viva_tel_lite", "krisp_viva_promodel", "krisp_viva_ss".
-	Engine string `json:"engine,omitzero"`
-	paramObj
-}
-
-func (r CredentialConnectionNewParamsNoiseSuppressionDetails) MarshalJSON() (data []byte, err error) {
-	type shadow CredentialConnectionNewParamsNoiseSuppressionDetails
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CredentialConnectionNewParamsNoiseSuppressionDetails) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[CredentialConnectionNewParamsNoiseSuppressionDetails](
-		"engine", "denoiser", "deep_filter_net", "deep_filter_net_large", "krisp_viva_tel", "krisp_viva_tel_lite", "krisp_viva_promodel", "krisp_viva_ss",
-	)
-}
 
 // This feature enables inbound SIP URI calls to your Credential Auth Connection.
 // If enabled for all (unrestricted) then anyone who calls the SIP URI
@@ -991,9 +922,9 @@ type CredentialConnectionUpdateParams struct {
 	// regardless of the noise_suppression value, but only take effect when
 	// noise_suppression is not 'disabled'. If you disable noise suppression and later
 	// re-enable it, the previously configured settings will be used.
-	NoiseSuppressionDetails CredentialConnectionUpdateParamsNoiseSuppressionDetails `json:"noise_suppression_details,omitzero"`
-	Outbound                CredentialOutboundParam                                 `json:"outbound,omitzero"`
-	RtcpSettings            ConnectionRtcpSettingsParam                             `json:"rtcp_settings,omitzero"`
+	NoiseSuppressionDetails shared.ConnectionNoiseSuppressionDetailsParam `json:"noise_suppression_details,omitzero"`
+	Outbound                CredentialOutboundParam                       `json:"outbound,omitzero"`
+	RtcpSettings            ConnectionRtcpSettingsParam                   `json:"rtcp_settings,omitzero"`
 	// This feature enables inbound SIP URI calls to your Credential Auth Connection.
 	// If enabled for all (unrestricted) then anyone who calls the SIP URI
 	// <your-username>@telnyx.com will be connected to your Connection. You can also
@@ -1031,42 +962,6 @@ const (
 	CredentialConnectionUpdateParamsNoiseSuppressionBoth     CredentialConnectionUpdateParamsNoiseSuppression = "both"
 	CredentialConnectionUpdateParamsNoiseSuppressionDisabled CredentialConnectionUpdateParamsNoiseSuppression = "disabled"
 )
-
-// Configuration options for noise suppression. These settings are stored
-// regardless of the noise_suppression value, but only take effect when
-// noise_suppression is not 'disabled'. If you disable noise suppression and later
-// re-enable it, the previously configured settings will be used.
-type CredentialConnectionUpdateParamsNoiseSuppressionDetails struct {
-	// The attenuation limit value for the selected engine. Default values vary by
-	// engine: 0 for 'denoiser', 80 for 'deep_filter_net', 'deep_filter_net_large', and
-	// all Krisp engines ('krisp_viva_tel', 'krisp_viva_tel_lite',
-	// 'krisp_viva_promodel', 'krisp_viva_ss').
-	AttenuationLimit param.Opt[int64] `json:"attenuation_limit,omitzero"`
-	// The noise suppression engine to use. 'denoiser' is the default engine.
-	// 'deep_filter_net' and 'deep_filter_net_large' are alternative engines with
-	// different performance characteristics. Krisp engines ('krisp_viva_tel',
-	// 'krisp_viva_tel_lite', 'krisp_viva_promodel', 'krisp_viva_ss') provide advanced
-	// noise suppression capabilities.
-	//
-	// Any of "denoiser", "deep_filter_net", "deep_filter_net_large", "krisp_viva_tel",
-	// "krisp_viva_tel_lite", "krisp_viva_promodel", "krisp_viva_ss".
-	Engine string `json:"engine,omitzero"`
-	paramObj
-}
-
-func (r CredentialConnectionUpdateParamsNoiseSuppressionDetails) MarshalJSON() (data []byte, err error) {
-	type shadow CredentialConnectionUpdateParamsNoiseSuppressionDetails
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CredentialConnectionUpdateParamsNoiseSuppressionDetails) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[CredentialConnectionUpdateParamsNoiseSuppressionDetails](
-		"engine", "denoiser", "deep_filter_net", "deep_filter_net_large", "krisp_viva_tel", "krisp_viva_tel_lite", "krisp_viva_promodel", "krisp_viva_ss",
-	)
-}
 
 // This feature enables inbound SIP URI calls to your Credential Auth Connection.
 // If enabled for all (unrestricted) then anyone who calls the SIP URI
