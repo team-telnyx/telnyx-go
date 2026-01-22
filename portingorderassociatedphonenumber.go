@@ -56,7 +56,7 @@ func (r *PortingOrderAssociatedPhoneNumberService) New(ctx context.Context, port
 // Returns a list of all associated phone numbers for a porting order. Associated
 // phone numbers are used for partial porting in GB to specify which phone numbers
 // should be kept or disconnected.
-func (r *PortingOrderAssociatedPhoneNumberService) List(ctx context.Context, portingOrderID string, query PortingOrderAssociatedPhoneNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingAssociatedPhoneNumber], err error) {
+func (r *PortingOrderAssociatedPhoneNumberService) List(ctx context.Context, portingOrderID string, query PortingOrderAssociatedPhoneNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingAssociatedPhoneNumber], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -80,8 +80,8 @@ func (r *PortingOrderAssociatedPhoneNumberService) List(ctx context.Context, por
 // Returns a list of all associated phone numbers for a porting order. Associated
 // phone numbers are used for partial porting in GB to specify which phone numbers
 // should be kept or disconnected.
-func (r *PortingOrderAssociatedPhoneNumberService) ListAutoPaging(ctx context.Context, portingOrderID string, query PortingOrderAssociatedPhoneNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingAssociatedPhoneNumber] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, portingOrderID, query, opts...))
+func (r *PortingOrderAssociatedPhoneNumberService) ListAutoPaging(ctx context.Context, portingOrderID string, query PortingOrderAssociatedPhoneNumberListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingAssociatedPhoneNumber] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, portingOrderID, query, opts...))
 }
 
 // Deletes an associated phone number from a porting order.
@@ -261,11 +261,12 @@ func (r *PortingOrderAssociatedPhoneNumberNewParamsPhoneNumberRange) UnmarshalJS
 }
 
 type PortingOrderAssociatedPhoneNumberListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[phone_number], filter[action]
 	Filter PortingOrderAssociatedPhoneNumberListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page PortingOrderAssociatedPhoneNumberListParamsPage `query:"page,omitzero" json:"-"`
 	// Consolidated sort parameter (deepObject style). Originally: sort[value]
 	Sort PortingOrderAssociatedPhoneNumberListParamsSort `query:"sort,omitzero" json:"-"`
 	paramObj
@@ -295,6 +296,25 @@ type PortingOrderAssociatedPhoneNumberListParamsFilter struct {
 // URLQuery serializes [PortingOrderAssociatedPhoneNumberListParamsFilter]'s query
 // parameters as `url.Values`.
 func (r PortingOrderAssociatedPhoneNumberListParamsFilter) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type PortingOrderAssociatedPhoneNumberListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [PortingOrderAssociatedPhoneNumberListParamsPage]'s query
+// parameters as `url.Values`.
+func (r PortingOrderAssociatedPhoneNumberListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

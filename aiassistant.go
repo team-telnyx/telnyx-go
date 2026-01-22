@@ -438,9 +438,9 @@ func (r *AssistantToolRetrievalRetrievalParam) UnmarshalJSON(data []byte) error 
 }
 
 // AssistantToolsItemsUnion contains all possible properties and values from
-// [InferenceEmbeddingWebhookToolParamsResp], [RetrievalTool],
-// [AssistantToolHandoff], [HangupTool], [AssistantToolTransfer],
-// [AssistantToolRefer], [AssistantToolSendDtmf], [AssistantToolSendMessage].
+// [AssistantToolWebhook], [RetrievalTool], [AssistantToolHandoff], [HangupTool],
+// [AssistantToolTransfer], [AssistantToolRefer], [AssistantToolSendDtmf],
+// [AssistantToolSendMessage].
 //
 // Use the [AssistantToolsItemsUnion.AsAny] method to switch on the variant.
 //
@@ -449,8 +449,8 @@ type AssistantToolsItemsUnion struct {
 	// Any of "webhook", "retrieval", "handoff", "hangup", "transfer", "refer",
 	// "send_dtmf", "send_message".
 	Type string `json:"type"`
-	// This field is from variant [InferenceEmbeddingWebhookToolParamsResp].
-	Webhook InferenceEmbeddingWebhookToolParamsWebhookResp `json:"webhook"`
+	// This field is from variant [AssistantToolWebhook].
+	Webhook AssistantToolWebhookWebhook `json:"webhook"`
 	// This field is from variant [RetrievalTool].
 	Retrieval BucketIDs `json:"retrieval"`
 	// This field is from variant [AssistantToolHandoff].
@@ -486,19 +486,19 @@ type anyAssistantToolsItems interface {
 	implAssistantToolsItemsUnion()
 }
 
-func (InferenceEmbeddingWebhookToolParamsResp) implAssistantToolsItemsUnion() {}
-func (RetrievalTool) implAssistantToolsItemsUnion()                           {}
-func (AssistantToolHandoff) implAssistantToolsItemsUnion()                    {}
-func (HangupTool) implAssistantToolsItemsUnion()                              {}
-func (AssistantToolTransfer) implAssistantToolsItemsUnion()                   {}
-func (AssistantToolRefer) implAssistantToolsItemsUnion()                      {}
-func (AssistantToolSendDtmf) implAssistantToolsItemsUnion()                   {}
-func (AssistantToolSendMessage) implAssistantToolsItemsUnion()                {}
+func (AssistantToolWebhook) implAssistantToolsItemsUnion()     {}
+func (RetrievalTool) implAssistantToolsItemsUnion()            {}
+func (AssistantToolHandoff) implAssistantToolsItemsUnion()     {}
+func (HangupTool) implAssistantToolsItemsUnion()               {}
+func (AssistantToolTransfer) implAssistantToolsItemsUnion()    {}
+func (AssistantToolRefer) implAssistantToolsItemsUnion()       {}
+func (AssistantToolSendDtmf) implAssistantToolsItemsUnion()    {}
+func (AssistantToolSendMessage) implAssistantToolsItemsUnion() {}
 
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := AssistantToolsItemsUnion.AsAny().(type) {
-//	case telnyx.InferenceEmbeddingWebhookToolParamsResp:
+//	case telnyx.AssistantToolWebhook:
 //	case telnyx.RetrievalTool:
 //	case telnyx.AssistantToolHandoff:
 //	case telnyx.HangupTool:
@@ -531,7 +531,7 @@ func (u AssistantToolsItemsUnion) AsAny() anyAssistantToolsItems {
 	return nil
 }
 
-func (u AssistantToolsItemsUnion) AsWebhook() (v InferenceEmbeddingWebhookToolParamsResp) {
+func (u AssistantToolsItemsUnion) AsWebhook() (v AssistantToolWebhook) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -586,6 +586,193 @@ func (r *AssistantToolsItemsUnion) UnmarshalJSON(data []byte) error {
 // AssistantToolsItemsUnionParam.Overrides()
 func (r AssistantToolsItemsUnion) ToParam() AssistantToolsItemsUnionParam {
 	return param.Override[AssistantToolsItemsUnionParam](json.RawMessage(r.RawJSON()))
+}
+
+type AssistantToolWebhook struct {
+	Type    constant.Webhook            `json:"type,required"`
+	Webhook AssistantToolWebhookWebhook `json:"webhook,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Webhook     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolWebhook) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolWebhook) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AssistantToolWebhookWebhook struct {
+	// The description of the tool.
+	Description string `json:"description,required"`
+	// The name of the tool.
+	Name string `json:"name,required"`
+	// The URL of the external tool to be called. This URL is going to be used by the
+	// assistant. The URL can be templated like: `https://example.com/api/v1/{id}`,
+	// where `{id}` is a placeholder for a value that will be provided by the assistant
+	// if `path_parameters` are provided with the `id` attribute.
+	URL string `json:"url,required"`
+	// If async, the assistant will move forward without waiting for your server to
+	// respond.
+	Async bool `json:"async"`
+	// The body parameters the webhook tool accepts, described as a JSON Schema object.
+	// These parameters will be passed to the webhook as the body of the request. See
+	// the [JSON Schema reference](https://json-schema.org/understanding-json-schema)
+	// for documentation about the format
+	BodyParameters AssistantToolWebhookWebhookBodyParameters `json:"body_parameters"`
+	// The headers to be sent to the external tool.
+	Headers []AssistantToolWebhookWebhookHeader `json:"headers"`
+	// The HTTP method to be used when calling the external tool.
+	//
+	// Any of "GET", "POST", "PUT", "DELETE", "PATCH".
+	Method string `json:"method"`
+	// The path parameters the webhook tool accepts, described as a JSON Schema object.
+	// These parameters will be passed to the webhook as the path of the request if the
+	// URL contains a placeholder for a value. See the
+	// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
+	// documentation about the format
+	PathParameters AssistantToolWebhookWebhookPathParameters `json:"path_parameters"`
+	// The query parameters the webhook tool accepts, described as a JSON Schema
+	// object. These parameters will be passed to the webhook as the query of the
+	// request. See the
+	// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
+	// documentation about the format
+	QueryParameters AssistantToolWebhookWebhookQueryParameters `json:"query_parameters"`
+	// The maximum number of milliseconds to wait for the webhook to respond. Only
+	// applicable when async is false.
+	TimeoutMs int64 `json:"timeout_ms"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Description     respjson.Field
+		Name            respjson.Field
+		URL             respjson.Field
+		Async           respjson.Field
+		BodyParameters  respjson.Field
+		Headers         respjson.Field
+		Method          respjson.Field
+		PathParameters  respjson.Field
+		QueryParameters respjson.Field
+		TimeoutMs       respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolWebhookWebhook) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolWebhookWebhook) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The body parameters the webhook tool accepts, described as a JSON Schema object.
+// These parameters will be passed to the webhook as the body of the request. See
+// the [JSON Schema reference](https://json-schema.org/understanding-json-schema)
+// for documentation about the format
+type AssistantToolWebhookWebhookBodyParameters struct {
+	// The properties of the body parameters.
+	Properties map[string]any `json:"properties"`
+	// The required properties of the body parameters.
+	Required []string `json:"required"`
+	// Any of "object".
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Properties  respjson.Field
+		Required    respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolWebhookWebhookBodyParameters) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolWebhookWebhookBodyParameters) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AssistantToolWebhookWebhookHeader struct {
+	Name string `json:"name"`
+	// The value of the header. Note that we support mustache templating for the value.
+	// For example you can use
+	// `Bearer {{#integration_secret}}test-secret{{/integration_secret}}` to pass the
+	// value of the integration secret as the bearer token.
+	// [Telnyx signature headers](https://developers.telnyx.com/docs/voice/programmable-voice/voice-api-webhooks)
+	// will be automatically added to the request.
+	Value string `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolWebhookWebhookHeader) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolWebhookWebhookHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The path parameters the webhook tool accepts, described as a JSON Schema object.
+// These parameters will be passed to the webhook as the path of the request if the
+// URL contains a placeholder for a value. See the
+// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
+// documentation about the format
+type AssistantToolWebhookWebhookPathParameters struct {
+	// The properties of the path parameters.
+	Properties map[string]any `json:"properties"`
+	// The required properties of the path parameters.
+	Required []string `json:"required"`
+	// Any of "object".
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Properties  respjson.Field
+		Required    respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolWebhookWebhookPathParameters) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolWebhookWebhookPathParameters) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The query parameters the webhook tool accepts, described as a JSON Schema
+// object. These parameters will be passed to the webhook as the query of the
+// request. See the
+// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
+// documentation about the format
+type AssistantToolWebhookWebhookQueryParameters struct {
+	// The properties of the query parameters.
+	Properties map[string]any `json:"properties"`
+	// The required properties of the query parameters.
+	Required []string `json:"required"`
+	// Any of "object".
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Properties  respjson.Field
+		Required    respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolWebhookWebhookQueryParameters) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolWebhookWebhookQueryParameters) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The handoff tool allows the assistant to hand off control of the conversation to
@@ -895,8 +1082,8 @@ func (r *AssistantToolSendMessage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func AssistantToolsItemsParamOfWebhook(webhook InferenceEmbeddingWebhookToolParamsWebhook) AssistantToolsItemsUnionParam {
-	var variant InferenceEmbeddingWebhookToolParams
+func AssistantToolsItemsParamOfWebhook(webhook AssistantToolWebhookWebhookParam) AssistantToolsItemsUnionParam {
+	var variant AssistantToolWebhookParam
 	variant.Webhook = webhook
 	return AssistantToolsItemsUnionParam{OfWebhook: &variant}
 }
@@ -947,14 +1134,14 @@ func AssistantToolsItemsParamOfSendMessage(sendMessage map[string]any) Assistant
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type AssistantToolsItemsUnionParam struct {
-	OfWebhook     *InferenceEmbeddingWebhookToolParams `json:",omitzero,inline"`
-	OfRetrieval   *RetrievalToolParam                  `json:",omitzero,inline"`
-	OfHandoff     *AssistantToolHandoffParam           `json:",omitzero,inline"`
-	OfHangup      *HangupToolParam                     `json:",omitzero,inline"`
-	OfTransfer    *AssistantToolTransferParam          `json:",omitzero,inline"`
-	OfRefer       *AssistantToolReferParam             `json:",omitzero,inline"`
-	OfSendDtmf    *AssistantToolSendDtmfParam          `json:",omitzero,inline"`
-	OfSendMessage *AssistantToolSendMessageParam       `json:",omitzero,inline"`
+	OfWebhook     *AssistantToolWebhookParam     `json:",omitzero,inline"`
+	OfRetrieval   *RetrievalToolParam            `json:",omitzero,inline"`
+	OfHandoff     *AssistantToolHandoffParam     `json:",omitzero,inline"`
+	OfHangup      *HangupToolParam               `json:",omitzero,inline"`
+	OfTransfer    *AssistantToolTransferParam    `json:",omitzero,inline"`
+	OfRefer       *AssistantToolReferParam       `json:",omitzero,inline"`
+	OfSendDtmf    *AssistantToolSendDtmfParam    `json:",omitzero,inline"`
+	OfSendMessage *AssistantToolSendMessageParam `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -994,7 +1181,7 @@ func (u *AssistantToolsItemsUnionParam) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u AssistantToolsItemsUnionParam) GetWebhook() *InferenceEmbeddingWebhookToolParamsWebhook {
+func (u AssistantToolsItemsUnionParam) GetWebhook() *AssistantToolWebhookWebhookParam {
 	if vt := u.OfWebhook; vt != nil {
 		return &vt.Webhook
 	}
@@ -1082,7 +1269,7 @@ func (u AssistantToolsItemsUnionParam) GetType() *string {
 func init() {
 	apijson.RegisterUnion[AssistantToolsItemsUnionParam](
 		"type",
-		apijson.Discriminator[InferenceEmbeddingWebhookToolParams]("webhook"),
+		apijson.Discriminator[AssistantToolWebhookParam]("webhook"),
 		apijson.Discriminator[RetrievalToolParam]("retrieval"),
 		apijson.Discriminator[AssistantToolHandoffParam]("handoff"),
 		apijson.Discriminator[HangupToolParam]("hangup"),
@@ -1090,6 +1277,185 @@ func init() {
 		apijson.Discriminator[AssistantToolReferParam]("refer"),
 		apijson.Discriminator[AssistantToolSendDtmfParam]("send_dtmf"),
 		apijson.Discriminator[AssistantToolSendMessageParam]("send_message"),
+	)
+}
+
+// The properties Type, Webhook are required.
+type AssistantToolWebhookParam struct {
+	Webhook AssistantToolWebhookWebhookParam `json:"webhook,omitzero,required"`
+	// This field can be elided, and will marshal its zero value as "webhook".
+	Type constant.Webhook `json:"type,required"`
+	paramObj
+}
+
+func (r AssistantToolWebhookParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolWebhookParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolWebhookParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Description, Name, URL are required.
+type AssistantToolWebhookWebhookParam struct {
+	// The description of the tool.
+	Description string `json:"description,required"`
+	// The name of the tool.
+	Name string `json:"name,required"`
+	// The URL of the external tool to be called. This URL is going to be used by the
+	// assistant. The URL can be templated like: `https://example.com/api/v1/{id}`,
+	// where `{id}` is a placeholder for a value that will be provided by the assistant
+	// if `path_parameters` are provided with the `id` attribute.
+	URL string `json:"url,required"`
+	// If async, the assistant will move forward without waiting for your server to
+	// respond.
+	Async param.Opt[bool] `json:"async,omitzero"`
+	// The maximum number of milliseconds to wait for the webhook to respond. Only
+	// applicable when async is false.
+	TimeoutMs param.Opt[int64] `json:"timeout_ms,omitzero"`
+	// The body parameters the webhook tool accepts, described as a JSON Schema object.
+	// These parameters will be passed to the webhook as the body of the request. See
+	// the [JSON Schema reference](https://json-schema.org/understanding-json-schema)
+	// for documentation about the format
+	BodyParameters AssistantToolWebhookWebhookBodyParametersParam `json:"body_parameters,omitzero"`
+	// The headers to be sent to the external tool.
+	Headers []AssistantToolWebhookWebhookHeaderParam `json:"headers,omitzero"`
+	// The HTTP method to be used when calling the external tool.
+	//
+	// Any of "GET", "POST", "PUT", "DELETE", "PATCH".
+	Method string `json:"method,omitzero"`
+	// The path parameters the webhook tool accepts, described as a JSON Schema object.
+	// These parameters will be passed to the webhook as the path of the request if the
+	// URL contains a placeholder for a value. See the
+	// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
+	// documentation about the format
+	PathParameters AssistantToolWebhookWebhookPathParametersParam `json:"path_parameters,omitzero"`
+	// The query parameters the webhook tool accepts, described as a JSON Schema
+	// object. These parameters will be passed to the webhook as the query of the
+	// request. See the
+	// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
+	// documentation about the format
+	QueryParameters AssistantToolWebhookWebhookQueryParametersParam `json:"query_parameters,omitzero"`
+	paramObj
+}
+
+func (r AssistantToolWebhookWebhookParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolWebhookWebhookParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolWebhookWebhookParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AssistantToolWebhookWebhookParam](
+		"method", "GET", "POST", "PUT", "DELETE", "PATCH",
+	)
+}
+
+// The body parameters the webhook tool accepts, described as a JSON Schema object.
+// These parameters will be passed to the webhook as the body of the request. See
+// the [JSON Schema reference](https://json-schema.org/understanding-json-schema)
+// for documentation about the format
+type AssistantToolWebhookWebhookBodyParametersParam struct {
+	// The properties of the body parameters.
+	Properties map[string]any `json:"properties,omitzero"`
+	// The required properties of the body parameters.
+	Required []string `json:"required,omitzero"`
+	// Any of "object".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r AssistantToolWebhookWebhookBodyParametersParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolWebhookWebhookBodyParametersParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolWebhookWebhookBodyParametersParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AssistantToolWebhookWebhookBodyParametersParam](
+		"type", "object",
+	)
+}
+
+type AssistantToolWebhookWebhookHeaderParam struct {
+	Name param.Opt[string] `json:"name,omitzero"`
+	// The value of the header. Note that we support mustache templating for the value.
+	// For example you can use
+	// `Bearer {{#integration_secret}}test-secret{{/integration_secret}}` to pass the
+	// value of the integration secret as the bearer token.
+	// [Telnyx signature headers](https://developers.telnyx.com/docs/voice/programmable-voice/voice-api-webhooks)
+	// will be automatically added to the request.
+	Value param.Opt[string] `json:"value,omitzero"`
+	paramObj
+}
+
+func (r AssistantToolWebhookWebhookHeaderParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolWebhookWebhookHeaderParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolWebhookWebhookHeaderParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The path parameters the webhook tool accepts, described as a JSON Schema object.
+// These parameters will be passed to the webhook as the path of the request if the
+// URL contains a placeholder for a value. See the
+// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
+// documentation about the format
+type AssistantToolWebhookWebhookPathParametersParam struct {
+	// The properties of the path parameters.
+	Properties map[string]any `json:"properties,omitzero"`
+	// The required properties of the path parameters.
+	Required []string `json:"required,omitzero"`
+	// Any of "object".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r AssistantToolWebhookWebhookPathParametersParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolWebhookWebhookPathParametersParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolWebhookWebhookPathParametersParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AssistantToolWebhookWebhookPathParametersParam](
+		"type", "object",
+	)
+}
+
+// The query parameters the webhook tool accepts, described as a JSON Schema
+// object. These parameters will be passed to the webhook as the query of the
+// request. See the
+// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
+// documentation about the format
+type AssistantToolWebhookWebhookQueryParametersParam struct {
+	// The properties of the query parameters.
+	Properties map[string]any `json:"properties,omitzero"`
+	// The required properties of the query parameters.
+	Required []string `json:"required,omitzero"`
+	// Any of "object".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r AssistantToolWebhookWebhookQueryParametersParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolWebhookWebhookQueryParametersParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolWebhookWebhookQueryParametersParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AssistantToolWebhookWebhookQueryParametersParam](
+		"type", "object",
 	)
 }
 
@@ -1559,7 +1925,7 @@ type InferenceEmbedding struct {
 	Transcription TranscriptionSettings      `json:"transcription"`
 	VoiceSettings VoiceSettings              `json:"voice_settings"`
 	// Configuration settings for the assistant's web widget.
-	WidgetSettings WidgetSettings `json:"widget_settings"`
+	WidgetSettings InferenceEmbeddingWidgetSettings `json:"widget_settings"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                         respjson.Field
@@ -1593,393 +1959,79 @@ func (r *InferenceEmbedding) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type InferenceEmbeddingWebhookToolParamsResp struct {
-	// Any of "webhook".
-	Type    InferenceEmbeddingWebhookToolParamsType        `json:"type,required"`
-	Webhook InferenceEmbeddingWebhookToolParamsWebhookResp `json:"webhook,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Type        respjson.Field
-		Webhook     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InferenceEmbeddingWebhookToolParamsResp) RawJSON() string { return r.JSON.raw }
-func (r *InferenceEmbeddingWebhookToolParamsResp) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this InferenceEmbeddingWebhookToolParamsResp to a
-// InferenceEmbeddingWebhookToolParams.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// InferenceEmbeddingWebhookToolParams.Overrides()
-func (r InferenceEmbeddingWebhookToolParamsResp) ToParam() InferenceEmbeddingWebhookToolParams {
-	return param.Override[InferenceEmbeddingWebhookToolParams](json.RawMessage(r.RawJSON()))
-}
-
-type InferenceEmbeddingWebhookToolParamsType string
-
-const (
-	InferenceEmbeddingWebhookToolParamsTypeWebhook InferenceEmbeddingWebhookToolParamsType = "webhook"
-)
-
-type InferenceEmbeddingWebhookToolParamsWebhookResp struct {
-	// The description of the tool.
-	Description string `json:"description,required"`
-	// The name of the tool.
-	Name string `json:"name,required"`
-	// The URL of the external tool to be called. This URL is going to be used by the
-	// assistant. The URL can be templated like: `https://example.com/api/v1/{id}`,
-	// where `{id}` is a placeholder for a value that will be provided by the assistant
-	// if `path_parameters` are provided with the `id` attribute.
-	URL string `json:"url,required"`
-	// If async, the assistant will move forward without waiting for your server to
-	// respond.
-	Async bool `json:"async"`
-	// The body parameters the webhook tool accepts, described as a JSON Schema object.
-	// These parameters will be passed to the webhook as the body of the request. See
-	// the [JSON Schema reference](https://json-schema.org/understanding-json-schema)
-	// for documentation about the format
-	BodyParameters InferenceEmbeddingWebhookToolParamsWebhookBodyParametersResp `json:"body_parameters"`
-	// The headers to be sent to the external tool.
-	Headers []InferenceEmbeddingWebhookToolParamsWebhookHeaderResp `json:"headers"`
-	// The HTTP method to be used when calling the external tool.
+// Configuration settings for the assistant's web widget.
+type InferenceEmbeddingWidgetSettings struct {
+	// Text displayed while the agent is processing.
+	AgentThinkingText     string                                                `json:"agent_thinking_text"`
+	AudioVisualizerConfig InferenceEmbeddingWidgetSettingsAudioVisualizerConfig `json:"audio_visualizer_config"`
+	// The default state of the widget.
 	//
-	// Any of "GET", "POST", "PUT", "DELETE", "PATCH".
-	Method string `json:"method"`
-	// The path parameters the webhook tool accepts, described as a JSON Schema object.
-	// These parameters will be passed to the webhook as the path of the request if the
-	// URL contains a placeholder for a value. See the
-	// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
-	// documentation about the format
-	PathParameters InferenceEmbeddingWebhookToolParamsWebhookPathParametersResp `json:"path_parameters"`
-	// The query parameters the webhook tool accepts, described as a JSON Schema
-	// object. These parameters will be passed to the webhook as the query of the
-	// request. See the
-	// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
-	// documentation about the format
-	QueryParameters InferenceEmbeddingWebhookToolParamsWebhookQueryParametersResp `json:"query_parameters"`
-	// The maximum number of milliseconds to wait for the webhook to respond. Only
-	// applicable when async is false.
-	TimeoutMs int64 `json:"timeout_ms"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Description     respjson.Field
-		Name            respjson.Field
-		URL             respjson.Field
-		Async           respjson.Field
-		BodyParameters  respjson.Field
-		Headers         respjson.Field
-		Method          respjson.Field
-		PathParameters  respjson.Field
-		QueryParameters respjson.Field
-		TimeoutMs       respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InferenceEmbeddingWebhookToolParamsWebhookResp) RawJSON() string { return r.JSON.raw }
-func (r *InferenceEmbeddingWebhookToolParamsWebhookResp) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The body parameters the webhook tool accepts, described as a JSON Schema object.
-// These parameters will be passed to the webhook as the body of the request. See
-// the [JSON Schema reference](https://json-schema.org/understanding-json-schema)
-// for documentation about the format
-type InferenceEmbeddingWebhookToolParamsWebhookBodyParametersResp struct {
-	// The properties of the body parameters.
-	Properties map[string]any `json:"properties"`
-	// The required properties of the body parameters.
-	Required []string `json:"required"`
-	// Any of "object".
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Properties  respjson.Field
-		Required    respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InferenceEmbeddingWebhookToolParamsWebhookBodyParametersResp) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *InferenceEmbeddingWebhookToolParamsWebhookBodyParametersResp) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type InferenceEmbeddingWebhookToolParamsWebhookHeaderResp struct {
-	Name string `json:"name"`
-	// The value of the header. Note that we support mustache templating for the value.
-	// For example you can use
-	// `Bearer {{#integration_secret}}test-secret{{/integration_secret}}` to pass the
-	// value of the integration secret as the bearer token.
-	// [Telnyx signature headers](https://developers.telnyx.com/docs/voice/programmable-voice/voice-api-webhooks)
-	// will be automatically added to the request.
-	Value string `json:"value"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Name        respjson.Field
-		Value       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InferenceEmbeddingWebhookToolParamsWebhookHeaderResp) RawJSON() string { return r.JSON.raw }
-func (r *InferenceEmbeddingWebhookToolParamsWebhookHeaderResp) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The path parameters the webhook tool accepts, described as a JSON Schema object.
-// These parameters will be passed to the webhook as the path of the request if the
-// URL contains a placeholder for a value. See the
-// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
-// documentation about the format
-type InferenceEmbeddingWebhookToolParamsWebhookPathParametersResp struct {
-	// The properties of the path parameters.
-	Properties map[string]any `json:"properties"`
-	// The required properties of the path parameters.
-	Required []string `json:"required"`
-	// Any of "object".
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Properties  respjson.Field
-		Required    respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InferenceEmbeddingWebhookToolParamsWebhookPathParametersResp) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *InferenceEmbeddingWebhookToolParamsWebhookPathParametersResp) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The query parameters the webhook tool accepts, described as a JSON Schema
-// object. These parameters will be passed to the webhook as the query of the
-// request. See the
-// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
-// documentation about the format
-type InferenceEmbeddingWebhookToolParamsWebhookQueryParametersResp struct {
-	// The properties of the query parameters.
-	Properties map[string]any `json:"properties"`
-	// The required properties of the query parameters.
-	Required []string `json:"required"`
-	// Any of "object".
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Properties  respjson.Field
-		Required    respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InferenceEmbeddingWebhookToolParamsWebhookQueryParametersResp) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *InferenceEmbeddingWebhookToolParamsWebhookQueryParametersResp) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties Type, Webhook are required.
-type InferenceEmbeddingWebhookToolParams struct {
-	// Any of "webhook".
-	Type    InferenceEmbeddingWebhookToolParamsType    `json:"type,omitzero,required"`
-	Webhook InferenceEmbeddingWebhookToolParamsWebhook `json:"webhook,omitzero,required"`
-	paramObj
-}
-
-func (r InferenceEmbeddingWebhookToolParams) MarshalJSON() (data []byte, err error) {
-	type shadow InferenceEmbeddingWebhookToolParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InferenceEmbeddingWebhookToolParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties Description, Name, URL are required.
-type InferenceEmbeddingWebhookToolParamsWebhook struct {
-	// The description of the tool.
-	Description string `json:"description,required"`
-	// The name of the tool.
-	Name string `json:"name,required"`
-	// The URL of the external tool to be called. This URL is going to be used by the
-	// assistant. The URL can be templated like: `https://example.com/api/v1/{id}`,
-	// where `{id}` is a placeholder for a value that will be provided by the assistant
-	// if `path_parameters` are provided with the `id` attribute.
-	URL string `json:"url,required"`
-	// If async, the assistant will move forward without waiting for your server to
-	// respond.
-	Async param.Opt[bool] `json:"async,omitzero"`
-	// The maximum number of milliseconds to wait for the webhook to respond. Only
-	// applicable when async is false.
-	TimeoutMs param.Opt[int64] `json:"timeout_ms,omitzero"`
-	// The body parameters the webhook tool accepts, described as a JSON Schema object.
-	// These parameters will be passed to the webhook as the body of the request. See
-	// the [JSON Schema reference](https://json-schema.org/understanding-json-schema)
-	// for documentation about the format
-	BodyParameters InferenceEmbeddingWebhookToolParamsWebhookBodyParameters `json:"body_parameters,omitzero"`
-	// The headers to be sent to the external tool.
-	Headers []InferenceEmbeddingWebhookToolParamsWebhookHeader `json:"headers,omitzero"`
-	// The HTTP method to be used when calling the external tool.
+	// Any of "expanded", "collapsed".
+	DefaultState string `json:"default_state"`
+	// URL for users to give feedback.
+	GiveFeedbackURL string `json:"give_feedback_url,nullable"`
+	// URL to a custom logo icon for the widget.
+	LogoIconURL string `json:"logo_icon_url,nullable"`
+	// The positioning style for the widget.
 	//
-	// Any of "GET", "POST", "PUT", "DELETE", "PATCH".
-	Method string `json:"method,omitzero"`
-	// The path parameters the webhook tool accepts, described as a JSON Schema object.
-	// These parameters will be passed to the webhook as the path of the request if the
-	// URL contains a placeholder for a value. See the
-	// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
-	// documentation about the format
-	PathParameters InferenceEmbeddingWebhookToolParamsWebhookPathParameters `json:"path_parameters,omitzero"`
-	// The query parameters the webhook tool accepts, described as a JSON Schema
-	// object. These parameters will be passed to the webhook as the query of the
-	// request. See the
-	// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
-	// documentation about the format
-	QueryParameters InferenceEmbeddingWebhookToolParamsWebhookQueryParameters `json:"query_parameters,omitzero"`
-	paramObj
+	// Any of "fixed", "static".
+	Position string `json:"position"`
+	// URL for users to report issues.
+	ReportIssueURL string `json:"report_issue_url,nullable"`
+	// Text prompting users to speak to interrupt.
+	SpeakToInterruptText string `json:"speak_to_interrupt_text"`
+	// Custom text displayed on the start call button.
+	StartCallText string `json:"start_call_text"`
+	// The visual theme for the widget.
+	//
+	// Any of "light", "dark".
+	Theme string `json:"theme"`
+	// URL to view conversation history.
+	ViewHistoryURL string `json:"view_history_url,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AgentThinkingText     respjson.Field
+		AudioVisualizerConfig respjson.Field
+		DefaultState          respjson.Field
+		GiveFeedbackURL       respjson.Field
+		LogoIconURL           respjson.Field
+		Position              respjson.Field
+		ReportIssueURL        respjson.Field
+		SpeakToInterruptText  respjson.Field
+		StartCallText         respjson.Field
+		Theme                 respjson.Field
+		ViewHistoryURL        respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
 }
 
-func (r InferenceEmbeddingWebhookToolParamsWebhook) MarshalJSON() (data []byte, err error) {
-	type shadow InferenceEmbeddingWebhookToolParamsWebhook
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InferenceEmbeddingWebhookToolParamsWebhook) UnmarshalJSON(data []byte) error {
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingWidgetSettings) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingWidgetSettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[InferenceEmbeddingWebhookToolParamsWebhook](
-		"method", "GET", "POST", "PUT", "DELETE", "PATCH",
-	)
+type InferenceEmbeddingWidgetSettingsAudioVisualizerConfig struct {
+	// The color theme for the audio visualizer.
+	//
+	// Any of "verdant", "twilight", "bloom", "mystic", "flare", "glacier".
+	Color string `json:"color"`
+	// The preset style for the audio visualizer.
+	Preset string `json:"preset"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Color       respjson.Field
+		Preset      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// The body parameters the webhook tool accepts, described as a JSON Schema object.
-// These parameters will be passed to the webhook as the body of the request. See
-// the [JSON Schema reference](https://json-schema.org/understanding-json-schema)
-// for documentation about the format
-type InferenceEmbeddingWebhookToolParamsWebhookBodyParameters struct {
-	// The properties of the body parameters.
-	Properties map[string]any `json:"properties,omitzero"`
-	// The required properties of the body parameters.
-	Required []string `json:"required,omitzero"`
-	// Any of "object".
-	Type string `json:"type,omitzero"`
-	paramObj
-}
-
-func (r InferenceEmbeddingWebhookToolParamsWebhookBodyParameters) MarshalJSON() (data []byte, err error) {
-	type shadow InferenceEmbeddingWebhookToolParamsWebhookBodyParameters
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InferenceEmbeddingWebhookToolParamsWebhookBodyParameters) UnmarshalJSON(data []byte) error {
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingWidgetSettingsAudioVisualizerConfig) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingWidgetSettingsAudioVisualizerConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[InferenceEmbeddingWebhookToolParamsWebhookBodyParameters](
-		"type", "object",
-	)
-}
-
-type InferenceEmbeddingWebhookToolParamsWebhookHeader struct {
-	Name param.Opt[string] `json:"name,omitzero"`
-	// The value of the header. Note that we support mustache templating for the value.
-	// For example you can use
-	// `Bearer {{#integration_secret}}test-secret{{/integration_secret}}` to pass the
-	// value of the integration secret as the bearer token.
-	// [Telnyx signature headers](https://developers.telnyx.com/docs/voice/programmable-voice/voice-api-webhooks)
-	// will be automatically added to the request.
-	Value param.Opt[string] `json:"value,omitzero"`
-	paramObj
-}
-
-func (r InferenceEmbeddingWebhookToolParamsWebhookHeader) MarshalJSON() (data []byte, err error) {
-	type shadow InferenceEmbeddingWebhookToolParamsWebhookHeader
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InferenceEmbeddingWebhookToolParamsWebhookHeader) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The path parameters the webhook tool accepts, described as a JSON Schema object.
-// These parameters will be passed to the webhook as the path of the request if the
-// URL contains a placeholder for a value. See the
-// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
-// documentation about the format
-type InferenceEmbeddingWebhookToolParamsWebhookPathParameters struct {
-	// The properties of the path parameters.
-	Properties map[string]any `json:"properties,omitzero"`
-	// The required properties of the path parameters.
-	Required []string `json:"required,omitzero"`
-	// Any of "object".
-	Type string `json:"type,omitzero"`
-	paramObj
-}
-
-func (r InferenceEmbeddingWebhookToolParamsWebhookPathParameters) MarshalJSON() (data []byte, err error) {
-	type shadow InferenceEmbeddingWebhookToolParamsWebhookPathParameters
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InferenceEmbeddingWebhookToolParamsWebhookPathParameters) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[InferenceEmbeddingWebhookToolParamsWebhookPathParameters](
-		"type", "object",
-	)
-}
-
-// The query parameters the webhook tool accepts, described as a JSON Schema
-// object. These parameters will be passed to the webhook as the query of the
-// request. See the
-// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
-// documentation about the format
-type InferenceEmbeddingWebhookToolParamsWebhookQueryParameters struct {
-	// The properties of the query parameters.
-	Properties map[string]any `json:"properties,omitzero"`
-	// The required properties of the query parameters.
-	Required []string `json:"required,omitzero"`
-	// Any of "object".
-	Type string `json:"type,omitzero"`
-	paramObj
-}
-
-func (r InferenceEmbeddingWebhookToolParamsWebhookQueryParameters) MarshalJSON() (data []byte, err error) {
-	type shadow InferenceEmbeddingWebhookToolParamsWebhookQueryParameters
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InferenceEmbeddingWebhookToolParamsWebhookQueryParameters) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[InferenceEmbeddingWebhookToolParamsWebhookQueryParameters](
-		"type", "object",
-	)
 }
 
 type InsightSettings struct {
@@ -3278,178 +3330,6 @@ func init() {
 	)
 }
 
-// Configuration settings for the assistant's web widget.
-type WidgetSettings struct {
-	// Text displayed while the agent is processing.
-	AgentThinkingText     string                              `json:"agent_thinking_text"`
-	AudioVisualizerConfig WidgetSettingsAudioVisualizerConfig `json:"audio_visualizer_config"`
-	// The default state of the widget.
-	//
-	// Any of "expanded", "collapsed".
-	DefaultState WidgetSettingsDefaultState `json:"default_state"`
-	// URL for users to give feedback.
-	GiveFeedbackURL string `json:"give_feedback_url,nullable"`
-	// URL to a custom logo icon for the widget.
-	LogoIconURL string `json:"logo_icon_url,nullable"`
-	// The positioning style for the widget.
-	//
-	// Any of "fixed", "static".
-	Position WidgetSettingsPosition `json:"position"`
-	// URL for users to report issues.
-	ReportIssueURL string `json:"report_issue_url,nullable"`
-	// Text prompting users to speak to interrupt.
-	SpeakToInterruptText string `json:"speak_to_interrupt_text"`
-	// Custom text displayed on the start call button.
-	StartCallText string `json:"start_call_text"`
-	// The visual theme for the widget.
-	//
-	// Any of "light", "dark".
-	Theme WidgetSettingsTheme `json:"theme"`
-	// URL to view conversation history.
-	ViewHistoryURL string `json:"view_history_url,nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AgentThinkingText     respjson.Field
-		AudioVisualizerConfig respjson.Field
-		DefaultState          respjson.Field
-		GiveFeedbackURL       respjson.Field
-		LogoIconURL           respjson.Field
-		Position              respjson.Field
-		ReportIssueURL        respjson.Field
-		SpeakToInterruptText  respjson.Field
-		StartCallText         respjson.Field
-		Theme                 respjson.Field
-		ViewHistoryURL        respjson.Field
-		ExtraFields           map[string]respjson.Field
-		raw                   string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WidgetSettings) RawJSON() string { return r.JSON.raw }
-func (r *WidgetSettings) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this WidgetSettings to a WidgetSettingsParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// WidgetSettingsParam.Overrides()
-func (r WidgetSettings) ToParam() WidgetSettingsParam {
-	return param.Override[WidgetSettingsParam](json.RawMessage(r.RawJSON()))
-}
-
-type WidgetSettingsAudioVisualizerConfig struct {
-	// The color theme for the audio visualizer.
-	//
-	// Any of "verdant", "twilight", "bloom", "mystic", "flare", "glacier".
-	Color string `json:"color"`
-	// The preset style for the audio visualizer.
-	Preset string `json:"preset"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Color       respjson.Field
-		Preset      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WidgetSettingsAudioVisualizerConfig) RawJSON() string { return r.JSON.raw }
-func (r *WidgetSettingsAudioVisualizerConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The default state of the widget.
-type WidgetSettingsDefaultState string
-
-const (
-	WidgetSettingsDefaultStateExpanded  WidgetSettingsDefaultState = "expanded"
-	WidgetSettingsDefaultStateCollapsed WidgetSettingsDefaultState = "collapsed"
-)
-
-// The positioning style for the widget.
-type WidgetSettingsPosition string
-
-const (
-	WidgetSettingsPositionFixed  WidgetSettingsPosition = "fixed"
-	WidgetSettingsPositionStatic WidgetSettingsPosition = "static"
-)
-
-// The visual theme for the widget.
-type WidgetSettingsTheme string
-
-const (
-	WidgetSettingsThemeLight WidgetSettingsTheme = "light"
-	WidgetSettingsThemeDark  WidgetSettingsTheme = "dark"
-)
-
-// Configuration settings for the assistant's web widget.
-type WidgetSettingsParam struct {
-	// URL for users to give feedback.
-	GiveFeedbackURL param.Opt[string] `json:"give_feedback_url,omitzero"`
-	// URL to a custom logo icon for the widget.
-	LogoIconURL param.Opt[string] `json:"logo_icon_url,omitzero"`
-	// URL for users to report issues.
-	ReportIssueURL param.Opt[string] `json:"report_issue_url,omitzero"`
-	// URL to view conversation history.
-	ViewHistoryURL param.Opt[string] `json:"view_history_url,omitzero"`
-	// Text displayed while the agent is processing.
-	AgentThinkingText param.Opt[string] `json:"agent_thinking_text,omitzero"`
-	// Text prompting users to speak to interrupt.
-	SpeakToInterruptText param.Opt[string] `json:"speak_to_interrupt_text,omitzero"`
-	// Custom text displayed on the start call button.
-	StartCallText         param.Opt[string]                        `json:"start_call_text,omitzero"`
-	AudioVisualizerConfig WidgetSettingsAudioVisualizerConfigParam `json:"audio_visualizer_config,omitzero"`
-	// The default state of the widget.
-	//
-	// Any of "expanded", "collapsed".
-	DefaultState WidgetSettingsDefaultState `json:"default_state,omitzero"`
-	// The positioning style for the widget.
-	//
-	// Any of "fixed", "static".
-	Position WidgetSettingsPosition `json:"position,omitzero"`
-	// The visual theme for the widget.
-	//
-	// Any of "light", "dark".
-	Theme WidgetSettingsTheme `json:"theme,omitzero"`
-	paramObj
-}
-
-func (r WidgetSettingsParam) MarshalJSON() (data []byte, err error) {
-	type shadow WidgetSettingsParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WidgetSettingsParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WidgetSettingsAudioVisualizerConfigParam struct {
-	// The preset style for the audio visualizer.
-	Preset param.Opt[string] `json:"preset,omitzero"`
-	// The color theme for the audio visualizer.
-	//
-	// Any of "verdant", "twilight", "bloom", "mystic", "flare", "glacier".
-	Color string `json:"color,omitzero"`
-	paramObj
-}
-
-func (r WidgetSettingsAudioVisualizerConfigParam) MarshalJSON() (data []byte, err error) {
-	type shadow WidgetSettingsAudioVisualizerConfigParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WidgetSettingsAudioVisualizerConfigParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[WidgetSettingsAudioVisualizerConfigParam](
-		"color", "verdant", "twilight", "bloom", "mystic", "flare", "glacier",
-	)
-}
-
 // Aligns with the OpenAI API:
 // https://platform.openai.com/docs/api-reference/assistants/deleteAssistant
 type AIAssistantDeleteResponse struct {
@@ -3546,7 +3426,7 @@ type AIAssistantNewParams struct {
 	Transcription TranscriptionSettingsParam      `json:"transcription,omitzero"`
 	VoiceSettings VoiceSettingsParam              `json:"voice_settings,omitzero"`
 	// Configuration settings for the assistant's web widget.
-	WidgetSettings WidgetSettingsParam `json:"widget_settings,omitzero"`
+	WidgetSettings AIAssistantNewParamsWidgetSettings `json:"widget_settings,omitzero"`
 	paramObj
 }
 
@@ -3556,6 +3436,82 @@ func (r AIAssistantNewParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *AIAssistantNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration settings for the assistant's web widget.
+type AIAssistantNewParamsWidgetSettings struct {
+	// URL for users to give feedback.
+	GiveFeedbackURL param.Opt[string] `json:"give_feedback_url,omitzero"`
+	// URL to a custom logo icon for the widget.
+	LogoIconURL param.Opt[string] `json:"logo_icon_url,omitzero"`
+	// URL for users to report issues.
+	ReportIssueURL param.Opt[string] `json:"report_issue_url,omitzero"`
+	// URL to view conversation history.
+	ViewHistoryURL param.Opt[string] `json:"view_history_url,omitzero"`
+	// Text displayed while the agent is processing.
+	AgentThinkingText param.Opt[string] `json:"agent_thinking_text,omitzero"`
+	// Text prompting users to speak to interrupt.
+	SpeakToInterruptText param.Opt[string] `json:"speak_to_interrupt_text,omitzero"`
+	// Custom text displayed on the start call button.
+	StartCallText         param.Opt[string]                                       `json:"start_call_text,omitzero"`
+	AudioVisualizerConfig AIAssistantNewParamsWidgetSettingsAudioVisualizerConfig `json:"audio_visualizer_config,omitzero"`
+	// The default state of the widget.
+	//
+	// Any of "expanded", "collapsed".
+	DefaultState string `json:"default_state,omitzero"`
+	// The positioning style for the widget.
+	//
+	// Any of "fixed", "static".
+	Position string `json:"position,omitzero"`
+	// The visual theme for the widget.
+	//
+	// Any of "light", "dark".
+	Theme string `json:"theme,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsWidgetSettings) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsWidgetSettings
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsWidgetSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantNewParamsWidgetSettings](
+		"default_state", "expanded", "collapsed",
+	)
+	apijson.RegisterFieldValidator[AIAssistantNewParamsWidgetSettings](
+		"position", "fixed", "static",
+	)
+	apijson.RegisterFieldValidator[AIAssistantNewParamsWidgetSettings](
+		"theme", "light", "dark",
+	)
+}
+
+type AIAssistantNewParamsWidgetSettingsAudioVisualizerConfig struct {
+	// The preset style for the audio visualizer.
+	Preset param.Opt[string] `json:"preset,omitzero"`
+	// The color theme for the audio visualizer.
+	//
+	// Any of "verdant", "twilight", "bloom", "mystic", "flare", "glacier".
+	Color string `json:"color,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsWidgetSettingsAudioVisualizerConfig) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsWidgetSettingsAudioVisualizerConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsWidgetSettingsAudioVisualizerConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantNewParamsWidgetSettingsAudioVisualizerConfig](
+		"color", "verdant", "twilight", "bloom", "mystic", "flare", "glacier",
+	)
 }
 
 type AIAssistantGetParams struct {
@@ -3618,7 +3574,7 @@ type AIAssistantUpdateParams struct {
 	Transcription TranscriptionSettingsParam      `json:"transcription,omitzero"`
 	VoiceSettings VoiceSettingsParam              `json:"voice_settings,omitzero"`
 	// Configuration settings for the assistant's web widget.
-	WidgetSettings WidgetSettingsParam `json:"widget_settings,omitzero"`
+	WidgetSettings AIAssistantUpdateParamsWidgetSettings `json:"widget_settings,omitzero"`
 	paramObj
 }
 
@@ -3628,6 +3584,82 @@ func (r AIAssistantUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *AIAssistantUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration settings for the assistant's web widget.
+type AIAssistantUpdateParamsWidgetSettings struct {
+	// URL for users to give feedback.
+	GiveFeedbackURL param.Opt[string] `json:"give_feedback_url,omitzero"`
+	// URL to a custom logo icon for the widget.
+	LogoIconURL param.Opt[string] `json:"logo_icon_url,omitzero"`
+	// URL for users to report issues.
+	ReportIssueURL param.Opt[string] `json:"report_issue_url,omitzero"`
+	// URL to view conversation history.
+	ViewHistoryURL param.Opt[string] `json:"view_history_url,omitzero"`
+	// Text displayed while the agent is processing.
+	AgentThinkingText param.Opt[string] `json:"agent_thinking_text,omitzero"`
+	// Text prompting users to speak to interrupt.
+	SpeakToInterruptText param.Opt[string] `json:"speak_to_interrupt_text,omitzero"`
+	// Custom text displayed on the start call button.
+	StartCallText         param.Opt[string]                                          `json:"start_call_text,omitzero"`
+	AudioVisualizerConfig AIAssistantUpdateParamsWidgetSettingsAudioVisualizerConfig `json:"audio_visualizer_config,omitzero"`
+	// The default state of the widget.
+	//
+	// Any of "expanded", "collapsed".
+	DefaultState string `json:"default_state,omitzero"`
+	// The positioning style for the widget.
+	//
+	// Any of "fixed", "static".
+	Position string `json:"position,omitzero"`
+	// The visual theme for the widget.
+	//
+	// Any of "light", "dark".
+	Theme string `json:"theme,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsWidgetSettings) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsWidgetSettings
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsWidgetSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantUpdateParamsWidgetSettings](
+		"default_state", "expanded", "collapsed",
+	)
+	apijson.RegisterFieldValidator[AIAssistantUpdateParamsWidgetSettings](
+		"position", "fixed", "static",
+	)
+	apijson.RegisterFieldValidator[AIAssistantUpdateParamsWidgetSettings](
+		"theme", "light", "dark",
+	)
+}
+
+type AIAssistantUpdateParamsWidgetSettingsAudioVisualizerConfig struct {
+	// The preset style for the audio visualizer.
+	Preset param.Opt[string] `json:"preset,omitzero"`
+	// The color theme for the audio visualizer.
+	//
+	// Any of "verdant", "twilight", "bloom", "mystic", "flare", "glacier".
+	Color string `json:"color,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsWidgetSettingsAudioVisualizerConfig) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsWidgetSettingsAudioVisualizerConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsWidgetSettingsAudioVisualizerConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantUpdateParamsWidgetSettingsAudioVisualizerConfig](
+		"color", "verdant", "twilight", "bloom", "mystic", "flare", "glacier",
+	)
 }
 
 type AIAssistantChatParams struct {

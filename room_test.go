@@ -135,8 +135,10 @@ func TestRoomListWithOptionalParams(t *testing.T) {
 			UniqueName: telnyx.String("my_video_room"),
 		},
 		IncludeSessions: telnyx.Bool(true),
-		PageNumber:      telnyx.Int(0),
-		PageSize:        telnyx.Int(0),
+		Page: telnyx.RoomListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

@@ -40,7 +40,7 @@ func NewPortingOrderActionRequirementService(opts ...option.RequestOption) (r Po
 }
 
 // Returns a list of action requirements for a specific porting order.
-func (r *PortingOrderActionRequirementService) List(ctx context.Context, portingOrderID string, query PortingOrderActionRequirementListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingOrderActionRequirementListResponse], err error) {
+func (r *PortingOrderActionRequirementService) List(ctx context.Context, portingOrderID string, query PortingOrderActionRequirementListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingOrderActionRequirementListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -62,8 +62,8 @@ func (r *PortingOrderActionRequirementService) List(ctx context.Context, porting
 }
 
 // Returns a list of action requirements for a specific porting order.
-func (r *PortingOrderActionRequirementService) ListAutoPaging(ctx context.Context, portingOrderID string, query PortingOrderActionRequirementListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingOrderActionRequirementListResponse] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, portingOrderID, query, opts...))
+func (r *PortingOrderActionRequirementService) ListAutoPaging(ctx context.Context, portingOrderID string, query PortingOrderActionRequirementListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingOrderActionRequirementListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, portingOrderID, query, opts...))
 }
 
 // Initiates a specific action requirement for a porting order.
@@ -213,11 +213,12 @@ func (r *PortingOrderActionRequirementInitiateResponseData) UnmarshalJSON(data [
 }
 
 type PortingOrderActionRequirementListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[id][in][],
 	// filter[requirement_type_id], filter[action_type], filter[status]
 	Filter PortingOrderActionRequirementListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page PortingOrderActionRequirementListParamsPage `query:"page,omitzero" json:"-"`
 	// Consolidated sort parameter (deepObject style). Originally: sort[value]
 	Sort PortingOrderActionRequirementListParamsSort `query:"sort,omitzero" json:"-"`
 	paramObj
@@ -253,6 +254,25 @@ type PortingOrderActionRequirementListParamsFilter struct {
 // URLQuery serializes [PortingOrderActionRequirementListParamsFilter]'s query
 // parameters as `url.Values`.
 func (r PortingOrderActionRequirementListParamsFilter) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type PortingOrderActionRequirementListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [PortingOrderActionRequirementListParamsPage]'s query
+// parameters as `url.Values`.
+func (r PortingOrderActionRequirementListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

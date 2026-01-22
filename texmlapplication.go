@@ -71,7 +71,7 @@ func (r *TexmlApplicationService) Update(ctx context.Context, id string, body Te
 }
 
 // Returns a list of your TeXML Applications.
-func (r *TexmlApplicationService) List(ctx context.Context, query TexmlApplicationListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[TexmlApplication], err error) {
+func (r *TexmlApplicationService) List(ctx context.Context, query TexmlApplicationListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[TexmlApplication], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -89,8 +89,8 @@ func (r *TexmlApplicationService) List(ctx context.Context, query TexmlApplicati
 }
 
 // Returns a list of your TeXML Applications.
-func (r *TexmlApplicationService) ListAutoPaging(ctx context.Context, query TexmlApplicationListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[TexmlApplication] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *TexmlApplicationService) ListAutoPaging(ctx context.Context, query TexmlApplicationListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[TexmlApplication] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Deletes a TeXML Application.
@@ -587,11 +587,12 @@ const (
 )
 
 type TexmlApplicationListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[outbound_voice_profile_id], filter[friendly_name]
 	Filter TexmlApplicationListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page TexmlApplicationListParamsPage `query:"page,omitzero" json:"-"`
 	// Specifies the sort order for results. By default sorting direction is ascending.
 	// To have the results sorted in descending order add the <code> -</code>
 	// prefix.<br/><br/> That is: <ul>
@@ -637,6 +638,25 @@ type TexmlApplicationListParamsFilter struct {
 // URLQuery serializes [TexmlApplicationListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r TexmlApplicationListParamsFilter) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type TexmlApplicationListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [TexmlApplicationListParamsPage]'s query parameters as
+// `url.Values`.
+func (r TexmlApplicationListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

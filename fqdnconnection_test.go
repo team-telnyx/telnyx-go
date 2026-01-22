@@ -11,7 +11,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4"
 	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
 	"github.com/team-telnyx/telnyx-go/v4/option"
-	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 func TestFqdnConnectionNewWithOptionalParams(t *testing.T) {
@@ -60,9 +59,9 @@ func TestFqdnConnectionNewWithOptionalParams(t *testing.T) {
 		IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
 		MicrosoftTeamsSbc:   telnyx.Bool(true),
 		NoiseSuppression:    telnyx.FqdnConnectionNewParamsNoiseSuppressionBoth,
-		NoiseSuppressionDetails: shared.ConnectionNoiseSuppressionDetailsParam{
+		NoiseSuppressionDetails: telnyx.FqdnConnectionNewParamsNoiseSuppressionDetails{
 			AttenuationLimit: telnyx.Int(80),
-			Engine:           shared.ConnectionNoiseSuppressionDetailsEngineDeepFilterNet,
+			Engine:           "deep_filter_net",
 		},
 		OnnetT38PassthroughEnabled: telnyx.Bool(true),
 		Outbound: telnyx.OutboundFqdnParam{
@@ -174,9 +173,9 @@ func TestFqdnConnectionUpdateWithOptionalParams(t *testing.T) {
 			},
 			IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
 			NoiseSuppression:    telnyx.FqdnConnectionUpdateParamsNoiseSuppressionBoth,
-			NoiseSuppressionDetails: shared.ConnectionNoiseSuppressionDetailsParam{
+			NoiseSuppressionDetails: telnyx.FqdnConnectionUpdateParamsNoiseSuppressionDetails{
 				AttenuationLimit: telnyx.Int(80),
-				Engine:           shared.ConnectionNoiseSuppressionDetailsEngineDeepFilterNet,
+				Engine:           "deep_filter_net",
 			},
 			OnnetT38PassthroughEnabled: telnyx.Bool(true),
 			Outbound: telnyx.OutboundFqdnParam{
@@ -239,9 +238,11 @@ func TestFqdnConnectionListWithOptionalParams(t *testing.T) {
 			Fqdn:                   telnyx.String("fqdn"),
 			OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
 		},
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
-		Sort:       telnyx.FqdnConnectionListParamsSortConnectionName,
+		Page: telnyx.FqdnConnectionListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
+		Sort: telnyx.FqdnConnectionListParamsSortConnectionName,
 	})
 	if err != nil {
 		var apierr *telnyx.Error

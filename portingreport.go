@@ -61,7 +61,7 @@ func (r *PortingReportService) Get(ctx context.Context, id string, opts ...optio
 }
 
 // List the reports generated about porting operations.
-func (r *PortingReportService) List(ctx context.Context, query PortingReportListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingReport], err error) {
+func (r *PortingReportService) List(ctx context.Context, query PortingReportListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingReport], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -79,8 +79,8 @@ func (r *PortingReportService) List(ctx context.Context, query PortingReportList
 }
 
 // List the reports generated about porting operations.
-func (r *PortingReportService) ListAutoPaging(ctx context.Context, query PortingReportListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingReport] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *PortingReportService) ListAutoPaging(ctx context.Context, query PortingReportListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingReport] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // The parameters for generating a porting orders CSV report.
@@ -298,11 +298,12 @@ const (
 )
 
 type PortingReportListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[report_type], filter[status]
 	Filter PortingReportListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page PortingReportListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -332,6 +333,25 @@ type PortingReportListParamsFilter struct {
 // URLQuery serializes [PortingReportListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r PortingReportListParamsFilter) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type PortingReportListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [PortingReportListParamsPage]'s query parameters as
+// `url.Values`.
+func (r PortingReportListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

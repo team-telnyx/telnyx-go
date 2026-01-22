@@ -76,7 +76,7 @@ func (r *PhoneNumberService) Update(ctx context.Context, phoneNumberID string, b
 }
 
 // List phone numbers
-func (r *PhoneNumberService) List(ctx context.Context, query PhoneNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PhoneNumberDetailed], err error) {
+func (r *PhoneNumberService) List(ctx context.Context, query PhoneNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PhoneNumberDetailed], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -94,8 +94,8 @@ func (r *PhoneNumberService) List(ctx context.Context, query PhoneNumberListPara
 }
 
 // List phone numbers
-func (r *PhoneNumberService) ListAutoPaging(ctx context.Context, query PhoneNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PhoneNumberDetailed] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *PhoneNumberService) ListAutoPaging(ctx context.Context, query PhoneNumberListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PhoneNumberDetailed] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a phone number
@@ -112,7 +112,7 @@ func (r *PhoneNumberService) Delete(ctx context.Context, id string, opts ...opti
 
 // List phone numbers, This endpoint is a lighter version of the /phone_numbers
 // endpoint having higher performance and rate limit.
-func (r *PhoneNumberService) SlimList(ctx context.Context, query PhoneNumberSlimListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PhoneNumberSlimListResponse], err error) {
+func (r *PhoneNumberService) SlimList(ctx context.Context, query PhoneNumberSlimListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PhoneNumberSlimListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -131,8 +131,8 @@ func (r *PhoneNumberService) SlimList(ctx context.Context, query PhoneNumberSlim
 
 // List phone numbers, This endpoint is a lighter version of the /phone_numbers
 // endpoint having higher performance and rate limit.
-func (r *PhoneNumberService) SlimListAutoPaging(ctx context.Context, query PhoneNumberSlimListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PhoneNumberSlimListResponse] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.SlimList(ctx, query, opts...))
+func (r *PhoneNumberService) SlimListAutoPaging(ctx context.Context, query PhoneNumberSlimListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PhoneNumberSlimListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.SlimList(ctx, query, opts...))
 }
 
 type PhoneNumberDetailed struct {
@@ -673,8 +673,6 @@ func (r *PhoneNumberUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type PhoneNumberListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[tag],
 	// filter[phone_number], filter[status], filter[country_iso_alpha2],
 	// filter[connection_id], filter[voice.connection_name],
@@ -691,6 +689,9 @@ type PhoneNumberListParams struct {
 	//
 	// Any of "true", "false".
 	HandleMessagingProfileError PhoneNumberListParamsHandleMessagingProfileError `query:"handle_messaging_profile_error,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page PhoneNumberListParamsPage `query:"page,omitzero" json:"-"`
 	// Specifies the sort order for results. If not given, results are sorted by
 	// created_at in descending order.
 	//
@@ -841,6 +842,25 @@ const (
 	PhoneNumberListParamsHandleMessagingProfileErrorFalse PhoneNumberListParamsHandleMessagingProfileError = "false"
 )
 
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type PhoneNumberListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [PhoneNumberListParamsPage]'s query parameters as
+// `url.Values`.
+func (r PhoneNumberListParamsPage) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
 // Specifies the sort order for results. If not given, results are sorted by
 // created_at in descending order.
 type PhoneNumberListParamsSort string
@@ -856,9 +876,7 @@ type PhoneNumberSlimListParams struct {
 	// Include the connection associated with the phone number.
 	IncludeConnection param.Opt[bool] `query:"include_connection,omitzero" json:"-"`
 	// Include the tags associated with the phone number.
-	IncludeTags param.Opt[bool]  `query:"include_tags,omitzero" json:"-"`
-	PageNumber  param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize    param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	IncludeTags param.Opt[bool] `query:"include_tags,omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[tag],
 	// filter[phone_number], filter[status], filter[country_iso_alpha2],
 	// filter[connection_id], filter[voice.connection_name],
@@ -866,6 +884,9 @@ type PhoneNumberSlimListParams struct {
 	// filter[emergency_address_id], filter[customer_reference], filter[number_type],
 	// filter[source]
 	Filter PhoneNumberSlimListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page PhoneNumberSlimListParamsPage `query:"page,omitzero" json:"-"`
 	// Specifies the sort order for results. If not given, results are sorted by
 	// created_at in descending order.
 	//
@@ -998,6 +1019,25 @@ type PhoneNumberSlimListParamsFilterVoiceConnectionName struct {
 // URLQuery serializes [PhoneNumberSlimListParamsFilterVoiceConnectionName]'s query
 // parameters as `url.Values`.
 func (r PhoneNumberSlimListParamsFilterVoiceConnectionName) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type PhoneNumberSlimListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [PhoneNumberSlimListParamsPage]'s query parameters as
+// `url.Values`.
+func (r PhoneNumberSlimListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

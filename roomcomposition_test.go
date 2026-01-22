@@ -102,8 +102,10 @@ func TestRoomCompositionListWithOptionalParams(t *testing.T) {
 			SessionID: telnyx.String("92e7d459-bcc5-4386-9f5f-6dd14a82588d"),
 			Status:    "completed",
 		},
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
+		Page: telnyx.RoomCompositionListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

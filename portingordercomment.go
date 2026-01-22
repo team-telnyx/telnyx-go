@@ -52,7 +52,7 @@ func (r *PortingOrderCommentService) New(ctx context.Context, id string, body Po
 }
 
 // Returns a list of all comments of a porting order.
-func (r *PortingOrderCommentService) List(ctx context.Context, id string, query PortingOrderCommentListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingOrderCommentListResponse], err error) {
+func (r *PortingOrderCommentService) List(ctx context.Context, id string, query PortingOrderCommentListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingOrderCommentListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -74,8 +74,8 @@ func (r *PortingOrderCommentService) List(ctx context.Context, id string, query 
 }
 
 // Returns a list of all comments of a porting order.
-func (r *PortingOrderCommentService) ListAutoPaging(ctx context.Context, id string, query PortingOrderCommentListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingOrderCommentListResponse] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, id, query, opts...))
+func (r *PortingOrderCommentService) ListAutoPaging(ctx context.Context, id string, query PortingOrderCommentListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingOrderCommentListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, id, query, opts...))
 }
 
 type PortingOrderCommentNewResponse struct {
@@ -181,14 +181,34 @@ func (r *PortingOrderCommentNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type PortingOrderCommentListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page PortingOrderCommentListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [PortingOrderCommentListParams]'s query parameters as
 // `url.Values`.
 func (r PortingOrderCommentListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type PortingOrderCommentListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [PortingOrderCommentListParamsPage]'s query parameters as
+// `url.Values`.
+func (r PortingOrderCommentListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

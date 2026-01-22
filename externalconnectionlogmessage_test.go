@@ -57,8 +57,10 @@ func TestExternalConnectionLogMessageListWithOptionalParams(t *testing.T) {
 				Eq:       telnyx.String("+1234567890"),
 			},
 		},
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
+		Page: telnyx.ExternalConnectionLogMessageListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

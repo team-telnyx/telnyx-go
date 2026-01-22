@@ -25,52 +25,6 @@ type APIErrorSource = shared.APIErrorSource
 // This is an alias to an internal type.
 type AvailablePhoneNumbersMetadata = shared.AvailablePhoneNumbersMetadata
 
-// Configuration options for noise suppression. These settings are stored
-// regardless of the noise_suppression value, but only take effect when
-// noise_suppression is not 'disabled'. If you disable noise suppression and later
-// re-enable it, the previously configured settings will be used.
-//
-// This is an alias to an internal type.
-type ConnectionNoiseSuppressionDetails = shared.ConnectionNoiseSuppressionDetails
-
-// The noise suppression engine to use. 'denoiser' is the default engine.
-// 'deep_filter_net' and 'deep_filter_net_large' are alternative engines with
-// different performance characteristics. Krisp engines ('krisp_viva_tel',
-// 'krisp_viva_tel_lite', 'krisp_viva_promodel', 'krisp_viva_ss') provide advanced
-// noise suppression capabilities.
-//
-// This is an alias to an internal type.
-type ConnectionNoiseSuppressionDetailsEngine = shared.ConnectionNoiseSuppressionDetailsEngine
-
-// Equals "denoiser"
-const ConnectionNoiseSuppressionDetailsEngineDenoiser = shared.ConnectionNoiseSuppressionDetailsEngineDenoiser
-
-// Equals "deep_filter_net"
-const ConnectionNoiseSuppressionDetailsEngineDeepFilterNet = shared.ConnectionNoiseSuppressionDetailsEngineDeepFilterNet
-
-// Equals "deep_filter_net_large"
-const ConnectionNoiseSuppressionDetailsEngineDeepFilterNetLarge = shared.ConnectionNoiseSuppressionDetailsEngineDeepFilterNetLarge
-
-// Equals "krisp_viva_tel"
-const ConnectionNoiseSuppressionDetailsEngineKrispVivaTel = shared.ConnectionNoiseSuppressionDetailsEngineKrispVivaTel
-
-// Equals "krisp_viva_tel_lite"
-const ConnectionNoiseSuppressionDetailsEngineKrispVivaTelLite = shared.ConnectionNoiseSuppressionDetailsEngineKrispVivaTelLite
-
-// Equals "krisp_viva_promodel"
-const ConnectionNoiseSuppressionDetailsEngineKrispVivaPromodel = shared.ConnectionNoiseSuppressionDetailsEngineKrispVivaPromodel
-
-// Equals "krisp_viva_ss"
-const ConnectionNoiseSuppressionDetailsEngineKrispVivaSS = shared.ConnectionNoiseSuppressionDetailsEngineKrispVivaSS
-
-// Configuration options for noise suppression. These settings are stored
-// regardless of the noise_suppression value, but only take effect when
-// noise_suppression is not 'disabled'. If you disable noise suppression and later
-// re-enable it, the previously configured settings will be used.
-//
-// This is an alias to an internal type.
-type ConnectionNoiseSuppressionDetailsParam = shared.ConnectionNoiseSuppressionDetailsParam
-
 // This is an alias to an internal type.
 type ConnectionsPaginationMeta = shared.ConnectionsPaginationMeta
 

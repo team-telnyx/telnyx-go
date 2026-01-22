@@ -399,7 +399,7 @@ func (r *SimCardGroupUpdateParamsDataLimit) UnmarshalJSON(data []byte) error {
 
 type SimCardGroupListParams struct {
 	// A valid SIM card group name.
-	FilterName param.Opt[string] `query:"filter[name],omitzero" format:"uuid" json:"-"`
+	FilterName param.Opt[string] `query:"filter[name],omitzero" json:"-"`
 	// A Private Wireless Gateway ID associated with the group.
 	FilterPrivateWirelessGatewayID param.Opt[string] `query:"filter[private_wireless_gateway_id],omitzero" format:"uuid" json:"-"`
 	// A Wireless Blocklist ID associated with the group.
