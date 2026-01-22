@@ -11,7 +11,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4"
 	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
 	"github.com/team-telnyx/telnyx-go/v4/option"
-	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 func TestIPConnectionNewWithOptionalParams(t *testing.T) {
@@ -56,9 +55,9 @@ func TestIPConnectionNewWithOptionalParams(t *testing.T) {
 		},
 		IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
 		NoiseSuppression:    telnyx.IPConnectionNewParamsNoiseSuppressionBoth,
-		NoiseSuppressionDetails: shared.ConnectionNoiseSuppressionDetailsParam{
+		NoiseSuppressionDetails: telnyx.IPConnectionNewParamsNoiseSuppressionDetails{
 			AttenuationLimit: telnyx.Int(80),
-			Engine:           shared.ConnectionNoiseSuppressionDetailsEngineDeepFilterNet,
+			Engine:           "deep_filter_net",
 		},
 		OnnetT38PassthroughEnabled: telnyx.Bool(false),
 		Outbound: telnyx.OutboundIPParam{
@@ -167,9 +166,9 @@ func TestIPConnectionUpdateWithOptionalParams(t *testing.T) {
 			},
 			IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
 			NoiseSuppression:    telnyx.IPConnectionUpdateParamsNoiseSuppressionBoth,
-			NoiseSuppressionDetails: shared.ConnectionNoiseSuppressionDetailsParam{
+			NoiseSuppressionDetails: telnyx.IPConnectionUpdateParamsNoiseSuppressionDetails{
 				AttenuationLimit: telnyx.Int(80),
-				Engine:           shared.ConnectionNoiseSuppressionDetailsEngineDeepFilterNet,
+				Engine:           "deep_filter_net",
 			},
 			OnnetT38PassthroughEnabled: telnyx.Bool(false),
 			Outbound: telnyx.OutboundIPParam{
@@ -229,9 +228,11 @@ func TestIPConnectionListWithOptionalParams(t *testing.T) {
 			Fqdn:                   telnyx.String("fqdn"),
 			OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
 		},
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
-		Sort:       telnyx.IPConnectionListParamsSortConnectionName,
+		Page: telnyx.IPConnectionListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
+		Sort: telnyx.IPConnectionListParamsSortConnectionName,
 	})
 	if err != nil {
 		var apierr *telnyx.Error

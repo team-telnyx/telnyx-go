@@ -74,7 +74,7 @@ func (r *ExternalConnectionPhoneNumberService) Update(ctx context.Context, phone
 
 // Returns a list of all active phone numbers associated with the given external
 // connection.
-func (r *ExternalConnectionPhoneNumberService) List(ctx context.Context, id string, query ExternalConnectionPhoneNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[ExternalConnectionPhoneNumber], err error) {
+func (r *ExternalConnectionPhoneNumberService) List(ctx context.Context, id string, query ExternalConnectionPhoneNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[ExternalConnectionPhoneNumber], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -97,8 +97,8 @@ func (r *ExternalConnectionPhoneNumberService) List(ctx context.Context, id stri
 
 // Returns a list of all active phone numbers associated with the given external
 // connection.
-func (r *ExternalConnectionPhoneNumberService) ListAutoPaging(ctx context.Context, id string, query ExternalConnectionPhoneNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[ExternalConnectionPhoneNumber] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, id, query, opts...))
+func (r *ExternalConnectionPhoneNumberService) ListAutoPaging(ctx context.Context, id string, query ExternalConnectionPhoneNumberListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[ExternalConnectionPhoneNumber] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, id, query, opts...))
 }
 
 type ExternalConnectionPhoneNumber struct {
@@ -191,11 +191,12 @@ func (r *ExternalConnectionPhoneNumberUpdateParams) UnmarshalJSON(data []byte) e
 }
 
 type ExternalConnectionPhoneNumberListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Filter parameter for phone numbers (deepObject style). Supports filtering by
 	// phone_number, civic_address_id, and location_id with eq/contains operations.
 	Filter ExternalConnectionPhoneNumberListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page ExternalConnectionPhoneNumberListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -268,6 +269,25 @@ type ExternalConnectionPhoneNumberListParamsFilterPhoneNumber struct {
 // URLQuery serializes [ExternalConnectionPhoneNumberListParamsFilterPhoneNumber]'s
 // query parameters as `url.Values`.
 func (r ExternalConnectionPhoneNumberListParamsFilterPhoneNumber) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type ExternalConnectionPhoneNumberListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ExternalConnectionPhoneNumberListParamsPage]'s query
+// parameters as `url.Values`.
+func (r ExternalConnectionPhoneNumberListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

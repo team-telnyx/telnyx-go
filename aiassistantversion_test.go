@@ -106,14 +106,13 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					},
 				},
 				Tools: []telnyx.AssistantToolsItemsUnionParam{{
-					OfWebhook: &telnyx.InferenceEmbeddingWebhookToolParams{
-						Type: telnyx.InferenceEmbeddingWebhookToolParamsTypeWebhook,
-						Webhook: telnyx.InferenceEmbeddingWebhookToolParamsWebhook{
+					OfWebhook: &telnyx.AssistantToolWebhookParam{
+						Webhook: telnyx.AssistantToolWebhookWebhookParam{
 							Description: "description",
 							Name:        "name",
 							URL:         "https://example.com/api/v1/function",
 							Async:       telnyx.Bool(true),
-							BodyParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookBodyParameters{
+							BodyParameters: telnyx.AssistantToolWebhookWebhookBodyParametersParam{
 								Properties: map[string]any{
 									"age":      "bar",
 									"location": "bar",
@@ -121,19 +120,19 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 								Required: []string{"age", "location"},
 								Type:     "object",
 							},
-							Headers: []telnyx.InferenceEmbeddingWebhookToolParamsWebhookHeader{{
+							Headers: []telnyx.AssistantToolWebhookWebhookHeaderParam{{
 								Name:  telnyx.String("name"),
 								Value: telnyx.String("value"),
 							}},
 							Method: "GET",
-							PathParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookPathParameters{
+							PathParameters: telnyx.AssistantToolWebhookWebhookPathParametersParam{
 								Properties: map[string]any{
 									"id": "bar",
 								},
 								Required: []string{"id"},
 								Type:     "object",
 							},
-							QueryParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookQueryParameters{
+							QueryParameters: telnyx.AssistantToolWebhookWebhookQueryParametersParam{
 								Properties: map[string]any{
 									"page": "bar",
 								},
@@ -171,20 +170,20 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					UseSpeakerBoost: telnyx.Bool(true),
 					VoiceSpeed:      telnyx.Float(0),
 				},
-				WidgetSettings: telnyx.WidgetSettingsParam{
+				WidgetSettings: telnyx.UpdateAssistantWidgetSettingsParam{
 					AgentThinkingText: telnyx.String("agent_thinking_text"),
-					AudioVisualizerConfig: telnyx.WidgetSettingsAudioVisualizerConfigParam{
+					AudioVisualizerConfig: telnyx.UpdateAssistantWidgetSettingsAudioVisualizerConfigParam{
 						Color:  "verdant",
 						Preset: telnyx.String("preset"),
 					},
-					DefaultState:         telnyx.WidgetSettingsDefaultStateExpanded,
+					DefaultState:         "expanded",
 					GiveFeedbackURL:      telnyx.String("give_feedback_url"),
 					LogoIconURL:          telnyx.String("logo_icon_url"),
-					Position:             telnyx.WidgetSettingsPositionFixed,
+					Position:             "fixed",
 					ReportIssueURL:       telnyx.String("report_issue_url"),
 					SpeakToInterruptText: telnyx.String("speak_to_interrupt_text"),
 					StartCallText:        telnyx.String("start_call_text"),
-					Theme:                telnyx.WidgetSettingsThemeLight,
+					Theme:                "light",
 					ViewHistoryURL:       telnyx.String("view_history_url"),
 				},
 			},

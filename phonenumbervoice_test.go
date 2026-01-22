@@ -112,9 +112,11 @@ func TestPhoneNumberVoiceListWithOptionalParams(t *testing.T) {
 			PhoneNumber:             telnyx.String("phone_number"),
 			VoiceUsagePaymentMethod: "channel",
 		},
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
-		Sort:       telnyx.PhoneNumberVoiceListParamsSortConnectionName,
+		Page: telnyx.PhoneNumberVoiceListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
+		Sort: telnyx.PhoneNumberVoiceListParamsSortConnectionName,
 	})
 	if err != nil {
 		var apierr *telnyx.Error

@@ -37,7 +37,7 @@ func NewNetworkCoverageService(opts ...option.RequestOption) (r NetworkCoverageS
 }
 
 // List all locations and the interfaces that region supports
-func (r *NetworkCoverageService) List(ctx context.Context, query NetworkCoverageListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[NetworkCoverageListResponse], err error) {
+func (r *NetworkCoverageService) List(ctx context.Context, query NetworkCoverageListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[NetworkCoverageListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -55,8 +55,8 @@ func (r *NetworkCoverageService) List(ctx context.Context, query NetworkCoverage
 }
 
 // List all locations and the interfaces that region supports
-func (r *NetworkCoverageService) ListAutoPaging(ctx context.Context, query NetworkCoverageListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[NetworkCoverageListResponse] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *NetworkCoverageService) ListAutoPaging(ctx context.Context, query NetworkCoverageListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[NetworkCoverageListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type AvailableService string
@@ -119,8 +119,6 @@ func (r *NetworkCoverageListResponseLocation) UnmarshalJSON(data []byte) error {
 }
 
 type NetworkCoverageListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[location.region], filter[location.site], filter[location.pop],
 	// filter[location.code]
@@ -128,6 +126,9 @@ type NetworkCoverageListParams struct {
 	// Consolidated filters parameter (deepObject style). Originally:
 	// filters[available_services][contains]
 	Filters NetworkCoverageListParamsFilters `query:"filters,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page NetworkCoverageListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -213,6 +214,25 @@ type NetworkCoverageListParamsFiltersAvailableServicesContains struct {
 // [NetworkCoverageListParamsFiltersAvailableServicesContains]'s query parameters
 // as `url.Values`.
 func (r NetworkCoverageListParamsFiltersAvailableServicesContains) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type NetworkCoverageListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [NetworkCoverageListParamsPage]'s query parameters as
+// `url.Values`.
+func (r NetworkCoverageListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

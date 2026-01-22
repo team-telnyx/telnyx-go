@@ -72,7 +72,7 @@ func (r *PortingLoaConfigurationService) Update(ctx context.Context, id string, 
 }
 
 // List the LOA configurations.
-func (r *PortingLoaConfigurationService) List(ctx context.Context, query PortingLoaConfigurationListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingLoaConfiguration], err error) {
+func (r *PortingLoaConfigurationService) List(ctx context.Context, query PortingLoaConfigurationListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingLoaConfiguration], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -90,8 +90,8 @@ func (r *PortingLoaConfigurationService) List(ctx context.Context, query Porting
 }
 
 // List the LOA configurations.
-func (r *PortingLoaConfigurationService) ListAutoPaging(ctx context.Context, query PortingLoaConfigurationListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingLoaConfiguration] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *PortingLoaConfigurationService) ListAutoPaging(ctx context.Context, query PortingLoaConfigurationListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingLoaConfiguration] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a specific LOA configuration.
@@ -470,14 +470,34 @@ func (r *PortingLoaConfigurationUpdateParamsLogo) UnmarshalJSON(data []byte) err
 }
 
 type PortingLoaConfigurationListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page PortingLoaConfigurationListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [PortingLoaConfigurationListParams]'s query parameters as
 // `url.Values`.
 func (r PortingLoaConfigurationListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type PortingLoaConfigurationListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [PortingLoaConfigurationListParamsPage]'s query parameters
+// as `url.Values`.
+func (r PortingLoaConfigurationListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

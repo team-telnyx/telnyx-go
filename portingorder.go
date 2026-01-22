@@ -102,7 +102,7 @@ func (r *PortingOrderService) Update(ctx context.Context, id string, body Portin
 }
 
 // Returns a list of your porting order.
-func (r *PortingOrderService) List(ctx context.Context, query PortingOrderListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingOrder], err error) {
+func (r *PortingOrderService) List(ctx context.Context, query PortingOrderListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingOrder], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -120,8 +120,8 @@ func (r *PortingOrderService) List(ctx context.Context, query PortingOrderListPa
 }
 
 // Returns a list of your porting order.
-func (r *PortingOrderService) ListAutoPaging(ctx context.Context, query PortingOrderListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingOrder] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *PortingOrderService) ListAutoPaging(ctx context.Context, query PortingOrderListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingOrder] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Deletes an existing porting order. This operation is restrict to porting orders
@@ -173,7 +173,7 @@ func (r *PortingOrderService) GetLoaTemplate(ctx context.Context, id string, que
 
 // Returns a list of all requirements based on country/number type for this porting
 // order.
-func (r *PortingOrderService) GetRequirements(ctx context.Context, id string, query PortingOrderGetRequirementsParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingOrderGetRequirementsResponse], err error) {
+func (r *PortingOrderService) GetRequirements(ctx context.Context, id string, query PortingOrderGetRequirementsParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingOrderGetRequirementsResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -196,8 +196,8 @@ func (r *PortingOrderService) GetRequirements(ctx context.Context, id string, qu
 
 // Returns a list of all requirements based on country/number type for this porting
 // order.
-func (r *PortingOrderService) GetRequirementsAutoPaging(ctx context.Context, id string, query PortingOrderGetRequirementsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingOrderGetRequirementsResponse] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.GetRequirements(ctx, id, query, opts...))
+func (r *PortingOrderService) GetRequirementsAutoPaging(ctx context.Context, id string, query PortingOrderGetRequirementsParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingOrderGetRequirementsResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.GetRequirements(ctx, id, query, opts...))
 }
 
 // Retrieve the associated V1 sub_request_id and port_request_id
@@ -1314,9 +1314,7 @@ func (r *PortingOrderUpdateParamsRequirement) UnmarshalJSON(data []byte) error {
 
 type PortingOrderListParams struct {
 	// Include the first 50 phone number objects in the results
-	IncludePhoneNumbers param.Opt[bool]  `query:"include_phone_numbers,omitzero" json:"-"`
-	PageNumber          param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize            param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	IncludePhoneNumbers param.Opt[bool] `query:"include_phone_numbers,omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[customer_reference], filter[customer_group_reference],
 	// filter[parent_support_key], filter[phone_numbers.country_code],
@@ -1327,6 +1325,9 @@ type PortingOrderListParams struct {
 	// filter[activation_settings.foc_datetime_requested][lt],
 	// filter[phone_numbers.phone_number][contains]
 	Filter PortingOrderListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page PortingOrderListParamsPage `query:"page,omitzero" json:"-"`
 	// Consolidated sort parameter (deepObject style). Originally: sort[value]
 	Sort PortingOrderListParamsSort `query:"sort,omitzero" json:"-"`
 	paramObj
@@ -1491,6 +1492,25 @@ func (r PortingOrderListParamsFilterPhoneNumbersPhoneNumber) URLQuery() (v url.V
 	})
 }
 
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type PortingOrderListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [PortingOrderListParamsPage]'s query parameters as
+// `url.Values`.
+func (r PortingOrderListParamsPage) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
 // Consolidated sort parameter (deepObject style). Originally: sort[value]
 type PortingOrderListParamsSort struct {
 	// Specifies the sort order for results. If not given, results are sorted by
@@ -1529,14 +1549,34 @@ func (r PortingOrderGetLoaTemplateParams) URLQuery() (v url.Values, err error) {
 }
 
 type PortingOrderGetRequirementsParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page PortingOrderGetRequirementsParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [PortingOrderGetRequirementsParams]'s query parameters as
 // `url.Values`.
 func (r PortingOrderGetRequirementsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type PortingOrderGetRequirementsParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [PortingOrderGetRequirementsParamsPage]'s query parameters
+// as `url.Values`.
+func (r PortingOrderGetRequirementsParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

@@ -18,7 +18,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // IPConnectionService contains methods and other services that help with
@@ -73,7 +72,7 @@ func (r *IPConnectionService) Update(ctx context.Context, id string, body IPConn
 }
 
 // Returns a list of your IP connections.
-func (r *IPConnectionService) List(ctx context.Context, query IPConnectionListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[IPConnection], err error) {
+func (r *IPConnectionService) List(ctx context.Context, query IPConnectionListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[IPConnection], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -91,8 +90,8 @@ func (r *IPConnectionService) List(ctx context.Context, query IPConnectionListPa
 }
 
 // Returns a list of your IP connections.
-func (r *IPConnectionService) ListAutoPaging(ctx context.Context, query IPConnectionListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[IPConnection] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *IPConnectionService) ListAutoPaging(ctx context.Context, query IPConnectionListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[IPConnection] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Deletes an existing IP connection.
@@ -393,7 +392,7 @@ type IPConnection struct {
 	// regardless of the noise_suppression value, but only take effect when
 	// noise_suppression is not 'disabled'. If you disable noise suppression and later
 	// re-enable it, the previously configured settings will be used.
-	NoiseSuppressionDetails shared.ConnectionNoiseSuppressionDetails `json:"noise_suppression_details"`
+	NoiseSuppressionDetails IPConnectionNoiseSuppressionDetails `json:"noise_suppression_details"`
 	// Enable on-net T38 if you prefer the sender and receiver negotiating T38 directly
 	// if both are on the Telnyx network. If this is disabled, Telnyx will be able to
 	// use T38 on just one leg of the call depending on each leg's settings.
@@ -472,6 +471,40 @@ const (
 	IPConnectionNoiseSuppressionBoth     IPConnectionNoiseSuppression = "both"
 	IPConnectionNoiseSuppressionDisabled IPConnectionNoiseSuppression = "disabled"
 )
+
+// Configuration options for noise suppression. These settings are stored
+// regardless of the noise_suppression value, but only take effect when
+// noise_suppression is not 'disabled'. If you disable noise suppression and later
+// re-enable it, the previously configured settings will be used.
+type IPConnectionNoiseSuppressionDetails struct {
+	// The attenuation limit value for the selected engine. Default values vary by
+	// engine: 0 for 'denoiser', 80 for 'deep_filter_net', 'deep_filter_net_large', and
+	// all Krisp engines ('krisp_viva_tel', 'krisp_viva_tel_lite',
+	// 'krisp_viva_promodel', 'krisp_viva_ss').
+	AttenuationLimit int64 `json:"attenuation_limit"`
+	// The noise suppression engine to use. 'denoiser' is the default engine.
+	// 'deep_filter_net' and 'deep_filter_net_large' are alternative engines with
+	// different performance characteristics. Krisp engines ('krisp_viva_tel',
+	// 'krisp_viva_tel_lite', 'krisp_viva_promodel', 'krisp_viva_ss') provide advanced
+	// noise suppression capabilities.
+	//
+	// Any of "denoiser", "deep_filter_net", "deep_filter_net_large", "krisp_viva_tel",
+	// "krisp_viva_tel_lite", "krisp_viva_promodel", "krisp_viva_ss".
+	Engine string `json:"engine"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AttenuationLimit respjson.Field
+		Engine           respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r IPConnectionNoiseSuppressionDetails) RawJSON() string { return r.JSON.raw }
+func (r *IPConnectionNoiseSuppressionDetails) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // One of UDP, TLS, or TCP. Applies only to connections with IP authentication or
 // FQDN authentication.
@@ -775,9 +808,9 @@ type IPConnectionNewParams struct {
 	// regardless of the noise_suppression value, but only take effect when
 	// noise_suppression is not 'disabled'. If you disable noise suppression and later
 	// re-enable it, the previously configured settings will be used.
-	NoiseSuppressionDetails shared.ConnectionNoiseSuppressionDetailsParam `json:"noise_suppression_details,omitzero"`
-	Outbound                OutboundIPParam                               `json:"outbound,omitzero"`
-	RtcpSettings            ConnectionRtcpSettingsParam                   `json:"rtcp_settings,omitzero"`
+	NoiseSuppressionDetails IPConnectionNewParamsNoiseSuppressionDetails `json:"noise_suppression_details,omitzero"`
+	Outbound                OutboundIPParam                              `json:"outbound,omitzero"`
+	RtcpSettings            ConnectionRtcpSettingsParam                  `json:"rtcp_settings,omitzero"`
 	// Tags associated with the connection.
 	Tags []string `json:"tags,omitzero"`
 	// One of UDP, TLS, or TCP. Applies only to connections with IP authentication or
@@ -899,6 +932,42 @@ const (
 	IPConnectionNewParamsNoiseSuppressionDisabled IPConnectionNewParamsNoiseSuppression = "disabled"
 )
 
+// Configuration options for noise suppression. These settings are stored
+// regardless of the noise_suppression value, but only take effect when
+// noise_suppression is not 'disabled'. If you disable noise suppression and later
+// re-enable it, the previously configured settings will be used.
+type IPConnectionNewParamsNoiseSuppressionDetails struct {
+	// The attenuation limit value for the selected engine. Default values vary by
+	// engine: 0 for 'denoiser', 80 for 'deep_filter_net', 'deep_filter_net_large', and
+	// all Krisp engines ('krisp_viva_tel', 'krisp_viva_tel_lite',
+	// 'krisp_viva_promodel', 'krisp_viva_ss').
+	AttenuationLimit param.Opt[int64] `json:"attenuation_limit,omitzero"`
+	// The noise suppression engine to use. 'denoiser' is the default engine.
+	// 'deep_filter_net' and 'deep_filter_net_large' are alternative engines with
+	// different performance characteristics. Krisp engines ('krisp_viva_tel',
+	// 'krisp_viva_tel_lite', 'krisp_viva_promodel', 'krisp_viva_ss') provide advanced
+	// noise suppression capabilities.
+	//
+	// Any of "denoiser", "deep_filter_net", "deep_filter_net_large", "krisp_viva_tel",
+	// "krisp_viva_tel_lite", "krisp_viva_promodel", "krisp_viva_ss".
+	Engine string `json:"engine,omitzero"`
+	paramObj
+}
+
+func (r IPConnectionNewParamsNoiseSuppressionDetails) MarshalJSON() (data []byte, err error) {
+	type shadow IPConnectionNewParamsNoiseSuppressionDetails
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *IPConnectionNewParamsNoiseSuppressionDetails) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[IPConnectionNewParamsNoiseSuppressionDetails](
+		"engine", "denoiser", "deep_filter_net", "deep_filter_net_large", "krisp_viva_tel", "krisp_viva_tel_lite", "krisp_viva_promodel", "krisp_viva_ss",
+	)
+}
+
 // One of UDP, TLS, or TCP. Applies only to connections with IP authentication or
 // FQDN authentication.
 type IPConnectionNewParamsTransportProtocol string
@@ -976,9 +1045,9 @@ type IPConnectionUpdateParams struct {
 	// regardless of the noise_suppression value, but only take effect when
 	// noise_suppression is not 'disabled'. If you disable noise suppression and later
 	// re-enable it, the previously configured settings will be used.
-	NoiseSuppressionDetails shared.ConnectionNoiseSuppressionDetailsParam `json:"noise_suppression_details,omitzero"`
-	Outbound                OutboundIPParam                               `json:"outbound,omitzero"`
-	RtcpSettings            ConnectionRtcpSettingsParam                   `json:"rtcp_settings,omitzero"`
+	NoiseSuppressionDetails IPConnectionUpdateParamsNoiseSuppressionDetails `json:"noise_suppression_details,omitzero"`
+	Outbound                OutboundIPParam                                 `json:"outbound,omitzero"`
+	RtcpSettings            ConnectionRtcpSettingsParam                     `json:"rtcp_settings,omitzero"`
 	// Tags associated with the connection.
 	Tags []string `json:"tags,omitzero"`
 	// One of UDP, TLS, or TCP. Applies only to connections with IP authentication or
@@ -1014,6 +1083,42 @@ const (
 	IPConnectionUpdateParamsNoiseSuppressionDisabled IPConnectionUpdateParamsNoiseSuppression = "disabled"
 )
 
+// Configuration options for noise suppression. These settings are stored
+// regardless of the noise_suppression value, but only take effect when
+// noise_suppression is not 'disabled'. If you disable noise suppression and later
+// re-enable it, the previously configured settings will be used.
+type IPConnectionUpdateParamsNoiseSuppressionDetails struct {
+	// The attenuation limit value for the selected engine. Default values vary by
+	// engine: 0 for 'denoiser', 80 for 'deep_filter_net', 'deep_filter_net_large', and
+	// all Krisp engines ('krisp_viva_tel', 'krisp_viva_tel_lite',
+	// 'krisp_viva_promodel', 'krisp_viva_ss').
+	AttenuationLimit param.Opt[int64] `json:"attenuation_limit,omitzero"`
+	// The noise suppression engine to use. 'denoiser' is the default engine.
+	// 'deep_filter_net' and 'deep_filter_net_large' are alternative engines with
+	// different performance characteristics. Krisp engines ('krisp_viva_tel',
+	// 'krisp_viva_tel_lite', 'krisp_viva_promodel', 'krisp_viva_ss') provide advanced
+	// noise suppression capabilities.
+	//
+	// Any of "denoiser", "deep_filter_net", "deep_filter_net_large", "krisp_viva_tel",
+	// "krisp_viva_tel_lite", "krisp_viva_promodel", "krisp_viva_ss".
+	Engine string `json:"engine,omitzero"`
+	paramObj
+}
+
+func (r IPConnectionUpdateParamsNoiseSuppressionDetails) MarshalJSON() (data []byte, err error) {
+	type shadow IPConnectionUpdateParamsNoiseSuppressionDetails
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *IPConnectionUpdateParamsNoiseSuppressionDetails) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[IPConnectionUpdateParamsNoiseSuppressionDetails](
+		"engine", "denoiser", "deep_filter_net", "deep_filter_net_large", "krisp_viva_tel", "krisp_viva_tel_lite", "krisp_viva_promodel", "krisp_viva_ss",
+	)
+}
+
 // One of UDP, TLS, or TCP. Applies only to connections with IP authentication or
 // FQDN authentication.
 type IPConnectionUpdateParamsTransportProtocol string
@@ -1033,12 +1138,13 @@ const (
 )
 
 type IPConnectionListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[connection_name], filter[fqdn], filter[outbound_voice_profile_id],
 	// filter[outbound.outbound_voice_profile_id]
 	Filter IPConnectionListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page IPConnectionListParamsPage `query:"page,omitzero" json:"-"`
 	// Specifies the sort order for results. By default sorting direction is ascending.
 	// To have the results sorted in descending order add the <code> -</code>
 	// prefix.<br/><br/> That is: <ul>
@@ -1103,6 +1209,25 @@ type IPConnectionListParamsFilterConnectionName struct {
 // URLQuery serializes [IPConnectionListParamsFilterConnectionName]'s query
 // parameters as `url.Values`.
 func (r IPConnectionListParamsFilterConnectionName) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type IPConnectionListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [IPConnectionListParamsPage]'s query parameters as
+// `url.Values`.
+func (r IPConnectionListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

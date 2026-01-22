@@ -89,27 +89,6 @@ func (r *OrganizationUserService) GetGroupsReport(ctx context.Context, query Org
 	return
 }
 
-// A reference to a group that a user belongs to.
-type UserGroupReference struct {
-	// The unique identifier of the group.
-	ID string `json:"id,required"`
-	// The name of the group.
-	Name string `json:"name,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UserGroupReference) RawJSON() string { return r.JSON.raw }
-func (r *UserGroupReference) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type OrganizationUserGetResponse struct {
 	Data OrganizationUserGetResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -135,7 +114,7 @@ type OrganizationUserGetResponseData struct {
 	Email string `json:"email" format:"email"`
 	// The groups the user belongs to. Only included when include_groups parameter is
 	// true.
-	Groups []UserGroupReference `json:"groups"`
+	Groups []OrganizationUserGetResponseDataGroup `json:"groups"`
 	// ISO 8601 formatted date indicating when the resource last signed into the
 	// portal. Null if the user has never signed in.
 	LastSignInAt string `json:"last_sign_in_at,nullable"`
@@ -170,6 +149,27 @@ func (r *OrganizationUserGetResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// A reference to a group that a user belongs to.
+type OrganizationUserGetResponseDataGroup struct {
+	// The unique identifier of the group.
+	ID string `json:"id,required"`
+	// The name of the group.
+	Name string `json:"name,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r OrganizationUserGetResponseDataGroup) RawJSON() string { return r.JSON.raw }
+func (r *OrganizationUserGetResponseDataGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type OrganizationUserListResponse struct {
 	// Identifies the specific resource.
 	ID string `json:"id"`
@@ -179,7 +179,7 @@ type OrganizationUserListResponse struct {
 	Email string `json:"email" format:"email"`
 	// The groups the user belongs to. Only included when include_groups parameter is
 	// true.
-	Groups []UserGroupReference `json:"groups"`
+	Groups []OrganizationUserListResponseGroup `json:"groups"`
 	// ISO 8601 formatted date indicating when the resource last signed into the
 	// portal. Null if the user has never signed in.
 	LastSignInAt string `json:"last_sign_in_at,nullable"`
@@ -211,6 +211,27 @@ type OrganizationUserListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r OrganizationUserListResponse) RawJSON() string { return r.JSON.raw }
 func (r *OrganizationUserListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A reference to a group that a user belongs to.
+type OrganizationUserListResponseGroup struct {
+	// The unique identifier of the group.
+	ID string `json:"id,required"`
+	// The name of the group.
+	Name string `json:"name,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r OrganizationUserListResponseGroup) RawJSON() string { return r.JSON.raw }
+func (r *OrganizationUserListResponseGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -248,7 +269,7 @@ type OrganizationUserGetGroupsReportResponseData struct {
 	// The email address of the user.
 	Email string `json:"email,required" format:"email"`
 	// The groups the user belongs to.
-	Groups []UserGroupReference `json:"groups,required"`
+	Groups []OrganizationUserGetGroupsReportResponseDataGroup `json:"groups,required"`
 	// Identifies the type of the resource. Can be 'organization_owner' or
 	// 'organization_sub_user'.
 	RecordType string `json:"record_type,required"`
@@ -280,6 +301,27 @@ type OrganizationUserGetGroupsReportResponseData struct {
 // Returns the unmodified JSON received from the API
 func (r OrganizationUserGetGroupsReportResponseData) RawJSON() string { return r.JSON.raw }
 func (r *OrganizationUserGetGroupsReportResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A reference to a group that a user belongs to.
+type OrganizationUserGetGroupsReportResponseDataGroup struct {
+	// The unique identifier of the group.
+	ID string `json:"id,required"`
+	// The name of the group.
+	Name string `json:"name,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r OrganizationUserGetGroupsReportResponseDataGroup) RawJSON() string { return r.JSON.raw }
+func (r *OrganizationUserGetGroupsReportResponseDataGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

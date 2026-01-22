@@ -467,6 +467,9 @@ type ConferenceListParams struct {
 	// filter[product], filter[failed], filter[from], filter[to], filter[name],
 	// filter[type], filter[occurred_at][eq/gt/gte/lt/lte], filter[status]
 	Filter ConferenceListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[after],
+	// page[before], page[limit], page[size], page[number]
+	Page ConferenceListParamsPage `query:"page,omitzero" json:"-"`
 	// Region where the conference data is located
 	//
 	// Any of "Australia", "Europe", "Middle East", "US".
@@ -576,6 +579,27 @@ func (r ConferenceListParamsFilterOccurredAt) URLQuery() (v url.Values, err erro
 	})
 }
 
+// Consolidated page parameter (deepObject style). Originally: page[after],
+// page[before], page[limit], page[size], page[number]
+type ConferenceListParamsPage struct {
+	// Opaque identifier of next page
+	After param.Opt[string] `query:"after,omitzero" json:"-"`
+	// Opaque identifier of previous page
+	Before param.Opt[string] `query:"before,omitzero" json:"-"`
+	// Limit of records per single page
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ConferenceListParamsPage]'s query parameters as
+// `url.Values`.
+func (r ConferenceListParamsPage) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
 // Region where the conference data is located
 type ConferenceListParamsRegion string
 
@@ -592,6 +616,9 @@ type ConferenceListParticipantsParams struct {
 	// Consolidated filter parameter (deepObject style). Originally: filter[muted],
 	// filter[on_hold], filter[whispering]
 	Filter ConferenceListParticipantsParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[after],
+	// page[before], page[limit], page[size], page[number]
+	Page ConferenceListParticipantsParamsPage `query:"page,omitzero" json:"-"`
 	// Region where the conference data is located
 	//
 	// Any of "Australia", "Europe", "Middle East", "US".
@@ -623,6 +650,27 @@ type ConferenceListParticipantsParamsFilter struct {
 // URLQuery serializes [ConferenceListParticipantsParamsFilter]'s query parameters
 // as `url.Values`.
 func (r ConferenceListParticipantsParamsFilter) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[after],
+// page[before], page[limit], page[size], page[number]
+type ConferenceListParticipantsParamsPage struct {
+	// Opaque identifier of next page
+	After param.Opt[string] `query:"after,omitzero" json:"-"`
+	// Opaque identifier of previous page
+	Before param.Opt[string] `query:"before,omitzero" json:"-"`
+	// Limit of records per single page
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ConferenceListParticipantsParamsPage]'s query parameters as
+// `url.Values`.
+func (r ConferenceListParticipantsParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

@@ -75,7 +75,7 @@ func (r *ManagedAccountService) Update(ctx context.Context, id string, body Mana
 
 // Lists the accounts managed by the current user. Users need to be explictly
 // approved by Telnyx in order to become manager accounts.
-func (r *ManagedAccountService) List(ctx context.Context, query ManagedAccountListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[ManagedAccountListResponse], err error) {
+func (r *ManagedAccountService) List(ctx context.Context, query ManagedAccountListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[ManagedAccountListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -94,8 +94,8 @@ func (r *ManagedAccountService) List(ctx context.Context, query ManagedAccountLi
 
 // Lists the accounts managed by the current user. Users need to be explictly
 // approved by Telnyx in order to become manager accounts.
-func (r *ManagedAccountService) ListAutoPaging(ctx context.Context, query ManagedAccountListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[ManagedAccountListResponse] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *ManagedAccountService) ListAutoPaging(ctx context.Context, query ManagedAccountListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[ManagedAccountListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Display information about allocatable global outbound channels for the current
@@ -490,13 +490,14 @@ func (r *ManagedAccountUpdateParams) UnmarshalJSON(data []byte) error {
 
 type ManagedAccountListParams struct {
 	// Specifies if cancelled accounts should be included in the results.
-	IncludeCancelledAccounts param.Opt[bool]  `query:"include_cancelled_accounts,omitzero" json:"-"`
-	PageNumber               param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize                 param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	IncludeCancelledAccounts param.Opt[bool] `query:"include_cancelled_accounts,omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[email][contains], filter[email][eq], filter[organization_name][contains],
 	// filter[organization_name][eq]
 	Filter ManagedAccountListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page ManagedAccountListParamsPage `query:"page,omitzero" json:"-"`
 	// Specifies the sort order for results. By default sorting direction is ascending.
 	// To have the results sorted in descending order add the <code> -</code>
 	// prefix.<br/><br/> That is: <ul>
@@ -578,6 +579,25 @@ type ManagedAccountListParamsFilterOrganizationName struct {
 // URLQuery serializes [ManagedAccountListParamsFilterOrganizationName]'s query
 // parameters as `url.Values`.
 func (r ManagedAccountListParamsFilterOrganizationName) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type ManagedAccountListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ManagedAccountListParamsPage]'s query parameters as
+// `url.Values`.
+func (r ManagedAccountListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

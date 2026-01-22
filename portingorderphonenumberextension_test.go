@@ -70,8 +70,10 @@ func TestPortingOrderPhoneNumberExtensionListWithOptionalParams(t *testing.T) {
 			Filter: telnyx.PortingOrderPhoneNumberExtensionListParamsFilter{
 				PortingPhoneNumberID: telnyx.String("04f8f1b9-310c-4a3c-963e-7dfc54765140"),
 			},
-			PageNumber: telnyx.Int(0),
-			PageSize:   telnyx.Int(0),
+			Page: telnyx.PortingOrderPhoneNumberExtensionListParamsPage{
+				Number: telnyx.Int(1),
+				Size:   telnyx.Int(1),
+			},
 			Sort: telnyx.PortingOrderPhoneNumberExtensionListParamsSort{
 				Value: "created_at",
 			},

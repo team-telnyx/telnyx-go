@@ -53,7 +53,7 @@ func (r *SimCardActionService) Get(ctx context.Context, id string, opts ...optio
 
 // This API lists a paginated collection of SIM card actions. It enables exploring
 // a collection of existing asynchronous operations using specific filters.
-func (r *SimCardActionService) List(ctx context.Context, query SimCardActionListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[SimCardAction], err error) {
+func (r *SimCardActionService) List(ctx context.Context, query SimCardActionListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[SimCardAction], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -72,8 +72,8 @@ func (r *SimCardActionService) List(ctx context.Context, query SimCardActionList
 
 // This API lists a paginated collection of SIM card actions. It enables exploring
 // a collection of existing asynchronous operations using specific filters.
-func (r *SimCardActionService) ListAutoPaging(ctx context.Context, query SimCardActionListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[SimCardAction] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *SimCardActionService) ListAutoPaging(ctx context.Context, query SimCardActionListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[SimCardAction] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // This API triggers an asynchronous operation to set a public IP for each of the
@@ -482,12 +482,13 @@ func (r *SimCardActionValidateRegistrationCodesResponseData) UnmarshalJSON(data 
 }
 
 type SimCardActionListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter for SIM card actions (deepObject style).
 	// Originally: filter[sim_card_id], filter[status],
 	// filter[bulk_sim_card_action_id], filter[action_type]
 	Filter SimCardActionListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated pagination parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page SimCardActionListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -523,6 +524,25 @@ type SimCardActionListParamsFilter struct {
 // URLQuery serializes [SimCardActionListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r SimCardActionListParamsFilter) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated pagination parameter (deepObject style). Originally: page[number],
+// page[size]
+type SimCardActionListParamsPage struct {
+	// The page number to load.
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page.
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [SimCardActionListParamsPage]'s query parameters as
+// `url.Values`.
+func (r SimCardActionListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
