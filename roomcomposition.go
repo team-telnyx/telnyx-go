@@ -61,7 +61,7 @@ func (r *RoomCompositionService) Get(ctx context.Context, roomCompositionID stri
 }
 
 // View a list of room compositions.
-func (r *RoomCompositionService) List(ctx context.Context, query RoomCompositionListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[RoomComposition], err error) {
+func (r *RoomCompositionService) List(ctx context.Context, query RoomCompositionListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[RoomComposition], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -79,8 +79,8 @@ func (r *RoomCompositionService) List(ctx context.Context, query RoomComposition
 }
 
 // View a list of room compositions.
-func (r *RoomCompositionService) ListAutoPaging(ctx context.Context, query RoomCompositionListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[RoomComposition] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *RoomCompositionService) ListAutoPaging(ctx context.Context, query RoomCompositionListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[RoomComposition] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Synchronously delete a room composition.
@@ -339,12 +339,13 @@ func (r *RoomCompositionNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type RoomCompositionListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[date_created_at][eq], filter[date_created_at][gte],
 	// filter[date_created_at][lte], filter[session_id], filter[status]
 	Filter RoomCompositionListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page RoomCompositionListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -393,6 +394,25 @@ type RoomCompositionListParamsFilterDateCreatedAt struct {
 // URLQuery serializes [RoomCompositionListParamsFilterDateCreatedAt]'s query
 // parameters as `url.Values`.
 func (r RoomCompositionListParamsFilterDateCreatedAt) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type RoomCompositionListParamsPage struct {
+	// The page number to load.
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page.
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [RoomCompositionListParamsPage]'s query parameters as
+// `url.Values`.
+func (r RoomCompositionListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

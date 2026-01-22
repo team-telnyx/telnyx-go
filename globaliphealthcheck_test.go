@@ -80,8 +80,10 @@ func TestGlobalIPHealthCheckListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.GlobalIPHealthChecks.List(context.TODO(), telnyx.GlobalIPHealthCheckListParams{
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
+		Page: telnyx.GlobalIPHealthCheckListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

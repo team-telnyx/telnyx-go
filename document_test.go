@@ -100,9 +100,11 @@ func TestDocumentListWithOptionalParams(t *testing.T) {
 				Contains: telnyx.String("invoice"),
 			},
 		},
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
-		Sort:       []string{"filename"},
+		Page: telnyx.DocumentListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
+		Sort: []string{"filename"},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

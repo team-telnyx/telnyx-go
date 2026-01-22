@@ -14,7 +14,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
-	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
@@ -83,30 +82,15 @@ func (r *TexmlAccountQueueService) Update(ctx context.Context, queueSid string, 
 }
 
 // Lists queue resources.
-func (r *TexmlAccountQueueService) List(ctx context.Context, accountSid string, query TexmlAccountQueueListParams, opts ...option.RequestOption) (res *pagination.DefaultPaginationForQueues[TexmlAccountQueueListResponse], err error) {
-	var raw *http.Response
+func (r *TexmlAccountQueueService) List(ctx context.Context, accountSid string, query TexmlAccountQueueListParams, opts ...option.RequestOption) (res *TexmlAccountQueueListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if accountSid == "" {
 		err = errors.New("missing required account_sid parameter")
 		return
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Queues", accountSid)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
-	if err != nil {
-		return nil, err
-	}
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-// Lists queue resources.
-func (r *TexmlAccountQueueService) ListAutoPaging(ctx context.Context, accountSid string, query TexmlAccountQueueListParams, opts ...option.RequestOption) *pagination.DefaultPaginationForQueuesAutoPager[TexmlAccountQueueListResponse] {
-	return pagination.NewDefaultPaginationForQueuesAutoPager(r.List(ctx, accountSid, query, opts...))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
 }
 
 // Delete a queue resource.
@@ -250,6 +234,43 @@ func (r *TexmlAccountQueueUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type TexmlAccountQueueListResponse struct {
+	// The number of the last element on the page, zero-indexed.
+	End int64 `json:"end"`
+	// /v2/texml/Accounts/61bf923e-5e4d-4595-a110-56190ea18a1b/Queues.json?Page=0&PageSize=1
+	FirstPageUri string `json:"first_page_uri"`
+	// /v2/texml/Accounts/61bf923e-5e4d-4595-a110-56190ea18a1b/Queues.json?Page=1&PageSize=1&PageToken=MTY4AjgyNDkwNzIxMQ
+	NextPageUri string `json:"next_page_uri"`
+	// Current page number, zero-indexed.
+	Page int64 `json:"page"`
+	// The number of items on the page
+	PageSize int64                                `json:"page_size"`
+	Queues   []TexmlAccountQueueListResponseQueue `json:"queues"`
+	// The number of the first element on the page, zero-indexed.
+	Start int64 `json:"start"`
+	// The URI of the current page.
+	Uri string `json:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		End          respjson.Field
+		FirstPageUri respjson.Field
+		NextPageUri  respjson.Field
+		Page         respjson.Field
+		PageSize     respjson.Field
+		Queues       respjson.Field
+		Start        respjson.Field
+		Uri          respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TexmlAccountQueueListResponse) RawJSON() string { return r.JSON.raw }
+func (r *TexmlAccountQueueListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TexmlAccountQueueListResponseQueue struct {
 	// The id of the account the resource belongs to.
 	AccountSid string `json:"account_sid"`
 	// The average wait time in seconds for members in the queue.
@@ -285,8 +306,8 @@ type TexmlAccountQueueListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r TexmlAccountQueueListResponse) RawJSON() string { return r.JSON.raw }
-func (r *TexmlAccountQueueListResponse) UnmarshalJSON(data []byte) error {
+func (r TexmlAccountQueueListResponseQueue) RawJSON() string { return r.JSON.raw }
+func (r *TexmlAccountQueueListResponseQueue) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

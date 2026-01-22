@@ -59,7 +59,7 @@ func (r *PublicInternetGatewayService) Get(ctx context.Context, id string, opts 
 }
 
 // List all Public Internet Gateways.
-func (r *PublicInternetGatewayService) List(ctx context.Context, query PublicInternetGatewayListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PublicInternetGatewayListResponse], err error) {
+func (r *PublicInternetGatewayService) List(ctx context.Context, query PublicInternetGatewayListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PublicInternetGatewayListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -77,8 +77,8 @@ func (r *PublicInternetGatewayService) List(ctx context.Context, query PublicInt
 }
 
 // List all Public Internet Gateways.
-func (r *PublicInternetGatewayService) ListAutoPaging(ctx context.Context, query PublicInternetGatewayListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PublicInternetGatewayListResponse] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *PublicInternetGatewayService) ListAutoPaging(ctx context.Context, query PublicInternetGatewayListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PublicInternetGatewayListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a Public Internet Gateway.
@@ -290,10 +290,11 @@ func (r *PublicInternetGatewayNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type PublicInternetGatewayListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[network_id]
 	Filter PublicInternetGatewayListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page PublicInternetGatewayListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -316,6 +317,25 @@ type PublicInternetGatewayListParamsFilter struct {
 // URLQuery serializes [PublicInternetGatewayListParamsFilter]'s query parameters
 // as `url.Values`.
 func (r PublicInternetGatewayListParamsFilter) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type PublicInternetGatewayListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [PublicInternetGatewayListParamsPage]'s query parameters as
+// `url.Values`.
+func (r PublicInternetGatewayListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

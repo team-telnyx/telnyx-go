@@ -68,7 +68,7 @@ func (r *SimCardService) Update(ctx context.Context, simCardID string, body SimC
 }
 
 // Get all SIM cards belonging to the user that match the given filters.
-func (r *SimCardService) List(ctx context.Context, query SimCardListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[shared.SimpleSimCard], err error) {
+func (r *SimCardService) List(ctx context.Context, query SimCardListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[shared.SimpleSimCard], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -86,8 +86,8 @@ func (r *SimCardService) List(ctx context.Context, query SimCardListParams, opts
 }
 
 // Get all SIM cards belonging to the user that match the given filters.
-func (r *SimCardService) ListAutoPaging(ctx context.Context, query SimCardListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[shared.SimpleSimCard] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *SimCardService) ListAutoPaging(ctx context.Context, query SimCardListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[shared.SimpleSimCard] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // The SIM card will be decommissioned, removed from your account and you will stop
@@ -831,12 +831,13 @@ type SimCardListParams struct {
 	// A valid SIM card group ID.
 	FilterSimCardGroupID param.Opt[string] `query:"filter[sim_card_group_id],omitzero" format:"uuid" json:"-"`
 	// It includes the associated SIM card group object in the response when present.
-	IncludeSimCardGroup param.Opt[bool]  `query:"include_sim_card_group,omitzero" json:"-"`
-	PageNumber          param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize            param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	IncludeSimCardGroup param.Opt[bool] `query:"include_sim_card_group,omitzero" json:"-"`
 	// Consolidated filter parameter for SIM cards (deepObject style). Originally:
-	// filter[tags], filter[iccid], filter[status]
+	// filter[iccid], filter[msisdn], filter[status], filter[tags]
 	Filter SimCardListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated pagination parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page SimCardListParamsPage `query:"page,omitzero" json:"-"`
 	// Sorts SIM cards by the given field. Defaults to ascending order unless field is
 	// prefixed with a minus sign.
 	//
@@ -855,10 +856,12 @@ func (r SimCardListParams) URLQuery() (v url.Values, err error) {
 }
 
 // Consolidated filter parameter for SIM cards (deepObject style). Originally:
-// filter[tags], filter[iccid], filter[status]
+// filter[iccid], filter[msisdn], filter[status], filter[tags]
 type SimCardListParamsFilter struct {
 	// A search string to partially match for the SIM card's ICCID.
 	Iccid param.Opt[string] `query:"iccid,omitzero" json:"-"`
+	// A search string to match for the SIM card's MSISDN.
+	Msisdn param.Opt[string] `query:"msisdn,omitzero" json:"-"`
 	// Filter by a SIM card's status.
 	//
 	// Any of "enabled", "disabled", "standby", "data_limit_exceeded",
@@ -881,6 +884,24 @@ type SimCardListParamsFilter struct {
 // URLQuery serializes [SimCardListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r SimCardListParamsFilter) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated pagination parameter (deepObject style). Originally: page[number],
+// page[size]
+type SimCardListParamsPage struct {
+	// The page number to load.
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page.
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [SimCardListParamsPage]'s query parameters as `url.Values`.
+func (r SimCardListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

@@ -109,9 +109,11 @@ func TestPhoneNumberListWithOptionalParams(t *testing.T) {
 			WithoutTags:             "true",
 		},
 		HandleMessagingProfileError: telnyx.PhoneNumberListParamsHandleMessagingProfileErrorFalse,
-		PageNumber:                  telnyx.Int(0),
-		PageSize:                    telnyx.Int(0),
-		Sort:                        telnyx.PhoneNumberListParamsSortConnectionName,
+		Page: telnyx.PhoneNumberListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
+		Sort: telnyx.PhoneNumberListParamsSortConnectionName,
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -184,9 +186,11 @@ func TestPhoneNumberSlimListWithOptionalParams(t *testing.T) {
 		},
 		IncludeConnection: telnyx.Bool(true),
 		IncludeTags:       telnyx.Bool(true),
-		PageNumber:        telnyx.Int(0),
-		PageSize:          telnyx.Int(0),
-		Sort:              telnyx.PhoneNumberSlimListParamsSortConnectionName,
+		Page: telnyx.PhoneNumberSlimListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
+		Sort: telnyx.PhoneNumberSlimListParamsSortConnectionName,
 	})
 	if err != nil {
 		var apierr *telnyx.Error

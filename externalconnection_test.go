@@ -139,8 +139,10 @@ func TestExternalConnectionListWithOptionalParams(t *testing.T) {
 				Contains: telnyx.String("+15555555555"),
 			},
 		},
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
+		Page: telnyx.ExternalConnectionListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

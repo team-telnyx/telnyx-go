@@ -170,6 +170,11 @@ func TestCallControlApplicationListWithOptionalParams(t *testing.T) {
 			To:                             telnyx.String("+12025550142"),
 			Type:                           "webhook",
 		},
+		Page: telnyx.CallControlApplicationListParamsPage{
+			After:  telnyx.String("after"),
+			Before: telnyx.String("before"),
+			Limit:  telnyx.Int(1),
+		},
 		PageNumber: telnyx.Int(0),
 		PageSize:   telnyx.Int(0),
 		Sort:       telnyx.CallControlApplicationListParamsSortConnectionName,

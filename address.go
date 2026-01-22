@@ -61,7 +61,7 @@ func (r *AddressService) Get(ctx context.Context, id string, opts ...option.Requ
 }
 
 // Returns a list of your addresses.
-func (r *AddressService) List(ctx context.Context, query AddressListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[Address], err error) {
+func (r *AddressService) List(ctx context.Context, query AddressListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[Address], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -79,8 +79,8 @@ func (r *AddressService) List(ctx context.Context, query AddressListParams, opts
 }
 
 // Returns a list of your addresses.
-func (r *AddressService) ListAutoPaging(ctx context.Context, query AddressListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[Address] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *AddressService) ListAutoPaging(ctx context.Context, query AddressListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[Address] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Deletes an existing address.
@@ -285,13 +285,14 @@ func (r *AddressNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type AddressListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[customer_reference][eq], filter[customer_reference][contains],
 	// filter[used_as_emergency], filter[street_address][contains],
 	// filter[address_book][eq]
 	Filter AddressListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page AddressListParamsPage `query:"page,omitzero" json:"-"`
 	// Specifies the sort order for results. By default sorting direction is ascending.
 	// To have the results sorted in descending order add the <code> -</code>
 	// prefix.<br/><br/> That is: <ul>
@@ -412,6 +413,24 @@ type AddressListParamsFilterStreetAddress struct {
 // URLQuery serializes [AddressListParamsFilterStreetAddress]'s query parameters as
 // `url.Values`.
 func (r AddressListParamsFilterStreetAddress) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type AddressListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [AddressListParamsPage]'s query parameters as `url.Values`.
+func (r AddressListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
