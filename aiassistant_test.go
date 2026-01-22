@@ -135,20 +135,20 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			UseSpeakerBoost: telnyx.Bool(true),
 			VoiceSpeed:      telnyx.Float(0),
 		},
-		WidgetSettings: telnyx.AIAssistantNewParamsWidgetSettings{
+		WidgetSettings: telnyx.WidgetSettingsParam{
 			AgentThinkingText: telnyx.String("agent_thinking_text"),
-			AudioVisualizerConfig: telnyx.AIAssistantNewParamsWidgetSettingsAudioVisualizerConfig{
-				Color:  "verdant",
+			AudioVisualizerConfig: telnyx.AudioVisualizerConfigParam{
+				Color:  telnyx.AudioVisualizerConfigColorVerdant,
 				Preset: telnyx.String("preset"),
 			},
-			DefaultState:         "expanded",
+			DefaultState:         telnyx.WidgetSettingsDefaultStateExpanded,
 			GiveFeedbackURL:      telnyx.String("give_feedback_url"),
 			LogoIconURL:          telnyx.String("logo_icon_url"),
-			Position:             "fixed",
+			Position:             telnyx.WidgetSettingsPositionFixed,
 			ReportIssueURL:       telnyx.String("report_issue_url"),
 			SpeakToInterruptText: telnyx.String("speak_to_interrupt_text"),
 			StartCallText:        telnyx.String("start_call_text"),
-			Theme:                "light",
+			Theme:                telnyx.WidgetSettingsThemeLight,
 			ViewHistoryURL:       telnyx.String("view_history_url"),
 		},
 	})
@@ -319,20 +319,20 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				UseSpeakerBoost: telnyx.Bool(true),
 				VoiceSpeed:      telnyx.Float(0),
 			},
-			WidgetSettings: telnyx.AIAssistantUpdateParamsWidgetSettings{
+			WidgetSettings: telnyx.WidgetSettingsParam{
 				AgentThinkingText: telnyx.String("agent_thinking_text"),
-				AudioVisualizerConfig: telnyx.AIAssistantUpdateParamsWidgetSettingsAudioVisualizerConfig{
-					Color:  "verdant",
+				AudioVisualizerConfig: telnyx.AudioVisualizerConfigParam{
+					Color:  telnyx.AudioVisualizerConfigColorVerdant,
 					Preset: telnyx.String("preset"),
 				},
-				DefaultState:         "expanded",
+				DefaultState:         telnyx.WidgetSettingsDefaultStateExpanded,
 				GiveFeedbackURL:      telnyx.String("give_feedback_url"),
 				LogoIconURL:          telnyx.String("logo_icon_url"),
-				Position:             "fixed",
+				Position:             telnyx.WidgetSettingsPositionFixed,
 				ReportIssueURL:       telnyx.String("report_issue_url"),
 				SpeakToInterruptText: telnyx.String("speak_to_interrupt_text"),
 				StartCallText:        telnyx.String("start_call_text"),
-				Theme:                "light",
+				Theme:                telnyx.WidgetSettingsThemeLight,
 				ViewHistoryURL:       telnyx.String("view_history_url"),
 			},
 		},
