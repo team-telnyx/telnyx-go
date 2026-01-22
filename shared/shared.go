@@ -80,6 +80,97 @@ func (r *AvailablePhoneNumbersMetadata) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Configuration options for noise suppression. These settings are stored
+// regardless of the noise_suppression value, but only take effect when
+// noise_suppression is not 'disabled'. If you disable noise suppression and later
+// re-enable it, the previously configured settings will be used.
+type ConnectionNoiseSuppressionDetails struct {
+	// The attenuation limit value for the selected engine. Default values vary by
+	// engine: 0 for 'denoiser', 80 for 'deep_filter_net', 'deep_filter_net_large', and
+	// all Krisp engines ('krisp_viva_tel', 'krisp_viva_tel_lite',
+	// 'krisp_viva_promodel', 'krisp_viva_ss').
+	AttenuationLimit int64 `json:"attenuation_limit"`
+	// The noise suppression engine to use. 'denoiser' is the default engine.
+	// 'deep_filter_net' and 'deep_filter_net_large' are alternative engines with
+	// different performance characteristics. Krisp engines ('krisp_viva_tel',
+	// 'krisp_viva_tel_lite', 'krisp_viva_promodel', 'krisp_viva_ss') provide advanced
+	// noise suppression capabilities.
+	//
+	// Any of "denoiser", "deep_filter_net", "deep_filter_net_large", "krisp_viva_tel",
+	// "krisp_viva_tel_lite", "krisp_viva_promodel", "krisp_viva_ss".
+	Engine ConnectionNoiseSuppressionDetailsEngine `json:"engine"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AttenuationLimit respjson.Field
+		Engine           respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConnectionNoiseSuppressionDetails) RawJSON() string { return r.JSON.raw }
+func (r *ConnectionNoiseSuppressionDetails) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this ConnectionNoiseSuppressionDetails to a
+// ConnectionNoiseSuppressionDetailsParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// ConnectionNoiseSuppressionDetailsParam.Overrides()
+func (r ConnectionNoiseSuppressionDetails) ToParam() ConnectionNoiseSuppressionDetailsParam {
+	return param.Override[ConnectionNoiseSuppressionDetailsParam](json.RawMessage(r.RawJSON()))
+}
+
+// The noise suppression engine to use. 'denoiser' is the default engine.
+// 'deep_filter_net' and 'deep_filter_net_large' are alternative engines with
+// different performance characteristics. Krisp engines ('krisp_viva_tel',
+// 'krisp_viva_tel_lite', 'krisp_viva_promodel', 'krisp_viva_ss') provide advanced
+// noise suppression capabilities.
+type ConnectionNoiseSuppressionDetailsEngine string
+
+const (
+	ConnectionNoiseSuppressionDetailsEngineDenoiser           ConnectionNoiseSuppressionDetailsEngine = "denoiser"
+	ConnectionNoiseSuppressionDetailsEngineDeepFilterNet      ConnectionNoiseSuppressionDetailsEngine = "deep_filter_net"
+	ConnectionNoiseSuppressionDetailsEngineDeepFilterNetLarge ConnectionNoiseSuppressionDetailsEngine = "deep_filter_net_large"
+	ConnectionNoiseSuppressionDetailsEngineKrispVivaTel       ConnectionNoiseSuppressionDetailsEngine = "krisp_viva_tel"
+	ConnectionNoiseSuppressionDetailsEngineKrispVivaTelLite   ConnectionNoiseSuppressionDetailsEngine = "krisp_viva_tel_lite"
+	ConnectionNoiseSuppressionDetailsEngineKrispVivaPromodel  ConnectionNoiseSuppressionDetailsEngine = "krisp_viva_promodel"
+	ConnectionNoiseSuppressionDetailsEngineKrispVivaSS        ConnectionNoiseSuppressionDetailsEngine = "krisp_viva_ss"
+)
+
+// Configuration options for noise suppression. These settings are stored
+// regardless of the noise_suppression value, but only take effect when
+// noise_suppression is not 'disabled'. If you disable noise suppression and later
+// re-enable it, the previously configured settings will be used.
+type ConnectionNoiseSuppressionDetailsParam struct {
+	// The attenuation limit value for the selected engine. Default values vary by
+	// engine: 0 for 'denoiser', 80 for 'deep_filter_net', 'deep_filter_net_large', and
+	// all Krisp engines ('krisp_viva_tel', 'krisp_viva_tel_lite',
+	// 'krisp_viva_promodel', 'krisp_viva_ss').
+	AttenuationLimit param.Opt[int64] `json:"attenuation_limit,omitzero"`
+	// The noise suppression engine to use. 'denoiser' is the default engine.
+	// 'deep_filter_net' and 'deep_filter_net_large' are alternative engines with
+	// different performance characteristics. Krisp engines ('krisp_viva_tel',
+	// 'krisp_viva_tel_lite', 'krisp_viva_promodel', 'krisp_viva_ss') provide advanced
+	// noise suppression capabilities.
+	//
+	// Any of "denoiser", "deep_filter_net", "deep_filter_net_large", "krisp_viva_tel",
+	// "krisp_viva_tel_lite", "krisp_viva_promodel", "krisp_viva_ss".
+	Engine ConnectionNoiseSuppressionDetailsEngine `json:"engine,omitzero"`
+	paramObj
+}
+
+func (r ConnectionNoiseSuppressionDetailsParam) MarshalJSON() (data []byte, err error) {
+	type shadow ConnectionNoiseSuppressionDetailsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ConnectionNoiseSuppressionDetailsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ConnectionsPaginationMeta struct {
 	PageNumber   int64 `json:"page_number,required"`
 	TotalPages   int64 `json:"total_pages,required"`
