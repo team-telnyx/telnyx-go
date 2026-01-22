@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.10.0 (2026-01-22)
+
+Full Changelog: [v4.9.0...v4.10.0](https://github.com/team-telnyx/telnyx-go/compare/v4.9.0...v4.10.0)
+
+### Features
+
+* Deploy dev/mc vady wip ([3f2d6a3](https://github.com/team-telnyx/telnyx-go/commit/3f2d6a3df9a4d09693b47eff0ec5da0e6ee1bcee))
+
 ## 4.9.0 (2026-01-21)
 
 Full Changelog: [v4.8.0...v4.9.0](https://github.com/team-telnyx/telnyx-go/compare/v4.8.0...v4.9.0)
