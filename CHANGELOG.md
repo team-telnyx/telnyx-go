@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.11.0 (2026-01-23)
+
+Full Changelog: [v4.10.0...v4.11.0](https://github.com/team-telnyx/telnyx-go/compare/v4.10.0...v4.11.0)
+
+### Features
+
+* **api:** manual updates ([18d292c](https://github.com/team-telnyx/telnyx-go/commit/18d292c4e30d72a7f1e15ee048821cef135f8b46))
+* **client:** add a convenient param.SetJSON helper ([72ee0e5](https://github.com/team-telnyx/telnyx-go/commit/72ee0e5698455866f70ef66fa84fccd99f70d990))
+
 ## 4.10.0 (2026-01-22)
 
 Full Changelog: [v4.9.0...v4.10.0](https://github.com/team-telnyx/telnyx-go/compare/v4.9.0...v4.10.0)
