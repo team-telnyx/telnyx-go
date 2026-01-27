@@ -43,6 +43,7 @@ func TestCredentialConnectionNewWithOptionalParams(t *testing.T) {
 			AniNumberFormat:          telnyx.CredentialInboundAniNumberFormatPlusE164,
 			ChannelLimit:             telnyx.Int(10),
 			Codecs:                   []string{"G722"},
+			DefaultRoutingMethod:     telnyx.CredentialInboundDefaultRoutingMethodSequential,
 			DnisNumberFormat:         telnyx.CredentialInboundDnisNumberFormatPlusE164,
 			GenerateRingbackTone:     telnyx.Bool(true),
 			IsupHeadersEnabled:       telnyx.Bool(true),
@@ -54,7 +55,12 @@ func TestCredentialConnectionNewWithOptionalParams(t *testing.T) {
 			Timeout2xxSecs:           telnyx.Int(20),
 		},
 		IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
-		NoiseSuppression:    telnyx.CredentialConnectionNewParamsNoiseSuppressionBoth,
+		JitterBuffer: telnyx.CredentialConnectionNewParamsJitterBuffer{
+			EnableJitterBuffer:  telnyx.Bool(true),
+			JitterbufferMsecMax: telnyx.Int(200),
+			JitterbufferMsecMin: telnyx.Int(60),
+		},
+		NoiseSuppression: telnyx.CredentialConnectionNewParamsNoiseSuppressionBoth,
 		NoiseSuppressionDetails: shared.ConnectionNoiseSuppressionDetailsParam{
 			AttenuationLimit: telnyx.Int(80),
 			Engine:           shared.ConnectionNoiseSuppressionDetailsEngineDeepFilterNet,
@@ -145,6 +151,7 @@ func TestCredentialConnectionUpdateWithOptionalParams(t *testing.T) {
 				AniNumberFormat:          telnyx.CredentialInboundAniNumberFormatPlusE164,
 				ChannelLimit:             telnyx.Int(10),
 				Codecs:                   []string{"G722"},
+				DefaultRoutingMethod:     telnyx.CredentialInboundDefaultRoutingMethodSequential,
 				DnisNumberFormat:         telnyx.CredentialInboundDnisNumberFormatPlusE164,
 				GenerateRingbackTone:     telnyx.Bool(true),
 				IsupHeadersEnabled:       telnyx.Bool(true),
@@ -156,7 +163,12 @@ func TestCredentialConnectionUpdateWithOptionalParams(t *testing.T) {
 				Timeout2xxSecs:           telnyx.Int(20),
 			},
 			IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
-			NoiseSuppression:    telnyx.CredentialConnectionUpdateParamsNoiseSuppressionBoth,
+			JitterBuffer: telnyx.CredentialConnectionUpdateParamsJitterBuffer{
+				EnableJitterBuffer:  telnyx.Bool(true),
+				JitterbufferMsecMax: telnyx.Int(200),
+				JitterbufferMsecMin: telnyx.Int(60),
+			},
+			NoiseSuppression: telnyx.CredentialConnectionUpdateParamsNoiseSuppressionBoth,
 			NoiseSuppressionDetails: shared.ConnectionNoiseSuppressionDetailsParam{
 				AttenuationLimit: telnyx.Int(80),
 				Engine:           shared.ConnectionNoiseSuppressionDetailsEngineDeepFilterNet,
