@@ -359,6 +359,8 @@ type IPConnection struct {
 	// Australia", "Amsterdam, Netherlands", "London, UK", "Toronto, Canada",
 	// "Vancouver, Canada", "Frankfurt, Germany".
 	AnchorsiteOverride AnchorsiteOverride `json:"anchorsite_override"`
+	// The uuid of the push credential for Android
+	AndroidPushCredentialID string `json:"android_push_credential_id,nullable"`
 	// Specifies if call cost webhooks should be sent for this connection.
 	CallCostInWebhooks bool   `json:"call_cost_in_webhooks"`
 	ConnectionName     string `json:"connection_name"`
@@ -382,6 +384,14 @@ type IPConnection struct {
 	// Any of "SRTP".
 	EncryptedMedia EncryptedMedia `json:"encrypted_media,nullable"`
 	Inbound        InboundIP      `json:"inbound"`
+	// The uuid of the push credential for Ios
+	IosPushCredentialID string `json:"ios_push_credential_id,nullable"`
+	// Configuration options for Jitter Buffer. Enables Jitter Buffer for RTP streams
+	// of SIP Trunking calls. The feature is off unless enabled. You may define min and
+	// max values in msec for customized buffering behaviors. Larger values add latency
+	// but tolerate more jitter, while smaller values reduce latency but are more
+	// sensitive to jitter and reordering.
+	JitterBuffer IPConnectionJitterBuffer `json:"jitter_buffer"`
 	// Controls when noise suppression is applied to calls. When set to 'inbound',
 	// noise suppression is applied to incoming audio. When set to 'outbound', it's
 	// applied to outgoing audio. When set to 'both', it's applied in both directions.
@@ -428,6 +438,7 @@ type IPConnection struct {
 		ID                               respjson.Field
 		Active                           respjson.Field
 		AnchorsiteOverride               respjson.Field
+		AndroidPushCredentialID          respjson.Field
 		CallCostInWebhooks               respjson.Field
 		ConnectionName                   respjson.Field
 		CreatedAt                        respjson.Field
@@ -436,6 +447,8 @@ type IPConnection struct {
 		EncodeContactHeaderEnabled       respjson.Field
 		EncryptedMedia                   respjson.Field
 		Inbound                          respjson.Field
+		IosPushCredentialID              respjson.Field
+		JitterBuffer                     respjson.Field
 		NoiseSuppression                 respjson.Field
 		NoiseSuppressionDetails          respjson.Field
 		OnnetT38PassthroughEnabled       respjson.Field
@@ -457,6 +470,37 @@ type IPConnection struct {
 // Returns the unmodified JSON received from the API
 func (r IPConnection) RawJSON() string { return r.JSON.raw }
 func (r *IPConnection) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration options for Jitter Buffer. Enables Jitter Buffer for RTP streams
+// of SIP Trunking calls. The feature is off unless enabled. You may define min and
+// max values in msec for customized buffering behaviors. Larger values add latency
+// but tolerate more jitter, while smaller values reduce latency but are more
+// sensitive to jitter and reordering.
+type IPConnectionJitterBuffer struct {
+	// Enables Jitter Buffer for RTP streams of SIP Trunking calls. The feature is off
+	// unless enabled.
+	EnableJitterBuffer bool `json:"enable_jitter_buffer"`
+	// The maximum jitter buffer size in milliseconds. Must be between 40 and 400. Has
+	// no effect if enable_jitter_buffer is not true.
+	JitterbufferMsecMax int64 `json:"jitterbuffer_msec_max"`
+	// The minimum jitter buffer size in milliseconds. Must be between 40 and 400. Has
+	// no effect if enable_jitter_buffer is not true.
+	JitterbufferMsecMin int64 `json:"jitterbuffer_msec_min"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EnableJitterBuffer  respjson.Field
+		JitterbufferMsecMax respjson.Field
+		JitterbufferMsecMin respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r IPConnectionJitterBuffer) RawJSON() string { return r.JSON.raw }
+func (r *IPConnectionJitterBuffer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -764,6 +808,12 @@ type IPConnectionNewParams struct {
 	// Any of "RFC 2833", "Inband", "SIP INFO".
 	DtmfType DtmfType                     `json:"dtmf_type,omitzero"`
 	Inbound  IPConnectionNewParamsInbound `json:"inbound,omitzero"`
+	// Configuration options for Jitter Buffer. Enables Jitter Buffer for RTP streams
+	// of SIP Trunking calls. The feature is off unless enabled. You may define min and
+	// max values in msec for customized buffering behaviors. Larger values add latency
+	// but tolerate more jitter, while smaller values reduce latency but are more
+	// sensitive to jitter and reordering.
+	JitterBuffer IPConnectionNewParamsJitterBuffer `json:"jitter_buffer,omitzero"`
 	// Controls when noise suppression is applied to calls. When set to 'inbound',
 	// noise suppression is applied to incoming audio. When set to 'outbound', it's
 	// applied to outgoing audio. When set to 'both', it's applied in both directions.
@@ -886,6 +936,32 @@ func init() {
 	)
 }
 
+// Configuration options for Jitter Buffer. Enables Jitter Buffer for RTP streams
+// of SIP Trunking calls. The feature is off unless enabled. You may define min and
+// max values in msec for customized buffering behaviors. Larger values add latency
+// but tolerate more jitter, while smaller values reduce latency but are more
+// sensitive to jitter and reordering.
+type IPConnectionNewParamsJitterBuffer struct {
+	// Enables Jitter Buffer for RTP streams of SIP Trunking calls. The feature is off
+	// unless enabled.
+	EnableJitterBuffer param.Opt[bool] `json:"enable_jitter_buffer,omitzero"`
+	// The maximum jitter buffer size in milliseconds. Must be between 40 and 400. Has
+	// no effect if enable_jitter_buffer is not true.
+	JitterbufferMsecMax param.Opt[int64] `json:"jitterbuffer_msec_max,omitzero"`
+	// The minimum jitter buffer size in milliseconds. Must be between 40 and 400. Has
+	// no effect if enable_jitter_buffer is not true.
+	JitterbufferMsecMin param.Opt[int64] `json:"jitterbuffer_msec_min,omitzero"`
+	paramObj
+}
+
+func (r IPConnectionNewParamsJitterBuffer) MarshalJSON() (data []byte, err error) {
+	type shadow IPConnectionNewParamsJitterBuffer
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *IPConnectionNewParamsJitterBuffer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Controls when noise suppression is applied to calls. When set to 'inbound',
 // noise suppression is applied to incoming audio. When set to 'outbound', it's
 // applied to outgoing audio. When set to 'both', it's applied in both directions.
@@ -965,6 +1041,12 @@ type IPConnectionUpdateParams struct {
 	// Any of "RFC 2833", "Inband", "SIP INFO".
 	DtmfType DtmfType       `json:"dtmf_type,omitzero"`
 	Inbound  InboundIPParam `json:"inbound,omitzero"`
+	// Configuration options for Jitter Buffer. Enables Jitter Buffer for RTP streams
+	// of SIP Trunking calls. The feature is off unless enabled. You may define min and
+	// max values in msec for customized buffering behaviors. Larger values add latency
+	// but tolerate more jitter, while smaller values reduce latency but are more
+	// sensitive to jitter and reordering.
+	JitterBuffer IPConnectionUpdateParamsJitterBuffer `json:"jitter_buffer,omitzero"`
 	// Controls when noise suppression is applied to calls. When set to 'inbound',
 	// noise suppression is applied to incoming audio. When set to 'outbound', it's
 	// applied to outgoing audio. When set to 'both', it's applied in both directions.
@@ -998,6 +1080,32 @@ func (r IPConnectionUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *IPConnectionUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration options for Jitter Buffer. Enables Jitter Buffer for RTP streams
+// of SIP Trunking calls. The feature is off unless enabled. You may define min and
+// max values in msec for customized buffering behaviors. Larger values add latency
+// but tolerate more jitter, while smaller values reduce latency but are more
+// sensitive to jitter and reordering.
+type IPConnectionUpdateParamsJitterBuffer struct {
+	// Enables Jitter Buffer for RTP streams of SIP Trunking calls. The feature is off
+	// unless enabled.
+	EnableJitterBuffer param.Opt[bool] `json:"enable_jitter_buffer,omitzero"`
+	// The maximum jitter buffer size in milliseconds. Must be between 40 and 400. Has
+	// no effect if enable_jitter_buffer is not true.
+	JitterbufferMsecMax param.Opt[int64] `json:"jitterbuffer_msec_max,omitzero"`
+	// The minimum jitter buffer size in milliseconds. Must be between 40 and 400. Has
+	// no effect if enable_jitter_buffer is not true.
+	JitterbufferMsecMin param.Opt[int64] `json:"jitterbuffer_msec_min,omitzero"`
+	paramObj
+}
+
+func (r IPConnectionUpdateParamsJitterBuffer) MarshalJSON() (data []byte, err error) {
+	type shadow IPConnectionUpdateParamsJitterBuffer
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *IPConnectionUpdateParamsJitterBuffer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

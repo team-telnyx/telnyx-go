@@ -58,8 +58,13 @@ func TestFqdnConnectionNewWithOptionalParams(t *testing.T) {
 			Timeout2xxSecs:              telnyx.Int(10),
 		},
 		IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
-		MicrosoftTeamsSbc:   telnyx.Bool(true),
-		NoiseSuppression:    telnyx.FqdnConnectionNewParamsNoiseSuppressionBoth,
+		JitterBuffer: telnyx.FqdnConnectionNewParamsJitterBuffer{
+			EnableJitterBuffer:  telnyx.Bool(true),
+			JitterbufferMsecMax: telnyx.Int(200),
+			JitterbufferMsecMin: telnyx.Int(60),
+		},
+		MicrosoftTeamsSbc: telnyx.Bool(true),
+		NoiseSuppression:  telnyx.FqdnConnectionNewParamsNoiseSuppressionBoth,
 		NoiseSuppressionDetails: shared.ConnectionNoiseSuppressionDetailsParam{
 			AttenuationLimit: telnyx.Int(80),
 			Engine:           shared.ConnectionNoiseSuppressionDetailsEngineDeepFilterNet,
@@ -173,7 +178,12 @@ func TestFqdnConnectionUpdateWithOptionalParams(t *testing.T) {
 				Timeout2xxSecs:              telnyx.Int(10),
 			},
 			IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
-			NoiseSuppression:    telnyx.FqdnConnectionUpdateParamsNoiseSuppressionBoth,
+			JitterBuffer: telnyx.FqdnConnectionUpdateParamsJitterBuffer{
+				EnableJitterBuffer:  telnyx.Bool(true),
+				JitterbufferMsecMax: telnyx.Int(200),
+				JitterbufferMsecMin: telnyx.Int(60),
+			},
+			NoiseSuppression: telnyx.FqdnConnectionUpdateParamsNoiseSuppressionBoth,
 			NoiseSuppressionDetails: shared.ConnectionNoiseSuppressionDetailsParam{
 				AttenuationLimit: telnyx.Int(80),
 				Engine:           shared.ConnectionNoiseSuppressionDetailsEngineDeepFilterNet,
