@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.12.0 (2026-01-27)
+
+Full Changelog: [v4.11.0...v4.12.0](https://github.com/team-telnyx/telnyx-go/compare/v4.11.0...v4.12.0)
+
+### Features
+
+* Deploy dev/mc vady wip ([a10129d](https://github.com/team-telnyx/telnyx-go/commit/a10129db5b9e7f7a67d4399fa57e59fdef49d2c2))
+* jira-engdesk-49089 add new connection jitter buffer related fields ([8601fcf](https://github.com/team-telnyx/telnyx-go/commit/8601fcf8da3f19a99061f9ba791a1917a62ba6c3))
+
 ## 4.11.0 (2026-01-23)
 
 Full Changelog: [v4.10.0...v4.11.0](https://github.com/team-telnyx/telnyx-go/compare/v4.10.0...v4.11.0)
