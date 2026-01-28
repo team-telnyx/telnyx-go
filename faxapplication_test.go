@@ -141,11 +141,9 @@ func TestFaxApplicationListWithOptionalParams(t *testing.T) {
 			},
 			OutboundVoiceProfileID: telnyx.String("1293384261075731499"),
 		},
-		Page: telnyx.FaxApplicationListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
-		Sort: telnyx.FaxApplicationListParamsSortApplicationName,
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
+		Sort:       telnyx.FaxApplicationListParamsSortApplicationName,
 	})
 	if err != nil {
 		var apierr *telnyx.Error

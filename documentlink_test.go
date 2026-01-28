@@ -31,10 +31,8 @@ func TestDocumentLinkListWithOptionalParams(t *testing.T) {
 			LinkedRecordType: telnyx.String("porting_order"),
 			LinkedResourceID: telnyx.String("6a09cdc3-8948-47f0-aa62-74ac943d6c58"),
 		},
-		Page: telnyx.DocumentLinkListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

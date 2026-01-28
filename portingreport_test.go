@@ -88,10 +88,8 @@ func TestPortingReportListWithOptionalParams(t *testing.T) {
 			ReportType: "export_porting_orders_csv",
 			Status:     "completed",
 		},
-		Page: telnyx.PortingReportListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

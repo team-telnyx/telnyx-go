@@ -71,13 +71,14 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			},
 		},
 		Tools: []telnyx.AssistantToolsItemsUnionParam{{
-			OfWebhook: &telnyx.AssistantToolWebhookParam{
-				Webhook: telnyx.AssistantToolWebhookWebhookParam{
+			OfWebhook: &telnyx.InferenceEmbeddingWebhookToolParams{
+				Type: telnyx.InferenceEmbeddingWebhookToolParamsTypeWebhook,
+				Webhook: telnyx.InferenceEmbeddingWebhookToolParamsWebhook{
 					Description: "description",
 					Name:        "name",
 					URL:         "https://example.com/api/v1/function",
 					Async:       telnyx.Bool(true),
-					BodyParameters: telnyx.AssistantToolWebhookWebhookBodyParametersParam{
+					BodyParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookBodyParameters{
 						Properties: map[string]any{
 							"age":      "bar",
 							"location": "bar",
@@ -85,19 +86,19 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 						Required: []string{"age", "location"},
 						Type:     "object",
 					},
-					Headers: []telnyx.AssistantToolWebhookWebhookHeaderParam{{
+					Headers: []telnyx.InferenceEmbeddingWebhookToolParamsWebhookHeader{{
 						Name:  telnyx.String("name"),
 						Value: telnyx.String("value"),
 					}},
 					Method: "GET",
-					PathParameters: telnyx.AssistantToolWebhookWebhookPathParametersParam{
+					PathParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookPathParameters{
 						Properties: map[string]any{
 							"id": "bar",
 						},
 						Required: []string{"id"},
 						Type:     "object",
 					},
-					QueryParameters: telnyx.AssistantToolWebhookWebhookQueryParametersParam{
+					QueryParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookQueryParameters{
 						Properties: map[string]any{
 							"page": "bar",
 						},
@@ -137,8 +138,8 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 		},
 		WidgetSettings: telnyx.WidgetSettingsParam{
 			AgentThinkingText: telnyx.String("agent_thinking_text"),
-			AudioVisualizerConfig: telnyx.AudioVisualizerConfigParam{
-				Color:  telnyx.AudioVisualizerConfigColorVerdant,
+			AudioVisualizerConfig: telnyx.WidgetSettingsAudioVisualizerConfigParam{
+				Color:  "verdant",
 				Preset: telnyx.String("preset"),
 			},
 			DefaultState:         telnyx.WidgetSettingsDefaultStateExpanded,
@@ -255,13 +256,14 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				},
 			},
 			Tools: []telnyx.AssistantToolsItemsUnionParam{{
-				OfWebhook: &telnyx.AssistantToolWebhookParam{
-					Webhook: telnyx.AssistantToolWebhookWebhookParam{
+				OfWebhook: &telnyx.InferenceEmbeddingWebhookToolParams{
+					Type: telnyx.InferenceEmbeddingWebhookToolParamsTypeWebhook,
+					Webhook: telnyx.InferenceEmbeddingWebhookToolParamsWebhook{
 						Description: "description",
 						Name:        "name",
 						URL:         "https://example.com/api/v1/function",
 						Async:       telnyx.Bool(true),
-						BodyParameters: telnyx.AssistantToolWebhookWebhookBodyParametersParam{
+						BodyParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookBodyParameters{
 							Properties: map[string]any{
 								"age":      "bar",
 								"location": "bar",
@@ -269,19 +271,19 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 							Required: []string{"age", "location"},
 							Type:     "object",
 						},
-						Headers: []telnyx.AssistantToolWebhookWebhookHeaderParam{{
+						Headers: []telnyx.InferenceEmbeddingWebhookToolParamsWebhookHeader{{
 							Name:  telnyx.String("name"),
 							Value: telnyx.String("value"),
 						}},
 						Method: "GET",
-						PathParameters: telnyx.AssistantToolWebhookWebhookPathParametersParam{
+						PathParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookPathParameters{
 							Properties: map[string]any{
 								"id": "bar",
 							},
 							Required: []string{"id"},
 							Type:     "object",
 						},
-						QueryParameters: telnyx.AssistantToolWebhookWebhookQueryParametersParam{
+						QueryParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookQueryParameters{
 							Properties: map[string]any{
 								"page": "bar",
 							},
@@ -321,8 +323,8 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 			},
 			WidgetSettings: telnyx.WidgetSettingsParam{
 				AgentThinkingText: telnyx.String("agent_thinking_text"),
-				AudioVisualizerConfig: telnyx.AudioVisualizerConfigParam{
-					Color:  telnyx.AudioVisualizerConfigColorVerdant,
+				AudioVisualizerConfig: telnyx.WidgetSettingsAudioVisualizerConfigParam{
+					Color:  "verdant",
 					Preset: telnyx.String("preset"),
 				},
 				DefaultState:         telnyx.WidgetSettingsDefaultStateExpanded,

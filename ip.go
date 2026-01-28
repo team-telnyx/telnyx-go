@@ -71,7 +71,7 @@ func (r *IPService) Update(ctx context.Context, id string, body IPUpdateParams, 
 }
 
 // Get all IPs belonging to the user that match the given filters.
-func (r *IPService) List(ctx context.Context, query IPListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[IP], err error) {
+func (r *IPService) List(ctx context.Context, query IPListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[IP], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -89,8 +89,8 @@ func (r *IPService) List(ctx context.Context, query IPListParams, opts ...option
 }
 
 // Get all IPs belonging to the user that match the given filters.
-func (r *IPService) ListAutoPaging(ctx context.Context, query IPListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[IP] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *IPService) ListAutoPaging(ctx context.Context, query IPListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[IP] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete an IP.
@@ -241,12 +241,11 @@ func (r *IPUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type IPListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[connection_id], filter[ip_address], filter[port]
 	Filter IPListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page IPListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -272,24 +271,6 @@ type IPListParamsFilter struct {
 
 // URLQuery serializes [IPListParamsFilter]'s query parameters as `url.Values`.
 func (r IPListParamsFilter) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type IPListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [IPListParamsPage]'s query parameters as `url.Values`.
-func (r IPListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

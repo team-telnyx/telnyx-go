@@ -58,7 +58,7 @@ func (r *ChannelZoneService) Update(ctx context.Context, channelZoneID string, b
 // <a href="https://support.telnyx.com/en/articles/8428806-global-channel-billing">Telnyx
 // Support Articles</a> section for full information and examples of how to utilize
 // Channel Billing.
-func (r *ChannelZoneService) List(ctx context.Context, query ChannelZoneListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[ChannelZoneListResponse], err error) {
+func (r *ChannelZoneService) List(ctx context.Context, query ChannelZoneListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[ChannelZoneListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -80,8 +80,8 @@ func (r *ChannelZoneService) List(ctx context.Context, query ChannelZoneListPara
 // <a href="https://support.telnyx.com/en/articles/8428806-global-channel-billing">Telnyx
 // Support Articles</a> section for full information and examples of how to utilize
 // Channel Billing.
-func (r *ChannelZoneService) ListAutoPaging(ctx context.Context, query ChannelZoneListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[ChannelZoneListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *ChannelZoneService) ListAutoPaging(ctx context.Context, query ChannelZoneListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[ChannelZoneListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type ChannelZoneUpdateResponse struct {
@@ -177,33 +177,13 @@ func (r *ChannelZoneUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type ChannelZoneListParams struct {
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page ChannelZoneListParamsPage `query:"page,omitzero" json:"-"`
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [ChannelZoneListParams]'s query parameters as `url.Values`.
 func (r ChannelZoneListParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type ChannelZoneListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [ChannelZoneListParamsPage]'s query parameters as
-// `url.Values`.
-func (r ChannelZoneListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

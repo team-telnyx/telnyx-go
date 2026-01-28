@@ -60,7 +60,7 @@ func (r *WireguardInterfaceService) Get(ctx context.Context, id string, opts ...
 }
 
 // List all WireGuard Interfaces.
-func (r *WireguardInterfaceService) List(ctx context.Context, query WireguardInterfaceListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[WireguardInterfaceListResponse], err error) {
+func (r *WireguardInterfaceService) List(ctx context.Context, query WireguardInterfaceListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[WireguardInterfaceListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -78,8 +78,8 @@ func (r *WireguardInterfaceService) List(ctx context.Context, query WireguardInt
 }
 
 // List all WireGuard Interfaces.
-func (r *WireguardInterfaceService) ListAutoPaging(ctx context.Context, query WireguardInterfaceListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[WireguardInterfaceListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *WireguardInterfaceService) ListAutoPaging(ctx context.Context, query WireguardInterfaceListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[WireguardInterfaceListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a WireGuard Interface.
@@ -375,11 +375,10 @@ func (r *WireguardInterfaceNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type WireguardInterfaceListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[network_id]
 	Filter WireguardInterfaceListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[number],
-	// page[size]
-	Page WireguardInterfaceListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -402,25 +401,6 @@ type WireguardInterfaceListParamsFilter struct {
 // URLQuery serializes [WireguardInterfaceListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r WireguardInterfaceListParamsFilter) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[number],
-// page[size]
-type WireguardInterfaceListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [WireguardInterfaceListParamsPage]'s query parameters as
-// `url.Values`.
-func (r WireguardInterfaceListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

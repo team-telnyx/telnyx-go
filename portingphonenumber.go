@@ -37,7 +37,7 @@ func NewPortingPhoneNumberService(opts ...option.RequestOption) (r PortingPhoneN
 }
 
 // Returns a list of your porting phone numbers.
-func (r *PortingPhoneNumberService) List(ctx context.Context, query PortingPhoneNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingPhoneNumberListResponse], err error) {
+func (r *PortingPhoneNumberService) List(ctx context.Context, query PortingPhoneNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingPhoneNumberListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -55,8 +55,8 @@ func (r *PortingPhoneNumberService) List(ctx context.Context, query PortingPhone
 }
 
 // Returns a list of your porting phone numbers.
-func (r *PortingPhoneNumberService) ListAutoPaging(ctx context.Context, query PortingPhoneNumberListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingPhoneNumberListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *PortingPhoneNumberService) ListAutoPaging(ctx context.Context, query PortingPhoneNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingPhoneNumberListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type PortingPhoneNumberListResponse struct {
@@ -181,12 +181,11 @@ const (
 )
 
 type PortingPhoneNumberListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[porting_order_status]
 	Filter PortingPhoneNumberListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page PortingPhoneNumberListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -213,25 +212,6 @@ type PortingPhoneNumberListParamsFilter struct {
 // URLQuery serializes [PortingPhoneNumberListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r PortingPhoneNumberListParamsFilter) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type PortingPhoneNumberListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [PortingPhoneNumberListParamsPage]'s query parameters as
-// `url.Values`.
-func (r PortingPhoneNumberListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
