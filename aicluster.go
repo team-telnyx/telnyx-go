@@ -289,7 +289,7 @@ func (r AIClusterListParams) URLQuery() (v url.Values, err error) {
 type AIClusterComputeParams struct {
 	// The embedded storage bucket to compute the clusters from. The bucket must
 	// already be
-	// [embedded](https://developers.telnyx.com/api/inference/inference-embedding/post-embedding).
+	// [embedded](https://developers.telnyx.com/api-reference/embeddings/embed-documents).
 	Bucket string `json:"bucket,required"`
 	// Smallest number of related text chunks to qualify as a cluster. Top-level
 	// clusters should be thought of as identifying broad themes in your data.
