@@ -62,10 +62,8 @@ func TestPortingOrderPhoneNumberConfigurationListWithOptionalParams(t *testing.T
 			PortingPhoneNumber: []string{"5d6f7ede-1961-4717-bfb5-db392c5efc2d"},
 			UserBundleID:       []string{"5d6f7ede-1961-4717-bfb5-db392c5efc2d"},
 		},
-		Page: telnyx.PortingOrderPhoneNumberConfigurationListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 		Sort: telnyx.PortingOrderPhoneNumberConfigurationListParamsSort{
 			Value: "created_at",
 		},

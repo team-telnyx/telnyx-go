@@ -52,7 +52,7 @@ func (r *RoomRecordingService) Get(ctx context.Context, roomRecordingID string, 
 }
 
 // View a list of room recordings.
-func (r *RoomRecordingService) List(ctx context.Context, query RoomRecordingListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[RoomRecordingListResponse], err error) {
+func (r *RoomRecordingService) List(ctx context.Context, query RoomRecordingListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[RoomRecordingListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -70,8 +70,8 @@ func (r *RoomRecordingService) List(ctx context.Context, query RoomRecordingList
 }
 
 // View a list of room recordings.
-func (r *RoomRecordingService) ListAutoPaging(ctx context.Context, query RoomRecordingListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[RoomRecordingListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *RoomRecordingService) ListAutoPaging(ctx context.Context, query RoomRecordingListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[RoomRecordingListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Synchronously delete a Room Recording.
@@ -291,6 +291,8 @@ func (r *RoomRecordingDeleteBulkResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type RoomRecordingListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[date_ended_at][eq], filter[date_ended_at][gte],
 	// filter[date_ended_at][lte], filter[date_started_at][eq],
@@ -298,9 +300,6 @@ type RoomRecordingListParams struct {
 	// filter[participant_id], filter[session_id], filter[status], filter[type],
 	// filter[duration_secs]
 	Filter RoomRecordingListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page RoomRecordingListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -384,26 +383,9 @@ func (r RoomRecordingListParamsFilterDateStartedAt) URLQuery() (v url.Values, er
 	})
 }
 
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type RoomRecordingListParamsPage struct {
-	// The page number to load.
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page.
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [RoomRecordingListParamsPage]'s query parameters as
-// `url.Values`.
-func (r RoomRecordingListParamsPage) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
 type RoomRecordingDeleteBulkParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[date_ended_at][eq], filter[date_ended_at][gte],
 	// filter[date_ended_at][lte], filter[date_started_at][eq],
@@ -411,9 +393,6 @@ type RoomRecordingDeleteBulkParams struct {
 	// filter[participant_id], filter[session_id], filter[status], filter[type],
 	// filter[duration_secs]
 	Filter RoomRecordingDeleteBulkParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page RoomRecordingDeleteBulkParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -491,25 +470,6 @@ type RoomRecordingDeleteBulkParamsFilterDateStartedAt struct {
 // URLQuery serializes [RoomRecordingDeleteBulkParamsFilterDateStartedAt]'s query
 // parameters as `url.Values`.
 func (r RoomRecordingDeleteBulkParamsFilterDateStartedAt) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type RoomRecordingDeleteBulkParamsPage struct {
-	// The page number to load.
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page.
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [RoomRecordingDeleteBulkParamsPage]'s query parameters as
-// `url.Values`.
-func (r RoomRecordingDeleteBulkParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

@@ -61,7 +61,7 @@ func (r *MobilePushCredentialService) Get(ctx context.Context, pushCredentialID 
 }
 
 // List mobile push credentials
-func (r *MobilePushCredentialService) List(ctx context.Context, query MobilePushCredentialListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PushCredential], err error) {
+func (r *MobilePushCredentialService) List(ctx context.Context, query MobilePushCredentialListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PushCredential], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -79,8 +79,8 @@ func (r *MobilePushCredentialService) List(ctx context.Context, query MobilePush
 }
 
 // List mobile push credentials
-func (r *MobilePushCredentialService) ListAutoPaging(ctx context.Context, query MobilePushCredentialListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PushCredential] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *MobilePushCredentialService) ListAutoPaging(ctx context.Context, query MobilePushCredentialListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PushCredential] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Deletes a mobile push credential based on the given `push_credential_id`
@@ -220,12 +220,11 @@ func (r *MobilePushCredentialNewParamsCreateMobilePushCredentialRequestAndroid) 
 }
 
 type MobilePushCredentialListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[type],
 	// filter[alias]
 	Filter MobilePushCredentialListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page MobilePushCredentialListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -253,25 +252,6 @@ type MobilePushCredentialListParamsFilter struct {
 // URLQuery serializes [MobilePushCredentialListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r MobilePushCredentialListParamsFilter) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type MobilePushCredentialListParamsPage struct {
-	// The page number to load.
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page.
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [MobilePushCredentialListParamsPage]'s query parameters as
-// `url.Values`.
-func (r MobilePushCredentialListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

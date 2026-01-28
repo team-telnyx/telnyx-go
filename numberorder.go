@@ -73,7 +73,7 @@ func (r *NumberOrderService) Update(ctx context.Context, numberOrderID string, b
 }
 
 // Get a paginated list of number orders.
-func (r *NumberOrderService) List(ctx context.Context, query NumberOrderListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[NumberOrderListResponse], err error) {
+func (r *NumberOrderService) List(ctx context.Context, query NumberOrderListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[NumberOrderListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -91,8 +91,8 @@ func (r *NumberOrderService) List(ctx context.Context, query NumberOrderListPara
 }
 
 // Get a paginated list of number orders.
-func (r *NumberOrderService) ListAutoPaging(ctx context.Context, query NumberOrderListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[NumberOrderListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *NumberOrderService) ListAutoPaging(ctx context.Context, query NumberOrderListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[NumberOrderListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type NumberOrderWithPhoneNumbers struct {
@@ -423,13 +423,12 @@ func (r *NumberOrderUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type NumberOrderListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[status],
 	// filter[created_at], filter[phone_numbers_count], filter[customer_reference],
 	// filter[requirements_met]
 	Filter NumberOrderListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page NumberOrderListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -479,25 +478,6 @@ type NumberOrderListParamsFilterCreatedAt struct {
 // URLQuery serializes [NumberOrderListParamsFilterCreatedAt]'s query parameters as
 // `url.Values`.
 func (r NumberOrderListParamsFilterCreatedAt) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type NumberOrderListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [NumberOrderListParamsPage]'s query parameters as
-// `url.Values`.
-func (r NumberOrderListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

@@ -38,7 +38,7 @@ func NewNotificationEventConditionService(opts ...option.RequestOption) (r Notif
 }
 
 // Returns a list of your notifications events conditions.
-func (r *NotificationEventConditionService) List(ctx context.Context, query NotificationEventConditionListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[NotificationEventConditionListResponse], err error) {
+func (r *NotificationEventConditionService) List(ctx context.Context, query NotificationEventConditionListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[NotificationEventConditionListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -56,8 +56,8 @@ func (r *NotificationEventConditionService) List(ctx context.Context, query Noti
 }
 
 // Returns a list of your notifications events conditions.
-func (r *NotificationEventConditionService) ListAutoPaging(ctx context.Context, query NotificationEventConditionListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[NotificationEventConditionListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *NotificationEventConditionService) ListAutoPaging(ctx context.Context, query NotificationEventConditionListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[NotificationEventConditionListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type NotificationEventConditionListResponse struct {
@@ -134,14 +134,13 @@ func (r *NotificationEventConditionListResponseParameter) UnmarshalJSON(data []b
 }
 
 type NotificationEventConditionListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[associated_record_type][eq], filter[channel_type_id][eq],
 	// filter[notification_profile_id][eq], filter[notification_channel][eq],
 	// filter[notification_event_condition_id][eq], filter[status][eq]
 	Filter NotificationEventConditionListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[number],
-	// page[size]
-	Page NotificationEventConditionListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -272,25 +271,6 @@ type NotificationEventConditionListParamsFilterStatus struct {
 // URLQuery serializes [NotificationEventConditionListParamsFilterStatus]'s query
 // parameters as `url.Values`.
 func (r NotificationEventConditionListParamsFilterStatus) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[number],
-// page[size]
-type NotificationEventConditionListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [NotificationEventConditionListParamsPage]'s query
-// parameters as `url.Values`.
-func (r NotificationEventConditionListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

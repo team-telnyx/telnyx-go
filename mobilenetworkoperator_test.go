@@ -39,10 +39,8 @@ func TestMobileNetworkOperatorListWithOptionalParams(t *testing.T) {
 			NetworkPreferencesEnabled: telnyx.Bool(true),
 			Tadig:                     telnyx.String("USACG"),
 		},
-		Page: telnyx.MobileNetworkOperatorListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

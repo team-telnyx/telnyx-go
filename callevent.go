@@ -129,9 +129,6 @@ type CallEventListParams struct {
 	// filter[product], filter[failed], filter[from], filter[to], filter[name],
 	// filter[type], filter[occurred_at][eq/gt/gte/lt/lte], filter[status]
 	Filter CallEventListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[after],
-	// page[before], page[limit], page[size], page[number]
-	Page CallEventListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -231,27 +228,6 @@ type CallEventListParamsFilterOccurredAt struct {
 // URLQuery serializes [CallEventListParamsFilterOccurredAt]'s query parameters as
 // `url.Values`.
 func (r CallEventListParamsFilterOccurredAt) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[after],
-// page[before], page[limit], page[size], page[number]
-type CallEventListParamsPage struct {
-	// Opaque identifier of next page
-	After param.Opt[string] `query:"after,omitzero" json:"-"`
-	// Opaque identifier of previous page
-	Before param.Opt[string] `query:"before,omitzero" json:"-"`
-	// Limit of records per single page
-	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [CallEventListParamsPage]'s query parameters as
-// `url.Values`.
-func (r CallEventListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

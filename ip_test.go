@@ -113,10 +113,8 @@ func TestIPListWithOptionalParams(t *testing.T) {
 			IPAddress:    telnyx.String("192.168.0.0"),
 			Port:         telnyx.Int(5060),
 		},
-		Page: telnyx.IPListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

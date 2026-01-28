@@ -53,11 +53,9 @@ func TestPhoneNumberJobListWithOptionalParams(t *testing.T) {
 		Filter: telnyx.PhoneNumberJobListParamsFilter{
 			Type: "update_emergency_settings",
 		},
-		Page: telnyx.PhoneNumberJobListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
-		Sort: telnyx.PhoneNumberJobListParamsSortCreatedAt,
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
+		Sort:       telnyx.PhoneNumberJobListParamsSortCreatedAt,
 	})
 	if err != nil {
 		var apierr *telnyx.Error
