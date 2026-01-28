@@ -2725,7 +2725,7 @@ type VoiceSettings struct {
 	// Telnyx.KokoroTTS.af_heart)
 	Voice string `json:"voice,required"`
 	// The `identifier` for an integration secret
-	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
+	// [/v2/integration_secrets](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
 	// that refers to your ElevenLabs API key. Warning: Free plans are unlikely to work
 	// with this integration.
 	APIKeyRef string `json:"api_key_ref"`
@@ -2933,7 +2933,7 @@ type VoiceSettingsParam struct {
 	// Telnyx.KokoroTTS.af_heart)
 	Voice string `json:"voice,required"`
 	// The `identifier` for an integration secret
-	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
+	// [/v2/integration_secrets](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
 	// that refers to your ElevenLabs API key. Warning: Free plans are unlikely to work
 	// with this integration.
 	APIKeyRef param.Opt[string] `json:"api_key_ref,omitzero"`
