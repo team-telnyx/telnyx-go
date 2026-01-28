@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.12.1 (2026-01-28)
+
+Full Changelog: [v4.12.0...v4.12.1](https://github.com/team-telnyx/telnyx-go/compare/v4.12.0...v4.12.1)
+
+### Bug Fixes
+
+* **docs:** fix mcp installation instructions for remote servers ([38cf582](https://github.com/team-telnyx/telnyx-go/commit/38cf5826fdc9360343f8d85c7c8b2f7d6ec2224d))
+
 ## 4.12.0 (2026-01-27)
 
 Full Changelog: [v4.11.0...v4.12.0](https://github.com/team-telnyx/telnyx-go/compare/v4.11.0...v4.12.0)
