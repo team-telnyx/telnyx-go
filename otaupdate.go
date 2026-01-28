@@ -51,7 +51,7 @@ func (r *OtaUpdateService) Get(ctx context.Context, id string, opts ...option.Re
 }
 
 // List OTA updates
-func (r *OtaUpdateService) List(ctx context.Context, query OtaUpdateListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[OtaUpdateListResponse], err error) {
+func (r *OtaUpdateService) List(ctx context.Context, query OtaUpdateListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[OtaUpdateListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -69,8 +69,8 @@ func (r *OtaUpdateService) List(ctx context.Context, query OtaUpdateListParams, 
 }
 
 // List OTA updates
-func (r *OtaUpdateService) ListAutoPaging(ctx context.Context, query OtaUpdateListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[OtaUpdateListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *OtaUpdateService) ListAutoPaging(ctx context.Context, query OtaUpdateListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[OtaUpdateListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type OtaUpdateGetResponse struct {
@@ -240,12 +240,11 @@ const (
 )
 
 type OtaUpdateListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter for OTA updates (deepObject style). Originally:
 	// filter[status], filter[sim_card_id], filter[type]
 	Filter OtaUpdateListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated pagination parameter (deepObject style). Originally: page[number],
-	// page[size]
-	Page OtaUpdateListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -276,25 +275,6 @@ type OtaUpdateListParamsFilter struct {
 // URLQuery serializes [OtaUpdateListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r OtaUpdateListParamsFilter) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated pagination parameter (deepObject style). Originally: page[number],
-// page[size]
-type OtaUpdateListParamsPage struct {
-	// The page number to load.
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page.
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [OtaUpdateListParamsPage]'s query parameters as
-// `url.Values`.
-func (r OtaUpdateListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

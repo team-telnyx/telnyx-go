@@ -20,123 +20,6 @@ type paramUnion = param.APIUnion
 // aliased to make [param.APIObject] private when embedding
 type paramObj = param.APIObject
 
-type DefaultPaginationMeta struct {
-	PageNumber int64 `json:"page_number,required"`
-	TotalPages int64 `json:"total_pages,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageNumber  respjson.Field
-		TotalPages  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DefaultPaginationMeta) RawJSON() string { return r.JSON.raw }
-func (r *DefaultPaginationMeta) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DefaultPagination[T any] struct {
-	Data []T                   `json:"data"`
-	Meta DefaultPaginationMeta `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	cfg *requestconfig.RequestConfig
-	res *http.Response
-}
-
-// Returns the unmodified JSON received from the API
-func (r DefaultPagination[T]) RawJSON() string { return r.JSON.raw }
-func (r *DefaultPagination[T]) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// GetNextPage returns the next page as defined by this pagination style. When
-// there is no next page, this function will return a 'nil' for the page value, but
-// will not return an error
-func (r *DefaultPagination[T]) GetNextPage() (res *DefaultPagination[T], err error) {
-	if len(r.Data) == 0 {
-		return nil, nil
-	}
-	currentPage := r.Meta.PageNumber
-	if currentPage >= r.Meta.TotalPages {
-		return nil, nil
-	}
-	cfg := r.cfg.Clone(context.Background())
-	query := cfg.Request.URL.Query()
-	query.Set("number", fmt.Sprintf("%d", currentPage+1))
-	cfg.Request.URL.RawQuery = query.Encode()
-	var raw *http.Response
-	cfg.ResponseInto = &raw
-	cfg.ResponseBodyInto = &res
-	err = cfg.Execute()
-	if err != nil {
-		return nil, err
-	}
-	res.SetPageConfig(cfg, raw)
-	return res, nil
-}
-
-func (r *DefaultPagination[T]) SetPageConfig(cfg *requestconfig.RequestConfig, res *http.Response) {
-	if r == nil {
-		r = &DefaultPagination[T]{}
-	}
-	r.cfg = cfg
-	r.res = res
-}
-
-type DefaultPaginationAutoPager[T any] struct {
-	page *DefaultPagination[T]
-	cur  T
-	idx  int
-	run  int
-	err  error
-	paramObj
-}
-
-func NewDefaultPaginationAutoPager[T any](page *DefaultPagination[T], err error) *DefaultPaginationAutoPager[T] {
-	return &DefaultPaginationAutoPager[T]{
-		page: page,
-		err:  err,
-	}
-}
-
-func (r *DefaultPaginationAutoPager[T]) Next() bool {
-	if r.page == nil || len(r.page.Data) == 0 {
-		return false
-	}
-	if r.idx >= len(r.page.Data) {
-		r.idx = 0
-		r.page, r.err = r.page.GetNextPage()
-		if r.err != nil || r.page == nil || len(r.page.Data) == 0 {
-			return false
-		}
-	}
-	r.cur = r.page.Data[r.idx]
-	r.run += 1
-	r.idx += 1
-	return true
-}
-
-func (r *DefaultPaginationAutoPager[T]) Current() T {
-	return r.cur
-}
-
-func (r *DefaultPaginationAutoPager[T]) Err() error {
-	return r.err
-}
-
-func (r *DefaultPaginationAutoPager[T]) Index() int {
-	return r.run
-}
-
 type DefaultFlatPaginationMeta struct {
 	PageNumber int64 `json:"page_number,required"`
 	TotalPages int64 `json:"total_pages,required"`
@@ -403,7 +286,7 @@ func (r *DefaultPaginationForLogMessages[T]) GetNextPage() (res *DefaultPaginati
 	}
 	cfg := r.cfg.Clone(context.Background())
 	query := cfg.Request.URL.Query()
-	query.Set("number", fmt.Sprintf("%d", currentPage+1))
+	query.Set("page[number]", fmt.Sprintf("%d", currentPage+1))
 	cfg.Request.URL.RawQuery = query.Encode()
 	var raw *http.Response
 	cfg.ResponseInto = &raw
@@ -569,6 +452,104 @@ func (r *DefaultPaginationForMessagingTollfreeAutoPager[T]) Err() error {
 }
 
 func (r *DefaultPaginationForMessagingTollfreeAutoPager[T]) Index() int {
+	return r.run
+}
+
+type DefaultPaginationForQueues[T any] struct {
+	Queues []T `json:"queues"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Queues      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	cfg *requestconfig.RequestConfig
+	res *http.Response
+}
+
+// Returns the unmodified JSON received from the API
+func (r DefaultPaginationForQueues[T]) RawJSON() string { return r.JSON.raw }
+func (r *DefaultPaginationForQueues[T]) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// GetNextPage returns the next page as defined by this pagination style. When
+// there is no next page, this function will return a 'nil' for the page value, but
+// will not return an error
+func (r *DefaultPaginationForQueues[T]) GetNextPage() (res *DefaultPaginationForQueues[T], err error) {
+	if len(r.Queues) == 0 {
+		return nil, nil
+	}
+	u := r.cfg.Request.URL
+	currentPage, err := strconv.ParseInt(u.Query().Get("Page"), 10, 64)
+	if err != nil {
+		currentPage = 1
+	}
+	cfg := r.cfg.Clone(context.Background())
+	query := cfg.Request.URL.Query()
+	query.Set("Page", fmt.Sprintf("%d", currentPage+1))
+	cfg.Request.URL.RawQuery = query.Encode()
+	var raw *http.Response
+	cfg.ResponseInto = &raw
+	cfg.ResponseBodyInto = &res
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+func (r *DefaultPaginationForQueues[T]) SetPageConfig(cfg *requestconfig.RequestConfig, res *http.Response) {
+	if r == nil {
+		r = &DefaultPaginationForQueues[T]{}
+	}
+	r.cfg = cfg
+	r.res = res
+}
+
+type DefaultPaginationForQueuesAutoPager[T any] struct {
+	page *DefaultPaginationForQueues[T]
+	cur  T
+	idx  int
+	run  int
+	err  error
+	paramObj
+}
+
+func NewDefaultPaginationForQueuesAutoPager[T any](page *DefaultPaginationForQueues[T], err error) *DefaultPaginationForQueuesAutoPager[T] {
+	return &DefaultPaginationForQueuesAutoPager[T]{
+		page: page,
+		err:  err,
+	}
+}
+
+func (r *DefaultPaginationForQueuesAutoPager[T]) Next() bool {
+	if r.page == nil || len(r.page.Queues) == 0 {
+		return false
+	}
+	if r.idx >= len(r.page.Queues) {
+		r.idx = 0
+		r.page, r.err = r.page.GetNextPage()
+		if r.err != nil || r.page == nil || len(r.page.Queues) == 0 {
+			return false
+		}
+	}
+	r.cur = r.page.Queues[r.idx]
+	r.run += 1
+	r.idx += 1
+	return true
+}
+
+func (r *DefaultPaginationForQueuesAutoPager[T]) Current() T {
+	return r.cur
+}
+
+func (r *DefaultPaginationForQueuesAutoPager[T]) Err() error {
+	return r.err
+}
+
+func (r *DefaultPaginationForQueuesAutoPager[T]) Index() int {
 	return r.run
 }
 

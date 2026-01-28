@@ -113,10 +113,8 @@ func TestNetworkListWithOptionalParams(t *testing.T) {
 		Filter: telnyx.NetworkListParamsFilter{
 			Name: telnyx.String("test network"),
 		},
-		Page: telnyx.NetworkListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -171,10 +169,8 @@ func TestNetworkListInterfacesWithOptionalParams(t *testing.T) {
 				Name: telnyx.String("test interface"),
 				Type: telnyx.String("wireguard_interface"),
 			},
-			Page: telnyx.NetworkListInterfacesParamsPage{
-				Number: telnyx.Int(1),
-				Size:   telnyx.Int(1),
-			},
+			PageNumber: telnyx.Int(0),
+			PageSize:   telnyx.Int(0),
 		},
 	)
 	if err != nil {

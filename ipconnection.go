@@ -73,7 +73,7 @@ func (r *IPConnectionService) Update(ctx context.Context, id string, body IPConn
 }
 
 // Returns a list of your IP connections.
-func (r *IPConnectionService) List(ctx context.Context, query IPConnectionListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[IPConnection], err error) {
+func (r *IPConnectionService) List(ctx context.Context, query IPConnectionListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[IPConnection], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -91,8 +91,8 @@ func (r *IPConnectionService) List(ctx context.Context, query IPConnectionListPa
 }
 
 // Returns a list of your IP connections.
-func (r *IPConnectionService) ListAutoPaging(ctx context.Context, query IPConnectionListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[IPConnection] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *IPConnectionService) ListAutoPaging(ctx context.Context, query IPConnectionListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[IPConnection] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Deletes an existing IP connection.
@@ -1141,13 +1141,12 @@ const (
 )
 
 type IPConnectionListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[connection_name], filter[fqdn], filter[outbound_voice_profile_id],
 	// filter[outbound.outbound_voice_profile_id]
 	Filter IPConnectionListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page IPConnectionListParamsPage `query:"page,omitzero" json:"-"`
 	// Specifies the sort order for results. By default sorting direction is ascending.
 	// To have the results sorted in descending order add the <code> -</code>
 	// prefix.<br/><br/> That is: <ul>
@@ -1212,25 +1211,6 @@ type IPConnectionListParamsFilterConnectionName struct {
 // URLQuery serializes [IPConnectionListParamsFilterConnectionName]'s query
 // parameters as `url.Values`.
 func (r IPConnectionListParamsFilterConnectionName) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type IPConnectionListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [IPConnectionListParamsPage]'s query parameters as
-// `url.Values`.
-func (r IPConnectionListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

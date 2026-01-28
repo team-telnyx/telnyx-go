@@ -67,10 +67,8 @@ func TestPortingOrderAssociatedPhoneNumberListWithOptionalParams(t *testing.T) {
 				Action:      "keep",
 				PhoneNumber: telnyx.String("+441234567890"),
 			},
-			Page: telnyx.PortingOrderAssociatedPhoneNumberListParamsPage{
-				Number: telnyx.Int(1),
-				Size:   telnyx.Int(1),
-			},
+			PageNumber: telnyx.Int(0),
+			PageSize:   telnyx.Int(0),
 			Sort: telnyx.PortingOrderAssociatedPhoneNumberListParamsSort{
 				Value: "-created_at",
 			},

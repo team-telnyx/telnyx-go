@@ -53,7 +53,7 @@ func (r *RoomParticipantService) Get(ctx context.Context, roomParticipantID stri
 }
 
 // View a list of room participants.
-func (r *RoomParticipantService) List(ctx context.Context, query RoomParticipantListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[shared.RoomParticipant], err error) {
+func (r *RoomParticipantService) List(ctx context.Context, query RoomParticipantListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[shared.RoomParticipant], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -71,8 +71,8 @@ func (r *RoomParticipantService) List(ctx context.Context, query RoomParticipant
 }
 
 // View a list of room participants.
-func (r *RoomParticipantService) ListAutoPaging(ctx context.Context, query RoomParticipantListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[shared.RoomParticipant] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *RoomParticipantService) ListAutoPaging(ctx context.Context, query RoomParticipantListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[shared.RoomParticipant] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type RoomParticipantGetResponse struct {
@@ -92,6 +92,8 @@ func (r *RoomParticipantGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type RoomParticipantListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[date_joined_at][eq], filter[date_joined_at][gte],
 	// filter[date_joined_at][lte], filter[date_updated_at][eq],
@@ -99,9 +101,6 @@ type RoomParticipantListParams struct {
 	// filter[date_left_at][eq], filter[date_left_at][gte], filter[date_left_at][lte],
 	// filter[context], filter[session_id]
 	Filter RoomParticipantListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page RoomParticipantListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -192,25 +191,6 @@ type RoomParticipantListParamsFilterDateUpdatedAt struct {
 // URLQuery serializes [RoomParticipantListParamsFilterDateUpdatedAt]'s query
 // parameters as `url.Values`.
 func (r RoomParticipantListParamsFilterDateUpdatedAt) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type RoomParticipantListParamsPage struct {
-	// The page number to load.
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page.
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [RoomParticipantListParamsPage]'s query parameters as
-// `url.Values`.
-func (r RoomParticipantListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

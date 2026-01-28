@@ -91,10 +91,8 @@ func TestSimCardOrderListWithOptionalParams(t *testing.T) {
 			Quantity:                  telnyx.Int(21),
 			UpdatedAt:                 telnyx.Time(time.Now()),
 		},
-		Page: telnyx.SimCardOrderListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

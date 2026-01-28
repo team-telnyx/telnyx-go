@@ -74,7 +74,7 @@ func (r *WireguardPeerService) Update(ctx context.Context, id string, body Wireg
 }
 
 // List all WireGuard peers.
-func (r *WireguardPeerService) List(ctx context.Context, query WireguardPeerListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[WireguardPeerListResponse], err error) {
+func (r *WireguardPeerService) List(ctx context.Context, query WireguardPeerListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[WireguardPeerListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -92,8 +92,8 @@ func (r *WireguardPeerService) List(ctx context.Context, query WireguardPeerList
 }
 
 // List all WireGuard peers.
-func (r *WireguardPeerService) ListAutoPaging(ctx context.Context, query WireguardPeerListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[WireguardPeerListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *WireguardPeerService) ListAutoPaging(ctx context.Context, query WireguardPeerListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[WireguardPeerListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete the WireGuard peer.
@@ -402,12 +402,11 @@ func (r *WireguardPeerUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type WireguardPeerListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[wireguard_interface_id]
 	Filter WireguardPeerListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[number],
-	// page[size]
-	Page WireguardPeerListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -431,25 +430,6 @@ type WireguardPeerListParamsFilter struct {
 // URLQuery serializes [WireguardPeerListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r WireguardPeerListParamsFilter) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[number],
-// page[size]
-type WireguardPeerListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [WireguardPeerListParamsPage]'s query parameters as
-// `url.Values`.
-func (r WireguardPeerListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
