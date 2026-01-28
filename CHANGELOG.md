@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.13.0 (2026-01-28)
+
+Full Changelog: [v4.12.1...v4.13.0](https://github.com/team-telnyx/telnyx-go/compare/v4.12.1...v4.13.0)
+
+### Features
+
+* Fix broken documentation links ([d16d7ec](https://github.com/team-telnyx/telnyx-go/commit/d16d7ec304175ae29dc7c78b4ad40ad941612c38))
+
 ## 4.12.1 (2026-01-28)
 
 Full Changelog: [v4.12.0...v4.12.1](https://github.com/team-telnyx/telnyx-go/compare/v4.12.0...v4.12.1)
