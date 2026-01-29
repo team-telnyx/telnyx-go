@@ -42,7 +42,6 @@ type System string            // Always "system"
 type Tool string              // Always "tool"
 type Transfer string          // Always "transfer"
 type User string              // Always "user"
-type Webhook string           // Always "webhook"
 
 func (c Android) Default() Android                     { return "android" }
 func (c Assistant) Default() Assistant                 { return "assistant" }
@@ -68,7 +67,6 @@ func (c System) Default() System                       { return "system" }
 func (c Tool) Default() Tool                           { return "tool" }
 func (c Transfer) Default() Transfer                   { return "transfer" }
 func (c User) Default() User                           { return "user" }
-func (c Webhook) Default() Webhook                     { return "webhook" }
 
 func (c Android) MarshalJSON() ([]byte, error)           { return marshalString(c) }
 func (c Assistant) MarshalJSON() ([]byte, error)         { return marshalString(c) }
@@ -94,7 +92,6 @@ func (c System) MarshalJSON() ([]byte, error)            { return marshalString(
 func (c Tool) MarshalJSON() ([]byte, error)              { return marshalString(c) }
 func (c Transfer) MarshalJSON() ([]byte, error)          { return marshalString(c) }
 func (c User) MarshalJSON() ([]byte, error)              { return marshalString(c) }
-func (c Webhook) MarshalJSON() ([]byte, error)           { return marshalString(c) }
 
 type constant[T any] interface {
 	Constant[T]

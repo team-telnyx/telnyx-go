@@ -69,10 +69,8 @@ func TestRoomRecordingListWithOptionalParams(t *testing.T) {
 			Status:        telnyx.String("completed"),
 			Type:          telnyx.String("audio"),
 		},
-		Page: telnyx.RoomRecordingListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -138,10 +136,8 @@ func TestRoomRecordingDeleteBulkWithOptionalParams(t *testing.T) {
 			Status:        telnyx.String("completed"),
 			Type:          telnyx.String("audio"),
 		},
-		Page: telnyx.RoomRecordingDeleteBulkParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

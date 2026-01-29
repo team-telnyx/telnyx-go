@@ -40,7 +40,7 @@ func NewAuditEventService(opts ...option.RequestOption) (r AuditEventService) {
 
 // Retrieve a list of audit log entries. Audit logs are a best-effort, eventually
 // consistent record of significant account-related changes.
-func (r *AuditEventService) List(ctx context.Context, query AuditEventListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[AuditEventListResponse], err error) {
+func (r *AuditEventService) List(ctx context.Context, query AuditEventListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[AuditEventListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -59,8 +59,8 @@ func (r *AuditEventService) List(ctx context.Context, query AuditEventListParams
 
 // Retrieve a list of audit log entries. Audit logs are a best-effort, eventually
 // consistent record of significant account-related changes.
-func (r *AuditEventService) ListAutoPaging(ctx context.Context, query AuditEventListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[AuditEventListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *AuditEventService) ListAutoPaging(ctx context.Context, query AuditEventListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[AuditEventListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type AuditEventListResponse struct {
@@ -276,12 +276,11 @@ func (r *AuditEventListResponseChangeToUnion) UnmarshalJSON(data []byte) error {
 }
 
 type AuditEventListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[created_before], filter[created_after]
 	Filter AuditEventListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[number],
-	// page[size]
-	Page AuditEventListParamsPage `query:"page,omitzero" json:"-"`
 	// Set the order of the results by the creation date.
 	//
 	// Any of "asc", "desc".
@@ -310,25 +309,6 @@ type AuditEventListParamsFilter struct {
 // URLQuery serializes [AuditEventListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r AuditEventListParamsFilter) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[number],
-// page[size]
-type AuditEventListParamsPage struct {
-	// Page number to load.
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// Number of items per page.
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [AuditEventListParamsPage]'s query parameters as
-// `url.Values`.
-func (r AuditEventListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

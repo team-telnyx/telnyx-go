@@ -40,7 +40,7 @@ func NewPortingOrderVerificationCodeService(opts ...option.RequestOption) (r Por
 }
 
 // Returns a list of verification codes for a porting order.
-func (r *PortingOrderVerificationCodeService) List(ctx context.Context, id string, query PortingOrderVerificationCodeListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingOrderVerificationCodeListResponse], err error) {
+func (r *PortingOrderVerificationCodeService) List(ctx context.Context, id string, query PortingOrderVerificationCodeListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingOrderVerificationCodeListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -62,8 +62,8 @@ func (r *PortingOrderVerificationCodeService) List(ctx context.Context, id strin
 }
 
 // Returns a list of verification codes for a porting order.
-func (r *PortingOrderVerificationCodeService) ListAutoPaging(ctx context.Context, id string, query PortingOrderVerificationCodeListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingOrderVerificationCodeListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, id, query, opts...))
+func (r *PortingOrderVerificationCodeService) ListAutoPaging(ctx context.Context, id string, query PortingOrderVerificationCodeListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingOrderVerificationCodeListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, id, query, opts...))
 }
 
 // Send the verification code for all porting phone numbers.
@@ -178,11 +178,10 @@ func (r *PortingOrderVerificationCodeVerifyResponseData) UnmarshalJSON(data []by
 }
 
 type PortingOrderVerificationCodeListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[verified]
 	Filter PortingOrderVerificationCodeListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page PortingOrderVerificationCodeListParamsPage `query:"page,omitzero" json:"-"`
 	// Consolidated sort parameter (deepObject style). Originally: sort[value]
 	Sort PortingOrderVerificationCodeListParamsSort `query:"sort,omitzero" json:"-"`
 	paramObj
@@ -207,25 +206,6 @@ type PortingOrderVerificationCodeListParamsFilter struct {
 // URLQuery serializes [PortingOrderVerificationCodeListParamsFilter]'s query
 // parameters as `url.Values`.
 func (r PortingOrderVerificationCodeListParamsFilter) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type PortingOrderVerificationCodeListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [PortingOrderVerificationCodeListParamsPage]'s query
-// parameters as `url.Values`.
-func (r PortingOrderVerificationCodeListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

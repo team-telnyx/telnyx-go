@@ -41,7 +41,7 @@ func NewMobileNetworkOperatorService(opts ...option.RequestOption) (r MobileNetw
 // change over time. That means that this resource won't allow any write operations
 // for it. Still, it's available so it can be used as a support resource that can
 // be related to other resources or become a configuration option.
-func (r *MobileNetworkOperatorService) List(ctx context.Context, query MobileNetworkOperatorListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[MobileNetworkOperatorListResponse], err error) {
+func (r *MobileNetworkOperatorService) List(ctx context.Context, query MobileNetworkOperatorListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MobileNetworkOperatorListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -63,8 +63,8 @@ func (r *MobileNetworkOperatorService) List(ctx context.Context, query MobileNet
 // change over time. That means that this resource won't allow any write operations
 // for it. Still, it's available so it can be used as a support resource that can
 // be related to other resources or become a configuration option.
-func (r *MobileNetworkOperatorService) ListAutoPaging(ctx context.Context, query MobileNetworkOperatorListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[MobileNetworkOperatorListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *MobileNetworkOperatorService) ListAutoPaging(ctx context.Context, query MobileNetworkOperatorListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MobileNetworkOperatorListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type MobileNetworkOperatorListResponse struct {
@@ -114,14 +114,13 @@ func (r *MobileNetworkOperatorListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MobileNetworkOperatorListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter for mobile network operators (deepObject style).
 	// Originally: filter[name][starts_with], filter[name][contains],
 	// filter[name][ends_with], filter[country_code], filter[mcc], filter[mnc],
 	// filter[tadig], filter[network_preferences_enabled]
 	Filter MobileNetworkOperatorListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated pagination parameter (deepObject style). Originally: page[number],
-	// page[size]
-	Page MobileNetworkOperatorListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -177,25 +176,6 @@ type MobileNetworkOperatorListParamsFilterName struct {
 // URLQuery serializes [MobileNetworkOperatorListParamsFilterName]'s query
 // parameters as `url.Values`.
 func (r MobileNetworkOperatorListParamsFilterName) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated pagination parameter (deepObject style). Originally: page[number],
-// page[size]
-type MobileNetworkOperatorListParamsPage struct {
-	// The page number to load.
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page.
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [MobileNetworkOperatorListParamsPage]'s query parameters as
-// `url.Values`.
-func (r MobileNetworkOperatorListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

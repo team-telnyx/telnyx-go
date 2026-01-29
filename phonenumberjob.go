@@ -52,7 +52,7 @@ func (r *PhoneNumberJobService) Get(ctx context.Context, id string, opts ...opti
 }
 
 // Lists the phone numbers jobs
-func (r *PhoneNumberJobService) List(ctx context.Context, query PhoneNumberJobListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PhoneNumbersJob], err error) {
+func (r *PhoneNumberJobService) List(ctx context.Context, query PhoneNumberJobListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PhoneNumbersJob], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -70,8 +70,8 @@ func (r *PhoneNumberJobService) List(ctx context.Context, query PhoneNumberJobLi
 }
 
 // Lists the phone numbers jobs
-func (r *PhoneNumberJobService) ListAutoPaging(ctx context.Context, query PhoneNumberJobListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PhoneNumbersJob] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *PhoneNumberJobService) ListAutoPaging(ctx context.Context, query PhoneNumberJobListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PhoneNumbersJob] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Creates a new background job to delete a batch of numbers. At most one thousand
@@ -329,11 +329,10 @@ func (r *PhoneNumberJobUpdateEmergencySettingsBatchResponse) UnmarshalJSON(data 
 }
 
 type PhoneNumberJobListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[type]
 	Filter PhoneNumberJobListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page PhoneNumberJobListParamsPage `query:"page,omitzero" json:"-"`
 	// Specifies the sort order for results. If not given, results are sorted by
 	// created_at in descending order.
 	//
@@ -364,25 +363,6 @@ type PhoneNumberJobListParamsFilter struct {
 // URLQuery serializes [PhoneNumberJobListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r PhoneNumberJobListParamsFilter) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type PhoneNumberJobListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [PhoneNumberJobListParamsPage]'s query parameters as
-// `url.Values`.
-func (r PhoneNumberJobListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

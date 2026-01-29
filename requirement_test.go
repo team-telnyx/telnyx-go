@@ -55,11 +55,9 @@ func TestRequirementListWithOptionalParams(t *testing.T) {
 			CountryCode:     telnyx.String("US"),
 			PhoneNumberType: "local",
 		},
-		Page: telnyx.RequirementListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
-		Sort: []string{"country_code"},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
+		Sort:       []string{"country_code"},
 	})
 	if err != nil {
 		var apierr *telnyx.Error
