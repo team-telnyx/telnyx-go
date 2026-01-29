@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.14.0 (2026-01-29)
+
+Full Changelog: [v4.13.0...v4.14.0](https://github.com/team-telnyx/telnyx-go/compare/v4.13.0...v4.14.0)
+
+### Features
+
+* Add deepgram/nova-3 transcription engine option to record_start ([51916b7](https://github.com/team-telnyx/telnyx-go/commit/51916b7248951efa08b945ff171c3558b2434467))
+
 ## 4.13.0 (2026-01-28)
 
 Full Changelog: [v4.12.1...v4.13.0](https://github.com/team-telnyx/telnyx-go/compare/v4.12.1...v4.13.0)
