@@ -55,8 +55,10 @@ func TestOtaUpdateListWithOptionalParams(t *testing.T) {
 			Status:    "in-progress",
 			Type:      "sim_card_network_preferences",
 		},
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
+		Page: telnyx.OtaUpdateListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

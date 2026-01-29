@@ -73,7 +73,7 @@ func (r *OutboundVoiceProfileService) Update(ctx context.Context, id string, bod
 
 // Get all outbound voice profiles belonging to the user that match the given
 // filters.
-func (r *OutboundVoiceProfileService) List(ctx context.Context, query OutboundVoiceProfileListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[OutboundVoiceProfile], err error) {
+func (r *OutboundVoiceProfileService) List(ctx context.Context, query OutboundVoiceProfileListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[OutboundVoiceProfile], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -92,8 +92,8 @@ func (r *OutboundVoiceProfileService) List(ctx context.Context, query OutboundVo
 
 // Get all outbound voice profiles belonging to the user that match the given
 // filters.
-func (r *OutboundVoiceProfileService) ListAutoPaging(ctx context.Context, query OutboundVoiceProfileListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[OutboundVoiceProfile] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *OutboundVoiceProfileService) ListAutoPaging(ctx context.Context, query OutboundVoiceProfileListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[OutboundVoiceProfile] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Deletes an existing outbound voice profile.
@@ -549,11 +549,12 @@ func (r *OutboundVoiceProfileUpdateParamsCallingWindow) UnmarshalJSON(data []byt
 }
 
 type OutboundVoiceProfileListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[name][contains]
 	Filter OutboundVoiceProfileListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page OutboundVoiceProfileListParamsPage `query:"page,omitzero" json:"-"`
 	// Specifies the sort order for results. By default sorting direction is ascending.
 	// To have the results sorted in descending order add the <code>-</code>
 	// prefix.<br/><br/> That is: <ul>
@@ -613,6 +614,25 @@ type OutboundVoiceProfileListParamsFilterName struct {
 // URLQuery serializes [OutboundVoiceProfileListParamsFilterName]'s query
 // parameters as `url.Values`.
 func (r OutboundVoiceProfileListParamsFilterName) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type OutboundVoiceProfileListParamsPage struct {
+	// The page number to load.
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page.
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [OutboundVoiceProfileListParamsPage]'s query parameters as
+// `url.Values`.
+func (r OutboundVoiceProfileListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

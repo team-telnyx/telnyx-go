@@ -230,9 +230,11 @@ func TestCredentialConnectionListWithOptionalParams(t *testing.T) {
 			Fqdn:                   telnyx.String("fqdn"),
 			OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
 		},
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
-		Sort:       telnyx.CredentialConnectionListParamsSortConnectionName,
+		Page: telnyx.CredentialConnectionListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
+		Sort: telnyx.CredentialConnectionListParamsSortConnectionName,
 	})
 	if err != nil {
 		var apierr *telnyx.Error

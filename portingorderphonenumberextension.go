@@ -52,7 +52,7 @@ func (r *PortingOrderPhoneNumberExtensionService) New(ctx context.Context, porti
 }
 
 // Returns a list of all phone number extensions of a porting order.
-func (r *PortingOrderPhoneNumberExtensionService) List(ctx context.Context, portingOrderID string, query PortingOrderPhoneNumberExtensionListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingPhoneNumberExtension], err error) {
+func (r *PortingOrderPhoneNumberExtensionService) List(ctx context.Context, portingOrderID string, query PortingOrderPhoneNumberExtensionListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingPhoneNumberExtension], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -74,8 +74,8 @@ func (r *PortingOrderPhoneNumberExtensionService) List(ctx context.Context, port
 }
 
 // Returns a list of all phone number extensions of a porting order.
-func (r *PortingOrderPhoneNumberExtensionService) ListAutoPaging(ctx context.Context, portingOrderID string, query PortingOrderPhoneNumberExtensionListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingPhoneNumberExtension] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, portingOrderID, query, opts...))
+func (r *PortingOrderPhoneNumberExtensionService) ListAutoPaging(ctx context.Context, portingOrderID string, query PortingOrderPhoneNumberExtensionListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingPhoneNumberExtension] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, portingOrderID, query, opts...))
 }
 
 // Deletes a phone number extension.
@@ -268,11 +268,12 @@ func (r *PortingOrderPhoneNumberExtensionNewParamsExtensionRange) UnmarshalJSON(
 }
 
 type PortingOrderPhoneNumberExtensionListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[porting_phone_number_id]
 	Filter PortingOrderPhoneNumberExtensionListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page PortingOrderPhoneNumberExtensionListParamsPage `query:"page,omitzero" json:"-"`
 	// Consolidated sort parameter (deepObject style). Originally: sort[value]
 	Sort PortingOrderPhoneNumberExtensionListParamsSort `query:"sort,omitzero" json:"-"`
 	paramObj
@@ -298,6 +299,25 @@ type PortingOrderPhoneNumberExtensionListParamsFilter struct {
 // URLQuery serializes [PortingOrderPhoneNumberExtensionListParamsFilter]'s query
 // parameters as `url.Values`.
 func (r PortingOrderPhoneNumberExtensionListParamsFilter) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type PortingOrderPhoneNumberExtensionListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [PortingOrderPhoneNumberExtensionListParamsPage]'s query
+// parameters as `url.Values`.
+func (r PortingOrderPhoneNumberExtensionListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

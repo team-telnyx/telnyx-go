@@ -103,8 +103,10 @@ func TestNotificationSettingListWithOptionalParams(t *testing.T) {
 				Eq: "enable-received",
 			},
 		},
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
+		Page: telnyx.NotificationSettingListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

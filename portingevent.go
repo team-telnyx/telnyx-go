@@ -54,7 +54,7 @@ func (r *PortingEventService) Get(ctx context.Context, id string, opts ...option
 }
 
 // Returns a list of all porting events.
-func (r *PortingEventService) List(ctx context.Context, query PortingEventListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingEventListResponseUnion], err error) {
+func (r *PortingEventService) List(ctx context.Context, query PortingEventListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingEventListResponseUnion], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -72,8 +72,8 @@ func (r *PortingEventService) List(ctx context.Context, query PortingEventListPa
 }
 
 // Returns a list of all porting events.
-func (r *PortingEventService) ListAutoPaging(ctx context.Context, query PortingEventListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingEventListResponseUnion] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *PortingEventService) ListAutoPaging(ctx context.Context, query PortingEventListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingEventListResponseUnion] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Republish a specific porting event.
@@ -1545,11 +1545,12 @@ func (r *PortingEventListResponsePortingEventWithoutWebhook) UnmarshalJSON(data 
 }
 
 type PortingEventListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[type],
 	// filter[porting_order_id], filter[created_at][gte], filter[created_at][lte]
 	Filter PortingEventListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page PortingEventListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -1599,6 +1600,25 @@ type PortingEventListParamsFilterCreatedAt struct {
 // URLQuery serializes [PortingEventListParamsFilterCreatedAt]'s query parameters
 // as `url.Values`.
 func (r PortingEventListParamsFilterCreatedAt) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type PortingEventListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [PortingEventListParamsPage]'s query parameters as
+// `url.Values`.
+func (r PortingEventListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
