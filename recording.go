@@ -53,7 +53,7 @@ func (r *RecordingService) Get(ctx context.Context, recordingID string, opts ...
 }
 
 // Returns a list of your call recordings.
-func (r *RecordingService) List(ctx context.Context, query RecordingListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[RecordingResponseData], err error) {
+func (r *RecordingService) List(ctx context.Context, query RecordingListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[RecordingResponseData], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -71,8 +71,8 @@ func (r *RecordingService) List(ctx context.Context, query RecordingListParams, 
 }
 
 // Returns a list of your call recordings.
-func (r *RecordingService) ListAutoPaging(ctx context.Context, query RecordingListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[RecordingResponseData] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *RecordingService) ListAutoPaging(ctx context.Context, query RecordingListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[RecordingResponseData] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Permanently deletes a call recording.
@@ -241,14 +241,13 @@ func (r *RecordingDeleteResponse) UnmarshalJSON(data []byte) error {
 }
 
 type RecordingListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[conference_id], filter[created_at][gte], filter[created_at][lte],
 	// filter[call_leg_id], filter[call_session_id], filter[from], filter[to],
 	// filter[connection_id], filter[sip_call_id]
 	Filter RecordingListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page RecordingListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -308,25 +307,6 @@ type RecordingListParamsFilterCreatedAt struct {
 // URLQuery serializes [RecordingListParamsFilterCreatedAt]'s query parameters as
 // `url.Values`.
 func (r RecordingListParamsFilterCreatedAt) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type RecordingListParamsPage struct {
-	// The page number to load.
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page.
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [RecordingListParamsPage]'s query parameters as
-// `url.Values`.
-func (r RecordingListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

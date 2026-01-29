@@ -87,10 +87,8 @@ func TestNumberBlockOrderListWithOptionalParams(t *testing.T) {
 			PhoneNumbersStartingNumber: telnyx.String("+19705555000"),
 			Status:                     telnyx.String("pending"),
 		},
-		Page: telnyx.NumberBlockOrderListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

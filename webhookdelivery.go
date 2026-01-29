@@ -53,7 +53,7 @@ func (r *WebhookDeliveryService) Get(ctx context.Context, id string, opts ...opt
 }
 
 // Lists webhook_deliveries for the authenticated user
-func (r *WebhookDeliveryService) List(ctx context.Context, query WebhookDeliveryListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[WebhookDeliveryListResponse], err error) {
+func (r *WebhookDeliveryService) List(ctx context.Context, query WebhookDeliveryListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[WebhookDeliveryListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -71,8 +71,8 @@ func (r *WebhookDeliveryService) List(ctx context.Context, query WebhookDelivery
 }
 
 // Lists webhook_deliveries for the authenticated user
-func (r *WebhookDeliveryService) ListAutoPaging(ctx context.Context, query WebhookDeliveryListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[WebhookDeliveryListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *WebhookDeliveryService) ListAutoPaging(ctx context.Context, query WebhookDeliveryListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[WebhookDeliveryListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type WebhookDeliveryGetResponse struct {
@@ -436,14 +436,13 @@ func (r *WebhookDeliveryListResponseWebhook) UnmarshalJSON(data []byte) error {
 }
 
 type WebhookDeliveryListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[status][eq], filter[event_type], filter[webhook][contains],
 	// filter[attempts][contains], filter[started_at][gte], filter[started_at][lte],
 	// filter[finished_at][gte], filter[finished_at][lte]
 	Filter WebhookDeliveryListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[number],
-	// page[size]
-	Page WebhookDeliveryListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -561,25 +560,6 @@ type WebhookDeliveryListParamsFilterWebhook struct {
 // URLQuery serializes [WebhookDeliveryListParamsFilterWebhook]'s query parameters
 // as `url.Values`.
 func (r WebhookDeliveryListParamsFilterWebhook) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[number],
-// page[size]
-type WebhookDeliveryListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [WebhookDeliveryListParamsPage]'s query parameters as
-// `url.Values`.
-func (r WebhookDeliveryListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

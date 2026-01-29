@@ -78,10 +78,8 @@ func TestPortingOrderPhoneNumberBlockListWithOptionalParams(t *testing.T) {
 					OfString: telnyx.String("sr_a12345"),
 				},
 			},
-			Page: telnyx.PortingOrderPhoneNumberBlockListParamsPage{
-				Number: telnyx.Int(1),
-				Size:   telnyx.Int(1),
-			},
+			PageNumber: telnyx.Int(0),
+			PageSize:   telnyx.Int(0),
 			Sort: telnyx.PortingOrderPhoneNumberBlockListParamsSort{
 				Value: "created_at",
 			},

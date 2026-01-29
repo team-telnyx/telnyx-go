@@ -30,10 +30,8 @@ func TestPortingPhoneNumberListWithOptionalParams(t *testing.T) {
 		Filter: telnyx.PortingPhoneNumberListParamsFilter{
 			PortingOrderStatus: "in-process",
 		},
-		Page: telnyx.PortingPhoneNumberListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

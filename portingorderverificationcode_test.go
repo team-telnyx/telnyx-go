@@ -33,10 +33,8 @@ func TestPortingOrderVerificationCodeListWithOptionalParams(t *testing.T) {
 			Filter: telnyx.PortingOrderVerificationCodeListParamsFilter{
 				Verified: telnyx.Bool(true),
 			},
-			Page: telnyx.PortingOrderVerificationCodeListParamsPage{
-				Number: telnyx.Int(1),
-				Size:   telnyx.Int(1),
-			},
+			PageNumber: telnyx.Int(0),
+			PageSize:   telnyx.Int(0),
 			Sort: telnyx.PortingOrderVerificationCodeListParamsSort{
 				Value: "created_at",
 			},

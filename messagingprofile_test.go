@@ -158,10 +158,8 @@ func TestMessagingProfileListWithOptionalParams(t *testing.T) {
 		Filter: telnyx.MessagingProfileListParamsFilter{
 			Name: telnyx.String("name"),
 		},
-		Page: telnyx.MessagingProfileListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -212,10 +210,8 @@ func TestMessagingProfileListPhoneNumbersWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.MessagingProfileListPhoneNumbersParams{
-			Page: telnyx.MessagingProfileListPhoneNumbersParamsPage{
-				Number: telnyx.Int(1),
-				Size:   telnyx.Int(1),
-			},
+			PageNumber: telnyx.Int(0),
+			PageSize:   telnyx.Int(0),
 		},
 	)
 	if err != nil {
@@ -244,10 +240,8 @@ func TestMessagingProfileListShortCodesWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.MessagingProfileListShortCodesParams{
-			Page: telnyx.MessagingProfileListShortCodesParamsPage{
-				Number: telnyx.Int(1),
-				Size:   telnyx.Int(1),
-			},
+			PageNumber: telnyx.Int(0),
+			PageSize:   telnyx.Int(0),
 		},
 	)
 	if err != nil {

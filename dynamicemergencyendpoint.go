@@ -61,7 +61,7 @@ func (r *DynamicEmergencyEndpointService) Get(ctx context.Context, id string, op
 }
 
 // Returns the dynamic emergency endpoints according to filters
-func (r *DynamicEmergencyEndpointService) List(ctx context.Context, query DynamicEmergencyEndpointListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[DynamicEmergencyEndpoint], err error) {
+func (r *DynamicEmergencyEndpointService) List(ctx context.Context, query DynamicEmergencyEndpointListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[DynamicEmergencyEndpoint], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -79,8 +79,8 @@ func (r *DynamicEmergencyEndpointService) List(ctx context.Context, query Dynami
 }
 
 // Returns the dynamic emergency endpoints according to filters
-func (r *DynamicEmergencyEndpointService) ListAutoPaging(ctx context.Context, query DynamicEmergencyEndpointListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[DynamicEmergencyEndpoint] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *DynamicEmergencyEndpointService) ListAutoPaging(ctx context.Context, query DynamicEmergencyEndpointListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[DynamicEmergencyEndpoint] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Deletes the dynamic emergency endpoint based on the ID provided
@@ -232,12 +232,11 @@ func (r *DynamicEmergencyEndpointNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type DynamicEmergencyEndpointListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[status],
 	// filter[country_code]
 	Filter DynamicEmergencyEndpointListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page DynamicEmergencyEndpointListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -265,25 +264,6 @@ type DynamicEmergencyEndpointListParamsFilter struct {
 // URLQuery serializes [DynamicEmergencyEndpointListParamsFilter]'s query
 // parameters as `url.Values`.
 func (r DynamicEmergencyEndpointListParamsFilter) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type DynamicEmergencyEndpointListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [DynamicEmergencyEndpointListParamsPage]'s query parameters
-// as `url.Values`.
-func (r DynamicEmergencyEndpointListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

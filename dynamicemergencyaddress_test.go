@@ -91,10 +91,8 @@ func TestDynamicEmergencyAddressListWithOptionalParams(t *testing.T) {
 			CountryCode: telnyx.String("country_code"),
 			Status:      "pending",
 		},
-		Page: telnyx.DynamicEmergencyAddressListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

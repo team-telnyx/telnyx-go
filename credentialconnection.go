@@ -75,7 +75,7 @@ func (r *CredentialConnectionService) Update(ctx context.Context, id string, bod
 }
 
 // Returns a list of your credential connections.
-func (r *CredentialConnectionService) List(ctx context.Context, query CredentialConnectionListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[CredentialConnection], err error) {
+func (r *CredentialConnectionService) List(ctx context.Context, query CredentialConnectionListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[CredentialConnection], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -93,8 +93,8 @@ func (r *CredentialConnectionService) List(ctx context.Context, query Credential
 }
 
 // Returns a list of your credential connections.
-func (r *CredentialConnectionService) ListAutoPaging(ctx context.Context, query CredentialConnectionListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[CredentialConnection] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *CredentialConnectionService) ListAutoPaging(ctx context.Context, query CredentialConnectionListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[CredentialConnection] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Deletes an existing credential connection.
@@ -1116,13 +1116,12 @@ const (
 )
 
 type CredentialConnectionListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[connection_name], filter[fqdn], filter[outbound_voice_profile_id],
 	// filter[outbound.outbound_voice_profile_id]
 	Filter CredentialConnectionListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page CredentialConnectionListParamsPage `query:"page,omitzero" json:"-"`
 	// Specifies the sort order for results. By default sorting direction is ascending.
 	// To have the results sorted in descending order add the <code> -</code>
 	// prefix.<br/><br/> That is: <ul>
@@ -1188,25 +1187,6 @@ type CredentialConnectionListParamsFilterConnectionName struct {
 // URLQuery serializes [CredentialConnectionListParamsFilterConnectionName]'s query
 // parameters as `url.Values`.
 func (r CredentialConnectionListParamsFilterConnectionName) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type CredentialConnectionListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [CredentialConnectionListParamsPage]'s query parameters as
-// `url.Values`.
-func (r CredentialConnectionListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

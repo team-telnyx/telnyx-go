@@ -107,10 +107,8 @@ func TestExternalConnectionUploadListWithOptionalParams(t *testing.T) {
 					Eq: []string{"pending_upload", "pending"},
 				},
 			},
-			Page: telnyx.ExternalConnectionUploadListParamsPage{
-				Number: telnyx.Int(1),
-				Size:   telnyx.Int(1),
-			},
+			PageNumber: telnyx.Int(0),
+			PageSize:   telnyx.Int(0),
 		},
 	)
 	if err != nil {

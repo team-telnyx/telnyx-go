@@ -106,10 +106,8 @@ func TestGlobalIPAssignmentListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.GlobalIPAssignments.List(context.TODO(), telnyx.GlobalIPAssignmentListParams{
-		Page: telnyx.GlobalIPAssignmentListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
