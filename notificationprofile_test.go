@@ -108,8 +108,10 @@ func TestNotificationProfileListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.NotificationProfiles.List(context.TODO(), telnyx.NotificationProfileListParams{
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
+		Page: telnyx.NotificationProfileListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

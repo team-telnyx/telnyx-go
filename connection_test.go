@@ -57,9 +57,11 @@ func TestConnectionListWithOptionalParams(t *testing.T) {
 			Fqdn:                   telnyx.String("fqdn"),
 			OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
 		},
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
-		Sort:       telnyx.ConnectionListParamsSortConnectionName,
+		Page: telnyx.ConnectionListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
+		Sort: telnyx.ConnectionListParamsSortConnectionName,
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -87,6 +89,11 @@ func TestConnectionListActiveCallsWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"1293384261075731461",
 		telnyx.ConnectionListActiveCallsParams{
+			Page: telnyx.ConnectionListActiveCallsParamsPage{
+				After:  telnyx.String("after"),
+				Before: telnyx.String("before"),
+				Limit:  telnyx.Int(1),
+			},
 			PageNumber: telnyx.Int(0),
 			PageSize:   telnyx.Int(0),
 		},

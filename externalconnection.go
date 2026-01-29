@@ -89,7 +89,7 @@ func (r *ExternalConnectionService) Update(ctx context.Context, id string, body 
 // attribute of the response. External Connections are used by Telnyx customers to
 // seamless configure SIP trunking integrations with Telnyx Partners, through
 // External Voice Integrations in Mission Control Portal.
-func (r *ExternalConnectionService) List(ctx context.Context, query ExternalConnectionListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[ExternalConnection], err error) {
+func (r *ExternalConnectionService) List(ctx context.Context, query ExternalConnectionListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[ExternalConnection], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -110,8 +110,8 @@ func (r *ExternalConnectionService) List(ctx context.Context, query ExternalConn
 // attribute of the response. External Connections are used by Telnyx customers to
 // seamless configure SIP trunking integrations with Telnyx Partners, through
 // External Voice Integrations in Mission Control Portal.
-func (r *ExternalConnectionService) ListAutoPaging(ctx context.Context, query ExternalConnectionListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[ExternalConnection] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *ExternalConnectionService) ListAutoPaging(ctx context.Context, query ExternalConnectionListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[ExternalConnection] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Permanently deletes an External Connection. Deletion may be prevented if the
@@ -514,11 +514,12 @@ func (r *ExternalConnectionUpdateParamsInbound) UnmarshalJSON(data []byte) error
 }
 
 type ExternalConnectionListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Filter parameter for external connections (deepObject style). Supports filtering
 	// by connection_name, external_sip_connection, id, created_at, and phone_number.
 	Filter ExternalConnectionListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page ExternalConnectionListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -590,6 +591,25 @@ type ExternalConnectionListParamsFilterPhoneNumber struct {
 // URLQuery serializes [ExternalConnectionListParamsFilterPhoneNumber]'s query
 // parameters as `url.Values`.
 func (r ExternalConnectionListParamsFilterPhoneNumber) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type ExternalConnectionListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ExternalConnectionListParamsPage]'s query parameters as
+// `url.Values`.
+func (r ExternalConnectionListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

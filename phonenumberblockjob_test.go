@@ -54,9 +54,11 @@ func TestPhoneNumberBlockJobListWithOptionalParams(t *testing.T) {
 			Status: "in_progress",
 			Type:   "delete_phone_number_block",
 		},
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
-		Sort:       telnyx.PhoneNumberBlockJobListParamsSortCreatedAt,
+		Page: telnyx.PhoneNumberBlockJobListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
+		Sort: telnyx.PhoneNumberBlockJobListParamsSortCreatedAt,
 	})
 	if err != nil {
 		var apierr *telnyx.Error

@@ -118,7 +118,7 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 		StreamURL:                          telnyx.String("wss://www.example.com/websocket"),
 		SuperviseCallControlID:             telnyx.String("v3:MdI91X4lWFEs7IgbBEOT9M4AigoY08M0WWZFISt1Yw2axZ_IiE4pqg"),
 		SupervisorRole:                     telnyx.CallDialParamsSupervisorRoleBarge,
-		TimeLimitSecs:                      telnyx.Int(600),
+		TimeLimitSecs:                      telnyx.Int(60),
 		TimeoutSecs:                        telnyx.Int(60),
 		Transcription:                      telnyx.Bool(true),
 		TranscriptionConfig: telnyx.TranscriptionStartRequestParam{

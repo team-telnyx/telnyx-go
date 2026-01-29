@@ -77,8 +77,10 @@ func TestRoomSessionList0WithOptionalParams(t *testing.T) {
 			RoomID: telnyx.String("0ccc7b54-4df3-4bca-a65a-3da1ecc777f0"),
 		},
 		IncludeParticipants: telnyx.Bool(true),
-		PageNumber:          telnyx.Int(0),
-		PageSize:            telnyx.Int(0),
+		Page: telnyx.RoomSessionList0ParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -125,8 +127,10 @@ func TestRoomSessionList1WithOptionalParams(t *testing.T) {
 				},
 			},
 			IncludeParticipants: telnyx.Bool(true),
-			PageNumber:          telnyx.Int(0),
-			PageSize:            telnyx.Int(0),
+			Page: telnyx.RoomSessionList1ParamsPage{
+				Number: telnyx.Int(1),
+				Size:   telnyx.Int(1),
+			},
 		},
 	)
 	if err != nil {
@@ -173,8 +177,10 @@ func TestRoomSessionGetParticipantsWithOptionalParams(t *testing.T) {
 					Lte: telnyx.Time(time.Now()),
 				},
 			},
-			PageNumber: telnyx.Int(0),
-			PageSize:   telnyx.Int(0),
+			Page: telnyx.RoomSessionGetParticipantsParamsPage{
+				Number: telnyx.Int(1),
+				Size:   telnyx.Int(1),
+			},
 		},
 	)
 	if err != nil {

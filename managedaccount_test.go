@@ -119,9 +119,11 @@ func TestManagedAccountListWithOptionalParams(t *testing.T) {
 			},
 		},
 		IncludeCancelledAccounts: telnyx.Bool(true),
-		PageNumber:               telnyx.Int(0),
-		PageSize:                 telnyx.Int(0),
-		Sort:                     telnyx.ManagedAccountListParamsSortEmail,
+		Page: telnyx.ManagedAccountListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
+		Sort: telnyx.ManagedAccountListParamsSortEmail,
 	})
 	if err != nil {
 		var apierr *telnyx.Error

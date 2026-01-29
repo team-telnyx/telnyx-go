@@ -78,7 +78,7 @@ func (r *FaxApplicationService) Update(ctx context.Context, id string, body FaxA
 // attribute of the response. You can adjust which applications are listed by using
 // filters. Fax Applications are used to configure how you send and receive faxes
 // using the Programmable Fax API with Telnyx.
-func (r *FaxApplicationService) List(ctx context.Context, query FaxApplicationListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[FaxApplication], err error) {
+func (r *FaxApplicationService) List(ctx context.Context, query FaxApplicationListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[FaxApplication], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -99,8 +99,8 @@ func (r *FaxApplicationService) List(ctx context.Context, query FaxApplicationLi
 // attribute of the response. You can adjust which applications are listed by using
 // filters. Fax Applications are used to configure how you send and receive faxes
 // using the Programmable Fax API with Telnyx.
-func (r *FaxApplicationService) ListAutoPaging(ctx context.Context, query FaxApplicationListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[FaxApplication] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *FaxApplicationService) ListAutoPaging(ctx context.Context, query FaxApplicationListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[FaxApplication] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Permanently deletes a Fax Application. Deletion may be prevented if the
@@ -471,11 +471,12 @@ func (r *FaxApplicationUpdateParamsOutbound) UnmarshalJSON(data []byte) error {
 }
 
 type FaxApplicationListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[application_name][contains], filter[outbound_voice_profile_id]
 	Filter FaxApplicationListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page FaxApplicationListParamsPage `query:"page,omitzero" json:"-"`
 	// Specifies the sort order for results. By default sorting direction is ascending.
 	// To have the results sorted in descending order add the <code> -</code>
 	// prefix.<br/><br/> That is: <ul>
@@ -537,6 +538,25 @@ type FaxApplicationListParamsFilterApplicationName struct {
 // URLQuery serializes [FaxApplicationListParamsFilterApplicationName]'s query
 // parameters as `url.Values`.
 func (r FaxApplicationListParamsFilterApplicationName) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type FaxApplicationListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [FaxApplicationListParamsPage]'s query parameters as
+// `url.Values`.
+func (r FaxApplicationListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

@@ -63,8 +63,10 @@ func TestRecordingListWithOptionalParams(t *testing.T) {
 			SipCallID: telnyx.String("428c31b6-7af4-4bcb-b7f5-5013ef9657c1"),
 			To:        telnyx.String("1234567890"),
 		},
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
+		Page: telnyx.RecordingListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

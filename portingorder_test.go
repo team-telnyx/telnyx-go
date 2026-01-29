@@ -198,8 +198,10 @@ func TestPortingOrderListWithOptionalParams(t *testing.T) {
 			},
 		},
 		IncludePhoneNumbers: telnyx.Bool(true),
-		PageNumber:          telnyx.Int(0),
-		PageSize:            telnyx.Int(0),
+		Page: telnyx.PortingOrderListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
 		Sort: telnyx.PortingOrderListParamsSort{
 			Value: "created_at",
 		},
@@ -339,8 +341,10 @@ func TestPortingOrderGetRequirementsWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.PortingOrderGetRequirementsParams{
-			PageNumber: telnyx.Int(0),
-			PageSize:   telnyx.Int(0),
+			Page: telnyx.PortingOrderGetRequirementsParamsPage{
+				Number: telnyx.Int(1),
+				Size:   telnyx.Int(1),
+			},
 		},
 	)
 	if err != nil {

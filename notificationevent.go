@@ -38,7 +38,7 @@ func NewNotificationEventService(opts ...option.RequestOption) (r NotificationEv
 }
 
 // Returns a list of your notifications events.
-func (r *NotificationEventService) List(ctx context.Context, query NotificationEventListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[NotificationEventListResponse], err error) {
+func (r *NotificationEventService) List(ctx context.Context, query NotificationEventListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[NotificationEventListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -56,8 +56,8 @@ func (r *NotificationEventService) List(ctx context.Context, query NotificationE
 }
 
 // Returns a list of your notifications events.
-func (r *NotificationEventService) ListAutoPaging(ctx context.Context, query NotificationEventListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[NotificationEventListResponse] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *NotificationEventService) ListAutoPaging(ctx context.Context, query NotificationEventListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[NotificationEventListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // An object representing the available notifications.
@@ -92,14 +92,34 @@ func (r *NotificationEventListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type NotificationEventListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page NotificationEventListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [NotificationEventListParams]'s query parameters as
 // `url.Values`.
 func (r NotificationEventListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type NotificationEventListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [NotificationEventListParamsPage]'s query parameters as
+// `url.Values`.
+func (r NotificationEventListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

@@ -75,7 +75,7 @@ func (r *NetworkService) Update(ctx context.Context, networkID string, body Netw
 }
 
 // List all Networks.
-func (r *NetworkService) List(ctx context.Context, query NetworkListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[NetworkListResponse], err error) {
+func (r *NetworkService) List(ctx context.Context, query NetworkListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[NetworkListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -93,8 +93,8 @@ func (r *NetworkService) List(ctx context.Context, query NetworkListParams, opts
 }
 
 // List all Networks.
-func (r *NetworkService) ListAutoPaging(ctx context.Context, query NetworkListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[NetworkListResponse] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *NetworkService) ListAutoPaging(ctx context.Context, query NetworkListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[NetworkListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a Network.
@@ -110,7 +110,7 @@ func (r *NetworkService) Delete(ctx context.Context, id string, opts ...option.R
 }
 
 // List all Interfaces for a Network.
-func (r *NetworkService) ListInterfaces(ctx context.Context, id string, query NetworkListInterfacesParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[NetworkListInterfacesResponse], err error) {
+func (r *NetworkService) ListInterfaces(ctx context.Context, id string, query NetworkListInterfacesParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[NetworkListInterfacesResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -132,8 +132,8 @@ func (r *NetworkService) ListInterfaces(ctx context.Context, id string, query Ne
 }
 
 // List all Interfaces for a Network.
-func (r *NetworkService) ListInterfacesAutoPaging(ctx context.Context, id string, query NetworkListInterfacesParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[NetworkListInterfacesResponse] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.ListInterfaces(ctx, id, query, opts...))
+func (r *NetworkService) ListInterfacesAutoPaging(ctx context.Context, id string, query NetworkListInterfacesParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[NetworkListInterfacesResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.ListInterfaces(ctx, id, query, opts...))
 }
 
 // The current status of the interface deployment.
@@ -389,10 +389,11 @@ func (r *NetworkUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type NetworkListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[name]
 	Filter NetworkListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page NetworkListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -420,12 +421,31 @@ func (r NetworkListParamsFilter) URLQuery() (v url.Values, err error) {
 	})
 }
 
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type NetworkListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [NetworkListParamsPage]'s query parameters as `url.Values`.
+func (r NetworkListParamsPage) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
 type NetworkListInterfacesParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[name],
 	// filter[type], filter[status]
 	Filter NetworkListInterfacesParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page NetworkListInterfacesParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -451,6 +471,25 @@ type NetworkListInterfacesParamsFilter struct {
 // URLQuery serializes [NetworkListInterfacesParamsFilter]'s query parameters as
 // `url.Values`.
 func (r NetworkListInterfacesParamsFilter) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type NetworkListInterfacesParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [NetworkListInterfacesParamsPage]'s query parameters as
+// `url.Values`.
+func (r NetworkListInterfacesParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

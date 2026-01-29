@@ -74,7 +74,7 @@ func (r *NotificationChannelService) Update(ctx context.Context, notificationCha
 }
 
 // List notification channels.
-func (r *NotificationChannelService) List(ctx context.Context, query NotificationChannelListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[NotificationChannel], err error) {
+func (r *NotificationChannelService) List(ctx context.Context, query NotificationChannelListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[NotificationChannel], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -92,8 +92,8 @@ func (r *NotificationChannelService) List(ctx context.Context, query Notificatio
 }
 
 // List notification channels.
-func (r *NotificationChannelService) ListAutoPaging(ctx context.Context, query NotificationChannelListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[NotificationChannel] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *NotificationChannelService) ListAutoPaging(ctx context.Context, query NotificationChannelListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[NotificationChannel] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a notification channel.
@@ -278,13 +278,14 @@ func (r *NotificationChannelUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type NotificationChannelListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[associated_record_type][eq], filter[channel_type_id][eq],
 	// filter[notification_profile_id][eq], filter[notification_channel][eq],
 	// filter[notification_event_condition_id][eq], filter[status][eq]
 	Filter NotificationChannelListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page NotificationChannelListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -412,6 +413,25 @@ type NotificationChannelListParamsFilterStatus struct {
 // URLQuery serializes [NotificationChannelListParamsFilterStatus]'s query
 // parameters as `url.Values`.
 func (r NotificationChannelListParamsFilterStatus) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type NotificationChannelListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [NotificationChannelListParamsPage]'s query parameters as
+// `url.Values`.
+func (r NotificationChannelListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

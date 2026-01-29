@@ -71,7 +71,7 @@ func (r *TelephonyCredentialService) Update(ctx context.Context, id string, body
 }
 
 // List all On-demand Credentials.
-func (r *TelephonyCredentialService) List(ctx context.Context, query TelephonyCredentialListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[TelephonyCredential], err error) {
+func (r *TelephonyCredentialService) List(ctx context.Context, query TelephonyCredentialListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[TelephonyCredential], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -89,8 +89,8 @@ func (r *TelephonyCredentialService) List(ctx context.Context, query TelephonyCr
 }
 
 // List all On-demand Credentials.
-func (r *TelephonyCredentialService) ListAutoPaging(ctx context.Context, query TelephonyCredentialListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[TelephonyCredential] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *TelephonyCredentialService) ListAutoPaging(ctx context.Context, query TelephonyCredentialListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[TelephonyCredential] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete an existing credential.
@@ -264,11 +264,12 @@ func (r *TelephonyCredentialUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type TelephonyCredentialListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[tag],
 	// filter[name], filter[status], filter[resource_id], filter[sip_username]
 	Filter TelephonyCredentialListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page TelephonyCredentialListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -300,6 +301,25 @@ type TelephonyCredentialListParamsFilter struct {
 // URLQuery serializes [TelephonyCredentialListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r TelephonyCredentialListParamsFilter) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type TelephonyCredentialListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [TelephonyCredentialListParamsPage]'s query parameters as
+// `url.Values`.
+func (r TelephonyCredentialListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

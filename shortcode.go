@@ -66,7 +66,7 @@ func (r *ShortCodeService) Update(ctx context.Context, id string, body ShortCode
 }
 
 // List short codes
-func (r *ShortCodeService) List(ctx context.Context, query ShortCodeListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[shared.ShortCode], err error) {
+func (r *ShortCodeService) List(ctx context.Context, query ShortCodeListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[shared.ShortCode], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -84,8 +84,8 @@ func (r *ShortCodeService) List(ctx context.Context, query ShortCodeListParams, 
 }
 
 // List short codes
-func (r *ShortCodeService) ListAutoPaging(ctx context.Context, query ShortCodeListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[shared.ShortCode] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *ShortCodeService) ListAutoPaging(ctx context.Context, query ShortCodeListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[shared.ShortCode] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type ShortCodeGetResponse struct {
@@ -136,11 +136,12 @@ func (r *ShortCodeUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type ShortCodeListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[messaging_profile_id]
 	Filter ShortCodeListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page ShortCodeListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -165,6 +166,25 @@ type ShortCodeListParamsFilter struct {
 // URLQuery serializes [ShortCodeListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r ShortCodeListParamsFilter) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type ShortCodeListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ShortCodeListParamsPage]'s query parameters as
+// `url.Values`.
+func (r ShortCodeListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

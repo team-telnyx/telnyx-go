@@ -104,9 +104,11 @@ func TestSimCardListWithOptionalParams(t *testing.T) {
 		},
 		FilterSimCardGroupID: telnyx.String("47a1c2b0-cc7b-4ab1-bb98-b33fb0fc61b9"),
 		IncludeSimCardGroup:  telnyx.Bool(true),
-		PageNumber:           telnyx.Int(0),
-		PageSize:             telnyx.Int(0),
-		Sort:                 telnyx.SimCardListParamsSortCurrentBillingPeriodConsumedDataAmount,
+		Page: telnyx.SimCardListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
+		Sort: telnyx.SimCardListParamsSortCurrentBillingPeriodConsumedDataAmount,
 	})
 	if err != nil {
 		var apierr *telnyx.Error

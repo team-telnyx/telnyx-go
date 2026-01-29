@@ -249,11 +249,12 @@ func (r *ExternalConnectionLogMessageDismissResponse) UnmarshalJSON(data []byte)
 }
 
 type ExternalConnectionLogMessageListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Filter parameter for log messages (deepObject style). Supports filtering by
 	// external_connection_id and telephone_number with eq/contains operations.
 	Filter ExternalConnectionLogMessageListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page ExternalConnectionLogMessageListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -302,6 +303,25 @@ type ExternalConnectionLogMessageListParamsFilterTelephoneNumber struct {
 // [ExternalConnectionLogMessageListParamsFilterTelephoneNumber]'s query parameters
 // as `url.Values`.
 func (r ExternalConnectionLogMessageListParamsFilterTelephoneNumber) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type ExternalConnectionLogMessageListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ExternalConnectionLogMessageListParamsPage]'s query
+// parameters as `url.Values`.
+func (r ExternalConnectionLogMessageListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

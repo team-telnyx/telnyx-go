@@ -32,9 +32,11 @@ func TestAuditEventListWithOptionalParams(t *testing.T) {
 			CreatedAfter:  telnyx.Time(time.Now()),
 			CreatedBefore: telnyx.Time(time.Now()),
 		},
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
-		Sort:       telnyx.AuditEventListParamsSortDesc,
+		Page: telnyx.AuditEventListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(10),
+		},
+		Sort: telnyx.AuditEventListParamsSortDesc,
 	})
 	if err != nil {
 		var apierr *telnyx.Error
