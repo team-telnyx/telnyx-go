@@ -89,6 +89,11 @@ func TestQueueCallListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"queue_name",
 		telnyx.QueueCallListParams{
+			Page: telnyx.QueueCallListParamsPage{
+				After:  telnyx.String("after"),
+				Before: telnyx.String("before"),
+				Limit:  telnyx.Int(1),
+			},
 			PageNumber: telnyx.Int(0),
 			PageSize:   telnyx.Int(0),
 		},

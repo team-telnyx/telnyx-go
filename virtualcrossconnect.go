@@ -82,7 +82,7 @@ func (r *VirtualCrossConnectService) Update(ctx context.Context, id string, body
 }
 
 // List all Virtual Cross Connects.
-func (r *VirtualCrossConnectService) List(ctx context.Context, query VirtualCrossConnectListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[VirtualCrossConnectListResponse], err error) {
+func (r *VirtualCrossConnectService) List(ctx context.Context, query VirtualCrossConnectListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[VirtualCrossConnectListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -100,8 +100,8 @@ func (r *VirtualCrossConnectService) List(ctx context.Context, query VirtualCros
 }
 
 // List all Virtual Cross Connects.
-func (r *VirtualCrossConnectService) ListAutoPaging(ctx context.Context, query VirtualCrossConnectListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[VirtualCrossConnectListResponse] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *VirtualCrossConnectService) ListAutoPaging(ctx context.Context, query VirtualCrossConnectListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[VirtualCrossConnectListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a Virtual Cross Connect.
@@ -866,10 +866,11 @@ func (r *VirtualCrossConnectUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type VirtualCrossConnectListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[network_id]
 	Filter VirtualCrossConnectListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page VirtualCrossConnectListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -892,6 +893,25 @@ type VirtualCrossConnectListParamsFilter struct {
 // URLQuery serializes [VirtualCrossConnectListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r VirtualCrossConnectListParamsFilter) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type VirtualCrossConnectListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [VirtualCrossConnectListParamsPage]'s query parameters as
+// `url.Values`.
+func (r VirtualCrossConnectListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

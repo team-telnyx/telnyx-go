@@ -37,7 +37,7 @@ func NewDocumentLinkService(opts ...option.RequestOption) (r DocumentLinkService
 }
 
 // List all documents links ordered by created_at descending.
-func (r *DocumentLinkService) List(ctx context.Context, query DocumentLinkListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[DocumentLinkListResponse], err error) {
+func (r *DocumentLinkService) List(ctx context.Context, query DocumentLinkListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[DocumentLinkListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -55,8 +55,8 @@ func (r *DocumentLinkService) List(ctx context.Context, query DocumentLinkListPa
 }
 
 // List all documents links ordered by created_at descending.
-func (r *DocumentLinkService) ListAutoPaging(ctx context.Context, query DocumentLinkListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[DocumentLinkListResponse] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *DocumentLinkService) ListAutoPaging(ctx context.Context, query DocumentLinkListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[DocumentLinkListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type DocumentLinkListResponse struct {
@@ -95,11 +95,12 @@ func (r *DocumentLinkListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type DocumentLinkListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter for document links (deepObject style). Originally:
 	// filter[linked_record_type], filter[linked_resource_id]
 	Filter DocumentLinkListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page DocumentLinkListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -124,6 +125,25 @@ type DocumentLinkListParamsFilter struct {
 // URLQuery serializes [DocumentLinkListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r DocumentLinkListParamsFilter) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type DocumentLinkListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [DocumentLinkListParamsPage]'s query parameters as
+// `url.Values`.
+func (r DocumentLinkListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

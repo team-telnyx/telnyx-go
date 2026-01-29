@@ -622,6 +622,9 @@ type CallControlApplicationListParams struct {
 	// filter[product], filter[failed], filter[from], filter[to], filter[name],
 	// filter[type], filter[occurred_at][eq/gt/gte/lt/lte], filter[status]
 	Filter CallControlApplicationListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[after],
+	// page[before], page[limit], page[size], page[number]
+	Page CallControlApplicationListParamsPage `query:"page,omitzero" json:"-"`
 	// Specifies the sort order for results. By default sorting direction is ascending.
 	// To have the results sorted in descending order add the <code> -</code>
 	// prefix.<br/><br/> That is: <ul>
@@ -740,6 +743,27 @@ type CallControlApplicationListParamsFilterOccurredAt struct {
 // URLQuery serializes [CallControlApplicationListParamsFilterOccurredAt]'s query
 // parameters as `url.Values`.
 func (r CallControlApplicationListParamsFilterOccurredAt) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[after],
+// page[before], page[limit], page[size], page[number]
+type CallControlApplicationListParamsPage struct {
+	// Opaque identifier of next page
+	After param.Opt[string] `query:"after,omitzero" json:"-"`
+	// Opaque identifier of previous page
+	Before param.Opt[string] `query:"before,omitzero" json:"-"`
+	// Limit of records per single page
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [CallControlApplicationListParamsPage]'s query parameters as
+// `url.Values`.
+func (r CallControlApplicationListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

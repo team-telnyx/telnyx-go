@@ -115,6 +115,11 @@ func TestConferenceListWithOptionalParams(t *testing.T) {
 			To:                             telnyx.String("+12025550142"),
 			Type:                           "webhook",
 		},
+		Page: telnyx.ConferenceListParamsPage{
+			After:  telnyx.String("after"),
+			Before: telnyx.String("before"),
+			Limit:  telnyx.Int(1),
+		},
 		PageNumber: telnyx.Int(0),
 		PageSize:   telnyx.Int(0),
 		Region:     telnyx.ConferenceListParamsRegionAustralia,
@@ -149,6 +154,11 @@ func TestConferenceListParticipantsWithOptionalParams(t *testing.T) {
 				Muted:      telnyx.Bool(true),
 				OnHold:     telnyx.Bool(true),
 				Whispering: telnyx.Bool(true),
+			},
+			Page: telnyx.ConferenceListParticipantsParamsPage{
+				After:  telnyx.String("after"),
+				Before: telnyx.String("before"),
+				Limit:  telnyx.Int(1),
 			},
 			PageNumber: telnyx.Int(0),
 			PageSize:   telnyx.Int(0),

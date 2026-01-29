@@ -265,11 +265,35 @@ func (r *QueueCallUpdateParams) UnmarshalJSON(data []byte) error {
 type QueueCallListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[after],
+	// page[before], page[limit], page[size], page[number]
+	Page QueueCallListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [QueueCallListParams]'s query parameters as `url.Values`.
 func (r QueueCallListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[after],
+// page[before], page[limit], page[size], page[number]
+type QueueCallListParamsPage struct {
+	// Opaque identifier of next page
+	After param.Opt[string] `query:"after,omitzero" json:"-"`
+	// Opaque identifier of previous page
+	Before param.Opt[string] `query:"before,omitzero" json:"-"`
+	// Limit of records per single page
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [QueueCallListParamsPage]'s query parameters as
+// `url.Values`.
+func (r QueueCallListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

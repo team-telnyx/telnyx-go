@@ -39,7 +39,7 @@ func NewVirtualCrossConnectsCoverageService(opts ...option.RequestOption) (r Vir
 // List Virtual Cross Connects Cloud Coverage.<br /><br />This endpoint shows which
 // cloud regions are available for the `location_code` your Virtual Cross Connect
 // will be provisioned in.
-func (r *VirtualCrossConnectsCoverageService) List(ctx context.Context, query VirtualCrossConnectsCoverageListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[VirtualCrossConnectsCoverageListResponse], err error) {
+func (r *VirtualCrossConnectsCoverageService) List(ctx context.Context, query VirtualCrossConnectsCoverageListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[VirtualCrossConnectsCoverageListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -59,8 +59,8 @@ func (r *VirtualCrossConnectsCoverageService) List(ctx context.Context, query Vi
 // List Virtual Cross Connects Cloud Coverage.<br /><br />This endpoint shows which
 // cloud regions are available for the `location_code` your Virtual Cross Connect
 // will be provisioned in.
-func (r *VirtualCrossConnectsCoverageService) ListAutoPaging(ctx context.Context, query VirtualCrossConnectsCoverageListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[VirtualCrossConnectsCoverageListResponse] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *VirtualCrossConnectsCoverageService) ListAutoPaging(ctx context.Context, query VirtualCrossConnectsCoverageListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[VirtualCrossConnectsCoverageListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type VirtualCrossConnectsCoverageListResponse struct {
@@ -137,8 +137,6 @@ func (r *VirtualCrossConnectsCoverageListResponseLocation) UnmarshalJSON(data []
 }
 
 type VirtualCrossConnectsCoverageListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[cloud_provider], filter[cloud_provider_region], filter[location.region],
 	// filter[location.site], filter[location.pop], filter[location.code]
@@ -146,6 +144,9 @@ type VirtualCrossConnectsCoverageListParams struct {
 	// Consolidated filters parameter (deepObject style). Originally:
 	// filters[available_bandwidth][contains]
 	Filters VirtualCrossConnectsCoverageListParamsFilters `query:"filters,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page VirtualCrossConnectsCoverageListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -234,6 +235,25 @@ type VirtualCrossConnectsCoverageListParamsFiltersAvailableBandwidthContains str
 // [VirtualCrossConnectsCoverageListParamsFiltersAvailableBandwidthContains]'s
 // query parameters as `url.Values`.
 func (r VirtualCrossConnectsCoverageListParamsFiltersAvailableBandwidthContains) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type VirtualCrossConnectsCoverageListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [VirtualCrossConnectsCoverageListParamsPage]'s query
+// parameters as `url.Values`.
+func (r VirtualCrossConnectsCoverageListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

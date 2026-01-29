@@ -62,7 +62,7 @@ func (r *MessagingHostedNumberOrderService) Get(ctx context.Context, id string, 
 }
 
 // List messaging hosted number orders
-func (r *MessagingHostedNumberOrderService) List(ctx context.Context, query MessagingHostedNumberOrderListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[shared.MessagingHostedNumberOrder], err error) {
+func (r *MessagingHostedNumberOrderService) List(ctx context.Context, query MessagingHostedNumberOrderListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[shared.MessagingHostedNumberOrder], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -80,8 +80,8 @@ func (r *MessagingHostedNumberOrderService) List(ctx context.Context, query Mess
 }
 
 // List messaging hosted number orders
-func (r *MessagingHostedNumberOrderService) ListAutoPaging(ctx context.Context, query MessagingHostedNumberOrderListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[shared.MessagingHostedNumberOrder] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *MessagingHostedNumberOrderService) ListAutoPaging(ctx context.Context, query MessagingHostedNumberOrderListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[shared.MessagingHostedNumberOrder] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a messaging hosted number order and all associated phone numbers.
@@ -350,14 +350,34 @@ func (r *MessagingHostedNumberOrderNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type MessagingHostedNumberOrderListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page MessagingHostedNumberOrderListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [MessagingHostedNumberOrderListParams]'s query parameters as
 // `url.Values`.
 func (r MessagingHostedNumberOrderListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type MessagingHostedNumberOrderListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [MessagingHostedNumberOrderListParamsPage]'s query
+// parameters as `url.Values`.
+func (r MessagingHostedNumberOrderListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

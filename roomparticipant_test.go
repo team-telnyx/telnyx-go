@@ -70,8 +70,10 @@ func TestRoomParticipantListWithOptionalParams(t *testing.T) {
 			},
 			SessionID: telnyx.String("0ccc7b54-4df3-4bca-a65a-3da1ecc777f0"),
 		},
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
+		Page: telnyx.RoomParticipantListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

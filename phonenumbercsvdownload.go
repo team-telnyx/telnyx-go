@@ -59,7 +59,7 @@ func (r *PhoneNumberCsvDownloadService) Get(ctx context.Context, id string, opts
 }
 
 // List CSV downloads
-func (r *PhoneNumberCsvDownloadService) List(ctx context.Context, query PhoneNumberCsvDownloadListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[CsvDownload], err error) {
+func (r *PhoneNumberCsvDownloadService) List(ctx context.Context, query PhoneNumberCsvDownloadListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[CsvDownload], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -77,8 +77,8 @@ func (r *PhoneNumberCsvDownloadService) List(ctx context.Context, query PhoneNum
 }
 
 // List CSV downloads
-func (r *PhoneNumberCsvDownloadService) ListAutoPaging(ctx context.Context, query PhoneNumberCsvDownloadListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[CsvDownload] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *PhoneNumberCsvDownloadService) ListAutoPaging(ctx context.Context, query PhoneNumberCsvDownloadListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[CsvDownload] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type CsvDownload struct {
@@ -257,14 +257,34 @@ func (r PhoneNumberCsvDownloadNewParamsFilterVoiceConnectionName) URLQuery() (v 
 }
 
 type PhoneNumberCsvDownloadListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page PhoneNumberCsvDownloadListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [PhoneNumberCsvDownloadListParams]'s query parameters as
 // `url.Values`.
 func (r PhoneNumberCsvDownloadListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type PhoneNumberCsvDownloadListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [PhoneNumberCsvDownloadListParamsPage]'s query parameters as
+// `url.Values`.
+func (r PhoneNumberCsvDownloadListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

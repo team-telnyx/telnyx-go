@@ -74,8 +74,10 @@ func TestExternalConnectionReleaseListWithOptionalParams(t *testing.T) {
 					Eq: []string{"pending", "in_progress"},
 				},
 			},
-			PageNumber: telnyx.Int(0),
-			PageSize:   telnyx.Int(0),
+			Page: telnyx.ExternalConnectionReleaseListParamsPage{
+				Number: telnyx.Int(1),
+				Size:   telnyx.Int(1),
+			},
 		},
 	)
 	if err != nil {

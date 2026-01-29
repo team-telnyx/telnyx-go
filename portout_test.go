@@ -71,8 +71,10 @@ func TestPortoutListWithOptionalParams(t *testing.T) {
 			StatusIn:   []string{"pending"},
 			SupportKey: telnyx.String("PO_abc123"),
 		},
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
+		Page: telnyx.PortoutListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

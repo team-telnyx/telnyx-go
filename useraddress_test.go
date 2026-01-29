@@ -97,9 +97,11 @@ func TestUserAddressListWithOptionalParams(t *testing.T) {
 				Contains: telnyx.String("contains"),
 			},
 		},
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
-		Sort:       telnyx.UserAddressListParamsSortStreetAddress,
+		Page: telnyx.UserAddressListParamsPage{
+			Number: telnyx.Int(1),
+			Size:   telnyx.Int(1),
+		},
+		Sort: telnyx.UserAddressListParamsSortStreetAddress,
 	})
 	if err != nil {
 		var apierr *telnyx.Error

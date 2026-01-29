@@ -101,8 +101,10 @@ func TestExternalConnectionPhoneNumberListWithOptionalParams(t *testing.T) {
 					Eq:       telnyx.String("+19705555098"),
 				},
 			},
-			PageNumber: telnyx.Int(0),
-			PageSize:   telnyx.Int(0),
+			Page: telnyx.ExternalConnectionPhoneNumberListParamsPage{
+				Number: telnyx.Int(1),
+				Size:   telnyx.Int(1),
+			},
 		},
 	)
 	if err != nil {

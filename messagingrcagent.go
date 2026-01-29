@@ -62,7 +62,7 @@ func (r *MessagingRcAgentService) Update(ctx context.Context, id string, body Me
 }
 
 // List all RCS agents
-func (r *MessagingRcAgentService) List(ctx context.Context, query MessagingRcAgentListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[RcsAgent], err error) {
+func (r *MessagingRcAgentService) List(ctx context.Context, query MessagingRcAgentListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[RcsAgent], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -80,8 +80,8 @@ func (r *MessagingRcAgentService) List(ctx context.Context, query MessagingRcAge
 }
 
 // List all RCS agents
-func (r *MessagingRcAgentService) ListAutoPaging(ctx context.Context, query MessagingRcAgentListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[RcsAgent] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *MessagingRcAgentService) ListAutoPaging(ctx context.Context, query MessagingRcAgentListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[RcsAgent] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type MessagingRcAgentUpdateParams struct {
@@ -103,14 +103,34 @@ func (r *MessagingRcAgentUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type MessagingRcAgentListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page MessagingRcAgentListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [MessagingRcAgentListParams]'s query parameters as
 // `url.Values`.
 func (r MessagingRcAgentListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type MessagingRcAgentListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [MessagingRcAgentListParamsPage]'s query parameters as
+// `url.Values`.
+func (r MessagingRcAgentListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

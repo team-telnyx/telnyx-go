@@ -52,7 +52,7 @@ func (r *ConnectionService) Get(ctx context.Context, id string, opts ...option.R
 }
 
 // Returns a list of your connections irrespective of type.
-func (r *ConnectionService) List(ctx context.Context, query ConnectionListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[ConnectionListResponse], err error) {
+func (r *ConnectionService) List(ctx context.Context, query ConnectionListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[ConnectionListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -70,8 +70,8 @@ func (r *ConnectionService) List(ctx context.Context, query ConnectionListParams
 }
 
 // Returns a list of your connections irrespective of type.
-func (r *ConnectionService) ListAutoPaging(ctx context.Context, query ConnectionListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[ConnectionListResponse] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *ConnectionService) ListAutoPaging(ctx context.Context, query ConnectionListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[ConnectionListResponse] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Lists all active calls for given connection. Acceptable connections are either
@@ -286,12 +286,13 @@ const (
 )
 
 type ConnectionListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[connection_name], filter[fqdn], filter[outbound_voice_profile_id],
 	// filter[outbound.outbound_voice_profile_id]
 	Filter ConnectionListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[size],
+	// page[number]
+	Page ConnectionListParamsPage `query:"page,omitzero" json:"-"`
 	// Specifies the sort order for results. By default sorting direction is ascending.
 	// To have the results sorted in descending order add the <code> -</code>
 	// prefix.<br/><br/> That is: <ul>
@@ -362,6 +363,25 @@ func (r ConnectionListParamsFilterConnectionName) URLQuery() (v url.Values, err 
 	})
 }
 
+// Consolidated page parameter (deepObject style). Originally: page[size],
+// page[number]
+type ConnectionListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ConnectionListParamsPage]'s query parameters as
+// `url.Values`.
+func (r ConnectionListParamsPage) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
 // Specifies the sort order for results. By default sorting direction is ascending.
 // To have the results sorted in descending order add the <code> -</code>
 // prefix.<br/><br/> That is: <ul>
@@ -388,12 +408,36 @@ const (
 type ConnectionListActiveCallsParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[after],
+	// page[before], page[limit], page[size], page[number]
+	Page ConnectionListActiveCallsParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [ConnectionListActiveCallsParams]'s query parameters as
 // `url.Values`.
 func (r ConnectionListActiveCallsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[after],
+// page[before], page[limit], page[size], page[number]
+type ConnectionListActiveCallsParamsPage struct {
+	// Opaque identifier of next page
+	After param.Opt[string] `query:"after,omitzero" json:"-"`
+	// Opaque identifier of previous page
+	Before param.Opt[string] `query:"before,omitzero" json:"-"`
+	// Limit of records per single page
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ConnectionListActiveCallsParamsPage]'s query parameters as
+// `url.Values`.
+func (r ConnectionListActiveCallsParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

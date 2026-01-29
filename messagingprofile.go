@@ -76,7 +76,7 @@ func (r *MessagingProfileService) Update(ctx context.Context, messagingProfileID
 }
 
 // List messaging profiles
-func (r *MessagingProfileService) List(ctx context.Context, query MessagingProfileListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MessagingProfile], err error) {
+func (r *MessagingProfileService) List(ctx context.Context, query MessagingProfileListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[MessagingProfile], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -94,8 +94,8 @@ func (r *MessagingProfileService) List(ctx context.Context, query MessagingProfi
 }
 
 // List messaging profiles
-func (r *MessagingProfileService) ListAutoPaging(ctx context.Context, query MessagingProfileListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MessagingProfile] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *MessagingProfileService) ListAutoPaging(ctx context.Context, query MessagingProfileListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[MessagingProfile] {
+	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a messaging profile
@@ -111,7 +111,7 @@ func (r *MessagingProfileService) Delete(ctx context.Context, messagingProfileID
 }
 
 // List phone numbers associated with a messaging profile
-func (r *MessagingProfileService) ListPhoneNumbers(ctx context.Context, messagingProfileID string, query MessagingProfileListPhoneNumbersParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[shared.PhoneNumberWithMessagingSettings], err error) {
+func (r *MessagingProfileService) ListPhoneNumbers(ctx context.Context, messagingProfileID string, query MessagingProfileListPhoneNumbersParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[shared.PhoneNumberWithMessagingSettings], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -133,12 +133,12 @@ func (r *MessagingProfileService) ListPhoneNumbers(ctx context.Context, messagin
 }
 
 // List phone numbers associated with a messaging profile
-func (r *MessagingProfileService) ListPhoneNumbersAutoPaging(ctx context.Context, messagingProfileID string, query MessagingProfileListPhoneNumbersParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[shared.PhoneNumberWithMessagingSettings] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.ListPhoneNumbers(ctx, messagingProfileID, query, opts...))
+func (r *MessagingProfileService) ListPhoneNumbersAutoPaging(ctx context.Context, messagingProfileID string, query MessagingProfileListPhoneNumbersParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[shared.PhoneNumberWithMessagingSettings] {
+	return pagination.NewDefaultPaginationAutoPager(r.ListPhoneNumbers(ctx, messagingProfileID, query, opts...))
 }
 
 // List short codes associated with a messaging profile
-func (r *MessagingProfileService) ListShortCodes(ctx context.Context, messagingProfileID string, query MessagingProfileListShortCodesParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[shared.ShortCode], err error) {
+func (r *MessagingProfileService) ListShortCodes(ctx context.Context, messagingProfileID string, query MessagingProfileListShortCodesParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[shared.ShortCode], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -160,8 +160,8 @@ func (r *MessagingProfileService) ListShortCodes(ctx context.Context, messagingP
 }
 
 // List short codes associated with a messaging profile
-func (r *MessagingProfileService) ListShortCodesAutoPaging(ctx context.Context, messagingProfileID string, query MessagingProfileListShortCodesParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[shared.ShortCode] {
-	return pagination.NewDefaultFlatPaginationAutoPager(r.ListShortCodes(ctx, messagingProfileID, query, opts...))
+func (r *MessagingProfileService) ListShortCodesAutoPaging(ctx context.Context, messagingProfileID string, query MessagingProfileListShortCodesParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[shared.ShortCode] {
+	return pagination.NewDefaultPaginationAutoPager(r.ListShortCodes(ctx, messagingProfileID, query, opts...))
 }
 
 type MessagingProfile struct {
@@ -683,10 +683,11 @@ const (
 )
 
 type MessagingProfileListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[name]
 	Filter MessagingProfileListParamsFilter `query:"filter,omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page MessagingProfileListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -715,9 +716,29 @@ func (r MessagingProfileListParamsFilter) URLQuery() (v url.Values, err error) {
 	})
 }
 
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type MessagingProfileListParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [MessagingProfileListParamsPage]'s query parameters as
+// `url.Values`.
+func (r MessagingProfileListParamsPage) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
 type MessagingProfileListPhoneNumbersParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page MessagingProfileListPhoneNumbersParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -730,15 +751,54 @@ func (r MessagingProfileListPhoneNumbersParams) URLQuery() (v url.Values, err er
 	})
 }
 
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type MessagingProfileListPhoneNumbersParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [MessagingProfileListPhoneNumbersParamsPage]'s query
+// parameters as `url.Values`.
+func (r MessagingProfileListPhoneNumbersParamsPage) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
 type MessagingProfileListShortCodesParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Consolidated page parameter (deepObject style). Originally: page[number],
+	// page[size]
+	Page MessagingProfileListShortCodesParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [MessagingProfileListShortCodesParams]'s query parameters as
 // `url.Values`.
 func (r MessagingProfileListShortCodesParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Consolidated page parameter (deepObject style). Originally: page[number],
+// page[size]
+type MessagingProfileListShortCodesParamsPage struct {
+	// The page number to load
+	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
+	// The size of the page
+	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [MessagingProfileListShortCodesParamsPage]'s query
+// parameters as `url.Values`.
+func (r MessagingProfileListShortCodesParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
