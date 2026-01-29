@@ -56,10 +56,8 @@ func TestSimCardActionListWithOptionalParams(t *testing.T) {
 			SimCardID:           telnyx.String("47a1c2b0-cc7b-4ab1-bb98-b33fb0fc61b9"),
 			Status:              "in-progress",
 		},
-		Page: telnyx.SimCardActionListParamsPage{
-			Number: telnyx.Int(1),
-			Size:   telnyx.Int(1),
-		},
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

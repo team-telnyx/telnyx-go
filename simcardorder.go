@@ -60,7 +60,7 @@ func (r *SimCardOrderService) Get(ctx context.Context, id string, opts ...option
 }
 
 // Get all SIM card orders according to filters.
-func (r *SimCardOrderService) List(ctx context.Context, query SimCardOrderListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[SimCardOrder], err error) {
+func (r *SimCardOrderService) List(ctx context.Context, query SimCardOrderListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[SimCardOrder], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -78,8 +78,8 @@ func (r *SimCardOrderService) List(ctx context.Context, query SimCardOrderListPa
 }
 
 // Get all SIM card orders according to filters.
-func (r *SimCardOrderService) ListAutoPaging(ctx context.Context, query SimCardOrderListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[SimCardOrder] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *SimCardOrderService) ListAutoPaging(ctx context.Context, query SimCardOrderListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[SimCardOrder] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type SimCardOrder struct {
@@ -269,6 +269,8 @@ func (r *SimCardOrderNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type SimCardOrderListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter for SIM card orders (deepObject style).
 	// Originally: filter[created_at], filter[updated_at], filter[quantity],
 	// filter[cost.amount], filter[cost.currency], filter[address.id],
@@ -276,9 +278,6 @@ type SimCardOrderListParams struct {
 	// filter[address.locality], filter[address.administrative_area],
 	// filter[address.country_code], filter[address.postal_code]
 	Filter SimCardOrderListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated pagination parameter (deepObject style). Originally: page[number],
-	// page[size]
-	Page SimCardOrderListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -331,25 +330,6 @@ type SimCardOrderListParamsFilter struct {
 // URLQuery serializes [SimCardOrderListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r SimCardOrderListParamsFilter) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated pagination parameter (deepObject style). Originally: page[number],
-// page[size]
-type SimCardOrderListParamsPage struct {
-	// The page number to load.
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page.
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [SimCardOrderListParamsPage]'s query parameters as
-// `url.Values`.
-func (r SimCardOrderListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

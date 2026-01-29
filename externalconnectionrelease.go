@@ -57,7 +57,7 @@ func (r *ExternalConnectionReleaseService) Get(ctx context.Context, releaseID st
 // Returns a list of your Releases for the given external connection. These are
 // automatically created when you change the `connection_id` of a phone number that
 // is currently on Microsoft Teams.
-func (r *ExternalConnectionReleaseService) List(ctx context.Context, id string, query ExternalConnectionReleaseListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[ExternalConnectionReleaseListResponse], err error) {
+func (r *ExternalConnectionReleaseService) List(ctx context.Context, id string, query ExternalConnectionReleaseListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[ExternalConnectionReleaseListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -81,8 +81,8 @@ func (r *ExternalConnectionReleaseService) List(ctx context.Context, id string, 
 // Returns a list of your Releases for the given external connection. These are
 // automatically created when you change the `connection_id` of a phone number that
 // is currently on Microsoft Teams.
-func (r *ExternalConnectionReleaseService) ListAutoPaging(ctx context.Context, id string, query ExternalConnectionReleaseListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[ExternalConnectionReleaseListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, id, query, opts...))
+func (r *ExternalConnectionReleaseService) ListAutoPaging(ctx context.Context, id string, query ExternalConnectionReleaseListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[ExternalConnectionReleaseListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, id, query, opts...))
 }
 
 type ExternalConnectionReleaseGetResponse struct {
@@ -226,12 +226,11 @@ type ExternalConnectionReleaseGetParams struct {
 }
 
 type ExternalConnectionReleaseListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Filter parameter for releases (deepObject style). Supports filtering by status,
 	// civic_address_id, location_id, and phone_number with eq/contains operations.
 	Filter ExternalConnectionReleaseListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page ExternalConnectionReleaseListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -326,25 +325,6 @@ type ExternalConnectionReleaseListParamsFilterStatus struct {
 // URLQuery serializes [ExternalConnectionReleaseListParamsFilterStatus]'s query
 // parameters as `url.Values`.
 func (r ExternalConnectionReleaseListParamsFilterStatus) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type ExternalConnectionReleaseListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [ExternalConnectionReleaseListParamsPage]'s query parameters
-// as `url.Values`.
-func (r ExternalConnectionReleaseListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

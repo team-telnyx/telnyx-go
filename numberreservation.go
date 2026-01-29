@@ -63,7 +63,7 @@ func (r *NumberReservationService) Get(ctx context.Context, numberReservationID 
 }
 
 // Gets a paginated list of phone number reservations.
-func (r *NumberReservationService) List(ctx context.Context, query NumberReservationListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[NumberReservation], err error) {
+func (r *NumberReservationService) List(ctx context.Context, query NumberReservationListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[NumberReservation], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -81,8 +81,8 @@ func (r *NumberReservationService) List(ctx context.Context, query NumberReserva
 }
 
 // Gets a paginated list of phone number reservations.
-func (r *NumberReservationService) ListAutoPaging(ctx context.Context, query NumberReservationListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[NumberReservation] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *NumberReservationService) ListAutoPaging(ctx context.Context, query NumberReservationListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[NumberReservation] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type NumberReservation struct {
@@ -244,13 +244,12 @@ func (r *NumberReservationNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type NumberReservationListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[status],
 	// filter[created_at], filter[phone_numbers.phone_number],
 	// filter[customer_reference]
 	Filter NumberReservationListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page NumberReservationListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -299,25 +298,6 @@ type NumberReservationListParamsFilterCreatedAt struct {
 // URLQuery serializes [NumberReservationListParamsFilterCreatedAt]'s query
 // parameters as `url.Values`.
 func (r NumberReservationListParamsFilterCreatedAt) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type NumberReservationListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [NumberReservationListParamsPage]'s query parameters as
-// `url.Values`.
-func (r NumberReservationListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

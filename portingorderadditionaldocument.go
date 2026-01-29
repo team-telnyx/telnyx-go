@@ -52,7 +52,7 @@ func (r *PortingOrderAdditionalDocumentService) New(ctx context.Context, id stri
 }
 
 // Returns a list of additional documents for a porting order.
-func (r *PortingOrderAdditionalDocumentService) List(ctx context.Context, id string, query PortingOrderAdditionalDocumentListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[PortingOrderAdditionalDocumentListResponse], err error) {
+func (r *PortingOrderAdditionalDocumentService) List(ctx context.Context, id string, query PortingOrderAdditionalDocumentListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingOrderAdditionalDocumentListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -74,8 +74,8 @@ func (r *PortingOrderAdditionalDocumentService) List(ctx context.Context, id str
 }
 
 // Returns a list of additional documents for a porting order.
-func (r *PortingOrderAdditionalDocumentService) ListAutoPaging(ctx context.Context, id string, query PortingOrderAdditionalDocumentListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[PortingOrderAdditionalDocumentListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, id, query, opts...))
+func (r *PortingOrderAdditionalDocumentService) ListAutoPaging(ctx context.Context, id string, query PortingOrderAdditionalDocumentListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingOrderAdditionalDocumentListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, id, query, opts...))
 }
 
 // Deletes an additional document for a porting order.
@@ -245,12 +245,11 @@ func init() {
 }
 
 type PortingOrderAdditionalDocumentListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[document_type]
 	Filter PortingOrderAdditionalDocumentListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[size],
-	// page[number]
-	Page PortingOrderAdditionalDocumentListParamsPage `query:"page,omitzero" json:"-"`
 	// Consolidated sort parameter (deepObject style). Originally: sort[value]
 	Sort PortingOrderAdditionalDocumentListParamsSort `query:"sort,omitzero" json:"-"`
 	paramObj
@@ -278,25 +277,6 @@ type PortingOrderAdditionalDocumentListParamsFilter struct {
 // URLQuery serializes [PortingOrderAdditionalDocumentListParamsFilter]'s query
 // parameters as `url.Values`.
 func (r PortingOrderAdditionalDocumentListParamsFilter) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[size],
-// page[number]
-type PortingOrderAdditionalDocumentListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [PortingOrderAdditionalDocumentListParamsPage]'s query
-// parameters as `url.Values`.
-func (r PortingOrderAdditionalDocumentListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

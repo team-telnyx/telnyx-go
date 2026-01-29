@@ -38,7 +38,7 @@ func NewMessagingOptoutService(opts ...option.RequestOption) (r MessagingOptoutS
 }
 
 // Retrieve a list of opt-out blocks.
-func (r *MessagingOptoutService) List(ctx context.Context, query MessagingOptoutListParams, opts ...option.RequestOption) (res *pagination.DefaultPagination[MessagingOptoutListResponse], err error) {
+func (r *MessagingOptoutService) List(ctx context.Context, query MessagingOptoutListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MessagingOptoutListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -56,8 +56,8 @@ func (r *MessagingOptoutService) List(ctx context.Context, query MessagingOptout
 }
 
 // Retrieve a list of opt-out blocks.
-func (r *MessagingOptoutService) ListAutoPaging(ctx context.Context, query MessagingOptoutListParams, opts ...option.RequestOption) *pagination.DefaultPaginationAutoPager[MessagingOptoutListResponse] {
-	return pagination.NewDefaultPaginationAutoPager(r.List(ctx, query, opts...))
+func (r *MessagingOptoutService) ListAutoPaging(ctx context.Context, query MessagingOptoutListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MessagingOptoutListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type MessagingOptoutListResponse struct {
@@ -91,6 +91,8 @@ func (r *MessagingOptoutListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MessagingOptoutListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// If receiving address (+E.164 formatted phone number) should be redacted
 	RedactionEnabled param.Opt[string] `query:"redaction_enabled,omitzero" format:"boolean" json:"-"`
 	// Consolidated created_at parameter (deepObject style). Originally:
@@ -99,9 +101,6 @@ type MessagingOptoutListParams struct {
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[messaging_profile_id], filter[from]
 	Filter MessagingOptoutListParamsFilter `query:"filter,omitzero" json:"-"`
-	// Consolidated page parameter (deepObject style). Originally: page[number],
-	// page[size]
-	Page MessagingOptoutListParamsPage `query:"page,omitzero" json:"-"`
 	paramObj
 }
 
@@ -147,25 +146,6 @@ type MessagingOptoutListParamsFilter struct {
 // URLQuery serializes [MessagingOptoutListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r MessagingOptoutListParamsFilter) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Consolidated page parameter (deepObject style). Originally: page[number],
-// page[size]
-type MessagingOptoutListParamsPage struct {
-	// The page number to load
-	Number param.Opt[int64] `query:"number,omitzero" json:"-"`
-	// The size of the page
-	Size param.Opt[int64] `query:"size,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [MessagingOptoutListParamsPage]'s query parameters as
-// `url.Values`.
-func (r MessagingOptoutListParamsPage) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
