@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.15.0 (2026-01-29)
+
+Full Changelog: [v4.14.0...v4.15.0](https://github.com/team-telnyx/telnyx-go/compare/v4.14.0...v4.15.0)
+
+### Features
+
+* **api:** revert bad update to spec ([5155d01](https://github.com/team-telnyx/telnyx-go/commit/5155d01033d71ff661aa25dadc3a66fc79d40780))
+
 ## 4.14.0 (2026-01-29)
 
 Full Changelog: [v4.13.0...v4.14.0](https://github.com/team-telnyx/telnyx-go/compare/v4.13.0...v4.14.0)
