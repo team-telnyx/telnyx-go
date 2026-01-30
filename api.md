@@ -3766,16 +3766,6 @@ Methods:
 
 ## Calls
 
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TexmlCallUpdateResponse">TexmlCallUpdateResponse</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TexmlCallInitiateResponse">TexmlCallInitiateResponse</a>
-
-Methods:
-
-- <code title="post /texml/calls/{call_sid}/update">client.Texml.Calls.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TexmlCallService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, callSid <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TexmlCallUpdateParams">TexmlCallUpdateParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TexmlCallUpdateResponse">TexmlCallUpdateResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="post /texml/calls/{application_id}">client.Texml.Calls.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TexmlCallService.Initiate">Initiate</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, applicationID <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TexmlCallInitiateParams">TexmlCallInitiateParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TexmlCallInitiateResponse">TexmlCallInitiateResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-
 # TexmlApplications
 
 Response Types:

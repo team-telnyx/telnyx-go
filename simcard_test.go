@@ -98,6 +98,7 @@ func TestSimCardListWithOptionalParams(t *testing.T) {
 	_, err := client.SimCards.List(context.TODO(), telnyx.SimCardListParams{
 		Filter: telnyx.SimCardListParamsFilter{
 			Iccid:  telnyx.String("89310410106543789301"),
+			Msisdn: telnyx.String("+13109976224"),
 			Status: []string{"enabled"},
 			Tags:   []string{"personal", "customers", "active-customers"},
 		},

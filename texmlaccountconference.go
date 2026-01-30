@@ -370,8 +370,10 @@ type TexmlAccountConferenceGetRecordingsResponse struct {
 	// Current page number, zero-indexed.
 	Page int64 `json:"page"`
 	// The number of items on the page
-	PageSize   int64                                                  `json:"page_size"`
-	Recordings []TexmlAccountConferenceGetRecordingsResponseRecording `json:"recordings"`
+	PageSize int64 `json:"page_size"`
+	// List of participant resources.
+	Participants []any                                                  `json:"participants"`
+	Recordings   []TexmlAccountConferenceGetRecordingsResponseRecording `json:"recordings"`
 	// The number of the first element on the page, zero-indexed.
 	Start int64 `json:"start"`
 	// The URI of the current page.
@@ -383,6 +385,7 @@ type TexmlAccountConferenceGetRecordingsResponse struct {
 		NextPageUri  respjson.Field
 		Page         respjson.Field
 		PageSize     respjson.Field
+		Participants respjson.Field
 		Recordings   respjson.Field
 		Start        respjson.Field
 		Uri          respjson.Field
