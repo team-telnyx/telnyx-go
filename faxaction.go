@@ -60,10 +60,10 @@ func (r *FaxActionService) Refresh(ctx context.Context, id string, opts ...optio
 }
 
 type FaxActionCancelResponse struct {
-	Result string `json:"result"`
+	Data FaxActionCancelResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Result      respjson.Field
+		Data        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -75,7 +75,7 @@ func (r *FaxActionCancelResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type FaxActionRefreshResponse struct {
+type FaxActionCancelResponseData struct {
 	Result string `json:"result"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -86,7 +86,39 @@ type FaxActionRefreshResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
+func (r FaxActionCancelResponseData) RawJSON() string { return r.JSON.raw }
+func (r *FaxActionCancelResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FaxActionRefreshResponse struct {
+	Data FaxActionRefreshResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
 func (r FaxActionRefreshResponse) RawJSON() string { return r.JSON.raw }
 func (r *FaxActionRefreshResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FaxActionRefreshResponseData struct {
+	Result string `json:"result"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Result      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FaxActionRefreshResponseData) RawJSON() string { return r.JSON.raw }
+func (r *FaxActionRefreshResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

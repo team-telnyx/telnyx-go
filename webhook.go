@@ -4957,23 +4957,13 @@ func (r *DeliveryUpdateWebhookEventMeta) UnmarshalJSON(data []byte) error {
 }
 
 type FaxDeliveredWebhookEvent struct {
-	// Identifies the type of resource.
-	ID string `json:"id" format:"uuid"`
-	// The type of event being delivered.
-	//
-	// Any of "fax.delivered".
-	EventType FaxDeliveredWebhookEventEventType `json:"event_type"`
-	Payload   FaxDeliveredWebhookEventPayload   `json:"payload"`
-	// Identifies the type of the resource.
-	//
-	// Any of "event".
-	RecordType FaxDeliveredWebhookEventRecordType `json:"record_type"`
+	Data FaxDeliveredWebhookEventData `json:"data"`
+	// Metadata about the webhook delivery.
+	Meta FaxDeliveredWebhookEventMeta `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		EventType   respjson.Field
-		Payload     respjson.Field
-		RecordType  respjson.Field
+		Data        respjson.Field
+		Meta        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -4985,14 +4975,39 @@ func (r *FaxDeliveredWebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The type of event being delivered.
-type FaxDeliveredWebhookEventEventType string
+type FaxDeliveredWebhookEventData struct {
+	// Identifies the type of resource.
+	ID string `json:"id" format:"uuid"`
+	// The type of event being delivered.
+	//
+	// Any of "fax.delivered".
+	EventType string `json:"event_type"`
+	// ISO 8601 datetime of when the event occurred.
+	OccurredAt time.Time                           `json:"occurred_at" format:"date-time"`
+	Payload    FaxDeliveredWebhookEventDataPayload `json:"payload"`
+	// Identifies the type of the resource.
+	//
+	// Any of "event".
+	RecordType string `json:"record_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
 
-const (
-	FaxDeliveredWebhookEventEventTypeFaxDelivered FaxDeliveredWebhookEventEventType = "fax.delivered"
-)
+// Returns the unmodified JSON received from the API
+func (r FaxDeliveredWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *FaxDeliveredWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
-type FaxDeliveredWebhookEventPayload struct {
+type FaxDeliveredWebhookEventDataPayload struct {
 	// The duration of the call in seconds.
 	CallDurationSecs int64 `json:"call_duration_secs"`
 	// State received from a command.
@@ -5044,36 +5059,40 @@ type FaxDeliveredWebhookEventPayload struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FaxDeliveredWebhookEventPayload) RawJSON() string { return r.JSON.raw }
-func (r *FaxDeliveredWebhookEventPayload) UnmarshalJSON(data []byte) error {
+func (r FaxDeliveredWebhookEventDataPayload) RawJSON() string { return r.JSON.raw }
+func (r *FaxDeliveredWebhookEventDataPayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Identifies the type of the resource.
-type FaxDeliveredWebhookEventRecordType string
-
-const (
-	FaxDeliveredWebhookEventRecordTypeEvent FaxDeliveredWebhookEventRecordType = "event"
-)
-
-type FaxFailedWebhookEvent struct {
-	// Identifies the type of resource.
-	ID string `json:"id" format:"uuid"`
-	// The type of event being delivered.
-	//
-	// Any of "fax.failed".
-	EventType FaxFailedWebhookEventEventType `json:"event_type"`
-	Payload   FaxFailedWebhookEventPayload   `json:"payload"`
-	// Identifies the type of the resource.
-	//
-	// Any of "event".
-	RecordType FaxFailedWebhookEventRecordType `json:"record_type"`
+// Metadata about the webhook delivery.
+type FaxDeliveredWebhookEventMeta struct {
+	// The delivery attempt number.
+	Attempt int64 `json:"attempt"`
+	// The URL the webhook was delivered to.
+	DeliveredTo string `json:"delivered_to" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		EventType   respjson.Field
-		Payload     respjson.Field
-		RecordType  respjson.Field
+		Attempt     respjson.Field
+		DeliveredTo respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FaxDeliveredWebhookEventMeta) RawJSON() string { return r.JSON.raw }
+func (r *FaxDeliveredWebhookEventMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FaxFailedWebhookEvent struct {
+	Data FaxFailedWebhookEventData `json:"data"`
+	// Metadata about the webhook delivery.
+	Meta FaxFailedWebhookEventMeta `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -5085,14 +5104,39 @@ func (r *FaxFailedWebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The type of event being delivered.
-type FaxFailedWebhookEventEventType string
+type FaxFailedWebhookEventData struct {
+	// Identifies the type of resource.
+	ID string `json:"id" format:"uuid"`
+	// The type of event being delivered.
+	//
+	// Any of "fax.failed".
+	EventType string `json:"event_type"`
+	// ISO 8601 datetime of when the event occurred.
+	OccurredAt time.Time                        `json:"occurred_at" format:"date-time"`
+	Payload    FaxFailedWebhookEventDataPayload `json:"payload"`
+	// Identifies the type of the resource.
+	//
+	// Any of "event".
+	RecordType string `json:"record_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
 
-const (
-	FaxFailedWebhookEventEventTypeFaxFailed FaxFailedWebhookEventEventType = "fax.failed"
-)
+// Returns the unmodified JSON received from the API
+func (r FaxFailedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *FaxFailedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
-type FaxFailedWebhookEventPayload struct {
+type FaxFailedWebhookEventDataPayload struct {
 	// State received from a command.
 	ClientState string `json:"client_state"`
 	// The ID of the connection used to send the fax.
@@ -5143,36 +5187,40 @@ type FaxFailedWebhookEventPayload struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FaxFailedWebhookEventPayload) RawJSON() string { return r.JSON.raw }
-func (r *FaxFailedWebhookEventPayload) UnmarshalJSON(data []byte) error {
+func (r FaxFailedWebhookEventDataPayload) RawJSON() string { return r.JSON.raw }
+func (r *FaxFailedWebhookEventDataPayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Identifies the type of the resource.
-type FaxFailedWebhookEventRecordType string
-
-const (
-	FaxFailedWebhookEventRecordTypeEvent FaxFailedWebhookEventRecordType = "event"
-)
-
-type FaxMediaProcessedWebhookEvent struct {
-	// Identifies the type of resource.
-	ID string `json:"id" format:"uuid"`
-	// The type of event being delivered.
-	//
-	// Any of "fax.media.processed".
-	EventType FaxMediaProcessedWebhookEventEventType `json:"event_type"`
-	Payload   FaxMediaProcessedWebhookEventPayload   `json:"payload"`
-	// Identifies the type of the resource.
-	//
-	// Any of "event".
-	RecordType FaxMediaProcessedWebhookEventRecordType `json:"record_type"`
+// Metadata about the webhook delivery.
+type FaxFailedWebhookEventMeta struct {
+	// The delivery attempt number.
+	Attempt int64 `json:"attempt"`
+	// The URL the webhook was delivered to.
+	DeliveredTo string `json:"delivered_to" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		EventType   respjson.Field
-		Payload     respjson.Field
-		RecordType  respjson.Field
+		Attempt     respjson.Field
+		DeliveredTo respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FaxFailedWebhookEventMeta) RawJSON() string { return r.JSON.raw }
+func (r *FaxFailedWebhookEventMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FaxMediaProcessedWebhookEvent struct {
+	Data FaxMediaProcessedWebhookEventData `json:"data"`
+	// Metadata about the webhook delivery.
+	Meta FaxMediaProcessedWebhookEventMeta `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -5184,14 +5232,39 @@ func (r *FaxMediaProcessedWebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The type of event being delivered.
-type FaxMediaProcessedWebhookEventEventType string
+type FaxMediaProcessedWebhookEventData struct {
+	// Identifies the type of resource.
+	ID string `json:"id" format:"uuid"`
+	// The type of event being delivered.
+	//
+	// Any of "fax.media.processed".
+	EventType string `json:"event_type"`
+	// ISO 8601 datetime of when the event occurred.
+	OccurredAt time.Time                                `json:"occurred_at" format:"date-time"`
+	Payload    FaxMediaProcessedWebhookEventDataPayload `json:"payload"`
+	// Identifies the type of the resource.
+	//
+	// Any of "event".
+	RecordType string `json:"record_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
 
-const (
-	FaxMediaProcessedWebhookEventEventTypeFaxMediaProcessed FaxMediaProcessedWebhookEventEventType = "fax.media.processed"
-)
+// Returns the unmodified JSON received from the API
+func (r FaxMediaProcessedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *FaxMediaProcessedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
-type FaxMediaProcessedWebhookEventPayload struct {
+type FaxMediaProcessedWebhookEventDataPayload struct {
 	// State received from a command.
 	ClientState string `json:"client_state"`
 	// The ID of the connection used to send the fax.
@@ -5237,36 +5310,40 @@ type FaxMediaProcessedWebhookEventPayload struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FaxMediaProcessedWebhookEventPayload) RawJSON() string { return r.JSON.raw }
-func (r *FaxMediaProcessedWebhookEventPayload) UnmarshalJSON(data []byte) error {
+func (r FaxMediaProcessedWebhookEventDataPayload) RawJSON() string { return r.JSON.raw }
+func (r *FaxMediaProcessedWebhookEventDataPayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Identifies the type of the resource.
-type FaxMediaProcessedWebhookEventRecordType string
-
-const (
-	FaxMediaProcessedWebhookEventRecordTypeEvent FaxMediaProcessedWebhookEventRecordType = "event"
-)
-
-type FaxQueuedWebhookEvent struct {
-	// Identifies the type of resource.
-	ID string `json:"id" format:"uuid"`
-	// The type of event being delivered.
-	//
-	// Any of "fax.queued".
-	EventType FaxQueuedWebhookEventEventType `json:"event_type"`
-	Payload   FaxQueuedWebhookEventPayload   `json:"payload"`
-	// Identifies the type of the resource.
-	//
-	// Any of "event".
-	RecordType FaxQueuedWebhookEventRecordType `json:"record_type"`
+// Metadata about the webhook delivery.
+type FaxMediaProcessedWebhookEventMeta struct {
+	// The delivery attempt number.
+	Attempt int64 `json:"attempt"`
+	// The URL the webhook was delivered to.
+	DeliveredTo string `json:"delivered_to" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		EventType   respjson.Field
-		Payload     respjson.Field
-		RecordType  respjson.Field
+		Attempt     respjson.Field
+		DeliveredTo respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FaxMediaProcessedWebhookEventMeta) RawJSON() string { return r.JSON.raw }
+func (r *FaxMediaProcessedWebhookEventMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FaxQueuedWebhookEvent struct {
+	Data FaxQueuedWebhookEventData `json:"data"`
+	// Metadata about the webhook delivery.
+	Meta FaxQueuedWebhookEventMeta `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -5278,14 +5355,39 @@ func (r *FaxQueuedWebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The type of event being delivered.
-type FaxQueuedWebhookEventEventType string
+type FaxQueuedWebhookEventData struct {
+	// Identifies the type of resource.
+	ID string `json:"id" format:"uuid"`
+	// The type of event being delivered.
+	//
+	// Any of "fax.queued".
+	EventType string `json:"event_type"`
+	// ISO 8601 datetime of when the event occurred.
+	OccurredAt time.Time                        `json:"occurred_at" format:"date-time"`
+	Payload    FaxQueuedWebhookEventDataPayload `json:"payload"`
+	// Identifies the type of the resource.
+	//
+	// Any of "event".
+	RecordType string `json:"record_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
 
-const (
-	FaxQueuedWebhookEventEventTypeFaxQueued FaxQueuedWebhookEventEventType = "fax.queued"
-)
+// Returns the unmodified JSON received from the API
+func (r FaxQueuedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *FaxQueuedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
-type FaxQueuedWebhookEventPayload struct {
+type FaxQueuedWebhookEventDataPayload struct {
 	// State received from a command.
 	ClientState string `json:"client_state"`
 	// The ID of the connection used to send the fax.
@@ -5331,36 +5433,40 @@ type FaxQueuedWebhookEventPayload struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FaxQueuedWebhookEventPayload) RawJSON() string { return r.JSON.raw }
-func (r *FaxQueuedWebhookEventPayload) UnmarshalJSON(data []byte) error {
+func (r FaxQueuedWebhookEventDataPayload) RawJSON() string { return r.JSON.raw }
+func (r *FaxQueuedWebhookEventDataPayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Identifies the type of the resource.
-type FaxQueuedWebhookEventRecordType string
-
-const (
-	FaxQueuedWebhookEventRecordTypeEvent FaxQueuedWebhookEventRecordType = "event"
-)
-
-type FaxSendingStartedWebhookEvent struct {
-	// Identifies the type of resource.
-	ID string `json:"id" format:"uuid"`
-	// The type of event being delivered.
-	//
-	// Any of "fax.sending.started".
-	EventType FaxSendingStartedWebhookEventEventType `json:"event_type"`
-	Payload   FaxSendingStartedWebhookEventPayload   `json:"payload"`
-	// Identifies the type of the resource.
-	//
-	// Any of "event".
-	RecordType FaxSendingStartedWebhookEventRecordType `json:"record_type"`
+// Metadata about the webhook delivery.
+type FaxQueuedWebhookEventMeta struct {
+	// The delivery attempt number.
+	Attempt int64 `json:"attempt"`
+	// The URL the webhook was delivered to.
+	DeliveredTo string `json:"delivered_to" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		EventType   respjson.Field
-		Payload     respjson.Field
-		RecordType  respjson.Field
+		Attempt     respjson.Field
+		DeliveredTo respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FaxQueuedWebhookEventMeta) RawJSON() string { return r.JSON.raw }
+func (r *FaxQueuedWebhookEventMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FaxSendingStartedWebhookEvent struct {
+	Data FaxSendingStartedWebhookEventData `json:"data"`
+	// Metadata about the webhook delivery.
+	Meta FaxSendingStartedWebhookEventMeta `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -5372,14 +5478,39 @@ func (r *FaxSendingStartedWebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The type of event being delivered.
-type FaxSendingStartedWebhookEventEventType string
+type FaxSendingStartedWebhookEventData struct {
+	// Identifies the type of resource.
+	ID string `json:"id" format:"uuid"`
+	// The type of event being delivered.
+	//
+	// Any of "fax.sending.started".
+	EventType string `json:"event_type"`
+	// ISO 8601 datetime of when the event occurred.
+	OccurredAt time.Time                                `json:"occurred_at" format:"date-time"`
+	Payload    FaxSendingStartedWebhookEventDataPayload `json:"payload"`
+	// Identifies the type of the resource.
+	//
+	// Any of "event".
+	RecordType string `json:"record_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
 
-const (
-	FaxSendingStartedWebhookEventEventTypeFaxSendingStarted FaxSendingStartedWebhookEventEventType = "fax.sending.started"
-)
+// Returns the unmodified JSON received from the API
+func (r FaxSendingStartedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *FaxSendingStartedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
-type FaxSendingStartedWebhookEventPayload struct {
+type FaxSendingStartedWebhookEventDataPayload struct {
 	// State received from a command.
 	ClientState string `json:"client_state"`
 	// The ID of the connection used to send the fax.
@@ -5425,17 +5556,31 @@ type FaxSendingStartedWebhookEventPayload struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FaxSendingStartedWebhookEventPayload) RawJSON() string { return r.JSON.raw }
-func (r *FaxSendingStartedWebhookEventPayload) UnmarshalJSON(data []byte) error {
+func (r FaxSendingStartedWebhookEventDataPayload) RawJSON() string { return r.JSON.raw }
+func (r *FaxSendingStartedWebhookEventDataPayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Identifies the type of the resource.
-type FaxSendingStartedWebhookEventRecordType string
+// Metadata about the webhook delivery.
+type FaxSendingStartedWebhookEventMeta struct {
+	// The delivery attempt number.
+	Attempt int64 `json:"attempt"`
+	// The URL the webhook was delivered to.
+	DeliveredTo string `json:"delivered_to" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Attempt     respjson.Field
+		DeliveredTo respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
 
-const (
-	FaxSendingStartedWebhookEventRecordTypeEvent FaxSendingStartedWebhookEventRecordType = "event"
-)
+// Returns the unmodified JSON received from the API
+func (r FaxSendingStartedWebhookEventMeta) RawJSON() string { return r.JSON.raw }
+func (r *FaxSendingStartedWebhookEventMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type InboundMessageWebhookEvent struct {
 	Data InboundMessageWebhookEventData `json:"data"`
@@ -5780,8 +5925,11 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// [ConferenceRecordingSavedWebhookEventData],
 	// [ConferenceSpeakEndedWebhookEventData],
 	// [ConferenceSpeakStartedWebhookEventData], [DeliveryUpdateWebhookEventData],
-	// [InboundMessageWebhookEventData], [NumberOrderStatusUpdateWebhookEventData],
-	// [ReplacedLinkClickWebhookEventData], [TranscriptionWebhookEventData]
+	// [FaxDeliveredWebhookEventData], [FaxFailedWebhookEventData],
+	// [FaxMediaProcessedWebhookEventData], [FaxQueuedWebhookEventData],
+	// [FaxSendingStartedWebhookEventData], [InboundMessageWebhookEventData],
+	// [NumberOrderStatusUpdateWebhookEventData], [ReplacedLinkClickWebhookEventData],
+	// [TranscriptionWebhookEventData]
 	Data UnsafeUnwrapWebhookEventUnionData `json:"data"`
 	// This field is from variant [CampaignStatusUpdateWebhookEvent].
 	BrandID string `json:"brandId"`
@@ -5798,17 +5946,19 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// This field is from variant [CampaignStatusUpdateWebhookEvent].
 	Status CampaignStatusUpdateWebhookEventStatus `json:"status"`
 	// This field is from variant [CampaignStatusUpdateWebhookEvent].
-	Type      CampaignStatusUpdateWebhookEventType `json:"type"`
-	ID        string                               `json:"id"`
-	EventType string                               `json:"event_type"`
-	// This field is a union of [ConferenceFloorChangedWebhookEventPayload],
-	// [FaxDeliveredWebhookEventPayload], [FaxFailedWebhookEventPayload],
-	// [FaxMediaProcessedWebhookEventPayload], [FaxQueuedWebhookEventPayload],
-	// [FaxSendingStartedWebhookEventPayload]
-	Payload    UnsafeUnwrapWebhookEventUnionPayload `json:"payload"`
-	RecordType string                               `json:"record_type"`
+	Type CampaignStatusUpdateWebhookEventType `json:"type"`
+	// This field is from variant [ConferenceFloorChangedWebhookEvent].
+	ID string `json:"id"`
+	// This field is from variant [ConferenceFloorChangedWebhookEvent].
+	EventType ConferenceFloorChangedWebhookEventEventType `json:"event_type"`
+	// This field is from variant [ConferenceFloorChangedWebhookEvent].
+	Payload ConferenceFloorChangedWebhookEventPayload `json:"payload"`
+	// This field is from variant [ConferenceFloorChangedWebhookEvent].
+	RecordType ConferenceFloorChangedWebhookEventRecordType `json:"record_type"`
 	// This field is a union of [DeliveryUpdateWebhookEventMeta],
-	// [NumberOrderStatusUpdateWebhookEventMeta]
+	// [FaxDeliveredWebhookEventMeta], [FaxFailedWebhookEventMeta],
+	// [FaxMediaProcessedWebhookEventMeta], [FaxQueuedWebhookEventMeta],
+	// [FaxSendingStartedWebhookEventMeta], [NumberOrderStatusUpdateWebhookEventMeta]
 	Meta UnsafeUnwrapWebhookEventUnionMeta `json:"meta"`
 	JSON struct {
 		Data                respjson.Field
@@ -6188,8 +6338,10 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	// [ConferenceRecordingSavedWebhookEventDataPayload],
 	// [ConferenceSpeakEndedWebhookEventDataPayload],
 	// [ConferenceSpeakStartedWebhookEventDataPayload], [OutboundMessagePayload],
-	// [shared.InboundMessagePayload], [NumberOrderWithPhoneNumbers],
-	// [TranscriptionWebhookEventDataPayload]
+	// [FaxDeliveredWebhookEventDataPayload], [FaxFailedWebhookEventDataPayload],
+	// [FaxMediaProcessedWebhookEventDataPayload], [FaxQueuedWebhookEventDataPayload],
+	// [FaxSendingStartedWebhookEventDataPayload], [shared.InboundMessagePayload],
+	// [NumberOrderWithPhoneNumbers], [TranscriptionWebhookEventDataPayload]
 	Payload    UnsafeUnwrapWebhookEventUnionDataPayload `json:"payload"`
 	RecordType string                                   `json:"record_type"`
 	// This field is from variant [CallConversationEndedWebhookEventData].
@@ -6235,8 +6387,8 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	ConnectionID  string `json:"connection_id"`
 	// This field is a union of [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
-	// [string], [string], [string], [string], [OutboundMessagePayloadFrom],
-	// [shared.InboundMessagePayloadFrom]
+	// [string], [string], [string], [string], [OutboundMessagePayloadFrom], [string],
+	// [string], [string], [string], [string], [shared.InboundMessagePayloadFrom]
 	From UnsafeUnwrapWebhookEventUnionDataPayloadFrom `json:"from"`
 	// This field is a union of
 	// [[]CallAIGatherEndedWebhookEventDataPayloadMessageHistory],
@@ -6249,8 +6401,8 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	Status string                                         `json:"status"`
 	// This field is a union of [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
-	// [string], [string], [string], [string], [[]OutboundMessagePayloadTo],
-	// [[]shared.InboundMessagePayloadTo]
+	// [string], [string], [string], [string], [[]OutboundMessagePayloadTo], [string],
+	// [string], [string], [string], [string], [[]shared.InboundMessagePayloadTo]
 	To UnsafeUnwrapWebhookEventUnionDataPayloadTo `json:"to"`
 	// This field is from variant [CallAIGatherPartialResultsWebhookEventDataPayload].
 	PartialResults map[string]any    `json:"partial_results"`
@@ -6342,8 +6494,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	TranscriptionText string `json:"transcription_text"`
 	SipNotifyResponse int64  `json:"sip_notify_response"`
 	// This field is from variant [CallSiprecFailedWebhookEventDataPayload].
-	FailureCause string `json:"failure_cause"`
-	// This field is from variant [CallStreamingFailedPayload].
+	FailureCause  string `json:"failure_cause"`
 	FailureReason string `json:"failure_reason"`
 	// This field is from variant [CallStreamingFailedPayload].
 	StreamID string `json:"stream_id"`
@@ -6386,6 +6537,13 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	ValidUntil            time.Time                                     `json:"valid_until"`
 	WebhookFailoverURL    string                                        `json:"webhook_failover_url"`
 	WebhookURL            string                                        `json:"webhook_url"`
+	// This field is from variant [FaxDeliveredWebhookEventDataPayload].
+	CallDurationSecs int64  `json:"call_duration_secs"`
+	FaxID            string `json:"fax_id"`
+	OriginalMediaURL string `json:"original_media_url"`
+	// This field is from variant [FaxDeliveredWebhookEventDataPayload].
+	PageCount int64  `json:"page_count"`
+	UserID    string `json:"user_id"`
 	// This field is from variant [NumberOrderWithPhoneNumbers].
 	BillingGroupID string `json:"billing_group_id"`
 	// This field is from variant [NumberOrderWithPhoneNumbers].
@@ -6497,6 +6655,11 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		ValidUntil               respjson.Field
 		WebhookFailoverURL       respjson.Field
 		WebhookURL               respjson.Field
+		CallDurationSecs         respjson.Field
+		FaxID                    respjson.Field
+		OriginalMediaURL         respjson.Field
+		PageCount                respjson.Field
+		UserID                   respjson.Field
 		BillingGroupID           respjson.Field
 		CreatedAt                respjson.Field
 		CustomerReference        respjson.Field
@@ -6821,66 +6984,6 @@ func (r *UnsafeUnwrapWebhookEventUnionDataPayloadMedia) UnmarshalJSON(data []byt
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// UnsafeUnwrapWebhookEventUnionPayload is an implicit subunion of
-// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionPayload provides
-// convenient access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [UnsafeUnwrapWebhookEventUnion].
-type UnsafeUnwrapWebhookEventUnionPayload struct {
-	// This field is from variant [ConferenceFloorChangedWebhookEventPayload].
-	CallControlID string `json:"call_control_id"`
-	// This field is from variant [ConferenceFloorChangedWebhookEventPayload].
-	CallLegID string `json:"call_leg_id"`
-	// This field is from variant [ConferenceFloorChangedWebhookEventPayload].
-	CallSessionID string `json:"call_session_id"`
-	ClientState   string `json:"client_state"`
-	// This field is from variant [ConferenceFloorChangedWebhookEventPayload].
-	ConferenceID string `json:"conference_id"`
-	ConnectionID string `json:"connection_id"`
-	// This field is from variant [ConferenceFloorChangedWebhookEventPayload].
-	OccurredAt time.Time `json:"occurred_at"`
-	// This field is from variant [FaxDeliveredWebhookEventPayload].
-	CallDurationSecs int64  `json:"call_duration_secs"`
-	Direction        string `json:"direction"`
-	FaxID            string `json:"fax_id"`
-	From             string `json:"from"`
-	MediaName        string `json:"media_name"`
-	OriginalMediaURL string `json:"original_media_url"`
-	// This field is from variant [FaxDeliveredWebhookEventPayload].
-	PageCount int64  `json:"page_count"`
-	Status    string `json:"status"`
-	To        string `json:"to"`
-	UserID    string `json:"user_id"`
-	// This field is from variant [FaxFailedWebhookEventPayload].
-	FailureReason string `json:"failure_reason"`
-	JSON          struct {
-		CallControlID    respjson.Field
-		CallLegID        respjson.Field
-		CallSessionID    respjson.Field
-		ClientState      respjson.Field
-		ConferenceID     respjson.Field
-		ConnectionID     respjson.Field
-		OccurredAt       respjson.Field
-		CallDurationSecs respjson.Field
-		Direction        respjson.Field
-		FaxID            respjson.Field
-		From             respjson.Field
-		MediaName        respjson.Field
-		OriginalMediaURL respjson.Field
-		PageCount        respjson.Field
-		Status           respjson.Field
-		To               respjson.Field
-		UserID           respjson.Field
-		FailureReason    respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-func (r *UnsafeUnwrapWebhookEventUnionPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // UnsafeUnwrapWebhookEventUnionMeta is an implicit subunion of
 // [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionMeta provides
 // convenient access to the sub-properties of the union.
@@ -6973,8 +7076,11 @@ type UnwrapWebhookEventUnion struct {
 	// [ConferenceRecordingSavedWebhookEventData],
 	// [ConferenceSpeakEndedWebhookEventData],
 	// [ConferenceSpeakStartedWebhookEventData], [DeliveryUpdateWebhookEventData],
-	// [InboundMessageWebhookEventData], [NumberOrderStatusUpdateWebhookEventData],
-	// [ReplacedLinkClickWebhookEventData], [TranscriptionWebhookEventData]
+	// [FaxDeliveredWebhookEventData], [FaxFailedWebhookEventData],
+	// [FaxMediaProcessedWebhookEventData], [FaxQueuedWebhookEventData],
+	// [FaxSendingStartedWebhookEventData], [InboundMessageWebhookEventData],
+	// [NumberOrderStatusUpdateWebhookEventData], [ReplacedLinkClickWebhookEventData],
+	// [TranscriptionWebhookEventData]
 	Data UnwrapWebhookEventUnionData `json:"data"`
 	// This field is from variant [CampaignStatusUpdateWebhookEvent].
 	BrandID string `json:"brandId"`
@@ -6991,17 +7097,19 @@ type UnwrapWebhookEventUnion struct {
 	// This field is from variant [CampaignStatusUpdateWebhookEvent].
 	Status CampaignStatusUpdateWebhookEventStatus `json:"status"`
 	// This field is from variant [CampaignStatusUpdateWebhookEvent].
-	Type      CampaignStatusUpdateWebhookEventType `json:"type"`
-	ID        string                               `json:"id"`
-	EventType string                               `json:"event_type"`
-	// This field is a union of [ConferenceFloorChangedWebhookEventPayload],
-	// [FaxDeliveredWebhookEventPayload], [FaxFailedWebhookEventPayload],
-	// [FaxMediaProcessedWebhookEventPayload], [FaxQueuedWebhookEventPayload],
-	// [FaxSendingStartedWebhookEventPayload]
-	Payload    UnwrapWebhookEventUnionPayload `json:"payload"`
-	RecordType string                         `json:"record_type"`
+	Type CampaignStatusUpdateWebhookEventType `json:"type"`
+	// This field is from variant [ConferenceFloorChangedWebhookEvent].
+	ID string `json:"id"`
+	// This field is from variant [ConferenceFloorChangedWebhookEvent].
+	EventType ConferenceFloorChangedWebhookEventEventType `json:"event_type"`
+	// This field is from variant [ConferenceFloorChangedWebhookEvent].
+	Payload ConferenceFloorChangedWebhookEventPayload `json:"payload"`
+	// This field is from variant [ConferenceFloorChangedWebhookEvent].
+	RecordType ConferenceFloorChangedWebhookEventRecordType `json:"record_type"`
 	// This field is a union of [DeliveryUpdateWebhookEventMeta],
-	// [NumberOrderStatusUpdateWebhookEventMeta]
+	// [FaxDeliveredWebhookEventMeta], [FaxFailedWebhookEventMeta],
+	// [FaxMediaProcessedWebhookEventMeta], [FaxQueuedWebhookEventMeta],
+	// [FaxSendingStartedWebhookEventMeta], [NumberOrderStatusUpdateWebhookEventMeta]
 	Meta UnwrapWebhookEventUnionMeta `json:"meta"`
 	JSON struct {
 		Data                respjson.Field
@@ -7381,8 +7489,10 @@ type UnwrapWebhookEventUnionData struct {
 	// [ConferenceRecordingSavedWebhookEventDataPayload],
 	// [ConferenceSpeakEndedWebhookEventDataPayload],
 	// [ConferenceSpeakStartedWebhookEventDataPayload], [OutboundMessagePayload],
-	// [shared.InboundMessagePayload], [NumberOrderWithPhoneNumbers],
-	// [TranscriptionWebhookEventDataPayload]
+	// [FaxDeliveredWebhookEventDataPayload], [FaxFailedWebhookEventDataPayload],
+	// [FaxMediaProcessedWebhookEventDataPayload], [FaxQueuedWebhookEventDataPayload],
+	// [FaxSendingStartedWebhookEventDataPayload], [shared.InboundMessagePayload],
+	// [NumberOrderWithPhoneNumbers], [TranscriptionWebhookEventDataPayload]
 	Payload    UnwrapWebhookEventUnionDataPayload `json:"payload"`
 	RecordType string                             `json:"record_type"`
 	// This field is from variant [CallConversationEndedWebhookEventData].
@@ -7428,8 +7538,8 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	ConnectionID  string `json:"connection_id"`
 	// This field is a union of [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
-	// [string], [string], [string], [string], [OutboundMessagePayloadFrom],
-	// [shared.InboundMessagePayloadFrom]
+	// [string], [string], [string], [string], [OutboundMessagePayloadFrom], [string],
+	// [string], [string], [string], [string], [shared.InboundMessagePayloadFrom]
 	From UnwrapWebhookEventUnionDataPayloadFrom `json:"from"`
 	// This field is a union of
 	// [[]CallAIGatherEndedWebhookEventDataPayloadMessageHistory],
@@ -7442,8 +7552,8 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	Status string                                   `json:"status"`
 	// This field is a union of [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
-	// [string], [string], [string], [string], [[]OutboundMessagePayloadTo],
-	// [[]shared.InboundMessagePayloadTo]
+	// [string], [string], [string], [string], [[]OutboundMessagePayloadTo], [string],
+	// [string], [string], [string], [string], [[]shared.InboundMessagePayloadTo]
 	To UnwrapWebhookEventUnionDataPayloadTo `json:"to"`
 	// This field is from variant [CallAIGatherPartialResultsWebhookEventDataPayload].
 	PartialResults map[string]any    `json:"partial_results"`
@@ -7535,8 +7645,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	TranscriptionText string `json:"transcription_text"`
 	SipNotifyResponse int64  `json:"sip_notify_response"`
 	// This field is from variant [CallSiprecFailedWebhookEventDataPayload].
-	FailureCause string `json:"failure_cause"`
-	// This field is from variant [CallStreamingFailedPayload].
+	FailureCause  string `json:"failure_cause"`
 	FailureReason string `json:"failure_reason"`
 	// This field is from variant [CallStreamingFailedPayload].
 	StreamID string `json:"stream_id"`
@@ -7579,6 +7688,13 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	ValidUntil            time.Time                               `json:"valid_until"`
 	WebhookFailoverURL    string                                  `json:"webhook_failover_url"`
 	WebhookURL            string                                  `json:"webhook_url"`
+	// This field is from variant [FaxDeliveredWebhookEventDataPayload].
+	CallDurationSecs int64  `json:"call_duration_secs"`
+	FaxID            string `json:"fax_id"`
+	OriginalMediaURL string `json:"original_media_url"`
+	// This field is from variant [FaxDeliveredWebhookEventDataPayload].
+	PageCount int64  `json:"page_count"`
+	UserID    string `json:"user_id"`
 	// This field is from variant [NumberOrderWithPhoneNumbers].
 	BillingGroupID string `json:"billing_group_id"`
 	// This field is from variant [NumberOrderWithPhoneNumbers].
@@ -7690,6 +7806,11 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		ValidUntil               respjson.Field
 		WebhookFailoverURL       respjson.Field
 		WebhookURL               respjson.Field
+		CallDurationSecs         respjson.Field
+		FaxID                    respjson.Field
+		OriginalMediaURL         respjson.Field
+		PageCount                respjson.Field
+		UserID                   respjson.Field
 		BillingGroupID           respjson.Field
 		CreatedAt                respjson.Field
 		CustomerReference        respjson.Field
@@ -8006,66 +8127,6 @@ type UnwrapWebhookEventUnionDataPayloadMedia struct {
 }
 
 func (r *UnwrapWebhookEventUnionDataPayloadMedia) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UnwrapWebhookEventUnionPayload is an implicit subunion of
-// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionPayload provides convenient
-// access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [UnwrapWebhookEventUnion].
-type UnwrapWebhookEventUnionPayload struct {
-	// This field is from variant [ConferenceFloorChangedWebhookEventPayload].
-	CallControlID string `json:"call_control_id"`
-	// This field is from variant [ConferenceFloorChangedWebhookEventPayload].
-	CallLegID string `json:"call_leg_id"`
-	// This field is from variant [ConferenceFloorChangedWebhookEventPayload].
-	CallSessionID string `json:"call_session_id"`
-	ClientState   string `json:"client_state"`
-	// This field is from variant [ConferenceFloorChangedWebhookEventPayload].
-	ConferenceID string `json:"conference_id"`
-	ConnectionID string `json:"connection_id"`
-	// This field is from variant [ConferenceFloorChangedWebhookEventPayload].
-	OccurredAt time.Time `json:"occurred_at"`
-	// This field is from variant [FaxDeliveredWebhookEventPayload].
-	CallDurationSecs int64  `json:"call_duration_secs"`
-	Direction        string `json:"direction"`
-	FaxID            string `json:"fax_id"`
-	From             string `json:"from"`
-	MediaName        string `json:"media_name"`
-	OriginalMediaURL string `json:"original_media_url"`
-	// This field is from variant [FaxDeliveredWebhookEventPayload].
-	PageCount int64  `json:"page_count"`
-	Status    string `json:"status"`
-	To        string `json:"to"`
-	UserID    string `json:"user_id"`
-	// This field is from variant [FaxFailedWebhookEventPayload].
-	FailureReason string `json:"failure_reason"`
-	JSON          struct {
-		CallControlID    respjson.Field
-		CallLegID        respjson.Field
-		CallSessionID    respjson.Field
-		ClientState      respjson.Field
-		ConferenceID     respjson.Field
-		ConnectionID     respjson.Field
-		OccurredAt       respjson.Field
-		CallDurationSecs respjson.Field
-		Direction        respjson.Field
-		FaxID            respjson.Field
-		From             respjson.Field
-		MediaName        respjson.Field
-		OriginalMediaURL respjson.Field
-		PageCount        respjson.Field
-		Status           respjson.Field
-		To               respjson.Field
-		UserID           respjson.Field
-		FailureReason    respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-func (r *UnwrapWebhookEventUnionPayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
