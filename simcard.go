@@ -835,7 +835,7 @@ type SimCardListParams struct {
 	PageNumber          param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	PageSize            param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter for SIM cards (deepObject style). Originally:
-	// filter[tags], filter[iccid], filter[status]
+	// filter[iccid], filter[msisdn], filter[status], filter[tags]
 	Filter SimCardListParamsFilter `query:"filter,omitzero" json:"-"`
 	// Sorts SIM cards by the given field. Defaults to ascending order unless field is
 	// prefixed with a minus sign.
@@ -855,10 +855,12 @@ func (r SimCardListParams) URLQuery() (v url.Values, err error) {
 }
 
 // Consolidated filter parameter for SIM cards (deepObject style). Originally:
-// filter[tags], filter[iccid], filter[status]
+// filter[iccid], filter[msisdn], filter[status], filter[tags]
 type SimCardListParamsFilter struct {
 	// A search string to partially match for the SIM card's ICCID.
 	Iccid param.Opt[string] `query:"iccid,omitzero" json:"-"`
+	// A search string to match for the SIM card's MSISDN.
+	Msisdn param.Opt[string] `query:"msisdn,omitzero" json:"-"`
 	// Filter by a SIM card's status.
 	//
 	// Any of "enabled", "disabled", "standby", "data_limit_exceeded",

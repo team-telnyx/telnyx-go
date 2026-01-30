@@ -143,6 +143,8 @@ type TexmlAccountConferenceParticipantGetResponse struct {
 	CoachingCallSid string `json:"coaching_call_sid"`
 	// The identifier of the coached participant's call.
 	CoachingCallSidLegacy string `json:"coaching_call_sid_legacy"`
+	// The unique identifier for the conference.
+	ConferenceSid string `json:"conference_sid" format:"uuid"`
 	// The timestamp of when the resource was created.
 	DateCreated string `json:"date_created"`
 	// The timestamp of when the resource was last updated.
@@ -168,6 +170,7 @@ type TexmlAccountConferenceParticipantGetResponse struct {
 		Coaching              respjson.Field
 		CoachingCallSid       respjson.Field
 		CoachingCallSidLegacy respjson.Field
+		ConferenceSid         respjson.Field
 		DateCreated           respjson.Field
 		DateUpdated           respjson.Field
 		EndConferenceOnExit   respjson.Field
@@ -210,6 +213,8 @@ type TexmlAccountConferenceParticipantUpdateResponse struct {
 	CoachingCallSid string `json:"coaching_call_sid"`
 	// The identifier of the coached participant's call.
 	CoachingCallSidLegacy string `json:"coaching_call_sid_legacy"`
+	// The unique identifier for the conference.
+	ConferenceSid string `json:"conference_sid" format:"uuid"`
 	// The timestamp of when the resource was created.
 	DateCreated string `json:"date_created"`
 	// The timestamp of when the resource was last updated.
@@ -235,6 +240,7 @@ type TexmlAccountConferenceParticipantUpdateResponse struct {
 		Coaching              respjson.Field
 		CoachingCallSid       respjson.Field
 		CoachingCallSidLegacy respjson.Field
+		ConferenceSid         respjson.Field
 		DateCreated           respjson.Field
 		DateUpdated           respjson.Field
 		EndConferenceOnExit   respjson.Field
@@ -271,6 +277,8 @@ type TexmlAccountConferenceParticipantParticipantsResponse struct {
 	Coaching bool `json:"coaching"`
 	// The identifier of the coached participant's call.
 	CoachingCallSid string `json:"coaching_call_sid"`
+	// The unique identifier for the conference.
+	ConferenceSid string `json:"conference_sid" format:"uuid"`
 	// Whether the conference ends when the participant leaves.
 	EndConferenceOnExit bool `json:"end_conference_on_exit"`
 	// Whether the participant is on hold.
@@ -289,6 +297,7 @@ type TexmlAccountConferenceParticipantParticipantsResponse struct {
 		CallSid             respjson.Field
 		Coaching            respjson.Field
 		CoachingCallSid     respjson.Field
+		ConferenceSid       respjson.Field
 		EndConferenceOnExit respjson.Field
 		Hold                respjson.Field
 		Muted               respjson.Field
@@ -366,6 +375,8 @@ type TexmlAccountConferenceParticipantGetParticipantsResponseParticipant struct 
 	CoachingCallSid string `json:"coaching_call_sid"`
 	// The identifier of the coached participant's call.
 	CoachingCallSidLegacy string `json:"coaching_call_sid_legacy"`
+	// The unique identifier for the conference.
+	ConferenceSid string `json:"conference_sid" format:"uuid"`
 	// The timestamp of when the resource was created.
 	DateCreated string `json:"date_created"`
 	// The timestamp of when the resource was last updated.
@@ -391,6 +402,7 @@ type TexmlAccountConferenceParticipantGetParticipantsResponseParticipant struct 
 		Coaching              respjson.Field
 		CoachingCallSid       respjson.Field
 		CoachingCallSidLegacy respjson.Field
+		ConferenceSid         respjson.Field
 		DateCreated           respjson.Field
 		DateUpdated           respjson.Field
 		EndConferenceOnExit   respjson.Field
