@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.15.1 (2026-01-30)
+
+Full Changelog: [v4.15.0...v4.15.1](https://github.com/team-telnyx/telnyx-go/compare/v4.15.0...v4.15.1)
+
+### Bug Fixes
+
+* remove deprecated TeXML API endpoints from OpenAPI spec ([91ddee4](https://github.com/team-telnyx/telnyx-go/commit/91ddee4fbccdd9fefa6eba550ac6d306e91ac416))
+* use PaginationMeta schema for ListFaxesResponse.meta ([3651a7e](https://github.com/team-telnyx/telnyx-go/commit/3651a7e578ef69d772c1d5952528df33e275dcb8))
+
 ## 4.15.0 (2026-01-29)
 
 Full Changelog: [v4.14.0...v4.15.0](https://github.com/team-telnyx/telnyx-go/compare/v4.14.0...v4.15.0)
