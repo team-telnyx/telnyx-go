@@ -23,7 +23,6 @@ import (
 type TexmlService struct {
 	Options  []option.RequestOption
 	Accounts TexmlAccountService
-	Calls    TexmlCallService
 }
 
 // NewTexmlService generates a new service that applies the given options to each
@@ -33,7 +32,6 @@ func NewTexmlService(opts ...option.RequestOption) (r TexmlService) {
 	r = TexmlService{}
 	r.Options = opts
 	r.Accounts = NewTexmlAccountService(opts...)
-	r.Calls = NewTexmlCallService(opts...)
 	return
 }
 
