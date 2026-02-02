@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.16.1 (2026-02-02)
+
+Full Changelog: [v4.16.0...v4.16.1](https://github.com/team-telnyx/telnyx-go/compare/v4.16.0...v4.16.1)
+
+### Bug Fixes
+
+* **client/oauth:** send grant_type in the right location ([59c366b](https://github.com/team-telnyx/telnyx-go/commit/59c366b03572001cece12ea751af3a90bc72fede))
+
 ## 4.16.0 (2026-01-30)
 
 Full Changelog: [v4.15.1...v4.16.0](https://github.com/team-telnyx/telnyx-go/compare/v4.15.1...v4.16.0)
