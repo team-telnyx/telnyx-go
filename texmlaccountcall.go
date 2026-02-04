@@ -741,6 +741,9 @@ type TexmlAccountCallCallsParams struct {
 	// created leg will be added to the specified call in supervising mode. Status
 	// callbacks and action callbacks will NOT be sent for the supervising leg.
 	SuperviseCallSid param.Opt[string] `json:"SuperviseCallSid,omitzero"`
+	// TeXML to be used as instructions for the call. If provided, the call will
+	// execute these instructions instead of fetching from the Url.
+	Texml param.Opt[string] `json:"Texml,omitzero"`
 	// The URL from which Telnyx will retrieve the TeXML call instructions.
 	URL param.Opt[string] `json:"Url,omitzero"`
 	// HTTP request type used for `AsyncAmdStatusCallback`. The default value is
