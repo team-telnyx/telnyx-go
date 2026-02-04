@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.17.0 (2026-02-04)
+
+Full Changelog: [v4.16.1...v4.17.0](https://github.com/team-telnyx/telnyx-go/compare/v4.16.1...v4.17.0)
+
+### Features
+
+* Add Texml parameter to create call endpoint [ENGDESK-49187] ([f987ad8](https://github.com/team-telnyx/telnyx-go/commit/f987ad87fe9b6dde8dbdf3d39d8022d7ce733fcf))
+
 ## 4.16.1 (2026-02-02)
 
 Full Changelog: [v4.16.0...v4.16.1](https://github.com/team-telnyx/telnyx-go/compare/v4.16.0...v4.16.1)
