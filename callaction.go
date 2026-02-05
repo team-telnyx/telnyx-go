@@ -1779,9 +1779,8 @@ type TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova3ConfigParam 
 	KeywordsBoosting map[string]float64 `json:"keywords_boosting,omitzero"`
 	// Language to use for speech recognition with nova-3 model
 	//
-	// Any of "en", "en-US", "en-AU", "en-GB", "en-IN", "en-NZ", "de", "nl", "sv",
-	// "sv-SE", "da", "da-DK", "es", "es-419", "fr", "fr-CA", "pt", "pt-BR", "pt-PT",
-	// "auto_detect".
+	// Any of "en-US", "en-AU", "en-GB", "en-IN", "en-NZ", "de", "nl", "sv-SE",
+	// "da-DK", "es", "es-419", "fr", "fr-CA", "pt-BR", "pt-PT", "auto_detect".
 	Language string `json:"language,omitzero"`
 	// This field can be elided, and will marshal its zero value as "Deepgram".
 	TranscriptionEngine constant.Deepgram `json:"transcription_engine,required"`
@@ -1801,7 +1800,7 @@ func init() {
 		"transcription_model", "deepgram/nova-3",
 	)
 	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova3ConfigParam](
-		"language", "en", "en-US", "en-AU", "en-GB", "en-IN", "en-NZ", "de", "nl", "sv", "sv-SE", "da", "da-DK", "es", "es-419", "fr", "fr-CA", "pt", "pt-BR", "pt-PT", "auto_detect",
+		"language", "en-US", "en-AU", "en-GB", "en-IN", "en-NZ", "de", "nl", "sv-SE", "da-DK", "es", "es-419", "fr", "fr-CA", "pt-BR", "pt-PT", "auto_detect",
 	)
 }
 
