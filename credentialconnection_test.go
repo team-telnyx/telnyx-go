@@ -55,7 +55,7 @@ func TestCredentialConnectionNewWithOptionalParams(t *testing.T) {
 			Timeout2xxSecs:           telnyx.Int(20),
 		},
 		IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
-		JitterBuffer: telnyx.CredentialConnectionNewParamsJitterBuffer{
+		JitterBuffer: shared.ConnectionJitterBufferParam{
 			EnableJitterBuffer:  telnyx.Bool(true),
 			JitterbufferMsecMax: telnyx.Int(200),
 			JitterbufferMsecMin: telnyx.Int(60),
@@ -163,7 +163,7 @@ func TestCredentialConnectionUpdateWithOptionalParams(t *testing.T) {
 				Timeout2xxSecs:           telnyx.Int(20),
 			},
 			IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
-			JitterBuffer: telnyx.CredentialConnectionUpdateParamsJitterBuffer{
+			JitterBuffer: shared.ConnectionJitterBufferParam{
 				EnableJitterBuffer:  telnyx.Bool(true),
 				JitterbufferMsecMax: telnyx.Int(200),
 				JitterbufferMsecMin: telnyx.Int(60),

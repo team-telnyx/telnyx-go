@@ -161,7 +161,7 @@ type FqdnConnection struct {
 	// max values in msec for customized buffering behaviors. Larger values add latency
 	// but tolerate more jitter, while smaller values reduce latency but are more
 	// sensitive to jitter and reordering.
-	JitterBuffer FqdnConnectionJitterBuffer `json:"jitter_buffer"`
+	JitterBuffer shared.ConnectionJitterBuffer `json:"jitter_buffer"`
 	// The connection is enabled for Microsoft Teams Direct Routing.
 	MicrosoftTeamsSbc bool `json:"microsoft_teams_sbc"`
 	// Controls when noise suppression is applied to calls. When set to 'inbound',
@@ -271,37 +271,6 @@ type FqdnConnection struct {
 // Returns the unmodified JSON received from the API
 func (r FqdnConnection) RawJSON() string { return r.JSON.raw }
 func (r *FqdnConnection) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Configuration options for Jitter Buffer. Enables Jitter Buffer for RTP streams
-// of SIP Trunking calls. The feature is off unless enabled. You may define min and
-// max values in msec for customized buffering behaviors. Larger values add latency
-// but tolerate more jitter, while smaller values reduce latency but are more
-// sensitive to jitter and reordering.
-type FqdnConnectionJitterBuffer struct {
-	// Enables Jitter Buffer for RTP streams of SIP Trunking calls. The feature is off
-	// unless enabled.
-	EnableJitterBuffer bool `json:"enable_jitter_buffer"`
-	// The maximum jitter buffer size in milliseconds. Must be between 40 and 400. Has
-	// no effect if enable_jitter_buffer is not true.
-	JitterbufferMsecMax int64 `json:"jitterbuffer_msec_max"`
-	// The minimum jitter buffer size in milliseconds. Must be between 40 and 400. Has
-	// no effect if enable_jitter_buffer is not true.
-	JitterbufferMsecMin int64 `json:"jitterbuffer_msec_min"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		EnableJitterBuffer  respjson.Field
-		JitterbufferMsecMax respjson.Field
-		JitterbufferMsecMin respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r FqdnConnectionJitterBuffer) RawJSON() string { return r.JSON.raw }
-func (r *FqdnConnectionJitterBuffer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -874,7 +843,7 @@ type FqdnConnectionNewParams struct {
 	// max values in msec for customized buffering behaviors. Larger values add latency
 	// but tolerate more jitter, while smaller values reduce latency but are more
 	// sensitive to jitter and reordering.
-	JitterBuffer FqdnConnectionNewParamsJitterBuffer `json:"jitter_buffer,omitzero"`
+	JitterBuffer shared.ConnectionJitterBufferParam `json:"jitter_buffer,omitzero"`
 	// Controls when noise suppression is applied to calls. When set to 'inbound',
 	// noise suppression is applied to incoming audio. When set to 'outbound', it's
 	// applied to outgoing audio. When set to 'both', it's applied in both directions.
@@ -908,32 +877,6 @@ func (r FqdnConnectionNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *FqdnConnectionNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Configuration options for Jitter Buffer. Enables Jitter Buffer for RTP streams
-// of SIP Trunking calls. The feature is off unless enabled. You may define min and
-// max values in msec for customized buffering behaviors. Larger values add latency
-// but tolerate more jitter, while smaller values reduce latency but are more
-// sensitive to jitter and reordering.
-type FqdnConnectionNewParamsJitterBuffer struct {
-	// Enables Jitter Buffer for RTP streams of SIP Trunking calls. The feature is off
-	// unless enabled.
-	EnableJitterBuffer param.Opt[bool] `json:"enable_jitter_buffer,omitzero"`
-	// The maximum jitter buffer size in milliseconds. Must be between 40 and 400. Has
-	// no effect if enable_jitter_buffer is not true.
-	JitterbufferMsecMax param.Opt[int64] `json:"jitterbuffer_msec_max,omitzero"`
-	// The minimum jitter buffer size in milliseconds. Must be between 40 and 400. Has
-	// no effect if enable_jitter_buffer is not true.
-	JitterbufferMsecMin param.Opt[int64] `json:"jitterbuffer_msec_min,omitzero"`
-	paramObj
-}
-
-func (r FqdnConnectionNewParamsJitterBuffer) MarshalJSON() (data []byte, err error) {
-	type shadow FqdnConnectionNewParamsJitterBuffer
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FqdnConnectionNewParamsJitterBuffer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1004,7 +947,7 @@ type FqdnConnectionUpdateParams struct {
 	// max values in msec for customized buffering behaviors. Larger values add latency
 	// but tolerate more jitter, while smaller values reduce latency but are more
 	// sensitive to jitter and reordering.
-	JitterBuffer FqdnConnectionUpdateParamsJitterBuffer `json:"jitter_buffer,omitzero"`
+	JitterBuffer shared.ConnectionJitterBufferParam `json:"jitter_buffer,omitzero"`
 	// Controls when noise suppression is applied to calls. When set to 'inbound',
 	// noise suppression is applied to incoming audio. When set to 'outbound', it's
 	// applied to outgoing audio. When set to 'both', it's applied in both directions.
@@ -1038,32 +981,6 @@ func (r FqdnConnectionUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *FqdnConnectionUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Configuration options for Jitter Buffer. Enables Jitter Buffer for RTP streams
-// of SIP Trunking calls. The feature is off unless enabled. You may define min and
-// max values in msec for customized buffering behaviors. Larger values add latency
-// but tolerate more jitter, while smaller values reduce latency but are more
-// sensitive to jitter and reordering.
-type FqdnConnectionUpdateParamsJitterBuffer struct {
-	// Enables Jitter Buffer for RTP streams of SIP Trunking calls. The feature is off
-	// unless enabled.
-	EnableJitterBuffer param.Opt[bool] `json:"enable_jitter_buffer,omitzero"`
-	// The maximum jitter buffer size in milliseconds. Must be between 40 and 400. Has
-	// no effect if enable_jitter_buffer is not true.
-	JitterbufferMsecMax param.Opt[int64] `json:"jitterbuffer_msec_max,omitzero"`
-	// The minimum jitter buffer size in milliseconds. Must be between 40 and 400. Has
-	// no effect if enable_jitter_buffer is not true.
-	JitterbufferMsecMin param.Opt[int64] `json:"jitterbuffer_msec_min,omitzero"`
-	paramObj
-}
-
-func (r FqdnConnectionUpdateParamsJitterBuffer) MarshalJSON() (data []byte, err error) {
-	type shadow FqdnConnectionUpdateParamsJitterBuffer
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FqdnConnectionUpdateParamsJitterBuffer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -79,6 +79,72 @@ func (r *AvailablePhoneNumbersMetadata) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Configuration options for Jitter Buffer. Enables Jitter Buffer for RTP streams
+// of SIP Trunking calls. The feature is off unless enabled. You may define min and
+// max values in msec for customized buffering behaviors. Larger values add latency
+// but tolerate more jitter, while smaller values reduce latency but are more
+// sensitive to jitter and reordering.
+type ConnectionJitterBuffer struct {
+	// Enables Jitter Buffer for RTP streams of SIP Trunking calls. The feature is off
+	// unless enabled.
+	EnableJitterBuffer bool `json:"enable_jitter_buffer"`
+	// The maximum jitter buffer size in milliseconds. Must be between 40 and 400. Has
+	// no effect if enable_jitter_buffer is not true.
+	JitterbufferMsecMax int64 `json:"jitterbuffer_msec_max"`
+	// The minimum jitter buffer size in milliseconds. Must be between 40 and 400. Has
+	// no effect if enable_jitter_buffer is not true.
+	JitterbufferMsecMin int64 `json:"jitterbuffer_msec_min"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EnableJitterBuffer  respjson.Field
+		JitterbufferMsecMax respjson.Field
+		JitterbufferMsecMin respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConnectionJitterBuffer) RawJSON() string { return r.JSON.raw }
+func (r *ConnectionJitterBuffer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this ConnectionJitterBuffer to a ConnectionJitterBufferParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// ConnectionJitterBufferParam.Overrides()
+func (r ConnectionJitterBuffer) ToParam() ConnectionJitterBufferParam {
+	return param.Override[ConnectionJitterBufferParam](json.RawMessage(r.RawJSON()))
+}
+
+// Configuration options for Jitter Buffer. Enables Jitter Buffer for RTP streams
+// of SIP Trunking calls. The feature is off unless enabled. You may define min and
+// max values in msec for customized buffering behaviors. Larger values add latency
+// but tolerate more jitter, while smaller values reduce latency but are more
+// sensitive to jitter and reordering.
+type ConnectionJitterBufferParam struct {
+	// Enables Jitter Buffer for RTP streams of SIP Trunking calls. The feature is off
+	// unless enabled.
+	EnableJitterBuffer param.Opt[bool] `json:"enable_jitter_buffer,omitzero"`
+	// The maximum jitter buffer size in milliseconds. Must be between 40 and 400. Has
+	// no effect if enable_jitter_buffer is not true.
+	JitterbufferMsecMax param.Opt[int64] `json:"jitterbuffer_msec_max,omitzero"`
+	// The minimum jitter buffer size in milliseconds. Must be between 40 and 400. Has
+	// no effect if enable_jitter_buffer is not true.
+	JitterbufferMsecMin param.Opt[int64] `json:"jitterbuffer_msec_min,omitzero"`
+	paramObj
+}
+
+func (r ConnectionJitterBufferParam) MarshalJSON() (data []byte, err error) {
+	type shadow ConnectionJitterBufferParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ConnectionJitterBufferParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Configuration options for noise suppression. These settings are stored
 // regardless of the noise_suppression value, but only take effect when
 // noise_suppression is not 'disabled'. If you disable noise suppression and later
