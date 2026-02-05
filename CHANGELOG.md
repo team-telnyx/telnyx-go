@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.19.0 (2026-02-05)
+
+Full Changelog: [v4.18.0...v4.19.0](https://github.com/team-telnyx/telnyx-go/compare/v4.18.0...v4.19.0)
+
+### Features
+
+* **api:** manual updates ([f1dd32d](https://github.com/team-telnyx/telnyx-go/commit/f1dd32dd6f7048ceeaca99f3682a4b12416f0be2))
+* **api:** Merge pull request [#23](https://github.com/team-telnyx/telnyx-go/issues/23) from stainless-sdks/fix/deepgram-nova3-enum-duplicates ([57c96d0](https://github.com/team-telnyx/telnyx-go/commit/57c96d0f6177157f78d51d987b456742721b7ffe))
+
 ## 4.18.0 (2026-02-05)
 
 Full Changelog: [v4.17.0...v4.18.0](https://github.com/team-telnyx/telnyx-go/compare/v4.17.0...v4.18.0)
