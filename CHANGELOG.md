@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.18.0 (2026-02-05)
+
+Full Changelog: [v4.17.0...v4.18.0](https://github.com/team-telnyx/telnyx-go/compare/v4.17.0...v4.18.0)
+
+### Features
+
+* **api:** Merge pull request [#22](https://github.com/team-telnyx/telnyx-go/issues/22) from stainless-sdks/add-all-webhook-models ([1bf76af](https://github.com/team-telnyx/telnyx-go/commit/1bf76af3b74184ac3f074272f790aecaa1f9cf93))
+
 ## 4.17.0 (2026-02-04)
 
 Full Changelog: [v4.16.1...v4.17.0](https://github.com/team-telnyx/telnyx-go/compare/v4.16.1...v4.17.0)
