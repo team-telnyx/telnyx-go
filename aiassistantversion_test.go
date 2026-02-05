@@ -173,8 +173,8 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 				},
 				WidgetSettings: telnyx.WidgetSettingsParam{
 					AgentThinkingText: telnyx.String("agent_thinking_text"),
-					AudioVisualizerConfig: telnyx.WidgetSettingsAudioVisualizerConfigParam{
-						Color:  "verdant",
+					AudioVisualizerConfig: telnyx.AudioVisualizerConfigParam{
+						Color:  telnyx.AudioVisualizerConfigColorVerdant,
 						Preset: telnyx.String("preset"),
 					},
 					DefaultState:         telnyx.WidgetSettingsDefaultStateExpanded,

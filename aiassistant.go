@@ -1384,6 +1384,67 @@ func (r *AssistantsList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type AudioVisualizerConfig struct {
+	// The color theme for the audio visualizer.
+	//
+	// Any of "verdant", "twilight", "bloom", "mystic", "flare", "glacier".
+	Color AudioVisualizerConfigColor `json:"color"`
+	// The preset style for the audio visualizer.
+	Preset string `json:"preset"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Color       respjson.Field
+		Preset      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AudioVisualizerConfig) RawJSON() string { return r.JSON.raw }
+func (r *AudioVisualizerConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this AudioVisualizerConfig to a AudioVisualizerConfigParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// AudioVisualizerConfigParam.Overrides()
+func (r AudioVisualizerConfig) ToParam() AudioVisualizerConfigParam {
+	return param.Override[AudioVisualizerConfigParam](json.RawMessage(r.RawJSON()))
+}
+
+// The color theme for the audio visualizer.
+type AudioVisualizerConfigColor string
+
+const (
+	AudioVisualizerConfigColorVerdant  AudioVisualizerConfigColor = "verdant"
+	AudioVisualizerConfigColorTwilight AudioVisualizerConfigColor = "twilight"
+	AudioVisualizerConfigColorBloom    AudioVisualizerConfigColor = "bloom"
+	AudioVisualizerConfigColorMystic   AudioVisualizerConfigColor = "mystic"
+	AudioVisualizerConfigColorFlare    AudioVisualizerConfigColor = "flare"
+	AudioVisualizerConfigColorGlacier  AudioVisualizerConfigColor = "glacier"
+)
+
+type AudioVisualizerConfigParam struct {
+	// The preset style for the audio visualizer.
+	Preset param.Opt[string] `json:"preset,omitzero"`
+	// The color theme for the audio visualizer.
+	//
+	// Any of "verdant", "twilight", "bloom", "mystic", "flare", "glacier".
+	Color AudioVisualizerConfigColor `json:"color,omitzero"`
+	paramObj
+}
+
+func (r AudioVisualizerConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow AudioVisualizerConfigParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AudioVisualizerConfigParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // If `telephony` is enabled, the assistant will be able to make and receive calls.
 // If `messaging` is enabled, the assistant will be able to send and receive
 // messages.
@@ -3281,8 +3342,8 @@ func init() {
 // Configuration settings for the assistant's web widget.
 type WidgetSettings struct {
 	// Text displayed while the agent is processing.
-	AgentThinkingText     string                              `json:"agent_thinking_text"`
-	AudioVisualizerConfig WidgetSettingsAudioVisualizerConfig `json:"audio_visualizer_config"`
+	AgentThinkingText     string                `json:"agent_thinking_text"`
+	AudioVisualizerConfig AudioVisualizerConfig `json:"audio_visualizer_config"`
 	// The default state of the widget.
 	//
 	// Any of "expanded", "collapsed".
@@ -3340,28 +3401,6 @@ func (r WidgetSettings) ToParam() WidgetSettingsParam {
 	return param.Override[WidgetSettingsParam](json.RawMessage(r.RawJSON()))
 }
 
-type WidgetSettingsAudioVisualizerConfig struct {
-	// The color theme for the audio visualizer.
-	//
-	// Any of "verdant", "twilight", "bloom", "mystic", "flare", "glacier".
-	Color string `json:"color"`
-	// The preset style for the audio visualizer.
-	Preset string `json:"preset"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Color       respjson.Field
-		Preset      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WidgetSettingsAudioVisualizerConfig) RawJSON() string { return r.JSON.raw }
-func (r *WidgetSettingsAudioVisualizerConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // The default state of the widget.
 type WidgetSettingsDefaultState string
 
@@ -3401,8 +3440,8 @@ type WidgetSettingsParam struct {
 	// Text prompting users to speak to interrupt.
 	SpeakToInterruptText param.Opt[string] `json:"speak_to_interrupt_text,omitzero"`
 	// Custom text displayed on the start call button.
-	StartCallText         param.Opt[string]                        `json:"start_call_text,omitzero"`
-	AudioVisualizerConfig WidgetSettingsAudioVisualizerConfigParam `json:"audio_visualizer_config,omitzero"`
+	StartCallText         param.Opt[string]          `json:"start_call_text,omitzero"`
+	AudioVisualizerConfig AudioVisualizerConfigParam `json:"audio_visualizer_config,omitzero"`
 	// The default state of the widget.
 	//
 	// Any of "expanded", "collapsed".
@@ -3424,30 +3463,6 @@ func (r WidgetSettingsParam) MarshalJSON() (data []byte, err error) {
 }
 func (r *WidgetSettingsParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-type WidgetSettingsAudioVisualizerConfigParam struct {
-	// The preset style for the audio visualizer.
-	Preset param.Opt[string] `json:"preset,omitzero"`
-	// The color theme for the audio visualizer.
-	//
-	// Any of "verdant", "twilight", "bloom", "mystic", "flare", "glacier".
-	Color string `json:"color,omitzero"`
-	paramObj
-}
-
-func (r WidgetSettingsAudioVisualizerConfigParam) MarshalJSON() (data []byte, err error) {
-	type shadow WidgetSettingsAudioVisualizerConfigParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WidgetSettingsAudioVisualizerConfigParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[WidgetSettingsAudioVisualizerConfigParam](
-		"color", "verdant", "twilight", "bloom", "mystic", "flare", "glacier",
-	)
 }
 
 // Aligns with the OpenAI API:

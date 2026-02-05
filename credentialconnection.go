@@ -238,7 +238,7 @@ type CredentialConnection struct {
 	// max values in msec for customized buffering behaviors. Larger values add latency
 	// but tolerate more jitter, while smaller values reduce latency but are more
 	// sensitive to jitter and reordering.
-	JitterBuffer CredentialConnectionJitterBuffer `json:"jitter_buffer"`
+	JitterBuffer shared.ConnectionJitterBuffer `json:"jitter_buffer"`
 	// Controls when noise suppression is applied to calls. When set to 'inbound',
 	// noise suppression is applied to incoming audio. When set to 'outbound', it's
 	// applied to outgoing audio. When set to 'both', it's applied in both directions.
@@ -329,37 +329,6 @@ type CredentialConnection struct {
 // Returns the unmodified JSON received from the API
 func (r CredentialConnection) RawJSON() string { return r.JSON.raw }
 func (r *CredentialConnection) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Configuration options for Jitter Buffer. Enables Jitter Buffer for RTP streams
-// of SIP Trunking calls. The feature is off unless enabled. You may define min and
-// max values in msec for customized buffering behaviors. Larger values add latency
-// but tolerate more jitter, while smaller values reduce latency but are more
-// sensitive to jitter and reordering.
-type CredentialConnectionJitterBuffer struct {
-	// Enables Jitter Buffer for RTP streams of SIP Trunking calls. The feature is off
-	// unless enabled.
-	EnableJitterBuffer bool `json:"enable_jitter_buffer"`
-	// The maximum jitter buffer size in milliseconds. Must be between 40 and 400. Has
-	// no effect if enable_jitter_buffer is not true.
-	JitterbufferMsecMax int64 `json:"jitterbuffer_msec_max"`
-	// The minimum jitter buffer size in milliseconds. Must be between 40 and 400. Has
-	// no effect if enable_jitter_buffer is not true.
-	JitterbufferMsecMin int64 `json:"jitterbuffer_msec_min"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		EnableJitterBuffer  respjson.Field
-		JitterbufferMsecMax respjson.Field
-		JitterbufferMsecMin respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CredentialConnectionJitterBuffer) RawJSON() string { return r.JSON.raw }
-func (r *CredentialConnectionJitterBuffer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -850,7 +819,7 @@ type CredentialConnectionNewParams struct {
 	// max values in msec for customized buffering behaviors. Larger values add latency
 	// but tolerate more jitter, while smaller values reduce latency but are more
 	// sensitive to jitter and reordering.
-	JitterBuffer CredentialConnectionNewParamsJitterBuffer `json:"jitter_buffer,omitzero"`
+	JitterBuffer shared.ConnectionJitterBufferParam `json:"jitter_buffer,omitzero"`
 	// Controls when noise suppression is applied to calls. When set to 'inbound',
 	// noise suppression is applied to incoming audio. When set to 'outbound', it's
 	// applied to outgoing audio. When set to 'both', it's applied in both directions.
@@ -889,32 +858,6 @@ func (r CredentialConnectionNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *CredentialConnectionNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Configuration options for Jitter Buffer. Enables Jitter Buffer for RTP streams
-// of SIP Trunking calls. The feature is off unless enabled. You may define min and
-// max values in msec for customized buffering behaviors. Larger values add latency
-// but tolerate more jitter, while smaller values reduce latency but are more
-// sensitive to jitter and reordering.
-type CredentialConnectionNewParamsJitterBuffer struct {
-	// Enables Jitter Buffer for RTP streams of SIP Trunking calls. The feature is off
-	// unless enabled.
-	EnableJitterBuffer param.Opt[bool] `json:"enable_jitter_buffer,omitzero"`
-	// The maximum jitter buffer size in milliseconds. Must be between 40 and 400. Has
-	// no effect if enable_jitter_buffer is not true.
-	JitterbufferMsecMax param.Opt[int64] `json:"jitterbuffer_msec_max,omitzero"`
-	// The minimum jitter buffer size in milliseconds. Must be between 40 and 400. Has
-	// no effect if enable_jitter_buffer is not true.
-	JitterbufferMsecMin param.Opt[int64] `json:"jitterbuffer_msec_min,omitzero"`
-	paramObj
-}
-
-func (r CredentialConnectionNewParamsJitterBuffer) MarshalJSON() (data []byte, err error) {
-	type shadow CredentialConnectionNewParamsJitterBuffer
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CredentialConnectionNewParamsJitterBuffer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1015,7 +958,7 @@ type CredentialConnectionUpdateParams struct {
 	// max values in msec for customized buffering behaviors. Larger values add latency
 	// but tolerate more jitter, while smaller values reduce latency but are more
 	// sensitive to jitter and reordering.
-	JitterBuffer CredentialConnectionUpdateParamsJitterBuffer `json:"jitter_buffer,omitzero"`
+	JitterBuffer shared.ConnectionJitterBufferParam `json:"jitter_buffer,omitzero"`
 	// Controls when noise suppression is applied to calls. When set to 'inbound',
 	// noise suppression is applied to incoming audio. When set to 'outbound', it's
 	// applied to outgoing audio. When set to 'both', it's applied in both directions.
@@ -1052,32 +995,6 @@ func (r CredentialConnectionUpdateParams) MarshalJSON() (data []byte, err error)
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *CredentialConnectionUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Configuration options for Jitter Buffer. Enables Jitter Buffer for RTP streams
-// of SIP Trunking calls. The feature is off unless enabled. You may define min and
-// max values in msec for customized buffering behaviors. Larger values add latency
-// but tolerate more jitter, while smaller values reduce latency but are more
-// sensitive to jitter and reordering.
-type CredentialConnectionUpdateParamsJitterBuffer struct {
-	// Enables Jitter Buffer for RTP streams of SIP Trunking calls. The feature is off
-	// unless enabled.
-	EnableJitterBuffer param.Opt[bool] `json:"enable_jitter_buffer,omitzero"`
-	// The maximum jitter buffer size in milliseconds. Must be between 40 and 400. Has
-	// no effect if enable_jitter_buffer is not true.
-	JitterbufferMsecMax param.Opt[int64] `json:"jitterbuffer_msec_max,omitzero"`
-	// The minimum jitter buffer size in milliseconds. Must be between 40 and 400. Has
-	// no effect if enable_jitter_buffer is not true.
-	JitterbufferMsecMin param.Opt[int64] `json:"jitterbuffer_msec_min,omitzero"`
-	paramObj
-}
-
-func (r CredentialConnectionUpdateParamsJitterBuffer) MarshalJSON() (data []byte, err error) {
-	type shadow CredentialConnectionUpdateParamsJitterBuffer
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CredentialConnectionUpdateParamsJitterBuffer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
