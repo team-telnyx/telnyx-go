@@ -58,7 +58,7 @@ func TestFqdnConnectionNewWithOptionalParams(t *testing.T) {
 			Timeout2xxSecs:              telnyx.Int(10),
 		},
 		IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
-		JitterBuffer: telnyx.FqdnConnectionNewParamsJitterBuffer{
+		JitterBuffer: shared.ConnectionJitterBufferParam{
 			EnableJitterBuffer:  telnyx.Bool(true),
 			JitterbufferMsecMax: telnyx.Int(200),
 			JitterbufferMsecMin: telnyx.Int(60),
@@ -178,7 +178,7 @@ func TestFqdnConnectionUpdateWithOptionalParams(t *testing.T) {
 				Timeout2xxSecs:              telnyx.Int(10),
 			},
 			IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
-			JitterBuffer: telnyx.FqdnConnectionUpdateParamsJitterBuffer{
+			JitterBuffer: shared.ConnectionJitterBufferParam{
 				EnableJitterBuffer:  telnyx.Bool(true),
 				JitterbufferMsecMax: telnyx.Int(200),
 				JitterbufferMsecMin: telnyx.Int(60),

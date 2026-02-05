@@ -25,6 +25,24 @@ type APIErrorSource = shared.APIErrorSource
 // This is an alias to an internal type.
 type AvailablePhoneNumbersMetadata = shared.AvailablePhoneNumbersMetadata
 
+// Configuration options for Jitter Buffer. Enables Jitter Buffer for RTP streams
+// of SIP Trunking calls. The feature is off unless enabled. You may define min and
+// max values in msec for customized buffering behaviors. Larger values add latency
+// but tolerate more jitter, while smaller values reduce latency but are more
+// sensitive to jitter and reordering.
+//
+// This is an alias to an internal type.
+type ConnectionJitterBuffer = shared.ConnectionJitterBuffer
+
+// Configuration options for Jitter Buffer. Enables Jitter Buffer for RTP streams
+// of SIP Trunking calls. The feature is off unless enabled. You may define min and
+// max values in msec for customized buffering behaviors. Larger values add latency
+// but tolerate more jitter, while smaller values reduce latency but are more
+// sensitive to jitter and reordering.
+//
+// This is an alias to an internal type.
+type ConnectionJitterBufferParam = shared.ConnectionJitterBufferParam
+
 // Configuration options for noise suppression. These settings are stored
 // regardless of the noise_suppression value, but only take effect when
 // noise_suppression is not 'disabled'. If you disable noise suppression and later
