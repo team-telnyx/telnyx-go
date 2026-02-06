@@ -1740,12 +1740,11 @@ type TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova2ConfigParam 
 	KeywordsBoosting map[string]float64 `json:"keywords_boosting,omitzero"`
 	// Language to use for speech recognition with nova-2 model
 	//
-	// Any of "bg", "ca", "zh", "zh-CN", "zh-Hans", "zh-TW", "zh-Hant", "zh-HK", "cs",
-	// "da", "da-DK", "nl", "en", "en-US", "en-AU", "en-GB", "en-NZ", "en-IN", "et",
-	// "fi", "nl-BE", "fr", "fr-CA", "de", "de-CH", "el", "hi", "hu", "id", "it", "ja",
-	// "ko", "ko-KR", "lv", "lt", "ms", "no", "pl", "pt", "pt-BR", "pt-PT", "ro", "ru",
-	// "sk", "es", "es-419", "sv", "sv-SE", "th", "th-TH", "tr", "uk", "vi",
-	// "auto_detect".
+	// Any of "bg", "ca", "zh-CN", "zh-Hans", "zh-TW", "zh-Hant", "zh-HK", "cs",
+	// "da-DK", "nl-BE", "en-US", "en-AU", "en-GB", "en-NZ", "en-IN", "et", "fi", "fr",
+	// "fr-CA", "de-CH", "el", "hi", "hu", "id", "it", "ja", "ko-KR", "lv", "lt", "ms",
+	// "no", "pl", "pt-BR", "pt-PT", "ro", "ru", "sk", "es-419", "sv-SE", "th-TH",
+	// "tr", "uk", "vi", "auto_detect".
 	Language string `json:"language,omitzero"`
 	// This field can be elided, and will marshal its zero value as "Deepgram".
 	TranscriptionEngine constant.Deepgram `json:"transcription_engine,required"`
@@ -1765,7 +1764,7 @@ func init() {
 		"transcription_model", "deepgram/nova-2",
 	)
 	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova2ConfigParam](
-		"language", "bg", "ca", "zh", "zh-CN", "zh-Hans", "zh-TW", "zh-Hant", "zh-HK", "cs", "da", "da-DK", "nl", "en", "en-US", "en-AU", "en-GB", "en-NZ", "en-IN", "et", "fi", "nl-BE", "fr", "fr-CA", "de", "de-CH", "el", "hi", "hu", "id", "it", "ja", "ko", "ko-KR", "lv", "lt", "ms", "no", "pl", "pt", "pt-BR", "pt-PT", "ro", "ru", "sk", "es", "es-419", "sv", "sv-SE", "th", "th-TH", "tr", "uk", "vi", "auto_detect",
+		"language", "bg", "ca", "zh-CN", "zh-Hans", "zh-TW", "zh-Hant", "zh-HK", "cs", "da-DK", "nl-BE", "en-US", "en-AU", "en-GB", "en-NZ", "en-IN", "et", "fi", "fr", "fr-CA", "de-CH", "el", "hi", "hu", "id", "it", "ja", "ko-KR", "lv", "lt", "ms", "no", "pl", "pt-BR", "pt-PT", "ro", "ru", "sk", "es-419", "sv-SE", "th-TH", "tr", "uk", "vi", "auto_detect",
 	)
 }
 
