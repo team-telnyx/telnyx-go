@@ -2253,6 +2253,8 @@ type TelephonySettings struct {
 	// Configuration for noise suppression. Only applicable when noise_suppression is
 	// 'deepfilternet'.
 	NoiseSuppressionConfig TelephonySettingsNoiseSuppressionConfig `json:"noise_suppression_config"`
+	// Configuration for call recording format and channel settings.
+	RecordingSettings TelephonySettingsRecordingSettings `json:"recording_settings"`
 	// When enabled, allows users to interact with your AI assistant directly from your
 	// website without requiring authentication. This is required for FE widgets that
 	// work with assistants that have telephony enabled.
@@ -2279,6 +2281,7 @@ type TelephonySettings struct {
 		DefaultTexmlAppID               respjson.Field
 		NoiseSuppression                respjson.Field
 		NoiseSuppressionConfig          respjson.Field
+		RecordingSettings               respjson.Field
 		SupportsUnauthenticatedWebCalls respjson.Field
 		TimeLimitSecs                   respjson.Field
 		UserIdleTimeoutSecs             respjson.Field
@@ -2334,6 +2337,31 @@ type TelephonySettingsNoiseSuppressionConfig struct {
 // Returns the unmodified JSON received from the API
 func (r TelephonySettingsNoiseSuppressionConfig) RawJSON() string { return r.JSON.raw }
 func (r *TelephonySettingsNoiseSuppressionConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration for call recording format and channel settings.
+type TelephonySettingsRecordingSettings struct {
+	// The number of channels for the recording. 'single' for mono, 'dual' for stereo.
+	//
+	// Any of "single", "dual".
+	Channels string `json:"channels"`
+	// The format of the recording file.
+	//
+	// Any of "wav", "mp3".
+	Format string `json:"format"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Channels    respjson.Field
+		Format      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TelephonySettingsRecordingSettings) RawJSON() string { return r.JSON.raw }
+func (r *TelephonySettingsRecordingSettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2443,6 +2471,8 @@ type TelephonySettingsParam struct {
 	// Configuration for noise suppression. Only applicable when noise_suppression is
 	// 'deepfilternet'.
 	NoiseSuppressionConfig TelephonySettingsNoiseSuppressionConfigParam `json:"noise_suppression_config,omitzero"`
+	// Configuration for call recording format and channel settings.
+	RecordingSettings TelephonySettingsRecordingSettingsParam `json:"recording_settings,omitzero"`
 	// Configuration for voicemail detection (AMD - Answering Machine Detection) on
 	// outgoing calls. These settings only apply if AMD is enabled on the Dial command.
 	// See
@@ -2484,6 +2514,36 @@ func (r *TelephonySettingsNoiseSuppressionConfigParam) UnmarshalJSON(data []byte
 func init() {
 	apijson.RegisterFieldValidator[TelephonySettingsNoiseSuppressionConfigParam](
 		"mode", "advanced",
+	)
+}
+
+// Configuration for call recording format and channel settings.
+type TelephonySettingsRecordingSettingsParam struct {
+	// The number of channels for the recording. 'single' for mono, 'dual' for stereo.
+	//
+	// Any of "single", "dual".
+	Channels string `json:"channels,omitzero"`
+	// The format of the recording file.
+	//
+	// Any of "wav", "mp3".
+	Format string `json:"format,omitzero"`
+	paramObj
+}
+
+func (r TelephonySettingsRecordingSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow TelephonySettingsRecordingSettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TelephonySettingsRecordingSettingsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TelephonySettingsRecordingSettingsParam](
+		"channels", "single", "dual",
+	)
+	apijson.RegisterFieldValidator[TelephonySettingsRecordingSettingsParam](
+		"format", "wav", "mp3",
 	)
 }
 
