@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.20.0 (2026-02-06)
+
+Full Changelog: [v4.19.0...v4.20.0](https://github.com/team-telnyx/telnyx-go/compare/v4.19.0...v4.20.0)
+
+### Features
+
+* Revert "fix emergency settings -schema" ([d9e25f2](https://github.com/team-telnyx/telnyx-go/commit/d9e25f298581f5462b1a2b2979eba98c1c5b2ca2))
+
 ## 4.19.0 (2026-02-05)
 
 Full Changelog: [v4.18.0...v4.19.0](https://github.com/team-telnyx/telnyx-go/compare/v4.18.0...v4.19.0)
