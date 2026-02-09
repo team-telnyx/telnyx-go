@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.21.0 (2026-02-09)
+
+Full Changelog: [v4.20.0...v4.21.0](https://github.com/team-telnyx/telnyx-go/compare/v4.20.0...v4.21.0)
+
+### Features
+
+* add Telnyx webhook verification with ED25519 signatures ([f634059](https://github.com/team-telnyx/telnyx-go/commit/f6340596c3a0867f4537fa3737671fa48cdce281))
+
 ## 4.20.0 (2026-02-06)
 
 Full Changelog: [v4.19.0...v4.20.0](https://github.com/team-telnyx/telnyx-go/compare/v4.19.0...v4.20.0)

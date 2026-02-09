@@ -1,5 +1,3 @@
-github.com/standard-webhooks/standard-webhooks/libraries v0.0.0-20260204153508-82e3cc7ca7f2 h1:G8HmTGjWol06WYFuaB92Ii9WVd6/IRBkmAyc4OrmN8Y=
-github.com/standard-webhooks/standard-webhooks/libraries v0.0.0-20260204153508-82e3cc7ca7f2/go.mod h1:L1MQhA6x4dn9r007T033lsaZMv9EmBAdXyU/+EF40fo=
 github.com/tidwall/gjson v1.14.2/go.mod h1:/wbyibRr2FHMks5tjHJ5F8dMZh3AcwJEMf5vlfC0lxk=
 github.com/tidwall/gjson v1.18.0 h1:FIDeeyB800efLX89e5a8Y0BNH+LOngJyGrIWxG2FKQY=
 github.com/tidwall/gjson v1.18.0/go.mod h1:/wbyibRr2FHMks5tjHJ5F8dMZh3AcwJEMf5vlfC0lxk=
