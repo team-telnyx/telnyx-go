@@ -134,7 +134,12 @@ type Conversation struct {
 	// The datetime of the latest message in the conversation.
 	LastMessageAt time.Time `json:"last_message_at,required" format:"date-time"`
 	// Metadata associated with the conversation. Telnyx provides several pieces of
-	// metadata, but customers can also add their own.
+	// metadata, but customers can also add their own. The reserved field `ai_disabled`
+	// (boolean) can be set to `true` to prevent AI-generated responses on this
+	// conversation. When `ai_disabled` is `true`, calls to the chat endpoint will
+	// return a 400 error. Set to `false` or remove the field to re-enable AI
+	// responses. This is useful when a human agent needs to take over the conversation
+	// mid-stream (e.g., a technician stepping in while AI was messaging a resident).
 	Metadata map[string]string `json:"metadata,required"`
 	Name     string            `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -274,7 +279,8 @@ func (r *AIConversationGetConversationsInsightsResponseDataConversationInsight) 
 
 type AIConversationNewParams struct {
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Metadata associated with the conversation.
+	// Metadata associated with the conversation. Set `ai_disabled` to `true` to create
+	// the conversation with AI message responses disabled.
 	Metadata map[string]string `json:"metadata,omitzero"`
 	paramObj
 }
@@ -288,7 +294,9 @@ func (r *AIConversationNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type AIConversationUpdateParams struct {
-	// Metadata associated with the conversation.
+	// Metadata associated with the conversation. Set `ai_disabled` to `true` to stop
+	// AI from responding to messages (e.g., when a human agent takes over). Set to
+	// `false` to re-enable AI responses.
 	Metadata map[string]string `json:"metadata,omitzero"`
 	paramObj
 }
