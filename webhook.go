@@ -1,20 +1,47 @@
-// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+// Telnyx webhook verification using ED25519 signatures.
+//
+// This file provides ED25519 signature verification for Telnyx webhooks,
+// matching the implementation pattern used in the Python and Node SDKs.
+//
+// Example usage:
+//
+//	client := telnyx.NewClient(
+//		option.WithAPIKey(os.Getenv("TELNYX_API_KEY")),
+//		option.WithPublicKey(os.Getenv("TELNYX_PUBLIC_KEY")), // Base64 from Mission Control
+//	)
+//
+//	// In your webhook handler:
+//	event, err := client.Webhooks.Unwrap(payload, req.Header)
+//	if err != nil {
+//		// Signature verification failed
+//	}
 
 package telnyx
 
 import (
+	"crypto/ed25519"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"slices"
+	"strconv"
 	"time"
 
-	standardwebhooks "github.com/standard-webhooks/standard-webhooks/libraries/go"
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v4/shared"
+)
+
+const (
+	// Telnyx webhook signature headers (case-insensitive per HTTP spec)
+	webhookSignatureHeader = "telnyx-signature-ed25519"
+	webhookTimestampHeader = "telnyx-timestamp"
+	// Tolerance for timestamp validation (5 minutes)
+	webhookTimestampTolerance = 5 * time.Minute
 )
 
 // WebhookService contains methods and other services that help with interacting
@@ -55,20 +82,76 @@ func (r *WebhookService) Unwrap(payload []byte, headers http.Header, opts ...opt
 	if key == "" {
 		return nil, errors.New("The PublicKey option must be set in order to verify webhook headers")
 	}
-	wh, err := standardwebhooks.NewWebhook(key)
-	if err != nil {
+
+	// Verify the webhook signature using ED25519
+	if err := verifyWebhookSignature(payload, headers, key); err != nil {
 		return nil, err
 	}
-	err = wh.Verify(payload, headers)
-	if err != nil {
-		return nil, err
-	}
+
 	res := &UnwrapWebhookEventUnion{}
 	err = res.UnmarshalJSON(payload)
 	if err != nil {
 		return res, err
 	}
 	return res, nil
+}
+
+// verifyWebhookSignature verifies the ED25519 signature of a Telnyx webhook.
+// Telnyx webhooks are signed using ED25519 with the following format:
+//   - Header "Telnyx-Signature-Ed25519": Base64-encoded ED25519 signature
+//   - Header "Telnyx-Timestamp": Unix timestamp (seconds)
+//   - Signed payload: "{timestamp}|{payload}"
+func verifyWebhookSignature(payload []byte, headers http.Header, publicKeyB64 string) error {
+	// Get required headers
+	signature := headers.Get(webhookSignatureHeader)
+	timestamp := headers.Get(webhookTimestampHeader)
+
+	if signature == "" || timestamp == "" {
+		return errors.New("missing required webhook headers: telnyx-signature-ed25519 and telnyx-timestamp")
+	}
+
+	// Decode the base64-encoded public key
+	publicKeyBytes, err := base64.StdEncoding.DecodeString(publicKeyB64)
+	if err != nil {
+		return fmt.Errorf("invalid public key encoding: %w", err)
+	}
+
+	if len(publicKeyBytes) != ed25519.PublicKeySize {
+		return fmt.Errorf("invalid public key size: expected %d bytes, got %d", ed25519.PublicKeySize, len(publicKeyBytes))
+	}
+
+	// Decode the base64-encoded signature
+	signatureBytes, err := base64.StdEncoding.DecodeString(signature)
+	if err != nil {
+		return fmt.Errorf("invalid signature encoding: %w", err)
+	}
+
+	// Build the signed payload: "{timestamp}|{payload}"
+	signedPayload := []byte(timestamp + "|" + string(payload))
+
+	// Verify the ED25519 signature
+	if !ed25519.Verify(publicKeyBytes, signedPayload, signatureBytes) {
+		return errors.New("webhook signature verification failed")
+	}
+
+	// Validate timestamp to prevent replay attacks
+	ts, err := strconv.ParseInt(timestamp, 10, 64)
+	if err != nil {
+		return fmt.Errorf("invalid timestamp format: %w", err)
+	}
+
+	webhookTime := time.Unix(ts, 0)
+	now := time.Now()
+
+	if now.Sub(webhookTime) > webhookTimestampTolerance {
+		return errors.New("webhook timestamp is too old")
+	}
+
+	if webhookTime.Sub(now) > webhookTimestampTolerance {
+		return errors.New("webhook timestamp is too far in the future")
+	}
+
+	return nil
 }
 
 type CallAIGatherEnded struct {
