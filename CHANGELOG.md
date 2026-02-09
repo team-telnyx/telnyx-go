@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.22.0 (2026-02-09)
+
+Full Changelog: [v4.21.0...v4.22.0](https://github.com/team-telnyx/telnyx-go/compare/v4.21.0...v4.22.0)
+
+### Features
+
+* AI-2078 Feature: API endpoint to disable AI assistant mid-conversation ([472ce6b](https://github.com/team-telnyx/telnyx-go/commit/472ce6b0d45a47dcc39398ef7337d5bda65151d5))
+
 ## 4.21.0 (2026-02-09)
 
 Full Changelog: [v4.20.0...v4.21.0](https://github.com/team-telnyx/telnyx-go/compare/v4.20.0...v4.21.0)
