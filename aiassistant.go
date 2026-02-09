@@ -680,6 +680,10 @@ type AssistantToolTransferTransfer struct {
 	Targets []AssistantToolTransferTransferTarget `json:"targets,required"`
 	// Custom headers to be added to the SIP INVITE for the transfer command.
 	CustomHeaders []AssistantToolTransferTransferCustomHeader `json:"custom_headers"`
+	// Configuration for voicemail detection (AMD - Answering Machine Detection) on the
+	// transferred call. Allows the assistant to detect when a voicemail system answers
+	// the transferred call and take appropriate action.
+	VoicemailDetection AssistantToolTransferTransferVoicemailDetection `json:"voicemail_detection"`
 	// Natural language instructions for your agent for how to provide context for the
 	// transfer recipient.
 	WarmTransferInstructions string `json:"warm_transfer_instructions"`
@@ -688,6 +692,7 @@ type AssistantToolTransferTransfer struct {
 		From                     respjson.Field
 		Targets                  respjson.Field
 		CustomHeaders            respjson.Field
+		VoicemailDetection       respjson.Field
 		WarmTransferInstructions respjson.Field
 		ExtraFields              map[string]respjson.Field
 		raw                      string
@@ -739,6 +744,145 @@ type AssistantToolTransferTransferCustomHeader struct {
 // Returns the unmodified JSON received from the API
 func (r AssistantToolTransferTransferCustomHeader) RawJSON() string { return r.JSON.raw }
 func (r *AssistantToolTransferTransferCustomHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration for voicemail detection (AMD - Answering Machine Detection) on the
+// transferred call. Allows the assistant to detect when a voicemail system answers
+// the transferred call and take appropriate action.
+type AssistantToolTransferTransferVoicemailDetection struct {
+	// Advanced AMD detection configuration parameters. All values are optional -
+	// Telnyx will use defaults if not specified.
+	DetectionConfig AssistantToolTransferTransferVoicemailDetectionDetectionConfig `json:"detection_config"`
+	// The AMD detection mode to use. 'premium' provides the highest accuracy.
+	// 'disabled' turns off AMD detection.
+	//
+	// Any of "premium", "detect", "detect_beep", "detect_words", "greeting_end",
+	// "disabled".
+	DetectionMode string `json:"detection_mode"`
+	// Action to take when voicemail is detected on the transferred call.
+	OnVoicemailDetected AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetected `json:"on_voicemail_detected"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DetectionConfig     respjson.Field
+		DetectionMode       respjson.Field
+		OnVoicemailDetected respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolTransferTransferVoicemailDetection) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolTransferTransferVoicemailDetection) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Advanced AMD detection configuration parameters. All values are optional -
+// Telnyx will use defaults if not specified.
+type AssistantToolTransferTransferVoicemailDetectionDetectionConfig struct {
+	// Duration of silence after greeting detection before finalizing the result.
+	AfterGreetingSilenceMillis int64 `json:"after_greeting_silence_millis"`
+	// Maximum silence duration between words during greeting.
+	BetweenWordsSilenceMillis int64 `json:"between_words_silence_millis"`
+	// Expected duration of greeting speech.
+	GreetingDurationMillis int64 `json:"greeting_duration_millis"`
+	// Duration of silence after the greeting to wait before considering the greeting
+	// complete.
+	GreetingSilenceDurationMillis int64 `json:"greeting_silence_duration_millis"`
+	// Maximum time to spend analyzing the greeting.
+	GreetingTotalAnalysisTimeMillis int64 `json:"greeting_total_analysis_time_millis"`
+	// Maximum silence duration at the start of the call before speech.
+	InitialSilenceMillis int64 `json:"initial_silence_millis"`
+	// Maximum number of words expected in a human greeting.
+	MaximumNumberOfWords int64 `json:"maximum_number_of_words"`
+	// Maximum duration of a single word.
+	MaximumWordLengthMillis int64 `json:"maximum_word_length_millis"`
+	// Minimum duration for audio to be considered a word.
+	MinWordLengthMillis int64 `json:"min_word_length_millis"`
+	// Audio level threshold for silence detection.
+	SilenceThreshold int64 `json:"silence_threshold"`
+	// Total time allowed for AMD analysis.
+	TotalAnalysisTimeMillis int64 `json:"total_analysis_time_millis"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AfterGreetingSilenceMillis      respjson.Field
+		BetweenWordsSilenceMillis       respjson.Field
+		GreetingDurationMillis          respjson.Field
+		GreetingSilenceDurationMillis   respjson.Field
+		GreetingTotalAnalysisTimeMillis respjson.Field
+		InitialSilenceMillis            respjson.Field
+		MaximumNumberOfWords            respjson.Field
+		MaximumWordLengthMillis         respjson.Field
+		MinWordLengthMillis             respjson.Field
+		SilenceThreshold                respjson.Field
+		TotalAnalysisTimeMillis         respjson.Field
+		ExtraFields                     map[string]respjson.Field
+		raw                             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolTransferTransferVoicemailDetectionDetectionConfig) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *AssistantToolTransferTransferVoicemailDetectionDetectionConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Action to take when voicemail is detected on the transferred call.
+type AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetected struct {
+	// The action to take when voicemail is detected. 'stop_transfer' hangs up
+	// immediately. 'leave_message_and_stop_transfer' leaves a message then hangs up.
+	// 'continue_transfer' bridges the call despite voicemail detection.
+	//
+	// Any of "stop_transfer", "leave_message_and_stop_transfer", "continue_transfer".
+	Action string `json:"action"`
+	// Configuration for the voicemail message to leave. Only applicable when action is
+	// 'leave_message_and_stop_transfer'.
+	VoicemailMessage AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedVoicemailMessage `json:"voicemail_message"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Action           respjson.Field
+		VoicemailMessage respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetected) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetected) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration for the voicemail message to leave. Only applicable when action is
+// 'leave_message_and_stop_transfer'.
+type AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedVoicemailMessage struct {
+	// The specific message to leave as voicemail (converted to speech). Only
+	// applicable when type is 'message'.
+	Message string `json:"message"`
+	// The type of voicemail message. Use 'message' to leave a specific TTS message, or
+	// 'warm_transfer_instructions' to play the warm transfer audio.
+	//
+	// Any of "message", "warm_transfer_instructions".
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Message     respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedVoicemailMessage) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedVoicemailMessage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1186,6 +1330,10 @@ type AssistantToolTransferTransferParam struct {
 	WarmTransferInstructions param.Opt[string] `json:"warm_transfer_instructions,omitzero"`
 	// Custom headers to be added to the SIP INVITE for the transfer command.
 	CustomHeaders []AssistantToolTransferTransferCustomHeaderParam `json:"custom_headers,omitzero"`
+	// Configuration for voicemail detection (AMD - Answering Machine Detection) on the
+	// transferred call. Allows the assistant to detect when a voicemail system answers
+	// the transferred call and take appropriate action.
+	VoicemailDetection AssistantToolTransferTransferVoicemailDetectionParam `json:"voicemail_detection,omitzero"`
 	paramObj
 }
 
@@ -1229,6 +1377,131 @@ func (r AssistantToolTransferTransferCustomHeaderParam) MarshalJSON() (data []by
 }
 func (r *AssistantToolTransferTransferCustomHeaderParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration for voicemail detection (AMD - Answering Machine Detection) on the
+// transferred call. Allows the assistant to detect when a voicemail system answers
+// the transferred call and take appropriate action.
+type AssistantToolTransferTransferVoicemailDetectionParam struct {
+	// Advanced AMD detection configuration parameters. All values are optional -
+	// Telnyx will use defaults if not specified.
+	DetectionConfig AssistantToolTransferTransferVoicemailDetectionDetectionConfigParam `json:"detection_config,omitzero"`
+	// The AMD detection mode to use. 'premium' provides the highest accuracy.
+	// 'disabled' turns off AMD detection.
+	//
+	// Any of "premium", "detect", "detect_beep", "detect_words", "greeting_end",
+	// "disabled".
+	DetectionMode string `json:"detection_mode,omitzero"`
+	// Action to take when voicemail is detected on the transferred call.
+	OnVoicemailDetected AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedParam `json:"on_voicemail_detected,omitzero"`
+	paramObj
+}
+
+func (r AssistantToolTransferTransferVoicemailDetectionParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolTransferTransferVoicemailDetectionParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolTransferTransferVoicemailDetectionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AssistantToolTransferTransferVoicemailDetectionParam](
+		"detection_mode", "premium", "detect", "detect_beep", "detect_words", "greeting_end", "disabled",
+	)
+}
+
+// Advanced AMD detection configuration parameters. All values are optional -
+// Telnyx will use defaults if not specified.
+type AssistantToolTransferTransferVoicemailDetectionDetectionConfigParam struct {
+	// Duration of silence after greeting detection before finalizing the result.
+	AfterGreetingSilenceMillis param.Opt[int64] `json:"after_greeting_silence_millis,omitzero"`
+	// Maximum silence duration between words during greeting.
+	BetweenWordsSilenceMillis param.Opt[int64] `json:"between_words_silence_millis,omitzero"`
+	// Expected duration of greeting speech.
+	GreetingDurationMillis param.Opt[int64] `json:"greeting_duration_millis,omitzero"`
+	// Duration of silence after the greeting to wait before considering the greeting
+	// complete.
+	GreetingSilenceDurationMillis param.Opt[int64] `json:"greeting_silence_duration_millis,omitzero"`
+	// Maximum time to spend analyzing the greeting.
+	GreetingTotalAnalysisTimeMillis param.Opt[int64] `json:"greeting_total_analysis_time_millis,omitzero"`
+	// Maximum silence duration at the start of the call before speech.
+	InitialSilenceMillis param.Opt[int64] `json:"initial_silence_millis,omitzero"`
+	// Maximum number of words expected in a human greeting.
+	MaximumNumberOfWords param.Opt[int64] `json:"maximum_number_of_words,omitzero"`
+	// Maximum duration of a single word.
+	MaximumWordLengthMillis param.Opt[int64] `json:"maximum_word_length_millis,omitzero"`
+	// Minimum duration for audio to be considered a word.
+	MinWordLengthMillis param.Opt[int64] `json:"min_word_length_millis,omitzero"`
+	// Audio level threshold for silence detection.
+	SilenceThreshold param.Opt[int64] `json:"silence_threshold,omitzero"`
+	// Total time allowed for AMD analysis.
+	TotalAnalysisTimeMillis param.Opt[int64] `json:"total_analysis_time_millis,omitzero"`
+	paramObj
+}
+
+func (r AssistantToolTransferTransferVoicemailDetectionDetectionConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolTransferTransferVoicemailDetectionDetectionConfigParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolTransferTransferVoicemailDetectionDetectionConfigParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Action to take when voicemail is detected on the transferred call.
+type AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedParam struct {
+	// The action to take when voicemail is detected. 'stop_transfer' hangs up
+	// immediately. 'leave_message_and_stop_transfer' leaves a message then hangs up.
+	// 'continue_transfer' bridges the call despite voicemail detection.
+	//
+	// Any of "stop_transfer", "leave_message_and_stop_transfer", "continue_transfer".
+	Action string `json:"action,omitzero"`
+	// Configuration for the voicemail message to leave. Only applicable when action is
+	// 'leave_message_and_stop_transfer'.
+	VoicemailMessage AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedVoicemailMessageParam `json:"voicemail_message,omitzero"`
+	paramObj
+}
+
+func (r AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedParam](
+		"action", "stop_transfer", "leave_message_and_stop_transfer", "continue_transfer",
+	)
+}
+
+// Configuration for the voicemail message to leave. Only applicable when action is
+// 'leave_message_and_stop_transfer'.
+type AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedVoicemailMessageParam struct {
+	// The specific message to leave as voicemail (converted to speech). Only
+	// applicable when type is 'message'.
+	Message param.Opt[string] `json:"message,omitzero"`
+	// The type of voicemail message. Use 'message' to leave a specific TTS message, or
+	// 'warm_transfer_instructions' to play the warm transfer audio.
+	//
+	// Any of "message", "warm_transfer_instructions".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedVoicemailMessageParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedVoicemailMessageParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedVoicemailMessageParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedVoicemailMessageParam](
+		"type", "message", "warm_transfer_instructions",
+	)
 }
 
 // The properties Refer, Type are required.
