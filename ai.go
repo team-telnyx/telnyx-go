@@ -31,6 +31,7 @@ type AIService struct {
 	FineTuning    AIFineTuningService
 	Integrations  AIIntegrationService
 	McpServers    AIMcpServerService
+	OpenAI        AIOpenAIService
 }
 
 // NewAIService generates a new service that applies the given options to each
@@ -48,6 +49,7 @@ func NewAIService(opts ...option.RequestOption) (r AIService) {
 	r.FineTuning = NewAIFineTuningService(opts...)
 	r.Integrations = NewAIIntegrationService(opts...)
 	r.McpServers = NewAIMcpServerService(opts...)
+	r.OpenAI = NewAIOpenAIService(opts...)
 	return
 }
 
