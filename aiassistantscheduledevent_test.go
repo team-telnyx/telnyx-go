@@ -40,6 +40,9 @@ func TestAIAssistantScheduledEventNewWithOptionalParams(t *testing.T) {
 					OfString: telnyx.String("string"),
 				},
 			},
+			DynamicVariables: map[string]string{
+				"foo": "string",
+			},
 			Text: telnyx.String("text"),
 		},
 	)

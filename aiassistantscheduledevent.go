@@ -148,6 +148,7 @@ type ScheduledEventResponseUnion struct {
 	// [map[string]ScheduledSMSEventResponseConversationMetadataUnion]
 	ConversationMetadata ScheduledEventResponseUnionConversationMetadata `json:"conversation_metadata"`
 	CreatedAt            time.Time                                       `json:"created_at"`
+	DynamicVariables     string                                          `json:"dynamic_variables"`
 	Errors               []string                                        `json:"errors"`
 	// This field is from variant [ScheduledPhoneCallEventResponse].
 	RetryAttempts    int64  `json:"retry_attempts"`
@@ -166,6 +167,7 @@ type ScheduledEventResponseUnion struct {
 		ConversationID            respjson.Field
 		ConversationMetadata      respjson.Field
 		CreatedAt                 respjson.Field
+		DynamicVariables          respjson.Field
 		Errors                    respjson.Field
 		RetryAttempts             respjson.Field
 		RetryCount                respjson.Field
@@ -231,10 +233,13 @@ type ScheduledPhoneCallEventResponse struct {
 	ConversationID            string                                                              `json:"conversation_id"`
 	ConversationMetadata      map[string]ScheduledPhoneCallEventResponseConversationMetadataUnion `json:"conversation_metadata"`
 	CreatedAt                 time.Time                                                           `json:"created_at" format:"date-time"`
-	Errors                    []string                                                            `json:"errors"`
-	RetryAttempts             int64                                                               `json:"retry_attempts"`
-	RetryCount                int64                                                               `json:"retry_count"`
-	ScheduledEventID          string                                                              `json:"scheduled_event_id"`
+	// A map of dynamic variable names to values. These variables can be referenced in
+	// the assistant's instructions and messages using {{variable_name}} syntax.
+	DynamicVariables map[string]string `json:"dynamic_variables"`
+	Errors           []string          `json:"errors"`
+	RetryAttempts    int64             `json:"retry_attempts"`
+	RetryCount       int64             `json:"retry_count"`
+	ScheduledEventID string            `json:"scheduled_event_id"`
 	// Any of "pending", "in_progress", "completed", "failed".
 	Status EventStatus `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -247,6 +252,7 @@ type ScheduledPhoneCallEventResponse struct {
 		ConversationID            respjson.Field
 		ConversationMetadata      respjson.Field
 		CreatedAt                 respjson.Field
+		DynamicVariables          respjson.Field
 		Errors                    respjson.Field
 		RetryAttempts             respjson.Field
 		RetryCount                respjson.Field
@@ -318,9 +324,12 @@ type ScheduledSMSEventResponse struct {
 	ConversationID            string                                                        `json:"conversation_id"`
 	ConversationMetadata      map[string]ScheduledSMSEventResponseConversationMetadataUnion `json:"conversation_metadata"`
 	CreatedAt                 time.Time                                                     `json:"created_at" format:"date-time"`
-	Errors                    []string                                                      `json:"errors"`
-	RetryCount                int64                                                         `json:"retry_count"`
-	ScheduledEventID          string                                                        `json:"scheduled_event_id"`
+	// A map of dynamic variable names to values. These variables can be referenced in
+	// the assistant's instructions and messages using {{variable_name}} syntax.
+	DynamicVariables map[string]string `json:"dynamic_variables"`
+	Errors           []string          `json:"errors"`
+	RetryCount       int64             `json:"retry_count"`
+	ScheduledEventID string            `json:"scheduled_event_id"`
 	// Any of "pending", "in_progress", "completed", "failed".
 	Status EventStatus `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -334,6 +343,7 @@ type ScheduledSMSEventResponse struct {
 		ConversationID            respjson.Field
 		ConversationMetadata      respjson.Field
 		CreatedAt                 respjson.Field
+		DynamicVariables          respjson.Field
 		Errors                    respjson.Field
 		RetryCount                respjson.Field
 		ScheduledEventID          respjson.Field
@@ -413,6 +423,7 @@ type AIAssistantScheduledEventListResponseUnion struct {
 	// [map[string]ScheduledSMSEventResponseConversationMetadataUnion]
 	ConversationMetadata AIAssistantScheduledEventListResponseUnionConversationMetadata `json:"conversation_metadata"`
 	CreatedAt            time.Time                                                      `json:"created_at"`
+	DynamicVariables     string                                                         `json:"dynamic_variables"`
 	Errors               []string                                                       `json:"errors"`
 	// This field is from variant [ScheduledPhoneCallEventResponse].
 	RetryAttempts    int64  `json:"retry_attempts"`
@@ -431,6 +442,7 @@ type AIAssistantScheduledEventListResponseUnion struct {
 		ConversationID            respjson.Field
 		ConversationMetadata      respjson.Field
 		CreatedAt                 respjson.Field
+		DynamicVariables          respjson.Field
 		Errors                    respjson.Field
 		RetryAttempts             respjson.Field
 		RetryCount                respjson.Field
@@ -501,6 +513,9 @@ type AIAssistantScheduledEventNewParams struct {
 	// Metadata associated with the conversation. Telnyx provides several pieces of
 	// metadata, but customers can also add their own.
 	ConversationMetadata map[string]AIAssistantScheduledEventNewParamsConversationMetadataUnion `json:"conversation_metadata,omitzero"`
+	// A map of dynamic variable names to values. These variables can be referenced in
+	// the assistant's instructions and messages using {{variable_name}} syntax.
+	DynamicVariables map[string]string `json:"dynamic_variables,omitzero"`
 	paramObj
 }
 
