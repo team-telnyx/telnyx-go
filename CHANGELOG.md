@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.23.0 (2026-02-11)
+
+Full Changelog: [v4.22.0...v4.23.0](https://github.com/team-telnyx/telnyx-go/compare/v4.22.0...v4.23.0)
+
+### Features
+
+* Limit detection_mode enum to disabled and detect only ([0909bc5](https://github.com/team-telnyx/telnyx-go/commit/0909bc56e56aa2b71201c987db4cf31da15aee47))
+
+
+### Bug Fixes
+
+* **encoder:** correctly serialize NullStruct ([d4748ab](https://github.com/team-telnyx/telnyx-go/commit/d4748ab07f4d7fca78d3ab75319e774cc108b8dd))
+
 ## 4.22.0 (2026-02-09)
 
 Full Changelog: [v4.21.0...v4.22.0](https://github.com/team-telnyx/telnyx-go/compare/v4.21.0...v4.22.0)
