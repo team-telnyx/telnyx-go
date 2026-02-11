@@ -754,11 +754,11 @@ type AssistantToolTransferTransferVoicemailDetection struct {
 	// Advanced AMD detection configuration parameters. All values are optional -
 	// Telnyx will use defaults if not specified.
 	DetectionConfig AssistantToolTransferTransferVoicemailDetectionDetectionConfig `json:"detection_config"`
-	// The AMD detection mode to use. 'premium' provides the highest accuracy.
-	// 'disabled' turns off AMD detection.
+	// The AMD detection mode to use. 'detect' enables answering machine detection
+	// (works best when warm transfer instructions are also set). 'disabled' turns off
+	// AMD detection.
 	//
-	// Any of "premium", "detect", "detect_beep", "detect_words", "greeting_end",
-	// "disabled".
+	// Any of "disabled", "detect".
 	DetectionMode string `json:"detection_mode"`
 	// Action to take when voicemail is detected on the transferred call.
 	OnVoicemailDetected AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetected `json:"on_voicemail_detected"`
@@ -1386,11 +1386,11 @@ type AssistantToolTransferTransferVoicemailDetectionParam struct {
 	// Advanced AMD detection configuration parameters. All values are optional -
 	// Telnyx will use defaults if not specified.
 	DetectionConfig AssistantToolTransferTransferVoicemailDetectionDetectionConfigParam `json:"detection_config,omitzero"`
-	// The AMD detection mode to use. 'premium' provides the highest accuracy.
-	// 'disabled' turns off AMD detection.
+	// The AMD detection mode to use. 'detect' enables answering machine detection
+	// (works best when warm transfer instructions are also set). 'disabled' turns off
+	// AMD detection.
 	//
-	// Any of "premium", "detect", "detect_beep", "detect_words", "greeting_end",
-	// "disabled".
+	// Any of "disabled", "detect".
 	DetectionMode string `json:"detection_mode,omitzero"`
 	// Action to take when voicemail is detected on the transferred call.
 	OnVoicemailDetected AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedParam `json:"on_voicemail_detected,omitzero"`
@@ -1407,7 +1407,7 @@ func (r *AssistantToolTransferTransferVoicemailDetectionParam) UnmarshalJSON(dat
 
 func init() {
 	apijson.RegisterFieldValidator[AssistantToolTransferTransferVoicemailDetectionParam](
-		"detection_mode", "premium", "detect", "detect_beep", "detect_words", "greeting_end", "disabled",
+		"detection_mode", "disabled", "detect",
 	)
 }
 
