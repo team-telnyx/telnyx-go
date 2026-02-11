@@ -807,14 +807,14 @@ func (r *MessagingPaginationMeta) UnmarshalJSON(data []byte) error {
 
 type Metadata struct {
 	// Current Page based on pagination settings (included when defaults are used.)
-	PageNumber int64 `json:"page_number,required"`
+	PageNumber float64 `json:"page_number,required"`
 	// Total number of pages based on pagination settings
-	TotalPages int64 `json:"total_pages,required"`
+	TotalPages float64 `json:"total_pages,required"`
 	// Number of results to return per page based on pagination settings (included when
 	// defaults are used.)
-	PageSize int64 `json:"page_size"`
+	PageSize float64 `json:"page_size"`
 	// Total number of results
-	TotalResults int64 `json:"total_results"`
+	TotalResults float64 `json:"total_results"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PageNumber   respjson.Field
