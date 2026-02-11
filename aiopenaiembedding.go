@@ -38,7 +38,7 @@ func NewAIOpenAIEmbeddingService(opts ...option.RequestOption) (r AIOpenAIEmbedd
 // [OpenAI Embeddings API](https://platform.openai.com/docs/api-reference/embeddings)
 // and may be used with the OpenAI JS or Python SDK by setting the base URL to
 // `https://api.telnyx.com/v2/ai/openai`.
-func (r *AIOpenAIEmbeddingService) New(ctx context.Context, body AIOpenAIEmbeddingNewParams, opts ...option.RequestOption) (res *AIOpenAIEmbeddingNewResponse, err error) {
+func (r *AIOpenAIEmbeddingService) NewEmbeddings(ctx context.Context, body AIOpenAIEmbeddingNewEmbeddingsParams, opts ...option.RequestOption) (res *AIOpenAIEmbeddingNewEmbeddingsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/openai/embeddings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -47,21 +47,21 @@ func (r *AIOpenAIEmbeddingService) New(ctx context.Context, body AIOpenAIEmbeddi
 
 // Returns a list of available embedding models. This endpoint is compatible with
 // the OpenAI Models API format.
-func (r *AIOpenAIEmbeddingService) ListModels(ctx context.Context, opts ...option.RequestOption) (res *AIOpenAIEmbeddingListModelsResponse, err error) {
+func (r *AIOpenAIEmbeddingService) ListEmbeddingModels(ctx context.Context, opts ...option.RequestOption) (res *AIOpenAIEmbeddingListEmbeddingModelsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/openai/embeddings/models"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
-type AIOpenAIEmbeddingNewResponse struct {
+type AIOpenAIEmbeddingNewEmbeddingsResponse struct {
 	// List of embedding objects
-	Data []AIOpenAIEmbeddingNewResponseData `json:"data,required"`
+	Data []AIOpenAIEmbeddingNewEmbeddingsResponseData `json:"data,required"`
 	// The model used for embedding
 	Model string `json:"model,required"`
 	// The object type, always 'list'
-	Object string                            `json:"object,required"`
-	Usage  AIOpenAIEmbeddingNewResponseUsage `json:"usage,required"`
+	Object string                                      `json:"object,required"`
+	Usage  AIOpenAIEmbeddingNewEmbeddingsResponseUsage `json:"usage,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -74,12 +74,12 @@ type AIOpenAIEmbeddingNewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AIOpenAIEmbeddingNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIOpenAIEmbeddingNewResponse) UnmarshalJSON(data []byte) error {
+func (r AIOpenAIEmbeddingNewEmbeddingsResponse) RawJSON() string { return r.JSON.raw }
+func (r *AIOpenAIEmbeddingNewEmbeddingsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIOpenAIEmbeddingNewResponseData struct {
+type AIOpenAIEmbeddingNewEmbeddingsResponseData struct {
 	// The embedding vector
 	Embedding []float64 `json:"embedding,required"`
 	// The index of the embedding in the list of embeddings
@@ -97,12 +97,12 @@ type AIOpenAIEmbeddingNewResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AIOpenAIEmbeddingNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIOpenAIEmbeddingNewResponseData) UnmarshalJSON(data []byte) error {
+func (r AIOpenAIEmbeddingNewEmbeddingsResponseData) RawJSON() string { return r.JSON.raw }
+func (r *AIOpenAIEmbeddingNewEmbeddingsResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIOpenAIEmbeddingNewResponseUsage struct {
+type AIOpenAIEmbeddingNewEmbeddingsResponseUsage struct {
 	// Number of tokens in the input
 	PromptTokens int64 `json:"prompt_tokens,required"`
 	// Total number of tokens used
@@ -117,14 +117,14 @@ type AIOpenAIEmbeddingNewResponseUsage struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AIOpenAIEmbeddingNewResponseUsage) RawJSON() string { return r.JSON.raw }
-func (r *AIOpenAIEmbeddingNewResponseUsage) UnmarshalJSON(data []byte) error {
+func (r AIOpenAIEmbeddingNewEmbeddingsResponseUsage) RawJSON() string { return r.JSON.raw }
+func (r *AIOpenAIEmbeddingNewEmbeddingsResponseUsage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIOpenAIEmbeddingListModelsResponse struct {
+type AIOpenAIEmbeddingListEmbeddingModelsResponse struct {
 	// List of available embedding models
-	Data []AIOpenAIEmbeddingListModelsResponseData `json:"data,required"`
+	Data []AIOpenAIEmbeddingListEmbeddingModelsResponseData `json:"data,required"`
 	// The object type, always 'list'
 	Object string `json:"object,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -137,12 +137,12 @@ type AIOpenAIEmbeddingListModelsResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AIOpenAIEmbeddingListModelsResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIOpenAIEmbeddingListModelsResponse) UnmarshalJSON(data []byte) error {
+func (r AIOpenAIEmbeddingListEmbeddingModelsResponse) RawJSON() string { return r.JSON.raw }
+func (r *AIOpenAIEmbeddingListEmbeddingModelsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIOpenAIEmbeddingListModelsResponseData struct {
+type AIOpenAIEmbeddingListEmbeddingModelsResponseData struct {
 	// The model identifier
 	ID string `json:"id,required"`
 	// Unix timestamp of when the model was created
@@ -163,14 +163,14 @@ type AIOpenAIEmbeddingListModelsResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AIOpenAIEmbeddingListModelsResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIOpenAIEmbeddingListModelsResponseData) UnmarshalJSON(data []byte) error {
+func (r AIOpenAIEmbeddingListEmbeddingModelsResponseData) RawJSON() string { return r.JSON.raw }
+func (r *AIOpenAIEmbeddingListEmbeddingModelsResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIOpenAIEmbeddingNewParams struct {
+type AIOpenAIEmbeddingNewEmbeddingsParams struct {
 	// Input text to embed. Can be a string or array of strings.
-	Input AIOpenAIEmbeddingNewParamsInputUnion `json:"input,omitzero,required"`
+	Input AIOpenAIEmbeddingNewEmbeddingsParamsInputUnion `json:"input,omitzero,required"`
 	// ID of the model to use. Use the List embedding models endpoint to see available
 	// models.
 	Model string `json:"model,required"`
@@ -183,35 +183,35 @@ type AIOpenAIEmbeddingNewParams struct {
 	// The format to return the embeddings in.
 	//
 	// Any of "float", "base64".
-	EncodingFormat AIOpenAIEmbeddingNewParamsEncodingFormat `json:"encoding_format,omitzero"`
+	EncodingFormat AIOpenAIEmbeddingNewEmbeddingsParamsEncodingFormat `json:"encoding_format,omitzero"`
 	paramObj
 }
 
-func (r AIOpenAIEmbeddingNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow AIOpenAIEmbeddingNewParams
+func (r AIOpenAIEmbeddingNewEmbeddingsParams) MarshalJSON() (data []byte, err error) {
+	type shadow AIOpenAIEmbeddingNewEmbeddingsParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AIOpenAIEmbeddingNewParams) UnmarshalJSON(data []byte) error {
+func (r *AIOpenAIEmbeddingNewEmbeddingsParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type AIOpenAIEmbeddingNewParamsInputUnion struct {
+type AIOpenAIEmbeddingNewEmbeddingsParamsInputUnion struct {
 	OfString      param.Opt[string] `json:",omitzero,inline"`
 	OfStringArray []string          `json:",omitzero,inline"`
 	paramUnion
 }
 
-func (u AIOpenAIEmbeddingNewParamsInputUnion) MarshalJSON() ([]byte, error) {
+func (u AIOpenAIEmbeddingNewEmbeddingsParamsInputUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfStringArray)
 }
-func (u *AIOpenAIEmbeddingNewParamsInputUnion) UnmarshalJSON(data []byte) error {
+func (u *AIOpenAIEmbeddingNewEmbeddingsParamsInputUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
-func (u *AIOpenAIEmbeddingNewParamsInputUnion) asAny() any {
+func (u *AIOpenAIEmbeddingNewEmbeddingsParamsInputUnion) asAny() any {
 	if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
 	} else if !param.IsOmitted(u.OfStringArray) {
@@ -221,9 +221,9 @@ func (u *AIOpenAIEmbeddingNewParamsInputUnion) asAny() any {
 }
 
 // The format to return the embeddings in.
-type AIOpenAIEmbeddingNewParamsEncodingFormat string
+type AIOpenAIEmbeddingNewEmbeddingsParamsEncodingFormat string
 
 const (
-	AIOpenAIEmbeddingNewParamsEncodingFormatFloat  AIOpenAIEmbeddingNewParamsEncodingFormat = "float"
-	AIOpenAIEmbeddingNewParamsEncodingFormatBase64 AIOpenAIEmbeddingNewParamsEncodingFormat = "base64"
+	AIOpenAIEmbeddingNewEmbeddingsParamsEncodingFormatFloat  AIOpenAIEmbeddingNewEmbeddingsParamsEncodingFormat = "float"
+	AIOpenAIEmbeddingNewEmbeddingsParamsEncodingFormatBase64 AIOpenAIEmbeddingNewEmbeddingsParamsEncodingFormat = "base64"
 )

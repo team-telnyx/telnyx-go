@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestAIOpenAIEmbeddingNewWithOptionalParams(t *testing.T) {
+func TestAIOpenAIEmbeddingNewEmbeddingsWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,13 +26,13 @@ func TestAIOpenAIEmbeddingNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.OpenAI.Embeddings.New(context.TODO(), telnyx.AIOpenAIEmbeddingNewParams{
-		Input: telnyx.AIOpenAIEmbeddingNewParamsInputUnion{
+	_, err := client.AI.OpenAI.Embeddings.NewEmbeddings(context.TODO(), telnyx.AIOpenAIEmbeddingNewEmbeddingsParams{
+		Input: telnyx.AIOpenAIEmbeddingNewEmbeddingsParamsInputUnion{
 			OfString: telnyx.String("The quick brown fox jumps over the lazy dog"),
 		},
 		Model:          "thenlper/gte-large",
 		Dimensions:     telnyx.Int(0),
-		EncodingFormat: telnyx.AIOpenAIEmbeddingNewParamsEncodingFormatFloat,
+		EncodingFormat: telnyx.AIOpenAIEmbeddingNewEmbeddingsParamsEncodingFormatFloat,
 		User:           telnyx.String("user"),
 	})
 	if err != nil {
@@ -44,7 +44,7 @@ func TestAIOpenAIEmbeddingNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAIOpenAIEmbeddingListModels(t *testing.T) {
+func TestAIOpenAIEmbeddingListEmbeddingModels(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -57,7 +57,7 @@ func TestAIOpenAIEmbeddingListModels(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.OpenAI.Embeddings.ListModels(context.TODO())
+	_, err := client.AI.OpenAI.Embeddings.ListEmbeddingModels(context.TODO())
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
