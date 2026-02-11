@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.24.0 (2026-02-11)
+
+Full Changelog: [v4.23.0...v4.24.0](https://github.com/team-telnyx/telnyx-go/compare/v4.23.0...v4.24.0)
+
+### Features
+
+* fix schema in emergency address schema ([ef38477](https://github.com/team-telnyx/telnyx-go/commit/ef384775f54c1fc95189928cc1da3406aecd9d26))
+
+
+### Bug Fixes
+
+* remove invalid discriminators from string enum schemas ([6810353](https://github.com/team-telnyx/telnyx-go/commit/6810353e6ca06386d7424531bf81c42e58755088))
+
 ## 4.23.0 (2026-02-11)
 
 Full Changelog: [v4.22.0...v4.23.0](https://github.com/team-telnyx/telnyx-go/compare/v4.22.0...v4.23.0)
