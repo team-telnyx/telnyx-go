@@ -867,6 +867,20 @@ Methods:
 - <code title="get /ai/mcp_servers">client.AI.McpServers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIMcpServerService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIMcpServerListParams">AIMcpServerListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPaginationTopLevelArray">DefaultFlatPaginationTopLevelArray</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIMcpServerListResponse">AIMcpServerListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /ai/mcp_servers/{mcp_server_id}">client.AI.McpServers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIMcpServerService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, mcpServerID <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 
+## OpenAI
+
+### Embeddings
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIEmbeddingNewResponse">AIOpenAIEmbeddingNewResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIEmbeddingListModelsResponse">AIOpenAIEmbeddingListModelsResponse</a>
+
+Methods:
+
+- <code title="post /ai/openai/embeddings">client.AI.OpenAI.Embeddings.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIEmbeddingService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIEmbeddingNewParams">AIOpenAIEmbeddingNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIEmbeddingNewResponse">AIOpenAIEmbeddingNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /ai/openai/embeddings/models">client.AI.OpenAI.Embeddings.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIEmbeddingService.ListModels">ListModels</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIEmbeddingListModelsResponse">AIOpenAIEmbeddingListModelsResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # AuditEvents
 
 Response Types:
