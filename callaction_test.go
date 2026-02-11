@@ -912,7 +912,7 @@ func TestCallActionStartRecordingWithOptionalParams(t *testing.T) {
 			TimeoutSecs:                     telnyx.Int(0),
 			Transcription:                   telnyx.Bool(true),
 			TranscriptionEngine:             telnyx.CallActionStartRecordingParamsTranscriptionEngineB,
-			TranscriptionLanguage:           telnyx.CallActionStartRecordingParamsTranscriptionLanguageEnUs,
+			TranscriptionLanguage:           telnyx.CallActionStartRecordingParamsTranscriptionLanguageEn,
 			TranscriptionMaxSpeakerCount:    telnyx.Int(4),
 			TranscriptionMinSpeakerCount:    telnyx.Int(4),
 			TranscriptionProfanityFilter:    telnyx.Bool(true),
