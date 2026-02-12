@@ -592,35 +592,19 @@ const (
 )
 
 type CallBridged struct {
-	Data CallBridgedData `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CallBridged) RawJSON() string { return r.JSON.raw }
-func (r *CallBridged) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CallBridgedData struct {
 	// Identifies the type of resource.
 	ID string `json:"id" format:"uuid"`
 	// The type of event being delivered.
 	//
 	// Any of "call.bridged".
-	EventType string `json:"event_type"`
+	EventType CallBridgedEventType `json:"event_type"`
 	// ISO 8601 datetime of when the event occurred.
-	OccurredAt time.Time              `json:"occurred_at" format:"date-time"`
-	Payload    CallBridgedDataPayload `json:"payload"`
+	OccurredAt time.Time          `json:"occurred_at" format:"date-time"`
+	Payload    CallBridgedPayload `json:"payload"`
 	// Identifies the type of the resource.
 	//
 	// Any of "event".
-	RecordType string `json:"record_type"`
+	RecordType CallBridgedRecordType `json:"record_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -634,12 +618,19 @@ type CallBridgedData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CallBridgedData) RawJSON() string { return r.JSON.raw }
-func (r *CallBridgedData) UnmarshalJSON(data []byte) error {
+func (r CallBridged) RawJSON() string { return r.JSON.raw }
+func (r *CallBridged) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CallBridgedDataPayload struct {
+// The type of event being delivered.
+type CallBridgedEventType string
+
+const (
+	CallBridgedEventTypeCallBridged CallBridgedEventType = "call.bridged"
+)
+
+type CallBridgedPayload struct {
 	// Call ID used to issue commands via Call Control API.
 	CallControlID string `json:"call_control_id"`
 	// ID that is unique to the call and can be used to correlate webhook events.
@@ -671,10 +662,17 @@ type CallBridgedDataPayload struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CallBridgedDataPayload) RawJSON() string { return r.JSON.raw }
-func (r *CallBridgedDataPayload) UnmarshalJSON(data []byte) error {
+func (r CallBridgedPayload) RawJSON() string { return r.JSON.raw }
+func (r *CallBridgedPayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Identifies the type of the resource.
+type CallBridgedRecordType string
+
+const (
+	CallBridgedRecordTypeEvent CallBridgedRecordType = "event"
+)
 
 type CallConversationEnded struct {
 	// Unique identifier for the event.
@@ -5803,6 +5801,22 @@ func (r *CallAnsweredWebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type CallBridgedWebhookEvent struct {
+	Data CallBridged `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallBridgedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *CallBridgedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type CallConversationEndedWebhookEvent struct {
 	Data CallConversationEnded `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -6581,7 +6595,7 @@ func (r *TranscriptionWebhookEvent) UnmarshalJSON(data []byte) error {
 // [CallAIGatherEndedWebhookEvent],
 // [CallAIGatherMessageHistoryUpdatedWebhookEvent],
 // [CallAIGatherPartialResultsWebhookEvent], [CallAnsweredWebhookEvent],
-// [CallBridged], [CallConversationEndedWebhookEvent],
+// [CallBridgedWebhookEvent], [CallConversationEndedWebhookEvent],
 // [CallConversationInsightsGeneratedWebhookEvent], [CallDtmfReceivedWebhookEvent],
 // [CallEnqueuedWebhookEvent], [CallForkStartedWebhookEvent],
 // [CallForkStoppedWebhookEvent], [CallGatherEndedWebhookEvent],
@@ -6616,7 +6630,7 @@ func (r *TranscriptionWebhookEvent) UnmarshalJSON(data []byte) error {
 type UnsafeUnwrapWebhookEventUnion struct {
 	// This field is a union of [CallAIGatherEnded],
 	// [CallAIGatherMessageHistoryUpdated], [CallAIGatherPartialResults],
-	// [CallAnswered], [CallBridgedData], [CallConversationEnded],
+	// [CallAnswered], [CallBridged], [CallConversationEnded],
 	// [CallConversationInsightsGenerated], [CallDtmfReceived], [CallEnqueued],
 	// [CallForkStarted], [CallForkStopped], [CallGatherEnded], [CallHangup],
 	// [CallInitiated], [CallLeftQueue], [CallMachineDetectionEnded],
@@ -6703,7 +6717,7 @@ func (u UnsafeUnwrapWebhookEventUnion) AsCallAnsweredEvent() (v CallAnsweredWebh
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsCallBridgedEvent() (v CallBridged) {
+func (u UnsafeUnwrapWebhookEventUnion) AsCallBridgedEvent() (v CallBridgedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -7002,7 +7016,7 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	OccurredAt time.Time `json:"occurred_at"`
 	// This field is a union of [CallAIGatherEndedPayload],
 	// [CallAIGatherMessageHistoryUpdatedPayload], [CallAIGatherPartialResultsPayload],
-	// [CallAnsweredPayload], [CallBridgedDataPayload], [CallConversationEndedPayload],
+	// [CallAnsweredPayload], [CallBridgedPayload], [CallConversationEndedPayload],
 	// [CallConversationInsightsGeneratedPayload], [CallDtmfReceivedPayload],
 	// [CallEnqueuedPayload], [CallForkStartedPayload], [CallForkStoppedPayload],
 	// [CallGatherEndedPayload], [CallHangupPayload], [CallInitiatedPayload],
@@ -7685,7 +7699,7 @@ func (r *UnsafeUnwrapWebhookEventUnionMeta) UnmarshalJSON(data []byte) error {
 // [CallAIGatherEndedWebhookEvent],
 // [CallAIGatherMessageHistoryUpdatedWebhookEvent],
 // [CallAIGatherPartialResultsWebhookEvent], [CallAnsweredWebhookEvent],
-// [CallBridged], [CallConversationEndedWebhookEvent],
+// [CallBridgedWebhookEvent], [CallConversationEndedWebhookEvent],
 // [CallConversationInsightsGeneratedWebhookEvent], [CallDtmfReceivedWebhookEvent],
 // [CallEnqueuedWebhookEvent], [CallForkStartedWebhookEvent],
 // [CallForkStoppedWebhookEvent], [CallGatherEndedWebhookEvent],
@@ -7720,7 +7734,7 @@ func (r *UnsafeUnwrapWebhookEventUnionMeta) UnmarshalJSON(data []byte) error {
 type UnwrapWebhookEventUnion struct {
 	// This field is a union of [CallAIGatherEnded],
 	// [CallAIGatherMessageHistoryUpdated], [CallAIGatherPartialResults],
-	// [CallAnswered], [CallBridgedData], [CallConversationEnded],
+	// [CallAnswered], [CallBridged], [CallConversationEnded],
 	// [CallConversationInsightsGenerated], [CallDtmfReceived], [CallEnqueued],
 	// [CallForkStarted], [CallForkStopped], [CallGatherEnded], [CallHangup],
 	// [CallInitiated], [CallLeftQueue], [CallMachineDetectionEnded],
@@ -7807,7 +7821,7 @@ func (u UnwrapWebhookEventUnion) AsCallAnsweredEvent() (v CallAnsweredWebhookEve
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsCallBridgedEvent() (v CallBridged) {
+func (u UnwrapWebhookEventUnion) AsCallBridgedEvent() (v CallBridgedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -8106,7 +8120,7 @@ type UnwrapWebhookEventUnionData struct {
 	OccurredAt time.Time `json:"occurred_at"`
 	// This field is a union of [CallAIGatherEndedPayload],
 	// [CallAIGatherMessageHistoryUpdatedPayload], [CallAIGatherPartialResultsPayload],
-	// [CallAnsweredPayload], [CallBridgedDataPayload], [CallConversationEndedPayload],
+	// [CallAnsweredPayload], [CallBridgedPayload], [CallConversationEndedPayload],
 	// [CallConversationInsightsGeneratedPayload], [CallDtmfReceivedPayload],
 	// [CallEnqueuedPayload], [CallForkStartedPayload], [CallForkStoppedPayload],
 	// [CallGatherEndedPayload], [CallHangupPayload], [CallInitiatedPayload],
