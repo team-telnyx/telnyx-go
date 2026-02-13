@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.26.0 (2026-02-13)
+
+Full Changelog: [v4.25.0...v4.26.0](https://github.com/team-telnyx/telnyx-go/compare/v4.25.0...v4.26.0)
+
+### Features
+
+* Add Label parameter to Dial Conference Participant endpoint ([dbb5e1a](https://github.com/team-telnyx/telnyx-go/commit/dbb5e1ad4955b4fe9b9843eb5806fa4330da166e))
+* AI-2090: Add skip_turn tool type to assistant config schema ([466e3d6](https://github.com/team-telnyx/telnyx-go/commit/466e3d68b14f56d4370d6dbe8c1f00907ff752f1))
+
 ## 4.25.0 (2026-02-13)
 
 Full Changelog: [v4.24.0...v4.25.0](https://github.com/team-telnyx/telnyx-go/compare/v4.24.0...v4.25.0)
