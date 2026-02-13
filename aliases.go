@@ -55,7 +55,8 @@ type ConnectionNoiseSuppressionDetails = shared.ConnectionNoiseSuppressionDetail
 // 'deep_filter_net' and 'deep_filter_net_large' are alternative engines with
 // different performance characteristics. Krisp engines ('krisp_viva_tel',
 // 'krisp_viva_tel_lite', 'krisp_viva_promodel', 'krisp_viva_ss') provide advanced
-// noise suppression capabilities.
+// noise suppression capabilities. 'quail_voice_focus' provides Quail-based voice
+// focus noise suppression.
 //
 // This is an alias to an internal type.
 type ConnectionNoiseSuppressionDetailsEngine = shared.ConnectionNoiseSuppressionDetailsEngine
@@ -80,6 +81,9 @@ const ConnectionNoiseSuppressionDetailsEngineKrispVivaPromodel = shared.Connecti
 
 // Equals "krisp_viva_ss"
 const ConnectionNoiseSuppressionDetailsEngineKrispVivaSS = shared.ConnectionNoiseSuppressionDetailsEngineKrispVivaSS
+
+// Equals "quail_voice_focus"
+const ConnectionNoiseSuppressionDetailsEngineQuailVoiceFocus = shared.ConnectionNoiseSuppressionDetailsEngineQuailVoiceFocus
 
 // Configuration options for noise suppression. These settings are stored
 // regardless of the noise_suppression value, but only take effect when
