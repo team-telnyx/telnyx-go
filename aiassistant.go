@@ -440,14 +440,15 @@ func (r *AssistantToolRetrievalRetrievalParam) UnmarshalJSON(data []byte) error 
 // AssistantToolsItemsUnion contains all possible properties and values from
 // [InferenceEmbeddingWebhookToolParamsResp], [RetrievalTool],
 // [AssistantToolHandoff], [HangupTool], [AssistantToolTransfer],
-// [AssistantToolRefer], [AssistantToolSendDtmf], [AssistantToolSendMessage].
+// [AssistantToolRefer], [AssistantToolSendDtmf], [AssistantToolSendMessage],
+// [AssistantToolSkipTurn].
 //
 // Use the [AssistantToolsItemsUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AssistantToolsItemsUnion struct {
 	// Any of "webhook", "retrieval", "handoff", "hangup", "transfer", "refer",
-	// "send_dtmf", "send_message".
+	// "send_dtmf", "send_message", "skip_turn".
 	Type string `json:"type"`
 	// This field is from variant [InferenceEmbeddingWebhookToolParamsResp].
 	Webhook InferenceEmbeddingWebhookToolParamsWebhookResp `json:"webhook"`
@@ -465,7 +466,9 @@ type AssistantToolsItemsUnion struct {
 	SendDtmf map[string]any `json:"send_dtmf"`
 	// This field is from variant [AssistantToolSendMessage].
 	SendMessage map[string]any `json:"send_message"`
-	JSON        struct {
+	// This field is from variant [AssistantToolSkipTurn].
+	SkipTurn AssistantToolSkipTurnSkipTurn `json:"skip_turn"`
+	JSON     struct {
 		Type        respjson.Field
 		Webhook     respjson.Field
 		Retrieval   respjson.Field
@@ -475,6 +478,7 @@ type AssistantToolsItemsUnion struct {
 		Refer       respjson.Field
 		SendDtmf    respjson.Field
 		SendMessage respjson.Field
+		SkipTurn    respjson.Field
 		raw         string
 	} `json:"-"`
 }
@@ -494,6 +498,7 @@ func (AssistantToolTransfer) implAssistantToolsItemsUnion()                   {}
 func (AssistantToolRefer) implAssistantToolsItemsUnion()                      {}
 func (AssistantToolSendDtmf) implAssistantToolsItemsUnion()                   {}
 func (AssistantToolSendMessage) implAssistantToolsItemsUnion()                {}
+func (AssistantToolSkipTurn) implAssistantToolsItemsUnion()                   {}
 
 // Use the following switch statement to find the correct variant
 //
@@ -506,6 +511,7 @@ func (AssistantToolSendMessage) implAssistantToolsItemsUnion()                {}
 //	case telnyx.AssistantToolRefer:
 //	case telnyx.AssistantToolSendDtmf:
 //	case telnyx.AssistantToolSendMessage:
+//	case telnyx.AssistantToolSkipTurn:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -527,6 +533,8 @@ func (u AssistantToolsItemsUnion) AsAny() anyAssistantToolsItems {
 		return u.AsSendDtmf()
 	case "send_message":
 		return u.AsSendMessage()
+	case "skip_turn":
+		return u.AsSkipTurn()
 	}
 	return nil
 }
@@ -567,6 +575,11 @@ func (u AssistantToolsItemsUnion) AsSendDtmf() (v AssistantToolSendDtmf) {
 }
 
 func (u AssistantToolsItemsUnion) AsSendMessage() (v AssistantToolSendMessage) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u AssistantToolsItemsUnion) AsSkipTurn() (v AssistantToolSkipTurn) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1039,6 +1052,41 @@ func (r *AssistantToolSendMessage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type AssistantToolSkipTurn struct {
+	SkipTurn AssistantToolSkipTurnSkipTurn `json:"skip_turn,required"`
+	Type     constant.SkipTurn             `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		SkipTurn    respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolSkipTurn) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolSkipTurn) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AssistantToolSkipTurnSkipTurn struct {
+	// The description of the function that will be passed to the assistant.
+	Description string `json:"description"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Description respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolSkipTurnSkipTurn) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolSkipTurnSkipTurn) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 func AssistantToolsItemsParamOfWebhook(webhook InferenceEmbeddingWebhookToolParamsWebhook) AssistantToolsItemsUnionParam {
 	var variant InferenceEmbeddingWebhookToolParams
 	variant.Webhook = webhook
@@ -1087,6 +1135,12 @@ func AssistantToolsItemsParamOfSendMessage(sendMessage map[string]any) Assistant
 	return AssistantToolsItemsUnionParam{OfSendMessage: &variant}
 }
 
+func AssistantToolsItemsParamOfSkipTurn(skipTurn AssistantToolSkipTurnSkipTurnParam) AssistantToolsItemsUnionParam {
+	var variant AssistantToolSkipTurnParam
+	variant.SkipTurn = skipTurn
+	return AssistantToolsItemsUnionParam{OfSkipTurn: &variant}
+}
+
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
@@ -1099,6 +1153,7 @@ type AssistantToolsItemsUnionParam struct {
 	OfRefer       *AssistantToolReferParam             `json:",omitzero,inline"`
 	OfSendDtmf    *AssistantToolSendDtmfParam          `json:",omitzero,inline"`
 	OfSendMessage *AssistantToolSendMessageParam       `json:",omitzero,inline"`
+	OfSkipTurn    *AssistantToolSkipTurnParam          `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1110,7 +1165,8 @@ func (u AssistantToolsItemsUnionParam) MarshalJSON() ([]byte, error) {
 		u.OfTransfer,
 		u.OfRefer,
 		u.OfSendDtmf,
-		u.OfSendMessage)
+		u.OfSendMessage,
+		u.OfSkipTurn)
 }
 func (u *AssistantToolsItemsUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1133,6 +1189,8 @@ func (u *AssistantToolsItemsUnionParam) asAny() any {
 		return u.OfSendDtmf
 	} else if !param.IsOmitted(u.OfSendMessage) {
 		return u.OfSendMessage
+	} else if !param.IsOmitted(u.OfSkipTurn) {
+		return u.OfSkipTurn
 	}
 	return nil
 }
@@ -1202,6 +1260,14 @@ func (u AssistantToolsItemsUnionParam) GetSendMessage() map[string]any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u AssistantToolsItemsUnionParam) GetSkipTurn() *AssistantToolSkipTurnSkipTurnParam {
+	if vt := u.OfSkipTurn; vt != nil {
+		return &vt.SkipTurn
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u AssistantToolsItemsUnionParam) GetType() *string {
 	if vt := u.OfWebhook; vt != nil {
 		return (*string)(&vt.Type)
@@ -1219,6 +1285,8 @@ func (u AssistantToolsItemsUnionParam) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfSendMessage; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfSkipTurn; vt != nil {
+		return (*string)(&vt.Type)
 	}
 	return nil
 }
@@ -1234,6 +1302,7 @@ func init() {
 		apijson.Discriminator[AssistantToolReferParam]("refer"),
 		apijson.Discriminator[AssistantToolSendDtmfParam]("send_dtmf"),
 		apijson.Discriminator[AssistantToolSendMessageParam]("send_message"),
+		apijson.Discriminator[AssistantToolSkipTurnParam]("skip_turn"),
 	)
 }
 
@@ -1638,6 +1707,36 @@ func (r AssistantToolSendMessageParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *AssistantToolSendMessageParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties SkipTurn, Type are required.
+type AssistantToolSkipTurnParam struct {
+	SkipTurn AssistantToolSkipTurnSkipTurnParam `json:"skip_turn,omitzero,required"`
+	// This field can be elided, and will marshal its zero value as "skip_turn".
+	Type constant.SkipTurn `json:"type,required"`
+	paramObj
+}
+
+func (r AssistantToolSkipTurnParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolSkipTurnParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolSkipTurnParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AssistantToolSkipTurnSkipTurnParam struct {
+	// The description of the function that will be passed to the assistant.
+	Description param.Opt[string] `json:"description,omitzero"`
+	paramObj
+}
+
+func (r AssistantToolSkipTurnSkipTurnParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolSkipTurnSkipTurnParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolSkipTurnSkipTurnParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
