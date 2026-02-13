@@ -545,6 +545,10 @@ type TexmlAccountConferenceParticipantParticipantsParams struct {
 	// The phone number of the party that initiated the call. Phone numbers are
 	// formatted with a `+` and country code.
 	From param.Opt[string] `json:"From,omitzero"`
+	// A unique label for the participant that will be added to the conference. The
+	// label can be used to reference the participant for updates via the TeXML REST
+	// API.
+	Label param.Opt[string] `json:"Label,omitzero"`
 	// If initial silence duration is greater than this value, consider it a machine.
 	// Ignored when `premium` detection is used.
 	MachineDetectionSilenceTimeout param.Opt[int64] `json:"MachineDetectionSilenceTimeout,omitzero"`
