@@ -156,6 +156,7 @@ func TestTexmlAccountConferenceParticipantParticipantsWithOptionalParams(t *test
 			EarlyMedia:                         telnyx.Bool(true),
 			EndConferenceOnExit:                telnyx.Bool(true),
 			From:                               telnyx.String("+12065550200"),
+			Label:                              telnyx.String("customer"),
 			MachineDetection:                   telnyx.TexmlAccountConferenceParticipantParticipantsParamsMachineDetectionEnable,
 			MachineDetectionSilenceTimeout:     telnyx.Int(2000),
 			MachineDetectionSpeechEndThreshold: telnyx.Int(2000),
