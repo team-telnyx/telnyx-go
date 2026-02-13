@@ -1,5 +1,24 @@
 # Changelog
 
+## 4.25.0 (2026-02-13)
+
+Full Changelog: [v4.24.0...v4.25.0](https://github.com/team-telnyx/telnyx-go/compare/v4.24.0...v4.25.0)
+
+### Features
+
+* Add dynamic_variables field to scheduled event schemas ([d79464a](https://github.com/team-telnyx/telnyx-go/commit/d79464ae36cdcca5eaf0686b7d36d81f91b06db9))
+* Add OpenAI-compatible embeddings API spec ([77b88e4](https://github.com/team-telnyx/telnyx-go/commit/77b88e4b8e1550086aafd8c66e2ce6933f57f49a))
+* AI-2086: Add AI Missions endpoints to inference spec ([103af31](https://github.com/team-telnyx/telnyx-go/commit/103af3120228b9e43d04be8c82e3f33b4f92fa03))
+* **api:** manual updates ([2f8fb9c](https://github.com/team-telnyx/telnyx-go/commit/2f8fb9c8a445c6f45d7a8bb22c15b7621008ce3e))
+* **api:** manual updates ([fdb4a04](https://github.com/team-telnyx/telnyx-go/commit/fdb4a047e638f8bd45a9aee7769b64230a2ec4e3))
+* **api:** manual updates to include models ([64e8daa](https://github.com/team-telnyx/telnyx-go/commit/64e8daa4702121946129b908fceb0b04bb3180e8))
+* ENGDESK-49554: Add quail_voice_focus to noise suppression engine enums ([fb1136a](https://github.com/team-telnyx/telnyx-go/commit/fb1136a6691b498129c57dae06d7c27a9cdd735d))
+
+
+### Bug Fixes
+
+* **client:** revert change to certain pagination metadata types ([2512453](https://github.com/team-telnyx/telnyx-go/commit/25124530e6c4e05e01c9e77e4d2483e4d67cf6d6))
+
 ## 4.24.0 (2026-02-11)
 
 Full Changelog: [v4.23.0...v4.24.0](https://github.com/team-telnyx/telnyx-go/compare/v4.23.0...v4.24.0)
