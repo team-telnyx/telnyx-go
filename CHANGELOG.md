@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.27.0 (2026-02-17)
+
+Full Changelog: [v4.26.0...v4.27.0](https://github.com/team-telnyx/telnyx-go/compare/v4.26.0...v4.27.0)
+
+### Features
+
+* Add Minimax and Resemble voice providers for speak commands ([0a2e598](https://github.com/team-telnyx/telnyx-go/commit/0a2e59879fe735297a882308a9d4bc1a0aac02c5))
+
 ## 4.26.0 (2026-02-13)
 
 Full Changelog: [v4.25.0...v4.26.0](https://github.com/team-telnyx/telnyx-go/compare/v4.25.0...v4.26.0)
