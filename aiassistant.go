@@ -767,11 +767,10 @@ type AssistantToolTransferTransferVoicemailDetection struct {
 	// Advanced AMD detection configuration parameters. All values are optional -
 	// Telnyx will use defaults if not specified.
 	DetectionConfig AssistantToolTransferTransferVoicemailDetectionDetectionConfig `json:"detection_config"`
-	// The AMD detection mode to use. 'detect' enables answering machine detection
-	// (works best when warm transfer instructions are also set). 'disabled' turns off
-	// AMD detection.
+	// The AMD detection mode to use. 'premium' enables premium answering machine
+	// detection. 'disabled' turns off AMD detection.
 	//
-	// Any of "disabled", "detect".
+	// Any of "disabled", "premium".
 	DetectionMode string `json:"detection_mode"`
 	// Action to take when voicemail is detected on the transferred call.
 	OnVoicemailDetected AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetected `json:"on_voicemail_detected"`
@@ -847,9 +846,8 @@ func (r *AssistantToolTransferTransferVoicemailDetectionDetectionConfig) Unmarsh
 type AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetected struct {
 	// The action to take when voicemail is detected. 'stop_transfer' hangs up
 	// immediately. 'leave_message_and_stop_transfer' leaves a message then hangs up.
-	// 'continue_transfer' bridges the call despite voicemail detection.
 	//
-	// Any of "stop_transfer", "leave_message_and_stop_transfer", "continue_transfer".
+	// Any of "stop_transfer", "leave_message_and_stop_transfer".
 	Action string `json:"action"`
 	// Configuration for the voicemail message to leave. Only applicable when action is
 	// 'leave_message_and_stop_transfer'.
@@ -1455,11 +1453,10 @@ type AssistantToolTransferTransferVoicemailDetectionParam struct {
 	// Advanced AMD detection configuration parameters. All values are optional -
 	// Telnyx will use defaults if not specified.
 	DetectionConfig AssistantToolTransferTransferVoicemailDetectionDetectionConfigParam `json:"detection_config,omitzero"`
-	// The AMD detection mode to use. 'detect' enables answering machine detection
-	// (works best when warm transfer instructions are also set). 'disabled' turns off
-	// AMD detection.
+	// The AMD detection mode to use. 'premium' enables premium answering machine
+	// detection. 'disabled' turns off AMD detection.
 	//
-	// Any of "disabled", "detect".
+	// Any of "disabled", "premium".
 	DetectionMode string `json:"detection_mode,omitzero"`
 	// Action to take when voicemail is detected on the transferred call.
 	OnVoicemailDetected AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedParam `json:"on_voicemail_detected,omitzero"`
@@ -1476,7 +1473,7 @@ func (r *AssistantToolTransferTransferVoicemailDetectionParam) UnmarshalJSON(dat
 
 func init() {
 	apijson.RegisterFieldValidator[AssistantToolTransferTransferVoicemailDetectionParam](
-		"detection_mode", "disabled", "detect",
+		"detection_mode", "disabled", "premium",
 	)
 }
 
@@ -1521,9 +1518,8 @@ func (r *AssistantToolTransferTransferVoicemailDetectionDetectionConfigParam) Un
 type AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedParam struct {
 	// The action to take when voicemail is detected. 'stop_transfer' hangs up
 	// immediately. 'leave_message_and_stop_transfer' leaves a message then hangs up.
-	// 'continue_transfer' bridges the call despite voicemail detection.
 	//
-	// Any of "stop_transfer", "leave_message_and_stop_transfer", "continue_transfer".
+	// Any of "stop_transfer", "leave_message_and_stop_transfer".
 	Action string `json:"action,omitzero"`
 	// Configuration for the voicemail message to leave. Only applicable when action is
 	// 'leave_message_and_stop_transfer'.
@@ -1541,7 +1537,7 @@ func (r *AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedParam
 
 func init() {
 	apijson.RegisterFieldValidator[AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedParam](
-		"action", "stop_transfer", "leave_message_and_stop_transfer", "continue_transfer",
+		"action", "stop_transfer", "leave_message_and_stop_transfer",
 	)
 }
 
