@@ -32,6 +32,7 @@ type Handoff string           // Always "handoff"
 type Ios string               // Always "ios"
 type MediaName string         // Always "media_name"
 type MediaURL string          // Always "media_url"
+type Minimax string           // Always "minimax"
 type PredefinedMedia string   // Always "predefined_media"
 type Refer string             // Always "refer"
 type Retrieval string         // Always "retrieval"
@@ -58,6 +59,7 @@ func (c Handoff) Default() Handoff                     { return "handoff" }
 func (c Ios) Default() Ios                             { return "ios" }
 func (c MediaName) Default() MediaName                 { return "media_name" }
 func (c MediaURL) Default() MediaURL                   { return "media_url" }
+func (c Minimax) Default() Minimax                     { return "minimax" }
 func (c PredefinedMedia) Default() PredefinedMedia     { return "predefined_media" }
 func (c Refer) Default() Refer                         { return "refer" }
 func (c Retrieval) Default() Retrieval                 { return "retrieval" }
@@ -84,6 +86,7 @@ func (c Handoff) MarshalJSON() ([]byte, error)           { return marshalString(
 func (c Ios) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c MediaName) MarshalJSON() ([]byte, error)         { return marshalString(c) }
 func (c MediaURL) MarshalJSON() ([]byte, error)          { return marshalString(c) }
+func (c Minimax) MarshalJSON() ([]byte, error)           { return marshalString(c) }
 func (c PredefinedMedia) MarshalJSON() ([]byte, error)   { return marshalString(c) }
 func (c Refer) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Retrieval) MarshalJSON() ([]byte, error)         { return marshalString(c) }
