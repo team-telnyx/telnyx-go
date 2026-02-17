@@ -16,6 +16,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
 // ConferenceActionService contains methods and other services that help with
@@ -1000,14 +1001,17 @@ type ConferenceActionSpeakParams struct {
 	//     `ElevenLabs.eleven_multilingual_v2.21m00Tcm4TlvDq8ikWAM`). The `ModelId` part
 	//     is optional. To use ElevenLabs, you must provide your ElevenLabs API key as an
 	//     integration identifier secret in
-	//     `"voice_settings": {"api_key_ref": "<secret_identifier>"}`. See
-	//     [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
-	//     for details. Check
+	//     `"voice_settings": {"api_key_ref": "<secret_identifier>"}`. Check
 	//     [available voices](https://elevenlabs.io/docs/api-reference/get-voices).
 	//   - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>`
-	//
-	// For service_level basic, you may define the gender of the speaker (male or
-	// female).
+	//   - **Minimax:** Use `Minimax.<ModelId>.<VoiceId>` (e.g.,
+	//     `Minimax.speech-02-hd.Wise_Woman`). Supported models: `speech-02-turbo`,
+	//     `speech-02-hd`, `speech-2.6-turbo`, `speech-2.8-turbo`. Optional parameters:
+	//     `speed` (float, default 1.0), `vol` (float, default 1.0), `pitch` (integer,
+	//     default 0).
+	//   - **Resemble:** Use `Resemble.<ModelId>.<VoiceId>` (e.g.,
+	//     `Resemble.Pro.my_voice`). Supported models: `Pro` (multilingual) and `Turbo`
+	//     (English only).
 	Voice string `json:"voice,required"`
 	// Use this field to avoid execution of duplicate commands. Telnyx will ignore
 	// subsequent commands with the same `command_id` as one that has already been
@@ -1107,14 +1111,15 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type ConferenceActionSpeakParamsVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam     `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam        `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam                    `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam                        `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam                           `json:",omitzero,inline"`
+	OfMinimax    *ConferenceActionSpeakParamsVoiceSettingsMinimax `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u ConferenceActionSpeakParamsVoiceSettingsUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfElevenlabs, u.OfTelnyx, u.OfAws)
+	return param.MarshalUnion(u, u.OfElevenlabs, u.OfTelnyx, u.OfAws, u.OfMinimax)
 }
 func (u *ConferenceActionSpeakParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1127,6 +1132,8 @@ func (u *ConferenceActionSpeakParamsVoiceSettingsUnion) asAny() any {
 		return u.OfTelnyx
 	} else if !param.IsOmitted(u.OfAws) {
 		return u.OfAws
+	} else if !param.IsOmitted(u.OfMinimax) {
+		return u.OfMinimax
 	}
 	return nil
 }
@@ -1148,12 +1155,38 @@ func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetPitch() *int64 {
+	if vt := u.OfMinimax; vt != nil && vt.Pitch.Valid() {
+		return &vt.Pitch.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetSpeed() *float64 {
+	if vt := u.OfMinimax; vt != nil && vt.Speed.Valid() {
+		return &vt.Speed.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetVol() *float64 {
+	if vt := u.OfMinimax; vt != nil && vt.Vol.Valid() {
+		return &vt.Vol.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetType() *string {
 	if vt := u.OfElevenlabs; vt != nil {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfTelnyx; vt != nil {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfAws; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfMinimax; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -1165,7 +1198,31 @@ func init() {
 		apijson.Discriminator[ElevenLabsVoiceSettingsParam]("elevenlabs"),
 		apijson.Discriminator[TelnyxVoiceSettingsParam]("telnyx"),
 		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
+		apijson.Discriminator[ConferenceActionSpeakParamsVoiceSettingsMinimax]("minimax"),
 	)
+}
+
+// The property Type is required.
+type ConferenceActionSpeakParamsVoiceSettingsMinimax struct {
+	// Voice pitch adjustment. Default is 0.
+	Pitch param.Opt[int64] `json:"pitch,omitzero"`
+	// Speech speed multiplier. Default is 1.0.
+	Speed param.Opt[float64] `json:"speed,omitzero"`
+	// Speech volume multiplier. Default is 1.0.
+	Vol param.Opt[float64] `json:"vol,omitzero"`
+	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "minimax".
+	Type constant.Minimax `json:"type,required"`
+	paramObj
+}
+
+func (r ConferenceActionSpeakParamsVoiceSettingsMinimax) MarshalJSON() (data []byte, err error) {
+	type shadow ConferenceActionSpeakParamsVoiceSettingsMinimax
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ConferenceActionSpeakParamsVoiceSettingsMinimax) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type ConferenceActionStopParams struct {
