@@ -272,17 +272,6 @@ type MessagingPaginationMeta = shared.MessagingPaginationMeta
 // This is an alias to an internal type.
 type Metadata = shared.Metadata
 
-// This is an alias to an internal type.
-type MinimaxVoiceSettingsParam = shared.MinimaxVoiceSettingsParam
-
-// Voice settings provider type
-//
-// This is an alias to an internal type.
-type MinimaxVoiceSettingsType = shared.MinimaxVoiceSettingsType
-
-// Equals "minimax"
-const MinimaxVoiceSettingsTypeMinimax = shared.MinimaxVoiceSettingsTypeMinimax
-
 // High level health metrics about the number and it's messaging sending patterns.
 //
 // This is an alias to an internal type.
