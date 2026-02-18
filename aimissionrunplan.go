@@ -124,8 +124,51 @@ func (r *AIMissionRunPlanService) UpdateStep(ctx context.Context, stepID string,
 	return
 }
 
+type PlanStepData struct {
+	Description string `json:"description,required"`
+	RunID       string `json:"run_id,required" format:"uuid"`
+	Sequence    int64  `json:"sequence,required"`
+	// Any of "pending", "in_progress", "completed", "skipped", "failed".
+	Status       PlanStepDataStatus `json:"status,required"`
+	StepID       string             `json:"step_id,required"`
+	CompletedAt  time.Time          `json:"completed_at" format:"date-time"`
+	Metadata     map[string]any     `json:"metadata"`
+	ParentStepID string             `json:"parent_step_id"`
+	StartedAt    time.Time          `json:"started_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Description  respjson.Field
+		RunID        respjson.Field
+		Sequence     respjson.Field
+		Status       respjson.Field
+		StepID       respjson.Field
+		CompletedAt  respjson.Field
+		Metadata     respjson.Field
+		ParentStepID respjson.Field
+		StartedAt    respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PlanStepData) RawJSON() string { return r.JSON.raw }
+func (r *PlanStepData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PlanStepDataStatus string
+
+const (
+	PlanStepDataStatusPending    PlanStepDataStatus = "pending"
+	PlanStepDataStatusInProgress PlanStepDataStatus = "in_progress"
+	PlanStepDataStatusCompleted  PlanStepDataStatus = "completed"
+	PlanStepDataStatusSkipped    PlanStepDataStatus = "skipped"
+	PlanStepDataStatusFailed     PlanStepDataStatus = "failed"
+)
+
 type AIMissionRunPlanNewResponse struct {
-	Data []AIMissionRunPlanNewResponseData `json:"data,required"`
+	Data []PlanStepData `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -140,41 +183,8 @@ func (r *AIMissionRunPlanNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIMissionRunPlanNewResponseData struct {
-	Description string `json:"description,required"`
-	RunID       string `json:"run_id,required" format:"uuid"`
-	Sequence    int64  `json:"sequence,required"`
-	// Any of "pending", "in_progress", "completed", "skipped", "failed".
-	Status       string         `json:"status,required"`
-	StepID       string         `json:"step_id,required"`
-	CompletedAt  time.Time      `json:"completed_at" format:"date-time"`
-	Metadata     map[string]any `json:"metadata"`
-	ParentStepID string         `json:"parent_step_id"`
-	StartedAt    time.Time      `json:"started_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Description  respjson.Field
-		RunID        respjson.Field
-		Sequence     respjson.Field
-		Status       respjson.Field
-		StepID       respjson.Field
-		CompletedAt  respjson.Field
-		Metadata     respjson.Field
-		ParentStepID respjson.Field
-		StartedAt    respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunPlanNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunPlanNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type AIMissionRunPlanGetResponse struct {
-	Data []AIMissionRunPlanGetResponseData `json:"data,required"`
+	Data []PlanStepData `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -189,41 +199,8 @@ func (r *AIMissionRunPlanGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIMissionRunPlanGetResponseData struct {
-	Description string `json:"description,required"`
-	RunID       string `json:"run_id,required" format:"uuid"`
-	Sequence    int64  `json:"sequence,required"`
-	// Any of "pending", "in_progress", "completed", "skipped", "failed".
-	Status       string         `json:"status,required"`
-	StepID       string         `json:"step_id,required"`
-	CompletedAt  time.Time      `json:"completed_at" format:"date-time"`
-	Metadata     map[string]any `json:"metadata"`
-	ParentStepID string         `json:"parent_step_id"`
-	StartedAt    time.Time      `json:"started_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Description  respjson.Field
-		RunID        respjson.Field
-		Sequence     respjson.Field
-		Status       respjson.Field
-		StepID       respjson.Field
-		CompletedAt  respjson.Field
-		Metadata     respjson.Field
-		ParentStepID respjson.Field
-		StartedAt    respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunPlanGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunPlanGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type AIMissionRunPlanAddStepsToPlanResponse struct {
-	Data []AIMissionRunPlanAddStepsToPlanResponseData `json:"data,required"`
+	Data []PlanStepData `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -238,41 +215,8 @@ func (r *AIMissionRunPlanAddStepsToPlanResponse) UnmarshalJSON(data []byte) erro
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIMissionRunPlanAddStepsToPlanResponseData struct {
-	Description string `json:"description,required"`
-	RunID       string `json:"run_id,required" format:"uuid"`
-	Sequence    int64  `json:"sequence,required"`
-	// Any of "pending", "in_progress", "completed", "skipped", "failed".
-	Status       string         `json:"status,required"`
-	StepID       string         `json:"step_id,required"`
-	CompletedAt  time.Time      `json:"completed_at" format:"date-time"`
-	Metadata     map[string]any `json:"metadata"`
-	ParentStepID string         `json:"parent_step_id"`
-	StartedAt    time.Time      `json:"started_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Description  respjson.Field
-		RunID        respjson.Field
-		Sequence     respjson.Field
-		Status       respjson.Field
-		StepID       respjson.Field
-		CompletedAt  respjson.Field
-		Metadata     respjson.Field
-		ParentStepID respjson.Field
-		StartedAt    respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunPlanAddStepsToPlanResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunPlanAddStepsToPlanResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type AIMissionRunPlanGetStepDetailsResponse struct {
-	Data AIMissionRunPlanGetStepDetailsResponseData `json:"data,required"`
+	Data PlanStepData `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -287,41 +231,8 @@ func (r *AIMissionRunPlanGetStepDetailsResponse) UnmarshalJSON(data []byte) erro
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIMissionRunPlanGetStepDetailsResponseData struct {
-	Description string `json:"description,required"`
-	RunID       string `json:"run_id,required" format:"uuid"`
-	Sequence    int64  `json:"sequence,required"`
-	// Any of "pending", "in_progress", "completed", "skipped", "failed".
-	Status       string         `json:"status,required"`
-	StepID       string         `json:"step_id,required"`
-	CompletedAt  time.Time      `json:"completed_at" format:"date-time"`
-	Metadata     map[string]any `json:"metadata"`
-	ParentStepID string         `json:"parent_step_id"`
-	StartedAt    time.Time      `json:"started_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Description  respjson.Field
-		RunID        respjson.Field
-		Sequence     respjson.Field
-		Status       respjson.Field
-		StepID       respjson.Field
-		CompletedAt  respjson.Field
-		Metadata     respjson.Field
-		ParentStepID respjson.Field
-		StartedAt    respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunPlanGetStepDetailsResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunPlanGetStepDetailsResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type AIMissionRunPlanUpdateStepResponse struct {
-	Data AIMissionRunPlanUpdateStepResponseData `json:"data,required"`
+	Data PlanStepData `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -333,39 +244,6 @@ type AIMissionRunPlanUpdateStepResponse struct {
 // Returns the unmodified JSON received from the API
 func (r AIMissionRunPlanUpdateStepResponse) RawJSON() string { return r.JSON.raw }
 func (r *AIMissionRunPlanUpdateStepResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIMissionRunPlanUpdateStepResponseData struct {
-	Description string `json:"description,required"`
-	RunID       string `json:"run_id,required" format:"uuid"`
-	Sequence    int64  `json:"sequence,required"`
-	// Any of "pending", "in_progress", "completed", "skipped", "failed".
-	Status       string         `json:"status,required"`
-	StepID       string         `json:"step_id,required"`
-	CompletedAt  time.Time      `json:"completed_at" format:"date-time"`
-	Metadata     map[string]any `json:"metadata"`
-	ParentStepID string         `json:"parent_step_id"`
-	StartedAt    time.Time      `json:"started_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Description  respjson.Field
-		RunID        respjson.Field
-		Sequence     respjson.Field
-		Status       respjson.Field
-		StepID       respjson.Field
-		CompletedAt  respjson.Field
-		Metadata     respjson.Field
-		ParentStepID respjson.Field
-		StartedAt    respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunPlanUpdateStepResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunPlanUpdateStepResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
