@@ -90,7 +90,7 @@ func (r *AIMissionRunService) Update(ctx context.Context, runID string, params A
 }
 
 // List all runs for a specific mission
-func (r *AIMissionRunService) List(ctx context.Context, missionID string, query AIMissionRunListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[AIMissionRunListResponse], err error) {
+func (r *AIMissionRunService) List(ctx context.Context, missionID string, query AIMissionRunListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MissionRunData], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -112,7 +112,7 @@ func (r *AIMissionRunService) List(ctx context.Context, missionID string, query 
 }
 
 // List all runs for a specific mission
-func (r *AIMissionRunService) ListAutoPaging(ctx context.Context, missionID string, query AIMissionRunListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[AIMissionRunListResponse] {
+func (r *AIMissionRunService) ListAutoPaging(ctx context.Context, missionID string, query AIMissionRunListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MissionRunData] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, missionID, query, opts...))
 }
 
@@ -133,7 +133,7 @@ func (r *AIMissionRunService) CancelRun(ctx context.Context, runID string, body 
 }
 
 // List recent runs across all missions
-func (r *AIMissionRunService) ListRuns(ctx context.Context, query AIMissionRunListRunsParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[AIMissionRunListRunsResponse], err error) {
+func (r *AIMissionRunService) ListRuns(ctx context.Context, query AIMissionRunListRunsParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MissionRunData], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -151,7 +151,7 @@ func (r *AIMissionRunService) ListRuns(ctx context.Context, query AIMissionRunLi
 }
 
 // List recent runs across all missions
-func (r *AIMissionRunService) ListRunsAutoPaging(ctx context.Context, query AIMissionRunListRunsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[AIMissionRunListRunsResponse] {
+func (r *AIMissionRunService) ListRunsAutoPaging(ctx context.Context, query AIMissionRunListRunsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MissionRunData] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.ListRuns(ctx, query, opts...))
 }
 
@@ -187,8 +187,56 @@ func (r *AIMissionRunService) ResumeRun(ctx context.Context, runID string, body 
 	return
 }
 
+type MissionRunData struct {
+	MissionID string    `json:"mission_id,required" format:"uuid"`
+	RunID     string    `json:"run_id,required" format:"uuid"`
+	StartedAt time.Time `json:"started_at,required" format:"date-time"`
+	// Any of "pending", "running", "paused", "succeeded", "failed", "cancelled".
+	Status        MissionRunDataStatus `json:"status,required"`
+	UpdatedAt     time.Time            `json:"updated_at,required" format:"date-time"`
+	Error         string               `json:"error"`
+	FinishedAt    time.Time            `json:"finished_at" format:"date-time"`
+	Input         map[string]any       `json:"input"`
+	Metadata      map[string]any       `json:"metadata"`
+	ResultPayload map[string]any       `json:"result_payload"`
+	ResultSummary string               `json:"result_summary"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		MissionID     respjson.Field
+		RunID         respjson.Field
+		StartedAt     respjson.Field
+		Status        respjson.Field
+		UpdatedAt     respjson.Field
+		Error         respjson.Field
+		FinishedAt    respjson.Field
+		Input         respjson.Field
+		Metadata      respjson.Field
+		ResultPayload respjson.Field
+		ResultSummary respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MissionRunData) RawJSON() string { return r.JSON.raw }
+func (r *MissionRunData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MissionRunDataStatus string
+
+const (
+	MissionRunDataStatusPending   MissionRunDataStatus = "pending"
+	MissionRunDataStatusRunning   MissionRunDataStatus = "running"
+	MissionRunDataStatusPaused    MissionRunDataStatus = "paused"
+	MissionRunDataStatusSucceeded MissionRunDataStatus = "succeeded"
+	MissionRunDataStatusFailed    MissionRunDataStatus = "failed"
+	MissionRunDataStatusCancelled MissionRunDataStatus = "cancelled"
+)
+
 type AIMissionRunNewResponse struct {
-	Data AIMissionRunNewResponseData `json:"data,required"`
+	Data MissionRunData `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -203,45 +251,8 @@ func (r *AIMissionRunNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIMissionRunNewResponseData struct {
-	MissionID string    `json:"mission_id,required" format:"uuid"`
-	RunID     string    `json:"run_id,required" format:"uuid"`
-	StartedAt time.Time `json:"started_at,required" format:"date-time"`
-	// Any of "pending", "running", "paused", "succeeded", "failed", "cancelled".
-	Status        string         `json:"status,required"`
-	UpdatedAt     time.Time      `json:"updated_at,required" format:"date-time"`
-	Error         string         `json:"error"`
-	FinishedAt    time.Time      `json:"finished_at" format:"date-time"`
-	Input         map[string]any `json:"input"`
-	Metadata      map[string]any `json:"metadata"`
-	ResultPayload map[string]any `json:"result_payload"`
-	ResultSummary string         `json:"result_summary"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		MissionID     respjson.Field
-		RunID         respjson.Field
-		StartedAt     respjson.Field
-		Status        respjson.Field
-		UpdatedAt     respjson.Field
-		Error         respjson.Field
-		FinishedAt    respjson.Field
-		Input         respjson.Field
-		Metadata      respjson.Field
-		ResultPayload respjson.Field
-		ResultSummary respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type AIMissionRunGetResponse struct {
-	Data AIMissionRunGetResponseData `json:"data,required"`
+	Data MissionRunData `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -256,45 +267,8 @@ func (r *AIMissionRunGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIMissionRunGetResponseData struct {
-	MissionID string    `json:"mission_id,required" format:"uuid"`
-	RunID     string    `json:"run_id,required" format:"uuid"`
-	StartedAt time.Time `json:"started_at,required" format:"date-time"`
-	// Any of "pending", "running", "paused", "succeeded", "failed", "cancelled".
-	Status        string         `json:"status,required"`
-	UpdatedAt     time.Time      `json:"updated_at,required" format:"date-time"`
-	Error         string         `json:"error"`
-	FinishedAt    time.Time      `json:"finished_at" format:"date-time"`
-	Input         map[string]any `json:"input"`
-	Metadata      map[string]any `json:"metadata"`
-	ResultPayload map[string]any `json:"result_payload"`
-	ResultSummary string         `json:"result_summary"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		MissionID     respjson.Field
-		RunID         respjson.Field
-		StartedAt     respjson.Field
-		Status        respjson.Field
-		UpdatedAt     respjson.Field
-		Error         respjson.Field
-		FinishedAt    respjson.Field
-		Input         respjson.Field
-		Metadata      respjson.Field
-		ResultPayload respjson.Field
-		ResultSummary respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type AIMissionRunUpdateResponse struct {
-	Data AIMissionRunUpdateResponseData `json:"data,required"`
+	Data MissionRunData `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -309,93 +283,8 @@ func (r *AIMissionRunUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIMissionRunUpdateResponseData struct {
-	MissionID string    `json:"mission_id,required" format:"uuid"`
-	RunID     string    `json:"run_id,required" format:"uuid"`
-	StartedAt time.Time `json:"started_at,required" format:"date-time"`
-	// Any of "pending", "running", "paused", "succeeded", "failed", "cancelled".
-	Status        string         `json:"status,required"`
-	UpdatedAt     time.Time      `json:"updated_at,required" format:"date-time"`
-	Error         string         `json:"error"`
-	FinishedAt    time.Time      `json:"finished_at" format:"date-time"`
-	Input         map[string]any `json:"input"`
-	Metadata      map[string]any `json:"metadata"`
-	ResultPayload map[string]any `json:"result_payload"`
-	ResultSummary string         `json:"result_summary"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		MissionID     respjson.Field
-		RunID         respjson.Field
-		StartedAt     respjson.Field
-		Status        respjson.Field
-		UpdatedAt     respjson.Field
-		Error         respjson.Field
-		FinishedAt    respjson.Field
-		Input         respjson.Field
-		Metadata      respjson.Field
-		ResultPayload respjson.Field
-		ResultSummary respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunUpdateResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunUpdateResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIMissionRunListResponse struct {
-	MissionID string    `json:"mission_id,required" format:"uuid"`
-	RunID     string    `json:"run_id,required" format:"uuid"`
-	StartedAt time.Time `json:"started_at,required" format:"date-time"`
-	// Any of "pending", "running", "paused", "succeeded", "failed", "cancelled".
-	Status        AIMissionRunListResponseStatus `json:"status,required"`
-	UpdatedAt     time.Time                      `json:"updated_at,required" format:"date-time"`
-	Error         string                         `json:"error"`
-	FinishedAt    time.Time                      `json:"finished_at" format:"date-time"`
-	Input         map[string]any                 `json:"input"`
-	Metadata      map[string]any                 `json:"metadata"`
-	ResultPayload map[string]any                 `json:"result_payload"`
-	ResultSummary string                         `json:"result_summary"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		MissionID     respjson.Field
-		RunID         respjson.Field
-		StartedAt     respjson.Field
-		Status        respjson.Field
-		UpdatedAt     respjson.Field
-		Error         respjson.Field
-		FinishedAt    respjson.Field
-		Input         respjson.Field
-		Metadata      respjson.Field
-		ResultPayload respjson.Field
-		ResultSummary respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunListResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIMissionRunListResponseStatus string
-
-const (
-	AIMissionRunListResponseStatusPending   AIMissionRunListResponseStatus = "pending"
-	AIMissionRunListResponseStatusRunning   AIMissionRunListResponseStatus = "running"
-	AIMissionRunListResponseStatusPaused    AIMissionRunListResponseStatus = "paused"
-	AIMissionRunListResponseStatusSucceeded AIMissionRunListResponseStatus = "succeeded"
-	AIMissionRunListResponseStatusFailed    AIMissionRunListResponseStatus = "failed"
-	AIMissionRunListResponseStatusCancelled AIMissionRunListResponseStatus = "cancelled"
-)
-
 type AIMissionRunCancelRunResponse struct {
-	Data AIMissionRunCancelRunResponseData `json:"data,required"`
+	Data MissionRunData `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -410,93 +299,8 @@ func (r *AIMissionRunCancelRunResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIMissionRunCancelRunResponseData struct {
-	MissionID string    `json:"mission_id,required" format:"uuid"`
-	RunID     string    `json:"run_id,required" format:"uuid"`
-	StartedAt time.Time `json:"started_at,required" format:"date-time"`
-	// Any of "pending", "running", "paused", "succeeded", "failed", "cancelled".
-	Status        string         `json:"status,required"`
-	UpdatedAt     time.Time      `json:"updated_at,required" format:"date-time"`
-	Error         string         `json:"error"`
-	FinishedAt    time.Time      `json:"finished_at" format:"date-time"`
-	Input         map[string]any `json:"input"`
-	Metadata      map[string]any `json:"metadata"`
-	ResultPayload map[string]any `json:"result_payload"`
-	ResultSummary string         `json:"result_summary"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		MissionID     respjson.Field
-		RunID         respjson.Field
-		StartedAt     respjson.Field
-		Status        respjson.Field
-		UpdatedAt     respjson.Field
-		Error         respjson.Field
-		FinishedAt    respjson.Field
-		Input         respjson.Field
-		Metadata      respjson.Field
-		ResultPayload respjson.Field
-		ResultSummary respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunCancelRunResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunCancelRunResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIMissionRunListRunsResponse struct {
-	MissionID string    `json:"mission_id,required" format:"uuid"`
-	RunID     string    `json:"run_id,required" format:"uuid"`
-	StartedAt time.Time `json:"started_at,required" format:"date-time"`
-	// Any of "pending", "running", "paused", "succeeded", "failed", "cancelled".
-	Status        AIMissionRunListRunsResponseStatus `json:"status,required"`
-	UpdatedAt     time.Time                          `json:"updated_at,required" format:"date-time"`
-	Error         string                             `json:"error"`
-	FinishedAt    time.Time                          `json:"finished_at" format:"date-time"`
-	Input         map[string]any                     `json:"input"`
-	Metadata      map[string]any                     `json:"metadata"`
-	ResultPayload map[string]any                     `json:"result_payload"`
-	ResultSummary string                             `json:"result_summary"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		MissionID     respjson.Field
-		RunID         respjson.Field
-		StartedAt     respjson.Field
-		Status        respjson.Field
-		UpdatedAt     respjson.Field
-		Error         respjson.Field
-		FinishedAt    respjson.Field
-		Input         respjson.Field
-		Metadata      respjson.Field
-		ResultPayload respjson.Field
-		ResultSummary respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunListRunsResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunListRunsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIMissionRunListRunsResponseStatus string
-
-const (
-	AIMissionRunListRunsResponseStatusPending   AIMissionRunListRunsResponseStatus = "pending"
-	AIMissionRunListRunsResponseStatusRunning   AIMissionRunListRunsResponseStatus = "running"
-	AIMissionRunListRunsResponseStatusPaused    AIMissionRunListRunsResponseStatus = "paused"
-	AIMissionRunListRunsResponseStatusSucceeded AIMissionRunListRunsResponseStatus = "succeeded"
-	AIMissionRunListRunsResponseStatusFailed    AIMissionRunListRunsResponseStatus = "failed"
-	AIMissionRunListRunsResponseStatusCancelled AIMissionRunListRunsResponseStatus = "cancelled"
-)
-
 type AIMissionRunPauseRunResponse struct {
-	Data AIMissionRunPauseRunResponseData `json:"data,required"`
+	Data MissionRunData `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -511,45 +315,8 @@ func (r *AIMissionRunPauseRunResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIMissionRunPauseRunResponseData struct {
-	MissionID string    `json:"mission_id,required" format:"uuid"`
-	RunID     string    `json:"run_id,required" format:"uuid"`
-	StartedAt time.Time `json:"started_at,required" format:"date-time"`
-	// Any of "pending", "running", "paused", "succeeded", "failed", "cancelled".
-	Status        string         `json:"status,required"`
-	UpdatedAt     time.Time      `json:"updated_at,required" format:"date-time"`
-	Error         string         `json:"error"`
-	FinishedAt    time.Time      `json:"finished_at" format:"date-time"`
-	Input         map[string]any `json:"input"`
-	Metadata      map[string]any `json:"metadata"`
-	ResultPayload map[string]any `json:"result_payload"`
-	ResultSummary string         `json:"result_summary"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		MissionID     respjson.Field
-		RunID         respjson.Field
-		StartedAt     respjson.Field
-		Status        respjson.Field
-		UpdatedAt     respjson.Field
-		Error         respjson.Field
-		FinishedAt    respjson.Field
-		Input         respjson.Field
-		Metadata      respjson.Field
-		ResultPayload respjson.Field
-		ResultSummary respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunPauseRunResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunPauseRunResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type AIMissionRunResumeRunResponse struct {
-	Data AIMissionRunResumeRunResponseData `json:"data,required"`
+	Data MissionRunData `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -561,43 +328,6 @@ type AIMissionRunResumeRunResponse struct {
 // Returns the unmodified JSON received from the API
 func (r AIMissionRunResumeRunResponse) RawJSON() string { return r.JSON.raw }
 func (r *AIMissionRunResumeRunResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIMissionRunResumeRunResponseData struct {
-	MissionID string    `json:"mission_id,required" format:"uuid"`
-	RunID     string    `json:"run_id,required" format:"uuid"`
-	StartedAt time.Time `json:"started_at,required" format:"date-time"`
-	// Any of "pending", "running", "paused", "succeeded", "failed", "cancelled".
-	Status        string         `json:"status,required"`
-	UpdatedAt     time.Time      `json:"updated_at,required" format:"date-time"`
-	Error         string         `json:"error"`
-	FinishedAt    time.Time      `json:"finished_at" format:"date-time"`
-	Input         map[string]any `json:"input"`
-	Metadata      map[string]any `json:"metadata"`
-	ResultPayload map[string]any `json:"result_payload"`
-	ResultSummary string         `json:"result_summary"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		MissionID     respjson.Field
-		RunID         respjson.Field
-		StartedAt     respjson.Field
-		Status        respjson.Field
-		UpdatedAt     respjson.Field
-		Error         respjson.Field
-		FinishedAt    respjson.Field
-		Input         respjson.Field
-		Metadata      respjson.Field
-		ResultPayload respjson.Field
-		ResultSummary respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunResumeRunResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunResumeRunResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
