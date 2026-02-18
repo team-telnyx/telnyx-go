@@ -68,7 +68,7 @@ func (r *AIMissionService) Get(ctx context.Context, missionID string, opts ...op
 }
 
 // List all missions for the organization
-func (r *AIMissionService) List(ctx context.Context, query AIMissionListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MissionData], err error) {
+func (r *AIMissionService) List(ctx context.Context, query AIMissionListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[AIMissionListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -86,7 +86,7 @@ func (r *AIMissionService) List(ctx context.Context, query AIMissionListParams, 
 }
 
 // List all missions for the organization
-func (r *AIMissionService) ListAutoPaging(ctx context.Context, query AIMissionListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MissionData] {
+func (r *AIMissionService) ListAutoPaging(ctx context.Context, query AIMissionListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[AIMissionListResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -150,17 +150,33 @@ func (r *AIMissionService) UpdateMission(ctx context.Context, missionID string, 
 	return
 }
 
-type MissionData struct {
+type AIMissionNewResponse struct {
+	Data AIMissionNewResponseData `json:"data,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AIMissionNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *AIMissionNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AIMissionNewResponseData struct {
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Any of "external", "managed".
-	ExecutionMode MissionDataExecutionMode `json:"execution_mode,required"`
-	MissionID     string                   `json:"mission_id,required" format:"uuid"`
-	Name          string                   `json:"name,required"`
-	UpdatedAt     time.Time                `json:"updated_at,required" format:"date-time"`
-	Description   string                   `json:"description"`
-	Instructions  string                   `json:"instructions"`
-	Metadata      map[string]any           `json:"metadata"`
-	Model         string                   `json:"model"`
+	ExecutionMode string         `json:"execution_mode,required"`
+	MissionID     string         `json:"mission_id,required" format:"uuid"`
+	Name          string         `json:"name,required"`
+	UpdatedAt     time.Time      `json:"updated_at,required" format:"date-time"`
+	Description   string         `json:"description"`
+	Instructions  string         `json:"instructions"`
+	Metadata      map[string]any `json:"metadata"`
+	Model         string         `json:"model"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt     respjson.Field
@@ -178,36 +194,13 @@ type MissionData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MissionData) RawJSON() string { return r.JSON.raw }
-func (r *MissionData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MissionDataExecutionMode string
-
-const (
-	MissionDataExecutionModeExternal MissionDataExecutionMode = "external"
-	MissionDataExecutionModeManaged  MissionDataExecutionMode = "managed"
-)
-
-type AIMissionNewResponse struct {
-	Data MissionData `json:"data,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionNewResponse) UnmarshalJSON(data []byte) error {
+func (r AIMissionNewResponseData) RawJSON() string { return r.JSON.raw }
+func (r *AIMissionNewResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type AIMissionGetResponse struct {
-	Data MissionData `json:"data,required"`
+	Data AIMissionGetResponseData `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -221,6 +214,79 @@ func (r AIMissionGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *AIMissionGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type AIMissionGetResponseData struct {
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Any of "external", "managed".
+	ExecutionMode string         `json:"execution_mode,required"`
+	MissionID     string         `json:"mission_id,required" format:"uuid"`
+	Name          string         `json:"name,required"`
+	UpdatedAt     time.Time      `json:"updated_at,required" format:"date-time"`
+	Description   string         `json:"description"`
+	Instructions  string         `json:"instructions"`
+	Metadata      map[string]any `json:"metadata"`
+	Model         string         `json:"model"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt     respjson.Field
+		ExecutionMode respjson.Field
+		MissionID     respjson.Field
+		Name          respjson.Field
+		UpdatedAt     respjson.Field
+		Description   respjson.Field
+		Instructions  respjson.Field
+		Metadata      respjson.Field
+		Model         respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AIMissionGetResponseData) RawJSON() string { return r.JSON.raw }
+func (r *AIMissionGetResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AIMissionListResponse struct {
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Any of "external", "managed".
+	ExecutionMode AIMissionListResponseExecutionMode `json:"execution_mode,required"`
+	MissionID     string                             `json:"mission_id,required" format:"uuid"`
+	Name          string                             `json:"name,required"`
+	UpdatedAt     time.Time                          `json:"updated_at,required" format:"date-time"`
+	Description   string                             `json:"description"`
+	Instructions  string                             `json:"instructions"`
+	Metadata      map[string]any                     `json:"metadata"`
+	Model         string                             `json:"model"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt     respjson.Field
+		ExecutionMode respjson.Field
+		MissionID     respjson.Field
+		Name          respjson.Field
+		UpdatedAt     respjson.Field
+		Description   respjson.Field
+		Instructions  respjson.Field
+		Metadata      respjson.Field
+		Model         respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AIMissionListResponse) RawJSON() string { return r.JSON.raw }
+func (r *AIMissionListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AIMissionListResponseExecutionMode string
+
+const (
+	AIMissionListResponseExecutionModeExternal AIMissionListResponseExecutionMode = "external"
+	AIMissionListResponseExecutionModeManaged  AIMissionListResponseExecutionMode = "managed"
+)
 
 type AIMissionCloneMissionResponse = any
 
@@ -273,7 +339,7 @@ const (
 )
 
 type AIMissionUpdateMissionResponse struct {
-	Data MissionData `json:"data,required"`
+	Data AIMissionUpdateMissionResponseData `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -285,6 +351,39 @@ type AIMissionUpdateMissionResponse struct {
 // Returns the unmodified JSON received from the API
 func (r AIMissionUpdateMissionResponse) RawJSON() string { return r.JSON.raw }
 func (r *AIMissionUpdateMissionResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AIMissionUpdateMissionResponseData struct {
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Any of "external", "managed".
+	ExecutionMode string         `json:"execution_mode,required"`
+	MissionID     string         `json:"mission_id,required" format:"uuid"`
+	Name          string         `json:"name,required"`
+	UpdatedAt     time.Time      `json:"updated_at,required" format:"date-time"`
+	Description   string         `json:"description"`
+	Instructions  string         `json:"instructions"`
+	Metadata      map[string]any `json:"metadata"`
+	Model         string         `json:"model"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt     respjson.Field
+		ExecutionMode respjson.Field
+		MissionID     respjson.Field
+		Name          respjson.Field
+		UpdatedAt     respjson.Field
+		Description   respjson.Field
+		Instructions  respjson.Field
+		Metadata      respjson.Field
+		Model         respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AIMissionUpdateMissionResponseData) RawJSON() string { return r.JSON.raw }
+func (r *AIMissionUpdateMissionResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
