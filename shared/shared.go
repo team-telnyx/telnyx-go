@@ -837,6 +837,36 @@ func (r *Metadata) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property Type is required.
+type MinimaxVoiceSettingsParam struct {
+	// Voice settings provider type
+	//
+	// Any of "minimax".
+	Type MinimaxVoiceSettingsType `json:"type,omitzero,required"`
+	// Voice pitch adjustment. Default is 0.
+	Pitch param.Opt[int64] `json:"pitch,omitzero"`
+	// Speech speed multiplier. Default is 1.0.
+	Speed param.Opt[float64] `json:"speed,omitzero"`
+	// Speech volume multiplier. Default is 1.0.
+	Vol param.Opt[float64] `json:"vol,omitzero"`
+	paramObj
+}
+
+func (r MinimaxVoiceSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow MinimaxVoiceSettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MinimaxVoiceSettingsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Voice settings provider type
+type MinimaxVoiceSettingsType string
+
+const (
+	MinimaxVoiceSettingsTypeMinimax MinimaxVoiceSettingsType = "minimax"
+)
+
 // High level health metrics about the number and it's messaging sending patterns.
 type NumberHealthMetrics struct {
 	// The ratio of messages received to the number of messages sent.

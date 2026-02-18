@@ -16,6 +16,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
@@ -3568,10 +3569,10 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CallActionGatherUsingSpeakParamsVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam                         `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam                             `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam                                `json:",omitzero,inline"`
-	OfMinimax    *CallActionGatherUsingSpeakParamsVoiceSettingsMinimax `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam     `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam         `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam            `json:",omitzero,inline"`
+	OfMinimax    *shared.MinimaxVoiceSettingsParam `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -3655,31 +3656,8 @@ func init() {
 		apijson.Discriminator[ElevenLabsVoiceSettingsParam]("elevenlabs"),
 		apijson.Discriminator[TelnyxVoiceSettingsParam]("telnyx"),
 		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
-		apijson.Discriminator[CallActionGatherUsingSpeakParamsVoiceSettingsMinimax]("minimax"),
+		apijson.Discriminator[shared.MinimaxVoiceSettingsParam]("minimax"),
 	)
-}
-
-// The property Type is required.
-type CallActionGatherUsingSpeakParamsVoiceSettingsMinimax struct {
-	// Voice pitch adjustment. Default is 0.
-	Pitch param.Opt[int64] `json:"pitch,omitzero"`
-	// Speech speed multiplier. Default is 1.0.
-	Speed param.Opt[float64] `json:"speed,omitzero"`
-	// Speech volume multiplier. Default is 1.0.
-	Vol param.Opt[float64] `json:"vol,omitzero"`
-	// Voice settings provider type
-	//
-	// This field can be elided, and will marshal its zero value as "minimax".
-	Type constant.Minimax `json:"type,required"`
-	paramObj
-}
-
-func (r CallActionGatherUsingSpeakParamsVoiceSettingsMinimax) MarshalJSON() (data []byte, err error) {
-	type shadow CallActionGatherUsingSpeakParamsVoiceSettingsMinimax
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CallActionGatherUsingSpeakParamsVoiceSettingsMinimax) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type CallActionHangupParams struct {
@@ -4000,10 +3978,10 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CallActionSpeakParamsVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam              `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam                  `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam                     `json:",omitzero,inline"`
-	OfMinimax    *CallActionSpeakParamsVoiceSettingsMinimax `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam     `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam         `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam            `json:",omitzero,inline"`
+	OfMinimax    *shared.MinimaxVoiceSettingsParam `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -4087,31 +4065,8 @@ func init() {
 		apijson.Discriminator[ElevenLabsVoiceSettingsParam]("elevenlabs"),
 		apijson.Discriminator[TelnyxVoiceSettingsParam]("telnyx"),
 		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
-		apijson.Discriminator[CallActionSpeakParamsVoiceSettingsMinimax]("minimax"),
+		apijson.Discriminator[shared.MinimaxVoiceSettingsParam]("minimax"),
 	)
-}
-
-// The property Type is required.
-type CallActionSpeakParamsVoiceSettingsMinimax struct {
-	// Voice pitch adjustment. Default is 0.
-	Pitch param.Opt[int64] `json:"pitch,omitzero"`
-	// Speech speed multiplier. Default is 1.0.
-	Speed param.Opt[float64] `json:"speed,omitzero"`
-	// Speech volume multiplier. Default is 1.0.
-	Vol param.Opt[float64] `json:"vol,omitzero"`
-	// Voice settings provider type
-	//
-	// This field can be elided, and will marshal its zero value as "minimax".
-	Type constant.Minimax `json:"type,required"`
-	paramObj
-}
-
-func (r CallActionSpeakParamsVoiceSettingsMinimax) MarshalJSON() (data []byte, err error) {
-	type shadow CallActionSpeakParamsVoiceSettingsMinimax
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CallActionSpeakParamsVoiceSettingsMinimax) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type CallActionStartAIAssistantParams struct {
