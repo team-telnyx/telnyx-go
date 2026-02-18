@@ -850,6 +850,18 @@ type MinimaxVoiceSettingsParam struct {
 	Speed param.Opt[float64] `json:"speed,omitzero"`
 	// Speech volume multiplier. Default is 1.0.
 	Vol param.Opt[float64] `json:"vol,omitzero"`
+	// Enhances recognition for specific languages and dialects during MiniMax TTS
+	// synthesis. Default is null (no boost). Set to 'auto' for automatic language
+	// detection.
+	//
+	// Any of "auto", "Chinese", "Chinese,Yue", "English", "Arabic", "Russian",
+	// "Spanish", "French", "Portuguese", "German", "Turkish", "Dutch", "Ukrainian",
+	// "Vietnamese", "Indonesian", "Japanese", "Italian", "Korean", "Thai", "Polish",
+	// "Romanian", "Greek", "Czech", "Finnish", "Hindi", "Bulgarian", "Danish",
+	// "Hebrew", "Malay", "Persian", "Slovak", "Swedish", "Croatian", "Filipino",
+	// "Hungarian", "Norwegian", "Slovenian", "Catalan", "Nynorsk", "Tamil",
+	// "Afrikaans".
+	LanguageBoost MinimaxVoiceSettingsLanguageBoost `json:"language_boost,omitzero"`
 	paramObj
 }
 
@@ -866,6 +878,55 @@ type MinimaxVoiceSettingsType string
 
 const (
 	MinimaxVoiceSettingsTypeMinimax MinimaxVoiceSettingsType = "minimax"
+)
+
+// Enhances recognition for specific languages and dialects during MiniMax TTS
+// synthesis. Default is null (no boost). Set to 'auto' for automatic language
+// detection.
+type MinimaxVoiceSettingsLanguageBoost string
+
+const (
+	MinimaxVoiceSettingsLanguageBoostAuto       MinimaxVoiceSettingsLanguageBoost = "auto"
+	MinimaxVoiceSettingsLanguageBoostChinese    MinimaxVoiceSettingsLanguageBoost = "Chinese"
+	MinimaxVoiceSettingsLanguageBoostChineseYue MinimaxVoiceSettingsLanguageBoost = "Chinese,Yue"
+	MinimaxVoiceSettingsLanguageBoostEnglish    MinimaxVoiceSettingsLanguageBoost = "English"
+	MinimaxVoiceSettingsLanguageBoostArabic     MinimaxVoiceSettingsLanguageBoost = "Arabic"
+	MinimaxVoiceSettingsLanguageBoostRussian    MinimaxVoiceSettingsLanguageBoost = "Russian"
+	MinimaxVoiceSettingsLanguageBoostSpanish    MinimaxVoiceSettingsLanguageBoost = "Spanish"
+	MinimaxVoiceSettingsLanguageBoostFrench     MinimaxVoiceSettingsLanguageBoost = "French"
+	MinimaxVoiceSettingsLanguageBoostPortuguese MinimaxVoiceSettingsLanguageBoost = "Portuguese"
+	MinimaxVoiceSettingsLanguageBoostGerman     MinimaxVoiceSettingsLanguageBoost = "German"
+	MinimaxVoiceSettingsLanguageBoostTurkish    MinimaxVoiceSettingsLanguageBoost = "Turkish"
+	MinimaxVoiceSettingsLanguageBoostDutch      MinimaxVoiceSettingsLanguageBoost = "Dutch"
+	MinimaxVoiceSettingsLanguageBoostUkrainian  MinimaxVoiceSettingsLanguageBoost = "Ukrainian"
+	MinimaxVoiceSettingsLanguageBoostVietnamese MinimaxVoiceSettingsLanguageBoost = "Vietnamese"
+	MinimaxVoiceSettingsLanguageBoostIndonesian MinimaxVoiceSettingsLanguageBoost = "Indonesian"
+	MinimaxVoiceSettingsLanguageBoostJapanese   MinimaxVoiceSettingsLanguageBoost = "Japanese"
+	MinimaxVoiceSettingsLanguageBoostItalian    MinimaxVoiceSettingsLanguageBoost = "Italian"
+	MinimaxVoiceSettingsLanguageBoostKorean     MinimaxVoiceSettingsLanguageBoost = "Korean"
+	MinimaxVoiceSettingsLanguageBoostThai       MinimaxVoiceSettingsLanguageBoost = "Thai"
+	MinimaxVoiceSettingsLanguageBoostPolish     MinimaxVoiceSettingsLanguageBoost = "Polish"
+	MinimaxVoiceSettingsLanguageBoostRomanian   MinimaxVoiceSettingsLanguageBoost = "Romanian"
+	MinimaxVoiceSettingsLanguageBoostGreek      MinimaxVoiceSettingsLanguageBoost = "Greek"
+	MinimaxVoiceSettingsLanguageBoostCzech      MinimaxVoiceSettingsLanguageBoost = "Czech"
+	MinimaxVoiceSettingsLanguageBoostFinnish    MinimaxVoiceSettingsLanguageBoost = "Finnish"
+	MinimaxVoiceSettingsLanguageBoostHindi      MinimaxVoiceSettingsLanguageBoost = "Hindi"
+	MinimaxVoiceSettingsLanguageBoostBulgarian  MinimaxVoiceSettingsLanguageBoost = "Bulgarian"
+	MinimaxVoiceSettingsLanguageBoostDanish     MinimaxVoiceSettingsLanguageBoost = "Danish"
+	MinimaxVoiceSettingsLanguageBoostHebrew     MinimaxVoiceSettingsLanguageBoost = "Hebrew"
+	MinimaxVoiceSettingsLanguageBoostMalay      MinimaxVoiceSettingsLanguageBoost = "Malay"
+	MinimaxVoiceSettingsLanguageBoostPersian    MinimaxVoiceSettingsLanguageBoost = "Persian"
+	MinimaxVoiceSettingsLanguageBoostSlovak     MinimaxVoiceSettingsLanguageBoost = "Slovak"
+	MinimaxVoiceSettingsLanguageBoostSwedish    MinimaxVoiceSettingsLanguageBoost = "Swedish"
+	MinimaxVoiceSettingsLanguageBoostCroatian   MinimaxVoiceSettingsLanguageBoost = "Croatian"
+	MinimaxVoiceSettingsLanguageBoostFilipino   MinimaxVoiceSettingsLanguageBoost = "Filipino"
+	MinimaxVoiceSettingsLanguageBoostHungarian  MinimaxVoiceSettingsLanguageBoost = "Hungarian"
+	MinimaxVoiceSettingsLanguageBoostNorwegian  MinimaxVoiceSettingsLanguageBoost = "Norwegian"
+	MinimaxVoiceSettingsLanguageBoostSlovenian  MinimaxVoiceSettingsLanguageBoost = "Slovenian"
+	MinimaxVoiceSettingsLanguageBoostCatalan    MinimaxVoiceSettingsLanguageBoost = "Catalan"
+	MinimaxVoiceSettingsLanguageBoostNynorsk    MinimaxVoiceSettingsLanguageBoost = "Nynorsk"
+	MinimaxVoiceSettingsLanguageBoostTamil      MinimaxVoiceSettingsLanguageBoost = "Tamil"
+	MinimaxVoiceSettingsLanguageBoostAfrikaans  MinimaxVoiceSettingsLanguageBoost = "Afrikaans"
 )
 
 // High level health metrics about the number and it's messaging sending patterns.
