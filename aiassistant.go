@@ -3222,6 +3222,18 @@ type VoiceSettings struct {
 	// supply a looped MP3 URL. If a media URL is chosen in the portal, customers can
 	// preview it before saving.
 	BackgroundAudio VoiceSettingsBackgroundAudioUnion `json:"background_audio"`
+	// Enhances recognition for specific languages and dialects during MiniMax TTS
+	// synthesis. Default is null (no boost). Set to 'auto' for automatic language
+	// detection. Only applicable when using MiniMax voices.
+	//
+	// Any of "auto", "Chinese", "Chinese,Yue", "English", "Arabic", "Russian",
+	// "Spanish", "French", "Portuguese", "German", "Turkish", "Dutch", "Ukrainian",
+	// "Vietnamese", "Indonesian", "Japanese", "Italian", "Korean", "Thai", "Polish",
+	// "Romanian", "Greek", "Czech", "Finnish", "Hindi", "Bulgarian", "Danish",
+	// "Hebrew", "Malay", "Persian", "Slovak", "Swedish", "Croatian", "Filipino",
+	// "Hungarian", "Norwegian", "Slovenian", "Catalan", "Nynorsk", "Tamil",
+	// "Afrikaans".
+	LanguageBoost VoiceSettingsLanguageBoost `json:"language_boost,nullable"`
 	// Determines how closely the AI should adhere to the original voice when
 	// attempting to replicate it. Only applicable when using ElevenLabs.
 	SimilarityBoost float64 `json:"similarity_boost"`
@@ -3248,6 +3260,7 @@ type VoiceSettings struct {
 		Voice           respjson.Field
 		APIKeyRef       respjson.Field
 		BackgroundAudio respjson.Field
+		LanguageBoost   respjson.Field
 		SimilarityBoost respjson.Field
 		Speed           respjson.Field
 		Style           respjson.Field
@@ -3411,6 +3424,55 @@ func (r *VoiceSettingsBackgroundAudioMediaName) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Enhances recognition for specific languages and dialects during MiniMax TTS
+// synthesis. Default is null (no boost). Set to 'auto' for automatic language
+// detection. Only applicable when using MiniMax voices.
+type VoiceSettingsLanguageBoost string
+
+const (
+	VoiceSettingsLanguageBoostAuto       VoiceSettingsLanguageBoost = "auto"
+	VoiceSettingsLanguageBoostChinese    VoiceSettingsLanguageBoost = "Chinese"
+	VoiceSettingsLanguageBoostChineseYue VoiceSettingsLanguageBoost = "Chinese,Yue"
+	VoiceSettingsLanguageBoostEnglish    VoiceSettingsLanguageBoost = "English"
+	VoiceSettingsLanguageBoostArabic     VoiceSettingsLanguageBoost = "Arabic"
+	VoiceSettingsLanguageBoostRussian    VoiceSettingsLanguageBoost = "Russian"
+	VoiceSettingsLanguageBoostSpanish    VoiceSettingsLanguageBoost = "Spanish"
+	VoiceSettingsLanguageBoostFrench     VoiceSettingsLanguageBoost = "French"
+	VoiceSettingsLanguageBoostPortuguese VoiceSettingsLanguageBoost = "Portuguese"
+	VoiceSettingsLanguageBoostGerman     VoiceSettingsLanguageBoost = "German"
+	VoiceSettingsLanguageBoostTurkish    VoiceSettingsLanguageBoost = "Turkish"
+	VoiceSettingsLanguageBoostDutch      VoiceSettingsLanguageBoost = "Dutch"
+	VoiceSettingsLanguageBoostUkrainian  VoiceSettingsLanguageBoost = "Ukrainian"
+	VoiceSettingsLanguageBoostVietnamese VoiceSettingsLanguageBoost = "Vietnamese"
+	VoiceSettingsLanguageBoostIndonesian VoiceSettingsLanguageBoost = "Indonesian"
+	VoiceSettingsLanguageBoostJapanese   VoiceSettingsLanguageBoost = "Japanese"
+	VoiceSettingsLanguageBoostItalian    VoiceSettingsLanguageBoost = "Italian"
+	VoiceSettingsLanguageBoostKorean     VoiceSettingsLanguageBoost = "Korean"
+	VoiceSettingsLanguageBoostThai       VoiceSettingsLanguageBoost = "Thai"
+	VoiceSettingsLanguageBoostPolish     VoiceSettingsLanguageBoost = "Polish"
+	VoiceSettingsLanguageBoostRomanian   VoiceSettingsLanguageBoost = "Romanian"
+	VoiceSettingsLanguageBoostGreek      VoiceSettingsLanguageBoost = "Greek"
+	VoiceSettingsLanguageBoostCzech      VoiceSettingsLanguageBoost = "Czech"
+	VoiceSettingsLanguageBoostFinnish    VoiceSettingsLanguageBoost = "Finnish"
+	VoiceSettingsLanguageBoostHindi      VoiceSettingsLanguageBoost = "Hindi"
+	VoiceSettingsLanguageBoostBulgarian  VoiceSettingsLanguageBoost = "Bulgarian"
+	VoiceSettingsLanguageBoostDanish     VoiceSettingsLanguageBoost = "Danish"
+	VoiceSettingsLanguageBoostHebrew     VoiceSettingsLanguageBoost = "Hebrew"
+	VoiceSettingsLanguageBoostMalay      VoiceSettingsLanguageBoost = "Malay"
+	VoiceSettingsLanguageBoostPersian    VoiceSettingsLanguageBoost = "Persian"
+	VoiceSettingsLanguageBoostSlovak     VoiceSettingsLanguageBoost = "Slovak"
+	VoiceSettingsLanguageBoostSwedish    VoiceSettingsLanguageBoost = "Swedish"
+	VoiceSettingsLanguageBoostCroatian   VoiceSettingsLanguageBoost = "Croatian"
+	VoiceSettingsLanguageBoostFilipino   VoiceSettingsLanguageBoost = "Filipino"
+	VoiceSettingsLanguageBoostHungarian  VoiceSettingsLanguageBoost = "Hungarian"
+	VoiceSettingsLanguageBoostNorwegian  VoiceSettingsLanguageBoost = "Norwegian"
+	VoiceSettingsLanguageBoostSlovenian  VoiceSettingsLanguageBoost = "Slovenian"
+	VoiceSettingsLanguageBoostCatalan    VoiceSettingsLanguageBoost = "Catalan"
+	VoiceSettingsLanguageBoostNynorsk    VoiceSettingsLanguageBoost = "Nynorsk"
+	VoiceSettingsLanguageBoostTamil      VoiceSettingsLanguageBoost = "Tamil"
+	VoiceSettingsLanguageBoostAfrikaans  VoiceSettingsLanguageBoost = "Afrikaans"
+)
+
 // The property Voice is required.
 type VoiceSettingsParam struct {
 	// The voice to be used by the voice assistant. Check the full list of
@@ -3447,6 +3509,18 @@ type VoiceSettingsParam struct {
 	// numbers make the voice faster, smaller numbers make it slower. This is only
 	// applicable for Telnyx Natural voices.
 	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
+	// Enhances recognition for specific languages and dialects during MiniMax TTS
+	// synthesis. Default is null (no boost). Set to 'auto' for automatic language
+	// detection. Only applicable when using MiniMax voices.
+	//
+	// Any of "auto", "Chinese", "Chinese,Yue", "English", "Arabic", "Russian",
+	// "Spanish", "French", "Portuguese", "German", "Turkish", "Dutch", "Ukrainian",
+	// "Vietnamese", "Indonesian", "Japanese", "Italian", "Korean", "Thai", "Polish",
+	// "Romanian", "Greek", "Czech", "Finnish", "Hindi", "Bulgarian", "Danish",
+	// "Hebrew", "Malay", "Persian", "Slovak", "Swedish", "Croatian", "Filipino",
+	// "Hungarian", "Norwegian", "Slovenian", "Catalan", "Nynorsk", "Tamil",
+	// "Afrikaans".
+	LanguageBoost VoiceSettingsLanguageBoost `json:"language_boost,omitzero"`
 	// Optional background audio to play on the call. Use a predefined media bed, or
 	// supply a looped MP3 URL. If a media URL is chosen in the portal, customers can
 	// preview it before saving.

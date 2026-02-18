@@ -1155,6 +1155,14 @@ func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetLanguageBoost() *string {
+	if vt := u.OfMinimax; vt != nil {
+		return (*string)(&vt.LanguageBoost)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetPitch() *int64 {
 	if vt := u.OfMinimax; vt != nil && vt.Pitch.Valid() {
 		return &vt.Pitch.Value
