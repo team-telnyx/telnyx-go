@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.28.0 (2026-02-18)
+
+Full Changelog: [v4.27.0...v4.28.0](https://github.com/team-telnyx/telnyx-go/compare/v4.27.0...v4.28.0)
+
+### Features
+
+* Align transfer tool AMD spec with portal: premium mode, drop continue actions ([a5ed96c](https://github.com/team-telnyx/telnyx-go/commit/a5ed96c6e91a004b31ef5774a3d6b795bebc5c23))
+* **api:** manual updates ([a1daef1](https://github.com/team-telnyx/telnyx-go/commit/a1daef1cb2675105a83e102963caa4fe71de993e))
+* **api:** manual updates ([6f07e90](https://github.com/team-telnyx/telnyx-go/commit/6f07e907c4f6320f00a5077a1b1128518fd721cc))
+* **api:** manual updates ([474b100](https://github.com/team-telnyx/telnyx-go/commit/474b10095b0e1dd9d7f0e56b31dbd728d4cb4945))
+
 ## 4.27.0 (2026-02-17)
 
 Full Changelog: [v4.26.0...v4.27.0](https://github.com/team-telnyx/telnyx-go/compare/v4.26.0...v4.27.0)
