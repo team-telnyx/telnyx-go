@@ -81,7 +81,7 @@ func (r *OrganizationUserService) ListAutoPaging(ctx context.Context, query Orga
 // specific content-type headers.
 func (r *OrganizationUserService) GetGroupsReport(ctx context.Context, query OrganizationUserGetGroupsReportParams, opts ...option.RequestOption) (res *OrganizationUserGetGroupsReportResponse, err error) {
 	if !param.IsOmitted(query.Accept) {
-		opts = append(opts, option.WithHeader("Accept", fmt.Sprintf("%s", query.Accept)))
+		opts = append(opts, option.WithHeader("Accept", fmt.Sprintf("%v", query.Accept)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	path := "organizations/users/users_groups_report"

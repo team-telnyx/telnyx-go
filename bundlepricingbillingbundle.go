@@ -42,7 +42,7 @@ func NewBundlePricingBillingBundleService(opts ...option.RequestOption) (r Bundl
 // Get a single bundle by ID.
 func (r *BundlePricingBillingBundleService) Get(ctx context.Context, bundleID string, query BundlePricingBillingBundleGetParams, opts ...option.RequestOption) (res *BundlePricingBillingBundleGetResponse, err error) {
 	if !param.IsOmitted(query.AuthorizationBearer) {
-		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%s", query.AuthorizationBearer.Value)))
+		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%v", query.AuthorizationBearer.Value)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if bundleID == "" {
@@ -58,7 +58,7 @@ func (r *BundlePricingBillingBundleService) Get(ctx context.Context, bundleID st
 func (r *BundlePricingBillingBundleService) List(ctx context.Context, params BundlePricingBillingBundleListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[BillingBundleSummary], err error) {
 	var raw *http.Response
 	if !param.IsOmitted(params.AuthorizationBearer) {
-		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%s", params.AuthorizationBearer.Value)))
+		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%v", params.AuthorizationBearer.Value)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)

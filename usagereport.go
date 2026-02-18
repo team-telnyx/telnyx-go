@@ -41,7 +41,7 @@ func NewUsageReportService(opts ...option.RequestOption) (r UsageReportService) 
 func (r *UsageReportService) List(ctx context.Context, params UsageReportListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[UsageReportListResponse], err error) {
 	var raw *http.Response
 	if !param.IsOmitted(params.AuthorizationBearer) {
-		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%s", params.AuthorizationBearer.Value)))
+		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%v", params.AuthorizationBearer.Value)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -67,7 +67,7 @@ func (r *UsageReportService) ListAutoPaging(ctx context.Context, params UsageRep
 // available and their respective metrics and dimensions
 func (r *UsageReportService) GetOptions(ctx context.Context, params UsageReportGetOptionsParams, opts ...option.RequestOption) (res *UsageReportGetOptionsResponse, err error) {
 	if !param.IsOmitted(params.AuthorizationBearer) {
-		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%s", params.AuthorizationBearer.Value)))
+		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%v", params.AuthorizationBearer.Value)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	path := "usage_reports/options"

@@ -42,7 +42,7 @@ func NewBundlePricingUserBundleService(opts ...option.RequestOption) (r BundlePr
 // Creates multiple user bundles for the user.
 func (r *BundlePricingUserBundleService) New(ctx context.Context, params BundlePricingUserBundleNewParams, opts ...option.RequestOption) (res *BundlePricingUserBundleNewResponse, err error) {
 	if !param.IsOmitted(params.AuthorizationBearer) {
-		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%s", params.AuthorizationBearer.Value)))
+		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%v", params.AuthorizationBearer.Value)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	path := "bundle_pricing/user_bundles/bulk"
@@ -53,7 +53,7 @@ func (r *BundlePricingUserBundleService) New(ctx context.Context, params BundleP
 // Retrieves a user bundle by its ID.
 func (r *BundlePricingUserBundleService) Get(ctx context.Context, userBundleID string, query BundlePricingUserBundleGetParams, opts ...option.RequestOption) (res *BundlePricingUserBundleGetResponse, err error) {
 	if !param.IsOmitted(query.AuthorizationBearer) {
-		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%s", query.AuthorizationBearer.Value)))
+		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%v", query.AuthorizationBearer.Value)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if userBundleID == "" {
@@ -69,7 +69,7 @@ func (r *BundlePricingUserBundleService) Get(ctx context.Context, userBundleID s
 func (r *BundlePricingUserBundleService) List(ctx context.Context, params BundlePricingUserBundleListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[UserBundle], err error) {
 	var raw *http.Response
 	if !param.IsOmitted(params.AuthorizationBearer) {
-		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%s", params.AuthorizationBearer.Value)))
+		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%v", params.AuthorizationBearer.Value)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -94,7 +94,7 @@ func (r *BundlePricingUserBundleService) ListAutoPaging(ctx context.Context, par
 // Deactivates a user bundle by its ID.
 func (r *BundlePricingUserBundleService) Deactivate(ctx context.Context, userBundleID string, body BundlePricingUserBundleDeactivateParams, opts ...option.RequestOption) (res *BundlePricingUserBundleDeactivateResponse, err error) {
 	if !param.IsOmitted(body.AuthorizationBearer) {
-		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%s", body.AuthorizationBearer.Value)))
+		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%v", body.AuthorizationBearer.Value)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if userBundleID == "" {
@@ -109,7 +109,7 @@ func (r *BundlePricingUserBundleService) Deactivate(ctx context.Context, userBun
 // Retrieves the resources of a user bundle by its ID.
 func (r *BundlePricingUserBundleService) ListResources(ctx context.Context, userBundleID string, query BundlePricingUserBundleListResourcesParams, opts ...option.RequestOption) (res *BundlePricingUserBundleListResourcesResponse, err error) {
 	if !param.IsOmitted(query.AuthorizationBearer) {
-		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%s", query.AuthorizationBearer.Value)))
+		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%v", query.AuthorizationBearer.Value)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if userBundleID == "" {
@@ -124,7 +124,7 @@ func (r *BundlePricingUserBundleService) ListResources(ctx context.Context, user
 // Returns all user bundles that aren't in use.
 func (r *BundlePricingUserBundleService) ListUnused(ctx context.Context, params BundlePricingUserBundleListUnusedParams, opts ...option.RequestOption) (res *BundlePricingUserBundleListUnusedResponse, err error) {
 	if !param.IsOmitted(params.AuthorizationBearer) {
-		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%s", params.AuthorizationBearer.Value)))
+		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%v", params.AuthorizationBearer.Value)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	path := "bundle_pricing/user_bundles/unused"
