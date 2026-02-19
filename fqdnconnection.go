@@ -111,7 +111,7 @@ type FqdnConnection struct {
 	// A user-assigned name to help manage the connection.
 	ConnectionName string `json:"connection_name,required"`
 	// Identifies the resource.
-	ID string `json:"id" format:"int64"`
+	ID string `json:"id"`
 	// Defaults to true
 	Active bool `json:"active"`
 	// Indicates whether DTMF timestamp adjustment is enabled.
@@ -1042,7 +1042,7 @@ type FqdnConnectionListParamsFilter struct {
 	// returned. Matching is case-sensitive, and the full string must match.
 	Fqdn param.Opt[string] `query:"fqdn,omitzero" json:"-"`
 	// Identifies the associated outbound voice profile.
-	OutboundVoiceProfileID param.Opt[string] `query:"outbound_voice_profile_id,omitzero" format:"int64" json:"-"`
+	OutboundVoiceProfileID param.Opt[string] `query:"outbound_voice_profile_id,omitzero" json:"-"`
 	// Filter by connection_name using nested operations
 	ConnectionName FqdnConnectionListParamsFilterConnectionName `query:"connection_name,omitzero" json:"-"`
 	paramObj

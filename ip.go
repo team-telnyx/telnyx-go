@@ -107,7 +107,7 @@ func (r *IPService) Delete(ctx context.Context, id string, opts ...option.Reques
 
 type IP struct {
 	// Identifies the type of resource.
-	ID string `json:"id" format:"int64"`
+	ID string `json:"id"`
 	// ID of the IP Connection to which this IP should be attached.
 	ConnectionID string `json:"connection_id"`
 	// ISO 8601 formatted date indicating when the resource was created.

@@ -44,7 +44,7 @@ func TestCallEventListWithOptionalParams(t *testing.T) {
 				Lt:  telnyx.String("2019-03-29T11:10:00Z"),
 				Lte: telnyx.String("2019-03-29T11:10:00Z"),
 			},
-			OutboundOutboundVoiceProfileID: telnyx.String("outbound.outbound_voice_profile_id"),
+			OutboundOutboundVoiceProfileID: telnyx.String("1293384261075731499"),
 			Product:                        "texml",
 			Status:                         "init",
 			To:                             telnyx.String("+12025550142"),

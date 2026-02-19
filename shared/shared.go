@@ -19,7 +19,7 @@ type paramUnion = param.APIUnion
 type paramObj = param.APIObject
 
 type APIError struct {
-	Code   string         `json:"code,required" format:"int64"`
+	Code   string         `json:"code,required"`
 	Title  string         `json:"title,required"`
 	Detail string         `json:"detail"`
 	Meta   map[string]any `json:"meta"`
@@ -507,7 +507,7 @@ type InboundMessagePayloadCc struct {
 	// Any of "Wireline", "Wireless", "VoWiFi", "VoIP", "Pre-Paid Wireless", "".
 	LineType string `json:"line_type"`
 	// Receiving address (+E.164 formatted phone number or short code).
-	PhoneNumber string `json:"phone_number" format:"address"`
+	PhoneNumber string `json:"phone_number"`
 	// Any of "queued", "sending", "sent", "delivered", "sending_failed",
 	// "delivery_failed", "delivery_unconfirmed".
 	Status string `json:"status"`
@@ -530,9 +530,9 @@ func (r *InboundMessagePayloadCc) UnmarshalJSON(data []byte) error {
 
 type InboundMessagePayloadCost struct {
 	// The amount deducted from your account.
-	Amount string `json:"amount" format:"decimal"`
+	Amount string `json:"amount"`
 	// The ISO 4217 currency identifier.
-	Currency string `json:"currency" format:"iso4217"`
+	Currency string `json:"currency"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -569,9 +569,9 @@ func (r *InboundMessagePayloadCostBreakdown) UnmarshalJSON(data []byte) error {
 
 type InboundMessagePayloadCostBreakdownCarrierFee struct {
 	// The carrier fee amount.
-	Amount string `json:"amount" format:"decimal"`
+	Amount string `json:"amount"`
 	// The ISO 4217 currency identifier.
-	Currency string `json:"currency" format:"iso4217"`
+	Currency string `json:"currency"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -589,9 +589,9 @@ func (r *InboundMessagePayloadCostBreakdownCarrierFee) UnmarshalJSON(data []byte
 
 type InboundMessagePayloadCostBreakdownRate struct {
 	// The rate amount applied.
-	Amount string `json:"amount" format:"decimal"`
+	Amount string `json:"amount"`
 	// The ISO 4217 currency identifier.
-	Currency string `json:"currency" format:"iso4217"`
+	Currency string `json:"currency"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -624,7 +624,7 @@ type InboundMessagePayloadFrom struct {
 	LineType string `json:"line_type"`
 	// Sending address (+E.164 formatted phone number, alphanumeric sender ID, or short
 	// code).
-	PhoneNumber string `json:"phone_number" format:"address"`
+	PhoneNumber string `json:"phone_number"`
 	// Any of "received", "delivered".
 	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -646,7 +646,7 @@ func (r *InboundMessagePayloadFrom) UnmarshalJSON(data []byte) error {
 
 type InboundMessagePayloadMedia struct {
 	// The MIME type of the requested media.
-	ContentType string `json:"content_type" format:"mime-type"`
+	ContentType string `json:"content_type"`
 	// The SHA256 hash of the requested media.
 	HashSha256 string `json:"hash_sha256"`
 	// The size of the requested media.
@@ -685,7 +685,7 @@ type InboundMessagePayloadTo struct {
 	// Any of "Wireline", "Wireless", "VoWiFi", "VoIP", "Pre-Paid Wireless", "".
 	LineType string `json:"line_type"`
 	// Receiving address (+E.164 formatted phone number or short code).
-	PhoneNumber string `json:"phone_number" format:"address"`
+	PhoneNumber string `json:"phone_number"`
 	// Any of "queued", "sending", "sent", "delivered", "sending_failed",
 	// "delivery_failed", "delivery_unconfirmed", "webhook_delivered".
 	Status string `json:"status"`
@@ -973,7 +973,7 @@ type PhoneNumberWithMessagingSettings struct {
 	// Unique identifier for a messaging profile.
 	MessagingProfileID string `json:"messaging_profile_id,nullable"`
 	// +E.164 formatted phone number.
-	PhoneNumber string `json:"phone_number" format:"e164"`
+	PhoneNumber string `json:"phone_number"`
 	// Identifies the type of the resource.
 	//
 	// Any of "messaging_phone_number", "messaging_settings".
