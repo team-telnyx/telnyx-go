@@ -354,7 +354,7 @@ type HostedNumber struct {
 	// Identifies the type of resource.
 	ID string `json:"id" format:"uuid"`
 	// The messaging hosted phone number (+E.164 format)
-	PhoneNumber string `json:"phone_number" format:"+E.164"`
+	PhoneNumber string `json:"phone_number"`
 	RecordType  string `json:"record_type"`
 	// Any of "deleted", "failed", "failed_activation", "failed_carrier_rejected",
 	// "failed_ineligible_carrier", "failed_number_already_hosted",
