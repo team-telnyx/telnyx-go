@@ -104,7 +104,7 @@ func (r *ExternalConnectionLogMessageGetResponse) UnmarshalJSON(data []byte) err
 }
 
 type ExternalConnectionLogMessageGetResponseLogMessage struct {
-	Code   string                                                  `json:"code,required"`
+	Code   string                                                  `json:"code,required" format:"int64"`
 	Title  string                                                  `json:"title,required"`
 	Detail string                                                  `json:"detail"`
 	Meta   ExternalConnectionLogMessageGetResponseLogMessageMeta   `json:"meta"`
@@ -168,7 +168,7 @@ func (r *ExternalConnectionLogMessageGetResponseLogMessageSource) UnmarshalJSON(
 }
 
 type ExternalConnectionLogMessageListResponse struct {
-	Code   string                                         `json:"code,required"`
+	Code   string                                         `json:"code,required" format:"int64"`
 	Title  string                                         `json:"title,required"`
 	Detail string                                         `json:"detail"`
 	Meta   ExternalConnectionLogMessageListResponseMeta   `json:"meta"`

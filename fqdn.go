@@ -107,7 +107,7 @@ func (r *FqdnService) Delete(ctx context.Context, id string, opts ...option.Requ
 
 type Fqdn struct {
 	// Identifies the resource.
-	ID string `json:"id"`
+	ID string `json:"id" format:"int64"`
 	// ID of the FQDN connection to which this FQDN is attached.
 	ConnectionID string `json:"connection_id"`
 	// ISO 8601 formatted date indicating when the resource was created.

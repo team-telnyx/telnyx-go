@@ -107,7 +107,7 @@ func (r *CallControlApplicationService) Delete(ctx context.Context, id string, o
 }
 
 type CallControlApplication struct {
-	ID string `json:"id"`
+	ID string `json:"id" format:"int64"`
 	// Specifies whether the connection can be used.
 	Active bool `json:"active"`
 	// <code>Latency</code> directs Telnyx to route media through the site with the
@@ -324,7 +324,7 @@ type CallControlApplicationOutbound struct {
 	// associated with this connection.
 	ChannelLimit int64 `json:"channel_limit"`
 	// Identifies the associated outbound voice profile.
-	OutboundVoiceProfileID string `json:"outbound_voice_profile_id"`
+	OutboundVoiceProfileID string `json:"outbound_voice_profile_id" format:"int64"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ChannelLimit           respjson.Field
@@ -355,7 +355,7 @@ type CallControlApplicationOutboundParam struct {
 	// associated with this connection.
 	ChannelLimit param.Opt[int64] `json:"channel_limit,omitzero"`
 	// Identifies the associated outbound voice profile.
-	OutboundVoiceProfileID param.Opt[string] `json:"outbound_voice_profile_id,omitzero"`
+	OutboundVoiceProfileID param.Opt[string] `json:"outbound_voice_profile_id,omitzero" format:"int64"`
 	paramObj
 }
 

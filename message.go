@@ -2793,7 +2793,7 @@ type MessageScheduleParams struct {
 	//
 	// **Required if sending with a phone number, short code, or alphanumeric sender
 	// ID.**
-	From param.Opt[string] `json:"from,omitzero"`
+	From param.Opt[string] `json:"from,omitzero" format:"address"`
 	// Unique identifier for a messaging profile.
 	//
 	// **Required if sending via number pool or with an alphanumeric sender ID.**
@@ -2857,7 +2857,7 @@ type MessageSendParams struct {
 	//
 	// **Required if sending with a phone number, short code, or alphanumeric sender
 	// ID.**
-	From param.Opt[string] `json:"from,omitzero"`
+	From param.Opt[string] `json:"from,omitzero" format:"address"`
 	// Unique identifier for a messaging profile.
 	//
 	// **Required if sending via number pool or with an alphanumeric sender ID.**
@@ -2927,7 +2927,7 @@ const (
 
 type MessageSendGroupMmsParams struct {
 	// Phone number, in +E.164 format, used to send the message.
-	From string `json:"from,required"`
+	From string `json:"from,required" format:"address"`
 	// A list of destinations. No more than 8 destinations are allowed.
 	To []string `json:"to,omitzero,required" format:"address"`
 	// Subject of multimedia message
@@ -2958,7 +2958,7 @@ func (r *MessageSendGroupMmsParams) UnmarshalJSON(data []byte) error {
 
 type MessageSendLongCodeParams struct {
 	// Phone number, in +E.164 format, used to send the message.
-	From string `json:"from,required"`
+	From string `json:"from,required" format:"address"`
 	// Receiving address (+E.164 formatted phone number or short code).
 	To string `json:"to,required" format:"address"`
 	// Automatically detect if an SMS message is unusually long and exceeds a
@@ -3100,7 +3100,7 @@ const (
 
 type MessageSendShortCodeParams struct {
 	// Phone number, in +E.164 format, used to send the message.
-	From string `json:"from,required"`
+	From string `json:"from,required" format:"address"`
 	// Receiving address (+E.164 formatted phone number or short code).
 	To string `json:"to,required" format:"address"`
 	// Automatically detect if an SMS message is unusually long and exceeds a
