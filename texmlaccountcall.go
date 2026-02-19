@@ -744,6 +744,13 @@ type TexmlAccountCallCallsParams struct {
 	// TeXML to be used as instructions for the call. If provided, the call will
 	// execute these instructions instead of fetching from the Url.
 	Texml param.Opt[string] `json:"Texml,omitzero"`
+	// The maximum duration of the call in seconds. The minimum value is 30 and the
+	// maximum value is 14400 (4 hours). Default is 14400 seconds.
+	TimeLimit param.Opt[int64] `json:"TimeLimit,omitzero"`
+	// The number of seconds to wait for the called party to answer the call before the
+	// call is canceled. The minimum value is 5 and the maximum value is 120. Default
+	// is 30 seconds.
+	Timeout param.Opt[int64] `json:"Timeout,omitzero"`
 	// The URL from which Telnyx will retrieve the TeXML call instructions.
 	URL param.Opt[string] `json:"Url,omitzero"`
 	// HTTP request type used for `AsyncAmdStatusCallback`. The default value is
