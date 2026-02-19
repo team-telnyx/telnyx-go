@@ -19,7 +19,7 @@ type paramUnion = param.APIUnion
 type paramObj = param.APIObject
 
 type APIError struct {
-	Code   string         `json:"code,required" format:"int64"`
+	Code   string         `json:"code,required"`
 	Title  string         `json:"title,required"`
 	Detail string         `json:"detail"`
 	Meta   map[string]any `json:"meta"`
@@ -973,7 +973,7 @@ type PhoneNumberWithMessagingSettings struct {
 	// Unique identifier for a messaging profile.
 	MessagingProfileID string `json:"messaging_profile_id,nullable"`
 	// +E.164 formatted phone number.
-	PhoneNumber string `json:"phone_number" format:"e164"`
+	PhoneNumber string `json:"phone_number"`
 	// Identifies the type of the resource.
 	//
 	// Any of "messaging_phone_number", "messaging_settings".

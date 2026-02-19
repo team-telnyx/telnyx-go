@@ -195,7 +195,7 @@ func (r *ConnectionRtcpSettingsParam) UnmarshalJSON(data []byte) error {
 
 type CredentialConnection struct {
 	// Identifies the type of resource.
-	ID string `json:"id" format:"int64"`
+	ID string `json:"id"`
 	// Defaults to true
 	Active bool `json:"active"`
 	// `Latency` directs Telnyx to route media through the site with the lowest
