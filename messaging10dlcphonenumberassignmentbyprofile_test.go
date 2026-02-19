@@ -14,7 +14,7 @@ import (
 )
 
 func TestMessaging10dlcPhoneNumberAssignmentByProfileAssignWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -41,7 +41,7 @@ func TestMessaging10dlcPhoneNumberAssignmentByProfileAssignWithOptionalParams(t 
 }
 
 func TestMessaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -71,7 +71,7 @@ func TestMessaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusWithOp
 }
 
 func TestMessaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -101,7 +101,7 @@ func TestMessaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusWithOpt
 }
 
 func TestMessaging10dlcPhoneNumberAssignmentByProfileGetStatus(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

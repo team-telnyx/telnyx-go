@@ -14,7 +14,7 @@ import (
 )
 
 func TestCallActionAddAIAssistantMessagesWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -52,7 +52,7 @@ func TestCallActionAddAIAssistantMessagesWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionAnswerWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -143,7 +143,7 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionBridgeWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -189,7 +189,7 @@ func TestCallActionBridgeWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionEnqueueWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -223,7 +223,7 @@ func TestCallActionEnqueueWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionGatherWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -261,7 +261,7 @@ func TestCallActionGatherWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionGatherUsingAIWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -337,7 +337,7 @@ func TestCallActionGatherUsingAIWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionGatherUsingAudioWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -378,7 +378,7 @@ func TestCallActionGatherUsingAudioWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionGatherUsingSpeakWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -427,7 +427,7 @@ func TestCallActionGatherUsingSpeakWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionHangupWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -457,7 +457,7 @@ func TestCallActionHangupWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionLeaveQueueWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -487,7 +487,7 @@ func TestCallActionLeaveQueueWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionPauseRecordingWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -518,7 +518,7 @@ func TestCallActionPauseRecordingWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionReferWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -562,7 +562,7 @@ func TestCallActionReferWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionRejectWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -593,7 +593,7 @@ func TestCallActionRejectWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionResumeRecordingWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -624,7 +624,7 @@ func TestCallActionResumeRecordingWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionSendDtmfWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -656,7 +656,7 @@ func TestCallActionSendDtmfWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionSendSipInfoWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -688,7 +688,7 @@ func TestCallActionSendSipInfoWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionSpeakWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -734,7 +734,7 @@ func TestCallActionSpeakWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionStartAIAssistantWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -783,7 +783,7 @@ func TestCallActionStartAIAssistantWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionStartForkingWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -816,7 +816,7 @@ func TestCallActionStartForkingWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionStartNoiseSuppressionWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -851,7 +851,7 @@ func TestCallActionStartNoiseSuppressionWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionStartPlaybackWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -892,7 +892,7 @@ func TestCallActionStartPlaybackWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionStartRecordingWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -937,7 +937,7 @@ func TestCallActionStartRecordingWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionStartSiprecWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -972,7 +972,7 @@ func TestCallActionStartSiprecWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionStartStreamingWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -1022,7 +1022,7 @@ func TestCallActionStartStreamingWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionStartTranscriptionWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -1074,7 +1074,7 @@ func TestCallActionStartTranscriptionWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionStopAIAssistantWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -1104,7 +1104,7 @@ func TestCallActionStopAIAssistantWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionStopForkingWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -1135,7 +1135,7 @@ func TestCallActionStopForkingWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionStopGatherWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -1165,7 +1165,7 @@ func TestCallActionStopGatherWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionStopNoiseSuppressionWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -1195,7 +1195,7 @@ func TestCallActionStopNoiseSuppressionWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionStopPlaybackWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -1227,7 +1227,7 @@ func TestCallActionStopPlaybackWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionStopRecordingWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -1260,7 +1260,7 @@ func TestCallActionStopRecordingWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionStopSiprecWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -1290,7 +1290,7 @@ func TestCallActionStopSiprecWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionStopStreamingWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -1321,7 +1321,7 @@ func TestCallActionStopStreamingWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionStopTranscriptionWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -1351,7 +1351,7 @@ func TestCallActionStopTranscriptionWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionSwitchSupervisorRole(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -1380,7 +1380,7 @@ func TestCallActionSwitchSupervisorRole(t *testing.T) {
 }
 
 func TestCallActionTransferWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -1477,7 +1477,7 @@ func TestCallActionTransferWithOptionalParams(t *testing.T) {
 }
 
 func TestCallActionUpdateClientState(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

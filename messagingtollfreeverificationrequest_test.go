@@ -15,7 +15,7 @@ import (
 )
 
 func TestMessagingTollfreeVerificationRequestNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -82,7 +82,7 @@ func TestMessagingTollfreeVerificationRequestNewWithOptionalParams(t *testing.T)
 }
 
 func TestMessagingTollfreeVerificationRequestGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -105,7 +105,7 @@ func TestMessagingTollfreeVerificationRequestGet(t *testing.T) {
 }
 
 func TestMessagingTollfreeVerificationRequestUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -176,7 +176,7 @@ func TestMessagingTollfreeVerificationRequestUpdateWithOptionalParams(t *testing
 }
 
 func TestMessagingTollfreeVerificationRequestListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -206,7 +206,7 @@ func TestMessagingTollfreeVerificationRequestListWithOptionalParams(t *testing.T
 }
 
 func TestMessagingTollfreeVerificationRequestDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

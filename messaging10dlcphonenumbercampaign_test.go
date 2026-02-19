@@ -14,7 +14,7 @@ import (
 )
 
 func TestMessaging10dlcPhoneNumberCampaignNew(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -42,7 +42,7 @@ func TestMessaging10dlcPhoneNumberCampaignNew(t *testing.T) {
 }
 
 func TestMessaging10dlcPhoneNumberCampaignGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -65,7 +65,7 @@ func TestMessaging10dlcPhoneNumberCampaignGet(t *testing.T) {
 }
 
 func TestMessaging10dlcPhoneNumberCampaignUpdate(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -97,7 +97,7 @@ func TestMessaging10dlcPhoneNumberCampaignUpdate(t *testing.T) {
 }
 
 func TestMessaging10dlcPhoneNumberCampaignListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -130,7 +130,7 @@ func TestMessaging10dlcPhoneNumberCampaignListWithOptionalParams(t *testing.T) {
 }
 
 func TestMessaging10dlcPhoneNumberCampaignDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
