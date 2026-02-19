@@ -108,6 +108,7 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 			Semitone: telnyx.Float(-2),
 			Track:    telnyx.String("both"),
 		},
+		StreamAuthToken:                    telnyx.String("your-auth-token"),
 		StreamBidirectionalCodec:           telnyx.StreamBidirectionalCodecG722,
 		StreamBidirectionalMode:            telnyx.StreamBidirectionalModeRtp,
 		StreamBidirectionalSamplingRate:    16000,

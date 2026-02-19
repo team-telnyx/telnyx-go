@@ -297,9 +297,10 @@ func TestCallActionGatherUsingAIWithOptionalParams(t *testing.T) {
 					},
 				}},
 			},
-			ClientState: telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
-			CommandID:   telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
-			Greeting:    telnyx.String("Hello, can you tell me your age and where you live?"),
+			ClientState:       telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
+			CommandID:         telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
+			GatherEndedSpeech: telnyx.String("Thank you for providing the information."),
+			Greeting:          telnyx.String("Hello, can you tell me your age and where you live?"),
 			InterruptionSettings: telnyx.InterruptionSettingsParam{
 				Enable: telnyx.Bool(true),
 			},
@@ -703,14 +704,18 @@ func TestCallActionSpeakWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"call_control_id",
 		telnyx.CallActionSpeakParams{
-			Payload:      "Say this on the call",
-			Voice:        "female",
-			ClientState:  telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
-			CommandID:    telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
-			Language:     telnyx.CallActionSpeakParamsLanguageArb,
+			Payload:     "Say this on the call",
+			Voice:       "female",
+			ClientState: telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
+			CommandID:   telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
+			Language:    telnyx.CallActionSpeakParamsLanguageArb,
+			Loop: telnyx.LoopcountUnionParam{
+				OfString: telnyx.String("string"),
+			},
 			PayloadType:  telnyx.CallActionSpeakParamsPayloadTypeText,
 			ServiceLevel: telnyx.CallActionSpeakParamsServiceLevelBasic,
 			Stop:         telnyx.String("current"),
+			TargetLegs:   telnyx.CallActionSpeakParamsTargetLegsBoth,
 			VoiceSettings: telnyx.CallActionSpeakParamsVoiceSettingsUnion{
 				OfElevenlabs: &telnyx.ElevenLabsVoiceSettingsParam{
 					Type:      telnyx.ElevenLabsVoiceSettingsTypeElevenlabs,
@@ -985,11 +990,19 @@ func TestCallActionStartStreamingWithOptionalParams(t *testing.T) {
 		telnyx.CallActionStartStreamingParams{
 			ClientState: telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
 			CommandID:   telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
+			CustomParameters: []telnyx.CallActionStartStreamingParamsCustomParameter{{
+				Name:  telnyx.String("param1"),
+				Value: telnyx.String("value1"),
+			}, {
+				Name:  telnyx.String("param2"),
+				Value: telnyx.String("value2"),
+			}},
 			DialogflowConfig: telnyx.DialogflowConfigParam{
 				AnalyzeSentiment:           telnyx.Bool(false),
 				PartialAutomatedAgentReply: telnyx.Bool(false),
 			},
 			EnableDialogflow:                telnyx.Bool(false),
+			StreamAuthToken:                 telnyx.String("your-auth-token"),
 			StreamBidirectionalCodec:        telnyx.StreamBidirectionalCodecG722,
 			StreamBidirectionalMode:         telnyx.StreamBidirectionalModeRtp,
 			StreamBidirectionalSamplingRate: 16000,
@@ -1414,6 +1427,7 @@ func TestCallActionTransferWithOptionalParams(t *testing.T) {
 			MediaName:            telnyx.String("my_media_uploaded_to_media_storage_api"),
 			MuteDtmf:             telnyx.CallActionTransferParamsMuteDtmfOpposite,
 			ParkAfterUnbridge:    telnyx.String("self"),
+			PreferredCodecs:      telnyx.String("G722,PCMU,PCMA,G729,OPUS,VP8,H264"),
 			Record:               telnyx.CallActionTransferParamsRecordRecordFromAnswer,
 			RecordChannels:       telnyx.CallActionTransferParamsRecordChannelsSingle,
 			RecordCustomFileName: telnyx.String("my_recording_file_name"),
@@ -1439,8 +1453,18 @@ func TestCallActionTransferWithOptionalParams(t *testing.T) {
 			TargetLegClientState: telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
 			TimeLimitSecs:        telnyx.Int(60),
 			TimeoutSecs:          telnyx.Int(60),
-			WebhookURL:           telnyx.String("https://www.example.com/server-b/"),
-			WebhookURLMethod:     telnyx.CallActionTransferParamsWebhookURLMethodPost,
+			WebhookRetriesPolicies: map[string]telnyx.CallActionTransferParamsWebhookRetriesPolicy{
+				"call.answered": {
+					RetriesMs: []int64{1000, 2000, 5000},
+				},
+			},
+			WebhookURL:       telnyx.String("https://www.example.com/server-b/"),
+			WebhookURLMethod: telnyx.CallActionTransferParamsWebhookURLMethodPost,
+			WebhookURLs: map[string]string{
+				"call.answered": "https://www.example.com/webhooks/answered",
+				"call.hangup":   "https://www.example.com/webhooks/hangup",
+			},
+			WebhookURLsMethod: telnyx.CallActionTransferParamsWebhookURLsMethodPost,
 		},
 	)
 	if err != nil {

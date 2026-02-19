@@ -3276,6 +3276,9 @@ type CallActionGatherUsingAIParams struct {
 	// Use this field to avoid duplicate commands. Telnyx will ignore any command with
 	// the same `command_id` for the same `call_control_id`.
 	CommandID param.Opt[string] `json:"command_id,omitzero"`
+	// Text that will be played when the gathering has finished. There is a 3,000
+	// character limit.
+	GatherEndedSpeech param.Opt[string] `json:"gather_ended_speech,omitzero"`
 	// Text that will be played when the gathering starts, if none then nothing will be
 	// played when the gathering starts. The greeting can be text for any voice or SSML
 	// for `AWS.Polly.<voice_id>` voices. There is a 3,000 character limit.
@@ -3289,8 +3292,7 @@ type CallActionGatherUsingAIParams struct {
 	// individual fields are gathered. If set to `false`, the voice assistant will only
 	// send the final result via the `call.ai_gather.ended` callback.
 	SendPartialResults param.Opt[bool] `json:"send_partial_results,omitzero"`
-	// The number of milliseconds to wait for a user response before the voice
-	// assistant times out and check if the user is still there.
+	// The maximum time in milliseconds to wait for user response before timing out.
 	UserResponseTimeoutMs param.Opt[int64] `json:"user_response_timeout_ms,omitzero"`
 	// The voice to be used by the voice assistant. Currently we support ElevenLabs,
 	// Telnyx and AWS voices.
@@ -3983,6 +3985,9 @@ type CallActionSpeakParams struct {
 	// "hi-IN", "is-IS", "it-IT", "ja-JP", "ko-KR", "nb-NO", "nl-NL", "pl-PL", "pt-BR",
 	// "pt-PT", "ro-RO", "ru-RU", "sv-SE", "tr-TR".
 	Language CallActionSpeakParamsLanguage `json:"language,omitzero"`
+	// The number of times to play the audio file. Use `infinity` to loop indefinitely.
+	// Defaults to 1.
+	Loop LoopcountUnionParam `json:"loop,omitzero"`
 	// The type of the provided payload. The payload can either be plain text, or
 	// Speech Synthesis Markup Language (SSML).
 	//
@@ -3993,6 +3998,10 @@ type CallActionSpeakParams struct {
 	//
 	// Any of "basic", "premium".
 	ServiceLevel CallActionSpeakParamsServiceLevel `json:"service_level,omitzero"`
+	// Specifies which legs of the call should receive the spoken audio.
+	//
+	// Any of "self", "opposite", "both".
+	TargetLegs CallActionSpeakParamsTargetLegs `json:"target_legs,omitzero"`
 	// The settings associated with the voice selected
 	VoiceSettings CallActionSpeakParamsVoiceSettingsUnion `json:"voice_settings,omitzero"`
 	paramObj
@@ -4058,6 +4067,15 @@ type CallActionSpeakParamsServiceLevel string
 const (
 	CallActionSpeakParamsServiceLevelBasic   CallActionSpeakParamsServiceLevel = "basic"
 	CallActionSpeakParamsServiceLevelPremium CallActionSpeakParamsServiceLevel = "premium"
+)
+
+// Specifies which legs of the call should receive the spoken audio.
+type CallActionSpeakParamsTargetLegs string
+
+const (
+	CallActionSpeakParamsTargetLegsSelf     CallActionSpeakParamsTargetLegs = "self"
+	CallActionSpeakParamsTargetLegsOpposite CallActionSpeakParamsTargetLegs = "opposite"
+	CallActionSpeakParamsTargetLegsBoth     CallActionSpeakParamsTargetLegs = "both"
 )
 
 // Only one field can be non-zero.
@@ -4939,9 +4957,14 @@ type CallActionStartStreamingParams struct {
 	CommandID param.Opt[string] `json:"command_id,omitzero"`
 	// Enables Dialogflow for the current call. The default value is false.
 	EnableDialogflow param.Opt[bool] `json:"enable_dialogflow,omitzero"`
+	// An authentication token to be sent as part of the WebSocket connection. Maximum
+	// length is 4000 characters.
+	StreamAuthToken param.Opt[string] `json:"stream_auth_token,omitzero"`
 	// The destination WebSocket address where the stream is going to be delivered.
-	StreamURL        param.Opt[string]     `json:"stream_url,omitzero"`
-	DialogflowConfig DialogflowConfigParam `json:"dialogflow_config,omitzero"`
+	StreamURL param.Opt[string] `json:"stream_url,omitzero"`
+	// Custom parameters to be sent as part of the WebSocket connection.
+	CustomParameters []CallActionStartStreamingParamsCustomParameter `json:"custom_parameters,omitzero"`
+	DialogflowConfig DialogflowConfigParam                           `json:"dialogflow_config,omitzero"`
 	// Indicates codec for bidirectional streaming RTP payloads. Used only with
 	// stream_bidirectional_mode=rtp. Case sensitive.
 	//
@@ -4976,6 +4999,22 @@ func (r CallActionStartStreamingParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *CallActionStartStreamingParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallActionStartStreamingParamsCustomParameter struct {
+	// The name of the custom parameter.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// The value of the custom parameter.
+	Value param.Opt[string] `json:"value,omitzero"`
+	paramObj
+}
+
+func (r CallActionStartStreamingParamsCustomParameter) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionStartStreamingParamsCustomParameter
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionStartStreamingParamsCustomParameter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -5239,6 +5278,10 @@ type CallActionTransferParams struct {
 	// or is transferred). If supplied with the value `self`, the current leg will be
 	// parked after unbridge. If not set, the default behavior is to hang up the leg.
 	ParkAfterUnbridge param.Opt[string] `json:"park_after_unbridge,omitzero"`
+	// The list of comma-separated codecs in order of preference to be used during the
+	// call. The codecs supported are `G722`, `PCMU`, `PCMA`, `G729`, `OPUS`, `VP8`,
+	// `H264`, `AMR-WB`.
+	PreferredCodecs param.Opt[string] `json:"preferred_codecs,omitzero"`
 	// The custom recording file name to be used instead of the default `call_leg_id`.
 	// Telnyx will still add a Unix timestamp suffix.
 	RecordCustomFileName param.Opt[string] `json:"record_custom_file_name,omitzero"`
@@ -5337,10 +5380,22 @@ type CallActionTransferParams struct {
 	SipTransportProtocol CallActionTransferParamsSipTransportProtocol `json:"sip_transport_protocol,omitzero"`
 	// Use this field to modify sound effects, for example adjust the pitch.
 	SoundModifications SoundModificationsParam `json:"sound_modifications,omitzero"`
+	// A map of event types to retry policies. Each retry policy contains an array of
+	// `retries_ms` specifying the delays between retry attempts in milliseconds.
+	// Maximum 5 retries, total delay cannot exceed 60 seconds.
+	WebhookRetriesPolicies map[string]CallActionTransferParamsWebhookRetriesPolicy `json:"webhook_retries_policies,omitzero"`
 	// HTTP request type used for `webhook_url`.
 	//
 	// Any of "POST", "GET".
 	WebhookURLMethod CallActionTransferParamsWebhookURLMethod `json:"webhook_url_method,omitzero"`
+	// A map of event types to webhook URLs. When an event of the specified type
+	// occurs, the webhook URL associated with that event type will be called instead
+	// of `webhook_url`. Events not mapped here will use the default `webhook_url`.
+	WebhookURLs map[string]string `json:"webhook_urls,omitzero" format:"uri"`
+	// HTTP request method to invoke `webhook_urls`.
+	//
+	// Any of "POST", "GET".
+	WebhookURLsMethod CallActionTransferParamsWebhookURLsMethod `json:"webhook_urls_method,omitzero"`
 	paramObj
 }
 
@@ -5491,12 +5546,35 @@ const (
 	CallActionTransferParamsSipTransportProtocolTls CallActionTransferParamsSipTransportProtocol = "TLS"
 )
 
+type CallActionTransferParamsWebhookRetriesPolicy struct {
+	// Array of delays in milliseconds between retry attempts. Total sum cannot exceed
+	// 60000ms.
+	RetriesMs []int64 `json:"retries_ms,omitzero"`
+	paramObj
+}
+
+func (r CallActionTransferParamsWebhookRetriesPolicy) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionTransferParamsWebhookRetriesPolicy
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionTransferParamsWebhookRetriesPolicy) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // HTTP request type used for `webhook_url`.
 type CallActionTransferParamsWebhookURLMethod string
 
 const (
 	CallActionTransferParamsWebhookURLMethodPost CallActionTransferParamsWebhookURLMethod = "POST"
 	CallActionTransferParamsWebhookURLMethodGet  CallActionTransferParamsWebhookURLMethod = "GET"
+)
+
+// HTTP request method to invoke `webhook_urls`.
+type CallActionTransferParamsWebhookURLsMethod string
+
+const (
+	CallActionTransferParamsWebhookURLsMethodPost CallActionTransferParamsWebhookURLsMethod = "POST"
+	CallActionTransferParamsWebhookURLsMethodGet  CallActionTransferParamsWebhookURLsMethod = "GET"
 )
 
 type CallActionUpdateClientStateParams struct {

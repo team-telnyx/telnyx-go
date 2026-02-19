@@ -470,6 +470,9 @@ type CallDialParams struct {
 	SipAuthPassword param.Opt[string] `json:"sip_auth_password,omitzero"`
 	// SIP Authentication username used for SIP challenges.
 	SipAuthUsername param.Opt[string] `json:"sip_auth_username,omitzero"`
+	// An authentication token to be sent as part of the WebSocket connection when
+	// using streaming. Maximum length is 4000 characters.
+	StreamAuthToken param.Opt[string] `json:"stream_auth_token,omitzero"`
 	// Establish websocket connection before dialing the destination. This is useful
 	// for cases where the websocket connection takes a long time to establish.
 	StreamEstablishBeforeCallOriginate param.Opt[bool] `json:"stream_establish_before_call_originate,omitzero"`
