@@ -249,7 +249,7 @@ func (r *MessagingHostedNumberOrderNewVerificationCodesResponse) UnmarshalJSON(d
 // Verification code result response
 type MessagingHostedNumberOrderNewVerificationCodesResponseData struct {
 	// Phone number for which the verification code was created
-	PhoneNumber string `json:"phone_number,required"`
+	PhoneNumber string `json:"phone_number,required" format:"+E.164"`
 	// Error message describing why the verification code creation failed
 	Error string `json:"error"`
 	// Type of verification method used
@@ -312,7 +312,7 @@ func (r *MessagingHostedNumberOrderValidateCodesResponseData) UnmarshalJSON(data
 }
 
 type MessagingHostedNumberOrderValidateCodesResponseDataPhoneNumber struct {
-	PhoneNumber string `json:"phone_number,required"`
+	PhoneNumber string `json:"phone_number,required" format:"+E.164"`
 	// Any of "verified", "rejected", "already_verified".
 	Status string `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -417,7 +417,7 @@ func (r *MessagingHostedNumberOrderValidateCodesParams) UnmarshalJSON(data []byt
 // The properties Code, PhoneNumber are required.
 type MessagingHostedNumberOrderValidateCodesParamsVerificationCode struct {
 	Code        string `json:"code,required"`
-	PhoneNumber string `json:"phone_number,required"`
+	PhoneNumber string `json:"phone_number,required" format:"+E.164"`
 	paramObj
 }
 

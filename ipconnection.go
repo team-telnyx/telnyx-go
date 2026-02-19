@@ -348,7 +348,7 @@ func (r *InboundIPParam) UnmarshalJSON(data []byte) error {
 
 type IPConnection struct {
 	// Identifies the type of resource.
-	ID string `json:"id"`
+	ID string `json:"id" format:"int64"`
 	// Defaults to true
 	Active bool `json:"active"`
 	// `Latency` directs Telnyx to route media through the site with the lowest
@@ -1101,7 +1101,7 @@ type IPConnectionListParamsFilter struct {
 	// returned. Matching is case-sensitive, and the full string must match.
 	Fqdn param.Opt[string] `query:"fqdn,omitzero" json:"-"`
 	// Identifies the associated outbound voice profile.
-	OutboundVoiceProfileID param.Opt[string] `query:"outbound_voice_profile_id,omitzero" json:"-"`
+	OutboundVoiceProfileID param.Opt[string] `query:"outbound_voice_profile_id,omitzero" format:"int64" json:"-"`
 	// Filter by connection_name using nested operations
 	ConnectionName IPConnectionListParamsFilterConnectionName `query:"connection_name,omitzero" json:"-"`
 	paramObj

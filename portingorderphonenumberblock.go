@@ -342,16 +342,16 @@ func (r PortingOrderPhoneNumberBlockListParamsFilter) URLQuery() (v url.Values, 
 type PortingOrderPhoneNumberBlockListParamsFilterStatusUnion struct {
 	// Check if union is this variant with
 	// !param.IsOmitted(union.OfPortingOrderSingleStatus)
-	OfPortingOrderSingleStatus                                                 param.Opt[string] `query:",omitzero,inline"`
-	OfPortingOrderPhoneNumberBlockListsFilterStatusUnionArrayVariant1ItemArray []string          `query:",omitzero,inline"`
+	OfPortingOrderSingleStatus                                    param.Opt[string] `query:",omitzero,inline"`
+	OfPortingOrderPhoneNumberBlockListsFilterStatusArrayItemArray []string          `query:",omitzero,inline"`
 	paramUnion
 }
 
 func (u *PortingOrderPhoneNumberBlockListParamsFilterStatusUnion) asAny() any {
 	if !param.IsOmitted(u.OfPortingOrderSingleStatus) {
 		return &u.OfPortingOrderSingleStatus
-	} else if !param.IsOmitted(u.OfPortingOrderPhoneNumberBlockListsFilterStatusUnionArrayVariant1ItemArray) {
-		return &u.OfPortingOrderPhoneNumberBlockListsFilterStatusUnionArrayVariant1ItemArray
+	} else if !param.IsOmitted(u.OfPortingOrderPhoneNumberBlockListsFilterStatusArrayItemArray) {
+		return &u.OfPortingOrderPhoneNumberBlockListsFilterStatusArrayItemArray
 	}
 	return nil
 }

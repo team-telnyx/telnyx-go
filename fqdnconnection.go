@@ -111,7 +111,7 @@ type FqdnConnection struct {
 	// A user-assigned name to help manage the connection.
 	ConnectionName string `json:"connection_name,required"`
 	// Identifies the resource.
-	ID string `json:"id"`
+	ID string `json:"id" format:"int64"`
 	// Defaults to true
 	Active bool `json:"active"`
 	// Indicates whether DTMF timestamp adjustment is enabled.
@@ -525,7 +525,7 @@ func (r *InboundFqdnParam) UnmarshalJSON(data []byte) error {
 type OutboundFqdn struct {
 	// Set a phone number as the ani_override value to override caller id number on
 	// outbound calls.
-	AniOverride string `json:"ani_override"`
+	AniOverride string `json:"ani_override" format:"E.164"`
 	// Specifies when we should apply your ani_override setting. Only applies when
 	// ani_override is not blank.
 	//
@@ -650,7 +650,7 @@ type OutboundFqdnParam struct {
 	CallParkingEnabled param.Opt[bool] `json:"call_parking_enabled,omitzero"`
 	// Set a phone number as the ani_override value to override caller id number on
 	// outbound calls.
-	AniOverride param.Opt[string] `json:"ani_override,omitzero"`
+	AniOverride param.Opt[string] `json:"ani_override,omitzero" format:"E.164"`
 	// When set, this will limit the total number of inbound calls to phone numbers
 	// associated with this connection.
 	ChannelLimit param.Opt[int64] `json:"channel_limit,omitzero"`
@@ -1042,7 +1042,7 @@ type FqdnConnectionListParamsFilter struct {
 	// returned. Matching is case-sensitive, and the full string must match.
 	Fqdn param.Opt[string] `query:"fqdn,omitzero" json:"-"`
 	// Identifies the associated outbound voice profile.
-	OutboundVoiceProfileID param.Opt[string] `query:"outbound_voice_profile_id,omitzero" json:"-"`
+	OutboundVoiceProfileID param.Opt[string] `query:"outbound_voice_profile_id,omitzero" format:"int64" json:"-"`
 	// Filter by connection_name using nested operations
 	ConnectionName FqdnConnectionListParamsFilterConnectionName `query:"connection_name,omitzero" json:"-"`
 	paramObj

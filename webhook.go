@@ -5607,7 +5607,7 @@ type ReplacedLinkClick struct {
 	TimeClicked time.Time `json:"time_clicked" format:"date-time"`
 	// Sending address (+E.164 formatted phone number, alphanumeric sender ID, or short
 	// code).
-	To string `json:"to"`
+	To string `json:"to" format:"address"`
 	// The original link that was sent in the message.
 	URL string `json:"url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].

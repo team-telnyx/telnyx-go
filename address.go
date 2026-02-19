@@ -97,7 +97,7 @@ func (r *AddressService) Delete(ctx context.Context, id string, opts ...option.R
 
 type Address struct {
 	// Uniquely identifies the address.
-	ID string `json:"id"`
+	ID string `json:"id" format:"int64"`
 	// Indicates whether or not the address should be considered part of your list of
 	// addresses that appear for regular use.
 	AddressBook bool `json:"address_book"`

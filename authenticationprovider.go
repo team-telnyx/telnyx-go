@@ -109,6 +109,9 @@ func (r *AuthenticationProviderService) Delete(ctx context.Context, id string, o
 type AuthenticationProvider struct {
 	// Uniquely identifies the authentication provider.
 	ID string `json:"id" format:"uuid"`
+	// ISO 8601 formatted date indicating when the authentication provider was
+	// activated.
+	ActivatedAt time.Time `json:"activated_at" format:"date-time"`
 	// The active status of the authentication provider
 	Active bool `json:"active"`
 	// ISO 8601 formatted date indicating when the resource was created.
@@ -129,6 +132,7 @@ type AuthenticationProvider struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
+		ActivatedAt    respjson.Field
 		Active         respjson.Field
 		CreatedAt      respjson.Field
 		Name           respjson.Field
@@ -152,6 +156,8 @@ func (r *AuthenticationProvider) UnmarshalJSON(data []byte) error {
 type AuthenticationProviderSettings struct {
 	// The Assertion Consumer Service URL for the service provider (Telnyx).
 	AssertionConsumerServiceURL string `json:"assertion_consumer_service_url" format:"uri"`
+	// Mapping of SAML attribute names used by the identity provider (IdP).
+	IdpAttributeNames any `json:"idp_attribute_names"`
 	// The certificate fingerprint for the identity provider (IdP)
 	IdpCertFingerprint string `json:"idp_cert_fingerprint"`
 	// The algorithm used to generate the identity provider's (IdP) certificate
@@ -159,25 +165,39 @@ type AuthenticationProviderSettings struct {
 	//
 	// Any of "sha1", "sha256", "sha384", "sha512".
 	IdpCertFingerprintAlgorithm string `json:"idp_cert_fingerprint_algorithm"`
+	// The full X.509 certificate for the identity provider (IdP).
+	IdpCertificate string `json:"idp_certificate"`
 	// The Entity ID for the identity provider (IdP).
 	IdpEntityID string `json:"idp_entity_id" format:"uri"`
+	// The Single Logout (SLO) target URL for the identity provider (IdP).
+	IdpSloTargetURL string `json:"idp_slo_target_url" format:"uri"`
 	// The SSO target url for the identity provider (IdP).
 	IdpSSOTargetURL string `json:"idp_sso_target_url" format:"uri"`
 	// The name identifier format associated with the authentication provider. This
 	// must be the same for both the Identity Provider (IdP) and the service provider
 	// (Telnyx).
 	NameIdentifierFormat string `json:"name_identifier_format"`
+	// Whether group provisioning is enabled for this authentication provider.
+	ProvisionGroups bool `json:"provision_groups"`
 	// The Entity ID for the service provider (Telnyx).
 	ServiceProviderEntityID string `json:"service_provider_entity_id" format:"uri"`
+	// The login URL for the service provider (Telnyx). Users navigate to this URL to
+	// initiate SSO login.
+	ServiceProviderLoginURL string `json:"service_provider_login_url" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AssertionConsumerServiceURL respjson.Field
+		IdpAttributeNames           respjson.Field
 		IdpCertFingerprint          respjson.Field
 		IdpCertFingerprintAlgorithm respjson.Field
+		IdpCertificate              respjson.Field
 		IdpEntityID                 respjson.Field
+		IdpSloTargetURL             respjson.Field
 		IdpSSOTargetURL             respjson.Field
 		NameIdentifierFormat        respjson.Field
+		ProvisionGroups             respjson.Field
 		ServiceProviderEntityID     respjson.Field
+		ServiceProviderLoginURL     respjson.Field
 		ExtraFields                 map[string]respjson.Field
 		raw                         string
 	} `json:"-"`

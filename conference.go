@@ -678,7 +678,7 @@ type ConferenceListParamsFilter struct {
 	// attribute. Matching is case-sensitive
 	Name param.Opt[string] `query:"name,omitzero" json:"-"`
 	// Identifies the associated outbound voice profile.
-	OutboundOutboundVoiceProfileID param.Opt[string] `query:"outbound.outbound_voice_profile_id,omitzero" json:"-"`
+	OutboundOutboundVoiceProfileID param.Opt[string] `query:"outbound.outbound_voice_profile_id,omitzero" format:"int64" json:"-"`
 	// Filter by To number.
 	To param.Opt[string] `query:"to,omitzero" json:"-"`
 	// Application name filters
