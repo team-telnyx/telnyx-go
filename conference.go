@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
+	"time"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
@@ -127,6 +128,38 @@ func (r *ConferenceService) ListParticipants(ctx context.Context, conferenceID s
 // Lists conference participants
 func (r *ConferenceService) ListParticipantsAutoPaging(ctx context.Context, conferenceID string, query ConferenceListParticipantsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[ConferenceListParticipantsResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.ListParticipants(ctx, conferenceID, query, opts...))
+}
+
+// Retrieve details of a specific conference participant by their ID or label.
+func (r *ConferenceService) GetParticipant(ctx context.Context, participantID string, query ConferenceGetParticipantParams, opts ...option.RequestOption) (res *ConferenceGetParticipantResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if query.ID == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	if participantID == "" {
+		err = errors.New("missing required participant_id parameter")
+		return
+	}
+	path := fmt.Sprintf("conferences/%s/participants/%s", query.ID, participantID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
+}
+
+// Update properties of a conference participant.
+func (r *ConferenceService) UpdateParticipant(ctx context.Context, participantID string, params ConferenceUpdateParticipantParams, opts ...option.RequestOption) (res *ConferenceUpdateParticipantResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if params.ID == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	if participantID == "" {
+		err = errors.New("missing required participant_id parameter")
+		return
+	}
+	path := fmt.Sprintf("conferences/%s/participants/%s", params.ID, participantID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
+	return
 }
 
 type Conference struct {
@@ -353,6 +386,148 @@ const (
 	ConferenceListParticipantsResponseStatusJoined  ConferenceListParticipantsResponseStatus = "joined"
 	ConferenceListParticipantsResponseStatusLeft    ConferenceListParticipantsResponseStatus = "left"
 )
+
+type ConferenceGetParticipantResponse struct {
+	Data ConferenceGetParticipantResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConferenceGetParticipantResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConferenceGetParticipantResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConferenceGetParticipantResponseData struct {
+	// Uniquely identifies the participant.
+	ID string `json:"id"`
+	// Unique identifier and token for controlling the participant's call leg.
+	CallControlID string `json:"call_control_id"`
+	// Unique identifier for the call leg.
+	CallLegID string `json:"call_leg_id"`
+	// Unique identifier for the conference.
+	ConferenceID string `json:"conference_id"`
+	// Timestamp when the participant joined.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Whether the conference ends when this participant exits.
+	EndConferenceOnExit bool `json:"end_conference_on_exit"`
+	// Label assigned to the participant when joining.
+	Label string `json:"label"`
+	// Whether the participant is muted.
+	Muted bool `json:"muted"`
+	// Whether the participant is on hold.
+	OnHold bool `json:"on_hold"`
+	// Whether the conference soft-ends when this participant exits.
+	SoftEndConferenceOnExit bool `json:"soft_end_conference_on_exit"`
+	// Status of the participant.
+	//
+	// Any of "joining", "joined", "left".
+	Status string `json:"status"`
+	// Timestamp when the participant was last updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// List of call control IDs this participant is whispering to.
+	WhisperCallControlIDs []string `json:"whisper_call_control_ids"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                      respjson.Field
+		CallControlID           respjson.Field
+		CallLegID               respjson.Field
+		ConferenceID            respjson.Field
+		CreatedAt               respjson.Field
+		EndConferenceOnExit     respjson.Field
+		Label                   respjson.Field
+		Muted                   respjson.Field
+		OnHold                  respjson.Field
+		SoftEndConferenceOnExit respjson.Field
+		Status                  respjson.Field
+		UpdatedAt               respjson.Field
+		WhisperCallControlIDs   respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConferenceGetParticipantResponseData) RawJSON() string { return r.JSON.raw }
+func (r *ConferenceGetParticipantResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConferenceUpdateParticipantResponse struct {
+	Data ConferenceUpdateParticipantResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConferenceUpdateParticipantResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConferenceUpdateParticipantResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConferenceUpdateParticipantResponseData struct {
+	// Uniquely identifies the participant.
+	ID string `json:"id"`
+	// Unique identifier and token for controlling the participant's call leg.
+	CallControlID string `json:"call_control_id"`
+	// Unique identifier for the call leg.
+	CallLegID string `json:"call_leg_id"`
+	// Unique identifier for the conference.
+	ConferenceID string `json:"conference_id"`
+	// Timestamp when the participant joined.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Whether the conference ends when this participant exits.
+	EndConferenceOnExit bool `json:"end_conference_on_exit"`
+	// Label assigned to the participant when joining.
+	Label string `json:"label"`
+	// Whether the participant is muted.
+	Muted bool `json:"muted"`
+	// Whether the participant is on hold.
+	OnHold bool `json:"on_hold"`
+	// Whether the conference soft-ends when this participant exits.
+	SoftEndConferenceOnExit bool `json:"soft_end_conference_on_exit"`
+	// Status of the participant.
+	//
+	// Any of "joining", "joined", "left".
+	Status string `json:"status"`
+	// Timestamp when the participant was last updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// List of call control IDs this participant is whispering to.
+	WhisperCallControlIDs []string `json:"whisper_call_control_ids"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                      respjson.Field
+		CallControlID           respjson.Field
+		CallLegID               respjson.Field
+		ConferenceID            respjson.Field
+		CreatedAt               respjson.Field
+		EndConferenceOnExit     respjson.Field
+		Label                   respjson.Field
+		Muted                   respjson.Field
+		OnHold                  respjson.Field
+		SoftEndConferenceOnExit respjson.Field
+		Status                  respjson.Field
+		UpdatedAt               respjson.Field
+		WhisperCallControlIDs   respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConferenceUpdateParticipantResponseData) RawJSON() string { return r.JSON.raw }
+func (r *ConferenceUpdateParticipantResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type ConferenceNewParams struct {
 	// Unique identifier and token for controlling the call
@@ -637,4 +812,42 @@ const (
 	ConferenceListParticipantsParamsRegionEurope     ConferenceListParticipantsParamsRegion = "Europe"
 	ConferenceListParticipantsParamsRegionMiddleEast ConferenceListParticipantsParamsRegion = "Middle East"
 	ConferenceListParticipantsParamsRegionUs         ConferenceListParticipantsParamsRegion = "US"
+)
+
+type ConferenceGetParticipantParams struct {
+	ID string `path:"id,required" format:"uuid" json:"-"`
+	paramObj
+}
+
+type ConferenceUpdateParticipantParams struct {
+	ID string `path:"id,required" format:"uuid" json:"-"`
+	// Whether the conference should end when this participant exits.
+	EndConferenceOnExit param.Opt[bool] `json:"end_conference_on_exit,omitzero"`
+	// Whether the conference should soft-end when this participant exits. A soft end
+	// will stop new participants from joining but allow existing participants to
+	// remain.
+	SoftEndConferenceOnExit param.Opt[bool] `json:"soft_end_conference_on_exit,omitzero"`
+	// Whether entry/exit beeps are enabled for this participant.
+	//
+	// Any of "always", "never", "on_enter", "on_exit".
+	BeepEnabled ConferenceUpdateParticipantParamsBeepEnabled `json:"beep_enabled,omitzero"`
+	paramObj
+}
+
+func (r ConferenceUpdateParticipantParams) MarshalJSON() (data []byte, err error) {
+	type shadow ConferenceUpdateParticipantParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ConferenceUpdateParticipantParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Whether entry/exit beeps are enabled for this participant.
+type ConferenceUpdateParticipantParamsBeepEnabled string
+
+const (
+	ConferenceUpdateParticipantParamsBeepEnabledAlways  ConferenceUpdateParticipantParamsBeepEnabled = "always"
+	ConferenceUpdateParticipantParamsBeepEnabledNever   ConferenceUpdateParticipantParamsBeepEnabled = "never"
+	ConferenceUpdateParticipantParamsBeepEnabledOnEnter ConferenceUpdateParticipantParamsBeepEnabled = "on_enter"
+	ConferenceUpdateParticipantParamsBeepEnabledOnExit  ConferenceUpdateParticipantParamsBeepEnabled = "on_exit"
 )
