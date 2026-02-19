@@ -719,6 +719,12 @@ type DeepgramNova2ConfigParam struct {
 	TranscriptionEngine DeepgramNova2ConfigTranscriptionEngine `json:"transcription_engine,omitzero,required"`
 	// Any of "deepgram/nova-2".
 	TranscriptionModel DeepgramNova2ConfigTranscriptionModel `json:"transcription_model,omitzero,required"`
+	// Whether to send also interim results. If set to false, only final results will
+	// be sent.
+	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
+	// Number of milliseconds of silence to consider an utterance ended. Ranges from 0
+	// to 5000 ms.
+	UtteranceEndMs param.Opt[int64] `json:"utterance_end_ms,omitzero"`
 	// Keywords and their respective intensifiers (boosting values) to improve
 	// transcription accuracy for specific words or phrases. The intensifier should be
 	// a numeric value. Example: `{"snuffleupagus": 5, "systrom": 2, "krieger": 1}`.
@@ -810,6 +816,12 @@ type DeepgramNova3ConfigParam struct {
 	TranscriptionEngine DeepgramNova3ConfigTranscriptionEngine `json:"transcription_engine,omitzero,required"`
 	// Any of "deepgram/nova-3".
 	TranscriptionModel DeepgramNova3ConfigTranscriptionModel `json:"transcription_model,omitzero,required"`
+	// Whether to send also interim results. If set to false, only final results will
+	// be sent.
+	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
+	// Number of milliseconds of silence to consider an utterance ended. Ranges from 0
+	// to 5000 ms.
+	UtteranceEndMs param.Opt[int64] `json:"utterance_end_ms,omitzero"`
 	// Keywords and their respective intensifiers (boosting values) to improve
 	// transcription accuracy for specific words or phrases. The intensifier should be
 	// a numeric value. Example: `{"snuffleupagus": 5, "systrom": 2, "krieger": 1}`.
@@ -1709,6 +1721,10 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetEnableS
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetInterimResults() *bool {
 	if vt := u.OfGoogle; vt != nil && vt.InterimResults.Valid() {
 		return &vt.InterimResults.Value
+	} else if vt := u.OfDeepgramNova2Config; vt != nil && vt.InterimResults.Valid() {
+		return &vt.InterimResults.Value
+	} else if vt := u.OfDeepgramNova3Config; vt != nil && vt.InterimResults.Valid() {
+		return &vt.InterimResults.Value
 	} else if vt := u.OfA; vt != nil && vt.InterimResults.Valid() {
 		return &vt.InterimResults.Value
 	}
@@ -1815,6 +1831,16 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscr
 		return (*string)(&vt.TranscriptionModel)
 	} else if vt := u.OfB; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetUtteranceEndMs() *int64 {
+	if vt := u.OfDeepgramNova2Config; vt != nil && vt.UtteranceEndMs.Valid() {
+		return &vt.UtteranceEndMs.Value
+	} else if vt := u.OfDeepgramNova3Config; vt != nil && vt.UtteranceEndMs.Valid() {
+		return &vt.UtteranceEndMs.Value
 	}
 	return nil
 }
