@@ -525,7 +525,7 @@ func (r *InboundFqdnParam) UnmarshalJSON(data []byte) error {
 type OutboundFqdn struct {
 	// Set a phone number as the ani_override value to override caller id number on
 	// outbound calls.
-	AniOverride string `json:"ani_override" format:"E.164"`
+	AniOverride string `json:"ani_override"`
 	// Specifies when we should apply your ani_override setting. Only applies when
 	// ani_override is not blank.
 	//
@@ -650,7 +650,7 @@ type OutboundFqdnParam struct {
 	CallParkingEnabled param.Opt[bool] `json:"call_parking_enabled,omitzero"`
 	// Set a phone number as the ani_override value to override caller id number on
 	// outbound calls.
-	AniOverride param.Opt[string] `json:"ani_override,omitzero" format:"E.164"`
+	AniOverride param.Opt[string] `json:"ani_override,omitzero"`
 	// When set, this will limit the total number of inbound calls to phone numbers
 	// associated with this connection.
 	ChannelLimit param.Opt[int64] `json:"channel_limit,omitzero"`
