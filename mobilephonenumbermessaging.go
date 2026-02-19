@@ -104,7 +104,7 @@ type MobilePhoneNumberMessagingGetResponseData struct {
 	// Unique identifier for a messaging profile.
 	MessagingProfileID string `json:"messaging_profile_id,nullable"`
 	// +E.164 formatted phone number.
-	PhoneNumber string `json:"phone_number" format:"e164"`
+	PhoneNumber string `json:"phone_number"`
 	// Identifies the type of the resource.
 	//
 	// Any of "messaging_phone_number", "messaging_settings".
@@ -173,7 +173,7 @@ type MobilePhoneNumberMessagingListResponse struct {
 	// Unique identifier for a messaging profile.
 	MessagingProfileID string `json:"messaging_profile_id,nullable"`
 	// +E.164 formatted phone number.
-	PhoneNumber string `json:"phone_number" format:"e164"`
+	PhoneNumber string `json:"phone_number"`
 	// Identifies the type of the resource.
 	//
 	// Any of "messaging_phone_number", "messaging_settings".

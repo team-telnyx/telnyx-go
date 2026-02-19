@@ -191,13 +191,13 @@ const (
 
 type ManagedAccountBalance struct {
 	// Available amount to spend (balance + credit limit)
-	AvailableCredit string `json:"available_credit" format:"decimal"`
+	AvailableCredit string `json:"available_credit"`
 	// The account's current balance.
-	Balance string `json:"balance" format:"decimal"`
+	Balance string `json:"balance"`
 	// The account's credit limit.
-	CreditLimit string `json:"credit_limit" format:"decimal"`
+	CreditLimit string `json:"credit_limit"`
 	// The ISO 4217 currency identifier.
-	Currency string `json:"currency" format:"iso4217"`
+	Currency string `json:"currency"`
 	// Identifies the type of the resource.
 	//
 	// Any of "balance".

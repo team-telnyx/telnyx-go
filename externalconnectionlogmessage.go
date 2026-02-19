@@ -104,7 +104,7 @@ func (r *ExternalConnectionLogMessageGetResponse) UnmarshalJSON(data []byte) err
 }
 
 type ExternalConnectionLogMessageGetResponseLogMessage struct {
-	Code   string                                                  `json:"code,required" format:"int64"`
+	Code   string                                                  `json:"code,required"`
 	Title  string                                                  `json:"title,required"`
 	Detail string                                                  `json:"detail"`
 	Meta   ExternalConnectionLogMessageGetResponseLogMessageMeta   `json:"meta"`
@@ -129,7 +129,7 @@ func (r *ExternalConnectionLogMessageGetResponseLogMessage) UnmarshalJSON(data [
 
 type ExternalConnectionLogMessageGetResponseLogMessageMeta struct {
 	// The external connection the log message is associated with, if any.
-	ExternalConnectionID string `json:"external_connection_id" format:"int64"`
+	ExternalConnectionID string `json:"external_connection_id"`
 	// The telephone number the log message is associated with, if any.
 	TelephoneNumber string `json:"telephone_number"`
 	// The ticket ID for an operation that generated the log message, if any.
@@ -168,7 +168,7 @@ func (r *ExternalConnectionLogMessageGetResponseLogMessageSource) UnmarshalJSON(
 }
 
 type ExternalConnectionLogMessageListResponse struct {
-	Code   string                                         `json:"code,required" format:"int64"`
+	Code   string                                         `json:"code,required"`
 	Title  string                                         `json:"title,required"`
 	Detail string                                         `json:"detail"`
 	Meta   ExternalConnectionLogMessageListResponseMeta   `json:"meta"`
@@ -193,7 +193,7 @@ func (r *ExternalConnectionLogMessageListResponse) UnmarshalJSON(data []byte) er
 
 type ExternalConnectionLogMessageListResponseMeta struct {
 	// The external connection the log message is associated with, if any.
-	ExternalConnectionID string `json:"external_connection_id" format:"int64"`
+	ExternalConnectionID string `json:"external_connection_id"`
 	// The telephone number the log message is associated with, if any.
 	TelephoneNumber string `json:"telephone_number"`
 	// The ticket ID for an operation that generated the log message, if any.
