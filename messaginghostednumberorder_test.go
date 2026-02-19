@@ -14,7 +14,7 @@ import (
 )
 
 func TestMessagingHostedNumberOrderNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -40,7 +40,7 @@ func TestMessagingHostedNumberOrderNewWithOptionalParams(t *testing.T) {
 }
 
 func TestMessagingHostedNumberOrderGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -63,7 +63,7 @@ func TestMessagingHostedNumberOrderGet(t *testing.T) {
 }
 
 func TestMessagingHostedNumberOrderListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -89,7 +89,7 @@ func TestMessagingHostedNumberOrderListWithOptionalParams(t *testing.T) {
 }
 
 func TestMessagingHostedNumberOrderDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -112,7 +112,7 @@ func TestMessagingHostedNumberOrderDelete(t *testing.T) {
 }
 
 func TestMessagingHostedNumberOrderCheckEligibility(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -137,7 +137,7 @@ func TestMessagingHostedNumberOrderCheckEligibility(t *testing.T) {
 }
 
 func TestMessagingHostedNumberOrderNewVerificationCodes(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -167,7 +167,7 @@ func TestMessagingHostedNumberOrderNewVerificationCodes(t *testing.T) {
 }
 
 func TestMessagingHostedNumberOrderValidateCodes(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

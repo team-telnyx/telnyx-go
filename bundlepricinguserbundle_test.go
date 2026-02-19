@@ -14,7 +14,7 @@ import (
 )
 
 func TestBundlePricingUserBundleNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -44,7 +44,7 @@ func TestBundlePricingUserBundleNewWithOptionalParams(t *testing.T) {
 }
 
 func TestBundlePricingUserBundleGetWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -73,7 +73,7 @@ func TestBundlePricingUserBundleGetWithOptionalParams(t *testing.T) {
 }
 
 func TestBundlePricingUserBundleListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -104,7 +104,7 @@ func TestBundlePricingUserBundleListWithOptionalParams(t *testing.T) {
 }
 
 func TestBundlePricingUserBundleDeactivateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -133,7 +133,7 @@ func TestBundlePricingUserBundleDeactivateWithOptionalParams(t *testing.T) {
 }
 
 func TestBundlePricingUserBundleListResourcesWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -162,7 +162,7 @@ func TestBundlePricingUserBundleListResourcesWithOptionalParams(t *testing.T) {
 }
 
 func TestBundlePricingUserBundleListUnusedWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

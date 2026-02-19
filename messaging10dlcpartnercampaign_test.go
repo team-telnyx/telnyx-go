@@ -14,7 +14,7 @@ import (
 )
 
 func TestMessaging10dlcPartnerCampaignGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -37,7 +37,7 @@ func TestMessaging10dlcPartnerCampaignGet(t *testing.T) {
 }
 
 func TestMessaging10dlcPartnerCampaignUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -67,7 +67,7 @@ func TestMessaging10dlcPartnerCampaignUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestMessaging10dlcPartnerCampaignListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -94,7 +94,7 @@ func TestMessaging10dlcPartnerCampaignListWithOptionalParams(t *testing.T) {
 }
 
 func TestMessaging10dlcPartnerCampaignListSharedByMeWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -120,7 +120,7 @@ func TestMessaging10dlcPartnerCampaignListSharedByMeWithOptionalParams(t *testin
 }
 
 func TestMessaging10dlcPartnerCampaignGetSharingStatus(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

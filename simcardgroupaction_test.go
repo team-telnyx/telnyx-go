@@ -14,7 +14,7 @@ import (
 )
 
 func TestSimCardGroupActionGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -37,7 +37,7 @@ func TestSimCardGroupActionGet(t *testing.T) {
 }
 
 func TestSimCardGroupActionListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -66,7 +66,7 @@ func TestSimCardGroupActionListWithOptionalParams(t *testing.T) {
 }
 
 func TestSimCardGroupActionRemovePrivateWirelessGateway(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -89,7 +89,7 @@ func TestSimCardGroupActionRemovePrivateWirelessGateway(t *testing.T) {
 }
 
 func TestSimCardGroupActionRemoveWirelessBlocklist(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -112,7 +112,7 @@ func TestSimCardGroupActionRemoveWirelessBlocklist(t *testing.T) {
 }
 
 func TestSimCardGroupActionSetPrivateWirelessGateway(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -141,7 +141,7 @@ func TestSimCardGroupActionSetPrivateWirelessGateway(t *testing.T) {
 }
 
 func TestSimCardGroupActionSetWirelessBlocklist(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

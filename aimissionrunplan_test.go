@@ -14,7 +14,7 @@ import (
 )
 
 func TestAIMissionRunPlanNew(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -52,7 +52,7 @@ func TestAIMissionRunPlanNew(t *testing.T) {
 }
 
 func TestAIMissionRunPlanGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -81,7 +81,7 @@ func TestAIMissionRunPlanGet(t *testing.T) {
 }
 
 func TestAIMissionRunPlanAddStepsToPlan(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -119,7 +119,7 @@ func TestAIMissionRunPlanAddStepsToPlan(t *testing.T) {
 }
 
 func TestAIMissionRunPlanGetStepDetails(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -149,7 +149,7 @@ func TestAIMissionRunPlanGetStepDetails(t *testing.T) {
 }
 
 func TestAIMissionRunPlanUpdateStepWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

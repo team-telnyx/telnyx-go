@@ -28,7 +28,7 @@ func TestAutoPagination(t *testing.T) {
 		PageNumber: telnyx.Int(1),
 		PageSize:   telnyx.Int(50),
 	})
-	// Prism mock isn't going to give us real pagination
+	// The mock server isn't going to give us real pagination
 	for i := 0; i < 3 && iter.Next(); i++ {
 		accessIPAddress := iter.Current()
 		t.Logf("%+v\n", accessIPAddress.ID)

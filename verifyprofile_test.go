@@ -14,7 +14,7 @@ import (
 )
 
 func TestVerifyProfileNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -61,7 +61,7 @@ func TestVerifyProfileNewWithOptionalParams(t *testing.T) {
 }
 
 func TestVerifyProfileGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -84,7 +84,7 @@ func TestVerifyProfileGet(t *testing.T) {
 }
 
 func TestVerifyProfileUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -135,7 +135,7 @@ func TestVerifyProfileUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestVerifyProfileListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -164,7 +164,7 @@ func TestVerifyProfileListWithOptionalParams(t *testing.T) {
 }
 
 func TestVerifyProfileDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -187,7 +187,7 @@ func TestVerifyProfileDelete(t *testing.T) {
 }
 
 func TestVerifyProfileNewTemplate(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -212,7 +212,7 @@ func TestVerifyProfileNewTemplate(t *testing.T) {
 }
 
 func TestVerifyProfileGetTemplates(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -235,7 +235,7 @@ func TestVerifyProfileGetTemplates(t *testing.T) {
 }
 
 func TestVerifyProfileUpdateTemplate(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

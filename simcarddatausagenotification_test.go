@@ -14,7 +14,7 @@ import (
 )
 
 func TestSimCardDataUsageNotificationNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -43,7 +43,7 @@ func TestSimCardDataUsageNotificationNewWithOptionalParams(t *testing.T) {
 }
 
 func TestSimCardDataUsageNotificationGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -66,7 +66,7 @@ func TestSimCardDataUsageNotificationGet(t *testing.T) {
 }
 
 func TestSimCardDataUsageNotificationUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -101,7 +101,7 @@ func TestSimCardDataUsageNotificationUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestSimCardDataUsageNotificationListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -128,7 +128,7 @@ func TestSimCardDataUsageNotificationListWithOptionalParams(t *testing.T) {
 }
 
 func TestSimCardDataUsageNotificationDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

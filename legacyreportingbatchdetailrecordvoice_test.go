@@ -15,7 +15,7 @@ import (
 )
 
 func TestLegacyReportingBatchDetailRecordVoiceNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -60,7 +60,7 @@ func TestLegacyReportingBatchDetailRecordVoiceNewWithOptionalParams(t *testing.T
 }
 
 func TestLegacyReportingBatchDetailRecordVoiceGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -83,7 +83,7 @@ func TestLegacyReportingBatchDetailRecordVoiceGet(t *testing.T) {
 }
 
 func TestLegacyReportingBatchDetailRecordVoiceList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -106,7 +106,7 @@ func TestLegacyReportingBatchDetailRecordVoiceList(t *testing.T) {
 }
 
 func TestLegacyReportingBatchDetailRecordVoiceDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -129,7 +129,7 @@ func TestLegacyReportingBatchDetailRecordVoiceDelete(t *testing.T) {
 }
 
 func TestLegacyReportingBatchDetailRecordVoiceGetFields(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

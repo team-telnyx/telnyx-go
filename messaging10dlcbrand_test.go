@@ -14,7 +14,7 @@ import (
 )
 
 func TestMessaging10dlcBrandNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -62,7 +62,7 @@ func TestMessaging10dlcBrandNewWithOptionalParams(t *testing.T) {
 }
 
 func TestMessaging10dlcBrandGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -85,7 +85,7 @@ func TestMessaging10dlcBrandGet(t *testing.T) {
 }
 
 func TestMessaging10dlcBrandUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -138,7 +138,7 @@ func TestMessaging10dlcBrandUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestMessaging10dlcBrandListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -171,7 +171,7 @@ func TestMessaging10dlcBrandListWithOptionalParams(t *testing.T) {
 }
 
 func TestMessaging10dlcBrandDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -194,7 +194,7 @@ func TestMessaging10dlcBrandDelete(t *testing.T) {
 }
 
 func TestMessaging10dlcBrandGetFeedback(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -217,7 +217,7 @@ func TestMessaging10dlcBrandGetFeedback(t *testing.T) {
 }
 
 func TestMessaging10dlcBrandGetSMSOtpByReferenceWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -246,7 +246,7 @@ func TestMessaging10dlcBrandGetSMSOtpByReferenceWithOptionalParams(t *testing.T)
 }
 
 func TestMessaging10dlcBrandResend2faEmail(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -269,7 +269,7 @@ func TestMessaging10dlcBrandResend2faEmail(t *testing.T) {
 }
 
 func TestMessaging10dlcBrandGetSMSOtpStatus(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -292,7 +292,7 @@ func TestMessaging10dlcBrandGetSMSOtpStatus(t *testing.T) {
 }
 
 func TestMessaging10dlcBrandRevet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -315,7 +315,7 @@ func TestMessaging10dlcBrandRevet(t *testing.T) {
 }
 
 func TestMessaging10dlcBrandTriggerSMSOtp(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -345,7 +345,7 @@ func TestMessaging10dlcBrandTriggerSMSOtp(t *testing.T) {
 }
 
 func TestMessaging10dlcBrandVerifySMSOtp(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
