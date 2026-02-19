@@ -372,7 +372,7 @@ type TexmlAccountConferenceGetRecordingsResponse struct {
 	// The number of items on the page
 	PageSize int64 `json:"page_size"`
 	// List of participant resources.
-	Participants []map[string]any                                       `json:"participants"`
+	Participants []any                                                  `json:"participants"`
 	Recordings   []TexmlAccountConferenceGetRecordingsResponseRecording `json:"recordings"`
 	// The number of the first element on the page, zero-indexed.
 	Start int64 `json:"start"`

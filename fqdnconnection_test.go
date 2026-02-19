@@ -247,7 +247,7 @@ func TestFqdnConnectionListWithOptionalParams(t *testing.T) {
 				Contains: telnyx.String("contains"),
 			},
 			Fqdn:                   telnyx.String("fqdn"),
-			OutboundVoiceProfileID: telnyx.String("1293384261075731499"),
+			OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
 		},
 		PageNumber: telnyx.Int(0),
 		PageSize:   telnyx.Int(0),

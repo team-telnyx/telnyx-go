@@ -43,7 +43,7 @@ func TestCallControlApplicationNewWithOptionalParams(t *testing.T) {
 		},
 		Outbound: telnyx.CallControlApplicationOutboundParam{
 			ChannelLimit:           telnyx.Int(10),
-			OutboundVoiceProfileID: telnyx.String("1293384261075731499"),
+			OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
 		},
 		RedactDtmfDebugLogging:  telnyx.Bool(true),
 		WebhookAPIVersion:       telnyx.CallControlApplicationNewParamsWebhookAPIVersionV1,
@@ -115,7 +115,7 @@ func TestCallControlApplicationUpdateWithOptionalParams(t *testing.T) {
 			},
 			Outbound: telnyx.CallControlApplicationOutboundParam{
 				ChannelLimit:           telnyx.Int(10),
-				OutboundVoiceProfileID: telnyx.String("1293384261075731499"),
+				OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
 			},
 			RedactDtmfDebugLogging:  telnyx.Bool(true),
 			Tags:                    []string{"tag1", "tag2"},
@@ -164,7 +164,7 @@ func TestCallControlApplicationListWithOptionalParams(t *testing.T) {
 				Lt:  telnyx.String("2019-03-29T11:10:00Z"),
 				Lte: telnyx.String("2019-03-29T11:10:00Z"),
 			},
-			OutboundOutboundVoiceProfileID: telnyx.String("1293384261075731499"),
+			OutboundOutboundVoiceProfileID: telnyx.String("outbound.outbound_voice_profile_id"),
 			Product:                        "texml",
 			Status:                         "init",
 			To:                             telnyx.String("+12025550142"),

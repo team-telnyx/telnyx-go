@@ -77,11 +77,11 @@ type PaymentAutoRechargePrefUpdateResponseData struct {
 	Preference string `json:"preference"`
 	// The amount to recharge the account, the actual recharge amount will be the
 	// amount necessary to reach the threshold amount plus the recharge amount.
-	RechargeAmount string `json:"recharge_amount"`
+	RechargeAmount string `json:"recharge_amount" format:"decimal"`
 	// The record type.
 	RecordType string `json:"record_type"`
 	// The threshold amount at which the account will be recharged.
-	ThresholdAmount string `json:"threshold_amount"`
+	ThresholdAmount string `json:"threshold_amount" format:"decimal"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -130,11 +130,11 @@ type PaymentAutoRechargePrefListResponseData struct {
 	Preference string `json:"preference"`
 	// The amount to recharge the account, the actual recharge amount will be the
 	// amount necessary to reach the threshold amount plus the recharge amount.
-	RechargeAmount string `json:"recharge_amount"`
+	RechargeAmount string `json:"recharge_amount" format:"decimal"`
 	// The record type.
 	RecordType string `json:"record_type"`
 	// The threshold amount at which the account will be recharged.
-	ThresholdAmount string `json:"threshold_amount"`
+	ThresholdAmount string `json:"threshold_amount" format:"decimal"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -161,9 +161,9 @@ type PaymentAutoRechargePrefUpdateParams struct {
 	InvoiceEnabled param.Opt[bool] `json:"invoice_enabled,omitzero"`
 	// The amount to recharge the account, the actual recharge amount will be the
 	// amount necessary to reach the threshold amount plus the recharge amount.
-	RechargeAmount param.Opt[string] `json:"recharge_amount,omitzero"`
+	RechargeAmount param.Opt[string] `json:"recharge_amount,omitzero" format:"decimal"`
 	// The threshold amount at which the account will be recharged.
-	ThresholdAmount param.Opt[string] `json:"threshold_amount,omitzero"`
+	ThresholdAmount param.Opt[string] `json:"threshold_amount,omitzero" format:"decimal"`
 	// The payment preference for auto recharge.
 	//
 	// Any of "credit_paypal", "ach".

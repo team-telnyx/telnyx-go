@@ -34,10 +34,8 @@ func TestCallActionAddAIAssistantMessagesWithOptionalParams(t *testing.T) {
 			CommandID:   telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
 			Messages: []telnyx.CallActionAddAIAssistantMessagesParamsMessageUnion{{
 				OfSystem: &telnyx.CallActionAddAIAssistantMessagesParamsMessageSystem{
-					Content: "Get the user's favorite color",
-					Metadata: map[string]any{
-						"foo": "bar",
-					},
+					Content:  "Get the user's favorite color",
+					Metadata: map[string]any{},
 				},
 			}},
 		},
