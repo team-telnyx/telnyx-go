@@ -111,7 +111,7 @@ type FqdnConnection struct {
 	// A user-assigned name to help manage the connection.
 	ConnectionName string `json:"connection_name,required"`
 	// Identifies the resource.
-	ID string `json:"id"`
+	ID string `json:"id" format:"int64"`
 	// Defaults to true
 	Active bool `json:"active"`
 	// Indicates whether DTMF timestamp adjustment is enabled.

@@ -348,7 +348,7 @@ func (r *InboundIPParam) UnmarshalJSON(data []byte) error {
 
 type IPConnection struct {
 	// Identifies the type of resource.
-	ID string `json:"id"`
+	ID string `json:"id" format:"int64"`
 	// Defaults to true
 	Active bool `json:"active"`
 	// `Latency` directs Telnyx to route media through the site with the lowest

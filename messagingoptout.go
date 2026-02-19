@@ -65,7 +65,7 @@ type MessagingOptoutListResponse struct {
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Sending address (+E.164 formatted phone number, alphanumeric sender ID, or short
 	// code).
-	From string `json:"from"`
+	From string `json:"from" format:"address"`
 	// The keyword that triggered the opt-out.
 	Keyword string `json:"keyword,nullable"`
 	// Unique identifier for a messaging profile.

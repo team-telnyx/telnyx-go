@@ -123,7 +123,7 @@ func (r *ConnectionGetResponse) UnmarshalJSON(data []byte) error {
 
 type ConnectionGetResponseData struct {
 	// Identifies the specific resource.
-	ID string `json:"id"`
+	ID string `json:"id" format:"int64"`
 	// Defaults to true
 	Active bool `json:"active"`
 	// `Latency` directs Telnyx to route media through the site with the lowest
@@ -181,7 +181,7 @@ func (r *ConnectionGetResponseData) UnmarshalJSON(data []byte) error {
 
 type ConnectionListResponse struct {
 	// Identifies the specific resource.
-	ID string `json:"id"`
+	ID string `json:"id" format:"int64"`
 	// Defaults to true
 	Active bool `json:"active"`
 	// `Latency` directs Telnyx to route media through the site with the lowest
