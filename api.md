@@ -2,6 +2,7 @@
 
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#ConnectionJitterBufferParam">ConnectionJitterBufferParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#ConnectionNoiseSuppressionDetailsParam">ConnectionNoiseSuppressionDetailsParam</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#MinimaxVoiceSettingsParam">MinimaxVoiceSettingsParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#SimCardStatusParam">SimCardStatusParam</a>
 
 # Shared Response Types
@@ -1217,6 +1218,8 @@ Methods:
 Params Types:
 
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AwsVoiceSettingsParam">AwsVoiceSettingsParam</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DeepgramNova2ConfigParam">DeepgramNova2ConfigParam</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DeepgramNova3ConfigParam">DeepgramNova3ConfigParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ElevenLabsVoiceSettingsParam">ElevenLabsVoiceSettingsParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#GoogleTranscriptionLanguage">GoogleTranscriptionLanguage</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#InterruptionSettingsParam">InterruptionSettingsParam</a>

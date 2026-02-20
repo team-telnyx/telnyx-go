@@ -272,6 +272,147 @@ type MessagingPaginationMeta = shared.MessagingPaginationMeta
 // This is an alias to an internal type.
 type Metadata = shared.Metadata
 
+// This is an alias to an internal type.
+type MinimaxVoiceSettingsParam = shared.MinimaxVoiceSettingsParam
+
+// Voice settings provider type
+//
+// This is an alias to an internal type.
+type MinimaxVoiceSettingsType = shared.MinimaxVoiceSettingsType
+
+// Equals "minimax"
+const MinimaxVoiceSettingsTypeMinimax = shared.MinimaxVoiceSettingsTypeMinimax
+
+// Enhances recognition for specific languages and dialects during MiniMax TTS
+// synthesis. Default is null (no boost). Set to 'auto' for automatic language
+// detection.
+//
+// This is an alias to an internal type.
+type MinimaxVoiceSettingsLanguageBoost = shared.MinimaxVoiceSettingsLanguageBoost
+
+// Equals "auto"
+const MinimaxVoiceSettingsLanguageBoostAuto = shared.MinimaxVoiceSettingsLanguageBoostAuto
+
+// Equals "Chinese"
+const MinimaxVoiceSettingsLanguageBoostChinese = shared.MinimaxVoiceSettingsLanguageBoostChinese
+
+// Equals "Chinese,Yue"
+const MinimaxVoiceSettingsLanguageBoostChineseYue = shared.MinimaxVoiceSettingsLanguageBoostChineseYue
+
+// Equals "English"
+const MinimaxVoiceSettingsLanguageBoostEnglish = shared.MinimaxVoiceSettingsLanguageBoostEnglish
+
+// Equals "Arabic"
+const MinimaxVoiceSettingsLanguageBoostArabic = shared.MinimaxVoiceSettingsLanguageBoostArabic
+
+// Equals "Russian"
+const MinimaxVoiceSettingsLanguageBoostRussian = shared.MinimaxVoiceSettingsLanguageBoostRussian
+
+// Equals "Spanish"
+const MinimaxVoiceSettingsLanguageBoostSpanish = shared.MinimaxVoiceSettingsLanguageBoostSpanish
+
+// Equals "French"
+const MinimaxVoiceSettingsLanguageBoostFrench = shared.MinimaxVoiceSettingsLanguageBoostFrench
+
+// Equals "Portuguese"
+const MinimaxVoiceSettingsLanguageBoostPortuguese = shared.MinimaxVoiceSettingsLanguageBoostPortuguese
+
+// Equals "German"
+const MinimaxVoiceSettingsLanguageBoostGerman = shared.MinimaxVoiceSettingsLanguageBoostGerman
+
+// Equals "Turkish"
+const MinimaxVoiceSettingsLanguageBoostTurkish = shared.MinimaxVoiceSettingsLanguageBoostTurkish
+
+// Equals "Dutch"
+const MinimaxVoiceSettingsLanguageBoostDutch = shared.MinimaxVoiceSettingsLanguageBoostDutch
+
+// Equals "Ukrainian"
+const MinimaxVoiceSettingsLanguageBoostUkrainian = shared.MinimaxVoiceSettingsLanguageBoostUkrainian
+
+// Equals "Vietnamese"
+const MinimaxVoiceSettingsLanguageBoostVietnamese = shared.MinimaxVoiceSettingsLanguageBoostVietnamese
+
+// Equals "Indonesian"
+const MinimaxVoiceSettingsLanguageBoostIndonesian = shared.MinimaxVoiceSettingsLanguageBoostIndonesian
+
+// Equals "Japanese"
+const MinimaxVoiceSettingsLanguageBoostJapanese = shared.MinimaxVoiceSettingsLanguageBoostJapanese
+
+// Equals "Italian"
+const MinimaxVoiceSettingsLanguageBoostItalian = shared.MinimaxVoiceSettingsLanguageBoostItalian
+
+// Equals "Korean"
+const MinimaxVoiceSettingsLanguageBoostKorean = shared.MinimaxVoiceSettingsLanguageBoostKorean
+
+// Equals "Thai"
+const MinimaxVoiceSettingsLanguageBoostThai = shared.MinimaxVoiceSettingsLanguageBoostThai
+
+// Equals "Polish"
+const MinimaxVoiceSettingsLanguageBoostPolish = shared.MinimaxVoiceSettingsLanguageBoostPolish
+
+// Equals "Romanian"
+const MinimaxVoiceSettingsLanguageBoostRomanian = shared.MinimaxVoiceSettingsLanguageBoostRomanian
+
+// Equals "Greek"
+const MinimaxVoiceSettingsLanguageBoostGreek = shared.MinimaxVoiceSettingsLanguageBoostGreek
+
+// Equals "Czech"
+const MinimaxVoiceSettingsLanguageBoostCzech = shared.MinimaxVoiceSettingsLanguageBoostCzech
+
+// Equals "Finnish"
+const MinimaxVoiceSettingsLanguageBoostFinnish = shared.MinimaxVoiceSettingsLanguageBoostFinnish
+
+// Equals "Hindi"
+const MinimaxVoiceSettingsLanguageBoostHindi = shared.MinimaxVoiceSettingsLanguageBoostHindi
+
+// Equals "Bulgarian"
+const MinimaxVoiceSettingsLanguageBoostBulgarian = shared.MinimaxVoiceSettingsLanguageBoostBulgarian
+
+// Equals "Danish"
+const MinimaxVoiceSettingsLanguageBoostDanish = shared.MinimaxVoiceSettingsLanguageBoostDanish
+
+// Equals "Hebrew"
+const MinimaxVoiceSettingsLanguageBoostHebrew = shared.MinimaxVoiceSettingsLanguageBoostHebrew
+
+// Equals "Malay"
+const MinimaxVoiceSettingsLanguageBoostMalay = shared.MinimaxVoiceSettingsLanguageBoostMalay
+
+// Equals "Persian"
+const MinimaxVoiceSettingsLanguageBoostPersian = shared.MinimaxVoiceSettingsLanguageBoostPersian
+
+// Equals "Slovak"
+const MinimaxVoiceSettingsLanguageBoostSlovak = shared.MinimaxVoiceSettingsLanguageBoostSlovak
+
+// Equals "Swedish"
+const MinimaxVoiceSettingsLanguageBoostSwedish = shared.MinimaxVoiceSettingsLanguageBoostSwedish
+
+// Equals "Croatian"
+const MinimaxVoiceSettingsLanguageBoostCroatian = shared.MinimaxVoiceSettingsLanguageBoostCroatian
+
+// Equals "Filipino"
+const MinimaxVoiceSettingsLanguageBoostFilipino = shared.MinimaxVoiceSettingsLanguageBoostFilipino
+
+// Equals "Hungarian"
+const MinimaxVoiceSettingsLanguageBoostHungarian = shared.MinimaxVoiceSettingsLanguageBoostHungarian
+
+// Equals "Norwegian"
+const MinimaxVoiceSettingsLanguageBoostNorwegian = shared.MinimaxVoiceSettingsLanguageBoostNorwegian
+
+// Equals "Slovenian"
+const MinimaxVoiceSettingsLanguageBoostSlovenian = shared.MinimaxVoiceSettingsLanguageBoostSlovenian
+
+// Equals "Catalan"
+const MinimaxVoiceSettingsLanguageBoostCatalan = shared.MinimaxVoiceSettingsLanguageBoostCatalan
+
+// Equals "Nynorsk"
+const MinimaxVoiceSettingsLanguageBoostNynorsk = shared.MinimaxVoiceSettingsLanguageBoostNynorsk
+
+// Equals "Tamil"
+const MinimaxVoiceSettingsLanguageBoostTamil = shared.MinimaxVoiceSettingsLanguageBoostTamil
+
+// Equals "Afrikaans"
+const MinimaxVoiceSettingsLanguageBoostAfrikaans = shared.MinimaxVoiceSettingsLanguageBoostAfrikaans
+
 // High level health metrics about the number and it's messaging sending patterns.
 //
 // This is an alias to an internal type.

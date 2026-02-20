@@ -16,6 +16,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
@@ -711,6 +712,169 @@ func (r CallControlCommandResult) RawJSON() string { return r.JSON.raw }
 func (r *CallControlCommandResult) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// The properties TranscriptionEngine, TranscriptionModel are required.
+type DeepgramNova2ConfigParam struct {
+	// Any of "Deepgram".
+	TranscriptionEngine DeepgramNova2ConfigTranscriptionEngine `json:"transcription_engine,omitzero,required"`
+	// Any of "deepgram/nova-2".
+	TranscriptionModel DeepgramNova2ConfigTranscriptionModel `json:"transcription_model,omitzero,required"`
+	// Whether to send also interim results. If set to false, only final results will
+	// be sent.
+	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
+	// Number of milliseconds of silence to consider an utterance ended. Ranges from 0
+	// to 5000 ms.
+	UtteranceEndMs param.Opt[int64] `json:"utterance_end_ms,omitzero"`
+	// Keywords and their respective intensifiers (boosting values) to improve
+	// transcription accuracy for specific words or phrases. The intensifier should be
+	// a numeric value. Example: `{"snuffleupagus": 5, "systrom": 2, "krieger": 1}`.
+	KeywordsBoosting map[string]float64 `json:"keywords_boosting,omitzero"`
+	// Language to use for speech recognition with nova-2 model
+	//
+	// Any of "bg", "ca", "zh-CN", "zh-Hans", "zh-TW", "zh-Hant", "zh-HK", "cs",
+	// "da-DK", "nl-BE", "en-US", "en-AU", "en-GB", "en-NZ", "en-IN", "et", "fi", "fr",
+	// "fr-CA", "de-CH", "el", "hi", "hu", "id", "it", "ja", "ko-KR", "lv", "lt", "ms",
+	// "no", "pl", "pt-BR", "pt-PT", "ro", "ru", "sk", "es-419", "sv-SE", "th-TH",
+	// "tr", "uk", "vi", "auto_detect".
+	Language DeepgramNova2ConfigLanguage `json:"language,omitzero"`
+	paramObj
+}
+
+func (r DeepgramNova2ConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow DeepgramNova2ConfigParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DeepgramNova2ConfigParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DeepgramNova2ConfigTranscriptionEngine string
+
+const (
+	DeepgramNova2ConfigTranscriptionEngineDeepgram DeepgramNova2ConfigTranscriptionEngine = "Deepgram"
+)
+
+type DeepgramNova2ConfigTranscriptionModel string
+
+const (
+	DeepgramNova2ConfigTranscriptionModelDeepgramNova2 DeepgramNova2ConfigTranscriptionModel = "deepgram/nova-2"
+)
+
+// Language to use for speech recognition with nova-2 model
+type DeepgramNova2ConfigLanguage string
+
+const (
+	DeepgramNova2ConfigLanguageBg         DeepgramNova2ConfigLanguage = "bg"
+	DeepgramNova2ConfigLanguageCa         DeepgramNova2ConfigLanguage = "ca"
+	DeepgramNova2ConfigLanguageZhCn       DeepgramNova2ConfigLanguage = "zh-CN"
+	DeepgramNova2ConfigLanguageZhHans     DeepgramNova2ConfigLanguage = "zh-Hans"
+	DeepgramNova2ConfigLanguageZhTw       DeepgramNova2ConfigLanguage = "zh-TW"
+	DeepgramNova2ConfigLanguageZhHant     DeepgramNova2ConfigLanguage = "zh-Hant"
+	DeepgramNova2ConfigLanguageZhHk       DeepgramNova2ConfigLanguage = "zh-HK"
+	DeepgramNova2ConfigLanguageCs         DeepgramNova2ConfigLanguage = "cs"
+	DeepgramNova2ConfigLanguageDaDk       DeepgramNova2ConfigLanguage = "da-DK"
+	DeepgramNova2ConfigLanguageNlBe       DeepgramNova2ConfigLanguage = "nl-BE"
+	DeepgramNova2ConfigLanguageEnUs       DeepgramNova2ConfigLanguage = "en-US"
+	DeepgramNova2ConfigLanguageEnAu       DeepgramNova2ConfigLanguage = "en-AU"
+	DeepgramNova2ConfigLanguageEnGB       DeepgramNova2ConfigLanguage = "en-GB"
+	DeepgramNova2ConfigLanguageEnNz       DeepgramNova2ConfigLanguage = "en-NZ"
+	DeepgramNova2ConfigLanguageEnIn       DeepgramNova2ConfigLanguage = "en-IN"
+	DeepgramNova2ConfigLanguageEt         DeepgramNova2ConfigLanguage = "et"
+	DeepgramNova2ConfigLanguageFi         DeepgramNova2ConfigLanguage = "fi"
+	DeepgramNova2ConfigLanguageFr         DeepgramNova2ConfigLanguage = "fr"
+	DeepgramNova2ConfigLanguageFrCa       DeepgramNova2ConfigLanguage = "fr-CA"
+	DeepgramNova2ConfigLanguageDeCh       DeepgramNova2ConfigLanguage = "de-CH"
+	DeepgramNova2ConfigLanguageEl         DeepgramNova2ConfigLanguage = "el"
+	DeepgramNova2ConfigLanguageHi         DeepgramNova2ConfigLanguage = "hi"
+	DeepgramNova2ConfigLanguageHu         DeepgramNova2ConfigLanguage = "hu"
+	DeepgramNova2ConfigLanguageID         DeepgramNova2ConfigLanguage = "id"
+	DeepgramNova2ConfigLanguageIt         DeepgramNova2ConfigLanguage = "it"
+	DeepgramNova2ConfigLanguageJa         DeepgramNova2ConfigLanguage = "ja"
+	DeepgramNova2ConfigLanguageKoKr       DeepgramNova2ConfigLanguage = "ko-KR"
+	DeepgramNova2ConfigLanguageLv         DeepgramNova2ConfigLanguage = "lv"
+	DeepgramNova2ConfigLanguageLt         DeepgramNova2ConfigLanguage = "lt"
+	DeepgramNova2ConfigLanguageMs         DeepgramNova2ConfigLanguage = "ms"
+	DeepgramNova2ConfigLanguageNo         DeepgramNova2ConfigLanguage = "no"
+	DeepgramNova2ConfigLanguagePl         DeepgramNova2ConfigLanguage = "pl"
+	DeepgramNova2ConfigLanguagePtBr       DeepgramNova2ConfigLanguage = "pt-BR"
+	DeepgramNova2ConfigLanguagePtPt       DeepgramNova2ConfigLanguage = "pt-PT"
+	DeepgramNova2ConfigLanguageRo         DeepgramNova2ConfigLanguage = "ro"
+	DeepgramNova2ConfigLanguageRu         DeepgramNova2ConfigLanguage = "ru"
+	DeepgramNova2ConfigLanguageSk         DeepgramNova2ConfigLanguage = "sk"
+	DeepgramNova2ConfigLanguageEs419      DeepgramNova2ConfigLanguage = "es-419"
+	DeepgramNova2ConfigLanguageSvSe       DeepgramNova2ConfigLanguage = "sv-SE"
+	DeepgramNova2ConfigLanguageThTh       DeepgramNova2ConfigLanguage = "th-TH"
+	DeepgramNova2ConfigLanguageTr         DeepgramNova2ConfigLanguage = "tr"
+	DeepgramNova2ConfigLanguageUk         DeepgramNova2ConfigLanguage = "uk"
+	DeepgramNova2ConfigLanguageVi         DeepgramNova2ConfigLanguage = "vi"
+	DeepgramNova2ConfigLanguageAutoDetect DeepgramNova2ConfigLanguage = "auto_detect"
+)
+
+// The properties TranscriptionEngine, TranscriptionModel are required.
+type DeepgramNova3ConfigParam struct {
+	// Any of "Deepgram".
+	TranscriptionEngine DeepgramNova3ConfigTranscriptionEngine `json:"transcription_engine,omitzero,required"`
+	// Any of "deepgram/nova-3".
+	TranscriptionModel DeepgramNova3ConfigTranscriptionModel `json:"transcription_model,omitzero,required"`
+	// Whether to send also interim results. If set to false, only final results will
+	// be sent.
+	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
+	// Number of milliseconds of silence to consider an utterance ended. Ranges from 0
+	// to 5000 ms.
+	UtteranceEndMs param.Opt[int64] `json:"utterance_end_ms,omitzero"`
+	// Keywords and their respective intensifiers (boosting values) to improve
+	// transcription accuracy for specific words or phrases. The intensifier should be
+	// a numeric value. Example: `{"snuffleupagus": 5, "systrom": 2, "krieger": 1}`.
+	KeywordsBoosting map[string]float64 `json:"keywords_boosting,omitzero"`
+	// Language to use for speech recognition with nova-3 model
+	//
+	// Any of "en-US", "en-AU", "en-GB", "en-IN", "en-NZ", "de", "nl", "sv-SE",
+	// "da-DK", "es", "es-419", "fr", "fr-CA", "pt-BR", "pt-PT", "auto_detect".
+	Language DeepgramNova3ConfigLanguage `json:"language,omitzero"`
+	paramObj
+}
+
+func (r DeepgramNova3ConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow DeepgramNova3ConfigParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DeepgramNova3ConfigParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DeepgramNova3ConfigTranscriptionEngine string
+
+const (
+	DeepgramNova3ConfigTranscriptionEngineDeepgram DeepgramNova3ConfigTranscriptionEngine = "Deepgram"
+)
+
+type DeepgramNova3ConfigTranscriptionModel string
+
+const (
+	DeepgramNova3ConfigTranscriptionModelDeepgramNova3 DeepgramNova3ConfigTranscriptionModel = "deepgram/nova-3"
+)
+
+// Language to use for speech recognition with nova-3 model
+type DeepgramNova3ConfigLanguage string
+
+const (
+	DeepgramNova3ConfigLanguageEnUs       DeepgramNova3ConfigLanguage = "en-US"
+	DeepgramNova3ConfigLanguageEnAu       DeepgramNova3ConfigLanguage = "en-AU"
+	DeepgramNova3ConfigLanguageEnGB       DeepgramNova3ConfigLanguage = "en-GB"
+	DeepgramNova3ConfigLanguageEnIn       DeepgramNova3ConfigLanguage = "en-IN"
+	DeepgramNova3ConfigLanguageEnNz       DeepgramNova3ConfigLanguage = "en-NZ"
+	DeepgramNova3ConfigLanguageDe         DeepgramNova3ConfigLanguage = "de"
+	DeepgramNova3ConfigLanguageNl         DeepgramNova3ConfigLanguage = "nl"
+	DeepgramNova3ConfigLanguageSvSe       DeepgramNova3ConfigLanguage = "sv-SE"
+	DeepgramNova3ConfigLanguageDaDk       DeepgramNova3ConfigLanguage = "da-DK"
+	DeepgramNova3ConfigLanguageEs         DeepgramNova3ConfigLanguage = "es"
+	DeepgramNova3ConfigLanguageEs419      DeepgramNova3ConfigLanguage = "es-419"
+	DeepgramNova3ConfigLanguageFr         DeepgramNova3ConfigLanguage = "fr"
+	DeepgramNova3ConfigLanguageFrCa       DeepgramNova3ConfigLanguage = "fr-CA"
+	DeepgramNova3ConfigLanguagePtBr       DeepgramNova3ConfigLanguage = "pt-BR"
+	DeepgramNova3ConfigLanguagePtPt       DeepgramNova3ConfigLanguage = "pt-PT"
+	DeepgramNova3ConfigLanguageAutoDetect DeepgramNova3ConfigLanguage = "auto_detect"
+)
 
 // The property Type is required.
 type ElevenLabsVoiceSettingsParam struct {
@@ -1485,13 +1649,13 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type TranscriptionStartRequestTranscriptionEngineConfigUnionParam struct {
-	OfGoogle              *TranscriptionEngineGoogleConfigParam                                       `json:",omitzero,inline"`
-	OfTelnyx              *TranscriptionEngineTelnyxConfigParam                                       `json:",omitzero,inline"`
-	OfDeepgramNova2Config *TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova2ConfigParam `json:",omitzero,inline"`
-	OfDeepgramNova3Config *TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova3ConfigParam `json:",omitzero,inline"`
-	OfAzure               *TranscriptionEngineAzureConfigParam                                        `json:",omitzero,inline"`
-	OfA                   *TranscriptionEngineAConfigParam                                            `json:",omitzero,inline"`
-	OfB                   *TranscriptionEngineBConfigParam                                            `json:",omitzero,inline"`
+	OfGoogle              *TranscriptionEngineGoogleConfigParam `json:",omitzero,inline"`
+	OfTelnyx              *TranscriptionEngineTelnyxConfigParam `json:",omitzero,inline"`
+	OfDeepgramNova2Config *DeepgramNova2ConfigParam             `json:",omitzero,inline"`
+	OfDeepgramNova3Config *DeepgramNova3ConfigParam             `json:",omitzero,inline"`
+	OfAzure               *TranscriptionEngineAzureConfigParam  `json:",omitzero,inline"`
+	OfA                   *TranscriptionEngineAConfigParam      `json:",omitzero,inline"`
+	OfB                   *TranscriptionEngineBConfigParam      `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1736,96 +1900,11 @@ func init() {
 		"transcription_engine",
 		apijson.Discriminator[TranscriptionEngineGoogleConfigParam]("Google"),
 		apijson.Discriminator[TranscriptionEngineTelnyxConfigParam]("Telnyx"),
-		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova2ConfigParam]("Deepgram"),
-		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova3ConfigParam]("Deepgram"),
+		apijson.Discriminator[DeepgramNova2ConfigParam]("Deepgram"),
+		apijson.Discriminator[DeepgramNova3ConfigParam]("Deepgram"),
 		apijson.Discriminator[TranscriptionEngineAzureConfigParam]("Azure"),
 		apijson.Discriminator[TranscriptionEngineAConfigParam]("A"),
 		apijson.Discriminator[TranscriptionEngineBConfigParam]("B"),
-	)
-}
-
-// The properties TranscriptionEngine, TranscriptionModel are required.
-type TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova2ConfigParam struct {
-	// Any of "deepgram/nova-2".
-	TranscriptionModel string `json:"transcription_model,omitzero,required"`
-	// Whether to send also interim results. If set to false, only final results will
-	// be sent.
-	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
-	// Number of milliseconds of silence to consider an utterance ended. Ranges from 0
-	// to 5000 ms.
-	UtteranceEndMs param.Opt[int64] `json:"utterance_end_ms,omitzero"`
-	// Keywords and their respective intensifiers (boosting values) to improve
-	// transcription accuracy for specific words or phrases. The intensifier should be
-	// a numeric value. Example: `{"snuffleupagus": 5, "systrom": 2, "krieger": 1}`.
-	KeywordsBoosting map[string]float64 `json:"keywords_boosting,omitzero"`
-	// Language to use for speech recognition with nova-2 model
-	//
-	// Any of "bg", "ca", "zh-CN", "zh-Hans", "zh-TW", "zh-Hant", "zh-HK", "cs",
-	// "da-DK", "nl-BE", "en-US", "en-AU", "en-GB", "en-NZ", "en-IN", "et", "fi", "fr",
-	// "fr-CA", "de-CH", "el", "hi", "hu", "id", "it", "ja", "ko-KR", "lv", "lt", "ms",
-	// "no", "pl", "pt-BR", "pt-PT", "ro", "ru", "sk", "es-419", "sv-SE", "th-TH",
-	// "tr", "uk", "vi", "auto_detect".
-	Language string `json:"language,omitzero"`
-	// This field can be elided, and will marshal its zero value as "Deepgram".
-	TranscriptionEngine constant.Deepgram `json:"transcription_engine,required"`
-	paramObj
-}
-
-func (r TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova2ConfigParam) MarshalJSON() (data []byte, err error) {
-	type shadow TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova2ConfigParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova2ConfigParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova2ConfigParam](
-		"transcription_model", "deepgram/nova-2",
-	)
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova2ConfigParam](
-		"language", "bg", "ca", "zh-CN", "zh-Hans", "zh-TW", "zh-Hant", "zh-HK", "cs", "da-DK", "nl-BE", "en-US", "en-AU", "en-GB", "en-NZ", "en-IN", "et", "fi", "fr", "fr-CA", "de-CH", "el", "hi", "hu", "id", "it", "ja", "ko-KR", "lv", "lt", "ms", "no", "pl", "pt-BR", "pt-PT", "ro", "ru", "sk", "es-419", "sv-SE", "th-TH", "tr", "uk", "vi", "auto_detect",
-	)
-}
-
-// The properties TranscriptionEngine, TranscriptionModel are required.
-type TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova3ConfigParam struct {
-	// Any of "deepgram/nova-3".
-	TranscriptionModel string `json:"transcription_model,omitzero,required"`
-	// Whether to send also interim results. If set to false, only final results will
-	// be sent.
-	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
-	// Number of milliseconds of silence to consider an utterance ended. Ranges from 0
-	// to 5000 ms.
-	UtteranceEndMs param.Opt[int64] `json:"utterance_end_ms,omitzero"`
-	// Keywords and their respective intensifiers (boosting values) to improve
-	// transcription accuracy for specific words or phrases. The intensifier should be
-	// a numeric value. Example: `{"snuffleupagus": 5, "systrom": 2, "krieger": 1}`.
-	KeywordsBoosting map[string]float64 `json:"keywords_boosting,omitzero"`
-	// Language to use for speech recognition with nova-3 model
-	//
-	// Any of "en-US", "en-AU", "en-GB", "en-IN", "en-NZ", "de", "nl", "sv-SE",
-	// "da-DK", "es", "es-419", "fr", "fr-CA", "pt-BR", "pt-PT", "auto_detect".
-	Language string `json:"language,omitzero"`
-	// This field can be elided, and will marshal its zero value as "Deepgram".
-	TranscriptionEngine constant.Deepgram `json:"transcription_engine,required"`
-	paramObj
-}
-
-func (r TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova3ConfigParam) MarshalJSON() (data []byte, err error) {
-	type shadow TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova3ConfigParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova3ConfigParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova3ConfigParam](
-		"transcription_model", "deepgram/nova-3",
-	)
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigDeepgramNova3ConfigParam](
-		"language", "en-US", "en-AU", "en-GB", "en-IN", "en-NZ", "de", "nl", "sv-SE", "da-DK", "es", "es-419", "fr", "fr-CA", "pt-BR", "pt-PT", "auto_detect",
 	)
 }
 
@@ -3596,10 +3675,10 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CallActionGatherUsingSpeakParamsVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam                         `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam                             `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam                                `json:",omitzero,inline"`
-	OfMinimax    *CallActionGatherUsingSpeakParamsVoiceSettingsMinimax `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam     `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam         `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam            `json:",omitzero,inline"`
+	OfMinimax    *shared.MinimaxVoiceSettingsParam `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -3642,7 +3721,7 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetVoiceSpeed() *flo
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetLanguageBoost() *string {
 	if vt := u.OfMinimax; vt != nil {
-		return &vt.LanguageBoost
+		return (*string)(&vt.LanguageBoost)
 	}
 	return nil
 }
@@ -3691,48 +3770,7 @@ func init() {
 		apijson.Discriminator[ElevenLabsVoiceSettingsParam]("elevenlabs"),
 		apijson.Discriminator[TelnyxVoiceSettingsParam]("telnyx"),
 		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
-		apijson.Discriminator[CallActionGatherUsingSpeakParamsVoiceSettingsMinimax]("minimax"),
-	)
-}
-
-// The property Type is required.
-type CallActionGatherUsingSpeakParamsVoiceSettingsMinimax struct {
-	// Voice pitch adjustment. Default is 0.
-	Pitch param.Opt[int64] `json:"pitch,omitzero"`
-	// Speech speed multiplier. Default is 1.0.
-	Speed param.Opt[float64] `json:"speed,omitzero"`
-	// Speech volume multiplier. Default is 1.0.
-	Vol param.Opt[float64] `json:"vol,omitzero"`
-	// Enhances recognition for specific languages and dialects during MiniMax TTS
-	// synthesis. Default is null (no boost). Set to 'auto' for automatic language
-	// detection.
-	//
-	// Any of "auto", "Chinese", "Chinese,Yue", "English", "Arabic", "Russian",
-	// "Spanish", "French", "Portuguese", "German", "Turkish", "Dutch", "Ukrainian",
-	// "Vietnamese", "Indonesian", "Japanese", "Italian", "Korean", "Thai", "Polish",
-	// "Romanian", "Greek", "Czech", "Finnish", "Hindi", "Bulgarian", "Danish",
-	// "Hebrew", "Malay", "Persian", "Slovak", "Swedish", "Croatian", "Filipino",
-	// "Hungarian", "Norwegian", "Slovenian", "Catalan", "Nynorsk", "Tamil",
-	// "Afrikaans".
-	LanguageBoost string `json:"language_boost,omitzero"`
-	// Voice settings provider type
-	//
-	// This field can be elided, and will marshal its zero value as "minimax".
-	Type constant.Minimax `json:"type,required"`
-	paramObj
-}
-
-func (r CallActionGatherUsingSpeakParamsVoiceSettingsMinimax) MarshalJSON() (data []byte, err error) {
-	type shadow CallActionGatherUsingSpeakParamsVoiceSettingsMinimax
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CallActionGatherUsingSpeakParamsVoiceSettingsMinimax) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[CallActionGatherUsingSpeakParamsVoiceSettingsMinimax](
-		"language_boost", "auto", "Chinese", "Chinese,Yue", "English", "Arabic", "Russian", "Spanish", "French", "Portuguese", "German", "Turkish", "Dutch", "Ukrainian", "Vietnamese", "Indonesian", "Japanese", "Italian", "Korean", "Thai", "Polish", "Romanian", "Greek", "Czech", "Finnish", "Hindi", "Bulgarian", "Danish", "Hebrew", "Malay", "Persian", "Slovak", "Swedish", "Croatian", "Filipino", "Hungarian", "Norwegian", "Slovenian", "Catalan", "Nynorsk", "Tamil", "Afrikaans",
+		apijson.Discriminator[shared.MinimaxVoiceSettingsParam]("minimax"),
 	)
 }
 
@@ -4070,10 +4108,10 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CallActionSpeakParamsVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam              `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam                  `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam                     `json:",omitzero,inline"`
-	OfMinimax    *CallActionSpeakParamsVoiceSettingsMinimax `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam     `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam         `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam            `json:",omitzero,inline"`
+	OfMinimax    *shared.MinimaxVoiceSettingsParam `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -4116,7 +4154,7 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 {
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionSpeakParamsVoiceSettingsUnion) GetLanguageBoost() *string {
 	if vt := u.OfMinimax; vt != nil {
-		return &vt.LanguageBoost
+		return (*string)(&vt.LanguageBoost)
 	}
 	return nil
 }
@@ -4165,48 +4203,7 @@ func init() {
 		apijson.Discriminator[ElevenLabsVoiceSettingsParam]("elevenlabs"),
 		apijson.Discriminator[TelnyxVoiceSettingsParam]("telnyx"),
 		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
-		apijson.Discriminator[CallActionSpeakParamsVoiceSettingsMinimax]("minimax"),
-	)
-}
-
-// The property Type is required.
-type CallActionSpeakParamsVoiceSettingsMinimax struct {
-	// Voice pitch adjustment. Default is 0.
-	Pitch param.Opt[int64] `json:"pitch,omitzero"`
-	// Speech speed multiplier. Default is 1.0.
-	Speed param.Opt[float64] `json:"speed,omitzero"`
-	// Speech volume multiplier. Default is 1.0.
-	Vol param.Opt[float64] `json:"vol,omitzero"`
-	// Enhances recognition for specific languages and dialects during MiniMax TTS
-	// synthesis. Default is null (no boost). Set to 'auto' for automatic language
-	// detection.
-	//
-	// Any of "auto", "Chinese", "Chinese,Yue", "English", "Arabic", "Russian",
-	// "Spanish", "French", "Portuguese", "German", "Turkish", "Dutch", "Ukrainian",
-	// "Vietnamese", "Indonesian", "Japanese", "Italian", "Korean", "Thai", "Polish",
-	// "Romanian", "Greek", "Czech", "Finnish", "Hindi", "Bulgarian", "Danish",
-	// "Hebrew", "Malay", "Persian", "Slovak", "Swedish", "Croatian", "Filipino",
-	// "Hungarian", "Norwegian", "Slovenian", "Catalan", "Nynorsk", "Tamil",
-	// "Afrikaans".
-	LanguageBoost string `json:"language_boost,omitzero"`
-	// Voice settings provider type
-	//
-	// This field can be elided, and will marshal its zero value as "minimax".
-	Type constant.Minimax `json:"type,required"`
-	paramObj
-}
-
-func (r CallActionSpeakParamsVoiceSettingsMinimax) MarshalJSON() (data []byte, err error) {
-	type shadow CallActionSpeakParamsVoiceSettingsMinimax
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CallActionSpeakParamsVoiceSettingsMinimax) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[CallActionSpeakParamsVoiceSettingsMinimax](
-		"language_boost", "auto", "Chinese", "Chinese,Yue", "English", "Arabic", "Russian", "Spanish", "French", "Portuguese", "German", "Turkish", "Dutch", "Ukrainian", "Vietnamese", "Indonesian", "Japanese", "Italian", "Korean", "Thai", "Polish", "Romanian", "Greek", "Czech", "Finnish", "Hindi", "Bulgarian", "Danish", "Hebrew", "Malay", "Persian", "Slovak", "Swedish", "Croatian", "Filipino", "Hungarian", "Norwegian", "Slovenian", "Catalan", "Nynorsk", "Tamil", "Afrikaans",
+		apijson.Discriminator[shared.MinimaxVoiceSettingsParam]("minimax"),
 	)
 }
 
