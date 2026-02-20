@@ -16,7 +16,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // ConferenceActionService contains methods and other services that help with
@@ -1282,10 +1282,10 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type ConferenceActionSpeakParamsVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam                    `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam                        `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam                           `json:",omitzero,inline"`
-	OfMinimax    *ConferenceActionSpeakParamsVoiceSettingsMinimax `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam     `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam         `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam            `json:",omitzero,inline"`
+	OfMinimax    *shared.MinimaxVoiceSettingsParam `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1328,7 +1328,7 @@ func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 
 // Returns a pointer to the underlying variant's property, if present.
 func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetLanguageBoost() *string {
 	if vt := u.OfMinimax; vt != nil {
-		return &vt.LanguageBoost
+		return (*string)(&vt.LanguageBoost)
 	}
 	return nil
 }
@@ -1377,48 +1377,7 @@ func init() {
 		apijson.Discriminator[ElevenLabsVoiceSettingsParam]("elevenlabs"),
 		apijson.Discriminator[TelnyxVoiceSettingsParam]("telnyx"),
 		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
-		apijson.Discriminator[ConferenceActionSpeakParamsVoiceSettingsMinimax]("minimax"),
-	)
-}
-
-// The property Type is required.
-type ConferenceActionSpeakParamsVoiceSettingsMinimax struct {
-	// Voice pitch adjustment. Default is 0.
-	Pitch param.Opt[int64] `json:"pitch,omitzero"`
-	// Speech speed multiplier. Default is 1.0.
-	Speed param.Opt[float64] `json:"speed,omitzero"`
-	// Speech volume multiplier. Default is 1.0.
-	Vol param.Opt[float64] `json:"vol,omitzero"`
-	// Enhances recognition for specific languages and dialects during MiniMax TTS
-	// synthesis. Default is null (no boost). Set to 'auto' for automatic language
-	// detection.
-	//
-	// Any of "auto", "Chinese", "Chinese,Yue", "English", "Arabic", "Russian",
-	// "Spanish", "French", "Portuguese", "German", "Turkish", "Dutch", "Ukrainian",
-	// "Vietnamese", "Indonesian", "Japanese", "Italian", "Korean", "Thai", "Polish",
-	// "Romanian", "Greek", "Czech", "Finnish", "Hindi", "Bulgarian", "Danish",
-	// "Hebrew", "Malay", "Persian", "Slovak", "Swedish", "Croatian", "Filipino",
-	// "Hungarian", "Norwegian", "Slovenian", "Catalan", "Nynorsk", "Tamil",
-	// "Afrikaans".
-	LanguageBoost string `json:"language_boost,omitzero"`
-	// Voice settings provider type
-	//
-	// This field can be elided, and will marshal its zero value as "minimax".
-	Type constant.Minimax `json:"type,required"`
-	paramObj
-}
-
-func (r ConferenceActionSpeakParamsVoiceSettingsMinimax) MarshalJSON() (data []byte, err error) {
-	type shadow ConferenceActionSpeakParamsVoiceSettingsMinimax
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ConferenceActionSpeakParamsVoiceSettingsMinimax) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ConferenceActionSpeakParamsVoiceSettingsMinimax](
-		"language_boost", "auto", "Chinese", "Chinese,Yue", "English", "Arabic", "Russian", "Spanish", "French", "Portuguese", "German", "Turkish", "Dutch", "Ukrainian", "Vietnamese", "Indonesian", "Japanese", "Italian", "Korean", "Thai", "Polish", "Romanian", "Greek", "Czech", "Finnish", "Hindi", "Bulgarian", "Danish", "Hebrew", "Malay", "Persian", "Slovak", "Swedish", "Croatian", "Filipino", "Hungarian", "Norwegian", "Slovenian", "Catalan", "Nynorsk", "Tamil", "Afrikaans",
+		apijson.Discriminator[shared.MinimaxVoiceSettingsParam]("minimax"),
 	)
 }
 
