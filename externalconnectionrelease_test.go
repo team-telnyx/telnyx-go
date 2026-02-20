@@ -30,7 +30,7 @@ func TestExternalConnectionReleaseGet(t *testing.T) {
 		context.TODO(),
 		"7b6a6449-b055-45a6-81f6-f6f0dffa4cc6",
 		telnyx.ExternalConnectionReleaseGetParams{
-			ID: "id",
+			ID: "1293384261075731499",
 		},
 	)
 	if err != nil {
@@ -57,7 +57,7 @@ func TestExternalConnectionReleaseListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.ExternalConnections.Releases.List(
 		context.TODO(),
-		"id",
+		"1293384261075731499",
 		telnyx.ExternalConnectionReleaseListParams{
 			Filter: telnyx.ExternalConnectionReleaseListParamsFilter{
 				CivicAddressID: telnyx.ExternalConnectionReleaseListParamsFilterCivicAddressID{

@@ -138,6 +138,8 @@ type TelephonyCredential struct {
 	SipUsername string `json:"sip_username"`
 	// ISO-8601 formatted date indicating when the resource was updated.
 	UpdatedAt string `json:"updated_at"`
+	// Identifies the user this credential is associated with.
+	UserID string `json:"user_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -150,6 +152,7 @@ type TelephonyCredential struct {
 		SipPassword respjson.Field
 		SipUsername respjson.Field
 		UpdatedAt   respjson.Field
+		UserID      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`

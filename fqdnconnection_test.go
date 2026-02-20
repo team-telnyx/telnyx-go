@@ -81,7 +81,7 @@ func TestFqdnConnectionNewWithOptionalParams(t *testing.T) {
 			IPAuthenticationMethod: telnyx.OutboundFqdnIPAuthenticationMethodCredentialAuthentication,
 			IPAuthenticationToken:  telnyx.String("aBcD1234"),
 			Localization:           telnyx.String("string"),
-			OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
+			OutboundVoiceProfileID: telnyx.String("1293384261075731499"),
 			T38ReinviteSource:      telnyx.OutboundFqdnT38ReinviteSourceCustomer,
 			TechPrefix:             telnyx.String("0123"),
 			Timeout1xxSecs:         telnyx.Int(10),
@@ -121,7 +121,7 @@ func TestFqdnConnectionGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.FqdnConnections.Get(context.TODO(), "id")
+	_, err := client.FqdnConnections.Get(context.TODO(), "1293384261075731499")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -146,7 +146,7 @@ func TestFqdnConnectionUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.FqdnConnections.Update(
 		context.TODO(),
-		"id",
+		"1293384261075731499",
 		telnyx.FqdnConnectionUpdateParams{
 			Active:                           telnyx.Bool(true),
 			AnchorsiteOverride:               telnyx.AnchorsiteOverrideLatency,
@@ -200,7 +200,7 @@ func TestFqdnConnectionUpdateWithOptionalParams(t *testing.T) {
 				IPAuthenticationMethod: telnyx.OutboundFqdnIPAuthenticationMethodCredentialAuthentication,
 				IPAuthenticationToken:  telnyx.String("ip_authentication_token"),
 				Localization:           telnyx.String("US"),
-				OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
+				OutboundVoiceProfileID: telnyx.String("1293384261075731499"),
 				T38ReinviteSource:      telnyx.OutboundFqdnT38ReinviteSourceTelnyx,
 				TechPrefix:             telnyx.String("tech_prefix"),
 				Timeout1xxSecs:         telnyx.Int(1),
@@ -247,7 +247,7 @@ func TestFqdnConnectionListWithOptionalParams(t *testing.T) {
 				Contains: telnyx.String("contains"),
 			},
 			Fqdn:                   telnyx.String("fqdn"),
-			OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
+			OutboundVoiceProfileID: telnyx.String("1293384261075731499"),
 		},
 		PageNumber: telnyx.Int(0),
 		PageSize:   telnyx.Int(0),
@@ -275,7 +275,7 @@ func TestFqdnConnectionDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.FqdnConnections.Delete(context.TODO(), "id")
+	_, err := client.FqdnConnections.Delete(context.TODO(), "1293384261075731499")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

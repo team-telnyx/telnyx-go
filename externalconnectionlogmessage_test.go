@@ -26,7 +26,7 @@ func TestExternalConnectionLogMessageGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ExternalConnections.LogMessages.Get(context.TODO(), "id")
+	_, err := client.ExternalConnections.LogMessages.Get(context.TODO(), "1293384261075731499")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -82,7 +82,7 @@ func TestExternalConnectionLogMessageDismiss(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ExternalConnections.LogMessages.Dismiss(context.TODO(), "id")
+	_, err := client.ExternalConnections.LogMessages.Dismiss(context.TODO(), "1293384261075731499")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

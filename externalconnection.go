@@ -147,7 +147,7 @@ func (r *ExternalConnectionService) UpdateLocation(ctx context.Context, location
 
 type ExternalConnection struct {
 	// Uniquely identifies the resource.
-	ID string `json:"id" format:"int64"`
+	ID string `json:"id"`
 	// Specifies whether the connection can be used.
 	Active bool `json:"active"`
 	// ISO 8601 formatted date indicating when the resource was created.
@@ -236,7 +236,7 @@ type ExternalConnectionOutbound struct {
 	// numbers associated with this connection.
 	ChannelLimit int64 `json:"channel_limit"`
 	// Identifies the associated outbound voice profile.
-	OutboundVoiceProfileID string `json:"outbound_voice_profile_id" format:"int64"`
+	OutboundVoiceProfileID string `json:"outbound_voice_profile_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ChannelLimit           respjson.Field
@@ -424,7 +424,7 @@ type ExternalConnectionNewParamsOutbound struct {
 	// numbers associated with this connection.
 	ChannelLimit param.Opt[int64] `json:"channel_limit,omitzero"`
 	// Identifies the associated outbound voice profile.
-	OutboundVoiceProfileID param.Opt[string] `json:"outbound_voice_profile_id,omitzero" format:"int64"`
+	OutboundVoiceProfileID param.Opt[string] `json:"outbound_voice_profile_id,omitzero"`
 	paramObj
 }
 
@@ -483,7 +483,7 @@ func (r *ExternalConnectionUpdateParams) UnmarshalJSON(data []byte) error {
 // The property OutboundVoiceProfileID is required.
 type ExternalConnectionUpdateParamsOutbound struct {
 	// Identifies the associated outbound voice profile.
-	OutboundVoiceProfileID string `json:"outbound_voice_profile_id,required" format:"int64"`
+	OutboundVoiceProfileID string `json:"outbound_voice_profile_id,required"`
 	// When set, this will limit the number of concurrent outbound calls to phone
 	// numbers associated with this connection.
 	ChannelLimit param.Opt[int64] `json:"channel_limit,omitzero"`

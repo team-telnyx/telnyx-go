@@ -54,7 +54,7 @@ func TestFqdnGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Fqdns.Get(context.TODO(), "id")
+	_, err := client.Fqdns.Get(context.TODO(), "1517907029795014409")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -79,7 +79,7 @@ func TestFqdnUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Fqdns.Update(
 		context.TODO(),
-		"id",
+		"1517907029795014409",
 		telnyx.FqdnUpdateParams{
 			ConnectionID:  telnyx.String("1516447646313612565"),
 			DNSRecordType: telnyx.String("a"),
@@ -141,7 +141,7 @@ func TestFqdnDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Fqdns.Delete(context.TODO(), "id")
+	_, err := client.Fqdns.Delete(context.TODO(), "1517907029795014409")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
