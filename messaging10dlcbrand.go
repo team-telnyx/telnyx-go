@@ -138,6 +138,29 @@ func (r *Messaging10dlcBrandService) GetFeedback(ctx context.Context, brandID st
 	return
 }
 
+// Query the status of an SMS OTP (One-Time Password) for Sole Proprietor brand
+// verification.
+//
+// This endpoint allows you to check the delivery and verification status of an OTP
+// sent during the Sole Proprietor brand verification process. You can query by
+// either:
+//
+// - `referenceId` - The reference ID returned when the OTP was initially triggered
+// - `brandId` - Query parameter for portal users to look up OTP status by Brand ID
+//
+// The response includes delivery status, verification dates, and detailed delivery
+// information.
+func (r *Messaging10dlcBrandService) GetSMSOtpByReference(ctx context.Context, referenceID string, query Messaging10dlcBrandGetSMSOtpByReferenceParams, opts ...option.RequestOption) (res *Messaging10dlcBrandGetSMSOtpByReferenceResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if referenceID == "" {
+		err = errors.New("missing required referenceId parameter")
+		return
+	}
+	path := fmt.Sprintf("10dlc/brand/smsOtp/%s", referenceID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
+}
+
 // Resend brand 2FA email
 func (r *Messaging10dlcBrandService) Resend2faEmail(ctx context.Context, brandID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -651,6 +674,46 @@ func (r *Messaging10dlcBrandGetFeedbackResponseCategory) UnmarshalJSON(data []by
 }
 
 // Status information for an SMS OTP sent during Sole Proprietor brand verification
+type Messaging10dlcBrandGetSMSOtpByReferenceResponse struct {
+	// The Brand ID associated with this OTP request
+	BrandID string `json:"brandId,required"`
+	// The current delivery status of the OTP SMS message. Common values include:
+	// `DELIVERED_HANDSET`, `PENDING`, `FAILED`, `EXPIRED`
+	DeliveryStatus string `json:"deliveryStatus,required"`
+	// The mobile phone number where the OTP was sent, in E.164 format
+	MobilePhone string `json:"mobilePhone,required"`
+	// The reference ID for this OTP request, used for status queries
+	ReferenceID string `json:"referenceId,required"`
+	// The timestamp when the OTP request was initiated
+	RequestDate time.Time `json:"requestDate,required" format:"date-time"`
+	// The timestamp when the delivery status was last updated
+	DeliveryStatusDate time.Time `json:"deliveryStatusDate" format:"date-time"`
+	// Additional details about the delivery status
+	DeliveryStatusDetails string `json:"deliveryStatusDetails"`
+	// The timestamp when the OTP was successfully verified (if applicable)
+	VerifyDate time.Time `json:"verifyDate" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BrandID               respjson.Field
+		DeliveryStatus        respjson.Field
+		MobilePhone           respjson.Field
+		ReferenceID           respjson.Field
+		RequestDate           respjson.Field
+		DeliveryStatusDate    respjson.Field
+		DeliveryStatusDetails respjson.Field
+		VerifyDate            respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Messaging10dlcBrandGetSMSOtpByReferenceResponse) RawJSON() string { return r.JSON.raw }
+func (r *Messaging10dlcBrandGetSMSOtpByReferenceResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Status information for an SMS OTP sent during Sole Proprietor brand verification
 type Messaging10dlcBrandGetSMSOtpStatusResponse struct {
 	// The Brand ID associated with this OTP request
 	BrandID string `json:"brandId,required"`
@@ -919,6 +982,21 @@ const (
 	Messaging10dlcBrandListParamsSortTcrBrandID                 Messaging10dlcBrandListParamsSort = "tcrBrandId"
 	Messaging10dlcBrandListParamsSortTcrBrandIDDesc             Messaging10dlcBrandListParamsSort = "-tcrBrandId"
 )
+
+type Messaging10dlcBrandGetSMSOtpByReferenceParams struct {
+	// Filter by Brand ID for easier lookup in portal applications
+	BrandID param.Opt[string] `query:"brandId,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [Messaging10dlcBrandGetSMSOtpByReferenceParams]'s query
+// parameters as `url.Values`.
+func (r Messaging10dlcBrandGetSMSOtpByReferenceParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
 
 type Messaging10dlcBrandTriggerSMSOtpParams struct {
 	// SMS message template to send the OTP. Must include `@OTP_PIN@` placeholder which
