@@ -1,5 +1,22 @@
 # Changelog
 
+## 4.29.0 (2026-02-18)
+
+Full Changelog: [v4.28.0...v4.29.0](https://github.com/team-telnyx/telnyx-go/compare/v4.28.0...v4.29.0)
+
+### Features
+
+* Add smart encoding fields to messaging API spec ([109b506](https://github.com/team-telnyx/telnyx-go/commit/109b5064f3d793b13daa1a0c321c44078f5342d9))
+* **api:** manual updates ([3a79955](https://github.com/team-telnyx/telnyx-go/commit/3a799553c1d33bb3f7e426d29ffc8b81b13735b7))
+* **api:** manual updates ([a5a42ff](https://github.com/team-telnyx/telnyx-go/commit/a5a42ffc85a8e41462ff83f005ae22c890310aa1))
+* **api:** manual updates ([2893c31](https://github.com/team-telnyx/telnyx-go/commit/2893c3117ead11141e37121ff7eea8425718a6b9))
+* **api:** manual updates ([99ede75](https://github.com/team-telnyx/telnyx-go/commit/99ede75268ac63f6a956fff647823b402ee23299))
+
+
+### Bug Fixes
+
+* add discriminator to TranscriptionEngineDeepgramConfig for Stainless SDK ([ec0f1c5](https://github.com/team-telnyx/telnyx-go/commit/ec0f1c5e632fe44478f75f795025980c10fd40d7))
+
 ## 4.28.0 (2026-02-18)
 
 Full Changelog: [v4.27.0...v4.28.0](https://github.com/team-telnyx/telnyx-go/compare/v4.27.0...v4.28.0)

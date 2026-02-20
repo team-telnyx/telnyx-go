@@ -169,6 +169,11 @@ type OutboundMessagePayload struct {
 	RecordType OutboundMessagePayloadRecordType `json:"record_type"`
 	// ISO 8601 formatted date indicating when the message was sent.
 	SentAt time.Time `json:"sent_at,nullable" format:"date-time"`
+	// Indicates whether smart encoding was applied to this message. When `true`, one
+	// or more Unicode characters were automatically replaced with GSM-7 equivalents to
+	// reduce segment count and cost. The original message text is preserved in
+	// webhooks.
+	SmartEncodingApplied bool `json:"smart_encoding_applied"`
 	// Subject of multimedia message
 	Subject string `json:"subject,nullable"`
 	// Tags associated with the resource.
@@ -215,6 +220,7 @@ type OutboundMessagePayload struct {
 		ReceivedAt            respjson.Field
 		RecordType            respjson.Field
 		SentAt                respjson.Field
+		SmartEncodingApplied  respjson.Field
 		Subject               respjson.Field
 		Tags                  respjson.Field
 		TcrCampaignBillable   respjson.Field
@@ -1369,19 +1375,21 @@ type MessageGetResponseDataUnion struct {
 	From MessageGetResponseDataUnionFrom `json:"from"`
 	// This field is a union of [[]OutboundMessagePayloadMedia],
 	// [[]shared.InboundMessagePayloadMedia]
-	Media                 MessageGetResponseDataUnionMedia `json:"media"`
-	MessagingProfileID    string                           `json:"messaging_profile_id"`
-	OrganizationID        string                           `json:"organization_id"`
-	Parts                 int64                            `json:"parts"`
-	ReceivedAt            time.Time                        `json:"received_at"`
-	RecordType            string                           `json:"record_type"`
-	SentAt                time.Time                        `json:"sent_at"`
-	Subject               string                           `json:"subject"`
-	Tags                  []string                         `json:"tags"`
-	TcrCampaignBillable   bool                             `json:"tcr_campaign_billable"`
-	TcrCampaignID         string                           `json:"tcr_campaign_id"`
-	TcrCampaignRegistered string                           `json:"tcr_campaign_registered"`
-	Text                  string                           `json:"text"`
+	Media              MessageGetResponseDataUnionMedia `json:"media"`
+	MessagingProfileID string                           `json:"messaging_profile_id"`
+	OrganizationID     string                           `json:"organization_id"`
+	Parts              int64                            `json:"parts"`
+	ReceivedAt         time.Time                        `json:"received_at"`
+	RecordType         string                           `json:"record_type"`
+	SentAt             time.Time                        `json:"sent_at"`
+	// This field is from variant [OutboundMessagePayload].
+	SmartEncodingApplied  bool     `json:"smart_encoding_applied"`
+	Subject               string   `json:"subject"`
+	Tags                  []string `json:"tags"`
+	TcrCampaignBillable   bool     `json:"tcr_campaign_billable"`
+	TcrCampaignID         string   `json:"tcr_campaign_id"`
+	TcrCampaignRegistered string   `json:"tcr_campaign_registered"`
+	Text                  string   `json:"text"`
 	// This field is a union of [[]OutboundMessagePayloadTo],
 	// [[]shared.InboundMessagePayloadTo]
 	To                 MessageGetResponseDataUnionTo `json:"to"`
@@ -1406,6 +1414,7 @@ type MessageGetResponseDataUnion struct {
 		ReceivedAt            respjson.Field
 		RecordType            respjson.Field
 		SentAt                respjson.Field
+		SmartEncodingApplied  respjson.Field
 		Subject               respjson.Field
 		Tags                  respjson.Field
 		TcrCampaignBillable   respjson.Field
@@ -1691,6 +1700,11 @@ type MessageCancelScheduledResponse struct {
 	RecordType MessageCancelScheduledResponseRecordType `json:"record_type"`
 	// ISO 8601 formatted date indicating when the message was sent.
 	SentAt time.Time `json:"sent_at,nullable" format:"date-time"`
+	// Indicates whether smart encoding was applied to this message. When `true`, one
+	// or more Unicode characters were automatically replaced with GSM-7 equivalents to
+	// reduce segment count and cost. The original message text is preserved in
+	// webhooks.
+	SmartEncodingApplied bool `json:"smart_encoding_applied"`
 	// Subject of multimedia message
 	Subject string `json:"subject,nullable"`
 	// Tags associated with the resource.
@@ -1737,6 +1751,7 @@ type MessageCancelScheduledResponse struct {
 		ReceivedAt            respjson.Field
 		RecordType            respjson.Field
 		SentAt                respjson.Field
+		SmartEncodingApplied  respjson.Field
 		Subject               respjson.Field
 		Tags                  respjson.Field
 		TcrCampaignBillable   respjson.Field
@@ -2818,6 +2833,14 @@ type MessageSendParams struct {
 	WebhookFailoverURL param.Opt[string] `json:"webhook_failover_url,omitzero" format:"url"`
 	// The URL where webhooks related to this message will be sent.
 	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	// Encoding to use for the message. `auto` (default) uses smart encoding to
+	// automatically select the most efficient encoding. `gsm7` forces GSM-7 encoding
+	// (returns 400 if message contains characters that cannot be encoded). `ucs2`
+	// forces UCS-2 encoding and disables smart encoding. When set, this overrides the
+	// messaging profile's `smart_encoding` setting.
+	//
+	// Any of "auto", "gsm7", "ucs2".
+	Encoding MessageSendParamsEncoding `json:"encoding,omitzero"`
 	// A list of media URLs. The total media size must be less than 1 MB.
 	//
 	// **Required for MMS**
@@ -2836,6 +2859,19 @@ func (r MessageSendParams) MarshalJSON() (data []byte, err error) {
 func (r *MessageSendParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Encoding to use for the message. `auto` (default) uses smart encoding to
+// automatically select the most efficient encoding. `gsm7` forces GSM-7 encoding
+// (returns 400 if message contains characters that cannot be encoded). `ucs2`
+// forces UCS-2 encoding and disables smart encoding. When set, this overrides the
+// messaging profile's `smart_encoding` setting.
+type MessageSendParamsEncoding string
+
+const (
+	MessageSendParamsEncodingAuto MessageSendParamsEncoding = "auto"
+	MessageSendParamsEncodingGsm7 MessageSendParamsEncoding = "gsm7"
+	MessageSendParamsEncodingUcs2 MessageSendParamsEncoding = "ucs2"
+)
 
 // The protocol for sending the message, either SMS or MMS.
 type MessageSendParamsType string
@@ -2899,6 +2935,14 @@ type MessageSendLongCodeParams struct {
 	WebhookFailoverURL param.Opt[string] `json:"webhook_failover_url,omitzero" format:"url"`
 	// The URL where webhooks related to this message will be sent.
 	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	// Encoding to use for the message. `auto` (default) uses smart encoding to
+	// automatically select the most efficient encoding. `gsm7` forces GSM-7 encoding
+	// (returns 400 if message contains characters that cannot be encoded). `ucs2`
+	// forces UCS-2 encoding and disables smart encoding. When set, this overrides the
+	// messaging profile's `smart_encoding` setting.
+	//
+	// Any of "auto", "gsm7", "ucs2".
+	Encoding MessageSendLongCodeParamsEncoding `json:"encoding,omitzero"`
 	// A list of media URLs. The total media size must be less than 1 MB.
 	//
 	// **Required for MMS**
@@ -2917,6 +2961,19 @@ func (r MessageSendLongCodeParams) MarshalJSON() (data []byte, err error) {
 func (r *MessageSendLongCodeParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Encoding to use for the message. `auto` (default) uses smart encoding to
+// automatically select the most efficient encoding. `gsm7` forces GSM-7 encoding
+// (returns 400 if message contains characters that cannot be encoded). `ucs2`
+// forces UCS-2 encoding and disables smart encoding. When set, this overrides the
+// messaging profile's `smart_encoding` setting.
+type MessageSendLongCodeParamsEncoding string
+
+const (
+	MessageSendLongCodeParamsEncodingAuto MessageSendLongCodeParamsEncoding = "auto"
+	MessageSendLongCodeParamsEncodingGsm7 MessageSendLongCodeParamsEncoding = "gsm7"
+	MessageSendLongCodeParamsEncodingUcs2 MessageSendLongCodeParamsEncoding = "ucs2"
+)
 
 // The protocol for sending the message, either SMS or MMS.
 type MessageSendLongCodeParamsType string
@@ -2949,6 +3006,14 @@ type MessageSendNumberPoolParams struct {
 	WebhookFailoverURL param.Opt[string] `json:"webhook_failover_url,omitzero" format:"url"`
 	// The URL where webhooks related to this message will be sent.
 	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	// Encoding to use for the message. `auto` (default) uses smart encoding to
+	// automatically select the most efficient encoding. `gsm7` forces GSM-7 encoding
+	// (returns 400 if message contains characters that cannot be encoded). `ucs2`
+	// forces UCS-2 encoding and disables smart encoding. When set, this overrides the
+	// messaging profile's `smart_encoding` setting.
+	//
+	// Any of "auto", "gsm7", "ucs2".
+	Encoding MessageSendNumberPoolParamsEncoding `json:"encoding,omitzero"`
 	// A list of media URLs. The total media size must be less than 1 MB.
 	//
 	// **Required for MMS**
@@ -2967,6 +3032,19 @@ func (r MessageSendNumberPoolParams) MarshalJSON() (data []byte, err error) {
 func (r *MessageSendNumberPoolParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Encoding to use for the message. `auto` (default) uses smart encoding to
+// automatically select the most efficient encoding. `gsm7` forces GSM-7 encoding
+// (returns 400 if message contains characters that cannot be encoded). `ucs2`
+// forces UCS-2 encoding and disables smart encoding. When set, this overrides the
+// messaging profile's `smart_encoding` setting.
+type MessageSendNumberPoolParamsEncoding string
+
+const (
+	MessageSendNumberPoolParamsEncodingAuto MessageSendNumberPoolParamsEncoding = "auto"
+	MessageSendNumberPoolParamsEncodingGsm7 MessageSendNumberPoolParamsEncoding = "gsm7"
+	MessageSendNumberPoolParamsEncodingUcs2 MessageSendNumberPoolParamsEncoding = "ucs2"
+)
 
 // The protocol for sending the message, either SMS or MMS.
 type MessageSendNumberPoolParamsType string
@@ -2999,6 +3077,14 @@ type MessageSendShortCodeParams struct {
 	WebhookFailoverURL param.Opt[string] `json:"webhook_failover_url,omitzero" format:"url"`
 	// The URL where webhooks related to this message will be sent.
 	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	// Encoding to use for the message. `auto` (default) uses smart encoding to
+	// automatically select the most efficient encoding. `gsm7` forces GSM-7 encoding
+	// (returns 400 if message contains characters that cannot be encoded). `ucs2`
+	// forces UCS-2 encoding and disables smart encoding. When set, this overrides the
+	// messaging profile's `smart_encoding` setting.
+	//
+	// Any of "auto", "gsm7", "ucs2".
+	Encoding MessageSendShortCodeParamsEncoding `json:"encoding,omitzero"`
 	// A list of media URLs. The total media size must be less than 1 MB.
 	//
 	// **Required for MMS**
@@ -3017,6 +3103,19 @@ func (r MessageSendShortCodeParams) MarshalJSON() (data []byte, err error) {
 func (r *MessageSendShortCodeParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Encoding to use for the message. `auto` (default) uses smart encoding to
+// automatically select the most efficient encoding. `gsm7` forces GSM-7 encoding
+// (returns 400 if message contains characters that cannot be encoded). `ucs2`
+// forces UCS-2 encoding and disables smart encoding. When set, this overrides the
+// messaging profile's `smart_encoding` setting.
+type MessageSendShortCodeParamsEncoding string
+
+const (
+	MessageSendShortCodeParamsEncodingAuto MessageSendShortCodeParamsEncoding = "auto"
+	MessageSendShortCodeParamsEncodingGsm7 MessageSendShortCodeParamsEncoding = "gsm7"
+	MessageSendShortCodeParamsEncodingUcs2 MessageSendShortCodeParamsEncoding = "ucs2"
+)
 
 // The protocol for sending the message, either SMS or MMS.
 type MessageSendShortCodeParamsType string
