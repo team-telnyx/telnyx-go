@@ -303,7 +303,7 @@ type InboundFqdn struct {
 	Codecs []string `json:"codecs"`
 	// The default primary FQDN to use for the number. Only settable if the connection
 	// is of FQDN type. Value must be the ID of an FQDN set on the connection.
-	DefaultPrimaryFqdnID string `json:"default_primary_fqdn_id,nullable" format:"int64"`
+	DefaultPrimaryFqdnID string `json:"default_primary_fqdn_id,nullable"`
 	// Default routing method to be used when a number is associated with the
 	// connection. Must be one of the routing method types or null, other values are
 	// not allowed.
@@ -313,10 +313,10 @@ type InboundFqdn struct {
 	// The default secondary FQDN to use for the number. Only settable if the
 	// connection is of FQDN type. Value must be the ID of an FQDN set on the
 	// connection.
-	DefaultSecondaryFqdnID string `json:"default_secondary_fqdn_id,nullable" format:"int64"`
+	DefaultSecondaryFqdnID string `json:"default_secondary_fqdn_id,nullable"`
 	// The default tertiary FQDN to use for the number. Only settable if the connection
 	// is of FQDN type. Value must be the ID of an FQDN set on the connection.
-	DefaultTertiaryFqdnID string `json:"default_tertiary_fqdn_id,nullable" format:"int64"`
+	DefaultTertiaryFqdnID string `json:"default_tertiary_fqdn_id,nullable"`
 	// Any of "+e164", "e164", "national", "sip_username".
 	DnisNumberFormat InboundFqdnDnisNumberFormat `json:"dnis_number_format"`
 	// Generate ringback tone through 183 session progress message with early media.
@@ -450,14 +450,14 @@ type InboundFqdnParam struct {
 	ChannelLimit param.Opt[int64] `json:"channel_limit,omitzero"`
 	// The default primary FQDN to use for the number. Only settable if the connection
 	// is of FQDN type. Value must be the ID of an FQDN set on the connection.
-	DefaultPrimaryFqdnID param.Opt[string] `json:"default_primary_fqdn_id,omitzero" format:"int64"`
+	DefaultPrimaryFqdnID param.Opt[string] `json:"default_primary_fqdn_id,omitzero"`
 	// The default secondary FQDN to use for the number. Only settable if the
 	// connection is of FQDN type. Value must be the ID of an FQDN set on the
 	// connection.
-	DefaultSecondaryFqdnID param.Opt[string] `json:"default_secondary_fqdn_id,omitzero" format:"int64"`
+	DefaultSecondaryFqdnID param.Opt[string] `json:"default_secondary_fqdn_id,omitzero"`
 	// The default tertiary FQDN to use for the number. Only settable if the connection
 	// is of FQDN type. Value must be the ID of an FQDN set on the connection.
-	DefaultTertiaryFqdnID param.Opt[string] `json:"default_tertiary_fqdn_id,omitzero" format:"int64"`
+	DefaultTertiaryFqdnID param.Opt[string] `json:"default_tertiary_fqdn_id,omitzero"`
 	// Specifies a subdomain that can be used to receive Inbound calls to a Connection,
 	// in the same way a phone number is used, from a SIP endpoint. Example: the
 	// subdomain "example.sip.telnyx.com" can be called from any SIP endpoint by using

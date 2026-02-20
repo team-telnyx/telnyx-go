@@ -135,7 +135,7 @@ func (r *MessageService) SendWhatsapp(ctx context.Context, body MessageSendWhats
 }
 
 type MessagingError struct {
-	Code   string               `json:"code,required" format:"integer"`
+	Code   string               `json:"code,required"`
 	Title  string               `json:"title,required"`
 	Detail string               `json:"detail"`
 	Meta   map[string]any       `json:"meta"`
@@ -431,7 +431,7 @@ func (r *OutboundMessagePayloadFrom) UnmarshalJSON(data []byte) error {
 
 type OutboundMessagePayloadMedia struct {
 	// The MIME type of the requested media.
-	ContentType string `json:"content_type,nullable" format:"mime-type"`
+	ContentType string `json:"content_type,nullable"`
 	// The SHA256 hash of the requested media.
 	Sha256 string `json:"sha256,nullable"`
 	// The size of the requested media.
@@ -1964,7 +1964,7 @@ func (r *MessageCancelScheduledResponseFrom) UnmarshalJSON(data []byte) error {
 
 type MessageCancelScheduledResponseMedia struct {
 	// The MIME type of the requested media.
-	ContentType string `json:"content_type,nullable" format:"mime-type"`
+	ContentType string `json:"content_type,nullable"`
 	// The SHA256 hash of the requested media.
 	Sha256 string `json:"sha256,nullable"`
 	// The size of the requested media.
