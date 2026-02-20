@@ -134,6 +134,7 @@ func TestTexmlAccountConferenceParticipantParticipantsWithOptionalParams(t *test
 			AccountSid:                              "account_sid",
 			AmdStatusCallback:                       telnyx.String("https://www.example.com/amd_result"),
 			AmdStatusCallbackMethod:                 telnyx.TexmlAccountConferenceParticipantParticipantsParamsAmdStatusCallbackMethodGet,
+			ApplicationSid:                          telnyx.String("1846572522338780702"),
 			Beep:                                    telnyx.TexmlAccountConferenceParticipantParticipantsParamsBeepOnExit,
 			CallerID:                                telnyx.String("Info"),
 			CallSidToCoach:                          telnyx.String("v3:9X2vxPDFY2RHSJ1EdMS0RHRksMTg7ldNxdjWbVr9zBjbGjGsSe-aiQ"),
