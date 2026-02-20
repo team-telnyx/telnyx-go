@@ -750,7 +750,7 @@ type TexmlAccountCallCallsParams struct {
 	// The number of seconds to wait for the called party to answer the call before the
 	// call is canceled. The minimum value is 5 and the maximum value is 120. Default
 	// is 30 seconds.
-	Timeout param.Opt[int64] `json:"Timeout,omitzero"`
+	TimeoutSeconds param.Opt[int64] `json:"Timeout,omitzero"`
 	// The URL from which Telnyx will retrieve the TeXML call instructions.
 	URL param.Opt[string] `json:"Url,omitzero"`
 	// HTTP request type used for `AsyncAmdStatusCallback`. The default value is

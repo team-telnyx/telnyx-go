@@ -137,7 +137,7 @@ func TestTexmlAccountCallCallsWithOptionalParams(t *testing.T) {
 			SupervisingRole:                    telnyx.TexmlAccountCallCallsParamsSupervisingRoleMonitor,
 			Texml:                              telnyx.String(`<?xml version="1.0" encoding="UTF-8"?><Response><Say>Hello</Say></Response>`),
 			TimeLimit:                          telnyx.Int(3600),
-			Timeout:                            telnyx.Int(60),
+			TimeoutSeconds:                     telnyx.Int(60),
 			Trim:                               telnyx.TexmlAccountCallCallsParamsTrimTrimSilence,
 			URL:                                telnyx.String("https://www.example.com/texml.xml"),
 			URLMethod:                          telnyx.TexmlAccountCallCallsParamsURLMethodGet,
