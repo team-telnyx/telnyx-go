@@ -30,7 +30,7 @@ func TestExternalConnectionNewWithOptionalParams(t *testing.T) {
 		ExternalSipConnection: telnyx.ExternalConnectionNewParamsExternalSipConnectionZoom,
 		Outbound: telnyx.ExternalConnectionNewParamsOutbound{
 			ChannelLimit:           telnyx.Int(10),
-			OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
+			OutboundVoiceProfileID: telnyx.String("1911630617284445511"),
 		},
 		Active: telnyx.Bool(false),
 		Inbound: telnyx.ExternalConnectionNewParamsInbound{
@@ -64,7 +64,7 @@ func TestExternalConnectionGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ExternalConnections.Get(context.TODO(), "id")
+	_, err := client.ExternalConnections.Get(context.TODO(), "1293384261075731499")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -89,10 +89,10 @@ func TestExternalConnectionUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.ExternalConnections.Update(
 		context.TODO(),
-		"id",
+		"1293384261075731499",
 		telnyx.ExternalConnectionUpdateParams{
 			Outbound: telnyx.ExternalConnectionUpdateParamsOutbound{
-				OutboundVoiceProfileID: "outbound_voice_profile_id",
+				OutboundVoiceProfileID: "1911630617284445511",
 				ChannelLimit:           telnyx.Int(10),
 			},
 			Active: telnyx.Bool(false),
@@ -164,7 +164,7 @@ func TestExternalConnectionDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ExternalConnections.Delete(context.TODO(), "id")
+	_, err := client.ExternalConnections.Delete(context.TODO(), "1293384261075731499")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

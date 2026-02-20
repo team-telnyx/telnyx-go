@@ -157,7 +157,7 @@ type AuthenticationProviderSettings struct {
 	// The Assertion Consumer Service URL for the service provider (Telnyx).
 	AssertionConsumerServiceURL string `json:"assertion_consumer_service_url" format:"uri"`
 	// Mapping of SAML attribute names used by the identity provider (IdP).
-	IdpAttributeNames map[string]any `json:"idp_attribute_names"`
+	IdpAttributeNames any `json:"idp_attribute_names"`
 	// The certificate fingerprint for the identity provider (IdP)
 	IdpCertFingerprint string `json:"idp_cert_fingerprint"`
 	// The algorithm used to generate the identity provider's (IdP) certificate

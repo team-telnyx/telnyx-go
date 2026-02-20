@@ -48,7 +48,7 @@ func TestConferenceActionUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestConferenceActionEndWithOptionalParams(t *testing.T) {
+func TestConferenceActionEndConferenceWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -61,10 +61,10 @@ func TestConferenceActionEndWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Conferences.Actions.End(
+	_, err := client.Conferences.Actions.EndConference(
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-		telnyx.ConferenceActionEndParams{
+		telnyx.ConferenceActionEndConferenceParams{
 			CommandID: telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
 		},
 	)
@@ -77,7 +77,7 @@ func TestConferenceActionEndWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestConferenceActionGatherUsingAudioWithOptionalParams(t *testing.T) {
+func TestConferenceActionGatherDtmfAudioWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -90,10 +90,10 @@ func TestConferenceActionGatherUsingAudioWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Conferences.Actions.GatherUsingAudio(
+	_, err := client.Conferences.Actions.GatherDtmfAudio(
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-		telnyx.ConferenceActionGatherUsingAudioParams{
+		telnyx.ConferenceActionGatherDtmfAudioParams{
 			CallControlID:           "v3:MdI91X4lWFEs7IgbBEOT9M4AigoY08M0WWZFISt1Yw2axZ_IiE4pqg",
 			AudioURL:                telnyx.String("http://example.com/gather_prompt.wav"),
 			ClientState:             telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),

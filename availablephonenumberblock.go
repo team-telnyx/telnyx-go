@@ -65,19 +65,19 @@ func (r *AvailablePhoneNumberBlockListResponse) UnmarshalJSON(data []byte) error
 type AvailablePhoneNumberBlockListResponseData struct {
 	CostInformation AvailablePhoneNumberBlockListResponseDataCostInformation `json:"cost_information"`
 	Features        []AvailablePhoneNumberBlockListResponseDataFeature       `json:"features"`
+	PhoneNumber     string                                                   `json:"phone_number"`
 	Range           int64                                                    `json:"range"`
 	// Any of "available_phone_number_block".
 	RecordType        string                                                       `json:"record_type"`
 	RegionInformation []AvailablePhoneNumberBlockListResponseDataRegionInformation `json:"region_information"`
-	StartingNumber    string                                                       `json:"starting_number"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CostInformation   respjson.Field
 		Features          respjson.Field
+		PhoneNumber       respjson.Field
 		Range             respjson.Field
 		RecordType        respjson.Field
 		RegionInformation respjson.Field
-		StartingNumber    respjson.Field
 		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`

@@ -348,7 +348,7 @@ func (r *InboundIPParam) UnmarshalJSON(data []byte) error {
 
 type IPConnection struct {
 	// Identifies the type of resource.
-	ID string `json:"id" format:"int64"`
+	ID string `json:"id"`
 	// Defaults to true
 	Active bool `json:"active"`
 	// `Latency` directs Telnyx to route media through the site with the lowest
@@ -535,7 +535,7 @@ type OutboundIP struct {
 	// dialing rules, in that order, by default.
 	Localization string `json:"localization"`
 	// Identifies the associated outbound voice profile.
-	OutboundVoiceProfileID string `json:"outbound_voice_profile_id" format:"int64"`
+	OutboundVoiceProfileID string `json:"outbound_voice_profile_id"`
 	// This setting only affects connections with Fax-type Outbound Voice Profiles. The
 	// setting dictates whether or not Telnyx sends a t.38 reinvite.<br/><br/> By
 	// default, Telnyx will send the re-invite. If set to `customer`, the caller is
@@ -636,7 +636,7 @@ type OutboundIPParam struct {
 	// dialing rules, in that order, by default.
 	Localization param.Opt[string] `json:"localization,omitzero"`
 	// Identifies the associated outbound voice profile.
-	OutboundVoiceProfileID param.Opt[string] `json:"outbound_voice_profile_id,omitzero" format:"int64"`
+	OutboundVoiceProfileID param.Opt[string] `json:"outbound_voice_profile_id,omitzero"`
 	// Numerical chars only, exactly 4 characters.
 	TechPrefix param.Opt[string] `json:"tech_prefix,omitzero"`
 	// Specifies when we apply your ani_override setting. Only applies when
@@ -1101,7 +1101,7 @@ type IPConnectionListParamsFilter struct {
 	// returned. Matching is case-sensitive, and the full string must match.
 	Fqdn param.Opt[string] `query:"fqdn,omitzero" json:"-"`
 	// Identifies the associated outbound voice profile.
-	OutboundVoiceProfileID param.Opt[string] `query:"outbound_voice_profile_id,omitzero" format:"int64" json:"-"`
+	OutboundVoiceProfileID param.Opt[string] `query:"outbound_voice_profile_id,omitzero" json:"-"`
 	// Filter by connection_name using nested operations
 	ConnectionName IPConnectionListParamsFilterConnectionName `query:"connection_name,omitzero" json:"-"`
 	paramObj

@@ -90,9 +90,11 @@ type NumberReservation struct {
 	// An ISO 8901 datetime string denoting when the numbers reservation was created.
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// A customer reference string for customer look ups.
-	CustomerReference string                `json:"customer_reference"`
-	PhoneNumbers      []ReservedPhoneNumber `json:"phone_numbers"`
-	RecordType        string                `json:"record_type"`
+	CustomerReference string `json:"customer_reference"`
+	// Errors the reservation could happen upon
+	Errors       string                `json:"errors"`
+	PhoneNumbers []ReservedPhoneNumber `json:"phone_numbers"`
+	RecordType   string                `json:"record_type"`
 	// The status of the entire reservation.
 	//
 	// Any of "pending", "success", "failure".
@@ -104,6 +106,7 @@ type NumberReservation struct {
 		ID                respjson.Field
 		CreatedAt         respjson.Field
 		CustomerReference respjson.Field
+		Errors            respjson.Field
 		PhoneNumbers      respjson.Field
 		RecordType        respjson.Field
 		Status            respjson.Field
@@ -133,6 +136,8 @@ type ReservedPhoneNumber struct {
 	// An ISO 8901 datetime string denoting when the individual number reservation was
 	// created.
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Errors the reservation could happen upon
+	Errors string `json:"errors"`
 	// An ISO 8901 datetime string for when the individual number reservation is going
 	// to expire
 	ExpiredAt   time.Time `json:"expired_at" format:"date-time"`
@@ -149,6 +154,7 @@ type ReservedPhoneNumber struct {
 	JSON struct {
 		ID          respjson.Field
 		CreatedAt   respjson.Field
+		Errors      respjson.Field
 		ExpiredAt   respjson.Field
 		PhoneNumber respjson.Field
 		RecordType  respjson.Field

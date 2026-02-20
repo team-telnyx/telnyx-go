@@ -51,7 +51,7 @@ func (r *ConferenceActionService) Update(ctx context.Context, id string, body Co
 }
 
 // End a conference and terminate all active participants.
-func (r *ConferenceActionService) End(ctx context.Context, id string, body ConferenceActionEndParams, opts ...option.RequestOption) (res *ConferenceActionEndResponse, err error) {
+func (r *ConferenceActionService) EndConference(ctx context.Context, id string, body ConferenceActionEndConferenceParams, opts ...option.RequestOption) (res *ConferenceActionEndConferenceResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -63,7 +63,7 @@ func (r *ConferenceActionService) End(ctx context.Context, id string, body Confe
 }
 
 // Play an audio file to a specific conference participant and gather DTMF input.
-func (r *ConferenceActionService) GatherUsingAudio(ctx context.Context, id string, body ConferenceActionGatherUsingAudioParams, opts ...option.RequestOption) (res *ConferenceActionGatherUsingAudioResponse, err error) {
+func (r *ConferenceActionService) GatherDtmfAudio(ctx context.Context, id string, body ConferenceActionGatherDtmfAudioParams, opts ...option.RequestOption) (res *ConferenceActionGatherDtmfAudioResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -357,7 +357,7 @@ func (r *ConferenceActionUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ConferenceActionEndResponse struct {
+type ConferenceActionEndConferenceResponse struct {
 	Data ConferenceCommandResult `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -368,12 +368,12 @@ type ConferenceActionEndResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ConferenceActionEndResponse) RawJSON() string { return r.JSON.raw }
-func (r *ConferenceActionEndResponse) UnmarshalJSON(data []byte) error {
+func (r ConferenceActionEndConferenceResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConferenceActionEndConferenceResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ConferenceActionGatherUsingAudioResponse struct {
+type ConferenceActionGatherDtmfAudioResponse struct {
 	Data ConferenceCommandResult `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -384,8 +384,8 @@ type ConferenceActionGatherUsingAudioResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ConferenceActionGatherUsingAudioResponse) RawJSON() string { return r.JSON.raw }
-func (r *ConferenceActionGatherUsingAudioResponse) UnmarshalJSON(data []byte) error {
+func (r ConferenceActionGatherDtmfAudioResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConferenceActionGatherDtmfAudioResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -625,22 +625,22 @@ func (r *ConferenceActionUpdateParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.UpdateConference)
 }
 
-type ConferenceActionEndParams struct {
+type ConferenceActionEndConferenceParams struct {
 	// Use this field to avoid duplicate commands. Telnyx will ignore any command with
 	// the same `command_id` for the same conference.
 	CommandID param.Opt[string] `json:"command_id,omitzero"`
 	paramObj
 }
 
-func (r ConferenceActionEndParams) MarshalJSON() (data []byte, err error) {
-	type shadow ConferenceActionEndParams
+func (r ConferenceActionEndConferenceParams) MarshalJSON() (data []byte, err error) {
+	type shadow ConferenceActionEndConferenceParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ConferenceActionEndParams) UnmarshalJSON(data []byte) error {
+func (r *ConferenceActionEndConferenceParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ConferenceActionGatherUsingAudioParams struct {
+type ConferenceActionGatherDtmfAudioParams struct {
 	// Unique identifier and token for controlling the call leg that will receive the
 	// gather prompt.
 	CallControlID string `json:"call_control_id,required"`
@@ -681,11 +681,11 @@ type ConferenceActionGatherUsingAudioParams struct {
 	paramObj
 }
 
-func (r ConferenceActionGatherUsingAudioParams) MarshalJSON() (data []byte, err error) {
-	type shadow ConferenceActionGatherUsingAudioParams
+func (r ConferenceActionGatherDtmfAudioParams) MarshalJSON() (data []byte, err error) {
+	type shadow ConferenceActionGatherDtmfAudioParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ConferenceActionGatherUsingAudioParams) UnmarshalJSON(data []byte) error {
+func (r *ConferenceActionGatherDtmfAudioParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

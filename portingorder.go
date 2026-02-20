@@ -245,6 +245,8 @@ type PortingOrder struct {
 	//
 	// Any of "landline", "local", "mobile", "national", "shared_cost", "toll_free".
 	PhoneNumberType PortingOrderPhoneNumberType `json:"phone_number_type"`
+	// List of phone numbers associated with this porting order
+	PhoneNumbers []PortingOrderPhoneNumber `json:"phone_numbers"`
 	// Count of phone numbers associated with this porting order
 	PortingPhoneNumbersCount int64 `json:"porting_phone_numbers_count"`
 	// Identifies the type of the resource.
@@ -282,6 +284,7 @@ type PortingOrder struct {
 		ParentSupportKey         respjson.Field
 		PhoneNumberConfiguration respjson.Field
 		PhoneNumberType          respjson.Field
+		PhoneNumbers             respjson.Field
 		PortingPhoneNumbersCount respjson.Field
 		RecordType               respjson.Field
 		Requirements             respjson.Field
@@ -314,6 +317,62 @@ const (
 	PortingOrderPhoneNumberTypeSharedCost PortingOrderPhoneNumberType = "shared_cost"
 	PortingOrderPhoneNumberTypeTollFree   PortingOrderPhoneNumberType = "toll_free"
 )
+
+type PortingOrderPhoneNumber struct {
+	// Activation status
+	//
+	// Any of "New", "Pending", "Conflict", "Cancel Pending", "Failed", "Concurred",
+	// "Activate RDY", "Disconnect Pending", "Concurrence Sent", "Old", "Sending",
+	// "Active", "Cancelled".
+	ActivationStatus string `json:"activation_status"`
+	// E164 formatted phone number
+	PhoneNumber string `json:"phone_number"`
+	// The type of the phone number
+	//
+	// Any of "landline", "local", "mobile", "national", "shared_cost", "toll_free".
+	PhoneNumberType string `json:"phone_number_type"`
+	// Specifies whether Telnyx is able to confirm portability this number in the
+	// United States & Canada. International phone numbers are provisional by default.
+	//
+	// Any of "pending", "confirmed", "provisional".
+	PortabilityStatus string `json:"portability_status"`
+	// Identifies the associated port request
+	PortingOrderID string `json:"porting_order_id" format:"uuid"`
+	// The current status of the porting order
+	//
+	// Any of "draft", "in-process", "submitted", "exception", "foc-date-confirmed",
+	// "cancel-pending", "ported", "cancelled".
+	PortingOrderStatus string `json:"porting_order_status"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
+	// The current status of the requirements in a INTL porting order
+	//
+	// Any of "requirement-info-pending", "requirement-info-under-review",
+	// "requirement-info-exception", "approved".
+	RequirementsStatus string `json:"requirements_status"`
+	// A key to reference this porting order when contacting Telnyx customer support
+	SupportKey string `json:"support_key"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ActivationStatus   respjson.Field
+		PhoneNumber        respjson.Field
+		PhoneNumberType    respjson.Field
+		PortabilityStatus  respjson.Field
+		PortingOrderID     respjson.Field
+		PortingOrderStatus respjson.Field
+		RecordType         respjson.Field
+		RequirementsStatus respjson.Field
+		SupportKey         respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingOrderPhoneNumber) RawJSON() string { return r.JSON.raw }
+func (r *PortingOrderPhoneNumber) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type PortingOrderActivationSettings struct {
 	// Activation status

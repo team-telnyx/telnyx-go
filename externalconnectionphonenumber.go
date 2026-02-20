@@ -171,12 +171,12 @@ func (r *ExternalConnectionPhoneNumberUpdateResponse) UnmarshalJSON(data []byte)
 }
 
 type ExternalConnectionPhoneNumberGetParams struct {
-	ID string `path:"id,required" format:"int64" json:"-"`
+	ID string `path:"id,required" json:"-"`
 	paramObj
 }
 
 type ExternalConnectionPhoneNumberUpdateParams struct {
-	ID string `path:"id,required" format:"int64" json:"-"`
+	ID string `path:"id,required" json:"-"`
 	// Identifies the location to assign the phone number to.
 	LocationID param.Opt[string] `json:"location_id,omitzero" format:"uuid"`
 	paramObj

@@ -415,7 +415,7 @@ const (
 )
 
 type ExternalConnectionUploadGetParams struct {
-	ID string `path:"id,required" format:"int64" json:"-"`
+	ID string `path:"id,required" json:"-"`
 	paramObj
 }
 
@@ -521,6 +521,6 @@ func (r ExternalConnectionUploadListParamsFilterStatus) URLQuery() (v url.Values
 }
 
 type ExternalConnectionUploadRetryParams struct {
-	ID string `path:"id,required" format:"int64" json:"-"`
+	ID string `path:"id,required" json:"-"`
 	paramObj
 }

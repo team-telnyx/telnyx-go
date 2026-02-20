@@ -114,6 +114,8 @@ type RoomComposition struct {
 	// Any of "mp4".
 	Format     RoomCompositionFormat `json:"format"`
 	RecordType string                `json:"record_type"`
+	// The resolution of the room composition.
+	Resolution string `json:"resolution"`
 	// Identify the room associated with the room composition.
 	RoomID string `json:"room_id" format:"uuid"`
 	// Identify the room session associated with the room composition.
@@ -151,6 +153,7 @@ type RoomComposition struct {
 		EndedAt                 respjson.Field
 		Format                  respjson.Field
 		RecordType              respjson.Field
+		Resolution              respjson.Field
 		RoomID                  respjson.Field
 		SessionID               respjson.Field
 		SizeMB                  respjson.Field
