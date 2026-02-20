@@ -1649,21 +1649,21 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type TranscriptionStartRequestTranscriptionEngineConfigUnionParam struct {
-	OfGoogle              *TranscriptionEngineGoogleConfigParam `json:",omitzero,inline"`
-	OfTelnyx              *TranscriptionEngineTelnyxConfigParam `json:",omitzero,inline"`
-	OfDeepgramNova2Config *DeepgramNova2ConfigParam             `json:",omitzero,inline"`
-	OfDeepgramNova3Config *DeepgramNova3ConfigParam             `json:",omitzero,inline"`
-	OfAzure               *TranscriptionEngineAzureConfigParam  `json:",omitzero,inline"`
-	OfA                   *TranscriptionEngineAConfigParam      `json:",omitzero,inline"`
-	OfB                   *TranscriptionEngineBConfigParam      `json:",omitzero,inline"`
+	OfGoogle        *TranscriptionEngineGoogleConfigParam `json:",omitzero,inline"`
+	OfTelnyx        *TranscriptionEngineTelnyxConfigParam `json:",omitzero,inline"`
+	OfDeepgramNova2 *DeepgramNova2ConfigParam             `json:",omitzero,inline"`
+	OfDeepgramNova3 *DeepgramNova3ConfigParam             `json:",omitzero,inline"`
+	OfAzure         *TranscriptionEngineAzureConfigParam  `json:",omitzero,inline"`
+	OfA             *TranscriptionEngineAConfigParam      `json:",omitzero,inline"`
+	OfB             *TranscriptionEngineBConfigParam      `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfGoogle,
 		u.OfTelnyx,
-		u.OfDeepgramNova2Config,
-		u.OfDeepgramNova3Config,
+		u.OfDeepgramNova2,
+		u.OfDeepgramNova3,
 		u.OfAzure,
 		u.OfA,
 		u.OfB)
@@ -1677,10 +1677,10 @@ func (u *TranscriptionStartRequestTranscriptionEngineConfigUnionParam) asAny() a
 		return u.OfGoogle
 	} else if !param.IsOmitted(u.OfTelnyx) {
 		return u.OfTelnyx
-	} else if !param.IsOmitted(u.OfDeepgramNova2Config) {
-		return u.OfDeepgramNova2Config
-	} else if !param.IsOmitted(u.OfDeepgramNova3Config) {
-		return u.OfDeepgramNova3Config
+	} else if !param.IsOmitted(u.OfDeepgramNova2) {
+		return u.OfDeepgramNova2
+	} else if !param.IsOmitted(u.OfDeepgramNova3) {
+		return u.OfDeepgramNova3
 	} else if !param.IsOmitted(u.OfAzure) {
 		return u.OfAzure
 	} else if !param.IsOmitted(u.OfA) {
@@ -1721,9 +1721,9 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetEnableS
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetInterimResults() *bool {
 	if vt := u.OfGoogle; vt != nil && vt.InterimResults.Valid() {
 		return &vt.InterimResults.Value
-	} else if vt := u.OfDeepgramNova2Config; vt != nil && vt.InterimResults.Valid() {
+	} else if vt := u.OfDeepgramNova2; vt != nil && vt.InterimResults.Valid() {
 		return &vt.InterimResults.Value
-	} else if vt := u.OfDeepgramNova3Config; vt != nil && vt.InterimResults.Valid() {
+	} else if vt := u.OfDeepgramNova3; vt != nil && vt.InterimResults.Valid() {
 		return &vt.InterimResults.Value
 	} else if vt := u.OfA; vt != nil && vt.InterimResults.Valid() {
 		return &vt.InterimResults.Value
@@ -1737,9 +1737,9 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetLanguag
 		return (*string)(&vt.Language)
 	} else if vt := u.OfTelnyx; vt != nil {
 		return (*string)(&vt.Language)
-	} else if vt := u.OfDeepgramNova2Config; vt != nil {
+	} else if vt := u.OfDeepgramNova2; vt != nil {
 		return (*string)(&vt.Language)
-	} else if vt := u.OfDeepgramNova3Config; vt != nil {
+	} else if vt := u.OfDeepgramNova3; vt != nil {
 		return (*string)(&vt.Language)
 	} else if vt := u.OfAzure; vt != nil {
 		return (*string)(&vt.Language)
@@ -1797,9 +1797,9 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscr
 		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfTelnyx; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
-	} else if vt := u.OfDeepgramNova2Config; vt != nil {
+	} else if vt := u.OfDeepgramNova2; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
-	} else if vt := u.OfDeepgramNova3Config; vt != nil {
+	} else if vt := u.OfDeepgramNova3; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfAzure; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
@@ -1825,9 +1825,9 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetUseEnha
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscriptionModel() *string {
 	if vt := u.OfTelnyx; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
-	} else if vt := u.OfDeepgramNova2Config; vt != nil {
+	} else if vt := u.OfDeepgramNova2; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
-	} else if vt := u.OfDeepgramNova3Config; vt != nil {
+	} else if vt := u.OfDeepgramNova3; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
 	} else if vt := u.OfB; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
@@ -1837,9 +1837,9 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscr
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetUtteranceEndMs() *int64 {
-	if vt := u.OfDeepgramNova2Config; vt != nil && vt.UtteranceEndMs.Valid() {
+	if vt := u.OfDeepgramNova2; vt != nil && vt.UtteranceEndMs.Valid() {
 		return &vt.UtteranceEndMs.Value
-	} else if vt := u.OfDeepgramNova3Config; vt != nil && vt.UtteranceEndMs.Valid() {
+	} else if vt := u.OfDeepgramNova3; vt != nil && vt.UtteranceEndMs.Valid() {
 		return &vt.UtteranceEndMs.Value
 	}
 	return nil
@@ -1887,9 +1887,9 @@ func (u transcriptionStartRequestTranscriptionEngineConfigUnionParamSpeechContex
 // Returns a pointer to the underlying variant's KeywordsBoosting property, if
 // present.
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetKeywordsBoosting() map[string]float64 {
-	if vt := u.OfDeepgramNova2Config; vt != nil {
+	if vt := u.OfDeepgramNova2; vt != nil {
 		return vt.KeywordsBoosting
-	} else if vt := u.OfDeepgramNova3Config; vt != nil {
+	} else if vt := u.OfDeepgramNova3; vt != nil {
 		return vt.KeywordsBoosting
 	}
 	return nil
