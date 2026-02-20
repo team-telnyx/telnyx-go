@@ -3743,7 +3743,7 @@ func init() {
 // for documentation about the format
 type WebhookToolWebhookBodyParametersParam struct {
 	// The properties of the body parameters.
-	Properties any `json:"properties,omitzero"`
+	Properties map[string]any `json:"properties,omitzero"`
 	// The required properties of the body parameters.
 	Required []string `json:"required,omitzero"`
 	// Any of "object".
@@ -3790,7 +3790,7 @@ func (r *WebhookToolWebhookHeaderParam) UnmarshalJSON(data []byte) error {
 // documentation about the format
 type WebhookToolWebhookPathParametersParam struct {
 	// The properties of the path parameters.
-	Properties any `json:"properties,omitzero"`
+	Properties map[string]any `json:"properties,omitzero"`
 	// The required properties of the path parameters.
 	Required []string `json:"required,omitzero"`
 	// Any of "object".
@@ -3819,7 +3819,7 @@ func init() {
 // documentation about the format
 type WebhookToolWebhookQueryParametersParam struct {
 	// The properties of the query parameters.
-	Properties any `json:"properties,omitzero"`
+	Properties map[string]any `json:"properties,omitzero"`
 	// The required properties of the query parameters.
 	Required []string `json:"required,omitzero"`
 	// Any of "object".
