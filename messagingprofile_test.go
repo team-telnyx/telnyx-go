@@ -29,10 +29,12 @@ func TestMessagingProfileNewWithOptionalParams(t *testing.T) {
 	_, err := client.MessagingProfiles.New(context.TODO(), telnyx.MessagingProfileNewParams{
 		Name:                    "My name",
 		WhitelistedDestinations: []string{"US"},
+		AIAssistantID:           telnyx.String("ai_assistant_id"),
 		AlphaSender:             telnyx.String("sqF"),
 		DailySpendLimit:         telnyx.String("269125115713"),
 		DailySpendLimitEnabled:  telnyx.Bool(true),
 		Enabled:                 telnyx.Bool(true),
+		HealthWebhookURL:        telnyx.String("health_webhook_url"),
 		MmsFallBackToSMS:        telnyx.Bool(true),
 		MmsTranscoding:          telnyx.Bool(true),
 		MobileOnly:              telnyx.Bool(true),
@@ -43,7 +45,8 @@ func TestMessagingProfileNewWithOptionalParams(t *testing.T) {
 			Geomatch:       telnyx.Bool(false),
 			StickySender:   telnyx.Bool(false),
 		},
-		SmartEncoding: telnyx.Bool(true),
+		ResourceGroupID: telnyx.String("resource_group_id"),
+		SmartEncoding:   telnyx.Bool(true),
 		URLShortenerSettings: telnyx.URLShortenerSettingsParam{
 			Domain:               "example.ex",
 			Prefix:               telnyx.String(""),
@@ -158,8 +161,10 @@ func TestMessagingProfileListWithOptionalParams(t *testing.T) {
 		Filter: telnyx.MessagingProfileListParamsFilter{
 			Name: telnyx.String("name"),
 		},
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
+		FilterNameContains: telnyx.String("filter[name][contains]"),
+		FilterNameEq:       telnyx.String("filter[name][eq]"),
+		PageNumber:         telnyx.Int(0),
+		PageSize:           telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -184,6 +189,36 @@ func TestMessagingProfileDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.MessagingProfiles.Delete(context.TODO(), "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestMessagingProfileListAlphanumericSenderIDsWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.MessagingProfiles.ListAlphanumericSenderIDs(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		telnyx.MessagingProfileListAlphanumericSenderIDsParams{
+			PageNumber: telnyx.Int(0),
+			PageSize:   telnyx.Int(0),
+		},
+	)
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -242,6 +277,35 @@ func TestMessagingProfileListShortCodesWithOptionalParams(t *testing.T) {
 		telnyx.MessagingProfileListShortCodesParams{
 			PageNumber: telnyx.Int(0),
 			PageSize:   telnyx.Int(0),
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestMessagingProfileGetMetricsWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.MessagingProfiles.GetMetrics(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		telnyx.MessagingProfileGetMetricsParams{
+			TimeFrame: telnyx.MessagingProfileGetMetricsParamsTimeFrame1h,
 		},
 	)
 	if err != nil {

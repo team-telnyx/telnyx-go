@@ -31,6 +31,7 @@ import (
 type MessagingProfileService struct {
 	Options         []option.RequestOption
 	AutorespConfigs MessagingProfileAutorespConfigService
+	Actions         MessagingProfileActionService
 }
 
 // NewMessagingProfileService generates a new service that applies the given
@@ -40,6 +41,7 @@ func NewMessagingProfileService(opts ...option.RequestOption) (r MessagingProfil
 	r = MessagingProfileService{}
 	r.Options = opts
 	r.AutorespConfigs = NewMessagingProfileAutorespConfigService(opts...)
+	r.Actions = NewMessagingProfileActionService(opts...)
 	return
 }
 
@@ -110,6 +112,33 @@ func (r *MessagingProfileService) Delete(ctx context.Context, messagingProfileID
 	return
 }
 
+// List all alphanumeric sender IDs associated with a specific messaging profile.
+func (r *MessagingProfileService) ListAlphanumericSenderIDs(ctx context.Context, id string, query MessagingProfileListAlphanumericSenderIDsParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MessagingProfileListAlphanumericSenderIDsResponse], err error) {
+	var raw *http.Response
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("messaging_profiles/%s/alphanumeric_sender_ids", id)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List all alphanumeric sender IDs associated with a specific messaging profile.
+func (r *MessagingProfileService) ListAlphanumericSenderIDsAutoPaging(ctx context.Context, id string, query MessagingProfileListAlphanumericSenderIDsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MessagingProfileListAlphanumericSenderIDsResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.ListAlphanumericSenderIDs(ctx, id, query, opts...))
+}
+
 // List phone numbers associated with a messaging profile
 func (r *MessagingProfileService) ListPhoneNumbers(ctx context.Context, messagingProfileID string, query MessagingProfileListPhoneNumbersParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[shared.PhoneNumberWithMessagingSettings], err error) {
 	var raw *http.Response
@@ -164,9 +193,24 @@ func (r *MessagingProfileService) ListShortCodesAutoPaging(ctx context.Context, 
 	return pagination.NewDefaultFlatPaginationAutoPager(r.ListShortCodes(ctx, messagingProfileID, query, opts...))
 }
 
+// Get detailed metrics for a specific messaging profile, broken down by time
+// interval.
+func (r *MessagingProfileService) GetMetrics(ctx context.Context, id string, query MessagingProfileGetMetricsParams, opts ...option.RequestOption) (res *MessagingProfileGetMetricsResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("messaging_profiles/%s/metrics", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
+}
+
 type MessagingProfile struct {
 	// Identifies the type of resource.
 	ID string `json:"id" format:"uuid"`
+	// The AI assistant ID associated with this messaging profile.
+	AIAssistantID string `json:"ai_assistant_id,nullable"`
 	// The alphanumeric sender ID to use when sending to destinations that require an
 	// alphanumeric sender ID.
 	AlphaSender string `json:"alpha_sender,nullable"`
@@ -195,6 +239,8 @@ type MessagingProfile struct {
 	//
 	// To disable this feature, set the object field to `null`.
 	NumberPoolSettings NumberPoolSettings `json:"number_pool_settings,nullable"`
+	// The organization that owns this messaging profile.
+	OrganizationID string `json:"organization_id"`
 	// Identifies the type of the resource.
 	//
 	// Any of "messaging_profile".
@@ -204,6 +250,8 @@ type MessagingProfile struct {
 	// Determines how much information is redacted in messages for privacy or
 	// compliance purposes.
 	RedactionLevel int64 `json:"redaction_level"`
+	// The resource group ID associated with this messaging profile.
+	ResourceGroupID string `json:"resource_group_id,nullable"`
 	// Enables automatic character encoding optimization for SMS messages. When
 	// enabled, the system automatically selects the most efficient encoding (GSM-7 or
 	// UCS-2) based on message content to maximize character limits and minimize costs.
@@ -237,6 +285,7 @@ type MessagingProfile struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                      respjson.Field
+		AIAssistantID           respjson.Field
 		AlphaSender             respjson.Field
 		CreatedAt               respjson.Field
 		DailySpendLimit         respjson.Field
@@ -248,9 +297,11 @@ type MessagingProfile struct {
 		MobileOnly              respjson.Field
 		Name                    respjson.Field
 		NumberPoolSettings      respjson.Field
+		OrganizationID          respjson.Field
 		RecordType              respjson.Field
 		RedactionEnabled        respjson.Field
 		RedactionLevel          respjson.Field
+		ResourceGroupID         respjson.Field
 		SmartEncoding           respjson.Field
 		UpdatedAt               respjson.Field
 		URLShortenerSettings    respjson.Field
@@ -534,6 +585,61 @@ func (r *MessagingProfileDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type MessagingProfileListAlphanumericSenderIDsResponse struct {
+	// Uniquely identifies the alphanumeric sender ID resource.
+	ID string `json:"id" format:"uuid"`
+	// The alphanumeric sender ID string.
+	AlphanumericSenderID string `json:"alphanumeric_sender_id"`
+	// The messaging profile this sender ID belongs to.
+	MessagingProfileID string `json:"messaging_profile_id" format:"uuid"`
+	// The organization that owns this sender ID.
+	OrganizationID string `json:"organization_id"`
+	// Any of "alphanumeric_sender_id".
+	RecordType MessagingProfileListAlphanumericSenderIDsResponseRecordType `json:"record_type"`
+	// A US long code number to use as fallback when sending to US destinations.
+	UsLongCodeFallback string `json:"us_long_code_fallback"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                   respjson.Field
+		AlphanumericSenderID respjson.Field
+		MessagingProfileID   respjson.Field
+		OrganizationID       respjson.Field
+		RecordType           respjson.Field
+		UsLongCodeFallback   respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingProfileListAlphanumericSenderIDsResponse) RawJSON() string { return r.JSON.raw }
+func (r *MessagingProfileListAlphanumericSenderIDsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessagingProfileListAlphanumericSenderIDsResponseRecordType string
+
+const (
+	MessagingProfileListAlphanumericSenderIDsResponseRecordTypeAlphanumericSenderID MessagingProfileListAlphanumericSenderIDsResponseRecordType = "alphanumeric_sender_id"
+)
+
+type MessagingProfileGetMetricsResponse struct {
+	// Detailed metrics for a messaging profile.
+	Data map[string]any `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingProfileGetMetricsResponse) RawJSON() string { return r.JSON.raw }
+func (r *MessagingProfileGetMetricsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type MessagingProfileNewParams struct {
 	// A user friendly name for the messaging profile.
 	Name string `json:"name,required"`
@@ -541,9 +647,15 @@ type MessagingProfileNewParams struct {
 	// the list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]` all
 	// destinations will be allowed.
 	WhitelistedDestinations []string `json:"whitelisted_destinations,omitzero,required"`
+	// The AI assistant ID to associate with this messaging profile.
+	AIAssistantID param.Opt[string] `json:"ai_assistant_id,omitzero"`
 	// The alphanumeric sender ID to use when sending to destinations that require an
 	// alphanumeric sender ID.
 	AlphaSender param.Opt[string] `json:"alpha_sender,omitzero"`
+	// A URL to receive health check webhooks for numbers in this profile.
+	HealthWebhookURL param.Opt[string] `json:"health_webhook_url,omitzero" format:"url"`
+	// The resource group ID to associate with this messaging profile.
+	ResourceGroupID param.Opt[string] `json:"resource_group_id,omitzero"`
 	// The failover URL where webhooks related to this messaging profile will be sent
 	// if sending to the primary URL fails.
 	WebhookFailoverURL param.Opt[string] `json:"webhook_failover_url,omitzero" format:"url"`
@@ -683,8 +795,12 @@ const (
 )
 
 type MessagingProfileListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Filter profiles by name containing the given string.
+	FilterNameContains param.Opt[string] `query:"filter[name][contains],omitzero" json:"-"`
+	// Filter profiles by exact name match.
+	FilterNameEq param.Opt[string] `query:"filter[name][eq],omitzero" json:"-"`
+	PageNumber   param.Opt[int64]  `query:"page[number],omitzero" json:"-"`
+	PageSize     param.Opt[int64]  `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[name]
 	Filter MessagingProfileListParamsFilter `query:"filter,omitzero" json:"-"`
 	paramObj
@@ -709,6 +825,21 @@ type MessagingProfileListParamsFilter struct {
 // URLQuery serializes [MessagingProfileListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r MessagingProfileListParamsFilter) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type MessagingProfileListAlphanumericSenderIDsParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [MessagingProfileListAlphanumericSenderIDsParams]'s query
+// parameters as `url.Values`.
+func (r MessagingProfileListAlphanumericSenderIDsParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
@@ -744,3 +875,32 @@ func (r MessagingProfileListShortCodesParams) URLQuery() (v url.Values, err erro
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+type MessagingProfileGetMetricsParams struct {
+	// The time frame for metrics.
+	//
+	// Any of "1h", "3h", "24h", "3d", "7d", "30d".
+	TimeFrame MessagingProfileGetMetricsParamsTimeFrame `query:"time_frame,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [MessagingProfileGetMetricsParams]'s query parameters as
+// `url.Values`.
+func (r MessagingProfileGetMetricsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// The time frame for metrics.
+type MessagingProfileGetMetricsParamsTimeFrame string
+
+const (
+	MessagingProfileGetMetricsParamsTimeFrame1h  MessagingProfileGetMetricsParamsTimeFrame = "1h"
+	MessagingProfileGetMetricsParamsTimeFrame3h  MessagingProfileGetMetricsParamsTimeFrame = "3h"
+	MessagingProfileGetMetricsParamsTimeFrame24h MessagingProfileGetMetricsParamsTimeFrame = "24h"
+	MessagingProfileGetMetricsParamsTimeFrame3d  MessagingProfileGetMetricsParamsTimeFrame = "3d"
+	MessagingProfileGetMetricsParamsTimeFrame7d  MessagingProfileGetMetricsParamsTimeFrame = "7d"
+	MessagingProfileGetMetricsParamsTimeFrame30d MessagingProfileGetMetricsParamsTimeFrame = "30d"
+)

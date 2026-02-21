@@ -159,6 +159,8 @@ type MessagingNumbersBulkUpdateNewParams struct {
 	MessagingProfileID string `json:"messaging_profile_id,required"`
 	// The list of phone numbers to update.
 	Numbers []string `json:"numbers,omitzero,required"`
+	// If true, only assign numbers to the profile without changing other settings.
+	AssignOnly param.Opt[bool] `json:"assign_only,omitzero"`
 	paramObj
 }
 

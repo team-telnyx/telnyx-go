@@ -68,6 +68,18 @@ func (r *MessageService) CancelScheduled(ctx context.Context, id string, opts ..
 	return
 }
 
+// Retrieve all messages in a group MMS conversation by the group message ID.
+func (r *MessageService) GetGroupMessages(ctx context.Context, messageID string, opts ...option.RequestOption) (res *MessageGetGroupMessagesResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if messageID == "" {
+		err = errors.New("missing required message_id parameter")
+		return
+	}
+	path := fmt.Sprintf("messages/group/%s", messageID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
+}
+
 // Schedule a message with a Phone Number, Alphanumeric Sender ID, Short Code or
 // Number Pool.
 //
@@ -130,6 +142,14 @@ func (r *MessageService) SendShortCode(ctx context.Context, body MessageSendShor
 func (r *MessageService) SendWhatsapp(ctx context.Context, body MessageSendWhatsappParams, opts ...option.RequestOption) (res *MessageSendWhatsappResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/whatsapp"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
+// Send an SMS message using an alphanumeric sender ID. This is SMS only.
+func (r *MessageService) SendWithAlphanumericSender(ctx context.Context, body MessageSendWithAlphanumericSenderParams, opts ...option.RequestOption) (res *MessageSendWithAlphanumericSenderResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "messages/alphanumeric_sender_id"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -2034,6 +2054,22 @@ const (
 	MessageCancelScheduledResponseTypeMms MessageCancelScheduledResponseType = "MMS"
 )
 
+type MessageGetGroupMessagesResponse struct {
+	Data []OutboundMessagePayload `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageGetGroupMessagesResponse) RawJSON() string { return r.JSON.raw }
+func (r *MessageGetGroupMessagesResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type MessageScheduleResponse struct {
 	Data OutboundMessagePayload `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2779,6 +2815,22 @@ type MessageSendWhatsappResponseDataTo struct {
 // Returns the unmodified JSON received from the API
 func (r MessageSendWhatsappResponseDataTo) RawJSON() string { return r.JSON.raw }
 func (r *MessageSendWhatsappResponseDataTo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageSendWithAlphanumericSenderResponse struct {
+	Data OutboundMessagePayload `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWithAlphanumericSenderResponse) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWithAlphanumericSenderResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3624,3 +3676,29 @@ type MessageSendWhatsappParamsType string
 const (
 	MessageSendWhatsappParamsTypeWhatsapp MessageSendWhatsappParamsType = "WHATSAPP"
 )
+
+type MessageSendWithAlphanumericSenderParams struct {
+	// A valid alphanumeric sender ID on the user's account.
+	From string `json:"from,required"`
+	// The messaging profile ID to use.
+	MessagingProfileID string `json:"messaging_profile_id,required" format:"uuid"`
+	// The message body.
+	Text string `json:"text,required"`
+	// Receiving address (+E.164 formatted phone number).
+	To string `json:"to,required"`
+	// Failover callback URL for delivery status updates.
+	WebhookFailoverURL param.Opt[string] `json:"webhook_failover_url,omitzero" format:"url"`
+	// Callback URL for delivery status updates.
+	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	// If true, use the messaging profile's webhook settings.
+	UseProfileWebhooks param.Opt[bool] `json:"use_profile_webhooks,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWithAlphanumericSenderParams) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWithAlphanumericSenderParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWithAlphanumericSenderParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}

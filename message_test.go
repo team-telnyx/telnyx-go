@@ -60,6 +60,29 @@ func TestMessageCancelScheduled(t *testing.T) {
 	}
 }
 
+func TestMessageGetGroupMessages(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Messages.GetGroupMessages(context.TODO(), "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestMessageScheduleWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
@@ -449,6 +472,37 @@ func TestMessageSendWhatsappWithOptionalParams(t *testing.T) {
 		},
 		Type:       telnyx.MessageSendWhatsappParamsTypeWhatsapp,
 		WebhookURL: telnyx.String("webhook_url"),
+	})
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestMessageSendWithAlphanumericSenderWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Messages.SendWithAlphanumericSender(context.TODO(), telnyx.MessageSendWithAlphanumericSenderParams{
+		From:               "MyCompany",
+		MessagingProfileID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		Text:               "text",
+		To:                 "+E.164",
+		UseProfileWebhooks: telnyx.Bool(true),
+		WebhookFailoverURL: telnyx.String("webhook_failover_url"),
+		WebhookURL:         telnyx.String("webhook_url"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

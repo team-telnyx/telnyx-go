@@ -131,6 +131,8 @@ type PhoneNumberMessagingUpdateParams struct {
 	//   - Set this field to a quoted UUID of a messaging profile to assign this number
 	//     to that messaging profile
 	MessagingProfileID param.Opt[string] `json:"messaging_profile_id,omitzero"`
+	// Tags to set on this phone number.
+	Tags []string `json:"tags,omitzero"`
 	paramObj
 }
 
@@ -143,8 +145,22 @@ func (r *PhoneNumberMessagingUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type PhoneNumberMessagingListParams struct {
-	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Filter by messaging profile ID.
+	FilterMessagingProfileID param.Opt[string] `query:"filter[messaging_profile_id],omitzero" format:"uuid" json:"-"`
+	// Filter by exact phone number (supports comma-separated list).
+	FilterPhoneNumber param.Opt[string] `query:"filter[phone_number],omitzero" json:"-"`
+	// Filter by phone number substring.
+	FilterPhoneNumberContains param.Opt[string] `query:"filter[phone_number][contains],omitzero" json:"-"`
+	PageNumber                param.Opt[int64]  `query:"page[number],omitzero" json:"-"`
+	PageSize                  param.Opt[int64]  `query:"page[size],omitzero" json:"-"`
+	// Filter by phone number type.
+	//
+	// Any of "tollfree", "longcode", "shortcode".
+	FilterType PhoneNumberMessagingListParamsFilterType `query:"filter[type],omitzero" json:"-"`
+	// Sort by phone number.
+	//
+	// Any of "asc", "desc".
+	SortPhoneNumber PhoneNumberMessagingListParamsSortPhoneNumber `query:"sort[phone_number],omitzero" json:"-"`
 	paramObj
 }
 
@@ -156,3 +172,20 @@ func (r PhoneNumberMessagingListParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// Filter by phone number type.
+type PhoneNumberMessagingListParamsFilterType string
+
+const (
+	PhoneNumberMessagingListParamsFilterTypeTollfree  PhoneNumberMessagingListParamsFilterType = "tollfree"
+	PhoneNumberMessagingListParamsFilterTypeLongcode  PhoneNumberMessagingListParamsFilterType = "longcode"
+	PhoneNumberMessagingListParamsFilterTypeShortcode PhoneNumberMessagingListParamsFilterType = "shortcode"
+)
+
+// Sort by phone number.
+type PhoneNumberMessagingListParamsSortPhoneNumber string
+
+const (
+	PhoneNumberMessagingListParamsSortPhoneNumberAsc  PhoneNumberMessagingListParamsSortPhoneNumber = "asc"
+	PhoneNumberMessagingListParamsSortPhoneNumberDesc PhoneNumberMessagingListParamsSortPhoneNumber = "desc"
+)
