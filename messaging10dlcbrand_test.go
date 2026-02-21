@@ -106,7 +106,7 @@ func TestMessaging10dlcBrandUpdateWithOptionalParams(t *testing.T) {
 			Email:                "email",
 			EntityType:           telnyx.EntityTypePrivateProfit,
 			Vertical:             telnyx.VerticalTechnology,
-			AltBusinessID:        telnyx.String("altBusiness_id"),
+			AltBusinessID:        telnyx.String("altBusinessId"),
 			AltBusinessIDType:    telnyx.AltBusinessIDTypeNone,
 			BusinessContactEmail: telnyx.String("name@example.com"),
 			City:                 telnyx.String("New York"),
