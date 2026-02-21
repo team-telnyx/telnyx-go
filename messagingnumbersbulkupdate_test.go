@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestMessagingNumbersBulkUpdateNew(t *testing.T) {
+func TestMessagingNumbersBulkUpdateNewWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -29,6 +29,7 @@ func TestMessagingNumbersBulkUpdateNew(t *testing.T) {
 	_, err := client.MessagingNumbersBulkUpdates.New(context.TODO(), telnyx.MessagingNumbersBulkUpdateNewParams{
 		MessagingProfileID: "00000000-0000-0000-0000-000000000000",
 		Numbers:            []string{"+18880000000", "+18880000001", "+18880000002"},
+		AssignOnly:         telnyx.Bool(true),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
