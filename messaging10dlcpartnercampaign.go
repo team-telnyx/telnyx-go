@@ -360,7 +360,7 @@ type Messaging10dlcPartnerCampaignListParams struct {
 	// createdAt in descending order.
 	//
 	// Any of "assignedPhoneNumbersCount", "-assignedPhoneNumbersCount",
-	// "brandDisplayName", "-brandDisplayName", "tcrBrandId", "-tcrBranId",
+	// "brandDisplayName", "-brandDisplayName", "tcrBrandId", "-tcrBrandId",
 	// "tcrCampaignId", "-tcrCampaignId", "createdAt", "-createdAt", "campaignStatus",
 	// "-campaignStatus".
 	Sort Messaging10dlcPartnerCampaignListParamsSort `query:"sort,omitzero" json:"-"`
@@ -386,7 +386,7 @@ const (
 	Messaging10dlcPartnerCampaignListParamsSortBrandDisplayName              Messaging10dlcPartnerCampaignListParamsSort = "brandDisplayName"
 	Messaging10dlcPartnerCampaignListParamsSortBrandDisplayNameDesc          Messaging10dlcPartnerCampaignListParamsSort = "-brandDisplayName"
 	Messaging10dlcPartnerCampaignListParamsSortTcrBrandID                    Messaging10dlcPartnerCampaignListParamsSort = "tcrBrandId"
-	Messaging10dlcPartnerCampaignListParamsSortTcrBranIDDesc                 Messaging10dlcPartnerCampaignListParamsSort = "-tcrBranId"
+	Messaging10dlcPartnerCampaignListParamsSortTcrBrandIDDesc                Messaging10dlcPartnerCampaignListParamsSort = "-tcrBrandId"
 	Messaging10dlcPartnerCampaignListParamsSortTcrCampaignID                 Messaging10dlcPartnerCampaignListParamsSort = "tcrCampaignId"
 	Messaging10dlcPartnerCampaignListParamsSortTcrCampaignIDDesc             Messaging10dlcPartnerCampaignListParamsSort = "-tcrCampaignId"
 	Messaging10dlcPartnerCampaignListParamsSortCreatedAt                     Messaging10dlcPartnerCampaignListParamsSort = "createdAt"
