@@ -36,17 +36,26 @@ func TestVerifyProfileNewWithOptionalParams(t *testing.T) {
 			WhitelistedDestinations:        []string{"US", "CA"},
 		},
 		Flashcall: telnyx.VerifyProfileNewParamsFlashcall{
+			AppName:                        telnyx.String("Example Secure App"),
 			DefaultVerificationTimeoutSecs: telnyx.Int(300),
 			WhitelistedDestinations:        []string{"US", "CA"},
 		},
 		Language: telnyx.String("en-US"),
-		SMS: telnyx.VerifyProfileNewParamsSMS{
+		Rcs: telnyx.VerifyProfileNewParamsRcs{
+			AppName:                        telnyx.String("Example Secure App"),
+			CodeLength:                     telnyx.Int(6),
+			DefaultVerificationTimeoutSecs: telnyx.Int(300),
+			MessagingTemplateID:            telnyx.String("0abb5b4f-459f-445a-bfcd-488998b7572d"),
+			SMSFallback:                    telnyx.Bool(true),
 			WhitelistedDestinations:        []string{"US", "CA"},
+		},
+		SMS: telnyx.VerifyProfileNewParamsSMS{
 			AlphaSender:                    telnyx.String("sqF"),
 			AppName:                        telnyx.String("Example Secure App"),
 			CodeLength:                     telnyx.Int(6),
 			DefaultVerificationTimeoutSecs: telnyx.Int(300),
 			MessagingTemplateID:            telnyx.String("0abb5b4f-459f-445a-bfcd-488998b7572d"),
+			WhitelistedDestinations:        []string{"US", "CA"},
 		},
 		WebhookFailoverURL: telnyx.String("http://example.com/webhook/failover"),
 		WebhookURL:         telnyx.String("http://example.com/webhook"),
@@ -108,11 +117,20 @@ func TestVerifyProfileUpdateWithOptionalParams(t *testing.T) {
 				WhitelistedDestinations:        []string{"US", "CA"},
 			},
 			Flashcall: telnyx.VerifyProfileUpdateParamsFlashcall{
+				AppName:                        telnyx.String("Example Secure App"),
 				DefaultVerificationTimeoutSecs: telnyx.Int(300),
 				WhitelistedDestinations:        []string{"US", "CA"},
 			},
 			Language: telnyx.String("en-US"),
 			Name:     telnyx.String("Test Profile"),
+			Rcs: telnyx.VerifyProfileUpdateParamsRcs{
+				AppName:                        telnyx.String("Example Secure App"),
+				CodeLength:                     telnyx.Int(6),
+				DefaultVerificationTimeoutSecs: telnyx.Int(300),
+				MessagingTemplateID:            telnyx.String("0abb5b4f-459f-445a-bfcd-488998b7572d"),
+				SMSFallback:                    telnyx.Bool(true),
+				WhitelistedDestinations:        []string{"US", "CA"},
+			},
 			SMS: telnyx.VerifyProfileUpdateParamsSMS{
 				AlphaSender:                    telnyx.String("sqF"),
 				AppName:                        telnyx.String("Example Secure App"),
