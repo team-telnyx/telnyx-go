@@ -113,7 +113,7 @@ func (r *MessagingProfileService) Delete(ctx context.Context, messagingProfileID
 }
 
 // List all alphanumeric sender IDs associated with a specific messaging profile.
-func (r *MessagingProfileService) ListAlphanumericSenderIDs(ctx context.Context, id string, query MessagingProfileListAlphanumericSenderIDsParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MessagingProfileListAlphanumericSenderIDsResponse], err error) {
+func (r *MessagingProfileService) ListAlphanumericSenderIDs(ctx context.Context, id string, query MessagingProfileListAlphanumericSenderIDsParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[AlphanumericSenderID], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -135,7 +135,7 @@ func (r *MessagingProfileService) ListAlphanumericSenderIDs(ctx context.Context,
 }
 
 // List all alphanumeric sender IDs associated with a specific messaging profile.
-func (r *MessagingProfileService) ListAlphanumericSenderIDsAutoPaging(ctx context.Context, id string, query MessagingProfileListAlphanumericSenderIDsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MessagingProfileListAlphanumericSenderIDsResponse] {
+func (r *MessagingProfileService) ListAlphanumericSenderIDsAutoPaging(ctx context.Context, id string, query MessagingProfileListAlphanumericSenderIDsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[AlphanumericSenderID] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.ListAlphanumericSenderIDs(ctx, id, query, opts...))
 }
 
@@ -584,44 +584,6 @@ func (r MessagingProfileDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *MessagingProfileDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type MessagingProfileListAlphanumericSenderIDsResponse struct {
-	// Uniquely identifies the alphanumeric sender ID resource.
-	ID string `json:"id" format:"uuid"`
-	// The alphanumeric sender ID string.
-	AlphanumericSenderID string `json:"alphanumeric_sender_id"`
-	// The messaging profile this sender ID belongs to.
-	MessagingProfileID string `json:"messaging_profile_id" format:"uuid"`
-	// The organization that owns this sender ID.
-	OrganizationID string `json:"organization_id"`
-	// Any of "alphanumeric_sender_id".
-	RecordType MessagingProfileListAlphanumericSenderIDsResponseRecordType `json:"record_type"`
-	// A US long code number to use as fallback when sending to US destinations.
-	UsLongCodeFallback string `json:"us_long_code_fallback"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                   respjson.Field
-		AlphanumericSenderID respjson.Field
-		MessagingProfileID   respjson.Field
-		OrganizationID       respjson.Field
-		RecordType           respjson.Field
-		UsLongCodeFallback   respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessagingProfileListAlphanumericSenderIDsResponse) RawJSON() string { return r.JSON.raw }
-func (r *MessagingProfileListAlphanumericSenderIDsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessagingProfileListAlphanumericSenderIDsResponseRecordType string
-
-const (
-	MessagingProfileListAlphanumericSenderIDsResponseRecordTypeAlphanumericSenderID MessagingProfileListAlphanumericSenderIDsResponseRecordType = "alphanumeric_sender_id"
-)
 
 type MessagingProfileGetMetricsResponse struct {
 	// Detailed metrics for a messaging profile.
