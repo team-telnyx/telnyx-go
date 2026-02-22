@@ -40,7 +40,6 @@ func TestMessagingTollfreeVerificationRequestNewWithOptionalParams(t *testing.T)
 			BusinessState:            "Texas",
 			BusinessZip:              "78701",
 			CorporateWebsite:         "http://example.com",
-			IsvReseller:              "isvReseller",
 			MessageVolume:            telnyx.VolumeV100000,
 			OptInWorkflow:            "User signs into the Telnyx portal, enters a number and is prompted to select whether they want to use 2FA verification for security purposes. If they've opted in a confirmation message is sent out to the handset",
 			OptInWorkflowImageURLs: []telnyx.URLParam{{
@@ -65,6 +64,7 @@ func TestMessagingTollfreeVerificationRequestNewWithOptionalParams(t *testing.T)
 			DoingBusinessAs:                  telnyx.String("Acme Services"),
 			EntityType:                       telnyx.TollFreeVerificationEntityTypeSoleProprietor,
 			HelpMessageResponse:              telnyx.String("Reply HELP for assistance or STOP to unsubscribe. Contact: support@example.com"),
+			IsvReseller:                      telnyx.String("isvReseller"),
 			OptInConfirmationResponse:        telnyx.String("You have successfully opted in to receive messages from Acme Corp"),
 			OptInKeywords:                    telnyx.String("START, YES, SUBSCRIBE"),
 			PrivacyPolicyURL:                 telnyx.String("https://example.com/privacy"),
@@ -133,7 +133,6 @@ func TestMessagingTollfreeVerificationRequestUpdateWithOptionalParams(t *testing
 				BusinessState:            "Texas",
 				BusinessZip:              "78701",
 				CorporateWebsite:         "http://example.com",
-				IsvReseller:              "isvReseller",
 				MessageVolume:            telnyx.VolumeV100000,
 				OptInWorkflow:            "User signs into the Telnyx portal, enters a number and is prompted to select whether they want to use 2FA verification for security purposes. If they've opted in a confirmation message is sent out to the handset",
 				OptInWorkflowImageURLs: []telnyx.URLParam{{
@@ -158,6 +157,7 @@ func TestMessagingTollfreeVerificationRequestUpdateWithOptionalParams(t *testing
 				DoingBusinessAs:                  telnyx.String("Acme Services"),
 				EntityType:                       telnyx.TollFreeVerificationEntityTypeSoleProprietor,
 				HelpMessageResponse:              telnyx.String("Reply HELP for assistance or STOP to unsubscribe. Contact: support@example.com"),
+				IsvReseller:                      telnyx.String("isvReseller"),
 				OptInConfirmationResponse:        telnyx.String("You have successfully opted in to receive messages from Acme Corp"),
 				OptInKeywords:                    telnyx.String("START, YES, SUBSCRIBE"),
 				PrivacyPolicyURL:                 telnyx.String("https://example.com/privacy"),
@@ -189,12 +189,13 @@ func TestMessagingTollfreeVerificationRequestListWithOptionalParams(t *testing.T
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.MessagingTollfree.Verification.Requests.List(context.TODO(), telnyx.MessagingTollfreeVerificationRequestListParams{
-		Page:        1,
-		PageSize:    1,
-		DateEnd:     telnyx.Time(time.Now()),
-		DateStart:   telnyx.Time(time.Now()),
-		PhoneNumber: telnyx.String("phone_number"),
-		Status:      telnyx.TfVerificationStatusVerified,
+		Page:         1,
+		PageSize:     1,
+		BusinessName: telnyx.String("business_name"),
+		DateEnd:      telnyx.Time(time.Now()),
+		DateStart:    telnyx.Time(time.Now()),
+		PhoneNumber:  telnyx.String("phone_number"),
+		Status:       telnyx.TfVerificationStatusVerified,
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -219,6 +220,36 @@ func TestMessagingTollfreeVerificationRequestDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	err := client.MessagingTollfree.Verification.Requests.Delete(context.TODO(), "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestMessagingTollfreeVerificationRequestGetStatusHistory(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.MessagingTollfree.Verification.Requests.GetStatusHistory(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		telnyx.MessagingTollfreeVerificationRequestGetStatusHistoryParams{
+			PageNumber: 1,
+			PageSize:   1,
+		},
+	)
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
