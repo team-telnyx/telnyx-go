@@ -59,7 +59,7 @@ func (r *AlphanumericSenderIDService) Get(ctx context.Context, id string, opts .
 }
 
 // List all alphanumeric sender IDs for the authenticated user.
-func (r *AlphanumericSenderIDService) List(ctx context.Context, query AlphanumericSenderIDListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[AlphanumericSenderIDListResponse], err error) {
+func (r *AlphanumericSenderIDService) List(ctx context.Context, query AlphanumericSenderIDListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[AlphanumericSenderID], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -77,7 +77,7 @@ func (r *AlphanumericSenderIDService) List(ctx context.Context, query Alphanumer
 }
 
 // List all alphanumeric sender IDs for the authenticated user.
-func (r *AlphanumericSenderIDService) ListAutoPaging(ctx context.Context, query AlphanumericSenderIDListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[AlphanumericSenderIDListResponse] {
+func (r *AlphanumericSenderIDService) ListAutoPaging(ctx context.Context, query AlphanumericSenderIDListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[AlphanumericSenderID] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -93,8 +93,46 @@ func (r *AlphanumericSenderIDService) Delete(ctx context.Context, id string, opt
 	return
 }
 
+type AlphanumericSenderID struct {
+	// Uniquely identifies the alphanumeric sender ID resource.
+	ID string `json:"id" format:"uuid"`
+	// The alphanumeric sender ID string.
+	AlphanumericSenderID string `json:"alphanumeric_sender_id"`
+	// The messaging profile this sender ID belongs to.
+	MessagingProfileID string `json:"messaging_profile_id" format:"uuid"`
+	// The organization that owns this sender ID.
+	OrganizationID string `json:"organization_id"`
+	// Any of "alphanumeric_sender_id".
+	RecordType AlphanumericSenderIDRecordType `json:"record_type"`
+	// A US long code number to use as fallback when sending to US destinations.
+	UsLongCodeFallback string `json:"us_long_code_fallback"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                   respjson.Field
+		AlphanumericSenderID respjson.Field
+		MessagingProfileID   respjson.Field
+		OrganizationID       respjson.Field
+		RecordType           respjson.Field
+		UsLongCodeFallback   respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AlphanumericSenderID) RawJSON() string { return r.JSON.raw }
+func (r *AlphanumericSenderID) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AlphanumericSenderIDRecordType string
+
+const (
+	AlphanumericSenderIDRecordTypeAlphanumericSenderID AlphanumericSenderIDRecordType = "alphanumeric_sender_id"
+)
+
 type AlphanumericSenderIDNewResponse struct {
-	Data AlphanumericSenderIDNewResponseData `json:"data"`
+	Data AlphanumericSenderID `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -109,40 +147,8 @@ func (r *AlphanumericSenderIDNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AlphanumericSenderIDNewResponseData struct {
-	// Uniquely identifies the alphanumeric sender ID resource.
-	ID string `json:"id" format:"uuid"`
-	// The alphanumeric sender ID string.
-	AlphanumericSenderID string `json:"alphanumeric_sender_id"`
-	// The messaging profile this sender ID belongs to.
-	MessagingProfileID string `json:"messaging_profile_id" format:"uuid"`
-	// The organization that owns this sender ID.
-	OrganizationID string `json:"organization_id"`
-	// Any of "alphanumeric_sender_id".
-	RecordType string `json:"record_type"`
-	// A US long code number to use as fallback when sending to US destinations.
-	UsLongCodeFallback string `json:"us_long_code_fallback"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                   respjson.Field
-		AlphanumericSenderID respjson.Field
-		MessagingProfileID   respjson.Field
-		OrganizationID       respjson.Field
-		RecordType           respjson.Field
-		UsLongCodeFallback   respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AlphanumericSenderIDNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AlphanumericSenderIDNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type AlphanumericSenderIDGetResponse struct {
-	Data AlphanumericSenderIDGetResponseData `json:"data"`
+	Data AlphanumericSenderID `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -157,78 +163,8 @@ func (r *AlphanumericSenderIDGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AlphanumericSenderIDGetResponseData struct {
-	// Uniquely identifies the alphanumeric sender ID resource.
-	ID string `json:"id" format:"uuid"`
-	// The alphanumeric sender ID string.
-	AlphanumericSenderID string `json:"alphanumeric_sender_id"`
-	// The messaging profile this sender ID belongs to.
-	MessagingProfileID string `json:"messaging_profile_id" format:"uuid"`
-	// The organization that owns this sender ID.
-	OrganizationID string `json:"organization_id"`
-	// Any of "alphanumeric_sender_id".
-	RecordType string `json:"record_type"`
-	// A US long code number to use as fallback when sending to US destinations.
-	UsLongCodeFallback string `json:"us_long_code_fallback"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                   respjson.Field
-		AlphanumericSenderID respjson.Field
-		MessagingProfileID   respjson.Field
-		OrganizationID       respjson.Field
-		RecordType           respjson.Field
-		UsLongCodeFallback   respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AlphanumericSenderIDGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AlphanumericSenderIDGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AlphanumericSenderIDListResponse struct {
-	// Uniquely identifies the alphanumeric sender ID resource.
-	ID string `json:"id" format:"uuid"`
-	// The alphanumeric sender ID string.
-	AlphanumericSenderID string `json:"alphanumeric_sender_id"`
-	// The messaging profile this sender ID belongs to.
-	MessagingProfileID string `json:"messaging_profile_id" format:"uuid"`
-	// The organization that owns this sender ID.
-	OrganizationID string `json:"organization_id"`
-	// Any of "alphanumeric_sender_id".
-	RecordType AlphanumericSenderIDListResponseRecordType `json:"record_type"`
-	// A US long code number to use as fallback when sending to US destinations.
-	UsLongCodeFallback string `json:"us_long_code_fallback"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                   respjson.Field
-		AlphanumericSenderID respjson.Field
-		MessagingProfileID   respjson.Field
-		OrganizationID       respjson.Field
-		RecordType           respjson.Field
-		UsLongCodeFallback   respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AlphanumericSenderIDListResponse) RawJSON() string { return r.JSON.raw }
-func (r *AlphanumericSenderIDListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AlphanumericSenderIDListResponseRecordType string
-
-const (
-	AlphanumericSenderIDListResponseRecordTypeAlphanumericSenderID AlphanumericSenderIDListResponseRecordType = "alphanumeric_sender_id"
-)
-
 type AlphanumericSenderIDDeleteResponse struct {
-	Data AlphanumericSenderIDDeleteResponseData `json:"data"`
+	Data AlphanumericSenderID `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -240,38 +176,6 @@ type AlphanumericSenderIDDeleteResponse struct {
 // Returns the unmodified JSON received from the API
 func (r AlphanumericSenderIDDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *AlphanumericSenderIDDeleteResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AlphanumericSenderIDDeleteResponseData struct {
-	// Uniquely identifies the alphanumeric sender ID resource.
-	ID string `json:"id" format:"uuid"`
-	// The alphanumeric sender ID string.
-	AlphanumericSenderID string `json:"alphanumeric_sender_id"`
-	// The messaging profile this sender ID belongs to.
-	MessagingProfileID string `json:"messaging_profile_id" format:"uuid"`
-	// The organization that owns this sender ID.
-	OrganizationID string `json:"organization_id"`
-	// Any of "alphanumeric_sender_id".
-	RecordType string `json:"record_type"`
-	// A US long code number to use as fallback when sending to US destinations.
-	UsLongCodeFallback string `json:"us_long_code_fallback"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                   respjson.Field
-		AlphanumericSenderID respjson.Field
-		MessagingProfileID   respjson.Field
-		OrganizationID       respjson.Field
-		RecordType           respjson.Field
-		UsLongCodeFallback   respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AlphanumericSenderIDDeleteResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AlphanumericSenderIDDeleteResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
