@@ -230,7 +230,7 @@ func (r *TelephonyCredentialDeleteResponse) UnmarshalJSON(data []byte) error {
 
 type TelephonyCredentialNewParams struct {
 	// Identifies the Credential Connection this credential is associated with.
-	ConnectionID string `json:"connection_id,required"`
+	ConnectionID string `json:"connection_id" api:"required"`
 	// ISO-8601 formatted date indicating when the credential will expire.
 	ExpiresAt param.Opt[string] `json:"expires_at,omitzero"`
 	Name      param.Opt[string] `json:"name,omitzero"`

@@ -126,13 +126,13 @@ type MobileVoiceConnection struct {
 	// The API version for webhooks.
 	//
 	// Any of "1", "2".
-	WebhookAPIVersion MobileVoiceConnectionWebhookAPIVersion `json:"webhook_api_version,nullable"`
+	WebhookAPIVersion MobileVoiceConnectionWebhookAPIVersion `json:"webhook_api_version" api:"nullable"`
 	// The failover URL where webhooks are sent.
-	WebhookEventFailoverURL string `json:"webhook_event_failover_url,nullable"`
+	WebhookEventFailoverURL string `json:"webhook_event_failover_url" api:"nullable"`
 	// The URL where webhooks are sent.
-	WebhookEventURL string `json:"webhook_event_url,nullable"`
+	WebhookEventURL string `json:"webhook_event_url" api:"nullable"`
 	// The timeout for webhooks in seconds.
-	WebhookTimeoutSecs int64 `json:"webhook_timeout_secs,nullable"`
+	WebhookTimeoutSecs int64 `json:"webhook_timeout_secs" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                      respjson.Field
@@ -160,7 +160,7 @@ func (r *MobileVoiceConnection) UnmarshalJSON(data []byte) error {
 }
 
 type MobileVoiceConnectionInbound struct {
-	ChannelLimit int64 `json:"channel_limit,nullable"`
+	ChannelLimit int64 `json:"channel_limit" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ChannelLimit respjson.Field
@@ -176,8 +176,8 @@ func (r *MobileVoiceConnectionInbound) UnmarshalJSON(data []byte) error {
 }
 
 type MobileVoiceConnectionOutbound struct {
-	ChannelLimit           int64  `json:"channel_limit,nullable"`
-	OutboundVoiceProfileID string `json:"outbound_voice_profile_id,nullable"`
+	ChannelLimit           int64  `json:"channel_limit" api:"nullable"`
+	OutboundVoiceProfileID string `json:"outbound_voice_profile_id" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ChannelLimit           respjson.Field

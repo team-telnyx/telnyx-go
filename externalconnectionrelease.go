@@ -221,7 +221,7 @@ func (r *ExternalConnectionReleaseListResponseTelephoneNumber) UnmarshalJSON(dat
 }
 
 type ExternalConnectionReleaseGetParams struct {
-	ID string `path:"id,required" json:"-"`
+	ID string `path:"id" api:"required" json:"-"`
 	paramObj
 }
 

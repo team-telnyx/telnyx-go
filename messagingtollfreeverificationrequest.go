@@ -134,7 +134,7 @@ func (r *MessagingTollfreeVerificationRequestService) GetStatusHistory(ctx conte
 
 // A phone number
 type TfPhoneNumber struct {
-	PhoneNumber string `json:"phoneNumber,required"`
+	PhoneNumber string `json:"phoneNumber" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PhoneNumber respjson.Field
@@ -162,7 +162,7 @@ func (r TfPhoneNumber) ToParam() TfPhoneNumberParam {
 //
 // The property PhoneNumber is required.
 type TfPhoneNumberParam struct {
-	PhoneNumber string `json:"phoneNumber,required"`
+	PhoneNumber string `json:"phoneNumber" api:"required"`
 	paramObj
 }
 
@@ -183,44 +183,44 @@ func (r *TfPhoneNumberParam) UnmarshalJSON(data []byte) error {
 // PhoneNumbers, ProductionMessageContent, UseCase, UseCaseSummary are required.
 type TfVerificationRequestParam struct {
 	// Any additional information
-	AdditionalInformation string `json:"additionalInformation,required"`
+	AdditionalInformation string `json:"additionalInformation" api:"required"`
 	// Line 1 of the business address
-	BusinessAddr1 string `json:"businessAddr1,required"`
+	BusinessAddr1 string `json:"businessAddr1" api:"required"`
 	// The city of the business address; the first letter should be capitalized
-	BusinessCity string `json:"businessCity,required"`
+	BusinessCity string `json:"businessCity" api:"required"`
 	// The email address of the business contact
-	BusinessContactEmail string `json:"businessContactEmail,required"`
+	BusinessContactEmail string `json:"businessContactEmail" api:"required"`
 	// First name of the business contact; there are no specific requirements on
 	// formatting
-	BusinessContactFirstName string `json:"businessContactFirstName,required"`
+	BusinessContactFirstName string `json:"businessContactFirstName" api:"required"`
 	// Last name of the business contact; there are no specific requirements on
 	// formatting
-	BusinessContactLastName string `json:"businessContactLastName,required"`
+	BusinessContactLastName string `json:"businessContactLastName" api:"required"`
 	// The phone number of the business contact in E.164 format
-	BusinessContactPhone string `json:"businessContactPhone,required"`
+	BusinessContactPhone string `json:"businessContactPhone" api:"required"`
 	// Name of the business; there are no specific formatting requirements
-	BusinessName string `json:"businessName,required"`
+	BusinessName string `json:"businessName" api:"required"`
 	// The full name of the state (not the 2 letter code) of the business address; the
 	// first letter should be capitalized
-	BusinessState string `json:"businessState,required"`
+	BusinessState string `json:"businessState" api:"required"`
 	// The ZIP code of the business address
-	BusinessZip string `json:"businessZip,required"`
+	BusinessZip string `json:"businessZip" api:"required"`
 	// A URL, including the scheme, pointing to the corporate website
-	CorporateWebsite string `json:"corporateWebsite,required"`
+	CorporateWebsite string `json:"corporateWebsite" api:"required"`
 	// Message Volume Enums
 	//
 	// Any of "10", "100", "1,000", "10,000", "100,000", "250,000", "500,000",
 	// "750,000", "1,000,000", "5,000,000", "10,000,000+".
-	MessageVolume Volume `json:"messageVolume,omitzero,required"`
+	MessageVolume Volume `json:"messageVolume,omitzero" api:"required"`
 	// Human-readable description of how end users will opt into receiving messages
 	// from the given phone numbers
-	OptInWorkflow string `json:"optInWorkflow,required"`
+	OptInWorkflow string `json:"optInWorkflow" api:"required"`
 	// Images showing the opt-in workflow
-	OptInWorkflowImageURLs []URLParam `json:"optInWorkflowImageURLs,omitzero,required"`
+	OptInWorkflowImageURLs []URLParam `json:"optInWorkflowImageURLs,omitzero" api:"required"`
 	// The phone numbers to request the verification of
-	PhoneNumbers []TfPhoneNumberParam `json:"phoneNumbers,omitzero,required"`
+	PhoneNumbers []TfPhoneNumberParam `json:"phoneNumbers,omitzero" api:"required"`
 	// An example of a message that will be sent from the given phone numbers
-	ProductionMessageContent string `json:"productionMessageContent,required"`
+	ProductionMessageContent string `json:"productionMessageContent" api:"required"`
 	// Tollfree usecase categories
 	//
 	// Any of "2FA", "App Notifications", "Appointments", "Auctions", "Auto Repair
@@ -235,9 +235,9 @@ type TfVerificationRequestParam struct {
 	// Services", "Repair and Diagnostics Alerts", "Rewards Program", "Surveys",
 	// "System Alerts", "Voting Reminders", "Waitlist Alerts", "Webinar Reminders",
 	// "Workshop Alerts".
-	UseCase UseCaseCategories `json:"useCase,omitzero,required"`
+	UseCase UseCaseCategories `json:"useCase,omitzero" api:"required"`
 	// Human-readable summary of the desired use-case
-	UseCaseSummary string `json:"useCaseSummary,required"`
+	UseCaseSummary string `json:"useCaseSummary" api:"required"`
 	// ISO 3166-1 alpha-2 country code of the issuing business authority. Must be
 	// exactly 2 letters. Automatically converted to uppercase. Required from
 	// January 2026.
@@ -314,7 +314,7 @@ const (
 )
 
 type URL struct {
-	URL string `json:"url,required" format:"uri"`
+	URL string `json:"url" api:"required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		URL         respjson.Field
@@ -340,7 +340,7 @@ func (r URL) ToParam() URLParam {
 
 // The property URL is required.
 type URLParam struct {
-	URL string `json:"url,required" format:"uri"`
+	URL string `json:"url" api:"required" format:"uri"`
 	paramObj
 }
 
@@ -403,27 +403,27 @@ const (
 
 // A verification request as it comes out of the database
 type VerificationRequestEgress struct {
-	ID                       string `json:"id,required" format:"uuid"`
-	AdditionalInformation    string `json:"additionalInformation,required"`
-	BusinessAddr1            string `json:"businessAddr1,required"`
-	BusinessCity             string `json:"businessCity,required"`
-	BusinessContactEmail     string `json:"businessContactEmail,required"`
-	BusinessContactFirstName string `json:"businessContactFirstName,required"`
-	BusinessContactLastName  string `json:"businessContactLastName,required"`
-	BusinessContactPhone     string `json:"businessContactPhone,required"`
-	BusinessName             string `json:"businessName,required"`
-	BusinessState            string `json:"businessState,required"`
-	BusinessZip              string `json:"businessZip,required"`
-	CorporateWebsite         string `json:"corporateWebsite,required"`
+	ID                       string `json:"id" api:"required" format:"uuid"`
+	AdditionalInformation    string `json:"additionalInformation" api:"required"`
+	BusinessAddr1            string `json:"businessAddr1" api:"required"`
+	BusinessCity             string `json:"businessCity" api:"required"`
+	BusinessContactEmail     string `json:"businessContactEmail" api:"required"`
+	BusinessContactFirstName string `json:"businessContactFirstName" api:"required"`
+	BusinessContactLastName  string `json:"businessContactLastName" api:"required"`
+	BusinessContactPhone     string `json:"businessContactPhone" api:"required"`
+	BusinessName             string `json:"businessName" api:"required"`
+	BusinessState            string `json:"businessState" api:"required"`
+	BusinessZip              string `json:"businessZip" api:"required"`
+	CorporateWebsite         string `json:"corporateWebsite" api:"required"`
 	// Message Volume Enums
 	//
 	// Any of "10", "100", "1,000", "10,000", "100,000", "250,000", "500,000",
 	// "750,000", "1,000,000", "5,000,000", "10,000,000+".
-	MessageVolume            Volume          `json:"messageVolume,required"`
-	OptInWorkflow            string          `json:"optInWorkflow,required"`
-	OptInWorkflowImageURLs   []URL           `json:"optInWorkflowImageURLs,required"`
-	PhoneNumbers             []TfPhoneNumber `json:"phoneNumbers,required"`
-	ProductionMessageContent string          `json:"productionMessageContent,required"`
+	MessageVolume            Volume          `json:"messageVolume" api:"required"`
+	OptInWorkflow            string          `json:"optInWorkflow" api:"required"`
+	OptInWorkflowImageURLs   []URL           `json:"optInWorkflowImageURLs" api:"required"`
+	PhoneNumbers             []TfPhoneNumber `json:"phoneNumbers" api:"required"`
+	ProductionMessageContent string          `json:"productionMessageContent" api:"required"`
 	// Tollfree usecase categories
 	//
 	// Any of "2FA", "App Notifications", "Appointments", "Auctions", "Auto Repair
@@ -438,9 +438,9 @@ type VerificationRequestEgress struct {
 	// Services", "Repair and Diagnostics Alerts", "Rewards Program", "Surveys",
 	// "System Alerts", "Voting Reminders", "Waitlist Alerts", "Webinar Reminders",
 	// "Workshop Alerts".
-	UseCase                     UseCaseCategories `json:"useCase,required"`
-	UseCaseSummary              string            `json:"useCaseSummary,required"`
-	VerificationRequestID       string            `json:"verificationRequestId,required"`
+	UseCase                     UseCaseCategories `json:"useCase" api:"required"`
+	UseCaseSummary              string            `json:"useCaseSummary" api:"required"`
+	VerificationRequestID       string            `json:"verificationRequestId" api:"required"`
 	AgeGatedContent             bool              `json:"ageGatedContent"`
 	BusinessAddr2               string            `json:"businessAddr2"`
 	BusinessRegistrationCountry string            `json:"businessRegistrationCountry"`
@@ -448,7 +448,7 @@ type VerificationRequestEgress struct {
 	BusinessRegistrationType    string            `json:"businessRegistrationType"`
 	// Campaign Verify Authorization Token required for Political use case submissions
 	// starting February 17, 2026
-	CampaignVerifyAuthorizationToken string `json:"campaignVerifyAuthorizationToken,nullable"`
+	CampaignVerifyAuthorizationToken string `json:"campaignVerifyAuthorizationToken" api:"nullable"`
 	DoingBusinessAs                  string `json:"doingBusinessAs"`
 	// Business entity classification
 	//
@@ -518,27 +518,27 @@ func (r *VerificationRequestEgress) UnmarshalJSON(data []byte) error {
 
 // A verification request and its status, suitable for returning to users
 type VerificationRequestStatus struct {
-	ID                       string `json:"id,required" format:"uuid"`
-	AdditionalInformation    string `json:"additionalInformation,required"`
-	BusinessAddr1            string `json:"businessAddr1,required"`
-	BusinessCity             string `json:"businessCity,required"`
-	BusinessContactEmail     string `json:"businessContactEmail,required"`
-	BusinessContactFirstName string `json:"businessContactFirstName,required"`
-	BusinessContactLastName  string `json:"businessContactLastName,required"`
-	BusinessContactPhone     string `json:"businessContactPhone,required"`
-	BusinessName             string `json:"businessName,required"`
-	BusinessState            string `json:"businessState,required"`
-	BusinessZip              string `json:"businessZip,required"`
-	CorporateWebsite         string `json:"corporateWebsite,required"`
+	ID                       string `json:"id" api:"required" format:"uuid"`
+	AdditionalInformation    string `json:"additionalInformation" api:"required"`
+	BusinessAddr1            string `json:"businessAddr1" api:"required"`
+	BusinessCity             string `json:"businessCity" api:"required"`
+	BusinessContactEmail     string `json:"businessContactEmail" api:"required"`
+	BusinessContactFirstName string `json:"businessContactFirstName" api:"required"`
+	BusinessContactLastName  string `json:"businessContactLastName" api:"required"`
+	BusinessContactPhone     string `json:"businessContactPhone" api:"required"`
+	BusinessName             string `json:"businessName" api:"required"`
+	BusinessState            string `json:"businessState" api:"required"`
+	BusinessZip              string `json:"businessZip" api:"required"`
+	CorporateWebsite         string `json:"corporateWebsite" api:"required"`
 	// Message Volume Enums
 	//
 	// Any of "10", "100", "1,000", "10,000", "100,000", "250,000", "500,000",
 	// "750,000", "1,000,000", "5,000,000", "10,000,000+".
-	MessageVolume            Volume          `json:"messageVolume,required"`
-	OptInWorkflow            string          `json:"optInWorkflow,required"`
-	OptInWorkflowImageURLs   []URL           `json:"optInWorkflowImageURLs,required"`
-	PhoneNumbers             []TfPhoneNumber `json:"phoneNumbers,required"`
-	ProductionMessageContent string          `json:"productionMessageContent,required"`
+	MessageVolume            Volume          `json:"messageVolume" api:"required"`
+	OptInWorkflow            string          `json:"optInWorkflow" api:"required"`
+	OptInWorkflowImageURLs   []URL           `json:"optInWorkflowImageURLs" api:"required"`
+	PhoneNumbers             []TfPhoneNumber `json:"phoneNumbers" api:"required"`
+	ProductionMessageContent string          `json:"productionMessageContent" api:"required"`
 	// Tollfree usecase categories
 	//
 	// Any of "2FA", "App Notifications", "Appointments", "Auctions", "Auto Repair
@@ -553,13 +553,13 @@ type VerificationRequestStatus struct {
 	// Services", "Repair and Diagnostics Alerts", "Rewards Program", "Surveys",
 	// "System Alerts", "Voting Reminders", "Waitlist Alerts", "Webinar Reminders",
 	// "Workshop Alerts".
-	UseCase        UseCaseCategories `json:"useCase,required"`
-	UseCaseSummary string            `json:"useCaseSummary,required"`
+	UseCase        UseCaseCategories `json:"useCase" api:"required"`
+	UseCaseSummary string            `json:"useCaseSummary" api:"required"`
 	// Tollfree verification status
 	//
 	// Any of "Verified", "Rejected", "Waiting For Vendor", "Waiting For Customer",
 	// "Waiting For Telnyx", "In Progress".
-	VerificationStatus          TfVerificationStatus `json:"verificationStatus,required"`
+	VerificationStatus          TfVerificationStatus `json:"verificationStatus" api:"required"`
 	AgeGatedContent             bool                 `json:"ageGatedContent"`
 	BusinessAddr2               string               `json:"businessAddr2"`
 	BusinessRegistrationCountry string               `json:"businessRegistrationCountry"`
@@ -567,7 +567,7 @@ type VerificationRequestStatus struct {
 	BusinessRegistrationType    string               `json:"businessRegistrationType"`
 	// Campaign Verify Authorization Token required for Political use case submissions
 	// starting February 17, 2026
-	CampaignVerifyAuthorizationToken string    `json:"campaignVerifyAuthorizationToken,nullable"`
+	CampaignVerifyAuthorizationToken string    `json:"campaignVerifyAuthorizationToken" api:"nullable"`
 	CreatedAt                        time.Time `json:"createdAt" format:"date-time"`
 	DoingBusinessAs                  string    `json:"doingBusinessAs"`
 	// Business entity classification
@@ -655,9 +655,9 @@ const (
 // A paginated response
 type MessagingTollfreeVerificationRequestGetStatusHistoryResponse struct {
 	// The records yielded by this request
-	Records []MessagingTollfreeVerificationRequestGetStatusHistoryResponseRecord `json:"records,required"`
+	Records []MessagingTollfreeVerificationRequestGetStatusHistoryResponseRecord `json:"records" api:"required"`
 	// The total amount of records for these query parameters
-	TotalRecords int64 `json:"total_records,required"`
+	TotalRecords int64 `json:"total_records" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Records      respjson.Field
@@ -678,14 +678,14 @@ func (r *MessagingTollfreeVerificationRequestGetStatusHistoryResponse) Unmarshal
 // A single entry in the verification request status history
 type MessagingTollfreeVerificationRequestGetStatusHistoryResponseRecord struct {
 	// The timestamp at which this status change occurred
-	UpdatedAt time.Time `json:"updatedAt,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updatedAt" api:"required" format:"date-time"`
 	// Tollfree verification status
 	//
 	// Any of "Verified", "Rejected", "Waiting For Vendor", "Waiting For Customer",
 	// "Waiting For Telnyx", "In Progress".
-	VerificationStatus TfVerificationStatus `json:"verificationStatus,required"`
+	VerificationStatus TfVerificationStatus `json:"verificationStatus" api:"required"`
 	// An explanation of why this request has its current status.
-	Reason string `json:"reason,nullable"`
+	Reason string `json:"reason" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		UpdatedAt          respjson.Field
@@ -731,11 +731,11 @@ func (r *MessagingTollfreeVerificationRequestUpdateParams) UnmarshalJSON(data []
 }
 
 type MessagingTollfreeVerificationRequestListParams struct {
-	Page int64 `query:"page,required" json:"-"`
+	Page int64 `query:"page" api:"required" json:"-"`
 	// Request this many records per page
 	//
 	//	This value is automatically clamped if the provided value is too large.
-	PageSize int64 `query:"page_size,required" json:"-"`
+	PageSize int64 `query:"page_size" api:"required" json:"-"`
 	// Filter verification requests by business name
 	BusinessName param.Opt[string]    `query:"business_name,omitzero" json:"-"`
 	DateEnd      param.Opt[time.Time] `query:"date_end,omitzero" format:"date-time" json:"-"`
@@ -759,10 +759,10 @@ func (r MessagingTollfreeVerificationRequestListParams) URLQuery() (v url.Values
 }
 
 type MessagingTollfreeVerificationRequestGetStatusHistoryParams struct {
-	PageNumber int64 `query:"page[number],required" json:"-"`
+	PageNumber int64 `query:"page[number]" api:"required" json:"-"`
 	// Request this many records per page. This value is automatically clamped if the
 	// provided value is too large.
-	PageSize int64 `query:"page[size],required" json:"-"`
+	PageSize int64 `query:"page[size]" api:"required" json:"-"`
 	paramObj
 }
 

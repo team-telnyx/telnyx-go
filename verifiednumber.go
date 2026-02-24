@@ -161,11 +161,11 @@ func (r *VerifiedNumberNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VerifiedNumberNewParams struct {
-	PhoneNumber string `json:"phone_number,required"`
+	PhoneNumber string `json:"phone_number" api:"required"`
 	// Verification method.
 	//
 	// Any of "sms", "call".
-	VerificationMethod VerifiedNumberNewParamsVerificationMethod `json:"verification_method,omitzero,required"`
+	VerificationMethod VerifiedNumberNewParamsVerificationMethod `json:"verification_method,omitzero" api:"required"`
 	// Optional DTMF extension sequence to dial after the call is answered. This
 	// parameter enables verification of phone numbers behind IVR systems that require
 	// extension dialing. Valid characters: digits 0-9, letters A-D, symbols \* and #.

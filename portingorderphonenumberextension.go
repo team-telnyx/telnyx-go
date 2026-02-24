@@ -213,11 +213,11 @@ type PortingOrderPhoneNumberExtensionNewParams struct {
 	// Specifies the activation ranges for this porting phone number extension. The
 	// activation range must be within the extension range and should not overlap with
 	// other activation ranges.
-	ActivationRanges []PortingOrderPhoneNumberExtensionNewParamsActivationRange `json:"activation_ranges,omitzero,required"`
-	ExtensionRange   PortingOrderPhoneNumberExtensionNewParamsExtensionRange    `json:"extension_range,omitzero,required"`
+	ActivationRanges []PortingOrderPhoneNumberExtensionNewParamsActivationRange `json:"activation_ranges,omitzero" api:"required"`
+	ExtensionRange   PortingOrderPhoneNumberExtensionNewParamsExtensionRange    `json:"extension_range,omitzero" api:"required"`
 	// Identifies the porting phone number associated with this porting phone number
 	// extension.
-	PortingPhoneNumberID string `json:"porting_phone_number_id,required" format:"uuid"`
+	PortingPhoneNumberID string `json:"porting_phone_number_id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -233,10 +233,10 @@ func (r *PortingOrderPhoneNumberExtensionNewParams) UnmarshalJSON(data []byte) e
 type PortingOrderPhoneNumberExtensionNewParamsActivationRange struct {
 	// Specifies the end of the activation range. It must be no more than the end of
 	// the extension range.
-	EndAt int64 `json:"end_at,required"`
+	EndAt int64 `json:"end_at" api:"required"`
 	// Specifies the start of the activation range. Must be greater or equal the start
 	// of the extension range.
-	StartAt int64 `json:"start_at,required"`
+	StartAt int64 `json:"start_at" api:"required"`
 	paramObj
 }
 
@@ -252,10 +252,10 @@ func (r *PortingOrderPhoneNumberExtensionNewParamsActivationRange) UnmarshalJSON
 type PortingOrderPhoneNumberExtensionNewParamsExtensionRange struct {
 	// Specifies the end of the extension range for this porting phone number
 	// extension.
-	EndAt int64 `json:"end_at,required"`
+	EndAt int64 `json:"end_at" api:"required"`
 	// Specifies the start of the extension range for this porting phone number
 	// extension.
-	StartAt int64 `json:"start_at,required"`
+	StartAt int64 `json:"start_at" api:"required"`
 	paramObj
 }
 
@@ -324,6 +324,6 @@ func (r PortingOrderPhoneNumberExtensionListParamsSort) URLQuery() (v url.Values
 }
 
 type PortingOrderPhoneNumberExtensionDeleteParams struct {
-	PortingOrderID string `path:"porting_order_id,required" format:"uuid" json:"-"`
+	PortingOrderID string `path:"porting_order_id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }

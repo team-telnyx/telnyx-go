@@ -101,7 +101,7 @@ func (r *StorageBucketNewPresignedURLResponseContent) UnmarshalJSON(data []byte)
 }
 
 type StorageBucketNewPresignedURLParams struct {
-	BucketName string `path:"bucketName,required" json:"-"`
+	BucketName string `path:"bucketName" api:"required" json:"-"`
 	// The time to live of the token in seconds
 	Ttl param.Opt[int64] `json:"ttl,omitzero"`
 	paramObj

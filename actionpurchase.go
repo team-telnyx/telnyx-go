@@ -65,8 +65,8 @@ func (r *ActionPurchaseNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ActionPurchaseNewResponseError struct {
-	Code   string                               `json:"code,required"`
-	Title  string                               `json:"title,required"`
+	Code   string                               `json:"code" api:"required"`
+	Title  string                               `json:"title" api:"required"`
 	Detail string                               `json:"detail"`
 	Meta   map[string]any                       `json:"meta"`
 	Source ActionPurchaseNewResponseErrorSource `json:"source"`
@@ -110,7 +110,7 @@ func (r *ActionPurchaseNewResponseErrorSource) UnmarshalJSON(data []byte) error 
 
 type ActionPurchaseNewParams struct {
 	// The amount of eSIMs to be purchased.
-	Amount int64 `json:"amount,required"`
+	Amount int64 `json:"amount" api:"required"`
 	// Type of product to be purchased, specify "whitelabel" to use a custom SPN
 	Product param.Opt[string] `json:"product,omitzero"`
 	// The group SIMCardGroup identification. This attribute can be <code>null</code>

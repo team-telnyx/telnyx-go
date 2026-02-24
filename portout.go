@@ -137,7 +137,7 @@ type PortoutDetails struct {
 	Pon string `json:"pon"`
 	// The reason why the order is being rejected by the user. If the order is
 	// authorized, this field can be left null
-	Reason string `json:"reason,nullable"`
+	Reason string `json:"reason" api:"nullable"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
 	// The rejection code for one of the valid rejections to reject a port out order
@@ -442,9 +442,9 @@ func (u *PortoutListRejectionCodesParamsFilterCodeUnion) asAny() any {
 }
 
 type PortoutUpdateStatusParams struct {
-	ID string `path:"id,required" format:"uuid" json:"-"`
+	ID string `path:"id" api:"required" format:"uuid" json:"-"`
 	// Provide a reason if rejecting the port out request
-	Reason string `json:"reason,required"`
+	Reason string `json:"reason" api:"required"`
 	// Indicates whether messaging services should be maintained with Telnyx after the
 	// port out completes
 	HostMessaging param.Opt[bool] `json:"host_messaging,omitzero"`

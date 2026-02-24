@@ -39,15 +39,15 @@ type RcsAgent struct {
 	// Specifies whether the agent is enabled
 	Enabled bool `json:"enabled"`
 	// Messaging profile ID associated with the RCS Agent
-	ProfileID string `json:"profile_id,nullable" format:"uuid"`
+	ProfileID string `json:"profile_id" api:"nullable" format:"uuid"`
 	// Date and time when the resource was updated
 	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
 	// User ID associated with the RCS Agent
 	UserID string `json:"user_id"`
 	// Failover URL to receive RCS events
-	WebhookFailoverURL string `json:"webhook_failover_url,nullable" format:"url"`
+	WebhookFailoverURL string `json:"webhook_failover_url" api:"nullable" format:"url"`
 	// URL to receive RCS events
-	WebhookURL string `json:"webhook_url,nullable" format:"url"`
+	WebhookURL string `json:"webhook_url" api:"nullable" format:"url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AgentID            respjson.Field

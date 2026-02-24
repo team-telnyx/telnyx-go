@@ -74,7 +74,7 @@ type OrganizationUserActionRemoveResponseData struct {
 	Groups []UserGroupReference `json:"groups"`
 	// ISO 8601 formatted date indicating when the resource last signed into the
 	// portal. Null if the user has never signed in.
-	LastSignInAt string `json:"last_sign_in_at,nullable"`
+	LastSignInAt string `json:"last_sign_in_at" api:"nullable"`
 	// Indicates whether this user is allowed to bypass SSO and use password
 	// authentication.
 	OrganizationUserBypassesSSO bool `json:"organization_user_bypasses_sso"`

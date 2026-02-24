@@ -191,9 +191,9 @@ func (r *LegacyReportingUsageReportVoiceDeleteResponse) UnmarshalJSON(data []byt
 
 type LegacyReportingUsageReportVoiceNewParams struct {
 	// End time in ISO format
-	EndTime time.Time `json:"end_time,required" format:"date-time"`
+	EndTime time.Time `json:"end_time" api:"required" format:"date-time"`
 	// Start time in ISO format
-	StartTime time.Time `json:"start_time,required" format:"date-time"`
+	StartTime time.Time `json:"start_time" api:"required" format:"date-time"`
 	// Aggregation type: All = 0, By Connections = 1, By Tags = 2, By Billing Group = 3
 	AggregationType param.Opt[int64] `json:"aggregation_type,omitzero"`
 	// Product breakdown type: No breakdown = 0, DID vs Toll-free = 1, Country = 2, DID

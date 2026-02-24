@@ -76,7 +76,7 @@ func (r *VerificationService) TriggerSMS(ctx context.Context, body VerificationT
 }
 
 type CreateVerificationResponse struct {
-	Data Verification `json:"data,required"`
+	Data Verification `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -95,7 +95,7 @@ type Verification struct {
 	ID        string `json:"id" format:"uuid"`
 	CreatedAt string `json:"created_at"`
 	// Send a self-generated numeric code to the end-user
-	CustomCode string `json:"custom_code,nullable"`
+	CustomCode string `json:"custom_code" api:"nullable"`
 	// +E164 formatted phone number.
 	PhoneNumber string `json:"phone_number"`
 	// The possible verification record types.
@@ -168,7 +168,7 @@ const (
 )
 
 type VerificationGetResponse struct {
-	Data Verification `json:"data,required"`
+	Data Verification `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -185,9 +185,9 @@ func (r *VerificationGetResponse) UnmarshalJSON(data []byte) error {
 
 type VerificationTriggerCallParams struct {
 	// +E164 formatted phone number.
-	PhoneNumber string `json:"phone_number,required"`
+	PhoneNumber string `json:"phone_number" api:"required"`
 	// The identifier of the associated Verify profile.
-	VerifyProfileID string `json:"verify_profile_id,required" format:"uuid"`
+	VerifyProfileID string `json:"verify_profile_id" api:"required" format:"uuid"`
 	// Send a self-generated numeric code to the end-user
 	CustomCode param.Opt[string] `json:"custom_code,omitzero"`
 	// Optional extension to dial after call is answered using DTMF digits. Valid
@@ -208,9 +208,9 @@ func (r *VerificationTriggerCallParams) UnmarshalJSON(data []byte) error {
 
 type VerificationTriggerFlashcallParams struct {
 	// +E164 formatted phone number.
-	PhoneNumber string `json:"phone_number,required"`
+	PhoneNumber string `json:"phone_number" api:"required"`
 	// The identifier of the associated Verify profile.
-	VerifyProfileID string `json:"verify_profile_id,required" format:"uuid"`
+	VerifyProfileID string `json:"verify_profile_id" api:"required" format:"uuid"`
 	// The number of seconds the verification code is valid for.
 	TimeoutSecs param.Opt[int64] `json:"timeout_secs,omitzero"`
 	paramObj
@@ -226,9 +226,9 @@ func (r *VerificationTriggerFlashcallParams) UnmarshalJSON(data []byte) error {
 
 type VerificationTriggerSMSParams struct {
 	// +E164 formatted phone number.
-	PhoneNumber string `json:"phone_number,required"`
+	PhoneNumber string `json:"phone_number" api:"required"`
 	// The identifier of the associated Verify profile.
-	VerifyProfileID string `json:"verify_profile_id,required" format:"uuid"`
+	VerifyProfileID string `json:"verify_profile_id" api:"required" format:"uuid"`
 	// Send a self-generated numeric code to the end-user
 	CustomCode param.Opt[string] `json:"custom_code,omitzero"`
 	// The number of seconds the verification code is valid for.

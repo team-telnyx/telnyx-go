@@ -80,10 +80,10 @@ func (r *AIAssistantTestTestSuiteRunService) Trigger(ctx context.Context, suiteN
 }
 
 type Meta struct {
-	PageNumber   int64 `json:"page_number,required"`
-	PageSize     int64 `json:"page_size,required"`
-	TotalPages   int64 `json:"total_pages,required"`
-	TotalResults int64 `json:"total_results,required"`
+	PageNumber   int64 `json:"page_number" api:"required"`
+	PageSize     int64 `json:"page_size" api:"required"`
+	TotalPages   int64 `json:"total_pages" api:"required"`
+	TotalResults int64 `json:"total_results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PageNumber   respjson.Field
@@ -107,9 +107,9 @@ func (r *Meta) UnmarshalJSON(data []byte) error {
 // numbers of test executions.
 type PaginatedTestRunList struct {
 	// Array of test run objects for the current page.
-	Data []TestRunResponse `json:"data,required"`
+	Data []TestRunResponse `json:"data" api:"required"`
 	// Pagination metadata including total counts and current page info.
-	Meta Meta `json:"meta,required"`
+	Meta Meta `json:"meta" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

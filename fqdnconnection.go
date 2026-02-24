@@ -109,7 +109,7 @@ func (r *FqdnConnectionService) Delete(ctx context.Context, id string, opts ...o
 
 type FqdnConnection struct {
 	// A user-assigned name to help manage the connection.
-	ConnectionName string `json:"connection_name,required"`
+	ConnectionName string `json:"connection_name" api:"required"`
 	// Identifies the resource.
 	ID string `json:"id"`
 	// Defaults to true
@@ -125,7 +125,7 @@ type FqdnConnection struct {
 	// "Vancouver, Canada", "Frankfurt, Germany".
 	AnchorsiteOverride AnchorsiteOverride `json:"anchorsite_override"`
 	// The uuid of the push credential for Android
-	AndroidPushCredentialID string `json:"android_push_credential_id,nullable"`
+	AndroidPushCredentialID string `json:"android_push_credential_id" api:"nullable"`
 	// Indicates whether call cost calculation is enabled.
 	CallCostEnabled bool `json:"call_cost_enabled"`
 	// Specifies if call cost webhooks should be sent for this connection.
@@ -148,14 +148,14 @@ type FqdnConnection struct {
 	// TLS.
 	//
 	// Any of "SRTP".
-	EncryptedMedia EncryptedMedia `json:"encrypted_media,nullable"`
+	EncryptedMedia EncryptedMedia `json:"encrypted_media" api:"nullable"`
 	// Indicates whether DTMF duration should be ignored.
 	IgnoreDtmfDuration bool `json:"ignore_dtmf_duration"`
 	// Indicates whether the mark bit should be ignored.
 	IgnoreMarkBit bool        `json:"ignore_mark_bit"`
 	Inbound       InboundFqdn `json:"inbound"`
 	// The uuid of the push credential for Ios
-	IosPushCredentialID string `json:"ios_push_credential_id,nullable"`
+	IosPushCredentialID string `json:"ios_push_credential_id" api:"nullable"`
 	// Configuration options for Jitter Buffer. Enables Jitter Buffer for RTP streams
 	// of SIP Trunking calls. The feature is off unless enabled. You may define min and
 	// max values in msec for customized buffering behaviors. Larger values add latency
@@ -215,12 +215,12 @@ type FqdnConnection struct {
 	WebhookAPIVersion WebhookAPIVersion `json:"webhook_api_version"`
 	// The failover URL where webhooks related to this connection will be sent if
 	// sending to the primary URL fails. Must include a scheme, such as 'https'.
-	WebhookEventFailoverURL string `json:"webhook_event_failover_url,nullable" format:"uri"`
+	WebhookEventFailoverURL string `json:"webhook_event_failover_url" api:"nullable" format:"uri"`
 	// The URL where webhooks related to this connection will be sent. Must include a
 	// scheme, such as 'https'.
 	WebhookEventURL string `json:"webhook_event_url" format:"uri"`
 	// Specifies how many seconds to wait before timing out a webhook.
-	WebhookTimeoutSecs int64 `json:"webhook_timeout_secs,nullable"`
+	WebhookTimeoutSecs int64 `json:"webhook_timeout_secs" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ConnectionName                   respjson.Field
@@ -295,7 +295,7 @@ type InboundFqdn struct {
 	AniNumberFormat InboundFqdnAniNumberFormat `json:"ani_number_format"`
 	// When set, this will limit the total number of inbound calls to phone numbers
 	// associated with this connection.
-	ChannelLimit int64 `json:"channel_limit,nullable"`
+	ChannelLimit int64 `json:"channel_limit" api:"nullable"`
 	// Defines the list of codecs that Telnyx will send for inbound calls to a specific
 	// number on your portal account, in priority order. This only works when the
 	// Connection the number is assigned to uses Media Handling mode: default. OPUS and
@@ -303,20 +303,20 @@ type InboundFqdn struct {
 	Codecs []string `json:"codecs"`
 	// The default primary FQDN to use for the number. Only settable if the connection
 	// is of FQDN type. Value must be the ID of an FQDN set on the connection.
-	DefaultPrimaryFqdnID string `json:"default_primary_fqdn_id,nullable"`
+	DefaultPrimaryFqdnID string `json:"default_primary_fqdn_id" api:"nullable"`
 	// Default routing method to be used when a number is associated with the
 	// connection. Must be one of the routing method types or null, other values are
 	// not allowed.
 	//
 	// Any of "sequential", "round-robin".
-	DefaultRoutingMethod InboundFqdnDefaultRoutingMethod `json:"default_routing_method,nullable"`
+	DefaultRoutingMethod InboundFqdnDefaultRoutingMethod `json:"default_routing_method" api:"nullable"`
 	// The default secondary FQDN to use for the number. Only settable if the
 	// connection is of FQDN type. Value must be the ID of an FQDN set on the
 	// connection.
-	DefaultSecondaryFqdnID string `json:"default_secondary_fqdn_id,nullable"`
+	DefaultSecondaryFqdnID string `json:"default_secondary_fqdn_id" api:"nullable"`
 	// The default tertiary FQDN to use for the number. Only settable if the connection
 	// is of FQDN type. Value must be the ID of an FQDN set on the connection.
-	DefaultTertiaryFqdnID string `json:"default_tertiary_fqdn_id,nullable"`
+	DefaultTertiaryFqdnID string `json:"default_tertiary_fqdn_id" api:"nullable"`
 	// Any of "+e164", "e164", "national", "sip_username".
 	DnisNumberFormat InboundFqdnDnisNumberFormat `json:"dnis_number_format"`
 	// Generate ringback tone through 183 session progress message with early media.
@@ -343,7 +343,7 @@ type InboundFqdn struct {
 	// the SIP URI "sip:@example.sip.telnyx.com" where the user part can be any
 	// alphanumeric value. Please note TLS encrypted calls are not allowed for
 	// subdomain calls.
-	SipSubdomain string `json:"sip_subdomain,nullable"`
+	SipSubdomain string `json:"sip_subdomain" api:"nullable"`
 	// This option can be enabled to receive calls from: "Anyone" (any SIP endpoint in
 	// the public Internet) or "Only my connections" (any connection assigned to the
 	// same Telnyx user).
@@ -535,7 +535,7 @@ type OutboundFqdn struct {
 	// \"bridged\" to the destination specified on the URI. Parked calls will return
 	// ringback to the caller and will await for a Call Control command to define which
 	// action will be taken next.
-	CallParkingEnabled bool `json:"call_parking_enabled,nullable"`
+	CallParkingEnabled bool `json:"call_parking_enabled" api:"nullable"`
 	// When set, this will limit the total number of inbound calls to phone numbers
 	// associated with this connection.
 	ChannelLimit int64 `json:"channel_limit"`
@@ -543,7 +543,7 @@ type OutboundFqdn struct {
 	// TLS.
 	//
 	// Any of "SRTP".
-	EncryptedMedia EncryptedMedia `json:"encrypted_media,nullable"`
+	EncryptedMedia EncryptedMedia `json:"encrypted_media" api:"nullable"`
 	// Generate ringback tone through 183 session progress message with early media.
 	GenerateRingbackTone bool `json:"generate_ringback_tone"`
 	// When set, ringback will not wait for indication before sending ringback tone to
@@ -788,7 +788,7 @@ func (r *FqdnConnectionDeleteResponse) UnmarshalJSON(data []byte) error {
 
 type FqdnConnectionNewParams struct {
 	// A user-assigned name to help manage the connection.
-	ConnectionName string `json:"connection_name,required"`
+	ConnectionName string `json:"connection_name" api:"required"`
 	// The uuid of the push credential for Android
 	AndroidPushCredentialID param.Opt[string] `json:"android_push_credential_id,omitzero"`
 	// The uuid of the push credential for Ios

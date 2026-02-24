@@ -77,12 +77,12 @@ type TexmlGetCallRecordingResponseBody struct {
 	CallSid    string `json:"call_sid"`
 	// Any of 1, 2.
 	Channels      int64     `json:"channels"`
-	ConferenceSid string    `json:"conference_sid,nullable" format:"uuid"`
+	ConferenceSid string    `json:"conference_sid" api:"nullable" format:"uuid"`
 	DateCreated   time.Time `json:"date_created" format:"date-time"`
 	DateUpdated   time.Time `json:"date_updated" format:"date-time"`
 	// The duration of this recording, given in seconds.
-	Duration  string `json:"duration,nullable"`
-	ErrorCode string `json:"error_code,nullable"`
+	Duration  string `json:"duration" api:"nullable"`
+	ErrorCode string `json:"error_code" api:"nullable"`
 	MediaURL  string `json:"media_url" format:"uri"`
 	// Identifier of a resource.
 	Sid string `json:"sid"`
@@ -150,7 +150,7 @@ const (
 
 // Subresources details for a recording if available.
 type TexmlRecordingSubresourcesUris struct {
-	Transcriptions string `json:"transcriptions,nullable" format:"uri"`
+	Transcriptions string `json:"transcriptions" api:"nullable" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Transcriptions respjson.Field
@@ -253,7 +253,7 @@ type TexmlAccountGetTranscriptionsJsonResponseTranscription struct {
 	DateCreated time.Time `json:"date_created" format:"date-time"`
 	DateUpdated time.Time `json:"date_updated" format:"date-time"`
 	// The duration of this recording, given in seconds.
-	Duration string `json:"duration,nullable"`
+	Duration string `json:"duration" api:"nullable"`
 	// Identifier of a resource.
 	RecordingSid string `json:"recording_sid"`
 	// Identifier of a resource.

@@ -88,7 +88,7 @@ type CountryCoverageGetResponseData struct {
 	// Supports quickship
 	Quickship bool `json:"quickship"`
 	// Geographic region (e.g., AMER, EMEA, APAC)
-	Region string `json:"region,nullable"`
+	Region string `json:"region" api:"nullable"`
 	// Supports reservable
 	Reservable bool                                   `json:"reservable"`
 	SharedCost map[string]any                         `json:"shared_cost"`
@@ -207,7 +207,7 @@ type CountryCoverageGetCountryResponseData struct {
 	// Supports quickship
 	Quickship bool `json:"quickship"`
 	// Geographic region (e.g., AMER, EMEA, APAC)
-	Region string `json:"region,nullable"`
+	Region string `json:"region" api:"nullable"`
 	// Supports reservable
 	Reservable bool                                          `json:"reservable"`
 	SharedCost map[string]any                                `json:"shared_cost"`

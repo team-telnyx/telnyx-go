@@ -210,10 +210,10 @@ type MessagingProfile struct {
 	// Identifies the type of resource.
 	ID string `json:"id" format:"uuid"`
 	// The AI assistant ID associated with this messaging profile.
-	AIAssistantID string `json:"ai_assistant_id,nullable"`
+	AIAssistantID string `json:"ai_assistant_id" api:"nullable"`
 	// The alphanumeric sender ID to use when sending to destinations that require an
 	// alphanumeric sender ID.
-	AlphaSender string `json:"alpha_sender,nullable"`
+	AlphaSender string `json:"alpha_sender" api:"nullable"`
 	// ISO 8601 formatted date indicating when the resource was created.
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// The maximum amount of money (in USD) that can be spent by this profile before
@@ -224,7 +224,7 @@ type MessagingProfile struct {
 	// Specifies whether the messaging profile is enabled or not.
 	Enabled bool `json:"enabled"`
 	// DEPRECATED: health check url service checking
-	HealthWebhookURL string `json:"health_webhook_url,nullable" format:"url"`
+	HealthWebhookURL string `json:"health_webhook_url" api:"nullable" format:"url"`
 	// enables SMS fallback for MMS messages.
 	MmsFallBackToSMS bool `json:"mms_fall_back_to_sms"`
 	// enables automated resizing of MMS media.
@@ -238,7 +238,7 @@ type MessagingProfile struct {
 	// and toll free numbers assigned to the messaging profile.
 	//
 	// To disable this feature, set the object field to `null`.
-	NumberPoolSettings NumberPoolSettings `json:"number_pool_settings,nullable"`
+	NumberPoolSettings NumberPoolSettings `json:"number_pool_settings" api:"nullable"`
 	// The organization that owns this messaging profile.
 	OrganizationID string `json:"organization_id"`
 	// Identifies the type of the resource.
@@ -251,7 +251,7 @@ type MessagingProfile struct {
 	// compliance purposes.
 	RedactionLevel int64 `json:"redaction_level"`
 	// The resource group ID associated with this messaging profile.
-	ResourceGroupID string `json:"resource_group_id,nullable"`
+	ResourceGroupID string `json:"resource_group_id" api:"nullable"`
 	// Enables automatic character encoding optimization for SMS messages. When
 	// enabled, the system automatically selects the most efficient encoding (GSM-7 or
 	// UCS-2) based on message content to maximize character limits and minimize costs.
@@ -265,7 +265,7 @@ type MessagingProfile struct {
 	// links can improve branding and message deliverability.
 	//
 	// To disable this feature, set the object field to `null`.
-	URLShortenerSettings URLShortenerSettings `json:"url_shortener_settings,nullable"`
+	URLShortenerSettings URLShortenerSettings `json:"url_shortener_settings" api:"nullable"`
 	// Secret used to authenticate with v1 endpoints.
 	V1Secret string `json:"v1_secret"`
 	// Determines which webhook format will be used, Telnyx API v1, v2, or a legacy
@@ -275,9 +275,9 @@ type MessagingProfile struct {
 	WebhookAPIVersion MessagingProfileWebhookAPIVersion `json:"webhook_api_version"`
 	// The failover URL where webhooks related to this messaging profile will be sent
 	// if sending to the primary URL fails.
-	WebhookFailoverURL string `json:"webhook_failover_url,nullable" format:"url"`
+	WebhookFailoverURL string `json:"webhook_failover_url" api:"nullable" format:"url"`
 	// The URL where webhooks related to this messaging profile will be sent.
-	WebhookURL string `json:"webhook_url,nullable" format:"url"`
+	WebhookURL string `json:"webhook_url" api:"nullable" format:"url"`
 	// Destinations to which the messaging profile is allowed to send. The elements in
 	// the list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
 	// destinations will be allowed.
@@ -349,19 +349,19 @@ type NumberPoolSettings struct {
 	// the weights for all number types does not necessarily need to add to 100. Weight
 	// must be a non-negative number, and when equal to zero it will remove the number
 	// type from the pool.
-	LongCodeWeight float64 `json:"long_code_weight,required"`
+	LongCodeWeight float64 `json:"long_code_weight" api:"required"`
 	// If set to true all unhealthy numbers will be automatically excluded from the
 	// pool. Health metrics per number are calculated on a regular basis, taking into
 	// account the deliverability rate and the amount of messages marked as spam by
 	// upstream carriers. Numbers with a deliverability rate below 25% or spam ratio
 	// over 75% will be considered unhealthy.
-	SkipUnhealthy bool `json:"skip_unhealthy,required"`
+	SkipUnhealthy bool `json:"skip_unhealthy" api:"required"`
 	// Defines the probability weight for a Toll Free number to be selected when
 	// sending a message. The higher the weight the higher the probability. The sum of
 	// the weights for all number types does not necessarily need to add to 100. Weight
 	// must be a non-negative number, and when equal to zero it will remove the number
 	// type from the pool.
-	TollFreeWeight float64 `json:"toll_free_weight,required"`
+	TollFreeWeight float64 `json:"toll_free_weight" api:"required"`
 	// If set to true, Number Pool will try to choose a sending number with the same
 	// area code as the destination number. If there are no such numbers available, a
 	// nunber with a different area code will be chosen. Currently only NANP numbers
@@ -411,19 +411,19 @@ type NumberPoolSettingsParam struct {
 	// the weights for all number types does not necessarily need to add to 100. Weight
 	// must be a non-negative number, and when equal to zero it will remove the number
 	// type from the pool.
-	LongCodeWeight float64 `json:"long_code_weight,required"`
+	LongCodeWeight float64 `json:"long_code_weight" api:"required"`
 	// If set to true all unhealthy numbers will be automatically excluded from the
 	// pool. Health metrics per number are calculated on a regular basis, taking into
 	// account the deliverability rate and the amount of messages marked as spam by
 	// upstream carriers. Numbers with a deliverability rate below 25% or spam ratio
 	// over 75% will be considered unhealthy.
-	SkipUnhealthy bool `json:"skip_unhealthy,required"`
+	SkipUnhealthy bool `json:"skip_unhealthy" api:"required"`
 	// Defines the probability weight for a Toll Free number to be selected when
 	// sending a message. The higher the weight the higher the probability. The sum of
 	// the weights for all number types does not necessarily need to add to 100. Weight
 	// must be a non-negative number, and when equal to zero it will remove the number
 	// type from the pool.
-	TollFreeWeight float64 `json:"toll_free_weight,required"`
+	TollFreeWeight float64 `json:"toll_free_weight" api:"required"`
 	// If set to true, Number Pool will try to choose a sending number with the same
 	// area code as the destination number. If there are no such numbers available, a
 	// nunber with a different area code will be chosen. Currently only NANP numbers
@@ -453,7 +453,7 @@ func (r *NumberPoolSettingsParam) UnmarshalJSON(data []byte) error {
 // To disable this feature, set the object field to `null`.
 type URLShortenerSettings struct {
 	// One of the domains provided by the Telnyx URL shortener service.
-	Domain string `json:"domain,required"`
+	Domain string `json:"domain" api:"required"`
 	// Optional prefix that can be used to identify your brand, and will appear in the
 	// Telnyx generated URLs after the domain name.
 	Prefix string `json:"prefix"`
@@ -500,7 +500,7 @@ func (r URLShortenerSettings) ToParam() URLShortenerSettingsParam {
 // The property Domain is required.
 type URLShortenerSettingsParam struct {
 	// One of the domains provided by the Telnyx URL shortener service.
-	Domain string `json:"domain,required"`
+	Domain string `json:"domain" api:"required"`
 	// Optional prefix that can be used to identify your brand, and will appear in the
 	// Telnyx generated URLs after the domain name.
 	Prefix param.Opt[string] `json:"prefix,omitzero"`
@@ -604,11 +604,11 @@ func (r *MessagingProfileGetMetricsResponse) UnmarshalJSON(data []byte) error {
 
 type MessagingProfileNewParams struct {
 	// A user friendly name for the messaging profile.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Destinations to which the messaging profile is allowed to send. The elements in
 	// the list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]` all
 	// destinations will be allowed.
-	WhitelistedDestinations []string `json:"whitelisted_destinations,omitzero,required"`
+	WhitelistedDestinations []string `json:"whitelisted_destinations,omitzero" api:"required"`
 	// The AI assistant ID to associate with this messaging profile.
 	AIAssistantID param.Opt[string] `json:"ai_assistant_id,omitzero"`
 	// The alphanumeric sender ID to use when sending to destinations that require an

@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.30.1 (2026-02-24)
+
+Full Changelog: [v4.30.0...v4.30.1](https://github.com/team-telnyx/telnyx-go/compare/v4.30.0...v4.30.1)
+
+### Chores
+
+* **internal:** move custom custom `json` tags to `api` ([26fdddf](https://github.com/team-telnyx/telnyx-go/commit/26fdddf04417aa259dfd56758bc429692e5818e2))
+
 ## 4.30.0 (2026-02-24)
 
 Full Changelog: [v4.29.0...v4.30.0](https://github.com/team-telnyx/telnyx-go/compare/v4.29.0...v4.30.0)

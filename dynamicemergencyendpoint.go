@@ -96,10 +96,10 @@ func (r *DynamicEmergencyEndpointService) Delete(ctx context.Context, id string,
 }
 
 type DynamicEmergencyEndpoint struct {
-	CallbackNumber string `json:"callback_number,required"`
-	CallerName     string `json:"caller_name,required"`
+	CallbackNumber string `json:"callback_number" api:"required"`
+	CallerName     string `json:"caller_name" api:"required"`
 	// An id of a currently active dynamic emergency location.
-	DynamicEmergencyAddressID string `json:"dynamic_emergency_address_id,required"`
+	DynamicEmergencyAddressID string `json:"dynamic_emergency_address_id" api:"required"`
 	ID                        string `json:"id"`
 	// ISO 8601 formatted date of when the resource was created
 	CreatedAt string `json:"created_at"`
@@ -156,10 +156,10 @@ const (
 // The properties CallbackNumber, CallerName, DynamicEmergencyAddressID are
 // required.
 type DynamicEmergencyEndpointParam struct {
-	CallbackNumber string `json:"callback_number,required"`
-	CallerName     string `json:"caller_name,required"`
+	CallbackNumber string `json:"callback_number" api:"required"`
+	CallerName     string `json:"caller_name" api:"required"`
 	// An id of a currently active dynamic emergency location.
-	DynamicEmergencyAddressID string `json:"dynamic_emergency_address_id,required"`
+	DynamicEmergencyAddressID string `json:"dynamic_emergency_address_id" api:"required"`
 	paramObj
 }
 

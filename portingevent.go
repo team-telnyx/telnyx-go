@@ -794,7 +794,7 @@ type PortingEventGetResponseDataPortingEventWithoutWebhook struct {
 	// "porting_order.sharing_token_expired", "porting_order.new_comment",
 	// "porting_order.split".
 	EventType string `json:"event_type"`
-	Payload   any    `json:"payload,nullable"`
+	Payload   any    `json:"payload" api:"nullable"`
 	// The status of the payload generation.
 	//
 	// Any of "created", "completed".
@@ -1511,7 +1511,7 @@ type PortingEventListResponsePortingEventWithoutWebhook struct {
 	// "porting_order.sharing_token_expired", "porting_order.new_comment",
 	// "porting_order.split".
 	EventType string `json:"event_type"`
-	Payload   any    `json:"payload,nullable"`
+	Payload   any    `json:"payload" api:"nullable"`
 	// The status of the payload generation.
 	//
 	// Any of "created", "completed".

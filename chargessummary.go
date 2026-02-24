@@ -48,11 +48,11 @@ func (r *ChargesSummaryService) Get(ctx context.Context, query ChargesSummaryGet
 
 type MonthDetail struct {
 	// Monthly recurring charge amount as decimal string
-	Mrc string `json:"mrc,required"`
+	Mrc string `json:"mrc" api:"required"`
 	// Number of items
-	Quantity int64 `json:"quantity,required"`
+	Quantity int64 `json:"quantity" api:"required"`
 	// One-time charge amount as decimal string
-	Otc string `json:"otc,nullable"`
+	Otc string `json:"otc" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Mrc         respjson.Field
@@ -70,7 +70,7 @@ func (r *MonthDetail) UnmarshalJSON(data []byte) error {
 }
 
 type ChargesSummaryGetResponse struct {
-	Data ChargesSummaryGetResponseData `json:"data,required"`
+	Data ChargesSummaryGetResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -87,17 +87,17 @@ func (r *ChargesSummaryGetResponse) UnmarshalJSON(data []byte) error {
 
 type ChargesSummaryGetResponseData struct {
 	// Currency code
-	Currency string `json:"currency,required"`
+	Currency string `json:"currency" api:"required"`
 	// End date of the summary period
-	EndDate time.Time `json:"end_date,required" format:"date"`
+	EndDate time.Time `json:"end_date" api:"required" format:"date"`
 	// Start date of the summary period
-	StartDate time.Time                            `json:"start_date,required" format:"date"`
-	Summary   ChargesSummaryGetResponseDataSummary `json:"summary,required"`
-	Total     ChargesSummaryGetResponseDataTotal   `json:"total,required"`
+	StartDate time.Time                            `json:"start_date" api:"required" format:"date"`
+	Summary   ChargesSummaryGetResponseDataSummary `json:"summary" api:"required"`
+	Total     ChargesSummaryGetResponseDataTotal   `json:"total" api:"required"`
 	// User email address
-	UserEmail string `json:"user_email,required" format:"email"`
+	UserEmail string `json:"user_email" api:"required" format:"email"`
 	// User identifier
-	UserID string `json:"user_id,required"`
+	UserID string `json:"user_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Currency    respjson.Field
@@ -120,9 +120,9 @@ func (r *ChargesSummaryGetResponseData) UnmarshalJSON(data []byte) error {
 
 type ChargesSummaryGetResponseDataSummary struct {
 	// List of billing adjustments
-	Adjustments []ChargesSummaryGetResponseDataSummaryAdjustment `json:"adjustments,required"`
+	Adjustments []ChargesSummaryGetResponseDataSummaryAdjustment `json:"adjustments" api:"required"`
 	// List of charge summary lines
-	Lines []ChargesSummaryGetResponseDataSummaryLineUnion `json:"lines,required"`
+	Lines []ChargesSummaryGetResponseDataSummaryLineUnion `json:"lines" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Adjustments respjson.Field
@@ -140,11 +140,11 @@ func (r *ChargesSummaryGetResponseDataSummary) UnmarshalJSON(data []byte) error 
 
 type ChargesSummaryGetResponseDataSummaryAdjustment struct {
 	// Adjustment amount as decimal string
-	Amount string `json:"amount,required"`
+	Amount string `json:"amount" api:"required"`
 	// Description of the adjustment
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// Date when the adjustment occurred
-	EventDate time.Time `json:"event_date,required" format:"date"`
+	EventDate time.Time `json:"event_date" api:"required" format:"date"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -245,12 +245,12 @@ func (r *ChargesSummaryGetResponseDataSummaryLineUnion) UnmarshalJSON(data []byt
 
 type ChargesSummaryGetResponseDataSummaryLineComparative struct {
 	// Service alias
-	Alias             string      `json:"alias,required"`
-	ExistingThisMonth MonthDetail `json:"existing_this_month,required"`
+	Alias             string      `json:"alias" api:"required"`
+	ExistingThisMonth MonthDetail `json:"existing_this_month" api:"required"`
 	// Service name
-	Name         string               `json:"name,required"`
-	NewThisMonth MonthDetail          `json:"new_this_month,required"`
-	Type         constant.Comparative `json:"type,required"`
+	Name         string               `json:"name" api:"required"`
+	NewThisMonth MonthDetail          `json:"new_this_month" api:"required"`
+	Type         constant.Comparative `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Alias             respjson.Field
@@ -271,14 +271,14 @@ func (r *ChargesSummaryGetResponseDataSummaryLineComparative) UnmarshalJSON(data
 
 type ChargesSummaryGetResponseDataSummaryLineSimple struct {
 	// Service alias
-	Alias string `json:"alias,required"`
+	Alias string `json:"alias" api:"required"`
 	// Total amount as decimal string
-	Amount string `json:"amount,required"`
+	Amount string `json:"amount" api:"required"`
 	// Service name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Number of items
-	Quantity int64           `json:"quantity,required"`
-	Type     constant.Simple `json:"type,required"`
+	Quantity int64           `json:"quantity" api:"required"`
+	Type     constant.Simple `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Alias       respjson.Field
@@ -299,19 +299,19 @@ func (r *ChargesSummaryGetResponseDataSummaryLineSimple) UnmarshalJSON(data []by
 
 type ChargesSummaryGetResponseDataTotal struct {
 	// Total credits as decimal string
-	Credits string `json:"credits,required"`
+	Credits string `json:"credits" api:"required"`
 	// Total existing monthly recurring charges as decimal string
-	ExistingMrc string `json:"existing_mrc,required"`
+	ExistingMrc string `json:"existing_mrc" api:"required"`
 	// Grand total of all charges as decimal string
-	GrandTotal string `json:"grand_total,required"`
+	GrandTotal string `json:"grand_total" api:"required"`
 	// Ledger adjustments as decimal string
-	LedgerAdjustments string `json:"ledger_adjustments,required"`
+	LedgerAdjustments string `json:"ledger_adjustments" api:"required"`
 	// Total new monthly recurring charges as decimal string
-	NewMrc string `json:"new_mrc,required"`
+	NewMrc string `json:"new_mrc" api:"required"`
 	// Total new one-time charges as decimal string
-	NewOtc string `json:"new_otc,required"`
+	NewOtc string `json:"new_otc" api:"required"`
 	// Other charges as decimal string
-	Other string `json:"other,required"`
+	Other string `json:"other" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Credits           respjson.Field
@@ -336,9 +336,9 @@ type ChargesSummaryGetParams struct {
 	// End date for the charges summary in ISO date format (YYYY-MM-DD). The date is
 	// exclusive, data for the end_date itself is not included in the report. The
 	// interval between start_date and end_date cannot exceed 31 days.
-	EndDate time.Time `query:"end_date,required" format:"date" json:"-"`
+	EndDate time.Time `query:"end_date" api:"required" format:"date" json:"-"`
 	// Start date for the charges summary in ISO date format (YYYY-MM-DD)
-	StartDate time.Time `query:"start_date,required" format:"date" json:"-"`
+	StartDate time.Time `query:"start_date" api:"required" format:"date" json:"-"`
 	paramObj
 }
 

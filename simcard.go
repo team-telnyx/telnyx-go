@@ -181,7 +181,7 @@ type SimCard struct {
 	// Indicate whether the SIM card has any pending (in-progress) actions.
 	ActionsInProgress bool `json:"actions_in_progress"`
 	// List of IMEIs authorized to use a given SIM card.
-	AuthorizedImeis []string `json:"authorized_imeis,nullable"`
+	AuthorizedImeis []string `json:"authorized_imeis" api:"nullable"`
 	// ISO 8601 formatted date-time indicating when the resource was created.
 	CreatedAt string `json:"created_at"`
 	// The SIM card consumption so far in the current billing cycle.
@@ -203,11 +203,11 @@ type SimCard struct {
 	// The SIM card individual data limit configuration.
 	DataLimit SimCardDataLimit `json:"data_limit"`
 	// The Embedded Identity Document (eID) for eSIM cards.
-	Eid string `json:"eid,nullable"`
+	Eid string `json:"eid" api:"nullable"`
 	// The installation status of the eSIM. Only applicable for eSIM cards.
 	//
 	// Any of "released", "disabled".
-	EsimInstallationStatus SimCardEsimInstallationStatus `json:"esim_installation_status,nullable"`
+	EsimInstallationStatus SimCardEsimInstallationStatus `json:"esim_installation_status" api:"nullable"`
 	// The ICCID is the identifier of the specific SIM card/chip. Each SIM is
 	// internationally identified by its integrated circuit card identifier (ICCID).
 	// ICCIDs are stored in the SIM card's memory and are also engraved or printed on

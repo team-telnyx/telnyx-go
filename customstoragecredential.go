@@ -90,7 +90,7 @@ type AzureConfigurationData struct {
 	// Storage backend type
 	//
 	// Any of "azure".
-	Backend AzureConfigurationDataBackend `json:"backend,required"`
+	Backend AzureConfigurationDataBackend `json:"backend" api:"required"`
 	// Azure Blob Storage account key.
 	AccountKey string `json:"account_key"`
 	// Azure Blob Storage account name.
@@ -135,7 +135,7 @@ type AzureConfigurationDataParam struct {
 	// Storage backend type
 	//
 	// Any of "azure".
-	Backend AzureConfigurationDataBackend `json:"backend,omitzero,required"`
+	Backend AzureConfigurationDataBackend `json:"backend,omitzero" api:"required"`
 	// Azure Blob Storage account key.
 	AccountKey param.Opt[string] `json:"account_key,omitzero"`
 	// Azure Blob Storage account name.
@@ -155,8 +155,8 @@ func (r *AzureConfigurationDataParam) UnmarshalJSON(data []byte) error {
 
 type CustomStorageConfiguration struct {
 	// Any of "gcs", "s3", "azure".
-	Backend       CustomStorageConfigurationBackend            `json:"backend,required"`
-	Configuration CustomStorageConfigurationConfigurationUnion `json:"configuration,required"`
+	Backend       CustomStorageConfigurationBackend            `json:"backend" api:"required"`
+	Configuration CustomStorageConfigurationConfigurationUnion `json:"configuration" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Backend       respjson.Field
@@ -284,8 +284,8 @@ func (r *CustomStorageConfigurationConfigurationUnion) UnmarshalJSON(data []byte
 // The properties Backend, Configuration are required.
 type CustomStorageConfigurationParam struct {
 	// Any of "gcs", "s3", "azure".
-	Backend       CustomStorageConfigurationBackend                 `json:"backend,omitzero,required"`
-	Configuration CustomStorageConfigurationConfigurationUnionParam `json:"configuration,omitzero,required"`
+	Backend       CustomStorageConfigurationBackend                 `json:"backend,omitzero" api:"required"`
+	Configuration CustomStorageConfigurationConfigurationUnionParam `json:"configuration,omitzero" api:"required"`
 	paramObj
 }
 
@@ -410,7 +410,7 @@ type GcsConfigurationData struct {
 	// Storage backend type
 	//
 	// Any of "gcs".
-	Backend GcsConfigurationDataBackend `json:"backend,required"`
+	Backend GcsConfigurationDataBackend `json:"backend" api:"required"`
 	// Name of the bucket to be used to store recording files.
 	Bucket string `json:"bucket"`
 	// Opaque credential token used to authenticate and authorize with storage
@@ -453,7 +453,7 @@ type GcsConfigurationDataParam struct {
 	// Storage backend type
 	//
 	// Any of "gcs".
-	Backend GcsConfigurationDataBackend `json:"backend,omitzero,required"`
+	Backend GcsConfigurationDataBackend `json:"backend,omitzero" api:"required"`
 	// Name of the bucket to be used to store recording files.
 	Bucket param.Opt[string] `json:"bucket,omitzero"`
 	// Opaque credential token used to authenticate and authorize with storage
@@ -474,7 +474,7 @@ type S3ConfigurationData struct {
 	// Storage backend type
 	//
 	// Any of "s3".
-	Backend S3ConfigurationDataBackend `json:"backend,required"`
+	Backend S3ConfigurationDataBackend `json:"backend" api:"required"`
 	// AWS credentials access key id.
 	AwsAccessKeyID string `json:"aws_access_key_id"`
 	// AWS secret access key.
@@ -522,7 +522,7 @@ type S3ConfigurationDataParam struct {
 	// Storage backend type
 	//
 	// Any of "s3".
-	Backend S3ConfigurationDataBackend `json:"backend,omitzero,required"`
+	Backend S3ConfigurationDataBackend `json:"backend,omitzero" api:"required"`
 	// AWS credentials access key id.
 	AwsAccessKeyID param.Opt[string] `json:"aws_access_key_id,omitzero"`
 	// AWS secret access key.
@@ -545,12 +545,12 @@ func (r *S3ConfigurationDataParam) UnmarshalJSON(data []byte) error {
 type CustomStorageCredentialNewResponse struct {
 	// Uniquely identifies a Telnyx application (Call Control, TeXML) or Sip connection
 	// resource.
-	ConnectionID string                     `json:"connection_id,required"`
-	Data         CustomStorageConfiguration `json:"data,required"`
+	ConnectionID string                     `json:"connection_id" api:"required"`
+	Data         CustomStorageConfiguration `json:"data" api:"required"`
 	// Identifies record type.
 	//
 	// Any of "custom_storage_credentials".
-	RecordType CustomStorageCredentialNewResponseRecordType `json:"record_type,required"`
+	RecordType CustomStorageCredentialNewResponseRecordType `json:"record_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ConnectionID respjson.Field
@@ -577,12 +577,12 @@ const (
 type CustomStorageCredentialGetResponse struct {
 	// Uniquely identifies a Telnyx application (Call Control, TeXML) or Sip connection
 	// resource.
-	ConnectionID string                     `json:"connection_id,required"`
-	Data         CustomStorageConfiguration `json:"data,required"`
+	ConnectionID string                     `json:"connection_id" api:"required"`
+	Data         CustomStorageConfiguration `json:"data" api:"required"`
 	// Identifies record type.
 	//
 	// Any of "custom_storage_credentials".
-	RecordType CustomStorageCredentialGetResponseRecordType `json:"record_type,required"`
+	RecordType CustomStorageCredentialGetResponseRecordType `json:"record_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ConnectionID respjson.Field
@@ -609,12 +609,12 @@ const (
 type CustomStorageCredentialUpdateResponse struct {
 	// Uniquely identifies a Telnyx application (Call Control, TeXML) or Sip connection
 	// resource.
-	ConnectionID string                     `json:"connection_id,required"`
-	Data         CustomStorageConfiguration `json:"data,required"`
+	ConnectionID string                     `json:"connection_id" api:"required"`
+	Data         CustomStorageConfiguration `json:"data" api:"required"`
 	// Identifies record type.
 	//
 	// Any of "custom_storage_credentials".
-	RecordType CustomStorageCredentialUpdateResponseRecordType `json:"record_type,required"`
+	RecordType CustomStorageCredentialUpdateResponseRecordType `json:"record_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ConnectionID respjson.Field

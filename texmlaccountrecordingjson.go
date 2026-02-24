@@ -66,11 +66,11 @@ func (r *TexmlAccountRecordingJsonService) GetRecordingSidJson(ctx context.Conte
 }
 
 type TexmlAccountRecordingJsonDeleteRecordingSidJsonParams struct {
-	AccountSid string `path:"account_sid,required" json:"-"`
+	AccountSid string `path:"account_sid" api:"required" json:"-"`
 	paramObj
 }
 
 type TexmlAccountRecordingJsonGetRecordingSidJsonParams struct {
-	AccountSid string `path:"account_sid,required" json:"-"`
+	AccountSid string `path:"account_sid" api:"required" json:"-"`
 	paramObj
 }

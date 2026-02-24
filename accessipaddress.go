@@ -95,14 +95,14 @@ func (r *AccessIPAddressService) Delete(ctx context.Context, accessIPAddressID s
 }
 
 type AccessIPAddressResponse struct {
-	ID        string `json:"id,required"`
-	IPAddress string `json:"ip_address,required"`
-	Source    string `json:"source,required"`
+	ID        string `json:"id" api:"required"`
+	IPAddress string `json:"ip_address" api:"required"`
+	Source    string `json:"source" api:"required"`
 	// An enumeration.
 	//
 	// Any of "pending", "added".
-	Status      CloudflareSyncStatus `json:"status,required"`
-	UserID      string               `json:"user_id,required"`
+	Status      CloudflareSyncStatus `json:"status" api:"required"`
+	UserID      string               `json:"user_id" api:"required"`
 	CreatedAt   time.Time            `json:"created_at" format:"date-time"`
 	Description string               `json:"description"`
 	UpdatedAt   time.Time            `json:"updated_at" format:"date-time"`
@@ -136,10 +136,10 @@ const (
 )
 
 type PaginationMetaCloudflareIPListSync struct {
-	PageNumber   int64 `json:"page_number,required"`
-	PageSize     int64 `json:"page_size,required"`
-	TotalPages   int64 `json:"total_pages,required"`
-	TotalResults int64 `json:"total_results,required"`
+	PageNumber   int64 `json:"page_number" api:"required"`
+	PageSize     int64 `json:"page_size" api:"required"`
+	TotalPages   int64 `json:"total_pages" api:"required"`
+	TotalResults int64 `json:"total_results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PageNumber   respjson.Field
@@ -158,7 +158,7 @@ func (r *PaginationMetaCloudflareIPListSync) UnmarshalJSON(data []byte) error {
 }
 
 type AccessIPAddressNewParams struct {
-	IPAddress   string            `json:"ip_address,required"`
+	IPAddress   string            `json:"ip_address" api:"required"`
 	Description param.Opt[string] `json:"description,omitzero"`
 	paramObj
 }

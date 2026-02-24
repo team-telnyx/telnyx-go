@@ -88,19 +88,19 @@ func (r *OAuthGrantService) Delete(ctx context.Context, id string, opts ...optio
 
 type OAuthGrant struct {
 	// Unique identifier for the OAuth grant
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// OAuth client identifier
-	ClientID string `json:"client_id,required"`
+	ClientID string `json:"client_id" api:"required"`
 	// Timestamp when the grant was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Record type identifier
 	//
 	// Any of "oauth_grant".
-	RecordType OAuthGrantRecordType `json:"record_type,required"`
+	RecordType OAuthGrantRecordType `json:"record_type" api:"required"`
 	// List of granted OAuth scopes
-	Scopes []string `json:"scopes,required"`
+	Scopes []string `json:"scopes" api:"required"`
 	// Timestamp when the grant was last used
-	LastUsedAt time.Time `json:"last_used_at,nullable" format:"date-time"`
+	LastUsedAt time.Time `json:"last_used_at" api:"nullable" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field

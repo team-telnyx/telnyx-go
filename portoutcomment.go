@@ -77,14 +77,14 @@ func (r *PortoutCommentNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type PortoutCommentNewResponseData struct {
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Comment body
-	Body string `json:"body,required"`
+	Body string `json:"body" api:"required"`
 	// Comment creation timestamp in ISO 8601 format
-	CreatedAt string `json:"created_at,required"`
+	CreatedAt string `json:"created_at" api:"required"`
 	// Identifies the user who created the comment. Will be null if created by Telnyx
 	// Admin
-	UserID string `json:"user_id,required"`
+	UserID string `json:"user_id" api:"required"`
 	// Identifies the associated port request
 	PortoutID string `json:"portout_id"`
 	// Identifies the type of the resource.
@@ -127,14 +127,14 @@ func (r *PortoutCommentListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type PortoutCommentListResponseData struct {
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Comment body
-	Body string `json:"body,required"`
+	Body string `json:"body" api:"required"`
 	// Comment creation timestamp in ISO 8601 format
-	CreatedAt string `json:"created_at,required"`
+	CreatedAt string `json:"created_at" api:"required"`
 	// Identifies the user who created the comment. Will be null if created by Telnyx
 	// Admin
-	UserID string `json:"user_id,required"`
+	UserID string `json:"user_id" api:"required"`
 	// Identifies the associated port request
 	PortoutID string `json:"portout_id"`
 	// Identifies the type of the resource.

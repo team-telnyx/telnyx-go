@@ -108,13 +108,13 @@ func (r *AIMcpServerService) Delete(ctx context.Context, mcpServerID string, opt
 }
 
 type AIMcpServerNewResponse struct {
-	ID           string    `json:"id,required"`
-	CreatedAt    time.Time `json:"created_at,required" format:"date-time"`
-	Name         string    `json:"name,required"`
-	Type         string    `json:"type,required"`
-	URL          string    `json:"url,required"`
-	AllowedTools []string  `json:"allowed_tools,nullable"`
-	APIKeyRef    string    `json:"api_key_ref,nullable"`
+	ID           string    `json:"id" api:"required"`
+	CreatedAt    time.Time `json:"created_at" api:"required" format:"date-time"`
+	Name         string    `json:"name" api:"required"`
+	Type         string    `json:"type" api:"required"`
+	URL          string    `json:"url" api:"required"`
+	AllowedTools []string  `json:"allowed_tools" api:"nullable"`
+	APIKeyRef    string    `json:"api_key_ref" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
@@ -136,13 +136,13 @@ func (r *AIMcpServerNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIMcpServerGetResponse struct {
-	ID           string    `json:"id,required"`
-	CreatedAt    time.Time `json:"created_at,required" format:"date-time"`
-	Name         string    `json:"name,required"`
-	Type         string    `json:"type,required"`
-	URL          string    `json:"url,required"`
-	AllowedTools []string  `json:"allowed_tools,nullable"`
-	APIKeyRef    string    `json:"api_key_ref,nullable"`
+	ID           string    `json:"id" api:"required"`
+	CreatedAt    time.Time `json:"created_at" api:"required" format:"date-time"`
+	Name         string    `json:"name" api:"required"`
+	Type         string    `json:"type" api:"required"`
+	URL          string    `json:"url" api:"required"`
+	AllowedTools []string  `json:"allowed_tools" api:"nullable"`
+	APIKeyRef    string    `json:"api_key_ref" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
@@ -164,13 +164,13 @@ func (r *AIMcpServerGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIMcpServerUpdateResponse struct {
-	ID           string    `json:"id,required"`
-	CreatedAt    time.Time `json:"created_at,required" format:"date-time"`
-	Name         string    `json:"name,required"`
-	Type         string    `json:"type,required"`
-	URL          string    `json:"url,required"`
-	AllowedTools []string  `json:"allowed_tools,nullable"`
-	APIKeyRef    string    `json:"api_key_ref,nullable"`
+	ID           string    `json:"id" api:"required"`
+	CreatedAt    time.Time `json:"created_at" api:"required" format:"date-time"`
+	Name         string    `json:"name" api:"required"`
+	Type         string    `json:"type" api:"required"`
+	URL          string    `json:"url" api:"required"`
+	AllowedTools []string  `json:"allowed_tools" api:"nullable"`
+	APIKeyRef    string    `json:"api_key_ref" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
@@ -192,13 +192,13 @@ func (r *AIMcpServerUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIMcpServerListResponse struct {
-	ID           string    `json:"id,required"`
-	CreatedAt    time.Time `json:"created_at,required" format:"date-time"`
-	Name         string    `json:"name,required"`
-	Type         string    `json:"type,required"`
-	URL          string    `json:"url,required"`
-	AllowedTools []string  `json:"allowed_tools,nullable"`
-	APIKeyRef    string    `json:"api_key_ref,nullable"`
+	ID           string    `json:"id" api:"required"`
+	CreatedAt    time.Time `json:"created_at" api:"required" format:"date-time"`
+	Name         string    `json:"name" api:"required"`
+	Type         string    `json:"type" api:"required"`
+	URL          string    `json:"url" api:"required"`
+	AllowedTools []string  `json:"allowed_tools" api:"nullable"`
+	APIKeyRef    string    `json:"api_key_ref" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
@@ -220,9 +220,9 @@ func (r *AIMcpServerListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIMcpServerNewParams struct {
-	Name         string            `json:"name,required"`
-	Type         string            `json:"type,required"`
-	URL          string            `json:"url,required"`
+	Name         string            `json:"name" api:"required"`
+	Type         string            `json:"type" api:"required"`
+	URL          string            `json:"url" api:"required"`
 	APIKeyRef    param.Opt[string] `json:"api_key_ref,omitzero"`
 	AllowedTools []string          `json:"allowed_tools,omitzero"`
 	paramObj

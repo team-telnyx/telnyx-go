@@ -73,16 +73,16 @@ type TexmlAccountCallRecordingsJsonRecordingsJsonResponse struct {
 	CallSid    string `json:"call_sid"`
 	// Any of 1, 2.
 	Channels      int64     `json:"channels"`
-	ConferenceSid string    `json:"conference_sid,nullable" format:"uuid"`
+	ConferenceSid string    `json:"conference_sid" api:"nullable" format:"uuid"`
 	DateCreated   time.Time `json:"date_created" format:"date-time"`
 	DateUpdated   time.Time `json:"date_updated" format:"date-time"`
 	// The duration of this recording, given in seconds.
-	Duration  string `json:"duration,nullable"`
-	ErrorCode string `json:"error_code,nullable"`
+	Duration  string `json:"duration" api:"nullable"`
+	ErrorCode string `json:"error_code" api:"nullable"`
 	// The price of this recording, the currency is specified in the price_unit field.
-	Price string `json:"price,nullable"`
+	Price string `json:"price" api:"nullable"`
 	// The unit in which the price is given.
-	PriceUnit string `json:"price_unit,nullable"`
+	PriceUnit string `json:"price_unit" api:"nullable"`
 	// Identifier of a resource.
 	Sid string `json:"sid"`
 	// Defines how the recording was created.
@@ -188,7 +188,7 @@ func (r *TexmlAccountCallRecordingsJsonGetRecordingsJsonResponse) UnmarshalJSON(
 }
 
 type TexmlAccountCallRecordingsJsonRecordingsJsonParams struct {
-	AccountSid string `path:"account_sid,required" json:"-"`
+	AccountSid string `path:"account_sid" api:"required" json:"-"`
 	// Whether to play a beep when recording is started.
 	PlayBeep param.Opt[bool] `json:"PlayBeep,omitzero"`
 	// Url where status callbacks will be sent.
@@ -250,6 +250,6 @@ const (
 )
 
 type TexmlAccountCallRecordingsJsonGetRecordingsJsonParams struct {
-	AccountSid string `path:"account_sid,required" json:"-"`
+	AccountSid string `path:"account_sid" api:"required" json:"-"`
 	paramObj
 }

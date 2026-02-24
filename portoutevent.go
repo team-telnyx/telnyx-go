@@ -284,7 +284,7 @@ type PortoutEventGetResponseDataWebhookPortoutStatusChangedPayload struct {
 	PhoneNumbers []string `json:"phone_numbers"`
 	// The reason why the order is being rejected by the user. If the order is
 	// authorized, this field can be left null
-	RejectionReason string `json:"rejection_reason,nullable"`
+	RejectionReason string `json:"rejection_reason" api:"nullable"`
 	// The new carrier SPID.
 	Spid string `json:"spid"`
 	// The new status of the port out.
@@ -650,7 +650,7 @@ type PortoutEventListResponseWebhookPortoutStatusChangedPayload struct {
 	PhoneNumbers []string `json:"phone_numbers"`
 	// The reason why the order is being rejected by the user. If the order is
 	// authorized, this field can be left null
-	RejectionReason string `json:"rejection_reason,nullable"`
+	RejectionReason string `json:"rejection_reason" api:"nullable"`
 	// The new carrier SPID.
 	Spid string `json:"spid"`
 	// The new status of the port out.

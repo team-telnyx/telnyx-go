@@ -207,7 +207,7 @@ type CredentialConnection struct {
 	// "Vancouver, Canada", "Frankfurt, Germany".
 	AnchorsiteOverride AnchorsiteOverride `json:"anchorsite_override"`
 	// The uuid of the push credential for Android
-	AndroidPushCredentialID string `json:"android_push_credential_id,nullable"`
+	AndroidPushCredentialID string `json:"android_push_credential_id" api:"nullable"`
 	// Specifies if call cost webhooks should be sent for this connection.
 	CallCostInWebhooks bool   `json:"call_cost_in_webhooks"`
 	ConnectionName     string `json:"connection_name"`
@@ -229,10 +229,10 @@ type CredentialConnection struct {
 	// TLS.
 	//
 	// Any of "SRTP".
-	EncryptedMedia EncryptedMedia    `json:"encrypted_media,nullable"`
+	EncryptedMedia EncryptedMedia    `json:"encrypted_media" api:"nullable"`
 	Inbound        CredentialInbound `json:"inbound"`
 	// The uuid of the push credential for Ios
-	IosPushCredentialID string `json:"ios_push_credential_id,nullable"`
+	IosPushCredentialID string `json:"ios_push_credential_id" api:"nullable"`
 	// Configuration options for Jitter Buffer. Enables Jitter Buffer for RTP streams
 	// of SIP Trunking calls. The feature is off unless enabled. You may define min and
 	// max values in msec for customized buffering behaviors. Larger values add latency
@@ -284,12 +284,12 @@ type CredentialConnection struct {
 	WebhookAPIVersion CredentialConnectionWebhookAPIVersion `json:"webhook_api_version"`
 	// The failover URL where webhooks related to this connection will be sent if
 	// sending to the primary URL fails. Must include a scheme, such as 'https'.
-	WebhookEventFailoverURL string `json:"webhook_event_failover_url,nullable" format:"uri"`
+	WebhookEventFailoverURL string `json:"webhook_event_failover_url" api:"nullable" format:"uri"`
 	// The URL where webhooks related to this connection will be sent. Must include a
 	// scheme, such as 'https'.
 	WebhookEventURL string `json:"webhook_event_url" format:"uri"`
 	// Specifies how many seconds to wait before timing out a webhook.
-	WebhookTimeoutSecs int64 `json:"webhook_timeout_secs,nullable"`
+	WebhookTimeoutSecs int64 `json:"webhook_timeout_secs" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                               respjson.Field
@@ -549,7 +549,7 @@ type CredentialOutbound struct {
 	// "bridged" to the destination specified on the URI. Parked calls will return
 	// ringback to the caller and will await for a Call Control command to define which
 	// action will be taken next.
-	CallParkingEnabled bool `json:"call_parking_enabled,nullable"`
+	CallParkingEnabled bool `json:"call_parking_enabled" api:"nullable"`
 	// When set, this will limit the total number of outbound calls to phone numbers
 	// associated with this connection.
 	ChannelLimit int64 `json:"channel_limit"`
@@ -761,13 +761,13 @@ func (r *CredentialConnectionDeleteResponse) UnmarshalJSON(data []byte) error {
 
 type CredentialConnectionNewParams struct {
 	// A user-assigned name to help manage the connection.
-	ConnectionName string `json:"connection_name,required"`
+	ConnectionName string `json:"connection_name" api:"required"`
 	// The password to be used as part of the credentials. Must be 8 to 128 characters
 	// long.
-	Password string `json:"password,required"`
+	Password string `json:"password" api:"required"`
 	// The user name to be used as part of the credentials. Must be 4-32 characters
 	// long and alphanumeric values only (no spaces or special characters).
-	UserName string `json:"user_name,required"`
+	UserName string `json:"user_name" api:"required"`
 	// The uuid of the push credential for Android
 	AndroidPushCredentialID param.Opt[string] `json:"android_push_credential_id,omitzero"`
 	// The uuid of the push credential for Ios

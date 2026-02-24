@@ -114,16 +114,16 @@ type AIMissionMcpServerListMcpServersResponse = any
 type AIMissionMcpServerUpdateMcpServerResponse = any
 
 type AIMissionMcpServerDeleteMcpServerParams struct {
-	MissionID string `path:"mission_id,required" json:"-"`
+	MissionID string `path:"mission_id" api:"required" json:"-"`
 	paramObj
 }
 
 type AIMissionMcpServerGetMcpServerParams struct {
-	MissionID string `path:"mission_id,required" json:"-"`
+	MissionID string `path:"mission_id" api:"required" json:"-"`
 	paramObj
 }
 
 type AIMissionMcpServerUpdateMcpServerParams struct {
-	MissionID string `path:"mission_id,required" json:"-"`
+	MissionID string `path:"mission_id" api:"required" json:"-"`
 	paramObj
 }

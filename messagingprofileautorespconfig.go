@@ -114,13 +114,13 @@ func (r *MessagingProfileAutorespConfigService) Delete(ctx context.Context, auto
 }
 
 type AutoRespConfig struct {
-	ID          string    `json:"id,required"`
-	CountryCode string    `json:"country_code,required"`
-	CreatedAt   time.Time `json:"created_at,required" format:"date-time"`
-	Keywords    []string  `json:"keywords,required"`
+	ID          string    `json:"id" api:"required"`
+	CountryCode string    `json:"country_code" api:"required"`
+	CreatedAt   time.Time `json:"created_at" api:"required" format:"date-time"`
+	Keywords    []string  `json:"keywords" api:"required"`
 	// Any of "start", "stop", "info".
-	Op        AutoRespConfigOp `json:"op,required"`
-	UpdatedAt time.Time        `json:"updated_at,required" format:"date-time"`
+	Op        AutoRespConfigOp `json:"op" api:"required"`
+	UpdatedAt time.Time        `json:"updated_at" api:"required" format:"date-time"`
 	RespText  string           `json:"resp_text"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -152,10 +152,10 @@ const (
 
 // The properties CountryCode, Keywords, Op are required.
 type AutoRespConfigCreateParam struct {
-	CountryCode string   `json:"country_code,required"`
-	Keywords    []string `json:"keywords,omitzero,required"`
+	CountryCode string   `json:"country_code" api:"required"`
+	Keywords    []string `json:"keywords,omitzero" api:"required"`
 	// Any of "start", "stop", "info".
-	Op       AutoRespConfigCreateOp `json:"op,omitzero,required"`
+	Op       AutoRespConfigCreateOp `json:"op,omitzero" api:"required"`
 	RespText param.Opt[string]      `json:"resp_text,omitzero"`
 	paramObj
 }
@@ -177,7 +177,7 @@ const (
 )
 
 type AutoRespConfigResponse struct {
-	Data AutoRespConfig `json:"data,required"`
+	Data AutoRespConfig `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -194,8 +194,8 @@ func (r *AutoRespConfigResponse) UnmarshalJSON(data []byte) error {
 
 // List of Auto-Response Settings
 type MessagingProfileAutorespConfigListResponse struct {
-	Data []AutoRespConfig               `json:"data,required"`
-	Meta shared.MessagingPaginationMeta `json:"meta,required"`
+	Data []AutoRespConfig               `json:"data" api:"required"`
+	Meta shared.MessagingPaginationMeta `json:"meta" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -224,12 +224,12 @@ func (r *MessagingProfileAutorespConfigNewParams) UnmarshalJSON(data []byte) err
 }
 
 type MessagingProfileAutorespConfigGetParams struct {
-	ProfileID string `path:"profile_id,required" format:"uuid" json:"-"`
+	ProfileID string `path:"profile_id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }
 
 type MessagingProfileAutorespConfigUpdateParams struct {
-	ProfileID            string `path:"profile_id,required" format:"uuid" json:"-"`
+	ProfileID            string `path:"profile_id" api:"required" format:"uuid" json:"-"`
 	AutoRespConfigCreate AutoRespConfigCreateParam
 	paramObj
 }
@@ -296,6 +296,6 @@ func (r MessagingProfileAutorespConfigListParamsUpdatedAt) URLQuery() (v url.Val
 }
 
 type MessagingProfileAutorespConfigDeleteParams struct {
-	ProfileID string `path:"profile_id,required" format:"uuid" json:"-"`
+	ProfileID string `path:"profile_id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }

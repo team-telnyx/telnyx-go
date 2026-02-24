@@ -301,15 +301,15 @@ func (r *PortingLoaConfigurationUpdateResponse) UnmarshalJSON(data []byte) error
 
 type PortingLoaConfigurationNewParams struct {
 	// The address of the company.
-	Address PortingLoaConfigurationNewParamsAddress `json:"address,omitzero,required"`
+	Address PortingLoaConfigurationNewParamsAddress `json:"address,omitzero" api:"required"`
 	// The name of the company
-	CompanyName string `json:"company_name,required"`
+	CompanyName string `json:"company_name" api:"required"`
 	// The contact information of the company.
-	Contact PortingLoaConfigurationNewParamsContact `json:"contact,omitzero,required"`
+	Contact PortingLoaConfigurationNewParamsContact `json:"contact,omitzero" api:"required"`
 	// The logo of the LOA configuration
-	Logo PortingLoaConfigurationNewParamsLogo `json:"logo,omitzero,required"`
+	Logo PortingLoaConfigurationNewParamsLogo `json:"logo,omitzero" api:"required"`
 	// The name of the LOA configuration
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	paramObj
 }
 
@@ -326,15 +326,15 @@ func (r *PortingLoaConfigurationNewParams) UnmarshalJSON(data []byte) error {
 // The properties City, CountryCode, State, StreetAddress, ZipCode are required.
 type PortingLoaConfigurationNewParamsAddress struct {
 	// The locality of the company
-	City string `json:"city,required"`
+	City string `json:"city" api:"required"`
 	// The country code of the company
-	CountryCode string `json:"country_code,required"`
+	CountryCode string `json:"country_code" api:"required"`
 	// The administrative area of the company
-	State string `json:"state,required"`
+	State string `json:"state" api:"required"`
 	// The street address of the company
-	StreetAddress string `json:"street_address,required"`
+	StreetAddress string `json:"street_address" api:"required"`
 	// The postal code of the company
-	ZipCode string `json:"zip_code,required"`
+	ZipCode string `json:"zip_code" api:"required"`
 	// The extended address of the company
 	ExtendedAddress param.Opt[string] `json:"extended_address,omitzero"`
 	paramObj
@@ -353,9 +353,9 @@ func (r *PortingLoaConfigurationNewParamsAddress) UnmarshalJSON(data []byte) err
 // The properties Email, PhoneNumber are required.
 type PortingLoaConfigurationNewParamsContact struct {
 	// The email address of the contact
-	Email string `json:"email,required"`
+	Email string `json:"email" api:"required"`
 	// The phone number of the contact
-	PhoneNumber string `json:"phone_number,required"`
+	PhoneNumber string `json:"phone_number" api:"required"`
 	paramObj
 }
 
@@ -372,7 +372,7 @@ func (r *PortingLoaConfigurationNewParamsContact) UnmarshalJSON(data []byte) err
 // The property DocumentID is required.
 type PortingLoaConfigurationNewParamsLogo struct {
 	// The document identification
-	DocumentID string `json:"document_id,required" format:"uuid"`
+	DocumentID string `json:"document_id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -386,15 +386,15 @@ func (r *PortingLoaConfigurationNewParamsLogo) UnmarshalJSON(data []byte) error 
 
 type PortingLoaConfigurationUpdateParams struct {
 	// The address of the company.
-	Address PortingLoaConfigurationUpdateParamsAddress `json:"address,omitzero,required"`
+	Address PortingLoaConfigurationUpdateParamsAddress `json:"address,omitzero" api:"required"`
 	// The name of the company
-	CompanyName string `json:"company_name,required"`
+	CompanyName string `json:"company_name" api:"required"`
 	// The contact information of the company.
-	Contact PortingLoaConfigurationUpdateParamsContact `json:"contact,omitzero,required"`
+	Contact PortingLoaConfigurationUpdateParamsContact `json:"contact,omitzero" api:"required"`
 	// The logo of the LOA configuration
-	Logo PortingLoaConfigurationUpdateParamsLogo `json:"logo,omitzero,required"`
+	Logo PortingLoaConfigurationUpdateParamsLogo `json:"logo,omitzero" api:"required"`
 	// The name of the LOA configuration
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	paramObj
 }
 
@@ -411,15 +411,15 @@ func (r *PortingLoaConfigurationUpdateParams) UnmarshalJSON(data []byte) error {
 // The properties City, CountryCode, State, StreetAddress, ZipCode are required.
 type PortingLoaConfigurationUpdateParamsAddress struct {
 	// The locality of the company
-	City string `json:"city,required"`
+	City string `json:"city" api:"required"`
 	// The country code of the company
-	CountryCode string `json:"country_code,required"`
+	CountryCode string `json:"country_code" api:"required"`
 	// The administrative area of the company
-	State string `json:"state,required"`
+	State string `json:"state" api:"required"`
 	// The street address of the company
-	StreetAddress string `json:"street_address,required"`
+	StreetAddress string `json:"street_address" api:"required"`
 	// The postal code of the company
-	ZipCode string `json:"zip_code,required"`
+	ZipCode string `json:"zip_code" api:"required"`
 	// The extended address of the company
 	ExtendedAddress param.Opt[string] `json:"extended_address,omitzero"`
 	paramObj
@@ -438,9 +438,9 @@ func (r *PortingLoaConfigurationUpdateParamsAddress) UnmarshalJSON(data []byte) 
 // The properties Email, PhoneNumber are required.
 type PortingLoaConfigurationUpdateParamsContact struct {
 	// The email address of the contact
-	Email string `json:"email,required"`
+	Email string `json:"email" api:"required"`
 	// The phone number of the contact
-	PhoneNumber string `json:"phone_number,required"`
+	PhoneNumber string `json:"phone_number" api:"required"`
 	paramObj
 }
 
@@ -457,7 +457,7 @@ func (r *PortingLoaConfigurationUpdateParamsContact) UnmarshalJSON(data []byte) 
 // The property DocumentID is required.
 type PortingLoaConfigurationUpdateParamsLogo struct {
 	// The document identification
-	DocumentID string `json:"document_id,required" format:"uuid"`
+	DocumentID string `json:"document_id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -486,15 +486,15 @@ func (r PortingLoaConfigurationListParams) URLQuery() (v url.Values, err error) 
 
 type PortingLoaConfigurationPreview0Params struct {
 	// The address of the company.
-	Address PortingLoaConfigurationPreview0ParamsAddress `json:"address,omitzero,required"`
+	Address PortingLoaConfigurationPreview0ParamsAddress `json:"address,omitzero" api:"required"`
 	// The name of the company
-	CompanyName string `json:"company_name,required"`
+	CompanyName string `json:"company_name" api:"required"`
 	// The contact information of the company.
-	Contact PortingLoaConfigurationPreview0ParamsContact `json:"contact,omitzero,required"`
+	Contact PortingLoaConfigurationPreview0ParamsContact `json:"contact,omitzero" api:"required"`
 	// The logo of the LOA configuration
-	Logo PortingLoaConfigurationPreview0ParamsLogo `json:"logo,omitzero,required"`
+	Logo PortingLoaConfigurationPreview0ParamsLogo `json:"logo,omitzero" api:"required"`
 	// The name of the LOA configuration
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	paramObj
 }
 
@@ -511,15 +511,15 @@ func (r *PortingLoaConfigurationPreview0Params) UnmarshalJSON(data []byte) error
 // The properties City, CountryCode, State, StreetAddress, ZipCode are required.
 type PortingLoaConfigurationPreview0ParamsAddress struct {
 	// The locality of the company
-	City string `json:"city,required"`
+	City string `json:"city" api:"required"`
 	// The country code of the company
-	CountryCode string `json:"country_code,required"`
+	CountryCode string `json:"country_code" api:"required"`
 	// The administrative area of the company
-	State string `json:"state,required"`
+	State string `json:"state" api:"required"`
 	// The street address of the company
-	StreetAddress string `json:"street_address,required"`
+	StreetAddress string `json:"street_address" api:"required"`
 	// The postal code of the company
-	ZipCode string `json:"zip_code,required"`
+	ZipCode string `json:"zip_code" api:"required"`
 	// The extended address of the company
 	ExtendedAddress param.Opt[string] `json:"extended_address,omitzero"`
 	paramObj
@@ -538,9 +538,9 @@ func (r *PortingLoaConfigurationPreview0ParamsAddress) UnmarshalJSON(data []byte
 // The properties Email, PhoneNumber are required.
 type PortingLoaConfigurationPreview0ParamsContact struct {
 	// The email address of the contact
-	Email string `json:"email,required"`
+	Email string `json:"email" api:"required"`
 	// The phone number of the contact
-	PhoneNumber string `json:"phone_number,required"`
+	PhoneNumber string `json:"phone_number" api:"required"`
 	paramObj
 }
 
@@ -557,7 +557,7 @@ func (r *PortingLoaConfigurationPreview0ParamsContact) UnmarshalJSON(data []byte
 // The property DocumentID is required.
 type PortingLoaConfigurationPreview0ParamsLogo struct {
 	// The document identification
-	DocumentID string `json:"document_id,required" format:"uuid"`
+	DocumentID string `json:"document_id" api:"required" format:"uuid"`
 	paramObj
 }
 

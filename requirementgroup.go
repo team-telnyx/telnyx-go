@@ -178,11 +178,11 @@ const (
 
 type RequirementGroupNewParams struct {
 	// Any of "ordering", "porting".
-	Action RequirementGroupNewParamsAction `json:"action,omitzero,required"`
+	Action RequirementGroupNewParamsAction `json:"action,omitzero" api:"required"`
 	// ISO alpha 2 country code
-	CountryCode string `json:"country_code,required"`
+	CountryCode string `json:"country_code" api:"required"`
 	// Any of "local", "toll_free", "mobile", "national", "shared_cost".
-	PhoneNumberType        RequirementGroupNewParamsPhoneNumberType         `json:"phone_number_type,omitzero,required"`
+	PhoneNumberType        RequirementGroupNewParamsPhoneNumberType         `json:"phone_number_type,omitzero" api:"required"`
 	CustomerReference      param.Opt[string]                                `json:"customer_reference,omitzero"`
 	RegulatoryRequirements []RequirementGroupNewParamsRegulatoryRequirement `json:"regulatory_requirements,omitzero"`
 	paramObj

@@ -224,12 +224,12 @@ func (r *ScheduledEventResponseUnionConversationMetadata) UnmarshalJSON(data []b
 }
 
 type ScheduledPhoneCallEventResponse struct {
-	AssistantID              string    `json:"assistant_id,required"`
-	ScheduledAtFixedDatetime time.Time `json:"scheduled_at_fixed_datetime,required" format:"date-time"`
-	TelnyxAgentTarget        string    `json:"telnyx_agent_target,required"`
+	AssistantID              string    `json:"assistant_id" api:"required"`
+	ScheduledAtFixedDatetime time.Time `json:"scheduled_at_fixed_datetime" api:"required" format:"date-time"`
+	TelnyxAgentTarget        string    `json:"telnyx_agent_target" api:"required"`
 	// Any of "phone_call", "sms_chat".
-	TelnyxConversationChannel ConversationChannelType                                             `json:"telnyx_conversation_channel,required"`
-	TelnyxEndUserTarget       string                                                              `json:"telnyx_end_user_target,required"`
+	TelnyxConversationChannel ConversationChannelType                                             `json:"telnyx_conversation_channel" api:"required"`
+	TelnyxEndUserTarget       string                                                              `json:"telnyx_end_user_target" api:"required"`
 	ConversationID            string                                                              `json:"conversation_id"`
 	ConversationMetadata      map[string]ScheduledPhoneCallEventResponseConversationMetadataUnion `json:"conversation_metadata"`
 	CreatedAt                 time.Time                                                           `json:"created_at" format:"date-time"`
@@ -314,13 +314,13 @@ func (r *ScheduledPhoneCallEventResponseConversationMetadataUnion) UnmarshalJSON
 }
 
 type ScheduledSMSEventResponse struct {
-	AssistantID              string    `json:"assistant_id,required"`
-	ScheduledAtFixedDatetime time.Time `json:"scheduled_at_fixed_datetime,required" format:"date-time"`
-	TelnyxAgentTarget        string    `json:"telnyx_agent_target,required"`
+	AssistantID              string    `json:"assistant_id" api:"required"`
+	ScheduledAtFixedDatetime time.Time `json:"scheduled_at_fixed_datetime" api:"required" format:"date-time"`
+	TelnyxAgentTarget        string    `json:"telnyx_agent_target" api:"required"`
 	// Any of "phone_call", "sms_chat".
-	TelnyxConversationChannel ConversationChannelType                                       `json:"telnyx_conversation_channel,required"`
-	TelnyxEndUserTarget       string                                                        `json:"telnyx_end_user_target,required"`
-	Text                      string                                                        `json:"text,required"`
+	TelnyxConversationChannel ConversationChannelType                                       `json:"telnyx_conversation_channel" api:"required"`
+	TelnyxEndUserTarget       string                                                        `json:"telnyx_end_user_target" api:"required"`
+	Text                      string                                                        `json:"text" api:"required"`
 	ConversationID            string                                                        `json:"conversation_id"`
 	ConversationMetadata      map[string]ScheduledSMSEventResponseConversationMetadataUnion `json:"conversation_metadata"`
 	CreatedAt                 time.Time                                                     `json:"created_at" format:"date-time"`
@@ -501,13 +501,13 @@ func (r *AIAssistantScheduledEventListResponseUnionConversationMetadata) Unmarsh
 
 type AIAssistantScheduledEventNewParams struct {
 	// The datetime at which the event should be scheduled. Formatted as ISO 8601.
-	ScheduledAtFixedDatetime time.Time `json:"scheduled_at_fixed_datetime,required" format:"date-time"`
+	ScheduledAtFixedDatetime time.Time `json:"scheduled_at_fixed_datetime" api:"required" format:"date-time"`
 	// The phone number, SIP URI, to schedule the call or text from.
-	TelnyxAgentTarget string `json:"telnyx_agent_target,required"`
+	TelnyxAgentTarget string `json:"telnyx_agent_target" api:"required"`
 	// Any of "phone_call", "sms_chat".
-	TelnyxConversationChannel ConversationChannelType `json:"telnyx_conversation_channel,omitzero,required"`
+	TelnyxConversationChannel ConversationChannelType `json:"telnyx_conversation_channel,omitzero" api:"required"`
 	// The phone number, SIP URI, to schedule the call or text to.
-	TelnyxEndUserTarget string `json:"telnyx_end_user_target,required"`
+	TelnyxEndUserTarget string `json:"telnyx_end_user_target" api:"required"`
 	// Required for sms scheduled events. The text to be sent to the end user.
 	Text param.Opt[string] `json:"text,omitzero"`
 	// Metadata associated with the conversation. Telnyx provides several pieces of
@@ -556,7 +556,7 @@ func (u *AIAssistantScheduledEventNewParamsConversationMetadataUnion) asAny() an
 }
 
 type AIAssistantScheduledEventGetParams struct {
-	AssistantID string `path:"assistant_id,required" json:"-"`
+	AssistantID string `path:"assistant_id" api:"required" json:"-"`
 	paramObj
 }
 
@@ -580,6 +580,6 @@ func (r AIAssistantScheduledEventListParams) URLQuery() (v url.Values, err error
 }
 
 type AIAssistantScheduledEventDeleteParams struct {
-	AssistantID string `path:"assistant_id,required" json:"-"`
+	AssistantID string `path:"assistant_id" api:"required" json:"-"`
 	paramObj
 }

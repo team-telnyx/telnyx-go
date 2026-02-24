@@ -1410,7 +1410,7 @@ type CallHangupPayload struct {
 	// Call quality statistics aggregated from the CHANNEL_HANGUP_COMPLETE event. Only
 	// includes metrics that are available (filters out nil values). Returns nil if no
 	// metrics are available.
-	CallQualityStats CallHangupPayloadCallQualityStats `json:"call_quality_stats,nullable"`
+	CallQualityStats CallHangupPayloadCallQualityStats `json:"call_quality_stats" api:"nullable"`
 	// ID that is unique to the call session and can be used to correlate webhook
 	// events. Call session is a group of related call legs that logically belong to
 	// the same phone call, e.g. an inbound and outbound leg of a transferred call.
@@ -2485,9 +2485,9 @@ func (r *CallRecordingSavedPayload) UnmarshalJSON(data []byte) error {
 // Please contact customer support with your Account ID to request activation.
 type CallRecordingSavedPayloadPublicRecordingURLs struct {
 	// Recording URL in requested `mp3` format.
-	MP3 string `json:"mp3,nullable"`
+	MP3 string `json:"mp3" api:"nullable"`
 	// Recording URL in requested `wav` format.
-	Wav string `json:"wav,nullable"`
+	Wav string `json:"wav" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		MP3         respjson.Field
@@ -2508,9 +2508,9 @@ func (r *CallRecordingSavedPayloadPublicRecordingURLs) UnmarshalJSON(data []byte
 // documentation, or via Mission Control under Reporting -> Recordings.
 type CallRecordingSavedPayloadRecordingURLs struct {
 	// Recording URL in requested `mp3` format.
-	MP3 string `json:"mp3,nullable"`
+	MP3 string `json:"mp3" api:"nullable"`
 	// Recording URL in requested `wav` format.
-	Wav string `json:"wav,nullable"`
+	Wav string `json:"wav" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		MP3         respjson.Field
@@ -4627,9 +4627,9 @@ func (r *ConferenceRecordingSavedPayload) UnmarshalJSON(data []byte) error {
 // Please contact customer support with your Account ID to request activation.
 type ConferenceRecordingSavedPayloadPublicRecordingURLs struct {
 	// Recording URL in requested `mp3` format.
-	MP3 string `json:"mp3,nullable"`
+	MP3 string `json:"mp3" api:"nullable"`
 	// Recording URL in requested `wav` format.
-	Wav string `json:"wav,nullable"`
+	Wav string `json:"wav" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		MP3         respjson.Field
@@ -4650,9 +4650,9 @@ func (r *ConferenceRecordingSavedPayloadPublicRecordingURLs) UnmarshalJSON(data 
 // documentation, or via Mission Control under Reporting -> Recordings.
 type ConferenceRecordingSavedPayloadRecordingURLs struct {
 	// Recording URL in requested `mp3` format.
-	MP3 string `json:"mp3,nullable"`
+	MP3 string `json:"mp3" api:"nullable"`
 	// Recording URL in requested `wav` format.
-	Wav string `json:"wav,nullable"`
+	Wav string `json:"wav" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		MP3         respjson.Field
@@ -5486,8 +5486,8 @@ const (
 )
 
 type NumberOrderStatusUpdate struct {
-	Data NumberOrderStatusUpdateData `json:"data,required"`
-	Meta NumberOrderStatusUpdateMeta `json:"meta,required"`
+	Data NumberOrderStatusUpdateData `json:"data" api:"required"`
+	Meta NumberOrderStatusUpdateMeta `json:"meta" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -5505,14 +5505,14 @@ func (r *NumberOrderStatusUpdate) UnmarshalJSON(data []byte) error {
 
 type NumberOrderStatusUpdateData struct {
 	// Unique identifier for the event
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// The type of event being sent
-	EventType string `json:"event_type,required"`
+	EventType string `json:"event_type" api:"required"`
 	// ISO 8601 timestamp of when the event occurred
-	OccurredAt time.Time                   `json:"occurred_at,required" format:"date-time"`
-	Payload    NumberOrderWithPhoneNumbers `json:"payload,required"`
+	OccurredAt time.Time                   `json:"occurred_at" api:"required" format:"date-time"`
+	Payload    NumberOrderWithPhoneNumbers `json:"payload" api:"required"`
 	// Type of record
-	RecordType string `json:"record_type,required"`
+	RecordType string `json:"record_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -5533,9 +5533,9 @@ func (r *NumberOrderStatusUpdateData) UnmarshalJSON(data []byte) error {
 
 type NumberOrderStatusUpdateMeta struct {
 	// Webhook delivery attempt number
-	Attempt int64 `json:"attempt,required"`
+	Attempt int64 `json:"attempt" api:"required"`
 	// URL where the webhook was delivered
-	DeliveredTo string `json:"delivered_to,required" format:"uri"`
+	DeliveredTo string `json:"delivered_to" api:"required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Attempt     respjson.Field

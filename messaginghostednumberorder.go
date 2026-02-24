@@ -231,7 +231,7 @@ func (r *MessagingHostedNumberOrderCheckEligibilityResponsePhoneNumber) Unmarsha
 }
 
 type MessagingHostedNumberOrderNewVerificationCodesResponse struct {
-	Data []MessagingHostedNumberOrderNewVerificationCodesResponseData `json:"data,required"`
+	Data []MessagingHostedNumberOrderNewVerificationCodesResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -249,7 +249,7 @@ func (r *MessagingHostedNumberOrderNewVerificationCodesResponse) UnmarshalJSON(d
 // Verification code result response
 type MessagingHostedNumberOrderNewVerificationCodesResponseData struct {
 	// Phone number for which the verification code was created
-	PhoneNumber string `json:"phone_number,required"`
+	PhoneNumber string `json:"phone_number" api:"required"`
 	// Error message describing why the verification code creation failed
 	Error string `json:"error"`
 	// Type of verification method used
@@ -294,8 +294,8 @@ func (r *MessagingHostedNumberOrderValidateCodesResponse) UnmarshalJSON(data []b
 }
 
 type MessagingHostedNumberOrderValidateCodesResponseData struct {
-	OrderID      string                                                           `json:"order_id,required" format:"uuid"`
-	PhoneNumbers []MessagingHostedNumberOrderValidateCodesResponseDataPhoneNumber `json:"phone_numbers,required"`
+	OrderID      string                                                           `json:"order_id" api:"required" format:"uuid"`
+	PhoneNumbers []MessagingHostedNumberOrderValidateCodesResponseDataPhoneNumber `json:"phone_numbers" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		OrderID      respjson.Field
@@ -312,9 +312,9 @@ func (r *MessagingHostedNumberOrderValidateCodesResponseData) UnmarshalJSON(data
 }
 
 type MessagingHostedNumberOrderValidateCodesResponseDataPhoneNumber struct {
-	PhoneNumber string `json:"phone_number,required"`
+	PhoneNumber string `json:"phone_number" api:"required"`
 	// Any of "verified", "rejected", "already_verified".
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PhoneNumber respjson.Field
@@ -366,7 +366,7 @@ func (r MessagingHostedNumberOrderListParams) URLQuery() (v url.Values, err erro
 
 type MessagingHostedNumberOrderCheckEligibilityParams struct {
 	// List of phone numbers to check eligibility
-	PhoneNumbers []string `json:"phone_numbers,omitzero,required"`
+	PhoneNumbers []string `json:"phone_numbers,omitzero" api:"required"`
 	paramObj
 }
 
@@ -379,9 +379,9 @@ func (r *MessagingHostedNumberOrderCheckEligibilityParams) UnmarshalJSON(data []
 }
 
 type MessagingHostedNumberOrderNewVerificationCodesParams struct {
-	PhoneNumbers []string `json:"phone_numbers,omitzero,required"`
+	PhoneNumbers []string `json:"phone_numbers,omitzero" api:"required"`
 	// Any of "sms", "call", "flashcall".
-	VerificationMethod MessagingHostedNumberOrderNewVerificationCodesParamsVerificationMethod `json:"verification_method,omitzero,required"`
+	VerificationMethod MessagingHostedNumberOrderNewVerificationCodesParamsVerificationMethod `json:"verification_method,omitzero" api:"required"`
 	paramObj
 }
 
@@ -402,7 +402,7 @@ const (
 )
 
 type MessagingHostedNumberOrderValidateCodesParams struct {
-	VerificationCodes []MessagingHostedNumberOrderValidateCodesParamsVerificationCode `json:"verification_codes,omitzero,required"`
+	VerificationCodes []MessagingHostedNumberOrderValidateCodesParamsVerificationCode `json:"verification_codes,omitzero" api:"required"`
 	paramObj
 }
 
@@ -416,8 +416,8 @@ func (r *MessagingHostedNumberOrderValidateCodesParams) UnmarshalJSON(data []byt
 
 // The properties Code, PhoneNumber are required.
 type MessagingHostedNumberOrderValidateCodesParamsVerificationCode struct {
-	Code        string `json:"code,required"`
-	PhoneNumber string `json:"phone_number,required"`
+	Code        string `json:"code" api:"required"`
+	PhoneNumber string `json:"phone_number" api:"required"`
 	paramObj
 }
 

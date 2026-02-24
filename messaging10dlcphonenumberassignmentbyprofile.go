@@ -104,9 +104,9 @@ const (
 
 type Messaging10dlcPhoneNumberAssignmentByProfileAssignResponse struct {
 	// The ID of the messaging profile that you want to link to the specified campaign.
-	MessagingProfileID string `json:"messagingProfileId,required"`
+	MessagingProfileID string `json:"messagingProfileId" api:"required"`
 	// The ID of the task associated with assigning a messaging profile to a campaign.
-	TaskID string `json:"taskId,required"`
+	TaskID string `json:"taskId" api:"required"`
 	// The ID of the campaign you want to link to the specified messaging profile. If
 	// you supply this ID in the request, do not also include a tcrCampaignId.
 	CampaignID string `json:"campaignId"`
@@ -134,7 +134,7 @@ func (r *Messaging10dlcPhoneNumberAssignmentByProfileAssignResponse) UnmarshalJS
 }
 
 type Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusResponse struct {
-	Records []Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusResponseRecord `json:"records,required"`
+	Records []Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusResponseRecord `json:"records" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Records     respjson.Field
@@ -153,11 +153,11 @@ func (r *Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusRespon
 
 type Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusResponseRecord struct {
 	// The phone number that the status is being checked for.
-	PhoneNumber string `json:"phoneNumber,required"`
+	PhoneNumber string `json:"phoneNumber" api:"required"`
 	// The status of the associated phone number assignment.
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// The ID of the task associated with the phone number.
-	TaskID string `json:"taskId,required"`
+	TaskID string `json:"taskId" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PhoneNumber respjson.Field
@@ -177,7 +177,7 @@ func (r *Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusRespon
 }
 
 type Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusResponse struct {
-	Records []Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusResponseRecord `json:"records,required"`
+	Records []Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusResponseRecord `json:"records" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Records     respjson.Field
@@ -196,11 +196,11 @@ func (r *Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusRespons
 
 type Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusResponseRecord struct {
 	// The phone number that the status is being checked for.
-	PhoneNumber string `json:"phoneNumber,required"`
+	PhoneNumber string `json:"phoneNumber" api:"required"`
 	// The status of the associated phone number assignment.
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// The ID of the task associated with the phone number.
-	TaskID string `json:"taskId,required"`
+	TaskID string `json:"taskId" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PhoneNumber respjson.Field
@@ -223,8 +223,8 @@ type Messaging10dlcPhoneNumberAssignmentByProfileGetStatusResponse struct {
 	// An enumeration.
 	//
 	// Any of "pending", "processing", "completed", "failed".
-	Status    Messaging10dlcPhoneNumberAssignmentByProfileGetStatusResponseStatus `json:"status,required"`
-	TaskID    string                                                              `json:"taskId,required"`
+	Status    Messaging10dlcPhoneNumberAssignmentByProfileGetStatusResponseStatus `json:"status" api:"required"`
+	TaskID    string                                                              `json:"taskId" api:"required"`
 	CreatedAt time.Time                                                           `json:"createdAt" format:"date-time"`
 	UpdatedAt time.Time                                                           `json:"updatedAt" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -258,7 +258,7 @@ const (
 
 type Messaging10dlcPhoneNumberAssignmentByProfileAssignParams struct {
 	// The ID of the messaging profile that you want to link to the specified campaign.
-	MessagingProfileID string `json:"messagingProfileId,required"`
+	MessagingProfileID string `json:"messagingProfileId" api:"required"`
 	// The ID of the campaign you want to link to the specified messaging profile. If
 	// you supply this ID in the request, do not also include a tcrCampaignId.
 	CampaignID param.Opt[string] `json:"campaignId,omitzero"`

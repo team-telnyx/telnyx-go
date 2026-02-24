@@ -303,6 +303,6 @@ func (r PortingOrderAdditionalDocumentListParamsSort) URLQuery() (v url.Values, 
 }
 
 type PortingOrderAdditionalDocumentDeleteParams struct {
-	ID string `path:"id,required" format:"uuid" json:"-"`
+	ID string `path:"id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }

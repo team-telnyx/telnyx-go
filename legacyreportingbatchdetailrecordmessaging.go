@@ -78,8 +78,8 @@ func (r *LegacyReportingBatchDetailRecordMessagingService) Delete(ctx context.Co
 }
 
 type BatchCsvPaginationMeta struct {
-	PageNumber   int64 `json:"page_number,required"`
-	TotalPages   int64 `json:"total_pages,required"`
+	PageNumber   int64 `json:"page_number" api:"required"`
+	TotalPages   int64 `json:"total_pages" api:"required"`
 	PageSize     int64 `json:"page_size"`
 	TotalResults int64 `json:"total_results"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -225,9 +225,9 @@ type LegacyReportingBatchDetailRecordMessagingNewParams struct {
 	// End time in ISO format. Note: If end time includes the last 4 hours, some MDRs
 	// might not appear in this report, due to wait time for downstream message
 	// delivery confirmation
-	EndTime time.Time `json:"end_time,required" format:"date-time"`
+	EndTime time.Time `json:"end_time" api:"required" format:"date-time"`
 	// Start time in ISO format
-	StartTime time.Time `json:"start_time,required" format:"date-time"`
+	StartTime time.Time `json:"start_time" api:"required" format:"date-time"`
 	// Whether to include message body in the report
 	IncludeMessageBody param.Opt[bool] `json:"include_message_body,omitzero"`
 	// Name of the report

@@ -102,9 +102,9 @@ func (r *AIAssistantTestRunService) Trigger(ctx context.Context, testID string, 
 // timing, logs, and detailed evaluation results.
 type TestRunResponse struct {
 	// Timestamp when the test run was created and queued.
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Unique identifier for this specific test run execution.
-	RunID string `json:"run_id,required" format:"uuid"`
+	RunID string `json:"run_id" api:"required" format:"uuid"`
 	// Represents the lifecycle of a test:
 	//
 	// - 'pending': Test is waiting to be executed.
@@ -115,11 +115,11 @@ type TestRunResponse struct {
 	// - 'error': An error occurred during test execution.
 	//
 	// Any of "pending", "starting", "running", "passed", "failed", "error".
-	Status TestStatus `json:"status,required"`
+	Status TestStatus `json:"status" api:"required"`
 	// Identifier of the assistant test that was executed.
-	TestID string `json:"test_id,required" format:"uuid"`
+	TestID string `json:"test_id" api:"required" format:"uuid"`
 	// How this test run was initiated (manual, scheduled, or API).
-	TriggeredBy string `json:"triggered_by,required"`
+	TriggeredBy string `json:"triggered_by" api:"required"`
 	// Timestamp when the test run finished execution.
 	CompletedAt time.Time `json:"completed_at" format:"date-time"`
 	// Identifier of the conversation created during test execution.
@@ -162,7 +162,7 @@ func (r *TestRunResponse) UnmarshalJSON(data []byte) error {
 }
 
 type TestRunResponseDetailStatus struct {
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Represents the lifecycle of a test:
 	//
 	// - 'pending': Test is waiting to be executed.
@@ -173,7 +173,7 @@ type TestRunResponseDetailStatus struct {
 	// - 'error': An error occurred during test execution.
 	//
 	// Any of "pending", "starting", "running", "passed", "failed", "error".
-	Status TestStatus `json:"status,required"`
+	Status TestStatus `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
@@ -209,7 +209,7 @@ const (
 )
 
 type AIAssistantTestRunGetParams struct {
-	TestID string `path:"test_id,required" json:"-"`
+	TestID string `path:"test_id" api:"required" json:"-"`
 	paramObj
 }
 

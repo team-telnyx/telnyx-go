@@ -151,9 +151,9 @@ type ConnectionGetResponseData struct {
 	WebhookAPIVersion string `json:"webhook_api_version"`
 	// The failover URL where webhooks related to this connection will be sent if
 	// sending to the primary URL fails.
-	WebhookEventFailoverURL string `json:"webhook_event_failover_url,nullable" format:"uri"`
+	WebhookEventFailoverURL string `json:"webhook_event_failover_url" api:"nullable" format:"uri"`
 	// The URL where webhooks related to this connection will be sent.
-	WebhookEventURL string `json:"webhook_event_url,nullable" format:"uri"`
+	WebhookEventURL string `json:"webhook_event_url" api:"nullable" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                      respjson.Field
@@ -209,9 +209,9 @@ type ConnectionListResponse struct {
 	WebhookAPIVersion ConnectionListResponseWebhookAPIVersion `json:"webhook_api_version"`
 	// The failover URL where webhooks related to this connection will be sent if
 	// sending to the primary URL fails.
-	WebhookEventFailoverURL string `json:"webhook_event_failover_url,nullable" format:"uri"`
+	WebhookEventFailoverURL string `json:"webhook_event_failover_url" api:"nullable" format:"uri"`
 	// The URL where webhooks related to this connection will be sent.
-	WebhookEventURL string `json:"webhook_event_url,nullable" format:"uri"`
+	WebhookEventURL string `json:"webhook_event_url" api:"nullable" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                      respjson.Field
@@ -247,19 +247,19 @@ const (
 
 type ConnectionListActiveCallsResponse struct {
 	// Unique identifier and token for controlling the call.
-	CallControlID string `json:"call_control_id,required"`
+	CallControlID string `json:"call_control_id" api:"required"`
 	// Indicates the duration of the call in seconds
-	CallDuration int64 `json:"call_duration,required"`
+	CallDuration int64 `json:"call_duration" api:"required"`
 	// ID that is unique to the call and can be used to correlate webhook events
-	CallLegID string `json:"call_leg_id,required"`
+	CallLegID string `json:"call_leg_id" api:"required"`
 	// ID that is unique to the call session and can be used to correlate webhook
 	// events. Call session is a group of related call legs that logically belong to
 	// the same phone call, e.g. an inbound and outbound leg of a transferred call
-	CallSessionID string `json:"call_session_id,required"`
+	CallSessionID string `json:"call_session_id" api:"required"`
 	// State received from a command.
-	ClientState string `json:"client_state,required"`
+	ClientState string `json:"client_state" api:"required"`
 	// Any of "call".
-	RecordType ConnectionListActiveCallsResponseRecordType `json:"record_type,required"`
+	RecordType ConnectionListActiveCallsResponseRecordType `json:"record_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CallControlID respjson.Field

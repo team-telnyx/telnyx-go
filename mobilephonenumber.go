@@ -97,22 +97,22 @@ type MobilePhoneNumber struct {
 	CallerIDNameEnabled bool                         `json:"caller_id_name_enabled"`
 	CnamListing         MobilePhoneNumberCnamListing `json:"cnam_listing"`
 	// The ID of the connection associated with this number.
-	ConnectionID string `json:"connection_id,nullable"`
+	ConnectionID string `json:"connection_id" api:"nullable"`
 	// The name of the connection.
-	ConnectionName string `json:"connection_name,nullable"`
+	ConnectionName string `json:"connection_name" api:"nullable"`
 	// The type of the connection.
-	ConnectionType string `json:"connection_type,nullable"`
+	ConnectionType string `json:"connection_type" api:"nullable"`
 	// The ISO 3166-1 alpha-2 country code of the number.
 	CountryISOAlpha2 string `json:"country_iso_alpha2"`
 	// ISO 8601 formatted date indicating when the resource was created.
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// A customer reference string.
-	CustomerReference string                   `json:"customer_reference,nullable"`
+	CustomerReference string                   `json:"customer_reference" api:"nullable"`
 	Inbound           MobilePhoneNumberInbound `json:"inbound"`
 	// The inbound call screening setting.
 	//
 	// Any of "disabled", "reject_calls", "flag_calls".
-	InboundCallScreening MobilePhoneNumberInboundCallScreening `json:"inbound_call_screening,nullable"`
+	InboundCallScreening MobilePhoneNumberInboundCallScreening `json:"inbound_call_screening" api:"nullable"`
 	// Indicates if mobile voice is enabled.
 	MobileVoiceEnabled bool `json:"mobile_voice_enabled"`
 	// The noise suppression setting.
@@ -170,8 +170,8 @@ func (r *MobilePhoneNumber) UnmarshalJSON(data []byte) error {
 type MobilePhoneNumberCallForwarding struct {
 	CallForwardingEnabled bool `json:"call_forwarding_enabled"`
 	// Any of "always", "on-failure".
-	ForwardingType string `json:"forwarding_type,nullable"`
-	ForwardsTo     string `json:"forwards_to,nullable"`
+	ForwardingType string `json:"forwarding_type" api:"nullable"`
+	ForwardsTo     string `json:"forwards_to" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CallForwardingEnabled respjson.Field
@@ -211,7 +211,7 @@ func (r *MobilePhoneNumberCallRecording) UnmarshalJSON(data []byte) error {
 }
 
 type MobilePhoneNumberCnamListing struct {
-	CnamListingDetails string `json:"cnam_listing_details,nullable"`
+	CnamListingDetails string `json:"cnam_listing_details" api:"nullable"`
 	CnamListingEnabled bool   `json:"cnam_listing_enabled"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -230,9 +230,9 @@ func (r *MobilePhoneNumberCnamListing) UnmarshalJSON(data []byte) error {
 
 type MobilePhoneNumberInbound struct {
 	// The ID of the app that will intercept inbound calls.
-	InterceptionAppID string `json:"interception_app_id,nullable"`
+	InterceptionAppID string `json:"interception_app_id" api:"nullable"`
 	// The name of the app that will intercept inbound calls.
-	InterceptionAppName string `json:"interception_app_name,nullable"`
+	InterceptionAppName string `json:"interception_app_name" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		InterceptionAppID   respjson.Field
@@ -269,9 +269,9 @@ const (
 
 type MobilePhoneNumberOutbound struct {
 	// The ID of the app that will intercept outbound calls.
-	InterceptionAppID string `json:"interception_app_id,nullable"`
+	InterceptionAppID string `json:"interception_app_id" api:"nullable"`
 	// The name of the app that will intercept outbound calls.
-	InterceptionAppName string `json:"interception_app_name,nullable"`
+	InterceptionAppName string `json:"interception_app_name" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		InterceptionAppID   respjson.Field

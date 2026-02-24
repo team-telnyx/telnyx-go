@@ -338,7 +338,7 @@ const (
 )
 
 type PhoneNumberBlockJobDeletePhoneNumberBlockParams struct {
-	PhoneNumberBlockID string `json:"phone_number_block_id,required"`
+	PhoneNumberBlockID string `json:"phone_number_block_id" api:"required"`
 	paramObj
 }
 

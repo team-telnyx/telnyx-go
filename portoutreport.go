@@ -86,7 +86,7 @@ func (r *PortoutReportService) ListAutoPaging(ctx context.Context, query Portout
 // The parameters for generating a port-outs CSV report.
 type ExportPortoutsCsvReport struct {
 	// The filters to apply to the export port-out CSV report.
-	Filters ExportPortoutsCsvReportFilters `json:"filters,required"`
+	Filters ExportPortoutsCsvReportFilters `json:"filters" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filters     respjson.Field
@@ -151,7 +151,7 @@ func (r *ExportPortoutsCsvReportFilters) UnmarshalJSON(data []byte) error {
 // The property Filters is required.
 type ExportPortoutsCsvReportParam struct {
 	// The filters to apply to the export port-out CSV report.
-	Filters ExportPortoutsCsvReportFiltersParam `json:"filters,omitzero,required"`
+	Filters ExportPortoutsCsvReportFiltersParam `json:"filters,omitzero" api:"required"`
 	paramObj
 }
 
@@ -283,11 +283,11 @@ func (r *PortoutReportGetResponse) UnmarshalJSON(data []byte) error {
 
 type PortoutReportNewParams struct {
 	// The parameters for generating a port-outs CSV report.
-	Params ExportPortoutsCsvReportParam `json:"params,omitzero,required"`
+	Params ExportPortoutsCsvReportParam `json:"params,omitzero" api:"required"`
 	// Identifies the type of report
 	//
 	// Any of "export_portouts_csv".
-	ReportType PortoutReportNewParamsReportType `json:"report_type,omitzero,required"`
+	ReportType PortoutReportNewParamsReportType `json:"report_type,omitzero" api:"required"`
 	paramObj
 }
 

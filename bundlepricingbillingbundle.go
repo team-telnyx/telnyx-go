@@ -82,15 +82,15 @@ func (r *BundlePricingBillingBundleService) ListAutoPaging(ctx context.Context, 
 
 type BillingBundleSummary struct {
 	// Bundle's ID, this is used to identify the bundle in the API.
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Bundle's cost code, this is used to identify the bundle in the billing system.
-	CostCode string `json:"cost_code,required"`
+	CostCode string `json:"cost_code" api:"required"`
 	// Date the bundle was created.
-	CreatedAt time.Time `json:"created_at,required" format:"date"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date"`
 	// Available to all customers or only to specific customers.
-	IsPublic bool `json:"is_public,required"`
+	IsPublic bool `json:"is_public" api:"required"`
 	// Bundle's name, this is used to identify the bundle in the UI.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Bundle's currency code.
 	Currency string `json:"currency"`
 	// Monthly recurring charge price.
@@ -122,13 +122,13 @@ func (r *BillingBundleSummary) UnmarshalJSON(data []byte) error {
 
 type PaginationResponse struct {
 	// The current page number.
-	PageNumber int64 `json:"page_number,required"`
+	PageNumber int64 `json:"page_number" api:"required"`
 	// The number of results per page.
-	PageSize int64 `json:"page_size,required"`
+	PageSize int64 `json:"page_size" api:"required"`
 	// Total number of pages from the results.
-	TotalPages int64 `json:"total_pages,required"`
+	TotalPages int64 `json:"total_pages" api:"required"`
 	// Total number of results returned.
-	TotalResults int64 `json:"total_results,required"`
+	TotalResults int64 `json:"total_results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PageNumber   respjson.Field
@@ -147,7 +147,7 @@ func (r *PaginationResponse) UnmarshalJSON(data []byte) error {
 }
 
 type BundlePricingBillingBundleGetResponse struct {
-	Data BundlePricingBillingBundleGetResponseData `json:"data,required"`
+	Data BundlePricingBillingBundleGetResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -164,18 +164,18 @@ func (r *BundlePricingBillingBundleGetResponse) UnmarshalJSON(data []byte) error
 
 type BundlePricingBillingBundleGetResponseData struct {
 	// Bundle's ID, this is used to identify the bundle in the API.
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// If that bundle is active or not.
-	Active       bool                                                   `json:"active,required"`
-	BundleLimits []BundlePricingBillingBundleGetResponseDataBundleLimit `json:"bundle_limits,required"`
+	Active       bool                                                   `json:"active" api:"required"`
+	BundleLimits []BundlePricingBillingBundleGetResponseDataBundleLimit `json:"bundle_limits" api:"required"`
 	// Bundle's cost code, this is used to identify the bundle in the billing system.
-	CostCode string `json:"cost_code,required"`
+	CostCode string `json:"cost_code" api:"required"`
 	// Date the bundle was created.
-	CreatedAt time.Time `json:"created_at,required" format:"date"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date"`
 	// Available to all customers or only to specific customers.
-	IsPublic bool `json:"is_public,required"`
+	IsPublic bool `json:"is_public" api:"required"`
 	// Bundle's name, this is used to identify the bundle in the UI.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Slugified version of the bundle's name.
 	Slug string `json:"slug"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -200,11 +200,11 @@ func (r *BundlePricingBillingBundleGetResponseData) UnmarshalJSON(data []byte) e
 }
 
 type BundlePricingBillingBundleGetResponseDataBundleLimit struct {
-	ID             string    `json:"id,required" format:"uuid"`
-	CreatedAt      time.Time `json:"created_at,required" format:"date"`
-	Metric         string    `json:"metric,required"`
-	Service        string    `json:"service,required"`
-	UpdatedAt      time.Time `json:"updated_at,required" format:"date"`
+	ID             string    `json:"id" api:"required" format:"uuid"`
+	CreatedAt      time.Time `json:"created_at" api:"required" format:"date"`
+	Metric         string    `json:"metric" api:"required"`
+	Service        string    `json:"service" api:"required"`
+	UpdatedAt      time.Time `json:"updated_at" api:"required" format:"date"`
 	BillingService string    `json:"billing_service"`
 	// Use country_iso instead
 	//

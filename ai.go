@@ -86,7 +86,7 @@ func (r *AIService) Summarize(ctx context.Context, body AISummarizeParams, opts 
 }
 
 type AIGetModelsResponse struct {
-	Data   []AIGetModelsResponseData `json:"data,required"`
+	Data   []AIGetModelsResponseData `json:"data" api:"required"`
 	Object string                    `json:"object"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -104,9 +104,9 @@ func (r *AIGetModelsResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIGetModelsResponseData struct {
-	ID      string `json:"id,required"`
-	Created int64  `json:"created,required"`
-	OwnedBy string `json:"owned_by,required"`
+	ID      string `json:"id" api:"required"`
+	Created int64  `json:"created" api:"required"`
+	OwnedBy string `json:"owned_by" api:"required"`
 	Object  string `json:"object"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -126,7 +126,7 @@ func (r *AIGetModelsResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type AISummarizeResponse struct {
-	Data AISummarizeResponseData `json:"data,required"`
+	Data AISummarizeResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -142,7 +142,7 @@ func (r *AISummarizeResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AISummarizeResponseData struct {
-	Summary string `json:"summary,required"`
+	Summary string `json:"summary" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Summary     respjson.Field
@@ -159,9 +159,9 @@ func (r *AISummarizeResponseData) UnmarshalJSON(data []byte) error {
 
 type AISummarizeParams struct {
 	// The name of the bucket that contains the file to be summarized.
-	Bucket string `json:"bucket,required"`
+	Bucket string `json:"bucket" api:"required"`
 	// The name of the file to be summarized.
-	Filename string `json:"filename,required"`
+	Filename string `json:"filename" api:"required"`
 	// A system prompt to guide the summary generation.
 	SystemPrompt param.Opt[string] `json:"system_prompt,omitzero"`
 	paramObj

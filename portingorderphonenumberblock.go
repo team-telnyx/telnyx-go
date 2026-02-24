@@ -229,8 +229,8 @@ type PortingOrderPhoneNumberBlockNewParams struct {
 	// Specifies the activation ranges for this porting phone number block. The
 	// activation range must be within the block range and should not overlap with
 	// other activation ranges.
-	ActivationRanges []PortingOrderPhoneNumberBlockNewParamsActivationRange `json:"activation_ranges,omitzero,required"`
-	PhoneNumberRange PortingOrderPhoneNumberBlockNewParamsPhoneNumberRange  `json:"phone_number_range,omitzero,required"`
+	ActivationRanges []PortingOrderPhoneNumberBlockNewParamsActivationRange `json:"activation_ranges,omitzero" api:"required"`
+	PhoneNumberRange PortingOrderPhoneNumberBlockNewParamsPhoneNumberRange  `json:"phone_number_range,omitzero" api:"required"`
 	paramObj
 }
 
@@ -246,10 +246,10 @@ func (r *PortingOrderPhoneNumberBlockNewParams) UnmarshalJSON(data []byte) error
 type PortingOrderPhoneNumberBlockNewParamsActivationRange struct {
 	// Specifies the end of the activation range. It must be no more than the end of
 	// the extension range.
-	EndAt string `json:"end_at,required"`
+	EndAt string `json:"end_at" api:"required"`
 	// Specifies the start of the activation range. Must be greater or equal the start
 	// of the extension range.
-	StartAt string `json:"start_at,required"`
+	StartAt string `json:"start_at" api:"required"`
 	paramObj
 }
 
@@ -264,10 +264,10 @@ func (r *PortingOrderPhoneNumberBlockNewParamsActivationRange) UnmarshalJSON(dat
 // The properties EndAt, StartAt are required.
 type PortingOrderPhoneNumberBlockNewParamsPhoneNumberRange struct {
 	// Specifies the end of the phone number range for this porting phone number block.
-	EndAt string `json:"end_at,required"`
+	EndAt string `json:"end_at" api:"required"`
 	// Specifies the start of the phone number range for this porting phone number
 	// block.
-	StartAt string `json:"start_at,required"`
+	StartAt string `json:"start_at" api:"required"`
 	paramObj
 }
 
@@ -408,6 +408,6 @@ func (r PortingOrderPhoneNumberBlockListParamsSort) URLQuery() (v url.Values, er
 }
 
 type PortingOrderPhoneNumberBlockDeleteParams struct {
-	PortingOrderID string `path:"porting_order_id,required" format:"uuid" json:"-"`
+	PortingOrderID string `path:"porting_order_id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }

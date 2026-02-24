@@ -48,7 +48,7 @@ func (r *VerificationByPhoneNumberActionService) Verify(ctx context.Context, pho
 }
 
 type VerifyVerificationCodeResponse struct {
-	Data VerifyVerificationCodeResponseData `json:"data,required"`
+	Data VerifyVerificationCodeResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -65,11 +65,11 @@ func (r *VerifyVerificationCodeResponse) UnmarshalJSON(data []byte) error {
 
 type VerifyVerificationCodeResponseData struct {
 	// +E164 formatted phone number.
-	PhoneNumber string `json:"phone_number,required"`
+	PhoneNumber string `json:"phone_number" api:"required"`
 	// Identifies if the verification code has been accepted or rejected.
 	//
 	// Any of "accepted", "rejected".
-	ResponseCode string `json:"response_code,required"`
+	ResponseCode string `json:"response_code" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PhoneNumber  respjson.Field
@@ -87,9 +87,9 @@ func (r *VerifyVerificationCodeResponseData) UnmarshalJSON(data []byte) error {
 
 type VerificationByPhoneNumberActionVerifyParams struct {
 	// This is the code the user submits for verification.
-	Code string `json:"code,required"`
+	Code string `json:"code" api:"required"`
 	// The identifier of the associated Verify profile.
-	VerifyProfileID string `json:"verify_profile_id,required" format:"uuid"`
+	VerifyProfileID string `json:"verify_profile_id" api:"required" format:"uuid"`
 	paramObj
 }
 

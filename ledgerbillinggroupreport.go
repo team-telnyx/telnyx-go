@@ -68,7 +68,7 @@ type LedgerBillingGroupReport struct {
 	// Any of "ledger_billing_group_report".
 	RecordType LedgerBillingGroupReportRecordType `json:"record_type"`
 	// External url of the ledger billing group report, if the status is complete
-	ReportURL string `json:"report_url,nullable" format:"uri"`
+	ReportURL string `json:"report_url" api:"nullable" format:"uri"`
 	// Status of the ledger billing group report
 	//
 	// Any of "pending", "complete", "failed", "deleted".

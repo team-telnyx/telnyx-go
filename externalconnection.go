@@ -172,12 +172,12 @@ type ExternalConnection struct {
 	WebhookAPIVersion ExternalConnectionWebhookAPIVersion `json:"webhook_api_version"`
 	// The failover URL where webhooks related to this connection will be sent if
 	// sending to the primary URL fails. Must include a scheme, such as 'https'.
-	WebhookEventFailoverURL string `json:"webhook_event_failover_url,nullable" format:"uri"`
+	WebhookEventFailoverURL string `json:"webhook_event_failover_url" api:"nullable" format:"uri"`
 	// The URL where webhooks related to this connection will be sent. Must include a
 	// scheme, such as 'https'.
 	WebhookEventURL string `json:"webhook_event_url" format:"uri"`
 	// Specifies how many seconds to wait before timing out a webhook.
-	WebhookTimeoutSecs int64 `json:"webhook_timeout_secs,nullable"`
+	WebhookTimeoutSecs int64 `json:"webhook_timeout_secs" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                      respjson.Field
@@ -261,8 +261,8 @@ const (
 )
 
 type ExternalVoiceIntegrationsPaginationMeta struct {
-	PageNumber   int64 `json:"page_number,required"`
-	TotalPages   int64 `json:"total_pages,required"`
+	PageNumber   int64 `json:"page_number" api:"required"`
+	TotalPages   int64 `json:"total_pages" api:"required"`
 	PageSize     int64 `json:"page_size"`
 	TotalResults int64 `json:"total_results"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -386,8 +386,8 @@ type ExternalConnectionNewParams struct {
 	// The service that will be consuming this connection.
 	//
 	// Any of "zoom".
-	ExternalSipConnection ExternalConnectionNewParamsExternalSipConnection `json:"external_sip_connection,omitzero,required"`
-	Outbound              ExternalConnectionNewParamsOutbound              `json:"outbound,omitzero,required"`
+	ExternalSipConnection ExternalConnectionNewParamsExternalSipConnection `json:"external_sip_connection,omitzero" api:"required"`
+	Outbound              ExternalConnectionNewParamsOutbound              `json:"outbound,omitzero" api:"required"`
 	// The failover URL where webhooks related to this connection will be sent if
 	// sending to the primary URL fails. Must include a scheme, such as 'https'.
 	WebhookEventFailoverURL param.Opt[string] `json:"webhook_event_failover_url,omitzero" format:"uri"`
@@ -439,7 +439,7 @@ func (r *ExternalConnectionNewParamsOutbound) UnmarshalJSON(data []byte) error {
 // The property OutboundVoiceProfileID is required.
 type ExternalConnectionNewParamsInbound struct {
 	// The ID of the outbound voice profile to use for inbound calls.
-	OutboundVoiceProfileID string `json:"outbound_voice_profile_id,required"`
+	OutboundVoiceProfileID string `json:"outbound_voice_profile_id" api:"required"`
 	// When set, this will limit the number of concurrent inbound calls to phone
 	// numbers associated with this connection.
 	ChannelLimit param.Opt[int64] `json:"channel_limit,omitzero"`
@@ -455,7 +455,7 @@ func (r *ExternalConnectionNewParamsInbound) UnmarshalJSON(data []byte) error {
 }
 
 type ExternalConnectionUpdateParams struct {
-	Outbound ExternalConnectionUpdateParamsOutbound `json:"outbound,omitzero,required"`
+	Outbound ExternalConnectionUpdateParamsOutbound `json:"outbound,omitzero" api:"required"`
 	// The failover URL where webhooks related to this connection will be sent if
 	// sending to the primary URL fails. Must include a scheme, such as 'https'.
 	WebhookEventFailoverURL param.Opt[string] `json:"webhook_event_failover_url,omitzero" format:"uri"`
@@ -483,7 +483,7 @@ func (r *ExternalConnectionUpdateParams) UnmarshalJSON(data []byte) error {
 // The property OutboundVoiceProfileID is required.
 type ExternalConnectionUpdateParamsOutbound struct {
 	// Identifies the associated outbound voice profile.
-	OutboundVoiceProfileID string `json:"outbound_voice_profile_id,required"`
+	OutboundVoiceProfileID string `json:"outbound_voice_profile_id" api:"required"`
 	// When set, this will limit the number of concurrent outbound calls to phone
 	// numbers associated with this connection.
 	ChannelLimit param.Opt[int64] `json:"channel_limit,omitzero"`
@@ -597,9 +597,9 @@ func (r ExternalConnectionListParamsFilterPhoneNumber) URLQuery() (v url.Values,
 }
 
 type ExternalConnectionUpdateLocationParams struct {
-	ID string `path:"id,required" format:"uuid" json:"-"`
+	ID string `path:"id" api:"required" format:"uuid" json:"-"`
 	// A new static emergency address ID to update the location with
-	StaticEmergencyAddressID string `json:"static_emergency_address_id,required" format:"uuid"`
+	StaticEmergencyAddressID string `json:"static_emergency_address_id" api:"required" format:"uuid"`
 	paramObj
 }
 

@@ -659,12 +659,12 @@ const (
 )
 
 type TexmlAccountCallGetParams struct {
-	AccountSid string `path:"account_sid,required" json:"-"`
+	AccountSid string `path:"account_sid" api:"required" json:"-"`
 	paramObj
 }
 
 type TexmlAccountCallUpdateParams struct {
-	AccountSid string `path:"account_sid,required" json:"-"`
+	AccountSid string `path:"account_sid" api:"required" json:"-"`
 	UpdateCall UpdateCallParam
 	paramObj
 }
@@ -678,13 +678,13 @@ func (r *TexmlAccountCallUpdateParams) UnmarshalJSON(data []byte) error {
 
 type TexmlAccountCallCallsParams struct {
 	// The ID of the TeXML Application.
-	ApplicationSid string `json:"ApplicationSid,required"`
+	ApplicationSid string `json:"ApplicationSid" api:"required"`
 	// The phone number of the party that initiated the call. Phone numbers are
 	// formatted with a `+` and country code.
-	From string `json:"From,required"`
+	From string `json:"From" api:"required"`
 	// The phone number of the called party. Phone numbers are formatted with a `+` and
 	// country code.
-	To string `json:"To,required"`
+	To string `json:"To" api:"required"`
 	// Select whether to perform answering machine detection in the background. By
 	// default execution is blocked until Answering Machine Detection is completed.
 	AsyncAmd param.Opt[bool] `json:"AsyncAmd,omitzero"`
@@ -833,9 +833,9 @@ const (
 // The properties Name, Value are required.
 type TexmlAccountCallCallsParamsCustomHeader struct {
 	// The name of the custom header
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The value of the custom header
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -1000,7 +1000,7 @@ const (
 )
 
 type TexmlAccountCallSiprecJsonParams struct {
-	AccountSid string `path:"account_sid,required" json:"-"`
+	AccountSid string `path:"account_sid" api:"required" json:"-"`
 	// The name of the connector to use for the SIPREC session.
 	ConnectorName param.Opt[string] `json:"ConnectorName,omitzero"`
 	// Name of the SIPREC session. May be used to stop the SIPREC session from TeXML
@@ -1076,7 +1076,7 @@ const (
 )
 
 type TexmlAccountCallStreamsJsonParams struct {
-	AccountSid string `path:"account_sid,required" json:"-"`
+	AccountSid string `path:"account_sid" api:"required" json:"-"`
 	// The user specified name of Stream.
 	Name param.Opt[string] `json:"Name,omitzero"`
 	// Url where status callbacks will be sent.

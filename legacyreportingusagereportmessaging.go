@@ -139,8 +139,8 @@ func (r *MdrUsageReportResponseLegacy) UnmarshalJSON(data []byte) error {
 }
 
 type StandardPaginationMeta struct {
-	PageNumber   int64 `json:"page_number,required"`
-	TotalPages   int64 `json:"total_pages,required"`
+	PageNumber   int64 `json:"page_number" api:"required"`
+	TotalPages   int64 `json:"total_pages" api:"required"`
 	PageSize     int64 `json:"page_size"`
 	TotalResults int64 `json:"total_results"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -213,7 +213,7 @@ func (r *LegacyReportingUsageReportMessagingDeleteResponse) UnmarshalJSON(data [
 
 type LegacyReportingUsageReportMessagingNewParams struct {
 	// Aggregation type: No aggregation = 0, By Messaging Profile = 1, By Tags = 2
-	AggregationType          int64                `json:"aggregation_type,required"`
+	AggregationType          int64                `json:"aggregation_type" api:"required"`
 	EndTime                  param.Opt[time.Time] `json:"end_time,omitzero" format:"date-time"`
 	SelectAllManagedAccounts param.Opt[bool]      `json:"select_all_managed_accounts,omitzero"`
 	StartTime                param.Opt[time.Time] `json:"start_time,omitzero" format:"date-time"`

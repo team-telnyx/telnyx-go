@@ -338,20 +338,20 @@ type TelnyxBrand struct {
 	//
 	// Any of "BASIC_ACCOUNT", "SMALL_ACCOUNT", "MEDIUM_ACCOUNT", "LARGE_ACCOUNT",
 	// "KEY_ACCOUNT".
-	BrandRelationship TelnyxBrandBrandRelationship `json:"brandRelationship,required"`
+	BrandRelationship TelnyxBrandBrandRelationship `json:"brandRelationship" api:"required"`
 	// ISO2 2 characters country code. Example: US - United States
-	Country string `json:"country,required"`
+	Country string `json:"country" api:"required"`
 	// Display or marketing name of the brand.
-	DisplayName string `json:"displayName,required"`
+	DisplayName string `json:"displayName" api:"required"`
 	// Valid email address of brand support contact.
-	Email string `json:"email,required"`
+	Email string `json:"email" api:"required"`
 	// Entity type behind the brand. This is the form of business establishment.
 	//
 	// Any of "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT", "GOVERNMENT",
 	// "SOLE_PROPRIETOR".
-	EntityType EntityType `json:"entityType,required"`
+	EntityType EntityType `json:"entityType" api:"required"`
 	// Vertical or industry segment of the brand.
-	Vertical string `json:"vertical,required"`
+	Vertical string `json:"vertical" api:"required"`
 	// Alternate business identifier such as DUNS, LEI, or GIIN
 	AltBusinessID string `json:"altBusinessId"`
 	// An enumeration.
@@ -629,9 +629,9 @@ const (
 
 type Messaging10dlcBrandGetFeedbackResponse struct {
 	// ID of the brand being queried about
-	BrandID string `json:"brandId,required"`
+	BrandID string `json:"brandId" api:"required"`
 	// A list of reasons why brand creation/revetting didn't go as planned
-	Category []Messaging10dlcBrandGetFeedbackResponseCategory `json:"category,required"`
+	Category []Messaging10dlcBrandGetFeedbackResponseCategory `json:"category" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BrandID     respjson.Field
@@ -649,13 +649,13 @@ func (r *Messaging10dlcBrandGetFeedbackResponse) UnmarshalJSON(data []byte) erro
 
 type Messaging10dlcBrandGetFeedbackResponseCategory struct {
 	// One of `TAX_ID`, `STOCK_SYMBOL`, `GOVERNMENT_ENTITY`, `NONPROFIT`, and `OTHERS`
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Long-form description of the feedback with additional information
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// Human-readable version of the `id` field
-	DisplayName string `json:"displayName,required"`
+	DisplayName string `json:"displayName" api:"required"`
 	// List of relevant fields in the originally-submitted brand json
-	Fields []string `json:"fields,required"`
+	Fields []string `json:"fields" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -676,16 +676,16 @@ func (r *Messaging10dlcBrandGetFeedbackResponseCategory) UnmarshalJSON(data []by
 // Status information for an SMS OTP sent during Sole Proprietor brand verification
 type Messaging10dlcBrandGetSMSOtpByReferenceResponse struct {
 	// The Brand ID associated with this OTP request
-	BrandID string `json:"brandId,required"`
+	BrandID string `json:"brandId" api:"required"`
 	// The current delivery status of the OTP SMS message. Common values include:
 	// `DELIVERED_HANDSET`, `PENDING`, `FAILED`, `EXPIRED`
-	DeliveryStatus string `json:"deliveryStatus,required"`
+	DeliveryStatus string `json:"deliveryStatus" api:"required"`
 	// The mobile phone number where the OTP was sent, in E.164 format
-	MobilePhone string `json:"mobilePhone,required"`
+	MobilePhone string `json:"mobilePhone" api:"required"`
 	// The reference ID for this OTP request, used for status queries
-	ReferenceID string `json:"referenceId,required"`
+	ReferenceID string `json:"referenceId" api:"required"`
 	// The timestamp when the OTP request was initiated
-	RequestDate time.Time `json:"requestDate,required" format:"date-time"`
+	RequestDate time.Time `json:"requestDate" api:"required" format:"date-time"`
 	// The timestamp when the delivery status was last updated
 	DeliveryStatusDate time.Time `json:"deliveryStatusDate" format:"date-time"`
 	// Additional details about the delivery status
@@ -716,16 +716,16 @@ func (r *Messaging10dlcBrandGetSMSOtpByReferenceResponse) UnmarshalJSON(data []b
 // Status information for an SMS OTP sent during Sole Proprietor brand verification
 type Messaging10dlcBrandGetSMSOtpStatusResponse struct {
 	// The Brand ID associated with this OTP request
-	BrandID string `json:"brandId,required"`
+	BrandID string `json:"brandId" api:"required"`
 	// The current delivery status of the OTP SMS message. Common values include:
 	// `DELIVERED_HANDSET`, `PENDING`, `FAILED`, `EXPIRED`
-	DeliveryStatus string `json:"deliveryStatus,required"`
+	DeliveryStatus string `json:"deliveryStatus" api:"required"`
 	// The mobile phone number where the OTP was sent, in E.164 format
-	MobilePhone string `json:"mobilePhone,required"`
+	MobilePhone string `json:"mobilePhone" api:"required"`
 	// The reference ID for this OTP request, used for status queries
-	ReferenceID string `json:"referenceId,required"`
+	ReferenceID string `json:"referenceId" api:"required"`
 	// The timestamp when the OTP request was initiated
-	RequestDate time.Time `json:"requestDate,required" format:"date-time"`
+	RequestDate time.Time `json:"requestDate" api:"required" format:"date-time"`
 	// The timestamp when the delivery status was last updated
 	DeliveryStatusDate time.Time `json:"deliveryStatusDate" format:"date-time"`
 	// Additional details about the delivery status
@@ -756,9 +756,9 @@ func (r *Messaging10dlcBrandGetSMSOtpStatusResponse) UnmarshalJSON(data []byte) 
 // Response after successfully triggering a Brand SMS OTP
 type Messaging10dlcBrandTriggerSMSOtpResponse struct {
 	// The Brand ID for which the OTP was triggered
-	BrandID string `json:"brandId,required"`
+	BrandID string `json:"brandId" api:"required"`
 	// The reference ID that can be used to check OTP status
-	ReferenceID string `json:"referenceId,required"`
+	ReferenceID string `json:"referenceId" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BrandID     respjson.Field
@@ -776,23 +776,23 @@ func (r *Messaging10dlcBrandTriggerSMSOtpResponse) UnmarshalJSON(data []byte) er
 
 type Messaging10dlcBrandNewParams struct {
 	// ISO2 2 characters country code. Example: US - United States
-	Country string `json:"country,required"`
+	Country string `json:"country" api:"required"`
 	// Display name, marketing name, or DBA name of the brand.
-	DisplayName string `json:"displayName,required"`
+	DisplayName string `json:"displayName" api:"required"`
 	// Valid email address of brand support contact.
-	Email string `json:"email,required"`
+	Email string `json:"email" api:"required"`
 	// Entity type behind the brand. This is the form of business establishment.
 	//
 	// Any of "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT", "GOVERNMENT",
 	// "SOLE_PROPRIETOR".
-	EntityType EntityType `json:"entityType,omitzero,required"`
+	EntityType EntityType `json:"entityType,omitzero" api:"required"`
 	// Vertical or industry segment of the brand or campaign.
 	//
 	// Any of "REAL_ESTATE", "HEALTHCARE", "ENERGY", "ENTERTAINMENT", "RETAIL",
 	// "AGRICULTURE", "INSURANCE", "EDUCATION", "HOSPITALITY", "FINANCIAL", "GAMBLING",
 	// "CONSTRUCTION", "NGO", "MANUFACTURING", "GOVERNMENT", "TECHNOLOGY",
 	// "COMMUNICATION".
-	Vertical Vertical `json:"vertical,omitzero,required"`
+	Vertical Vertical `json:"vertical,omitzero" api:"required"`
 	// Business contact email.
 	//
 	// Required if `entityType` is `PUBLIC_PROFIT`. Otherwise, it is recommended to
@@ -851,23 +851,23 @@ func (r *Messaging10dlcBrandNewParams) UnmarshalJSON(data []byte) error {
 
 type Messaging10dlcBrandUpdateParams struct {
 	// ISO2 2 characters country code. Example: US - United States
-	Country string `json:"country,required"`
+	Country string `json:"country" api:"required"`
 	// Display or marketing name of the brand.
-	DisplayName string `json:"displayName,required"`
+	DisplayName string `json:"displayName" api:"required"`
 	// Valid email address of brand support contact.
-	Email string `json:"email,required"`
+	Email string `json:"email" api:"required"`
 	// Entity type behind the brand. This is the form of business establishment.
 	//
 	// Any of "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT", "GOVERNMENT",
 	// "SOLE_PROPRIETOR".
-	EntityType EntityType `json:"entityType,omitzero,required"`
+	EntityType EntityType `json:"entityType,omitzero" api:"required"`
 	// Vertical or industry segment of the brand or campaign.
 	//
 	// Any of "REAL_ESTATE", "HEALTHCARE", "ENERGY", "ENTERTAINMENT", "RETAIL",
 	// "AGRICULTURE", "INSURANCE", "EDUCATION", "HOSPITALITY", "FINANCIAL", "GAMBLING",
 	// "CONSTRUCTION", "NGO", "MANUFACTURING", "GOVERNMENT", "TECHNOLOGY",
 	// "COMMUNICATION".
-	Vertical Vertical `json:"vertical,omitzero,required"`
+	Vertical Vertical `json:"vertical,omitzero" api:"required"`
 	// Alternate business identifier such as DUNS, LEI, or GIIN
 	AltBusinessID param.Opt[string] `json:"altBusinessId,omitzero"`
 	// Business contact email.
@@ -1001,9 +1001,9 @@ func (r Messaging10dlcBrandGetSMSOtpByReferenceParams) URLQuery() (v url.Values,
 type Messaging10dlcBrandTriggerSMSOtpParams struct {
 	// SMS message template to send the OTP. Must include `@OTP_PIN@` placeholder which
 	// will be replaced with the actual PIN
-	PinSMS string `json:"pinSms,required"`
+	PinSMS string `json:"pinSms" api:"required"`
 	// SMS message to send upon successful OTP verification
-	SuccessSMS string `json:"successSms,required"`
+	SuccessSMS string `json:"successSms" api:"required"`
 	paramObj
 }
 
@@ -1017,7 +1017,7 @@ func (r *Messaging10dlcBrandTriggerSMSOtpParams) UnmarshalJSON(data []byte) erro
 
 type Messaging10dlcBrandVerifySMSOtpParams struct {
 	// The OTP PIN received via SMS
-	OtpPin string `json:"otpPin,required"`
+	OtpPin string `json:"otpPin" api:"required"`
 	paramObj
 }
 

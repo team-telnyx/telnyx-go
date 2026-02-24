@@ -121,9 +121,9 @@ func (r *Messaging10dlcGetEnumResponseUnion) UnmarshalJSON(data []byte) error {
 }
 
 type Messaging10dlcGetEnumResponseEnumPaginatedResponse struct {
-	Page         int64            `json:"page,required"`
-	Records      []map[string]any `json:"records,required"`
-	TotalRecords int64            `json:"totalRecords,required"`
+	Page         int64            `json:"page" api:"required"`
+	Records      []map[string]any `json:"records" api:"required"`
+	TotalRecords int64            `json:"totalRecords" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Page         respjson.Field

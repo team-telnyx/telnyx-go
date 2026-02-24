@@ -116,9 +116,9 @@ type AddressActionValidateResponseData struct {
 	// Indicates whether an address is valid or invalid.
 	//
 	// Any of "valid", "invalid".
-	Result string `json:"result,required"`
+	Result string `json:"result" api:"required"`
 	// Provides normalized address when available.
-	Suggested AddressActionValidateResponseDataSuggested `json:"suggested,required"`
+	Suggested AddressActionValidateResponseDataSuggested `json:"suggested" api:"required"`
 	Errors    []shared.APIError                          `json:"errors"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
@@ -156,7 +156,7 @@ type AddressActionValidateResponseDataSuggested struct {
 	PostalCode string `json:"postal_code"`
 	// The primary street address information about the address.
 	StreetAddress string         `json:"street_address"`
-	ExtraFields   map[string]any `json:",extras"`
+	ExtraFields   map[string]any `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AdministrativeArea respjson.Field
@@ -192,11 +192,11 @@ func (r *AddressActionAcceptSuggestionsParams) UnmarshalJSON(data []byte) error 
 
 type AddressActionValidateParams struct {
 	// The two-character (ISO 3166-1 alpha-2) country code of the address.
-	CountryCode string `json:"country_code,required"`
+	CountryCode string `json:"country_code" api:"required"`
 	// The postal code of the address.
-	PostalCode string `json:"postal_code,required"`
+	PostalCode string `json:"postal_code" api:"required"`
 	// The primary street address information about the address.
-	StreetAddress string `json:"street_address,required"`
+	StreetAddress string `json:"street_address" api:"required"`
 	// The locality of the address. For US addresses, this corresponds to the state of
 	// the address.
 	AdministrativeArea param.Opt[string] `json:"administrative_area,omitzero"`

@@ -158,7 +158,7 @@ func (r *RoomActionGenerateJoinClientTokenParams) UnmarshalJSON(data []byte) err
 }
 
 type RoomActionRefreshClientTokenParams struct {
-	RefreshToken string `json:"refresh_token,required"`
+	RefreshToken string `json:"refresh_token" api:"required"`
 	// The time to live in seconds of the Client Token, after that time the Client
 	// Token is invalid and can't be used to join a Room.
 	TokenTtlSecs param.Opt[int64] `json:"token_ttl_secs,omitzero"`

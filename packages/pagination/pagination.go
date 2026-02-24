@@ -21,8 +21,8 @@ type paramUnion = param.APIUnion
 type paramObj = param.APIObject
 
 type DefaultFlatPaginationMeta struct {
-	PageNumber int64 `json:"page_number,required"`
-	TotalPages int64 `json:"total_pages,required"`
+	PageNumber int64 `json:"page_number" api:"required"`
+	TotalPages int64 `json:"total_pages" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PageNumber  respjson.Field
@@ -236,8 +236,8 @@ func (r *DefaultFlatPaginationTopLevelArrayAutoPager[T]) Index() int {
 }
 
 type DefaultPaginationForLogMessagesMeta struct {
-	PageNumber int64 `json:"page_number,required"`
-	TotalPages int64 `json:"total_pages,required"`
+	PageNumber int64 `json:"page_number" api:"required"`
+	TotalPages int64 `json:"total_pages" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PageNumber  respjson.Field
@@ -554,8 +554,8 @@ func (r *DefaultPaginationForQueuesAutoPager[T]) Index() int {
 }
 
 type DefaultFlatPaginationForInexplicitNumberOrdersMeta struct {
-	PageNumber int64 `json:"page_number,required"`
-	TotalPages int64 `json:"total_pages,required"`
+	PageNumber int64 `json:"page_number" api:"required"`
+	TotalPages int64 `json:"total_pages" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PageNumber  respjson.Field
@@ -671,8 +671,8 @@ func (r *DefaultFlatPaginationForInexplicitNumberOrdersAutoPager[T]) Index() int
 }
 
 type PerPagePaginationMeta struct {
-	PageNumber int64 `json:"page_number,required"`
-	TotalPages int64 `json:"total_pages,required"`
+	PageNumber int64 `json:"page_number" api:"required"`
+	TotalPages int64 `json:"total_pages" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PageNumber  respjson.Field
@@ -789,8 +789,8 @@ func (r *PerPagePaginationAutoPager[T]) Index() int {
 
 type PerPagePaginationV2[T any] struct {
 	Records      []T   `json:"records"`
-	Page         int64 `json:"page,required"`
-	TotalRecords int64 `json:"totalRecords,required"`
+	Page         int64 `json:"page" api:"required"`
+	TotalRecords int64 `json:"totalRecords" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Records      respjson.Field

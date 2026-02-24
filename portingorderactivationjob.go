@@ -131,12 +131,12 @@ func (r *PortingOrderActivationJobUpdateResponse) UnmarshalJSON(data []byte) err
 }
 
 type PortingOrderActivationJobGetParams struct {
-	ID string `path:"id,required" format:"uuid" json:"-"`
+	ID string `path:"id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }
 
 type PortingOrderActivationJobUpdateParams struct {
-	ID string `path:"id,required" format:"uuid" json:"-"`
+	ID string `path:"id" api:"required" format:"uuid" json:"-"`
 	// The desired activation time. The activation time should be between any of the
 	// activation windows.
 	ActivateAt param.Opt[time.Time] `json:"activate_at,omitzero" format:"date-time"`

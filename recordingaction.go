@@ -43,7 +43,7 @@ func (r *RecordingActionService) Delete(ctx context.Context, body RecordingActio
 
 type RecordingActionDeleteParams struct {
 	// List of call recording IDs to delete.
-	IDs []string `json:"ids,omitzero,required"`
+	IDs []string `json:"ids,omitzero" api:"required"`
 	paramObj
 }
 

@@ -345,7 +345,7 @@ func (r *DetailRecordListResponseUnion) UnmarshalJSON(data []byte) error {
 
 type DetailRecordListResponseMessage struct {
 	// Identifies the record schema
-	RecordType string `json:"record_type,required"`
+	RecordType string `json:"record_type" api:"required"`
 	// Country-specific carrier used to send or receive the message
 	Carrier string `json:"carrier"`
 	// Fee charged by certain carriers in order to deliver certain message types.
@@ -468,7 +468,7 @@ func (r *DetailRecordListResponseMessage) UnmarshalJSON(data []byte) error {
 }
 
 type DetailRecordListResponseConference struct {
-	RecordType string `json:"record_type,required"`
+	RecordType string `json:"record_type" api:"required"`
 	// Conference id
 	ID string `json:"id"`
 	// Telnyx UUID that identifies the conference call leg
@@ -526,7 +526,7 @@ func (r *DetailRecordListResponseConference) UnmarshalJSON(data []byte) error {
 }
 
 type DetailRecordListResponseConferenceParticipant struct {
-	RecordType string `json:"record_type,required"`
+	RecordType string `json:"record_type" api:"required"`
 	// Participant id
 	ID string `json:"id"`
 	// Duration of the conference call for billing purposes
@@ -590,7 +590,7 @@ func (r *DetailRecordListResponseConferenceParticipant) UnmarshalJSON(data []byt
 }
 
 type DetailRecordListResponseAmd struct {
-	RecordType string `json:"record_type,required"`
+	RecordType string `json:"record_type" api:"required"`
 	// Feature invocation id
 	ID string `json:"id"`
 	// Billing Group id
@@ -653,7 +653,7 @@ func (r *DetailRecordListResponseAmd) UnmarshalJSON(data []byte) error {
 }
 
 type DetailRecordListResponseVerify2Fa struct {
-	RecordType string `json:"record_type,required"`
+	RecordType string `json:"record_type" api:"required"`
 	// Unique ID of the verification
 	ID        string    `json:"id" format:"uuid"`
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
@@ -715,7 +715,7 @@ func (r *DetailRecordListResponseVerify2Fa) UnmarshalJSON(data []byte) error {
 }
 
 type DetailRecordListResponseSimCardUsage struct {
-	RecordType string `json:"record_type,required"`
+	RecordType string `json:"record_type" api:"required"`
 	// Unique identifier for this SIM Card Usage
 	ID string `json:"id" format:"uuid"`
 	// Event close time
@@ -785,7 +785,7 @@ func (r *DetailRecordListResponseSimCardUsage) UnmarshalJSON(data []byte) error 
 }
 
 type DetailRecordListResponseMediaStorage struct {
-	RecordType string `json:"record_type,required"`
+	RecordType string `json:"record_type" api:"required"`
 	// Unique identifier for the Media Storage Event
 	ID string `json:"id"`
 	// Type of action performed against the Media Storage API
@@ -873,7 +873,7 @@ type DetailRecordListParamsFilter struct {
 	// "inference-speech-to-text", "media_storage", "media-streaming", "messaging",
 	// "noise-suppression", "recording", "sip-trunking", "siprec-client", "stt", "tts",
 	// "verify", "webrtc", "wireless".
-	RecordType string `query:"record_type,omitzero,required" json:"-"`
+	RecordType string `query:"record_type,omitzero" api:"required" json:"-"`
 	// Filter by the given user-friendly date range. You can specify one of the
 	// following enum values, or a dynamic one using this format: last_N_days.
 	//

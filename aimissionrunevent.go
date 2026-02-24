@@ -107,13 +107,13 @@ func (r *AIMissionRunEventService) Log(ctx context.Context, runID string, params
 }
 
 type AIMissionRunEventListResponse struct {
-	EventID   string    `json:"event_id,required"`
-	RunID     string    `json:"run_id,required"`
-	Summary   string    `json:"summary,required"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	EventID   string    `json:"event_id" api:"required"`
+	RunID     string    `json:"run_id" api:"required"`
+	Summary   string    `json:"summary" api:"required"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "status_change", "step_started", "step_completed", "step_failed",
 	// "tool_call", "tool_result", "message", "error", "custom".
-	Type           AIMissionRunEventListResponseType `json:"type,required"`
+	Type           AIMissionRunEventListResponseType `json:"type" api:"required"`
 	AgentID        string                            `json:"agent_id"`
 	IdempotencyKey string                            `json:"idempotency_key"`
 	Payload        map[string]any                    `json:"payload"`
@@ -155,7 +155,7 @@ const (
 )
 
 type AIMissionRunEventGetEventDetailsResponse struct {
-	Data AIMissionRunEventGetEventDetailsResponseData `json:"data,required"`
+	Data AIMissionRunEventGetEventDetailsResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -171,13 +171,13 @@ func (r *AIMissionRunEventGetEventDetailsResponse) UnmarshalJSON(data []byte) er
 }
 
 type AIMissionRunEventGetEventDetailsResponseData struct {
-	EventID   string    `json:"event_id,required"`
-	RunID     string    `json:"run_id,required"`
-	Summary   string    `json:"summary,required"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	EventID   string    `json:"event_id" api:"required"`
+	RunID     string    `json:"run_id" api:"required"`
+	Summary   string    `json:"summary" api:"required"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "status_change", "step_started", "step_completed", "step_failed",
 	// "tool_call", "tool_result", "message", "error", "custom".
-	Type           string         `json:"type,required"`
+	Type           string         `json:"type" api:"required"`
 	AgentID        string         `json:"agent_id"`
 	IdempotencyKey string         `json:"idempotency_key"`
 	Payload        map[string]any `json:"payload"`
@@ -205,7 +205,7 @@ func (r *AIMissionRunEventGetEventDetailsResponseData) UnmarshalJSON(data []byte
 }
 
 type AIMissionRunEventLogResponse struct {
-	Data AIMissionRunEventLogResponseData `json:"data,required"`
+	Data AIMissionRunEventLogResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -221,13 +221,13 @@ func (r *AIMissionRunEventLogResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIMissionRunEventLogResponseData struct {
-	EventID   string    `json:"event_id,required"`
-	RunID     string    `json:"run_id,required"`
-	Summary   string    `json:"summary,required"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	EventID   string    `json:"event_id" api:"required"`
+	RunID     string    `json:"run_id" api:"required"`
+	Summary   string    `json:"summary" api:"required"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "status_change", "step_started", "step_completed", "step_failed",
 	// "tool_call", "tool_result", "message", "error", "custom".
-	Type           string         `json:"type,required"`
+	Type           string         `json:"type" api:"required"`
 	AgentID        string         `json:"agent_id"`
 	IdempotencyKey string         `json:"idempotency_key"`
 	Payload        map[string]any `json:"payload"`
@@ -255,7 +255,7 @@ func (r *AIMissionRunEventLogResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type AIMissionRunEventListParams struct {
-	MissionID string            `path:"mission_id,required" format:"uuid" json:"-"`
+	MissionID string            `path:"mission_id" api:"required" format:"uuid" json:"-"`
 	AgentID   param.Opt[string] `query:"agent_id,omitzero" json:"-"`
 	// Page number (1-based)
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
@@ -276,17 +276,17 @@ func (r AIMissionRunEventListParams) URLQuery() (v url.Values, err error) {
 }
 
 type AIMissionRunEventGetEventDetailsParams struct {
-	MissionID string `path:"mission_id,required" format:"uuid" json:"-"`
-	RunID     string `path:"run_id,required" format:"uuid" json:"-"`
+	MissionID string `path:"mission_id" api:"required" format:"uuid" json:"-"`
+	RunID     string `path:"run_id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }
 
 type AIMissionRunEventLogParams struct {
-	MissionID string `path:"mission_id,required" format:"uuid" json:"-"`
-	Summary   string `json:"summary,required"`
+	MissionID string `path:"mission_id" api:"required" format:"uuid" json:"-"`
+	Summary   string `json:"summary" api:"required"`
 	// Any of "status_change", "step_started", "step_completed", "step_failed",
 	// "tool_call", "tool_result", "message", "error", "custom".
-	Type    AIMissionRunEventLogParamsType `json:"type,omitzero,required"`
+	Type    AIMissionRunEventLogParamsType `json:"type,omitzero" api:"required"`
 	AgentID param.Opt[string]              `json:"agent_id,omitzero"`
 	// Prevents duplicate events on retry
 	IdempotencyKey param.Opt[string] `json:"idempotency_key,omitzero"`

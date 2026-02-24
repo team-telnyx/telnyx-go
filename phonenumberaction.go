@@ -279,7 +279,7 @@ type PhoneNumberActionChangeBundleStatusParams struct {
 	// the number from a bundle, this must be null. You cannot assign a number from one
 	// bundle to another directly. You must first remove it from a bundle, and then
 	// assign it to a new bundle.
-	BundleID string `json:"bundle_id,required"`
+	BundleID string `json:"bundle_id" api:"required"`
 	paramObj
 }
 
@@ -293,9 +293,9 @@ func (r *PhoneNumberActionChangeBundleStatusParams) UnmarshalJSON(data []byte) e
 
 type PhoneNumberActionEnableEmergencyParams struct {
 	// Identifies the address to be used with emergency services.
-	EmergencyAddressID string `json:"emergency_address_id,required"`
+	EmergencyAddressID string `json:"emergency_address_id" api:"required"`
 	// Indicates whether to enable emergency services on this number.
-	EmergencyEnabled bool `json:"emergency_enabled,required"`
+	EmergencyEnabled bool `json:"emergency_enabled" api:"required"`
 	paramObj
 }
 
@@ -309,7 +309,7 @@ func (r *PhoneNumberActionEnableEmergencyParams) UnmarshalJSON(data []byte) erro
 
 type PhoneNumberActionVerifyOwnershipParams struct {
 	// Array of phone numbers to verify ownership for
-	PhoneNumbers []string `json:"phone_numbers,omitzero,required"`
+	PhoneNumbers []string `json:"phone_numbers,omitzero" api:"required"`
 	paramObj
 }
 

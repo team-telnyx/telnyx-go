@@ -71,7 +71,7 @@ func (r *AIEmbeddingBucketService) Delete(ctx context.Context, bucketName string
 }
 
 type AIEmbeddingBucketGetResponse struct {
-	Data []AIEmbeddingBucketGetResponseData `json:"data,required"`
+	Data []AIEmbeddingBucketGetResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -87,9 +87,9 @@ func (r *AIEmbeddingBucketGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIEmbeddingBucketGetResponseData struct {
-	CreatedAt      time.Time `json:"created_at,required" format:"date-time"`
-	Filename       string    `json:"filename,required"`
-	Status         string    `json:"status,required"`
+	CreatedAt      time.Time `json:"created_at" api:"required" format:"date-time"`
+	Filename       string    `json:"filename" api:"required"`
+	Status         string    `json:"status" api:"required"`
 	ErrorReason    string    `json:"error_reason"`
 	LastEmbeddedAt time.Time `json:"last_embedded_at" format:"date-time"`
 	UpdatedAt      time.Time `json:"updated_at" format:"date-time"`
@@ -113,7 +113,7 @@ func (r *AIEmbeddingBucketGetResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type AIEmbeddingBucketListResponse struct {
-	Data AIEmbeddingBucketListResponseData `json:"data,required"`
+	Data AIEmbeddingBucketListResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -129,7 +129,7 @@ func (r *AIEmbeddingBucketListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIEmbeddingBucketListResponseData struct {
-	Buckets []string `json:"buckets,required"`
+	Buckets []string `json:"buckets" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Buckets     respjson.Field

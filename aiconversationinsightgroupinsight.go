@@ -68,12 +68,12 @@ func (r *AIConversationInsightGroupInsightService) DeleteUnassign(ctx context.Co
 
 type AIConversationInsightGroupInsightAssignParams struct {
 	// The ID of the insight group
-	GroupID string `path:"group_id,required" format:"uuid" json:"-"`
+	GroupID string `path:"group_id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }
 
 type AIConversationInsightGroupInsightDeleteUnassignParams struct {
 	// The ID of the insight group
-	GroupID string `path:"group_id,required" format:"uuid" json:"-"`
+	GroupID string `path:"group_id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }
