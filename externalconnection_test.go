@@ -14,7 +14,7 @@ import (
 )
 
 func TestExternalConnectionNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -30,7 +30,7 @@ func TestExternalConnectionNewWithOptionalParams(t *testing.T) {
 		ExternalSipConnection: telnyx.ExternalConnectionNewParamsExternalSipConnectionZoom,
 		Outbound: telnyx.ExternalConnectionNewParamsOutbound{
 			ChannelLimit:           telnyx.Int(10),
-			OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
+			OutboundVoiceProfileID: telnyx.String("1911630617284445511"),
 		},
 		Active: telnyx.Bool(false),
 		Inbound: telnyx.ExternalConnectionNewParamsInbound{
@@ -52,7 +52,7 @@ func TestExternalConnectionNewWithOptionalParams(t *testing.T) {
 }
 
 func TestExternalConnectionGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -64,7 +64,7 @@ func TestExternalConnectionGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ExternalConnections.Get(context.TODO(), "id")
+	_, err := client.ExternalConnections.Get(context.TODO(), "1293384261075731499")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -75,7 +75,7 @@ func TestExternalConnectionGet(t *testing.T) {
 }
 
 func TestExternalConnectionUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -89,10 +89,10 @@ func TestExternalConnectionUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.ExternalConnections.Update(
 		context.TODO(),
-		"id",
+		"1293384261075731499",
 		telnyx.ExternalConnectionUpdateParams{
 			Outbound: telnyx.ExternalConnectionUpdateParamsOutbound{
-				OutboundVoiceProfileID: "outbound_voice_profile_id",
+				OutboundVoiceProfileID: "1911630617284445511",
 				ChannelLimit:           telnyx.Int(10),
 			},
 			Active: telnyx.Bool(false),
@@ -115,7 +115,7 @@ func TestExternalConnectionUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestExternalConnectionListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -152,7 +152,7 @@ func TestExternalConnectionListWithOptionalParams(t *testing.T) {
 }
 
 func TestExternalConnectionDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -164,7 +164,7 @@ func TestExternalConnectionDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ExternalConnections.Delete(context.TODO(), "id")
+	_, err := client.ExternalConnections.Delete(context.TODO(), "1293384261075731499")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -175,7 +175,7 @@ func TestExternalConnectionDelete(t *testing.T) {
 }
 
 func TestExternalConnectionUpdateLocation(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

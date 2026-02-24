@@ -14,7 +14,7 @@ import (
 )
 
 func TestTexmlAccountCallGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -43,7 +43,7 @@ func TestTexmlAccountCallGet(t *testing.T) {
 }
 
 func TestTexmlAccountCallUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -82,7 +82,7 @@ func TestTexmlAccountCallUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestTexmlAccountCallCallsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -136,6 +136,8 @@ func TestTexmlAccountCallCallsWithOptionalParams(t *testing.T) {
 			SuperviseCallSid:                   telnyx.String("v3:MdI91X4lWFEs7IgbBEOT9M4AigoY08M0WWZFISt1Yw2axZ_IiE4pqg"),
 			SupervisingRole:                    telnyx.TexmlAccountCallCallsParamsSupervisingRoleMonitor,
 			Texml:                              telnyx.String(`<?xml version="1.0" encoding="UTF-8"?><Response><Say>Hello</Say></Response>`),
+			TimeLimit:                          telnyx.Int(3600),
+			TimeoutSeconds:                     telnyx.Int(60),
 			Trim:                               telnyx.TexmlAccountCallCallsParamsTrimTrimSilence,
 			URL:                                telnyx.String("https://www.example.com/texml.xml"),
 			URLMethod:                          telnyx.TexmlAccountCallCallsParamsURLMethodGet,
@@ -151,7 +153,7 @@ func TestTexmlAccountCallCallsWithOptionalParams(t *testing.T) {
 }
 
 func TestTexmlAccountCallGetCallsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -191,7 +193,7 @@ func TestTexmlAccountCallGetCallsWithOptionalParams(t *testing.T) {
 }
 
 func TestTexmlAccountCallSiprecJsonWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -229,7 +231,7 @@ func TestTexmlAccountCallSiprecJsonWithOptionalParams(t *testing.T) {
 }
 
 func TestTexmlAccountCallStreamsJsonWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

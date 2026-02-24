@@ -249,7 +249,7 @@ func (r *MessagingHostedNumberOrderNewVerificationCodesResponse) UnmarshalJSON(d
 // Verification code result response
 type MessagingHostedNumberOrderNewVerificationCodesResponseData struct {
 	// Phone number for which the verification code was created
-	PhoneNumber string `json:"phone_number,required" format:"+E.164"`
+	PhoneNumber string `json:"phone_number,required"`
 	// Error message describing why the verification code creation failed
 	Error string `json:"error"`
 	// Type of verification method used
@@ -312,7 +312,7 @@ func (r *MessagingHostedNumberOrderValidateCodesResponseData) UnmarshalJSON(data
 }
 
 type MessagingHostedNumberOrderValidateCodesResponseDataPhoneNumber struct {
-	PhoneNumber string `json:"phone_number,required" format:"+E.164"`
+	PhoneNumber string `json:"phone_number,required"`
 	// Any of "verified", "rejected", "already_verified".
 	Status string `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -337,7 +337,7 @@ type MessagingHostedNumberOrderNewParams struct {
 	// is complete.
 	MessagingProfileID param.Opt[string] `json:"messaging_profile_id,omitzero"`
 	// Phone numbers to be used for hosted messaging.
-	PhoneNumbers []string `json:"phone_numbers,omitzero" format:"+E.164"`
+	PhoneNumbers []string `json:"phone_numbers,omitzero"`
 	paramObj
 }
 
@@ -366,7 +366,7 @@ func (r MessagingHostedNumberOrderListParams) URLQuery() (v url.Values, err erro
 
 type MessagingHostedNumberOrderCheckEligibilityParams struct {
 	// List of phone numbers to check eligibility
-	PhoneNumbers []string `json:"phone_numbers,omitzero,required" format:"+E.164"`
+	PhoneNumbers []string `json:"phone_numbers,omitzero,required"`
 	paramObj
 }
 
@@ -379,7 +379,7 @@ func (r *MessagingHostedNumberOrderCheckEligibilityParams) UnmarshalJSON(data []
 }
 
 type MessagingHostedNumberOrderNewVerificationCodesParams struct {
-	PhoneNumbers []string `json:"phone_numbers,omitzero,required" format:"+E.164"`
+	PhoneNumbers []string `json:"phone_numbers,omitzero,required"`
 	// Any of "sms", "call", "flashcall".
 	VerificationMethod MessagingHostedNumberOrderNewVerificationCodesParamsVerificationMethod `json:"verification_method,omitzero,required"`
 	paramObj
@@ -417,7 +417,7 @@ func (r *MessagingHostedNumberOrderValidateCodesParams) UnmarshalJSON(data []byt
 // The properties Code, PhoneNumber are required.
 type MessagingHostedNumberOrderValidateCodesParamsVerificationCode struct {
 	Code        string `json:"code,required"`
-	PhoneNumber string `json:"phone_number,required" format:"+E.164"`
+	PhoneNumber string `json:"phone_number,required"`
 	paramObj
 }
 

@@ -15,7 +15,7 @@ import (
 )
 
 func TestIPConnectionNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -76,7 +76,7 @@ func TestIPConnectionNewWithOptionalParams(t *testing.T) {
 			IPAuthenticationMethod: telnyx.OutboundIPIPAuthenticationMethodToken,
 			IPAuthenticationToken:  telnyx.String("string"),
 			Localization:           telnyx.String("string"),
-			OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
+			OutboundVoiceProfileID: telnyx.String("1293384261075731499"),
 			T38ReinviteSource:      telnyx.OutboundIPT38ReinviteSourceCustomer,
 			TechPrefix:             telnyx.String("string"),
 		},
@@ -102,7 +102,7 @@ func TestIPConnectionNewWithOptionalParams(t *testing.T) {
 }
 
 func TestIPConnectionGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -125,7 +125,7 @@ func TestIPConnectionGet(t *testing.T) {
 }
 
 func TestIPConnectionUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -192,7 +192,7 @@ func TestIPConnectionUpdateWithOptionalParams(t *testing.T) {
 				IPAuthenticationMethod: telnyx.OutboundIPIPAuthenticationMethodToken,
 				IPAuthenticationToken:  telnyx.String("string"),
 				Localization:           telnyx.String("string"),
-				OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
+				OutboundVoiceProfileID: telnyx.String("1293384261075731499"),
 				T38ReinviteSource:      telnyx.OutboundIPT38ReinviteSourceCustomer,
 				TechPrefix:             telnyx.String("string"),
 			},
@@ -219,7 +219,7 @@ func TestIPConnectionUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestIPConnectionListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -237,7 +237,7 @@ func TestIPConnectionListWithOptionalParams(t *testing.T) {
 				Contains: telnyx.String("contains"),
 			},
 			Fqdn:                   telnyx.String("fqdn"),
-			OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
+			OutboundVoiceProfileID: telnyx.String("1293384261075731499"),
 		},
 		PageNumber: telnyx.Int(0),
 		PageSize:   telnyx.Int(0),
@@ -253,7 +253,7 @@ func TestIPConnectionListWithOptionalParams(t *testing.T) {
 }
 
 func TestIPConnectionDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

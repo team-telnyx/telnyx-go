@@ -869,7 +869,7 @@ type Messaging10dlcBrandUpdateParams struct {
 	// "COMMUNICATION".
 	Vertical Vertical `json:"vertical,omitzero,required"`
 	// Alternate business identifier such as DUNS, LEI, or GIIN
-	AltBusinessID param.Opt[string] `json:"altBusiness_id,omitzero"`
+	AltBusinessID param.Opt[string] `json:"altBusinessId,omitzero"`
 	// Business contact email.
 	//
 	// Required if `entityType` will be changed to `PUBLIC_PROFIT`. Otherwise, it is

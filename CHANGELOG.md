@@ -1,5 +1,59 @@
 # Changelog
 
+## 4.30.0 (2026-02-24)
+
+Full Changelog: [v4.29.0...v4.30.0](https://github.com/team-telnyx/telnyx-go/compare/v4.29.0...v4.30.0)
+
+### Features
+
+* AI-2093: Add language_boost to MiniMax voice settings ([fcfef69](https://github.com/team-telnyx/telnyx-go/commit/fcfef6932be3d64e98e925d524709a035bdefaec))
+* **api:** manual updates ([d58966b](https://github.com/team-telnyx/telnyx-go/commit/d58966b0d04598527d91f9058beea61cf8985bb0))
+* **api:** manual updates ([fb6e833](https://github.com/team-telnyx/telnyx-go/commit/fb6e833f89d05086625deafff87a8f1b9a2b2458))
+* **api:** manual updates ([bba09e9](https://github.com/team-telnyx/telnyx-go/commit/bba09e9b73ab11a3a6d8df095d8502a85c23f806))
+* **api:** manual updates ([61d85b1](https://github.com/team-telnyx/telnyx-go/commit/61d85b11fee99df526fc8c734ad782d88690ab16))
+* **api:** manual updates ([4240e9e](https://github.com/team-telnyx/telnyx-go/commit/4240e9e081050f68b30af2bbeb48be285fa31f82))
+* **api:** manual updates ([afc7ce6](https://github.com/team-telnyx/telnyx-go/commit/afc7ce6631df7d7d43a7e8dd4685141b2f0ef507))
+* **api:** manual updates ([b9d5ab6](https://github.com/team-telnyx/telnyx-go/commit/b9d5ab611f171528ba5b8609aea45e37fbcc5932))
+* **api:** manual updates ([8b25a82](https://github.com/team-telnyx/telnyx-go/commit/8b25a82353a61633ebe84d5ee27334feb74a7961))
+* **api:** manual updates ([fefd67b](https://github.com/team-telnyx/telnyx-go/commit/fefd67b109d2c5c012d8a47216b36759460bfdc6))
+* **api:** manual updates ([1f95500](https://github.com/team-telnyx/telnyx-go/commit/1f9550001206d12ca2c9c5b4ca58bb0e3b6e5753))
+* **api:** manual updates ([e625099](https://github.com/team-telnyx/telnyx-go/commit/e625099f707f14967c2bea84ed6d282c26e0fea4))
+* **api:** manual updates ([e0b0f1b](https://github.com/team-telnyx/telnyx-go/commit/e0b0f1b8e4ec762ae1bcb350979af96b5568650a))
+* **api:** manual updates ([cd3b9e3](https://github.com/team-telnyx/telnyx-go/commit/cd3b9e39868c81a76e902f1364b9823f9e9e4c34))
+* **api:** manual updates ([c79e174](https://github.com/team-telnyx/telnyx-go/commit/c79e1748f6ae09c7bc187221b32b320ff2357aaa))
+* fix-stainless-sdk-timeout ([0539121](https://github.com/team-telnyx/telnyx-go/commit/0539121c5bd1607d05452571688d31b20fe01c0a))
+* TELAPPS Add ApplicationSid param ([102472f](https://github.com/team-telnyx/telnyx-go/commit/102472f5311ae02006965c37019b54fb25928908))
+* TELAPPS Add interim_results to deepgram config ([56a7d7d](https://github.com/team-telnyx/telnyx-go/commit/56a7d7dda5b1e1e8eafabd57f1ed9032f9757e6d))
+
+
+### Bug Fixes
+
+* allow canceling a request while it is waiting to retry ([09da6eb](https://github.com/team-telnyx/telnyx-go/commit/09da6eb09775e6ae1ddf9f581a2ee808b673cda1))
+* **client:** use correct format specifier for header serialization ([49fed3a](https://github.com/team-telnyx/telnyx-go/commit/49fed3abfb9918d7bf3dd3ec7e23d6690cd57196))
+* **internal:** skip tests that depend on mock server ([23c9bec](https://github.com/team-telnyx/telnyx-go/commit/23c9bec1d47e3950698904c6abd53d5010a57c46))
+* move unsupported string formats to x-format ([e013fcc](https://github.com/team-telnyx/telnyx-go/commit/e013fccb33d3a96e6e489aa700d5228df172ced3))
+* OAS drift — 10dlc.json (messaging-campaign-registry) ([fc6998b](https://github.com/team-telnyx/telnyx-go/commit/fc6998b7869607d134cf91903d60018528b2c3a1))
+* OAS drift — messaging.json (messaging-settings + messaging-outbound) ([1fc474c](https://github.com/team-telnyx/telnyx-go/commit/1fc474cae78973892d96ec6e81b832b712391e0f))
+* OAS drift — toll-free-verification.json (messaging-tf-verify) ([7b9e913](https://github.com/team-telnyx/telnyx-go/commit/7b9e91365cd6210db6c39f9ecedb56b3613cc67b))
+* OAS drift — verify.json (messaging-2fa) ([bcbc092](https://github.com/team-telnyx/telnyx-go/commit/bcbc09281e2d908ce311b8ff200a46c1d9d216f2))
+* StringFormatNotSupported ([35ad893](https://github.com/team-telnyx/telnyx-go/commit/35ad893f7e8865c595a3bde6f402894dde410fc9))
+
+
+### Chores
+
+* **internal:** codegen related update ([01b9ca6](https://github.com/team-telnyx/telnyx-go/commit/01b9ca615baa27063a1c245c087a5fe4c8615228))
+* **internal:** codegen related update ([3c657ff](https://github.com/team-telnyx/telnyx-go/commit/3c657ff23a59786d0ee198da41726bf2ac48334d))
+* **internal:** remove mock server code ([a087122](https://github.com/team-telnyx/telnyx-go/commit/a087122515a694d6480bcac23842ba6d67629f70))
+* update mock server docs ([d036d12](https://github.com/team-telnyx/telnyx-go/commit/d036d1256c436129c404cf9b260a603daafb84b5))
+
+
+### Documentation
+
+* add service_provider_login_url to authentication provider settings ([3886cab](https://github.com/team-telnyx/telnyx-go/commit/3886cabb888880a690f4d43be249b3637d231787))
+* **call-control:** Add missing conference endpoints ([d3f4cbb](https://github.com/team-telnyx/telnyx-go/commit/d3f4cbb0d5ae20b79d7f724fd0e257eb2ee339e4))
+* **call-control:** Add missing parameters to call control endpoints ([622b420](https://github.com/team-telnyx/telnyx-go/commit/622b4209934b5903e5964f3353dd0189c4bb65d5))
+* **call-scripting:** add Timeout and TimeLimit to InitiateTexmlCall ([293b294](https://github.com/team-telnyx/telnyx-go/commit/293b29447e7b9d9384132777ab9938f56b9428c3))
+
 ## 4.29.0 (2026-02-18)
 
 Full Changelog: [v4.28.0...v4.29.0](https://github.com/team-telnyx/telnyx-go/compare/v4.28.0...v4.29.0)

@@ -68,6 +68,18 @@ func (r *MessageService) CancelScheduled(ctx context.Context, id string, opts ..
 	return
 }
 
+// Retrieve all messages in a group MMS conversation by the group message ID.
+func (r *MessageService) GetGroupMessages(ctx context.Context, messageID string, opts ...option.RequestOption) (res *MessageGetGroupMessagesResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if messageID == "" {
+		err = errors.New("missing required message_id parameter")
+		return
+	}
+	path := fmt.Sprintf("messages/group/%s", messageID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
+}
+
 // Schedule a message with a Phone Number, Alphanumeric Sender ID, Short Code or
 // Number Pool.
 //
@@ -132,6 +144,58 @@ func (r *MessageService) SendWhatsapp(ctx context.Context, body MessageSendWhats
 	path := "messages/whatsapp"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
+}
+
+// Send an SMS message using an alphanumeric sender ID. This is SMS only.
+func (r *MessageService) SendWithAlphanumericSender(ctx context.Context, body MessageSendWithAlphanumericSenderParams, opts ...option.RequestOption) (res *MessageSendWithAlphanumericSenderResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "messages/alphanumeric_sender_id"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
+type MessagingError struct {
+	Code   string               `json:"code,required"`
+	Title  string               `json:"title,required"`
+	Detail string               `json:"detail"`
+	Meta   map[string]any       `json:"meta"`
+	Source MessagingErrorSource `json:"source"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Code        respjson.Field
+		Title       respjson.Field
+		Detail      respjson.Field
+		Meta        respjson.Field
+		Source      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingError) RawJSON() string { return r.JSON.raw }
+func (r *MessagingError) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessagingErrorSource struct {
+	// Indicates which query parameter caused the error.
+	Parameter string `json:"parameter"`
+	// JSON pointer (RFC6901) to the offending entity.
+	Pointer string `json:"pointer" format:"json-pointer"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Parameter   respjson.Field
+		Pointer     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingErrorSource) RawJSON() string { return r.JSON.raw }
+func (r *MessagingErrorSource) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type OutboundMessagePayload struct {
@@ -251,7 +315,7 @@ type OutboundMessagePayloadCc struct {
 	// Any of "Wireline", "Wireless", "VoWiFi", "VoIP", "Pre-Paid Wireless", "".
 	LineType string `json:"line_type"`
 	// Receiving address (+E.164 formatted phone number or short code).
-	PhoneNumber string `json:"phone_number" format:"address"`
+	PhoneNumber string `json:"phone_number"`
 	// Any of "queued", "sending", "sent", "delivered", "sending_failed",
 	// "delivery_failed", "delivery_unconfirmed".
 	Status string `json:"status"`
@@ -274,9 +338,9 @@ func (r *OutboundMessagePayloadCc) UnmarshalJSON(data []byte) error {
 
 type OutboundMessagePayloadCost struct {
 	// The amount deducted from your account.
-	Amount string `json:"amount" format:"decimal"`
+	Amount string `json:"amount"`
 	// The ISO 4217 currency identifier.
-	Currency string `json:"currency" format:"iso4217"`
+	Currency string `json:"currency"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -313,9 +377,9 @@ func (r *OutboundMessagePayloadCostBreakdown) UnmarshalJSON(data []byte) error {
 
 type OutboundMessagePayloadCostBreakdownCarrierFee struct {
 	// The carrier fee amount.
-	Amount string `json:"amount" format:"decimal"`
+	Amount string `json:"amount"`
 	// The ISO 4217 currency identifier.
-	Currency string `json:"currency" format:"iso4217"`
+	Currency string `json:"currency"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -333,9 +397,9 @@ func (r *OutboundMessagePayloadCostBreakdownCarrierFee) UnmarshalJSON(data []byt
 
 type OutboundMessagePayloadCostBreakdownRate struct {
 	// The rate amount applied.
-	Amount string `json:"amount" format:"decimal"`
+	Amount string `json:"amount"`
 	// The ISO 4217 currency identifier.
-	Currency string `json:"currency" format:"iso4217"`
+	Currency string `json:"currency"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -368,7 +432,7 @@ type OutboundMessagePayloadFrom struct {
 	LineType string `json:"line_type"`
 	// Sending address (+E.164 formatted phone number, alphanumeric sender ID, or short
 	// code).
-	PhoneNumber string `json:"phone_number" format:"address"`
+	PhoneNumber string `json:"phone_number"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Carrier     respjson.Field
@@ -387,7 +451,7 @@ func (r *OutboundMessagePayloadFrom) UnmarshalJSON(data []byte) error {
 
 type OutboundMessagePayloadMedia struct {
 	// The MIME type of the requested media.
-	ContentType string `json:"content_type,nullable" format:"mime-type"`
+	ContentType string `json:"content_type,nullable"`
 	// The SHA256 hash of the requested media.
 	Sha256 string `json:"sha256,nullable"`
 	// The size of the requested media.
@@ -426,7 +490,7 @@ type OutboundMessagePayloadTo struct {
 	// Any of "Wireline", "Wireless", "VoWiFi", "VoIP", "Pre-Paid Wireless", "".
 	LineType string `json:"line_type"`
 	// Receiving address (+E.164 formatted phone number or short code).
-	PhoneNumber string `json:"phone_number" format:"address"`
+	PhoneNumber string `json:"phone_number"`
 	// The delivery status of the message.
 	//
 	// Any of "queued", "sending", "sent", "expired", "sending_failed",
@@ -1782,7 +1846,7 @@ type MessageCancelScheduledResponseCc struct {
 	// Any of "Wireline", "Wireless", "VoWiFi", "VoIP", "Pre-Paid Wireless", "".
 	LineType string `json:"line_type"`
 	// Receiving address (+E.164 formatted phone number or short code).
-	PhoneNumber string `json:"phone_number" format:"address"`
+	PhoneNumber string `json:"phone_number"`
 	// The delivery status of the message.
 	//
 	// Any of "scheduled", "queued", "sending", "sent", "cancelled", "expired",
@@ -1807,9 +1871,9 @@ func (r *MessageCancelScheduledResponseCc) UnmarshalJSON(data []byte) error {
 
 type MessageCancelScheduledResponseCost struct {
 	// The amount deducted from your account.
-	Amount string `json:"amount" format:"decimal"`
+	Amount string `json:"amount"`
 	// The ISO 4217 currency identifier.
-	Currency string `json:"currency" format:"iso4217"`
+	Currency string `json:"currency"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -1846,9 +1910,9 @@ func (r *MessageCancelScheduledResponseCostBreakdown) UnmarshalJSON(data []byte)
 
 type MessageCancelScheduledResponseCostBreakdownCarrierFee struct {
 	// The carrier fee amount.
-	Amount string `json:"amount" format:"decimal"`
+	Amount string `json:"amount"`
 	// The ISO 4217 currency identifier.
-	Currency string `json:"currency" format:"iso4217"`
+	Currency string `json:"currency"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -1866,9 +1930,9 @@ func (r *MessageCancelScheduledResponseCostBreakdownCarrierFee) UnmarshalJSON(da
 
 type MessageCancelScheduledResponseCostBreakdownRate struct {
 	// The rate amount applied.
-	Amount string `json:"amount" format:"decimal"`
+	Amount string `json:"amount"`
 	// The ISO 4217 currency identifier.
-	Currency string `json:"currency" format:"iso4217"`
+	Currency string `json:"currency"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -1901,7 +1965,7 @@ type MessageCancelScheduledResponseFrom struct {
 	LineType string `json:"line_type"`
 	// Sending address (+E.164 formatted phone number, alphanumeric sender ID, or short
 	// code).
-	PhoneNumber string `json:"phone_number" format:"address"`
+	PhoneNumber string `json:"phone_number"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Carrier     respjson.Field
@@ -1920,7 +1984,7 @@ func (r *MessageCancelScheduledResponseFrom) UnmarshalJSON(data []byte) error {
 
 type MessageCancelScheduledResponseMedia struct {
 	// The MIME type of the requested media.
-	ContentType string `json:"content_type,nullable" format:"mime-type"`
+	ContentType string `json:"content_type,nullable"`
 	// The SHA256 hash of the requested media.
 	Sha256 string `json:"sha256,nullable"`
 	// The size of the requested media.
@@ -1959,7 +2023,7 @@ type MessageCancelScheduledResponseTo struct {
 	// Any of "Wireline", "Wireless", "VoWiFi", "VoIP", "Pre-Paid Wireless", "".
 	LineType string `json:"line_type"`
 	// Receiving address (+E.164 formatted phone number or short code).
-	PhoneNumber string `json:"phone_number" format:"address"`
+	PhoneNumber string `json:"phone_number"`
 	// The delivery status of the message.
 	//
 	// Any of "scheduled", "queued", "sending", "sent", "cancelled", "expired",
@@ -1989,6 +2053,22 @@ const (
 	MessageCancelScheduledResponseTypeSMS MessageCancelScheduledResponseType = "SMS"
 	MessageCancelScheduledResponseTypeMms MessageCancelScheduledResponseType = "MMS"
 )
+
+type MessageGetGroupMessagesResponse struct {
+	Data []OutboundMessagePayload `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageGetGroupMessagesResponse) RawJSON() string { return r.JSON.raw }
+func (r *MessageGetGroupMessagesResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type MessageScheduleResponse struct {
 	Data OutboundMessagePayload `json:"data"`
@@ -2273,7 +2353,7 @@ func (r *MessageSendWhatsappResponseDataBodyContactOrg) UnmarshalJSON(data []byt
 }
 
 type MessageSendWhatsappResponseDataBodyContactPhone struct {
-	Phone string `json:"phone" format:"E+164"`
+	Phone string `json:"phone"`
 	Type  string `json:"type"`
 	WaID  string `json:"wa_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2696,7 +2776,7 @@ type MessageSendWhatsappResponseDataFrom struct {
 	LineType string `json:"line_type"`
 	// Sending address (+E.164 formatted phone number, alphanumeric sender ID, or short
 	// code).
-	PhoneNumber string `json:"phone_number" format:"address"`
+	PhoneNumber string `json:"phone_number"`
 	// Any of "received", "delivered".
 	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2738,9 +2818,25 @@ func (r *MessageSendWhatsappResponseDataTo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type MessageSendWithAlphanumericSenderResponse struct {
+	Data OutboundMessagePayload `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageSendWithAlphanumericSenderResponse) RawJSON() string { return r.JSON.raw }
+func (r *MessageSendWithAlphanumericSenderResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type MessageScheduleParams struct {
 	// Receiving address (+E.164 formatted phone number or short code).
-	To string `json:"to,required" format:"address"`
+	To string `json:"to,required"`
 	// Automatically detect if an SMS message is unusually long and exceeds a
 	// recommended limit of message parts.
 	AutoDetect param.Opt[bool] `json:"auto_detect,omitzero"`
@@ -2749,7 +2845,7 @@ type MessageScheduleParams struct {
 	//
 	// **Required if sending with a phone number, short code, or alphanumeric sender
 	// ID.**
-	From param.Opt[string] `json:"from,omitzero" format:"address"`
+	From param.Opt[string] `json:"from,omitzero"`
 	// Unique identifier for a messaging profile.
 	//
 	// **Required if sending via number pool or with an alphanumeric sender ID.**
@@ -2801,7 +2897,7 @@ const (
 
 type MessageSendParams struct {
 	// Receiving address (+E.164 formatted phone number or short code).
-	To string `json:"to,required" format:"address"`
+	To string `json:"to,required"`
 	// ISO 8601 formatted date indicating when to send the message - accurate up till a
 	// minute.
 	SendAt param.Opt[time.Time] `json:"send_at,omitzero" format:"date-time"`
@@ -2813,7 +2909,7 @@ type MessageSendParams struct {
 	//
 	// **Required if sending with a phone number, short code, or alphanumeric sender
 	// ID.**
-	From param.Opt[string] `json:"from,omitzero" format:"address"`
+	From param.Opt[string] `json:"from,omitzero"`
 	// Unique identifier for a messaging profile.
 	//
 	// **Required if sending via number pool or with an alphanumeric sender ID.**
@@ -2883,9 +2979,9 @@ const (
 
 type MessageSendGroupMmsParams struct {
 	// Phone number, in +E.164 format, used to send the message.
-	From string `json:"from,required" format:"address"`
+	From string `json:"from,required"`
 	// A list of destinations. No more than 8 destinations are allowed.
-	To []string `json:"to,omitzero,required" format:"address"`
+	To []string `json:"to,omitzero,required"`
 	// Subject of multimedia message
 	Subject param.Opt[string] `json:"subject,omitzero"`
 	// Message body (i.e., content) as a non-empty string.
@@ -2914,9 +3010,9 @@ func (r *MessageSendGroupMmsParams) UnmarshalJSON(data []byte) error {
 
 type MessageSendLongCodeParams struct {
 	// Phone number, in +E.164 format, used to send the message.
-	From string `json:"from,required" format:"address"`
+	From string `json:"from,required"`
 	// Receiving address (+E.164 formatted phone number or short code).
-	To string `json:"to,required" format:"address"`
+	To string `json:"to,required"`
 	// Automatically detect if an SMS message is unusually long and exceeds a
 	// recommended limit of message parts.
 	AutoDetect param.Opt[bool] `json:"auto_detect,omitzero"`
@@ -2987,7 +3083,7 @@ type MessageSendNumberPoolParams struct {
 	// Unique identifier for a messaging profile.
 	MessagingProfileID string `json:"messaging_profile_id,required"`
 	// Receiving address (+E.164 formatted phone number or short code).
-	To string `json:"to,required" format:"address"`
+	To string `json:"to,required"`
 	// Automatically detect if an SMS message is unusually long and exceeds a
 	// recommended limit of message parts.
 	AutoDetect param.Opt[bool] `json:"auto_detect,omitzero"`
@@ -3056,9 +3152,9 @@ const (
 
 type MessageSendShortCodeParams struct {
 	// Phone number, in +E.164 format, used to send the message.
-	From string `json:"from,required" format:"address"`
+	From string `json:"from,required"`
 	// Receiving address (+E.164 formatted phone number or short code).
-	To string `json:"to,required" format:"address"`
+	To string `json:"to,required"`
 	// Automatically detect if an SMS message is unusually long and exceeds a
 	// recommended limit of message parts.
 	AutoDetect param.Opt[bool] `json:"auto_detect,omitzero"`
@@ -3248,7 +3344,7 @@ func (r *MessageSendWhatsappParamsWhatsappMessageContactOrg) UnmarshalJSON(data 
 }
 
 type MessageSendWhatsappParamsWhatsappMessageContactPhone struct {
-	Phone param.Opt[string] `json:"phone,omitzero" format:"E+164"`
+	Phone param.Opt[string] `json:"phone,omitzero"`
 	Type  param.Opt[string] `json:"type,omitzero"`
 	WaID  param.Opt[string] `json:"wa_id,omitzero"`
 	paramObj
@@ -3580,3 +3676,29 @@ type MessageSendWhatsappParamsType string
 const (
 	MessageSendWhatsappParamsTypeWhatsapp MessageSendWhatsappParamsType = "WHATSAPP"
 )
+
+type MessageSendWithAlphanumericSenderParams struct {
+	// A valid alphanumeric sender ID on the user's account.
+	From string `json:"from,required"`
+	// The messaging profile ID to use.
+	MessagingProfileID string `json:"messaging_profile_id,required" format:"uuid"`
+	// The message body.
+	Text string `json:"text,required"`
+	// Receiving address (+E.164 formatted phone number).
+	To string `json:"to,required"`
+	// Failover callback URL for delivery status updates.
+	WebhookFailoverURL param.Opt[string] `json:"webhook_failover_url,omitzero" format:"url"`
+	// Callback URL for delivery status updates.
+	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	// If true, use the messaging profile's webhook settings.
+	UseProfileWebhooks param.Opt[bool] `json:"use_profile_webhooks,omitzero"`
+	paramObj
+}
+
+func (r MessageSendWithAlphanumericSenderParams) MarshalJSON() (data []byte, err error) {
+	type shadow MessageSendWithAlphanumericSenderParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageSendWithAlphanumericSenderParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}

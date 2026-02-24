@@ -24,7 +24,7 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	response, err := client.Calls.Dial(context.TODO(), telnyx.CallDialParams{
 		ConnectionID: "conn12345",
 		From:         "+15557654321",

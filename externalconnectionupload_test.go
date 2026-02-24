@@ -14,7 +14,7 @@ import (
 )
 
 func TestExternalConnectionUploadNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -28,7 +28,7 @@ func TestExternalConnectionUploadNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.ExternalConnections.Uploads.New(
 		context.TODO(),
-		"id",
+		"1293384261075731499",
 		telnyx.ExternalConnectionUploadNewParams{
 			NumberIDs:        []string{"3920457616934164700", "3920457616934164701", "3920457616934164702", "3920457616934164703"},
 			AdditionalUsages: []string{"calling_user_assignment"},
@@ -47,7 +47,7 @@ func TestExternalConnectionUploadNewWithOptionalParams(t *testing.T) {
 }
 
 func TestExternalConnectionUploadGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -63,7 +63,7 @@ func TestExternalConnectionUploadGet(t *testing.T) {
 		context.TODO(),
 		"7b6a6449-b055-45a6-81f6-f6f0dffa4cc6",
 		telnyx.ExternalConnectionUploadGetParams{
-			ID: "id",
+			ID: "1293384261075731499",
 		},
 	)
 	if err != nil {
@@ -76,7 +76,7 @@ func TestExternalConnectionUploadGet(t *testing.T) {
 }
 
 func TestExternalConnectionUploadListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -90,7 +90,7 @@ func TestExternalConnectionUploadListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.ExternalConnections.Uploads.List(
 		context.TODO(),
-		"id",
+		"1293384261075731499",
 		telnyx.ExternalConnectionUploadListParams{
 			Filter: telnyx.ExternalConnectionUploadListParamsFilter{
 				CivicAddressID: telnyx.ExternalConnectionUploadListParamsFilterCivicAddressID{
@@ -121,7 +121,7 @@ func TestExternalConnectionUploadListWithOptionalParams(t *testing.T) {
 }
 
 func TestExternalConnectionUploadPendingCount(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -133,7 +133,7 @@ func TestExternalConnectionUploadPendingCount(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ExternalConnections.Uploads.PendingCount(context.TODO(), "id")
+	_, err := client.ExternalConnections.Uploads.PendingCount(context.TODO(), "1293384261075731499")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -144,7 +144,7 @@ func TestExternalConnectionUploadPendingCount(t *testing.T) {
 }
 
 func TestExternalConnectionUploadRefreshStatus(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -156,7 +156,7 @@ func TestExternalConnectionUploadRefreshStatus(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ExternalConnections.Uploads.RefreshStatus(context.TODO(), "id")
+	_, err := client.ExternalConnections.Uploads.RefreshStatus(context.TODO(), "1293384261075731499")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -167,7 +167,7 @@ func TestExternalConnectionUploadRefreshStatus(t *testing.T) {
 }
 
 func TestExternalConnectionUploadRetry(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -183,7 +183,7 @@ func TestExternalConnectionUploadRetry(t *testing.T) {
 		context.TODO(),
 		"7b6a6449-b055-45a6-81f6-f6f0dffa4cc6",
 		telnyx.ExternalConnectionUploadRetryParams{
-			ID: "id",
+			ID: "1293384261075731499",
 		},
 	)
 	if err != nil {

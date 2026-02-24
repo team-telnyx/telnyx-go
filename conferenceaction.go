@@ -50,6 +50,30 @@ func (r *ConferenceActionService) Update(ctx context.Context, id string, body Co
 	return
 }
 
+// End a conference and terminate all active participants.
+func (r *ConferenceActionService) EndConference(ctx context.Context, id string, body ConferenceActionEndConferenceParams, opts ...option.RequestOption) (res *ConferenceActionEndConferenceResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("conferences/%s/actions/end", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
+// Play an audio file to a specific conference participant and gather DTMF input.
+func (r *ConferenceActionService) GatherDtmfAudio(ctx context.Context, id string, body ConferenceActionGatherDtmfAudioParams, opts ...option.RequestOption) (res *ConferenceActionGatherDtmfAudioResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("conferences/%s/actions/gather_using_audio", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
 // Hold a list of participants in a conference call
 func (r *ConferenceActionService) Hold(ctx context.Context, id string, body ConferenceActionHoldParams, opts ...option.RequestOption) (res *ConferenceActionHoldResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -176,6 +200,18 @@ func (r *ConferenceActionService) RecordStop(ctx context.Context, id string, bod
 		return
 	}
 	path := fmt.Sprintf("conferences/%s/actions/record_stop", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
+// Send DTMF tones to one or more conference participants.
+func (r *ConferenceActionService) SendDtmf(ctx context.Context, id string, body ConferenceActionSendDtmfParams, opts ...option.RequestOption) (res *ConferenceActionSendDtmfResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("conferences/%s/actions/send_dtmf", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -318,6 +354,38 @@ type ConferenceActionUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ConferenceActionUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *ConferenceActionUpdateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConferenceActionEndConferenceResponse struct {
+	Data ConferenceCommandResult `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConferenceActionEndConferenceResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConferenceActionEndConferenceResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConferenceActionGatherDtmfAudioResponse struct {
+	Data ConferenceCommandResult `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConferenceActionGatherDtmfAudioResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConferenceActionGatherDtmfAudioResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -465,6 +533,22 @@ func (r *ConferenceActionRecordStopResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type ConferenceActionSendDtmfResponse struct {
+	Data ConferenceCommandResult `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConferenceActionSendDtmfResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConferenceActionSendDtmfResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ConferenceActionSpeakResponse struct {
 	Data ConferenceCommandResult `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -539,6 +623,70 @@ func (r ConferenceActionUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *ConferenceActionUpdateParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.UpdateConference)
+}
+
+type ConferenceActionEndConferenceParams struct {
+	// Use this field to avoid duplicate commands. Telnyx will ignore any command with
+	// the same `command_id` for the same conference.
+	CommandID param.Opt[string] `json:"command_id,omitzero"`
+	paramObj
+}
+
+func (r ConferenceActionEndConferenceParams) MarshalJSON() (data []byte, err error) {
+	type shadow ConferenceActionEndConferenceParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ConferenceActionEndConferenceParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConferenceActionGatherDtmfAudioParams struct {
+	// Unique identifier and token for controlling the call leg that will receive the
+	// gather prompt.
+	CallControlID string `json:"call_control_id,required"`
+	// The URL of the audio file to play as the gather prompt. Must be WAV or MP3
+	// format.
+	AudioURL param.Opt[string] `json:"audio_url,omitzero"`
+	// Use this field to add state to every subsequent webhook. Must be a valid Base-64
+	// encoded string.
+	ClientState param.Opt[string] `json:"client_state,omitzero"`
+	// Identifier for this gather command. Will be included in the gather ended
+	// webhook. Maximum 100 characters.
+	GatherID param.Opt[string] `json:"gather_id,omitzero"`
+	// Duration in milliseconds to wait for the first digit before timing out.
+	InitialTimeoutMillis param.Opt[int64] `json:"initial_timeout_millis,omitzero"`
+	// Duration in milliseconds to wait between digits.
+	InterDigitTimeoutMillis param.Opt[int64] `json:"inter_digit_timeout_millis,omitzero"`
+	// URL of audio file to play when invalid input is received.
+	InvalidAudioURL param.Opt[string] `json:"invalid_audio_url,omitzero"`
+	// Name of media file to play when invalid input is received.
+	InvalidMediaName param.Opt[string] `json:"invalid_media_name,omitzero"`
+	// Maximum number of digits to gather.
+	MaximumDigits param.Opt[int64] `json:"maximum_digits,omitzero"`
+	// Maximum number of times to play the prompt if no input is received.
+	MaximumTries param.Opt[int64] `json:"maximum_tries,omitzero"`
+	// The name of the media file uploaded to the Media Storage API to play as the
+	// gather prompt.
+	MediaName param.Opt[string] `json:"media_name,omitzero"`
+	// Minimum number of digits to gather.
+	MinimumDigits param.Opt[int64] `json:"minimum_digits,omitzero"`
+	// Whether to stop the audio playback when a DTMF digit is received.
+	StopPlaybackOnDtmf param.Opt[bool] `json:"stop_playback_on_dtmf,omitzero"`
+	// Digit that terminates gathering.
+	TerminatingDigit param.Opt[string] `json:"terminating_digit,omitzero"`
+	// Duration in milliseconds to wait for input before timing out.
+	TimeoutMillis param.Opt[int64] `json:"timeout_millis,omitzero"`
+	// Digits that are valid for gathering. All other digits will be ignored.
+	ValidDigits param.Opt[string] `json:"valid_digits,omitzero"`
+	paramObj
+}
+
+func (r ConferenceActionGatherDtmfAudioParams) MarshalJSON() (data []byte, err error) {
+	type shadow ConferenceActionGatherDtmfAudioParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ConferenceActionGatherDtmfAudioParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type ConferenceActionHoldParams struct {
@@ -978,6 +1126,29 @@ const (
 	ConferenceActionRecordStopParamsRegionUs         ConferenceActionRecordStopParamsRegion = "US"
 )
 
+type ConferenceActionSendDtmfParams struct {
+	// DTMF digits to send. Valid characters: 0-9, A-D, \*, #, w (0.5s pause), W (1s
+	// pause).
+	Digits string `json:"digits,required"`
+	// Use this field to add state to every subsequent webhook. Must be a valid Base-64
+	// encoded string.
+	ClientState param.Opt[string] `json:"client_state,omitzero"`
+	// Duration of each DTMF digit in milliseconds.
+	DurationMillis param.Opt[int64] `json:"duration_millis,omitzero"`
+	// Array of participant call control IDs to send DTMF to. When empty, DTMF will be
+	// sent to all participants.
+	CallControlIDs []string `json:"call_control_ids,omitzero"`
+	paramObj
+}
+
+func (r ConferenceActionSendDtmfParams) MarshalJSON() (data []byte, err error) {
+	type shadow ConferenceActionSendDtmfParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ConferenceActionSendDtmfParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ConferenceActionSpeakParams struct {
 	// The text or SSML to be converted into speech. There is a 3,000 character limit.
 	Payload string `json:"payload,required"`
@@ -1150,6 +1321,14 @@ func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetAPIKeyRef() *string {
 func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 {
 	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
 		return &vt.VoiceSpeed.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetLanguageBoost() *string {
+	if vt := u.OfMinimax; vt != nil {
+		return (*string)(&vt.LanguageBoost)
 	}
 	return nil
 }

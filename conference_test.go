@@ -14,7 +14,7 @@ import (
 )
 
 func TestConferenceNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -50,7 +50,7 @@ func TestConferenceNewWithOptionalParams(t *testing.T) {
 }
 
 func TestConferenceGetWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -79,7 +79,7 @@ func TestConferenceGetWithOptionalParams(t *testing.T) {
 }
 
 func TestConferenceListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -109,7 +109,7 @@ func TestConferenceListWithOptionalParams(t *testing.T) {
 				Lt:  telnyx.String("2019-03-29T11:10:00Z"),
 				Lte: telnyx.String("2019-03-29T11:10:00Z"),
 			},
-			OutboundOutboundVoiceProfileID: telnyx.String("outbound.outbound_voice_profile_id"),
+			OutboundOutboundVoiceProfileID: telnyx.String("1293384261075731499"),
 			Product:                        "texml",
 			Status:                         "init",
 			To:                             telnyx.String("+12025550142"),
@@ -129,7 +129,7 @@ func TestConferenceListWithOptionalParams(t *testing.T) {
 }
 
 func TestConferenceListParticipantsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -153,6 +153,67 @@ func TestConferenceListParticipantsWithOptionalParams(t *testing.T) {
 			PageNumber: telnyx.Int(0),
 			PageSize:   telnyx.Int(0),
 			Region:     telnyx.ConferenceListParticipantsParamsRegionAustralia,
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestConferenceGetParticipant(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Conferences.GetParticipant(
+		context.TODO(),
+		"participant_id",
+		telnyx.ConferenceGetParticipantParams{
+			ID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestConferenceUpdateParticipantWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Conferences.UpdateParticipant(
+		context.TODO(),
+		"participant_id",
+		telnyx.ConferenceUpdateParticipantParams{
+			ID:                      "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			BeepEnabled:             telnyx.ConferenceUpdateParticipantParamsBeepEnabledNever,
+			EndConferenceOnExit:     telnyx.Bool(true),
+			SoftEndConferenceOnExit: telnyx.Bool(false),
 		},
 	)
 	if err != nil {

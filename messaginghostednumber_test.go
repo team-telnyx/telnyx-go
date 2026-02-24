@@ -13,8 +13,92 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
+func TestMessagingHostedNumberGet(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.MessagingHostedNumbers.Get(context.TODO(), "id")
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestMessagingHostedNumberUpdateWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.MessagingHostedNumbers.Update(
+		context.TODO(),
+		"id",
+		telnyx.MessagingHostedNumberUpdateParams{
+			MessagingProduct:   telnyx.String("P2P"),
+			MessagingProfileID: telnyx.String("dd50eba1-a0c0-4563-9925-b25e842a7cb6"),
+			Tags:               []string{"string"},
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestMessagingHostedNumberListWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.MessagingHostedNumbers.List(context.TODO(), telnyx.MessagingHostedNumberListParams{
+		FilterMessagingProfileID:  telnyx.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		FilterPhoneNumber:         telnyx.String("filter[phone_number]"),
+		FilterPhoneNumberContains: telnyx.String("filter[phone_number][contains]"),
+		PageNumber:                telnyx.Int(0),
+		PageSize:                  telnyx.Int(0),
+		SortPhoneNumber:           telnyx.MessagingHostedNumberListParamsSortPhoneNumberAsc,
+	})
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestMessagingHostedNumberDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

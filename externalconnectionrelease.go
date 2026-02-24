@@ -221,7 +221,7 @@ func (r *ExternalConnectionReleaseListResponseTelephoneNumber) UnmarshalJSON(dat
 }
 
 type ExternalConnectionReleaseGetParams struct {
-	ID string `path:"id,required" format:"int64" json:"-"`
+	ID string `path:"id,required" json:"-"`
 	paramObj
 }
 
@@ -300,7 +300,7 @@ type ExternalConnectionReleaseListParamsFilterPhoneNumber struct {
 	// The partial phone number to filter by. Requires 3-15 digits.
 	Contains param.Opt[string] `query:"contains,omitzero" json:"-"`
 	// The phone number to filter by
-	Eq param.Opt[string] `query:"eq,omitzero" format:"E164" json:"-"`
+	Eq param.Opt[string] `query:"eq,omitzero" json:"-"`
 	paramObj
 }
 

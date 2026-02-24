@@ -14,7 +14,7 @@ import (
 )
 
 func TestPhoneNumberMessagingGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -37,7 +37,7 @@ func TestPhoneNumberMessagingGet(t *testing.T) {
 }
 
 func TestPhoneNumberMessagingUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -55,6 +55,7 @@ func TestPhoneNumberMessagingUpdateWithOptionalParams(t *testing.T) {
 		telnyx.PhoneNumberMessagingUpdateParams{
 			MessagingProduct:   telnyx.String("P2P"),
 			MessagingProfileID: telnyx.String("dd50eba1-a0c0-4563-9925-b25e842a7cb6"),
+			Tags:               []string{"string"},
 		},
 	)
 	if err != nil {
@@ -67,7 +68,7 @@ func TestPhoneNumberMessagingUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestPhoneNumberMessagingListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -80,8 +81,13 @@ func TestPhoneNumberMessagingListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.PhoneNumbers.Messaging.List(context.TODO(), telnyx.PhoneNumberMessagingListParams{
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
+		FilterMessagingProfileID:  telnyx.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		FilterPhoneNumber:         telnyx.String("filter[phone_number]"),
+		FilterPhoneNumberContains: telnyx.String("filter[phone_number][contains]"),
+		FilterType:                telnyx.PhoneNumberMessagingListParamsFilterTypeTollfree,
+		PageNumber:                telnyx.Int(0),
+		PageSize:                  telnyx.Int(0),
+		SortPhoneNumber:           telnyx.PhoneNumberMessagingListParamsSortPhoneNumberAsc,
 	})
 	if err != nil {
 		var apierr *telnyx.Error

@@ -14,7 +14,7 @@ import (
 )
 
 func TestConferenceActionUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -48,8 +48,81 @@ func TestConferenceActionUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestConferenceActionEndConferenceWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Conferences.Actions.EndConference(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		telnyx.ConferenceActionEndConferenceParams{
+			CommandID: telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestConferenceActionGatherDtmfAudioWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Conferences.Actions.GatherDtmfAudio(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		telnyx.ConferenceActionGatherDtmfAudioParams{
+			CallControlID:           "v3:MdI91X4lWFEs7IgbBEOT9M4AigoY08M0WWZFISt1Yw2axZ_IiE4pqg",
+			AudioURL:                telnyx.String("http://example.com/gather_prompt.wav"),
+			ClientState:             telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
+			GatherID:                telnyx.String("gather_id"),
+			InitialTimeoutMillis:    telnyx.Int(10000),
+			InterDigitTimeoutMillis: telnyx.Int(3000),
+			InvalidAudioURL:         telnyx.String("invalid_audio_url"),
+			InvalidMediaName:        telnyx.String("invalid_media_name"),
+			MaximumDigits:           telnyx.Int(4),
+			MaximumTries:            telnyx.Int(3),
+			MediaName:               telnyx.String("media_name"),
+			MinimumDigits:           telnyx.Int(1),
+			StopPlaybackOnDtmf:      telnyx.Bool(true),
+			TerminatingDigit:        telnyx.String("#"),
+			TimeoutMillis:           telnyx.Int(30000),
+			ValidDigits:             telnyx.String("0123456789"),
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestConferenceActionHoldWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -81,7 +154,7 @@ func TestConferenceActionHoldWithOptionalParams(t *testing.T) {
 }
 
 func TestConferenceActionJoinWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -123,7 +196,7 @@ func TestConferenceActionJoinWithOptionalParams(t *testing.T) {
 }
 
 func TestConferenceActionLeaveWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -155,7 +228,7 @@ func TestConferenceActionLeaveWithOptionalParams(t *testing.T) {
 }
 
 func TestConferenceActionMuteWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -185,7 +258,7 @@ func TestConferenceActionMuteWithOptionalParams(t *testing.T) {
 }
 
 func TestConferenceActionPlayWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -220,7 +293,7 @@ func TestConferenceActionPlayWithOptionalParams(t *testing.T) {
 }
 
 func TestConferenceActionRecordPauseWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -251,7 +324,7 @@ func TestConferenceActionRecordPauseWithOptionalParams(t *testing.T) {
 }
 
 func TestConferenceActionRecordResumeWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -282,7 +355,7 @@ func TestConferenceActionRecordResumeWithOptionalParams(t *testing.T) {
 }
 
 func TestConferenceActionRecordStartWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -316,7 +389,7 @@ func TestConferenceActionRecordStartWithOptionalParams(t *testing.T) {
 }
 
 func TestConferenceActionRecordStopWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -347,8 +420,40 @@ func TestConferenceActionRecordStopWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestConferenceActionSendDtmfWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Conferences.Actions.SendDtmf(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		telnyx.ConferenceActionSendDtmfParams{
+			Digits:         "1234#",
+			CallControlIDs: []string{"v3:MdI91X4lWFEs7IgbBEOT9M4AigoY08M0WWZFISt1Yw2axZ_IiE4pqg"},
+			ClientState:    telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
+			DurationMillis: telnyx.Int(250),
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestConferenceActionSpeakWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -389,7 +494,7 @@ func TestConferenceActionSpeakWithOptionalParams(t *testing.T) {
 }
 
 func TestConferenceActionStopWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -419,7 +524,7 @@ func TestConferenceActionStopWithOptionalParams(t *testing.T) {
 }
 
 func TestConferenceActionUnholdWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -449,7 +554,7 @@ func TestConferenceActionUnholdWithOptionalParams(t *testing.T) {
 }
 
 func TestConferenceActionUnmuteWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

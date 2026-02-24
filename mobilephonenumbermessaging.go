@@ -103,12 +103,16 @@ type MobilePhoneNumberMessagingGetResponseData struct {
 	MessagingProduct string `json:"messaging_product"`
 	// Unique identifier for a messaging profile.
 	MessagingProfileID string `json:"messaging_profile_id,nullable"`
+	// The organization that owns this phone number.
+	OrganizationID string `json:"organization_id"`
 	// +E.164 formatted phone number.
-	PhoneNumber string `json:"phone_number" format:"e164"`
+	PhoneNumber string `json:"phone_number"`
 	// Identifies the type of the resource.
 	//
 	// Any of "messaging_phone_number", "messaging_settings".
 	RecordType string `json:"record_type"`
+	// Tags associated with this phone number.
+	Tags []string `json:"tags"`
 	// The messaging traffic or use case for which the number is currently configured.
 	TrafficType string `json:"traffic_type"`
 	// The type of the phone number
@@ -125,8 +129,10 @@ type MobilePhoneNumberMessagingGetResponseData struct {
 		Features           respjson.Field
 		MessagingProduct   respjson.Field
 		MessagingProfileID respjson.Field
+		OrganizationID     respjson.Field
 		PhoneNumber        respjson.Field
 		RecordType         respjson.Field
+		Tags               respjson.Field
 		TrafficType        respjson.Field
 		Type               respjson.Field
 		UpdatedAt          respjson.Field
@@ -172,12 +178,16 @@ type MobilePhoneNumberMessagingListResponse struct {
 	MessagingProduct string `json:"messaging_product"`
 	// Unique identifier for a messaging profile.
 	MessagingProfileID string `json:"messaging_profile_id,nullable"`
+	// The organization that owns this phone number.
+	OrganizationID string `json:"organization_id"`
 	// +E.164 formatted phone number.
-	PhoneNumber string `json:"phone_number" format:"e164"`
+	PhoneNumber string `json:"phone_number"`
 	// Identifies the type of the resource.
 	//
 	// Any of "messaging_phone_number", "messaging_settings".
 	RecordType MobilePhoneNumberMessagingListResponseRecordType `json:"record_type"`
+	// Tags associated with this phone number.
+	Tags []string `json:"tags"`
 	// The messaging traffic or use case for which the number is currently configured.
 	TrafficType string `json:"traffic_type"`
 	// The type of the phone number
@@ -194,8 +204,10 @@ type MobilePhoneNumberMessagingListResponse struct {
 		Features           respjson.Field
 		MessagingProduct   respjson.Field
 		MessagingProfileID respjson.Field
+		OrganizationID     respjson.Field
 		PhoneNumber        respjson.Field
 		RecordType         respjson.Field
+		Tags               respjson.Field
 		TrafficType        respjson.Field
 		Type               respjson.Field
 		UpdatedAt          respjson.Field

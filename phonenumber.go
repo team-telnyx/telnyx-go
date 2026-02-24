@@ -203,6 +203,8 @@ type PhoneNumberDetailed struct {
 	// Any of "active", "deprovisioning", "disabled", "provisioning",
 	// "provisioning-failed".
 	EmergencyStatus PhoneNumberDetailedEmergencyStatus `json:"emergency_status"`
+	// Indicates whether HD voice is enabled for this number.
+	HDVoiceEnabled bool `json:"hd_voice_enabled"`
 	// The inbound_call_screening setting is a phone number configuration option
 	// variable that allows users to configure their settings to block or flag
 	// fraudulent calls. It can be set to disabled, reject_calls, or flag_calls. This
@@ -221,6 +223,8 @@ type PhoneNumberDetailed struct {
 	SourceType PhoneNumberDetailedSourceType `json:"source_type,nullable"`
 	// Indicates whether T38 Fax Gateway for inbound calls to this number.
 	T38FaxGatewayEnabled bool `json:"t38_fax_gateway_enabled"`
+	// ISO 8601 formatted date indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
@@ -245,11 +249,13 @@ type PhoneNumberDetailed struct {
 		EmergencyAddressID    respjson.Field
 		EmergencyEnabled      respjson.Field
 		EmergencyStatus       respjson.Field
+		HDVoiceEnabled        respjson.Field
 		InboundCallScreening  respjson.Field
 		MessagingProfileID    respjson.Field
 		MessagingProfileName  respjson.Field
 		SourceType            respjson.Field
 		T38FaxGatewayEnabled  respjson.Field
+		UpdatedAt             respjson.Field
 		ExtraFields           map[string]respjson.Field
 		raw                   string
 	} `json:"-"`
@@ -417,6 +423,8 @@ type PhoneNumberDeleteResponseData struct {
 	// the correct external PIN to the winning carrier. Note that not all carriers
 	// cooperate with this security mechanism.
 	ExternalPin string `json:"external_pin"`
+	// Indicates whether HD voice is enabled for this number.
+	HDVoiceEnabled bool `json:"hd_voice_enabled"`
 	// Identifies the messaging profile associated with the phone number.
 	MessagingProfileID string `json:"messaging_profile_id"`
 	// The name of the messaging profile associated with the phone number.
@@ -459,6 +467,7 @@ type PhoneNumberDeleteResponseData struct {
 		EmergencyAddressID    respjson.Field
 		EmergencyEnabled      respjson.Field
 		ExternalPin           respjson.Field
+		HDVoiceEnabled        respjson.Field
 		MessagingProfileID    respjson.Field
 		MessagingProfileName  respjson.Field
 		PhoneNumber           respjson.Field
@@ -520,6 +529,8 @@ type PhoneNumberSlimListResponse struct {
 	// the correct external PIN to the winning carrier. Note that not all carriers
 	// cooperate with this security mechanism.
 	ExternalPin string `json:"external_pin"`
+	// Indicates whether HD voice is enabled for this number.
+	HDVoiceEnabled bool `json:"hd_voice_enabled"`
 	// The inbound_call_screening setting is a phone number configuration option
 	// variable that allows users to configure their settings to block or flag
 	// fraudulent calls. It can be set to disabled, reject_calls, or flag_calls. This
@@ -549,6 +560,8 @@ type PhoneNumberSlimListResponse struct {
 	Status PhoneNumberSlimListResponseStatus `json:"status"`
 	// Indicates whether T38 Fax Gateway for inbound calls to this number.
 	T38FaxGatewayEnabled bool `json:"t38_fax_gateway_enabled"`
+	// ISO 8601 formatted date indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
@@ -565,6 +578,7 @@ type PhoneNumberSlimListResponse struct {
 		EmergencyEnabled      respjson.Field
 		EmergencyStatus       respjson.Field
 		ExternalPin           respjson.Field
+		HDVoiceEnabled        respjson.Field
 		InboundCallScreening  respjson.Field
 		PhoneNumber           respjson.Field
 		PhoneNumberType       respjson.Field
@@ -572,6 +586,7 @@ type PhoneNumberSlimListResponse struct {
 		RecordType            respjson.Field
 		Status                respjson.Field
 		T38FaxGatewayEnabled  respjson.Field
+		UpdatedAt             respjson.Field
 		ExtraFields           map[string]respjson.Field
 		raw                   string
 	} `json:"-"`
@@ -646,6 +661,8 @@ const (
 )
 
 type PhoneNumberUpdateParams struct {
+	// Identifies the address associated with the phone number.
+	AddressID param.Opt[string] `json:"address_id,omitzero"`
 	// Identifies the billing group associated with the phone number.
 	BillingGroupID param.Opt[string] `json:"billing_group_id,omitzero"`
 	// Identifies the connection associated with the phone number.

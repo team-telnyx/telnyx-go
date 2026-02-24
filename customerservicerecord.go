@@ -111,6 +111,8 @@ type CustomerServiceRecord struct {
 	Status CustomerServiceRecordStatus `json:"status"`
 	// ISO 8601 formatted date indicating when the resource was created.
 	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// Callback URL to receive webhook notifications.
+	WebhookURL string `json:"webhook_url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
@@ -121,6 +123,7 @@ type CustomerServiceRecord struct {
 		Result       respjson.Field
 		Status       respjson.Field
 		UpdatedAt    respjson.Field
+		WebhookURL   respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`

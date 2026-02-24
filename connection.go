@@ -123,7 +123,7 @@ func (r *ConnectionGetResponse) UnmarshalJSON(data []byte) error {
 
 type ConnectionGetResponseData struct {
 	// Identifies the specific resource.
-	ID string `json:"id" format:"int64"`
+	ID string `json:"id"`
 	// Defaults to true
 	Active bool `json:"active"`
 	// `Latency` directs Telnyx to route media through the site with the lowest
@@ -138,7 +138,7 @@ type ConnectionGetResponseData struct {
 	// ISO 8601 formatted date indicating when the resource was created.
 	CreatedAt string `json:"created_at"`
 	// Identifies the associated outbound voice profile.
-	OutboundVoiceProfileID string `json:"outbound_voice_profile_id" format:"int64"`
+	OutboundVoiceProfileID string `json:"outbound_voice_profile_id"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
 	// Tags associated with the connection.
@@ -181,7 +181,7 @@ func (r *ConnectionGetResponseData) UnmarshalJSON(data []byte) error {
 
 type ConnectionListResponse struct {
 	// Identifies the specific resource.
-	ID string `json:"id" format:"int64"`
+	ID string `json:"id"`
 	// Defaults to true
 	Active bool `json:"active"`
 	// `Latency` directs Telnyx to route media through the site with the lowest
@@ -196,7 +196,7 @@ type ConnectionListResponse struct {
 	// ISO 8601 formatted date indicating when the resource was created.
 	CreatedAt string `json:"created_at"`
 	// Identifies the associated outbound voice profile.
-	OutboundVoiceProfileID string `json:"outbound_voice_profile_id" format:"int64"`
+	OutboundVoiceProfileID string `json:"outbound_voice_profile_id"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
 	// Tags associated with the connection.
@@ -329,7 +329,7 @@ type ConnectionListParamsFilter struct {
 	// returned. Matching is case-sensitive, and the full string must match.
 	Fqdn param.Opt[string] `query:"fqdn,omitzero" json:"-"`
 	// Identifies the associated outbound voice profile.
-	OutboundVoiceProfileID param.Opt[string] `query:"outbound_voice_profile_id,omitzero" format:"int64" json:"-"`
+	OutboundVoiceProfileID param.Opt[string] `query:"outbound_voice_profile_id,omitzero" json:"-"`
 	// Filter by connection_name using nested operations
 	ConnectionName ConnectionListParamsFilterConnectionName `query:"connection_name,omitzero" json:"-"`
 	paramObj

@@ -14,7 +14,7 @@ import (
 )
 
 func TestExternalConnectionLogMessageGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,7 +26,7 @@ func TestExternalConnectionLogMessageGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ExternalConnections.LogMessages.Get(context.TODO(), "id")
+	_, err := client.ExternalConnections.LogMessages.Get(context.TODO(), "1293384261075731499")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -37,7 +37,7 @@ func TestExternalConnectionLogMessageGet(t *testing.T) {
 }
 
 func TestExternalConnectionLogMessageListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -70,7 +70,7 @@ func TestExternalConnectionLogMessageListWithOptionalParams(t *testing.T) {
 }
 
 func TestExternalConnectionLogMessageDismiss(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -82,7 +82,7 @@ func TestExternalConnectionLogMessageDismiss(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ExternalConnections.LogMessages.Dismiss(context.TODO(), "id")
+	_, err := client.ExternalConnections.LogMessages.Dismiss(context.TODO(), "1293384261075731499")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

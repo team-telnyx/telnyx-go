@@ -14,7 +14,7 @@ import (
 )
 
 func TestFqdnNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -42,7 +42,7 @@ func TestFqdnNewWithOptionalParams(t *testing.T) {
 }
 
 func TestFqdnGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -54,7 +54,7 @@ func TestFqdnGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Fqdns.Get(context.TODO(), "id")
+	_, err := client.Fqdns.Get(context.TODO(), "1517907029795014409")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -65,7 +65,7 @@ func TestFqdnGet(t *testing.T) {
 }
 
 func TestFqdnUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -79,7 +79,7 @@ func TestFqdnUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Fqdns.Update(
 		context.TODO(),
-		"id",
+		"1517907029795014409",
 		telnyx.FqdnUpdateParams{
 			ConnectionID:  telnyx.String("1516447646313612565"),
 			DNSRecordType: telnyx.String("a"),
@@ -97,7 +97,7 @@ func TestFqdnUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestFqdnListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -129,7 +129,7 @@ func TestFqdnListWithOptionalParams(t *testing.T) {
 }
 
 func TestFqdnDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -141,7 +141,7 @@ func TestFqdnDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Fqdns.Delete(context.TODO(), "id")
+	_, err := client.Fqdns.Delete(context.TODO(), "1517907029795014409")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

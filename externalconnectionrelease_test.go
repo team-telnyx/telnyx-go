@@ -14,7 +14,7 @@ import (
 )
 
 func TestExternalConnectionReleaseGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -30,7 +30,7 @@ func TestExternalConnectionReleaseGet(t *testing.T) {
 		context.TODO(),
 		"7b6a6449-b055-45a6-81f6-f6f0dffa4cc6",
 		telnyx.ExternalConnectionReleaseGetParams{
-			ID: "id",
+			ID: "1293384261075731499",
 		},
 	)
 	if err != nil {
@@ -43,7 +43,7 @@ func TestExternalConnectionReleaseGet(t *testing.T) {
 }
 
 func TestExternalConnectionReleaseListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -57,7 +57,7 @@ func TestExternalConnectionReleaseListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.ExternalConnections.Releases.List(
 		context.TODO(),
-		"id",
+		"1293384261075731499",
 		telnyx.ExternalConnectionReleaseListParams{
 			Filter: telnyx.ExternalConnectionReleaseListParamsFilter{
 				CivicAddressID: telnyx.ExternalConnectionReleaseListParamsFilterCivicAddressID{

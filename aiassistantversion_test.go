@@ -14,7 +14,7 @@ import (
 )
 
 func TestAIAssistantVersionGetWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -44,7 +44,7 @@ func TestAIAssistantVersionGetWithOptionalParams(t *testing.T) {
 }
 
 func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -168,6 +168,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 							Value: "silence",
 						},
 					},
+					LanguageBoost:   telnyx.VoiceSettingsLanguageBoostAuto,
 					SimilarityBoost: telnyx.Float(0),
 					Speed:           telnyx.Float(0),
 					Style:           telnyx.Float(0),
@@ -204,7 +205,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAIAssistantVersionList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -227,7 +228,7 @@ func TestAIAssistantVersionList(t *testing.T) {
 }
 
 func TestAIAssistantVersionDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -256,7 +257,7 @@ func TestAIAssistantVersionDelete(t *testing.T) {
 }
 
 func TestAIAssistantVersionPromote(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

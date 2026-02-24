@@ -14,7 +14,7 @@ import (
 )
 
 func TestExternalConnectionPhoneNumberGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -30,7 +30,7 @@ func TestExternalConnectionPhoneNumberGet(t *testing.T) {
 		context.TODO(),
 		"1234567889",
 		telnyx.ExternalConnectionPhoneNumberGetParams{
-			ID: "id",
+			ID: "1293384261075731499",
 		},
 	)
 	if err != nil {
@@ -43,7 +43,7 @@ func TestExternalConnectionPhoneNumberGet(t *testing.T) {
 }
 
 func TestExternalConnectionPhoneNumberUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -59,7 +59,7 @@ func TestExternalConnectionPhoneNumberUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"1234567889",
 		telnyx.ExternalConnectionPhoneNumberUpdateParams{
-			ID:         "id",
+			ID:         "1293384261075731499",
 			LocationID: telnyx.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		},
 	)
@@ -73,7 +73,7 @@ func TestExternalConnectionPhoneNumberUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestExternalConnectionPhoneNumberListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -87,7 +87,7 @@ func TestExternalConnectionPhoneNumberListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.ExternalConnections.PhoneNumbers.List(
 		context.TODO(),
-		"id",
+		"1293384261075731499",
 		telnyx.ExternalConnectionPhoneNumberListParams{
 			Filter: telnyx.ExternalConnectionPhoneNumberListParamsFilter{
 				CivicAddressID: telnyx.ExternalConnectionPhoneNumberListParamsFilterCivicAddressID{

@@ -15,7 +15,7 @@ import (
 )
 
 func TestFqdnConnectionNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -41,10 +41,10 @@ func TestFqdnConnectionNewWithOptionalParams(t *testing.T) {
 			AniNumberFormat:             telnyx.InboundFqdnAniNumberFormatPlusE164,
 			ChannelLimit:                telnyx.Int(10),
 			Codecs:                      []string{"G722"},
-			DefaultPrimaryFqdnID:        telnyx.String("default_primary_fqdn_id"),
+			DefaultPrimaryFqdnID:        telnyx.String("1293384261075731497"),
 			DefaultRoutingMethod:        telnyx.InboundFqdnDefaultRoutingMethodSequential,
-			DefaultSecondaryFqdnID:      telnyx.String("default_secondary_fqdn_id"),
-			DefaultTertiaryFqdnID:       telnyx.String("default_tertiary_fqdn_id"),
+			DefaultSecondaryFqdnID:      telnyx.String("1293384261075731498"),
+			DefaultTertiaryFqdnID:       telnyx.String("1293384261075731499"),
 			DnisNumberFormat:            telnyx.InboundFqdnDnisNumberFormatPlusE164,
 			GenerateRingbackTone:        telnyx.Bool(true),
 			IsupHeadersEnabled:          telnyx.Bool(true),
@@ -81,7 +81,7 @@ func TestFqdnConnectionNewWithOptionalParams(t *testing.T) {
 			IPAuthenticationMethod: telnyx.OutboundFqdnIPAuthenticationMethodCredentialAuthentication,
 			IPAuthenticationToken:  telnyx.String("aBcD1234"),
 			Localization:           telnyx.String("string"),
-			OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
+			OutboundVoiceProfileID: telnyx.String("1293384261075731499"),
 			T38ReinviteSource:      telnyx.OutboundFqdnT38ReinviteSourceCustomer,
 			TechPrefix:             telnyx.String("0123"),
 			Timeout1xxSecs:         telnyx.Int(10),
@@ -109,7 +109,7 @@ func TestFqdnConnectionNewWithOptionalParams(t *testing.T) {
 }
 
 func TestFqdnConnectionGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -121,7 +121,7 @@ func TestFqdnConnectionGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.FqdnConnections.Get(context.TODO(), "id")
+	_, err := client.FqdnConnections.Get(context.TODO(), "1293384261075731499")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -132,7 +132,7 @@ func TestFqdnConnectionGet(t *testing.T) {
 }
 
 func TestFqdnConnectionUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -146,7 +146,7 @@ func TestFqdnConnectionUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.FqdnConnections.Update(
 		context.TODO(),
-		"id",
+		"1293384261075731499",
 		telnyx.FqdnConnectionUpdateParams{
 			Active:                           telnyx.Bool(true),
 			AnchorsiteOverride:               telnyx.AnchorsiteOverrideLatency,
@@ -161,10 +161,10 @@ func TestFqdnConnectionUpdateWithOptionalParams(t *testing.T) {
 				AniNumberFormat:             telnyx.InboundFqdnAniNumberFormatPlusE164,
 				ChannelLimit:                telnyx.Int(10),
 				Codecs:                      []string{"G722"},
-				DefaultPrimaryFqdnID:        telnyx.String("default_primary_fqdn_id"),
+				DefaultPrimaryFqdnID:        telnyx.String("1293384261075731497"),
 				DefaultRoutingMethod:        telnyx.InboundFqdnDefaultRoutingMethodSequential,
-				DefaultSecondaryFqdnID:      telnyx.String("default_secondary_fqdn_id"),
-				DefaultTertiaryFqdnID:       telnyx.String("default_tertiary_fqdn_id"),
+				DefaultSecondaryFqdnID:      telnyx.String("1293384261075731498"),
+				DefaultTertiaryFqdnID:       telnyx.String("1293384261075731499"),
 				DnisNumberFormat:            telnyx.InboundFqdnDnisNumberFormatPlusE164,
 				GenerateRingbackTone:        telnyx.Bool(true),
 				IsupHeadersEnabled:          telnyx.Bool(true),
@@ -200,7 +200,7 @@ func TestFqdnConnectionUpdateWithOptionalParams(t *testing.T) {
 				IPAuthenticationMethod: telnyx.OutboundFqdnIPAuthenticationMethodCredentialAuthentication,
 				IPAuthenticationToken:  telnyx.String("ip_authentication_token"),
 				Localization:           telnyx.String("US"),
-				OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
+				OutboundVoiceProfileID: telnyx.String("1293384261075731499"),
 				T38ReinviteSource:      telnyx.OutboundFqdnT38ReinviteSourceTelnyx,
 				TechPrefix:             telnyx.String("tech_prefix"),
 				Timeout1xxSecs:         telnyx.Int(1),
@@ -229,7 +229,7 @@ func TestFqdnConnectionUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestFqdnConnectionListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -247,7 +247,7 @@ func TestFqdnConnectionListWithOptionalParams(t *testing.T) {
 				Contains: telnyx.String("contains"),
 			},
 			Fqdn:                   telnyx.String("fqdn"),
-			OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
+			OutboundVoiceProfileID: telnyx.String("1293384261075731499"),
 		},
 		PageNumber: telnyx.Int(0),
 		PageSize:   telnyx.Int(0),
@@ -263,7 +263,7 @@ func TestFqdnConnectionListWithOptionalParams(t *testing.T) {
 }
 
 func TestFqdnConnectionDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -275,7 +275,7 @@ func TestFqdnConnectionDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.FqdnConnections.Delete(context.TODO(), "id")
+	_, err := client.FqdnConnections.Delete(context.TODO(), "1293384261075731499")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

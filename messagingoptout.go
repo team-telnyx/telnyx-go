@@ -65,13 +65,13 @@ type MessagingOptoutListResponse struct {
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Sending address (+E.164 formatted phone number, alphanumeric sender ID, or short
 	// code).
-	From string `json:"from" format:"address"`
+	From string `json:"from"`
 	// The keyword that triggered the opt-out.
 	Keyword string `json:"keyword,nullable"`
 	// Unique identifier for a messaging profile.
 	MessagingProfileID string `json:"messaging_profile_id,nullable"`
 	// Receiving address (+E.164 formatted phone number or short code).
-	To string `json:"to" format:"address"`
+	To string `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt          respjson.Field
@@ -94,7 +94,7 @@ type MessagingOptoutListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// If receiving address (+E.164 formatted phone number) should be redacted
-	RedactionEnabled param.Opt[string] `query:"redaction_enabled,omitzero" format:"boolean" json:"-"`
+	RedactionEnabled param.Opt[string] `query:"redaction_enabled,omitzero" json:"-"`
 	// Consolidated created_at parameter (deepObject style). Originally:
 	// created_at[gte], created_at[lte]
 	CreatedAt MessagingOptoutListParamsCreatedAt `query:"created_at,omitzero" json:"-"`

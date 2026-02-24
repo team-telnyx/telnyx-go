@@ -719,6 +719,12 @@ type DeepgramNova2ConfigParam struct {
 	TranscriptionEngine DeepgramNova2ConfigTranscriptionEngine `json:"transcription_engine,omitzero,required"`
 	// Any of "deepgram/nova-2".
 	TranscriptionModel DeepgramNova2ConfigTranscriptionModel `json:"transcription_model,omitzero,required"`
+	// Whether to send also interim results. If set to false, only final results will
+	// be sent.
+	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
+	// Number of milliseconds of silence to consider an utterance ended. Ranges from 0
+	// to 5000 ms.
+	UtteranceEndMs param.Opt[int64] `json:"utterance_end_ms,omitzero"`
 	// Keywords and their respective intensifiers (boosting values) to improve
 	// transcription accuracy for specific words or phrases. The intensifier should be
 	// a numeric value. Example: `{"snuffleupagus": 5, "systrom": 2, "krieger": 1}`.
@@ -810,6 +816,12 @@ type DeepgramNova3ConfigParam struct {
 	TranscriptionEngine DeepgramNova3ConfigTranscriptionEngine `json:"transcription_engine,omitzero,required"`
 	// Any of "deepgram/nova-3".
 	TranscriptionModel DeepgramNova3ConfigTranscriptionModel `json:"transcription_model,omitzero,required"`
+	// Whether to send also interim results. If set to false, only final results will
+	// be sent.
+	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
+	// Number of milliseconds of silence to consider an utterance ended. Ranges from 0
+	// to 5000 ms.
+	UtteranceEndMs param.Opt[int64] `json:"utterance_end_ms,omitzero"`
 	// Keywords and their respective intensifiers (boosting values) to improve
 	// transcription accuracy for specific words or phrases. The intensifier should be
 	// a numeric value. Example: `{"snuffleupagus": 5, "systrom": 2, "krieger": 1}`.
@@ -1709,6 +1721,10 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetEnableS
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetInterimResults() *bool {
 	if vt := u.OfGoogle; vt != nil && vt.InterimResults.Valid() {
 		return &vt.InterimResults.Value
+	} else if vt := u.OfDeepgramNova2Config; vt != nil && vt.InterimResults.Valid() {
+		return &vt.InterimResults.Value
+	} else if vt := u.OfDeepgramNova3Config; vt != nil && vt.InterimResults.Valid() {
+		return &vt.InterimResults.Value
 	} else if vt := u.OfA; vt != nil && vt.InterimResults.Valid() {
 		return &vt.InterimResults.Value
 	}
@@ -1815,6 +1831,16 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscr
 		return (*string)(&vt.TranscriptionModel)
 	} else if vt := u.OfB; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetUtteranceEndMs() *int64 {
+	if vt := u.OfDeepgramNova2Config; vt != nil && vt.UtteranceEndMs.Valid() {
+		return &vt.UtteranceEndMs.Value
+	} else if vt := u.OfDeepgramNova3Config; vt != nil && vt.UtteranceEndMs.Valid() {
+		return &vt.UtteranceEndMs.Value
 	}
 	return nil
 }
@@ -3276,6 +3302,9 @@ type CallActionGatherUsingAIParams struct {
 	// Use this field to avoid duplicate commands. Telnyx will ignore any command with
 	// the same `command_id` for the same `call_control_id`.
 	CommandID param.Opt[string] `json:"command_id,omitzero"`
+	// Text that will be played when the gathering has finished. There is a 3,000
+	// character limit.
+	GatherEndedSpeech param.Opt[string] `json:"gather_ended_speech,omitzero"`
 	// Text that will be played when the gathering starts, if none then nothing will be
 	// played when the gathering starts. The greeting can be text for any voice or SSML
 	// for `AWS.Polly.<voice_id>` voices. There is a 3,000 character limit.
@@ -3289,8 +3318,7 @@ type CallActionGatherUsingAIParams struct {
 	// individual fields are gathered. If set to `false`, the voice assistant will only
 	// send the final result via the `call.ai_gather.ended` callback.
 	SendPartialResults param.Opt[bool] `json:"send_partial_results,omitzero"`
-	// The number of milliseconds to wait for a user response before the voice
-	// assistant times out and check if the user is still there.
+	// The maximum time in milliseconds to wait for user response before timing out.
 	UserResponseTimeoutMs param.Opt[int64] `json:"user_response_timeout_ms,omitzero"`
 	// The voice to be used by the voice assistant. Currently we support ElevenLabs,
 	// Telnyx and AWS voices.
@@ -3691,6 +3719,14 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetVoiceSpeed() *flo
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetLanguageBoost() *string {
+	if vt := u.OfMinimax; vt != nil {
+		return (*string)(&vt.LanguageBoost)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetPitch() *int64 {
 	if vt := u.OfMinimax; vt != nil && vt.Pitch.Valid() {
 		return &vt.Pitch.Value
@@ -3975,6 +4011,9 @@ type CallActionSpeakParams struct {
 	// "hi-IN", "is-IS", "it-IT", "ja-JP", "ko-KR", "nb-NO", "nl-NL", "pl-PL", "pt-BR",
 	// "pt-PT", "ro-RO", "ru-RU", "sv-SE", "tr-TR".
 	Language CallActionSpeakParamsLanguage `json:"language,omitzero"`
+	// The number of times to play the audio file. Use `infinity` to loop indefinitely.
+	// Defaults to 1.
+	Loop LoopcountUnionParam `json:"loop,omitzero"`
 	// The type of the provided payload. The payload can either be plain text, or
 	// Speech Synthesis Markup Language (SSML).
 	//
@@ -3985,6 +4024,10 @@ type CallActionSpeakParams struct {
 	//
 	// Any of "basic", "premium".
 	ServiceLevel CallActionSpeakParamsServiceLevel `json:"service_level,omitzero"`
+	// Specifies which legs of the call should receive the spoken audio.
+	//
+	// Any of "self", "opposite", "both".
+	TargetLegs CallActionSpeakParamsTargetLegs `json:"target_legs,omitzero"`
 	// The settings associated with the voice selected
 	VoiceSettings CallActionSpeakParamsVoiceSettingsUnion `json:"voice_settings,omitzero"`
 	paramObj
@@ -4052,6 +4095,15 @@ const (
 	CallActionSpeakParamsServiceLevelPremium CallActionSpeakParamsServiceLevel = "premium"
 )
 
+// Specifies which legs of the call should receive the spoken audio.
+type CallActionSpeakParamsTargetLegs string
+
+const (
+	CallActionSpeakParamsTargetLegsSelf     CallActionSpeakParamsTargetLegs = "self"
+	CallActionSpeakParamsTargetLegsOpposite CallActionSpeakParamsTargetLegs = "opposite"
+	CallActionSpeakParamsTargetLegsBoth     CallActionSpeakParamsTargetLegs = "both"
+)
+
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
@@ -4095,6 +4147,14 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetAPIKeyRef() *string {
 func (u CallActionSpeakParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 {
 	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
 		return &vt.VoiceSpeed.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionSpeakParamsVoiceSettingsUnion) GetLanguageBoost() *string {
+	if vt := u.OfMinimax; vt != nil {
+		return (*string)(&vt.LanguageBoost)
 	}
 	return nil
 }
@@ -4509,31 +4569,35 @@ type CallActionStartRecordingParams struct {
 	//
 	// Any of "A", "B", "deepgram/nova-3".
 	TranscriptionEngine CallActionStartRecordingParamsTranscriptionEngine `json:"transcription_engine,omitzero"`
-	// Any of "af-ZA", "am-ET", "ar-AE", "ar-BH", "ar-DZ", "ar-EG", "ar-IL", "ar-IQ",
-	// "ar-JO", "ar-KW", "ar-LB", "ar-MA", "ar-MR", "ar-OM", "ar-PS", "ar-QA", "ar-SA",
-	// "ar-TN", "ar-YE", "az-AZ", "bg-BG", "bn-BD", "bn-IN", "bs-BA", "ca-ES", "cs-CZ",
-	// "da-DK", "de-AT", "de-CH", "de-DE", "el-GR", "en-AU", "en-CA", "en-GB", "en-GH",
-	// "en-HK", "en-IE", "en-IN", "en-KE", "en-NG", "en-NZ", "en-PH", "en-PK", "en-SG",
-	// "en-TZ", "en-US", "en-ZA", "es-AR", "es-BO", "es-CL", "es-CO", "es-CR", "es-DO",
+	// Language code for transcription. Note: Not all languages are supported by all
+	// transcription engines (google, telnyx, deepgram). See engine-specific
+	// documentation for supported values.
+	//
+	// Any of "af", "af-ZA", "am", "am-ET", "ar", "ar-AE", "ar-BH", "ar-DZ", "ar-EG",
+	// "ar-IL", "ar-IQ", "ar-JO", "ar-KW", "ar-LB", "ar-MA", "ar-MR", "ar-OM", "ar-PS",
+	// "ar-QA", "ar-SA", "ar-TN", "ar-YE", "as", "auto_detect", "az", "az-AZ", "ba",
+	// "be", "bg", "bg-BG", "bn", "bn-BD", "bn-IN", "bo", "br", "bs", "bs-BA", "ca",
+	// "ca-ES", "cs", "cs-CZ", "cy", "da", "da-DK", "de", "de-AT", "de-CH", "de-DE",
+	// "el", "el-GR", "en", "en-AU", "en-CA", "en-GB", "en-GH", "en-HK", "en-IE",
+	// "en-IN", "en-KE", "en-NG", "en-NZ", "en-PH", "en-PK", "en-SG", "en-TZ", "en-US",
+	// "en-ZA", "es", "es-419", "es-AR", "es-BO", "es-CL", "es-CO", "es-CR", "es-DO",
 	// "es-EC", "es-ES", "es-GT", "es-HN", "es-MX", "es-NI", "es-PA", "es-PE", "es-PR",
-	// "es-PY", "es-SV", "es-US", "es-UY", "es-VE", "et-EE", "eu-ES", "fa-IR", "fi-FI",
-	// "fil-PH", "fr-BE", "fr-CA", "fr-CH", "fr-FR", "gl-ES", "gu-IN", "hi-IN",
-	// "hr-HR", "hu-HU", "hy-AM", "id-ID", "is-IS", "it-CH", "it-IT", "iw-IL", "ja-JP",
-	// "jv-ID", "ka-GE", "kk-KZ", "km-KH", "kn-IN", "ko-KR", "lo-LA", "lt-LT", "lv-LV",
-	// "mk-MK", "ml-IN", "mn-MN", "mr-IN", "ms-MY", "my-MM", "ne-NP", "nl-BE", "nl-NL",
-	// "no-NO", "pa-Guru-IN", "pl-PL", "pt-BR", "pt-PT", "ro-RO", "ru-RU", "rw-RW",
-	// "si-LK", "sk-SK", "sl-SI", "sq-AL", "sr-RS", "ss-latn-za", "st-ZA", "su-ID",
-	// "sv-SE", "sw-KE", "sw-TZ", "ta-IN", "ta-LK", "ta-MY", "ta-SG", "te-IN", "th-TH",
-	// "tn-latn-za", "tr-TR", "ts-ZA", "uk-UA", "ur-IN", "ur-PK", "uz-UZ", "ve-ZA",
-	// "vi-VN", "xh-ZA", "yue-Hant-HK", "zh", "zh-TW", "zu-ZA", "en", "de", "es", "ru",
-	// "ko", "fr", "ja", "pt", "tr", "pl", "ca", "nl", "ar", "sv", "it", "id", "hi",
-	// "fi", "vi", "he", "uk", "el", "ms", "cs", "ro", "da", "hu", "ta", "no", "th",
-	// "ur", "hr", "bg", "lt", "la", "mi", "ml", "cy", "sk", "te", "fa", "lv", "bn",
-	// "sr", "az", "sl", "kn", "et", "mk", "br", "eu", "is", "hy", "ne", "mn", "bs",
-	// "kk", "sq", "sw", "gl", "mr", "pa", "si", "km", "sn", "yo", "so", "af", "oc",
-	// "ka", "be", "tg", "sd", "gu", "am", "yi", "lo", "uz", "fo", "ht", "ps", "tk",
-	// "nn", "mt", "sa", "lb", "my", "bo", "tl", "mg", "as", "tt", "haw", "ln", "ha",
-	// "ba", "jw", "su", "auto_detect", "es-419".
+	// "es-PY", "es-SV", "es-US", "es-UY", "es-VE", "et", "et-EE", "eu", "eu-ES", "fa",
+	// "fa-IR", "fi", "fi-FI", "fil-PH", "fo", "fr", "fr-BE", "fr-CA", "fr-CH",
+	// "fr-FR", "gl", "gl-ES", "gu", "gu-IN", "ha", "haw", "he", "hi", "hi-IN", "hr",
+	// "hr-HR", "ht", "hu", "hu-HU", "hy", "hy-AM", "id", "id-ID", "is", "is-IS", "it",
+	// "it-CH", "it-IT", "iw-IL", "ja", "ja-JP", "jv-ID", "jw", "ka", "ka-GE", "kk",
+	// "kk-KZ", "km", "km-KH", "kn", "kn-IN", "ko", "ko-KR", "la", "lb", "ln", "lo",
+	// "lo-LA", "lt", "lt-LT", "lv", "lv-LV", "mg", "mi", "mk", "mk-MK", "ml", "ml-IN",
+	// "mn", "mn-MN", "mr", "mr-IN", "ms", "ms-MY", "mt", "my", "my-MM", "ne", "ne-NP",
+	// "nl", "nl-BE", "nl-NL", "nn", "no", "no-NO", "oc", "pa", "pa-Guru-IN", "pl",
+	// "pl-PL", "ps", "pt", "pt-BR", "pt-PT", "ro", "ro-RO", "ru", "ru-RU", "rw-RW",
+	// "sa", "sd", "si", "si-LK", "sk", "sk-SK", "sl", "sl-SI", "sn", "so", "sq",
+	// "sq-AL", "sr", "sr-RS", "ss-latn-za", "st-ZA", "su", "su-ID", "sv", "sv-SE",
+	// "sw", "sw-KE", "sw-TZ", "ta", "ta-IN", "ta-LK", "ta-MY", "ta-SG", "te", "te-IN",
+	// "tg", "th", "th-TH", "tk", "tl", "tn-latn-za", "tr", "tr-TR", "ts-ZA", "tt",
+	// "uk", "uk-UA", "ur", "ur-IN", "ur-PK", "uz", "uz-UZ", "ve-ZA", "vi", "vi-VN",
+	// "xh-ZA", "yi", "yo", "yue-Hant-HK", "zh", "zh-TW", "zu-ZA".
 	TranscriptionLanguage CallActionStartRecordingParamsTranscriptionLanguage `json:"transcription_language,omitzero"`
 	// When set to `trim-silence`, silence will be removed from the beginning and end
 	// of the recording.
@@ -4591,11 +4655,17 @@ const (
 	CallActionStartRecordingParamsTranscriptionEngineDeepgramNova3 CallActionStartRecordingParamsTranscriptionEngine = "deepgram/nova-3"
 )
 
+// Language code for transcription. Note: Not all languages are supported by all
+// transcription engines (google, telnyx, deepgram). See engine-specific
+// documentation for supported values.
 type CallActionStartRecordingParamsTranscriptionLanguage string
 
 const (
+	CallActionStartRecordingParamsTranscriptionLanguageAf         CallActionStartRecordingParamsTranscriptionLanguage = "af"
 	CallActionStartRecordingParamsTranscriptionLanguageAfZa       CallActionStartRecordingParamsTranscriptionLanguage = "af-ZA"
+	CallActionStartRecordingParamsTranscriptionLanguageAm         CallActionStartRecordingParamsTranscriptionLanguage = "am"
 	CallActionStartRecordingParamsTranscriptionLanguageAmEt       CallActionStartRecordingParamsTranscriptionLanguage = "am-ET"
+	CallActionStartRecordingParamsTranscriptionLanguageAr         CallActionStartRecordingParamsTranscriptionLanguage = "ar"
 	CallActionStartRecordingParamsTranscriptionLanguageArAe       CallActionStartRecordingParamsTranscriptionLanguage = "ar-AE"
 	CallActionStartRecordingParamsTranscriptionLanguageArBh       CallActionStartRecordingParamsTranscriptionLanguage = "ar-BH"
 	CallActionStartRecordingParamsTranscriptionLanguageArDz       CallActionStartRecordingParamsTranscriptionLanguage = "ar-DZ"
@@ -4613,18 +4683,35 @@ const (
 	CallActionStartRecordingParamsTranscriptionLanguageArSa       CallActionStartRecordingParamsTranscriptionLanguage = "ar-SA"
 	CallActionStartRecordingParamsTranscriptionLanguageArTn       CallActionStartRecordingParamsTranscriptionLanguage = "ar-TN"
 	CallActionStartRecordingParamsTranscriptionLanguageArYe       CallActionStartRecordingParamsTranscriptionLanguage = "ar-YE"
+	CallActionStartRecordingParamsTranscriptionLanguageAs         CallActionStartRecordingParamsTranscriptionLanguage = "as"
+	CallActionStartRecordingParamsTranscriptionLanguageAutoDetect CallActionStartRecordingParamsTranscriptionLanguage = "auto_detect"
+	CallActionStartRecordingParamsTranscriptionLanguageAz         CallActionStartRecordingParamsTranscriptionLanguage = "az"
 	CallActionStartRecordingParamsTranscriptionLanguageAzAz       CallActionStartRecordingParamsTranscriptionLanguage = "az-AZ"
+	CallActionStartRecordingParamsTranscriptionLanguageBa         CallActionStartRecordingParamsTranscriptionLanguage = "ba"
+	CallActionStartRecordingParamsTranscriptionLanguageBe         CallActionStartRecordingParamsTranscriptionLanguage = "be"
+	CallActionStartRecordingParamsTranscriptionLanguageBg         CallActionStartRecordingParamsTranscriptionLanguage = "bg"
 	CallActionStartRecordingParamsTranscriptionLanguageBgBg       CallActionStartRecordingParamsTranscriptionLanguage = "bg-BG"
+	CallActionStartRecordingParamsTranscriptionLanguageBn         CallActionStartRecordingParamsTranscriptionLanguage = "bn"
 	CallActionStartRecordingParamsTranscriptionLanguageBnBd       CallActionStartRecordingParamsTranscriptionLanguage = "bn-BD"
 	CallActionStartRecordingParamsTranscriptionLanguageBnIn       CallActionStartRecordingParamsTranscriptionLanguage = "bn-IN"
+	CallActionStartRecordingParamsTranscriptionLanguageBo         CallActionStartRecordingParamsTranscriptionLanguage = "bo"
+	CallActionStartRecordingParamsTranscriptionLanguageBr         CallActionStartRecordingParamsTranscriptionLanguage = "br"
+	CallActionStartRecordingParamsTranscriptionLanguageBs         CallActionStartRecordingParamsTranscriptionLanguage = "bs"
 	CallActionStartRecordingParamsTranscriptionLanguageBsBa       CallActionStartRecordingParamsTranscriptionLanguage = "bs-BA"
+	CallActionStartRecordingParamsTranscriptionLanguageCa         CallActionStartRecordingParamsTranscriptionLanguage = "ca"
 	CallActionStartRecordingParamsTranscriptionLanguageCaEs       CallActionStartRecordingParamsTranscriptionLanguage = "ca-ES"
+	CallActionStartRecordingParamsTranscriptionLanguageCs         CallActionStartRecordingParamsTranscriptionLanguage = "cs"
 	CallActionStartRecordingParamsTranscriptionLanguageCsCz       CallActionStartRecordingParamsTranscriptionLanguage = "cs-CZ"
+	CallActionStartRecordingParamsTranscriptionLanguageCy         CallActionStartRecordingParamsTranscriptionLanguage = "cy"
+	CallActionStartRecordingParamsTranscriptionLanguageDa         CallActionStartRecordingParamsTranscriptionLanguage = "da"
 	CallActionStartRecordingParamsTranscriptionLanguageDaDk       CallActionStartRecordingParamsTranscriptionLanguage = "da-DK"
+	CallActionStartRecordingParamsTranscriptionLanguageDe         CallActionStartRecordingParamsTranscriptionLanguage = "de"
 	CallActionStartRecordingParamsTranscriptionLanguageDeAt       CallActionStartRecordingParamsTranscriptionLanguage = "de-AT"
 	CallActionStartRecordingParamsTranscriptionLanguageDeCh       CallActionStartRecordingParamsTranscriptionLanguage = "de-CH"
 	CallActionStartRecordingParamsTranscriptionLanguageDeDe       CallActionStartRecordingParamsTranscriptionLanguage = "de-DE"
+	CallActionStartRecordingParamsTranscriptionLanguageEl         CallActionStartRecordingParamsTranscriptionLanguage = "el"
 	CallActionStartRecordingParamsTranscriptionLanguageElGr       CallActionStartRecordingParamsTranscriptionLanguage = "el-GR"
+	CallActionStartRecordingParamsTranscriptionLanguageEn         CallActionStartRecordingParamsTranscriptionLanguage = "en"
 	CallActionStartRecordingParamsTranscriptionLanguageEnAu       CallActionStartRecordingParamsTranscriptionLanguage = "en-AU"
 	CallActionStartRecordingParamsTranscriptionLanguageEnCa       CallActionStartRecordingParamsTranscriptionLanguage = "en-CA"
 	CallActionStartRecordingParamsTranscriptionLanguageEnGB       CallActionStartRecordingParamsTranscriptionLanguage = "en-GB"
@@ -4641,6 +4728,8 @@ const (
 	CallActionStartRecordingParamsTranscriptionLanguageEnTz       CallActionStartRecordingParamsTranscriptionLanguage = "en-TZ"
 	CallActionStartRecordingParamsTranscriptionLanguageEnUs       CallActionStartRecordingParamsTranscriptionLanguage = "en-US"
 	CallActionStartRecordingParamsTranscriptionLanguageEnZa       CallActionStartRecordingParamsTranscriptionLanguage = "en-ZA"
+	CallActionStartRecordingParamsTranscriptionLanguageEs         CallActionStartRecordingParamsTranscriptionLanguage = "es"
+	CallActionStartRecordingParamsTranscriptionLanguageEs419      CallActionStartRecordingParamsTranscriptionLanguage = "es-419"
 	CallActionStartRecordingParamsTranscriptionLanguageEsAr       CallActionStartRecordingParamsTranscriptionLanguage = "es-AR"
 	CallActionStartRecordingParamsTranscriptionLanguageEsBo       CallActionStartRecordingParamsTranscriptionLanguage = "es-BO"
 	CallActionStartRecordingParamsTranscriptionLanguageEsCl       CallActionStartRecordingParamsTranscriptionLanguage = "es-CL"
@@ -4661,184 +4750,162 @@ const (
 	CallActionStartRecordingParamsTranscriptionLanguageEsUs       CallActionStartRecordingParamsTranscriptionLanguage = "es-US"
 	CallActionStartRecordingParamsTranscriptionLanguageEsUy       CallActionStartRecordingParamsTranscriptionLanguage = "es-UY"
 	CallActionStartRecordingParamsTranscriptionLanguageEsVe       CallActionStartRecordingParamsTranscriptionLanguage = "es-VE"
+	CallActionStartRecordingParamsTranscriptionLanguageEt         CallActionStartRecordingParamsTranscriptionLanguage = "et"
 	CallActionStartRecordingParamsTranscriptionLanguageEtEe       CallActionStartRecordingParamsTranscriptionLanguage = "et-EE"
+	CallActionStartRecordingParamsTranscriptionLanguageEu         CallActionStartRecordingParamsTranscriptionLanguage = "eu"
 	CallActionStartRecordingParamsTranscriptionLanguageEuEs       CallActionStartRecordingParamsTranscriptionLanguage = "eu-ES"
+	CallActionStartRecordingParamsTranscriptionLanguageFa         CallActionStartRecordingParamsTranscriptionLanguage = "fa"
 	CallActionStartRecordingParamsTranscriptionLanguageFaIr       CallActionStartRecordingParamsTranscriptionLanguage = "fa-IR"
+	CallActionStartRecordingParamsTranscriptionLanguageFi         CallActionStartRecordingParamsTranscriptionLanguage = "fi"
 	CallActionStartRecordingParamsTranscriptionLanguageFiFi       CallActionStartRecordingParamsTranscriptionLanguage = "fi-FI"
 	CallActionStartRecordingParamsTranscriptionLanguageFilPh      CallActionStartRecordingParamsTranscriptionLanguage = "fil-PH"
+	CallActionStartRecordingParamsTranscriptionLanguageFo         CallActionStartRecordingParamsTranscriptionLanguage = "fo"
+	CallActionStartRecordingParamsTranscriptionLanguageFr         CallActionStartRecordingParamsTranscriptionLanguage = "fr"
 	CallActionStartRecordingParamsTranscriptionLanguageFrBe       CallActionStartRecordingParamsTranscriptionLanguage = "fr-BE"
 	CallActionStartRecordingParamsTranscriptionLanguageFrCa       CallActionStartRecordingParamsTranscriptionLanguage = "fr-CA"
 	CallActionStartRecordingParamsTranscriptionLanguageFrCh       CallActionStartRecordingParamsTranscriptionLanguage = "fr-CH"
 	CallActionStartRecordingParamsTranscriptionLanguageFrFr       CallActionStartRecordingParamsTranscriptionLanguage = "fr-FR"
+	CallActionStartRecordingParamsTranscriptionLanguageGl         CallActionStartRecordingParamsTranscriptionLanguage = "gl"
 	CallActionStartRecordingParamsTranscriptionLanguageGlEs       CallActionStartRecordingParamsTranscriptionLanguage = "gl-ES"
+	CallActionStartRecordingParamsTranscriptionLanguageGu         CallActionStartRecordingParamsTranscriptionLanguage = "gu"
 	CallActionStartRecordingParamsTranscriptionLanguageGuIn       CallActionStartRecordingParamsTranscriptionLanguage = "gu-IN"
+	CallActionStartRecordingParamsTranscriptionLanguageHa         CallActionStartRecordingParamsTranscriptionLanguage = "ha"
+	CallActionStartRecordingParamsTranscriptionLanguageHaw        CallActionStartRecordingParamsTranscriptionLanguage = "haw"
+	CallActionStartRecordingParamsTranscriptionLanguageHe         CallActionStartRecordingParamsTranscriptionLanguage = "he"
+	CallActionStartRecordingParamsTranscriptionLanguageHi         CallActionStartRecordingParamsTranscriptionLanguage = "hi"
 	CallActionStartRecordingParamsTranscriptionLanguageHiIn       CallActionStartRecordingParamsTranscriptionLanguage = "hi-IN"
+	CallActionStartRecordingParamsTranscriptionLanguageHr         CallActionStartRecordingParamsTranscriptionLanguage = "hr"
 	CallActionStartRecordingParamsTranscriptionLanguageHrHr       CallActionStartRecordingParamsTranscriptionLanguage = "hr-HR"
+	CallActionStartRecordingParamsTranscriptionLanguageHt         CallActionStartRecordingParamsTranscriptionLanguage = "ht"
+	CallActionStartRecordingParamsTranscriptionLanguageHu         CallActionStartRecordingParamsTranscriptionLanguage = "hu"
 	CallActionStartRecordingParamsTranscriptionLanguageHuHu       CallActionStartRecordingParamsTranscriptionLanguage = "hu-HU"
+	CallActionStartRecordingParamsTranscriptionLanguageHy         CallActionStartRecordingParamsTranscriptionLanguage = "hy"
 	CallActionStartRecordingParamsTranscriptionLanguageHyAm       CallActionStartRecordingParamsTranscriptionLanguage = "hy-AM"
+	CallActionStartRecordingParamsTranscriptionLanguageID         CallActionStartRecordingParamsTranscriptionLanguage = "id"
 	CallActionStartRecordingParamsTranscriptionLanguageIDID       CallActionStartRecordingParamsTranscriptionLanguage = "id-ID"
+	CallActionStartRecordingParamsTranscriptionLanguageIs         CallActionStartRecordingParamsTranscriptionLanguage = "is"
 	CallActionStartRecordingParamsTranscriptionLanguageIsIs       CallActionStartRecordingParamsTranscriptionLanguage = "is-IS"
+	CallActionStartRecordingParamsTranscriptionLanguageIt         CallActionStartRecordingParamsTranscriptionLanguage = "it"
 	CallActionStartRecordingParamsTranscriptionLanguageItCh       CallActionStartRecordingParamsTranscriptionLanguage = "it-CH"
 	CallActionStartRecordingParamsTranscriptionLanguageItIt       CallActionStartRecordingParamsTranscriptionLanguage = "it-IT"
 	CallActionStartRecordingParamsTranscriptionLanguageIwIl       CallActionStartRecordingParamsTranscriptionLanguage = "iw-IL"
+	CallActionStartRecordingParamsTranscriptionLanguageJa         CallActionStartRecordingParamsTranscriptionLanguage = "ja"
 	CallActionStartRecordingParamsTranscriptionLanguageJaJp       CallActionStartRecordingParamsTranscriptionLanguage = "ja-JP"
 	CallActionStartRecordingParamsTranscriptionLanguageJvID       CallActionStartRecordingParamsTranscriptionLanguage = "jv-ID"
+	CallActionStartRecordingParamsTranscriptionLanguageJw         CallActionStartRecordingParamsTranscriptionLanguage = "jw"
+	CallActionStartRecordingParamsTranscriptionLanguageKa         CallActionStartRecordingParamsTranscriptionLanguage = "ka"
 	CallActionStartRecordingParamsTranscriptionLanguageKaGe       CallActionStartRecordingParamsTranscriptionLanguage = "ka-GE"
+	CallActionStartRecordingParamsTranscriptionLanguageKk         CallActionStartRecordingParamsTranscriptionLanguage = "kk"
 	CallActionStartRecordingParamsTranscriptionLanguageKkKz       CallActionStartRecordingParamsTranscriptionLanguage = "kk-KZ"
+	CallActionStartRecordingParamsTranscriptionLanguageKm         CallActionStartRecordingParamsTranscriptionLanguage = "km"
 	CallActionStartRecordingParamsTranscriptionLanguageKmKh       CallActionStartRecordingParamsTranscriptionLanguage = "km-KH"
+	CallActionStartRecordingParamsTranscriptionLanguageKn         CallActionStartRecordingParamsTranscriptionLanguage = "kn"
 	CallActionStartRecordingParamsTranscriptionLanguageKnIn       CallActionStartRecordingParamsTranscriptionLanguage = "kn-IN"
+	CallActionStartRecordingParamsTranscriptionLanguageKo         CallActionStartRecordingParamsTranscriptionLanguage = "ko"
 	CallActionStartRecordingParamsTranscriptionLanguageKoKr       CallActionStartRecordingParamsTranscriptionLanguage = "ko-KR"
+	CallActionStartRecordingParamsTranscriptionLanguageLa         CallActionStartRecordingParamsTranscriptionLanguage = "la"
+	CallActionStartRecordingParamsTranscriptionLanguageLb         CallActionStartRecordingParamsTranscriptionLanguage = "lb"
+	CallActionStartRecordingParamsTranscriptionLanguageLn         CallActionStartRecordingParamsTranscriptionLanguage = "ln"
+	CallActionStartRecordingParamsTranscriptionLanguageLo         CallActionStartRecordingParamsTranscriptionLanguage = "lo"
 	CallActionStartRecordingParamsTranscriptionLanguageLoLa       CallActionStartRecordingParamsTranscriptionLanguage = "lo-LA"
+	CallActionStartRecordingParamsTranscriptionLanguageLt         CallActionStartRecordingParamsTranscriptionLanguage = "lt"
 	CallActionStartRecordingParamsTranscriptionLanguageLtLt       CallActionStartRecordingParamsTranscriptionLanguage = "lt-LT"
+	CallActionStartRecordingParamsTranscriptionLanguageLv         CallActionStartRecordingParamsTranscriptionLanguage = "lv"
 	CallActionStartRecordingParamsTranscriptionLanguageLvLv       CallActionStartRecordingParamsTranscriptionLanguage = "lv-LV"
+	CallActionStartRecordingParamsTranscriptionLanguageMg         CallActionStartRecordingParamsTranscriptionLanguage = "mg"
+	CallActionStartRecordingParamsTranscriptionLanguageMi         CallActionStartRecordingParamsTranscriptionLanguage = "mi"
+	CallActionStartRecordingParamsTranscriptionLanguageMk         CallActionStartRecordingParamsTranscriptionLanguage = "mk"
 	CallActionStartRecordingParamsTranscriptionLanguageMkMk       CallActionStartRecordingParamsTranscriptionLanguage = "mk-MK"
+	CallActionStartRecordingParamsTranscriptionLanguageMl         CallActionStartRecordingParamsTranscriptionLanguage = "ml"
 	CallActionStartRecordingParamsTranscriptionLanguageMlIn       CallActionStartRecordingParamsTranscriptionLanguage = "ml-IN"
+	CallActionStartRecordingParamsTranscriptionLanguageMn         CallActionStartRecordingParamsTranscriptionLanguage = "mn"
 	CallActionStartRecordingParamsTranscriptionLanguageMnMn       CallActionStartRecordingParamsTranscriptionLanguage = "mn-MN"
+	CallActionStartRecordingParamsTranscriptionLanguageMr         CallActionStartRecordingParamsTranscriptionLanguage = "mr"
 	CallActionStartRecordingParamsTranscriptionLanguageMrIn       CallActionStartRecordingParamsTranscriptionLanguage = "mr-IN"
+	CallActionStartRecordingParamsTranscriptionLanguageMs         CallActionStartRecordingParamsTranscriptionLanguage = "ms"
 	CallActionStartRecordingParamsTranscriptionLanguageMsMy       CallActionStartRecordingParamsTranscriptionLanguage = "ms-MY"
+	CallActionStartRecordingParamsTranscriptionLanguageMt         CallActionStartRecordingParamsTranscriptionLanguage = "mt"
+	CallActionStartRecordingParamsTranscriptionLanguageMy         CallActionStartRecordingParamsTranscriptionLanguage = "my"
 	CallActionStartRecordingParamsTranscriptionLanguageMyMm       CallActionStartRecordingParamsTranscriptionLanguage = "my-MM"
+	CallActionStartRecordingParamsTranscriptionLanguageNe         CallActionStartRecordingParamsTranscriptionLanguage = "ne"
 	CallActionStartRecordingParamsTranscriptionLanguageNeNp       CallActionStartRecordingParamsTranscriptionLanguage = "ne-NP"
+	CallActionStartRecordingParamsTranscriptionLanguageNl         CallActionStartRecordingParamsTranscriptionLanguage = "nl"
 	CallActionStartRecordingParamsTranscriptionLanguageNlBe       CallActionStartRecordingParamsTranscriptionLanguage = "nl-BE"
 	CallActionStartRecordingParamsTranscriptionLanguageNlNl       CallActionStartRecordingParamsTranscriptionLanguage = "nl-NL"
+	CallActionStartRecordingParamsTranscriptionLanguageNn         CallActionStartRecordingParamsTranscriptionLanguage = "nn"
+	CallActionStartRecordingParamsTranscriptionLanguageNo         CallActionStartRecordingParamsTranscriptionLanguage = "no"
 	CallActionStartRecordingParamsTranscriptionLanguageNoNo       CallActionStartRecordingParamsTranscriptionLanguage = "no-NO"
+	CallActionStartRecordingParamsTranscriptionLanguageOc         CallActionStartRecordingParamsTranscriptionLanguage = "oc"
+	CallActionStartRecordingParamsTranscriptionLanguagePa         CallActionStartRecordingParamsTranscriptionLanguage = "pa"
 	CallActionStartRecordingParamsTranscriptionLanguagePaGuruIn   CallActionStartRecordingParamsTranscriptionLanguage = "pa-Guru-IN"
+	CallActionStartRecordingParamsTranscriptionLanguagePl         CallActionStartRecordingParamsTranscriptionLanguage = "pl"
 	CallActionStartRecordingParamsTranscriptionLanguagePlPl       CallActionStartRecordingParamsTranscriptionLanguage = "pl-PL"
+	CallActionStartRecordingParamsTranscriptionLanguagePs         CallActionStartRecordingParamsTranscriptionLanguage = "ps"
+	CallActionStartRecordingParamsTranscriptionLanguagePt         CallActionStartRecordingParamsTranscriptionLanguage = "pt"
 	CallActionStartRecordingParamsTranscriptionLanguagePtBr       CallActionStartRecordingParamsTranscriptionLanguage = "pt-BR"
 	CallActionStartRecordingParamsTranscriptionLanguagePtPt       CallActionStartRecordingParamsTranscriptionLanguage = "pt-PT"
+	CallActionStartRecordingParamsTranscriptionLanguageRo         CallActionStartRecordingParamsTranscriptionLanguage = "ro"
 	CallActionStartRecordingParamsTranscriptionLanguageRoRo       CallActionStartRecordingParamsTranscriptionLanguage = "ro-RO"
+	CallActionStartRecordingParamsTranscriptionLanguageRu         CallActionStartRecordingParamsTranscriptionLanguage = "ru"
 	CallActionStartRecordingParamsTranscriptionLanguageRuRu       CallActionStartRecordingParamsTranscriptionLanguage = "ru-RU"
 	CallActionStartRecordingParamsTranscriptionLanguageRwRw       CallActionStartRecordingParamsTranscriptionLanguage = "rw-RW"
+	CallActionStartRecordingParamsTranscriptionLanguageSa         CallActionStartRecordingParamsTranscriptionLanguage = "sa"
+	CallActionStartRecordingParamsTranscriptionLanguageSd         CallActionStartRecordingParamsTranscriptionLanguage = "sd"
+	CallActionStartRecordingParamsTranscriptionLanguageSi         CallActionStartRecordingParamsTranscriptionLanguage = "si"
 	CallActionStartRecordingParamsTranscriptionLanguageSiLk       CallActionStartRecordingParamsTranscriptionLanguage = "si-LK"
+	CallActionStartRecordingParamsTranscriptionLanguageSk         CallActionStartRecordingParamsTranscriptionLanguage = "sk"
 	CallActionStartRecordingParamsTranscriptionLanguageSkSk       CallActionStartRecordingParamsTranscriptionLanguage = "sk-SK"
+	CallActionStartRecordingParamsTranscriptionLanguageSl         CallActionStartRecordingParamsTranscriptionLanguage = "sl"
 	CallActionStartRecordingParamsTranscriptionLanguageSlSi       CallActionStartRecordingParamsTranscriptionLanguage = "sl-SI"
+	CallActionStartRecordingParamsTranscriptionLanguageSn         CallActionStartRecordingParamsTranscriptionLanguage = "sn"
+	CallActionStartRecordingParamsTranscriptionLanguageSo         CallActionStartRecordingParamsTranscriptionLanguage = "so"
+	CallActionStartRecordingParamsTranscriptionLanguageSq         CallActionStartRecordingParamsTranscriptionLanguage = "sq"
 	CallActionStartRecordingParamsTranscriptionLanguageSqAl       CallActionStartRecordingParamsTranscriptionLanguage = "sq-AL"
+	CallActionStartRecordingParamsTranscriptionLanguageSr         CallActionStartRecordingParamsTranscriptionLanguage = "sr"
 	CallActionStartRecordingParamsTranscriptionLanguageSrRs       CallActionStartRecordingParamsTranscriptionLanguage = "sr-RS"
 	CallActionStartRecordingParamsTranscriptionLanguageSSLatnZa   CallActionStartRecordingParamsTranscriptionLanguage = "ss-latn-za"
 	CallActionStartRecordingParamsTranscriptionLanguageStZa       CallActionStartRecordingParamsTranscriptionLanguage = "st-ZA"
+	CallActionStartRecordingParamsTranscriptionLanguageSu         CallActionStartRecordingParamsTranscriptionLanguage = "su"
 	CallActionStartRecordingParamsTranscriptionLanguageSuID       CallActionStartRecordingParamsTranscriptionLanguage = "su-ID"
+	CallActionStartRecordingParamsTranscriptionLanguageSv         CallActionStartRecordingParamsTranscriptionLanguage = "sv"
 	CallActionStartRecordingParamsTranscriptionLanguageSvSe       CallActionStartRecordingParamsTranscriptionLanguage = "sv-SE"
+	CallActionStartRecordingParamsTranscriptionLanguageSw         CallActionStartRecordingParamsTranscriptionLanguage = "sw"
 	CallActionStartRecordingParamsTranscriptionLanguageSwKe       CallActionStartRecordingParamsTranscriptionLanguage = "sw-KE"
 	CallActionStartRecordingParamsTranscriptionLanguageSwTz       CallActionStartRecordingParamsTranscriptionLanguage = "sw-TZ"
+	CallActionStartRecordingParamsTranscriptionLanguageTa         CallActionStartRecordingParamsTranscriptionLanguage = "ta"
 	CallActionStartRecordingParamsTranscriptionLanguageTaIn       CallActionStartRecordingParamsTranscriptionLanguage = "ta-IN"
 	CallActionStartRecordingParamsTranscriptionLanguageTaLk       CallActionStartRecordingParamsTranscriptionLanguage = "ta-LK"
 	CallActionStartRecordingParamsTranscriptionLanguageTaMy       CallActionStartRecordingParamsTranscriptionLanguage = "ta-MY"
 	CallActionStartRecordingParamsTranscriptionLanguageTaSg       CallActionStartRecordingParamsTranscriptionLanguage = "ta-SG"
+	CallActionStartRecordingParamsTranscriptionLanguageTe         CallActionStartRecordingParamsTranscriptionLanguage = "te"
 	CallActionStartRecordingParamsTranscriptionLanguageTeIn       CallActionStartRecordingParamsTranscriptionLanguage = "te-IN"
+	CallActionStartRecordingParamsTranscriptionLanguageTg         CallActionStartRecordingParamsTranscriptionLanguage = "tg"
+	CallActionStartRecordingParamsTranscriptionLanguageTh         CallActionStartRecordingParamsTranscriptionLanguage = "th"
 	CallActionStartRecordingParamsTranscriptionLanguageThTh       CallActionStartRecordingParamsTranscriptionLanguage = "th-TH"
+	CallActionStartRecordingParamsTranscriptionLanguageTk         CallActionStartRecordingParamsTranscriptionLanguage = "tk"
+	CallActionStartRecordingParamsTranscriptionLanguageTl         CallActionStartRecordingParamsTranscriptionLanguage = "tl"
 	CallActionStartRecordingParamsTranscriptionLanguageTnLatnZa   CallActionStartRecordingParamsTranscriptionLanguage = "tn-latn-za"
+	CallActionStartRecordingParamsTranscriptionLanguageTr         CallActionStartRecordingParamsTranscriptionLanguage = "tr"
 	CallActionStartRecordingParamsTranscriptionLanguageTrTr       CallActionStartRecordingParamsTranscriptionLanguage = "tr-TR"
 	CallActionStartRecordingParamsTranscriptionLanguageTsZa       CallActionStartRecordingParamsTranscriptionLanguage = "ts-ZA"
+	CallActionStartRecordingParamsTranscriptionLanguageTt         CallActionStartRecordingParamsTranscriptionLanguage = "tt"
+	CallActionStartRecordingParamsTranscriptionLanguageUk         CallActionStartRecordingParamsTranscriptionLanguage = "uk"
 	CallActionStartRecordingParamsTranscriptionLanguageUkUa       CallActionStartRecordingParamsTranscriptionLanguage = "uk-UA"
+	CallActionStartRecordingParamsTranscriptionLanguageUr         CallActionStartRecordingParamsTranscriptionLanguage = "ur"
 	CallActionStartRecordingParamsTranscriptionLanguageUrIn       CallActionStartRecordingParamsTranscriptionLanguage = "ur-IN"
 	CallActionStartRecordingParamsTranscriptionLanguageUrPk       CallActionStartRecordingParamsTranscriptionLanguage = "ur-PK"
+	CallActionStartRecordingParamsTranscriptionLanguageUz         CallActionStartRecordingParamsTranscriptionLanguage = "uz"
 	CallActionStartRecordingParamsTranscriptionLanguageUzUz       CallActionStartRecordingParamsTranscriptionLanguage = "uz-UZ"
 	CallActionStartRecordingParamsTranscriptionLanguageVeZa       CallActionStartRecordingParamsTranscriptionLanguage = "ve-ZA"
+	CallActionStartRecordingParamsTranscriptionLanguageVi         CallActionStartRecordingParamsTranscriptionLanguage = "vi"
 	CallActionStartRecordingParamsTranscriptionLanguageViVn       CallActionStartRecordingParamsTranscriptionLanguage = "vi-VN"
 	CallActionStartRecordingParamsTranscriptionLanguageXhZa       CallActionStartRecordingParamsTranscriptionLanguage = "xh-ZA"
+	CallActionStartRecordingParamsTranscriptionLanguageYi         CallActionStartRecordingParamsTranscriptionLanguage = "yi"
+	CallActionStartRecordingParamsTranscriptionLanguageYo         CallActionStartRecordingParamsTranscriptionLanguage = "yo"
 	CallActionStartRecordingParamsTranscriptionLanguageYueHantHk  CallActionStartRecordingParamsTranscriptionLanguage = "yue-Hant-HK"
 	CallActionStartRecordingParamsTranscriptionLanguageZh         CallActionStartRecordingParamsTranscriptionLanguage = "zh"
 	CallActionStartRecordingParamsTranscriptionLanguageZhTw       CallActionStartRecordingParamsTranscriptionLanguage = "zh-TW"
 	CallActionStartRecordingParamsTranscriptionLanguageZuZa       CallActionStartRecordingParamsTranscriptionLanguage = "zu-ZA"
-	CallActionStartRecordingParamsTranscriptionLanguageEn         CallActionStartRecordingParamsTranscriptionLanguage = "en"
-	CallActionStartRecordingParamsTranscriptionLanguageDe         CallActionStartRecordingParamsTranscriptionLanguage = "de"
-	CallActionStartRecordingParamsTranscriptionLanguageEs         CallActionStartRecordingParamsTranscriptionLanguage = "es"
-	CallActionStartRecordingParamsTranscriptionLanguageRu         CallActionStartRecordingParamsTranscriptionLanguage = "ru"
-	CallActionStartRecordingParamsTranscriptionLanguageKo         CallActionStartRecordingParamsTranscriptionLanguage = "ko"
-	CallActionStartRecordingParamsTranscriptionLanguageFr         CallActionStartRecordingParamsTranscriptionLanguage = "fr"
-	CallActionStartRecordingParamsTranscriptionLanguageJa         CallActionStartRecordingParamsTranscriptionLanguage = "ja"
-	CallActionStartRecordingParamsTranscriptionLanguagePt         CallActionStartRecordingParamsTranscriptionLanguage = "pt"
-	CallActionStartRecordingParamsTranscriptionLanguageTr         CallActionStartRecordingParamsTranscriptionLanguage = "tr"
-	CallActionStartRecordingParamsTranscriptionLanguagePl         CallActionStartRecordingParamsTranscriptionLanguage = "pl"
-	CallActionStartRecordingParamsTranscriptionLanguageCa         CallActionStartRecordingParamsTranscriptionLanguage = "ca"
-	CallActionStartRecordingParamsTranscriptionLanguageNl         CallActionStartRecordingParamsTranscriptionLanguage = "nl"
-	CallActionStartRecordingParamsTranscriptionLanguageAr         CallActionStartRecordingParamsTranscriptionLanguage = "ar"
-	CallActionStartRecordingParamsTranscriptionLanguageSv         CallActionStartRecordingParamsTranscriptionLanguage = "sv"
-	CallActionStartRecordingParamsTranscriptionLanguageIt         CallActionStartRecordingParamsTranscriptionLanguage = "it"
-	CallActionStartRecordingParamsTranscriptionLanguageID         CallActionStartRecordingParamsTranscriptionLanguage = "id"
-	CallActionStartRecordingParamsTranscriptionLanguageHi         CallActionStartRecordingParamsTranscriptionLanguage = "hi"
-	CallActionStartRecordingParamsTranscriptionLanguageFi         CallActionStartRecordingParamsTranscriptionLanguage = "fi"
-	CallActionStartRecordingParamsTranscriptionLanguageVi         CallActionStartRecordingParamsTranscriptionLanguage = "vi"
-	CallActionStartRecordingParamsTranscriptionLanguageHe         CallActionStartRecordingParamsTranscriptionLanguage = "he"
-	CallActionStartRecordingParamsTranscriptionLanguageUk         CallActionStartRecordingParamsTranscriptionLanguage = "uk"
-	CallActionStartRecordingParamsTranscriptionLanguageEl         CallActionStartRecordingParamsTranscriptionLanguage = "el"
-	CallActionStartRecordingParamsTranscriptionLanguageMs         CallActionStartRecordingParamsTranscriptionLanguage = "ms"
-	CallActionStartRecordingParamsTranscriptionLanguageCs         CallActionStartRecordingParamsTranscriptionLanguage = "cs"
-	CallActionStartRecordingParamsTranscriptionLanguageRo         CallActionStartRecordingParamsTranscriptionLanguage = "ro"
-	CallActionStartRecordingParamsTranscriptionLanguageDa         CallActionStartRecordingParamsTranscriptionLanguage = "da"
-	CallActionStartRecordingParamsTranscriptionLanguageHu         CallActionStartRecordingParamsTranscriptionLanguage = "hu"
-	CallActionStartRecordingParamsTranscriptionLanguageTa         CallActionStartRecordingParamsTranscriptionLanguage = "ta"
-	CallActionStartRecordingParamsTranscriptionLanguageNo         CallActionStartRecordingParamsTranscriptionLanguage = "no"
-	CallActionStartRecordingParamsTranscriptionLanguageTh         CallActionStartRecordingParamsTranscriptionLanguage = "th"
-	CallActionStartRecordingParamsTranscriptionLanguageUr         CallActionStartRecordingParamsTranscriptionLanguage = "ur"
-	CallActionStartRecordingParamsTranscriptionLanguageHr         CallActionStartRecordingParamsTranscriptionLanguage = "hr"
-	CallActionStartRecordingParamsTranscriptionLanguageBg         CallActionStartRecordingParamsTranscriptionLanguage = "bg"
-	CallActionStartRecordingParamsTranscriptionLanguageLt         CallActionStartRecordingParamsTranscriptionLanguage = "lt"
-	CallActionStartRecordingParamsTranscriptionLanguageLa         CallActionStartRecordingParamsTranscriptionLanguage = "la"
-	CallActionStartRecordingParamsTranscriptionLanguageMi         CallActionStartRecordingParamsTranscriptionLanguage = "mi"
-	CallActionStartRecordingParamsTranscriptionLanguageMl         CallActionStartRecordingParamsTranscriptionLanguage = "ml"
-	CallActionStartRecordingParamsTranscriptionLanguageCy         CallActionStartRecordingParamsTranscriptionLanguage = "cy"
-	CallActionStartRecordingParamsTranscriptionLanguageSk         CallActionStartRecordingParamsTranscriptionLanguage = "sk"
-	CallActionStartRecordingParamsTranscriptionLanguageTe         CallActionStartRecordingParamsTranscriptionLanguage = "te"
-	CallActionStartRecordingParamsTranscriptionLanguageFa         CallActionStartRecordingParamsTranscriptionLanguage = "fa"
-	CallActionStartRecordingParamsTranscriptionLanguageLv         CallActionStartRecordingParamsTranscriptionLanguage = "lv"
-	CallActionStartRecordingParamsTranscriptionLanguageBn         CallActionStartRecordingParamsTranscriptionLanguage = "bn"
-	CallActionStartRecordingParamsTranscriptionLanguageSr         CallActionStartRecordingParamsTranscriptionLanguage = "sr"
-	CallActionStartRecordingParamsTranscriptionLanguageAz         CallActionStartRecordingParamsTranscriptionLanguage = "az"
-	CallActionStartRecordingParamsTranscriptionLanguageSl         CallActionStartRecordingParamsTranscriptionLanguage = "sl"
-	CallActionStartRecordingParamsTranscriptionLanguageKn         CallActionStartRecordingParamsTranscriptionLanguage = "kn"
-	CallActionStartRecordingParamsTranscriptionLanguageEt         CallActionStartRecordingParamsTranscriptionLanguage = "et"
-	CallActionStartRecordingParamsTranscriptionLanguageMk         CallActionStartRecordingParamsTranscriptionLanguage = "mk"
-	CallActionStartRecordingParamsTranscriptionLanguageBr         CallActionStartRecordingParamsTranscriptionLanguage = "br"
-	CallActionStartRecordingParamsTranscriptionLanguageEu         CallActionStartRecordingParamsTranscriptionLanguage = "eu"
-	CallActionStartRecordingParamsTranscriptionLanguageIs         CallActionStartRecordingParamsTranscriptionLanguage = "is"
-	CallActionStartRecordingParamsTranscriptionLanguageHy         CallActionStartRecordingParamsTranscriptionLanguage = "hy"
-	CallActionStartRecordingParamsTranscriptionLanguageNe         CallActionStartRecordingParamsTranscriptionLanguage = "ne"
-	CallActionStartRecordingParamsTranscriptionLanguageMn         CallActionStartRecordingParamsTranscriptionLanguage = "mn"
-	CallActionStartRecordingParamsTranscriptionLanguageBs         CallActionStartRecordingParamsTranscriptionLanguage = "bs"
-	CallActionStartRecordingParamsTranscriptionLanguageKk         CallActionStartRecordingParamsTranscriptionLanguage = "kk"
-	CallActionStartRecordingParamsTranscriptionLanguageSq         CallActionStartRecordingParamsTranscriptionLanguage = "sq"
-	CallActionStartRecordingParamsTranscriptionLanguageSw         CallActionStartRecordingParamsTranscriptionLanguage = "sw"
-	CallActionStartRecordingParamsTranscriptionLanguageGl         CallActionStartRecordingParamsTranscriptionLanguage = "gl"
-	CallActionStartRecordingParamsTranscriptionLanguageMr         CallActionStartRecordingParamsTranscriptionLanguage = "mr"
-	CallActionStartRecordingParamsTranscriptionLanguagePa         CallActionStartRecordingParamsTranscriptionLanguage = "pa"
-	CallActionStartRecordingParamsTranscriptionLanguageSi         CallActionStartRecordingParamsTranscriptionLanguage = "si"
-	CallActionStartRecordingParamsTranscriptionLanguageKm         CallActionStartRecordingParamsTranscriptionLanguage = "km"
-	CallActionStartRecordingParamsTranscriptionLanguageSn         CallActionStartRecordingParamsTranscriptionLanguage = "sn"
-	CallActionStartRecordingParamsTranscriptionLanguageYo         CallActionStartRecordingParamsTranscriptionLanguage = "yo"
-	CallActionStartRecordingParamsTranscriptionLanguageSo         CallActionStartRecordingParamsTranscriptionLanguage = "so"
-	CallActionStartRecordingParamsTranscriptionLanguageAf         CallActionStartRecordingParamsTranscriptionLanguage = "af"
-	CallActionStartRecordingParamsTranscriptionLanguageOc         CallActionStartRecordingParamsTranscriptionLanguage = "oc"
-	CallActionStartRecordingParamsTranscriptionLanguageKa         CallActionStartRecordingParamsTranscriptionLanguage = "ka"
-	CallActionStartRecordingParamsTranscriptionLanguageBe         CallActionStartRecordingParamsTranscriptionLanguage = "be"
-	CallActionStartRecordingParamsTranscriptionLanguageTg         CallActionStartRecordingParamsTranscriptionLanguage = "tg"
-	CallActionStartRecordingParamsTranscriptionLanguageSd         CallActionStartRecordingParamsTranscriptionLanguage = "sd"
-	CallActionStartRecordingParamsTranscriptionLanguageGu         CallActionStartRecordingParamsTranscriptionLanguage = "gu"
-	CallActionStartRecordingParamsTranscriptionLanguageAm         CallActionStartRecordingParamsTranscriptionLanguage = "am"
-	CallActionStartRecordingParamsTranscriptionLanguageYi         CallActionStartRecordingParamsTranscriptionLanguage = "yi"
-	CallActionStartRecordingParamsTranscriptionLanguageLo         CallActionStartRecordingParamsTranscriptionLanguage = "lo"
-	CallActionStartRecordingParamsTranscriptionLanguageUz         CallActionStartRecordingParamsTranscriptionLanguage = "uz"
-	CallActionStartRecordingParamsTranscriptionLanguageFo         CallActionStartRecordingParamsTranscriptionLanguage = "fo"
-	CallActionStartRecordingParamsTranscriptionLanguageHt         CallActionStartRecordingParamsTranscriptionLanguage = "ht"
-	CallActionStartRecordingParamsTranscriptionLanguagePs         CallActionStartRecordingParamsTranscriptionLanguage = "ps"
-	CallActionStartRecordingParamsTranscriptionLanguageTk         CallActionStartRecordingParamsTranscriptionLanguage = "tk"
-	CallActionStartRecordingParamsTranscriptionLanguageNn         CallActionStartRecordingParamsTranscriptionLanguage = "nn"
-	CallActionStartRecordingParamsTranscriptionLanguageMt         CallActionStartRecordingParamsTranscriptionLanguage = "mt"
-	CallActionStartRecordingParamsTranscriptionLanguageSa         CallActionStartRecordingParamsTranscriptionLanguage = "sa"
-	CallActionStartRecordingParamsTranscriptionLanguageLb         CallActionStartRecordingParamsTranscriptionLanguage = "lb"
-	CallActionStartRecordingParamsTranscriptionLanguageMy         CallActionStartRecordingParamsTranscriptionLanguage = "my"
-	CallActionStartRecordingParamsTranscriptionLanguageBo         CallActionStartRecordingParamsTranscriptionLanguage = "bo"
-	CallActionStartRecordingParamsTranscriptionLanguageTl         CallActionStartRecordingParamsTranscriptionLanguage = "tl"
-	CallActionStartRecordingParamsTranscriptionLanguageMg         CallActionStartRecordingParamsTranscriptionLanguage = "mg"
-	CallActionStartRecordingParamsTranscriptionLanguageAs         CallActionStartRecordingParamsTranscriptionLanguage = "as"
-	CallActionStartRecordingParamsTranscriptionLanguageTt         CallActionStartRecordingParamsTranscriptionLanguage = "tt"
-	CallActionStartRecordingParamsTranscriptionLanguageHaw        CallActionStartRecordingParamsTranscriptionLanguage = "haw"
-	CallActionStartRecordingParamsTranscriptionLanguageLn         CallActionStartRecordingParamsTranscriptionLanguage = "ln"
-	CallActionStartRecordingParamsTranscriptionLanguageHa         CallActionStartRecordingParamsTranscriptionLanguage = "ha"
-	CallActionStartRecordingParamsTranscriptionLanguageBa         CallActionStartRecordingParamsTranscriptionLanguage = "ba"
-	CallActionStartRecordingParamsTranscriptionLanguageJw         CallActionStartRecordingParamsTranscriptionLanguage = "jw"
-	CallActionStartRecordingParamsTranscriptionLanguageSu         CallActionStartRecordingParamsTranscriptionLanguage = "su"
-	CallActionStartRecordingParamsTranscriptionLanguageAutoDetect CallActionStartRecordingParamsTranscriptionLanguage = "auto_detect"
-	CallActionStartRecordingParamsTranscriptionLanguageEs419      CallActionStartRecordingParamsTranscriptionLanguage = "es-419"
 )
 
 // When set to `trim-silence`, silence will be removed from the beginning and end
@@ -4916,9 +4983,14 @@ type CallActionStartStreamingParams struct {
 	CommandID param.Opt[string] `json:"command_id,omitzero"`
 	// Enables Dialogflow for the current call. The default value is false.
 	EnableDialogflow param.Opt[bool] `json:"enable_dialogflow,omitzero"`
+	// An authentication token to be sent as part of the WebSocket connection. Maximum
+	// length is 4000 characters.
+	StreamAuthToken param.Opt[string] `json:"stream_auth_token,omitzero"`
 	// The destination WebSocket address where the stream is going to be delivered.
-	StreamURL        param.Opt[string]     `json:"stream_url,omitzero"`
-	DialogflowConfig DialogflowConfigParam `json:"dialogflow_config,omitzero"`
+	StreamURL param.Opt[string] `json:"stream_url,omitzero"`
+	// Custom parameters to be sent as part of the WebSocket connection.
+	CustomParameters []CallActionStartStreamingParamsCustomParameter `json:"custom_parameters,omitzero"`
+	DialogflowConfig DialogflowConfigParam                           `json:"dialogflow_config,omitzero"`
 	// Indicates codec for bidirectional streaming RTP payloads. Used only with
 	// stream_bidirectional_mode=rtp. Case sensitive.
 	//
@@ -4953,6 +5025,22 @@ func (r CallActionStartStreamingParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *CallActionStartStreamingParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallActionStartStreamingParamsCustomParameter struct {
+	// The name of the custom parameter.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// The value of the custom parameter.
+	Value param.Opt[string] `json:"value,omitzero"`
+	paramObj
+}
+
+func (r CallActionStartStreamingParamsCustomParameter) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionStartStreamingParamsCustomParameter
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionStartStreamingParamsCustomParameter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -5216,6 +5304,10 @@ type CallActionTransferParams struct {
 	// or is transferred). If supplied with the value `self`, the current leg will be
 	// parked after unbridge. If not set, the default behavior is to hang up the leg.
 	ParkAfterUnbridge param.Opt[string] `json:"park_after_unbridge,omitzero"`
+	// The list of comma-separated codecs in order of preference to be used during the
+	// call. The codecs supported are `G722`, `PCMU`, `PCMA`, `G729`, `OPUS`, `VP8`,
+	// `H264`, `AMR-WB`.
+	PreferredCodecs param.Opt[string] `json:"preferred_codecs,omitzero"`
 	// The custom recording file name to be used instead of the default `call_leg_id`.
 	// Telnyx will still add a Unix timestamp suffix.
 	RecordCustomFileName param.Opt[string] `json:"record_custom_file_name,omitzero"`
@@ -5314,10 +5406,22 @@ type CallActionTransferParams struct {
 	SipTransportProtocol CallActionTransferParamsSipTransportProtocol `json:"sip_transport_protocol,omitzero"`
 	// Use this field to modify sound effects, for example adjust the pitch.
 	SoundModifications SoundModificationsParam `json:"sound_modifications,omitzero"`
+	// A map of event types to retry policies. Each retry policy contains an array of
+	// `retries_ms` specifying the delays between retry attempts in milliseconds.
+	// Maximum 5 retries, total delay cannot exceed 60 seconds.
+	WebhookRetriesPolicies map[string]CallActionTransferParamsWebhookRetriesPolicy `json:"webhook_retries_policies,omitzero"`
 	// HTTP request type used for `webhook_url`.
 	//
 	// Any of "POST", "GET".
 	WebhookURLMethod CallActionTransferParamsWebhookURLMethod `json:"webhook_url_method,omitzero"`
+	// A map of event types to webhook URLs. When an event of the specified type
+	// occurs, the webhook URL associated with that event type will be called instead
+	// of `webhook_url`. Events not mapped here will use the default `webhook_url`.
+	WebhookURLs map[string]string `json:"webhook_urls,omitzero" format:"uri"`
+	// HTTP request method to invoke `webhook_urls`.
+	//
+	// Any of "POST", "GET".
+	WebhookURLsMethod CallActionTransferParamsWebhookURLsMethod `json:"webhook_urls_method,omitzero"`
 	paramObj
 }
 
@@ -5468,12 +5572,35 @@ const (
 	CallActionTransferParamsSipTransportProtocolTls CallActionTransferParamsSipTransportProtocol = "TLS"
 )
 
+type CallActionTransferParamsWebhookRetriesPolicy struct {
+	// Array of delays in milliseconds between retry attempts. Total sum cannot exceed
+	// 60000ms.
+	RetriesMs []int64 `json:"retries_ms,omitzero"`
+	paramObj
+}
+
+func (r CallActionTransferParamsWebhookRetriesPolicy) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionTransferParamsWebhookRetriesPolicy
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionTransferParamsWebhookRetriesPolicy) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // HTTP request type used for `webhook_url`.
 type CallActionTransferParamsWebhookURLMethod string
 
 const (
 	CallActionTransferParamsWebhookURLMethodPost CallActionTransferParamsWebhookURLMethod = "POST"
 	CallActionTransferParamsWebhookURLMethodGet  CallActionTransferParamsWebhookURLMethod = "GET"
+)
+
+// HTTP request method to invoke `webhook_urls`.
+type CallActionTransferParamsWebhookURLsMethod string
+
+const (
+	CallActionTransferParamsWebhookURLsMethodPost CallActionTransferParamsWebhookURLsMethod = "POST"
+	CallActionTransferParamsWebhookURLsMethodGet  CallActionTransferParamsWebhookURLsMethod = "GET"
 )
 
 type CallActionUpdateClientStateParams struct {

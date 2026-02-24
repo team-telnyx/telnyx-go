@@ -14,7 +14,7 @@ import (
 )
 
 func TestVerifyProfileNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -36,17 +36,26 @@ func TestVerifyProfileNewWithOptionalParams(t *testing.T) {
 			WhitelistedDestinations:        []string{"US", "CA"},
 		},
 		Flashcall: telnyx.VerifyProfileNewParamsFlashcall{
+			AppName:                        telnyx.String("Example Secure App"),
 			DefaultVerificationTimeoutSecs: telnyx.Int(300),
 			WhitelistedDestinations:        []string{"US", "CA"},
 		},
 		Language: telnyx.String("en-US"),
-		SMS: telnyx.VerifyProfileNewParamsSMS{
+		Rcs: telnyx.VerifyProfileNewParamsRcs{
+			AppName:                        telnyx.String("Example Secure App"),
+			CodeLength:                     telnyx.Int(6),
+			DefaultVerificationTimeoutSecs: telnyx.Int(300),
+			MessagingTemplateID:            telnyx.String("0abb5b4f-459f-445a-bfcd-488998b7572d"),
+			SMSFallback:                    telnyx.Bool(true),
 			WhitelistedDestinations:        []string{"US", "CA"},
+		},
+		SMS: telnyx.VerifyProfileNewParamsSMS{
 			AlphaSender:                    telnyx.String("sqF"),
 			AppName:                        telnyx.String("Example Secure App"),
 			CodeLength:                     telnyx.Int(6),
 			DefaultVerificationTimeoutSecs: telnyx.Int(300),
 			MessagingTemplateID:            telnyx.String("0abb5b4f-459f-445a-bfcd-488998b7572d"),
+			WhitelistedDestinations:        []string{"US", "CA"},
 		},
 		WebhookFailoverURL: telnyx.String("http://example.com/webhook/failover"),
 		WebhookURL:         telnyx.String("http://example.com/webhook"),
@@ -61,7 +70,7 @@ func TestVerifyProfileNewWithOptionalParams(t *testing.T) {
 }
 
 func TestVerifyProfileGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -84,7 +93,7 @@ func TestVerifyProfileGet(t *testing.T) {
 }
 
 func TestVerifyProfileUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -108,11 +117,20 @@ func TestVerifyProfileUpdateWithOptionalParams(t *testing.T) {
 				WhitelistedDestinations:        []string{"US", "CA"},
 			},
 			Flashcall: telnyx.VerifyProfileUpdateParamsFlashcall{
+				AppName:                        telnyx.String("Example Secure App"),
 				DefaultVerificationTimeoutSecs: telnyx.Int(300),
 				WhitelistedDestinations:        []string{"US", "CA"},
 			},
 			Language: telnyx.String("en-US"),
 			Name:     telnyx.String("Test Profile"),
+			Rcs: telnyx.VerifyProfileUpdateParamsRcs{
+				AppName:                        telnyx.String("Example Secure App"),
+				CodeLength:                     telnyx.Int(6),
+				DefaultVerificationTimeoutSecs: telnyx.Int(300),
+				MessagingTemplateID:            telnyx.String("0abb5b4f-459f-445a-bfcd-488998b7572d"),
+				SMSFallback:                    telnyx.Bool(true),
+				WhitelistedDestinations:        []string{"US", "CA"},
+			},
 			SMS: telnyx.VerifyProfileUpdateParamsSMS{
 				AlphaSender:                    telnyx.String("sqF"),
 				AppName:                        telnyx.String("Example Secure App"),
@@ -135,7 +153,7 @@ func TestVerifyProfileUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestVerifyProfileListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -164,7 +182,7 @@ func TestVerifyProfileListWithOptionalParams(t *testing.T) {
 }
 
 func TestVerifyProfileDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -187,7 +205,7 @@ func TestVerifyProfileDelete(t *testing.T) {
 }
 
 func TestVerifyProfileNewTemplate(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -212,7 +230,7 @@ func TestVerifyProfileNewTemplate(t *testing.T) {
 }
 
 func TestVerifyProfileGetTemplates(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -235,7 +253,7 @@ func TestVerifyProfileGetTemplates(t *testing.T) {
 }
 
 func TestVerifyProfileUpdateTemplate(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

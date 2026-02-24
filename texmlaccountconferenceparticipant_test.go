@@ -14,7 +14,7 @@ import (
 )
 
 func TestTexmlAccountConferenceParticipantGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -44,7 +44,7 @@ func TestTexmlAccountConferenceParticipantGet(t *testing.T) {
 }
 
 func TestTexmlAccountConferenceParticipantUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -85,7 +85,7 @@ func TestTexmlAccountConferenceParticipantUpdateWithOptionalParams(t *testing.T)
 }
 
 func TestTexmlAccountConferenceParticipantDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -115,7 +115,7 @@ func TestTexmlAccountConferenceParticipantDelete(t *testing.T) {
 }
 
 func TestTexmlAccountConferenceParticipantParticipantsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -134,6 +134,7 @@ func TestTexmlAccountConferenceParticipantParticipantsWithOptionalParams(t *test
 			AccountSid:                              "account_sid",
 			AmdStatusCallback:                       telnyx.String("https://www.example.com/amd_result"),
 			AmdStatusCallbackMethod:                 telnyx.TexmlAccountConferenceParticipantParticipantsParamsAmdStatusCallbackMethodGet,
+			ApplicationSid:                          telnyx.String("1846572522338780702"),
 			Beep:                                    telnyx.TexmlAccountConferenceParticipantParticipantsParamsBeepOnExit,
 			CallerID:                                telnyx.String("Info"),
 			CallSidToCoach:                          telnyx.String("v3:9X2vxPDFY2RHSJ1EdMS0RHRksMTg7ldNxdjWbVr9zBjbGjGsSe-aiQ"),
@@ -194,7 +195,7 @@ func TestTexmlAccountConferenceParticipantParticipantsWithOptionalParams(t *test
 }
 
 func TestTexmlAccountConferenceParticipantGetParticipants(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

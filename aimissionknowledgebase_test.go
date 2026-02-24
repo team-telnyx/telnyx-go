@@ -14,7 +14,7 @@ import (
 )
 
 func TestAIMissionKnowledgeBaseNewKnowledgeBase(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -37,7 +37,7 @@ func TestAIMissionKnowledgeBaseNewKnowledgeBase(t *testing.T) {
 }
 
 func TestAIMissionKnowledgeBaseDeleteKnowledgeBase(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -66,7 +66,7 @@ func TestAIMissionKnowledgeBaseDeleteKnowledgeBase(t *testing.T) {
 }
 
 func TestAIMissionKnowledgeBaseGetKnowledgeBase(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -95,7 +95,7 @@ func TestAIMissionKnowledgeBaseGetKnowledgeBase(t *testing.T) {
 }
 
 func TestAIMissionKnowledgeBaseListKnowledgeBases(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -118,7 +118,7 @@ func TestAIMissionKnowledgeBaseListKnowledgeBases(t *testing.T) {
 }
 
 func TestAIMissionKnowledgeBaseUpdateKnowledgeBase(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

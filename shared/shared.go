@@ -18,16 +18,16 @@ type paramUnion = param.APIUnion
 type paramObj = param.APIObject
 
 type APIError struct {
-	Code   string         `json:"code,required" format:"int64"`
-	Title  string         `json:"title,required"`
-	Detail string         `json:"detail"`
-	Meta   map[string]any `json:"meta"`
-	Source APIErrorSource `json:"source"`
+	Code        string         `json:"code,required"`
+	Title       string         `json:"title,required"`
+	Description string         `json:"description"`
+	Meta        map[string]any `json:"meta"`
+	Source      APIErrorSource `json:"source"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Code        respjson.Field
 		Title       respjson.Field
-		Detail      respjson.Field
+		Description respjson.Field
 		Meta        respjson.Field
 		Source      respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -354,7 +354,7 @@ type HostedNumber struct {
 	// Identifies the type of resource.
 	ID string `json:"id" format:"uuid"`
 	// The messaging hosted phone number (+E.164 format)
-	PhoneNumber string `json:"phone_number" format:"+E.164"`
+	PhoneNumber string `json:"phone_number"`
 	RecordType  string `json:"record_type"`
 	// Any of "deleted", "failed", "failed_activation", "failed_carrier_rejected",
 	// "failed_ineligible_carrier", "failed_number_already_hosted",
@@ -506,7 +506,7 @@ type InboundMessagePayloadCc struct {
 	// Any of "Wireline", "Wireless", "VoWiFi", "VoIP", "Pre-Paid Wireless", "".
 	LineType string `json:"line_type"`
 	// Receiving address (+E.164 formatted phone number or short code).
-	PhoneNumber string `json:"phone_number" format:"address"`
+	PhoneNumber string `json:"phone_number"`
 	// Any of "queued", "sending", "sent", "delivered", "sending_failed",
 	// "delivery_failed", "delivery_unconfirmed".
 	Status string `json:"status"`
@@ -529,9 +529,9 @@ func (r *InboundMessagePayloadCc) UnmarshalJSON(data []byte) error {
 
 type InboundMessagePayloadCost struct {
 	// The amount deducted from your account.
-	Amount string `json:"amount" format:"decimal"`
+	Amount string `json:"amount"`
 	// The ISO 4217 currency identifier.
-	Currency string `json:"currency" format:"iso4217"`
+	Currency string `json:"currency"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -568,9 +568,9 @@ func (r *InboundMessagePayloadCostBreakdown) UnmarshalJSON(data []byte) error {
 
 type InboundMessagePayloadCostBreakdownCarrierFee struct {
 	// The carrier fee amount.
-	Amount string `json:"amount" format:"decimal"`
+	Amount string `json:"amount"`
 	// The ISO 4217 currency identifier.
-	Currency string `json:"currency" format:"iso4217"`
+	Currency string `json:"currency"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -588,9 +588,9 @@ func (r *InboundMessagePayloadCostBreakdownCarrierFee) UnmarshalJSON(data []byte
 
 type InboundMessagePayloadCostBreakdownRate struct {
 	// The rate amount applied.
-	Amount string `json:"amount" format:"decimal"`
+	Amount string `json:"amount"`
 	// The ISO 4217 currency identifier.
-	Currency string `json:"currency" format:"iso4217"`
+	Currency string `json:"currency"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -623,7 +623,7 @@ type InboundMessagePayloadFrom struct {
 	LineType string `json:"line_type"`
 	// Sending address (+E.164 formatted phone number, alphanumeric sender ID, or short
 	// code).
-	PhoneNumber string `json:"phone_number" format:"address"`
+	PhoneNumber string `json:"phone_number"`
 	// Any of "received", "delivered".
 	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -645,7 +645,7 @@ func (r *InboundMessagePayloadFrom) UnmarshalJSON(data []byte) error {
 
 type InboundMessagePayloadMedia struct {
 	// The MIME type of the requested media.
-	ContentType string `json:"content_type" format:"mime-type"`
+	ContentType string `json:"content_type"`
 	// The SHA256 hash of the requested media.
 	HashSha256 string `json:"hash_sha256"`
 	// The size of the requested media.
@@ -684,7 +684,7 @@ type InboundMessagePayloadTo struct {
 	// Any of "Wireline", "Wireless", "VoWiFi", "VoIP", "Pre-Paid Wireless", "".
 	LineType string `json:"line_type"`
 	// Receiving address (+E.164 formatted phone number or short code).
-	PhoneNumber string `json:"phone_number" format:"address"`
+	PhoneNumber string `json:"phone_number"`
 	// Any of "queued", "sending", "sent", "delivered", "sending_failed",
 	// "delivery_failed", "delivery_unconfirmed", "webhook_delivered".
 	Status string `json:"status"`
@@ -849,6 +849,18 @@ type MinimaxVoiceSettingsParam struct {
 	Speed param.Opt[float64] `json:"speed,omitzero"`
 	// Speech volume multiplier. Default is 1.0.
 	Vol param.Opt[float64] `json:"vol,omitzero"`
+	// Enhances recognition for specific languages and dialects during MiniMax TTS
+	// synthesis. Default is null (no boost). Set to 'auto' for automatic language
+	// detection.
+	//
+	// Any of "auto", "Chinese", "Chinese,Yue", "English", "Arabic", "Russian",
+	// "Spanish", "French", "Portuguese", "German", "Turkish", "Dutch", "Ukrainian",
+	// "Vietnamese", "Indonesian", "Japanese", "Italian", "Korean", "Thai", "Polish",
+	// "Romanian", "Greek", "Czech", "Finnish", "Hindi", "Bulgarian", "Danish",
+	// "Hebrew", "Malay", "Persian", "Slovak", "Swedish", "Croatian", "Filipino",
+	// "Hungarian", "Norwegian", "Slovenian", "Catalan", "Nynorsk", "Tamil",
+	// "Afrikaans".
+	LanguageBoost MinimaxVoiceSettingsLanguageBoost `json:"language_boost,omitzero"`
 	paramObj
 }
 
@@ -865,6 +877,55 @@ type MinimaxVoiceSettingsType string
 
 const (
 	MinimaxVoiceSettingsTypeMinimax MinimaxVoiceSettingsType = "minimax"
+)
+
+// Enhances recognition for specific languages and dialects during MiniMax TTS
+// synthesis. Default is null (no boost). Set to 'auto' for automatic language
+// detection.
+type MinimaxVoiceSettingsLanguageBoost string
+
+const (
+	MinimaxVoiceSettingsLanguageBoostAuto       MinimaxVoiceSettingsLanguageBoost = "auto"
+	MinimaxVoiceSettingsLanguageBoostChinese    MinimaxVoiceSettingsLanguageBoost = "Chinese"
+	MinimaxVoiceSettingsLanguageBoostChineseYue MinimaxVoiceSettingsLanguageBoost = "Chinese,Yue"
+	MinimaxVoiceSettingsLanguageBoostEnglish    MinimaxVoiceSettingsLanguageBoost = "English"
+	MinimaxVoiceSettingsLanguageBoostArabic     MinimaxVoiceSettingsLanguageBoost = "Arabic"
+	MinimaxVoiceSettingsLanguageBoostRussian    MinimaxVoiceSettingsLanguageBoost = "Russian"
+	MinimaxVoiceSettingsLanguageBoostSpanish    MinimaxVoiceSettingsLanguageBoost = "Spanish"
+	MinimaxVoiceSettingsLanguageBoostFrench     MinimaxVoiceSettingsLanguageBoost = "French"
+	MinimaxVoiceSettingsLanguageBoostPortuguese MinimaxVoiceSettingsLanguageBoost = "Portuguese"
+	MinimaxVoiceSettingsLanguageBoostGerman     MinimaxVoiceSettingsLanguageBoost = "German"
+	MinimaxVoiceSettingsLanguageBoostTurkish    MinimaxVoiceSettingsLanguageBoost = "Turkish"
+	MinimaxVoiceSettingsLanguageBoostDutch      MinimaxVoiceSettingsLanguageBoost = "Dutch"
+	MinimaxVoiceSettingsLanguageBoostUkrainian  MinimaxVoiceSettingsLanguageBoost = "Ukrainian"
+	MinimaxVoiceSettingsLanguageBoostVietnamese MinimaxVoiceSettingsLanguageBoost = "Vietnamese"
+	MinimaxVoiceSettingsLanguageBoostIndonesian MinimaxVoiceSettingsLanguageBoost = "Indonesian"
+	MinimaxVoiceSettingsLanguageBoostJapanese   MinimaxVoiceSettingsLanguageBoost = "Japanese"
+	MinimaxVoiceSettingsLanguageBoostItalian    MinimaxVoiceSettingsLanguageBoost = "Italian"
+	MinimaxVoiceSettingsLanguageBoostKorean     MinimaxVoiceSettingsLanguageBoost = "Korean"
+	MinimaxVoiceSettingsLanguageBoostThai       MinimaxVoiceSettingsLanguageBoost = "Thai"
+	MinimaxVoiceSettingsLanguageBoostPolish     MinimaxVoiceSettingsLanguageBoost = "Polish"
+	MinimaxVoiceSettingsLanguageBoostRomanian   MinimaxVoiceSettingsLanguageBoost = "Romanian"
+	MinimaxVoiceSettingsLanguageBoostGreek      MinimaxVoiceSettingsLanguageBoost = "Greek"
+	MinimaxVoiceSettingsLanguageBoostCzech      MinimaxVoiceSettingsLanguageBoost = "Czech"
+	MinimaxVoiceSettingsLanguageBoostFinnish    MinimaxVoiceSettingsLanguageBoost = "Finnish"
+	MinimaxVoiceSettingsLanguageBoostHindi      MinimaxVoiceSettingsLanguageBoost = "Hindi"
+	MinimaxVoiceSettingsLanguageBoostBulgarian  MinimaxVoiceSettingsLanguageBoost = "Bulgarian"
+	MinimaxVoiceSettingsLanguageBoostDanish     MinimaxVoiceSettingsLanguageBoost = "Danish"
+	MinimaxVoiceSettingsLanguageBoostHebrew     MinimaxVoiceSettingsLanguageBoost = "Hebrew"
+	MinimaxVoiceSettingsLanguageBoostMalay      MinimaxVoiceSettingsLanguageBoost = "Malay"
+	MinimaxVoiceSettingsLanguageBoostPersian    MinimaxVoiceSettingsLanguageBoost = "Persian"
+	MinimaxVoiceSettingsLanguageBoostSlovak     MinimaxVoiceSettingsLanguageBoost = "Slovak"
+	MinimaxVoiceSettingsLanguageBoostSwedish    MinimaxVoiceSettingsLanguageBoost = "Swedish"
+	MinimaxVoiceSettingsLanguageBoostCroatian   MinimaxVoiceSettingsLanguageBoost = "Croatian"
+	MinimaxVoiceSettingsLanguageBoostFilipino   MinimaxVoiceSettingsLanguageBoost = "Filipino"
+	MinimaxVoiceSettingsLanguageBoostHungarian  MinimaxVoiceSettingsLanguageBoost = "Hungarian"
+	MinimaxVoiceSettingsLanguageBoostNorwegian  MinimaxVoiceSettingsLanguageBoost = "Norwegian"
+	MinimaxVoiceSettingsLanguageBoostSlovenian  MinimaxVoiceSettingsLanguageBoost = "Slovenian"
+	MinimaxVoiceSettingsLanguageBoostCatalan    MinimaxVoiceSettingsLanguageBoost = "Catalan"
+	MinimaxVoiceSettingsLanguageBoostNynorsk    MinimaxVoiceSettingsLanguageBoost = "Nynorsk"
+	MinimaxVoiceSettingsLanguageBoostTamil      MinimaxVoiceSettingsLanguageBoost = "Tamil"
+	MinimaxVoiceSettingsLanguageBoostAfrikaans  MinimaxVoiceSettingsLanguageBoost = "Afrikaans"
 )
 
 // High level health metrics about the number and it's messaging sending patterns.
@@ -910,12 +971,16 @@ type PhoneNumberWithMessagingSettings struct {
 	MessagingProduct string `json:"messaging_product"`
 	// Unique identifier for a messaging profile.
 	MessagingProfileID string `json:"messaging_profile_id,nullable"`
+	// The organization that owns this phone number.
+	OrganizationID string `json:"organization_id"`
 	// +E.164 formatted phone number.
-	PhoneNumber string `json:"phone_number" format:"e164"`
+	PhoneNumber string `json:"phone_number"`
 	// Identifies the type of the resource.
 	//
 	// Any of "messaging_phone_number", "messaging_settings".
 	RecordType PhoneNumberWithMessagingSettingsRecordType `json:"record_type"`
+	// Tags associated with this phone number.
+	Tags []string `json:"tags"`
 	// The messaging traffic or use case for which the number is currently configured.
 	TrafficType string `json:"traffic_type"`
 	// The type of the phone number
@@ -935,8 +1000,10 @@ type PhoneNumberWithMessagingSettings struct {
 		Health                    respjson.Field
 		MessagingProduct          respjson.Field
 		MessagingProfileID        respjson.Field
+		OrganizationID            respjson.Field
 		PhoneNumber               respjson.Field
 		RecordType                respjson.Field
+		Tags                      respjson.Field
 		TrafficType               respjson.Field
 		Type                      respjson.Field
 		UpdatedAt                 respjson.Field

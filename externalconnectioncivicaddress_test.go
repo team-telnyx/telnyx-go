@@ -14,7 +14,7 @@ import (
 )
 
 func TestExternalConnectionCivicAddressGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -30,7 +30,7 @@ func TestExternalConnectionCivicAddressGet(t *testing.T) {
 		context.TODO(),
 		"318fb664-d341-44d2-8405-e6bfb9ced6d9",
 		telnyx.ExternalConnectionCivicAddressGetParams{
-			ID: "id",
+			ID: "1293384261075731499",
 		},
 	)
 	if err != nil {
@@ -43,7 +43,7 @@ func TestExternalConnectionCivicAddressGet(t *testing.T) {
 }
 
 func TestExternalConnectionCivicAddressListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -57,7 +57,7 @@ func TestExternalConnectionCivicAddressListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.ExternalConnections.CivicAddresses.List(
 		context.TODO(),
-		"id",
+		"1293384261075731499",
 		telnyx.ExternalConnectionCivicAddressListParams{
 			Filter: telnyx.ExternalConnectionCivicAddressListParamsFilter{
 				Country: []string{"US", "CA", "MX", "BR"},

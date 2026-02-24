@@ -117,6 +117,21 @@ func (r *MessagingTollfreeVerificationRequestService) Delete(ctx context.Context
 	return
 }
 
+// Get the history of status changes for a verification request.
+//
+// Returns a paginated list of historical status changes including the reason for
+// each change and when it occurred.
+func (r *MessagingTollfreeVerificationRequestService) GetStatusHistory(ctx context.Context, id string, query MessagingTollfreeVerificationRequestGetStatusHistoryParams, opts ...option.RequestOption) (res *MessagingTollfreeVerificationRequestGetStatusHistoryResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("messaging_tollfree/verification/requests/%s/status_history", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
+}
+
 // A phone number
 type TfPhoneNumber struct {
 	PhoneNumber string `json:"phoneNumber,required"`
@@ -164,9 +179,8 @@ func (r *TfPhoneNumberParam) UnmarshalJSON(data []byte) error {
 // The properties AdditionalInformation, BusinessAddr1, BusinessCity,
 // BusinessContactEmail, BusinessContactFirstName, BusinessContactLastName,
 // BusinessContactPhone, BusinessName, BusinessState, BusinessZip,
-// CorporateWebsite, IsvReseller, MessageVolume, OptInWorkflow,
-// OptInWorkflowImageURLs, PhoneNumbers, ProductionMessageContent, UseCase,
-// UseCaseSummary are required.
+// CorporateWebsite, MessageVolume, OptInWorkflow, OptInWorkflowImageURLs,
+// PhoneNumbers, ProductionMessageContent, UseCase, UseCaseSummary are required.
 type TfVerificationRequestParam struct {
 	// Any additional information
 	AdditionalInformation string `json:"additionalInformation,required"`
@@ -193,8 +207,6 @@ type TfVerificationRequestParam struct {
 	BusinessZip string `json:"businessZip,required"`
 	// A URL, including the scheme, pointing to the corporate website
 	CorporateWebsite string `json:"corporateWebsite,required"`
-	// ISV name
-	IsvReseller string `json:"isvReseller,required"`
 	// Message Volume Enums
 	//
 	// Any of "10", "100", "1,000", "10,000", "100,000", "250,000", "500,000",
@@ -243,6 +255,8 @@ type TfVerificationRequestParam struct {
 	DoingBusinessAs param.Opt[string] `json:"doingBusinessAs,omitzero"`
 	// The message returned when users text 'HELP'
 	HelpMessageResponse param.Opt[string] `json:"helpMessageResponse,omitzero"`
+	// ISV name
+	IsvReseller param.Opt[string] `json:"isvReseller,omitzero"`
 	// Message sent to users confirming their opt-in to receive messages
 	OptInConfirmationResponse param.Opt[string] `json:"optInConfirmationResponse,omitzero"`
 	// Keywords used to collect and process consumer opt-ins
@@ -401,7 +415,6 @@ type VerificationRequestEgress struct {
 	BusinessState            string `json:"businessState,required"`
 	BusinessZip              string `json:"businessZip,required"`
 	CorporateWebsite         string `json:"corporateWebsite,required"`
-	IsvReseller              string `json:"isvReseller,required"`
 	// Message Volume Enums
 	//
 	// Any of "10", "100", "1,000", "10,000", "100,000", "250,000", "500,000",
@@ -443,6 +456,7 @@ type VerificationRequestEgress struct {
 	// "GOVERNMENT".
 	EntityType                TollFreeVerificationEntityType `json:"entityType"`
 	HelpMessageResponse       string                         `json:"helpMessageResponse"`
+	IsvReseller               string                         `json:"isvReseller"`
 	OptInConfirmationResponse string                         `json:"optInConfirmationResponse"`
 	OptInKeywords             string                         `json:"optInKeywords"`
 	PrivacyPolicyURL          string                         `json:"privacyPolicyURL"`
@@ -467,7 +481,6 @@ type VerificationRequestEgress struct {
 		BusinessState                    respjson.Field
 		BusinessZip                      respjson.Field
 		CorporateWebsite                 respjson.Field
-		IsvReseller                      respjson.Field
 		MessageVolume                    respjson.Field
 		OptInWorkflow                    respjson.Field
 		OptInWorkflowImageURLs           respjson.Field
@@ -485,6 +498,7 @@ type VerificationRequestEgress struct {
 		DoingBusinessAs                  respjson.Field
 		EntityType                       respjson.Field
 		HelpMessageResponse              respjson.Field
+		IsvReseller                      respjson.Field
 		OptInConfirmationResponse        respjson.Field
 		OptInKeywords                    respjson.Field
 		PrivacyPolicyURL                 respjson.Field
@@ -516,7 +530,6 @@ type VerificationRequestStatus struct {
 	BusinessState            string `json:"businessState,required"`
 	BusinessZip              string `json:"businessZip,required"`
 	CorporateWebsite         string `json:"corporateWebsite,required"`
-	IsvReseller              string `json:"isvReseller,required"`
 	// Message Volume Enums
 	//
 	// Any of "10", "100", "1,000", "10,000", "100,000", "250,000", "500,000",
@@ -563,6 +576,7 @@ type VerificationRequestStatus struct {
 	// "GOVERNMENT".
 	EntityType                TollFreeVerificationEntityType `json:"entityType"`
 	HelpMessageResponse       string                         `json:"helpMessageResponse"`
+	IsvReseller               string                         `json:"isvReseller"`
 	OptInConfirmationResponse string                         `json:"optInConfirmationResponse"`
 	OptInKeywords             string                         `json:"optInKeywords"`
 	PrivacyPolicyURL          string                         `json:"privacyPolicyURL"`
@@ -584,7 +598,6 @@ type VerificationRequestStatus struct {
 		BusinessState                    respjson.Field
 		BusinessZip                      respjson.Field
 		CorporateWebsite                 respjson.Field
-		IsvReseller                      respjson.Field
 		MessageVolume                    respjson.Field
 		OptInWorkflow                    respjson.Field
 		OptInWorkflowImageURLs           respjson.Field
@@ -603,6 +616,7 @@ type VerificationRequestStatus struct {
 		DoingBusinessAs                  respjson.Field
 		EntityType                       respjson.Field
 		HelpMessageResponse              respjson.Field
+		IsvReseller                      respjson.Field
 		OptInConfirmationResponse        respjson.Field
 		OptInKeywords                    respjson.Field
 		PrivacyPolicyURL                 respjson.Field
@@ -638,6 +652,58 @@ const (
 	VolumeV10000000Plus Volume = "10,000,000+"
 )
 
+// A paginated response
+type MessagingTollfreeVerificationRequestGetStatusHistoryResponse struct {
+	// The records yielded by this request
+	Records []MessagingTollfreeVerificationRequestGetStatusHistoryResponseRecord `json:"records,required"`
+	// The total amount of records for these query parameters
+	TotalRecords int64 `json:"total_records,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Records      respjson.Field
+		TotalRecords respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingTollfreeVerificationRequestGetStatusHistoryResponse) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *MessagingTollfreeVerificationRequestGetStatusHistoryResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single entry in the verification request status history
+type MessagingTollfreeVerificationRequestGetStatusHistoryResponseRecord struct {
+	// The timestamp at which this status change occurred
+	UpdatedAt time.Time `json:"updatedAt,required" format:"date-time"`
+	// Tollfree verification status
+	//
+	// Any of "Verified", "Rejected", "Waiting For Vendor", "Waiting For Customer",
+	// "Waiting For Telnyx", "In Progress".
+	VerificationStatus TfVerificationStatus `json:"verificationStatus,required"`
+	// An explanation of why this request has its current status.
+	Reason string `json:"reason,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		UpdatedAt          respjson.Field
+		VerificationStatus respjson.Field
+		Reason             respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingTollfreeVerificationRequestGetStatusHistoryResponseRecord) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *MessagingTollfreeVerificationRequestGetStatusHistoryResponseRecord) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type MessagingTollfreeVerificationRequestNewParams struct {
 	// The body of a tollfree verification request
 	TfVerificationRequest TfVerificationRequestParam
@@ -669,10 +735,12 @@ type MessagingTollfreeVerificationRequestListParams struct {
 	// Request this many records per page
 	//
 	//	This value is automatically clamped if the provided value is too large.
-	PageSize    int64                `query:"page_size,required" json:"-"`
-	DateEnd     param.Opt[time.Time] `query:"date_end,omitzero" format:"date-time" json:"-"`
-	DateStart   param.Opt[time.Time] `query:"date_start,omitzero" format:"date-time" json:"-"`
-	PhoneNumber param.Opt[string]    `query:"phone_number,omitzero" json:"-"`
+	PageSize int64 `query:"page_size,required" json:"-"`
+	// Filter verification requests by business name
+	BusinessName param.Opt[string]    `query:"business_name,omitzero" json:"-"`
+	DateEnd      param.Opt[time.Time] `query:"date_end,omitzero" format:"date-time" json:"-"`
+	DateStart    param.Opt[time.Time] `query:"date_start,omitzero" format:"date-time" json:"-"`
+	PhoneNumber  param.Opt[string]    `query:"phone_number,omitzero" json:"-"`
 	// Tollfree verification status
 	//
 	// Any of "Verified", "Rejected", "Waiting For Vendor", "Waiting For Customer",
@@ -684,6 +752,24 @@ type MessagingTollfreeVerificationRequestListParams struct {
 // URLQuery serializes [MessagingTollfreeVerificationRequestListParams]'s query
 // parameters as `url.Values`.
 func (r MessagingTollfreeVerificationRequestListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type MessagingTollfreeVerificationRequestGetStatusHistoryParams struct {
+	PageNumber int64 `query:"page[number],required" json:"-"`
+	// Request this many records per page. This value is automatically clamped if the
+	// provided value is too large.
+	PageSize int64 `query:"page[size],required" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes
+// [MessagingTollfreeVerificationRequestGetStatusHistoryParams]'s query parameters
+// as `url.Values`.
+func (r MessagingTollfreeVerificationRequestGetStatusHistoryParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

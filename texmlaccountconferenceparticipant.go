@@ -503,6 +503,9 @@ type TexmlAccountConferenceParticipantParticipantsParams struct {
 	AccountSid string `path:"account_sid,required" json:"-"`
 	// The URL the result of answering machine detection will be sent to.
 	AmdStatusCallback param.Opt[string] `json:"AmdStatusCallback,omitzero"`
+	// The SID of the TeXML application that will handle the new participant's call.
+	// Required unless joining an existing conference by its ConferenceSid.
+	ApplicationSid param.Opt[string] `json:"ApplicationSid,omitzero"`
 	// To be used as the caller id name (SIP From Display Name) presented to the
 	// destination (`To` number). The string should have a maximum of 128 characters,
 	// containing only letters, numbers, spaces, and `-_~!.+` special characters. If
