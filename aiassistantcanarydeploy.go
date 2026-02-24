@@ -104,7 +104,7 @@ func (r *AIAssistantCanaryDeployService) Delete(ctx context.Context, assistantID
 // The property Versions is required.
 type CanaryDeployParam struct {
 	// List of version configurations
-	Versions []VersionConfigParam `json:"versions,omitzero,required"`
+	Versions []VersionConfigParam `json:"versions,omitzero" api:"required"`
 	paramObj
 }
 
@@ -118,10 +118,10 @@ func (r *CanaryDeployParam) UnmarshalJSON(data []byte) error {
 
 // Response model for canary deploy operations.
 type CanaryDeployResponse struct {
-	AssistantID string          `json:"assistant_id,required"`
-	CreatedAt   time.Time       `json:"created_at,required" format:"date-time"`
-	UpdatedAt   time.Time       `json:"updated_at,required" format:"date-time"`
-	Versions    []VersionConfig `json:"versions,required"`
+	AssistantID string          `json:"assistant_id" api:"required"`
+	CreatedAt   time.Time       `json:"created_at" api:"required" format:"date-time"`
+	UpdatedAt   time.Time       `json:"updated_at" api:"required" format:"date-time"`
+	Versions    []VersionConfig `json:"versions" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AssistantID respjson.Field
@@ -142,9 +142,9 @@ func (r *CanaryDeployResponse) UnmarshalJSON(data []byte) error {
 // Configuration for a single version in canary deploy.
 type VersionConfig struct {
 	// Percentage of traffic for this version [1-99]
-	Percentage float64 `json:"percentage,required"`
+	Percentage float64 `json:"percentage" api:"required"`
 	// Version ID string that references assistant_versions.version_id
-	VersionID string `json:"version_id,required"`
+	VersionID string `json:"version_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Percentage  respjson.Field
@@ -174,9 +174,9 @@ func (r VersionConfig) ToParam() VersionConfigParam {
 // The properties Percentage, VersionID are required.
 type VersionConfigParam struct {
 	// Percentage of traffic for this version [1-99]
-	Percentage float64 `json:"percentage,required"`
+	Percentage float64 `json:"percentage" api:"required"`
 	// Version ID string that references assistant_versions.version_id
-	VersionID string `json:"version_id,required"`
+	VersionID string `json:"version_id" api:"required"`
 	paramObj
 }
 

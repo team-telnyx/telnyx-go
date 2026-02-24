@@ -151,12 +151,12 @@ func (r *AIMissionService) UpdateMission(ctx context.Context, missionID string, 
 }
 
 type MissionData struct {
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Any of "external", "managed".
-	ExecutionMode MissionDataExecutionMode `json:"execution_mode,required"`
-	MissionID     string                   `json:"mission_id,required" format:"uuid"`
-	Name          string                   `json:"name,required"`
-	UpdatedAt     time.Time                `json:"updated_at,required" format:"date-time"`
+	ExecutionMode MissionDataExecutionMode `json:"execution_mode" api:"required"`
+	MissionID     string                   `json:"mission_id" api:"required" format:"uuid"`
+	Name          string                   `json:"name" api:"required"`
+	UpdatedAt     time.Time                `json:"updated_at" api:"required" format:"date-time"`
 	Description   string                   `json:"description"`
 	Instructions  string                   `json:"instructions"`
 	Metadata      map[string]any           `json:"metadata"`
@@ -191,7 +191,7 @@ const (
 )
 
 type AIMissionNewResponse struct {
-	Data MissionData `json:"data,required"`
+	Data MissionData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -207,7 +207,7 @@ func (r *AIMissionNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIMissionGetResponse struct {
-	Data MissionData `json:"data,required"`
+	Data MissionData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -225,13 +225,13 @@ func (r *AIMissionGetResponse) UnmarshalJSON(data []byte) error {
 type AIMissionCloneMissionResponse = any
 
 type AIMissionListEventsResponse struct {
-	EventID   string    `json:"event_id,required"`
-	RunID     string    `json:"run_id,required"`
-	Summary   string    `json:"summary,required"`
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	EventID   string    `json:"event_id" api:"required"`
+	RunID     string    `json:"run_id" api:"required"`
+	Summary   string    `json:"summary" api:"required"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "status_change", "step_started", "step_completed", "step_failed",
 	// "tool_call", "tool_result", "message", "error", "custom".
-	Type           AIMissionListEventsResponseType `json:"type,required"`
+	Type           AIMissionListEventsResponseType `json:"type" api:"required"`
 	AgentID        string                          `json:"agent_id"`
 	IdempotencyKey string                          `json:"idempotency_key"`
 	Payload        map[string]any                  `json:"payload"`
@@ -273,7 +273,7 @@ const (
 )
 
 type AIMissionUpdateMissionResponse struct {
-	Data MissionData `json:"data,required"`
+	Data MissionData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -289,7 +289,7 @@ func (r *AIMissionUpdateMissionResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIMissionNewParams struct {
-	Name         string            `json:"name,required"`
+	Name         string            `json:"name" api:"required"`
 	Description  param.Opt[string] `json:"description,omitzero"`
 	Instructions param.Opt[string] `json:"instructions,omitzero"`
 	Model        param.Opt[string] `json:"model,omitzero"`

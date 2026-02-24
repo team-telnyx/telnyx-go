@@ -97,14 +97,14 @@ type CustomerServiceRecord struct {
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// The error message in case status is `failed`. This field would be null in case
 	// of `pending` or `completed` status.
-	ErrorMessage string `json:"error_message,nullable"`
+	ErrorMessage string `json:"error_message" api:"nullable"`
 	// The phone number of the customer service record.
 	PhoneNumber string `json:"phone_number"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
 	// The result of the CSR request. This field would be null in case of `pending` or
 	// `failed` status.
-	Result CustomerServiceRecordResult `json:"result,nullable"`
+	Result CustomerServiceRecordResult `json:"result" api:"nullable"`
 	// The status of the customer service record
 	//
 	// Any of "pending", "completed", "failed".
@@ -315,7 +315,7 @@ func (r *CustomerServiceRecordVerifyPhoneNumberCoverageResponseData) UnmarshalJS
 
 type CustomerServiceRecordNewParams struct {
 	// A valid US phone number in E164 format.
-	PhoneNumber string `json:"phone_number,required"`
+	PhoneNumber string `json:"phone_number" api:"required"`
 	// Callback URL to receive webhook notifications.
 	WebhookURL     param.Opt[string]                            `json:"webhook_url,omitzero"`
 	AdditionalData CustomerServiceRecordNewParamsAdditionalData `json:"additional_data,omitzero"`
@@ -478,7 +478,7 @@ func (r CustomerServiceRecordListParamsSort) URLQuery() (v url.Values, err error
 
 type CustomerServiceRecordVerifyPhoneNumberCoverageParams struct {
 	// The phone numbers list to be verified.
-	PhoneNumbers []string `json:"phone_numbers,omitzero,required"`
+	PhoneNumbers []string `json:"phone_numbers,omitzero" api:"required"`
 	paramObj
 }
 

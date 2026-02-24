@@ -49,8 +49,8 @@ func (r *AIConversationMessageService) List(ctx context.Context, conversationID 
 }
 
 type AIConversationMessageListResponse struct {
-	Data []AIConversationMessageListResponseData `json:"data,required"`
-	Meta Meta                                    `json:"meta,required"`
+	Data []AIConversationMessageListResponseData `json:"data" api:"required"`
+	Meta Meta                                    `json:"meta" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -70,9 +70,9 @@ type AIConversationMessageListResponseData struct {
 	// The role of the message sender.
 	//
 	// Any of "user", "assistant", "tool".
-	Role string `json:"role,required"`
+	Role string `json:"role" api:"required"`
 	// The message content. Can be null for tool calls.
-	Text string `json:"text,required"`
+	Text string `json:"text" api:"required"`
 	// The datetime the message was created on the conversation. This does not
 	// necesarily correspond to the time the message was sent. The best field to use to
 	// determine the time the end user experienced the message is `sent_at`.
@@ -101,12 +101,12 @@ func (r *AIConversationMessageListResponseData) UnmarshalJSON(data []byte) error
 
 type AIConversationMessageListResponseDataToolCall struct {
 	// Unique identifier for the tool call.
-	ID       string                                                `json:"id,required"`
-	Function AIConversationMessageListResponseDataToolCallFunction `json:"function,required"`
+	ID       string                                                `json:"id" api:"required"`
+	Function AIConversationMessageListResponseDataToolCallFunction `json:"function" api:"required"`
 	// Type of the tool call.
 	//
 	// Any of "function".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -125,9 +125,9 @@ func (r *AIConversationMessageListResponseDataToolCall) UnmarshalJSON(data []byt
 
 type AIConversationMessageListResponseDataToolCallFunction struct {
 	// JSON-formatted arguments to pass to the function.
-	Arguments string `json:"arguments,required"`
+	Arguments string `json:"arguments" api:"required"`
 	// Name of the function to call.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Arguments   respjson.Field

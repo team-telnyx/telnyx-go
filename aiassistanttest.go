@@ -121,17 +121,17 @@ func (r *AIAssistantTestService) Delete(ctx context.Context, testID string, opts
 // creating/updating tests.
 type AssistantTest struct {
 	// Timestamp when the test was created.
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Human-readable name of the test.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Evaluation criteria used to assess test performance.
-	Rubric []AssistantTestRubric `json:"rubric,required"`
+	Rubric []AssistantTestRubric `json:"rubric" api:"required"`
 	// Communication channel used for test execution.
 	//
 	// Any of "phone_call", "web_call", "sms_chat", "web_chat".
-	TelnyxConversationChannel TelnyxConversationChannel `json:"telnyx_conversation_channel,required"`
+	TelnyxConversationChannel TelnyxConversationChannel `json:"telnyx_conversation_channel" api:"required"`
 	// Unique identifier for the assistant test.
-	TestID string `json:"test_id,required" format:"uuid"`
+	TestID string `json:"test_id" api:"required" format:"uuid"`
 	// Detailed description of the test's purpose and scope.
 	Description string `json:"description"`
 	// Target destination for test conversations.
@@ -168,9 +168,9 @@ func (r *AssistantTest) UnmarshalJSON(data []byte) error {
 type AssistantTestRubric struct {
 	// Specific guidance on how to assess the assistant’s performance for this rubric
 	// item.
-	Criteria string `json:"criteria,required"`
+	Criteria string `json:"criteria" api:"required"`
 	// Label for the evaluation criterion, e.g., Empathy, Accuracy, Clarity.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Criteria    respjson.Field
@@ -198,16 +198,16 @@ const (
 type AIAssistantTestNewParams struct {
 	// The target destination for the test conversation. Format depends on the channel:
 	// phone number for SMS/voice, webhook URL for web chat, etc.
-	Destination string `json:"destination,required"`
+	Destination string `json:"destination" api:"required"`
 	// Detailed instructions that define the test scenario and what the assistant
 	// should accomplish. This guides the test execution and evaluation.
-	Instructions string `json:"instructions,required"`
+	Instructions string `json:"instructions" api:"required"`
 	// A descriptive name for the assistant test. This will be used to identify the
 	// test in the UI and reports.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Evaluation criteria used to assess the assistant's performance. Each rubric item
 	// contains a name and specific criteria for evaluation.
-	Rubric []AIAssistantTestNewParamsRubric `json:"rubric,omitzero,required"`
+	Rubric []AIAssistantTestNewParamsRubric `json:"rubric,omitzero" api:"required"`
 	// Optional detailed description of what this test evaluates and its purpose. Helps
 	// team members understand the test's objectives.
 	Description param.Opt[string] `json:"description,omitzero"`
@@ -237,9 +237,9 @@ func (r *AIAssistantTestNewParams) UnmarshalJSON(data []byte) error {
 type AIAssistantTestNewParamsRubric struct {
 	// Specific guidance on how to assess the assistant’s performance for this rubric
 	// item.
-	Criteria string `json:"criteria,required"`
+	Criteria string `json:"criteria" api:"required"`
 	// Label for the evaluation criterion, e.g., Empathy, Accuracy, Clarity.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	paramObj
 }
 
@@ -285,9 +285,9 @@ func (r *AIAssistantTestUpdateParams) UnmarshalJSON(data []byte) error {
 type AIAssistantTestUpdateParamsRubric struct {
 	// Specific guidance on how to assess the assistant’s performance for this rubric
 	// item.
-	Criteria string `json:"criteria,required"`
+	Criteria string `json:"criteria" api:"required"`
 	// Label for the evaluation criterion, e.g., Empathy, Accuracy, Clarity.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	paramObj
 }
 

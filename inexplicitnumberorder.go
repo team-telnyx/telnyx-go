@@ -193,9 +193,9 @@ func (r *InexplicitNumberOrderResponseOrderingGroup) UnmarshalJSON(data []byte) 
 
 type InexplicitNumberOrderResponseOrderingGroupOrder struct {
 	// ID of the main number order
-	NumberOrderID string `json:"number_order_id,required" format:"uuid"`
+	NumberOrderID string `json:"number_order_id" api:"required" format:"uuid"`
 	// Array of sub number order IDs
-	SubNumberOrderIDs []string `json:"sub_number_order_ids,required" format:"uuid"`
+	SubNumberOrderIDs []string `json:"sub_number_order_ids" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		NumberOrderID     respjson.Field
@@ -246,7 +246,7 @@ func (r *InexplicitNumberOrderGetResponse) UnmarshalJSON(data []byte) error {
 type InexplicitNumberOrderNewParams struct {
 	// Group(s) of numbers to order. You can have multiple ordering_groups objects
 	// added to a single request.
-	OrderingGroups []InexplicitNumberOrderNewParamsOrderingGroup `json:"ordering_groups,omitzero,required"`
+	OrderingGroups []InexplicitNumberOrderNewParamsOrderingGroup `json:"ordering_groups,omitzero" api:"required"`
 	// Billing group id to apply to phone numbers that are purchased
 	BillingGroupID param.Opt[string] `json:"billing_group_id,omitzero"`
 	// Connection id to apply to phone numbers that are purchased
@@ -269,13 +269,13 @@ func (r *InexplicitNumberOrderNewParams) UnmarshalJSON(data []byte) error {
 // The properties CountRequested, CountryISO, PhoneNumberType are required.
 type InexplicitNumberOrderNewParamsOrderingGroup struct {
 	// Quantity of phone numbers to order
-	CountRequested string `json:"count_requested,required"`
+	CountRequested string `json:"count_requested" api:"required"`
 	// Country where you would like to purchase phone numbers. Allowable values: US, CA
 	//
 	// Any of "US", "CA".
-	CountryISO string `json:"country_iso,omitzero,required"`
+	CountryISO string `json:"country_iso,omitzero" api:"required"`
 	// Number type (local, toll-free, etc.)
-	PhoneNumberType string `json:"phone_number_type,required"`
+	PhoneNumberType string `json:"phone_number_type" api:"required"`
 	// Filter for phone numbers in a given state / province
 	AdministrativeArea param.Opt[string] `json:"administrative_area,omitzero"`
 	// Filter to exclude phone numbers that are currently on hold/reserved for your

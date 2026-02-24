@@ -174,7 +174,7 @@ func (r *UpdateAssistantParam) UnmarshalJSON(data []byte) error {
 }
 
 type AIAssistantVersionGetParams struct {
-	AssistantID       string          `path:"assistant_id,required" json:"-"`
+	AssistantID       string          `path:"assistant_id" api:"required" json:"-"`
 	IncludeMcpServers param.Opt[bool] `query:"include_mcp_servers,omitzero" json:"-"`
 	paramObj
 }
@@ -189,7 +189,7 @@ func (r AIAssistantVersionGetParams) URLQuery() (v url.Values, err error) {
 }
 
 type AIAssistantVersionUpdateParams struct {
-	AssistantID     string `path:"assistant_id,required" json:"-"`
+	AssistantID     string `path:"assistant_id" api:"required" json:"-"`
 	UpdateAssistant UpdateAssistantParam
 	paramObj
 }
@@ -202,11 +202,11 @@ func (r *AIAssistantVersionUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type AIAssistantVersionDeleteParams struct {
-	AssistantID string `path:"assistant_id,required" json:"-"`
+	AssistantID string `path:"assistant_id" api:"required" json:"-"`
 	paramObj
 }
 
 type AIAssistantVersionPromoteParams struct {
-	AssistantID string `path:"assistant_id,required" json:"-"`
+	AssistantID string `path:"assistant_id" api:"required" json:"-"`
 	paramObj
 }

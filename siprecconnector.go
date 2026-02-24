@@ -81,7 +81,7 @@ func (r *SiprecConnectorService) Delete(ctx context.Context, connectorName strin
 }
 
 type SiprecConnectorNewResponse struct {
-	Data SiprecConnectorNewResponseData `json:"data,required"`
+	Data SiprecConnectorNewResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -131,7 +131,7 @@ func (r *SiprecConnectorNewResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type SiprecConnectorGetResponse struct {
-	Data SiprecConnectorGetResponseData `json:"data,required"`
+	Data SiprecConnectorGetResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -181,7 +181,7 @@ func (r *SiprecConnectorGetResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type SiprecConnectorUpdateResponse struct {
-	Data SiprecConnectorUpdateResponseData `json:"data,required"`
+	Data SiprecConnectorUpdateResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -232,11 +232,11 @@ func (r *SiprecConnectorUpdateResponseData) UnmarshalJSON(data []byte) error {
 
 type SiprecConnectorNewParams struct {
 	// Hostname/IPv4 address of the SIPREC SRS.
-	Host string `json:"host,required"`
+	Host string `json:"host" api:"required"`
 	// Name for the SIPREC connector resource.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Port for the SIPREC SRS.
-	Port int64 `json:"port,required"`
+	Port int64 `json:"port" api:"required"`
 	// Subdomain to route the call when using Telnyx SRS (optional for non-Telnyx SRS).
 	AppSubdomain param.Opt[string] `json:"app_subdomain,omitzero"`
 	paramObj
@@ -252,11 +252,11 @@ func (r *SiprecConnectorNewParams) UnmarshalJSON(data []byte) error {
 
 type SiprecConnectorUpdateParams struct {
 	// Hostname/IPv4 address of the SIPREC SRS.
-	Host string `json:"host,required"`
+	Host string `json:"host" api:"required"`
 	// Name for the SIPREC connector resource.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Port for the SIPREC SRS.
-	Port int64 `json:"port,required"`
+	Port int64 `json:"port" api:"required"`
 	// Subdomain to route the call when using Telnyx SRS (optional for non-Telnyx SRS).
 	AppSubdomain param.Opt[string] `json:"app_subdomain,omitzero"`
 	paramObj

@@ -224,9 +224,9 @@ type PortingOrder struct {
 	// ISO 8601 formatted date indicating when the resource was created.
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// A customer-specified group reference for customer bookkeeping purposes
-	CustomerGroupReference string `json:"customer_group_reference,nullable"`
+	CustomerGroupReference string `json:"customer_group_reference" api:"nullable"`
 	// A customer-specified reference number for customer bookkeeping purposes
-	CustomerReference string `json:"customer_reference,nullable"`
+	CustomerReference string `json:"customer_reference" api:"nullable"`
 	// A description of the porting order
 	Description string `json:"description"`
 	// Can be specified directly or via the `requirement_group_id` parameter.
@@ -234,12 +234,12 @@ type PortingOrder struct {
 	EndUser   PortingOrderEndUser   `json:"end_user"`
 	// Information about messaging porting process.
 	Messaging PortingOrderMessaging `json:"messaging"`
-	Misc      PortingOrderMisc      `json:"misc,nullable"`
+	Misc      PortingOrderMisc      `json:"misc" api:"nullable"`
 	// Identifies the old service provider
 	OldServiceProviderOcn string `json:"old_service_provider_ocn"`
 	// A key to reference for the porting order group when contacting Telnyx customer
 	// support. This information is not available for porting orders in `draft` state
-	ParentSupportKey         string                               `json:"parent_support_key,nullable"`
+	ParentSupportKey         string                               `json:"parent_support_key" api:"nullable"`
 	PhoneNumberConfiguration PortingOrderPhoneNumberConfiguration `json:"phone_number_configuration"`
 	// The type of the phone number
 	//
@@ -260,13 +260,13 @@ type PortingOrder struct {
 	Status shared.PortingOrderStatus `json:"status"`
 	// A key to reference this porting order when contacting Telnyx customer support.
 	// This information is not available in draft porting orders.
-	SupportKey string `json:"support_key,nullable"`
+	SupportKey string `json:"support_key" api:"nullable"`
 	// ISO 8601 formatted date indicating when the resource was created.
 	UpdatedAt    time.Time                `json:"updated_at" format:"date-time"`
 	UserFeedback PortingOrderUserFeedback `json:"user_feedback"`
 	// Identifies the user (or organization) who requested the porting order
 	UserID     string `json:"user_id" format:"uuid"`
-	WebhookURL string `json:"webhook_url,nullable" format:"uri"`
+	WebhookURL string `json:"webhook_url" api:"nullable" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                       respjson.Field
@@ -380,13 +380,13 @@ type PortingOrderActivationSettings struct {
 	// Any of "New", "Pending", "Conflict", "Cancel Pending", "Failed", "Concurred",
 	// "Activate RDY", "Disconnect Pending", "Concurrence Sent", "Old", "Sending",
 	// "Active", "Cancelled".
-	ActivationStatus PortingOrderActivationSettingsActivationStatus `json:"activation_status,nullable"`
+	ActivationStatus PortingOrderActivationSettingsActivationStatus `json:"activation_status" api:"nullable"`
 	// Indicates whether this porting order is eligible for FastPort
 	FastPortEligible bool `json:"fast_port_eligible"`
 	// ISO 8601 formatted Date/Time of the FOC date
-	FocDatetimeActual time.Time `json:"foc_datetime_actual,nullable" format:"date-time"`
+	FocDatetimeActual time.Time `json:"foc_datetime_actual" api:"nullable" format:"date-time"`
 	// ISO 8601 formatted Date/Time requested for the FOC date
-	FocDatetimeRequested time.Time `json:"foc_datetime_requested,nullable" format:"date-time"`
+	FocDatetimeRequested time.Time `json:"foc_datetime_requested" api:"nullable" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ActivationStatus     respjson.Field
@@ -426,9 +426,9 @@ const (
 // Can be specified directly or via the `requirement_group_id` parameter.
 type PortingOrderDocuments struct {
 	// Returned ID of the submitted Invoice via the Documents endpoint
-	Invoice string `json:"invoice,nullable" format:"uuid"`
+	Invoice string `json:"invoice" api:"nullable" format:"uuid"`
 	// Returned ID of the submitted LOA via the Documents endpoint
-	Loa string `json:"loa,nullable" format:"uuid"`
+	Loa string `json:"loa" api:"nullable" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Invoice     respjson.Field
@@ -513,20 +513,20 @@ func (r *PortingOrderEndUserParam) UnmarshalJSON(data []byte) error {
 
 type PortingOrderEndUserAdmin struct {
 	// The authorized person's account number with the current service provider
-	AccountNumber string `json:"account_number,nullable"`
+	AccountNumber string `json:"account_number" api:"nullable"`
 	// Name of person authorizing the porting order
-	AuthPersonName string `json:"auth_person_name,nullable"`
+	AuthPersonName string `json:"auth_person_name" api:"nullable"`
 	// Billing phone number associated with these phone numbers
-	BillingPhoneNumber string `json:"billing_phone_number,nullable"`
+	BillingPhoneNumber string `json:"billing_phone_number" api:"nullable"`
 	// European business identification number. Applicable only in the European Union
-	BusinessIdentifier string `json:"business_identifier,nullable"`
+	BusinessIdentifier string `json:"business_identifier" api:"nullable"`
 	// Person Name or Company name requesting the port
-	EntityName string `json:"entity_name,nullable"`
+	EntityName string `json:"entity_name" api:"nullable"`
 	// PIN/passcode possibly required by the old service provider for extra
 	// verification
-	PinPasscode string `json:"pin_passcode,nullable"`
+	PinPasscode string `json:"pin_passcode" api:"nullable"`
 	// European tax identification number. Applicable only in the European Union
-	TaxIdentifier string `json:"tax_identifier,nullable"`
+	TaxIdentifier string `json:"tax_identifier" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AccountNumber      respjson.Field
@@ -586,17 +586,17 @@ func (r *PortingOrderEndUserAdminParam) UnmarshalJSON(data []byte) error {
 
 type PortingOrderEndUserLocation struct {
 	// State, province, or similar of billing address
-	AdministrativeArea string `json:"administrative_area,nullable"`
+	AdministrativeArea string `json:"administrative_area" api:"nullable"`
 	// ISO3166-1 alpha-2 country code of billing address
-	CountryCode string `json:"country_code,nullable"`
+	CountryCode string `json:"country_code" api:"nullable"`
 	// Second line of billing address
-	ExtendedAddress string `json:"extended_address,nullable"`
+	ExtendedAddress string `json:"extended_address" api:"nullable"`
 	// City or municipality of billing address
-	Locality string `json:"locality,nullable"`
+	Locality string `json:"locality" api:"nullable"`
 	// Postal Code of billing address
-	PostalCode string `json:"postal_code,nullable"`
+	PostalCode string `json:"postal_code" api:"nullable"`
 	// First line of billing address
-	StreetAddress string `json:"street_address,nullable"`
+	StreetAddress string `json:"street_address" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AdministrativeArea respjson.Field
@@ -700,13 +700,13 @@ type PortingOrderMisc struct {
 	// billing phone number is being ported to Telnyx. This will be set on your account
 	// with your current service provider and should be one of the numbers remaining on
 	// that account.
-	NewBillingPhoneNumber string `json:"new_billing_phone_number,nullable"`
+	NewBillingPhoneNumber string `json:"new_billing_phone_number" api:"nullable"`
 	// Remaining numbers can be either kept with their current service provider or
 	// disconnected. 'new_billing_telephone_number' is required when
 	// 'remaining_numbers_action' is 'keep'.
 	//
 	// Any of "keep", "disconnect".
-	RemainingNumbersAction PortingOrderMiscRemainingNumbersAction `json:"remaining_numbers_action,nullable"`
+	RemainingNumbersAction PortingOrderMiscRemainingNumbersAction `json:"remaining_numbers_action" api:"nullable"`
 	// A port can be either 'full' or 'partial'. When type is 'full' the other
 	// attributes should be omitted.
 	//
@@ -777,13 +777,13 @@ func (r *PortingOrderMiscParam) UnmarshalJSON(data []byte) error {
 
 type PortingOrderPhoneNumberConfiguration struct {
 	// identifies the billing group to set on the numbers when ported
-	BillingGroupID string `json:"billing_group_id,nullable"`
+	BillingGroupID string `json:"billing_group_id" api:"nullable"`
 	// identifies the connection to set on the numbers when ported
-	ConnectionID string `json:"connection_id,nullable"`
+	ConnectionID string `json:"connection_id" api:"nullable"`
 	// identifies the emergency address to set on the numbers when ported
-	EmergencyAddressID string `json:"emergency_address_id,nullable"`
+	EmergencyAddressID string `json:"emergency_address_id" api:"nullable"`
 	// identifies the messaging profile to set on the numbers when ported
-	MessagingProfileID string   `json:"messaging_profile_id,nullable"`
+	MessagingProfileID string   `json:"messaging_profile_id" api:"nullable"`
 	Tags               []string `json:"tags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -880,10 +880,10 @@ const (
 
 type PortingOrderUserFeedback struct {
 	// A comment related to the customer rating.
-	UserComment string `json:"user_comment,nullable"`
+	UserComment string `json:"user_comment" api:"nullable"`
 	// Once an order is ported, cancellation is requested or the request is cancelled,
 	// the user may rate their experience
-	UserRating int64 `json:"user_rating,nullable"`
+	UserRating int64 `json:"user_rating" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		UserComment respjson.Field
@@ -1260,7 +1260,7 @@ func (r *PortingOrderGetSubRequestResponseData) UnmarshalJSON(data []byte) error
 
 type PortingOrderNewParams struct {
 	// The list of +E.164 formatted phone numbers
-	PhoneNumbers []string `json:"phone_numbers,omitzero,required"`
+	PhoneNumbers []string `json:"phone_numbers,omitzero" api:"required"`
 	// A customer-specified reference number for customer bookkeeping purposes
 	CustomerReference param.Opt[string] `json:"customer_reference,omitzero"`
 	// A customer-specified group reference for customer bookkeeping purposes
@@ -1357,9 +1357,9 @@ func (r *PortingOrderUpdateParamsMessaging) UnmarshalJSON(data []byte) error {
 type PortingOrderUpdateParamsRequirement struct {
 	// identifies the document or provides the text value that satisfies this
 	// requirement
-	FieldValue string `json:"field_value,required"`
+	FieldValue string `json:"field_value" api:"required"`
 	// Identifies the requirement type that the `field_value` fulfills
-	RequirementTypeID string `json:"requirement_type_id,required"`
+	RequirementTypeID string `json:"requirement_type_id" api:"required"`
 	paramObj
 }
 

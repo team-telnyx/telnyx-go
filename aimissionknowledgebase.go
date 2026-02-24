@@ -114,16 +114,16 @@ type AIMissionKnowledgeBaseListKnowledgeBasesResponse = any
 type AIMissionKnowledgeBaseUpdateKnowledgeBaseResponse = any
 
 type AIMissionKnowledgeBaseDeleteKnowledgeBaseParams struct {
-	MissionID string `path:"mission_id,required" json:"-"`
+	MissionID string `path:"mission_id" api:"required" json:"-"`
 	paramObj
 }
 
 type AIMissionKnowledgeBaseGetKnowledgeBaseParams struct {
-	MissionID string `path:"mission_id,required" json:"-"`
+	MissionID string `path:"mission_id" api:"required" json:"-"`
 	paramObj
 }
 
 type AIMissionKnowledgeBaseUpdateKnowledgeBaseParams struct {
-	MissionID string `path:"mission_id,required" json:"-"`
+	MissionID string `path:"mission_id" api:"required" json:"-"`
 	paramObj
 }

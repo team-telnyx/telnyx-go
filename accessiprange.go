@@ -83,13 +83,13 @@ func (r *AccessIPRangeService) Delete(ctx context.Context, accessIPRangeID strin
 }
 
 type AccessIPRange struct {
-	ID        string `json:"id,required"`
-	CidrBlock string `json:"cidr_block,required"`
+	ID        string `json:"id" api:"required"`
+	CidrBlock string `json:"cidr_block" api:"required"`
 	// An enumeration.
 	//
 	// Any of "pending", "added".
-	Status      CloudflareSyncStatus `json:"status,required"`
-	UserID      string               `json:"user_id,required"`
+	Status      CloudflareSyncStatus `json:"status" api:"required"`
+	UserID      string               `json:"user_id" api:"required"`
 	CreatedAt   time.Time            `json:"created_at" format:"date-time"`
 	Description string               `json:"description"`
 	UpdatedAt   time.Time            `json:"updated_at" format:"date-time"`
@@ -114,7 +114,7 @@ func (r *AccessIPRange) UnmarshalJSON(data []byte) error {
 }
 
 type AccessIPRangeNewParams struct {
-	CidrBlock   string            `json:"cidr_block,required"`
+	CidrBlock   string            `json:"cidr_block" api:"required"`
 	Description param.Opt[string] `json:"description,omitzero"`
 	paramObj
 }

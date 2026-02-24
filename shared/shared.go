@@ -18,8 +18,8 @@ type paramUnion = param.APIUnion
 type paramObj = param.APIObject
 
 type APIError struct {
-	Code        string         `json:"code,required"`
-	Title       string         `json:"title,required"`
+	Code        string         `json:"code" api:"required"`
+	Title       string         `json:"title" api:"required"`
 	Description string         `json:"description"`
 	Meta        map[string]any `json:"meta"`
 	Source      APIErrorSource `json:"source"`
@@ -243,8 +243,8 @@ func (r *ConnectionNoiseSuppressionDetailsParam) UnmarshalJSON(data []byte) erro
 }
 
 type ConnectionsPaginationMeta struct {
-	PageNumber   int64 `json:"page_number,required"`
-	TotalPages   int64 `json:"total_pages,required"`
+	PageNumber   int64 `json:"page_number" api:"required"`
+	TotalPages   int64 `json:"total_pages" api:"required"`
 	PageSize     int64 `json:"page_size"`
 	TotalResults int64 `json:"total_results"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -400,10 +400,10 @@ type InboundMessagePayload struct {
 	ID string                    `json:"id" format:"uuid"`
 	Cc []InboundMessagePayloadCc `json:"cc"`
 	// Not used for inbound messages.
-	CompletedAt time.Time                 `json:"completed_at,nullable" format:"date-time"`
-	Cost        InboundMessagePayloadCost `json:"cost,nullable"`
+	CompletedAt time.Time                 `json:"completed_at" api:"nullable" format:"date-time"`
+	Cost        InboundMessagePayloadCost `json:"cost" api:"nullable"`
 	// Detailed breakdown of the message cost components.
-	CostBreakdown InboundMessagePayloadCostBreakdown `json:"cost_breakdown,nullable"`
+	CostBreakdown InboundMessagePayloadCostBreakdown `json:"cost_breakdown" api:"nullable"`
 	// The direction of the message. Inbound messages are sent to you whereas outbound
 	// messages are sent from you.
 	//
@@ -429,17 +429,17 @@ type InboundMessagePayload struct {
 	// Any of "message".
 	RecordType InboundMessagePayloadRecordType `json:"record_type"`
 	// Not used for inbound messages.
-	SentAt time.Time `json:"sent_at,nullable" format:"date-time"`
+	SentAt time.Time `json:"sent_at" api:"nullable" format:"date-time"`
 	// Message subject.
-	Subject string `json:"subject,nullable"`
+	Subject string `json:"subject" api:"nullable"`
 	// Tags associated with the resource.
 	Tags []string `json:"tags"`
 	// Indicates whether the TCR campaign is billable.
 	TcrCampaignBillable bool `json:"tcr_campaign_billable"`
 	// The Campaign Registry (TCR) campaign ID associated with the message.
-	TcrCampaignID string `json:"tcr_campaign_id,nullable"`
+	TcrCampaignID string `json:"tcr_campaign_id" api:"nullable"`
 	// The registration status of the TCR campaign.
-	TcrCampaignRegistered string `json:"tcr_campaign_registered,nullable"`
+	TcrCampaignRegistered string `json:"tcr_campaign_registered" api:"nullable"`
 	// Message body (i.e., content) as a non-empty string.
 	//
 	// **Required for SMS**
@@ -450,12 +450,12 @@ type InboundMessagePayload struct {
 	// Any of "SMS", "MMS".
 	Type InboundMessagePayloadType `json:"type"`
 	// Not used for inbound messages.
-	ValidUntil time.Time `json:"valid_until,nullable" format:"date-time"`
+	ValidUntil time.Time `json:"valid_until" api:"nullable" format:"date-time"`
 	// The failover URL where webhooks related to this message will be sent if sending
 	// to the primary URL fails.
-	WebhookFailoverURL string `json:"webhook_failover_url,nullable" format:"url"`
+	WebhookFailoverURL string `json:"webhook_failover_url" api:"nullable" format:"url"`
 	// The URL where webhooks related to this message will be sent.
-	WebhookURL string `json:"webhook_url,nullable" format:"url"`
+	WebhookURL string `json:"webhook_url" api:"nullable" format:"url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
@@ -718,11 +718,11 @@ const (
 // its current product configuration.
 type MessagingFeatureSet struct {
 	// Send messages to and receive messages from numbers in the same country.
-	DomesticTwoWay bool `json:"domestic_two_way,required"`
+	DomesticTwoWay bool `json:"domestic_two_way" api:"required"`
 	// Receive messages from numbers in other countries.
-	InternationalInbound bool `json:"international_inbound,required"`
+	InternationalInbound bool `json:"international_inbound" api:"required"`
 	// Send messages to numbers in other countries.
-	InternationalOutbound bool `json:"international_outbound,required"`
+	InternationalOutbound bool `json:"international_outbound" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DomesticTwoWay        respjson.Field
@@ -744,7 +744,7 @@ type MessagingHostedNumberOrder struct {
 	ID string `json:"id" format:"uuid"`
 	// Automatically associate the number with this messaging profile ID when the order
 	// is complete.
-	MessagingProfileID string         `json:"messaging_profile_id,nullable"`
+	MessagingProfileID string         `json:"messaging_profile_id" api:"nullable"`
 	PhoneNumbers       []HostedNumber `json:"phone_numbers"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
@@ -789,10 +789,10 @@ const (
 )
 
 type MessagingPaginationMeta struct {
-	PageNumber   int64 `json:"page_number,required"`
-	PageSize     int64 `json:"page_size,required"`
-	TotalPages   int64 `json:"total_pages,required"`
-	TotalResults int64 `json:"total_results,required"`
+	PageNumber   int64 `json:"page_number" api:"required"`
+	PageSize     int64 `json:"page_size" api:"required"`
+	TotalPages   int64 `json:"total_pages" api:"required"`
+	TotalResults int64 `json:"total_results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PageNumber   respjson.Field
@@ -812,9 +812,9 @@ func (r *MessagingPaginationMeta) UnmarshalJSON(data []byte) error {
 
 type Metadata struct {
 	// Current Page based on pagination settings (included when defaults are used.)
-	PageNumber int64 `json:"page_number,required"`
+	PageNumber int64 `json:"page_number" api:"required"`
 	// Total number of pages based on pagination settings
-	TotalPages int64 `json:"total_pages,required"`
+	TotalPages int64 `json:"total_pages" api:"required"`
 	// Number of results to return per page based on pagination settings (included when
 	// defaults are used.)
 	PageSize int64 `json:"page_size"`
@@ -842,7 +842,7 @@ type MinimaxVoiceSettingsParam struct {
 	// Voice settings provider type
 	//
 	// Any of "minimax".
-	Type MinimaxVoiceSettingsType `json:"type,omitzero,required"`
+	Type MinimaxVoiceSettingsType `json:"type,omitzero" api:"required"`
 	// Voice pitch adjustment. Default is 0.
 	Pitch param.Opt[int64] `json:"pitch,omitzero"`
 	// Speech speed multiplier. Default is 1.0.
@@ -931,13 +931,13 @@ const (
 // High level health metrics about the number and it's messaging sending patterns.
 type NumberHealthMetrics struct {
 	// The ratio of messages received to the number of messages sent.
-	InboundOutboundRatio float64 `json:"inbound_outbound_ratio,required"`
+	InboundOutboundRatio float64 `json:"inbound_outbound_ratio" api:"required"`
 	// The number of messages analyzed for the health metrics.
-	MessageCount int64 `json:"message_count,required"`
+	MessageCount int64 `json:"message_count" api:"required"`
 	// The ratio of messages blocked for spam to the number of messages attempted.
-	SpamRatio float64 `json:"spam_ratio,required"`
+	SpamRatio float64 `json:"spam_ratio" api:"required"`
 	// The ratio of messages sucessfully delivered to the number of messages attempted.
-	SuccessRatio float64 `json:"success_ratio,required"`
+	SuccessRatio float64 `json:"success_ratio" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		InboundOutboundRatio respjson.Field
@@ -970,7 +970,7 @@ type PhoneNumberWithMessagingSettings struct {
 	// The messaging product that the number is registered to use
 	MessagingProduct string `json:"messaging_product"`
 	// Unique identifier for a messaging profile.
-	MessagingProfileID string `json:"messaging_profile_id,nullable"`
+	MessagingProfileID string `json:"messaging_profile_id" api:"nullable"`
 	// The organization that owns this phone number.
 	OrganizationID string `json:"organization_id"`
 	// +E.164 formatted phone number.
@@ -1022,11 +1022,11 @@ type PhoneNumberWithMessagingSettingsFeatures struct {
 	// The set of features available for a specific messaging use case (SMS or MMS).
 	// Features can vary depending on the characteristics the phone number, as well as
 	// its current product configuration.
-	Mms MessagingFeatureSet `json:"mms,nullable"`
+	Mms MessagingFeatureSet `json:"mms" api:"nullable"`
 	// The set of features available for a specific messaging use case (SMS or MMS).
 	// Features can vary depending on the characteristics the phone number, as well as
 	// its current product configuration.
-	SMS MessagingFeatureSet `json:"sms,nullable"`
+	SMS MessagingFeatureSet `json:"sms" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Mms         respjson.Field
@@ -1191,7 +1191,7 @@ func (r *RoomParticipant) UnmarshalJSON(data []byte) error {
 
 type ShortCode struct {
 	// Unique identifier for a messaging profile.
-	MessagingProfileID string `json:"messaging_profile_id,required"`
+	MessagingProfileID string `json:"messaging_profile_id" api:"required"`
 	// Identifies the type of resource.
 	ID string `json:"id" format:"uuid"`
 	// ISO 3166-1 alpha-2 country code.
@@ -1327,7 +1327,7 @@ type SimpleSimCard struct {
 	// Indicate whether the SIM card has any pending (in-progress) actions.
 	ActionsInProgress bool `json:"actions_in_progress"`
 	// List of IMEIs authorized to use a given SIM card.
-	AuthorizedImeis []string `json:"authorized_imeis,nullable"`
+	AuthorizedImeis []string `json:"authorized_imeis" api:"nullable"`
 	// ISO 8601 formatted date-time indicating when the resource was created.
 	CreatedAt string `json:"created_at"`
 	// The SIM card consumption so far in the current billing cycle.
@@ -1335,11 +1335,11 @@ type SimpleSimCard struct {
 	// The SIM card individual data limit configuration.
 	DataLimit SimpleSimCardDataLimit `json:"data_limit"`
 	// The Embedded Identity Document (eID) for eSIM cards.
-	Eid string `json:"eid,nullable"`
+	Eid string `json:"eid" api:"nullable"`
 	// The installation status of the eSIM. Only applicable for eSIM cards.
 	//
 	// Any of "released", "disabled".
-	EsimInstallationStatus SimpleSimCardEsimInstallationStatus `json:"esim_installation_status,nullable"`
+	EsimInstallationStatus SimpleSimCardEsimInstallationStatus `json:"esim_installation_status" api:"nullable"`
 	// The ICCID is the identifier of the specific SIM card/chip. Each SIM is
 	// internationally identified by its integrated circuit card identifier (ICCID).
 	// ICCIDs are stored in the SIM card's memory and are also engraved or printed on

@@ -143,9 +143,9 @@ type PrivateWirelessGatewayStatus struct {
 	// This attribute is an
 	// [error code](https://developers.telnyx.com/development/api-fundamentals/api-errors)
 	// related to the failure reason.
-	ErrorCode string `json:"error_code,nullable"`
+	ErrorCode string `json:"error_code" api:"nullable"`
 	// This attribute provides a human-readable explanation of why a failure happened.
-	ErrorDescription string `json:"error_description,nullable"`
+	ErrorDescription string `json:"error_description" api:"nullable"`
 	// The current status or failure details of the Private Wireless Gateway. <ul>
 	//
 	//	<li><code>provisioning</code> - the Private Wireless Gateway is being provisioned.</li>
@@ -262,9 +262,9 @@ func (r *PrivateWirelessGatewayDeleteResponse) UnmarshalJSON(data []byte) error 
 
 type PrivateWirelessGatewayNewParams struct {
 	// The private wireless gateway name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The identification of the related network resource.
-	NetworkID string `json:"network_id,required" format:"uuid"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid"`
 	// The code of the region where the private wireless gateway will be assigned. A
 	// list of available regions can be found at the regions endpoint
 	RegionCode param.Opt[string] `json:"region_code,omitzero"`

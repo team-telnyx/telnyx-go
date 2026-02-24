@@ -324,9 +324,9 @@ func init() {
 
 // The properties BookAppointment, Type are required.
 type AssistantToolBookAppointmentParam struct {
-	BookAppointment AssistantToolBookAppointmentBookAppointmentParam `json:"book_appointment,omitzero,required"`
+	BookAppointment AssistantToolBookAppointmentBookAppointmentParam `json:"book_appointment,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "book_appointment".
-	Type constant.BookAppointment `json:"type,required"`
+	Type constant.BookAppointment `json:"type" api:"required"`
 	paramObj
 }
 
@@ -344,10 +344,10 @@ type AssistantToolBookAppointmentBookAppointmentParam struct {
 	// pass the `identifier` for an integration secret
 	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
 	// that refers to your Cal.com API key.
-	APIKeyRef string `json:"api_key_ref,required"`
+	APIKeyRef string `json:"api_key_ref" api:"required"`
 	// Event Type ID for which slots are being fetched.
 	// [cal.com](https://cal.com/docs/api-reference/v2/bookings/create-a-booking#body-event-type-id)
-	EventTypeID int64 `json:"event_type_id,required"`
+	EventTypeID int64 `json:"event_type_id" api:"required"`
 	// The name of the attendee
 	// [cal.com](https://cal.com/docs/api-reference/v2/bookings/create-a-booking#body-attendee-name).
 	// If not provided, the assistant will ask for the attendee's name.
@@ -369,10 +369,10 @@ func (r *AssistantToolBookAppointmentBookAppointmentParam) UnmarshalJSON(data []
 
 // The properties CheckAvailability, Type are required.
 type AssistantToolCheckAvailabilityParam struct {
-	CheckAvailability AssistantToolCheckAvailabilityCheckAvailabilityParam `json:"check_availability,omitzero,required"`
+	CheckAvailability AssistantToolCheckAvailabilityCheckAvailabilityParam `json:"check_availability,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as
 	// "check_availability".
-	Type constant.CheckAvailability `json:"type,required"`
+	Type constant.CheckAvailability `json:"type" api:"required"`
 	paramObj
 }
 
@@ -390,10 +390,10 @@ type AssistantToolCheckAvailabilityCheckAvailabilityParam struct {
 	// pass the `identifier` for an integration secret
 	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
 	// that refers to your Cal.com API key.
-	APIKeyRef string `json:"api_key_ref,required"`
+	APIKeyRef string `json:"api_key_ref" api:"required"`
 	// Event Type ID for which slots are being fetched.
 	// [cal.com](https://cal.com/docs/api-reference/v2/slots/get-available-slots#parameter-event-type-id)
-	EventTypeID int64 `json:"event_type_id,required"`
+	EventTypeID int64 `json:"event_type_id" api:"required"`
 	paramObj
 }
 
@@ -407,9 +407,9 @@ func (r *AssistantToolCheckAvailabilityCheckAvailabilityParam) UnmarshalJSON(dat
 
 // The properties Retrieval, Type are required.
 type AssistantToolRetrievalParam struct {
-	Retrieval AssistantToolRetrievalRetrievalParam `json:"retrieval,omitzero,required"`
+	Retrieval AssistantToolRetrievalRetrievalParam `json:"retrieval,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "retrieval".
-	Type constant.Retrieval `json:"type,required"`
+	Type constant.Retrieval `json:"type" api:"required"`
 	paramObj
 }
 
@@ -423,7 +423,7 @@ func (r *AssistantToolRetrievalParam) UnmarshalJSON(data []byte) error {
 
 // The property BucketIDs is required.
 type AssistantToolRetrievalRetrievalParam struct {
-	BucketIDs []string `json:"bucket_ids,omitzero,required"`
+	BucketIDs []string `json:"bucket_ids,omitzero" api:"required"`
 	// The maximum number of results to retrieve as context for the language model.
 	MaxNumResults param.Opt[int64] `json:"max_num_results,omitzero"`
 	paramObj
@@ -605,8 +605,8 @@ func (r AssistantToolsItemsUnion) ToParam() AssistantToolsItemsUnionParam {
 // another AI assistant. By default, this will happen transparently to the end
 // user.
 type AssistantToolHandoff struct {
-	Handoff AssistantToolHandoffHandoff `json:"handoff,required"`
-	Type    constant.Handoff            `json:"type,required"`
+	Handoff AssistantToolHandoffHandoff `json:"handoff" api:"required"`
+	Type    constant.Handoff            `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Handoff     respjson.Field
@@ -624,7 +624,7 @@ func (r *AssistantToolHandoff) UnmarshalJSON(data []byte) error {
 
 type AssistantToolHandoffHandoff struct {
 	// List of possible assistants that can receive a handoff.
-	AIAssistants []AssistantToolHandoffHandoffAIAssistant `json:"ai_assistants,required"`
+	AIAssistants []AssistantToolHandoffHandoffAIAssistant `json:"ai_assistants" api:"required"`
 	// With the unified voice mode all assistants share the same voice, making the
 	// handoff transparent to the user. With the distinct voice mode all assistants
 	// retain their voice configuration, providing the experience of a conference call
@@ -649,9 +649,9 @@ func (r *AssistantToolHandoffHandoff) UnmarshalJSON(data []byte) error {
 
 type AssistantToolHandoffHandoffAIAssistant struct {
 	// The ID of the assistant to hand off to.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Helpful name for giving context on when to handoff to the assistant.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -668,8 +668,8 @@ func (r *AssistantToolHandoffHandoffAIAssistant) UnmarshalJSON(data []byte) erro
 }
 
 type AssistantToolTransfer struct {
-	Transfer AssistantToolTransferTransfer `json:"transfer,required"`
-	Type     constant.Transfer             `json:"type,required"`
+	Transfer AssistantToolTransferTransfer `json:"transfer" api:"required"`
+	Type     constant.Transfer             `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Transfer    respjson.Field
@@ -687,10 +687,10 @@ func (r *AssistantToolTransfer) UnmarshalJSON(data []byte) error {
 
 type AssistantToolTransferTransfer struct {
 	// Number or SIP URI placing the call.
-	From string `json:"from,required"`
+	From string `json:"from" api:"required"`
 	// The different possible targets of the transfer. The assistant will be able to
 	// choose one of the targets to transfer the call to.
-	Targets []AssistantToolTransferTransferTarget `json:"targets,required"`
+	Targets []AssistantToolTransferTransferTarget `json:"targets" api:"required"`
 	// Custom headers to be added to the SIP INVITE for the transfer command.
 	CustomHeaders []AssistantToolTransferTransferCustomHeader `json:"custom_headers"`
 	// Configuration for voicemail detection (AMD - Answering Machine Detection) on the
@@ -898,8 +898,8 @@ func (r *AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedVoice
 }
 
 type AssistantToolRefer struct {
-	Refer AssistantToolReferRefer `json:"refer,required"`
-	Type  constant.Refer          `json:"type,required"`
+	Refer AssistantToolReferRefer `json:"refer" api:"required"`
+	Type  constant.Refer          `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Refer       respjson.Field
@@ -918,7 +918,7 @@ func (r *AssistantToolRefer) UnmarshalJSON(data []byte) error {
 type AssistantToolReferRefer struct {
 	// The different possible targets of the SIP refer. The assistant will be able to
 	// choose one of the targets to refer the call to.
-	Targets []AssistantToolReferReferTarget `json:"targets,required"`
+	Targets []AssistantToolReferReferTarget `json:"targets" api:"required"`
 	// Custom headers to be added to the SIP REFER.
 	CustomHeaders []AssistantToolReferReferCustomHeader `json:"custom_headers"`
 	// SIP headers to be added to the SIP REFER. Currently only User-to-User and
@@ -942,9 +942,9 @@ func (r *AssistantToolReferRefer) UnmarshalJSON(data []byte) error {
 
 type AssistantToolReferReferTarget struct {
 	// The name of the target.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The SIP URI to which the call will be referred.
-	SipAddress string `json:"sip_address,required"`
+	SipAddress string `json:"sip_address" api:"required"`
 	// SIP Authentication password used for SIP challenges.
 	SipAuthPassword string `json:"sip_auth_password"`
 	// SIP Authentication username used for SIP challenges.
@@ -1012,8 +1012,8 @@ func (r *AssistantToolReferReferSipHeader) UnmarshalJSON(data []byte) error {
 }
 
 type AssistantToolSendDtmf struct {
-	SendDtmf map[string]any    `json:"send_dtmf,required"`
-	Type     constant.SendDtmf `json:"type,required"`
+	SendDtmf map[string]any    `json:"send_dtmf" api:"required"`
+	Type     constant.SendDtmf `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		SendDtmf    respjson.Field
@@ -1033,8 +1033,8 @@ func (r *AssistantToolSendDtmf) UnmarshalJSON(data []byte) error {
 // end user. The 'to' and 'from' addresses are automatically determined from the
 // conversation context, and the message text is generated by the assistant.
 type AssistantToolSendMessage struct {
-	SendMessage map[string]any       `json:"send_message,required"`
-	Type        constant.SendMessage `json:"type,required"`
+	SendMessage map[string]any       `json:"send_message" api:"required"`
+	Type        constant.SendMessage `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		SendMessage respjson.Field
@@ -1051,8 +1051,8 @@ func (r *AssistantToolSendMessage) UnmarshalJSON(data []byte) error {
 }
 
 type AssistantToolSkipTurn struct {
-	SkipTurn AssistantToolSkipTurnSkipTurn `json:"skip_turn,required"`
-	Type     constant.SkipTurn             `json:"type,required"`
+	SkipTurn AssistantToolSkipTurnSkipTurn `json:"skip_turn" api:"required"`
+	Type     constant.SkipTurn             `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		SkipTurn    respjson.Field
@@ -1310,9 +1310,9 @@ func init() {
 //
 // The properties Handoff, Type are required.
 type AssistantToolHandoffParam struct {
-	Handoff AssistantToolHandoffHandoffParam `json:"handoff,omitzero,required"`
+	Handoff AssistantToolHandoffHandoffParam `json:"handoff,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "handoff".
-	Type constant.Handoff `json:"type,required"`
+	Type constant.Handoff `json:"type" api:"required"`
 	paramObj
 }
 
@@ -1327,7 +1327,7 @@ func (r *AssistantToolHandoffParam) UnmarshalJSON(data []byte) error {
 // The property AIAssistants is required.
 type AssistantToolHandoffHandoffParam struct {
 	// List of possible assistants that can receive a handoff.
-	AIAssistants []AssistantToolHandoffHandoffAIAssistantParam `json:"ai_assistants,omitzero,required"`
+	AIAssistants []AssistantToolHandoffHandoffAIAssistantParam `json:"ai_assistants,omitzero" api:"required"`
 	// With the unified voice mode all assistants share the same voice, making the
 	// handoff transparent to the user. With the distinct voice mode all assistants
 	// retain their voice configuration, providing the experience of a conference call
@@ -1355,9 +1355,9 @@ func init() {
 // The properties ID, Name are required.
 type AssistantToolHandoffHandoffAIAssistantParam struct {
 	// The ID of the assistant to hand off to.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Helpful name for giving context on when to handoff to the assistant.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	paramObj
 }
 
@@ -1371,9 +1371,9 @@ func (r *AssistantToolHandoffHandoffAIAssistantParam) UnmarshalJSON(data []byte)
 
 // The properties Transfer, Type are required.
 type AssistantToolTransferParam struct {
-	Transfer AssistantToolTransferTransferParam `json:"transfer,omitzero,required"`
+	Transfer AssistantToolTransferTransferParam `json:"transfer,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "transfer".
-	Type constant.Transfer `json:"type,required"`
+	Type constant.Transfer `json:"type" api:"required"`
 	paramObj
 }
 
@@ -1388,10 +1388,10 @@ func (r *AssistantToolTransferParam) UnmarshalJSON(data []byte) error {
 // The properties From, Targets are required.
 type AssistantToolTransferTransferParam struct {
 	// Number or SIP URI placing the call.
-	From string `json:"from,required"`
+	From string `json:"from" api:"required"`
 	// The different possible targets of the transfer. The assistant will be able to
 	// choose one of the targets to transfer the call to.
-	Targets []AssistantToolTransferTransferTargetParam `json:"targets,omitzero,required"`
+	Targets []AssistantToolTransferTransferTargetParam `json:"targets,omitzero" api:"required"`
 	// Natural language instructions for your agent for how to provide context for the
 	// transfer recipient.
 	WarmTransferInstructions param.Opt[string] `json:"warm_transfer_instructions,omitzero"`
@@ -1571,9 +1571,9 @@ func init() {
 
 // The properties Refer, Type are required.
 type AssistantToolReferParam struct {
-	Refer AssistantToolReferReferParam `json:"refer,omitzero,required"`
+	Refer AssistantToolReferReferParam `json:"refer,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "refer".
-	Type constant.Refer `json:"type,required"`
+	Type constant.Refer `json:"type" api:"required"`
 	paramObj
 }
 
@@ -1589,7 +1589,7 @@ func (r *AssistantToolReferParam) UnmarshalJSON(data []byte) error {
 type AssistantToolReferReferParam struct {
 	// The different possible targets of the SIP refer. The assistant will be able to
 	// choose one of the targets to refer the call to.
-	Targets []AssistantToolReferReferTargetParam `json:"targets,omitzero,required"`
+	Targets []AssistantToolReferReferTargetParam `json:"targets,omitzero" api:"required"`
 	// Custom headers to be added to the SIP REFER.
 	CustomHeaders []AssistantToolReferReferCustomHeaderParam `json:"custom_headers,omitzero"`
 	// SIP headers to be added to the SIP REFER. Currently only User-to-User and
@@ -1609,9 +1609,9 @@ func (r *AssistantToolReferReferParam) UnmarshalJSON(data []byte) error {
 // The properties Name, SipAddress are required.
 type AssistantToolReferReferTargetParam struct {
 	// The name of the target.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The SIP URI to which the call will be referred.
-	SipAddress string `json:"sip_address,required"`
+	SipAddress string `json:"sip_address" api:"required"`
 	// SIP Authentication password used for SIP challenges.
 	SipAuthPassword param.Opt[string] `json:"sip_auth_password,omitzero"`
 	// SIP Authentication username used for SIP challenges.
@@ -1672,9 +1672,9 @@ func init() {
 
 // The properties SendDtmf, Type are required.
 type AssistantToolSendDtmfParam struct {
-	SendDtmf map[string]any `json:"send_dtmf,omitzero,required"`
+	SendDtmf map[string]any `json:"send_dtmf,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "send_dtmf".
-	Type constant.SendDtmf `json:"type,required"`
+	Type constant.SendDtmf `json:"type" api:"required"`
 	paramObj
 }
 
@@ -1692,9 +1692,9 @@ func (r *AssistantToolSendDtmfParam) UnmarshalJSON(data []byte) error {
 //
 // The properties SendMessage, Type are required.
 type AssistantToolSendMessageParam struct {
-	SendMessage map[string]any `json:"send_message,omitzero,required"`
+	SendMessage map[string]any `json:"send_message,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "send_message".
-	Type constant.SendMessage `json:"type,required"`
+	Type constant.SendMessage `json:"type" api:"required"`
 	paramObj
 }
 
@@ -1708,9 +1708,9 @@ func (r *AssistantToolSendMessageParam) UnmarshalJSON(data []byte) error {
 
 // The properties SkipTurn, Type are required.
 type AssistantToolSkipTurnParam struct {
-	SkipTurn AssistantToolSkipTurnSkipTurnParam `json:"skip_turn,omitzero,required"`
+	SkipTurn AssistantToolSkipTurnSkipTurnParam `json:"skip_turn,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "skip_turn".
-	Type constant.SkipTurn `json:"type,required"`
+	Type constant.SkipTurn `json:"type" api:"required"`
 	paramObj
 }
 
@@ -1737,7 +1737,7 @@ func (r *AssistantToolSkipTurnSkipTurnParam) UnmarshalJSON(data []byte) error {
 }
 
 type AssistantsList struct {
-	Data []InferenceEmbedding `json:"data,required"`
+	Data []InferenceEmbedding `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -1824,9 +1824,9 @@ const (
 )
 
 type HangupTool struct {
-	Hangup HangupToolParamsResp `json:"hangup,required"`
+	Hangup HangupToolParamsResp `json:"hangup" api:"required"`
 	// Any of "hangup".
-	Type HangupToolType `json:"type,required"`
+	Type HangupToolType `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Hangup      respjson.Field
@@ -1859,9 +1859,9 @@ const (
 
 // The properties Hangup, Type are required.
 type HangupToolParam struct {
-	Hangup HangupToolParams `json:"hangup,omitzero,required"`
+	Hangup HangupToolParams `json:"hangup,omitzero" api:"required"`
 	// Any of "hangup".
-	Type HangupToolType `json:"type,omitzero,required"`
+	Type HangupToolType `json:"type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1945,16 +1945,16 @@ const (
 )
 
 type InferenceEmbedding struct {
-	ID        string    `json:"id,required"`
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	ID        string    `json:"id" api:"required"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// System instructions for the assistant. These may be templated with
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
-	Instructions string `json:"instructions,required"`
+	Instructions string `json:"instructions" api:"required"`
 	// ID of the model to use. You can use the
 	// [Get models API](https://developers.telnyx.com/api-reference/chat/get-available-models)
 	// to see all of your available models,
-	Model       string `json:"model,required"`
-	Name        string `json:"name,required"`
+	Model       string `json:"model" api:"required"`
+	Name        string `json:"name" api:"required"`
 	Description string `json:"description"`
 	// Map of dynamic variables and their values
 	DynamicVariables map[string]any `json:"dynamic_variables"`
@@ -2024,8 +2024,8 @@ func (r *InferenceEmbedding) UnmarshalJSON(data []byte) error {
 
 type InferenceEmbeddingWebhookToolParamsResp struct {
 	// Any of "webhook".
-	Type    InferenceEmbeddingWebhookToolParamsType        `json:"type,required"`
-	Webhook InferenceEmbeddingWebhookToolParamsWebhookResp `json:"webhook,required"`
+	Type    InferenceEmbeddingWebhookToolParamsType        `json:"type" api:"required"`
+	Webhook InferenceEmbeddingWebhookToolParamsWebhookResp `json:"webhook" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
@@ -2059,14 +2059,14 @@ const (
 
 type InferenceEmbeddingWebhookToolParamsWebhookResp struct {
 	// The description of the tool.
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// The name of the tool.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The URL of the external tool to be called. This URL is going to be used by the
 	// assistant. The URL can be templated like: `https://example.com/api/v1/{id}`,
 	// where `{id}` is a placeholder for a value that will be provided by the assistant
 	// if `path_parameters` are provided with the `id` attribute.
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// If async, the assistant will move forward without waiting for your server to
 	// respond.
 	Async bool `json:"async"`
@@ -2235,8 +2235,8 @@ func (r *InferenceEmbeddingWebhookToolParamsWebhookQueryParametersResp) Unmarsha
 // The properties Type, Webhook are required.
 type InferenceEmbeddingWebhookToolParams struct {
 	// Any of "webhook".
-	Type    InferenceEmbeddingWebhookToolParamsType    `json:"type,omitzero,required"`
-	Webhook InferenceEmbeddingWebhookToolParamsWebhook `json:"webhook,omitzero,required"`
+	Type    InferenceEmbeddingWebhookToolParamsType    `json:"type,omitzero" api:"required"`
+	Webhook InferenceEmbeddingWebhookToolParamsWebhook `json:"webhook,omitzero" api:"required"`
 	paramObj
 }
 
@@ -2251,14 +2251,14 @@ func (r *InferenceEmbeddingWebhookToolParams) UnmarshalJSON(data []byte) error {
 // The properties Description, Name, URL are required.
 type InferenceEmbeddingWebhookToolParamsWebhook struct {
 	// The description of the tool.
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// The name of the tool.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The URL of the external tool to be called. This URL is going to be used by the
 	// assistant. The URL can be templated like: `https://example.com/api/v1/{id}`,
 	// where `{id}` is a placeholder for a value that will be provided by the assistant
 	// if `path_parameters` are provided with the `id` attribute.
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// If async, the assistant will move forward without waiting for your server to
 	// respond.
 	Async param.Opt[bool] `json:"async,omitzero"`
@@ -2560,9 +2560,9 @@ func (r *PrivacySettingsParam) UnmarshalJSON(data []byte) error {
 }
 
 type RetrievalTool struct {
-	Retrieval BucketIDs `json:"retrieval,required"`
+	Retrieval BucketIDs `json:"retrieval" api:"required"`
 	// Any of "retrieval".
-	Type RetrievalToolType `json:"type,required"`
+	Type RetrievalToolType `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Retrieval   respjson.Field
@@ -2595,9 +2595,9 @@ const (
 
 // The properties Retrieval, Type are required.
 type RetrievalToolParam struct {
-	Retrieval BucketIDsParam `json:"retrieval,omitzero,required"`
+	Retrieval BucketIDsParam `json:"retrieval,omitzero" api:"required"`
 	// Any of "retrieval".
-	Type RetrievalToolType `json:"type,omitzero,required"`
+	Type RetrievalToolType `json:"type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -3150,9 +3150,9 @@ func (r *TranscriptionSettingsConfigParam) UnmarshalJSON(data []byte) error {
 
 // The properties Transfer, Type are required.
 type TransferToolParam struct {
-	Transfer TransferToolTransferParam `json:"transfer,omitzero,required"`
+	Transfer TransferToolTransferParam `json:"transfer,omitzero" api:"required"`
 	// Any of "transfer".
-	Type TransferToolType `json:"type,omitzero,required"`
+	Type TransferToolType `json:"type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -3167,10 +3167,10 @@ func (r *TransferToolParam) UnmarshalJSON(data []byte) error {
 // The properties From, Targets are required.
 type TransferToolTransferParam struct {
 	// Number or SIP URI placing the call.
-	From string `json:"from,required"`
+	From string `json:"from" api:"required"`
 	// The different possible targets of the transfer. The assistant will be able to
 	// choose one of the targets to transfer the call to.
-	Targets []TransferToolTransferTargetParam `json:"targets,omitzero,required"`
+	Targets []TransferToolTransferTargetParam `json:"targets,omitzero" api:"required"`
 	paramObj
 }
 
@@ -3212,7 +3212,7 @@ type VoiceSettings struct {
 	// [integration secrets documentation](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
 	// for details. For Telnyx voices, use `Telnyx.<model_id>.<voice_id>` (e.g.
 	// Telnyx.KokoroTTS.af_heart)
-	Voice string `json:"voice,required"`
+	Voice string `json:"voice" api:"required"`
 	// The `identifier` for an integration secret
 	// [/v2/integration_secrets](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
 	// that refers to your ElevenLabs API key. Warning: Free plans are unlikely to work
@@ -3233,7 +3233,7 @@ type VoiceSettings struct {
 	// "Hebrew", "Malay", "Persian", "Slovak", "Swedish", "Croatian", "Filipino",
 	// "Hungarian", "Norwegian", "Slovenian", "Catalan", "Nynorsk", "Tamil",
 	// "Afrikaans".
-	LanguageBoost VoiceSettingsLanguageBoost `json:"language_boost,nullable"`
+	LanguageBoost VoiceSettingsLanguageBoost `json:"language_boost" api:"nullable"`
 	// Determines how closely the AI should adhere to the original voice when
 	// attempting to replicate it. Only applicable when using ElevenLabs.
 	SimilarityBoost float64 `json:"similarity_boost"`
@@ -3362,11 +3362,11 @@ func (r *VoiceSettingsBackgroundAudioUnion) UnmarshalJSON(data []byte) error {
 
 type VoiceSettingsBackgroundAudioPredefinedMedia struct {
 	// Select from predefined media options.
-	Type constant.PredefinedMedia `json:"type,required"`
+	Type constant.PredefinedMedia `json:"type" api:"required"`
 	// The predefined media to use. `silence` disables background audio.
 	//
 	// Any of "silence", "office".
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
@@ -3384,9 +3384,9 @@ func (r *VoiceSettingsBackgroundAudioPredefinedMedia) UnmarshalJSON(data []byte)
 
 type VoiceSettingsBackgroundAudioMediaURL struct {
 	// Provide a direct URL to an MP3 file. The audio will loop during the call.
-	Type constant.MediaURL `json:"type,required"`
+	Type constant.MediaURL `json:"type" api:"required"`
 	// HTTPS URL to an MP3 file.
-	Value string `json:"value,required" format:"uri"`
+	Value string `json:"value" api:"required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
@@ -3404,11 +3404,11 @@ func (r *VoiceSettingsBackgroundAudioMediaURL) UnmarshalJSON(data []byte) error 
 
 type VoiceSettingsBackgroundAudioMediaName struct {
 	// Reference a previously uploaded media by its name from Telnyx Media Storage.
-	Type constant.MediaName `json:"type,required"`
+	Type constant.MediaName `json:"type" api:"required"`
 	// The `name` of a media asset created via
 	// [Media Storage API](https://developers.telnyx.com/api/media-storage/create-media-storage).
 	// The audio will loop during the call.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
@@ -3482,7 +3482,7 @@ type VoiceSettingsParam struct {
 	// [integration secrets documentation](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
 	// for details. For Telnyx voices, use `Telnyx.<model_id>.<voice_id>` (e.g.
 	// Telnyx.KokoroTTS.af_heart)
-	Voice string `json:"voice,required"`
+	Voice string `json:"voice" api:"required"`
 	// The `identifier` for an integration secret
 	// [/v2/integration_secrets](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
 	// that refers to your ElevenLabs API key. Warning: Free plans are unlikely to work
@@ -3602,11 +3602,11 @@ type VoiceSettingsBackgroundAudioPredefinedMediaParam struct {
 	// The predefined media to use. `silence` disables background audio.
 	//
 	// Any of "silence", "office".
-	Value string `json:"value,omitzero,required"`
+	Value string `json:"value,omitzero" api:"required"`
 	// Select from predefined media options.
 	//
 	// This field can be elided, and will marshal its zero value as "predefined_media".
-	Type constant.PredefinedMedia `json:"type,required"`
+	Type constant.PredefinedMedia `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3627,11 +3627,11 @@ func init() {
 // The properties Type, Value are required.
 type VoiceSettingsBackgroundAudioMediaURLParam struct {
 	// HTTPS URL to an MP3 file.
-	Value string `json:"value,required" format:"uri"`
+	Value string `json:"value" api:"required" format:"uri"`
 	// Provide a direct URL to an MP3 file. The audio will loop during the call.
 	//
 	// This field can be elided, and will marshal its zero value as "media_url".
-	Type constant.MediaURL `json:"type,required"`
+	Type constant.MediaURL `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3648,11 +3648,11 @@ type VoiceSettingsBackgroundAudioMediaNameParam struct {
 	// The `name` of a media asset created via
 	// [Media Storage API](https://developers.telnyx.com/api/media-storage/create-media-storage).
 	// The audio will loop during the call.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// Reference a previously uploaded media by its name from Telnyx Media Storage.
 	//
 	// This field can be elided, and will marshal its zero value as "media_name".
-	Type constant.MediaName `json:"type,required"`
+	Type constant.MediaName `json:"type" api:"required"`
 	paramObj
 }
 
@@ -3667,8 +3667,8 @@ func (r *VoiceSettingsBackgroundAudioMediaNameParam) UnmarshalJSON(data []byte) 
 // The properties Type, Webhook are required.
 type WebhookToolParam struct {
 	// Any of "webhook".
-	Type    WebhookToolType         `json:"type,omitzero,required"`
-	Webhook WebhookToolWebhookParam `json:"webhook,omitzero,required"`
+	Type    WebhookToolType         `json:"type,omitzero" api:"required"`
+	Webhook WebhookToolWebhookParam `json:"webhook,omitzero" api:"required"`
 	paramObj
 }
 
@@ -3689,14 +3689,14 @@ const (
 // The properties Description, Name, URL are required.
 type WebhookToolWebhookParam struct {
 	// The description of the tool.
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// The name of the tool.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The URL of the external tool to be called. This URL is going to be used by the
 	// assistant. The URL can be templated like: `https://example.com/api/v1/{id}`,
 	// where `{id}` is a placeholder for a value that will be provided by the assistant
 	// if `path_parameters` are provided with the `id` attribute.
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// The body parameters the webhook tool accepts, described as a JSON Schema object.
 	// These parameters will be passed to the webhook as the body of the request. See
 	// the [JSON Schema reference](https://json-schema.org/understanding-json-schema)
@@ -3851,15 +3851,15 @@ type WidgetSettings struct {
 	// Any of "expanded", "collapsed".
 	DefaultState WidgetSettingsDefaultState `json:"default_state"`
 	// URL for users to give feedback.
-	GiveFeedbackURL string `json:"give_feedback_url,nullable"`
+	GiveFeedbackURL string `json:"give_feedback_url" api:"nullable"`
 	// URL to a custom logo icon for the widget.
-	LogoIconURL string `json:"logo_icon_url,nullable"`
+	LogoIconURL string `json:"logo_icon_url" api:"nullable"`
 	// The positioning style for the widget.
 	//
 	// Any of "fixed", "static".
 	Position WidgetSettingsPosition `json:"position"`
 	// URL for users to report issues.
-	ReportIssueURL string `json:"report_issue_url,nullable"`
+	ReportIssueURL string `json:"report_issue_url" api:"nullable"`
 	// Text prompting users to speak to interrupt.
 	SpeakToInterruptText string `json:"speak_to_interrupt_text"`
 	// Custom text displayed on the start call button.
@@ -3869,7 +3869,7 @@ type WidgetSettings struct {
 	// Any of "light", "dark".
 	Theme WidgetSettingsTheme `json:"theme"`
 	// URL to view conversation history.
-	ViewHistoryURL string `json:"view_history_url,nullable"`
+	ViewHistoryURL string `json:"view_history_url" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AgentThinkingText     respjson.Field
@@ -3970,9 +3970,9 @@ func (r *WidgetSettingsParam) UnmarshalJSON(data []byte) error {
 // Aligns with the OpenAI API:
 // https://platform.openai.com/docs/api-reference/assistants/deleteAssistant
 type AIAssistantDeleteResponse struct {
-	ID      string `json:"id,required"`
-	Deleted bool   `json:"deleted,required"`
-	Object  string `json:"object,required"`
+	ID      string `json:"id" api:"required"`
+	Deleted bool   `json:"deleted" api:"required"`
+	Object  string `json:"object" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -3991,7 +3991,7 @@ func (r *AIAssistantDeleteResponse) UnmarshalJSON(data []byte) error {
 
 type AIAssistantChatResponse struct {
 	// The assistant's generated response based on the input message and context.
-	Content string `json:"content,required"`
+	Content string `json:"content" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Content     respjson.Field
@@ -4025,12 +4025,12 @@ func (r *AIAssistantSendSMSResponse) UnmarshalJSON(data []byte) error {
 type AIAssistantNewParams struct {
 	// System instructions for the assistant. These may be templated with
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
-	Instructions string `json:"instructions,required"`
+	Instructions string `json:"instructions" api:"required"`
 	// ID of the model to use. You can use the
 	// [Get models API](https://developers.telnyx.com/api-reference/chat/get-available-models)
 	// to see all of your available models,
-	Model       string            `json:"model,required"`
-	Name        string            `json:"name,required"`
+	Model       string            `json:"model" api:"required"`
+	Name        string            `json:"name" api:"required"`
 	Description param.Opt[string] `json:"description,omitzero"`
 	// If the dynamic_variables_webhook_url is set for the assistant, we will send a
 	// request at the start of the conversation. See our
@@ -4149,9 +4149,9 @@ func (r *AIAssistantUpdateParams) UnmarshalJSON(data []byte) error {
 
 type AIAssistantChatParams struct {
 	// The message content sent by the client to the assistant
-	Content string `json:"content,required"`
+	Content string `json:"content" api:"required"`
 	// A unique identifier for the conversation thread, used to maintain context
-	ConversationID string `json:"conversation_id,required"`
+	ConversationID string `json:"conversation_id" api:"required"`
 	// The optional display name of the user sending the message
 	Name param.Opt[string] `json:"name,omitzero"`
 	paramObj
@@ -4169,11 +4169,11 @@ type AIAssistantImportsParams struct {
 	// Integration secret pointer that refers to the API key for the external provider.
 	// This should be an identifier for an integration secret created via
 	// /v2/integration_secrets.
-	APIKeyRef string `json:"api_key_ref,required"`
+	APIKeyRef string `json:"api_key_ref" api:"required"`
 	// The external provider to import assistants from.
 	//
 	// Any of "elevenlabs", "vapi", "retell".
-	Provider AIAssistantImportsParamsProvider `json:"provider,omitzero,required"`
+	Provider AIAssistantImportsParamsProvider `json:"provider,omitzero" api:"required"`
 	// Optional list of assistant IDs to import from the external provider. If not
 	// provided, all assistants will be imported.
 	ImportIDs []string `json:"import_ids,omitzero"`
@@ -4198,8 +4198,8 @@ const (
 )
 
 type AIAssistantSendSMSParams struct {
-	From                     string                                                       `json:"from,required"`
-	To                       string                                                       `json:"to,required"`
+	From                     string                                                       `json:"from" api:"required"`
+	To                       string                                                       `json:"to" api:"required"`
 	ShouldCreateConversation param.Opt[bool]                                              `json:"should_create_conversation,omitzero"`
 	Text                     param.Opt[string]                                            `json:"text,omitzero"`
 	ConversationMetadata     map[string]AIAssistantSendSMSParamsConversationMetadataUnion `json:"conversation_metadata,omitzero"`

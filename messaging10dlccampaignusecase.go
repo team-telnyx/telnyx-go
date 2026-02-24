@@ -43,10 +43,10 @@ func (r *Messaging10dlcCampaignUsecaseService) GetCost(ctx context.Context, quer
 }
 
 type Messaging10dlcCampaignUsecaseGetCostResponse struct {
-	CampaignUsecase string `json:"campaignUsecase,required"`
-	Description     string `json:"description,required"`
-	MonthlyCost     string `json:"monthlyCost,required"`
-	UpFrontCost     string `json:"upFrontCost,required"`
+	CampaignUsecase string `json:"campaignUsecase" api:"required"`
+	Description     string `json:"description" api:"required"`
+	MonthlyCost     string `json:"monthlyCost" api:"required"`
+	UpFrontCost     string `json:"upFrontCost" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CampaignUsecase respjson.Field
@@ -65,7 +65,7 @@ func (r *Messaging10dlcCampaignUsecaseGetCostResponse) UnmarshalJSON(data []byte
 }
 
 type Messaging10dlcCampaignUsecaseGetCostParams struct {
-	Usecase string `query:"usecase,required" json:"-"`
+	Usecase string `query:"usecase" api:"required" json:"-"`
 	paramObj
 }
 

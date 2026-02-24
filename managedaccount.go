@@ -122,25 +122,25 @@ func (r *ManagedAccountService) UpdateGlobalChannelLimit(ctx context.Context, id
 
 type ManagedAccount struct {
 	// Uniquely identifies the managed account.
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// The managed account's V2 API access key
-	APIKey string `json:"api_key,required"`
+	APIKey string `json:"api_key" api:"required"`
 	// The managed account's V1 API token
-	APIToken string `json:"api_token,required"`
+	APIToken string `json:"api_token" api:"required"`
 	// The manager account's email, which serves as the V1 API user identifier
-	APIUser string `json:"api_user,required"`
+	APIUser string `json:"api_user" api:"required"`
 	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt string `json:"created_at,required"`
+	CreatedAt string `json:"created_at" api:"required"`
 	// The managed account's email.
-	Email string `json:"email,required" format:"email"`
+	Email string `json:"email" api:"required" format:"email"`
 	// The ID of the manager account associated with the managed account.
-	ManagerAccountID string `json:"manager_account_id,required"`
+	ManagerAccountID string `json:"manager_account_id" api:"required"`
 	// Identifies the type of the resource.
 	//
 	// Any of "managed_account".
-	RecordType ManagedAccountRecordType `json:"record_type,required"`
+	RecordType ManagedAccountRecordType `json:"record_type" api:"required"`
 	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt string                `json:"updated_at,required"`
+	UpdatedAt string                `json:"updated_at" api:"required"`
 	Balance   ManagedAccountBalance `json:"balance"`
 	// Boolean value that indicates if the managed account is able to have custom
 	// pricing set for it or not. If false, uses the pricing of the manager account.
@@ -277,21 +277,21 @@ func (r *ManagedAccountUpdateResponse) UnmarshalJSON(data []byte) error {
 
 type ManagedAccountListResponse struct {
 	// Uniquely identifies the managed account.
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// The manager account's email, which serves as the V1 API user identifier
-	APIUser string `json:"api_user,required"`
+	APIUser string `json:"api_user" api:"required"`
 	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt string `json:"created_at,required"`
+	CreatedAt string `json:"created_at" api:"required"`
 	// The managed account's email.
-	Email string `json:"email,required" format:"email"`
+	Email string `json:"email" api:"required" format:"email"`
 	// The ID of the manager account associated with the managed account.
-	ManagerAccountID string `json:"manager_account_id,required"`
+	ManagerAccountID string `json:"manager_account_id" api:"required"`
 	// Identifies the type of the resource.
 	//
 	// Any of "managed_account".
-	RecordType ManagedAccountListResponseRecordType `json:"record_type,required"`
+	RecordType ManagedAccountListResponseRecordType `json:"record_type" api:"required"`
 	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt string `json:"updated_at,required"`
+	UpdatedAt string `json:"updated_at" api:"required"`
 	// Boolean value that indicates if the managed account is able to have custom
 	// pricing set for it or not. If false, uses the pricing of the manager account.
 	// Defaults to false. There may be time lag between when the value is changed and
@@ -440,7 +440,7 @@ func (r *ManagedAccountUpdateGlobalChannelLimitResponseData) UnmarshalJSON(data 
 type ManagedAccountNewParams struct {
 	// The name of the business for which the new managed account is being created,
 	// that will be used as the managed accounts's organization's name.
-	BusinessName string `json:"business_name,required"`
+	BusinessName string `json:"business_name" api:"required"`
 	// The email address for the managed account. If not provided, the email address
 	// will be generated based on the email address of the manager account.
 	Email param.Opt[string] `json:"email,omitzero"`

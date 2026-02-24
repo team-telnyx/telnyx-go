@@ -254,9 +254,9 @@ func (r *SimCardOrderGetResponse) UnmarshalJSON(data []byte) error {
 
 type SimCardOrderNewParams struct {
 	// Uniquely identifies the address for the order.
-	AddressID string `json:"address_id,required"`
+	AddressID string `json:"address_id" api:"required"`
 	// The amount of SIM cards to order.
-	Quantity int64 `json:"quantity,required"`
+	Quantity int64 `json:"quantity" api:"required"`
 	paramObj
 }
 

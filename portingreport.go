@@ -86,7 +86,7 @@ func (r *PortingReportService) ListAutoPaging(ctx context.Context, query Porting
 // The parameters for generating a porting orders CSV report.
 type ExportPortingOrdersCsvReport struct {
 	// The filters to apply to the export porting order CSV report.
-	Filters ExportPortingOrdersCsvReportFilters `json:"filters,required"`
+	Filters ExportPortingOrdersCsvReportFilters `json:"filters" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filters     respjson.Field
@@ -146,7 +146,7 @@ func (r *ExportPortingOrdersCsvReportFilters) UnmarshalJSON(data []byte) error {
 // The property Filters is required.
 type ExportPortingOrdersCsvReportParam struct {
 	// The filters to apply to the export porting order CSV report.
-	Filters ExportPortingOrdersCsvReportFiltersParam `json:"filters,omitzero,required"`
+	Filters ExportPortingOrdersCsvReportFiltersParam `json:"filters,omitzero" api:"required"`
 	paramObj
 }
 
@@ -274,11 +274,11 @@ func (r *PortingReportGetResponse) UnmarshalJSON(data []byte) error {
 
 type PortingReportNewParams struct {
 	// The parameters for generating a porting orders CSV report.
-	Params ExportPortingOrdersCsvReportParam `json:"params,omitzero,required"`
+	Params ExportPortingOrdersCsvReportParam `json:"params,omitzero" api:"required"`
 	// Identifies the type of report
 	//
 	// Any of "export_porting_orders_csv".
-	ReportType PortingReportNewParamsReportType `json:"report_type,omitzero,required"`
+	ReportType PortingReportNewParamsReportType `json:"report_type,omitzero" api:"required"`
 	paramObj
 }
 

@@ -360,7 +360,7 @@ const (
 
 type SimCardGroupActionSetPrivateWirelessGatewayParams struct {
 	// The identification of the related Private Wireless Gateway resource.
-	PrivateWirelessGatewayID string `json:"private_wireless_gateway_id,required" format:"uuid"`
+	PrivateWirelessGatewayID string `json:"private_wireless_gateway_id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -374,7 +374,7 @@ func (r *SimCardGroupActionSetPrivateWirelessGatewayParams) UnmarshalJSON(data [
 
 type SimCardGroupActionSetWirelessBlocklistParams struct {
 	// The identification of the related Wireless Blocklist resource.
-	WirelessBlocklistID string `json:"wireless_blocklist_id,required" format:"uuid"`
+	WirelessBlocklistID string `json:"wireless_blocklist_id" api:"required" format:"uuid"`
 	paramObj
 }
 

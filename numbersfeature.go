@@ -58,8 +58,8 @@ func (r *NumbersFeatureNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type NumbersFeatureNewResponseData struct {
-	Features    []string `json:"features,required"`
-	PhoneNumber string   `json:"phone_number,required"`
+	Features    []string `json:"features" api:"required"`
+	PhoneNumber string   `json:"phone_number" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Features    respjson.Field
@@ -76,7 +76,7 @@ func (r *NumbersFeatureNewResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type NumbersFeatureNewParams struct {
-	PhoneNumbers []string `json:"phone_numbers,omitzero,required"`
+	PhoneNumbers []string `json:"phone_numbers,omitzero" api:"required"`
 	paramObj
 }
 

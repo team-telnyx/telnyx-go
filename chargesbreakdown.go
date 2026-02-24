@@ -46,7 +46,7 @@ func (r *ChargesBreakdownService) Get(ctx context.Context, query ChargesBreakdow
 }
 
 type ChargesBreakdownGetResponse struct {
-	Data ChargesBreakdownGetResponseData `json:"data,required"`
+	Data ChargesBreakdownGetResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -63,17 +63,17 @@ func (r *ChargesBreakdownGetResponse) UnmarshalJSON(data []byte) error {
 
 type ChargesBreakdownGetResponseData struct {
 	// Currency code
-	Currency string `json:"currency,required"`
+	Currency string `json:"currency" api:"required"`
 	// End date of the breakdown period
-	EndDate time.Time `json:"end_date,required" format:"date"`
+	EndDate time.Time `json:"end_date" api:"required" format:"date"`
 	// List of phone number charge breakdowns
-	Results []ChargesBreakdownGetResponseDataResult `json:"results,required"`
+	Results []ChargesBreakdownGetResponseDataResult `json:"results" api:"required"`
 	// Start date of the breakdown period
-	StartDate time.Time `json:"start_date,required" format:"date"`
+	StartDate time.Time `json:"start_date" api:"required" format:"date"`
 	// User email address
-	UserEmail string `json:"user_email,required" format:"email"`
+	UserEmail string `json:"user_email" api:"required" format:"email"`
 	// User identifier
-	UserID string `json:"user_id,required"`
+	UserID string `json:"user_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Currency    respjson.Field
@@ -95,15 +95,15 @@ func (r *ChargesBreakdownGetResponseData) UnmarshalJSON(data []byte) error {
 
 type ChargesBreakdownGetResponseDataResult struct {
 	// Type of charge for the number
-	ChargeType string `json:"charge_type,required"`
+	ChargeType string `json:"charge_type" api:"required"`
 	// Email address of the service owner
-	ServiceOwnerEmail string `json:"service_owner_email,required" format:"email"`
+	ServiceOwnerEmail string `json:"service_owner_email" api:"required" format:"email"`
 	// User ID of the service owner
-	ServiceOwnerUserID string `json:"service_owner_user_id,required"`
+	ServiceOwnerUserID string `json:"service_owner_user_id" api:"required"`
 	// List of services associated with this number
-	Services []ChargesBreakdownGetResponseDataResultService `json:"services,required"`
+	Services []ChargesBreakdownGetResponseDataResultService `json:"services" api:"required"`
 	// Phone number
-	Tn string `json:"tn,required"`
+	Tn string `json:"tn" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ChargeType         respjson.Field
@@ -124,11 +124,11 @@ func (r *ChargesBreakdownGetResponseDataResult) UnmarshalJSON(data []byte) error
 
 type ChargesBreakdownGetResponseDataResultService struct {
 	// Cost per unit as decimal string
-	Cost string `json:"cost,required"`
+	Cost string `json:"cost" api:"required"`
 	// Type of cost (MRC or OTC)
-	CostType string `json:"cost_type,required"`
+	CostType string `json:"cost_type" api:"required"`
 	// Service name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Cost        respjson.Field
@@ -147,7 +147,7 @@ func (r *ChargesBreakdownGetResponseDataResultService) UnmarshalJSON(data []byte
 
 type ChargesBreakdownGetParams struct {
 	// Start date for the charges breakdown in ISO date format (YYYY-MM-DD)
-	StartDate time.Time `query:"start_date,required" format:"date" json:"-"`
+	StartDate time.Time `query:"start_date" api:"required" format:"date" json:"-"`
 	// End date for the charges breakdown in ISO date format (YYYY-MM-DD). If not
 	// provided, defaults to start_date + 1 month. The date is exclusive, data for the
 	// end_date itself is not included in the report. The interval between start_date

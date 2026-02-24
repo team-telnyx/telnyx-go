@@ -54,7 +54,7 @@ func (r *AIAssistantToolService) Test(ctx context.Context, toolID string, params
 // Response model for webhook tool test results
 type AIAssistantToolTestResponse struct {
 	// Response model for webhook tool test results
-	Data AIAssistantToolTestResponseData `json:"data,required"`
+	Data AIAssistantToolTestResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -71,11 +71,11 @@ func (r *AIAssistantToolTestResponse) UnmarshalJSON(data []byte) error {
 
 // Response model for webhook tool test results
 type AIAssistantToolTestResponseData struct {
-	ContentType string         `json:"content_type,required"`
-	Request     map[string]any `json:"request,required"`
-	Response    string         `json:"response,required"`
-	StatusCode  int64          `json:"status_code,required"`
-	Success     bool           `json:"success,required"`
+	ContentType string         `json:"content_type" api:"required"`
+	Request     map[string]any `json:"request" api:"required"`
+	Response    string         `json:"response" api:"required"`
+	StatusCode  int64          `json:"status_code" api:"required"`
+	Success     bool           `json:"success" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ContentType respjson.Field
@@ -95,7 +95,7 @@ func (r *AIAssistantToolTestResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type AIAssistantToolTestParams struct {
-	AssistantID string `path:"assistant_id,required" json:"-"`
+	AssistantID string `path:"assistant_id" api:"required" json:"-"`
 	// Key-value arguments to use for the webhook test
 	Arguments map[string]any `json:"arguments,omitzero"`
 	// Key-value dynamic variables to use for the webhook test

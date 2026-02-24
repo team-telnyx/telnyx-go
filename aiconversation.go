@@ -128,11 +128,11 @@ func (r *AIConversationService) GetConversationsInsights(ctx context.Context, co
 }
 
 type Conversation struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// The datetime the conversation was created.
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// The datetime of the latest message in the conversation.
-	LastMessageAt time.Time `json:"last_message_at,required" format:"date-time"`
+	LastMessageAt time.Time `json:"last_message_at" api:"required" format:"date-time"`
 	// Metadata associated with the conversation. Telnyx provides several pieces of
 	// metadata, but customers can also add their own. The reserved field `ai_disabled`
 	// (boolean) can be set to `true` to prevent AI-generated responses on this
@@ -140,7 +140,7 @@ type Conversation struct {
 	// return a 400 error. Set to `false` or remove the field to re-enable AI
 	// responses. This is useful when a human agent needs to take over the conversation
 	// mid-stream (e.g., a technician stepping in while AI was messaging a resident).
-	Metadata map[string]string `json:"metadata,required"`
+	Metadata map[string]string `json:"metadata" api:"required"`
 	Name     string            `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -193,7 +193,7 @@ func (r *AIConversationUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIConversationListResponse struct {
-	Data []Conversation `json:"data,required"`
+	Data []Conversation `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -209,8 +209,8 @@ func (r *AIConversationListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIConversationGetConversationsInsightsResponse struct {
-	Data []AIConversationGetConversationsInsightsResponseData `json:"data,required"`
-	Meta Meta                                                 `json:"meta,required"`
+	Data []AIConversationGetConversationsInsightsResponseData `json:"data" api:"required"`
+	Meta Meta                                                 `json:"meta" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -228,15 +228,15 @@ func (r *AIConversationGetConversationsInsightsResponse) UnmarshalJSON(data []by
 
 type AIConversationGetConversationsInsightsResponseData struct {
 	// Unique identifier for the conversation insight.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// List of insights extracted from the conversation.
-	ConversationInsights []AIConversationGetConversationsInsightsResponseDataConversationInsight `json:"conversation_insights,required"`
+	ConversationInsights []AIConversationGetConversationsInsightsResponseDataConversationInsight `json:"conversation_insights" api:"required"`
 	// Timestamp of when the object was created.
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Current status of the insight generation for the conversation.
 	//
 	// Any of "pending", "in_progress", "completed", "failed".
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                   respjson.Field
@@ -256,10 +256,10 @@ func (r *AIConversationGetConversationsInsightsResponseData) UnmarshalJSON(data 
 
 type AIConversationGetConversationsInsightsResponseDataConversationInsight struct {
 	// Unique identifier for the insight configuration.
-	InsightID string `json:"insight_id,required"`
+	InsightID string `json:"insight_id" api:"required"`
 	// Insight result from the conversation. If the insight has a JSON schema, this
 	// will be stringified JSON object.
-	Result string `json:"result,required"`
+	Result string `json:"result" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		InsightID   respjson.Field
@@ -352,7 +352,7 @@ func (r AIConversationListParams) URLQuery() (v url.Values, err error) {
 }
 
 type AIConversationAddMessageParams struct {
-	Role       string                                                 `json:"role,required"`
+	Role       string                                                 `json:"role" api:"required"`
 	Content    param.Opt[string]                                      `json:"content,omitzero"`
 	Name       param.Opt[string]                                      `json:"name,omitzero"`
 	SentAt     param.Opt[time.Time]                                   `json:"sent_at,omitzero" format:"date-time"`

@@ -205,7 +205,7 @@ type SimCardAction struct {
 	CreatedAt  string `json:"created_at"`
 	RecordType string `json:"record_type"`
 	// A JSON object representation of the action params.
-	Settings map[string]any `json:"settings,nullable"`
+	Settings map[string]any `json:"settings" api:"nullable"`
 	// The related SIM card identifier.
 	SimCardID string              `json:"sim_card_id" format:"uuid"`
 	Status    SimCardActionStatus `json:"status"`
@@ -458,7 +458,7 @@ func (r *SimCardActionValidateRegistrationCodesResponse) UnmarshalJSON(data []by
 
 type SimCardActionValidateRegistrationCodesResponseData struct {
 	// The validation message
-	InvalidDetail string `json:"invalid_detail,nullable"`
+	InvalidDetail string `json:"invalid_detail" api:"nullable"`
 	RecordType    string `json:"record_type"`
 	// The 10-digit SIM card registration code
 	RegistrationCode string `json:"registration_code"`
@@ -530,7 +530,7 @@ func (r SimCardActionListParamsFilter) URLQuery() (v url.Values, err error) {
 }
 
 type SimCardActionBulkSetPublicIPsParams struct {
-	SimCardIDs []string `json:"sim_card_ids,omitzero,required" format:"uuid"`
+	SimCardIDs []string `json:"sim_card_ids,omitzero" api:"required" format:"uuid"`
 	paramObj
 }
 

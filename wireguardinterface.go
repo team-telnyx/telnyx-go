@@ -356,7 +356,7 @@ func (r *WireguardInterfaceDeleteResponseDataRegion) UnmarshalJSON(data []byte) 
 
 type WireguardInterfaceNewParams struct {
 	// The region the interface should be deployed to.
-	RegionCode string `json:"region_code,required"`
+	RegionCode string `json:"region_code" api:"required"`
 	// Enable SIP traffic forwarding over VPN interface.
 	EnableSipTrunking param.Opt[bool] `json:"enable_sip_trunking,omitzero"`
 	// A user specified name for the interface.

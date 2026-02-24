@@ -79,27 +79,27 @@ func (r *AIFineTuningJobService) Cancel(ctx context.Context, jobID string, opts 
 // through the API.
 type FineTuningJob struct {
 	// The name of the fine-tuned model that is being created.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The Unix timestamp (in seconds) for when the fine-tuning job was created.
-	CreatedAt int64 `json:"created_at,required"`
+	CreatedAt int64 `json:"created_at" api:"required"`
 	// The Unix timestamp (in seconds) for when the fine-tuning job was finished. The
 	// value will be null if the fine-tuning job is still running.
-	FinishedAt int64 `json:"finished_at,required"`
+	FinishedAt int64 `json:"finished_at" api:"required"`
 	// The hyperparameters used for the fine-tuning job.
-	Hyperparameters FineTuningJobHyperparameters `json:"hyperparameters,required"`
+	Hyperparameters FineTuningJobHyperparameters `json:"hyperparameters" api:"required"`
 	// The base model that is being fine-tuned.
-	Model string `json:"model,required"`
+	Model string `json:"model" api:"required"`
 	// The organization that owns the fine-tuning job.
-	OrganizationID string `json:"organization_id,required"`
+	OrganizationID string `json:"organization_id" api:"required"`
 	// The current status of the fine-tuning job.
 	//
 	// Any of "queued", "running", "succeeded", "failed", "cancelled".
-	Status FineTuningJobStatus `json:"status,required"`
+	Status FineTuningJobStatus `json:"status" api:"required"`
 	// The total number of billable tokens processed by this fine-tuning job. The value
 	// will be null if the fine-tuning job is still running.
-	TrainedTokens int64 `json:"trained_tokens,required"`
+	TrainedTokens int64 `json:"trained_tokens" api:"required"`
 	// The storage bucket or object used for training.
-	TrainingFile string `json:"training_file,required"`
+	TrainingFile string `json:"training_file" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -126,7 +126,7 @@ func (r *FineTuningJob) UnmarshalJSON(data []byte) error {
 type FineTuningJobHyperparameters struct {
 	// The number of epochs to train the model for. An epoch refers to one full cycle
 	// through the training dataset.
-	NEpochs int64 `json:"n_epochs,required"`
+	NEpochs int64 `json:"n_epochs" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		NEpochs     respjson.Field
@@ -153,7 +153,7 @@ const (
 )
 
 type AIFineTuningJobListResponse struct {
-	Data []FineTuningJob `json:"data,required"`
+	Data []FineTuningJob `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -170,9 +170,9 @@ func (r *AIFineTuningJobListResponse) UnmarshalJSON(data []byte) error {
 
 type AIFineTuningJobNewParams struct {
 	// The base model that is being fine-tuned.
-	Model string `json:"model,required"`
+	Model string `json:"model" api:"required"`
 	// The storage bucket or object used for training.
-	TrainingFile string `json:"training_file,required"`
+	TrainingFile string `json:"training_file" api:"required"`
 	// Optional suffix to append to the fine tuned model's name.
 	Suffix param.Opt[string] `json:"suffix,omitzero"`
 	// The hyperparameters used for the fine-tuning job.

@@ -102,7 +102,7 @@ type MobilePhoneNumberMessagingGetResponseData struct {
 	// The messaging product that the number is registered to use
 	MessagingProduct string `json:"messaging_product"`
 	// Unique identifier for a messaging profile.
-	MessagingProfileID string `json:"messaging_profile_id,nullable"`
+	MessagingProfileID string `json:"messaging_profile_id" api:"nullable"`
 	// The organization that owns this phone number.
 	OrganizationID string `json:"organization_id"`
 	// +E.164 formatted phone number.
@@ -151,7 +151,7 @@ type MobilePhoneNumberMessagingGetResponseDataFeatures struct {
 	// The set of features available for a specific messaging use case (SMS or MMS).
 	// Features can vary depending on the characteristics the phone number, as well as
 	// its current product configuration.
-	SMS shared.MessagingFeatureSet `json:"sms,nullable"`
+	SMS shared.MessagingFeatureSet `json:"sms" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		SMS         respjson.Field
@@ -177,7 +177,7 @@ type MobilePhoneNumberMessagingListResponse struct {
 	// The messaging product that the number is registered to use
 	MessagingProduct string `json:"messaging_product"`
 	// Unique identifier for a messaging profile.
-	MessagingProfileID string `json:"messaging_profile_id,nullable"`
+	MessagingProfileID string `json:"messaging_profile_id" api:"nullable"`
 	// The organization that owns this phone number.
 	OrganizationID string `json:"organization_id"`
 	// +E.164 formatted phone number.
@@ -226,7 +226,7 @@ type MobilePhoneNumberMessagingListResponseFeatures struct {
 	// The set of features available for a specific messaging use case (SMS or MMS).
 	// Features can vary depending on the characteristics the phone number, as well as
 	// its current product configuration.
-	SMS shared.MessagingFeatureSet `json:"sms,nullable"`
+	SMS shared.MessagingFeatureSet `json:"sms" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		SMS         respjson.Field

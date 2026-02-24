@@ -110,9 +110,9 @@ func (r *AIConversationInsightGroupService) GetInsightGroupsAutoPaging(ctx conte
 }
 
 type InsightTemplateGroup struct {
-	ID          string            `json:"id,required" format:"uuid"`
-	CreatedAt   time.Time         `json:"created_at,required" format:"date-time"`
-	Name        string            `json:"name,required"`
+	ID          string            `json:"id" api:"required" format:"uuid"`
+	CreatedAt   time.Time         `json:"created_at" api:"required" format:"date-time"`
+	Name        string            `json:"name" api:"required"`
 	Description string            `json:"description"`
 	Insights    []InsightTemplate `json:"insights"`
 	Webhook     string            `json:"webhook"`
@@ -136,7 +136,7 @@ func (r *InsightTemplateGroup) UnmarshalJSON(data []byte) error {
 }
 
 type InsightTemplateGroupDetail struct {
-	Data InsightTemplateGroup `json:"data,required"`
+	Data InsightTemplateGroup `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -167,7 +167,7 @@ func (r *AIConversationInsightGroupUpdateParams) UnmarshalJSON(data []byte) erro
 }
 
 type AIConversationInsightGroupInsightGroupsParams struct {
-	Name        string            `json:"name,required"`
+	Name        string            `json:"name" api:"required"`
 	Description param.Opt[string] `json:"description,omitzero"`
 	Webhook     param.Opt[string] `json:"webhook,omitzero"`
 	paramObj

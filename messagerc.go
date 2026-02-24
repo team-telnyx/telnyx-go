@@ -60,7 +60,7 @@ func (r *MessageRcService) Send(ctx context.Context, body MessageRcSendParams, o
 }
 
 type MessageRcGenerateDeeplinkResponse struct {
-	Data MessageRcGenerateDeeplinkResponseData `json:"data,required"`
+	Data MessageRcGenerateDeeplinkResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -77,7 +77,7 @@ func (r *MessageRcGenerateDeeplinkResponse) UnmarshalJSON(data []byte) error {
 
 type MessageRcGenerateDeeplinkResponseData struct {
 	// The generated deeplink URL
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		URL         respjson.Field
@@ -207,12 +207,12 @@ func (r MessageRcGenerateDeeplinkParams) URLQuery() (v url.Values, err error) {
 
 type MessageRcSendParams struct {
 	// RCS Agent ID
-	AgentID      string               `json:"agent_id,required"`
-	AgentMessage RcsAgentMessageParam `json:"agent_message,omitzero,required"`
+	AgentID      string               `json:"agent_id" api:"required"`
+	AgentMessage RcsAgentMessageParam `json:"agent_message,omitzero" api:"required"`
 	// A valid messaging profile ID
-	MessagingProfileID string `json:"messaging_profile_id,required"`
+	MessagingProfileID string `json:"messaging_profile_id" api:"required"`
 	// Phone number in +E.164 format
-	To string `json:"to,required"`
+	To string `json:"to" api:"required"`
 	// The URL where webhooks related to this message will be sent.
 	WebhookURL  param.Opt[string]              `json:"webhook_url,omitzero" format:"url"`
 	MmsFallback MessageRcSendParamsMmsFallback `json:"mms_fallback,omitzero"`

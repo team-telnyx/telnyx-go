@@ -199,24 +199,24 @@ func (r *CampaignSharingStatus) UnmarshalJSON(data []byte) error {
 // including **usecase**, **vertical**, **brandId** and **cspId**.
 type TelnyxCampaignCsp struct {
 	// Unique identifier assigned to the brand.
-	BrandID string `json:"brandId,required"`
+	BrandID string `json:"brandId" api:"required"`
 	// Unique identifier for a campaign.
-	CampaignID string `json:"campaignId,required"`
+	CampaignID string `json:"campaignId" api:"required"`
 	// Alphanumeric identifier of the CSP associated with this campaign.
-	CspID string `json:"cspId,required"`
+	CspID string `json:"cspId" api:"required"`
 	// Summary description of this campaign.
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// Campaign created from mock brand. Mocked campaign cannot be shared with an
 	// upstream CNP.
-	Mock bool `json:"mock,required"`
+	Mock bool `json:"mock" api:"required"`
 	// Campaign sub-usecases. Must be of defined valid sub-usecase types. Use
 	// `/10dlc/enum/usecase` operation to retrieve list of valid sub-usecases
-	SubUsecases []string `json:"subUsecases,required"`
+	SubUsecases []string `json:"subUsecases" api:"required"`
 	// Is terms & conditions accepted?
-	TermsAndConditions bool `json:"termsAndConditions,required"`
+	TermsAndConditions bool `json:"termsAndConditions" api:"required"`
 	// Campaign usecase. Must be of defined valid types. Use `/10dlc/enum/usecase`
 	// operation to retrieve usecases available for given brand.
-	Usecase string `json:"usecase,required"`
+	Usecase string `json:"usecase" api:"required"`
 	// Age gated content in campaign.
 	AgeGated bool `json:"ageGated"`
 	// Campaign subscription auto-renewal status.
@@ -623,7 +623,7 @@ const (
 type Messaging10dlcCampaignAcceptSharingResponse map[string]any
 
 type Messaging10dlcCampaignDeactivateResponse struct {
-	Time       float64 `json:"time,required"`
+	Time       float64 `json:"time" api:"required"`
 	Message    string  `json:"message"`
 	RecordType string  `json:"record_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -644,7 +644,7 @@ func (r *Messaging10dlcCampaignDeactivateResponse) UnmarshalJSON(data []byte) er
 
 type Messaging10dlcCampaignGetMnoMetadataResponse struct {
 	Mno10999    Mno10999       `json:"10999"`
-	ExtraFields map[string]any `json:",extras"`
+	ExtraFields map[string]any `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Mno10999    respjson.Field
@@ -660,16 +660,16 @@ func (r *Messaging10dlcCampaignGetMnoMetadataResponse) UnmarshalJSON(data []byte
 }
 
 type Mno10999 struct {
-	MinMsgSamples       int64  `json:"minMsgSamples,required"`
-	Mno                 string `json:"mno,required"`
-	MnoReview           bool   `json:"mnoReview,required"`
-	MnoSupport          bool   `json:"mnoSupport,required"`
-	NoEmbeddedLink      bool   `json:"noEmbeddedLink,required"`
-	NoEmbeddedPhone     bool   `json:"noEmbeddedPhone,required"`
-	Qualify             bool   `json:"qualify,required"`
-	ReqSubscriberHelp   bool   `json:"reqSubscriberHelp,required"`
-	ReqSubscriberOptin  bool   `json:"reqSubscriberOptin,required"`
-	ReqSubscriberOptout bool   `json:"reqSubscriberOptout,required"`
+	MinMsgSamples       int64  `json:"minMsgSamples" api:"required"`
+	Mno                 string `json:"mno" api:"required"`
+	MnoReview           bool   `json:"mnoReview" api:"required"`
+	MnoSupport          bool   `json:"mnoSupport" api:"required"`
+	NoEmbeddedLink      bool   `json:"noEmbeddedLink" api:"required"`
+	NoEmbeddedPhone     bool   `json:"noEmbeddedPhone" api:"required"`
+	Qualify             bool   `json:"qualify" api:"required"`
+	ReqSubscriberHelp   bool   `json:"reqSubscriberHelp" api:"required"`
+	ReqSubscriberOptin  bool   `json:"reqSubscriberOptin" api:"required"`
+	ReqSubscriberOptout bool   `json:"reqSubscriberOptout" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		MinMsgSamples       respjson.Field
@@ -766,7 +766,7 @@ func (r *Messaging10dlcCampaignUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type Messaging10dlcCampaignListParams struct {
-	BrandID string `query:"brandId,required" json:"-"`
+	BrandID string `query:"brandId" api:"required" json:"-"`
 	// The 1-indexed page number to get. The default value is `1`.
 	Page param.Opt[int64] `query:"page,omitzero" json:"-"`
 	// The amount of records per page, limited to between 1 and 500 inclusive. The
@@ -811,7 +811,7 @@ const (
 type Messaging10dlcCampaignSubmitAppealParams struct {
 	// Detailed explanation of why the campaign should be reconsidered and what changes
 	// have been made to address the rejection reason.
-	AppealReason string `json:"appeal_reason,required"`
+	AppealReason string `json:"appeal_reason" api:"required"`
 	paramObj
 }
 

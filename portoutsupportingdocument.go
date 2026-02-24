@@ -76,21 +76,21 @@ func (r *PortoutSupportingDocumentNewResponse) UnmarshalJSON(data []byte) error 
 }
 
 type PortoutSupportingDocumentNewResponseData struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Supporting document creation timestamp in ISO 8601 format
-	CreatedAt string `json:"created_at,required"`
+	CreatedAt string `json:"created_at" api:"required"`
 	// Identifies the associated document
-	DocumentID string `json:"document_id,required" format:"uuid"`
+	DocumentID string `json:"document_id" api:"required" format:"uuid"`
 	// Identifies the associated port request
-	PortoutID string `json:"portout_id,required" format:"uuid"`
+	PortoutID string `json:"portout_id" api:"required" format:"uuid"`
 	// Identifies the type of the resource.
-	RecordType string `json:"record_type,required"`
+	RecordType string `json:"record_type" api:"required"`
 	// Identifies the type of the document
 	//
 	// Any of "loa", "invoice".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// Supporting document last changed timestamp in ISO 8601 format
-	UpdatedAt string `json:"updated_at,required"`
+	UpdatedAt string `json:"updated_at" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -128,21 +128,21 @@ func (r *PortoutSupportingDocumentListResponse) UnmarshalJSON(data []byte) error
 }
 
 type PortoutSupportingDocumentListResponseData struct {
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Supporting document creation timestamp in ISO 8601 format
-	CreatedAt string `json:"created_at,required"`
+	CreatedAt string `json:"created_at" api:"required"`
 	// Identifies the associated document
-	DocumentID string `json:"document_id,required" format:"uuid"`
+	DocumentID string `json:"document_id" api:"required" format:"uuid"`
 	// Identifies the associated port request
-	PortoutID string `json:"portout_id,required" format:"uuid"`
+	PortoutID string `json:"portout_id" api:"required" format:"uuid"`
 	// Identifies the type of the resource.
-	RecordType string `json:"record_type,required"`
+	RecordType string `json:"record_type" api:"required"`
 	// Identifies the type of the document
 	//
 	// Any of "loa", "invoice".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// Supporting document last changed timestamp in ISO 8601 format
-	UpdatedAt string `json:"updated_at,required"`
+	UpdatedAt string `json:"updated_at" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -180,11 +180,11 @@ func (r *PortoutSupportingDocumentNewParams) UnmarshalJSON(data []byte) error {
 // The properties DocumentID, Type are required.
 type PortoutSupportingDocumentNewParamsDocument struct {
 	// Identifies the associated document
-	DocumentID string `json:"document_id,required" format:"uuid"`
+	DocumentID string `json:"document_id" api:"required" format:"uuid"`
 	// Identifies the type of the document
 	//
 	// Any of "loa", "invoice".
-	Type string `json:"type,omitzero,required"`
+	Type string `json:"type,omitzero" api:"required"`
 	paramObj
 }
 

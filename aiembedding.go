@@ -151,7 +151,7 @@ const (
 )
 
 type EmbeddingResponse struct {
-	Data EmbeddingResponseData `json:"data,required"`
+	Data EmbeddingResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -168,7 +168,7 @@ func (r *EmbeddingResponse) UnmarshalJSON(data []byte) error {
 
 type EmbeddingResponseData struct {
 	CreatedAt  string `json:"created_at"`
-	FinishedAt string `json:"finished_at,nullable"`
+	FinishedAt string `json:"finished_at" api:"nullable"`
 	Status     string `json:"status"`
 	TaskID     string `json:"task_id" format:"uuid"`
 	TaskName   string `json:"task_name"`
@@ -193,7 +193,7 @@ func (r *EmbeddingResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type AIEmbeddingGetResponse struct {
-	Data AIEmbeddingGetResponseData `json:"data,required"`
+	Data AIEmbeddingGetResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -236,7 +236,7 @@ func (r *AIEmbeddingGetResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type AIEmbeddingListResponse struct {
-	Data []AIEmbeddingListResponseData `json:"data,required"`
+	Data []AIEmbeddingListResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -252,14 +252,14 @@ func (r *AIEmbeddingListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIEmbeddingListResponseData struct {
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Status of an embeddings task.
 	//
 	// Any of "queued", "processing", "success", "failure", "partial_success".
-	Status     BackgroundTaskStatus `json:"status,required"`
-	TaskID     string               `json:"task_id,required"`
-	TaskName   string               `json:"task_name,required"`
-	UserID     string               `json:"user_id,required"`
+	Status     BackgroundTaskStatus `json:"status" api:"required"`
+	TaskID     string               `json:"task_id" api:"required"`
+	TaskName   string               `json:"task_name" api:"required"`
+	UserID     string               `json:"user_id" api:"required"`
 	Bucket     string               `json:"bucket"`
 	FinishedAt time.Time            `json:"finished_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -283,7 +283,7 @@ func (r *AIEmbeddingListResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type AIEmbeddingSimilaritySearchResponse struct {
-	Data []AIEmbeddingSimilaritySearchResponseData `json:"data,required"`
+	Data []AIEmbeddingSimilaritySearchResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -305,9 +305,9 @@ func (r *AIEmbeddingSimilaritySearchResponse) UnmarshalJSON(data []byte) error {
 // "openai/text-embedding-ada-002", "filename": "bee_movie_script.txt",
 // "certainty": 0.9069613814353943, "loader_metadata": {} } }
 type AIEmbeddingSimilaritySearchResponseData struct {
-	Distance      float64                                         `json:"distance,required"`
-	DocumentChunk string                                          `json:"document_chunk,required"`
-	Metadata      AIEmbeddingSimilaritySearchResponseDataMetadata `json:"metadata,required"`
+	Distance      float64                                         `json:"distance" api:"required"`
+	DocumentChunk string                                          `json:"document_chunk" api:"required"`
+	Metadata      AIEmbeddingSimilaritySearchResponseDataMetadata `json:"metadata" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Distance      respjson.Field
@@ -325,10 +325,10 @@ func (r *AIEmbeddingSimilaritySearchResponseData) UnmarshalJSON(data []byte) err
 }
 
 type AIEmbeddingSimilaritySearchResponseDataMetadata struct {
-	Checksum       string         `json:"checksum,required"`
-	Embedding      string         `json:"embedding,required"`
-	Filename       string         `json:"filename,required"`
-	Source         string         `json:"source,required"`
+	Checksum       string         `json:"checksum" api:"required"`
+	Embedding      string         `json:"embedding" api:"required"`
+	Filename       string         `json:"filename" api:"required"`
+	Source         string         `json:"source" api:"required"`
 	Certainty      float64        `json:"certainty"`
 	LoaderMetadata map[string]any `json:"loader_metadata"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -351,7 +351,7 @@ func (r *AIEmbeddingSimilaritySearchResponseDataMetadata) UnmarshalJSON(data []b
 }
 
 type AIEmbeddingNewParams struct {
-	BucketName               string           `json:"bucket_name,required"`
+	BucketName               string           `json:"bucket_name" api:"required"`
 	DocumentChunkOverlapSize param.Opt[int64] `json:"document_chunk_overlap_size,omitzero"`
 	DocumentChunkSize        param.Opt[int64] `json:"document_chunk_size,omitzero"`
 	// Supported models to vectorize and embed documents.
@@ -404,8 +404,8 @@ func (r AIEmbeddingListParams) URLQuery() (v url.Values, err error) {
 }
 
 type AIEmbeddingSimilaritySearchParams struct {
-	BucketName string           `json:"bucket_name,required"`
-	Query      string           `json:"query,required"`
+	BucketName string           `json:"bucket_name" api:"required"`
+	Query      string           `json:"query" api:"required"`
 	NumOfDocs  param.Opt[int64] `json:"num_of_docs,omitzero"`
 	paramObj
 }
@@ -420,9 +420,9 @@ func (r *AIEmbeddingSimilaritySearchParams) UnmarshalJSON(data []byte) error {
 
 type AIEmbeddingURLParams struct {
 	// Name of the bucket to store the embeddings. This bucket must already exist.
-	BucketName string `json:"bucket_name,required"`
+	BucketName string `json:"bucket_name" api:"required"`
 	// The URL of the webpage to embed
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	paramObj
 }
 

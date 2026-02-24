@@ -65,8 +65,8 @@ func (r *ActionRegisterNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ActionRegisterNewResponseError struct {
-	Code   string                               `json:"code,required"`
-	Title  string                               `json:"title,required"`
+	Code   string                               `json:"code" api:"required"`
+	Title  string                               `json:"title" api:"required"`
 	Detail string                               `json:"detail"`
 	Meta   map[string]any                       `json:"meta"`
 	Source ActionRegisterNewResponseErrorSource `json:"source"`
@@ -109,7 +109,7 @@ func (r *ActionRegisterNewResponseErrorSource) UnmarshalJSON(data []byte) error 
 }
 
 type ActionRegisterNewParams struct {
-	RegistrationCodes []string `json:"registration_codes,omitzero,required"`
+	RegistrationCodes []string `json:"registration_codes,omitzero" api:"required"`
 	// The group SIMCardGroup identification. This attribute can be <code>null</code>
 	// when it's present in an associated resource.
 	SimCardGroupID param.Opt[string] `json:"sim_card_group_id,omitzero" format:"uuid"`

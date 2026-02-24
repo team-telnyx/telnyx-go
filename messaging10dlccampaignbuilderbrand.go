@@ -91,6 +91,6 @@ func (r *Messaging10dlcCampaignBuilderBrandQualifyByUsecaseResponse) UnmarshalJS
 }
 
 type Messaging10dlcCampaignBuilderBrandQualifyByUsecaseParams struct {
-	BrandID string `path:"brandId,required" json:"-"`
+	BrandID string `path:"brandId" api:"required" json:"-"`
 	paramObj
 }

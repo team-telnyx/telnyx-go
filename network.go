@@ -148,7 +148,7 @@ const (
 
 type NetworkCreateParam struct {
 	// A user specified name for the network.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	RecordParam
 }
 

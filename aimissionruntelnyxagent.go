@@ -90,7 +90,7 @@ func (r *AIMissionRunTelnyxAgentService) Unlink(ctx context.Context, telnyxAgent
 }
 
 type AIMissionRunTelnyxAgentListResponse struct {
-	Data []AIMissionRunTelnyxAgentListResponseData `json:"data,required"`
+	Data []AIMissionRunTelnyxAgentListResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -106,9 +106,9 @@ func (r *AIMissionRunTelnyxAgentListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIMissionRunTelnyxAgentListResponseData struct {
-	CreatedAt     time.Time `json:"created_at,required" format:"date-time"`
-	RunID         string    `json:"run_id,required"`
-	TelnyxAgentID string    `json:"telnyx_agent_id,required"`
+	CreatedAt     time.Time `json:"created_at" api:"required" format:"date-time"`
+	RunID         string    `json:"run_id" api:"required"`
+	TelnyxAgentID string    `json:"telnyx_agent_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt     respjson.Field
@@ -126,7 +126,7 @@ func (r *AIMissionRunTelnyxAgentListResponseData) UnmarshalJSON(data []byte) err
 }
 
 type AIMissionRunTelnyxAgentLinkResponse struct {
-	Data AIMissionRunTelnyxAgentLinkResponseData `json:"data,required"`
+	Data AIMissionRunTelnyxAgentLinkResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -142,9 +142,9 @@ func (r *AIMissionRunTelnyxAgentLinkResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIMissionRunTelnyxAgentLinkResponseData struct {
-	CreatedAt     time.Time `json:"created_at,required" format:"date-time"`
-	RunID         string    `json:"run_id,required"`
-	TelnyxAgentID string    `json:"telnyx_agent_id,required"`
+	CreatedAt     time.Time `json:"created_at" api:"required" format:"date-time"`
+	RunID         string    `json:"run_id" api:"required"`
+	TelnyxAgentID string    `json:"telnyx_agent_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt     respjson.Field
@@ -162,14 +162,14 @@ func (r *AIMissionRunTelnyxAgentLinkResponseData) UnmarshalJSON(data []byte) err
 }
 
 type AIMissionRunTelnyxAgentListParams struct {
-	MissionID string `path:"mission_id,required" format:"uuid" json:"-"`
+	MissionID string `path:"mission_id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }
 
 type AIMissionRunTelnyxAgentLinkParams struct {
-	MissionID string `path:"mission_id,required" format:"uuid" json:"-"`
+	MissionID string `path:"mission_id" api:"required" format:"uuid" json:"-"`
 	// The Telnyx AI agent ID to link
-	TelnyxAgentID string `json:"telnyx_agent_id,required"`
+	TelnyxAgentID string `json:"telnyx_agent_id" api:"required"`
 	paramObj
 }
 
@@ -182,7 +182,7 @@ func (r *AIMissionRunTelnyxAgentLinkParams) UnmarshalJSON(data []byte) error {
 }
 
 type AIMissionRunTelnyxAgentUnlinkParams struct {
-	MissionID string `path:"mission_id,required" format:"uuid" json:"-"`
-	RunID     string `path:"run_id,required" format:"uuid" json:"-"`
+	MissionID string `path:"mission_id" api:"required" format:"uuid" json:"-"`
+	RunID     string `path:"run_id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }

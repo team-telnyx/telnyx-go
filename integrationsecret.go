@@ -85,10 +85,10 @@ func (r *IntegrationSecretService) Delete(ctx context.Context, id string, opts .
 }
 
 type IntegrationSecret struct {
-	ID         string    `json:"id,required"`
-	CreatedAt  time.Time `json:"created_at,required" format:"date-time"`
-	Identifier string    `json:"identifier,required"`
-	RecordType string    `json:"record_type,required"`
+	ID         string    `json:"id" api:"required"`
+	CreatedAt  time.Time `json:"created_at" api:"required" format:"date-time"`
+	Identifier string    `json:"identifier" api:"required"`
+	RecordType string    `json:"record_type" api:"required"`
 	UpdatedAt  time.Time `json:"updated_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -109,7 +109,7 @@ func (r *IntegrationSecret) UnmarshalJSON(data []byte) error {
 }
 
 type IntegrationSecretNewResponse struct {
-	Data IntegrationSecret `json:"data,required"`
+	Data IntegrationSecret `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -126,11 +126,11 @@ func (r *IntegrationSecretNewResponse) UnmarshalJSON(data []byte) error {
 
 type IntegrationSecretNewParams struct {
 	// The unique identifier of the secret.
-	Identifier string `json:"identifier,required"`
+	Identifier string `json:"identifier" api:"required"`
 	// The type of secret.
 	//
 	// Any of "bearer", "basic".
-	Type IntegrationSecretNewParamsType `json:"type,omitzero,required"`
+	Type IntegrationSecretNewParamsType `json:"type,omitzero" api:"required"`
 	// The token for the secret. Required for bearer type secrets, ignored otherwise.
 	Token param.Opt[string] `json:"token,omitzero"`
 	// The password for the secret. Required for basic type secrets, ignored otherwise.

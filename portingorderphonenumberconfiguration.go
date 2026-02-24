@@ -165,9 +165,9 @@ func (r *PortingOrderPhoneNumberConfigurationNewParams) UnmarshalJSON(data []byt
 // The properties PortingPhoneNumberID, UserBundleID are required.
 type PortingOrderPhoneNumberConfigurationNewParamsPhoneNumberConfiguration struct {
 	// Identifies the porting phone number to be configured.
-	PortingPhoneNumberID string `json:"porting_phone_number_id,required" format:"uuid"`
+	PortingPhoneNumberID string `json:"porting_phone_number_id" api:"required" format:"uuid"`
 	// Identifies the user bundle to be associated with the porting phone number.
-	UserBundleID string `json:"user_bundle_id,required" format:"uuid"`
+	UserBundleID string `json:"user_bundle_id" api:"required" format:"uuid"`
 	paramObj
 }
 

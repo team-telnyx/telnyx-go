@@ -116,7 +116,7 @@ const (
 )
 
 type MessagingRcInviteTestNumberResponse struct {
-	Data MessagingRcInviteTestNumberResponseData `json:"data,required"`
+	Data MessagingRcInviteTestNumberResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -192,15 +192,15 @@ func (r *MessagingRcGetCapabilitiesResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MessagingRcInviteTestNumberParams struct {
-	ID string `path:"id,required" json:"-"`
+	ID string `path:"id" api:"required" json:"-"`
 	paramObj
 }
 
 type MessagingRcListBulkCapabilitiesParams struct {
 	// RCS Agent ID
-	AgentID string `json:"agent_id,required"`
+	AgentID string `json:"agent_id" api:"required"`
 	// List of phone numbers to check
-	PhoneNumbers []string `json:"phone_numbers,omitzero,required"`
+	PhoneNumbers []string `json:"phone_numbers,omitzero" api:"required"`
 	paramObj
 }
 
@@ -213,6 +213,6 @@ func (r *MessagingRcListBulkCapabilitiesParams) UnmarshalJSON(data []byte) error
 }
 
 type MessagingRcGetCapabilitiesParams struct {
-	AgentID string `path:"agent_id,required" json:"-"`
+	AgentID string `path:"agent_id" api:"required" json:"-"`
 	paramObj
 }

@@ -67,9 +67,9 @@ type MessagingOptoutListResponse struct {
 	// code).
 	From string `json:"from"`
 	// The keyword that triggered the opt-out.
-	Keyword string `json:"keyword,nullable"`
+	Keyword string `json:"keyword" api:"nullable"`
 	// Unique identifier for a messaging profile.
-	MessagingProfileID string `json:"messaging_profile_id,nullable"`
+	MessagingProfileID string `json:"messaging_profile_id" api:"nullable"`
 	// Receiving address (+E.164 formatted phone number or short code).
 	To string `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].

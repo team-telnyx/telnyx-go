@@ -71,12 +71,12 @@ func (r *StorageMigrationService) List(ctx context.Context, opts ...option.Reque
 
 type MigrationParamsResp struct {
 	// ID of the Migration Source from which to migrate data.
-	SourceID string `json:"source_id,required"`
+	SourceID string `json:"source_id" api:"required"`
 	// Bucket name to migrate the data into. Will default to the same name as the
 	// `source_bucket_name`.
-	TargetBucketName string `json:"target_bucket_name,required"`
+	TargetBucketName string `json:"target_bucket_name" api:"required"`
 	// Telnyx Cloud Storage region to migrate the data to.
-	TargetRegion string `json:"target_region,required"`
+	TargetRegion string `json:"target_region" api:"required"`
 	// Unique identifier for the data migration.
 	ID string `json:"id"`
 	// Total amount of data that has been succesfully migrated.
@@ -147,12 +147,12 @@ const (
 // The properties SourceID, TargetBucketName, TargetRegion are required.
 type MigrationParams struct {
 	// ID of the Migration Source from which to migrate data.
-	SourceID string `json:"source_id,required"`
+	SourceID string `json:"source_id" api:"required"`
 	// Bucket name to migrate the data into. Will default to the same name as the
 	// `source_bucket_name`.
-	TargetBucketName string `json:"target_bucket_name,required"`
+	TargetBucketName string `json:"target_bucket_name" api:"required"`
 	// Telnyx Cloud Storage region to migrate the data to.
-	TargetRegion string `json:"target_region,required"`
+	TargetRegion string `json:"target_region" api:"required"`
 	// If true, will continue to poll the source bucket to ensure new data is
 	// continually migrated over.
 	Refresh param.Opt[bool] `json:"refresh,omitzero"`

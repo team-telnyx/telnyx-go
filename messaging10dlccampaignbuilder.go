@@ -51,12 +51,12 @@ func (r *Messaging10dlcCampaignBuilderService) Submit(ctx context.Context, body 
 
 type Messaging10dlcCampaignBuilderSubmitParams struct {
 	// Alphanumeric identifier of the brand associated with this campaign.
-	BrandID string `json:"brandId,required"`
+	BrandID string `json:"brandId" api:"required"`
 	// Summary description of this campaign.
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// Campaign usecase. Must be of defined valid types. Use `/10dlc/enum/usecase`
 	// operation to retrieve usecases available for given brand.
-	Usecase string `json:"usecase,required"`
+	Usecase string `json:"usecase" api:"required"`
 	// Age gated message content in campaign.
 	AgeGated param.Opt[bool] `json:"ageGated,omitzero"`
 	// Campaign subscription auto-renewal option. If set to true, then campaign will

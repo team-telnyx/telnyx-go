@@ -49,7 +49,7 @@ func (r *AIAudioService) Transcribe(ctx context.Context, body AIAudioTranscribeP
 
 type AIAudioTranscribeResponse struct {
 	// The transcribed text for the audio file.
-	Text string `json:"text,required"`
+	Text string `json:"text" api:"required"`
 	// The duration of the audio file in seconds. This is only included if
 	// `response_format` is set to `verbose_json`.
 	Duration float64 `json:"duration"`
@@ -74,13 +74,13 @@ func (r *AIAudioTranscribeResponse) UnmarshalJSON(data []byte) error {
 
 type AIAudioTranscribeResponseSegment struct {
 	// Unique identifier of the segment.
-	ID float64 `json:"id,required"`
+	ID float64 `json:"id" api:"required"`
 	// End time of the segment in seconds.
-	End float64 `json:"end,required"`
+	End float64 `json:"end" api:"required"`
 	// Start time of the segment in seconds.
-	Start float64 `json:"start,required"`
+	Start float64 `json:"start" api:"required"`
 	// Text content of the segment.
-	Text string `json:"text,required"`
+	Text string `json:"text" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -106,7 +106,7 @@ type AIAudioTranscribeParams struct {
 	//
 	// Any of "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo",
 	// "deepgram/nova-3".
-	Model AIAudioTranscribeParamsModel `json:"model,omitzero,required"`
+	Model AIAudioTranscribeParamsModel `json:"model,omitzero" api:"required"`
 	// Link to audio file in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a,
 	// ogg, wav, or webm. Support for hosted files is limited to 100MB. Cannot be used
 	// together with `file`. Note: `deepgram/nova-3` only supports mp3 and wav formats.

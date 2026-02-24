@@ -57,14 +57,14 @@ func (r *AIIntegrationService) List(ctx context.Context, opts ...option.RequestO
 }
 
 type AIIntegrationGetResponse struct {
-	ID             string   `json:"id,required"`
-	AvailableTools []string `json:"available_tools,required"`
-	Description    string   `json:"description,required"`
-	DisplayName    string   `json:"display_name,required"`
-	LogoURL        string   `json:"logo_url,required"`
-	Name           string   `json:"name,required"`
+	ID             string   `json:"id" api:"required"`
+	AvailableTools []string `json:"available_tools" api:"required"`
+	Description    string   `json:"description" api:"required"`
+	DisplayName    string   `json:"display_name" api:"required"`
+	LogoURL        string   `json:"logo_url" api:"required"`
+	Name           string   `json:"name" api:"required"`
 	// Any of "disconnected", "connected".
-	Status AIIntegrationGetResponseStatus `json:"status,required"`
+	Status AIIntegrationGetResponseStatus `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -93,7 +93,7 @@ const (
 )
 
 type AIIntegrationListResponse struct {
-	Data []AIIntegrationListResponseData `json:"data,required"`
+	Data []AIIntegrationListResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -109,14 +109,14 @@ func (r *AIIntegrationListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIIntegrationListResponseData struct {
-	ID             string   `json:"id,required"`
-	AvailableTools []string `json:"available_tools,required"`
-	Description    string   `json:"description,required"`
-	DisplayName    string   `json:"display_name,required"`
-	LogoURL        string   `json:"logo_url,required"`
-	Name           string   `json:"name,required"`
+	ID             string   `json:"id" api:"required"`
+	AvailableTools []string `json:"available_tools" api:"required"`
+	Description    string   `json:"description" api:"required"`
+	DisplayName    string   `json:"display_name" api:"required"`
+	LogoURL        string   `json:"logo_url" api:"required"`
+	Name           string   `json:"name" api:"required"`
 	// Any of "disconnected", "connected".
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field

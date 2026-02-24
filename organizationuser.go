@@ -92,9 +92,9 @@ func (r *OrganizationUserService) GetGroupsReport(ctx context.Context, query Org
 // A reference to a group that a user belongs to.
 type UserGroupReference struct {
 	// The unique identifier of the group.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The name of the group.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -138,7 +138,7 @@ type OrganizationUserGetResponseData struct {
 	Groups []UserGroupReference `json:"groups"`
 	// ISO 8601 formatted date indicating when the resource last signed into the
 	// portal. Null if the user has never signed in.
-	LastSignInAt string `json:"last_sign_in_at,nullable"`
+	LastSignInAt string `json:"last_sign_in_at" api:"nullable"`
 	// Indicates whether this user is allowed to bypass SSO and use password
 	// authentication.
 	OrganizationUserBypassesSSO bool `json:"organization_user_bypasses_sso"`
@@ -182,7 +182,7 @@ type OrganizationUserListResponse struct {
 	Groups []UserGroupReference `json:"groups"`
 	// ISO 8601 formatted date indicating when the resource last signed into the
 	// portal. Null if the user has never signed in.
-	LastSignInAt string `json:"last_sign_in_at,nullable"`
+	LastSignInAt string `json:"last_sign_in_at" api:"nullable"`
 	// Indicates whether this user is allowed to bypass SSO and use password
 	// authentication.
 	OrganizationUserBypassesSSO bool `json:"organization_user_bypasses_sso"`
@@ -242,23 +242,23 @@ func (r *OrganizationUserGetGroupsReportResponse) UnmarshalJSON(data []byte) err
 // An organization user with their group memberships always included.
 type OrganizationUserGetGroupsReportResponseData struct {
 	// Identifies the specific resource.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt string `json:"created_at,required"`
+	CreatedAt string `json:"created_at" api:"required"`
 	// The email address of the user.
-	Email string `json:"email,required" format:"email"`
+	Email string `json:"email" api:"required" format:"email"`
 	// The groups the user belongs to.
-	Groups []UserGroupReference `json:"groups,required"`
+	Groups []UserGroupReference `json:"groups" api:"required"`
 	// Identifies the type of the resource. Can be 'organization_owner' or
 	// 'organization_sub_user'.
-	RecordType string `json:"record_type,required"`
+	RecordType string `json:"record_type" api:"required"`
 	// The status of the account.
 	//
 	// Any of "enabled", "disabled", "blocked".
-	UserStatus string `json:"user_status,required"`
+	UserStatus string `json:"user_status" api:"required"`
 	// ISO 8601 formatted date indicating when the resource last signed into the
 	// portal. Null if the user has never signed in.
-	LastSignInAt string `json:"last_sign_in_at,nullable"`
+	LastSignInAt string `json:"last_sign_in_at" api:"nullable"`
 	// Indicates whether this user is allowed to bypass SSO and use password
 	// authentication.
 	OrganizationUserBypassesSSO bool `json:"organization_user_bypasses_sso"`

@@ -424,14 +424,14 @@ func (r *TexmlAccountConferenceParticipantGetParticipantsResponseParticipant) Un
 }
 
 type TexmlAccountConferenceParticipantGetParams struct {
-	AccountSid    string `path:"account_sid,required" json:"-"`
-	ConferenceSid string `path:"conference_sid,required" json:"-"`
+	AccountSid    string `path:"account_sid" api:"required" json:"-"`
+	ConferenceSid string `path:"conference_sid" api:"required" json:"-"`
 	paramObj
 }
 
 type TexmlAccountConferenceParticipantUpdateParams struct {
-	AccountSid    string `path:"account_sid,required" json:"-"`
-	ConferenceSid string `path:"conference_sid,required" json:"-"`
+	AccountSid    string `path:"account_sid" api:"required" json:"-"`
+	ConferenceSid string `path:"conference_sid" api:"required" json:"-"`
 	// The URL to call to announce something to the participant. The URL may return an
 	// MP3 fileo a WAV file, or a TwiML document that contains `<Play>`, `<Say>`,
 	// `<Pause>`, or `<Redirect>` verbs.
@@ -494,13 +494,13 @@ const (
 )
 
 type TexmlAccountConferenceParticipantDeleteParams struct {
-	AccountSid    string `path:"account_sid,required" json:"-"`
-	ConferenceSid string `path:"conference_sid,required" json:"-"`
+	AccountSid    string `path:"account_sid" api:"required" json:"-"`
+	ConferenceSid string `path:"conference_sid" api:"required" json:"-"`
 	paramObj
 }
 
 type TexmlAccountConferenceParticipantParticipantsParams struct {
-	AccountSid string `path:"account_sid,required" json:"-"`
+	AccountSid string `path:"account_sid" api:"required" json:"-"`
 	// The URL the result of answering machine detection will be sent to.
 	AmdStatusCallback param.Opt[string] `json:"AmdStatusCallback,omitzero"`
 	// The SID of the TeXML application that will handle the new participant's call.
@@ -734,9 +734,9 @@ const (
 // The properties Name, Value are required.
 type TexmlAccountConferenceParticipantParticipantsParamsCustomHeader struct {
 	// The name of the custom header
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The value of the custom header
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -802,6 +802,6 @@ const (
 )
 
 type TexmlAccountConferenceParticipantGetParticipantsParams struct {
-	AccountSid string `path:"account_sid,required" json:"-"`
+	AccountSid string `path:"account_sid" api:"required" json:"-"`
 	paramObj
 }

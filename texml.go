@@ -85,9 +85,9 @@ func (r *TexmlSecretsResponseData) UnmarshalJSON(data []byte) error {
 type TexmlSecretsParams struct {
 	// Name used as a reference for the secret, if the name already exists within the
 	// account its value will be replaced
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Secret value which will be used when rendering the TeXML template
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 

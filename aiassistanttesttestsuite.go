@@ -48,7 +48,7 @@ func (r *AIAssistantTestTestSuiteService) List(ctx context.Context, opts ...opti
 // organizing tests.
 type AIAssistantTestTestSuiteListResponse struct {
 	// Array of unique test suite names available to the user.
-	Data []string `json:"data,required"`
+	Data []string `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

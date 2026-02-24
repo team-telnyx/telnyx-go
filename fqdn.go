@@ -212,14 +212,14 @@ func (r *FqdnDeleteResponse) UnmarshalJSON(data []byte) error {
 
 type FqdnNewParams struct {
 	// ID of the FQDN connection to which this IP should be attached.
-	ConnectionID string `json:"connection_id,required"`
+	ConnectionID string `json:"connection_id" api:"required"`
 	// The DNS record type for the FQDN. For cases where a port is not set, the DNS
 	// record type must be 'srv'. For cases where a port is set, the DNS record type
 	// must be 'a'. If the DNS record type is 'a' and a port is not specified, 5060
 	// will be used.
-	DNSRecordType string `json:"dns_record_type,required"`
+	DNSRecordType string `json:"dns_record_type" api:"required"`
 	// FQDN represented by this resource.
-	Fqdn string `json:"fqdn,required"`
+	Fqdn string `json:"fqdn" api:"required"`
 	// Port to use when connecting to this FQDN.
 	Port param.Opt[int64] `json:"port,omitzero"`
 	paramObj

@@ -151,11 +151,11 @@ func (r *UsageReportGetOptionsResponseDataRecordType) UnmarshalJSON(data []byte)
 
 type UsageReportListParams struct {
 	// Breakout by specified product dimensions
-	Dimensions []string `query:"dimensions,omitzero,required" json:"-"`
+	Dimensions []string `query:"dimensions,omitzero" api:"required" json:"-"`
 	// Specified product usage values
-	Metrics []string `query:"metrics,omitzero,required" json:"-"`
+	Metrics []string `query:"metrics,omitzero" api:"required" json:"-"`
 	// Telnyx product
-	Product string `query:"product,required" json:"-"`
+	Product string `query:"product" api:"required" json:"-"`
 	// A more user-friendly way to specify the timespan you want to filter by. More
 	// options can be found in the Telnyx API Reference docs.
 	DateRange param.Opt[string] `query:"date_range,omitzero" json:"-"`

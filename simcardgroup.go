@@ -323,7 +323,7 @@ func (r *SimCardGroupDeleteResponse) UnmarshalJSON(data []byte) error {
 
 type SimCardGroupNewParams struct {
 	// A user friendly name for the SIM card group.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Upper limit on the amount of data the SIM cards, within the group, can use.
 	DataLimit SimCardGroupNewParamsDataLimit `json:"data_limit,omitzero"`
 	paramObj

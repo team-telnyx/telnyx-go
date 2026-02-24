@@ -505,12 +505,12 @@ func (r *TexmlAccountConferenceGetRecordingsJsonResponse) UnmarshalJSON(data []b
 }
 
 type TexmlAccountConferenceGetParams struct {
-	AccountSid string `path:"account_sid,required" json:"-"`
+	AccountSid string `path:"account_sid" api:"required" json:"-"`
 	paramObj
 }
 
 type TexmlAccountConferenceUpdateParams struct {
-	AccountSid string `path:"account_sid,required" json:"-"`
+	AccountSid string `path:"account_sid" api:"required" json:"-"`
 	// The URL we should call to announce something into the conference. The URL may
 	// return an MP3 file, a WAV file, or a TwiML document that contains `<Play>`,
 	// `<Say>`, `<Pause>`, or `<Redirect>` verbs.
@@ -583,11 +583,11 @@ const (
 )
 
 type TexmlAccountConferenceGetRecordingsParams struct {
-	AccountSid string `path:"account_sid,required" json:"-"`
+	AccountSid string `path:"account_sid" api:"required" json:"-"`
 	paramObj
 }
 
 type TexmlAccountConferenceGetRecordingsJsonParams struct {
-	AccountSid string `path:"account_sid,required" json:"-"`
+	AccountSid string `path:"account_sid" api:"required" json:"-"`
 	paramObj
 }
