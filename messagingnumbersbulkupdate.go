@@ -73,17 +73,17 @@ func (r *MessagingNumbersBulkUpdateNewResponse) UnmarshalJSON(data []byte) error
 
 type MessagingNumbersBulkUpdateNewResponseData struct {
 	// Phone numbers that failed to update.
-	Failed []string `json:"failed" format:"+E.164"`
+	Failed []string `json:"failed"`
 	// Order ID to verify bulk update status.
 	OrderID string `json:"order_id" format:"uuid"`
 	// Phone numbers pending to be updated.
-	Pending []string `json:"pending" format:"+E.164"`
+	Pending []string `json:"pending"`
 	// Identifies the type of the resource.
 	//
 	// Any of "messaging_numbers_bulk_update".
 	RecordType string `json:"record_type"`
 	// Phoned numbers updated successfully.
-	Success []string `json:"success" format:"+E.164"`
+	Success []string `json:"success"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Failed      respjson.Field
@@ -120,17 +120,17 @@ func (r *MessagingNumbersBulkUpdateGetResponse) UnmarshalJSON(data []byte) error
 
 type MessagingNumbersBulkUpdateGetResponseData struct {
 	// Phone numbers that failed to update.
-	Failed []string `json:"failed" format:"+E.164"`
+	Failed []string `json:"failed"`
 	// Order ID to verify bulk update status.
 	OrderID string `json:"order_id" format:"uuid"`
 	// Phone numbers pending to be updated.
-	Pending []string `json:"pending" format:"+E.164"`
+	Pending []string `json:"pending"`
 	// Identifies the type of the resource.
 	//
 	// Any of "messaging_numbers_bulk_update".
 	RecordType string `json:"record_type"`
 	// Phoned numbers updated successfully.
-	Success []string `json:"success" format:"+E.164"`
+	Success []string `json:"success"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Failed      respjson.Field
@@ -158,7 +158,7 @@ type MessagingNumbersBulkUpdateNewParams struct {
 	//     to that messaging profile
 	MessagingProfileID string `json:"messaging_profile_id,required"`
 	// The list of phone numbers to update.
-	Numbers []string `json:"numbers,omitzero,required" format:"+E.164"`
+	Numbers []string `json:"numbers,omitzero,required"`
 	paramObj
 }
 

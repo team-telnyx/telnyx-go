@@ -337,7 +337,7 @@ type MessagingHostedNumberOrderNewParams struct {
 	// is complete.
 	MessagingProfileID param.Opt[string] `json:"messaging_profile_id,omitzero"`
 	// Phone numbers to be used for hosted messaging.
-	PhoneNumbers []string `json:"phone_numbers,omitzero" format:"+E.164"`
+	PhoneNumbers []string `json:"phone_numbers,omitzero"`
 	paramObj
 }
 
@@ -366,7 +366,7 @@ func (r MessagingHostedNumberOrderListParams) URLQuery() (v url.Values, err erro
 
 type MessagingHostedNumberOrderCheckEligibilityParams struct {
 	// List of phone numbers to check eligibility
-	PhoneNumbers []string `json:"phone_numbers,omitzero,required" format:"+E.164"`
+	PhoneNumbers []string `json:"phone_numbers,omitzero,required"`
 	paramObj
 }
 
@@ -379,7 +379,7 @@ func (r *MessagingHostedNumberOrderCheckEligibilityParams) UnmarshalJSON(data []
 }
 
 type MessagingHostedNumberOrderNewVerificationCodesParams struct {
-	PhoneNumbers []string `json:"phone_numbers,omitzero,required" format:"+E.164"`
+	PhoneNumbers []string `json:"phone_numbers,omitzero,required"`
 	// Any of "sms", "call", "flashcall".
 	VerificationMethod MessagingHostedNumberOrderNewVerificationCodesParamsVerificationMethod `json:"verification_method,omitzero,required"`
 	paramObj

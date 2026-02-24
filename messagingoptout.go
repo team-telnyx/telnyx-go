@@ -94,7 +94,7 @@ type MessagingOptoutListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// If receiving address (+E.164 formatted phone number) should be redacted
-	RedactionEnabled param.Opt[string] `query:"redaction_enabled,omitzero" format:"boolean" json:"-"`
+	RedactionEnabled param.Opt[string] `query:"redaction_enabled,omitzero" json:"-"`
 	// Consolidated created_at parameter (deepObject style). Originally:
 	// created_at[gte], created_at[lte]
 	CreatedAt MessagingOptoutListParamsCreatedAt `query:"created_at,omitzero" json:"-"`

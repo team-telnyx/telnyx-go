@@ -97,7 +97,7 @@ type MobilePhoneNumber struct {
 	CallerIDNameEnabled bool                         `json:"caller_id_name_enabled"`
 	CnamListing         MobilePhoneNumberCnamListing `json:"cnam_listing"`
 	// The ID of the connection associated with this number.
-	ConnectionID string `json:"connection_id,nullable" format:"int64"`
+	ConnectionID string `json:"connection_id,nullable"`
 	// The name of the connection.
 	ConnectionName string `json:"connection_name,nullable"`
 	// The type of the connection.
@@ -230,7 +230,7 @@ func (r *MobilePhoneNumberCnamListing) UnmarshalJSON(data []byte) error {
 
 type MobilePhoneNumberInbound struct {
 	// The ID of the app that will intercept inbound calls.
-	InterceptionAppID string `json:"interception_app_id,nullable" format:"int64"`
+	InterceptionAppID string `json:"interception_app_id,nullable"`
 	// The name of the app that will intercept inbound calls.
 	InterceptionAppName string `json:"interception_app_name,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -269,7 +269,7 @@ const (
 
 type MobilePhoneNumberOutbound struct {
 	// The ID of the app that will intercept outbound calls.
-	InterceptionAppID string `json:"interception_app_id,nullable" format:"int64"`
+	InterceptionAppID string `json:"interception_app_id,nullable"`
 	// The name of the app that will intercept outbound calls.
 	InterceptionAppName string `json:"interception_app_name,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -408,7 +408,7 @@ func (r *MobilePhoneNumberUpdateParamsCnamListing) UnmarshalJSON(data []byte) er
 type MobilePhoneNumberUpdateParamsInbound struct {
 	// The ID of the CallControl or TeXML Application that will intercept inbound
 	// calls.
-	InterceptionAppID param.Opt[string] `json:"interception_app_id,omitzero" format:"int64"`
+	InterceptionAppID param.Opt[string] `json:"interception_app_id,omitzero"`
 	paramObj
 }
 
@@ -431,7 +431,7 @@ const (
 type MobilePhoneNumberUpdateParamsOutbound struct {
 	// The ID of the CallControl or TeXML Application that will intercept outbound
 	// calls.
-	InterceptionAppID param.Opt[string] `json:"interception_app_id,omitzero" format:"int64"`
+	InterceptionAppID param.Opt[string] `json:"interception_app_id,omitzero"`
 	paramObj
 }
 
