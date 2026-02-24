@@ -249,9 +249,9 @@ func (r *LegacyReportingBatchDetailRecordVoiceGetFieldsResponse) UnmarshalJSON(d
 
 type LegacyReportingBatchDetailRecordVoiceNewParams struct {
 	// End time in ISO format
-	EndTime time.Time `json:"end_time,required" format:"date-time"`
+	EndTime time.Time `json:"end_time" api:"required" format:"date-time"`
 	// Start time in ISO format
-	StartTime time.Time `json:"start_time,required" format:"date-time"`
+	StartTime time.Time `json:"start_time" api:"required" format:"date-time"`
 	// Whether to include all metadata
 	IncludeAllMetadata param.Opt[bool] `json:"include_all_metadata,omitzero"`
 	// Name of the report

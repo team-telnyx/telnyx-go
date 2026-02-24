@@ -274,11 +274,11 @@ func (r *FaxGetResponse) UnmarshalJSON(data []byte) error {
 
 type FaxNewParams struct {
 	// The connection ID to send the fax with.
-	ConnectionID string `json:"connection_id,required"`
+	ConnectionID string `json:"connection_id" api:"required"`
 	// The phone number, in E.164 format, the fax will be sent from.
-	From string `json:"from,required"`
+	From string `json:"from" api:"required"`
 	// The phone number, in E.164 format, the fax will be sent to or SIP URI
-	To string `json:"to,required"`
+	To string `json:"to" api:"required"`
 	// The black threshold percentage for monochrome faxes. Only applicable if
 	// `monochrome` is set to `true`.
 	BlackThreshold param.Opt[int64] `json:"black_threshold,omitzero"`

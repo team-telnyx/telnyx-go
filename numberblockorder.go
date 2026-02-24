@@ -176,9 +176,9 @@ func (r *NumberBlockOrderGetResponse) UnmarshalJSON(data []byte) error {
 
 type NumberBlockOrderNewParams struct {
 	// The phone number range included in the block.
-	Range int64 `json:"range,required"`
+	Range int64 `json:"range" api:"required"`
 	// Starting phone number block
-	StartingNumber string `json:"starting_number,required"`
+	StartingNumber string `json:"starting_number" api:"required"`
 	// Identifies the connection associated with this phone number.
 	ConnectionID param.Opt[string] `json:"connection_id,omitzero"`
 	// A customer reference string for customer look ups.

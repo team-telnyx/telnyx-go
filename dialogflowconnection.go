@@ -87,7 +87,7 @@ func (r *DialogflowConnectionService) Delete(ctx context.Context, connectionID s
 }
 
 type DialogflowConnectionNewResponse struct {
-	Data DialogflowConnectionNewResponseData `json:"data,required"`
+	Data DialogflowConnectionNewResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -132,7 +132,7 @@ func (r *DialogflowConnectionNewResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type DialogflowConnectionGetResponse struct {
-	Data DialogflowConnectionGetResponseData `json:"data,required"`
+	Data DialogflowConnectionGetResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -177,7 +177,7 @@ func (r *DialogflowConnectionGetResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type DialogflowConnectionUpdateResponse struct {
-	Data DialogflowConnectionUpdateResponseData `json:"data,required"`
+	Data DialogflowConnectionUpdateResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -223,7 +223,7 @@ func (r *DialogflowConnectionUpdateResponseData) UnmarshalJSON(data []byte) erro
 
 type DialogflowConnectionNewParams struct {
 	// The JSON map to connect your Dialoglow account.
-	ServiceAccount map[string]any `json:"service_account,omitzero,required"`
+	ServiceAccount map[string]any `json:"service_account,omitzero" api:"required"`
 	// The id of a configured conversation profile on your Dialogflow account. (If you
 	// use Dialogflow CX, this param is required)
 	ConversationProfileID param.Opt[string] `json:"conversation_profile_id,omitzero"`
@@ -256,7 +256,7 @@ const (
 
 type DialogflowConnectionUpdateParams struct {
 	// The JSON map to connect your Dialoglow account.
-	ServiceAccount map[string]any `json:"service_account,omitzero,required"`
+	ServiceAccount map[string]any `json:"service_account,omitzero" api:"required"`
 	// The id of a configured conversation profile on your Dialogflow account. (If you
 	// use Dialogflow CX, this param is required)
 	ConversationProfileID param.Opt[string] `json:"conversation_profile_id,omitzero"`

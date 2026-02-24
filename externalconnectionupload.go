@@ -382,7 +382,7 @@ func (r *ExternalConnectionUploadRetryResponse) UnmarshalJSON(data []byte) error
 }
 
 type ExternalConnectionUploadNewParams struct {
-	NumberIDs []string `json:"number_ids,omitzero,required"`
+	NumberIDs []string `json:"number_ids,omitzero" api:"required"`
 	// Identifies the civic address to assign all phone numbers to.
 	CivicAddressID param.Opt[string] `json:"civic_address_id,omitzero" format:"uuid"`
 	// Identifies the location to assign all phone numbers to.
@@ -415,7 +415,7 @@ const (
 )
 
 type ExternalConnectionUploadGetParams struct {
-	ID string `path:"id,required" json:"-"`
+	ID string `path:"id" api:"required" json:"-"`
 	paramObj
 }
 
@@ -521,6 +521,6 @@ func (r ExternalConnectionUploadListParamsFilterStatus) URLQuery() (v url.Values
 }
 
 type ExternalConnectionUploadRetryParams struct {
-	ID string `path:"id,required" json:"-"`
+	ID string `path:"id" api:"required" json:"-"`
 	paramObj
 }

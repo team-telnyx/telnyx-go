@@ -231,20 +231,20 @@ func (r *AddressDeleteResponse) UnmarshalJSON(data []byte) error {
 type AddressNewParams struct {
 	// The business name associated with the address. An address must have either a
 	// first last name or a business name.
-	BusinessName string `json:"business_name,required"`
+	BusinessName string `json:"business_name" api:"required"`
 	// The two-character (ISO 3166-1 alpha-2) country code of the address.
-	CountryCode string `json:"country_code,required"`
+	CountryCode string `json:"country_code" api:"required"`
 	// The first name associated with the address. An address must have either a first
 	// last name or a business name.
-	FirstName string `json:"first_name,required"`
+	FirstName string `json:"first_name" api:"required"`
 	// The last name associated with the address. An address must have either a first
 	// last name or a business name.
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// The locality of the address. For US addresses, this corresponds to the city of
 	// the address.
-	Locality string `json:"locality,required"`
+	Locality string `json:"locality" api:"required"`
 	// The primary street address information about the address.
-	StreetAddress string `json:"street_address,required"`
+	StreetAddress string `json:"street_address" api:"required"`
 	// Indicates whether or not the address should be considered part of your list of
 	// addresses that appear for regular use.
 	AddressBook param.Opt[bool] `json:"address_book,omitzero"`

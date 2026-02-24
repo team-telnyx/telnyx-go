@@ -69,23 +69,23 @@ func (r *CallEventService) ListAutoPaging(ctx context.Context, query CallEventLi
 
 type CallEventListResponse struct {
 	// Uniquely identifies an individual call leg.
-	CallLegID string `json:"call_leg_id,required"`
+	CallLegID string `json:"call_leg_id" api:"required"`
 	// Uniquely identifies the call control session. A session may include multiple
 	// call leg events.
-	CallSessionID string `json:"call_session_id,required"`
+	CallSessionID string `json:"call_session_id" api:"required"`
 	// Event timestamp
-	EventTimestamp string `json:"event_timestamp,required"`
+	EventTimestamp string `json:"event_timestamp" api:"required"`
 	// Event metadata, which includes raw event, and extra information based on event
 	// type
-	Metadata map[string]any `json:"metadata,required"`
+	Metadata map[string]any `json:"metadata" api:"required"`
 	// Event name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Any of "call_event".
-	RecordType CallEventListResponseRecordType `json:"record_type,required"`
+	RecordType CallEventListResponseRecordType `json:"record_type" api:"required"`
 	// Event type
 	//
 	// Any of "command", "webhook".
-	Type CallEventListResponseType `json:"type,required"`
+	Type CallEventListResponseType `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CallLegID      respjson.Field

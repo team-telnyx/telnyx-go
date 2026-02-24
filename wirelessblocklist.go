@@ -212,13 +212,13 @@ func (r *WirelessBlocklistDeleteResponse) UnmarshalJSON(data []byte) error {
 
 type WirelessBlocklistNewParams struct {
 	// The name of the Wireless Blocklist.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The type of wireless blocklist.
 	//
 	// Any of "country", "mcc", "plmn".
-	Type WirelessBlocklistNewParamsType `json:"type,omitzero,required"`
+	Type WirelessBlocklistNewParamsType `json:"type,omitzero" api:"required"`
 	// Values to block. The values here depend on the `type` of Wireless Blocklist.
-	Values []string `json:"values,omitzero,required"`
+	Values []string `json:"values,omitzero" api:"required"`
 	paramObj
 }
 

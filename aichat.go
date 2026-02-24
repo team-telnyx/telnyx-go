@@ -49,7 +49,7 @@ type BucketIDs struct {
 	// List of
 	// [embedded storage buckets](https://developers.telnyx.com/api-reference/embeddings/embed-documents)
 	// to use for retrieval-augmented generation.
-	BucketIDs []string `json:"bucket_ids,required"`
+	BucketIDs []string `json:"bucket_ids" api:"required"`
 	// The maximum number of results to retrieve as context for the language model.
 	MaxNumResults int64 `json:"max_num_results"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -81,7 +81,7 @@ type BucketIDsParam struct {
 	// List of
 	// [embedded storage buckets](https://developers.telnyx.com/api-reference/embeddings/embed-documents)
 	// to use for retrieval-augmented generation.
-	BucketIDs []string `json:"bucket_ids,omitzero,required"`
+	BucketIDs []string `json:"bucket_ids,omitzero" api:"required"`
 	// The maximum number of results to retrieve as context for the language model.
 	MaxNumResults param.Opt[int64] `json:"max_num_results,omitzero"`
 	paramObj
@@ -99,7 +99,7 @@ type AIChatNewCompletionResponse map[string]any
 
 type AIChatNewCompletionParams struct {
 	// A list of the previous chat messages for context.
-	Messages []AIChatNewCompletionParamsMessage `json:"messages,omitzero,required"`
+	Messages []AIChatNewCompletionParamsMessage `json:"messages,omitzero" api:"required"`
 	// If you are using an external inference provider like xAI or OpenAI, this field
 	// allows you to pass along a reference to your API key. After creating an
 	// [integration secret](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
@@ -180,9 +180,9 @@ func (r *AIChatNewCompletionParams) UnmarshalJSON(data []byte) error {
 
 // The properties Content, Role are required.
 type AIChatNewCompletionParamsMessage struct {
-	Content AIChatNewCompletionParamsMessageContentUnion `json:"content,omitzero,required"`
+	Content AIChatNewCompletionParamsMessageContentUnion `json:"content,omitzero" api:"required"`
 	// Any of "system", "user", "assistant", "tool".
-	Role string `json:"role,omitzero,required"`
+	Role string `json:"role,omitzero" api:"required"`
 	paramObj
 }
 
@@ -228,7 +228,7 @@ func (u *AIChatNewCompletionParamsMessageContentUnion) asAny() any {
 // The property Type is required.
 type AIChatNewCompletionParamsMessageContentTextAndImageArrayItem struct {
 	// Any of "text", "image_url".
-	Type     string            `json:"type,omitzero,required"`
+	Type     string            `json:"type,omitzero" api:"required"`
 	ImageURL param.Opt[string] `json:"image_url,omitzero"`
 	Text     param.Opt[string] `json:"text,omitzero"`
 	paramObj
@@ -254,7 +254,7 @@ func init() {
 // The property Type is required.
 type AIChatNewCompletionParamsResponseFormat struct {
 	// Any of "text", "json_object".
-	Type string `json:"type,omitzero,required"`
+	Type string `json:"type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -341,9 +341,9 @@ func init() {
 
 // The properties Function, Type are required.
 type AIChatNewCompletionParamsToolFunction struct {
-	Function AIChatNewCompletionParamsToolFunctionFunction `json:"function,omitzero,required"`
+	Function AIChatNewCompletionParamsToolFunctionFunction `json:"function,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "function".
-	Type constant.Function `json:"type,required"`
+	Type constant.Function `json:"type" api:"required"`
 	paramObj
 }
 
@@ -357,7 +357,7 @@ func (r *AIChatNewCompletionParamsToolFunction) UnmarshalJSON(data []byte) error
 
 // The property Name is required.
 type AIChatNewCompletionParamsToolFunctionFunction struct {
-	Name        string            `json:"name,required"`
+	Name        string            `json:"name" api:"required"`
 	Description param.Opt[string] `json:"description,omitzero"`
 	Parameters  map[string]any    `json:"parameters,omitzero"`
 	paramObj
@@ -373,9 +373,9 @@ func (r *AIChatNewCompletionParamsToolFunctionFunction) UnmarshalJSON(data []byt
 
 // The properties Retrieval, Type are required.
 type AIChatNewCompletionParamsToolRetrieval struct {
-	Retrieval BucketIDsParam `json:"retrieval,omitzero,required"`
+	Retrieval BucketIDsParam `json:"retrieval,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "retrieval".
-	Type constant.Retrieval `json:"type,required"`
+	Type constant.Retrieval `json:"type" api:"required"`
 	paramObj
 }
 

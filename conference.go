@@ -164,15 +164,15 @@ func (r *ConferenceService) UpdateParticipant(ctx context.Context, participantID
 
 type Conference struct {
 	// Uniquely identifies the conference
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// ISO 8601 formatted date of when the conference was created
-	CreatedAt string `json:"created_at,required"`
+	CreatedAt string `json:"created_at" api:"required"`
 	// ISO 8601 formatted date of when the conference will expire
-	ExpiresAt string `json:"expires_at,required"`
+	ExpiresAt string `json:"expires_at" api:"required"`
 	// Name of the conference
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Any of "conference".
-	RecordType ConferenceRecordType `json:"record_type,required"`
+	RecordType ConferenceRecordType `json:"record_type" api:"required"`
 	// Identifies the connection associated with the conference
 	ConnectionID string `json:"connection_id"`
 	// Reason why the conference ended
@@ -295,35 +295,35 @@ func (r *ConferenceGetResponse) UnmarshalJSON(data []byte) error {
 
 type ConferenceListParticipantsResponse struct {
 	// Uniquely identifies the participant
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Call Control ID associated with the partiipant of the conference
-	CallControlID string `json:"call_control_id,required"`
+	CallControlID string `json:"call_control_id" api:"required"`
 	// Uniquely identifies the call leg associated with the participant
-	CallLegID string `json:"call_leg_id,required"`
+	CallLegID string `json:"call_leg_id" api:"required"`
 	// Info about the conference that the participant is in
-	Conference ConferenceListParticipantsResponseConference `json:"conference,required"`
+	Conference ConferenceListParticipantsResponseConference `json:"conference" api:"required"`
 	// ISO 8601 formatted date of when the participant was created
-	CreatedAt string `json:"created_at,required"`
+	CreatedAt string `json:"created_at" api:"required"`
 	// Whether the conference will end and all remaining participants be hung up after
 	// the participant leaves the conference.
-	EndConferenceOnExit bool `json:"end_conference_on_exit,required"`
+	EndConferenceOnExit bool `json:"end_conference_on_exit" api:"required"`
 	// Whether the participant is muted.
-	Muted bool `json:"muted,required"`
+	Muted bool `json:"muted" api:"required"`
 	// Whether the participant is put on_hold.
-	OnHold bool `json:"on_hold,required"`
+	OnHold bool `json:"on_hold" api:"required"`
 	// Any of "participant".
-	RecordType ConferenceListParticipantsResponseRecordType `json:"record_type,required"`
+	RecordType ConferenceListParticipantsResponseRecordType `json:"record_type" api:"required"`
 	// Whether the conference will end after the participant leaves the conference.
-	SoftEndConferenceOnExit bool `json:"soft_end_conference_on_exit,required"`
+	SoftEndConferenceOnExit bool `json:"soft_end_conference_on_exit" api:"required"`
 	// The status of the participant with respect to the lifecycle within the
 	// conference
 	//
 	// Any of "joining", "joined", "left".
-	Status ConferenceListParticipantsResponseStatus `json:"status,required"`
+	Status ConferenceListParticipantsResponseStatus `json:"status" api:"required"`
 	// ISO 8601 formatted date of when the participant was last updated
-	UpdatedAt string `json:"updated_at,required"`
+	UpdatedAt string `json:"updated_at" api:"required"`
 	// Array of unique call_control_ids the participant can whisper to..
-	WhisperCallControlIDs []string `json:"whisper_call_control_ids,required"`
+	WhisperCallControlIDs []string `json:"whisper_call_control_ids" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                      respjson.Field
@@ -531,9 +531,9 @@ func (r *ConferenceUpdateParticipantResponseData) UnmarshalJSON(data []byte) err
 
 type ConferenceNewParams struct {
 	// Unique identifier and token for controlling the call
-	CallControlID string `json:"call_control_id,required"`
+	CallControlID string `json:"call_control_id" api:"required"`
 	// Name of the conference
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Use this field to add state to every subsequent webhook. It must be a valid
 	// Base-64 encoded string. The client_state will be updated for the creator call
 	// leg and will be used for all webhooks related to the created conference.
@@ -815,12 +815,12 @@ const (
 )
 
 type ConferenceGetParticipantParams struct {
-	ID string `path:"id,required" format:"uuid" json:"-"`
+	ID string `path:"id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }
 
 type ConferenceUpdateParticipantParams struct {
-	ID string `path:"id,required" format:"uuid" json:"-"`
+	ID string `path:"id" api:"required" format:"uuid" json:"-"`
 	// Whether the conference should end when this participant exits.
 	EndConferenceOnExit param.Opt[bool] `json:"end_conference_on_exit,omitzero"`
 	// Whether the conference should soft-end when this participant exits. A soft end

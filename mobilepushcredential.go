@@ -98,23 +98,23 @@ func (r *MobilePushCredentialService) Delete(ctx context.Context, pushCredential
 
 type PushCredential struct {
 	// Unique identifier of a push credential
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Alias to uniquely identify a credential
-	Alias string `json:"alias,required"`
+	Alias string `json:"alias" api:"required"`
 	// Apple certificate for sending push notifications. For iOS only
-	Certificate string `json:"certificate,required"`
+	Certificate string `json:"certificate" api:"required"`
 	// ISO 8601 timestamp when the room was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Apple private key for a given certificate for sending push notifications. For
 	// iOS only
-	PrivateKey string `json:"private_key,required"`
+	PrivateKey string `json:"private_key" api:"required"`
 	// Google server key for sending push notifications. For Android only
-	ProjectAccountJsonFile map[string]any `json:"project_account_json_file,required"`
-	RecordType             string         `json:"record_type,required"`
+	ProjectAccountJsonFile map[string]any `json:"project_account_json_file" api:"required"`
+	RecordType             string         `json:"record_type" api:"required"`
 	// Type of mobile push credential. Either <code>ios</code> or <code>android</code>
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// ISO 8601 timestamp when the room was updated.
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                     respjson.Field
@@ -178,15 +178,15 @@ func (r *MobilePushCredentialNewParams) UnmarshalJSON(data []byte) error {
 // The properties Alias, Certificate, PrivateKey, Type are required.
 type MobilePushCredentialNewParamsCreateMobilePushCredentialRequestIos struct {
 	// Alias to uniquely identify the credential
-	Alias string `json:"alias,required"`
+	Alias string `json:"alias" api:"required"`
 	// Certificate as received from APNs
-	Certificate string `json:"certificate,required"`
+	Certificate string `json:"certificate" api:"required"`
 	// Corresponding private key to the certificate as received from APNs
-	PrivateKey string `json:"private_key,required"`
+	PrivateKey string `json:"private_key" api:"required"`
 	// Type of mobile push credential. Should be <code>ios</code> here
 	//
 	// This field can be elided, and will marshal its zero value as "ios".
-	Type constant.Ios `json:"type,required"`
+	Type constant.Ios `json:"type" api:"required"`
 	paramObj
 }
 
@@ -201,13 +201,13 @@ func (r *MobilePushCredentialNewParamsCreateMobilePushCredentialRequestIos) Unma
 // The properties Alias, ProjectAccountJsonFile, Type are required.
 type MobilePushCredentialNewParamsCreateMobilePushCredentialRequestAndroid struct {
 	// Alias to uniquely identify the credential
-	Alias string `json:"alias,required"`
+	Alias string `json:"alias" api:"required"`
 	// Private key file in JSON format
-	ProjectAccountJsonFile map[string]any `json:"project_account_json_file,omitzero,required"`
+	ProjectAccountJsonFile map[string]any `json:"project_account_json_file,omitzero" api:"required"`
 	// Type of mobile push credential. Should be <code>android</code> here
 	//
 	// This field can be elided, and will marshal its zero value as "android".
-	Type constant.Android `json:"type,required"`
+	Type constant.Android `json:"type" api:"required"`
 	paramObj
 }
 

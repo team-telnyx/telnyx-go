@@ -76,7 +76,7 @@ type TexmlAccountTranscriptionJsonGetRecordingTranscriptionSidJsonResponse struc
 	DateCreated time.Time `json:"date_created" format:"date-time"`
 	DateUpdated time.Time `json:"date_updated" format:"date-time"`
 	// The duration of this recording, given in seconds.
-	Duration string `json:"duration,nullable"`
+	Duration string `json:"duration" api:"nullable"`
 	// Identifier of a resource.
 	RecordingSid string `json:"recording_sid"`
 	// Identifier of a resource.
@@ -126,11 +126,11 @@ const (
 )
 
 type TexmlAccountTranscriptionJsonDeleteRecordingTranscriptionSidJsonParams struct {
-	AccountSid string `path:"account_sid,required" json:"-"`
+	AccountSid string `path:"account_sid" api:"required" json:"-"`
 	paramObj
 }
 
 type TexmlAccountTranscriptionJsonGetRecordingTranscriptionSidJsonParams struct {
-	AccountSid string `path:"account_sid,required" json:"-"`
+	AccountSid string `path:"account_sid" api:"required" json:"-"`
 	paramObj
 }

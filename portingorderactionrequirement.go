@@ -88,9 +88,9 @@ type PortingOrderActionRequirementListResponse struct {
 	// The type of action required
 	ActionType string `json:"action_type"`
 	// Optional URL for the action
-	ActionURL string `json:"action_url,nullable"`
+	ActionURL string `json:"action_url" api:"nullable"`
 	// Reason for cancellation if status is 'cancelled'
-	CancelReason string `json:"cancel_reason,nullable"`
+	CancelReason string `json:"cancel_reason" api:"nullable"`
 	// ISO 8601 formatted date-time indicating when the resource was created
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// The ID of the porting order this action requirement belongs to
@@ -170,9 +170,9 @@ type PortingOrderActionRequirementInitiateResponseData struct {
 	// The type of action required
 	ActionType string `json:"action_type"`
 	// Optional URL for the action
-	ActionURL string `json:"action_url,nullable"`
+	ActionURL string `json:"action_url" api:"nullable"`
 	// Reason for cancellation if status is 'cancelled'
-	CancelReason string `json:"cancel_reason,nullable"`
+	CancelReason string `json:"cancel_reason" api:"nullable"`
 	// ISO 8601 formatted date-time indicating when the resource was created
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// The ID of the porting order this action requirement belongs to
@@ -279,10 +279,10 @@ func (r PortingOrderActionRequirementListParamsSort) URLQuery() (v url.Values, e
 }
 
 type PortingOrderActionRequirementInitiateParams struct {
-	PortingOrderID string `path:"porting_order_id,required" json:"-"`
+	PortingOrderID string `path:"porting_order_id" api:"required" json:"-"`
 	// Required information for initiating the action requirement for AU ID
 	// verification.
-	Params PortingOrderActionRequirementInitiateParamsParams `json:"params,omitzero,required"`
+	Params PortingOrderActionRequirementInitiateParamsParams `json:"params,omitzero" api:"required"`
 	paramObj
 }
 
@@ -300,9 +300,9 @@ func (r *PortingOrderActionRequirementInitiateParams) UnmarshalJSON(data []byte)
 // The properties FirstName, LastName are required.
 type PortingOrderActionRequirementInitiateParamsParams struct {
 	// The first name of the person that will perform the verification flow.
-	FirstName string `json:"first_name,required"`
+	FirstName string `json:"first_name" api:"required"`
 	// The last name of the person that will perform the verification flow.
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	paramObj
 }
 

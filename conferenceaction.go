@@ -265,7 +265,7 @@ func (r *ConferenceActionService) Unmute(ctx context.Context, id string, body Co
 }
 
 type ConferenceCommandResult struct {
-	Result string `json:"result,required"`
+	Result string `json:"result" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Result      respjson.Field
@@ -283,7 +283,7 @@ func (r *ConferenceCommandResult) UnmarshalJSON(data []byte) error {
 // The properties CallControlID, SupervisorRole are required.
 type UpdateConferenceParam struct {
 	// Unique identifier and token for controlling the call
-	CallControlID string `json:"call_control_id,required"`
+	CallControlID string `json:"call_control_id" api:"required"`
 	// Sets the participant as a supervisor for the conference. A conference can have
 	// multiple supervisors. "barge" means the supervisor enters the conference as a
 	// normal participant. This is the same as "none". "monitor" means the supervisor
@@ -291,7 +291,7 @@ type UpdateConferenceParam struct {
 	// "whisper_call_control_ids" can hear the supervisor. Defaults to "none".
 	//
 	// Any of "barge", "monitor", "none", "whisper".
-	SupervisorRole UpdateConferenceSupervisorRole `json:"supervisor_role,omitzero,required"`
+	SupervisorRole UpdateConferenceSupervisorRole `json:"supervisor_role,omitzero" api:"required"`
 	// Use this field to avoid execution of duplicate commands. Telnyx will ignore
 	// subsequent commands with the same `command_id` as one that has already been
 	// executed.
@@ -643,7 +643,7 @@ func (r *ConferenceActionEndConferenceParams) UnmarshalJSON(data []byte) error {
 type ConferenceActionGatherDtmfAudioParams struct {
 	// Unique identifier and token for controlling the call leg that will receive the
 	// gather prompt.
-	CallControlID string `json:"call_control_id,required"`
+	CallControlID string `json:"call_control_id" api:"required"`
 	// The URL of the audio file to play as the gather prompt. Must be WAV or MP3
 	// format.
 	AudioURL param.Opt[string] `json:"audio_url,omitzero"`
@@ -730,7 +730,7 @@ const (
 
 type ConferenceActionJoinParams struct {
 	// Unique identifier and token for controlling the call
-	CallControlID string `json:"call_control_id,required"`
+	CallControlID string `json:"call_control_id" api:"required"`
 	// Use this field to add state to every subsequent webhook. It must be a valid
 	// Base-64 encoded string. Please note that the client_state will be updated for
 	// the participient call leg and the change will not affect conferencing webhooks
@@ -840,7 +840,7 @@ const (
 
 type ConferenceActionLeaveParams struct {
 	// Unique identifier and token for controlling the call
-	CallControlID string `json:"call_control_id,required"`
+	CallControlID string `json:"call_control_id" api:"required"`
 	// Use this field to avoid execution of duplicate commands. Telnyx will ignore
 	// subsequent commands with the same `command_id` as one that has already been
 	// executed.
@@ -1032,7 +1032,7 @@ type ConferenceActionRecordStartParams struct {
 	// `mp3` or `wav`.
 	//
 	// Any of "wav", "mp3".
-	Format ConferenceActionRecordStartParamsFormat `json:"format,omitzero,required"`
+	Format ConferenceActionRecordStartParamsFormat `json:"format,omitzero" api:"required"`
 	// Use this field to avoid duplicate commands. Telnyx will ignore any command with
 	// the same `command_id` for the same `conference_id`.
 	CommandID param.Opt[string] `json:"command_id,omitzero"`
@@ -1129,7 +1129,7 @@ const (
 type ConferenceActionSendDtmfParams struct {
 	// DTMF digits to send. Valid characters: 0-9, A-D, \*, #, w (0.5s pause), W (1s
 	// pause).
-	Digits string `json:"digits,required"`
+	Digits string `json:"digits" api:"required"`
 	// Use this field to add state to every subsequent webhook. Must be a valid Base-64
 	// encoded string.
 	ClientState param.Opt[string] `json:"client_state,omitzero"`
@@ -1151,7 +1151,7 @@ func (r *ConferenceActionSendDtmfParams) UnmarshalJSON(data []byte) error {
 
 type ConferenceActionSpeakParams struct {
 	// The text or SSML to be converted into speech. There is a 3,000 character limit.
-	Payload string `json:"payload,required"`
+	Payload string `json:"payload" api:"required"`
 	// Specifies the voice used in speech synthesis.
 	//
 	//   - Define voices using the format `<Provider>.<Model>.<VoiceId>`. Specifying only
@@ -1183,7 +1183,7 @@ type ConferenceActionSpeakParams struct {
 	//   - **Resemble:** Use `Resemble.<ModelId>.<VoiceId>` (e.g.,
 	//     `Resemble.Pro.my_voice`). Supported models: `Pro` (multilingual) and `Turbo`
 	//     (English only).
-	Voice string `json:"voice,required"`
+	Voice string `json:"voice" api:"required"`
 	// Use this field to avoid execution of duplicate commands. Telnyx will ignore
 	// subsequent commands with the same `command_id` as one that has already been
 	// executed.
@@ -1415,7 +1415,7 @@ const (
 type ConferenceActionUnholdParams struct {
 	// List of unique identifiers and tokens for controlling the call. Enter each call
 	// control ID to be unheld.
-	CallControlIDs []string `json:"call_control_ids,omitzero,required"`
+	CallControlIDs []string `json:"call_control_ids,omitzero" api:"required"`
 	// Region where the conference data is located. Defaults to the region defined in
 	// user's data locality settings (Europe or US).
 	//

@@ -56,12 +56,12 @@ func (r *AIOpenAIEmbeddingService) ListEmbeddingModels(ctx context.Context, opts
 
 type AIOpenAIEmbeddingNewEmbeddingsResponse struct {
 	// List of embedding objects
-	Data []AIOpenAIEmbeddingNewEmbeddingsResponseData `json:"data,required"`
+	Data []AIOpenAIEmbeddingNewEmbeddingsResponseData `json:"data" api:"required"`
 	// The model used for embedding
-	Model string `json:"model,required"`
+	Model string `json:"model" api:"required"`
 	// The object type, always 'list'
-	Object string                                      `json:"object,required"`
-	Usage  AIOpenAIEmbeddingNewEmbeddingsResponseUsage `json:"usage,required"`
+	Object string                                      `json:"object" api:"required"`
+	Usage  AIOpenAIEmbeddingNewEmbeddingsResponseUsage `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -81,11 +81,11 @@ func (r *AIOpenAIEmbeddingNewEmbeddingsResponse) UnmarshalJSON(data []byte) erro
 
 type AIOpenAIEmbeddingNewEmbeddingsResponseData struct {
 	// The embedding vector
-	Embedding []float64 `json:"embedding,required"`
+	Embedding []float64 `json:"embedding" api:"required"`
 	// The index of the embedding in the list of embeddings
-	Index int64 `json:"index,required"`
+	Index int64 `json:"index" api:"required"`
 	// The object type, always 'embedding'
-	Object string `json:"object,required"`
+	Object string `json:"object" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Embedding   respjson.Field
@@ -104,9 +104,9 @@ func (r *AIOpenAIEmbeddingNewEmbeddingsResponseData) UnmarshalJSON(data []byte) 
 
 type AIOpenAIEmbeddingNewEmbeddingsResponseUsage struct {
 	// Number of tokens in the input
-	PromptTokens int64 `json:"prompt_tokens,required"`
+	PromptTokens int64 `json:"prompt_tokens" api:"required"`
 	// Total number of tokens used
-	TotalTokens int64 `json:"total_tokens,required"`
+	TotalTokens int64 `json:"total_tokens" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PromptTokens respjson.Field
@@ -124,9 +124,9 @@ func (r *AIOpenAIEmbeddingNewEmbeddingsResponseUsage) UnmarshalJSON(data []byte)
 
 type AIOpenAIEmbeddingListEmbeddingModelsResponse struct {
 	// List of available embedding models
-	Data []AIOpenAIEmbeddingListEmbeddingModelsResponseData `json:"data,required"`
+	Data []AIOpenAIEmbeddingListEmbeddingModelsResponseData `json:"data" api:"required"`
 	// The object type, always 'list'
-	Object string `json:"object,required"`
+	Object string `json:"object" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -144,13 +144,13 @@ func (r *AIOpenAIEmbeddingListEmbeddingModelsResponse) UnmarshalJSON(data []byte
 
 type AIOpenAIEmbeddingListEmbeddingModelsResponseData struct {
 	// The model identifier
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Unix timestamp of when the model was created
-	Created int64 `json:"created,required"`
+	Created int64 `json:"created" api:"required"`
 	// The object type, always 'model'
-	Object string `json:"object,required"`
+	Object string `json:"object" api:"required"`
 	// The organization that owns the model
-	OwnedBy string `json:"owned_by,required"`
+	OwnedBy string `json:"owned_by" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -170,10 +170,10 @@ func (r *AIOpenAIEmbeddingListEmbeddingModelsResponseData) UnmarshalJSON(data []
 
 type AIOpenAIEmbeddingNewEmbeddingsParams struct {
 	// Input text to embed. Can be a string or array of strings.
-	Input AIOpenAIEmbeddingNewEmbeddingsParamsInputUnion `json:"input,omitzero,required"`
+	Input AIOpenAIEmbeddingNewEmbeddingsParamsInputUnion `json:"input,omitzero" api:"required"`
 	// ID of the model to use. Use the List embedding models endpoint to see available
 	// models.
-	Model string `json:"model,required"`
+	Model string `json:"model" api:"required"`
 	// The number of dimensions the resulting output embeddings should have. Only
 	// supported in some models.
 	Dimensions param.Opt[int64] `json:"dimensions,omitzero"`

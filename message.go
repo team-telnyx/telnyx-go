@@ -155,8 +155,8 @@ func (r *MessageService) SendWithAlphanumericSender(ctx context.Context, body Me
 }
 
 type MessagingError struct {
-	Code   string               `json:"code,required"`
-	Title  string               `json:"title,required"`
+	Code   string               `json:"code" api:"required"`
+	Title  string               `json:"title" api:"required"`
 	Detail string               `json:"detail"`
 	Meta   map[string]any       `json:"meta"`
 	Source MessagingErrorSource `json:"source"`
@@ -203,10 +203,10 @@ type OutboundMessagePayload struct {
 	ID string                     `json:"id" format:"uuid"`
 	Cc []OutboundMessagePayloadCc `json:"cc"`
 	// ISO 8601 formatted date indicating when the message was finalized.
-	CompletedAt time.Time                  `json:"completed_at,nullable" format:"date-time"`
-	Cost        OutboundMessagePayloadCost `json:"cost,nullable"`
+	CompletedAt time.Time                  `json:"completed_at" api:"nullable" format:"date-time"`
+	Cost        OutboundMessagePayloadCost `json:"cost" api:"nullable"`
 	// Detailed breakdown of the message cost components.
-	CostBreakdown OutboundMessagePayloadCostBreakdown `json:"cost_breakdown,nullable"`
+	CostBreakdown OutboundMessagePayloadCostBreakdown `json:"cost_breakdown" api:"nullable"`
 	// The direction of the message. Inbound messages are sent to you whereas outbound
 	// messages are sent from you.
 	//
@@ -232,22 +232,22 @@ type OutboundMessagePayload struct {
 	// Any of "message".
 	RecordType OutboundMessagePayloadRecordType `json:"record_type"`
 	// ISO 8601 formatted date indicating when the message was sent.
-	SentAt time.Time `json:"sent_at,nullable" format:"date-time"`
+	SentAt time.Time `json:"sent_at" api:"nullable" format:"date-time"`
 	// Indicates whether smart encoding was applied to this message. When `true`, one
 	// or more Unicode characters were automatically replaced with GSM-7 equivalents to
 	// reduce segment count and cost. The original message text is preserved in
 	// webhooks.
 	SmartEncodingApplied bool `json:"smart_encoding_applied"`
 	// Subject of multimedia message
-	Subject string `json:"subject,nullable"`
+	Subject string `json:"subject" api:"nullable"`
 	// Tags associated with the resource.
 	Tags []string `json:"tags"`
 	// Indicates whether the TCR campaign is billable.
 	TcrCampaignBillable bool `json:"tcr_campaign_billable"`
 	// The Campaign Registry (TCR) campaign ID associated with the message.
-	TcrCampaignID string `json:"tcr_campaign_id,nullable"`
+	TcrCampaignID string `json:"tcr_campaign_id" api:"nullable"`
 	// The registration status of the TCR campaign.
-	TcrCampaignRegistered string `json:"tcr_campaign_registered,nullable"`
+	TcrCampaignRegistered string `json:"tcr_campaign_registered" api:"nullable"`
 	// Message body (i.e., content) as a non-empty string.
 	//
 	// **Required for SMS**
@@ -260,12 +260,12 @@ type OutboundMessagePayload struct {
 	// Message must be out of the queue by this time or else it will be discarded and
 	// marked as 'sending_failed'. Once the message moves out of the queue, this field
 	// will be nulled
-	ValidUntil time.Time `json:"valid_until,nullable" format:"date-time"`
+	ValidUntil time.Time `json:"valid_until" api:"nullable" format:"date-time"`
 	// The failover URL where webhooks related to this message will be sent if sending
 	// to the primary URL fails.
-	WebhookFailoverURL string `json:"webhook_failover_url,nullable" format:"url"`
+	WebhookFailoverURL string `json:"webhook_failover_url" api:"nullable" format:"url"`
 	// The URL where webhooks related to this message will be sent.
-	WebhookURL string `json:"webhook_url,nullable" format:"url"`
+	WebhookURL string `json:"webhook_url" api:"nullable" format:"url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
@@ -451,11 +451,11 @@ func (r *OutboundMessagePayloadFrom) UnmarshalJSON(data []byte) error {
 
 type OutboundMessagePayloadMedia struct {
 	// The MIME type of the requested media.
-	ContentType string `json:"content_type,nullable"`
+	ContentType string `json:"content_type" api:"nullable"`
 	// The SHA256 hash of the requested media.
-	Sha256 string `json:"sha256,nullable"`
+	Sha256 string `json:"sha256" api:"nullable"`
 	// The size of the requested media.
-	Size int64 `json:"size,nullable"`
+	Size int64 `json:"size" api:"nullable"`
 	// The url of the media requested to be sent.
 	URL string `json:"url" format:"url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -603,11 +603,11 @@ func (r *RcsAgentMessageContentMessageRichCard) UnmarshalJSON(data []byte) error
 type RcsAgentMessageContentMessageRichCardCarouselCard struct {
 	// The list of contents for each card in the carousel. A carousel can have a
 	// minimum of 2 cards and a maximum 10 cards.
-	CardContents []RcsCardContent `json:"card_contents,required"`
+	CardContents []RcsCardContent `json:"card_contents" api:"required"`
 	// The width of the cards in the carousel.
 	//
 	// Any of "CARD_WIDTH_UNSPECIFIED", "SMALL", "MEDIUM".
-	CardWidth string `json:"card_width,required"`
+	CardWidth string `json:"card_width" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CardContents respjson.Field
@@ -625,15 +625,15 @@ func (r *RcsAgentMessageContentMessageRichCardCarouselCard) UnmarshalJSON(data [
 
 // Standalone card
 type RcsAgentMessageContentMessageRichCardStandaloneCard struct {
-	CardContent RcsCardContent `json:"card_content,required"`
+	CardContent RcsCardContent `json:"card_content" api:"required"`
 	// Orientation of the card.
 	//
 	// Any of "CARD_ORIENTATION_UNSPECIFIED", "HORIZONTAL", "VERTICAL".
-	CardOrientation string `json:"card_orientation,required"`
+	CardOrientation string `json:"card_orientation" api:"required"`
 	// Image preview alignment for standalone cards with horizontal layout.
 	//
 	// Any of "THUMBNAIL_IMAGE_ALIGNMENT_UNSPECIFIED", "LEFT", "RIGHT".
-	ThumbnailImageAlignment string `json:"thumbnail_image_alignment,required"`
+	ThumbnailImageAlignment string `json:"thumbnail_image_alignment" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CardContent             respjson.Field
@@ -727,11 +727,11 @@ func (r *RcsAgentMessageContentMessageRichCardParam) UnmarshalJSON(data []byte) 
 type RcsAgentMessageContentMessageRichCardCarouselCardParam struct {
 	// The list of contents for each card in the carousel. A carousel can have a
 	// minimum of 2 cards and a maximum 10 cards.
-	CardContents []RcsCardContentParam `json:"card_contents,omitzero,required"`
+	CardContents []RcsCardContentParam `json:"card_contents,omitzero" api:"required"`
 	// The width of the cards in the carousel.
 	//
 	// Any of "CARD_WIDTH_UNSPECIFIED", "SMALL", "MEDIUM".
-	CardWidth string `json:"card_width,omitzero,required"`
+	CardWidth string `json:"card_width,omitzero" api:"required"`
 	paramObj
 }
 
@@ -754,15 +754,15 @@ func init() {
 // The properties CardContent, CardOrientation, ThumbnailImageAlignment are
 // required.
 type RcsAgentMessageContentMessageRichCardStandaloneCardParam struct {
-	CardContent RcsCardContentParam `json:"card_content,omitzero,required"`
+	CardContent RcsCardContentParam `json:"card_content,omitzero" api:"required"`
 	// Orientation of the card.
 	//
 	// Any of "CARD_ORIENTATION_UNSPECIFIED", "HORIZONTAL", "VERTICAL".
-	CardOrientation string `json:"card_orientation,omitzero,required"`
+	CardOrientation string `json:"card_orientation,omitzero" api:"required"`
 	// Image preview alignment for standalone cards with horizontal layout.
 	//
 	// Any of "THUMBNAIL_IMAGE_ALIGNMENT_UNSPECIFIED", "LEFT", "RIGHT".
-	ThumbnailImageAlignment string `json:"thumbnail_image_alignment,omitzero,required"`
+	ThumbnailImageAlignment string `json:"thumbnail_image_alignment,omitzero" api:"required"`
 	paramObj
 }
 
@@ -911,7 +911,7 @@ func init() {
 
 type RcsContentInfo struct {
 	// Publicly reachable URL of the file.
-	FileURL string `json:"file_url,required" format:"url"`
+	FileURL string `json:"file_url" api:"required" format:"url"`
 	// If set the URL content will not be cached.
 	ForceRefresh bool `json:"force_refresh"`
 	// Publicly reachable URL of the thumbnail. Maximum size of 100 kB.
@@ -944,7 +944,7 @@ func (r RcsContentInfo) ToParam() RcsContentInfoParam {
 // The property FileURL is required.
 type RcsContentInfoParam struct {
 	// Publicly reachable URL of the file.
-	FileURL string `json:"file_url,required" format:"url"`
+	FileURL string `json:"file_url" api:"required" format:"url"`
 	// If set the URL content will not be cached.
 	ForceRefresh param.Opt[bool] `json:"force_refresh,omitzero"`
 	// Publicly reachable URL of the thumbnail. Maximum size of 100 kB.
@@ -1062,7 +1062,7 @@ func (r *RcsSuggestionActionCreateCalendarEventAction) UnmarshalJSON(data []byte
 // in.
 type RcsSuggestionActionDialAction struct {
 	// Phone number in +E.164 format
-	PhoneNumber string `json:"phone_number,required"`
+	PhoneNumber string `json:"phone_number" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PhoneNumber respjson.Field
@@ -1082,10 +1082,10 @@ type RcsSuggestionActionOpenURLAction struct {
 	// URL open application, browser or webview.
 	//
 	// Any of "OPEN_URL_APPLICATION_UNSPECIFIED", "BROWSER", "WEBVIEW".
-	Application string `json:"application,required"`
-	URL         string `json:"url,required" format:"url"`
+	Application string `json:"application" api:"required"`
+	URL         string `json:"url" api:"required" format:"url"`
 	// Any of "WEBVIEW_VIEW_MODE_UNSPECIFIED", "FULL", "HALF", "TALL".
-	WebviewViewMode string `json:"webview_view_mode,required"`
+	WebviewViewMode string `json:"webview_view_mode" api:"required"`
 	// Accessbility description for webview.
 	Description string `json:"description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1130,9 +1130,9 @@ func (r *RcsSuggestionActionViewLocationAction) UnmarshalJSON(data []byte) error
 
 type RcsSuggestionActionViewLocationActionLatLong struct {
 	// The latitude in degrees. It must be in the range [-90.0, +90.0].
-	Latitude float64 `json:"latitude,required"`
+	Latitude float64 `json:"latitude" api:"required"`
 	// The longitude in degrees. It must be in the range [-180.0, +180.0].
-	Longitude float64 `json:"longitude,required"`
+	Longitude float64 `json:"longitude" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Latitude    respjson.Field
@@ -1244,7 +1244,7 @@ func (r *RcsSuggestionActionCreateCalendarEventActionParam) UnmarshalJSON(data [
 // The property PhoneNumber is required.
 type RcsSuggestionActionDialActionParam struct {
 	// Phone number in +E.164 format
-	PhoneNumber string `json:"phone_number,required"`
+	PhoneNumber string `json:"phone_number" api:"required"`
 	paramObj
 }
 
@@ -1263,10 +1263,10 @@ type RcsSuggestionActionOpenURLActionParam struct {
 	// URL open application, browser or webview.
 	//
 	// Any of "OPEN_URL_APPLICATION_UNSPECIFIED", "BROWSER", "WEBVIEW".
-	Application string `json:"application,omitzero,required"`
-	URL         string `json:"url,required" format:"url"`
+	Application string `json:"application,omitzero" api:"required"`
+	URL         string `json:"url" api:"required" format:"url"`
 	// Any of "WEBVIEW_VIEW_MODE_UNSPECIFIED", "FULL", "HALF", "TALL".
-	WebviewViewMode string `json:"webview_view_mode,omitzero,required"`
+	WebviewViewMode string `json:"webview_view_mode,omitzero" api:"required"`
 	// Accessbility description for webview.
 	Description param.Opt[string] `json:"description,omitzero"`
 	paramObj
@@ -1310,9 +1310,9 @@ func (r *RcsSuggestionActionViewLocationActionParam) UnmarshalJSON(data []byte) 
 // The properties Latitude, Longitude are required.
 type RcsSuggestionActionViewLocationActionLatLongParam struct {
 	// The latitude in degrees. It must be in the range [-90.0, +90.0].
-	Latitude float64 `json:"latitude,required"`
+	Latitude float64 `json:"latitude" api:"required"`
 	// The longitude in degrees. It must be in the range [-180.0, +180.0].
-	Longitude float64 `json:"longitude,required"`
+	Longitude float64 `json:"longitude" api:"required"`
 	paramObj
 }
 
@@ -1734,10 +1734,10 @@ type MessageCancelScheduledResponse struct {
 	ID string                             `json:"id" format:"uuid"`
 	Cc []MessageCancelScheduledResponseCc `json:"cc"`
 	// ISO 8601 formatted date indicating when the message was finalized.
-	CompletedAt time.Time                          `json:"completed_at,nullable" format:"date-time"`
-	Cost        MessageCancelScheduledResponseCost `json:"cost,nullable"`
+	CompletedAt time.Time                          `json:"completed_at" api:"nullable" format:"date-time"`
+	Cost        MessageCancelScheduledResponseCost `json:"cost" api:"nullable"`
 	// Detailed breakdown of the message cost components.
-	CostBreakdown MessageCancelScheduledResponseCostBreakdown `json:"cost_breakdown,nullable"`
+	CostBreakdown MessageCancelScheduledResponseCostBreakdown `json:"cost_breakdown" api:"nullable"`
 	// The direction of the message. Inbound messages are sent to you whereas outbound
 	// messages are sent from you.
 	//
@@ -1763,22 +1763,22 @@ type MessageCancelScheduledResponse struct {
 	// Any of "message".
 	RecordType MessageCancelScheduledResponseRecordType `json:"record_type"`
 	// ISO 8601 formatted date indicating when the message was sent.
-	SentAt time.Time `json:"sent_at,nullable" format:"date-time"`
+	SentAt time.Time `json:"sent_at" api:"nullable" format:"date-time"`
 	// Indicates whether smart encoding was applied to this message. When `true`, one
 	// or more Unicode characters were automatically replaced with GSM-7 equivalents to
 	// reduce segment count and cost. The original message text is preserved in
 	// webhooks.
 	SmartEncodingApplied bool `json:"smart_encoding_applied"`
 	// Subject of multimedia message
-	Subject string `json:"subject,nullable"`
+	Subject string `json:"subject" api:"nullable"`
 	// Tags associated with the resource.
 	Tags []string `json:"tags"`
 	// Indicates whether the TCR campaign is billable.
 	TcrCampaignBillable bool `json:"tcr_campaign_billable"`
 	// The Campaign Registry (TCR) campaign ID associated with the message.
-	TcrCampaignID string `json:"tcr_campaign_id,nullable"`
+	TcrCampaignID string `json:"tcr_campaign_id" api:"nullable"`
 	// The registration status of the TCR campaign.
-	TcrCampaignRegistered string `json:"tcr_campaign_registered,nullable"`
+	TcrCampaignRegistered string `json:"tcr_campaign_registered" api:"nullable"`
 	// Message body (i.e., content) as a non-empty string.
 	//
 	// **Required for SMS**
@@ -1791,12 +1791,12 @@ type MessageCancelScheduledResponse struct {
 	// Message must be out of the queue by this time or else it will be discarded and
 	// marked as 'sending_failed'. Once the message moves out of the queue, this field
 	// will be nulled
-	ValidUntil time.Time `json:"valid_until,nullable" format:"date-time"`
+	ValidUntil time.Time `json:"valid_until" api:"nullable" format:"date-time"`
 	// The failover URL where webhooks related to this message will be sent if sending
 	// to the primary URL fails.
-	WebhookFailoverURL string `json:"webhook_failover_url,nullable" format:"url"`
+	WebhookFailoverURL string `json:"webhook_failover_url" api:"nullable" format:"url"`
 	// The URL where webhooks related to this message will be sent.
-	WebhookURL string `json:"webhook_url,nullable" format:"url"`
+	WebhookURL string `json:"webhook_url" api:"nullable" format:"url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
@@ -1984,11 +1984,11 @@ func (r *MessageCancelScheduledResponseFrom) UnmarshalJSON(data []byte) error {
 
 type MessageCancelScheduledResponseMedia struct {
 	// The MIME type of the requested media.
-	ContentType string `json:"content_type,nullable"`
+	ContentType string `json:"content_type" api:"nullable"`
 	// The SHA256 hash of the requested media.
-	Sha256 string `json:"sha256,nullable"`
+	Sha256 string `json:"sha256" api:"nullable"`
 	// The size of the requested media.
-	Size int64 `json:"size,nullable"`
+	Size int64 `json:"size" api:"nullable"`
 	// The url of the media requested to be sent.
 	URL string `json:"url" format:"url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2836,7 +2836,7 @@ func (r *MessageSendWithAlphanumericSenderResponse) UnmarshalJSON(data []byte) e
 
 type MessageScheduleParams struct {
 	// Receiving address (+E.164 formatted phone number or short code).
-	To string `json:"to,required"`
+	To string `json:"to" api:"required"`
 	// Automatically detect if an SMS message is unusually long and exceeds a
 	// recommended limit of message parts.
 	AutoDetect param.Opt[bool] `json:"auto_detect,omitzero"`
@@ -2897,7 +2897,7 @@ const (
 
 type MessageSendParams struct {
 	// Receiving address (+E.164 formatted phone number or short code).
-	To string `json:"to,required"`
+	To string `json:"to" api:"required"`
 	// ISO 8601 formatted date indicating when to send the message - accurate up till a
 	// minute.
 	SendAt param.Opt[time.Time] `json:"send_at,omitzero" format:"date-time"`
@@ -2979,9 +2979,9 @@ const (
 
 type MessageSendGroupMmsParams struct {
 	// Phone number, in +E.164 format, used to send the message.
-	From string `json:"from,required"`
+	From string `json:"from" api:"required"`
 	// A list of destinations. No more than 8 destinations are allowed.
-	To []string `json:"to,omitzero,required"`
+	To []string `json:"to,omitzero" api:"required"`
 	// Subject of multimedia message
 	Subject param.Opt[string] `json:"subject,omitzero"`
 	// Message body (i.e., content) as a non-empty string.
@@ -3010,9 +3010,9 @@ func (r *MessageSendGroupMmsParams) UnmarshalJSON(data []byte) error {
 
 type MessageSendLongCodeParams struct {
 	// Phone number, in +E.164 format, used to send the message.
-	From string `json:"from,required"`
+	From string `json:"from" api:"required"`
 	// Receiving address (+E.164 formatted phone number or short code).
-	To string `json:"to,required"`
+	To string `json:"to" api:"required"`
 	// Automatically detect if an SMS message is unusually long and exceeds a
 	// recommended limit of message parts.
 	AutoDetect param.Opt[bool] `json:"auto_detect,omitzero"`
@@ -3081,9 +3081,9 @@ const (
 
 type MessageSendNumberPoolParams struct {
 	// Unique identifier for a messaging profile.
-	MessagingProfileID string `json:"messaging_profile_id,required"`
+	MessagingProfileID string `json:"messaging_profile_id" api:"required"`
 	// Receiving address (+E.164 formatted phone number or short code).
-	To string `json:"to,required"`
+	To string `json:"to" api:"required"`
 	// Automatically detect if an SMS message is unusually long and exceeds a
 	// recommended limit of message parts.
 	AutoDetect param.Opt[bool] `json:"auto_detect,omitzero"`
@@ -3152,9 +3152,9 @@ const (
 
 type MessageSendShortCodeParams struct {
 	// Phone number, in +E.164 format, used to send the message.
-	From string `json:"from,required"`
+	From string `json:"from" api:"required"`
 	// Receiving address (+E.164 formatted phone number or short code).
-	To string `json:"to,required"`
+	To string `json:"to" api:"required"`
 	// Automatically detect if an SMS message is unusually long and exceeds a
 	// recommended limit of message parts.
 	AutoDetect param.Opt[bool] `json:"auto_detect,omitzero"`
@@ -3223,10 +3223,10 @@ const (
 
 type MessageSendWhatsappParams struct {
 	// Phone number in +E.164 format associated with Whatsapp account
-	From string `json:"from,required"`
+	From string `json:"from" api:"required"`
 	// Phone number in +E.164 format
-	To              string                                   `json:"to,required"`
-	WhatsappMessage MessageSendWhatsappParamsWhatsappMessage `json:"whatsapp_message,omitzero,required"`
+	To              string                                   `json:"to" api:"required"`
+	WhatsappMessage MessageSendWhatsappParamsWhatsappMessage `json:"whatsapp_message,omitzero" api:"required"`
 	// The URL where webhooks related to this message will be sent.
 	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
 	// Message type - must be set to "WHATSAPP"
@@ -3679,13 +3679,13 @@ const (
 
 type MessageSendWithAlphanumericSenderParams struct {
 	// A valid alphanumeric sender ID on the user's account.
-	From string `json:"from,required"`
+	From string `json:"from" api:"required"`
 	// The messaging profile ID to use.
-	MessagingProfileID string `json:"messaging_profile_id,required" format:"uuid"`
+	MessagingProfileID string `json:"messaging_profile_id" api:"required" format:"uuid"`
 	// The message body.
-	Text string `json:"text,required"`
+	Text string `json:"text" api:"required"`
 	// Receiving address (+E.164 formatted phone number).
-	To string `json:"to,required"`
+	To string `json:"to" api:"required"`
 	// Failover callback URL for delivery status updates.
 	WebhookFailoverURL param.Opt[string] `json:"webhook_failover_url,omitzero" format:"url"`
 	// Callback URL for delivery status updates.

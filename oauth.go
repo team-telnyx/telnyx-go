@@ -119,16 +119,16 @@ type OAuthGetResponseData struct {
 	// Client ID
 	ClientID string `json:"client_id"`
 	// URL of the client logo
-	LogoUri string `json:"logo_uri,nullable" format:"uri"`
+	LogoUri string `json:"logo_uri" api:"nullable" format:"uri"`
 	// Client name
 	Name string `json:"name"`
 	// URL of the client's privacy policy
-	PolicyUri string `json:"policy_uri,nullable" format:"uri"`
+	PolicyUri string `json:"policy_uri" api:"nullable" format:"uri"`
 	// The redirect URI for this authorization
 	RedirectUri     string                               `json:"redirect_uri" format:"uri"`
 	RequestedScopes []OAuthGetResponseDataRequestedScope `json:"requested_scopes"`
 	// URL of the client's terms of service
-	TosUri string `json:"tos_uri,nullable" format:"uri"`
+	TosUri string `json:"tos_uri" api:"nullable" format:"uri"`
 	// Whether the client is verified
 	Verified bool `json:"verified"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -177,7 +177,7 @@ func (r *OAuthGetResponseDataRequestedScope) UnmarshalJSON(data []byte) error {
 
 type OAuthGrantsResponse struct {
 	// Redirect URI with authorization code or error
-	RedirectUri string `json:"redirect_uri,required" format:"uri"`
+	RedirectUri string `json:"redirect_uri" api:"required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		RedirectUri respjson.Field
@@ -194,7 +194,7 @@ func (r *OAuthGrantsResponse) UnmarshalJSON(data []byte) error {
 
 type OAuthIntrospectResponse struct {
 	// Whether the token is active
-	Active bool `json:"active,required"`
+	Active bool `json:"active" api:"required"`
 	// Audience
 	Aud string `json:"aud"`
 	// Client identifier
@@ -229,9 +229,9 @@ func (r *OAuthIntrospectResponse) UnmarshalJSON(data []byte) error {
 
 type OAuthRegisterResponse struct {
 	// Unique client identifier
-	ClientID string `json:"client_id,required"`
+	ClientID string `json:"client_id" api:"required"`
 	// Unix timestamp of when the client ID was issued
-	ClientIDIssuedAt int64 `json:"client_id_issued_at,required"`
+	ClientIDIssuedAt int64 `json:"client_id_issued_at" api:"required"`
 	// Human-readable client name
 	ClientName string `json:"client_name"`
 	// Client secret (only for confidential clients)
@@ -321,13 +321,13 @@ func (r *OAuthGetJwksResponseKey) UnmarshalJSON(data []byte) error {
 
 type OAuthTokenResponse struct {
 	// The access token
-	AccessToken string `json:"access_token,required"`
+	AccessToken string `json:"access_token" api:"required"`
 	// Token lifetime in seconds
-	ExpiresIn int64 `json:"expires_in,required"`
+	ExpiresIn int64 `json:"expires_in" api:"required"`
 	// Token type
 	//
 	// Any of "Bearer".
-	TokenType OAuthTokenResponseTokenType `json:"token_type,required"`
+	TokenType OAuthTokenResponseTokenType `json:"token_type" api:"required"`
 	// Refresh token (if applicable)
 	RefreshToken string `json:"refresh_token"`
 	// Space-separated list of granted scopes
@@ -359,9 +359,9 @@ const (
 
 type OAuthGrantsParams struct {
 	// Whether the grant is allowed
-	Allowed bool `json:"allowed,required"`
+	Allowed bool `json:"allowed" api:"required"`
 	// Consent token
-	ConsentToken string `json:"consent_token,required"`
+	ConsentToken string `json:"consent_token" api:"required"`
 	paramObj
 }
 
@@ -375,7 +375,7 @@ func (r *OAuthGrantsParams) UnmarshalJSON(data []byte) error {
 
 type OAuthIntrospectParams struct {
 	// The token to introspect
-	Token string `json:"token,required"`
+	Token string `json:"token" api:"required"`
 	paramObj
 }
 
@@ -432,13 +432,13 @@ const (
 
 type OAuthGetAuthorizeParams struct {
 	// OAuth client identifier
-	ClientID string `query:"client_id,required" json:"-"`
+	ClientID string `query:"client_id" api:"required" json:"-"`
 	// Redirect URI
-	RedirectUri string `query:"redirect_uri,required" format:"uri" json:"-"`
+	RedirectUri string `query:"redirect_uri" api:"required" format:"uri" json:"-"`
 	// OAuth response type
 	//
 	// Any of "code".
-	ResponseType OAuthGetAuthorizeParamsResponseType `query:"response_type,omitzero,required" json:"-"`
+	ResponseType OAuthGetAuthorizeParamsResponseType `query:"response_type,omitzero" api:"required" json:"-"`
 	// PKCE code challenge
 	CodeChallenge param.Opt[string] `query:"code_challenge,omitzero" json:"-"`
 	// Space-separated list of requested scopes
@@ -480,7 +480,7 @@ type OAuthTokenParams struct {
 	// OAuth 2.0 grant type
 	//
 	// Any of "client_credentials", "authorization_code", "refresh_token".
-	GrantType OAuthTokenParamsGrantType `json:"grant_type,omitzero,required"`
+	GrantType OAuthTokenParamsGrantType `json:"grant_type,omitzero" api:"required"`
 	// OAuth client ID (if not using HTTP Basic auth)
 	ClientID param.Opt[string] `json:"client_id,omitzero"`
 	// OAuth client secret (if not using HTTP Basic auth)

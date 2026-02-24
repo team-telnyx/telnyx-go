@@ -210,8 +210,8 @@ func (r *AuthenticationProviderSettings) UnmarshalJSON(data []byte) error {
 }
 
 type PaginationMeta struct {
-	PageNumber   int64 `json:"page_number,required"`
-	TotalPages   int64 `json:"total_pages,required"`
+	PageNumber   int64 `json:"page_number" api:"required"`
+	TotalPages   int64 `json:"total_pages" api:"required"`
 	PageSize     int64 `json:"page_size"`
 	TotalResults int64 `json:"total_results"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -236,11 +236,11 @@ func (r *PaginationMeta) UnmarshalJSON(data []byte) error {
 // The properties IdpCertFingerprint, IdpEntityID, IdpSSOTargetURL are required.
 type SettingsParam struct {
 	// The certificate fingerprint for the identity provider (IdP)
-	IdpCertFingerprint string `json:"idp_cert_fingerprint,required"`
+	IdpCertFingerprint string `json:"idp_cert_fingerprint" api:"required"`
 	// The Entity ID for the identity provider (IdP).
-	IdpEntityID string `json:"idp_entity_id,required" format:"uri"`
+	IdpEntityID string `json:"idp_entity_id" api:"required" format:"uri"`
 	// The SSO target url for the identity provider (IdP).
-	IdpSSOTargetURL string `json:"idp_sso_target_url,required" format:"uri"`
+	IdpSSOTargetURL string `json:"idp_sso_target_url" api:"required" format:"uri"`
 	// The algorithm used to generate the identity provider's (IdP) certificate
 	// fingerprint
 	//
@@ -334,12 +334,12 @@ func (r *AuthenticationProviderDeleteResponse) UnmarshalJSON(data []byte) error 
 
 type AuthenticationProviderNewParams struct {
 	// The name associated with the authentication provider.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The settings associated with the authentication provider.
-	Settings SettingsParam `json:"settings,omitzero,required"`
+	Settings SettingsParam `json:"settings,omitzero" api:"required"`
 	// The short name associated with the authentication provider. This must be unique
 	// and URL-friendly, as it's going to be part of the login URL.
-	ShortName string `json:"short_name,required"`
+	ShortName string `json:"short_name" api:"required"`
 	// The active status of the authentication provider
 	Active param.Opt[bool] `json:"active,omitzero"`
 	// The URL for the identity provider metadata file to populate the settings

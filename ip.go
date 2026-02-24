@@ -206,7 +206,7 @@ func (r *IPDeleteResponse) UnmarshalJSON(data []byte) error {
 
 type IPNewParams struct {
 	// IP adddress represented by this resource.
-	IPAddress string `json:"ip_address,required"`
+	IPAddress string `json:"ip_address" api:"required"`
 	// ID of the IP Connection to which this IP should be attached.
 	ConnectionID param.Opt[string] `json:"connection_id,omitzero"`
 	// Port to use when connecting to this IP.
@@ -224,7 +224,7 @@ func (r *IPNewParams) UnmarshalJSON(data []byte) error {
 
 type IPUpdateParams struct {
 	// IP adddress represented by this resource.
-	IPAddress string `json:"ip_address,required"`
+	IPAddress string `json:"ip_address" api:"required"`
 	// ID of the IP Connection to which this IP should be attached.
 	ConnectionID param.Opt[string] `json:"connection_id,omitzero"`
 	// Port to use when connecting to this IP.

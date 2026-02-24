@@ -378,7 +378,7 @@ const (
 )
 
 type PhoneNumberJobDeleteBatchParams struct {
-	PhoneNumbers []string `json:"phone_numbers,omitzero,required"`
+	PhoneNumbers []string `json:"phone_numbers,omitzero" api:"required"`
 	paramObj
 }
 
@@ -396,7 +396,7 @@ type PhoneNumberJobUpdateBatchParams struct {
 	// update specific numbers rather than all numbers matching a filter, you must use
 	// this parameter. Each item must be either a valid phone number ID or a phone
 	// number in E164 format (e.g., '+13127367254').
-	PhoneNumbers []string `json:"phone_numbers,omitzero,required"`
+	PhoneNumbers []string `json:"phone_numbers,omitzero" api:"required"`
 	// Identifies the billing group associated with the phone number.
 	BillingGroupID param.Opt[string] `json:"billing_group_id,omitzero"`
 	// Identifies the connection associated with the phone number.
@@ -517,8 +517,8 @@ func (r PhoneNumberJobUpdateBatchParamsFilterVoiceConnectionName) URLQuery() (v 
 
 type PhoneNumberJobUpdateEmergencySettingsBatchParams struct {
 	// Indicates whether to enable or disable emergency services on the numbers.
-	EmergencyEnabled bool     `json:"emergency_enabled,required"`
-	PhoneNumbers     []string `json:"phone_numbers,omitzero,required"`
+	EmergencyEnabled bool     `json:"emergency_enabled" api:"required"`
+	PhoneNumbers     []string `json:"phone_numbers,omitzero" api:"required"`
 	// Identifies the address to be used with emergency services. Required if
 	// emergency_enabled is true, must be null or omitted if emergency_enabled is
 	// false.

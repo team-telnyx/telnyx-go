@@ -280,9 +280,9 @@ func (r *SimCardDataUsageNotificationDeleteResponse) UnmarshalJSON(data []byte) 
 
 type SimCardDataUsageNotificationNewParams struct {
 	// The identification UUID of the related SIM card resource.
-	SimCardID string `json:"sim_card_id,required" format:"uuid"`
+	SimCardID string `json:"sim_card_id" api:"required" format:"uuid"`
 	// Data usage threshold that will trigger the notification.
-	Threshold SimCardDataUsageNotificationNewParamsThreshold `json:"threshold,omitzero,required"`
+	Threshold SimCardDataUsageNotificationNewParamsThreshold `json:"threshold,omitzero" api:"required"`
 	paramObj
 }
 

@@ -49,10 +49,10 @@ func (r *VerificationByPhoneNumberService) List(ctx context.Context, phoneNumber
 }
 
 type VerifyMeta struct {
-	PageNumber   int64 `json:"page_number,required"`
-	PageSize     int64 `json:"page_size,required"`
-	TotalPages   int64 `json:"total_pages,required"`
-	TotalResults int64 `json:"total_results,required"`
+	PageNumber   int64 `json:"page_number" api:"required"`
+	PageSize     int64 `json:"page_size" api:"required"`
+	TotalPages   int64 `json:"total_pages" api:"required"`
+	TotalResults int64 `json:"total_results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PageNumber   respjson.Field
@@ -71,8 +71,8 @@ func (r *VerifyMeta) UnmarshalJSON(data []byte) error {
 }
 
 type VerificationByPhoneNumberListResponse struct {
-	Data []Verification `json:"data,required"`
-	Meta VerifyMeta     `json:"meta,required"`
+	Data []Verification `json:"data" api:"required"`
+	Meta VerifyMeta     `json:"meta" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

@@ -85,14 +85,14 @@ func (r *ChannelZoneService) ListAutoPaging(ctx context.Context, query ChannelZo
 }
 
 type ChannelZoneUpdateResponse struct {
-	ID       string `json:"id,required"`
-	Channels int64  `json:"channels,required"`
+	ID       string `json:"id" api:"required"`
+	Channels int64  `json:"channels" api:"required"`
 	// List of countries (in ISO 3166-2, capitalized) members of the billing channel
 	// zone
-	Countries []string `json:"countries,required"`
-	Name      string   `json:"name,required"`
+	Countries []string `json:"countries" api:"required"`
+	Name      string   `json:"name" api:"required"`
 	// Any of "channel_zone".
-	RecordType ChannelZoneUpdateResponseRecordType `json:"record_type,required"`
+	RecordType ChannelZoneUpdateResponseRecordType `json:"record_type" api:"required"`
 	// ISO 8601 formatted date of when the channel zone was created
 	CreatedAt string `json:"created_at"`
 	// ISO 8601 formatted date of when the channel zone was updated
@@ -124,14 +124,14 @@ const (
 )
 
 type ChannelZoneListResponse struct {
-	ID       string `json:"id,required"`
-	Channels int64  `json:"channels,required"`
+	ID       string `json:"id" api:"required"`
+	Channels int64  `json:"channels" api:"required"`
 	// List of countries (in ISO 3166-2, capitalized) members of the billing channel
 	// zone
-	Countries []string `json:"countries,required"`
-	Name      string   `json:"name,required"`
+	Countries []string `json:"countries" api:"required"`
+	Name      string   `json:"name" api:"required"`
 	// Any of "channel_zone".
-	RecordType ChannelZoneListResponseRecordType `json:"record_type,required"`
+	RecordType ChannelZoneListResponseRecordType `json:"record_type" api:"required"`
 	// ISO 8601 formatted date of when the channel zone was created
 	CreatedAt string `json:"created_at"`
 	// ISO 8601 formatted date of when the channel zone was updated
@@ -164,7 +164,7 @@ const (
 
 type ChannelZoneUpdateParams struct {
 	// The number of reserved channels
-	Channels int64 `json:"channels,required"`
+	Channels int64 `json:"channels" api:"required"`
 	paramObj
 }
 

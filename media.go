@@ -250,7 +250,7 @@ func (r MediaListParamsFilter) URLQuery() (v url.Values, err error) {
 type MediaUploadParams struct {
 	// The URL where the media to be stored in Telnyx network is currently hosted. The
 	// maximum allowed size is 20 MB.
-	MediaURL string `json:"media_url,required"`
+	MediaURL string `json:"media_url" api:"required"`
 	// The unique identifier of a file.
 	MediaName param.Opt[string] `json:"media_name,omitzero"`
 	// The number of seconds after which the media resource will be deleted, defaults

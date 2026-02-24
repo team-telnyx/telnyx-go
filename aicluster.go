@@ -111,9 +111,9 @@ func (r *AIClusterService) FetchGraph(ctx context.Context, taskID string, query 
 }
 
 type RecursiveCluster struct {
-	ClusterID          string                 `json:"cluster_id,required"`
-	ClusterSummary     string                 `json:"cluster_summary,required"`
-	TotalNumberOfNodes int64                  `json:"total_number_of_nodes,required"`
+	ClusterID          string                 `json:"cluster_id" api:"required"`
+	ClusterSummary     string                 `json:"cluster_summary" api:"required"`
+	TotalNumberOfNodes int64                  `json:"total_number_of_nodes" api:"required"`
 	ClusterHeader      string                 `json:"cluster_header"`
 	Nodes              []RecursiveClusterNode `json:"nodes"`
 	Subclusters        []RecursiveCluster     `json:"subclusters"`
@@ -139,9 +139,9 @@ func (r *RecursiveCluster) UnmarshalJSON(data []byte) error {
 type RecursiveClusterNode struct {
 	// The corresponding source file of your embedded storage bucket that the node is
 	// from.
-	Filename string `json:"filename,required"`
+	Filename string `json:"filename" api:"required"`
 	// The text of the node.
-	Text string `json:"text,required"`
+	Text string `json:"text" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filename    respjson.Field
@@ -158,7 +158,7 @@ func (r *RecursiveClusterNode) UnmarshalJSON(data []byte) error {
 }
 
 type AIClusterGetResponse struct {
-	Data AIClusterGetResponseData `json:"data,required"`
+	Data AIClusterGetResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -174,10 +174,10 @@ func (r *AIClusterGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIClusterGetResponseData struct {
-	Bucket   string             `json:"bucket,required"`
-	Clusters []RecursiveCluster `json:"clusters,required"`
+	Bucket   string             `json:"bucket" api:"required"`
+	Clusters []RecursiveCluster `json:"clusters" api:"required"`
 	// Any of "pending", "starting", "running", "completed", "failed".
-	Status TaskStatus `json:"status,required"`
+	Status TaskStatus `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Bucket      respjson.Field
@@ -195,14 +195,14 @@ func (r *AIClusterGetResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type AIClusterListResponse struct {
-	Bucket            string    `json:"bucket,required"`
-	CreatedAt         time.Time `json:"created_at,required" format:"date-time"`
-	FinishedAt        time.Time `json:"finished_at,required" format:"date-time"`
-	MinClusterSize    int64     `json:"min_cluster_size,required"`
-	MinSubclusterSize int64     `json:"min_subcluster_size,required"`
+	Bucket            string    `json:"bucket" api:"required"`
+	CreatedAt         time.Time `json:"created_at" api:"required" format:"date-time"`
+	FinishedAt        time.Time `json:"finished_at" api:"required" format:"date-time"`
+	MinClusterSize    int64     `json:"min_cluster_size" api:"required"`
+	MinSubclusterSize int64     `json:"min_subcluster_size" api:"required"`
 	// Any of "pending", "starting", "running", "completed", "failed".
-	Status TaskStatus `json:"status,required"`
-	TaskID string     `json:"task_id,required"`
+	Status TaskStatus `json:"status" api:"required"`
+	TaskID string     `json:"task_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Bucket            respjson.Field
@@ -224,7 +224,7 @@ func (r *AIClusterListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIClusterComputeResponse struct {
-	Data AIClusterComputeResponseData `json:"data,required"`
+	Data AIClusterComputeResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -240,7 +240,7 @@ func (r *AIClusterComputeResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIClusterComputeResponseData struct {
-	TaskID string `json:"task_id,required"`
+	TaskID string `json:"task_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		TaskID      respjson.Field
@@ -290,7 +290,7 @@ type AIClusterComputeParams struct {
 	// The embedded storage bucket to compute the clusters from. The bucket must
 	// already be
 	// [embedded](https://developers.telnyx.com/api-reference/embeddings/embed-documents).
-	Bucket string `json:"bucket,required"`
+	Bucket string `json:"bucket" api:"required"`
 	// Smallest number of related text chunks to qualify as a cluster. Top-level
 	// clusters should be thought of as identifying broad themes in your data.
 	MinClusterSize param.Opt[int64] `json:"min_cluster_size,omitzero"`

@@ -374,7 +374,7 @@ func (r *WireguardPeerDeleteResponseData) UnmarshalJSON(data []byte) error {
 
 type WireguardPeerNewParams struct {
 	// The id of the wireguard interface associated with the peer.
-	WireguardInterfaceID string `json:"wireguard_interface_id,required" format:"uuid"`
+	WireguardInterfaceID string `json:"wireguard_interface_id" api:"required" format:"uuid"`
 	// The WireGuard `PublicKey`.<br /><br />If you do not provide a Public Key, a new
 	// Public and Private key pair will be generated for you.
 	PublicKey param.Opt[string] `json:"public_key,omitzero"`

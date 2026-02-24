@@ -134,17 +134,17 @@ func (r *BundlePricingUserBundleService) ListUnused(ctx context.Context, params 
 
 type UserBundle struct {
 	// User bundle's ID, this is used to identify the user bundle in the API.
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Status of the user bundle.
-	Active        bool                 `json:"active,required"`
-	BillingBundle BillingBundleSummary `json:"billing_bundle,required"`
+	Active        bool                 `json:"active" api:"required"`
+	BillingBundle BillingBundleSummary `json:"billing_bundle" api:"required"`
 	// Date the user bundle was created.
-	CreatedAt time.Time            `json:"created_at,required" format:"date"`
-	Resources []UserBundleResource `json:"resources,required"`
+	CreatedAt time.Time            `json:"created_at" api:"required" format:"date"`
+	Resources []UserBundleResource `json:"resources" api:"required"`
 	// The customer's ID that owns this user bundle.
-	UserID string `json:"user_id,required" format:"uuid"`
+	UserID string `json:"user_id" api:"required" format:"uuid"`
 	// Date the user bundle was last updated.
-	UpdatedAt time.Time `json:"updated_at,nullable" format:"date"`
+	UpdatedAt time.Time `json:"updated_at" api:"nullable" format:"date"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -167,15 +167,15 @@ func (r *UserBundle) UnmarshalJSON(data []byte) error {
 
 type UserBundleResource struct {
 	// Resource's ID.
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Date the resource was created.
-	CreatedAt time.Time `json:"created_at,required" format:"date"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date"`
 	// The resource itself (usually a phone number).
-	Resource string `json:"resource,required"`
+	Resource string `json:"resource" api:"required"`
 	// The type of the resource (usually 'number').
-	ResourceType string `json:"resource_type,required"`
+	ResourceType string `json:"resource_type" api:"required"`
 	// Date the resource was last updated.
-	UpdatedAt time.Time `json:"updated_at,nullable" format:"date"`
+	UpdatedAt time.Time `json:"updated_at" api:"nullable" format:"date"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
@@ -195,7 +195,7 @@ func (r *UserBundleResource) UnmarshalJSON(data []byte) error {
 }
 
 type BundlePricingUserBundleNewResponse struct {
-	Data []UserBundle `json:"data,required"`
+	Data []UserBundle `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -211,7 +211,7 @@ func (r *BundlePricingUserBundleNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type BundlePricingUserBundleGetResponse struct {
-	Data UserBundle `json:"data,required"`
+	Data UserBundle `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -227,7 +227,7 @@ func (r *BundlePricingUserBundleGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type BundlePricingUserBundleDeactivateResponse struct {
-	Data UserBundle `json:"data,required"`
+	Data UserBundle `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -243,7 +243,7 @@ func (r *BundlePricingUserBundleDeactivateResponse) UnmarshalJSON(data []byte) e
 }
 
 type BundlePricingUserBundleListResourcesResponse struct {
-	Data []UserBundleResource `json:"data,required"`
+	Data []UserBundleResource `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -259,7 +259,7 @@ func (r *BundlePricingUserBundleListResourcesResponse) UnmarshalJSON(data []byte
 }
 
 type BundlePricingUserBundleListUnusedResponse struct {
-	Data []BundlePricingUserBundleListUnusedResponseData `json:"data,required"`
+	Data []BundlePricingUserBundleListUnusedResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -275,9 +275,9 @@ func (r *BundlePricingUserBundleListUnusedResponse) UnmarshalJSON(data []byte) e
 }
 
 type BundlePricingUserBundleListUnusedResponseData struct {
-	BillingBundle BillingBundleSummary `json:"billing_bundle,required"`
+	BillingBundle BillingBundleSummary `json:"billing_bundle" api:"required"`
 	// List of user bundle IDs for given bundle.
-	UserBundleIDs []string `json:"user_bundle_ids,required" format:"uuid"`
+	UserBundleIDs []string `json:"user_bundle_ids" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BillingBundle respjson.Field
@@ -314,9 +314,9 @@ func (r *BundlePricingUserBundleNewParams) UnmarshalJSON(data []byte) error {
 // The properties BillingBundleID, Quantity are required.
 type BundlePricingUserBundleNewParamsItem struct {
 	// Quantity of user bundles to order.
-	BillingBundleID string `json:"billing_bundle_id,required" format:"uuid"`
+	BillingBundleID string `json:"billing_bundle_id" api:"required" format:"uuid"`
 	// Quantity of user bundles to order.
-	Quantity int64 `json:"quantity,required"`
+	Quantity int64 `json:"quantity" api:"required"`
 	paramObj
 }
 

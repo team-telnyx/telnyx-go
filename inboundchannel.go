@@ -129,7 +129,7 @@ func (r *InboundChannelListResponseData) UnmarshalJSON(data []byte) error {
 
 type InboundChannelUpdateParams struct {
 	// The new number of concurrent channels for the account
-	Channels int64 `json:"channels,required"`
+	Channels int64 `json:"channels" api:"required"`
 	paramObj
 }
 

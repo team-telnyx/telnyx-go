@@ -207,18 +207,18 @@ func (r *OutboundCallRecordingParam) UnmarshalJSON(data []byte) error {
 
 type OutboundVoiceProfile struct {
 	// A user-supplied name to help with organization.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Identifies the resource.
 	ID string `json:"id"`
 	// The ID of the billing group associated with the outbound proflile. Defaults to
 	// null (for no group assigned).
-	BillingGroupID string                `json:"billing_group_id,nullable" format:"uuid"`
+	BillingGroupID string                `json:"billing_group_id" api:"nullable" format:"uuid"`
 	CallRecording  OutboundCallRecording `json:"call_recording"`
 	// (BETA) Specifies the time window and call limits for calls made using this
 	// outbound voice profile. Note that all times are UTC in 24-hour clock time.
 	CallingWindow OutboundVoiceProfileCallingWindow `json:"calling_window"`
 	// Must be no more than your global concurrent call limit. Null means no limit.
-	ConcurrentCallLimit int64 `json:"concurrent_call_limit,nullable"`
+	ConcurrentCallLimit int64 `json:"concurrent_call_limit" api:"nullable"`
 	// Amount of connections associated with this outbound voice profile.
 	ConnectionsCount int64 `json:"connections_count"`
 	// ISO 8601 formatted date-time indicating when the resource was created.
@@ -402,7 +402,7 @@ func (r *OutboundVoiceProfileDeleteResponse) UnmarshalJSON(data []byte) error {
 
 type OutboundVoiceProfileNewParams struct {
 	// A user-supplied name to help with organization.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The ID of the billing group associated with the outbound proflile. Defaults to
 	// null (for no group assigned).
 	BillingGroupID param.Opt[string] `json:"billing_group_id,omitzero" format:"uuid"`
@@ -476,7 +476,7 @@ func (r *OutboundVoiceProfileNewParamsCallingWindow) UnmarshalJSON(data []byte) 
 
 type OutboundVoiceProfileUpdateParams struct {
 	// A user-supplied name to help with organization.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The ID of the billing group associated with the outbound proflile. Defaults to
 	// null (for no group assigned).
 	BillingGroupID param.Opt[string] `json:"billing_group_id,omitzero" format:"uuid"`

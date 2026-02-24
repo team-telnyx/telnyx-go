@@ -208,8 +208,8 @@ const (
 )
 
 type PaginationMetaReporting struct {
-	PageNumber   int64 `json:"page_number,required"`
-	TotalPages   int64 `json:"total_pages,required"`
+	PageNumber   int64 `json:"page_number" api:"required"`
+	TotalPages   int64 `json:"total_pages" api:"required"`
 	PageSize     int64 `json:"page_size"`
 	TotalResults int64 `json:"total_results"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -295,9 +295,9 @@ func (r *ReportMdrUsageReportFetchSyncResponse) UnmarshalJSON(data []byte) error
 
 type ReportMdrUsageReportNewParams struct {
 	// Any of "NO_AGGREGATION", "PROFILE", "TAGS".
-	AggregationType ReportMdrUsageReportNewParamsAggregationType `json:"aggregation_type,omitzero,required"`
-	EndDate         time.Time                                    `json:"end_date,required" format:"date-time"`
-	StartDate       time.Time                                    `json:"start_date,required" format:"date-time"`
+	AggregationType ReportMdrUsageReportNewParamsAggregationType `json:"aggregation_type,omitzero" api:"required"`
+	EndDate         time.Time                                    `json:"end_date" api:"required" format:"date-time"`
+	StartDate       time.Time                                    `json:"start_date" api:"required" format:"date-time"`
 	Profiles        param.Opt[string]                            `json:"profiles,omitzero"`
 	paramObj
 }
@@ -335,7 +335,7 @@ func (r ReportMdrUsageReportListParams) URLQuery() (v url.Values, err error) {
 
 type ReportMdrUsageReportFetchSyncParams struct {
 	// Any of "NO_AGGREGATION", "PROFILE", "TAGS".
-	AggregationType ReportMdrUsageReportFetchSyncParamsAggregationType `query:"aggregation_type,omitzero,required" json:"-"`
+	AggregationType ReportMdrUsageReportFetchSyncParamsAggregationType `query:"aggregation_type,omitzero" api:"required" json:"-"`
 	EndDate         param.Opt[time.Time]                               `query:"end_date,omitzero" format:"date-time" json:"-"`
 	StartDate       param.Opt[time.Time]                               `query:"start_date,omitzero" format:"date-time" json:"-"`
 	Profiles        []string                                           `query:"profiles,omitzero" json:"-"`

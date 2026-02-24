@@ -185,9 +185,9 @@ func (r *LegacyReportingBatchDetailRecordSpeechToTextDeleteResponse) UnmarshalJS
 
 type LegacyReportingBatchDetailRecordSpeechToTextNewParams struct {
 	// End date in ISO format with timezone (date range must be up to one month)
-	EndDate time.Time `json:"end_date,required" format:"date-time"`
+	EndDate time.Time `json:"end_date" api:"required" format:"date-time"`
 	// Start date in ISO format with timezone
-	StartDate time.Time `json:"start_date,required" format:"date-time"`
+	StartDate time.Time `json:"start_date" api:"required" format:"date-time"`
 	paramObj
 }
 

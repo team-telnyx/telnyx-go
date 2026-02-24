@@ -207,7 +207,7 @@ type VerifyProfileCall struct {
 	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
 	// destinations will be allowed.
 	WhitelistedDestinations []string       `json:"whitelisted_destinations"`
-	ExtraFields             map[string]any `json:",extras"`
+	ExtraFields             map[string]any `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AppName                        respjson.Field
@@ -235,7 +235,7 @@ type VerifyProfileFlashcall struct {
 	// verification request expires, the user cannot use the code to verify their
 	// identity.
 	DefaultVerificationTimeoutSecs int64          `json:"default_verification_timeout_secs"`
-	ExtraFields                    map[string]any `json:",extras"`
+	ExtraFields                    map[string]any `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AppName                        respjson.Field
@@ -270,7 +270,7 @@ type VerifyProfileRcs struct {
 	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
 	// destinations will be allowed.
 	WhitelistedDestinations []string       `json:"whitelisted_destinations"`
-	ExtraFields             map[string]any `json:",extras"`
+	ExtraFields             map[string]any `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AppName                        respjson.Field
@@ -300,7 +300,7 @@ const (
 type VerifyProfileSMS struct {
 	// The alphanumeric sender ID to use when sending to destinations that require an
 	// alphanumeric sender ID.
-	AlphaSender string `json:"alpha_sender,nullable"`
+	AlphaSender string `json:"alpha_sender" api:"nullable"`
 	// The name that identifies the application requesting 2fa in the verification
 	// message.
 	AppName string `json:"app_name"`
@@ -317,7 +317,7 @@ type VerifyProfileSMS struct {
 	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
 	// destinations will be allowed.
 	WhitelistedDestinations []string       `json:"whitelisted_destinations"`
-	ExtraFields             map[string]any `json:",extras"`
+	ExtraFields             map[string]any `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AlphaSender                    respjson.Field
@@ -373,7 +373,7 @@ func (r *VerifyProfileMessageTemplateResponse) UnmarshalJSON(data []byte) error 
 
 // A list of Verify profile message templates
 type VerifyProfileGetTemplatesResponse struct {
-	Data []VerifyProfileMessageTemplateResponse `json:"data,required"`
+	Data []VerifyProfileMessageTemplateResponse `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -389,7 +389,7 @@ func (r *VerifyProfileGetTemplatesResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VerifyProfileNewParams struct {
-	Name               string                          `json:"name,required"`
+	Name               string                          `json:"name" api:"required"`
 	Language           param.Opt[string]               `json:"language,omitzero"`
 	WebhookFailoverURL param.Opt[string]               `json:"webhook_failover_url,omitzero"`
 	WebhookURL         param.Opt[string]               `json:"webhook_url,omitzero"`
@@ -697,7 +697,7 @@ func (r VerifyProfileListParamsFilter) URLQuery() (v url.Values, err error) {
 
 type VerifyProfileNewTemplateParams struct {
 	// The text content of the message template.
-	Text string `json:"text,required"`
+	Text string `json:"text" api:"required"`
 	paramObj
 }
 
@@ -711,7 +711,7 @@ func (r *VerifyProfileNewTemplateParams) UnmarshalJSON(data []byte) error {
 
 type VerifyProfileUpdateTemplateParams struct {
 	// The text content of the message template.
-	Text string `json:"text,required"`
+	Text string `json:"text" api:"required"`
 	paramObj
 }
 

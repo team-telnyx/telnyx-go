@@ -68,7 +68,7 @@ func (r *AIIntegrationConnectionService) Delete(ctx context.Context, userConnect
 }
 
 type AIIntegrationConnectionGetResponse struct {
-	Data AIIntegrationConnectionGetResponseData `json:"data,required"`
+	Data AIIntegrationConnectionGetResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -84,9 +84,9 @@ func (r *AIIntegrationConnectionGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIIntegrationConnectionGetResponseData struct {
-	ID            string   `json:"id,required"`
-	AllowedTools  []string `json:"allowed_tools,required"`
-	IntegrationID string   `json:"integration_id,required"`
+	ID            string   `json:"id" api:"required"`
+	AllowedTools  []string `json:"allowed_tools" api:"required"`
+	IntegrationID string   `json:"integration_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -104,7 +104,7 @@ func (r *AIIntegrationConnectionGetResponseData) UnmarshalJSON(data []byte) erro
 }
 
 type AIIntegrationConnectionListResponse struct {
-	Data []AIIntegrationConnectionListResponseData `json:"data,required"`
+	Data []AIIntegrationConnectionListResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -120,9 +120,9 @@ func (r *AIIntegrationConnectionListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIIntegrationConnectionListResponseData struct {
-	ID            string   `json:"id,required"`
-	AllowedTools  []string `json:"allowed_tools,required"`
-	IntegrationID string   `json:"integration_id,required"`
+	ID            string   `json:"id" api:"required"`
+	AllowedTools  []string `json:"allowed_tools" api:"required"`
+	IntegrationID string   `json:"integration_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field

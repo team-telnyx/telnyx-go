@@ -107,10 +107,10 @@ func (r *ReportCdrUsageReportFetchSyncResponseData) UnmarshalJSON(data []byte) e
 
 type ReportCdrUsageReportFetchSyncParams struct {
 	// Any of "NO_AGGREGATION", "CONNECTION", "TAG", "BILLING_GROUP".
-	AggregationType ReportCdrUsageReportFetchSyncParamsAggregationType `query:"aggregation_type,omitzero,required" json:"-"`
+	AggregationType ReportCdrUsageReportFetchSyncParamsAggregationType `query:"aggregation_type,omitzero" api:"required" json:"-"`
 	// Any of "NO_BREAKDOWN", "DID_VS_TOLL_FREE", "COUNTRY",
 	// "DID_VS_TOLL_FREE_PER_COUNTRY".
-	ProductBreakdown ReportCdrUsageReportFetchSyncParamsProductBreakdown `query:"product_breakdown,omitzero,required" json:"-"`
+	ProductBreakdown ReportCdrUsageReportFetchSyncParamsProductBreakdown `query:"product_breakdown,omitzero" api:"required" json:"-"`
 	EndDate          param.Opt[time.Time]                                `query:"end_date,omitzero" format:"date-time" json:"-"`
 	StartDate        param.Opt[time.Time]                                `query:"start_date,omitzero" format:"date-time" json:"-"`
 	Connections      []float64                                           `query:"connections,omitzero" json:"-"`

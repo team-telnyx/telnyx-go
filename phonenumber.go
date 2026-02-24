@@ -137,43 +137,43 @@ func (r *PhoneNumberService) SlimListAutoPaging(ctx context.Context, query Phone
 
 type PhoneNumberDetailed struct {
 	// Identifies the resource.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The ISO 3166-1 alpha-2 country code of the phone number.
-	CountryISOAlpha2 string `json:"country_iso_alpha2,required"`
+	CountryISOAlpha2 string `json:"country_iso_alpha2" api:"required"`
 	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Indicates whether deletion lock is enabled for this number. When enabled, this
 	// prevents the phone number from being deleted via the API or Telnyx portal.
-	DeletionLockEnabled bool `json:"deletion_lock_enabled,required"`
+	DeletionLockEnabled bool `json:"deletion_lock_enabled" api:"required"`
 	// If someone attempts to port your phone number away from Telnyx and your phone
 	// number has an external PIN set, Telnyx will attempt to verify that you provided
 	// the correct external PIN to the winning carrier. Note that not all carriers
 	// cooperate with this security mechanism.
-	ExternalPin string `json:"external_pin,required"`
+	ExternalPin string `json:"external_pin" api:"required"`
 	// The +E.164-formatted phone number associated with this record.
-	PhoneNumber string `json:"phone_number,required"`
+	PhoneNumber string `json:"phone_number" api:"required"`
 	// The phone number's type. Note: For numbers purchased prior to July 2023 or when
 	// fetching a number's details immediately after a purchase completes, the legacy
 	// values `tollfree`, `shortcode` or `longcode` may be returned instead.
 	//
 	// Any of "local", "toll_free", "mobile", "national", "shared_cost", "landline",
 	// "tollfree", "shortcode", "longcode".
-	PhoneNumberType PhoneNumberDetailedPhoneNumberType `json:"phone_number_type,required"`
+	PhoneNumberType PhoneNumberDetailedPhoneNumberType `json:"phone_number_type" api:"required"`
 	// ISO 8601 formatted date indicating when the resource was purchased.
-	PurchasedAt string `json:"purchased_at,required"`
+	PurchasedAt string `json:"purchased_at" api:"required"`
 	// Identifies the type of the resource.
-	RecordType string `json:"record_type,required"`
+	RecordType string `json:"record_type" api:"required"`
 	// The phone number's current status.
 	//
 	// Any of "purchase-pending", "purchase-failed", "port-pending", "port-failed",
 	// "active", "deleted", "emergency-only", "ported-out", "port-out-pending",
 	// "requirement-info-pending", "requirement-info-under-review",
 	// "requirement-info-exception", "provision-pending".
-	Status PhoneNumberDetailedStatus `json:"status,required"`
+	Status PhoneNumberDetailedStatus `json:"status" api:"required"`
 	// A list of user-assigned tags to help manage the phone number.
-	Tags []string `json:"tags,required"`
+	Tags []string `json:"tags" api:"required"`
 	// Identifies the billing group associated with the phone number.
-	BillingGroupID string `json:"billing_group_id,nullable"`
+	BillingGroupID string `json:"billing_group_id" api:"nullable"`
 	// Indicates if call forwarding will be enabled for this number if forwards_to and
 	// forwarding_type are filled in. Defaults to true for backwards compatibility with
 	// APIV1 use of numbers endpoints.
@@ -185,14 +185,14 @@ type PhoneNumberDetailed struct {
 	// Indicates whether a CNAM listing is enabled for this number.
 	CnamListingEnabled bool `json:"cnam_listing_enabled"`
 	// Identifies the connection associated with the phone number.
-	ConnectionID string `json:"connection_id,nullable"`
+	ConnectionID string `json:"connection_id" api:"nullable"`
 	// The user-assigned name of the connection to be associated with this phone
 	// number.
-	ConnectionName string `json:"connection_name,nullable"`
+	ConnectionName string `json:"connection_name" api:"nullable"`
 	// A customer reference string for customer look ups.
-	CustomerReference string `json:"customer_reference,nullable"`
+	CustomerReference string `json:"customer_reference" api:"nullable"`
 	// Identifies the emergency address associated with the phone number.
-	EmergencyAddressID string `json:"emergency_address_id,nullable"`
+	EmergencyAddressID string `json:"emergency_address_id" api:"nullable"`
 	// Indicates whether emergency services are enabled for this number.
 	EmergencyEnabled bool `json:"emergency_enabled"`
 	// Indicates the status of the provisioning of emergency services for the phone
@@ -213,14 +213,14 @@ type PhoneNumberDetailed struct {
 	// Any of "disabled", "reject_calls", "flag_calls".
 	InboundCallScreening PhoneNumberDetailedInboundCallScreening `json:"inbound_call_screening"`
 	// Identifies the messaging profile associated with the phone number.
-	MessagingProfileID string `json:"messaging_profile_id,nullable"`
+	MessagingProfileID string `json:"messaging_profile_id" api:"nullable"`
 	// The name of the messaging profile associated with the phone number.
-	MessagingProfileName string `json:"messaging_profile_name,nullable"`
+	MessagingProfileName string `json:"messaging_profile_name" api:"nullable"`
 	// Indicates if the phone number was purchased or ported in. For some numbers this
 	// information may not be available.
 	//
 	// Any of "number_order", "port_request".
-	SourceType PhoneNumberDetailedSourceType `json:"source_type,nullable"`
+	SourceType PhoneNumberDetailedSourceType `json:"source_type" api:"nullable"`
 	// Indicates whether T38 Fax Gateway for inbound calls to this number.
 	T38FaxGatewayEnabled bool `json:"t38_fax_gateway_enabled"`
 	// ISO 8601 formatted date indicating when the resource was updated.

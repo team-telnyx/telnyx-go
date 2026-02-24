@@ -112,7 +112,7 @@ type BillingGroup struct {
 	// ISO 8601 formatted date indicating when the resource was created.
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// ISO 8601 formatted date indicating when the resource was removed.
-	DeletedAt time.Time `json:"deleted_at,nullable" format:"date-time"`
+	DeletedAt time.Time `json:"deleted_at" api:"nullable" format:"date-time"`
 	// A user-specified name for the billing group
 	Name string `json:"name"`
 	// Identifies the organization that owns the resource.

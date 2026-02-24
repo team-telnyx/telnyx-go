@@ -63,8 +63,8 @@ func (r *StorageBucketUsageService) GetBucketUsage(ctx context.Context, bucketNa
 }
 
 type PaginationMetaSimple struct {
-	PageNumber   int64 `json:"page_number,required"`
-	TotalPages   int64 `json:"total_pages,required"`
+	PageNumber   int64 `json:"page_number" api:"required"`
+	TotalPages   int64 `json:"total_pages" api:"required"`
 	PageSize     int64 `json:"page_size"`
 	TotalResults int64 `json:"total_results"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -227,7 +227,7 @@ func (r *StorageBucketUsageGetBucketUsageResponseData) UnmarshalJSON(data []byte
 type StorageBucketUsageGetAPIUsageParams struct {
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[start_time], filter[end_time]
-	Filter StorageBucketUsageGetAPIUsageParamsFilter `query:"filter,omitzero,required" json:"-"`
+	Filter StorageBucketUsageGetAPIUsageParamsFilter `query:"filter,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
@@ -246,9 +246,9 @@ func (r StorageBucketUsageGetAPIUsageParams) URLQuery() (v url.Values, err error
 // The properties EndTime, StartTime are required.
 type StorageBucketUsageGetAPIUsageParamsFilter struct {
 	// The end time of the period to filter the usage (ISO microsecond format)
-	EndTime time.Time `query:"end_time,required" format:"date-time" json:"-"`
+	EndTime time.Time `query:"end_time" api:"required" format:"date-time" json:"-"`
 	// The start time of the period to filter the usage (ISO microsecond format)
-	StartTime time.Time `query:"start_time,required" format:"date-time" json:"-"`
+	StartTime time.Time `query:"start_time" api:"required" format:"date-time" json:"-"`
 	paramObj
 }
 

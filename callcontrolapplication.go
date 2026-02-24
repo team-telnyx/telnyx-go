@@ -152,11 +152,11 @@ type CallControlApplication struct {
 	WebhookAPIVersion CallControlApplicationWebhookAPIVersion `json:"webhook_api_version"`
 	// The failover URL where webhooks related to this connection will be sent if
 	// sending to the primary URL fails. Must include a scheme, such as `https`.
-	WebhookEventFailoverURL string `json:"webhook_event_failover_url,nullable" format:"url"`
+	WebhookEventFailoverURL string `json:"webhook_event_failover_url" api:"nullable" format:"url"`
 	// The URL where webhooks related to this connection will be sent. Must include a
 	// scheme, such as `https`.
 	WebhookEventURL    string `json:"webhook_event_url" format:"url"`
-	WebhookTimeoutSecs int64  `json:"webhook_timeout_secs,nullable"`
+	WebhookTimeoutSecs int64  `json:"webhook_timeout_secs" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                      respjson.Field
@@ -433,10 +433,10 @@ func (r *CallControlApplicationDeleteResponse) UnmarshalJSON(data []byte) error 
 
 type CallControlApplicationNewParams struct {
 	// A user-assigned name to help manage the application.
-	ApplicationName string `json:"application_name,required"`
+	ApplicationName string `json:"application_name" api:"required"`
 	// The URL where webhooks related to this connection will be sent. Must include a
 	// scheme, such as 'https'.
-	WebhookEventURL string `json:"webhook_event_url,required" format:"url"`
+	WebhookEventURL string `json:"webhook_event_url" api:"required" format:"url"`
 	// The failover URL where webhooks related to this connection will be sent if
 	// sending to the primary URL fails. Must include a scheme, such as 'https'.
 	WebhookEventFailoverURL param.Opt[string] `json:"webhook_event_failover_url,omitzero" format:"url"`
@@ -523,10 +523,10 @@ const (
 
 type CallControlApplicationUpdateParams struct {
 	// A user-assigned name to help manage the application.
-	ApplicationName string `json:"application_name,required"`
+	ApplicationName string `json:"application_name" api:"required"`
 	// The URL where webhooks related to this connection will be sent. Must include a
 	// scheme, such as 'https'.
-	WebhookEventURL string `json:"webhook_event_url,required" format:"url"`
+	WebhookEventURL string `json:"webhook_event_url" api:"required" format:"url"`
 	// The failover URL where webhooks related to this connection will be sent if
 	// sending to the primary URL fails. Must include a scheme, such as 'https'.
 	WebhookEventFailoverURL param.Opt[string] `json:"webhook_event_failover_url,omitzero" format:"url"`

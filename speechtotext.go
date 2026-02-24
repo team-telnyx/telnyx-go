@@ -46,11 +46,11 @@ type SpeechToTextTranscribeParams struct {
 	// The format of input audio stream.
 	//
 	// Any of "mp3", "wav".
-	InputFormat SpeechToTextTranscribeParamsInputFormat `query:"input_format,omitzero,required" json:"-"`
+	InputFormat SpeechToTextTranscribeParamsInputFormat `query:"input_format,omitzero" api:"required" json:"-"`
 	// The transcription engine to use for processing the audio stream.
 	//
 	// Any of "Azure", "Deepgram", "Google", "Telnyx".
-	TranscriptionEngine SpeechToTextTranscribeParamsTranscriptionEngine `query:"transcription_engine,omitzero,required" json:"-"`
+	TranscriptionEngine SpeechToTextTranscribeParamsTranscriptionEngine `query:"transcription_engine,omitzero" api:"required" json:"-"`
 	// Whether to receive interim transcription results.
 	InterimResults param.Opt[bool] `query:"interim_results,omitzero" json:"-"`
 	// The language spoken in the audio stream.

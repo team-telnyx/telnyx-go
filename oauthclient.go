@@ -109,27 +109,27 @@ func (r *OAuthClientService) Delete(ctx context.Context, id string, opts ...opti
 
 type OAuthClient struct {
 	// OAuth client identifier
-	ClientID string `json:"client_id,required"`
+	ClientID string `json:"client_id" api:"required"`
 	// OAuth client type
 	//
 	// Any of "public", "confidential".
-	ClientType OAuthClientClientType `json:"client_type,required"`
+	ClientType OAuthClientClientType `json:"client_type" api:"required"`
 	// Timestamp when the client was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Human-readable name for the OAuth client
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Organization ID that owns this OAuth client
-	OrgID string `json:"org_id,required"`
+	OrgID string `json:"org_id" api:"required"`
 	// Record type identifier
 	//
 	// Any of "oauth_client".
-	RecordType OAuthClientRecordType `json:"record_type,required"`
+	RecordType OAuthClientRecordType `json:"record_type" api:"required"`
 	// Whether PKCE (Proof Key for Code Exchange) is required for this client
-	RequirePkce bool `json:"require_pkce,required"`
+	RequirePkce bool `json:"require_pkce" api:"required"`
 	// Timestamp when the client was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// User ID that created this OAuth client
-	UserID string `json:"user_id,required"`
+	UserID string `json:"user_id" api:"required"`
 	// List of allowed OAuth grant types
 	//
 	// Any of "client_credentials", "authorization_code", "refresh_token".
@@ -137,15 +137,15 @@ type OAuthClient struct {
 	// List of allowed OAuth scopes
 	AllowedScopes []string `json:"allowed_scopes"`
 	// Client secret (only included when available, for confidential clients)
-	ClientSecret string `json:"client_secret,nullable"`
+	ClientSecret string `json:"client_secret" api:"nullable"`
 	// URL of the client logo
-	LogoUri string `json:"logo_uri,nullable" format:"uri"`
+	LogoUri string `json:"logo_uri" api:"nullable" format:"uri"`
 	// URL of the client's privacy policy
-	PolicyUri string `json:"policy_uri,nullable" format:"uri"`
+	PolicyUri string `json:"policy_uri" api:"nullable" format:"uri"`
 	// List of allowed redirect URIs
 	RedirectUris []string `json:"redirect_uris" format:"uri"`
 	// URL of the client's terms of service
-	TosUri string `json:"tos_uri,nullable" format:"uri"`
+	TosUri string `json:"tos_uri" api:"nullable" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ClientID          respjson.Field
@@ -192,9 +192,9 @@ const (
 
 type PaginationMetaOAuth struct {
 	// Current page number
-	PageNumber int64 `json:"page_number,required"`
+	PageNumber int64 `json:"page_number" api:"required"`
 	// Total number of pages
-	TotalPages int64 `json:"total_pages,required"`
+	TotalPages int64 `json:"total_pages" api:"required"`
 	// Number of items per page
 	PageSize int64 `json:"page_size"`
 	// Total number of results
@@ -268,15 +268,15 @@ type OAuthClientNewParams struct {
 	// List of allowed OAuth grant types
 	//
 	// Any of "client_credentials", "authorization_code", "refresh_token".
-	AllowedGrantTypes []string `json:"allowed_grant_types,omitzero,required"`
+	AllowedGrantTypes []string `json:"allowed_grant_types,omitzero" api:"required"`
 	// List of allowed OAuth scopes
-	AllowedScopes []string `json:"allowed_scopes,omitzero,required"`
+	AllowedScopes []string `json:"allowed_scopes,omitzero" api:"required"`
 	// OAuth client type
 	//
 	// Any of "public", "confidential".
-	ClientType OAuthClientNewParamsClientType `json:"client_type,omitzero,required"`
+	ClientType OAuthClientNewParamsClientType `json:"client_type,omitzero" api:"required"`
 	// The name of the OAuth client
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// URL of the client logo
 	LogoUri param.Opt[string] `json:"logo_uri,omitzero" format:"uri"`
 	// URL of the client's privacy policy

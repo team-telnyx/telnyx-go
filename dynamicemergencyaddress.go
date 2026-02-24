@@ -96,13 +96,13 @@ func (r *DynamicEmergencyAddressService) Delete(ctx context.Context, id string, 
 }
 
 type DynamicEmergencyAddress struct {
-	AdministrativeArea string `json:"administrative_area,required"`
+	AdministrativeArea string `json:"administrative_area" api:"required"`
 	// Any of "US", "CA", "PR".
-	CountryCode DynamicEmergencyAddressCountryCode `json:"country_code,required"`
-	HouseNumber string                             `json:"house_number,required"`
-	Locality    string                             `json:"locality,required"`
-	PostalCode  string                             `json:"postal_code,required"`
-	StreetName  string                             `json:"street_name,required"`
+	CountryCode DynamicEmergencyAddressCountryCode `json:"country_code" api:"required"`
+	HouseNumber string                             `json:"house_number" api:"required"`
+	Locality    string                             `json:"locality" api:"required"`
+	PostalCode  string                             `json:"postal_code" api:"required"`
+	StreetName  string                             `json:"street_name" api:"required"`
 	ID          string                             `json:"id"`
 	// ISO 8601 formatted date of when the resource was created
 	CreatedAt       string `json:"created_at"`
@@ -181,13 +181,13 @@ const (
 // The properties AdministrativeArea, CountryCode, HouseNumber, Locality,
 // PostalCode, StreetName are required.
 type DynamicEmergencyAddressParam struct {
-	AdministrativeArea string `json:"administrative_area,required"`
+	AdministrativeArea string `json:"administrative_area" api:"required"`
 	// Any of "US", "CA", "PR".
-	CountryCode           DynamicEmergencyAddressCountryCode `json:"country_code,omitzero,required"`
-	HouseNumber           string                             `json:"house_number,required"`
-	Locality              string                             `json:"locality,required"`
-	PostalCode            string                             `json:"postal_code,required"`
-	StreetName            string                             `json:"street_name,required"`
+	CountryCode           DynamicEmergencyAddressCountryCode `json:"country_code,omitzero" api:"required"`
+	HouseNumber           string                             `json:"house_number" api:"required"`
+	Locality              string                             `json:"locality" api:"required"`
+	PostalCode            string                             `json:"postal_code" api:"required"`
+	StreetName            string                             `json:"street_name" api:"required"`
 	ExtendedAddress       param.Opt[string]                  `json:"extended_address,omitzero"`
 	HouseSuffix           param.Opt[string]                  `json:"house_suffix,omitzero"`
 	StreetPostDirectional param.Opt[string]                  `json:"street_post_directional,omitzero"`

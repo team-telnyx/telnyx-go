@@ -63,9 +63,9 @@ func (r *WirelessGetRegionsResponse) UnmarshalJSON(data []byte) error {
 
 type WirelessGetRegionsResponseData struct {
 	// The unique code of the region.
-	Code string `json:"code,required"`
+	Code string `json:"code" api:"required"`
 	// The name of the region.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Timestamp when the region was inserted.
 	InsertedAt time.Time `json:"inserted_at" format:"date-time"`
 	// Timestamp when the region was last updated.
@@ -90,7 +90,7 @@ func (r *WirelessGetRegionsResponseData) UnmarshalJSON(data []byte) error {
 type WirelessGetRegionsParams struct {
 	// The product for which to list regions (e.g., 'public_ips',
 	// 'private_wireless_gateways').
-	Product string `query:"product,required" json:"-"`
+	Product string `query:"product" api:"required" json:"-"`
 	paramObj
 }
 

@@ -70,7 +70,7 @@ type AuditEventListResponse struct {
 	// identify the resource but is not the primary identifier for the resource. For
 	// example, this field could be used to store the phone number value for a phone
 	// number when the primary database identifier is a separate distinct value.
-	AlternateResourceID string `json:"alternate_resource_id,nullable"`
+	AlternateResourceID string `json:"alternate_resource_id" api:"nullable"`
 	// Indicates if the change was made by Telnyx on your behalf, the organization
 	// owner, a member of your organization, or in the case of managed accounts, the
 	// account manager.
@@ -80,7 +80,7 @@ type AuditEventListResponse struct {
 	// The type of change that occurred.
 	ChangeType string `json:"change_type"`
 	// Details of the changes made to the resource.
-	Changes []AuditEventListResponseChange `json:"changes,nullable"`
+	Changes []AuditEventListResponseChange `json:"changes" api:"nullable"`
 	// ISO 8601 formatted date indicating when the change occurred.
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Unique identifier for the organization that owns the resource.
@@ -132,9 +132,9 @@ type AuditEventListResponseChange struct {
 	// nested fields.
 	Field string `json:"field"`
 	// The previous value of the field. Can be any JSON type.
-	From AuditEventListResponseChangeFromUnion `json:"from,nullable"`
+	From AuditEventListResponseChangeFromUnion `json:"from" api:"nullable"`
 	// The new value of the field. Can be any JSON type.
-	To AuditEventListResponseChangeToUnion `json:"to,nullable"`
+	To AuditEventListResponseChangeToUnion `json:"to" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Field       respjson.Field

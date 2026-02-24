@@ -332,9 +332,9 @@ func (r *TexmlApplicationDeleteResponse) UnmarshalJSON(data []byte) error {
 
 type TexmlApplicationNewParams struct {
 	// A user-assigned name to help manage the application.
-	FriendlyName string `json:"friendly_name,required"`
+	FriendlyName string `json:"friendly_name" api:"required"`
 	// URL to which Telnyx will deliver your XML Translator webhooks.
-	VoiceURL string `json:"voice_url,required" format:"uri"`
+	VoiceURL string `json:"voice_url" api:"required" format:"uri"`
 	// Specifies whether the connection can be used.
 	Active param.Opt[bool] `json:"active,omitzero"`
 	// Specifies if call cost webhooks should be sent for this TeXML Application.
@@ -460,9 +460,9 @@ const (
 
 type TexmlApplicationUpdateParams struct {
 	// A user-assigned name to help manage the application.
-	FriendlyName string `json:"friendly_name,required"`
+	FriendlyName string `json:"friendly_name" api:"required"`
 	// URL to which Telnyx will deliver your XML Translator webhooks.
-	VoiceURL string `json:"voice_url,required" format:"uri"`
+	VoiceURL string `json:"voice_url" api:"required" format:"uri"`
 	// Specifies whether the connection can be used.
 	Active param.Opt[bool] `json:"active,omitzero"`
 	// Specifies if call cost webhooks should be sent for this TeXML Application.

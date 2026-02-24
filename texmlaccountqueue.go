@@ -307,12 +307,12 @@ func (r *TexmlAccountQueueNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type TexmlAccountQueueGetParams struct {
-	AccountSid string `path:"account_sid,required" json:"-"`
+	AccountSid string `path:"account_sid" api:"required" json:"-"`
 	paramObj
 }
 
 type TexmlAccountQueueUpdateParams struct {
-	AccountSid string `path:"account_sid,required" json:"-"`
+	AccountSid string `path:"account_sid" api:"required" json:"-"`
 	// The maximum size of the queue.
 	MaxSize param.Opt[int64] `json:"MaxSize,omitzero"`
 	paramObj
@@ -353,6 +353,6 @@ func (r TexmlAccountQueueListParams) URLQuery() (v url.Values, err error) {
 }
 
 type TexmlAccountQueueDeleteParams struct {
-	AccountSid string `path:"account_sid,required" json:"-"`
+	AccountSid string `path:"account_sid" api:"required" json:"-"`
 	paramObj
 }

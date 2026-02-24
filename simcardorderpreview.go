@@ -145,10 +145,10 @@ func (r *SimCardOrderPreviewPreviewResponseDataTotalCost) UnmarshalJSON(data []b
 
 type SimCardOrderPreviewPreviewParams struct {
 	// Uniquely identifies the address for the order.
-	AddressID string `json:"address_id,required"`
+	AddressID string `json:"address_id" api:"required"`
 	// The amount of SIM cards that the user would like to purchase in the SIM card
 	// order.
-	Quantity int64 `json:"quantity,required"`
+	Quantity int64 `json:"quantity" api:"required"`
 	paramObj
 }
 

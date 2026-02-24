@@ -323,7 +323,7 @@ func (r *SubNumberOrderUpdateRequirementGroupResponseData) UnmarshalJSON(data []
 
 type SubNumberOrderUpdateRequirementGroupResponseDataPhoneNumber struct {
 	ID                     string                                                                             `json:"id" format:"uuid"`
-	BundleID               string                                                                             `json:"bundle_id,nullable" format:"uuid"`
+	BundleID               string                                                                             `json:"bundle_id" api:"nullable" format:"uuid"`
 	CountryCode            string                                                                             `json:"country_code"`
 	PhoneNumber            string                                                                             `json:"phone_number"`
 	PhoneNumberType        string                                                                             `json:"phone_number_type"`
@@ -494,7 +494,7 @@ func (r SubNumberOrderListParamsFilter) URLQuery() (v url.Values, err error) {
 
 type SubNumberOrderUpdateRequirementGroupParams struct {
 	// The ID of the requirement group to associate
-	RequirementGroupID string `json:"requirement_group_id,required" format:"uuid"`
+	RequirementGroupID string `json:"requirement_group_id" api:"required" format:"uuid"`
 	paramObj
 }
 

@@ -109,9 +109,9 @@ func (r *AIConversationInsightService) Delete(ctx context.Context, insightID str
 }
 
 type InsightTemplate struct {
-	ID           string    `json:"id,required" format:"uuid"`
-	CreatedAt    time.Time `json:"created_at,required" format:"date-time"`
-	Instructions string    `json:"instructions,required"`
+	ID           string    `json:"id" api:"required" format:"uuid"`
+	CreatedAt    time.Time `json:"created_at" api:"required" format:"date-time"`
+	Instructions string    `json:"instructions" api:"required"`
 	// Any of "custom", "default".
 	InsightType InsightTemplateInsightType `json:"insight_type"`
 	// If specified, the output will follow the JSON schema.
@@ -182,7 +182,7 @@ func (r *InsightTemplateJsonSchemaUnion) UnmarshalJSON(data []byte) error {
 }
 
 type InsightTemplateDetail struct {
-	Data InsightTemplate `json:"data,required"`
+	Data InsightTemplate `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -198,8 +198,8 @@ func (r *InsightTemplateDetail) UnmarshalJSON(data []byte) error {
 }
 
 type AIConversationInsightNewParams struct {
-	Instructions string            `json:"instructions,required"`
-	Name         string            `json:"name,required"`
+	Instructions string            `json:"instructions" api:"required"`
+	Name         string            `json:"name" api:"required"`
 	Webhook      param.Opt[string] `json:"webhook,omitzero"`
 	// If specified, the output will follow the JSON schema.
 	JsonSchema AIConversationInsightNewParamsJsonSchemaUnion `json:"json_schema,omitzero"`

@@ -677,7 +677,7 @@ type AwsVoiceSettingsParam struct {
 	// Voice settings provider type
 	//
 	// Any of "aws".
-	Type        AwsVoiceSettingsType `json:"type,omitzero,required"`
+	Type        AwsVoiceSettingsType `json:"type,omitzero" api:"required"`
 	ExtraFields map[string]any       `json:"-"`
 	paramObj
 }
@@ -716,9 +716,9 @@ func (r *CallControlCommandResult) UnmarshalJSON(data []byte) error {
 // The properties TranscriptionEngine, TranscriptionModel are required.
 type DeepgramNova2ConfigParam struct {
 	// Any of "Deepgram".
-	TranscriptionEngine DeepgramNova2ConfigTranscriptionEngine `json:"transcription_engine,omitzero,required"`
+	TranscriptionEngine DeepgramNova2ConfigTranscriptionEngine `json:"transcription_engine,omitzero" api:"required"`
 	// Any of "deepgram/nova-2".
-	TranscriptionModel DeepgramNova2ConfigTranscriptionModel `json:"transcription_model,omitzero,required"`
+	TranscriptionModel DeepgramNova2ConfigTranscriptionModel `json:"transcription_model,omitzero" api:"required"`
 	// Whether to send also interim results. If set to false, only final results will
 	// be sent.
 	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
@@ -813,9 +813,9 @@ const (
 // The properties TranscriptionEngine, TranscriptionModel are required.
 type DeepgramNova3ConfigParam struct {
 	// Any of "Deepgram".
-	TranscriptionEngine DeepgramNova3ConfigTranscriptionEngine `json:"transcription_engine,omitzero,required"`
+	TranscriptionEngine DeepgramNova3ConfigTranscriptionEngine `json:"transcription_engine,omitzero" api:"required"`
 	// Any of "deepgram/nova-3".
-	TranscriptionModel DeepgramNova3ConfigTranscriptionModel `json:"transcription_model,omitzero,required"`
+	TranscriptionModel DeepgramNova3ConfigTranscriptionModel `json:"transcription_model,omitzero" api:"required"`
 	// Whether to send also interim results. If set to false, only final results will
 	// be sent.
 	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
@@ -881,7 +881,7 @@ type ElevenLabsVoiceSettingsParam struct {
 	// Voice settings provider type
 	//
 	// Any of "elevenlabs".
-	Type ElevenLabsVoiceSettingsType `json:"type,omitzero,required"`
+	Type ElevenLabsVoiceSettingsType `json:"type,omitzero" api:"required"`
 	// The `identifier` for an integration secret
 	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
 	// that refers to your ElevenLabs API key. Warning: Free plans are unlikely to work
@@ -1162,7 +1162,7 @@ type TelnyxVoiceSettingsParam struct {
 	// Voice settings provider type
 	//
 	// Any of "telnyx".
-	Type TelnyxVoiceSettingsType `json:"type,omitzero,required"`
+	Type TelnyxVoiceSettingsType `json:"type,omitzero" api:"required"`
 	// The voice speed to be used for the voice. The voice speed must be between 0.1
 	// and 2.0. Default value is 1.0.
 	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
@@ -1298,11 +1298,11 @@ type TranscriptionEngineAzureConfigParam struct {
 	//
 	// Any of "australiaeast", "centralindia", "eastus", "northcentralus",
 	// "westeurope", "westus2".
-	Region TranscriptionEngineAzureConfigRegion `json:"region,omitzero,required"`
+	Region TranscriptionEngineAzureConfigRegion `json:"region,omitzero" api:"required"`
 	// Engine identifier for Azure transcription service
 	//
 	// Any of "Azure".
-	TranscriptionEngine TranscriptionEngineAzureConfigTranscriptionEngine `json:"transcription_engine,omitzero,required"`
+	TranscriptionEngine TranscriptionEngineAzureConfigTranscriptionEngine `json:"transcription_engine,omitzero" api:"required"`
 	// Reference to the API key for authentication. See
 	// [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
 	// for details. The parameter is optional as defaults are available for some
@@ -2696,13 +2696,13 @@ func init() {
 // The properties Content, Role are required.
 type CallActionAddAIAssistantMessagesParamsMessageUser struct {
 	// The contents of the user message.
-	Content string `json:"content,required"`
+	Content string `json:"content" api:"required"`
 	// Metadata to add to the message
 	Metadata map[string]any `json:"metadata,omitzero"`
 	// The role of the messages author, in this case `user`.
 	//
 	// This field can be elided, and will marshal its zero value as "user".
-	Role constant.User `json:"role,required"`
+	Role constant.User `json:"role" api:"required"`
 	paramObj
 }
 
@@ -2727,7 +2727,7 @@ type CallActionAddAIAssistantMessagesParamsMessageAssistant struct {
 	// The role of the messages author, in this case `assistant`.
 	//
 	// This field can be elided, and will marshal its zero value as "assistant".
-	Role constant.Assistant `json:"role,required"`
+	Role constant.Assistant `json:"role" api:"required"`
 	paramObj
 }
 
@@ -2744,13 +2744,13 @@ func (r *CallActionAddAIAssistantMessagesParamsMessageAssistant) UnmarshalJSON(d
 // The properties ID, Function, Type are required.
 type CallActionAddAIAssistantMessagesParamsMessageAssistantToolCall struct {
 	// The ID of the tool call.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The function that the model called.
-	Function CallActionAddAIAssistantMessagesParamsMessageAssistantToolCallFunction `json:"function,omitzero,required"`
+	Function CallActionAddAIAssistantMessagesParamsMessageAssistantToolCallFunction `json:"function,omitzero" api:"required"`
 	// The type of the tool. Currently, only `function` is supported.
 	//
 	// Any of "function".
-	Type string `json:"type,omitzero,required"`
+	Type string `json:"type,omitzero" api:"required"`
 	paramObj
 }
 
@@ -2773,7 +2773,7 @@ func init() {
 // The property Name is required.
 type CallActionAddAIAssistantMessagesParamsMessageAssistantToolCallFunction struct {
 	// The name of the function to call.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	paramObj
 }
 
@@ -2788,15 +2788,15 @@ func (r *CallActionAddAIAssistantMessagesParamsMessageAssistantToolCallFunction)
 // The properties Content, Role, ToolCallID are required.
 type CallActionAddAIAssistantMessagesParamsMessageTool struct {
 	// The contents of the tool message.
-	Content string `json:"content,required"`
+	Content string `json:"content" api:"required"`
 	// Tool call that this message is responding to.
-	ToolCallID string `json:"tool_call_id,required"`
+	ToolCallID string `json:"tool_call_id" api:"required"`
 	// Metadata to add to the message
 	Metadata map[string]any `json:"metadata,omitzero"`
 	// The role of the messages author, in this case `tool`.
 	//
 	// This field can be elided, and will marshal its zero value as "tool".
-	Role constant.Tool `json:"role,required"`
+	Role constant.Tool `json:"role" api:"required"`
 	paramObj
 }
 
@@ -2814,13 +2814,13 @@ func (r *CallActionAddAIAssistantMessagesParamsMessageTool) UnmarshalJSON(data [
 // The properties Content, Role are required.
 type CallActionAddAIAssistantMessagesParamsMessageSystem struct {
 	// The contents of the system message.
-	Content string `json:"content,required"`
+	Content string `json:"content" api:"required"`
 	// Metadata to add to the message
 	Metadata map[string]any `json:"metadata,omitzero"`
 	// The role of the messages author, in this case `system`.
 	//
 	// This field can be elided, and will marshal its zero value as "system".
-	Role constant.System `json:"role,required"`
+	Role constant.System `json:"role" api:"required"`
 	paramObj
 }
 
@@ -2838,13 +2838,13 @@ func (r *CallActionAddAIAssistantMessagesParamsMessageSystem) UnmarshalJSON(data
 // The properties Content, Role are required.
 type CallActionAddAIAssistantMessagesParamsMessageDeveloper struct {
 	// The contents of the developer message.
-	Content string `json:"content,required"`
+	Content string `json:"content" api:"required"`
 	// Metadata to add to the message
 	Metadata map[string]any `json:"metadata,omitzero"`
 	// The role of the messages author, in this case developer.
 	//
 	// This field can be elided, and will marshal its zero value as "developer".
-	Role constant.Developer `json:"role,required"`
+	Role constant.Developer `json:"role" api:"required"`
 	paramObj
 }
 
@@ -3033,7 +3033,7 @@ const (
 type CallActionBridgeParams struct {
 	// The Call Control ID of the call you want to bridge with, can't be used together
 	// with queue parameter or video_room_id parameter.
-	CallControlIDToBridgeWith string `json:"call_control_id,required"`
+	CallControlIDToBridgeWith string `json:"call_control_id" api:"required"`
 	// Use this field to add state to every subsequent webhook. It must be a valid
 	// Base-64 encoded string.
 	ClientState param.Opt[string] `json:"client_state,omitzero"`
@@ -3226,7 +3226,7 @@ const (
 type CallActionEnqueueParams struct {
 	// The name of the queue the call should be put in. If a queue with a given name
 	// doesn't exist yet it will be created.
-	QueueName string `json:"queue_name,required"`
+	QueueName string `json:"queue_name" api:"required"`
 	// Use this field to add state to every subsequent webhook. It must be a valid
 	// Base-64 encoded string.
 	ClientState param.Opt[string] `json:"client_state,omitzero"`
@@ -3295,7 +3295,7 @@ type CallActionGatherUsingAIParams struct {
 	// the voice assistant. See the
 	// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
 	// documentation about the format
-	Parameters map[string]any `json:"parameters,omitzero,required"`
+	Parameters map[string]any `json:"parameters,omitzero" api:"required"`
 	// Use this field to add state to every subsequent webhook. It must be a valid
 	// Base-64 encoded string.
 	ClientState param.Opt[string] `json:"client_state,omitzero"`
@@ -3525,7 +3525,7 @@ func (r *CallActionGatherUsingAudioParams) UnmarshalJSON(data []byte) error {
 
 type CallActionGatherUsingSpeakParams struct {
 	// The text or SSML to be converted into speech. There is a 3,000 character limit.
-	Payload string `json:"payload,required"`
+	Payload string `json:"payload" api:"required"`
 	// Specifies the voice used in speech synthesis.
 	//
 	//   - Define voices using the format `<Provider>.<Model>.<VoiceId>`. Specifying only
@@ -3557,7 +3557,7 @@ type CallActionGatherUsingSpeakParams struct {
 	//   - **Resemble:** Use `Resemble.<ModelId>.<VoiceId>` (e.g.,
 	//     `Resemble.Pro.my_voice`). Supported models: `Pro` (multilingual) and `Turbo`
 	//     (English only).
-	Voice string `json:"voice,required"`
+	Voice string `json:"voice" api:"required"`
 	// Use this field to add state to every subsequent webhook. It must be a valid
 	// Base-64 encoded string.
 	ClientState param.Opt[string] `json:"client_state,omitzero"`
@@ -3832,7 +3832,7 @@ func (r *CallActionPauseRecordingParams) UnmarshalJSON(data []byte) error {
 
 type CallActionReferParams struct {
 	// The SIP URI to which the call will be referred to.
-	SipAddress string `json:"sip_address,required"`
+	SipAddress string `json:"sip_address" api:"required"`
 	// Use this field to add state to every subsequent webhook. It must be a valid
 	// Base-64 encoded string.
 	ClientState param.Opt[string] `json:"client_state,omitzero"`
@@ -3864,7 +3864,7 @@ type CallActionRejectParams struct {
 	// Cause for call rejection.
 	//
 	// Any of "CALL_REJECTED", "USER_BUSY".
-	Cause CallActionRejectParamsCause `json:"cause,omitzero,required"`
+	Cause CallActionRejectParamsCause `json:"cause,omitzero" api:"required"`
 	// Use this field to add state to every subsequent webhook. It must be a valid
 	// Base-64 encoded string.
 	ClientState param.Opt[string] `json:"client_state,omitzero"`
@@ -3913,7 +3913,7 @@ func (r *CallActionResumeRecordingParams) UnmarshalJSON(data []byte) error {
 type CallActionSendDtmfParams struct {
 	// DTMF digits to send. Valid digits are 0-9, A-D, \*, and #. Pauses can be added
 	// using w (0.5s) and W (1s).
-	Digits string `json:"digits,required"`
+	Digits string `json:"digits" api:"required"`
 	// Use this field to add state to every subsequent webhook. It must be a valid
 	// Base-64 encoded string.
 	ClientState param.Opt[string] `json:"client_state,omitzero"`
@@ -3936,10 +3936,10 @@ func (r *CallActionSendDtmfParams) UnmarshalJSON(data []byte) error {
 
 type CallActionSendSipInfoParams struct {
 	// Content of the SIP INFO
-	Body string `json:"body,required"`
+	Body string `json:"body" api:"required"`
 	// Content type of the INFO body. Must be MIME type compliant. There is a 1,400
 	// bytes limit
-	ContentType string `json:"content_type,required"`
+	ContentType string `json:"content_type" api:"required"`
 	// Use this field to add state to every subsequent webhook. It must be a valid
 	// Base-64 encoded string.
 	ClientState param.Opt[string] `json:"client_state,omitzero"`
@@ -3959,7 +3959,7 @@ func (r *CallActionSendSipInfoParams) UnmarshalJSON(data []byte) error {
 
 type CallActionSpeakParams struct {
 	// The text or SSML to be converted into speech. There is a 3,000 character limit.
-	Payload string `json:"payload,required"`
+	Payload string `json:"payload" api:"required"`
 	// Specifies the voice used in speech synthesis.
 	//
 	//   - Define voices using the format `<Provider>.<Model>.<VoiceId>`. Specifying only
@@ -3991,7 +3991,7 @@ type CallActionSpeakParams struct {
 	//   - **Resemble:** Use `Resemble.<ModelId>.<VoiceId>` (e.g.,
 	//     `Resemble.Pro.my_voice`). Supported models: `Pro` (multilingual) and `Turbo`
 	//     (English only).
-	Voice string `json:"voice,required"`
+	Voice string `json:"voice" api:"required"`
 	// Use this field to add state to every subsequent webhook. It must be a valid
 	// Base-64 encoded string.
 	ClientState param.Opt[string] `json:"client_state,omitzero"`
@@ -4520,12 +4520,12 @@ type CallActionStartRecordingParams struct {
 	// channel A, and the rest on channel B.
 	//
 	// Any of "single", "dual".
-	Channels CallActionStartRecordingParamsChannels `json:"channels,omitzero,required"`
+	Channels CallActionStartRecordingParamsChannels `json:"channels,omitzero" api:"required"`
 	// The audio file format used when storing the call recording. Can be either `mp3`
 	// or `wav`.
 	//
 	// Any of "wav", "mp3".
-	Format CallActionStartRecordingParamsFormat `json:"format,omitzero,required"`
+	Format CallActionStartRecordingParamsFormat `json:"format,omitzero" api:"required"`
 	// Use this field to add state to every subsequent webhook. It must be a valid
 	// Base-64 encoded string.
 	ClientState param.Opt[string] `json:"client_state,omitzero"`
@@ -5248,7 +5248,7 @@ type CallActionSwitchSupervisorRoleParams struct {
 	// 'whisper' allows speaking to caller only, 'monitor' allows listening only.
 	//
 	// Any of "barge", "whisper", "monitor".
-	Role CallActionSwitchSupervisorRoleParamsRole `json:"role,omitzero,required"`
+	Role CallActionSwitchSupervisorRoleParamsRole `json:"role,omitzero" api:"required"`
 	paramObj
 }
 
@@ -5272,7 +5272,7 @@ const (
 
 type CallActionTransferParams struct {
 	// The DID or SIP URI to dial out to.
-	To string `json:"to,required"`
+	To string `json:"to" api:"required"`
 	// The URL of a file to be played back when the transfer destination answers before
 	// bridging the call. The URL can point to either a WAV or MP3 file. media_name and
 	// audio_url cannot be used together in one request.
@@ -5606,7 +5606,7 @@ const (
 type CallActionUpdateClientStateParams struct {
 	// Use this field to add state to every subsequent webhook. It must be a valid
 	// Base-64 encoded string.
-	ClientState string `json:"client_state,required"`
+	ClientState string `json:"client_state" api:"required"`
 	paramObj
 }
 

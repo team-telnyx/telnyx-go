@@ -188,12 +188,12 @@ func (r *AIMissionRunService) ResumeRun(ctx context.Context, runID string, body 
 }
 
 type MissionRunData struct {
-	MissionID string    `json:"mission_id,required" format:"uuid"`
-	RunID     string    `json:"run_id,required" format:"uuid"`
-	StartedAt time.Time `json:"started_at,required" format:"date-time"`
+	MissionID string    `json:"mission_id" api:"required" format:"uuid"`
+	RunID     string    `json:"run_id" api:"required" format:"uuid"`
+	StartedAt time.Time `json:"started_at" api:"required" format:"date-time"`
 	// Any of "pending", "running", "paused", "succeeded", "failed", "cancelled".
-	Status        MissionRunDataStatus `json:"status,required"`
-	UpdatedAt     time.Time            `json:"updated_at,required" format:"date-time"`
+	Status        MissionRunDataStatus `json:"status" api:"required"`
+	UpdatedAt     time.Time            `json:"updated_at" api:"required" format:"date-time"`
 	Error         string               `json:"error"`
 	FinishedAt    time.Time            `json:"finished_at" format:"date-time"`
 	Input         map[string]any       `json:"input"`
@@ -236,7 +236,7 @@ const (
 )
 
 type AIMissionRunNewResponse struct {
-	Data MissionRunData `json:"data,required"`
+	Data MissionRunData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -252,7 +252,7 @@ func (r *AIMissionRunNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIMissionRunGetResponse struct {
-	Data MissionRunData `json:"data,required"`
+	Data MissionRunData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -268,7 +268,7 @@ func (r *AIMissionRunGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIMissionRunUpdateResponse struct {
-	Data MissionRunData `json:"data,required"`
+	Data MissionRunData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -284,7 +284,7 @@ func (r *AIMissionRunUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIMissionRunCancelRunResponse struct {
-	Data MissionRunData `json:"data,required"`
+	Data MissionRunData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -300,7 +300,7 @@ func (r *AIMissionRunCancelRunResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIMissionRunPauseRunResponse struct {
-	Data MissionRunData `json:"data,required"`
+	Data MissionRunData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -316,7 +316,7 @@ func (r *AIMissionRunPauseRunResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIMissionRunResumeRunResponse struct {
-	Data MissionRunData `json:"data,required"`
+	Data MissionRunData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -346,12 +346,12 @@ func (r *AIMissionRunNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type AIMissionRunGetParams struct {
-	MissionID string `path:"mission_id,required" format:"uuid" json:"-"`
+	MissionID string `path:"mission_id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }
 
 type AIMissionRunUpdateParams struct {
-	MissionID     string            `path:"mission_id,required" format:"uuid" json:"-"`
+	MissionID     string            `path:"mission_id" api:"required" format:"uuid" json:"-"`
 	Error         param.Opt[string] `json:"error,omitzero"`
 	ResultSummary param.Opt[string] `json:"result_summary,omitzero"`
 	Metadata      map[string]any    `json:"metadata,omitzero"`
@@ -398,7 +398,7 @@ func (r AIMissionRunListParams) URLQuery() (v url.Values, err error) {
 }
 
 type AIMissionRunCancelRunParams struct {
-	MissionID string `path:"mission_id,required" format:"uuid" json:"-"`
+	MissionID string `path:"mission_id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }
 
@@ -421,11 +421,11 @@ func (r AIMissionRunListRunsParams) URLQuery() (v url.Values, err error) {
 }
 
 type AIMissionRunPauseRunParams struct {
-	MissionID string `path:"mission_id,required" format:"uuid" json:"-"`
+	MissionID string `path:"mission_id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }
 
 type AIMissionRunResumeRunParams struct {
-	MissionID string `path:"mission_id,required" format:"uuid" json:"-"`
+	MissionID string `path:"mission_id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }

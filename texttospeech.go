@@ -101,7 +101,7 @@ func (r *TextToSpeechListVoicesResponseVoice) UnmarshalJSON(data []byte) error {
 
 type TextToSpeechGenerateSpeechParams struct {
 	// The text to convert to speech
-	Text string `json:"text,required"`
+	Text string `json:"text" api:"required"`
 	// The voice ID in the format Provider.ModelId.VoiceId.
 	//
 	// Examples:
@@ -113,7 +113,7 @@ type TextToSpeechGenerateSpeechParams struct {
 	//
 	// Use the `GET /text-to-speech/voices` endpoint to get a complete list of
 	// available voices.
-	Voice string `json:"voice,required"`
+	Voice string `json:"voice" api:"required"`
 	paramObj
 }
 

@@ -79,13 +79,13 @@ func (r *StorageMigrationSourceService) Delete(ctx context.Context, id string, o
 
 type MigrationSourceParamsResp struct {
 	// Bucket name to migrate the data from.
-	BucketName string `json:"bucket_name,required"`
+	BucketName string `json:"bucket_name" api:"required"`
 	// Cloud provider from which to migrate data. Use 'telnyx' if you want to migrate
 	// data from one Telnyx bucket to another.
 	//
 	// Any of "aws", "telnyx".
-	Provider     MigrationSourceParamsProvider         `json:"provider,required"`
-	ProviderAuth MigrationSourceParamsProviderAuthResp `json:"provider_auth,required"`
+	Provider     MigrationSourceParamsProvider         `json:"provider" api:"required"`
+	ProviderAuth MigrationSourceParamsProviderAuthResp `json:"provider_auth" api:"required"`
 	// Unique identifier for the data migration source.
 	ID string `json:"id"`
 	// For intra-Telnyx buckets migration, specify the source bucket region in this
@@ -151,13 +151,13 @@ func (r *MigrationSourceParamsProviderAuthResp) UnmarshalJSON(data []byte) error
 // The properties BucketName, Provider, ProviderAuth are required.
 type MigrationSourceParams struct {
 	// Bucket name to migrate the data from.
-	BucketName string `json:"bucket_name,required"`
+	BucketName string `json:"bucket_name" api:"required"`
 	// Cloud provider from which to migrate data. Use 'telnyx' if you want to migrate
 	// data from one Telnyx bucket to another.
 	//
 	// Any of "aws", "telnyx".
-	Provider     MigrationSourceParamsProvider     `json:"provider,omitzero,required"`
-	ProviderAuth MigrationSourceParamsProviderAuth `json:"provider_auth,omitzero,required"`
+	Provider     MigrationSourceParamsProvider     `json:"provider,omitzero" api:"required"`
+	ProviderAuth MigrationSourceParamsProviderAuth `json:"provider_auth,omitzero" api:"required"`
 	// For intra-Telnyx buckets migration, specify the source bucket region in this
 	// field.
 	SourceRegion param.Opt[string] `json:"source_region,omitzero"`

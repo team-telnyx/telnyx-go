@@ -85,7 +85,7 @@ func (r *NumberOrderPhoneNumberService) UpdateRequirements(ctx context.Context, 
 
 type NumberOrderPhoneNumber struct {
 	ID             string    `json:"id" format:"uuid"`
-	BundleID       string    `json:"bundle_id,nullable" format:"uuid"`
+	BundleID       string    `json:"bundle_id" api:"nullable" format:"uuid"`
 	CountryCode    string    `json:"country_code"`
 	Deadline       time.Time `json:"deadline" format:"date-time"`
 	IsBlockNumber  bool      `json:"is_block_number"`
@@ -240,7 +240,7 @@ func (r *NumberOrderPhoneNumberUpdateRequirementGroupResponse) UnmarshalJSON(dat
 
 type NumberOrderPhoneNumberUpdateRequirementGroupResponseData struct {
 	ID                     string                                                                          `json:"id" format:"uuid"`
-	BundleID               string                                                                          `json:"bundle_id,nullable" format:"uuid"`
+	BundleID               string                                                                          `json:"bundle_id" api:"nullable" format:"uuid"`
 	CountryCode            string                                                                          `json:"country_code"`
 	Deadline               time.Time                                                                       `json:"deadline" format:"date-time"`
 	IsBlockNumber          bool                                                                            `json:"is_block_number"`
@@ -357,7 +357,7 @@ func (r NumberOrderPhoneNumberListParamsFilter) URLQuery() (v url.Values, err er
 
 type NumberOrderPhoneNumberUpdateRequirementGroupParams struct {
 	// The ID of the requirement group to associate
-	RequirementGroupID string `json:"requirement_group_id,required" format:"uuid"`
+	RequirementGroupID string `json:"requirement_group_id" api:"required" format:"uuid"`
 	paramObj
 }
 

@@ -114,16 +114,16 @@ type AIMissionToolListToolsResponse = any
 type AIMissionToolUpdateToolResponse = any
 
 type AIMissionToolDeleteToolParams struct {
-	MissionID string `path:"mission_id,required" json:"-"`
+	MissionID string `path:"mission_id" api:"required" json:"-"`
 	paramObj
 }
 
 type AIMissionToolGetToolParams struct {
-	MissionID string `path:"mission_id,required" json:"-"`
+	MissionID string `path:"mission_id" api:"required" json:"-"`
 	paramObj
 }
 
 type AIMissionToolUpdateToolParams struct {
-	MissionID string `path:"mission_id,required" json:"-"`
+	MissionID string `path:"mission_id" api:"required" json:"-"`
 	paramObj
 }

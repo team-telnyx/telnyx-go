@@ -181,9 +181,9 @@ func (r *AlphanumericSenderIDDeleteResponse) UnmarshalJSON(data []byte) error {
 
 type AlphanumericSenderIDNewParams struct {
 	// The alphanumeric sender ID string.
-	AlphanumericSenderID string `json:"alphanumeric_sender_id,required"`
+	AlphanumericSenderID string `json:"alphanumeric_sender_id" api:"required"`
 	// The messaging profile to associate the sender ID with.
-	MessagingProfileID string `json:"messaging_profile_id,required" format:"uuid"`
+	MessagingProfileID string `json:"messaging_profile_id" api:"required" format:"uuid"`
 	// A US long code number to use as fallback when sending to US destinations.
 	UsLongCodeFallback param.Opt[string] `json:"us_long_code_fallback,omitzero"`
 	paramObj

@@ -324,7 +324,7 @@ func (r *DocumentDeleteResponse) UnmarshalJSON(data []byte) error {
 }
 
 type DocumentGenerateDownloadLinkResponse struct {
-	Data DocumentGenerateDownloadLinkResponseData `json:"data,required"`
+	Data DocumentGenerateDownloadLinkResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -341,7 +341,7 @@ func (r *DocumentGenerateDownloadLinkResponse) UnmarshalJSON(data []byte) error 
 
 type DocumentGenerateDownloadLinkResponseData struct {
 	// Pre-signed temporary URL for downloading the document
-	URL string `json:"url,required" format:"uri"`
+	URL string `json:"url" api:"required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		URL         respjson.Field

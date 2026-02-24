@@ -79,9 +79,9 @@ func (r *CallService) GetStatus(ctx context.Context, callControlID string, opts 
 
 type CustomSipHeader struct {
 	// The name of the header to add.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The value of the header.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
@@ -109,9 +109,9 @@ func (r CustomSipHeader) ToParam() CustomSipHeaderParam {
 // The properties Name, Value are required.
 type CustomSipHeaderParam struct {
 	// The name of the header to add.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The value of the header.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -143,9 +143,9 @@ type SipHeader struct {
 	// The name of the header to add.
 	//
 	// Any of "User-to-User".
-	Name SipHeaderName `json:"name,required"`
+	Name SipHeaderName `json:"name" api:"required"`
 	// The value of the header.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
@@ -182,9 +182,9 @@ type SipHeaderParam struct {
 	// The name of the header to add.
 	//
 	// Any of "User-to-User".
-	Name SipHeaderName `json:"name,omitzero,required"`
+	Name SipHeaderName `json:"name,omitzero" api:"required"`
 	// The value of the header.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -291,18 +291,18 @@ func (r *CallDialResponse) UnmarshalJSON(data []byte) error {
 
 type CallDialResponseData struct {
 	// Unique identifier and token for controlling the call.
-	CallControlID string `json:"call_control_id,required"`
+	CallControlID string `json:"call_control_id" api:"required"`
 	// ID that is unique to the call and can be used to correlate webhook events
-	CallLegID string `json:"call_leg_id,required"`
+	CallLegID string `json:"call_leg_id" api:"required"`
 	// ID that is unique to the call session and can be used to correlate webhook
 	// events. Call session is a group of related call legs that logically belong to
 	// the same phone call, e.g. an inbound and outbound leg of a transferred call
-	CallSessionID string `json:"call_session_id,required"`
+	CallSessionID string `json:"call_session_id" api:"required"`
 	// Indicates whether the call is alive or not. For Dial command it will always be
 	// `false` (dialing is asynchronous).
-	IsAlive bool `json:"is_alive,required"`
+	IsAlive bool `json:"is_alive" api:"required"`
 	// Any of "call".
-	RecordType string `json:"record_type,required"`
+	RecordType string `json:"record_type" api:"required"`
 	// Indicates the duration of the call in seconds
 	CallDuration int64 `json:"call_duration"`
 	// State received from a command.
@@ -356,18 +356,18 @@ func (r *CallGetStatusResponse) UnmarshalJSON(data []byte) error {
 
 type CallGetStatusResponseData struct {
 	// Unique identifier and token for controlling the call.
-	CallControlID string `json:"call_control_id,required"`
+	CallControlID string `json:"call_control_id" api:"required"`
 	// ID that is unique to the call and can be used to correlate webhook events
-	CallLegID string `json:"call_leg_id,required"`
+	CallLegID string `json:"call_leg_id" api:"required"`
 	// ID that is unique to the call session and can be used to correlate webhook
 	// events. Call session is a group of related call legs that logically belong to
 	// the same phone call, e.g. an inbound and outbound leg of a transferred call
-	CallSessionID string `json:"call_session_id,required"`
+	CallSessionID string `json:"call_session_id" api:"required"`
 	// Indicates whether the call is alive or not. For Dial command it will always be
 	// `false` (dialing is asynchronous).
-	IsAlive bool `json:"is_alive,required"`
+	IsAlive bool `json:"is_alive" api:"required"`
 	// Any of "call".
-	RecordType string `json:"record_type,required"`
+	RecordType string `json:"record_type" api:"required"`
 	// Indicates the duration of the call in seconds
 	CallDuration int64 `json:"call_duration"`
 	// State received from a command.
@@ -402,13 +402,13 @@ func (r *CallGetStatusResponseData) UnmarshalJSON(data []byte) error {
 type CallDialParams struct {
 	// The ID of the Call Control App (formerly ID of the connection) to be used when
 	// dialing the destination.
-	ConnectionID string `json:"connection_id,required"`
+	ConnectionID string `json:"connection_id" api:"required"`
 	// The `from` number to be used as the caller id presented to the destination (`to`
 	// number). The number should be in +E164 format.
-	From string `json:"from,required"`
+	From string `json:"from" api:"required"`
 	// The DID or SIP URI to dial out to. Multiple DID or SIP URIs can be provided
 	// using an array of strings
-	To CallDialParamsToUnion `json:"to,omitzero,required"`
+	To CallDialParamsToUnion `json:"to,omitzero" api:"required"`
 	// The URL of a file to be played back to the callee when the call is answered. The
 	// URL can point to either a WAV or MP3 file. media_name and audio_url cannot be
 	// used together in one request.

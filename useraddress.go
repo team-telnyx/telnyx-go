@@ -185,18 +185,18 @@ func (r *UserAddressGetResponse) UnmarshalJSON(data []byte) error {
 
 type UserAddressNewParams struct {
 	// The business name associated with the user address.
-	BusinessName string `json:"business_name,required"`
+	BusinessName string `json:"business_name" api:"required"`
 	// The two-character (ISO 3166-1 alpha-2) country code of the user address.
-	CountryCode string `json:"country_code,required"`
+	CountryCode string `json:"country_code" api:"required"`
 	// The first name associated with the user address.
-	FirstName string `json:"first_name,required"`
+	FirstName string `json:"first_name" api:"required"`
 	// The last name associated with the user address.
-	LastName string `json:"last_name,required"`
+	LastName string `json:"last_name" api:"required"`
 	// The locality of the user address. For US addresses, this corresponds to the city
 	// of the address.
-	Locality string `json:"locality,required"`
+	Locality string `json:"locality" api:"required"`
 	// The primary street address information about the user address.
-	StreetAddress string `json:"street_address,required"`
+	StreetAddress string `json:"street_address" api:"required"`
 	// The locality of the user address. For US addresses, this corresponds to the
 	// state of the address.
 	AdministrativeArea param.Opt[string] `json:"administrative_area,omitzero"`

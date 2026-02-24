@@ -145,9 +145,9 @@ func (r *Messaging10dlcPartnerCampaignService) GetSharingStatus(ctx context.Cont
 // deleted from the OSR service.
 type TelnyxDownstreamCampaign struct {
 	// Unique identifier assigned to the brand by the registry.
-	TcrBrandID string `json:"tcrBrandId,required"`
+	TcrBrandID string `json:"tcrBrandId" api:"required"`
 	// Unique identifier assigned to the campaign by the registry.
-	TcrCampaignID string `json:"tcrCampaignId,required"`
+	TcrCampaignID string `json:"tcrCampaignId" api:"required"`
 	// Age gated content in campaign.
 	AgeGated bool `json:"ageGated"`
 	// Number of phone numbers associated with the campaign
@@ -302,13 +302,13 @@ const (
 // including **usecase**, **vertical**, **brandId** and **cspId**.
 type Messaging10dlcPartnerCampaignListSharedByMeResponse struct {
 	// Alphanumeric identifier of the brand associated with this campaign.
-	BrandID string `json:"brandId,required"`
+	BrandID string `json:"brandId" api:"required"`
 	// Alphanumeric identifier assigned by the registry for a campaign. This identifier
 	// is required by the NetNumber OSR SMS enabling process of 10DLC.
-	CampaignID string `json:"campaignId,required"`
+	CampaignID string `json:"campaignId" api:"required"`
 	// Campaign usecase. Must be of defined valid types. Use `/10dlc/enum/usecase`
 	// operation to retrieve usecases available for given brand.
-	Usecase string `json:"usecase,required"`
+	Usecase string `json:"usecase" api:"required"`
 	// Unix timestamp when campaign was created.
 	CreateDate string `json:"createDate"`
 	// Current campaign status. Possible values: ACTIVE, EXPIRED. A newly created

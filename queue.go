@@ -66,22 +66,22 @@ func (r *QueueGetResponse) UnmarshalJSON(data []byte) error {
 
 type QueueGetResponseData struct {
 	// Uniquely identifies the queue
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The average time that the calls currently in the queue have spent waiting, given
 	// in seconds.
-	AverageWaitTimeSecs int64 `json:"average_wait_time_secs,required"`
+	AverageWaitTimeSecs int64 `json:"average_wait_time_secs" api:"required"`
 	// ISO 8601 formatted date of when the queue was created
-	CreatedAt string `json:"created_at,required"`
+	CreatedAt string `json:"created_at" api:"required"`
 	// The number of calls currently in the queue
-	CurrentSize int64 `json:"current_size,required"`
+	CurrentSize int64 `json:"current_size" api:"required"`
 	// The maximum number of calls allowed in the queue
-	MaxSize int64 `json:"max_size,required"`
+	MaxSize int64 `json:"max_size" api:"required"`
 	// Name of the queue
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Any of "queue".
-	RecordType string `json:"record_type,required"`
+	RecordType string `json:"record_type" api:"required"`
 	// ISO 8601 formatted date of when the queue was last updated
-	UpdatedAt string `json:"updated_at,required"`
+	UpdatedAt string `json:"updated_at" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field

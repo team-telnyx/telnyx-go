@@ -223,8 +223,8 @@ type PortingOrderAssociatedPhoneNumberNewParams struct {
 	// Specifies the action to take with this phone number during partial porting.
 	//
 	// Any of "keep", "disconnect".
-	Action           PortingOrderAssociatedPhoneNumberNewParamsAction           `json:"action,omitzero,required"`
-	PhoneNumberRange PortingOrderAssociatedPhoneNumberNewParamsPhoneNumberRange `json:"phone_number_range,omitzero,required"`
+	Action           PortingOrderAssociatedPhoneNumberNewParamsAction           `json:"action,omitzero" api:"required"`
+	PhoneNumberRange PortingOrderAssociatedPhoneNumberNewParamsPhoneNumberRange `json:"phone_number_range,omitzero" api:"required"`
 	paramObj
 }
 
@@ -321,6 +321,6 @@ func (r PortingOrderAssociatedPhoneNumberListParamsSort) URLQuery() (v url.Value
 }
 
 type PortingOrderAssociatedPhoneNumberDeleteParams struct {
-	PortingOrderID string `path:"porting_order_id,required" format:"uuid" json:"-"`
+	PortingOrderID string `path:"porting_order_id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }

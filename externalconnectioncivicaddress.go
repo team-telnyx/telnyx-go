@@ -244,7 +244,7 @@ func (r *ExternalConnectionCivicAddressListResponseDataLocation) UnmarshalJSON(d
 }
 
 type ExternalConnectionCivicAddressGetParams struct {
-	ID string `path:"id,required" json:"-"`
+	ID string `path:"id" api:"required" json:"-"`
 	paramObj
 }
 

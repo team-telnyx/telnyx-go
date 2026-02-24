@@ -194,10 +194,10 @@ func (r *Messaging10dlcBrandExternalVettingOrderResponse) UnmarshalJSON(data []b
 
 type Messaging10dlcBrandExternalVettingImportsParams struct {
 	// External vetting provider ID for the brand.
-	EvpID string `json:"evpId,required"`
+	EvpID string `json:"evpId" api:"required"`
 	// Unique ID that identifies a vetting transaction performed by a vetting provider.
 	// This ID is provided by the vetting provider at time of vetting.
-	VettingID string `json:"vettingId,required"`
+	VettingID string `json:"vettingId" api:"required"`
 	// Required by some providers for vetting record confirmation.
 	VettingToken param.Opt[string] `json:"vettingToken,omitzero"`
 	paramObj
@@ -213,9 +213,9 @@ func (r *Messaging10dlcBrandExternalVettingImportsParams) UnmarshalJSON(data []b
 
 type Messaging10dlcBrandExternalVettingOrderParams struct {
 	// External vetting provider ID for the brand.
-	EvpID string `json:"evpId,required"`
+	EvpID string `json:"evpId" api:"required"`
 	// Identifies the vetting classification.
-	VettingClass string `json:"vettingClass,required"`
+	VettingClass string `json:"vettingClass" api:"required"`
 	paramObj
 }
 

@@ -95,8 +95,8 @@ const (
 )
 
 type TexmlAccountCallStreamStreamingSidJsonParams struct {
-	AccountSid string `path:"account_sid,required" json:"-"`
-	CallSid    string `path:"call_sid,required" json:"-"`
+	AccountSid string `path:"account_sid" api:"required" json:"-"`
+	CallSid    string `path:"call_sid" api:"required" json:"-"`
 	// The status of the Stream you wish to update.
 	//
 	// Any of "stopped".

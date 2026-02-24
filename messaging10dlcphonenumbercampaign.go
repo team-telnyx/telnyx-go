@@ -111,10 +111,10 @@ func (r *Messaging10dlcPhoneNumberCampaignService) Delete(ctx context.Context, p
 type PhoneNumberCampaign struct {
 	// For shared campaigns, this is the TCR campaign ID, otherwise it is the campaign
 	// ID
-	CampaignID  string `json:"campaignId,required"`
-	CreatedAt   string `json:"createdAt,required"`
-	PhoneNumber string `json:"phoneNumber,required"`
-	UpdatedAt   string `json:"updatedAt,required"`
+	CampaignID  string `json:"campaignId" api:"required"`
+	CreatedAt   string `json:"createdAt" api:"required"`
+	PhoneNumber string `json:"phoneNumber" api:"required"`
+	UpdatedAt   string `json:"updatedAt" api:"required"`
 	// The assignment status of the number.
 	//
 	// Any of "FAILED_ASSIGNMENT", "PENDING_ASSIGNMENT", "ASSIGNED",
@@ -168,9 +168,9 @@ const (
 // The properties CampaignID, PhoneNumber are required.
 type PhoneNumberCampaignCreateParam struct {
 	// The ID of the campaign you want to link to the specified phone number.
-	CampaignID string `json:"campaignId,required"`
+	CampaignID string `json:"campaignId" api:"required"`
 	// The phone number you want to link to a specified campaign.
-	PhoneNumber string `json:"phoneNumber,required"`
+	PhoneNumber string `json:"phoneNumber" api:"required"`
 	paramObj
 }
 

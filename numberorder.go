@@ -391,7 +391,7 @@ func (r *NumberOrderNewParams) UnmarshalJSON(data []byte) error {
 // The property PhoneNumber is required.
 type NumberOrderNewParamsPhoneNumber struct {
 	// e164_phone_number
-	PhoneNumber string `json:"phone_number,required"`
+	PhoneNumber string `json:"phone_number" api:"required"`
 	// ID of bundle to associate the number to
 	BundleID param.Opt[string] `json:"bundle_id,omitzero"`
 	// ID of requirement group to use to satisfy number requirements

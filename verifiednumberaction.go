@@ -47,7 +47,7 @@ func (r *VerifiedNumberActionService) SubmitVerificationCode(ctx context.Context
 }
 
 type VerifiedNumberActionSubmitVerificationCodeParams struct {
-	VerificationCode string `json:"verification_code,required"`
+	VerificationCode string `json:"verification_code" api:"required"`
 	paramObj
 }
 
