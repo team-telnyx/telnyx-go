@@ -1,5 +1,19 @@
 # Changelog
 
+## 4.32.0 (2026-02-25)
+
+Full Changelog: [v4.31.0...v4.32.0](https://github.com/team-telnyx/telnyx-go/compare/v4.31.0...v4.32.0)
+
+### Features
+
+* PORTAL-5923: Add stored_payment_transactions endpoint to OpenAPI docs ([5c565eb](https://github.com/team-telnyx/telnyx-go/commit/5c565eb70d4b7ed940f2aff53cff624e69b74f7c))
+
+
+### Documentation
+
+* **call-control:** Add missing params to hangup, bridge, answer ([c3a6ea4](https://github.com/team-telnyx/telnyx-go/commit/c3a6ea4093368e8fb7c17882fa55f2f29d11a866))
+* **call-control:** Add queue CRUD endpoints ([1497f4a](https://github.com/team-telnyx/telnyx-go/commit/1497f4a3d382aef18ecfb1a4cacdc5699e25a715))
+
 ## 4.31.0 (2026-02-25)
 
 Full Changelog: [v4.30.1...v4.31.0](https://github.com/team-telnyx/telnyx-go/compare/v4.30.1...v4.31.0)
