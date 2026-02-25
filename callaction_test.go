@@ -165,6 +165,7 @@ func TestCallActionBridgeWithOptionalParams(t *testing.T) {
 			MuteDtmf:                  telnyx.CallActionBridgeParamsMuteDtmfOpposite,
 			ParkAfterUnbridge:         telnyx.String("self"),
 			PlayRingtone:              telnyx.Bool(true),
+			PreventDoubleBridge:       telnyx.Bool(true),
 			Queue:                     telnyx.String("support"),
 			Record:                    telnyx.CallActionBridgeParamsRecordRecordFromAnswer,
 			RecordChannels:            telnyx.CallActionBridgeParamsRecordChannelsSingle,
