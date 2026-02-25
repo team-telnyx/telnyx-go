@@ -17,7 +17,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v4/shared"
-	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
 // ConferenceActionService contains methods and other services that help with
@@ -1292,13 +1291,13 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type ConferenceActionSpeakParamsVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam                     `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam                         `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam                            `json:",omitzero,inline"`
-	OfMinimax    *shared.MinimaxVoiceSettingsParam                 `json:",omitzero,inline"`
-	OfAzure      *ConferenceActionSpeakParamsVoiceSettingsAzure    `json:",omitzero,inline"`
-	OfRime       *ConferenceActionSpeakParamsVoiceSettingsRime     `json:",omitzero,inline"`
-	OfResemble   *ConferenceActionSpeakParamsVoiceSettingsResemble `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam      `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam          `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam             `json:",omitzero,inline"`
+	OfMinimax    *shared.MinimaxVoiceSettingsParam  `json:",omitzero,inline"`
+	OfAzure      *shared.AzureVoiceSettingsParam    `json:",omitzero,inline"`
+	OfRime       *shared.RimeVoiceSettingsParam     `json:",omitzero,inline"`
+	OfResemble   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1377,7 +1376,7 @@ func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetDeploymentID() *string
 // Returns a pointer to the underlying variant's property, if present.
 func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetEffect() *string {
 	if vt := u.OfAzure; vt != nil {
-		return &vt.Effect
+		return (*string)(&vt.Effect)
 	}
 	return nil
 }
@@ -1385,7 +1384,7 @@ func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetEffect() *string {
 // Returns a pointer to the underlying variant's property, if present.
 func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetGender() *string {
 	if vt := u.OfAzure; vt != nil {
-		return &vt.Gender
+		return (*string)(&vt.Gender)
 	}
 	return nil
 }
@@ -1401,7 +1400,7 @@ func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetRegion() *string {
 // Returns a pointer to the underlying variant's property, if present.
 func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetFormat() *string {
 	if vt := u.OfResemble; vt != nil {
-		return &vt.Format
+		return (*string)(&vt.Format)
 	}
 	return nil
 }
@@ -1409,7 +1408,7 @@ func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetFormat() *string {
 // Returns a pointer to the underlying variant's property, if present.
 func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetPrecision() *string {
 	if vt := u.OfResemble; vt != nil {
-		return &vt.Precision
+		return (*string)(&vt.Precision)
 	}
 	return nil
 }
@@ -1417,7 +1416,7 @@ func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetPrecision() *string {
 // Returns a pointer to the underlying variant's property, if present.
 func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetSampleRate() *string {
 	if vt := u.OfResemble; vt != nil {
-		return &vt.SampleRate
+		return (*string)(&vt.SampleRate)
 	}
 	return nil
 }
@@ -1469,111 +1468,9 @@ func init() {
 		apijson.Discriminator[TelnyxVoiceSettingsParam]("telnyx"),
 		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
 		apijson.Discriminator[shared.MinimaxVoiceSettingsParam]("minimax"),
-		apijson.Discriminator[ConferenceActionSpeakParamsVoiceSettingsAzure]("azure"),
-		apijson.Discriminator[ConferenceActionSpeakParamsVoiceSettingsRime]("rime"),
-		apijson.Discriminator[ConferenceActionSpeakParamsVoiceSettingsResemble]("resemble"),
-	)
-}
-
-// The property Type is required.
-type ConferenceActionSpeakParamsVoiceSettingsAzure struct {
-	// The `identifier` for an integration secret that refers to your Azure Speech API
-	// key.
-	APIKeyRef param.Opt[string] `json:"api_key_ref,omitzero"`
-	// The deployment ID for a custom Azure neural voice.
-	DeploymentID param.Opt[string] `json:"deployment_id,omitzero"`
-	// The Azure region for the Speech service (e.g., `eastus`, `westeurope`). Required
-	// when using a custom API key.
-	Region param.Opt[string] `json:"region,omitzero"`
-	// Audio effect to apply.
-	//
-	// Any of "eq_car", "eq_telecomhp8k".
-	Effect string `json:"effect,omitzero"`
-	// Voice gender filter.
-	//
-	// Any of "Male", "Female".
-	Gender string `json:"gender,omitzero"`
-	// Voice settings provider type
-	//
-	// This field can be elided, and will marshal its zero value as "azure".
-	Type constant.Azure `json:"type" api:"required"`
-	paramObj
-}
-
-func (r ConferenceActionSpeakParamsVoiceSettingsAzure) MarshalJSON() (data []byte, err error) {
-	type shadow ConferenceActionSpeakParamsVoiceSettingsAzure
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ConferenceActionSpeakParamsVoiceSettingsAzure) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ConferenceActionSpeakParamsVoiceSettingsAzure](
-		"effect", "eq_car", "eq_telecomhp8k",
-	)
-	apijson.RegisterFieldValidator[ConferenceActionSpeakParamsVoiceSettingsAzure](
-		"gender", "Male", "Female",
-	)
-}
-
-// The property Type is required.
-type ConferenceActionSpeakParamsVoiceSettingsRime struct {
-	// Speech speed multiplier. Default is 1.0.
-	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
-	// Voice settings provider type
-	//
-	// This field can be elided, and will marshal its zero value as "rime".
-	Type constant.Rime `json:"type" api:"required"`
-	paramObj
-}
-
-func (r ConferenceActionSpeakParamsVoiceSettingsRime) MarshalJSON() (data []byte, err error) {
-	type shadow ConferenceActionSpeakParamsVoiceSettingsRime
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ConferenceActionSpeakParamsVoiceSettingsRime) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property Type is required.
-type ConferenceActionSpeakParamsVoiceSettingsResemble struct {
-	// Output audio format.
-	//
-	// Any of "wav", "mp3".
-	Format string `json:"format,omitzero"`
-	// Audio precision format.
-	//
-	// Any of "PCM_16", "PCM_24", "PCM_32", "MULAW".
-	Precision string `json:"precision,omitzero"`
-	// Audio sample rate in Hz.
-	//
-	// Any of "8000", "16000", "22050", "32000", "44100", "48000".
-	SampleRate string `json:"sample_rate,omitzero"`
-	// Voice settings provider type
-	//
-	// This field can be elided, and will marshal its zero value as "resemble".
-	Type constant.Resemble `json:"type" api:"required"`
-	paramObj
-}
-
-func (r ConferenceActionSpeakParamsVoiceSettingsResemble) MarshalJSON() (data []byte, err error) {
-	type shadow ConferenceActionSpeakParamsVoiceSettingsResemble
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ConferenceActionSpeakParamsVoiceSettingsResemble) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ConferenceActionSpeakParamsVoiceSettingsResemble](
-		"format", "wav", "mp3",
-	)
-	apijson.RegisterFieldValidator[ConferenceActionSpeakParamsVoiceSettingsResemble](
-		"precision", "PCM_16", "PCM_24", "PCM_32", "MULAW",
-	)
-	apijson.RegisterFieldValidator[ConferenceActionSpeakParamsVoiceSettingsResemble](
-		"sample_rate", "8000", "16000", "22050", "32000", "44100", "48000",
+		apijson.Discriminator[shared.AzureVoiceSettingsParam]("azure"),
+		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
+		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
 	)
 }
 
