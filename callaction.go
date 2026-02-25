@@ -3407,14 +3407,22 @@ func init() {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CallActionGatherUsingAIParamsVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam     `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam        `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam                       `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam                           `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam                              `json:",omitzero,inline"`
+	OfAzure      *CallActionGatherUsingAIParamsVoiceSettingsAzure    `json:",omitzero,inline"`
+	OfRime       *CallActionGatherUsingAIParamsVoiceSettingsRime     `json:",omitzero,inline"`
+	OfResemble   *CallActionGatherUsingAIParamsVoiceSettingsResemble `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u CallActionGatherUsingAIParamsVoiceSettingsUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfElevenlabs, u.OfTelnyx, u.OfAws)
+	return param.MarshalUnion(u, u.OfElevenlabs,
+		u.OfTelnyx,
+		u.OfAws,
+		u.OfAzure,
+		u.OfRime,
+		u.OfResemble)
 }
 func (u *CallActionGatherUsingAIParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -3427,22 +3435,68 @@ func (u *CallActionGatherUsingAIParamsVoiceSettingsUnion) asAny() any {
 		return u.OfTelnyx
 	} else if !param.IsOmitted(u.OfAws) {
 		return u.OfAws
+	} else if !param.IsOmitted(u.OfAzure) {
+		return u.OfAzure
+	} else if !param.IsOmitted(u.OfRime) {
+		return u.OfRime
+	} else if !param.IsOmitted(u.OfResemble) {
+		return u.OfResemble
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u CallActionGatherUsingAIParamsVoiceSettingsUnion) GetAPIKeyRef() *string {
-	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
-		return &vt.APIKeyRef.Value
+func (u CallActionGatherUsingAIParamsVoiceSettingsUnion) GetDeploymentID() *string {
+	if vt := u.OfAzure; vt != nil && vt.DeploymentID.Valid() {
+		return &vt.DeploymentID.Value
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u CallActionGatherUsingAIParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 {
-	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
-		return &vt.VoiceSpeed.Value
+func (u CallActionGatherUsingAIParamsVoiceSettingsUnion) GetEffect() *string {
+	if vt := u.OfAzure; vt != nil {
+		return &vt.Effect
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingAIParamsVoiceSettingsUnion) GetGender() *string {
+	if vt := u.OfAzure; vt != nil {
+		return &vt.Gender
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingAIParamsVoiceSettingsUnion) GetRegion() *string {
+	if vt := u.OfAzure; vt != nil && vt.Region.Valid() {
+		return &vt.Region.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingAIParamsVoiceSettingsUnion) GetFormat() *string {
+	if vt := u.OfResemble; vt != nil {
+		return &vt.Format
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingAIParamsVoiceSettingsUnion) GetPrecision() *string {
+	if vt := u.OfResemble; vt != nil {
+		return &vt.Precision
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingAIParamsVoiceSettingsUnion) GetSampleRate() *string {
+	if vt := u.OfResemble; vt != nil {
+		return &vt.SampleRate
 	}
 	return nil
 }
@@ -3455,6 +3509,32 @@ func (u CallActionGatherUsingAIParamsVoiceSettingsUnion) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfAws; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfAzure; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfRime; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfResemble; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingAIParamsVoiceSettingsUnion) GetAPIKeyRef() *string {
+	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	} else if vt := u.OfAzure; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingAIParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 {
+	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
+		return &vt.VoiceSpeed.Value
+	} else if vt := u.OfRime; vt != nil && vt.VoiceSpeed.Valid() {
+		return &vt.VoiceSpeed.Value
 	}
 	return nil
 }
@@ -3465,6 +3545,111 @@ func init() {
 		apijson.Discriminator[ElevenLabsVoiceSettingsParam]("elevenlabs"),
 		apijson.Discriminator[TelnyxVoiceSettingsParam]("telnyx"),
 		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
+		apijson.Discriminator[CallActionGatherUsingAIParamsVoiceSettingsAzure]("azure"),
+		apijson.Discriminator[CallActionGatherUsingAIParamsVoiceSettingsRime]("rime"),
+		apijson.Discriminator[CallActionGatherUsingAIParamsVoiceSettingsResemble]("resemble"),
+	)
+}
+
+// The property Type is required.
+type CallActionGatherUsingAIParamsVoiceSettingsAzure struct {
+	// The `identifier` for an integration secret that refers to your Azure Speech API
+	// key.
+	APIKeyRef param.Opt[string] `json:"api_key_ref,omitzero"`
+	// The deployment ID for a custom Azure neural voice.
+	DeploymentID param.Opt[string] `json:"deployment_id,omitzero"`
+	// The Azure region for the Speech service (e.g., `eastus`, `westeurope`). Required
+	// when using a custom API key.
+	Region param.Opt[string] `json:"region,omitzero"`
+	// Audio effect to apply.
+	//
+	// Any of "eq_car", "eq_telecomhp8k".
+	Effect string `json:"effect,omitzero"`
+	// Voice gender filter.
+	//
+	// Any of "Male", "Female".
+	Gender string `json:"gender,omitzero"`
+	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "azure".
+	Type constant.Azure `json:"type" api:"required"`
+	paramObj
+}
+
+func (r CallActionGatherUsingAIParamsVoiceSettingsAzure) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionGatherUsingAIParamsVoiceSettingsAzure
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionGatherUsingAIParamsVoiceSettingsAzure) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallActionGatherUsingAIParamsVoiceSettingsAzure](
+		"effect", "eq_car", "eq_telecomhp8k",
+	)
+	apijson.RegisterFieldValidator[CallActionGatherUsingAIParamsVoiceSettingsAzure](
+		"gender", "Male", "Female",
+	)
+}
+
+// The property Type is required.
+type CallActionGatherUsingAIParamsVoiceSettingsRime struct {
+	// Speech speed multiplier. Default is 1.0.
+	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
+	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "rime".
+	Type constant.Rime `json:"type" api:"required"`
+	paramObj
+}
+
+func (r CallActionGatherUsingAIParamsVoiceSettingsRime) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionGatherUsingAIParamsVoiceSettingsRime
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionGatherUsingAIParamsVoiceSettingsRime) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Type is required.
+type CallActionGatherUsingAIParamsVoiceSettingsResemble struct {
+	// Output audio format.
+	//
+	// Any of "wav", "mp3".
+	Format string `json:"format,omitzero"`
+	// Audio precision format.
+	//
+	// Any of "PCM_16", "PCM_24", "PCM_32", "MULAW".
+	Precision string `json:"precision,omitzero"`
+	// Audio sample rate in Hz.
+	//
+	// Any of "8000", "16000", "22050", "32000", "44100", "48000".
+	SampleRate string `json:"sample_rate,omitzero"`
+	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "resemble".
+	Type constant.Resemble `json:"type" api:"required"`
+	paramObj
+}
+
+func (r CallActionGatherUsingAIParamsVoiceSettingsResemble) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionGatherUsingAIParamsVoiceSettingsResemble
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionGatherUsingAIParamsVoiceSettingsResemble) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallActionGatherUsingAIParamsVoiceSettingsResemble](
+		"format", "wav", "mp3",
+	)
+	apijson.RegisterFieldValidator[CallActionGatherUsingAIParamsVoiceSettingsResemble](
+		"precision", "PCM_16", "PCM_24", "PCM_32", "MULAW",
+	)
+	apijson.RegisterFieldValidator[CallActionGatherUsingAIParamsVoiceSettingsResemble](
+		"sample_rate", "8000", "16000", "22050", "32000", "44100", "48000",
 	)
 }
 
@@ -3538,25 +3723,34 @@ type CallActionGatherUsingSpeakParams struct {
 	//     the `VoiceId` (e.g., `AWS.Polly.Joanna-Neural`). Check the
 	//     [available voices](https://docs.aws.amazon.com/polly/latest/dg/available-voices.html)
 	//     for compatibility.
-	//   - **Azure:** Use `Azure.<VoiceId>. (e.g. Azure.en-CA-ClaraNeural,
-	//     Azure.en-CA-LiamNeural, Azure.en-US-BrianMultilingualNeural,
-	//     Azure.en-US-Ava:DragonHDLatestNeural. For a complete list of voices, go to
-	//     [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery).)
+	//   - **Azure:** Use `Azure.<VoiceId>` (e.g., `Azure.en-CA-ClaraNeural`,
+	//     `Azure.en-US-BrianMultilingualNeural`,
+	//     `Azure.en-US-Ava:DragonHDLatestNeural`). For a complete list of voices, go to
+	//     [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery). Use
+	//     `voice_settings` to configure custom deployments, regions, or API keys.
 	//   - **ElevenLabs:** Use `ElevenLabs.<ModelId>.<VoiceId>` (e.g.,
 	//     `ElevenLabs.eleven_multilingual_v2.21m00Tcm4TlvDq8ikWAM`). The `ModelId` part
 	//     is optional. To use ElevenLabs, you must provide your ElevenLabs API key as an
 	//     integration identifier secret in
-	//     `"voice_settings": {"api_key_ref": "<secret_identifier>"}`. Check
+	//     `"voice_settings": {"api_key_ref": "<secret_identifier>"}`. See
+	//     [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
+	//     for details. Check
 	//     [available voices](https://elevenlabs.io/docs/api-reference/get-voices).
-	//   - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>`
+	//   - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>` (e.g., `Telnyx.KokoroTTS.af`).
+	//     Use `voice_settings` to configure voice_speed and other synthesis parameters.
 	//   - **Minimax:** Use `Minimax.<ModelId>.<VoiceId>` (e.g.,
 	//     `Minimax.speech-02-hd.Wise_Woman`). Supported models: `speech-02-turbo`,
-	//     `speech-02-hd`, `speech-2.6-turbo`, `speech-2.8-turbo`. Optional parameters:
-	//     `speed` (float, default 1.0), `vol` (float, default 1.0), `pitch` (integer,
-	//     default 0).
-	//   - **Resemble:** Use `Resemble.<ModelId>.<VoiceId>` (e.g.,
-	//     `Resemble.Pro.my_voice`). Supported models: `Pro` (multilingual) and `Turbo`
-	//     (English only).
+	//     `speech-02-hd`, `speech-2.6-turbo`, `speech-2.8-turbo`. Use `voice_settings`
+	//     to configure speed, volume, pitch, and language_boost.
+	//   - **Rime:** Use `Rime.<model_id>.<voice_id>` (e.g., `Rime.Arcana.cove`).
+	//     Supported model_ids: `Arcana`, `Mist`. Use `voice_settings` to configure
+	//     voice_speed.
+	//   - **Resemble:** Use `Resemble.Turbo.<voice_id>` (e.g.,
+	//     `Resemble.Turbo.my_voice`). Only `Turbo` model is supported. Use
+	//     `voice_settings` to configure precision, sample_rate, and format.
+	//
+	// For service_level basic, you may define the gender of the speaker (male or
+	// female).
 	Voice string `json:"voice" api:"required"`
 	// Use this field to add state to every subsequent webhook. It must be a valid
 	// Base-64 encoded string.
@@ -3675,15 +3869,24 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CallActionGatherUsingSpeakParamsVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam     `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam         `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam            `json:",omitzero,inline"`
-	OfMinimax    *shared.MinimaxVoiceSettingsParam `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam                          `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam                              `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam                                 `json:",omitzero,inline"`
+	OfMinimax    *shared.MinimaxVoiceSettingsParam                      `json:",omitzero,inline"`
+	OfAzure      *CallActionGatherUsingSpeakParamsVoiceSettingsAzure    `json:",omitzero,inline"`
+	OfRime       *CallActionGatherUsingSpeakParamsVoiceSettingsRime     `json:",omitzero,inline"`
+	OfResemble   *CallActionGatherUsingSpeakParamsVoiceSettingsResemble `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfElevenlabs, u.OfTelnyx, u.OfAws, u.OfMinimax)
+	return param.MarshalUnion(u, u.OfElevenlabs,
+		u.OfTelnyx,
+		u.OfAws,
+		u.OfMinimax,
+		u.OfAzure,
+		u.OfRime,
+		u.OfResemble)
 }
 func (u *CallActionGatherUsingSpeakParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -3698,22 +3901,12 @@ func (u *CallActionGatherUsingSpeakParamsVoiceSettingsUnion) asAny() any {
 		return u.OfAws
 	} else if !param.IsOmitted(u.OfMinimax) {
 		return u.OfMinimax
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetAPIKeyRef() *string {
-	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
-		return &vt.APIKeyRef.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 {
-	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
-		return &vt.VoiceSpeed.Value
+	} else if !param.IsOmitted(u.OfAzure) {
+		return u.OfAzure
+	} else if !param.IsOmitted(u.OfRime) {
+		return u.OfRime
+	} else if !param.IsOmitted(u.OfResemble) {
+		return u.OfResemble
 	}
 	return nil
 }
@@ -3751,6 +3944,62 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetVol() *float64 {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetDeploymentID() *string {
+	if vt := u.OfAzure; vt != nil && vt.DeploymentID.Valid() {
+		return &vt.DeploymentID.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetEffect() *string {
+	if vt := u.OfAzure; vt != nil {
+		return &vt.Effect
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetGender() *string {
+	if vt := u.OfAzure; vt != nil {
+		return &vt.Gender
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetRegion() *string {
+	if vt := u.OfAzure; vt != nil && vt.Region.Valid() {
+		return &vt.Region.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetFormat() *string {
+	if vt := u.OfResemble; vt != nil {
+		return &vt.Format
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetPrecision() *string {
+	if vt := u.OfResemble; vt != nil {
+		return &vt.Precision
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetSampleRate() *string {
+	if vt := u.OfResemble; vt != nil {
+		return &vt.SampleRate
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetType() *string {
 	if vt := u.OfElevenlabs; vt != nil {
 		return (*string)(&vt.Type)
@@ -3760,6 +4009,32 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfMinimax; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfAzure; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfRime; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfResemble; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetAPIKeyRef() *string {
+	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	} else if vt := u.OfAzure; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 {
+	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
+		return &vt.VoiceSpeed.Value
+	} else if vt := u.OfRime; vt != nil && vt.VoiceSpeed.Valid() {
+		return &vt.VoiceSpeed.Value
 	}
 	return nil
 }
@@ -3771,6 +4046,111 @@ func init() {
 		apijson.Discriminator[TelnyxVoiceSettingsParam]("telnyx"),
 		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
 		apijson.Discriminator[shared.MinimaxVoiceSettingsParam]("minimax"),
+		apijson.Discriminator[CallActionGatherUsingSpeakParamsVoiceSettingsAzure]("azure"),
+		apijson.Discriminator[CallActionGatherUsingSpeakParamsVoiceSettingsRime]("rime"),
+		apijson.Discriminator[CallActionGatherUsingSpeakParamsVoiceSettingsResemble]("resemble"),
+	)
+}
+
+// The property Type is required.
+type CallActionGatherUsingSpeakParamsVoiceSettingsAzure struct {
+	// The `identifier` for an integration secret that refers to your Azure Speech API
+	// key.
+	APIKeyRef param.Opt[string] `json:"api_key_ref,omitzero"`
+	// The deployment ID for a custom Azure neural voice.
+	DeploymentID param.Opt[string] `json:"deployment_id,omitzero"`
+	// The Azure region for the Speech service (e.g., `eastus`, `westeurope`). Required
+	// when using a custom API key.
+	Region param.Opt[string] `json:"region,omitzero"`
+	// Audio effect to apply.
+	//
+	// Any of "eq_car", "eq_telecomhp8k".
+	Effect string `json:"effect,omitzero"`
+	// Voice gender filter.
+	//
+	// Any of "Male", "Female".
+	Gender string `json:"gender,omitzero"`
+	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "azure".
+	Type constant.Azure `json:"type" api:"required"`
+	paramObj
+}
+
+func (r CallActionGatherUsingSpeakParamsVoiceSettingsAzure) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionGatherUsingSpeakParamsVoiceSettingsAzure
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionGatherUsingSpeakParamsVoiceSettingsAzure) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallActionGatherUsingSpeakParamsVoiceSettingsAzure](
+		"effect", "eq_car", "eq_telecomhp8k",
+	)
+	apijson.RegisterFieldValidator[CallActionGatherUsingSpeakParamsVoiceSettingsAzure](
+		"gender", "Male", "Female",
+	)
+}
+
+// The property Type is required.
+type CallActionGatherUsingSpeakParamsVoiceSettingsRime struct {
+	// Speech speed multiplier. Default is 1.0.
+	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
+	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "rime".
+	Type constant.Rime `json:"type" api:"required"`
+	paramObj
+}
+
+func (r CallActionGatherUsingSpeakParamsVoiceSettingsRime) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionGatherUsingSpeakParamsVoiceSettingsRime
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionGatherUsingSpeakParamsVoiceSettingsRime) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Type is required.
+type CallActionGatherUsingSpeakParamsVoiceSettingsResemble struct {
+	// Output audio format.
+	//
+	// Any of "wav", "mp3".
+	Format string `json:"format,omitzero"`
+	// Audio precision format.
+	//
+	// Any of "PCM_16", "PCM_24", "PCM_32", "MULAW".
+	Precision string `json:"precision,omitzero"`
+	// Audio sample rate in Hz.
+	//
+	// Any of "8000", "16000", "22050", "32000", "44100", "48000".
+	SampleRate string `json:"sample_rate,omitzero"`
+	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "resemble".
+	Type constant.Resemble `json:"type" api:"required"`
+	paramObj
+}
+
+func (r CallActionGatherUsingSpeakParamsVoiceSettingsResemble) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionGatherUsingSpeakParamsVoiceSettingsResemble
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionGatherUsingSpeakParamsVoiceSettingsResemble) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallActionGatherUsingSpeakParamsVoiceSettingsResemble](
+		"format", "wav", "mp3",
+	)
+	apijson.RegisterFieldValidator[CallActionGatherUsingSpeakParamsVoiceSettingsResemble](
+		"precision", "PCM_16", "PCM_24", "PCM_32", "MULAW",
+	)
+	apijson.RegisterFieldValidator[CallActionGatherUsingSpeakParamsVoiceSettingsResemble](
+		"sample_rate", "8000", "16000", "22050", "32000", "44100", "48000",
 	)
 }
 
@@ -3972,25 +4352,34 @@ type CallActionSpeakParams struct {
 	//     the `VoiceId` (e.g., `AWS.Polly.Joanna-Neural`). Check the
 	//     [available voices](https://docs.aws.amazon.com/polly/latest/dg/available-voices.html)
 	//     for compatibility.
-	//   - **Azure:** Use `Azure.<VoiceId>. (e.g. Azure.en-CA-ClaraNeural,
-	//     Azure.en-CA-LiamNeural, Azure.en-US-BrianMultilingualNeural,
-	//     Azure.en-US-Ava:DragonHDLatestNeural. For a complete list of voices, go to
-	//     [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery).)
+	//   - **Azure:** Use `Azure.<VoiceId>` (e.g., `Azure.en-CA-ClaraNeural`,
+	//     `Azure.en-US-BrianMultilingualNeural`,
+	//     `Azure.en-US-Ava:DragonHDLatestNeural`). For a complete list of voices, go to
+	//     [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery). Use
+	//     `voice_settings` to configure custom deployments, regions, or API keys.
 	//   - **ElevenLabs:** Use `ElevenLabs.<ModelId>.<VoiceId>` (e.g.,
 	//     `ElevenLabs.eleven_multilingual_v2.21m00Tcm4TlvDq8ikWAM`). The `ModelId` part
 	//     is optional. To use ElevenLabs, you must provide your ElevenLabs API key as an
 	//     integration identifier secret in
-	//     `"voice_settings": {"api_key_ref": "<secret_identifier>"}`. Check
+	//     `"voice_settings": {"api_key_ref": "<secret_identifier>"}`. See
+	//     [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
+	//     for details. Check
 	//     [available voices](https://elevenlabs.io/docs/api-reference/get-voices).
-	//   - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>`
+	//   - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>` (e.g., `Telnyx.KokoroTTS.af`).
+	//     Use `voice_settings` to configure voice_speed and other synthesis parameters.
 	//   - **Minimax:** Use `Minimax.<ModelId>.<VoiceId>` (e.g.,
 	//     `Minimax.speech-02-hd.Wise_Woman`). Supported models: `speech-02-turbo`,
-	//     `speech-02-hd`, `speech-2.6-turbo`, `speech-2.8-turbo`. Optional parameters:
-	//     `speed` (float, default 1.0), `vol` (float, default 1.0), `pitch` (integer,
-	//     default 0).
-	//   - **Resemble:** Use `Resemble.<ModelId>.<VoiceId>` (e.g.,
-	//     `Resemble.Pro.my_voice`). Supported models: `Pro` (multilingual) and `Turbo`
-	//     (English only).
+	//     `speech-02-hd`, `speech-2.6-turbo`, `speech-2.8-turbo`. Use `voice_settings`
+	//     to configure speed, volume, pitch, and language_boost.
+	//   - **Rime:** Use `Rime.<model_id>.<voice_id>` (e.g., `Rime.Arcana.cove`).
+	//     Supported model_ids: `Arcana`, `Mist`. Use `voice_settings` to configure
+	//     voice_speed.
+	//   - **Resemble:** Use `Resemble.Turbo.<voice_id>` (e.g.,
+	//     `Resemble.Turbo.my_voice`). Only `Turbo` model is supported. Use
+	//     `voice_settings` to configure precision, sample_rate, and format.
+	//
+	// For service_level basic, you may define the gender of the speaker (male or
+	// female).
 	Voice string `json:"voice" api:"required"`
 	// Use this field to add state to every subsequent webhook. It must be a valid
 	// Base-64 encoded string.
@@ -4108,15 +4497,24 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CallActionSpeakParamsVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam     `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam         `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam            `json:",omitzero,inline"`
-	OfMinimax    *shared.MinimaxVoiceSettingsParam `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam               `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam                   `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam                      `json:",omitzero,inline"`
+	OfMinimax    *shared.MinimaxVoiceSettingsParam           `json:",omitzero,inline"`
+	OfAzure      *CallActionSpeakParamsVoiceSettingsAzure    `json:",omitzero,inline"`
+	OfRime       *CallActionSpeakParamsVoiceSettingsRime     `json:",omitzero,inline"`
+	OfResemble   *CallActionSpeakParamsVoiceSettingsResemble `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u CallActionSpeakParamsVoiceSettingsUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfElevenlabs, u.OfTelnyx, u.OfAws, u.OfMinimax)
+	return param.MarshalUnion(u, u.OfElevenlabs,
+		u.OfTelnyx,
+		u.OfAws,
+		u.OfMinimax,
+		u.OfAzure,
+		u.OfRime,
+		u.OfResemble)
 }
 func (u *CallActionSpeakParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -4131,22 +4529,12 @@ func (u *CallActionSpeakParamsVoiceSettingsUnion) asAny() any {
 		return u.OfAws
 	} else if !param.IsOmitted(u.OfMinimax) {
 		return u.OfMinimax
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallActionSpeakParamsVoiceSettingsUnion) GetAPIKeyRef() *string {
-	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
-		return &vt.APIKeyRef.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallActionSpeakParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 {
-	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
-		return &vt.VoiceSpeed.Value
+	} else if !param.IsOmitted(u.OfAzure) {
+		return u.OfAzure
+	} else if !param.IsOmitted(u.OfRime) {
+		return u.OfRime
+	} else if !param.IsOmitted(u.OfResemble) {
+		return u.OfResemble
 	}
 	return nil
 }
@@ -4184,6 +4572,62 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetVol() *float64 {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u CallActionSpeakParamsVoiceSettingsUnion) GetDeploymentID() *string {
+	if vt := u.OfAzure; vt != nil && vt.DeploymentID.Valid() {
+		return &vt.DeploymentID.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionSpeakParamsVoiceSettingsUnion) GetEffect() *string {
+	if vt := u.OfAzure; vt != nil {
+		return &vt.Effect
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionSpeakParamsVoiceSettingsUnion) GetGender() *string {
+	if vt := u.OfAzure; vt != nil {
+		return &vt.Gender
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionSpeakParamsVoiceSettingsUnion) GetRegion() *string {
+	if vt := u.OfAzure; vt != nil && vt.Region.Valid() {
+		return &vt.Region.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionSpeakParamsVoiceSettingsUnion) GetFormat() *string {
+	if vt := u.OfResemble; vt != nil {
+		return &vt.Format
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionSpeakParamsVoiceSettingsUnion) GetPrecision() *string {
+	if vt := u.OfResemble; vt != nil {
+		return &vt.Precision
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionSpeakParamsVoiceSettingsUnion) GetSampleRate() *string {
+	if vt := u.OfResemble; vt != nil {
+		return &vt.SampleRate
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u CallActionSpeakParamsVoiceSettingsUnion) GetType() *string {
 	if vt := u.OfElevenlabs; vt != nil {
 		return (*string)(&vt.Type)
@@ -4193,6 +4637,32 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfMinimax; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfAzure; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfRime; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfResemble; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionSpeakParamsVoiceSettingsUnion) GetAPIKeyRef() *string {
+	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	} else if vt := u.OfAzure; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionSpeakParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 {
+	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
+		return &vt.VoiceSpeed.Value
+	} else if vt := u.OfRime; vt != nil && vt.VoiceSpeed.Valid() {
+		return &vt.VoiceSpeed.Value
 	}
 	return nil
 }
@@ -4204,6 +4674,111 @@ func init() {
 		apijson.Discriminator[TelnyxVoiceSettingsParam]("telnyx"),
 		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
 		apijson.Discriminator[shared.MinimaxVoiceSettingsParam]("minimax"),
+		apijson.Discriminator[CallActionSpeakParamsVoiceSettingsAzure]("azure"),
+		apijson.Discriminator[CallActionSpeakParamsVoiceSettingsRime]("rime"),
+		apijson.Discriminator[CallActionSpeakParamsVoiceSettingsResemble]("resemble"),
+	)
+}
+
+// The property Type is required.
+type CallActionSpeakParamsVoiceSettingsAzure struct {
+	// The `identifier` for an integration secret that refers to your Azure Speech API
+	// key.
+	APIKeyRef param.Opt[string] `json:"api_key_ref,omitzero"`
+	// The deployment ID for a custom Azure neural voice.
+	DeploymentID param.Opt[string] `json:"deployment_id,omitzero"`
+	// The Azure region for the Speech service (e.g., `eastus`, `westeurope`). Required
+	// when using a custom API key.
+	Region param.Opt[string] `json:"region,omitzero"`
+	// Audio effect to apply.
+	//
+	// Any of "eq_car", "eq_telecomhp8k".
+	Effect string `json:"effect,omitzero"`
+	// Voice gender filter.
+	//
+	// Any of "Male", "Female".
+	Gender string `json:"gender,omitzero"`
+	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "azure".
+	Type constant.Azure `json:"type" api:"required"`
+	paramObj
+}
+
+func (r CallActionSpeakParamsVoiceSettingsAzure) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionSpeakParamsVoiceSettingsAzure
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionSpeakParamsVoiceSettingsAzure) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallActionSpeakParamsVoiceSettingsAzure](
+		"effect", "eq_car", "eq_telecomhp8k",
+	)
+	apijson.RegisterFieldValidator[CallActionSpeakParamsVoiceSettingsAzure](
+		"gender", "Male", "Female",
+	)
+}
+
+// The property Type is required.
+type CallActionSpeakParamsVoiceSettingsRime struct {
+	// Speech speed multiplier. Default is 1.0.
+	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
+	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "rime".
+	Type constant.Rime `json:"type" api:"required"`
+	paramObj
+}
+
+func (r CallActionSpeakParamsVoiceSettingsRime) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionSpeakParamsVoiceSettingsRime
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionSpeakParamsVoiceSettingsRime) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Type is required.
+type CallActionSpeakParamsVoiceSettingsResemble struct {
+	// Output audio format.
+	//
+	// Any of "wav", "mp3".
+	Format string `json:"format,omitzero"`
+	// Audio precision format.
+	//
+	// Any of "PCM_16", "PCM_24", "PCM_32", "MULAW".
+	Precision string `json:"precision,omitzero"`
+	// Audio sample rate in Hz.
+	//
+	// Any of "8000", "16000", "22050", "32000", "44100", "48000".
+	SampleRate string `json:"sample_rate,omitzero"`
+	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "resemble".
+	Type constant.Resemble `json:"type" api:"required"`
+	paramObj
+}
+
+func (r CallActionSpeakParamsVoiceSettingsResemble) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionSpeakParamsVoiceSettingsResemble
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionSpeakParamsVoiceSettingsResemble) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallActionSpeakParamsVoiceSettingsResemble](
+		"format", "wav", "mp3",
+	)
+	apijson.RegisterFieldValidator[CallActionSpeakParamsVoiceSettingsResemble](
+		"precision", "PCM_16", "PCM_24", "PCM_32", "MULAW",
+	)
+	apijson.RegisterFieldValidator[CallActionSpeakParamsVoiceSettingsResemble](
+		"sample_rate", "8000", "16000", "22050", "32000", "44100", "48000",
 	)
 }
 
@@ -4288,14 +4863,22 @@ func (r *CallActionStartAIAssistantParamsAssistant) UnmarshalJSON(data []byte) e
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CallActionStartAIAssistantParamsVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam     `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam        `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam                          `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam                              `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam                                 `json:",omitzero,inline"`
+	OfAzure      *CallActionStartAIAssistantParamsVoiceSettingsAzure    `json:",omitzero,inline"`
+	OfRime       *CallActionStartAIAssistantParamsVoiceSettingsRime     `json:",omitzero,inline"`
+	OfResemble   *CallActionStartAIAssistantParamsVoiceSettingsResemble `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfElevenlabs, u.OfTelnyx, u.OfAws)
+	return param.MarshalUnion(u, u.OfElevenlabs,
+		u.OfTelnyx,
+		u.OfAws,
+		u.OfAzure,
+		u.OfRime,
+		u.OfResemble)
 }
 func (u *CallActionStartAIAssistantParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -4308,22 +4891,68 @@ func (u *CallActionStartAIAssistantParamsVoiceSettingsUnion) asAny() any {
 		return u.OfTelnyx
 	} else if !param.IsOmitted(u.OfAws) {
 		return u.OfAws
+	} else if !param.IsOmitted(u.OfAzure) {
+		return u.OfAzure
+	} else if !param.IsOmitted(u.OfRime) {
+		return u.OfRime
+	} else if !param.IsOmitted(u.OfResemble) {
+		return u.OfResemble
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetAPIKeyRef() *string {
-	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
-		return &vt.APIKeyRef.Value
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetDeploymentID() *string {
+	if vt := u.OfAzure; vt != nil && vt.DeploymentID.Valid() {
+		return &vt.DeploymentID.Value
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 {
-	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
-		return &vt.VoiceSpeed.Value
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetEffect() *string {
+	if vt := u.OfAzure; vt != nil {
+		return &vt.Effect
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetGender() *string {
+	if vt := u.OfAzure; vt != nil {
+		return &vt.Gender
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetRegion() *string {
+	if vt := u.OfAzure; vt != nil && vt.Region.Valid() {
+		return &vt.Region.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetFormat() *string {
+	if vt := u.OfResemble; vt != nil {
+		return &vt.Format
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetPrecision() *string {
+	if vt := u.OfResemble; vt != nil {
+		return &vt.Precision
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetSampleRate() *string {
+	if vt := u.OfResemble; vt != nil {
+		return &vt.SampleRate
 	}
 	return nil
 }
@@ -4336,6 +4965,32 @@ func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfAws; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfAzure; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfRime; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfResemble; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetAPIKeyRef() *string {
+	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	} else if vt := u.OfAzure; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 {
+	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
+		return &vt.VoiceSpeed.Value
+	} else if vt := u.OfRime; vt != nil && vt.VoiceSpeed.Valid() {
+		return &vt.VoiceSpeed.Value
 	}
 	return nil
 }
@@ -4346,6 +5001,111 @@ func init() {
 		apijson.Discriminator[ElevenLabsVoiceSettingsParam]("elevenlabs"),
 		apijson.Discriminator[TelnyxVoiceSettingsParam]("telnyx"),
 		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
+		apijson.Discriminator[CallActionStartAIAssistantParamsVoiceSettingsAzure]("azure"),
+		apijson.Discriminator[CallActionStartAIAssistantParamsVoiceSettingsRime]("rime"),
+		apijson.Discriminator[CallActionStartAIAssistantParamsVoiceSettingsResemble]("resemble"),
+	)
+}
+
+// The property Type is required.
+type CallActionStartAIAssistantParamsVoiceSettingsAzure struct {
+	// The `identifier` for an integration secret that refers to your Azure Speech API
+	// key.
+	APIKeyRef param.Opt[string] `json:"api_key_ref,omitzero"`
+	// The deployment ID for a custom Azure neural voice.
+	DeploymentID param.Opt[string] `json:"deployment_id,omitzero"`
+	// The Azure region for the Speech service (e.g., `eastus`, `westeurope`). Required
+	// when using a custom API key.
+	Region param.Opt[string] `json:"region,omitzero"`
+	// Audio effect to apply.
+	//
+	// Any of "eq_car", "eq_telecomhp8k".
+	Effect string `json:"effect,omitzero"`
+	// Voice gender filter.
+	//
+	// Any of "Male", "Female".
+	Gender string `json:"gender,omitzero"`
+	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "azure".
+	Type constant.Azure `json:"type" api:"required"`
+	paramObj
+}
+
+func (r CallActionStartAIAssistantParamsVoiceSettingsAzure) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionStartAIAssistantParamsVoiceSettingsAzure
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionStartAIAssistantParamsVoiceSettingsAzure) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallActionStartAIAssistantParamsVoiceSettingsAzure](
+		"effect", "eq_car", "eq_telecomhp8k",
+	)
+	apijson.RegisterFieldValidator[CallActionStartAIAssistantParamsVoiceSettingsAzure](
+		"gender", "Male", "Female",
+	)
+}
+
+// The property Type is required.
+type CallActionStartAIAssistantParamsVoiceSettingsRime struct {
+	// Speech speed multiplier. Default is 1.0.
+	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
+	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "rime".
+	Type constant.Rime `json:"type" api:"required"`
+	paramObj
+}
+
+func (r CallActionStartAIAssistantParamsVoiceSettingsRime) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionStartAIAssistantParamsVoiceSettingsRime
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionStartAIAssistantParamsVoiceSettingsRime) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Type is required.
+type CallActionStartAIAssistantParamsVoiceSettingsResemble struct {
+	// Output audio format.
+	//
+	// Any of "wav", "mp3".
+	Format string `json:"format,omitzero"`
+	// Audio precision format.
+	//
+	// Any of "PCM_16", "PCM_24", "PCM_32", "MULAW".
+	Precision string `json:"precision,omitzero"`
+	// Audio sample rate in Hz.
+	//
+	// Any of "8000", "16000", "22050", "32000", "44100", "48000".
+	SampleRate string `json:"sample_rate,omitzero"`
+	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "resemble".
+	Type constant.Resemble `json:"type" api:"required"`
+	paramObj
+}
+
+func (r CallActionStartAIAssistantParamsVoiceSettingsResemble) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionStartAIAssistantParamsVoiceSettingsResemble
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionStartAIAssistantParamsVoiceSettingsResemble) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallActionStartAIAssistantParamsVoiceSettingsResemble](
+		"format", "wav", "mp3",
+	)
+	apijson.RegisterFieldValidator[CallActionStartAIAssistantParamsVoiceSettingsResemble](
+		"precision", "PCM_16", "PCM_24", "PCM_32", "MULAW",
+	)
+	apijson.RegisterFieldValidator[CallActionStartAIAssistantParamsVoiceSettingsResemble](
+		"sample_rate", "8000", "16000", "22050", "32000", "44100", "48000",
 	)
 }
 

@@ -20,6 +20,7 @@ func ValueOf[T Constant[T]]() T {
 
 type Android string           // Always "android"
 type Assistant string         // Always "assistant"
+type Azure string             // Always "azure"
 type BookAppointment string   // Always "book_appointment"
 type CheckAvailability string // Always "check_availability"
 type Comparative string       // Always "comparative"
@@ -31,7 +32,9 @@ type MediaName string         // Always "media_name"
 type MediaURL string          // Always "media_url"
 type PredefinedMedia string   // Always "predefined_media"
 type Refer string             // Always "refer"
+type Resemble string          // Always "resemble"
 type Retrieval string         // Always "retrieval"
+type Rime string              // Always "rime"
 type SendDtmf string          // Always "send_dtmf"
 type SendMessage string       // Always "send_message"
 type Simple string            // Always "simple"
@@ -43,6 +46,7 @@ type User string              // Always "user"
 
 func (c Android) Default() Android                     { return "android" }
 func (c Assistant) Default() Assistant                 { return "assistant" }
+func (c Azure) Default() Azure                         { return "azure" }
 func (c BookAppointment) Default() BookAppointment     { return "book_appointment" }
 func (c CheckAvailability) Default() CheckAvailability { return "check_availability" }
 func (c Comparative) Default() Comparative             { return "comparative" }
@@ -54,7 +58,9 @@ func (c MediaName) Default() MediaName                 { return "media_name" }
 func (c MediaURL) Default() MediaURL                   { return "media_url" }
 func (c PredefinedMedia) Default() PredefinedMedia     { return "predefined_media" }
 func (c Refer) Default() Refer                         { return "refer" }
+func (c Resemble) Default() Resemble                   { return "resemble" }
 func (c Retrieval) Default() Retrieval                 { return "retrieval" }
+func (c Rime) Default() Rime                           { return "rime" }
 func (c SendDtmf) Default() SendDtmf                   { return "send_dtmf" }
 func (c SendMessage) Default() SendMessage             { return "send_message" }
 func (c Simple) Default() Simple                       { return "simple" }
@@ -66,6 +72,7 @@ func (c User) Default() User                           { return "user" }
 
 func (c Android) MarshalJSON() ([]byte, error)           { return marshalString(c) }
 func (c Assistant) MarshalJSON() ([]byte, error)         { return marshalString(c) }
+func (c Azure) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c BookAppointment) MarshalJSON() ([]byte, error)   { return marshalString(c) }
 func (c CheckAvailability) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c Comparative) MarshalJSON() ([]byte, error)       { return marshalString(c) }
@@ -77,7 +84,9 @@ func (c MediaName) MarshalJSON() ([]byte, error)         { return marshalString(
 func (c MediaURL) MarshalJSON() ([]byte, error)          { return marshalString(c) }
 func (c PredefinedMedia) MarshalJSON() ([]byte, error)   { return marshalString(c) }
 func (c Refer) MarshalJSON() ([]byte, error)             { return marshalString(c) }
+func (c Resemble) MarshalJSON() ([]byte, error)          { return marshalString(c) }
 func (c Retrieval) MarshalJSON() ([]byte, error)         { return marshalString(c) }
+func (c Rime) MarshalJSON() ([]byte, error)              { return marshalString(c) }
 func (c SendDtmf) MarshalJSON() ([]byte, error)          { return marshalString(c) }
 func (c SendMessage) MarshalJSON() ([]byte, error)       { return marshalString(c) }
 func (c Simple) MarshalJSON() ([]byte, error)            { return marshalString(c) }
