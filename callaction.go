@@ -2947,10 +2947,22 @@ type CallActionAnswerParams struct {
 	// Any of "inbound_track", "outbound_track", "both_tracks".
 	StreamTrack         CallActionAnswerParamsStreamTrack `json:"stream_track,omitzero"`
 	TranscriptionConfig TranscriptionStartRequestParam    `json:"transcription_config,omitzero"`
+	// A map of event types to retry policies. Each retry policy contains an array of
+	// `retries_ms` specifying the delays between retry attempts in milliseconds.
+	// Maximum 5 retries, total delay cannot exceed 60 seconds.
+	WebhookRetriesPolicies map[string]CallActionAnswerParamsWebhookRetriesPolicy `json:"webhook_retries_policies,omitzero"`
 	// HTTP request type used for `webhook_url`.
 	//
 	// Any of "POST", "GET".
 	WebhookURLMethod CallActionAnswerParamsWebhookURLMethod `json:"webhook_url_method,omitzero"`
+	// A map of event types to webhook URLs. When an event of the specified type
+	// occurs, the webhook URL associated with that event type will be called instead
+	// of `webhook_url`. Events not mapped here will use the default `webhook_url`.
+	WebhookURLs map[string]string `json:"webhook_urls,omitzero" format:"uri"`
+	// HTTP request method to invoke `webhook_urls`.
+	//
+	// Any of "POST", "GET".
+	WebhookURLsMethod CallActionAnswerParamsWebhookURLsMethod `json:"webhook_urls_method,omitzero"`
 	paramObj
 }
 
@@ -3022,12 +3034,35 @@ const (
 	CallActionAnswerParamsStreamTrackBothTracks    CallActionAnswerParamsStreamTrack = "both_tracks"
 )
 
+type CallActionAnswerParamsWebhookRetriesPolicy struct {
+	// Array of delays in milliseconds between retry attempts. Total sum cannot exceed
+	// 60000ms.
+	RetriesMs []int64 `json:"retries_ms,omitzero"`
+	paramObj
+}
+
+func (r CallActionAnswerParamsWebhookRetriesPolicy) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionAnswerParamsWebhookRetriesPolicy
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionAnswerParamsWebhookRetriesPolicy) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // HTTP request type used for `webhook_url`.
 type CallActionAnswerParamsWebhookURLMethod string
 
 const (
 	CallActionAnswerParamsWebhookURLMethodPost CallActionAnswerParamsWebhookURLMethod = "POST"
 	CallActionAnswerParamsWebhookURLMethodGet  CallActionAnswerParamsWebhookURLMethod = "GET"
+)
+
+// HTTP request method to invoke `webhook_urls`.
+type CallActionAnswerParamsWebhookURLsMethod string
+
+const (
+	CallActionAnswerParamsWebhookURLsMethodPost CallActionAnswerParamsWebhookURLsMethod = "POST"
+	CallActionAnswerParamsWebhookURLsMethodGet  CallActionAnswerParamsWebhookURLsMethod = "GET"
 )
 
 type CallActionBridgeParams struct {
@@ -3040,6 +3075,9 @@ type CallActionBridgeParams struct {
 	// Use this field to avoid duplicate commands. Telnyx will ignore any command with
 	// the same `command_id` for the same `call_control_id`.
 	CommandID param.Opt[string] `json:"command_id,omitzero"`
+	// Specifies behavior after the bridge ends. If set to `true`, the current leg will
+	// be put on hold after unbridge instead of being hung up.
+	HoldAfterUnbridge param.Opt[bool] `json:"hold_after_unbridge,omitzero"`
 	// Specifies behavior after the bridge ends (i.e. the opposite leg either hangs up
 	// or is transferred). If supplied with the value `self`, the current leg will be
 	// parked after unbridge. If not set, the default behavior is to hang up the leg.
@@ -3960,6 +3998,8 @@ type CallActionHangupParams struct {
 	// Use this field to avoid duplicate commands. Telnyx will ignore any command with
 	// the same `command_id` for the same `call_control_id`.
 	CommandID param.Opt[string] `json:"command_id,omitzero"`
+	// Custom headers to be added to the SIP BYE message.
+	CustomHeaders []CustomSipHeaderParam `json:"custom_headers,omitzero"`
 	paramObj
 }
 

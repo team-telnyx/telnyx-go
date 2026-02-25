@@ -129,8 +129,18 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 				},
 				TranscriptionTracks: telnyx.String("both"),
 			},
+			WebhookRetriesPolicies: map[string]telnyx.CallActionAnswerParamsWebhookRetriesPolicy{
+				"call.hangup": {
+					RetriesMs: []int64{1000, 2000, 5000},
+				},
+			},
 			WebhookURL:       telnyx.String("https://www.example.com/server-b/"),
 			WebhookURLMethod: telnyx.CallActionAnswerParamsWebhookURLMethodPost,
+			WebhookURLs: map[string]string{
+				"call.hangup": "https://www.example.com/webhooks/hangup",
+				"call.bridge": "https://www.example.com/webhooks/bridge",
+			},
+			WebhookURLsMethod: telnyx.CallActionAnswerParamsWebhookURLsMethodPost,
 		},
 	)
 	if err != nil {
@@ -162,6 +172,7 @@ func TestCallActionBridgeWithOptionalParams(t *testing.T) {
 			CallControlIDToBridgeWith: "v3:MdI91X4lWFEs7IgbBEOT9M4AigoY08M0WWZFISt1Yw2axZ_IiE4pqg",
 			ClientState:               telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
 			CommandID:                 telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
+			HoldAfterUnbridge:         telnyx.Bool(true),
 			MuteDtmf:                  telnyx.CallActionBridgeParamsMuteDtmfOpposite,
 			ParkAfterUnbridge:         telnyx.String("self"),
 			PlayRingtone:              telnyx.Bool(true),
@@ -446,6 +457,13 @@ func TestCallActionHangupWithOptionalParams(t *testing.T) {
 		telnyx.CallActionHangupParams{
 			ClientState: telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
 			CommandID:   telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
+			CustomHeaders: []telnyx.CustomSipHeaderParam{{
+				Name:  "head_1",
+				Value: "val_1",
+			}, {
+				Name:  "head_2",
+				Value: "val_2",
+			}},
 		},
 	)
 	if err != nil {
