@@ -1,8 +1,11 @@
 # Shared Params Types
 
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#AzureVoiceSettingsParam">AzureVoiceSettingsParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#ConnectionJitterBufferParam">ConnectionJitterBufferParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#ConnectionNoiseSuppressionDetailsParam">ConnectionNoiseSuppressionDetailsParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#MinimaxVoiceSettingsParam">MinimaxVoiceSettingsParam</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#ResembleVoiceSettingsParam">ResembleVoiceSettingsParam</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#RimeVoiceSettingsParam">RimeVoiceSettingsParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#SimCardStatusParam">SimCardStatusParam</a>
 
 # Shared Response Types
