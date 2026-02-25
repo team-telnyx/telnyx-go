@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.31.0 (2026-02-25)
+
+Full Changelog: [v4.30.1...v4.31.0](https://github.com/team-telnyx/telnyx-go/compare/v4.30.1...v4.31.0)
+
+### Features
+
+* Add missing TTS voice settings schemas and update voice descriptions ([5764583](https://github.com/team-telnyx/telnyx-go/commit/576458359f9b3c27c18df38fcb9ed4f0c282ec01))
+* **api:** manual updates ([caa6b17](https://github.com/team-telnyx/telnyx-go/commit/caa6b173688e5e87466eb9f0125cb87fd7e5b832))
+* TELAPPS Add prevent_double_bridge to bridge command ([41f35ab](https://github.com/team-telnyx/telnyx-go/commit/41f35abf9e7794c8355f45fef386a926cc9e48b1))
+
 ## 4.30.1 (2026-02-24)
 
 Full Changelog: [v4.30.0...v4.30.1](https://github.com/team-telnyx/telnyx-go/compare/v4.30.0...v4.30.1)
