@@ -25,6 +25,39 @@ type APIErrorSource = shared.APIErrorSource
 // This is an alias to an internal type.
 type AvailablePhoneNumbersMetadata = shared.AvailablePhoneNumbersMetadata
 
+// This is an alias to an internal type.
+type AzureVoiceSettingsParam = shared.AzureVoiceSettingsParam
+
+// Voice settings provider type
+//
+// This is an alias to an internal type.
+type AzureVoiceSettingsType = shared.AzureVoiceSettingsType
+
+// Equals "azure"
+const AzureVoiceSettingsTypeAzure = shared.AzureVoiceSettingsTypeAzure
+
+// Audio effect to apply.
+//
+// This is an alias to an internal type.
+type AzureVoiceSettingsEffect = shared.AzureVoiceSettingsEffect
+
+// Equals "eq_car"
+const AzureVoiceSettingsEffectEqCar = shared.AzureVoiceSettingsEffectEqCar
+
+// Equals "eq_telecomhp8k"
+const AzureVoiceSettingsEffectEqTelecomhp8k = shared.AzureVoiceSettingsEffectEqTelecomhp8k
+
+// Voice gender filter.
+//
+// This is an alias to an internal type.
+type AzureVoiceSettingsGender = shared.AzureVoiceSettingsGender
+
+// Equals "Male"
+const AzureVoiceSettingsGenderMale = shared.AzureVoiceSettingsGenderMale
+
+// Equals "Female"
+const AzureVoiceSettingsGenderFemale = shared.AzureVoiceSettingsGenderFemale
+
 // Configuration options for Jitter Buffer. Enables Jitter Buffer for RTP streams
 // of SIP Trunking calls. The feature is off unless enabled. You may define min and
 // max values in msec for customized buffering behaviors. Larger values add latency
@@ -562,6 +595,79 @@ const PortingOrdersExceptionTypeCodeSvConflict = shared.PortingOrdersExceptionTy
 
 // Equals "SV_UNKNOWN_FAILURE"
 const PortingOrdersExceptionTypeCodeSvUnknownFailure = shared.PortingOrdersExceptionTypeCodeSvUnknownFailure
+
+// This is an alias to an internal type.
+type ResembleVoiceSettingsParam = shared.ResembleVoiceSettingsParam
+
+// Voice settings provider type
+//
+// This is an alias to an internal type.
+type ResembleVoiceSettingsType = shared.ResembleVoiceSettingsType
+
+// Equals "resemble"
+const ResembleVoiceSettingsTypeResemble = shared.ResembleVoiceSettingsTypeResemble
+
+// Output audio format.
+//
+// This is an alias to an internal type.
+type ResembleVoiceSettingsFormat = shared.ResembleVoiceSettingsFormat
+
+// Equals "wav"
+const ResembleVoiceSettingsFormatWav = shared.ResembleVoiceSettingsFormatWav
+
+// Equals "mp3"
+const ResembleVoiceSettingsFormatMP3 = shared.ResembleVoiceSettingsFormatMP3
+
+// Audio precision format.
+//
+// This is an alias to an internal type.
+type ResembleVoiceSettingsPrecision = shared.ResembleVoiceSettingsPrecision
+
+// Equals "PCM_16"
+const ResembleVoiceSettingsPrecisionPcm16 = shared.ResembleVoiceSettingsPrecisionPcm16
+
+// Equals "PCM_24"
+const ResembleVoiceSettingsPrecisionPcm24 = shared.ResembleVoiceSettingsPrecisionPcm24
+
+// Equals "PCM_32"
+const ResembleVoiceSettingsPrecisionPcm32 = shared.ResembleVoiceSettingsPrecisionPcm32
+
+// Equals "MULAW"
+const ResembleVoiceSettingsPrecisionMulaw = shared.ResembleVoiceSettingsPrecisionMulaw
+
+// Audio sample rate in Hz.
+//
+// This is an alias to an internal type.
+type ResembleVoiceSettingsSampleRate = shared.ResembleVoiceSettingsSampleRate
+
+// Equals "8000"
+const ResembleVoiceSettingsSampleRate8000 = shared.ResembleVoiceSettingsSampleRate8000
+
+// Equals "16000"
+const ResembleVoiceSettingsSampleRate16000 = shared.ResembleVoiceSettingsSampleRate16000
+
+// Equals "22050"
+const ResembleVoiceSettingsSampleRate22050 = shared.ResembleVoiceSettingsSampleRate22050
+
+// Equals "32000"
+const ResembleVoiceSettingsSampleRate32000 = shared.ResembleVoiceSettingsSampleRate32000
+
+// Equals "44100"
+const ResembleVoiceSettingsSampleRate44100 = shared.ResembleVoiceSettingsSampleRate44100
+
+// Equals "48000"
+const ResembleVoiceSettingsSampleRate48000 = shared.ResembleVoiceSettingsSampleRate48000
+
+// This is an alias to an internal type.
+type RimeVoiceSettingsParam = shared.RimeVoiceSettingsParam
+
+// Voice settings provider type
+//
+// This is an alias to an internal type.
+type RimeVoiceSettingsType = shared.RimeVoiceSettingsType
+
+// Equals "rime"
+const RimeVoiceSettingsTypeRime = shared.RimeVoiceSettingsTypeRime
 
 // This is an alias to an internal type.
 type RoomParticipant = shared.RoomParticipant

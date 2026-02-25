@@ -79,6 +79,62 @@ func (r *AvailablePhoneNumbersMetadata) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property Type is required.
+type AzureVoiceSettingsParam struct {
+	// Voice settings provider type
+	//
+	// Any of "azure".
+	Type AzureVoiceSettingsType `json:"type,omitzero" api:"required"`
+	// The `identifier` for an integration secret that refers to your Azure Speech API
+	// key.
+	APIKeyRef param.Opt[string] `json:"api_key_ref,omitzero"`
+	// The deployment ID for a custom Azure neural voice.
+	DeploymentID param.Opt[string] `json:"deployment_id,omitzero"`
+	// The Azure region for the Speech service (e.g., `eastus`, `westeurope`). Required
+	// when using a custom API key.
+	Region param.Opt[string] `json:"region,omitzero"`
+	// Audio effect to apply.
+	//
+	// Any of "eq_car", "eq_telecomhp8k".
+	Effect AzureVoiceSettingsEffect `json:"effect,omitzero"`
+	// Voice gender filter.
+	//
+	// Any of "Male", "Female".
+	Gender AzureVoiceSettingsGender `json:"gender,omitzero"`
+	paramObj
+}
+
+func (r AzureVoiceSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow AzureVoiceSettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AzureVoiceSettingsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Voice settings provider type
+type AzureVoiceSettingsType string
+
+const (
+	AzureVoiceSettingsTypeAzure AzureVoiceSettingsType = "azure"
+)
+
+// Audio effect to apply.
+type AzureVoiceSettingsEffect string
+
+const (
+	AzureVoiceSettingsEffectEqCar         AzureVoiceSettingsEffect = "eq_car"
+	AzureVoiceSettingsEffectEqTelecomhp8k AzureVoiceSettingsEffect = "eq_telecomhp8k"
+)
+
+// Voice gender filter.
+type AzureVoiceSettingsGender string
+
+const (
+	AzureVoiceSettingsGenderMale   AzureVoiceSettingsGender = "Male"
+	AzureVoiceSettingsGenderFemale AzureVoiceSettingsGender = "Female"
+)
+
 // Configuration options for Jitter Buffer. Enables Jitter Buffer for RTP streams
 // of SIP Trunking calls. The feature is off unless enabled. You may define min and
 // max values in msec for customized buffering behaviors. Larger values add latency
@@ -1153,6 +1209,98 @@ const (
 	PortingOrdersExceptionTypeCodeRateCenterNotPortable        PortingOrdersExceptionTypeCode = "RATE_CENTER_NOT_PORTABLE"
 	PortingOrdersExceptionTypeCodeSvConflict                   PortingOrdersExceptionTypeCode = "SV_CONFLICT"
 	PortingOrdersExceptionTypeCodeSvUnknownFailure             PortingOrdersExceptionTypeCode = "SV_UNKNOWN_FAILURE"
+)
+
+// The property Type is required.
+type ResembleVoiceSettingsParam struct {
+	// Voice settings provider type
+	//
+	// Any of "resemble".
+	Type ResembleVoiceSettingsType `json:"type,omitzero" api:"required"`
+	// Output audio format.
+	//
+	// Any of "wav", "mp3".
+	Format ResembleVoiceSettingsFormat `json:"format,omitzero"`
+	// Audio precision format.
+	//
+	// Any of "PCM_16", "PCM_24", "PCM_32", "MULAW".
+	Precision ResembleVoiceSettingsPrecision `json:"precision,omitzero"`
+	// Audio sample rate in Hz.
+	//
+	// Any of "8000", "16000", "22050", "32000", "44100", "48000".
+	SampleRate ResembleVoiceSettingsSampleRate `json:"sample_rate,omitzero"`
+	paramObj
+}
+
+func (r ResembleVoiceSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow ResembleVoiceSettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ResembleVoiceSettingsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Voice settings provider type
+type ResembleVoiceSettingsType string
+
+const (
+	ResembleVoiceSettingsTypeResemble ResembleVoiceSettingsType = "resemble"
+)
+
+// Output audio format.
+type ResembleVoiceSettingsFormat string
+
+const (
+	ResembleVoiceSettingsFormatWav ResembleVoiceSettingsFormat = "wav"
+	ResembleVoiceSettingsFormatMP3 ResembleVoiceSettingsFormat = "mp3"
+)
+
+// Audio precision format.
+type ResembleVoiceSettingsPrecision string
+
+const (
+	ResembleVoiceSettingsPrecisionPcm16 ResembleVoiceSettingsPrecision = "PCM_16"
+	ResembleVoiceSettingsPrecisionPcm24 ResembleVoiceSettingsPrecision = "PCM_24"
+	ResembleVoiceSettingsPrecisionPcm32 ResembleVoiceSettingsPrecision = "PCM_32"
+	ResembleVoiceSettingsPrecisionMulaw ResembleVoiceSettingsPrecision = "MULAW"
+)
+
+// Audio sample rate in Hz.
+type ResembleVoiceSettingsSampleRate string
+
+const (
+	ResembleVoiceSettingsSampleRate8000  ResembleVoiceSettingsSampleRate = "8000"
+	ResembleVoiceSettingsSampleRate16000 ResembleVoiceSettingsSampleRate = "16000"
+	ResembleVoiceSettingsSampleRate22050 ResembleVoiceSettingsSampleRate = "22050"
+	ResembleVoiceSettingsSampleRate32000 ResembleVoiceSettingsSampleRate = "32000"
+	ResembleVoiceSettingsSampleRate44100 ResembleVoiceSettingsSampleRate = "44100"
+	ResembleVoiceSettingsSampleRate48000 ResembleVoiceSettingsSampleRate = "48000"
+)
+
+// The property Type is required.
+type RimeVoiceSettingsParam struct {
+	// Voice settings provider type
+	//
+	// Any of "rime".
+	Type RimeVoiceSettingsType `json:"type,omitzero" api:"required"`
+	// Speech speed multiplier. Default is 1.0.
+	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
+	paramObj
+}
+
+func (r RimeVoiceSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow RimeVoiceSettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *RimeVoiceSettingsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Voice settings provider type
+type RimeVoiceSettingsType string
+
+const (
+	RimeVoiceSettingsTypeRime RimeVoiceSettingsType = "rime"
 )
 
 type RoomParticipant struct {
