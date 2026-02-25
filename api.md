@@ -2705,6 +2705,14 @@ Methods:
 
 # Payment
 
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#PaymentNewStoredPaymentTransactionResponse">PaymentNewStoredPaymentTransactionResponse</a>
+
+Methods:
+
+- <code title="post /v2/payment/stored_payment_transactions">client.Payment.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#PaymentService.NewStoredPaymentTransaction">NewStoredPaymentTransaction</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#PaymentNewStoredPaymentTransactionParams">PaymentNewStoredPaymentTransactionParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#PaymentNewStoredPaymentTransactionResponse">PaymentNewStoredPaymentTransactionResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 ## AutoRechargePrefs
 
 Response Types:
