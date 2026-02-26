@@ -4,6 +4,7 @@ package telnyx
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -13,6 +14,7 @@ import (
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
@@ -78,31 +80,15 @@ func (r *CommentService) MarkAsRead(ctx context.Context, id string, opts ...opti
 	return
 }
 
-type CommentNewResponse struct {
-	Data CommentNewResponseData `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CommentNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *CommentNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CommentNewResponseData struct {
+type Comment struct {
 	ID              string `json:"id" format:"uuid"`
 	Body            string `json:"body"`
 	CommentRecordID string `json:"comment_record_id" format:"uuid"`
 	// Any of "sub_number_order", "requirement_group".
-	CommentRecordType string `json:"comment_record_type"`
-	Commenter         string `json:"commenter"`
+	CommentRecordType CommentCommentRecordType `json:"comment_record_type"`
+	Commenter         string                   `json:"commenter"`
 	// Any of "admin", "user".
-	CommenterType string `json:"commenter_type"`
+	CommenterType CommentCommenterType `json:"commenter_type"`
 	// An ISO 8901 datetime string denoting when the comment was created.
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// An ISO 8901 datetime string for when the comment was read.
@@ -123,6 +109,76 @@ type CommentNewResponseData struct {
 		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Comment) RawJSON() string { return r.JSON.raw }
+func (r *Comment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this Comment to a CommentParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// CommentParam.Overrides()
+func (r Comment) ToParam() CommentParam {
+	return param.Override[CommentParam](json.RawMessage(r.RawJSON()))
+}
+
+type CommentCommentRecordType string
+
+const (
+	CommentCommentRecordTypeSubNumberOrder   CommentCommentRecordType = "sub_number_order"
+	CommentCommentRecordTypeRequirementGroup CommentCommentRecordType = "requirement_group"
+)
+
+type CommentCommenterType string
+
+const (
+	CommentCommenterTypeAdmin CommentCommenterType = "admin"
+	CommentCommenterTypeUser  CommentCommenterType = "user"
+)
+
+type CommentParam struct {
+	Body            param.Opt[string] `json:"body,omitzero"`
+	CommentRecordID param.Opt[string] `json:"comment_record_id,omitzero" format:"uuid"`
+	// Any of "sub_number_order", "requirement_group".
+	CommentRecordType CommentCommentRecordType `json:"comment_record_type,omitzero"`
+	paramObj
+}
+
+func (r CommentParam) MarshalJSON() (data []byte, err error) {
+	type shadow CommentParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CommentParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CommentNewResponse struct {
+	Data CommentNewResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CommentNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *CommentNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CommentNewResponseData struct {
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	Comment
 }
 
 // Returns the unmodified JSON received from the API
@@ -148,34 +204,12 @@ func (r *CommentGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type CommentGetResponseData struct {
-	ID              string `json:"id" format:"uuid"`
-	Body            string `json:"body"`
-	CommentRecordID string `json:"comment_record_id" format:"uuid"`
-	// Any of "sub_number_order", "requirement_group".
-	CommentRecordType string `json:"comment_record_type"`
-	Commenter         string `json:"commenter"`
-	// Any of "admin", "user".
-	CommenterType string `json:"commenter_type"`
-	// An ISO 8901 datetime string denoting when the comment was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// An ISO 8901 datetime string for when the comment was read.
-	ReadAt time.Time `json:"read_at" format:"date-time"`
-	// An ISO 8901 datetime string for when the comment was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                respjson.Field
-		Body              respjson.Field
-		CommentRecordID   respjson.Field
-		CommentRecordType respjson.Field
-		Commenter         respjson.Field
-		CommenterType     respjson.Field
-		CreatedAt         respjson.Field
-		ReadAt            respjson.Field
-		UpdatedAt         respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
+	Comment
 }
 
 // Returns the unmodified JSON received from the API
@@ -185,8 +219,8 @@ func (r *CommentGetResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type CommentListResponse struct {
-	Data []CommentListResponseData `json:"data"`
-	Meta PaginationMeta            `json:"meta"`
+	Data []Comment      `json:"data"`
+	Meta PaginationMeta `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -199,43 +233,6 @@ type CommentListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r CommentListResponse) RawJSON() string { return r.JSON.raw }
 func (r *CommentListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CommentListResponseData struct {
-	ID              string `json:"id" format:"uuid"`
-	Body            string `json:"body"`
-	CommentRecordID string `json:"comment_record_id" format:"uuid"`
-	// Any of "sub_number_order", "requirement_group".
-	CommentRecordType string `json:"comment_record_type"`
-	Commenter         string `json:"commenter"`
-	// Any of "admin", "user".
-	CommenterType string `json:"commenter_type"`
-	// An ISO 8901 datetime string denoting when the comment was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// An ISO 8901 datetime string for when the comment was read.
-	ReadAt time.Time `json:"read_at" format:"date-time"`
-	// An ISO 8901 datetime string for when the comment was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                respjson.Field
-		Body              respjson.Field
-		CommentRecordID   respjson.Field
-		CommentRecordType respjson.Field
-		Commenter         respjson.Field
-		CommenterType     respjson.Field
-		CreatedAt         respjson.Field
-		ReadAt            respjson.Field
-		UpdatedAt         respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CommentListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *CommentListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -256,34 +253,12 @@ func (r *CommentMarkAsReadResponse) UnmarshalJSON(data []byte) error {
 }
 
 type CommentMarkAsReadResponseData struct {
-	ID              string `json:"id" format:"uuid"`
-	Body            string `json:"body"`
-	CommentRecordID string `json:"comment_record_id" format:"uuid"`
-	// Any of "sub_number_order", "requirement_group".
-	CommentRecordType string `json:"comment_record_type"`
-	Commenter         string `json:"commenter"`
-	// Any of "admin", "user".
-	CommenterType string `json:"commenter_type"`
-	// An ISO 8901 datetime string denoting when the comment was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// An ISO 8901 datetime string for when the comment was read.
-	ReadAt time.Time `json:"read_at" format:"date-time"`
-	// An ISO 8901 datetime string for when the comment was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                respjson.Field
-		Body              respjson.Field
-		CommentRecordID   respjson.Field
-		CommentRecordType respjson.Field
-		Commenter         respjson.Field
-		CommenterType     respjson.Field
-		CreatedAt         respjson.Field
-		ReadAt            respjson.Field
-		UpdatedAt         respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
+	Comment
 }
 
 // Returns the unmodified JSON received from the API
@@ -293,27 +268,16 @@ func (r *CommentMarkAsReadResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type CommentNewParams struct {
-	Body            param.Opt[string] `json:"body,omitzero"`
-	CommentRecordID param.Opt[string] `json:"comment_record_id,omitzero" format:"uuid"`
-	// Any of "sub_number_order", "requirement_group".
-	CommentRecordType CommentNewParamsCommentRecordType `json:"comment_record_type,omitzero"`
+	Comment CommentParam
 	paramObj
 }
 
 func (r CommentNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow CommentNewParams
-	return param.MarshalObject(r, (*shadow)(&r))
+	return shimjson.Marshal(r.Comment)
 }
 func (r *CommentNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return json.Unmarshal(data, &r.Comment)
 }
-
-type CommentNewParamsCommentRecordType string
-
-const (
-	CommentNewParamsCommentRecordTypeSubNumberOrder   CommentNewParamsCommentRecordType = "sub_number_order"
-	CommentNewParamsCommentRecordTypeRequirementGroup CommentNewParamsCommentRecordType = "requirement_group"
-)
 
 type CommentListParams struct {
 	// Consolidated filter parameter (deepObject style). Originally:

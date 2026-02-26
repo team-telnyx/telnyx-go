@@ -13,6 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // RecordingTranscriptionService contains methods and other services that help with
@@ -157,7 +158,7 @@ func (r *RecordingTranscriptionListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type RecordingTranscriptionListResponseMeta struct {
-	Cursors RecordingTranscriptionListResponseMetaCursors `json:"cursors"`
+	Cursors shared.Cursor `json:"cursors"`
 	// Path to next page.
 	Next string `json:"next"`
 	// Path to previous page.
@@ -175,26 +176,6 @@ type RecordingTranscriptionListResponseMeta struct {
 // Returns the unmodified JSON received from the API
 func (r RecordingTranscriptionListResponseMeta) RawJSON() string { return r.JSON.raw }
 func (r *RecordingTranscriptionListResponseMeta) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type RecordingTranscriptionListResponseMetaCursors struct {
-	// Opaque identifier of next page.
-	After string `json:"after"`
-	// Opaque identifier of previous page.
-	Before string `json:"before"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		After       respjson.Field
-		Before      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RecordingTranscriptionListResponseMetaCursors) RawJSON() string { return r.JSON.raw }
-func (r *RecordingTranscriptionListResponseMetaCursors) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
