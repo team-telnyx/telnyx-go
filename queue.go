@@ -73,7 +73,7 @@ func (r *QueueService) Update(ctx context.Context, queueName string, body QueueU
 }
 
 // List all queues for the authenticated user.
-func (r *QueueService) List(ctx context.Context, query QueueListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[Queue], err error) {
+func (r *QueueService) List(ctx context.Context, query QueueListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[QueueListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -91,7 +91,7 @@ func (r *QueueService) List(ctx context.Context, query QueueListParams, opts ...
 }
 
 // List all queues for the authenticated user.
-func (r *QueueService) ListAutoPaging(ctx context.Context, query QueueListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[Queue] {
+func (r *QueueService) ListAutoPaging(ctx context.Context, query QueueListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[QueueListResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -108,7 +108,23 @@ func (r *QueueService) Delete(ctx context.Context, queueName string, opts ...opt
 	return
 }
 
-type Queue struct {
+type QueueNewResponse struct {
+	Data QueueNewResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r QueueNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *QueueNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type QueueNewResponseData struct {
 	// Uniquely identifies the queue
 	ID string `json:"id" api:"required"`
 	// The average time that the calls currently in the queue have spent waiting, given
@@ -123,7 +139,7 @@ type Queue struct {
 	// Name of the queue
 	Name string `json:"name" api:"required"`
 	// Any of "queue".
-	RecordType QueueRecordType `json:"record_type" api:"required"`
+	RecordType string `json:"record_type" api:"required"`
 	// ISO 8601 formatted date of when the queue was last updated
 	UpdatedAt string `json:"updated_at" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -142,35 +158,13 @@ type Queue struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r Queue) RawJSON() string { return r.JSON.raw }
-func (r *Queue) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type QueueRecordType string
-
-const (
-	QueueRecordTypeQueue QueueRecordType = "queue"
-)
-
-type QueueNewResponse struct {
-	Data Queue `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r QueueNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *QueueNewResponse) UnmarshalJSON(data []byte) error {
+func (r QueueNewResponseData) RawJSON() string { return r.JSON.raw }
+func (r *QueueNewResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type QueueGetResponse struct {
-	Data Queue `json:"data"`
+	Data QueueGetResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -185,8 +179,47 @@ func (r *QueueGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type QueueGetResponseData struct {
+	// Uniquely identifies the queue
+	ID string `json:"id" api:"required"`
+	// The average time that the calls currently in the queue have spent waiting, given
+	// in seconds.
+	AverageWaitTimeSecs int64 `json:"average_wait_time_secs" api:"required"`
+	// ISO 8601 formatted date of when the queue was created
+	CreatedAt string `json:"created_at" api:"required"`
+	// The number of calls currently in the queue
+	CurrentSize int64 `json:"current_size" api:"required"`
+	// The maximum number of calls allowed in the queue
+	MaxSize int64 `json:"max_size" api:"required"`
+	// Name of the queue
+	Name string `json:"name" api:"required"`
+	// Any of "queue".
+	RecordType string `json:"record_type" api:"required"`
+	// ISO 8601 formatted date of when the queue was last updated
+	UpdatedAt string `json:"updated_at" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                  respjson.Field
+		AverageWaitTimeSecs respjson.Field
+		CreatedAt           respjson.Field
+		CurrentSize         respjson.Field
+		MaxSize             respjson.Field
+		Name                respjson.Field
+		RecordType          respjson.Field
+		UpdatedAt           respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r QueueGetResponseData) RawJSON() string { return r.JSON.raw }
+func (r *QueueGetResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type QueueUpdateResponse struct {
-	Data Queue `json:"data"`
+	Data QueueUpdateResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -200,6 +233,90 @@ func (r QueueUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *QueueUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type QueueUpdateResponseData struct {
+	// Uniquely identifies the queue
+	ID string `json:"id" api:"required"`
+	// The average time that the calls currently in the queue have spent waiting, given
+	// in seconds.
+	AverageWaitTimeSecs int64 `json:"average_wait_time_secs" api:"required"`
+	// ISO 8601 formatted date of when the queue was created
+	CreatedAt string `json:"created_at" api:"required"`
+	// The number of calls currently in the queue
+	CurrentSize int64 `json:"current_size" api:"required"`
+	// The maximum number of calls allowed in the queue
+	MaxSize int64 `json:"max_size" api:"required"`
+	// Name of the queue
+	Name string `json:"name" api:"required"`
+	// Any of "queue".
+	RecordType string `json:"record_type" api:"required"`
+	// ISO 8601 formatted date of when the queue was last updated
+	UpdatedAt string `json:"updated_at" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                  respjson.Field
+		AverageWaitTimeSecs respjson.Field
+		CreatedAt           respjson.Field
+		CurrentSize         respjson.Field
+		MaxSize             respjson.Field
+		Name                respjson.Field
+		RecordType          respjson.Field
+		UpdatedAt           respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r QueueUpdateResponseData) RawJSON() string { return r.JSON.raw }
+func (r *QueueUpdateResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type QueueListResponse struct {
+	// Uniquely identifies the queue
+	ID string `json:"id" api:"required"`
+	// The average time that the calls currently in the queue have spent waiting, given
+	// in seconds.
+	AverageWaitTimeSecs int64 `json:"average_wait_time_secs" api:"required"`
+	// ISO 8601 formatted date of when the queue was created
+	CreatedAt string `json:"created_at" api:"required"`
+	// The number of calls currently in the queue
+	CurrentSize int64 `json:"current_size" api:"required"`
+	// The maximum number of calls allowed in the queue
+	MaxSize int64 `json:"max_size" api:"required"`
+	// Name of the queue
+	Name string `json:"name" api:"required"`
+	// Any of "queue".
+	RecordType QueueListResponseRecordType `json:"record_type" api:"required"`
+	// ISO 8601 formatted date of when the queue was last updated
+	UpdatedAt string `json:"updated_at" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                  respjson.Field
+		AverageWaitTimeSecs respjson.Field
+		CreatedAt           respjson.Field
+		CurrentSize         respjson.Field
+		MaxSize             respjson.Field
+		Name                respjson.Field
+		RecordType          respjson.Field
+		UpdatedAt           respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r QueueListResponse) RawJSON() string { return r.JSON.raw }
+func (r *QueueListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type QueueListResponseRecordType string
+
+const (
+	QueueListResponseRecordTypeQueue QueueListResponseRecordType = "queue"
+)
 
 type QueueNewParams struct {
 	// The name of the queue. Must be between 1 and 255 characters.
