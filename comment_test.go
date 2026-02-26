@@ -27,9 +27,11 @@ func TestCommentNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Comments.New(context.TODO(), telnyx.CommentNewParams{
-		Body:              telnyx.String("Hi there, ...."),
-		CommentRecordID:   telnyx.String("8ffb3622-7c6b-4ccc-b65f-7a3dc0099576"),
-		CommentRecordType: telnyx.CommentNewParamsCommentRecordTypeSubNumberOrder,
+		Comment: telnyx.CommentParam{
+			Body:              telnyx.String("Hi there, ...."),
+			CommentRecordID:   telnyx.String("8ffb3622-7c6b-4ccc-b65f-7a3dc0099576"),
+			CommentRecordType: telnyx.CommentCommentRecordTypeSubNumberOrder,
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error
