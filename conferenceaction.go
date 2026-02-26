@@ -1041,6 +1041,11 @@ type ConferenceActionRecordStartParams struct {
 	CustomFileName param.Opt[string] `json:"custom_file_name,omitzero"`
 	// If enabled, a beep sound will be played at the start of a recording.
 	PlayBeep param.Opt[bool] `json:"play_beep,omitzero"`
+	// When `dual`, final audio file will be stereo recorded with the conference
+	// creator on the first channel, and the rest on the second channel.
+	//
+	// Any of "single", "dual".
+	Channels ConferenceActionRecordStartParamsChannels `json:"channels,omitzero"`
 	// Region where the conference data is located. Defaults to the region defined in
 	// user's data locality settings (Europe or US).
 	//
@@ -1069,6 +1074,15 @@ type ConferenceActionRecordStartParamsFormat string
 const (
 	ConferenceActionRecordStartParamsFormatWav ConferenceActionRecordStartParamsFormat = "wav"
 	ConferenceActionRecordStartParamsFormatMP3 ConferenceActionRecordStartParamsFormat = "mp3"
+)
+
+// When `dual`, final audio file will be stereo recorded with the conference
+// creator on the first channel, and the rest on the second channel.
+type ConferenceActionRecordStartParamsChannels string
+
+const (
+	ConferenceActionRecordStartParamsChannelsSingle ConferenceActionRecordStartParamsChannels = "single"
+	ConferenceActionRecordStartParamsChannelsDual   ConferenceActionRecordStartParamsChannels = "dual"
 )
 
 // Region where the conference data is located. Defaults to the region defined in
