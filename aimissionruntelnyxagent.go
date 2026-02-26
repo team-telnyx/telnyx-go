@@ -89,8 +89,28 @@ func (r *AIMissionRunTelnyxAgentService) Unlink(ctx context.Context, telnyxAgent
 	return
 }
 
+type TelnyxAgentData struct {
+	CreatedAt     time.Time `json:"created_at" api:"required" format:"date-time"`
+	RunID         string    `json:"run_id" api:"required"`
+	TelnyxAgentID string    `json:"telnyx_agent_id" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt     respjson.Field
+		RunID         respjson.Field
+		TelnyxAgentID respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TelnyxAgentData) RawJSON() string { return r.JSON.raw }
+func (r *TelnyxAgentData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AIMissionRunTelnyxAgentListResponse struct {
-	Data []AIMissionRunTelnyxAgentListResponseData `json:"data" api:"required"`
+	Data []TelnyxAgentData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -105,28 +125,8 @@ func (r *AIMissionRunTelnyxAgentListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIMissionRunTelnyxAgentListResponseData struct {
-	CreatedAt     time.Time `json:"created_at" api:"required" format:"date-time"`
-	RunID         string    `json:"run_id" api:"required"`
-	TelnyxAgentID string    `json:"telnyx_agent_id" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CreatedAt     respjson.Field
-		RunID         respjson.Field
-		TelnyxAgentID respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunTelnyxAgentListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunTelnyxAgentListResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type AIMissionRunTelnyxAgentLinkResponse struct {
-	Data AIMissionRunTelnyxAgentLinkResponseData `json:"data" api:"required"`
+	Data TelnyxAgentData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -138,26 +138,6 @@ type AIMissionRunTelnyxAgentLinkResponse struct {
 // Returns the unmodified JSON received from the API
 func (r AIMissionRunTelnyxAgentLinkResponse) RawJSON() string { return r.JSON.raw }
 func (r *AIMissionRunTelnyxAgentLinkResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIMissionRunTelnyxAgentLinkResponseData struct {
-	CreatedAt     time.Time `json:"created_at" api:"required" format:"date-time"`
-	RunID         string    `json:"run_id" api:"required"`
-	TelnyxAgentID string    `json:"telnyx_agent_id" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CreatedAt     respjson.Field
-		RunID         respjson.Field
-		TelnyxAgentID respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunTelnyxAgentLinkResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunTelnyxAgentLinkResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

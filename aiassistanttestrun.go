@@ -96,6 +96,34 @@ func (r *AIAssistantTestRunService) Trigger(ctx context.Context, testID string, 
 	return
 }
 
+type TestRunDetailResult struct {
+	Name string `json:"name" api:"required"`
+	// Represents the lifecycle of a test:
+	//
+	// - 'pending': Test is waiting to be executed.
+	// - 'starting': Test execution is initializing.
+	// - 'running': Test is currently executing.
+	// - 'passed': Test completed successfully.
+	// - 'failed': Test executed but did not pass.
+	// - 'error': An error occurred during test execution.
+	//
+	// Any of "pending", "starting", "running", "passed", "failed", "error".
+	Status TestStatus `json:"status" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TestRunDetailResult) RawJSON() string { return r.JSON.raw }
+func (r *TestRunDetailResult) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Response model containing test run execution details and results.
 //
 // Provides comprehensive information about a test execution including status,
@@ -129,7 +157,7 @@ type TestRunResponse struct {
 	// Detailed evaluation results for each rubric criteria. Name is name of the
 	// criteria from the rubric and status is the result of the evaluation. This list
 	// will have a result for every criteria in the rubric section.
-	DetailStatus []TestRunResponseDetailStatus `json:"detail_status"`
+	DetailStatus []TestRunDetailResult `json:"detail_status"`
 	// Detailed execution logs and debug information.
 	Logs string `json:"logs"`
 	// Identifier linking this run to a test suite execution batch.
@@ -158,34 +186,6 @@ type TestRunResponse struct {
 // Returns the unmodified JSON received from the API
 func (r TestRunResponse) RawJSON() string { return r.JSON.raw }
 func (r *TestRunResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TestRunResponseDetailStatus struct {
-	Name string `json:"name" api:"required"`
-	// Represents the lifecycle of a test:
-	//
-	// - 'pending': Test is waiting to be executed.
-	// - 'starting': Test execution is initializing.
-	// - 'running': Test is currently executing.
-	// - 'passed': Test completed successfully.
-	// - 'failed': Test executed but did not pass.
-	// - 'error': An error occurred during test execution.
-	//
-	// Any of "pending", "starting", "running", "passed", "failed", "error".
-	Status TestStatus `json:"status" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Name        respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TestRunResponseDetailStatus) RawJSON() string { return r.JSON.raw }
-func (r *TestRunResponseDetailStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

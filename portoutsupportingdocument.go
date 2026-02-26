@@ -59,8 +59,52 @@ func (r *PortoutSupportingDocumentService) List(ctx context.Context, id string, 
 	return
 }
 
+type PortOutSupportingDocument struct {
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Supporting document creation timestamp in ISO 8601 format
+	CreatedAt string `json:"created_at" api:"required"`
+	// Identifies the associated document
+	DocumentID string `json:"document_id" api:"required" format:"uuid"`
+	// Identifies the associated port request
+	PortoutID string `json:"portout_id" api:"required" format:"uuid"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type" api:"required"`
+	// Identifies the type of the document
+	//
+	// Any of "loa", "invoice".
+	Type PortOutSupportingDocumentType `json:"type" api:"required"`
+	// Supporting document last changed timestamp in ISO 8601 format
+	UpdatedAt string `json:"updated_at" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		DocumentID  respjson.Field
+		PortoutID   respjson.Field
+		RecordType  respjson.Field
+		Type        respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortOutSupportingDocument) RawJSON() string { return r.JSON.raw }
+func (r *PortOutSupportingDocument) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies the type of the document
+type PortOutSupportingDocumentType string
+
+const (
+	PortOutSupportingDocumentTypeLoa     PortOutSupportingDocumentType = "loa"
+	PortOutSupportingDocumentTypeInvoice PortOutSupportingDocumentType = "invoice"
+)
+
 type PortoutSupportingDocumentNewResponse struct {
-	Data []PortoutSupportingDocumentNewResponseData `json:"data"`
+	Data []PortOutSupportingDocument `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -75,44 +119,8 @@ func (r *PortoutSupportingDocumentNewResponse) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PortoutSupportingDocumentNewResponseData struct {
-	ID string `json:"id" api:"required" format:"uuid"`
-	// Supporting document creation timestamp in ISO 8601 format
-	CreatedAt string `json:"created_at" api:"required"`
-	// Identifies the associated document
-	DocumentID string `json:"document_id" api:"required" format:"uuid"`
-	// Identifies the associated port request
-	PortoutID string `json:"portout_id" api:"required" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type" api:"required"`
-	// Identifies the type of the document
-	//
-	// Any of "loa", "invoice".
-	Type string `json:"type" api:"required"`
-	// Supporting document last changed timestamp in ISO 8601 format
-	UpdatedAt string `json:"updated_at" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		DocumentID  respjson.Field
-		PortoutID   respjson.Field
-		RecordType  respjson.Field
-		Type        respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortoutSupportingDocumentNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *PortoutSupportingDocumentNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type PortoutSupportingDocumentListResponse struct {
-	Data []PortoutSupportingDocumentListResponseData `json:"data"`
+	Data []PortOutSupportingDocument `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -124,42 +132,6 @@ type PortoutSupportingDocumentListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r PortoutSupportingDocumentListResponse) RawJSON() string { return r.JSON.raw }
 func (r *PortoutSupportingDocumentListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortoutSupportingDocumentListResponseData struct {
-	ID string `json:"id" api:"required" format:"uuid"`
-	// Supporting document creation timestamp in ISO 8601 format
-	CreatedAt string `json:"created_at" api:"required"`
-	// Identifies the associated document
-	DocumentID string `json:"document_id" api:"required" format:"uuid"`
-	// Identifies the associated port request
-	PortoutID string `json:"portout_id" api:"required" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type" api:"required"`
-	// Identifies the type of the document
-	//
-	// Any of "loa", "invoice".
-	Type string `json:"type" api:"required"`
-	// Supporting document last changed timestamp in ISO 8601 format
-	UpdatedAt string `json:"updated_at" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		DocumentID  respjson.Field
-		PortoutID   respjson.Field
-		RecordType  respjson.Field
-		Type        respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortoutSupportingDocumentListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *PortoutSupportingDocumentListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -65,8 +65,81 @@ func (r *ExternalConnectionCivicAddressService) List(ctx context.Context, id str
 	return
 }
 
+type CivicAddress struct {
+	// Uniquely identifies the resource.
+	ID                string `json:"id" format:"uuid"`
+	CityOrTown        string `json:"city_or_town"`
+	CityOrTownAlias   string `json:"city_or_town_alias"`
+	CompanyName       string `json:"company_name"`
+	Country           string `json:"country"`
+	CountryOrDistrict string `json:"country_or_district"`
+	// Identifies what is the default location in the list of locations.
+	DefaultLocationID string     `json:"default_location_id" format:"uuid"`
+	Description       string     `json:"description"`
+	HouseNumber       string     `json:"house_number"`
+	HouseNumberSuffix string     `json:"house_number_suffix"`
+	Locations         []Location `json:"locations"`
+	PostalOrZipCode   string     `json:"postal_or_zip_code"`
+	// Identifies the type of the resource.
+	RecordType      string `json:"record_type"`
+	StateOrProvince string `json:"state_or_province"`
+	StreetName      string `json:"street_name"`
+	StreetSuffix    string `json:"street_suffix"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                respjson.Field
+		CityOrTown        respjson.Field
+		CityOrTownAlias   respjson.Field
+		CompanyName       respjson.Field
+		Country           respjson.Field
+		CountryOrDistrict respjson.Field
+		DefaultLocationID respjson.Field
+		Description       respjson.Field
+		HouseNumber       respjson.Field
+		HouseNumberSuffix respjson.Field
+		Locations         respjson.Field
+		PostalOrZipCode   respjson.Field
+		RecordType        respjson.Field
+		StateOrProvince   respjson.Field
+		StreetName        respjson.Field
+		StreetSuffix      respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CivicAddress) RawJSON() string { return r.JSON.raw }
+func (r *CivicAddress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type Location struct {
+	// Uniquely identifies the resource.
+	ID             string `json:"id" format:"uuid"`
+	AdditionalInfo string `json:"additional_info"`
+	Description    string `json:"description"`
+	// Represents whether the location is the default or not.
+	IsDefault bool `json:"is_default"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID             respjson.Field
+		AdditionalInfo respjson.Field
+		Description    respjson.Field
+		IsDefault      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Location) RawJSON() string { return r.JSON.raw }
+func (r *Location) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ExternalConnectionCivicAddressGetResponse struct {
-	Data ExternalConnectionCivicAddressGetResponseData `json:"data"`
+	Data CivicAddress `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -81,81 +154,8 @@ func (r *ExternalConnectionCivicAddressGetResponse) UnmarshalJSON(data []byte) e
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ExternalConnectionCivicAddressGetResponseData struct {
-	// Uniquely identifies the resource.
-	ID                string `json:"id" format:"uuid"`
-	CityOrTown        string `json:"city_or_town"`
-	CityOrTownAlias   string `json:"city_or_town_alias"`
-	CompanyName       string `json:"company_name"`
-	Country           string `json:"country"`
-	CountryOrDistrict string `json:"country_or_district"`
-	// Identifies what is the default location in the list of locations.
-	DefaultLocationID string                                                  `json:"default_location_id" format:"uuid"`
-	Description       string                                                  `json:"description"`
-	HouseNumber       string                                                  `json:"house_number"`
-	HouseNumberSuffix string                                                  `json:"house_number_suffix"`
-	Locations         []ExternalConnectionCivicAddressGetResponseDataLocation `json:"locations"`
-	PostalOrZipCode   string                                                  `json:"postal_or_zip_code"`
-	// Identifies the type of the resource.
-	RecordType      string `json:"record_type"`
-	StateOrProvince string `json:"state_or_province"`
-	StreetName      string `json:"street_name"`
-	StreetSuffix    string `json:"street_suffix"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                respjson.Field
-		CityOrTown        respjson.Field
-		CityOrTownAlias   respjson.Field
-		CompanyName       respjson.Field
-		Country           respjson.Field
-		CountryOrDistrict respjson.Field
-		DefaultLocationID respjson.Field
-		Description       respjson.Field
-		HouseNumber       respjson.Field
-		HouseNumberSuffix respjson.Field
-		Locations         respjson.Field
-		PostalOrZipCode   respjson.Field
-		RecordType        respjson.Field
-		StateOrProvince   respjson.Field
-		StreetName        respjson.Field
-		StreetSuffix      respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExternalConnectionCivicAddressGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionCivicAddressGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ExternalConnectionCivicAddressGetResponseDataLocation struct {
-	// Uniquely identifies the resource.
-	ID             string `json:"id" format:"uuid"`
-	AdditionalInfo string `json:"additional_info"`
-	Description    string `json:"description"`
-	// Represents whether the location is the default or not.
-	IsDefault bool `json:"is_default"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		AdditionalInfo respjson.Field
-		Description    respjson.Field
-		IsDefault      respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExternalConnectionCivicAddressGetResponseDataLocation) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionCivicAddressGetResponseDataLocation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type ExternalConnectionCivicAddressListResponse struct {
-	Data []ExternalConnectionCivicAddressListResponseData `json:"data"`
+	Data []CivicAddress `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -167,79 +167,6 @@ type ExternalConnectionCivicAddressListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ExternalConnectionCivicAddressListResponse) RawJSON() string { return r.JSON.raw }
 func (r *ExternalConnectionCivicAddressListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ExternalConnectionCivicAddressListResponseData struct {
-	// Uniquely identifies the resource.
-	ID                string `json:"id" format:"uuid"`
-	CityOrTown        string `json:"city_or_town"`
-	CityOrTownAlias   string `json:"city_or_town_alias"`
-	CompanyName       string `json:"company_name"`
-	Country           string `json:"country"`
-	CountryOrDistrict string `json:"country_or_district"`
-	// Identifies what is the default location in the list of locations.
-	DefaultLocationID string                                                   `json:"default_location_id" format:"uuid"`
-	Description       string                                                   `json:"description"`
-	HouseNumber       string                                                   `json:"house_number"`
-	HouseNumberSuffix string                                                   `json:"house_number_suffix"`
-	Locations         []ExternalConnectionCivicAddressListResponseDataLocation `json:"locations"`
-	PostalOrZipCode   string                                                   `json:"postal_or_zip_code"`
-	// Identifies the type of the resource.
-	RecordType      string `json:"record_type"`
-	StateOrProvince string `json:"state_or_province"`
-	StreetName      string `json:"street_name"`
-	StreetSuffix    string `json:"street_suffix"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                respjson.Field
-		CityOrTown        respjson.Field
-		CityOrTownAlias   respjson.Field
-		CompanyName       respjson.Field
-		Country           respjson.Field
-		CountryOrDistrict respjson.Field
-		DefaultLocationID respjson.Field
-		Description       respjson.Field
-		HouseNumber       respjson.Field
-		HouseNumberSuffix respjson.Field
-		Locations         respjson.Field
-		PostalOrZipCode   respjson.Field
-		RecordType        respjson.Field
-		StateOrProvince   respjson.Field
-		StreetName        respjson.Field
-		StreetSuffix      respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExternalConnectionCivicAddressListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionCivicAddressListResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ExternalConnectionCivicAddressListResponseDataLocation struct {
-	// Uniquely identifies the resource.
-	ID             string `json:"id" format:"uuid"`
-	AdditionalInfo string `json:"additional_info"`
-	Description    string `json:"description"`
-	// Represents whether the location is the default or not.
-	IsDefault bool `json:"is_default"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		AdditionalInfo respjson.Field
-		Description    respjson.Field
-		IsDefault      respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExternalConnectionCivicAddressListResponseDataLocation) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionCivicAddressListResponseDataLocation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

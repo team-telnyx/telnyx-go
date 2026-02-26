@@ -72,8 +72,84 @@ func (r *SubNumberOrdersReportService) Download(ctx context.Context, reportID st
 	return
 }
 
+type SubNumberOrdersReport struct {
+	// Identifies the resource.
+	ID string `json:"id" format:"uuid"`
+	// ISO 8601 formatted date indicating when the resource was created.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// The filters that were applied to generate this report
+	Filters SubNumberOrdersReportFilters `json:"filters"`
+	// The type of order report.
+	OrderType string `json:"order_type"`
+	// Indicates the completion level of the sub number orders report. The report must
+	// have a status of 'success' before it can be downloaded.
+	//
+	// Any of "pending", "success", "failed", "expired".
+	Status SubNumberOrdersReportStatus `json:"status"`
+	// ISO 8601 formatted date indicating when the resource was updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// The ID of the user who created the report.
+	UserID string `json:"user_id" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Filters     respjson.Field
+		OrderType   respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
+		UserID      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SubNumberOrdersReport) RawJSON() string { return r.JSON.raw }
+func (r *SubNumberOrdersReport) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The filters that were applied to generate this report
+type SubNumberOrdersReportFilters struct {
+	CountryCode       string    `json:"country_code"`
+	CreatedAtGt       time.Time `json:"created_at_gt" format:"date-time"`
+	CreatedAtLt       time.Time `json:"created_at_lt" format:"date-time"`
+	CustomerReference string    `json:"customer_reference"`
+	OrderRequestID    string    `json:"order_request_id" format:"uuid"`
+	Status            string    `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CountryCode       respjson.Field
+		CreatedAtGt       respjson.Field
+		CreatedAtLt       respjson.Field
+		CustomerReference respjson.Field
+		OrderRequestID    respjson.Field
+		Status            respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SubNumberOrdersReportFilters) RawJSON() string { return r.JSON.raw }
+func (r *SubNumberOrdersReportFilters) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Indicates the completion level of the sub number orders report. The report must
+// have a status of 'success' before it can be downloaded.
+type SubNumberOrdersReportStatus string
+
+const (
+	SubNumberOrdersReportStatusPending SubNumberOrdersReportStatus = "pending"
+	SubNumberOrdersReportStatusSuccess SubNumberOrdersReportStatus = "success"
+	SubNumberOrdersReportStatusFailed  SubNumberOrdersReportStatus = "failed"
+	SubNumberOrdersReportStatusExpired SubNumberOrdersReportStatus = "expired"
+)
+
 type SubNumberOrdersReportNewResponse struct {
-	Data SubNumberOrdersReportNewResponseData `json:"data"`
+	Data SubNumberOrdersReport `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -88,73 +164,8 @@ func (r *SubNumberOrdersReportNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type SubNumberOrdersReportNewResponseData struct {
-	// Identifies the resource.
-	ID string `json:"id" format:"uuid"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// The filters that were applied to generate this report
-	Filters SubNumberOrdersReportNewResponseDataFilters `json:"filters"`
-	// The type of order report.
-	OrderType string `json:"order_type"`
-	// Indicates the completion level of the sub number orders report. The report must
-	// have a status of 'success' before it can be downloaded.
-	//
-	// Any of "pending", "success", "failed", "expired".
-	Status string `json:"status"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// The ID of the user who created the report.
-	UserID string `json:"user_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Filters     respjson.Field
-		OrderType   respjson.Field
-		Status      respjson.Field
-		UpdatedAt   respjson.Field
-		UserID      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SubNumberOrdersReportNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *SubNumberOrdersReportNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The filters that were applied to generate this report
-type SubNumberOrdersReportNewResponseDataFilters struct {
-	CountryCode       string    `json:"country_code"`
-	CreatedAtGt       time.Time `json:"created_at_gt" format:"date-time"`
-	CreatedAtLt       time.Time `json:"created_at_lt" format:"date-time"`
-	CustomerReference string    `json:"customer_reference"`
-	OrderRequestID    string    `json:"order_request_id" format:"uuid"`
-	Status            string    `json:"status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CountryCode       respjson.Field
-		CreatedAtGt       respjson.Field
-		CreatedAtLt       respjson.Field
-		CustomerReference respjson.Field
-		OrderRequestID    respjson.Field
-		Status            respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SubNumberOrdersReportNewResponseDataFilters) RawJSON() string { return r.JSON.raw }
-func (r *SubNumberOrdersReportNewResponseDataFilters) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type SubNumberOrdersReportGetResponse struct {
-	Data SubNumberOrdersReportGetResponseData `json:"data"`
+	Data SubNumberOrdersReport `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -166,71 +177,6 @@ type SubNumberOrdersReportGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r SubNumberOrdersReportGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *SubNumberOrdersReportGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SubNumberOrdersReportGetResponseData struct {
-	// Identifies the resource.
-	ID string `json:"id" format:"uuid"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// The filters that were applied to generate this report
-	Filters SubNumberOrdersReportGetResponseDataFilters `json:"filters"`
-	// The type of order report.
-	OrderType string `json:"order_type"`
-	// Indicates the completion level of the sub number orders report. The report must
-	// have a status of 'success' before it can be downloaded.
-	//
-	// Any of "pending", "success", "failed", "expired".
-	Status string `json:"status"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// The ID of the user who created the report.
-	UserID string `json:"user_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Filters     respjson.Field
-		OrderType   respjson.Field
-		Status      respjson.Field
-		UpdatedAt   respjson.Field
-		UserID      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SubNumberOrdersReportGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *SubNumberOrdersReportGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The filters that were applied to generate this report
-type SubNumberOrdersReportGetResponseDataFilters struct {
-	CountryCode       string    `json:"country_code"`
-	CreatedAtGt       time.Time `json:"created_at_gt" format:"date-time"`
-	CreatedAtLt       time.Time `json:"created_at_lt" format:"date-time"`
-	CustomerReference string    `json:"customer_reference"`
-	OrderRequestID    string    `json:"order_request_id" format:"uuid"`
-	Status            string    `json:"status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CountryCode       respjson.Field
-		CreatedAtGt       respjson.Field
-		CreatedAtLt       respjson.Field
-		CustomerReference respjson.Field
-		OrderRequestID    respjson.Field
-		Status            respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SubNumberOrdersReportGetResponseDataFilters) RawJSON() string { return r.JSON.raw }
-func (r *SubNumberOrdersReportGetResponseDataFilters) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

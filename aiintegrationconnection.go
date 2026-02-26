@@ -67,8 +67,28 @@ func (r *AIIntegrationConnectionService) Delete(ctx context.Context, userConnect
 	return
 }
 
+type IntegrationConnection struct {
+	ID            string   `json:"id" api:"required"`
+	AllowedTools  []string `json:"allowed_tools" api:"required"`
+	IntegrationID string   `json:"integration_id" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		AllowedTools  respjson.Field
+		IntegrationID respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r IntegrationConnection) RawJSON() string { return r.JSON.raw }
+func (r *IntegrationConnection) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AIIntegrationConnectionGetResponse struct {
-	Data AIIntegrationConnectionGetResponseData `json:"data" api:"required"`
+	Data IntegrationConnection `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -83,28 +103,8 @@ func (r *AIIntegrationConnectionGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIIntegrationConnectionGetResponseData struct {
-	ID            string   `json:"id" api:"required"`
-	AllowedTools  []string `json:"allowed_tools" api:"required"`
-	IntegrationID string   `json:"integration_id" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID            respjson.Field
-		AllowedTools  respjson.Field
-		IntegrationID respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIIntegrationConnectionGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIIntegrationConnectionGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type AIIntegrationConnectionListResponse struct {
-	Data []AIIntegrationConnectionListResponseData `json:"data" api:"required"`
+	Data []IntegrationConnection `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -116,25 +116,5 @@ type AIIntegrationConnectionListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r AIIntegrationConnectionListResponse) RawJSON() string { return r.JSON.raw }
 func (r *AIIntegrationConnectionListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIIntegrationConnectionListResponseData struct {
-	ID            string   `json:"id" api:"required"`
-	AllowedTools  []string `json:"allowed_tools" api:"required"`
-	IntegrationID string   `json:"integration_id" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID            respjson.Field
-		AllowedTools  respjson.Field
-		IntegrationID respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIIntegrationConnectionListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIIntegrationConnectionListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

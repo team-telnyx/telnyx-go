@@ -89,6 +89,678 @@ func (r *PortingEventService) Republish(ctx context.Context, id string, opts ...
 	return
 }
 
+type PortingEventDeletedPayload struct {
+	// Uniquely identifies the event.
+	ID string `json:"id" format:"uuid"`
+	// Indicates the notification methods used.
+	//
+	// Any of "email", "webhook", "webhook_v1".
+	AvailableNotificationMethods []string `json:"available_notification_methods"`
+	// Identifies the event type
+	//
+	// Any of "porting_order.deleted", "porting_order.loa_updated",
+	// "porting_order.messaging_changed", "porting_order.status_changed",
+	// "porting_order.sharing_token_expired", "porting_order.new_comment",
+	// "porting_order.split".
+	EventType PortingEventDeletedPayloadEventType `json:"event_type"`
+	Payload   PortingEventDeletedPayloadPayload   `json:"payload"`
+	// The status of the payload generation.
+	//
+	// Any of "created", "completed".
+	PayloadStatus PortingEventDeletedPayloadPayloadStatus `json:"payload_status"`
+	// Identifies the porting order associated with the event.
+	PortingOrderID string `json:"porting_order_id" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                           respjson.Field
+		AvailableNotificationMethods respjson.Field
+		EventType                    respjson.Field
+		Payload                      respjson.Field
+		PayloadStatus                respjson.Field
+		PortingOrderID               respjson.Field
+		ExtraFields                  map[string]respjson.Field
+		raw                          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingEventDeletedPayload) RawJSON() string { return r.JSON.raw }
+func (r *PortingEventDeletedPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies the event type
+type PortingEventDeletedPayloadEventType string
+
+const (
+	PortingEventDeletedPayloadEventTypePortingOrderDeleted             PortingEventDeletedPayloadEventType = "porting_order.deleted"
+	PortingEventDeletedPayloadEventTypePortingOrderLoaUpdated          PortingEventDeletedPayloadEventType = "porting_order.loa_updated"
+	PortingEventDeletedPayloadEventTypePortingOrderMessagingChanged    PortingEventDeletedPayloadEventType = "porting_order.messaging_changed"
+	PortingEventDeletedPayloadEventTypePortingOrderStatusChanged       PortingEventDeletedPayloadEventType = "porting_order.status_changed"
+	PortingEventDeletedPayloadEventTypePortingOrderSharingTokenExpired PortingEventDeletedPayloadEventType = "porting_order.sharing_token_expired"
+	PortingEventDeletedPayloadEventTypePortingOrderNewComment          PortingEventDeletedPayloadEventType = "porting_order.new_comment"
+	PortingEventDeletedPayloadEventTypePortingOrderSplit               PortingEventDeletedPayloadEventType = "porting_order.split"
+)
+
+type PortingEventDeletedPayloadPayload struct {
+	// Identifies the porting order that was deleted.
+	ID string `json:"id" format:"uuid"`
+	// ISO 8601 formatted date indicating when the resource was created.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Identifies the customer reference associated with the porting order.
+	CustomerReference string `json:"customer_reference"`
+	// ISO 8601 formatted date indicating when the porting order was deleted.
+	DeletedAt time.Time `json:"deleted_at" format:"date-time"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
+	// ISO 8601 formatted date indicating when the resource was updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                respjson.Field
+		CreatedAt         respjson.Field
+		CustomerReference respjson.Field
+		DeletedAt         respjson.Field
+		RecordType        respjson.Field
+		UpdatedAt         respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingEventDeletedPayloadPayload) RawJSON() string { return r.JSON.raw }
+func (r *PortingEventDeletedPayloadPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The status of the payload generation.
+type PortingEventDeletedPayloadPayloadStatus string
+
+const (
+	PortingEventDeletedPayloadPayloadStatusCreated   PortingEventDeletedPayloadPayloadStatus = "created"
+	PortingEventDeletedPayloadPayloadStatusCompleted PortingEventDeletedPayloadPayloadStatus = "completed"
+)
+
+type PortingEventMessagingChangedPayload struct {
+	// Uniquely identifies the event.
+	ID string `json:"id" format:"uuid"`
+	// Indicates the notification methods used.
+	//
+	// Any of "email", "webhook", "webhook_v1".
+	AvailableNotificationMethods []string `json:"available_notification_methods"`
+	// ISO 8601 formatted date indicating when the resource was created.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Identifies the event type
+	//
+	// Any of "porting_order.deleted", "porting_order.loa_updated",
+	// "porting_order.messaging_changed", "porting_order.status_changed",
+	// "porting_order.sharing_token_expired", "porting_order.new_comment",
+	// "porting_order.split".
+	EventType PortingEventMessagingChangedPayloadEventType `json:"event_type"`
+	// The webhook payload for the porting_order.messaging_changed event
+	Payload PortingEventMessagingChangedPayloadPayload `json:"payload"`
+	// The status of the payload generation.
+	//
+	// Any of "created", "completed".
+	PayloadStatus PortingEventMessagingChangedPayloadPayloadStatus `json:"payload_status"`
+	// Identifies the porting order associated with the event.
+	PortingOrderID string `json:"porting_order_id" format:"uuid"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
+	// ISO 8601 formatted date indicating when the resource was updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                           respjson.Field
+		AvailableNotificationMethods respjson.Field
+		CreatedAt                    respjson.Field
+		EventType                    respjson.Field
+		Payload                      respjson.Field
+		PayloadStatus                respjson.Field
+		PortingOrderID               respjson.Field
+		RecordType                   respjson.Field
+		UpdatedAt                    respjson.Field
+		ExtraFields                  map[string]respjson.Field
+		raw                          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingEventMessagingChangedPayload) RawJSON() string { return r.JSON.raw }
+func (r *PortingEventMessagingChangedPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies the event type
+type PortingEventMessagingChangedPayloadEventType string
+
+const (
+	PortingEventMessagingChangedPayloadEventTypePortingOrderDeleted             PortingEventMessagingChangedPayloadEventType = "porting_order.deleted"
+	PortingEventMessagingChangedPayloadEventTypePortingOrderLoaUpdated          PortingEventMessagingChangedPayloadEventType = "porting_order.loa_updated"
+	PortingEventMessagingChangedPayloadEventTypePortingOrderMessagingChanged    PortingEventMessagingChangedPayloadEventType = "porting_order.messaging_changed"
+	PortingEventMessagingChangedPayloadEventTypePortingOrderStatusChanged       PortingEventMessagingChangedPayloadEventType = "porting_order.status_changed"
+	PortingEventMessagingChangedPayloadEventTypePortingOrderSharingTokenExpired PortingEventMessagingChangedPayloadEventType = "porting_order.sharing_token_expired"
+	PortingEventMessagingChangedPayloadEventTypePortingOrderNewComment          PortingEventMessagingChangedPayloadEventType = "porting_order.new_comment"
+	PortingEventMessagingChangedPayloadEventTypePortingOrderSplit               PortingEventMessagingChangedPayloadEventType = "porting_order.split"
+)
+
+// The webhook payload for the porting_order.messaging_changed event
+type PortingEventMessagingChangedPayloadPayload struct {
+	// Identifies the porting order that was moved.
+	ID string `json:"id" format:"uuid"`
+	// Identifies the customer reference associated with the porting order.
+	CustomerReference string `json:"customer_reference"`
+	// The messaging portability status of the porting order.
+	Messaging PortingEventMessagingChangedPayloadPayloadMessaging `json:"messaging"`
+	// Identifies the support key associated with the porting order.
+	SupportKey string `json:"support_key"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                respjson.Field
+		CustomerReference respjson.Field
+		Messaging         respjson.Field
+		SupportKey        respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingEventMessagingChangedPayloadPayload) RawJSON() string { return r.JSON.raw }
+func (r *PortingEventMessagingChangedPayloadPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The messaging portability status of the porting order.
+type PortingEventMessagingChangedPayloadPayloadMessaging struct {
+	// Indicates whether Telnyx will port messaging capabilities from the losing
+	// carrier. If false, any messaging capabilities will stay with their current
+	// provider.
+	EnableMessaging bool `json:"enable_messaging"`
+	// Indicates whether the porting order is messaging capable.
+	MessagingCapable bool `json:"messaging_capable"`
+	// Indicates whether the messaging port is completed.
+	MessagingPortCompleted bool `json:"messaging_port_completed"`
+	// Indicates the messaging port status of the porting order.
+	//
+	// Any of "not_applicable", "pending", "activating", "exception", "canceled",
+	// "partial_port_complete", "ported".
+	MessagingPortStatus string `json:"messaging_port_status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EnableMessaging        respjson.Field
+		MessagingCapable       respjson.Field
+		MessagingPortCompleted respjson.Field
+		MessagingPortStatus    respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingEventMessagingChangedPayloadPayloadMessaging) RawJSON() string { return r.JSON.raw }
+func (r *PortingEventMessagingChangedPayloadPayloadMessaging) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The status of the payload generation.
+type PortingEventMessagingChangedPayloadPayloadStatus string
+
+const (
+	PortingEventMessagingChangedPayloadPayloadStatusCreated   PortingEventMessagingChangedPayloadPayloadStatus = "created"
+	PortingEventMessagingChangedPayloadPayloadStatusCompleted PortingEventMessagingChangedPayloadPayloadStatus = "completed"
+)
+
+type PortingEventNewCommentEvent struct {
+	// Uniquely identifies the event.
+	ID string `json:"id" format:"uuid"`
+	// Indicates the notification methods used.
+	//
+	// Any of "email", "webhook", "webhook_v1".
+	AvailableNotificationMethods []string `json:"available_notification_methods"`
+	// ISO 8601 formatted date indicating when the resource was created.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Identifies the event type
+	//
+	// Any of "porting_order.deleted", "porting_order.loa_updated",
+	// "porting_order.messaging_changed", "porting_order.status_changed",
+	// "porting_order.sharing_token_expired", "porting_order.new_comment",
+	// "porting_order.split".
+	EventType PortingEventNewCommentEventEventType `json:"event_type"`
+	// The webhook payload for the porting_order.new_comment event
+	Payload PortingEventNewCommentEventPayload `json:"payload"`
+	// The status of the payload generation.
+	//
+	// Any of "created", "completed".
+	PayloadStatus PortingEventNewCommentEventPayloadStatus `json:"payload_status"`
+	// Identifies the porting order associated with the event.
+	PortingOrderID string `json:"porting_order_id" format:"uuid"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
+	// ISO 8601 formatted date indicating when the resource was updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                           respjson.Field
+		AvailableNotificationMethods respjson.Field
+		CreatedAt                    respjson.Field
+		EventType                    respjson.Field
+		Payload                      respjson.Field
+		PayloadStatus                respjson.Field
+		PortingOrderID               respjson.Field
+		RecordType                   respjson.Field
+		UpdatedAt                    respjson.Field
+		ExtraFields                  map[string]respjson.Field
+		raw                          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingEventNewCommentEvent) RawJSON() string { return r.JSON.raw }
+func (r *PortingEventNewCommentEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies the event type
+type PortingEventNewCommentEventEventType string
+
+const (
+	PortingEventNewCommentEventEventTypePortingOrderDeleted             PortingEventNewCommentEventEventType = "porting_order.deleted"
+	PortingEventNewCommentEventEventTypePortingOrderLoaUpdated          PortingEventNewCommentEventEventType = "porting_order.loa_updated"
+	PortingEventNewCommentEventEventTypePortingOrderMessagingChanged    PortingEventNewCommentEventEventType = "porting_order.messaging_changed"
+	PortingEventNewCommentEventEventTypePortingOrderStatusChanged       PortingEventNewCommentEventEventType = "porting_order.status_changed"
+	PortingEventNewCommentEventEventTypePortingOrderSharingTokenExpired PortingEventNewCommentEventEventType = "porting_order.sharing_token_expired"
+	PortingEventNewCommentEventEventTypePortingOrderNewComment          PortingEventNewCommentEventEventType = "porting_order.new_comment"
+	PortingEventNewCommentEventEventTypePortingOrderSplit               PortingEventNewCommentEventEventType = "porting_order.split"
+)
+
+// The webhook payload for the porting_order.new_comment event
+type PortingEventNewCommentEventPayload struct {
+	// The comment that was added to the porting order.
+	Comment PortingEventNewCommentEventPayloadComment `json:"comment"`
+	// Identifies the porting order that the comment was added to.
+	PortingOrderID string `json:"porting_order_id" format:"uuid"`
+	// Identifies the support key associated with the porting order.
+	SupportKey string `json:"support_key"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Comment        respjson.Field
+		PortingOrderID respjson.Field
+		SupportKey     respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingEventNewCommentEventPayload) RawJSON() string { return r.JSON.raw }
+func (r *PortingEventNewCommentEventPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The comment that was added to the porting order.
+type PortingEventNewCommentEventPayloadComment struct {
+	// Identifies the comment.
+	ID string `json:"id" format:"uuid"`
+	// The body of the comment.
+	Body string `json:"body"`
+	// ISO 8601 formatted date indicating when the comment was created.
+	InsertedAt time.Time `json:"inserted_at" format:"date-time"`
+	// Identifies the user that create the comment.
+	UserID string `json:"user_id" format:"uuid"`
+	// Identifies the type of the user that created the comment.
+	//
+	// Any of "user", "admin", "system".
+	UserType string `json:"user_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Body        respjson.Field
+		InsertedAt  respjson.Field
+		UserID      respjson.Field
+		UserType    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingEventNewCommentEventPayloadComment) RawJSON() string { return r.JSON.raw }
+func (r *PortingEventNewCommentEventPayloadComment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The status of the payload generation.
+type PortingEventNewCommentEventPayloadStatus string
+
+const (
+	PortingEventNewCommentEventPayloadStatusCreated   PortingEventNewCommentEventPayloadStatus = "created"
+	PortingEventNewCommentEventPayloadStatusCompleted PortingEventNewCommentEventPayloadStatus = "completed"
+)
+
+type PortingEventSplitEvent struct {
+	// Uniquely identifies the event.
+	ID string `json:"id" format:"uuid"`
+	// Indicates the notification methods used.
+	//
+	// Any of "email", "webhook", "webhook_v1".
+	AvailableNotificationMethods []string `json:"available_notification_methods"`
+	// ISO 8601 formatted date indicating when the resource was created.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Identifies the event type
+	//
+	// Any of "porting_order.deleted", "porting_order.loa_updated",
+	// "porting_order.messaging_changed", "porting_order.status_changed",
+	// "porting_order.sharing_token_expired", "porting_order.new_comment",
+	// "porting_order.split".
+	EventType PortingEventSplitEventEventType `json:"event_type"`
+	// The webhook payload for the porting_order.split event
+	Payload PortingEventSplitEventPayload `json:"payload"`
+	// The status of the payload generation.
+	//
+	// Any of "created", "completed".
+	PayloadStatus PortingEventSplitEventPayloadStatus `json:"payload_status"`
+	// Identifies the porting order associated with the event.
+	PortingOrderID string `json:"porting_order_id" format:"uuid"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
+	// ISO 8601 formatted date indicating when the resource was updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                           respjson.Field
+		AvailableNotificationMethods respjson.Field
+		CreatedAt                    respjson.Field
+		EventType                    respjson.Field
+		Payload                      respjson.Field
+		PayloadStatus                respjson.Field
+		PortingOrderID               respjson.Field
+		RecordType                   respjson.Field
+		UpdatedAt                    respjson.Field
+		ExtraFields                  map[string]respjson.Field
+		raw                          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingEventSplitEvent) RawJSON() string { return r.JSON.raw }
+func (r *PortingEventSplitEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies the event type
+type PortingEventSplitEventEventType string
+
+const (
+	PortingEventSplitEventEventTypePortingOrderDeleted             PortingEventSplitEventEventType = "porting_order.deleted"
+	PortingEventSplitEventEventTypePortingOrderLoaUpdated          PortingEventSplitEventEventType = "porting_order.loa_updated"
+	PortingEventSplitEventEventTypePortingOrderMessagingChanged    PortingEventSplitEventEventType = "porting_order.messaging_changed"
+	PortingEventSplitEventEventTypePortingOrderStatusChanged       PortingEventSplitEventEventType = "porting_order.status_changed"
+	PortingEventSplitEventEventTypePortingOrderSharingTokenExpired PortingEventSplitEventEventType = "porting_order.sharing_token_expired"
+	PortingEventSplitEventEventTypePortingOrderNewComment          PortingEventSplitEventEventType = "porting_order.new_comment"
+	PortingEventSplitEventEventTypePortingOrderSplit               PortingEventSplitEventEventType = "porting_order.split"
+)
+
+// The webhook payload for the porting_order.split event
+type PortingEventSplitEventPayload struct {
+	// The porting order that was split.
+	From PortingEventSplitEventPayloadFrom `json:"from"`
+	// The list of porting phone numbers that were moved to the new porting order.
+	PortingPhoneNumbers []PortingEventSplitEventPayloadPortingPhoneNumber `json:"porting_phone_numbers"`
+	// The new porting order that the phone numbers was moved to.
+	To PortingEventSplitEventPayloadTo `json:"to"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From                respjson.Field
+		PortingPhoneNumbers respjson.Field
+		To                  respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingEventSplitEventPayload) RawJSON() string { return r.JSON.raw }
+func (r *PortingEventSplitEventPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The porting order that was split.
+type PortingEventSplitEventPayloadFrom struct {
+	// Identifies the porting order that was split.
+	ID string `json:"id" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingEventSplitEventPayloadFrom) RawJSON() string { return r.JSON.raw }
+func (r *PortingEventSplitEventPayloadFrom) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PortingEventSplitEventPayloadPortingPhoneNumber struct {
+	// Identifies the porting phone number that was moved.
+	ID string `json:"id" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingEventSplitEventPayloadPortingPhoneNumber) RawJSON() string { return r.JSON.raw }
+func (r *PortingEventSplitEventPayloadPortingPhoneNumber) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The new porting order that the phone numbers was moved to.
+type PortingEventSplitEventPayloadTo struct {
+	// Identifies the porting order that was split.
+	ID string `json:"id" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingEventSplitEventPayloadTo) RawJSON() string { return r.JSON.raw }
+func (r *PortingEventSplitEventPayloadTo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The status of the payload generation.
+type PortingEventSplitEventPayloadStatus string
+
+const (
+	PortingEventSplitEventPayloadStatusCreated   PortingEventSplitEventPayloadStatus = "created"
+	PortingEventSplitEventPayloadStatusCompleted PortingEventSplitEventPayloadStatus = "completed"
+)
+
+type PortingEventStatusChangedEvent struct {
+	// Uniquely identifies the event.
+	ID string `json:"id" format:"uuid"`
+	// Indicates the notification methods used.
+	//
+	// Any of "email", "webhook", "webhook_v1".
+	AvailableNotificationMethods []string `json:"available_notification_methods"`
+	// ISO 8601 formatted date indicating when the resource was created.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Identifies the event type
+	//
+	// Any of "porting_order.deleted", "porting_order.loa_updated",
+	// "porting_order.messaging_changed", "porting_order.status_changed",
+	// "porting_order.sharing_token_expired", "porting_order.new_comment",
+	// "porting_order.split".
+	EventType PortingEventStatusChangedEventEventType `json:"event_type"`
+	// The webhook payload for the porting_order.status_changed event
+	Payload PortingEventStatusChangedEventPayload `json:"payload"`
+	// The status of the payload generation.
+	//
+	// Any of "created", "completed".
+	PayloadStatus PortingEventStatusChangedEventPayloadStatus `json:"payload_status"`
+	// Identifies the porting order associated with the event.
+	PortingOrderID string `json:"porting_order_id" format:"uuid"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
+	// ISO 8601 formatted date indicating when the resource was updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                           respjson.Field
+		AvailableNotificationMethods respjson.Field
+		CreatedAt                    respjson.Field
+		EventType                    respjson.Field
+		Payload                      respjson.Field
+		PayloadStatus                respjson.Field
+		PortingOrderID               respjson.Field
+		RecordType                   respjson.Field
+		UpdatedAt                    respjson.Field
+		ExtraFields                  map[string]respjson.Field
+		raw                          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingEventStatusChangedEvent) RawJSON() string { return r.JSON.raw }
+func (r *PortingEventStatusChangedEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies the event type
+type PortingEventStatusChangedEventEventType string
+
+const (
+	PortingEventStatusChangedEventEventTypePortingOrderDeleted             PortingEventStatusChangedEventEventType = "porting_order.deleted"
+	PortingEventStatusChangedEventEventTypePortingOrderLoaUpdated          PortingEventStatusChangedEventEventType = "porting_order.loa_updated"
+	PortingEventStatusChangedEventEventTypePortingOrderMessagingChanged    PortingEventStatusChangedEventEventType = "porting_order.messaging_changed"
+	PortingEventStatusChangedEventEventTypePortingOrderStatusChanged       PortingEventStatusChangedEventEventType = "porting_order.status_changed"
+	PortingEventStatusChangedEventEventTypePortingOrderSharingTokenExpired PortingEventStatusChangedEventEventType = "porting_order.sharing_token_expired"
+	PortingEventStatusChangedEventEventTypePortingOrderNewComment          PortingEventStatusChangedEventEventType = "porting_order.new_comment"
+	PortingEventStatusChangedEventEventTypePortingOrderSplit               PortingEventStatusChangedEventEventType = "porting_order.split"
+)
+
+// The webhook payload for the porting_order.status_changed event
+type PortingEventStatusChangedEventPayload struct {
+	// Identifies the porting order that was moved.
+	ID string `json:"id" format:"uuid"`
+	// Identifies the customer reference associated with the porting order.
+	CustomerReference string `json:"customer_reference"`
+	// Porting order status
+	Status shared.PortingOrderStatus `json:"status"`
+	// Identifies the support key associated with the porting order.
+	SupportKey string `json:"support_key"`
+	// ISO 8601 formatted date indicating when the porting order was moved.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// The URL to send the webhook to.
+	WebhookURL string `json:"webhook_url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                respjson.Field
+		CustomerReference respjson.Field
+		Status            respjson.Field
+		SupportKey        respjson.Field
+		UpdatedAt         respjson.Field
+		WebhookURL        respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingEventStatusChangedEventPayload) RawJSON() string { return r.JSON.raw }
+func (r *PortingEventStatusChangedEventPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The status of the payload generation.
+type PortingEventStatusChangedEventPayloadStatus string
+
+const (
+	PortingEventStatusChangedEventPayloadStatusCreated   PortingEventStatusChangedEventPayloadStatus = "created"
+	PortingEventStatusChangedEventPayloadStatusCompleted PortingEventStatusChangedEventPayloadStatus = "completed"
+)
+
+type PortingEventWithoutWebhook struct {
+	// Uniquely identifies the event.
+	ID string `json:"id" format:"uuid"`
+	// Indicates the notification methods used.
+	//
+	// Any of "email", "webhook", "webhook_v1".
+	AvailableNotificationMethods []string `json:"available_notification_methods"`
+	// ISO 8601 formatted date indicating when the resource was created.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Identifies the event type
+	//
+	// Any of "porting_order.deleted", "porting_order.loa_updated",
+	// "porting_order.messaging_changed", "porting_order.status_changed",
+	// "porting_order.sharing_token_expired", "porting_order.new_comment",
+	// "porting_order.split".
+	EventType PortingEventWithoutWebhookEventType `json:"event_type"`
+	Payload   any                                 `json:"payload" api:"nullable"`
+	// The status of the payload generation.
+	//
+	// Any of "created", "completed".
+	PayloadStatus PortingEventWithoutWebhookPayloadStatus `json:"payload_status"`
+	// Identifies the porting order associated with the event.
+	PortingOrderID string `json:"porting_order_id" format:"uuid"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
+	// ISO 8601 formatted date indicating when the resource was updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                           respjson.Field
+		AvailableNotificationMethods respjson.Field
+		CreatedAt                    respjson.Field
+		EventType                    respjson.Field
+		Payload                      respjson.Field
+		PayloadStatus                respjson.Field
+		PortingOrderID               respjson.Field
+		RecordType                   respjson.Field
+		UpdatedAt                    respjson.Field
+		ExtraFields                  map[string]respjson.Field
+		raw                          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingEventWithoutWebhook) RawJSON() string { return r.JSON.raw }
+func (r *PortingEventWithoutWebhook) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies the event type
+type PortingEventWithoutWebhookEventType string
+
+const (
+	PortingEventWithoutWebhookEventTypePortingOrderDeleted             PortingEventWithoutWebhookEventType = "porting_order.deleted"
+	PortingEventWithoutWebhookEventTypePortingOrderLoaUpdated          PortingEventWithoutWebhookEventType = "porting_order.loa_updated"
+	PortingEventWithoutWebhookEventTypePortingOrderMessagingChanged    PortingEventWithoutWebhookEventType = "porting_order.messaging_changed"
+	PortingEventWithoutWebhookEventTypePortingOrderStatusChanged       PortingEventWithoutWebhookEventType = "porting_order.status_changed"
+	PortingEventWithoutWebhookEventTypePortingOrderSharingTokenExpired PortingEventWithoutWebhookEventType = "porting_order.sharing_token_expired"
+	PortingEventWithoutWebhookEventTypePortingOrderNewComment          PortingEventWithoutWebhookEventType = "porting_order.new_comment"
+	PortingEventWithoutWebhookEventTypePortingOrderSplit               PortingEventWithoutWebhookEventType = "porting_order.split"
+)
+
+// The status of the payload generation.
+type PortingEventWithoutWebhookPayloadStatus string
+
+const (
+	PortingEventWithoutWebhookPayloadStatusCreated   PortingEventWithoutWebhookPayloadStatus = "created"
+	PortingEventWithoutWebhookPayloadStatusCompleted PortingEventWithoutWebhookPayloadStatus = "completed"
+)
+
 type PortingEventGetResponse struct {
 	Data PortingEventGetResponseDataUnion `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -106,12 +778,9 @@ func (r *PortingEventGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 // PortingEventGetResponseDataUnion contains all possible properties and values
-// from [PortingEventGetResponseDataPortingEventDeletedPayload],
-// [PortingEventGetResponseDataPortingEventMessagingChangedPayload],
-// [PortingEventGetResponseDataPortingEventStatusChangedEvent],
-// [PortingEventGetResponseDataPortingEventNewCommentEvent],
-// [PortingEventGetResponseDataPortingEventSplitEvent],
-// [PortingEventGetResponseDataPortingEventWithoutWebhook].
+// from [PortingEventDeletedPayload], [PortingEventMessagingChangedPayload],
+// [PortingEventStatusChangedEvent], [PortingEventNewCommentEvent],
+// [PortingEventSplitEvent], [PortingEventWithoutWebhook].
 //
 // Use the [PortingEventGetResponseDataUnion.AsAny] method to switch on the
 // variant.
@@ -122,12 +791,10 @@ type PortingEventGetResponseDataUnion struct {
 	AvailableNotificationMethods []string `json:"available_notification_methods"`
 	// Any of nil, nil, nil, nil, nil, nil.
 	EventType string `json:"event_type"`
-	// This field is a union of
-	// [PortingEventGetResponseDataPortingEventDeletedPayloadPayload],
-	// [PortingEventGetResponseDataPortingEventMessagingChangedPayloadPayload],
-	// [PortingEventGetResponseDataPortingEventStatusChangedEventPayload],
-	// [PortingEventGetResponseDataPortingEventNewCommentEventPayload],
-	// [PortingEventGetResponseDataPortingEventSplitEventPayload], [any]
+	// This field is a union of [PortingEventDeletedPayloadPayload],
+	// [PortingEventMessagingChangedPayloadPayload],
+	// [PortingEventStatusChangedEventPayload], [PortingEventNewCommentEventPayload],
+	// [PortingEventSplitEventPayload], [any]
 	Payload        PortingEventGetResponseDataUnionPayload `json:"payload"`
 	PayloadStatus  string                                  `json:"payload_status"`
 	PortingOrderID string                                  `json:"porting_order_id"`
@@ -148,32 +815,32 @@ type PortingEventGetResponseDataUnion struct {
 	} `json:"-"`
 }
 
-func (u PortingEventGetResponseDataUnion) AsPortingEventGetResponseDataPortingEventDeletedPayload() (v PortingEventGetResponseDataPortingEventDeletedPayload) {
+func (u PortingEventGetResponseDataUnion) AsPortingEventDeletedPayload() (v PortingEventDeletedPayload) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortingEventGetResponseDataUnion) AsPortingEventGetResponseDataPortingEventMessagingChangedPayload() (v PortingEventGetResponseDataPortingEventMessagingChangedPayload) {
+func (u PortingEventGetResponseDataUnion) AsPortingEventMessagingChangedPayload() (v PortingEventMessagingChangedPayload) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortingEventGetResponseDataUnion) AsPortingEventGetResponseDataPortingEventStatusChangedEvent() (v PortingEventGetResponseDataPortingEventStatusChangedEvent) {
+func (u PortingEventGetResponseDataUnion) AsPortingEventStatusChangedEvent() (v PortingEventStatusChangedEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortingEventGetResponseDataUnion) AsPortingEventGetResponseDataPortingEventNewCommentEvent() (v PortingEventGetResponseDataPortingEventNewCommentEvent) {
+func (u PortingEventGetResponseDataUnion) AsPortingEventNewCommentEvent() (v PortingEventNewCommentEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortingEventGetResponseDataUnion) AsPortingEventGetResponseDataPortingEventSplitEvent() (v PortingEventGetResponseDataPortingEventSplitEvent) {
+func (u PortingEventGetResponseDataUnion) AsPortingEventSplitEvent() (v PortingEventSplitEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortingEventGetResponseDataUnion) AsPortingEventGetResponseDataPortingEventWithoutWebhook() (v PortingEventGetResponseDataPortingEventWithoutWebhook) {
+func (u PortingEventGetResponseDataUnion) AsPortingEventWithoutWebhook() (v PortingEventWithoutWebhook) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -193,65 +860,54 @@ func (r *PortingEventGetResponseDataUnion) UnmarshalJSON(data []byte) error {
 // [PortingEventGetResponseDataUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfPortingEventGetResponseDataPortingEventWithoutWebhookPayload]
+// will be valid: OfPortingEventWithoutWebhookPayload]
 type PortingEventGetResponseDataUnionPayload struct {
 	// This field will be present if the value is a [any] instead of an object.
-	OfPortingEventGetResponseDataPortingEventWithoutWebhookPayload any    `json:",inline"`
-	ID                                                             string `json:"id"`
-	// This field is from variant
-	// [PortingEventGetResponseDataPortingEventDeletedPayloadPayload].
+	OfPortingEventWithoutWebhookPayload any    `json:",inline"`
+	ID                                  string `json:"id"`
+	// This field is from variant [PortingEventDeletedPayloadPayload].
 	CreatedAt         time.Time `json:"created_at"`
 	CustomerReference string    `json:"customer_reference"`
-	// This field is from variant
-	// [PortingEventGetResponseDataPortingEventDeletedPayloadPayload].
+	// This field is from variant [PortingEventDeletedPayloadPayload].
 	DeletedAt time.Time `json:"deleted_at"`
-	// This field is from variant
-	// [PortingEventGetResponseDataPortingEventDeletedPayloadPayload].
+	// This field is from variant [PortingEventDeletedPayloadPayload].
 	RecordType string    `json:"record_type"`
 	UpdatedAt  time.Time `json:"updated_at"`
-	// This field is from variant
-	// [PortingEventGetResponseDataPortingEventMessagingChangedPayloadPayload].
-	Messaging  PortingEventGetResponseDataPortingEventMessagingChangedPayloadPayloadMessaging `json:"messaging"`
-	SupportKey string                                                                         `json:"support_key"`
-	// This field is from variant
-	// [PortingEventGetResponseDataPortingEventStatusChangedEventPayload].
+	// This field is from variant [PortingEventMessagingChangedPayloadPayload].
+	Messaging  PortingEventMessagingChangedPayloadPayloadMessaging `json:"messaging"`
+	SupportKey string                                              `json:"support_key"`
+	// This field is from variant [PortingEventStatusChangedEventPayload].
 	Status shared.PortingOrderStatus `json:"status"`
-	// This field is from variant
-	// [PortingEventGetResponseDataPortingEventStatusChangedEventPayload].
+	// This field is from variant [PortingEventStatusChangedEventPayload].
 	WebhookURL string `json:"webhook_url"`
-	// This field is from variant
-	// [PortingEventGetResponseDataPortingEventNewCommentEventPayload].
-	Comment PortingEventGetResponseDataPortingEventNewCommentEventPayloadComment `json:"comment"`
-	// This field is from variant
-	// [PortingEventGetResponseDataPortingEventNewCommentEventPayload].
+	// This field is from variant [PortingEventNewCommentEventPayload].
+	Comment PortingEventNewCommentEventPayloadComment `json:"comment"`
+	// This field is from variant [PortingEventNewCommentEventPayload].
 	PortingOrderID string `json:"porting_order_id"`
-	// This field is from variant
-	// [PortingEventGetResponseDataPortingEventSplitEventPayload].
-	From PortingEventGetResponseDataPortingEventSplitEventPayloadFrom `json:"from"`
-	// This field is from variant
-	// [PortingEventGetResponseDataPortingEventSplitEventPayload].
-	PortingPhoneNumbers []PortingEventGetResponseDataPortingEventSplitEventPayloadPortingPhoneNumber `json:"porting_phone_numbers"`
-	// This field is from variant
-	// [PortingEventGetResponseDataPortingEventSplitEventPayload].
-	To   PortingEventGetResponseDataPortingEventSplitEventPayloadTo `json:"to"`
+	// This field is from variant [PortingEventSplitEventPayload].
+	From PortingEventSplitEventPayloadFrom `json:"from"`
+	// This field is from variant [PortingEventSplitEventPayload].
+	PortingPhoneNumbers []PortingEventSplitEventPayloadPortingPhoneNumber `json:"porting_phone_numbers"`
+	// This field is from variant [PortingEventSplitEventPayload].
+	To   PortingEventSplitEventPayloadTo `json:"to"`
 	JSON struct {
-		OfPortingEventGetResponseDataPortingEventWithoutWebhookPayload respjson.Field
-		ID                                                             respjson.Field
-		CreatedAt                                                      respjson.Field
-		CustomerReference                                              respjson.Field
-		DeletedAt                                                      respjson.Field
-		RecordType                                                     respjson.Field
-		UpdatedAt                                                      respjson.Field
-		Messaging                                                      respjson.Field
-		SupportKey                                                     respjson.Field
-		Status                                                         respjson.Field
-		WebhookURL                                                     respjson.Field
-		Comment                                                        respjson.Field
-		PortingOrderID                                                 respjson.Field
-		From                                                           respjson.Field
-		PortingPhoneNumbers                                            respjson.Field
-		To                                                             respjson.Field
-		raw                                                            string
+		OfPortingEventWithoutWebhookPayload respjson.Field
+		ID                                  respjson.Field
+		CreatedAt                           respjson.Field
+		CustomerReference                   respjson.Field
+		DeletedAt                           respjson.Field
+		RecordType                          respjson.Field
+		UpdatedAt                           respjson.Field
+		Messaging                           respjson.Field
+		SupportKey                          respjson.Field
+		Status                              respjson.Field
+		WebhookURL                          respjson.Field
+		Comment                             respjson.Field
+		PortingOrderID                      respjson.Field
+		From                                respjson.Field
+		PortingPhoneNumbers                 respjson.Field
+		To                                  respjson.Field
+		raw                                 string
 	} `json:"-"`
 }
 
@@ -259,581 +915,10 @@ func (r *PortingEventGetResponseDataUnionPayload) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PortingEventGetResponseDataPortingEventDeletedPayload struct {
-	// Uniquely identifies the event.
-	ID string `json:"id" format:"uuid"`
-	// Indicates the notification methods used.
-	//
-	// Any of "email", "webhook", "webhook_v1".
-	AvailableNotificationMethods []string `json:"available_notification_methods"`
-	// Identifies the event type
-	//
-	// Any of "porting_order.deleted", "porting_order.loa_updated",
-	// "porting_order.messaging_changed", "porting_order.status_changed",
-	// "porting_order.sharing_token_expired", "porting_order.new_comment",
-	// "porting_order.split".
-	EventType string                                                       `json:"event_type"`
-	Payload   PortingEventGetResponseDataPortingEventDeletedPayloadPayload `json:"payload"`
-	// The status of the payload generation.
-	//
-	// Any of "created", "completed".
-	PayloadStatus string `json:"payload_status"`
-	// Identifies the porting order associated with the event.
-	PortingOrderID string `json:"porting_order_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                           respjson.Field
-		AvailableNotificationMethods respjson.Field
-		EventType                    respjson.Field
-		Payload                      respjson.Field
-		PayloadStatus                respjson.Field
-		PortingOrderID               respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventGetResponseDataPortingEventDeletedPayload) RawJSON() string { return r.JSON.raw }
-func (r *PortingEventGetResponseDataPortingEventDeletedPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingEventGetResponseDataPortingEventDeletedPayloadPayload struct {
-	// Identifies the porting order that was deleted.
-	ID string `json:"id" format:"uuid"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Identifies the customer reference associated with the porting order.
-	CustomerReference string `json:"customer_reference"`
-	// ISO 8601 formatted date indicating when the porting order was deleted.
-	DeletedAt time.Time `json:"deleted_at" format:"date-time"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                respjson.Field
-		CreatedAt         respjson.Field
-		CustomerReference respjson.Field
-		DeletedAt         respjson.Field
-		RecordType        respjson.Field
-		UpdatedAt         respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventGetResponseDataPortingEventDeletedPayloadPayload) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortingEventGetResponseDataPortingEventDeletedPayloadPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingEventGetResponseDataPortingEventMessagingChangedPayload struct {
-	// Uniquely identifies the event.
-	ID string `json:"id" format:"uuid"`
-	// Indicates the notification methods used.
-	//
-	// Any of "email", "webhook", "webhook_v1".
-	AvailableNotificationMethods []string `json:"available_notification_methods"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Identifies the event type
-	//
-	// Any of "porting_order.deleted", "porting_order.loa_updated",
-	// "porting_order.messaging_changed", "porting_order.status_changed",
-	// "porting_order.sharing_token_expired", "porting_order.new_comment",
-	// "porting_order.split".
-	EventType string `json:"event_type"`
-	// The webhook payload for the porting_order.messaging_changed event
-	Payload PortingEventGetResponseDataPortingEventMessagingChangedPayloadPayload `json:"payload"`
-	// The status of the payload generation.
-	//
-	// Any of "created", "completed".
-	PayloadStatus string `json:"payload_status"`
-	// Identifies the porting order associated with the event.
-	PortingOrderID string `json:"porting_order_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                           respjson.Field
-		AvailableNotificationMethods respjson.Field
-		CreatedAt                    respjson.Field
-		EventType                    respjson.Field
-		Payload                      respjson.Field
-		PayloadStatus                respjson.Field
-		PortingOrderID               respjson.Field
-		RecordType                   respjson.Field
-		UpdatedAt                    respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventGetResponseDataPortingEventMessagingChangedPayload) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortingEventGetResponseDataPortingEventMessagingChangedPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The webhook payload for the porting_order.messaging_changed event
-type PortingEventGetResponseDataPortingEventMessagingChangedPayloadPayload struct {
-	// Identifies the porting order that was moved.
-	ID string `json:"id" format:"uuid"`
-	// Identifies the customer reference associated with the porting order.
-	CustomerReference string `json:"customer_reference"`
-	// The messaging portability status of the porting order.
-	Messaging PortingEventGetResponseDataPortingEventMessagingChangedPayloadPayloadMessaging `json:"messaging"`
-	// Identifies the support key associated with the porting order.
-	SupportKey string `json:"support_key"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                respjson.Field
-		CustomerReference respjson.Field
-		Messaging         respjson.Field
-		SupportKey        respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventGetResponseDataPortingEventMessagingChangedPayloadPayload) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortingEventGetResponseDataPortingEventMessagingChangedPayloadPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The messaging portability status of the porting order.
-type PortingEventGetResponseDataPortingEventMessagingChangedPayloadPayloadMessaging struct {
-	// Indicates whether Telnyx will port messaging capabilities from the losing
-	// carrier. If false, any messaging capabilities will stay with their current
-	// provider.
-	EnableMessaging bool `json:"enable_messaging"`
-	// Indicates whether the porting order is messaging capable.
-	MessagingCapable bool `json:"messaging_capable"`
-	// Indicates whether the messaging port is completed.
-	MessagingPortCompleted bool `json:"messaging_port_completed"`
-	// Indicates the messaging port status of the porting order.
-	//
-	// Any of "not_applicable", "pending", "activating", "exception", "canceled",
-	// "partial_port_complete", "ported".
-	MessagingPortStatus string `json:"messaging_port_status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		EnableMessaging        respjson.Field
-		MessagingCapable       respjson.Field
-		MessagingPortCompleted respjson.Field
-		MessagingPortStatus    respjson.Field
-		ExtraFields            map[string]respjson.Field
-		raw                    string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventGetResponseDataPortingEventMessagingChangedPayloadPayloadMessaging) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortingEventGetResponseDataPortingEventMessagingChangedPayloadPayloadMessaging) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingEventGetResponseDataPortingEventStatusChangedEvent struct {
-	// Uniquely identifies the event.
-	ID string `json:"id" format:"uuid"`
-	// Indicates the notification methods used.
-	//
-	// Any of "email", "webhook", "webhook_v1".
-	AvailableNotificationMethods []string `json:"available_notification_methods"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Identifies the event type
-	//
-	// Any of "porting_order.deleted", "porting_order.loa_updated",
-	// "porting_order.messaging_changed", "porting_order.status_changed",
-	// "porting_order.sharing_token_expired", "porting_order.new_comment",
-	// "porting_order.split".
-	EventType string `json:"event_type"`
-	// The webhook payload for the porting_order.status_changed event
-	Payload PortingEventGetResponseDataPortingEventStatusChangedEventPayload `json:"payload"`
-	// The status of the payload generation.
-	//
-	// Any of "created", "completed".
-	PayloadStatus string `json:"payload_status"`
-	// Identifies the porting order associated with the event.
-	PortingOrderID string `json:"porting_order_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                           respjson.Field
-		AvailableNotificationMethods respjson.Field
-		CreatedAt                    respjson.Field
-		EventType                    respjson.Field
-		Payload                      respjson.Field
-		PayloadStatus                respjson.Field
-		PortingOrderID               respjson.Field
-		RecordType                   respjson.Field
-		UpdatedAt                    respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventGetResponseDataPortingEventStatusChangedEvent) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortingEventGetResponseDataPortingEventStatusChangedEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The webhook payload for the porting_order.status_changed event
-type PortingEventGetResponseDataPortingEventStatusChangedEventPayload struct {
-	// Identifies the porting order that was moved.
-	ID string `json:"id" format:"uuid"`
-	// Identifies the customer reference associated with the porting order.
-	CustomerReference string `json:"customer_reference"`
-	// Porting order status
-	Status shared.PortingOrderStatus `json:"status"`
-	// Identifies the support key associated with the porting order.
-	SupportKey string `json:"support_key"`
-	// ISO 8601 formatted date indicating when the porting order was moved.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// The URL to send the webhook to.
-	WebhookURL string `json:"webhook_url"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                respjson.Field
-		CustomerReference respjson.Field
-		Status            respjson.Field
-		SupportKey        respjson.Field
-		UpdatedAt         respjson.Field
-		WebhookURL        respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventGetResponseDataPortingEventStatusChangedEventPayload) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortingEventGetResponseDataPortingEventStatusChangedEventPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingEventGetResponseDataPortingEventNewCommentEvent struct {
-	// Uniquely identifies the event.
-	ID string `json:"id" format:"uuid"`
-	// Indicates the notification methods used.
-	//
-	// Any of "email", "webhook", "webhook_v1".
-	AvailableNotificationMethods []string `json:"available_notification_methods"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Identifies the event type
-	//
-	// Any of "porting_order.deleted", "porting_order.loa_updated",
-	// "porting_order.messaging_changed", "porting_order.status_changed",
-	// "porting_order.sharing_token_expired", "porting_order.new_comment",
-	// "porting_order.split".
-	EventType string `json:"event_type"`
-	// The webhook payload for the porting_order.new_comment event
-	Payload PortingEventGetResponseDataPortingEventNewCommentEventPayload `json:"payload"`
-	// The status of the payload generation.
-	//
-	// Any of "created", "completed".
-	PayloadStatus string `json:"payload_status"`
-	// Identifies the porting order associated with the event.
-	PortingOrderID string `json:"porting_order_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                           respjson.Field
-		AvailableNotificationMethods respjson.Field
-		CreatedAt                    respjson.Field
-		EventType                    respjson.Field
-		Payload                      respjson.Field
-		PayloadStatus                respjson.Field
-		PortingOrderID               respjson.Field
-		RecordType                   respjson.Field
-		UpdatedAt                    respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventGetResponseDataPortingEventNewCommentEvent) RawJSON() string { return r.JSON.raw }
-func (r *PortingEventGetResponseDataPortingEventNewCommentEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The webhook payload for the porting_order.new_comment event
-type PortingEventGetResponseDataPortingEventNewCommentEventPayload struct {
-	// The comment that was added to the porting order.
-	Comment PortingEventGetResponseDataPortingEventNewCommentEventPayloadComment `json:"comment"`
-	// Identifies the porting order that the comment was added to.
-	PortingOrderID string `json:"porting_order_id" format:"uuid"`
-	// Identifies the support key associated with the porting order.
-	SupportKey string `json:"support_key"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Comment        respjson.Field
-		PortingOrderID respjson.Field
-		SupportKey     respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventGetResponseDataPortingEventNewCommentEventPayload) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortingEventGetResponseDataPortingEventNewCommentEventPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The comment that was added to the porting order.
-type PortingEventGetResponseDataPortingEventNewCommentEventPayloadComment struct {
-	// Identifies the comment.
-	ID string `json:"id" format:"uuid"`
-	// The body of the comment.
-	Body string `json:"body"`
-	// ISO 8601 formatted date indicating when the comment was created.
-	InsertedAt time.Time `json:"inserted_at" format:"date-time"`
-	// Identifies the user that create the comment.
-	UserID string `json:"user_id" format:"uuid"`
-	// Identifies the type of the user that created the comment.
-	//
-	// Any of "user", "admin", "system".
-	UserType string `json:"user_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Body        respjson.Field
-		InsertedAt  respjson.Field
-		UserID      respjson.Field
-		UserType    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventGetResponseDataPortingEventNewCommentEventPayloadComment) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortingEventGetResponseDataPortingEventNewCommentEventPayloadComment) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingEventGetResponseDataPortingEventSplitEvent struct {
-	// Uniquely identifies the event.
-	ID string `json:"id" format:"uuid"`
-	// Indicates the notification methods used.
-	//
-	// Any of "email", "webhook", "webhook_v1".
-	AvailableNotificationMethods []string `json:"available_notification_methods"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Identifies the event type
-	//
-	// Any of "porting_order.deleted", "porting_order.loa_updated",
-	// "porting_order.messaging_changed", "porting_order.status_changed",
-	// "porting_order.sharing_token_expired", "porting_order.new_comment",
-	// "porting_order.split".
-	EventType string `json:"event_type"`
-	// The webhook payload for the porting_order.split event
-	Payload PortingEventGetResponseDataPortingEventSplitEventPayload `json:"payload"`
-	// The status of the payload generation.
-	//
-	// Any of "created", "completed".
-	PayloadStatus string `json:"payload_status"`
-	// Identifies the porting order associated with the event.
-	PortingOrderID string `json:"porting_order_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                           respjson.Field
-		AvailableNotificationMethods respjson.Field
-		CreatedAt                    respjson.Field
-		EventType                    respjson.Field
-		Payload                      respjson.Field
-		PayloadStatus                respjson.Field
-		PortingOrderID               respjson.Field
-		RecordType                   respjson.Field
-		UpdatedAt                    respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventGetResponseDataPortingEventSplitEvent) RawJSON() string { return r.JSON.raw }
-func (r *PortingEventGetResponseDataPortingEventSplitEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The webhook payload for the porting_order.split event
-type PortingEventGetResponseDataPortingEventSplitEventPayload struct {
-	// The porting order that was split.
-	From PortingEventGetResponseDataPortingEventSplitEventPayloadFrom `json:"from"`
-	// The list of porting phone numbers that were moved to the new porting order.
-	PortingPhoneNumbers []PortingEventGetResponseDataPortingEventSplitEventPayloadPortingPhoneNumber `json:"porting_phone_numbers"`
-	// The new porting order that the phone numbers was moved to.
-	To PortingEventGetResponseDataPortingEventSplitEventPayloadTo `json:"to"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		From                respjson.Field
-		PortingPhoneNumbers respjson.Field
-		To                  respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventGetResponseDataPortingEventSplitEventPayload) RawJSON() string { return r.JSON.raw }
-func (r *PortingEventGetResponseDataPortingEventSplitEventPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The porting order that was split.
-type PortingEventGetResponseDataPortingEventSplitEventPayloadFrom struct {
-	// Identifies the porting order that was split.
-	ID string `json:"id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventGetResponseDataPortingEventSplitEventPayloadFrom) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortingEventGetResponseDataPortingEventSplitEventPayloadFrom) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingEventGetResponseDataPortingEventSplitEventPayloadPortingPhoneNumber struct {
-	// Identifies the porting phone number that was moved.
-	ID string `json:"id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventGetResponseDataPortingEventSplitEventPayloadPortingPhoneNumber) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortingEventGetResponseDataPortingEventSplitEventPayloadPortingPhoneNumber) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The new porting order that the phone numbers was moved to.
-type PortingEventGetResponseDataPortingEventSplitEventPayloadTo struct {
-	// Identifies the porting order that was split.
-	ID string `json:"id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventGetResponseDataPortingEventSplitEventPayloadTo) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortingEventGetResponseDataPortingEventSplitEventPayloadTo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingEventGetResponseDataPortingEventWithoutWebhook struct {
-	// Uniquely identifies the event.
-	ID string `json:"id" format:"uuid"`
-	// Indicates the notification methods used.
-	//
-	// Any of "email", "webhook", "webhook_v1".
-	AvailableNotificationMethods []string `json:"available_notification_methods"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Identifies the event type
-	//
-	// Any of "porting_order.deleted", "porting_order.loa_updated",
-	// "porting_order.messaging_changed", "porting_order.status_changed",
-	// "porting_order.sharing_token_expired", "porting_order.new_comment",
-	// "porting_order.split".
-	EventType string `json:"event_type"`
-	Payload   any    `json:"payload" api:"nullable"`
-	// The status of the payload generation.
-	//
-	// Any of "created", "completed".
-	PayloadStatus string `json:"payload_status"`
-	// Identifies the porting order associated with the event.
-	PortingOrderID string `json:"porting_order_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                           respjson.Field
-		AvailableNotificationMethods respjson.Field
-		CreatedAt                    respjson.Field
-		EventType                    respjson.Field
-		Payload                      respjson.Field
-		PayloadStatus                respjson.Field
-		PortingOrderID               respjson.Field
-		RecordType                   respjson.Field
-		UpdatedAt                    respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventGetResponseDataPortingEventWithoutWebhook) RawJSON() string { return r.JSON.raw }
-func (r *PortingEventGetResponseDataPortingEventWithoutWebhook) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // PortingEventListResponseUnion contains all possible properties and values from
-// [PortingEventListResponsePortingEventDeletedPayload],
-// [PortingEventListResponsePortingEventMessagingChangedPayload],
-// [PortingEventListResponsePortingEventStatusChangedEvent],
-// [PortingEventListResponsePortingEventNewCommentEvent],
-// [PortingEventListResponsePortingEventSplitEvent],
-// [PortingEventListResponsePortingEventWithoutWebhook].
+// [PortingEventDeletedPayload], [PortingEventMessagingChangedPayload],
+// [PortingEventStatusChangedEvent], [PortingEventNewCommentEvent],
+// [PortingEventSplitEvent], [PortingEventWithoutWebhook].
 //
 // Use the [PortingEventListResponseUnion.AsAny] method to switch on the variant.
 //
@@ -843,12 +928,10 @@ type PortingEventListResponseUnion struct {
 	AvailableNotificationMethods []string `json:"available_notification_methods"`
 	// Any of nil, nil, nil, nil, nil, nil.
 	EventType string `json:"event_type"`
-	// This field is a union of
-	// [PortingEventListResponsePortingEventDeletedPayloadPayload],
-	// [PortingEventListResponsePortingEventMessagingChangedPayloadPayload],
-	// [PortingEventListResponsePortingEventStatusChangedEventPayload],
-	// [PortingEventListResponsePortingEventNewCommentEventPayload],
-	// [PortingEventListResponsePortingEventSplitEventPayload], [any]
+	// This field is a union of [PortingEventDeletedPayloadPayload],
+	// [PortingEventMessagingChangedPayloadPayload],
+	// [PortingEventStatusChangedEventPayload], [PortingEventNewCommentEventPayload],
+	// [PortingEventSplitEventPayload], [any]
 	Payload        PortingEventListResponseUnionPayload `json:"payload"`
 	PayloadStatus  string                               `json:"payload_status"`
 	PortingOrderID string                               `json:"porting_order_id"`
@@ -869,32 +952,32 @@ type PortingEventListResponseUnion struct {
 	} `json:"-"`
 }
 
-func (u PortingEventListResponseUnion) AsPortingEventListResponsePortingEventDeletedPayload() (v PortingEventListResponsePortingEventDeletedPayload) {
+func (u PortingEventListResponseUnion) AsPortingEventDeletedPayload() (v PortingEventDeletedPayload) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortingEventListResponseUnion) AsPortingEventListResponsePortingEventMessagingChangedPayload() (v PortingEventListResponsePortingEventMessagingChangedPayload) {
+func (u PortingEventListResponseUnion) AsPortingEventMessagingChangedPayload() (v PortingEventMessagingChangedPayload) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortingEventListResponseUnion) AsPortingEventListResponsePortingEventStatusChangedEvent() (v PortingEventListResponsePortingEventStatusChangedEvent) {
+func (u PortingEventListResponseUnion) AsPortingEventStatusChangedEvent() (v PortingEventStatusChangedEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortingEventListResponseUnion) AsPortingEventListResponsePortingEventNewCommentEvent() (v PortingEventListResponsePortingEventNewCommentEvent) {
+func (u PortingEventListResponseUnion) AsPortingEventNewCommentEvent() (v PortingEventNewCommentEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortingEventListResponseUnion) AsPortingEventListResponsePortingEventSplitEvent() (v PortingEventListResponsePortingEventSplitEvent) {
+func (u PortingEventListResponseUnion) AsPortingEventSplitEvent() (v PortingEventSplitEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortingEventListResponseUnion) AsPortingEventListResponsePortingEventWithoutWebhook() (v PortingEventListResponsePortingEventWithoutWebhook) {
+func (u PortingEventListResponseUnion) AsPortingEventWithoutWebhook() (v PortingEventWithoutWebhook) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -914,633 +997,58 @@ func (r *PortingEventListResponseUnion) UnmarshalJSON(data []byte) error {
 // [PortingEventListResponseUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfPortingEventListResponsePortingEventWithoutWebhookPayload]
+// will be valid: OfPortingEventWithoutWebhookPayload]
 type PortingEventListResponseUnionPayload struct {
 	// This field will be present if the value is a [any] instead of an object.
-	OfPortingEventListResponsePortingEventWithoutWebhookPayload any    `json:",inline"`
-	ID                                                          string `json:"id"`
-	// This field is from variant
-	// [PortingEventListResponsePortingEventDeletedPayloadPayload].
+	OfPortingEventWithoutWebhookPayload any    `json:",inline"`
+	ID                                  string `json:"id"`
+	// This field is from variant [PortingEventDeletedPayloadPayload].
 	CreatedAt         time.Time `json:"created_at"`
 	CustomerReference string    `json:"customer_reference"`
-	// This field is from variant
-	// [PortingEventListResponsePortingEventDeletedPayloadPayload].
+	// This field is from variant [PortingEventDeletedPayloadPayload].
 	DeletedAt time.Time `json:"deleted_at"`
-	// This field is from variant
-	// [PortingEventListResponsePortingEventDeletedPayloadPayload].
+	// This field is from variant [PortingEventDeletedPayloadPayload].
 	RecordType string    `json:"record_type"`
 	UpdatedAt  time.Time `json:"updated_at"`
-	// This field is from variant
-	// [PortingEventListResponsePortingEventMessagingChangedPayloadPayload].
-	Messaging  PortingEventListResponsePortingEventMessagingChangedPayloadPayloadMessaging `json:"messaging"`
-	SupportKey string                                                                      `json:"support_key"`
-	// This field is from variant
-	// [PortingEventListResponsePortingEventStatusChangedEventPayload].
+	// This field is from variant [PortingEventMessagingChangedPayloadPayload].
+	Messaging  PortingEventMessagingChangedPayloadPayloadMessaging `json:"messaging"`
+	SupportKey string                                              `json:"support_key"`
+	// This field is from variant [PortingEventStatusChangedEventPayload].
 	Status shared.PortingOrderStatus `json:"status"`
-	// This field is from variant
-	// [PortingEventListResponsePortingEventStatusChangedEventPayload].
+	// This field is from variant [PortingEventStatusChangedEventPayload].
 	WebhookURL string `json:"webhook_url"`
-	// This field is from variant
-	// [PortingEventListResponsePortingEventNewCommentEventPayload].
-	Comment PortingEventListResponsePortingEventNewCommentEventPayloadComment `json:"comment"`
-	// This field is from variant
-	// [PortingEventListResponsePortingEventNewCommentEventPayload].
+	// This field is from variant [PortingEventNewCommentEventPayload].
+	Comment PortingEventNewCommentEventPayloadComment `json:"comment"`
+	// This field is from variant [PortingEventNewCommentEventPayload].
 	PortingOrderID string `json:"porting_order_id"`
-	// This field is from variant
-	// [PortingEventListResponsePortingEventSplitEventPayload].
-	From PortingEventListResponsePortingEventSplitEventPayloadFrom `json:"from"`
-	// This field is from variant
-	// [PortingEventListResponsePortingEventSplitEventPayload].
-	PortingPhoneNumbers []PortingEventListResponsePortingEventSplitEventPayloadPortingPhoneNumber `json:"porting_phone_numbers"`
-	// This field is from variant
-	// [PortingEventListResponsePortingEventSplitEventPayload].
-	To   PortingEventListResponsePortingEventSplitEventPayloadTo `json:"to"`
+	// This field is from variant [PortingEventSplitEventPayload].
+	From PortingEventSplitEventPayloadFrom `json:"from"`
+	// This field is from variant [PortingEventSplitEventPayload].
+	PortingPhoneNumbers []PortingEventSplitEventPayloadPortingPhoneNumber `json:"porting_phone_numbers"`
+	// This field is from variant [PortingEventSplitEventPayload].
+	To   PortingEventSplitEventPayloadTo `json:"to"`
 	JSON struct {
-		OfPortingEventListResponsePortingEventWithoutWebhookPayload respjson.Field
-		ID                                                          respjson.Field
-		CreatedAt                                                   respjson.Field
-		CustomerReference                                           respjson.Field
-		DeletedAt                                                   respjson.Field
-		RecordType                                                  respjson.Field
-		UpdatedAt                                                   respjson.Field
-		Messaging                                                   respjson.Field
-		SupportKey                                                  respjson.Field
-		Status                                                      respjson.Field
-		WebhookURL                                                  respjson.Field
-		Comment                                                     respjson.Field
-		PortingOrderID                                              respjson.Field
-		From                                                        respjson.Field
-		PortingPhoneNumbers                                         respjson.Field
-		To                                                          respjson.Field
-		raw                                                         string
+		OfPortingEventWithoutWebhookPayload respjson.Field
+		ID                                  respjson.Field
+		CreatedAt                           respjson.Field
+		CustomerReference                   respjson.Field
+		DeletedAt                           respjson.Field
+		RecordType                          respjson.Field
+		UpdatedAt                           respjson.Field
+		Messaging                           respjson.Field
+		SupportKey                          respjson.Field
+		Status                              respjson.Field
+		WebhookURL                          respjson.Field
+		Comment                             respjson.Field
+		PortingOrderID                      respjson.Field
+		From                                respjson.Field
+		PortingPhoneNumbers                 respjson.Field
+		To                                  respjson.Field
+		raw                                 string
 	} `json:"-"`
 }
 
 func (r *PortingEventListResponseUnionPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingEventListResponsePortingEventDeletedPayload struct {
-	// Uniquely identifies the event.
-	ID string `json:"id" format:"uuid"`
-	// Indicates the notification methods used.
-	//
-	// Any of "email", "webhook", "webhook_v1".
-	AvailableNotificationMethods []string `json:"available_notification_methods"`
-	// Identifies the event type
-	//
-	// Any of "porting_order.deleted", "porting_order.loa_updated",
-	// "porting_order.messaging_changed", "porting_order.status_changed",
-	// "porting_order.sharing_token_expired", "porting_order.new_comment",
-	// "porting_order.split".
-	EventType string                                                    `json:"event_type"`
-	Payload   PortingEventListResponsePortingEventDeletedPayloadPayload `json:"payload"`
-	// The status of the payload generation.
-	//
-	// Any of "created", "completed".
-	PayloadStatus string `json:"payload_status"`
-	// Identifies the porting order associated with the event.
-	PortingOrderID string `json:"porting_order_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                           respjson.Field
-		AvailableNotificationMethods respjson.Field
-		EventType                    respjson.Field
-		Payload                      respjson.Field
-		PayloadStatus                respjson.Field
-		PortingOrderID               respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventListResponsePortingEventDeletedPayload) RawJSON() string { return r.JSON.raw }
-func (r *PortingEventListResponsePortingEventDeletedPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingEventListResponsePortingEventDeletedPayloadPayload struct {
-	// Identifies the porting order that was deleted.
-	ID string `json:"id" format:"uuid"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Identifies the customer reference associated with the porting order.
-	CustomerReference string `json:"customer_reference"`
-	// ISO 8601 formatted date indicating when the porting order was deleted.
-	DeletedAt time.Time `json:"deleted_at" format:"date-time"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                respjson.Field
-		CreatedAt         respjson.Field
-		CustomerReference respjson.Field
-		DeletedAt         respjson.Field
-		RecordType        respjson.Field
-		UpdatedAt         respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventListResponsePortingEventDeletedPayloadPayload) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortingEventListResponsePortingEventDeletedPayloadPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingEventListResponsePortingEventMessagingChangedPayload struct {
-	// Uniquely identifies the event.
-	ID string `json:"id" format:"uuid"`
-	// Indicates the notification methods used.
-	//
-	// Any of "email", "webhook", "webhook_v1".
-	AvailableNotificationMethods []string `json:"available_notification_methods"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Identifies the event type
-	//
-	// Any of "porting_order.deleted", "porting_order.loa_updated",
-	// "porting_order.messaging_changed", "porting_order.status_changed",
-	// "porting_order.sharing_token_expired", "porting_order.new_comment",
-	// "porting_order.split".
-	EventType string `json:"event_type"`
-	// The webhook payload for the porting_order.messaging_changed event
-	Payload PortingEventListResponsePortingEventMessagingChangedPayloadPayload `json:"payload"`
-	// The status of the payload generation.
-	//
-	// Any of "created", "completed".
-	PayloadStatus string `json:"payload_status"`
-	// Identifies the porting order associated with the event.
-	PortingOrderID string `json:"porting_order_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                           respjson.Field
-		AvailableNotificationMethods respjson.Field
-		CreatedAt                    respjson.Field
-		EventType                    respjson.Field
-		Payload                      respjson.Field
-		PayloadStatus                respjson.Field
-		PortingOrderID               respjson.Field
-		RecordType                   respjson.Field
-		UpdatedAt                    respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventListResponsePortingEventMessagingChangedPayload) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortingEventListResponsePortingEventMessagingChangedPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The webhook payload for the porting_order.messaging_changed event
-type PortingEventListResponsePortingEventMessagingChangedPayloadPayload struct {
-	// Identifies the porting order that was moved.
-	ID string `json:"id" format:"uuid"`
-	// Identifies the customer reference associated with the porting order.
-	CustomerReference string `json:"customer_reference"`
-	// The messaging portability status of the porting order.
-	Messaging PortingEventListResponsePortingEventMessagingChangedPayloadPayloadMessaging `json:"messaging"`
-	// Identifies the support key associated with the porting order.
-	SupportKey string `json:"support_key"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                respjson.Field
-		CustomerReference respjson.Field
-		Messaging         respjson.Field
-		SupportKey        respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventListResponsePortingEventMessagingChangedPayloadPayload) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortingEventListResponsePortingEventMessagingChangedPayloadPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The messaging portability status of the porting order.
-type PortingEventListResponsePortingEventMessagingChangedPayloadPayloadMessaging struct {
-	// Indicates whether Telnyx will port messaging capabilities from the losing
-	// carrier. If false, any messaging capabilities will stay with their current
-	// provider.
-	EnableMessaging bool `json:"enable_messaging"`
-	// Indicates whether the porting order is messaging capable.
-	MessagingCapable bool `json:"messaging_capable"`
-	// Indicates whether the messaging port is completed.
-	MessagingPortCompleted bool `json:"messaging_port_completed"`
-	// Indicates the messaging port status of the porting order.
-	//
-	// Any of "not_applicable", "pending", "activating", "exception", "canceled",
-	// "partial_port_complete", "ported".
-	MessagingPortStatus string `json:"messaging_port_status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		EnableMessaging        respjson.Field
-		MessagingCapable       respjson.Field
-		MessagingPortCompleted respjson.Field
-		MessagingPortStatus    respjson.Field
-		ExtraFields            map[string]respjson.Field
-		raw                    string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventListResponsePortingEventMessagingChangedPayloadPayloadMessaging) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortingEventListResponsePortingEventMessagingChangedPayloadPayloadMessaging) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingEventListResponsePortingEventStatusChangedEvent struct {
-	// Uniquely identifies the event.
-	ID string `json:"id" format:"uuid"`
-	// Indicates the notification methods used.
-	//
-	// Any of "email", "webhook", "webhook_v1".
-	AvailableNotificationMethods []string `json:"available_notification_methods"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Identifies the event type
-	//
-	// Any of "porting_order.deleted", "porting_order.loa_updated",
-	// "porting_order.messaging_changed", "porting_order.status_changed",
-	// "porting_order.sharing_token_expired", "porting_order.new_comment",
-	// "porting_order.split".
-	EventType string `json:"event_type"`
-	// The webhook payload for the porting_order.status_changed event
-	Payload PortingEventListResponsePortingEventStatusChangedEventPayload `json:"payload"`
-	// The status of the payload generation.
-	//
-	// Any of "created", "completed".
-	PayloadStatus string `json:"payload_status"`
-	// Identifies the porting order associated with the event.
-	PortingOrderID string `json:"porting_order_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                           respjson.Field
-		AvailableNotificationMethods respjson.Field
-		CreatedAt                    respjson.Field
-		EventType                    respjson.Field
-		Payload                      respjson.Field
-		PayloadStatus                respjson.Field
-		PortingOrderID               respjson.Field
-		RecordType                   respjson.Field
-		UpdatedAt                    respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventListResponsePortingEventStatusChangedEvent) RawJSON() string { return r.JSON.raw }
-func (r *PortingEventListResponsePortingEventStatusChangedEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The webhook payload for the porting_order.status_changed event
-type PortingEventListResponsePortingEventStatusChangedEventPayload struct {
-	// Identifies the porting order that was moved.
-	ID string `json:"id" format:"uuid"`
-	// Identifies the customer reference associated with the porting order.
-	CustomerReference string `json:"customer_reference"`
-	// Porting order status
-	Status shared.PortingOrderStatus `json:"status"`
-	// Identifies the support key associated with the porting order.
-	SupportKey string `json:"support_key"`
-	// ISO 8601 formatted date indicating when the porting order was moved.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// The URL to send the webhook to.
-	WebhookURL string `json:"webhook_url"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                respjson.Field
-		CustomerReference respjson.Field
-		Status            respjson.Field
-		SupportKey        respjson.Field
-		UpdatedAt         respjson.Field
-		WebhookURL        respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventListResponsePortingEventStatusChangedEventPayload) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortingEventListResponsePortingEventStatusChangedEventPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingEventListResponsePortingEventNewCommentEvent struct {
-	// Uniquely identifies the event.
-	ID string `json:"id" format:"uuid"`
-	// Indicates the notification methods used.
-	//
-	// Any of "email", "webhook", "webhook_v1".
-	AvailableNotificationMethods []string `json:"available_notification_methods"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Identifies the event type
-	//
-	// Any of "porting_order.deleted", "porting_order.loa_updated",
-	// "porting_order.messaging_changed", "porting_order.status_changed",
-	// "porting_order.sharing_token_expired", "porting_order.new_comment",
-	// "porting_order.split".
-	EventType string `json:"event_type"`
-	// The webhook payload for the porting_order.new_comment event
-	Payload PortingEventListResponsePortingEventNewCommentEventPayload `json:"payload"`
-	// The status of the payload generation.
-	//
-	// Any of "created", "completed".
-	PayloadStatus string `json:"payload_status"`
-	// Identifies the porting order associated with the event.
-	PortingOrderID string `json:"porting_order_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                           respjson.Field
-		AvailableNotificationMethods respjson.Field
-		CreatedAt                    respjson.Field
-		EventType                    respjson.Field
-		Payload                      respjson.Field
-		PayloadStatus                respjson.Field
-		PortingOrderID               respjson.Field
-		RecordType                   respjson.Field
-		UpdatedAt                    respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventListResponsePortingEventNewCommentEvent) RawJSON() string { return r.JSON.raw }
-func (r *PortingEventListResponsePortingEventNewCommentEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The webhook payload for the porting_order.new_comment event
-type PortingEventListResponsePortingEventNewCommentEventPayload struct {
-	// The comment that was added to the porting order.
-	Comment PortingEventListResponsePortingEventNewCommentEventPayloadComment `json:"comment"`
-	// Identifies the porting order that the comment was added to.
-	PortingOrderID string `json:"porting_order_id" format:"uuid"`
-	// Identifies the support key associated with the porting order.
-	SupportKey string `json:"support_key"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Comment        respjson.Field
-		PortingOrderID respjson.Field
-		SupportKey     respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventListResponsePortingEventNewCommentEventPayload) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortingEventListResponsePortingEventNewCommentEventPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The comment that was added to the porting order.
-type PortingEventListResponsePortingEventNewCommentEventPayloadComment struct {
-	// Identifies the comment.
-	ID string `json:"id" format:"uuid"`
-	// The body of the comment.
-	Body string `json:"body"`
-	// ISO 8601 formatted date indicating when the comment was created.
-	InsertedAt time.Time `json:"inserted_at" format:"date-time"`
-	// Identifies the user that create the comment.
-	UserID string `json:"user_id" format:"uuid"`
-	// Identifies the type of the user that created the comment.
-	//
-	// Any of "user", "admin", "system".
-	UserType string `json:"user_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Body        respjson.Field
-		InsertedAt  respjson.Field
-		UserID      respjson.Field
-		UserType    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventListResponsePortingEventNewCommentEventPayloadComment) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortingEventListResponsePortingEventNewCommentEventPayloadComment) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingEventListResponsePortingEventSplitEvent struct {
-	// Uniquely identifies the event.
-	ID string `json:"id" format:"uuid"`
-	// Indicates the notification methods used.
-	//
-	// Any of "email", "webhook", "webhook_v1".
-	AvailableNotificationMethods []string `json:"available_notification_methods"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Identifies the event type
-	//
-	// Any of "porting_order.deleted", "porting_order.loa_updated",
-	// "porting_order.messaging_changed", "porting_order.status_changed",
-	// "porting_order.sharing_token_expired", "porting_order.new_comment",
-	// "porting_order.split".
-	EventType string `json:"event_type"`
-	// The webhook payload for the porting_order.split event
-	Payload PortingEventListResponsePortingEventSplitEventPayload `json:"payload"`
-	// The status of the payload generation.
-	//
-	// Any of "created", "completed".
-	PayloadStatus string `json:"payload_status"`
-	// Identifies the porting order associated with the event.
-	PortingOrderID string `json:"porting_order_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                           respjson.Field
-		AvailableNotificationMethods respjson.Field
-		CreatedAt                    respjson.Field
-		EventType                    respjson.Field
-		Payload                      respjson.Field
-		PayloadStatus                respjson.Field
-		PortingOrderID               respjson.Field
-		RecordType                   respjson.Field
-		UpdatedAt                    respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventListResponsePortingEventSplitEvent) RawJSON() string { return r.JSON.raw }
-func (r *PortingEventListResponsePortingEventSplitEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The webhook payload for the porting_order.split event
-type PortingEventListResponsePortingEventSplitEventPayload struct {
-	// The porting order that was split.
-	From PortingEventListResponsePortingEventSplitEventPayloadFrom `json:"from"`
-	// The list of porting phone numbers that were moved to the new porting order.
-	PortingPhoneNumbers []PortingEventListResponsePortingEventSplitEventPayloadPortingPhoneNumber `json:"porting_phone_numbers"`
-	// The new porting order that the phone numbers was moved to.
-	To PortingEventListResponsePortingEventSplitEventPayloadTo `json:"to"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		From                respjson.Field
-		PortingPhoneNumbers respjson.Field
-		To                  respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventListResponsePortingEventSplitEventPayload) RawJSON() string { return r.JSON.raw }
-func (r *PortingEventListResponsePortingEventSplitEventPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The porting order that was split.
-type PortingEventListResponsePortingEventSplitEventPayloadFrom struct {
-	// Identifies the porting order that was split.
-	ID string `json:"id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventListResponsePortingEventSplitEventPayloadFrom) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortingEventListResponsePortingEventSplitEventPayloadFrom) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingEventListResponsePortingEventSplitEventPayloadPortingPhoneNumber struct {
-	// Identifies the porting phone number that was moved.
-	ID string `json:"id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventListResponsePortingEventSplitEventPayloadPortingPhoneNumber) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortingEventListResponsePortingEventSplitEventPayloadPortingPhoneNumber) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The new porting order that the phone numbers was moved to.
-type PortingEventListResponsePortingEventSplitEventPayloadTo struct {
-	// Identifies the porting order that was split.
-	ID string `json:"id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventListResponsePortingEventSplitEventPayloadTo) RawJSON() string { return r.JSON.raw }
-func (r *PortingEventListResponsePortingEventSplitEventPayloadTo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingEventListResponsePortingEventWithoutWebhook struct {
-	// Uniquely identifies the event.
-	ID string `json:"id" format:"uuid"`
-	// Indicates the notification methods used.
-	//
-	// Any of "email", "webhook", "webhook_v1".
-	AvailableNotificationMethods []string `json:"available_notification_methods"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Identifies the event type
-	//
-	// Any of "porting_order.deleted", "porting_order.loa_updated",
-	// "porting_order.messaging_changed", "porting_order.status_changed",
-	// "porting_order.sharing_token_expired", "porting_order.new_comment",
-	// "porting_order.split".
-	EventType string `json:"event_type"`
-	Payload   any    `json:"payload" api:"nullable"`
-	// The status of the payload generation.
-	//
-	// Any of "created", "completed".
-	PayloadStatus string `json:"payload_status"`
-	// Identifies the porting order associated with the event.
-	PortingOrderID string `json:"porting_order_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                           respjson.Field
-		AvailableNotificationMethods respjson.Field
-		CreatedAt                    respjson.Field
-		EventType                    respjson.Field
-		Payload                      respjson.Field
-		PayloadStatus                respjson.Field
-		PortingOrderID               respjson.Field
-		RecordType                   respjson.Field
-		UpdatedAt                    respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingEventListResponsePortingEventWithoutWebhook) RawJSON() string { return r.JSON.raw }
-func (r *PortingEventListResponsePortingEventWithoutWebhook) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

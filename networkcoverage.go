@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // NetworkCoverageService contains methods and other services that help with
@@ -69,8 +70,8 @@ const (
 
 type NetworkCoverageListResponse struct {
 	// List of interface types supported in this region.
-	AvailableServices []AvailableService                  `json:"available_services"`
-	Location          NetworkCoverageListResponseLocation `json:"location"`
+	AvailableServices []AvailableService     `json:"available_services"`
+	Location          shared.NetappsLocation `json:"location"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -86,35 +87,6 @@ type NetworkCoverageListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r NetworkCoverageListResponse) RawJSON() string { return r.JSON.raw }
 func (r *NetworkCoverageListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type NetworkCoverageListResponseLocation struct {
-	// Location code.
-	Code string `json:"code"`
-	// Human readable name of location.
-	Name string `json:"name"`
-	// Point of presence of location.
-	Pop string `json:"pop"`
-	// Identifies the geographical region of location.
-	Region string `json:"region"`
-	// Site of location.
-	Site string `json:"site"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Name        respjson.Field
-		Pop         respjson.Field
-		Region      respjson.Field
-		Site        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r NetworkCoverageListResponseLocation) RawJSON() string { return r.JSON.raw }
-func (r *NetworkCoverageListResponseLocation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

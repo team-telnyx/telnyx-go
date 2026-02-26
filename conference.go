@@ -261,6 +261,70 @@ const (
 	ConferenceStatusCompleted  ConferenceStatus = "completed"
 )
 
+type ConferenceParticipant struct {
+	// Uniquely identifies the participant.
+	ID string `json:"id"`
+	// Unique identifier and token for controlling the participant's call leg.
+	CallControlID string `json:"call_control_id"`
+	// Unique identifier for the call leg.
+	CallLegID string `json:"call_leg_id"`
+	// Unique identifier for the conference.
+	ConferenceID string `json:"conference_id"`
+	// Timestamp when the participant joined.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Whether the conference ends when this participant exits.
+	EndConferenceOnExit bool `json:"end_conference_on_exit"`
+	// Label assigned to the participant when joining.
+	Label string `json:"label"`
+	// Whether the participant is muted.
+	Muted bool `json:"muted"`
+	// Whether the participant is on hold.
+	OnHold bool `json:"on_hold"`
+	// Whether the conference soft-ends when this participant exits.
+	SoftEndConferenceOnExit bool `json:"soft_end_conference_on_exit"`
+	// Status of the participant.
+	//
+	// Any of "joining", "joined", "left".
+	Status ConferenceParticipantStatus `json:"status"`
+	// Timestamp when the participant was last updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// List of call control IDs this participant is whispering to.
+	WhisperCallControlIDs []string `json:"whisper_call_control_ids"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                      respjson.Field
+		CallControlID           respjson.Field
+		CallLegID               respjson.Field
+		ConferenceID            respjson.Field
+		CreatedAt               respjson.Field
+		EndConferenceOnExit     respjson.Field
+		Label                   respjson.Field
+		Muted                   respjson.Field
+		OnHold                  respjson.Field
+		SoftEndConferenceOnExit respjson.Field
+		Status                  respjson.Field
+		UpdatedAt               respjson.Field
+		WhisperCallControlIDs   respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConferenceParticipant) RawJSON() string { return r.JSON.raw }
+func (r *ConferenceParticipant) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Status of the participant.
+type ConferenceParticipantStatus string
+
+const (
+	ConferenceParticipantStatusJoining ConferenceParticipantStatus = "joining"
+	ConferenceParticipantStatusJoined  ConferenceParticipantStatus = "joined"
+	ConferenceParticipantStatusLeft    ConferenceParticipantStatus = "left"
+)
+
 type ConferenceNewResponse struct {
 	Data Conference `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -388,7 +452,7 @@ const (
 )
 
 type ConferenceGetParticipantResponse struct {
-	Data ConferenceGetParticipantResponseData `json:"data"`
+	Data ConferenceParticipant `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -403,63 +467,8 @@ func (r *ConferenceGetParticipantResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ConferenceGetParticipantResponseData struct {
-	// Uniquely identifies the participant.
-	ID string `json:"id"`
-	// Unique identifier and token for controlling the participant's call leg.
-	CallControlID string `json:"call_control_id"`
-	// Unique identifier for the call leg.
-	CallLegID string `json:"call_leg_id"`
-	// Unique identifier for the conference.
-	ConferenceID string `json:"conference_id"`
-	// Timestamp when the participant joined.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Whether the conference ends when this participant exits.
-	EndConferenceOnExit bool `json:"end_conference_on_exit"`
-	// Label assigned to the participant when joining.
-	Label string `json:"label"`
-	// Whether the participant is muted.
-	Muted bool `json:"muted"`
-	// Whether the participant is on hold.
-	OnHold bool `json:"on_hold"`
-	// Whether the conference soft-ends when this participant exits.
-	SoftEndConferenceOnExit bool `json:"soft_end_conference_on_exit"`
-	// Status of the participant.
-	//
-	// Any of "joining", "joined", "left".
-	Status string `json:"status"`
-	// Timestamp when the participant was last updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// List of call control IDs this participant is whispering to.
-	WhisperCallControlIDs []string `json:"whisper_call_control_ids"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                      respjson.Field
-		CallControlID           respjson.Field
-		CallLegID               respjson.Field
-		ConferenceID            respjson.Field
-		CreatedAt               respjson.Field
-		EndConferenceOnExit     respjson.Field
-		Label                   respjson.Field
-		Muted                   respjson.Field
-		OnHold                  respjson.Field
-		SoftEndConferenceOnExit respjson.Field
-		Status                  respjson.Field
-		UpdatedAt               respjson.Field
-		WhisperCallControlIDs   respjson.Field
-		ExtraFields             map[string]respjson.Field
-		raw                     string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ConferenceGetParticipantResponseData) RawJSON() string { return r.JSON.raw }
-func (r *ConferenceGetParticipantResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type ConferenceUpdateParticipantResponse struct {
-	Data ConferenceUpdateParticipantResponseData `json:"data"`
+	Data ConferenceParticipant `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -471,61 +480,6 @@ type ConferenceUpdateParticipantResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ConferenceUpdateParticipantResponse) RawJSON() string { return r.JSON.raw }
 func (r *ConferenceUpdateParticipantResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ConferenceUpdateParticipantResponseData struct {
-	// Uniquely identifies the participant.
-	ID string `json:"id"`
-	// Unique identifier and token for controlling the participant's call leg.
-	CallControlID string `json:"call_control_id"`
-	// Unique identifier for the call leg.
-	CallLegID string `json:"call_leg_id"`
-	// Unique identifier for the conference.
-	ConferenceID string `json:"conference_id"`
-	// Timestamp when the participant joined.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Whether the conference ends when this participant exits.
-	EndConferenceOnExit bool `json:"end_conference_on_exit"`
-	// Label assigned to the participant when joining.
-	Label string `json:"label"`
-	// Whether the participant is muted.
-	Muted bool `json:"muted"`
-	// Whether the participant is on hold.
-	OnHold bool `json:"on_hold"`
-	// Whether the conference soft-ends when this participant exits.
-	SoftEndConferenceOnExit bool `json:"soft_end_conference_on_exit"`
-	// Status of the participant.
-	//
-	// Any of "joining", "joined", "left".
-	Status string `json:"status"`
-	// Timestamp when the participant was last updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// List of call control IDs this participant is whispering to.
-	WhisperCallControlIDs []string `json:"whisper_call_control_ids"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                      respjson.Field
-		CallControlID           respjson.Field
-		CallLegID               respjson.Field
-		ConferenceID            respjson.Field
-		CreatedAt               respjson.Field
-		EndConferenceOnExit     respjson.Field
-		Label                   respjson.Field
-		Muted                   respjson.Field
-		OnHold                  respjson.Field
-		SoftEndConferenceOnExit respjson.Field
-		Status                  respjson.Field
-		UpdatedAt               respjson.Field
-		WhisperCallControlIDs   respjson.Field
-		ExtraFields             map[string]respjson.Field
-		raw                     string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ConferenceUpdateParticipantResponseData) RawJSON() string { return r.JSON.raw }
-func (r *ConferenceUpdateParticipantResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

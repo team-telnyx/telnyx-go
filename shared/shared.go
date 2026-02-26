@@ -320,6 +320,27 @@ func (r *ConnectionsPaginationMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type CostInformation struct {
+	// The ISO 4217 code for the currency.
+	Currency    string `json:"currency"`
+	MonthlyCost string `json:"monthly_cost"`
+	UpfrontCost string `json:"upfront_cost"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Currency    respjson.Field
+		MonthlyCost respjson.Field
+		UpfrontCost respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CostInformation) RawJSON() string { return r.JSON.raw }
+func (r *CostInformation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type DocReqsRequirementType struct {
 	// Identifies the associated document
 	ID string `json:"id" format:"uuid"`
@@ -405,6 +426,22 @@ const (
 	DocReqsRequirementTypeTypeAddress  DocReqsRequirementTypeType = "address"
 	DocReqsRequirementTypeTypeTextual  DocReqsRequirementTypeType = "textual"
 )
+
+type Feature struct {
+	Name string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Feature) RawJSON() string { return r.JSON.raw }
+func (r *Feature) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type HostedNumber struct {
 	// Identifies the type of resource.
@@ -984,6 +1021,35 @@ const (
 	MinimaxVoiceSettingsLanguageBoostAfrikaans  MinimaxVoiceSettingsLanguageBoost = "Afrikaans"
 )
 
+type NetappsLocation struct {
+	// Location code.
+	Code string `json:"code"`
+	// Human readable name of location.
+	Name string `json:"name"`
+	// Point of presence of location.
+	Pop string `json:"pop"`
+	// Identifies the geographical region of location.
+	Region string `json:"region"`
+	// Site of location.
+	Site string `json:"site"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Code        respjson.Field
+		Name        respjson.Field
+		Pop         respjson.Field
+		Region      respjson.Field
+		Site        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NetappsLocation) RawJSON() string { return r.JSON.raw }
+func (r *NetappsLocation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // High level health metrics about the number and it's messaging sending patterns.
 type NumberHealthMetrics struct {
 	// The ratio of messages received to the number of messages sent.
@@ -1118,6 +1184,26 @@ const (
 	PhoneNumberWithMessagingSettingsTypeShortcode PhoneNumberWithMessagingSettingsType = "shortcode"
 )
 
+type PhoneNumbersJobPhoneNumber struct {
+	// The phone number's ID
+	ID string `json:"id"`
+	// The phone number in e164 format.
+	PhoneNumber string `json:"phone_number"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		PhoneNumber respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PhoneNumbersJobPhoneNumber) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumbersJobPhoneNumber) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Porting order status
 type PortingOrderStatus struct {
 	// A list of 0 or more details about this porting order's status
@@ -1209,6 +1295,34 @@ const (
 	PortingOrdersExceptionTypeCodeRateCenterNotPortable        PortingOrdersExceptionTypeCode = "RATE_CENTER_NOT_PORTABLE"
 	PortingOrdersExceptionTypeCodeSvConflict                   PortingOrdersExceptionTypeCode = "SV_CONFLICT"
 	PortingOrdersExceptionTypeCodeSvUnknownFailure             PortingOrdersExceptionTypeCode = "SV_UNKNOWN_FAILURE"
+)
+
+type RegionInformation struct {
+	RegionName string `json:"region_name"`
+	// Any of "country_code", "rate_center", "state", "location".
+	RegionType RegionInformationRegionType `json:"region_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		RegionName  respjson.Field
+		RegionType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RegionInformation) RawJSON() string { return r.JSON.raw }
+func (r *RegionInformation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type RegionInformationRegionType string
+
+const (
+	RegionInformationRegionTypeCountryCode RegionInformationRegionType = "country_code"
+	RegionInformationRegionTypeRateCenter  RegionInformationRegionType = "rate_center"
+	RegionInformationRegionTypeState       RegionInformationRegionType = "state"
+	RegionInformationRegionTypeLocation    RegionInformationRegionType = "location"
 )
 
 // The property Type is required.

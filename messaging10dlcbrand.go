@@ -290,6 +290,23 @@ const (
 	BrandIdentityStatusVettedVerified BrandIdentityStatus = "VETTED_VERIFIED"
 )
 
+type BrandOptionalAttributes struct {
+	// The tax exempt status of the brand
+	TaxExemptStatus string `json:"taxExemptStatus"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		TaxExemptStatus respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BrandOptionalAttributes) RawJSON() string { return r.JSON.raw }
+func (r *BrandOptionalAttributes) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Entity type behind the brand. This is the form of business establishment.
 type EntityType string
 
@@ -392,8 +409,8 @@ type TelnyxBrand struct {
 	// Valid mobile phone number in e.164 international format.
 	MobilePhone string `json:"mobilePhone"`
 	// Mock brand for testing purposes
-	Mock               bool                          `json:"mock"`
-	OptionalAttributes TelnyxBrandOptionalAttributes `json:"optionalAttributes"`
+	Mock               bool                    `json:"mock"`
+	OptionalAttributes BrandOptionalAttributes `json:"optionalAttributes"`
 	// Valid phone number in e.164 international format.
 	Phone string `json:"phone"`
 	// Postal codes. Use 5 digit zipcode for United States
@@ -489,23 +506,6 @@ const (
 	TelnyxBrandBrandRelationshipLargeAccount  TelnyxBrandBrandRelationship = "LARGE_ACCOUNT"
 	TelnyxBrandBrandRelationshipKeyAccount    TelnyxBrandBrandRelationship = "KEY_ACCOUNT"
 )
-
-type TelnyxBrandOptionalAttributes struct {
-	// The tax exempt status of the brand
-	TaxExemptStatus string `json:"taxExemptStatus"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		TaxExemptStatus respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TelnyxBrandOptionalAttributes) RawJSON() string { return r.JSON.raw }
-func (r *TelnyxBrandOptionalAttributes) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 // Status of the brand
 type TelnyxBrandStatus string

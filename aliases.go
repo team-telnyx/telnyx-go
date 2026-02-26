@@ -130,6 +130,9 @@ type ConnectionNoiseSuppressionDetailsParam = shared.ConnectionNoiseSuppressionD
 type ConnectionsPaginationMeta = shared.ConnectionsPaginationMeta
 
 // This is an alias to an internal type.
+type CostInformation = shared.CostInformation
+
+// This is an alias to an internal type.
 type DocReqsRequirementType = shared.DocReqsRequirementType
 
 // Specifies objective criteria for acceptance
@@ -150,6 +153,9 @@ const DocReqsRequirementTypeTypeAddress = shared.DocReqsRequirementTypeTypeAddre
 
 // Equals "textual"
 const DocReqsRequirementTypeTypeTextual = shared.DocReqsRequirementTypeTypeTextual
+
+// This is an alias to an internal type.
+type Feature = shared.Feature
 
 // This is an alias to an internal type.
 type HostedNumber = shared.HostedNumber
@@ -446,6 +452,9 @@ const MinimaxVoiceSettingsLanguageBoostTamil = shared.MinimaxVoiceSettingsLangua
 // Equals "Afrikaans"
 const MinimaxVoiceSettingsLanguageBoostAfrikaans = shared.MinimaxVoiceSettingsLanguageBoostAfrikaans
 
+// This is an alias to an internal type.
+type NetappsLocation = shared.NetappsLocation
+
 // High level health metrics about the number and it's messaging sending patterns.
 //
 // This is an alias to an internal type.
@@ -490,6 +499,9 @@ const PhoneNumberWithMessagingSettingsTypeTollfree = shared.PhoneNumberWithMessa
 
 // Equals "shortcode"
 const PhoneNumberWithMessagingSettingsTypeShortcode = shared.PhoneNumberWithMessagingSettingsTypeShortcode
+
+// This is an alias to an internal type.
+type PhoneNumbersJobPhoneNumber = shared.PhoneNumbersJobPhoneNumber
 
 // Porting order status
 //
@@ -595,6 +607,24 @@ const PortingOrdersExceptionTypeCodeSvConflict = shared.PortingOrdersExceptionTy
 
 // Equals "SV_UNKNOWN_FAILURE"
 const PortingOrdersExceptionTypeCodeSvUnknownFailure = shared.PortingOrdersExceptionTypeCodeSvUnknownFailure
+
+// This is an alias to an internal type.
+type RegionInformation = shared.RegionInformation
+
+// This is an alias to an internal type.
+type RegionInformationRegionType = shared.RegionInformationRegionType
+
+// Equals "country_code"
+const RegionInformationRegionTypeCountryCode = shared.RegionInformationRegionTypeCountryCode
+
+// Equals "rate_center"
+const RegionInformationRegionTypeRateCenter = shared.RegionInformationRegionTypeRateCenter
+
+// Equals "state"
+const RegionInformationRegionTypeState = shared.RegionInformationRegionTypeState
+
+// Equals "location"
+const RegionInformationRegionTypeLocation = shared.RegionInformationRegionTypeLocation
 
 // This is an alias to an internal type.
 type ResembleVoiceSettingsParam = shared.ResembleVoiceSettingsParam

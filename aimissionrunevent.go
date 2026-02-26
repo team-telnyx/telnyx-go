@@ -40,7 +40,7 @@ func NewAIMissionRunEventService(opts ...option.RequestOption) (r AIMissionRunEv
 }
 
 // List events for a run (paginated)
-func (r *AIMissionRunEventService) List(ctx context.Context, runID string, params AIMissionRunEventListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[AIMissionRunEventListResponse], err error) {
+func (r *AIMissionRunEventService) List(ctx context.Context, runID string, params AIMissionRunEventListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[EventData], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -66,7 +66,7 @@ func (r *AIMissionRunEventService) List(ctx context.Context, runID string, param
 }
 
 // List events for a run (paginated)
-func (r *AIMissionRunEventService) ListAutoPaging(ctx context.Context, runID string, params AIMissionRunEventListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[AIMissionRunEventListResponse] {
+func (r *AIMissionRunEventService) ListAutoPaging(ctx context.Context, runID string, params AIMissionRunEventListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[EventData] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, runID, params, opts...))
 }
 
@@ -106,18 +106,18 @@ func (r *AIMissionRunEventService) Log(ctx context.Context, runID string, params
 	return
 }
 
-type AIMissionRunEventListResponse struct {
+type EventData struct {
 	EventID   string    `json:"event_id" api:"required"`
 	RunID     string    `json:"run_id" api:"required"`
 	Summary   string    `json:"summary" api:"required"`
 	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "status_change", "step_started", "step_completed", "step_failed",
 	// "tool_call", "tool_result", "message", "error", "custom".
-	Type           AIMissionRunEventListResponseType `json:"type" api:"required"`
-	AgentID        string                            `json:"agent_id"`
-	IdempotencyKey string                            `json:"idempotency_key"`
-	Payload        map[string]any                    `json:"payload"`
-	StepID         string                            `json:"step_id"`
+	Type           EventDataType  `json:"type" api:"required"`
+	AgentID        string         `json:"agent_id"`
+	IdempotencyKey string         `json:"idempotency_key"`
+	Payload        map[string]any `json:"payload"`
+	StepID         string         `json:"step_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventID        respjson.Field
@@ -135,27 +135,27 @@ type AIMissionRunEventListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AIMissionRunEventListResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunEventListResponse) UnmarshalJSON(data []byte) error {
+func (r EventData) RawJSON() string { return r.JSON.raw }
+func (r *EventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIMissionRunEventListResponseType string
+type EventDataType string
 
 const (
-	AIMissionRunEventListResponseTypeStatusChange  AIMissionRunEventListResponseType = "status_change"
-	AIMissionRunEventListResponseTypeStepStarted   AIMissionRunEventListResponseType = "step_started"
-	AIMissionRunEventListResponseTypeStepCompleted AIMissionRunEventListResponseType = "step_completed"
-	AIMissionRunEventListResponseTypeStepFailed    AIMissionRunEventListResponseType = "step_failed"
-	AIMissionRunEventListResponseTypeToolCall      AIMissionRunEventListResponseType = "tool_call"
-	AIMissionRunEventListResponseTypeToolResult    AIMissionRunEventListResponseType = "tool_result"
-	AIMissionRunEventListResponseTypeMessage       AIMissionRunEventListResponseType = "message"
-	AIMissionRunEventListResponseTypeError         AIMissionRunEventListResponseType = "error"
-	AIMissionRunEventListResponseTypeCustom        AIMissionRunEventListResponseType = "custom"
+	EventDataTypeStatusChange  EventDataType = "status_change"
+	EventDataTypeStepStarted   EventDataType = "step_started"
+	EventDataTypeStepCompleted EventDataType = "step_completed"
+	EventDataTypeStepFailed    EventDataType = "step_failed"
+	EventDataTypeToolCall      EventDataType = "tool_call"
+	EventDataTypeToolResult    EventDataType = "tool_result"
+	EventDataTypeMessage       EventDataType = "message"
+	EventDataTypeError         EventDataType = "error"
+	EventDataTypeCustom        EventDataType = "custom"
 )
 
 type AIMissionRunEventGetEventDetailsResponse struct {
-	Data AIMissionRunEventGetEventDetailsResponseData `json:"data" api:"required"`
+	Data EventData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -170,42 +170,8 @@ func (r *AIMissionRunEventGetEventDetailsResponse) UnmarshalJSON(data []byte) er
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIMissionRunEventGetEventDetailsResponseData struct {
-	EventID   string    `json:"event_id" api:"required"`
-	RunID     string    `json:"run_id" api:"required"`
-	Summary   string    `json:"summary" api:"required"`
-	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
-	// Any of "status_change", "step_started", "step_completed", "step_failed",
-	// "tool_call", "tool_result", "message", "error", "custom".
-	Type           string         `json:"type" api:"required"`
-	AgentID        string         `json:"agent_id"`
-	IdempotencyKey string         `json:"idempotency_key"`
-	Payload        map[string]any `json:"payload"`
-	StepID         string         `json:"step_id"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		EventID        respjson.Field
-		RunID          respjson.Field
-		Summary        respjson.Field
-		Timestamp      respjson.Field
-		Type           respjson.Field
-		AgentID        respjson.Field
-		IdempotencyKey respjson.Field
-		Payload        respjson.Field
-		StepID         respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunEventGetEventDetailsResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunEventGetEventDetailsResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type AIMissionRunEventLogResponse struct {
-	Data AIMissionRunEventLogResponseData `json:"data" api:"required"`
+	Data EventData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -217,40 +183,6 @@ type AIMissionRunEventLogResponse struct {
 // Returns the unmodified JSON received from the API
 func (r AIMissionRunEventLogResponse) RawJSON() string { return r.JSON.raw }
 func (r *AIMissionRunEventLogResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIMissionRunEventLogResponseData struct {
-	EventID   string    `json:"event_id" api:"required"`
-	RunID     string    `json:"run_id" api:"required"`
-	Summary   string    `json:"summary" api:"required"`
-	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
-	// Any of "status_change", "step_started", "step_completed", "step_failed",
-	// "tool_call", "tool_result", "message", "error", "custom".
-	Type           string         `json:"type" api:"required"`
-	AgentID        string         `json:"agent_id"`
-	IdempotencyKey string         `json:"idempotency_key"`
-	Payload        map[string]any `json:"payload"`
-	StepID         string         `json:"step_id"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		EventID        respjson.Field
-		RunID          respjson.Field
-		Summary        respjson.Field
-		Timestamp      respjson.Field
-		Type           respjson.Field
-		AgentID        respjson.Field
-		IdempotencyKey respjson.Field
-		Payload        respjson.Field
-		StepID         respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunEventLogResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunEventLogResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

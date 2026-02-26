@@ -18,6 +18,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // PhoneNumberJobService contains methods and other services that help with
@@ -115,10 +116,10 @@ type PhoneNumbersJob struct {
 	CreatedAt string `json:"created_at"`
 	// ISO 8601 formatted date indicating when the estimated time of completion of the
 	// background job.
-	Etc               time.Time                         `json:"etc" format:"date-time"`
-	FailedOperations  []PhoneNumbersJobFailedOperation  `json:"failed_operations"`
-	PendingOperations []PhoneNumbersJobPendingOperation `json:"pending_operations"`
-	PhoneNumbers      []PhoneNumbersJobPhoneNumber      `json:"phone_numbers"`
+	Etc               time.Time                           `json:"etc" format:"date-time"`
+	FailedOperations  []PhoneNumbersJobFailedOperation    `json:"failed_operations"`
+	PendingOperations []PhoneNumbersJobPendingOperation   `json:"pending_operations"`
+	PhoneNumbers      []shared.PhoneNumbersJobPhoneNumber `json:"phone_numbers"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
 	// Indicates the completion status of the background update.
@@ -199,27 +200,6 @@ type PhoneNumbersJobPendingOperation struct {
 // Returns the unmodified JSON received from the API
 func (r PhoneNumbersJobPendingOperation) RawJSON() string { return r.JSON.raw }
 func (r *PhoneNumbersJobPendingOperation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The unique phone numbers given as arguments in the job creation.
-type PhoneNumbersJobPhoneNumber struct {
-	// The phone number's ID
-	ID string `json:"id"`
-	// The phone number in e164 format.
-	PhoneNumber string `json:"phone_number"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		PhoneNumber respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PhoneNumbersJobPhoneNumber) RawJSON() string { return r.JSON.raw }
-func (r *PhoneNumbersJobPhoneNumber) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

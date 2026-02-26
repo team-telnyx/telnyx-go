@@ -116,7 +116,7 @@ func (r *AIMissionService) DeleteMission(ctx context.Context, missionID string, 
 }
 
 // List recent events across all missions
-func (r *AIMissionService) ListEvents(ctx context.Context, query AIMissionListEventsParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[AIMissionListEventsResponse], err error) {
+func (r *AIMissionService) ListEvents(ctx context.Context, query AIMissionListEventsParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[EventData], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -134,7 +134,7 @@ func (r *AIMissionService) ListEvents(ctx context.Context, query AIMissionListEv
 }
 
 // List recent events across all missions
-func (r *AIMissionService) ListEventsAutoPaging(ctx context.Context, query AIMissionListEventsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[AIMissionListEventsResponse] {
+func (r *AIMissionService) ListEventsAutoPaging(ctx context.Context, query AIMissionListEventsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[EventData] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.ListEvents(ctx, query, opts...))
 }
 
@@ -223,54 +223,6 @@ func (r *AIMissionGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIMissionCloneMissionResponse = any
-
-type AIMissionListEventsResponse struct {
-	EventID   string    `json:"event_id" api:"required"`
-	RunID     string    `json:"run_id" api:"required"`
-	Summary   string    `json:"summary" api:"required"`
-	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
-	// Any of "status_change", "step_started", "step_completed", "step_failed",
-	// "tool_call", "tool_result", "message", "error", "custom".
-	Type           AIMissionListEventsResponseType `json:"type" api:"required"`
-	AgentID        string                          `json:"agent_id"`
-	IdempotencyKey string                          `json:"idempotency_key"`
-	Payload        map[string]any                  `json:"payload"`
-	StepID         string                          `json:"step_id"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		EventID        respjson.Field
-		RunID          respjson.Field
-		Summary        respjson.Field
-		Timestamp      respjson.Field
-		Type           respjson.Field
-		AgentID        respjson.Field
-		IdempotencyKey respjson.Field
-		Payload        respjson.Field
-		StepID         respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionListEventsResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionListEventsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIMissionListEventsResponseType string
-
-const (
-	AIMissionListEventsResponseTypeStatusChange  AIMissionListEventsResponseType = "status_change"
-	AIMissionListEventsResponseTypeStepStarted   AIMissionListEventsResponseType = "step_started"
-	AIMissionListEventsResponseTypeStepCompleted AIMissionListEventsResponseType = "step_completed"
-	AIMissionListEventsResponseTypeStepFailed    AIMissionListEventsResponseType = "step_failed"
-	AIMissionListEventsResponseTypeToolCall      AIMissionListEventsResponseType = "tool_call"
-	AIMissionListEventsResponseTypeToolResult    AIMissionListEventsResponseType = "tool_result"
-	AIMissionListEventsResponseTypeMessage       AIMissionListEventsResponseType = "message"
-	AIMissionListEventsResponseTypeError         AIMissionListEventsResponseType = "error"
-	AIMissionListEventsResponseTypeCustom        AIMissionListEventsResponseType = "custom"
-)
 
 type AIMissionUpdateMissionResponse struct {
 	Data MissionData `json:"data" api:"required"`
