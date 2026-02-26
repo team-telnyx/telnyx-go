@@ -35,21 +35,39 @@ func NewTextToSpeechService(opts ...option.RequestOption) (r TextToSpeechService
 	return
 }
 
-// Converts the provided text to speech using the specified voice and returns audio
-// data
-func (r *TextToSpeechService) GenerateSpeech(ctx context.Context, body TextToSpeechGenerateSpeechParams, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "audio/mpeg")}, opts...)
-	path := "text-to-speech/speech"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
-}
-
 // Returns a list of voices that can be used with the text to speech commands.
 func (r *TextToSpeechService) ListVoices(ctx context.Context, query TextToSpeechListVoicesParams, opts ...option.RequestOption) (res *TextToSpeechListVoicesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "text-to-speech/voices"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
+}
+
+// Open a WebSocket connection to stream text and receive synthesized audio in real
+// time. Authentication is provided via the standard
+// `Authorization: Bearer <API_KEY>` header. Send JSON frames with text to
+// synthesize; receive JSON frames containing base64-encoded audio chunks.
+//
+// Supported providers: `aws`, `telnyx`, `azure`, `murfai`, `minimax`, `rime`,
+// `resemble`, `elevenlabs`.
+//
+// **Connection flow:**
+//
+//  1. Open WebSocket with query parameters specifying provider, voice, and model.
+//  2. Send an initial handshake message `{"text": " "}` (single space) with
+//     optional `voice_settings` to initialize the session.
+//  3. Send text messages as `{"text": "Hello world"}`.
+//  4. Receive audio chunks as JSON frames with base64-encoded audio.
+//  5. A final frame with `isFinal: true` indicates the end of audio for the current
+//     text.
+//
+// To interrupt and restart synthesis mid-stream, send `{"force": true}` — the
+// current worker is stopped and a new one is started.
+func (r *TextToSpeechService) Stream(ctx context.Context, query TextToSpeechStreamParams, opts ...option.RequestOption) (err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	path := "text-to-speech/speech"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, nil, opts...)
 	return
 }
 
@@ -99,32 +117,6 @@ func (r *TextToSpeechListVoicesResponseVoice) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type TextToSpeechGenerateSpeechParams struct {
-	// The text to convert to speech
-	Text string `json:"text" api:"required"`
-	// The voice ID in the format Provider.ModelId.VoiceId.
-	//
-	// Examples:
-	//
-	// - AWS.Polly.Joanna-Neural
-	// - Azure.en-US-AvaMultilingualNeural
-	// - ElevenLabs.eleven_multilingual_v2.Rachel
-	// - Telnyx.KokoroTTS.af
-	//
-	// Use the `GET /text-to-speech/voices` endpoint to get a complete list of
-	// available voices.
-	Voice string `json:"voice" api:"required"`
-	paramObj
-}
-
-func (r TextToSpeechGenerateSpeechParams) MarshalJSON() (data []byte, err error) {
-	type shadow TextToSpeechGenerateSpeechParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TextToSpeechGenerateSpeechParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type TextToSpeechListVoicesParams struct {
 	// Reference to your ElevenLabs API key stored in the Telnyx Portal
 	ElevenlabsAPIKeyRef param.Opt[string] `query:"elevenlabs_api_key_ref,omitzero" json:"-"`
@@ -152,4 +144,68 @@ const (
 	TextToSpeechListVoicesParamsProviderAzure      TextToSpeechListVoicesParamsProvider = "azure"
 	TextToSpeechListVoicesParamsProviderElevenlabs TextToSpeechListVoicesParamsProvider = "elevenlabs"
 	TextToSpeechListVoicesParamsProviderTelnyx     TextToSpeechListVoicesParamsProvider = "telnyx"
+)
+
+type TextToSpeechStreamParams struct {
+	// When `true`, bypass the audio cache and generate fresh audio.
+	DisableCache param.Opt[bool] `query:"disable_cache,omitzero" json:"-"`
+	// Model identifier for the chosen provider. Examples: `Natural`, `NaturalHD`
+	// (Telnyx); `Polly.Generative` (AWS).
+	ModelID param.Opt[string] `query:"model_id,omitzero" json:"-"`
+	// Client-provided socket identifier for tracking. If not provided, one is
+	// generated server-side.
+	SocketID param.Opt[string] `query:"socket_id,omitzero" json:"-"`
+	// Voice identifier in the format `provider.model_id.voice_id` or
+	// `provider.voice_id` (e.g. `telnyx.NaturalHD.Telnyx_Alloy` or
+	// `azure.en-US-AvaMultilingualNeural`). When provided, the `provider`, `model_id`,
+	// and `voice_id` are extracted automatically. Takes precedence over individual
+	// `provider`/`model_id`/`voice_id` parameters.
+	Voice param.Opt[string] `query:"voice,omitzero" json:"-"`
+	// Voice identifier for the chosen provider.
+	VoiceID param.Opt[string] `query:"voice_id,omitzero" json:"-"`
+	// Audio output format override. Supported for Telnyx `Natural`/`NaturalHD` models
+	// only. Accepted values: `pcm`, `wav`.
+	//
+	// Any of "pcm", "wav".
+	AudioFormat TextToSpeechStreamParamsAudioFormat `query:"audio_format,omitzero" json:"-"`
+	// TTS provider. Defaults to `telnyx` if not specified. Ignored when `voice` is
+	// provided.
+	//
+	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "murfai", "rime",
+	// "resemble".
+	Provider TextToSpeechStreamParamsProvider `query:"provider,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [TextToSpeechStreamParams]'s query parameters as
+// `url.Values`.
+func (r TextToSpeechStreamParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Audio output format override. Supported for Telnyx `Natural`/`NaturalHD` models
+// only. Accepted values: `pcm`, `wav`.
+type TextToSpeechStreamParamsAudioFormat string
+
+const (
+	TextToSpeechStreamParamsAudioFormatPcm TextToSpeechStreamParamsAudioFormat = "pcm"
+	TextToSpeechStreamParamsAudioFormatWav TextToSpeechStreamParamsAudioFormat = "wav"
+)
+
+// TTS provider. Defaults to `telnyx` if not specified. Ignored when `voice` is
+// provided.
+type TextToSpeechStreamParamsProvider string
+
+const (
+	TextToSpeechStreamParamsProviderAws        TextToSpeechStreamParamsProvider = "aws"
+	TextToSpeechStreamParamsProviderTelnyx     TextToSpeechStreamParamsProvider = "telnyx"
+	TextToSpeechStreamParamsProviderAzure      TextToSpeechStreamParamsProvider = "azure"
+	TextToSpeechStreamParamsProviderElevenlabs TextToSpeechStreamParamsProvider = "elevenlabs"
+	TextToSpeechStreamParamsProviderMinimax    TextToSpeechStreamParamsProvider = "minimax"
+	TextToSpeechStreamParamsProviderMurfai     TextToSpeechStreamParamsProvider = "murfai"
+	TextToSpeechStreamParamsProviderRime       TextToSpeechStreamParamsProvider = "rime"
+	TextToSpeechStreamParamsProviderResemble   TextToSpeechStreamParamsProvider = "resemble"
 )
