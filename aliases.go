@@ -133,6 +133,9 @@ type ConnectionsPaginationMeta = shared.ConnectionsPaginationMeta
 type CostInformation = shared.CostInformation
 
 // This is an alias to an internal type.
+type Cursor = shared.Cursor
+
+// This is an alias to an internal type.
 type DocReqsRequirementType = shared.DocReqsRequirementType
 
 // Specifies objective criteria for acceptance

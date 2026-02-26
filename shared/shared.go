@@ -342,6 +342,26 @@ func (r *CostInformation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type Cursor struct {
+	// Opaque identifier of next page.
+	After string `json:"after"`
+	// Opaque identifier of previous page.
+	Before string `json:"before"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		After       respjson.Field
+		Before      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Cursor) RawJSON() string { return r.JSON.raw }
+func (r *Cursor) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type DocReqsRequirementType struct {
 	// Identifies the associated document
 	ID string `json:"id" format:"uuid"`
