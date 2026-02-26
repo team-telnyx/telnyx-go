@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.33.0 (2026-02-26)
+
+Full Changelog: [v4.32.0...v4.33.0](https://github.com/team-telnyx/telnyx-go/compare/v4.32.0...v4.33.0)
+
+### Features
+
+* Add text-to-speech WebSocket streaming OpenAPI spec ([843b234](https://github.com/team-telnyx/telnyx-go/commit/843b23495b47df199ccdfadaf2899904016ca0c9))
+* **api:** manual updates ([23b6c36](https://github.com/team-telnyx/telnyx-go/commit/23b6c36458390ffd251b33c3e4fc987ba2a1c0f6))
+* **api:** manual updates ([f84640f](https://github.com/team-telnyx/telnyx-go/commit/f84640f161d7b2ceb397c4f8feb09adabce290f8))
+* TELAPPS-ENGDESK-48951 add channels to conf record start ([20421a4](https://github.com/team-telnyx/telnyx-go/commit/20421a4cd8cc8396ce18c2efabc7584512859669))
+
 ## 4.32.0 (2026-02-25)
 
 Full Changelog: [v4.31.0...v4.32.0](https://github.com/team-telnyx/telnyx-go/compare/v4.31.0...v4.32.0)
