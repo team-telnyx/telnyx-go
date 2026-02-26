@@ -119,7 +119,7 @@ type MessageRcSendResponseData struct {
 	OrganizationID     string                        `json:"organization_id"`
 	ReceivedAt         time.Time                     `json:"received_at" format:"date-time"`
 	RecordType         string                        `json:"record_type"`
-	To                 []MessageRcSendResponseDataTo `json:"to"`
+	To                 []RcsToItem                   `json:"to"`
 	Type               string                        `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -163,28 +163,6 @@ type MessageRcSendResponseDataFrom struct {
 // Returns the unmodified JSON received from the API
 func (r MessageRcSendResponseDataFrom) RawJSON() string { return r.JSON.raw }
 func (r *MessageRcSendResponseDataFrom) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessageRcSendResponseDataTo struct {
-	Carrier     string `json:"carrier"`
-	LineType    string `json:"line_type"`
-	PhoneNumber string `json:"phone_number"`
-	Status      string `json:"status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Carrier     respjson.Field
-		LineType    respjson.Field
-		PhoneNumber respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessageRcSendResponseDataTo) RawJSON() string { return r.JSON.raw }
-func (r *MessageRcSendResponseDataTo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

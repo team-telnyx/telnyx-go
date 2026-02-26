@@ -103,14 +103,14 @@ func (r *RequirementGroupService) SubmitForApproval(ctx context.Context, id stri
 }
 
 type RequirementGroup struct {
-	ID                     string                                  `json:"id"`
-	Action                 string                                  `json:"action"`
-	CountryCode            string                                  `json:"country_code"`
-	CreatedAt              time.Time                               `json:"created_at" format:"date-time"`
-	CustomerReference      string                                  `json:"customer_reference"`
-	PhoneNumberType        string                                  `json:"phone_number_type"`
-	RecordType             string                                  `json:"record_type"`
-	RegulatoryRequirements []RequirementGroupRegulatoryRequirement `json:"regulatory_requirements"`
+	ID                     string            `json:"id"`
+	Action                 string            `json:"action"`
+	CountryCode            string            `json:"country_code"`
+	CreatedAt              time.Time         `json:"created_at" format:"date-time"`
+	CustomerReference      string            `json:"customer_reference"`
+	PhoneNumberType        string            `json:"phone_number_type"`
+	RecordType             string            `json:"record_type"`
+	RegulatoryRequirements []UserRequirement `json:"regulatory_requirements"`
 	// Any of "approved", "unapproved", "pending-approval", "declined", "expired".
 	Status    RequirementGroupStatus `json:"status"`
 	UpdatedAt time.Time              `json:"updated_at" format:"date-time"`
@@ -137,15 +137,25 @@ func (r *RequirementGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RequirementGroupRegulatoryRequirement struct {
+type RequirementGroupStatus string
+
+const (
+	RequirementGroupStatusApproved        RequirementGroupStatus = "approved"
+	RequirementGroupStatusUnapproved      RequirementGroupStatus = "unapproved"
+	RequirementGroupStatusPendingApproval RequirementGroupStatus = "pending-approval"
+	RequirementGroupStatusDeclined        RequirementGroupStatus = "declined"
+	RequirementGroupStatusExpired         RequirementGroupStatus = "expired"
+)
+
+type UserRequirement struct {
 	CreatedAt     time.Time `json:"created_at" format:"date-time"`
 	ExpiresAt     time.Time `json:"expires_at" format:"date-time"`
 	FieldType     string    `json:"field_type"`
 	FieldValue    string    `json:"field_value"`
 	RequirementID string    `json:"requirement_id"`
 	// Any of "approved", "unapproved", "pending-approval", "declined", "expired".
-	Status    string    `json:"status"`
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	Status    UserRequirementStatus `json:"status"`
+	UpdatedAt time.Time             `json:"updated_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt     respjson.Field
@@ -161,19 +171,19 @@ type RequirementGroupRegulatoryRequirement struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RequirementGroupRegulatoryRequirement) RawJSON() string { return r.JSON.raw }
-func (r *RequirementGroupRegulatoryRequirement) UnmarshalJSON(data []byte) error {
+func (r UserRequirement) RawJSON() string { return r.JSON.raw }
+func (r *UserRequirement) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RequirementGroupStatus string
+type UserRequirementStatus string
 
 const (
-	RequirementGroupStatusApproved        RequirementGroupStatus = "approved"
-	RequirementGroupStatusUnapproved      RequirementGroupStatus = "unapproved"
-	RequirementGroupStatusPendingApproval RequirementGroupStatus = "pending-approval"
-	RequirementGroupStatusDeclined        RequirementGroupStatus = "declined"
-	RequirementGroupStatusExpired         RequirementGroupStatus = "expired"
+	UserRequirementStatusApproved        UserRequirementStatus = "approved"
+	UserRequirementStatusUnapproved      UserRequirementStatus = "unapproved"
+	UserRequirementStatusPendingApproval UserRequirementStatus = "pending-approval"
+	UserRequirementStatusDeclined        UserRequirementStatus = "declined"
+	UserRequirementStatusExpired         UserRequirementStatus = "expired"
 )
 
 type RequirementGroupNewParams struct {

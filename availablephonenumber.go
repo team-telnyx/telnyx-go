@@ -67,16 +67,16 @@ func (r *AvailablePhoneNumberListResponse) UnmarshalJSON(data []byte) error {
 type AvailablePhoneNumberListResponseData struct {
 	// Specifies whether the phone number is an exact match based on the search
 	// criteria or not.
-	BestEffort      bool                                                `json:"best_effort"`
-	CostInformation AvailablePhoneNumberListResponseDataCostInformation `json:"cost_information"`
-	Features        []AvailablePhoneNumberListResponseDataFeature       `json:"features"`
-	PhoneNumber     string                                              `json:"phone_number"`
+	BestEffort      bool                   `json:"best_effort"`
+	CostInformation shared.CostInformation `json:"cost_information"`
+	Features        []shared.Feature       `json:"features"`
+	PhoneNumber     string                 `json:"phone_number"`
 	// Specifies whether the phone number can receive calls immediately after purchase
 	// or not.
 	Quickship bool `json:"quickship"`
 	// Any of "available_phone_number".
-	RecordType        string                                                  `json:"record_type"`
-	RegionInformation []AvailablePhoneNumberListResponseDataRegionInformation `json:"region_information"`
+	RecordType        string                     `json:"record_type"`
+	RegionInformation []shared.RegionInformation `json:"region_information"`
 	// Specifies whether the phone number can be reserved before purchase or not.
 	Reservable   bool   `json:"reservable"`
 	VanityFormat string `json:"vanity_format"`
@@ -99,62 +99,6 @@ type AvailablePhoneNumberListResponseData struct {
 // Returns the unmodified JSON received from the API
 func (r AvailablePhoneNumberListResponseData) RawJSON() string { return r.JSON.raw }
 func (r *AvailablePhoneNumberListResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AvailablePhoneNumberListResponseDataCostInformation struct {
-	// The ISO 4217 code for the currency.
-	Currency    string `json:"currency"`
-	MonthlyCost string `json:"monthly_cost"`
-	UpfrontCost string `json:"upfront_cost"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Currency    respjson.Field
-		MonthlyCost respjson.Field
-		UpfrontCost respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AvailablePhoneNumberListResponseDataCostInformation) RawJSON() string { return r.JSON.raw }
-func (r *AvailablePhoneNumberListResponseDataCostInformation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AvailablePhoneNumberListResponseDataFeature struct {
-	Name string `json:"name"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AvailablePhoneNumberListResponseDataFeature) RawJSON() string { return r.JSON.raw }
-func (r *AvailablePhoneNumberListResponseDataFeature) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AvailablePhoneNumberListResponseDataRegionInformation struct {
-	RegionName string `json:"region_name"`
-	// Any of "country_code", "rate_center", "state", "location".
-	RegionType string `json:"region_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		RegionName  respjson.Field
-		RegionType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AvailablePhoneNumberListResponseDataRegionInformation) RawJSON() string { return r.JSON.raw }
-func (r *AvailablePhoneNumberListResponseDataRegionInformation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

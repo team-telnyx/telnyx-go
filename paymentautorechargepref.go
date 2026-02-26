@@ -49,8 +49,53 @@ func (r *PaymentAutoRechargePrefService) List(ctx context.Context, opts ...optio
 	return
 }
 
+type AutoRechargePref struct {
+	// The unique identifier for the auto recharge preference.
+	ID string `json:"id"`
+	// Whether auto recharge is enabled.
+	Enabled        bool `json:"enabled"`
+	InvoiceEnabled bool `json:"invoice_enabled"`
+	// The payment preference for auto recharge.
+	//
+	// Any of "credit_paypal", "ach".
+	Preference AutoRechargePrefPreference `json:"preference"`
+	// The amount to recharge the account, the actual recharge amount will be the
+	// amount necessary to reach the threshold amount plus the recharge amount.
+	RechargeAmount string `json:"recharge_amount"`
+	// The record type.
+	RecordType string `json:"record_type"`
+	// The threshold amount at which the account will be recharged.
+	ThresholdAmount string `json:"threshold_amount"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID              respjson.Field
+		Enabled         respjson.Field
+		InvoiceEnabled  respjson.Field
+		Preference      respjson.Field
+		RechargeAmount  respjson.Field
+		RecordType      respjson.Field
+		ThresholdAmount respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AutoRechargePref) RawJSON() string { return r.JSON.raw }
+func (r *AutoRechargePref) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The payment preference for auto recharge.
+type AutoRechargePrefPreference string
+
+const (
+	AutoRechargePrefPreferenceCreditPaypal AutoRechargePrefPreference = "credit_paypal"
+	AutoRechargePrefPreferenceACH          AutoRechargePrefPreference = "ach"
+)
+
 type PaymentAutoRechargePrefUpdateResponse struct {
-	Data PaymentAutoRechargePrefUpdateResponseData `json:"data"`
+	Data AutoRechargePref `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -65,45 +110,8 @@ func (r *PaymentAutoRechargePrefUpdateResponse) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PaymentAutoRechargePrefUpdateResponseData struct {
-	// The unique identifier for the auto recharge preference.
-	ID string `json:"id"`
-	// Whether auto recharge is enabled.
-	Enabled        bool `json:"enabled"`
-	InvoiceEnabled bool `json:"invoice_enabled"`
-	// The payment preference for auto recharge.
-	//
-	// Any of "credit_paypal", "ach".
-	Preference string `json:"preference"`
-	// The amount to recharge the account, the actual recharge amount will be the
-	// amount necessary to reach the threshold amount plus the recharge amount.
-	RechargeAmount string `json:"recharge_amount"`
-	// The record type.
-	RecordType string `json:"record_type"`
-	// The threshold amount at which the account will be recharged.
-	ThresholdAmount string `json:"threshold_amount"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID              respjson.Field
-		Enabled         respjson.Field
-		InvoiceEnabled  respjson.Field
-		Preference      respjson.Field
-		RechargeAmount  respjson.Field
-		RecordType      respjson.Field
-		ThresholdAmount respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PaymentAutoRechargePrefUpdateResponseData) RawJSON() string { return r.JSON.raw }
-func (r *PaymentAutoRechargePrefUpdateResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type PaymentAutoRechargePrefListResponse struct {
-	Data PaymentAutoRechargePrefListResponseData `json:"data"`
+	Data AutoRechargePref `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -115,43 +123,6 @@ type PaymentAutoRechargePrefListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r PaymentAutoRechargePrefListResponse) RawJSON() string { return r.JSON.raw }
 func (r *PaymentAutoRechargePrefListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PaymentAutoRechargePrefListResponseData struct {
-	// The unique identifier for the auto recharge preference.
-	ID string `json:"id"`
-	// Whether auto recharge is enabled.
-	Enabled        bool `json:"enabled"`
-	InvoiceEnabled bool `json:"invoice_enabled"`
-	// The payment preference for auto recharge.
-	//
-	// Any of "credit_paypal", "ach".
-	Preference string `json:"preference"`
-	// The amount to recharge the account, the actual recharge amount will be the
-	// amount necessary to reach the threshold amount plus the recharge amount.
-	RechargeAmount string `json:"recharge_amount"`
-	// The record type.
-	RecordType string `json:"record_type"`
-	// The threshold amount at which the account will be recharged.
-	ThresholdAmount string `json:"threshold_amount"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID              respjson.Field
-		Enabled         respjson.Field
-		InvoiceEnabled  respjson.Field
-		Preference      respjson.Field
-		RechargeAmount  respjson.Field
-		RecordType      respjson.Field
-		ThresholdAmount respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PaymentAutoRechargePrefListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *PaymentAutoRechargePrefListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

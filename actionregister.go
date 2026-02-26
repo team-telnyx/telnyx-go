@@ -47,8 +47,8 @@ func (r *ActionRegisterService) New(ctx context.Context, body ActionRegisterNewP
 
 type ActionRegisterNewResponse struct {
 	// Successfully registered SIM cards.
-	Data   []shared.SimpleSimCard           `json:"data"`
-	Errors []ActionRegisterNewResponseError `json:"errors"`
+	Data   []shared.SimpleSimCard `json:"data"`
+	Errors []WirelessError        `json:"errors"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -61,50 +61,6 @@ type ActionRegisterNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ActionRegisterNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *ActionRegisterNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ActionRegisterNewResponseError struct {
-	Code   string                               `json:"code" api:"required"`
-	Title  string                               `json:"title" api:"required"`
-	Detail string                               `json:"detail"`
-	Meta   map[string]any                       `json:"meta"`
-	Source ActionRegisterNewResponseErrorSource `json:"source"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Title       respjson.Field
-		Detail      respjson.Field
-		Meta        respjson.Field
-		Source      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ActionRegisterNewResponseError) RawJSON() string { return r.JSON.raw }
-func (r *ActionRegisterNewResponseError) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ActionRegisterNewResponseErrorSource struct {
-	// Indicates which query parameter caused the error.
-	Parameter string `json:"parameter"`
-	// JSON pointer (RFC6901) to the offending entity.
-	Pointer string `json:"pointer"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Parameter   respjson.Field
-		Pointer     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ActionRegisterNewResponseErrorSource) RawJSON() string { return r.JSON.raw }
-func (r *ActionRegisterNewResponseErrorSource) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -54,8 +54,111 @@ func (r *CountryCoverageService) GetCountry(ctx context.Context, countryCode str
 	return
 }
 
+type CountryCoverage struct {
+	// Country ISO code
+	Code string `json:"code"`
+	// Set of features supported
+	Features         []string `json:"features"`
+	InternationalSMS bool     `json:"international_sms"`
+	// Indicates whether country can be queried with inventory coverage endpoint
+	InventoryCoverage bool                 `json:"inventory_coverage"`
+	Local             CountryCoverageLocal `json:"local"`
+	Mobile            map[string]any       `json:"mobile"`
+	National          map[string]any       `json:"national"`
+	Numbers           bool                 `json:"numbers"`
+	P2p               bool                 `json:"p2p"`
+	// Phone number type
+	PhoneNumberType []string `json:"phone_number_type"`
+	// Supports quickship
+	Quickship bool `json:"quickship"`
+	// Geographic region (e.g., AMER, EMEA, APAC)
+	Region string `json:"region" api:"nullable"`
+	// Supports reservable
+	Reservable bool                    `json:"reservable"`
+	SharedCost map[string]any          `json:"shared_cost"`
+	TollFree   CountryCoverageTollFree `json:"toll_free"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Code              respjson.Field
+		Features          respjson.Field
+		InternationalSMS  respjson.Field
+		InventoryCoverage respjson.Field
+		Local             respjson.Field
+		Mobile            respjson.Field
+		National          respjson.Field
+		Numbers           respjson.Field
+		P2p               respjson.Field
+		PhoneNumberType   respjson.Field
+		Quickship         respjson.Field
+		Region            respjson.Field
+		Reservable        respjson.Field
+		SharedCost        respjson.Field
+		TollFree          respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CountryCoverage) RawJSON() string { return r.JSON.raw }
+func (r *CountryCoverage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CountryCoverageLocal struct {
+	Features            []string `json:"features"`
+	FullPstnReplacement bool     `json:"full_pstn_replacement"`
+	InternationalSMS    bool     `json:"international_sms"`
+	P2p                 bool     `json:"p2p"`
+	Quickship           bool     `json:"quickship"`
+	Reservable          bool     `json:"reservable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Features            respjson.Field
+		FullPstnReplacement respjson.Field
+		InternationalSMS    respjson.Field
+		P2p                 respjson.Field
+		Quickship           respjson.Field
+		Reservable          respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CountryCoverageLocal) RawJSON() string { return r.JSON.raw }
+func (r *CountryCoverageLocal) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CountryCoverageTollFree struct {
+	Features            []string `json:"features"`
+	FullPstnReplacement bool     `json:"full_pstn_replacement"`
+	InternationalSMS    bool     `json:"international_sms"`
+	P2p                 bool     `json:"p2p"`
+	Quickship           bool     `json:"quickship"`
+	Reservable          bool     `json:"reservable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Features            respjson.Field
+		FullPstnReplacement respjson.Field
+		InternationalSMS    respjson.Field
+		P2p                 respjson.Field
+		Quickship           respjson.Field
+		Reservable          respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CountryCoverageTollFree) RawJSON() string { return r.JSON.raw }
+func (r *CountryCoverageTollFree) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type CountryCoverageGetResponse struct {
-	Data map[string]CountryCoverageGetResponseData `json:"data"`
+	Data map[string]CountryCoverage `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -70,111 +173,8 @@ func (r *CountryCoverageGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CountryCoverageGetResponseData struct {
-	// Country ISO code
-	Code string `json:"code"`
-	// Set of features supported
-	Features         []string `json:"features"`
-	InternationalSMS bool     `json:"international_sms"`
-	// Indicates whether country can be queried with inventory coverage endpoint
-	InventoryCoverage bool                                `json:"inventory_coverage"`
-	Local             CountryCoverageGetResponseDataLocal `json:"local"`
-	Mobile            map[string]any                      `json:"mobile"`
-	National          map[string]any                      `json:"national"`
-	Numbers           bool                                `json:"numbers"`
-	P2p               bool                                `json:"p2p"`
-	// Phone number type
-	PhoneNumberType []string `json:"phone_number_type"`
-	// Supports quickship
-	Quickship bool `json:"quickship"`
-	// Geographic region (e.g., AMER, EMEA, APAC)
-	Region string `json:"region" api:"nullable"`
-	// Supports reservable
-	Reservable bool                                   `json:"reservable"`
-	SharedCost map[string]any                         `json:"shared_cost"`
-	TollFree   CountryCoverageGetResponseDataTollFree `json:"toll_free"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code              respjson.Field
-		Features          respjson.Field
-		InternationalSMS  respjson.Field
-		InventoryCoverage respjson.Field
-		Local             respjson.Field
-		Mobile            respjson.Field
-		National          respjson.Field
-		Numbers           respjson.Field
-		P2p               respjson.Field
-		PhoneNumberType   respjson.Field
-		Quickship         respjson.Field
-		Region            respjson.Field
-		Reservable        respjson.Field
-		SharedCost        respjson.Field
-		TollFree          respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CountryCoverageGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *CountryCoverageGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CountryCoverageGetResponseDataLocal struct {
-	Features            []string `json:"features"`
-	FullPstnReplacement bool     `json:"full_pstn_replacement"`
-	InternationalSMS    bool     `json:"international_sms"`
-	P2p                 bool     `json:"p2p"`
-	Quickship           bool     `json:"quickship"`
-	Reservable          bool     `json:"reservable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Features            respjson.Field
-		FullPstnReplacement respjson.Field
-		InternationalSMS    respjson.Field
-		P2p                 respjson.Field
-		Quickship           respjson.Field
-		Reservable          respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CountryCoverageGetResponseDataLocal) RawJSON() string { return r.JSON.raw }
-func (r *CountryCoverageGetResponseDataLocal) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CountryCoverageGetResponseDataTollFree struct {
-	Features            []string `json:"features"`
-	FullPstnReplacement bool     `json:"full_pstn_replacement"`
-	InternationalSMS    bool     `json:"international_sms"`
-	P2p                 bool     `json:"p2p"`
-	Quickship           bool     `json:"quickship"`
-	Reservable          bool     `json:"reservable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Features            respjson.Field
-		FullPstnReplacement respjson.Field
-		InternationalSMS    respjson.Field
-		P2p                 respjson.Field
-		Quickship           respjson.Field
-		Reservable          respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CountryCoverageGetResponseDataTollFree) RawJSON() string { return r.JSON.raw }
-func (r *CountryCoverageGetResponseDataTollFree) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type CountryCoverageGetCountryResponse struct {
-	Data CountryCoverageGetCountryResponseData `json:"data"`
+	Data CountryCoverage `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -186,108 +186,5 @@ type CountryCoverageGetCountryResponse struct {
 // Returns the unmodified JSON received from the API
 func (r CountryCoverageGetCountryResponse) RawJSON() string { return r.JSON.raw }
 func (r *CountryCoverageGetCountryResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CountryCoverageGetCountryResponseData struct {
-	// Country ISO code
-	Code string `json:"code"`
-	// Set of features supported
-	Features         []string `json:"features"`
-	InternationalSMS bool     `json:"international_sms"`
-	// Indicates whether country can be queried with inventory coverage endpoint
-	InventoryCoverage bool                                       `json:"inventory_coverage"`
-	Local             CountryCoverageGetCountryResponseDataLocal `json:"local"`
-	Mobile            map[string]any                             `json:"mobile"`
-	National          map[string]any                             `json:"national"`
-	Numbers           bool                                       `json:"numbers"`
-	P2p               bool                                       `json:"p2p"`
-	// Phone number type
-	PhoneNumberType []string `json:"phone_number_type"`
-	// Supports quickship
-	Quickship bool `json:"quickship"`
-	// Geographic region (e.g., AMER, EMEA, APAC)
-	Region string `json:"region" api:"nullable"`
-	// Supports reservable
-	Reservable bool                                          `json:"reservable"`
-	SharedCost map[string]any                                `json:"shared_cost"`
-	TollFree   CountryCoverageGetCountryResponseDataTollFree `json:"toll_free"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code              respjson.Field
-		Features          respjson.Field
-		InternationalSMS  respjson.Field
-		InventoryCoverage respjson.Field
-		Local             respjson.Field
-		Mobile            respjson.Field
-		National          respjson.Field
-		Numbers           respjson.Field
-		P2p               respjson.Field
-		PhoneNumberType   respjson.Field
-		Quickship         respjson.Field
-		Region            respjson.Field
-		Reservable        respjson.Field
-		SharedCost        respjson.Field
-		TollFree          respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CountryCoverageGetCountryResponseData) RawJSON() string { return r.JSON.raw }
-func (r *CountryCoverageGetCountryResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CountryCoverageGetCountryResponseDataLocal struct {
-	Features            []string `json:"features"`
-	FullPstnReplacement bool     `json:"full_pstn_replacement"`
-	InternationalSMS    bool     `json:"international_sms"`
-	P2p                 bool     `json:"p2p"`
-	Quickship           bool     `json:"quickship"`
-	Reservable          bool     `json:"reservable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Features            respjson.Field
-		FullPstnReplacement respjson.Field
-		InternationalSMS    respjson.Field
-		P2p                 respjson.Field
-		Quickship           respjson.Field
-		Reservable          respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CountryCoverageGetCountryResponseDataLocal) RawJSON() string { return r.JSON.raw }
-func (r *CountryCoverageGetCountryResponseDataLocal) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CountryCoverageGetCountryResponseDataTollFree struct {
-	Features            []string `json:"features"`
-	FullPstnReplacement bool     `json:"full_pstn_replacement"`
-	InternationalSMS    bool     `json:"international_sms"`
-	P2p                 bool     `json:"p2p"`
-	Quickship           bool     `json:"quickship"`
-	Reservable          bool     `json:"reservable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Features            respjson.Field
-		FullPstnReplacement respjson.Field
-		InternationalSMS    respjson.Field
-		P2p                 respjson.Field
-		Quickship           respjson.Field
-		Reservable          respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CountryCoverageGetCountryResponseDataTollFree) RawJSON() string { return r.JSON.raw }
-func (r *CountryCoverageGetCountryResponseDataTollFree) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

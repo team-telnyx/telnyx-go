@@ -76,6 +76,34 @@ func (r *BulkSimCardActionService) ListAutoPaging(ctx context.Context, query Bul
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
+type SimCardActionsSummary struct {
+	Count int64 `json:"count"`
+	// Any of "in-progress", "completed", "failed", "interrupted".
+	Status SimCardActionsSummaryStatus `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SimCardActionsSummary) RawJSON() string { return r.JSON.raw }
+func (r *SimCardActionsSummary) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SimCardActionsSummaryStatus string
+
+const (
+	SimCardActionsSummaryStatusInProgress  SimCardActionsSummaryStatus = "in-progress"
+	SimCardActionsSummaryStatusCompleted   SimCardActionsSummaryStatus = "completed"
+	SimCardActionsSummaryStatusFailed      SimCardActionsSummaryStatus = "failed"
+	SimCardActionsSummaryStatusInterrupted SimCardActionsSummaryStatus = "interrupted"
+)
+
 type BulkSimCardActionGetResponse struct {
 	Data BulkSimCardActionGetResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -107,8 +135,8 @@ type BulkSimCardActionGetResponseData struct {
 	CreatedAt  string `json:"created_at"`
 	RecordType string `json:"record_type"`
 	// A JSON object representation of the bulk action payload.
-	Settings              map[string]any                                          `json:"settings"`
-	SimCardActionsSummary []BulkSimCardActionGetResponseDataSimCardActionsSummary `json:"sim_card_actions_summary"`
+	Settings              map[string]any          `json:"settings"`
+	SimCardActionsSummary []SimCardActionsSummary `json:"sim_card_actions_summary"`
 	// ISO 8601 formatted date-time indicating when the resource was updated.
 	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -131,25 +159,6 @@ func (r *BulkSimCardActionGetResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type BulkSimCardActionGetResponseDataSimCardActionsSummary struct {
-	Count int64 `json:"count"`
-	// Any of "in-progress", "completed", "failed", "interrupted".
-	Status string `json:"status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BulkSimCardActionGetResponseDataSimCardActionsSummary) RawJSON() string { return r.JSON.raw }
-func (r *BulkSimCardActionGetResponseDataSimCardActionsSummary) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type BulkSimCardActionListResponse struct {
 	// Identifies the resource.
 	ID string `json:"id" format:"uuid"`
@@ -165,8 +174,8 @@ type BulkSimCardActionListResponse struct {
 	CreatedAt  string `json:"created_at"`
 	RecordType string `json:"record_type"`
 	// A JSON object representation of the bulk action payload.
-	Settings              map[string]any                                       `json:"settings"`
-	SimCardActionsSummary []BulkSimCardActionListResponseSimCardActionsSummary `json:"sim_card_actions_summary"`
+	Settings              map[string]any          `json:"settings"`
+	SimCardActionsSummary []SimCardActionsSummary `json:"sim_card_actions_summary"`
 	// ISO 8601 formatted date-time indicating when the resource was updated.
 	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -199,25 +208,6 @@ type BulkSimCardActionListResponseActionType string
 const (
 	BulkSimCardActionListResponseActionTypeBulkSetPublicIPs BulkSimCardActionListResponseActionType = "bulk_set_public_ips"
 )
-
-type BulkSimCardActionListResponseSimCardActionsSummary struct {
-	Count int64 `json:"count"`
-	// Any of "in-progress", "completed", "failed", "interrupted".
-	Status string `json:"status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BulkSimCardActionListResponseSimCardActionsSummary) RawJSON() string { return r.JSON.raw }
-func (r *BulkSimCardActionListResponseSimCardActionsSummary) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 type BulkSimCardActionListParams struct {
 	// The page number to load.

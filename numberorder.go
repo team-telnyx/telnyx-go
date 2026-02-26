@@ -297,8 +297,8 @@ type NumberOrderListResponse struct {
 	// A customer reference string for customer look ups.
 	CustomerReference string `json:"customer_reference"`
 	// Identifies the messaging profile associated with the phone number.
-	MessagingProfileID string                               `json:"messaging_profile_id"`
-	PhoneNumbers       []NumberOrderListResponsePhoneNumber `json:"phone_numbers"`
+	MessagingProfileID string                              `json:"messaging_profile_id"`
+	PhoneNumbers       []shared.PhoneNumbersJobPhoneNumber `json:"phone_numbers"`
 	// The count of phone numbers in the number order.
 	PhoneNumbersCount int64  `json:"phone_numbers_count"`
 	RecordType        string `json:"record_type"`
@@ -334,27 +334,6 @@ type NumberOrderListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r NumberOrderListResponse) RawJSON() string { return r.JSON.raw }
 func (r *NumberOrderListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The unique phone numbers given as arguments in the job creation.
-type NumberOrderListResponsePhoneNumber struct {
-	// The phone number's ID
-	ID string `json:"id"`
-	// The phone number in e164 format.
-	PhoneNumber string `json:"phone_number"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		PhoneNumber respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r NumberOrderListResponsePhoneNumber) RawJSON() string { return r.JSON.raw }
-func (r *NumberOrderListResponsePhoneNumber) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

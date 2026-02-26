@@ -92,6 +92,29 @@ func (r *Messaging10dlcPhoneNumberAssignmentByProfileService) GetStatus(ctx cont
 	return
 }
 
+type ProfileAssignmentPhoneNumbers struct {
+	// The phone number that the status is being checked for.
+	PhoneNumber string `json:"phoneNumber" api:"required"`
+	// The status of the associated phone number assignment.
+	Status string `json:"status" api:"required"`
+	// The ID of the task associated with the phone number.
+	TaskID string `json:"taskId" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PhoneNumber respjson.Field
+		Status      respjson.Field
+		TaskID      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ProfileAssignmentPhoneNumbers) RawJSON() string { return r.JSON.raw }
+func (r *ProfileAssignmentPhoneNumbers) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type TaskStatus string
 
 const (
@@ -134,7 +157,7 @@ func (r *Messaging10dlcPhoneNumberAssignmentByProfileAssignResponse) UnmarshalJS
 }
 
 type Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusResponse struct {
-	Records []Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusResponseRecord `json:"records" api:"required"`
+	Records []ProfileAssignmentPhoneNumbers `json:"records" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Records     respjson.Field
@@ -151,33 +174,8 @@ func (r *Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusRespon
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusResponseRecord struct {
-	// The phone number that the status is being checked for.
-	PhoneNumber string `json:"phoneNumber" api:"required"`
-	// The status of the associated phone number assignment.
-	Status string `json:"status" api:"required"`
-	// The ID of the task associated with the phone number.
-	TaskID string `json:"taskId" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PhoneNumber respjson.Field
-		Status      respjson.Field
-		TaskID      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusResponseRecord) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusResponseRecord) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusResponse struct {
-	Records []Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusResponseRecord `json:"records" api:"required"`
+	Records []ProfileAssignmentPhoneNumbers `json:"records" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Records     respjson.Field
@@ -191,31 +189,6 @@ func (r Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusResponse
 	return r.JSON.raw
 }
 func (r *Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusResponseRecord struct {
-	// The phone number that the status is being checked for.
-	PhoneNumber string `json:"phoneNumber" api:"required"`
-	// The status of the associated phone number assignment.
-	Status string `json:"status" api:"required"`
-	// The ID of the task associated with the phone number.
-	TaskID string `json:"taskId" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PhoneNumber respjson.Field
-		Status      respjson.Field
-		TaskID      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusResponseRecord) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusResponseRecord) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

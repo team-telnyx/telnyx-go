@@ -713,6 +713,25 @@ func (r *CallControlCommandResult) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type CallControlCommandResultWithConversationID struct {
+	// The ID of the conversation created by the command.
+	ConversationID string `json:"conversation_id" format:"uuid"`
+	Result         string `json:"result"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ConversationID respjson.Field
+		Result         respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallControlCommandResultWithConversationID) RawJSON() string { return r.JSON.raw }
+func (r *CallControlCommandResultWithConversationID) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The properties TranscriptionEngine, TranscriptionModel are required.
 type DeepgramNova2ConfigParam struct {
 	// Any of "Deepgram".
@@ -2009,7 +2028,7 @@ func (r *CallActionGatherResponse) UnmarshalJSON(data []byte) error {
 }
 
 type CallActionGatherUsingAIResponse struct {
-	Data CallActionGatherUsingAIResponseData `json:"data"`
+	Data CallControlCommandResultWithConversationID `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -2021,25 +2040,6 @@ type CallActionGatherUsingAIResponse struct {
 // Returns the unmodified JSON received from the API
 func (r CallActionGatherUsingAIResponse) RawJSON() string { return r.JSON.raw }
 func (r *CallActionGatherUsingAIResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CallActionGatherUsingAIResponseData struct {
-	// The ID of the conversation created by the command.
-	ConversationID string `json:"conversation_id" format:"uuid"`
-	Result         string `json:"result"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ConversationID respjson.Field
-		Result         respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CallActionGatherUsingAIResponseData) RawJSON() string { return r.JSON.raw }
-func (r *CallActionGatherUsingAIResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2220,7 +2220,7 @@ func (r *CallActionSpeakResponse) UnmarshalJSON(data []byte) error {
 }
 
 type CallActionStartAIAssistantResponse struct {
-	Data CallActionStartAIAssistantResponseData `json:"data"`
+	Data CallControlCommandResultWithConversationID `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -2232,25 +2232,6 @@ type CallActionStartAIAssistantResponse struct {
 // Returns the unmodified JSON received from the API
 func (r CallActionStartAIAssistantResponse) RawJSON() string { return r.JSON.raw }
 func (r *CallActionStartAIAssistantResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CallActionStartAIAssistantResponseData struct {
-	// The ID of the conversation created by the command.
-	ConversationID string `json:"conversation_id" format:"uuid"`
-	Result         string `json:"result"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ConversationID respjson.Field
-		Result         respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CallActionStartAIAssistantResponseData) RawJSON() string { return r.JSON.raw }
-func (r *CallActionStartAIAssistantResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
