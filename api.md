@@ -4045,8 +4045,8 @@ Response Types:
 
 Methods:
 
-- <code title="post /text-to-speech/speech">client.TextToSpeech.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TextToSpeechService.GenerateSpeech">GenerateSpeech</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TextToSpeechGenerateSpeechParams">TextToSpeechGenerateSpeechParams</a>) (\*http.Response, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /text-to-speech/voices">client.TextToSpeech.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TextToSpeechService.ListVoices">ListVoices</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TextToSpeechListVoicesParams">TextToSpeechListVoicesParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TextToSpeechListVoicesResponse">TextToSpeechListVoicesResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /text-to-speech/speech">client.TextToSpeech.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TextToSpeechService.Stream">Stream</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TextToSpeechStreamParams">TextToSpeechStreamParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 
 # UsageReports
 
