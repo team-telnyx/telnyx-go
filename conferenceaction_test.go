@@ -372,7 +372,6 @@ func TestConferenceActionRecordStartWithOptionalParams(t *testing.T) {
 		"id",
 		telnyx.ConferenceActionRecordStartParams{
 			Format:         telnyx.ConferenceActionRecordStartParamsFormatWav,
-			Channels:       telnyx.ConferenceActionRecordStartParamsChannelsDual,
 			CommandID:      telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
 			CustomFileName: telnyx.String("my_recording_file_name"),
 			PlayBeep:       telnyx.Bool(true),
