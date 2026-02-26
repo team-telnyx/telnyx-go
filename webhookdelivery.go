@@ -75,6 +75,107 @@ func (r *WebhookDeliveryService) ListAutoPaging(ctx context.Context, query Webho
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
+// Webhook delivery attempt details.
+type Attempt struct {
+	// Webhook delivery error codes.
+	Errors []int64 `json:"errors"`
+	// ISO 8601 timestamp indicating when the attempt has finished.
+	FinishedAt time.Time `json:"finished_at" format:"date-time"`
+	// HTTP request and response information.
+	HTTP HTTP `json:"http"`
+	// ISO 8601 timestamp indicating when the attempt was initiated.
+	StartedAt time.Time `json:"started_at" format:"date-time"`
+	// Any of "delivered", "failed".
+	Status AttemptStatus `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Errors      respjson.Field
+		FinishedAt  respjson.Field
+		HTTP        respjson.Field
+		StartedAt   respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Attempt) RawJSON() string { return r.JSON.raw }
+func (r *Attempt) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AttemptStatus string
+
+const (
+	AttemptStatusDelivered AttemptStatus = "delivered"
+	AttemptStatusFailed    AttemptStatus = "failed"
+)
+
+// HTTP request and response information.
+type HTTP struct {
+	// Request details.
+	Request HTTPRequest `json:"request"`
+	// Response details, optional.
+	Response HTTPResponse `json:"response"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Request     respjson.Field
+		Response    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r HTTP) RawJSON() string { return r.JSON.raw }
+func (r *HTTP) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Request details.
+type HTTPRequest struct {
+	// List of headers, limited to 10kB.
+	Headers [][]string `json:"headers"`
+	URL     string     `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Headers     respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r HTTPRequest) RawJSON() string { return r.JSON.raw }
+func (r *HTTPRequest) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Response details, optional.
+type HTTPResponse struct {
+	// Raw response body, limited to 10kB.
+	Body string `json:"body"`
+	// List of headers, limited to 10kB.
+	Headers [][]string `json:"headers"`
+	Status  int64      `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Body        respjson.Field
+		Headers     respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r HTTPResponse) RawJSON() string { return r.JSON.raw }
+func (r *HTTPResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type WebhookDeliveryGetResponse struct {
 	// Record of all attempts to deliver a webhook.
 	Data WebhookDeliveryGetResponseData `json:"data"`
@@ -97,7 +198,7 @@ type WebhookDeliveryGetResponseData struct {
 	// Uniquely identifies the webhook_delivery record.
 	ID string `json:"id" format:"uuid"`
 	// Detailed delivery attempts, ordered by most recent.
-	Attempts []WebhookDeliveryGetResponseDataAttempt `json:"attempts"`
+	Attempts []Attempt `json:"attempts"`
 	// ISO 8601 timestamp indicating when the last webhook response has been received.
 	FinishedAt time.Time `json:"finished_at" format:"date-time"`
 	// Identifies the type of the resource.
@@ -131,100 +232,6 @@ type WebhookDeliveryGetResponseData struct {
 // Returns the unmodified JSON received from the API
 func (r WebhookDeliveryGetResponseData) RawJSON() string { return r.JSON.raw }
 func (r *WebhookDeliveryGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Webhook delivery attempt details.
-type WebhookDeliveryGetResponseDataAttempt struct {
-	// Webhook delivery error codes.
-	Errors []int64 `json:"errors"`
-	// ISO 8601 timestamp indicating when the attempt has finished.
-	FinishedAt time.Time `json:"finished_at" format:"date-time"`
-	// HTTP request and response information.
-	HTTP WebhookDeliveryGetResponseDataAttemptHTTP `json:"http"`
-	// ISO 8601 timestamp indicating when the attempt was initiated.
-	StartedAt time.Time `json:"started_at" format:"date-time"`
-	// Any of "delivered", "failed".
-	Status string `json:"status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Errors      respjson.Field
-		FinishedAt  respjson.Field
-		HTTP        respjson.Field
-		StartedAt   respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WebhookDeliveryGetResponseDataAttempt) RawJSON() string { return r.JSON.raw }
-func (r *WebhookDeliveryGetResponseDataAttempt) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// HTTP request and response information.
-type WebhookDeliveryGetResponseDataAttemptHTTP struct {
-	// Request details.
-	Request WebhookDeliveryGetResponseDataAttemptHTTPRequest `json:"request"`
-	// Response details, optional.
-	Response WebhookDeliveryGetResponseDataAttemptHTTPResponse `json:"response"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Request     respjson.Field
-		Response    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WebhookDeliveryGetResponseDataAttemptHTTP) RawJSON() string { return r.JSON.raw }
-func (r *WebhookDeliveryGetResponseDataAttemptHTTP) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Request details.
-type WebhookDeliveryGetResponseDataAttemptHTTPRequest struct {
-	// List of headers, limited to 10kB.
-	Headers [][]string `json:"headers"`
-	URL     string     `json:"url"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Headers     respjson.Field
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WebhookDeliveryGetResponseDataAttemptHTTPRequest) RawJSON() string { return r.JSON.raw }
-func (r *WebhookDeliveryGetResponseDataAttemptHTTPRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Response details, optional.
-type WebhookDeliveryGetResponseDataAttemptHTTPResponse struct {
-	// Raw response body, limited to 10kB.
-	Body string `json:"body"`
-	// List of headers, limited to 10kB.
-	Headers [][]string `json:"headers"`
-	Status  int64      `json:"status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Body        respjson.Field
-		Headers     respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WebhookDeliveryGetResponseDataAttemptHTTPResponse) RawJSON() string { return r.JSON.raw }
-func (r *WebhookDeliveryGetResponseDataAttemptHTTPResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -264,7 +271,7 @@ type WebhookDeliveryListResponse struct {
 	// Uniquely identifies the webhook_delivery record.
 	ID string `json:"id" format:"uuid"`
 	// Detailed delivery attempts, ordered by most recent.
-	Attempts []WebhookDeliveryListResponseAttempt `json:"attempts"`
+	Attempts []Attempt `json:"attempts"`
 	// ISO 8601 timestamp indicating when the last webhook response has been received.
 	FinishedAt time.Time `json:"finished_at" format:"date-time"`
 	// Identifies the type of the resource.
@@ -298,100 +305,6 @@ type WebhookDeliveryListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r WebhookDeliveryListResponse) RawJSON() string { return r.JSON.raw }
 func (r *WebhookDeliveryListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Webhook delivery attempt details.
-type WebhookDeliveryListResponseAttempt struct {
-	// Webhook delivery error codes.
-	Errors []int64 `json:"errors"`
-	// ISO 8601 timestamp indicating when the attempt has finished.
-	FinishedAt time.Time `json:"finished_at" format:"date-time"`
-	// HTTP request and response information.
-	HTTP WebhookDeliveryListResponseAttemptHTTP `json:"http"`
-	// ISO 8601 timestamp indicating when the attempt was initiated.
-	StartedAt time.Time `json:"started_at" format:"date-time"`
-	// Any of "delivered", "failed".
-	Status string `json:"status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Errors      respjson.Field
-		FinishedAt  respjson.Field
-		HTTP        respjson.Field
-		StartedAt   respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WebhookDeliveryListResponseAttempt) RawJSON() string { return r.JSON.raw }
-func (r *WebhookDeliveryListResponseAttempt) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// HTTP request and response information.
-type WebhookDeliveryListResponseAttemptHTTP struct {
-	// Request details.
-	Request WebhookDeliveryListResponseAttemptHTTPRequest `json:"request"`
-	// Response details, optional.
-	Response WebhookDeliveryListResponseAttemptHTTPResponse `json:"response"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Request     respjson.Field
-		Response    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WebhookDeliveryListResponseAttemptHTTP) RawJSON() string { return r.JSON.raw }
-func (r *WebhookDeliveryListResponseAttemptHTTP) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Request details.
-type WebhookDeliveryListResponseAttemptHTTPRequest struct {
-	// List of headers, limited to 10kB.
-	Headers [][]string `json:"headers"`
-	URL     string     `json:"url"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Headers     respjson.Field
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WebhookDeliveryListResponseAttemptHTTPRequest) RawJSON() string { return r.JSON.raw }
-func (r *WebhookDeliveryListResponseAttemptHTTPRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Response details, optional.
-type WebhookDeliveryListResponseAttemptHTTPResponse struct {
-	// Raw response body, limited to 10kB.
-	Body string `json:"body"`
-	// List of headers, limited to 10kB.
-	Headers [][]string `json:"headers"`
-	Status  int64      `json:"status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Body        respjson.Field
-		Headers     respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WebhookDeliveryListResponseAttemptHTTPResponse) RawJSON() string { return r.JSON.raw }
-func (r *WebhookDeliveryListResponseAttemptHTTPResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

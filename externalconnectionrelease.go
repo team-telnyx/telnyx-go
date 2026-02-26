@@ -85,6 +85,26 @@ func (r *ExternalConnectionReleaseService) ListAutoPaging(ctx context.Context, i
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, id, query, opts...))
 }
 
+type TnReleaseEntry struct {
+	// Phone number ID from the Telnyx API.
+	NumberID string `json:"number_id"`
+	// Phone number in E164 format.
+	PhoneNumber string `json:"phone_number"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		NumberID    respjson.Field
+		PhoneNumber respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TnReleaseEntry) RawJSON() string { return r.JSON.raw }
+func (r *TnReleaseEntry) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ExternalConnectionReleaseGetResponse struct {
 	Data ExternalConnectionReleaseGetResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -110,9 +130,9 @@ type ExternalConnectionReleaseGetResponseData struct {
 	//
 	// Any of "pending_upload", "pending", "in_progress", "complete", "failed",
 	// "expired", "unknown".
-	Status           string                                                    `json:"status"`
-	TelephoneNumbers []ExternalConnectionReleaseGetResponseDataTelephoneNumber `json:"telephone_numbers"`
-	TenantID         string                                                    `json:"tenant_id" format:"uuid"`
+	Status           string           `json:"status"`
+	TelephoneNumbers []TnReleaseEntry `json:"telephone_numbers"`
+	TenantID         string           `json:"tenant_id" format:"uuid"`
 	// Uniquely identifies the resource.
 	TicketID string `json:"ticket_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -134,26 +154,6 @@ func (r *ExternalConnectionReleaseGetResponseData) UnmarshalJSON(data []byte) er
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ExternalConnectionReleaseGetResponseDataTelephoneNumber struct {
-	// Phone number ID from the Telnyx API.
-	NumberID string `json:"number_id"`
-	// Phone number in E164 format.
-	PhoneNumber string `json:"phone_number"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		NumberID    respjson.Field
-		PhoneNumber respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExternalConnectionReleaseGetResponseDataTelephoneNumber) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionReleaseGetResponseDataTelephoneNumber) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type ExternalConnectionReleaseListResponse struct {
 	// ISO 8601 formatted date indicating when the resource was created.
 	CreatedAt string `json:"created_at"`
@@ -163,9 +163,9 @@ type ExternalConnectionReleaseListResponse struct {
 	//
 	// Any of "pending_upload", "pending", "in_progress", "complete", "failed",
 	// "expired", "unknown".
-	Status           ExternalConnectionReleaseListResponseStatus            `json:"status"`
-	TelephoneNumbers []ExternalConnectionReleaseListResponseTelephoneNumber `json:"telephone_numbers"`
-	TenantID         string                                                 `json:"tenant_id" format:"uuid"`
+	Status           ExternalConnectionReleaseListResponseStatus `json:"status"`
+	TelephoneNumbers []TnReleaseEntry                            `json:"telephone_numbers"`
+	TenantID         string                                      `json:"tenant_id" format:"uuid"`
 	// Uniquely identifies the resource.
 	TicketID string `json:"ticket_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -199,26 +199,6 @@ const (
 	ExternalConnectionReleaseListResponseStatusExpired       ExternalConnectionReleaseListResponseStatus = "expired"
 	ExternalConnectionReleaseListResponseStatusUnknown       ExternalConnectionReleaseListResponseStatus = "unknown"
 )
-
-type ExternalConnectionReleaseListResponseTelephoneNumber struct {
-	// Phone number ID from the Telnyx API.
-	NumberID string `json:"number_id"`
-	// Phone number in E164 format.
-	PhoneNumber string `json:"phone_number"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		NumberID    respjson.Field
-		PhoneNumber respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExternalConnectionReleaseListResponseTelephoneNumber) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionReleaseListResponseTelephoneNumber) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 type ExternalConnectionReleaseGetParams struct {
 	ID string `path:"id" api:"required" json:"-"`

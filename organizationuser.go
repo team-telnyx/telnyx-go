@@ -53,7 +53,7 @@ func (r *OrganizationUserService) Get(ctx context.Context, id string, query Orga
 }
 
 // Returns a list of the users in your organization.
-func (r *OrganizationUserService) List(ctx context.Context, query OrganizationUserListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[OrganizationUserListResponse], err error) {
+func (r *OrganizationUserService) List(ctx context.Context, query OrganizationUserListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[OrganizationUser], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -71,7 +71,7 @@ func (r *OrganizationUserService) List(ctx context.Context, query OrganizationUs
 }
 
 // Returns a list of the users in your organization.
-func (r *OrganizationUserService) ListAutoPaging(ctx context.Context, query OrganizationUserListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[OrganizationUserListResponse] {
+func (r *OrganizationUserService) ListAutoPaging(ctx context.Context, query OrganizationUserListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[OrganizationUser] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -88,6 +88,59 @@ func (r *OrganizationUserService) GetGroupsReport(ctx context.Context, query Org
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
+
+type OrganizationUser struct {
+	// Identifies the specific resource.
+	ID string `json:"id"`
+	// ISO 8601 formatted date indicating when the resource was created.
+	CreatedAt string `json:"created_at"`
+	// The email address of the user.
+	Email string `json:"email" format:"email"`
+	// The groups the user belongs to. Only included when include_groups parameter is
+	// true.
+	Groups []UserGroupReference `json:"groups"`
+	// ISO 8601 formatted date indicating when the resource last signed into the
+	// portal. Null if the user has never signed in.
+	LastSignInAt string `json:"last_sign_in_at" api:"nullable"`
+	// Indicates whether this user is allowed to bypass SSO and use password
+	// authentication.
+	OrganizationUserBypassesSSO bool `json:"organization_user_bypasses_sso"`
+	// Identifies the type of the resource. Can be 'organization_owner' or
+	// 'organization_sub_user'.
+	RecordType string `json:"record_type"`
+	// The status of the account.
+	//
+	// Any of "enabled", "disabled", "blocked".
+	UserStatus OrganizationUserUserStatus `json:"user_status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                          respjson.Field
+		CreatedAt                   respjson.Field
+		Email                       respjson.Field
+		Groups                      respjson.Field
+		LastSignInAt                respjson.Field
+		OrganizationUserBypassesSSO respjson.Field
+		RecordType                  respjson.Field
+		UserStatus                  respjson.Field
+		ExtraFields                 map[string]respjson.Field
+		raw                         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r OrganizationUser) RawJSON() string { return r.JSON.raw }
+func (r *OrganizationUser) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The status of the account.
+type OrganizationUserUserStatus string
+
+const (
+	OrganizationUserUserStatusEnabled  OrganizationUserUserStatus = "enabled"
+	OrganizationUserUserStatusDisabled OrganizationUserUserStatus = "disabled"
+	OrganizationUserUserStatusBlocked  OrganizationUserUserStatus = "blocked"
+)
 
 // A reference to a group that a user belongs to.
 type UserGroupReference struct {
@@ -111,7 +164,7 @@ func (r *UserGroupReference) UnmarshalJSON(data []byte) error {
 }
 
 type OrganizationUserGetResponse struct {
-	Data OrganizationUserGetResponseData `json:"data"`
+	Data OrganizationUser `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -125,103 +178,6 @@ func (r OrganizationUserGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *OrganizationUserGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type OrganizationUserGetResponseData struct {
-	// Identifies the specific resource.
-	ID string `json:"id"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt string `json:"created_at"`
-	// The email address of the user.
-	Email string `json:"email" format:"email"`
-	// The groups the user belongs to. Only included when include_groups parameter is
-	// true.
-	Groups []UserGroupReference `json:"groups"`
-	// ISO 8601 formatted date indicating when the resource last signed into the
-	// portal. Null if the user has never signed in.
-	LastSignInAt string `json:"last_sign_in_at" api:"nullable"`
-	// Indicates whether this user is allowed to bypass SSO and use password
-	// authentication.
-	OrganizationUserBypassesSSO bool `json:"organization_user_bypasses_sso"`
-	// Identifies the type of the resource. Can be 'organization_owner' or
-	// 'organization_sub_user'.
-	RecordType string `json:"record_type"`
-	// The status of the account.
-	//
-	// Any of "enabled", "disabled", "blocked".
-	UserStatus string `json:"user_status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                          respjson.Field
-		CreatedAt                   respjson.Field
-		Email                       respjson.Field
-		Groups                      respjson.Field
-		LastSignInAt                respjson.Field
-		OrganizationUserBypassesSSO respjson.Field
-		RecordType                  respjson.Field
-		UserStatus                  respjson.Field
-		ExtraFields                 map[string]respjson.Field
-		raw                         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r OrganizationUserGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *OrganizationUserGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type OrganizationUserListResponse struct {
-	// Identifies the specific resource.
-	ID string `json:"id"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt string `json:"created_at"`
-	// The email address of the user.
-	Email string `json:"email" format:"email"`
-	// The groups the user belongs to. Only included when include_groups parameter is
-	// true.
-	Groups []UserGroupReference `json:"groups"`
-	// ISO 8601 formatted date indicating when the resource last signed into the
-	// portal. Null if the user has never signed in.
-	LastSignInAt string `json:"last_sign_in_at" api:"nullable"`
-	// Indicates whether this user is allowed to bypass SSO and use password
-	// authentication.
-	OrganizationUserBypassesSSO bool `json:"organization_user_bypasses_sso"`
-	// Identifies the type of the resource. Can be 'organization_owner' or
-	// 'organization_sub_user'.
-	RecordType string `json:"record_type"`
-	// The status of the account.
-	//
-	// Any of "enabled", "disabled", "blocked".
-	UserStatus OrganizationUserListResponseUserStatus `json:"user_status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                          respjson.Field
-		CreatedAt                   respjson.Field
-		Email                       respjson.Field
-		Groups                      respjson.Field
-		LastSignInAt                respjson.Field
-		OrganizationUserBypassesSSO respjson.Field
-		RecordType                  respjson.Field
-		UserStatus                  respjson.Field
-		ExtraFields                 map[string]respjson.Field
-		raw                         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r OrganizationUserListResponse) RawJSON() string { return r.JSON.raw }
-func (r *OrganizationUserListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The status of the account.
-type OrganizationUserListResponseUserStatus string
-
-const (
-	OrganizationUserListResponseUserStatusEnabled  OrganizationUserListResponseUserStatus = "enabled"
-	OrganizationUserListResponseUserStatusDisabled OrganizationUserListResponseUserStatus = "disabled"
-	OrganizationUserListResponseUserStatusBlocked  OrganizationUserListResponseUserStatus = "blocked"
-)
 
 type OrganizationUserGetGroupsReportResponse struct {
 	Data []OrganizationUserGetGroupsReportResponseData `json:"data"`

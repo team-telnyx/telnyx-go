@@ -55,8 +55,46 @@ func (r *MessagingNumbersBulkUpdateService) Get(ctx context.Context, orderID str
 	return
 }
 
+type BulkMessagingSettingsUpdatePhoneNumbers struct {
+	// Phone numbers that failed to update.
+	Failed []string `json:"failed"`
+	// Order ID to verify bulk update status.
+	OrderID string `json:"order_id" format:"uuid"`
+	// Phone numbers pending to be updated.
+	Pending []string `json:"pending"`
+	// Identifies the type of the resource.
+	//
+	// Any of "messaging_numbers_bulk_update".
+	RecordType BulkMessagingSettingsUpdatePhoneNumbersRecordType `json:"record_type"`
+	// Phoned numbers updated successfully.
+	Success []string `json:"success"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Failed      respjson.Field
+		OrderID     respjson.Field
+		Pending     respjson.Field
+		RecordType  respjson.Field
+		Success     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BulkMessagingSettingsUpdatePhoneNumbers) RawJSON() string { return r.JSON.raw }
+func (r *BulkMessagingSettingsUpdatePhoneNumbers) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies the type of the resource.
+type BulkMessagingSettingsUpdatePhoneNumbersRecordType string
+
+const (
+	BulkMessagingSettingsUpdatePhoneNumbersRecordTypeMessagingNumbersBulkUpdate BulkMessagingSettingsUpdatePhoneNumbersRecordType = "messaging_numbers_bulk_update"
+)
+
 type MessagingNumbersBulkUpdateNewResponse struct {
-	Data MessagingNumbersBulkUpdateNewResponseData `json:"data"`
+	Data BulkMessagingSettingsUpdatePhoneNumbers `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -71,39 +109,8 @@ func (r *MessagingNumbersBulkUpdateNewResponse) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type MessagingNumbersBulkUpdateNewResponseData struct {
-	// Phone numbers that failed to update.
-	Failed []string `json:"failed"`
-	// Order ID to verify bulk update status.
-	OrderID string `json:"order_id" format:"uuid"`
-	// Phone numbers pending to be updated.
-	Pending []string `json:"pending"`
-	// Identifies the type of the resource.
-	//
-	// Any of "messaging_numbers_bulk_update".
-	RecordType string `json:"record_type"`
-	// Phoned numbers updated successfully.
-	Success []string `json:"success"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Failed      respjson.Field
-		OrderID     respjson.Field
-		Pending     respjson.Field
-		RecordType  respjson.Field
-		Success     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessagingNumbersBulkUpdateNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *MessagingNumbersBulkUpdateNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type MessagingNumbersBulkUpdateGetResponse struct {
-	Data MessagingNumbersBulkUpdateGetResponseData `json:"data"`
+	Data BulkMessagingSettingsUpdatePhoneNumbers `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -115,37 +122,6 @@ type MessagingNumbersBulkUpdateGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MessagingNumbersBulkUpdateGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *MessagingNumbersBulkUpdateGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessagingNumbersBulkUpdateGetResponseData struct {
-	// Phone numbers that failed to update.
-	Failed []string `json:"failed"`
-	// Order ID to verify bulk update status.
-	OrderID string `json:"order_id" format:"uuid"`
-	// Phone numbers pending to be updated.
-	Pending []string `json:"pending"`
-	// Identifies the type of the resource.
-	//
-	// Any of "messaging_numbers_bulk_update".
-	RecordType string `json:"record_type"`
-	// Phoned numbers updated successfully.
-	Success []string `json:"success"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Failed      respjson.Field
-		OrderID     respjson.Field
-		Pending     respjson.Field
-		RecordType  respjson.Field
-		Success     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessagingNumbersBulkUpdateGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *MessagingNumbersBulkUpdateGetResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

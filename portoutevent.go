@@ -88,6 +88,298 @@ func (r *PortoutEventService) Republish(ctx context.Context, id string, opts ...
 	return
 }
 
+type WebhookPortoutFocDateChanged struct {
+	// Uniquely identifies the event.
+	ID string `json:"id" format:"uuid"`
+	// Indicates the notification methods used.
+	//
+	// Any of "email", "webhook".
+	AvailableNotificationMethods []string `json:"available_notification_methods"`
+	// ISO 8601 formatted date indicating when the resource was created.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Identifies the event type
+	//
+	// Any of "portout.status_changed", "portout.foc_date_changed",
+	// "portout.new_comment".
+	EventType WebhookPortoutFocDateChangedEventType `json:"event_type"`
+	// The webhook payload for the portout.foc_date_changed event
+	Payload WebhookPortoutFocDateChangedPayload `json:"payload"`
+	// The status of the payload generation.
+	//
+	// Any of "created", "completed".
+	PayloadStatus WebhookPortoutFocDateChangedPayloadStatus `json:"payload_status"`
+	// Identifies the port-out order associated with the event.
+	PortoutID string `json:"portout_id" format:"uuid"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
+	// ISO 8601 formatted date indicating when the resource was updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                           respjson.Field
+		AvailableNotificationMethods respjson.Field
+		CreatedAt                    respjson.Field
+		EventType                    respjson.Field
+		Payload                      respjson.Field
+		PayloadStatus                respjson.Field
+		PortoutID                    respjson.Field
+		RecordType                   respjson.Field
+		UpdatedAt                    respjson.Field
+		ExtraFields                  map[string]respjson.Field
+		raw                          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookPortoutFocDateChanged) RawJSON() string { return r.JSON.raw }
+func (r *WebhookPortoutFocDateChanged) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies the event type
+type WebhookPortoutFocDateChangedEventType string
+
+const (
+	WebhookPortoutFocDateChangedEventTypePortoutStatusChanged  WebhookPortoutFocDateChangedEventType = "portout.status_changed"
+	WebhookPortoutFocDateChangedEventTypePortoutFocDateChanged WebhookPortoutFocDateChangedEventType = "portout.foc_date_changed"
+	WebhookPortoutFocDateChangedEventTypePortoutNewComment     WebhookPortoutFocDateChangedEventType = "portout.new_comment"
+)
+
+// The webhook payload for the portout.foc_date_changed event
+type WebhookPortoutFocDateChangedPayload struct {
+	// Identifies the port-out order that have the FOC date changed.
+	ID string `json:"id" format:"uuid"`
+	// ISO 8601 formatted date indicating the new FOC date.
+	FocDate time.Time `json:"foc_date" format:"date-time"`
+	// Identifies the organization that port-out order belongs to.
+	UserID string `json:"user_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		FocDate     respjson.Field
+		UserID      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookPortoutFocDateChangedPayload) RawJSON() string { return r.JSON.raw }
+func (r *WebhookPortoutFocDateChangedPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The status of the payload generation.
+type WebhookPortoutFocDateChangedPayloadStatus string
+
+const (
+	WebhookPortoutFocDateChangedPayloadStatusCreated   WebhookPortoutFocDateChangedPayloadStatus = "created"
+	WebhookPortoutFocDateChangedPayloadStatusCompleted WebhookPortoutFocDateChangedPayloadStatus = "completed"
+)
+
+type WebhookPortoutNewComment struct {
+	// Uniquely identifies the event.
+	ID string `json:"id" format:"uuid"`
+	// Indicates the notification methods used.
+	//
+	// Any of "email", "webhook".
+	AvailableNotificationMethods []string `json:"available_notification_methods"`
+	// ISO 8601 formatted date indicating when the resource was created.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Identifies the event type
+	//
+	// Any of "portout.status_changed", "portout.foc_date_changed",
+	// "portout.new_comment".
+	EventType WebhookPortoutNewCommentEventType `json:"event_type"`
+	// The webhook payload for the portout.new_comment event
+	Payload WebhookPortoutNewCommentPayload `json:"payload"`
+	// The status of the payload generation.
+	//
+	// Any of "created", "completed".
+	PayloadStatus WebhookPortoutNewCommentPayloadStatus `json:"payload_status"`
+	// Identifies the port-out order associated with the event.
+	PortoutID string `json:"portout_id" format:"uuid"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
+	// ISO 8601 formatted date indicating when the resource was updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                           respjson.Field
+		AvailableNotificationMethods respjson.Field
+		CreatedAt                    respjson.Field
+		EventType                    respjson.Field
+		Payload                      respjson.Field
+		PayloadStatus                respjson.Field
+		PortoutID                    respjson.Field
+		RecordType                   respjson.Field
+		UpdatedAt                    respjson.Field
+		ExtraFields                  map[string]respjson.Field
+		raw                          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookPortoutNewComment) RawJSON() string { return r.JSON.raw }
+func (r *WebhookPortoutNewComment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies the event type
+type WebhookPortoutNewCommentEventType string
+
+const (
+	WebhookPortoutNewCommentEventTypePortoutStatusChanged  WebhookPortoutNewCommentEventType = "portout.status_changed"
+	WebhookPortoutNewCommentEventTypePortoutFocDateChanged WebhookPortoutNewCommentEventType = "portout.foc_date_changed"
+	WebhookPortoutNewCommentEventTypePortoutNewComment     WebhookPortoutNewCommentEventType = "portout.new_comment"
+)
+
+// The webhook payload for the portout.new_comment event
+type WebhookPortoutNewCommentPayload struct {
+	// Identifies the comment that was added to the port-out order.
+	ID string `json:"id" format:"uuid"`
+	// The body of the comment.
+	Comment string `json:"comment"`
+	// Identifies the port-out order that the comment was added to.
+	PortoutID string `json:"portout_id" format:"uuid"`
+	// Identifies the user that added the comment.
+	UserID string `json:"user_id" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Comment     respjson.Field
+		PortoutID   respjson.Field
+		UserID      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookPortoutNewCommentPayload) RawJSON() string { return r.JSON.raw }
+func (r *WebhookPortoutNewCommentPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The status of the payload generation.
+type WebhookPortoutNewCommentPayloadStatus string
+
+const (
+	WebhookPortoutNewCommentPayloadStatusCreated   WebhookPortoutNewCommentPayloadStatus = "created"
+	WebhookPortoutNewCommentPayloadStatusCompleted WebhookPortoutNewCommentPayloadStatus = "completed"
+)
+
+type WebhookPortoutStatusChanged struct {
+	// Uniquely identifies the event.
+	ID string `json:"id" format:"uuid"`
+	// Indicates the notification methods used.
+	//
+	// Any of "email", "webhook".
+	AvailableNotificationMethods []string `json:"available_notification_methods"`
+	// ISO 8601 formatted date indicating when the resource was created.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Identifies the event type
+	//
+	// Any of "portout.status_changed", "portout.foc_date_changed",
+	// "portout.new_comment".
+	EventType WebhookPortoutStatusChangedEventType `json:"event_type"`
+	// The webhook payload for the portout.status_changed event
+	Payload WebhookPortoutStatusChangedPayload `json:"payload"`
+	// The status of the payload generation.
+	//
+	// Any of "created", "completed".
+	PayloadStatus WebhookPortoutStatusChangedPayloadStatus `json:"payload_status"`
+	// Identifies the port-out order associated with the event.
+	PortoutID string `json:"portout_id" format:"uuid"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
+	// ISO 8601 formatted date indicating when the resource was updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                           respjson.Field
+		AvailableNotificationMethods respjson.Field
+		CreatedAt                    respjson.Field
+		EventType                    respjson.Field
+		Payload                      respjson.Field
+		PayloadStatus                respjson.Field
+		PortoutID                    respjson.Field
+		RecordType                   respjson.Field
+		UpdatedAt                    respjson.Field
+		ExtraFields                  map[string]respjson.Field
+		raw                          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookPortoutStatusChanged) RawJSON() string { return r.JSON.raw }
+func (r *WebhookPortoutStatusChanged) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies the event type
+type WebhookPortoutStatusChangedEventType string
+
+const (
+	WebhookPortoutStatusChangedEventTypePortoutStatusChanged  WebhookPortoutStatusChangedEventType = "portout.status_changed"
+	WebhookPortoutStatusChangedEventTypePortoutFocDateChanged WebhookPortoutStatusChangedEventType = "portout.foc_date_changed"
+	WebhookPortoutStatusChangedEventTypePortoutNewComment     WebhookPortoutStatusChangedEventType = "portout.new_comment"
+)
+
+// The webhook payload for the portout.status_changed event
+type WebhookPortoutStatusChangedPayload struct {
+	// Identifies the port out that was moved.
+	ID string `json:"id" format:"uuid"`
+	// The PIN that was attempted to be used to authorize the port out.
+	AttemptedPin string `json:"attempted_pin"`
+	// Carrier the number will be ported out to
+	CarrierName string `json:"carrier_name"`
+	// Phone numbers associated with this port-out order
+	PhoneNumbers []string `json:"phone_numbers"`
+	// The reason why the order is being rejected by the user. If the order is
+	// authorized, this field can be left null
+	RejectionReason string `json:"rejection_reason" api:"nullable"`
+	// The new carrier SPID.
+	Spid string `json:"spid"`
+	// The new status of the port out.
+	//
+	// Any of "pending", "authorized", "ported", "rejected", "rejected-pending",
+	// "canceled".
+	Status string `json:"status"`
+	// The name of the port-out's end user.
+	SubscriberName string `json:"subscriber_name"`
+	// Identifies the user that the port-out order belongs to.
+	UserID string `json:"user_id" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID              respjson.Field
+		AttemptedPin    respjson.Field
+		CarrierName     respjson.Field
+		PhoneNumbers    respjson.Field
+		RejectionReason respjson.Field
+		Spid            respjson.Field
+		Status          respjson.Field
+		SubscriberName  respjson.Field
+		UserID          respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookPortoutStatusChangedPayload) RawJSON() string { return r.JSON.raw }
+func (r *WebhookPortoutStatusChangedPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The status of the payload generation.
+type WebhookPortoutStatusChangedPayloadStatus string
+
+const (
+	WebhookPortoutStatusChangedPayloadStatusCreated   WebhookPortoutStatusChangedPayloadStatus = "created"
+	WebhookPortoutStatusChangedPayloadStatusCompleted WebhookPortoutStatusChangedPayloadStatus = "completed"
+)
+
 type PortoutEventGetResponse struct {
 	Data PortoutEventGetResponseDataUnion `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -105,9 +397,8 @@ func (r *PortoutEventGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 // PortoutEventGetResponseDataUnion contains all possible properties and values
-// from [PortoutEventGetResponseDataWebhookPortoutStatusChanged],
-// [PortoutEventGetResponseDataWebhookPortoutNewComment],
-// [PortoutEventGetResponseDataWebhookPortoutFocDateChanged].
+// from [WebhookPortoutStatusChanged], [WebhookPortoutNewComment],
+// [WebhookPortoutFocDateChanged].
 //
 // Use the [PortoutEventGetResponseDataUnion.AsAny] method to switch on the
 // variant.
@@ -119,10 +410,8 @@ type PortoutEventGetResponseDataUnion struct {
 	CreatedAt                    time.Time `json:"created_at"`
 	// Any of nil, nil, nil.
 	EventType string `json:"event_type"`
-	// This field is a union of
-	// [PortoutEventGetResponseDataWebhookPortoutStatusChangedPayload],
-	// [PortoutEventGetResponseDataWebhookPortoutNewCommentPayload],
-	// [PortoutEventGetResponseDataWebhookPortoutFocDateChangedPayload]
+	// This field is a union of [WebhookPortoutStatusChangedPayload],
+	// [WebhookPortoutNewCommentPayload], [WebhookPortoutFocDateChangedPayload]
 	Payload       PortoutEventGetResponseDataUnionPayload `json:"payload"`
 	PayloadStatus string                                  `json:"payload_status"`
 	PortoutID     string                                  `json:"portout_id"`
@@ -142,17 +431,17 @@ type PortoutEventGetResponseDataUnion struct {
 	} `json:"-"`
 }
 
-func (u PortoutEventGetResponseDataUnion) AsPortoutEventGetResponseDataWebhookPortoutStatusChanged() (v PortoutEventGetResponseDataWebhookPortoutStatusChanged) {
+func (u PortoutEventGetResponseDataUnion) AsWebhookPortoutStatusChanged() (v WebhookPortoutStatusChanged) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortoutEventGetResponseDataUnion) AsPortoutEventGetResponseDataWebhookPortoutNewComment() (v PortoutEventGetResponseDataWebhookPortoutNewComment) {
+func (u PortoutEventGetResponseDataUnion) AsWebhookPortoutNewComment() (v WebhookPortoutNewComment) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortoutEventGetResponseDataUnion) AsPortoutEventGetResponseDataWebhookPortoutFocDateChanged() (v PortoutEventGetResponseDataWebhookPortoutFocDateChanged) {
+func (u PortoutEventGetResponseDataUnion) AsWebhookPortoutFocDateChanged() (v WebhookPortoutFocDateChanged) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -172,36 +461,26 @@ func (r *PortoutEventGetResponseDataUnion) UnmarshalJSON(data []byte) error {
 // [PortoutEventGetResponseDataUnion].
 type PortoutEventGetResponseDataUnionPayload struct {
 	ID string `json:"id"`
-	// This field is from variant
-	// [PortoutEventGetResponseDataWebhookPortoutStatusChangedPayload].
+	// This field is from variant [WebhookPortoutStatusChangedPayload].
 	AttemptedPin string `json:"attempted_pin"`
-	// This field is from variant
-	// [PortoutEventGetResponseDataWebhookPortoutStatusChangedPayload].
+	// This field is from variant [WebhookPortoutStatusChangedPayload].
 	CarrierName string `json:"carrier_name"`
-	// This field is from variant
-	// [PortoutEventGetResponseDataWebhookPortoutStatusChangedPayload].
+	// This field is from variant [WebhookPortoutStatusChangedPayload].
 	PhoneNumbers []string `json:"phone_numbers"`
-	// This field is from variant
-	// [PortoutEventGetResponseDataWebhookPortoutStatusChangedPayload].
+	// This field is from variant [WebhookPortoutStatusChangedPayload].
 	RejectionReason string `json:"rejection_reason"`
-	// This field is from variant
-	// [PortoutEventGetResponseDataWebhookPortoutStatusChangedPayload].
+	// This field is from variant [WebhookPortoutStatusChangedPayload].
 	Spid string `json:"spid"`
-	// This field is from variant
-	// [PortoutEventGetResponseDataWebhookPortoutStatusChangedPayload].
+	// This field is from variant [WebhookPortoutStatusChangedPayload].
 	Status string `json:"status"`
-	// This field is from variant
-	// [PortoutEventGetResponseDataWebhookPortoutStatusChangedPayload].
+	// This field is from variant [WebhookPortoutStatusChangedPayload].
 	SubscriberName string `json:"subscriber_name"`
 	UserID         string `json:"user_id"`
-	// This field is from variant
-	// [PortoutEventGetResponseDataWebhookPortoutNewCommentPayload].
+	// This field is from variant [WebhookPortoutNewCommentPayload].
 	Comment string `json:"comment"`
-	// This field is from variant
-	// [PortoutEventGetResponseDataWebhookPortoutNewCommentPayload].
+	// This field is from variant [WebhookPortoutNewCommentPayload].
 	PortoutID string `json:"portout_id"`
-	// This field is from variant
-	// [PortoutEventGetResponseDataWebhookPortoutFocDateChangedPayload].
+	// This field is from variant [WebhookPortoutFocDateChangedPayload].
 	FocDate time.Time `json:"foc_date"`
 	JSON    struct {
 		ID              respjson.Field
@@ -224,257 +503,9 @@ func (r *PortoutEventGetResponseDataUnionPayload) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PortoutEventGetResponseDataWebhookPortoutStatusChanged struct {
-	// Uniquely identifies the event.
-	ID string `json:"id" format:"uuid"`
-	// Indicates the notification methods used.
-	//
-	// Any of "email", "webhook".
-	AvailableNotificationMethods []string `json:"available_notification_methods"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Identifies the event type
-	//
-	// Any of "portout.status_changed", "portout.foc_date_changed",
-	// "portout.new_comment".
-	EventType string `json:"event_type"`
-	// The webhook payload for the portout.status_changed event
-	Payload PortoutEventGetResponseDataWebhookPortoutStatusChangedPayload `json:"payload"`
-	// The status of the payload generation.
-	//
-	// Any of "created", "completed".
-	PayloadStatus string `json:"payload_status"`
-	// Identifies the port-out order associated with the event.
-	PortoutID string `json:"portout_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                           respjson.Field
-		AvailableNotificationMethods respjson.Field
-		CreatedAt                    respjson.Field
-		EventType                    respjson.Field
-		Payload                      respjson.Field
-		PayloadStatus                respjson.Field
-		PortoutID                    respjson.Field
-		RecordType                   respjson.Field
-		UpdatedAt                    respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortoutEventGetResponseDataWebhookPortoutStatusChanged) RawJSON() string { return r.JSON.raw }
-func (r *PortoutEventGetResponseDataWebhookPortoutStatusChanged) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The webhook payload for the portout.status_changed event
-type PortoutEventGetResponseDataWebhookPortoutStatusChangedPayload struct {
-	// Identifies the port out that was moved.
-	ID string `json:"id" format:"uuid"`
-	// The PIN that was attempted to be used to authorize the port out.
-	AttemptedPin string `json:"attempted_pin"`
-	// Carrier the number will be ported out to
-	CarrierName string `json:"carrier_name"`
-	// Phone numbers associated with this port-out order
-	PhoneNumbers []string `json:"phone_numbers"`
-	// The reason why the order is being rejected by the user. If the order is
-	// authorized, this field can be left null
-	RejectionReason string `json:"rejection_reason" api:"nullable"`
-	// The new carrier SPID.
-	Spid string `json:"spid"`
-	// The new status of the port out.
-	//
-	// Any of "pending", "authorized", "ported", "rejected", "rejected-pending",
-	// "canceled".
-	Status string `json:"status"`
-	// The name of the port-out's end user.
-	SubscriberName string `json:"subscriber_name"`
-	// Identifies the user that the port-out order belongs to.
-	UserID string `json:"user_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID              respjson.Field
-		AttemptedPin    respjson.Field
-		CarrierName     respjson.Field
-		PhoneNumbers    respjson.Field
-		RejectionReason respjson.Field
-		Spid            respjson.Field
-		Status          respjson.Field
-		SubscriberName  respjson.Field
-		UserID          respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortoutEventGetResponseDataWebhookPortoutStatusChangedPayload) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortoutEventGetResponseDataWebhookPortoutStatusChangedPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortoutEventGetResponseDataWebhookPortoutNewComment struct {
-	// Uniquely identifies the event.
-	ID string `json:"id" format:"uuid"`
-	// Indicates the notification methods used.
-	//
-	// Any of "email", "webhook".
-	AvailableNotificationMethods []string `json:"available_notification_methods"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Identifies the event type
-	//
-	// Any of "portout.status_changed", "portout.foc_date_changed",
-	// "portout.new_comment".
-	EventType string `json:"event_type"`
-	// The webhook payload for the portout.new_comment event
-	Payload PortoutEventGetResponseDataWebhookPortoutNewCommentPayload `json:"payload"`
-	// The status of the payload generation.
-	//
-	// Any of "created", "completed".
-	PayloadStatus string `json:"payload_status"`
-	// Identifies the port-out order associated with the event.
-	PortoutID string `json:"portout_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                           respjson.Field
-		AvailableNotificationMethods respjson.Field
-		CreatedAt                    respjson.Field
-		EventType                    respjson.Field
-		Payload                      respjson.Field
-		PayloadStatus                respjson.Field
-		PortoutID                    respjson.Field
-		RecordType                   respjson.Field
-		UpdatedAt                    respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortoutEventGetResponseDataWebhookPortoutNewComment) RawJSON() string { return r.JSON.raw }
-func (r *PortoutEventGetResponseDataWebhookPortoutNewComment) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The webhook payload for the portout.new_comment event
-type PortoutEventGetResponseDataWebhookPortoutNewCommentPayload struct {
-	// Identifies the comment that was added to the port-out order.
-	ID string `json:"id" format:"uuid"`
-	// The body of the comment.
-	Comment string `json:"comment"`
-	// Identifies the port-out order that the comment was added to.
-	PortoutID string `json:"portout_id" format:"uuid"`
-	// Identifies the user that added the comment.
-	UserID string `json:"user_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Comment     respjson.Field
-		PortoutID   respjson.Field
-		UserID      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortoutEventGetResponseDataWebhookPortoutNewCommentPayload) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortoutEventGetResponseDataWebhookPortoutNewCommentPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortoutEventGetResponseDataWebhookPortoutFocDateChanged struct {
-	// Uniquely identifies the event.
-	ID string `json:"id" format:"uuid"`
-	// Indicates the notification methods used.
-	//
-	// Any of "email", "webhook".
-	AvailableNotificationMethods []string `json:"available_notification_methods"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Identifies the event type
-	//
-	// Any of "portout.status_changed", "portout.foc_date_changed",
-	// "portout.new_comment".
-	EventType string `json:"event_type"`
-	// The webhook payload for the portout.foc_date_changed event
-	Payload PortoutEventGetResponseDataWebhookPortoutFocDateChangedPayload `json:"payload"`
-	// The status of the payload generation.
-	//
-	// Any of "created", "completed".
-	PayloadStatus string `json:"payload_status"`
-	// Identifies the port-out order associated with the event.
-	PortoutID string `json:"portout_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                           respjson.Field
-		AvailableNotificationMethods respjson.Field
-		CreatedAt                    respjson.Field
-		EventType                    respjson.Field
-		Payload                      respjson.Field
-		PayloadStatus                respjson.Field
-		PortoutID                    respjson.Field
-		RecordType                   respjson.Field
-		UpdatedAt                    respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortoutEventGetResponseDataWebhookPortoutFocDateChanged) RawJSON() string { return r.JSON.raw }
-func (r *PortoutEventGetResponseDataWebhookPortoutFocDateChanged) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The webhook payload for the portout.foc_date_changed event
-type PortoutEventGetResponseDataWebhookPortoutFocDateChangedPayload struct {
-	// Identifies the port-out order that have the FOC date changed.
-	ID string `json:"id" format:"uuid"`
-	// ISO 8601 formatted date indicating the new FOC date.
-	FocDate time.Time `json:"foc_date" format:"date-time"`
-	// Identifies the organization that port-out order belongs to.
-	UserID string `json:"user_id"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		FocDate     respjson.Field
-		UserID      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortoutEventGetResponseDataWebhookPortoutFocDateChangedPayload) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortoutEventGetResponseDataWebhookPortoutFocDateChangedPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // PortoutEventListResponseUnion contains all possible properties and values from
-// [PortoutEventListResponseWebhookPortoutStatusChanged],
-// [PortoutEventListResponseWebhookPortoutNewComment],
-// [PortoutEventListResponseWebhookPortoutFocDateChanged].
+// [WebhookPortoutStatusChanged], [WebhookPortoutNewComment],
+// [WebhookPortoutFocDateChanged].
 //
 // Use the [PortoutEventListResponseUnion.AsAny] method to switch on the variant.
 //
@@ -485,10 +516,8 @@ type PortoutEventListResponseUnion struct {
 	CreatedAt                    time.Time `json:"created_at"`
 	// Any of nil, nil, nil.
 	EventType string `json:"event_type"`
-	// This field is a union of
-	// [PortoutEventListResponseWebhookPortoutStatusChangedPayload],
-	// [PortoutEventListResponseWebhookPortoutNewCommentPayload],
-	// [PortoutEventListResponseWebhookPortoutFocDateChangedPayload]
+	// This field is a union of [WebhookPortoutStatusChangedPayload],
+	// [WebhookPortoutNewCommentPayload], [WebhookPortoutFocDateChangedPayload]
 	Payload       PortoutEventListResponseUnionPayload `json:"payload"`
 	PayloadStatus string                               `json:"payload_status"`
 	PortoutID     string                               `json:"portout_id"`
@@ -508,17 +537,17 @@ type PortoutEventListResponseUnion struct {
 	} `json:"-"`
 }
 
-func (u PortoutEventListResponseUnion) AsPortoutEventListResponseWebhookPortoutStatusChanged() (v PortoutEventListResponseWebhookPortoutStatusChanged) {
+func (u PortoutEventListResponseUnion) AsWebhookPortoutStatusChanged() (v WebhookPortoutStatusChanged) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortoutEventListResponseUnion) AsPortoutEventListResponseWebhookPortoutNewComment() (v PortoutEventListResponseWebhookPortoutNewComment) {
+func (u PortoutEventListResponseUnion) AsWebhookPortoutNewComment() (v WebhookPortoutNewComment) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortoutEventListResponseUnion) AsPortoutEventListResponseWebhookPortoutFocDateChanged() (v PortoutEventListResponseWebhookPortoutFocDateChanged) {
+func (u PortoutEventListResponseUnion) AsWebhookPortoutFocDateChanged() (v WebhookPortoutFocDateChanged) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -538,36 +567,26 @@ func (r *PortoutEventListResponseUnion) UnmarshalJSON(data []byte) error {
 // [PortoutEventListResponseUnion].
 type PortoutEventListResponseUnionPayload struct {
 	ID string `json:"id"`
-	// This field is from variant
-	// [PortoutEventListResponseWebhookPortoutStatusChangedPayload].
+	// This field is from variant [WebhookPortoutStatusChangedPayload].
 	AttemptedPin string `json:"attempted_pin"`
-	// This field is from variant
-	// [PortoutEventListResponseWebhookPortoutStatusChangedPayload].
+	// This field is from variant [WebhookPortoutStatusChangedPayload].
 	CarrierName string `json:"carrier_name"`
-	// This field is from variant
-	// [PortoutEventListResponseWebhookPortoutStatusChangedPayload].
+	// This field is from variant [WebhookPortoutStatusChangedPayload].
 	PhoneNumbers []string `json:"phone_numbers"`
-	// This field is from variant
-	// [PortoutEventListResponseWebhookPortoutStatusChangedPayload].
+	// This field is from variant [WebhookPortoutStatusChangedPayload].
 	RejectionReason string `json:"rejection_reason"`
-	// This field is from variant
-	// [PortoutEventListResponseWebhookPortoutStatusChangedPayload].
+	// This field is from variant [WebhookPortoutStatusChangedPayload].
 	Spid string `json:"spid"`
-	// This field is from variant
-	// [PortoutEventListResponseWebhookPortoutStatusChangedPayload].
+	// This field is from variant [WebhookPortoutStatusChangedPayload].
 	Status string `json:"status"`
-	// This field is from variant
-	// [PortoutEventListResponseWebhookPortoutStatusChangedPayload].
+	// This field is from variant [WebhookPortoutStatusChangedPayload].
 	SubscriberName string `json:"subscriber_name"`
 	UserID         string `json:"user_id"`
-	// This field is from variant
-	// [PortoutEventListResponseWebhookPortoutNewCommentPayload].
+	// This field is from variant [WebhookPortoutNewCommentPayload].
 	Comment string `json:"comment"`
-	// This field is from variant
-	// [PortoutEventListResponseWebhookPortoutNewCommentPayload].
+	// This field is from variant [WebhookPortoutNewCommentPayload].
 	PortoutID string `json:"portout_id"`
-	// This field is from variant
-	// [PortoutEventListResponseWebhookPortoutFocDateChangedPayload].
+	// This field is from variant [WebhookPortoutFocDateChangedPayload].
 	FocDate time.Time `json:"foc_date"`
 	JSON    struct {
 		ID              respjson.Field
@@ -587,251 +606,6 @@ type PortoutEventListResponseUnionPayload struct {
 }
 
 func (r *PortoutEventListResponseUnionPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortoutEventListResponseWebhookPortoutStatusChanged struct {
-	// Uniquely identifies the event.
-	ID string `json:"id" format:"uuid"`
-	// Indicates the notification methods used.
-	//
-	// Any of "email", "webhook".
-	AvailableNotificationMethods []string `json:"available_notification_methods"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Identifies the event type
-	//
-	// Any of "portout.status_changed", "portout.foc_date_changed",
-	// "portout.new_comment".
-	EventType string `json:"event_type"`
-	// The webhook payload for the portout.status_changed event
-	Payload PortoutEventListResponseWebhookPortoutStatusChangedPayload `json:"payload"`
-	// The status of the payload generation.
-	//
-	// Any of "created", "completed".
-	PayloadStatus string `json:"payload_status"`
-	// Identifies the port-out order associated with the event.
-	PortoutID string `json:"portout_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                           respjson.Field
-		AvailableNotificationMethods respjson.Field
-		CreatedAt                    respjson.Field
-		EventType                    respjson.Field
-		Payload                      respjson.Field
-		PayloadStatus                respjson.Field
-		PortoutID                    respjson.Field
-		RecordType                   respjson.Field
-		UpdatedAt                    respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortoutEventListResponseWebhookPortoutStatusChanged) RawJSON() string { return r.JSON.raw }
-func (r *PortoutEventListResponseWebhookPortoutStatusChanged) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The webhook payload for the portout.status_changed event
-type PortoutEventListResponseWebhookPortoutStatusChangedPayload struct {
-	// Identifies the port out that was moved.
-	ID string `json:"id" format:"uuid"`
-	// The PIN that was attempted to be used to authorize the port out.
-	AttemptedPin string `json:"attempted_pin"`
-	// Carrier the number will be ported out to
-	CarrierName string `json:"carrier_name"`
-	// Phone numbers associated with this port-out order
-	PhoneNumbers []string `json:"phone_numbers"`
-	// The reason why the order is being rejected by the user. If the order is
-	// authorized, this field can be left null
-	RejectionReason string `json:"rejection_reason" api:"nullable"`
-	// The new carrier SPID.
-	Spid string `json:"spid"`
-	// The new status of the port out.
-	//
-	// Any of "pending", "authorized", "ported", "rejected", "rejected-pending",
-	// "canceled".
-	Status string `json:"status"`
-	// The name of the port-out's end user.
-	SubscriberName string `json:"subscriber_name"`
-	// Identifies the user that the port-out order belongs to.
-	UserID string `json:"user_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID              respjson.Field
-		AttemptedPin    respjson.Field
-		CarrierName     respjson.Field
-		PhoneNumbers    respjson.Field
-		RejectionReason respjson.Field
-		Spid            respjson.Field
-		Status          respjson.Field
-		SubscriberName  respjson.Field
-		UserID          respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortoutEventListResponseWebhookPortoutStatusChangedPayload) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortoutEventListResponseWebhookPortoutStatusChangedPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortoutEventListResponseWebhookPortoutNewComment struct {
-	// Uniquely identifies the event.
-	ID string `json:"id" format:"uuid"`
-	// Indicates the notification methods used.
-	//
-	// Any of "email", "webhook".
-	AvailableNotificationMethods []string `json:"available_notification_methods"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Identifies the event type
-	//
-	// Any of "portout.status_changed", "portout.foc_date_changed",
-	// "portout.new_comment".
-	EventType string `json:"event_type"`
-	// The webhook payload for the portout.new_comment event
-	Payload PortoutEventListResponseWebhookPortoutNewCommentPayload `json:"payload"`
-	// The status of the payload generation.
-	//
-	// Any of "created", "completed".
-	PayloadStatus string `json:"payload_status"`
-	// Identifies the port-out order associated with the event.
-	PortoutID string `json:"portout_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                           respjson.Field
-		AvailableNotificationMethods respjson.Field
-		CreatedAt                    respjson.Field
-		EventType                    respjson.Field
-		Payload                      respjson.Field
-		PayloadStatus                respjson.Field
-		PortoutID                    respjson.Field
-		RecordType                   respjson.Field
-		UpdatedAt                    respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortoutEventListResponseWebhookPortoutNewComment) RawJSON() string { return r.JSON.raw }
-func (r *PortoutEventListResponseWebhookPortoutNewComment) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The webhook payload for the portout.new_comment event
-type PortoutEventListResponseWebhookPortoutNewCommentPayload struct {
-	// Identifies the comment that was added to the port-out order.
-	ID string `json:"id" format:"uuid"`
-	// The body of the comment.
-	Comment string `json:"comment"`
-	// Identifies the port-out order that the comment was added to.
-	PortoutID string `json:"portout_id" format:"uuid"`
-	// Identifies the user that added the comment.
-	UserID string `json:"user_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Comment     respjson.Field
-		PortoutID   respjson.Field
-		UserID      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortoutEventListResponseWebhookPortoutNewCommentPayload) RawJSON() string { return r.JSON.raw }
-func (r *PortoutEventListResponseWebhookPortoutNewCommentPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortoutEventListResponseWebhookPortoutFocDateChanged struct {
-	// Uniquely identifies the event.
-	ID string `json:"id" format:"uuid"`
-	// Indicates the notification methods used.
-	//
-	// Any of "email", "webhook".
-	AvailableNotificationMethods []string `json:"available_notification_methods"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Identifies the event type
-	//
-	// Any of "portout.status_changed", "portout.foc_date_changed",
-	// "portout.new_comment".
-	EventType string `json:"event_type"`
-	// The webhook payload for the portout.foc_date_changed event
-	Payload PortoutEventListResponseWebhookPortoutFocDateChangedPayload `json:"payload"`
-	// The status of the payload generation.
-	//
-	// Any of "created", "completed".
-	PayloadStatus string `json:"payload_status"`
-	// Identifies the port-out order associated with the event.
-	PortoutID string `json:"portout_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                           respjson.Field
-		AvailableNotificationMethods respjson.Field
-		CreatedAt                    respjson.Field
-		EventType                    respjson.Field
-		Payload                      respjson.Field
-		PayloadStatus                respjson.Field
-		PortoutID                    respjson.Field
-		RecordType                   respjson.Field
-		UpdatedAt                    respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortoutEventListResponseWebhookPortoutFocDateChanged) RawJSON() string { return r.JSON.raw }
-func (r *PortoutEventListResponseWebhookPortoutFocDateChanged) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The webhook payload for the portout.foc_date_changed event
-type PortoutEventListResponseWebhookPortoutFocDateChangedPayload struct {
-	// Identifies the port-out order that have the FOC date changed.
-	ID string `json:"id" format:"uuid"`
-	// ISO 8601 formatted date indicating the new FOC date.
-	FocDate time.Time `json:"foc_date" format:"date-time"`
-	// Identifies the organization that port-out order belongs to.
-	UserID string `json:"user_id"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		FocDate     respjson.Field
-		UserID      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortoutEventListResponseWebhookPortoutFocDateChangedPayload) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *PortoutEventListResponseWebhookPortoutFocDateChangedPayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

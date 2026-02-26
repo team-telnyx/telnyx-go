@@ -3,7 +3,9 @@
 package telnyx
 
 import (
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // ActionService contains methods and other services that help with interacting
@@ -27,4 +29,48 @@ func NewActionService(opts ...option.RequestOption) (r ActionService) {
 	r.Purchase = NewActionPurchaseService(opts...)
 	r.Register = NewActionRegisterService(opts...)
 	return
+}
+
+type WirelessError struct {
+	Code   string              `json:"code" api:"required"`
+	Title  string              `json:"title" api:"required"`
+	Detail string              `json:"detail"`
+	Meta   map[string]any      `json:"meta"`
+	Source WirelessErrorSource `json:"source"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Code        respjson.Field
+		Title       respjson.Field
+		Detail      respjson.Field
+		Meta        respjson.Field
+		Source      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WirelessError) RawJSON() string { return r.JSON.raw }
+func (r *WirelessError) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WirelessErrorSource struct {
+	// Indicates which query parameter caused the error.
+	Parameter string `json:"parameter"`
+	// JSON pointer (RFC6901) to the offending entity.
+	Pointer string `json:"pointer"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Parameter   respjson.Field
+		Pointer     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WirelessErrorSource) RawJSON() string { return r.JSON.raw }
+func (r *WirelessErrorSource) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

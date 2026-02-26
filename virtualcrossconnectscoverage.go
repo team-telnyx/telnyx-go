@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // VirtualCrossConnectsCoverageService contains methods and other services that
@@ -75,8 +76,8 @@ type VirtualCrossConnectsCoverageListResponse struct {
 	// The region where your Virtual Private Cloud hosts are located. Should be
 	// identical to how the cloud provider names region, i.e. us-east-1 for AWS but
 	// Frankfurt for Azure
-	CloudProviderRegion string                                           `json:"cloud_provider_region"`
-	Location            VirtualCrossConnectsCoverageListResponseLocation `json:"location"`
+	CloudProviderRegion string                 `json:"cloud_provider_region"`
+	Location            shared.NetappsLocation `json:"location"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -106,35 +107,6 @@ const (
 	VirtualCrossConnectsCoverageListResponseCloudProviderAzure VirtualCrossConnectsCoverageListResponseCloudProvider = "azure"
 	VirtualCrossConnectsCoverageListResponseCloudProviderGce   VirtualCrossConnectsCoverageListResponseCloudProvider = "gce"
 )
-
-type VirtualCrossConnectsCoverageListResponseLocation struct {
-	// Location code.
-	Code string `json:"code"`
-	// Human readable name of location.
-	Name string `json:"name"`
-	// Point of presence of location.
-	Pop string `json:"pop"`
-	// Identifies the geographical region of location.
-	Region string `json:"region"`
-	// Site of location.
-	Site string `json:"site"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Name        respjson.Field
-		Pop         respjson.Field
-		Region      respjson.Field
-		Site        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VirtualCrossConnectsCoverageListResponseLocation) RawJSON() string { return r.JSON.raw }
-func (r *VirtualCrossConnectsCoverageListResponseLocation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 type VirtualCrossConnectsCoverageListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`

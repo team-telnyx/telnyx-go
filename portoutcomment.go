@@ -60,8 +60,40 @@ func (r *PortoutCommentService) List(ctx context.Context, id string, opts ...opt
 	return
 }
 
+type PortoutComment struct {
+	ID string `json:"id" api:"required"`
+	// Comment body
+	Body string `json:"body" api:"required"`
+	// Comment creation timestamp in ISO 8601 format
+	CreatedAt string `json:"created_at" api:"required"`
+	// Identifies the user who created the comment. Will be null if created by Telnyx
+	// Admin
+	UserID string `json:"user_id" api:"required"`
+	// Identifies the associated port request
+	PortoutID string `json:"portout_id"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Body        respjson.Field
+		CreatedAt   respjson.Field
+		UserID      respjson.Field
+		PortoutID   respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortoutComment) RawJSON() string { return r.JSON.raw }
+func (r *PortoutComment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type PortoutCommentNewResponse struct {
-	Data PortoutCommentNewResponseData `json:"data"`
+	Data PortoutComment `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -76,41 +108,9 @@ func (r *PortoutCommentNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PortoutCommentNewResponseData struct {
-	ID string `json:"id" api:"required"`
-	// Comment body
-	Body string `json:"body" api:"required"`
-	// Comment creation timestamp in ISO 8601 format
-	CreatedAt string `json:"created_at" api:"required"`
-	// Identifies the user who created the comment. Will be null if created by Telnyx
-	// Admin
-	UserID string `json:"user_id" api:"required"`
-	// Identifies the associated port request
-	PortoutID string `json:"portout_id"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Body        respjson.Field
-		CreatedAt   respjson.Field
-		UserID      respjson.Field
-		PortoutID   respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortoutCommentNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *PortoutCommentNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type PortoutCommentListResponse struct {
-	Data []PortoutCommentListResponseData `json:"data"`
-	Meta shared.Metadata                  `json:"meta"`
+	Data []PortoutComment `json:"data"`
+	Meta shared.Metadata  `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -123,38 +123,6 @@ type PortoutCommentListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r PortoutCommentListResponse) RawJSON() string { return r.JSON.raw }
 func (r *PortoutCommentListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortoutCommentListResponseData struct {
-	ID string `json:"id" api:"required"`
-	// Comment body
-	Body string `json:"body" api:"required"`
-	// Comment creation timestamp in ISO 8601 format
-	CreatedAt string `json:"created_at" api:"required"`
-	// Identifies the user who created the comment. Will be null if created by Telnyx
-	// Admin
-	UserID string `json:"user_id" api:"required"`
-	// Identifies the associated port request
-	PortoutID string `json:"portout_id"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Body        respjson.Field
-		CreatedAt   respjson.Field
-		UserID      respjson.Field
-		PortoutID   respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortoutCommentListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *PortoutCommentListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
