@@ -13,6 +13,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 )
 
+// Campaign operations
+//
 // Messaging10dlcCampaignBuilderService contains methods and other services that
 // help with interacting with the telnyx API.
 //
@@ -21,7 +23,8 @@ import (
 // the [NewMessaging10dlcCampaignBuilderService] method instead.
 type Messaging10dlcCampaignBuilderService struct {
 	Options []option.RequestOption
-	Brand   Messaging10dlcCampaignBuilderBrandService
+	// Campaign operations
+	Brand Messaging10dlcCampaignBuilderBrandService
 }
 
 // NewMessaging10dlcCampaignBuilderService generates a new service that applies the

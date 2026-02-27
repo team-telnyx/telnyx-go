@@ -15,7 +15,8 @@ import (
 type LegacyReportingService struct {
 	Options            []option.RequestOption
 	BatchDetailRecords LegacyReportingBatchDetailRecordService
-	UsageReports       LegacyReportingUsageReportService
+	// Speech to text usage reports
+	UsageReports LegacyReportingUsageReportService
 }
 
 // NewLegacyReportingService generates a new service that applies the given options

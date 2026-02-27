@@ -19,6 +19,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 )
 
+// Configure AI assistant specifications
+//
 // AIAssistantVersionService contains methods and other services that help with
 // interacting with the telnyx API.
 //

@@ -20,6 +20,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Brand operations
+//
 // Messaging10dlcBrandService contains methods and other services that help with
 // interacting with the telnyx API.
 //
@@ -27,7 +29,8 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewMessaging10dlcBrandService] method instead.
 type Messaging10dlcBrandService struct {
-	Options         []option.RequestOption
+	Options []option.RequestOption
+	// Brand operations
 	ExternalVetting Messaging10dlcBrandExternalVettingService
 }
 

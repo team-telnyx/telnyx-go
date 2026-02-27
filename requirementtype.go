@@ -19,6 +19,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
+// Types of requirements for international numbers and porting orders
+//
 // RequirementTypeService contains methods and other services that help with
 // interacting with the telnyx API.
 //

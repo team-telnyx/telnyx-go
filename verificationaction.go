@@ -15,6 +15,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 )
 
+// Two factor authentication API
+//
 // VerificationActionService contains methods and other services that help with
 // interacting with the telnyx API.
 //

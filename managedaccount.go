@@ -19,6 +19,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Managed Accounts operations
+//
 // ManagedAccountService contains methods and other services that help with
 // interacting with the telnyx API.
 //
@@ -27,6 +29,7 @@ import (
 // the [NewManagedAccountService] method instead.
 type ManagedAccountService struct {
 	Options []option.RequestOption
+	// Managed Accounts operations
 	Actions ManagedAccountActionService
 }
 

@@ -19,6 +19,12 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Operations for working with UserAddress records. UserAddress records are stored
+// addresses that users can use for non-emergency-calling purposes, such as for
+// shipping addresses for orders of wireless SIMs (or other physical items). They
+// cannot be used for emergency calling and are distinct from Address records,
+// which are used on phone numbers.
+//
 // UserAddressService contains methods and other services that help with
 // interacting with the telnyx API.
 //

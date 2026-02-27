@@ -14,7 +14,8 @@ import (
 // the [NewTexmlAccountTranscriptionService] method instead.
 type TexmlAccountTranscriptionService struct {
 	Options []option.RequestOption
-	Json    TexmlAccountTranscriptionJsonService
+	// TeXML REST Commands
+	Json TexmlAccountTranscriptionJsonService
 }
 
 // NewTexmlAccountTranscriptionService generates a new service that applies the

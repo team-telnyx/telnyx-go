@@ -14,7 +14,8 @@ import (
 // the [NewTexmlAccountRecordingService] method instead.
 type TexmlAccountRecordingService struct {
 	Options []option.RequestOption
-	Json    TexmlAccountRecordingJsonService
+	// TeXML REST Commands
+	Json TexmlAccountRecordingJsonService
 }
 
 // NewTexmlAccountRecordingService generates a new service that applies the given

@@ -22,12 +22,17 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewMessaging10dlcService] method instead.
 type Messaging10dlcService struct {
-	Options                        []option.RequestOption
-	Brand                          Messaging10dlcBrandService
-	Campaign                       Messaging10dlcCampaignService
-	CampaignBuilder                Messaging10dlcCampaignBuilderService
-	PartnerCampaigns               Messaging10dlcPartnerCampaignService
-	PhoneNumberCampaigns           Messaging10dlcPhoneNumberCampaignService
+	Options []option.RequestOption
+	// Brand operations
+	Brand Messaging10dlcBrandService
+	// Campaign operations
+	Campaign Messaging10dlcCampaignService
+	// Campaign operations
+	CampaignBuilder  Messaging10dlcCampaignBuilderService
+	PartnerCampaigns Messaging10dlcPartnerCampaignService
+	// Phone number campaign assignment
+	PhoneNumberCampaigns Messaging10dlcPhoneNumberCampaignService
+	// Phone number campaign bulk assignment
 	PhoneNumberAssignmentByProfile Messaging10dlcPhoneNumberAssignmentByProfileService
 }
 

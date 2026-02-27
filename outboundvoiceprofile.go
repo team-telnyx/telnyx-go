@@ -20,6 +20,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Outbound voice profiles operations
+//
 // OutboundVoiceProfileService contains methods and other services that help with
 // interacting with the telnyx API.
 //

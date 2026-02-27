@@ -21,6 +21,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
+// Mobile push credential management
+//
 // MobilePushCredentialService contains methods and other services that help with
 // interacting with the telnyx API.
 //

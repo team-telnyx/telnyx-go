@@ -16,6 +16,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Managed Accounts operations
+//
 // ManagedAccountActionService contains methods and other services that help with
 // interacting with the telnyx API.
 //

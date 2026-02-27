@@ -16,6 +16,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
+// Generate text with LLMs
+//
 // AIChatService contains methods and other services that help with interacting
 // with the telnyx API.
 //

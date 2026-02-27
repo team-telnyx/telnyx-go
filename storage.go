@@ -13,6 +13,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Migrate data from an external provider into Telnyx Cloud Storage
+//
 // StorageService contains methods and other services that help with interacting
 // with the telnyx API.
 //
@@ -20,10 +22,13 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewStorageService] method instead.
 type StorageService struct {
-	Options          []option.RequestOption
-	Buckets          StorageBucketService
+	Options []option.RequestOption
+	// Presigned object URL operations
+	Buckets StorageBucketService
+	// Migrate data from an external provider into Telnyx Cloud Storage
 	MigrationSources StorageMigrationSourceService
-	Migrations       StorageMigrationService
+	// Migrate data from an external provider into Telnyx Cloud Storage
+	Migrations StorageMigrationService
 }
 
 // NewStorageService generates a new service that applies the given options to each

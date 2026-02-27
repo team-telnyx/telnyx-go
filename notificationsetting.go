@@ -22,6 +22,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Notification settings operations
+//
 // NotificationSettingService contains methods and other services that help with
 // interacting with the telnyx API.
 //

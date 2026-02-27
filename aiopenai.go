@@ -13,7 +13,9 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewAIOpenAIService] method instead.
 type AIOpenAIService struct {
-	Options    []option.RequestOption
+	Options []option.RequestOption
+	// OpenAI-compatible embeddings endpoints for generating vector representations of
+	// text
 	Embeddings AIOpenAIEmbeddingService
 }
 

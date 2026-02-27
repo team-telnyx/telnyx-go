@@ -14,7 +14,8 @@ import (
 // the [NewOrganizationService] method instead.
 type OrganizationService struct {
 	Options []option.RequestOption
-	Users   OrganizationUserService
+	// Operations related to users in your organization
+	Users OrganizationUserService
 }
 
 // NewOrganizationService generates a new service that applies the given options to

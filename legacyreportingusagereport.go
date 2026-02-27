@@ -17,6 +17,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Speech to text usage reports
+//
 // LegacyReportingUsageReportService contains methods and other services that help
 // with interacting with the telnyx API.
 //
@@ -24,10 +26,13 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewLegacyReportingUsageReportService] method instead.
 type LegacyReportingUsageReportService struct {
-	Options      []option.RequestOption
-	Messaging    LegacyReportingUsageReportMessagingService
+	Options []option.RequestOption
+	// Messaging usage reports
+	Messaging LegacyReportingUsageReportMessagingService
+	// Number lookup usage reports
 	NumberLookup LegacyReportingUsageReportNumberLookupService
-	Voice        LegacyReportingUsageReportVoiceService
+	// Voice usage reports
+	Voice LegacyReportingUsageReportVoiceService
 }
 
 // NewLegacyReportingUsageReportService generates a new service that applies the

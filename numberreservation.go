@@ -21,6 +21,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Number reservations
+//
 // NumberReservationService contains methods and other services that help with
 // interacting with the telnyx API.
 //
@@ -29,6 +31,7 @@ import (
 // the [NewNumberReservationService] method instead.
 type NumberReservationService struct {
 	Options []option.RequestOption
+	// Number reservations
 	Actions NumberReservationActionService
 }
 

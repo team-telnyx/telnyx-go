@@ -19,6 +19,9 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// View SIM card actions, their progress and timestamps using the SIM Card Actions
+// API
+//
 // BulkSimCardActionService contains methods and other services that help with
 // interacting with the telnyx API.
 //
