@@ -118,23 +118,6 @@ func (r *NetworkInterface) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type NetworkInterfaceRegion struct {
-	// The region the interface should be deployed to.
-	RegionCode string `json:"region_code"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		RegionCode  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r NetworkInterfaceRegion) RawJSON() string { return r.JSON.raw }
-func (r *NetworkInterfaceRegion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type PublicInternetGatewayNewResponse struct {
 	Data PublicInternetGatewayNewResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
