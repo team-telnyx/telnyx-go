@@ -27,8 +27,8 @@ func TestTextToSpeechListVoicesWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.TextToSpeech.ListVoices(context.TODO(), telnyx.TextToSpeechListVoicesParams{
-		ElevenlabsAPIKeyRef: telnyx.String("elevenlabs_api_key_ref"),
-		Provider:            telnyx.TextToSpeechListVoicesParamsProviderAws,
+		APIKey:   telnyx.String("api_key"),
+		Provider: telnyx.TextToSpeechListVoicesParamsProviderAws,
 	})
 	if err != nil {
 		var apierr *telnyx.Error
