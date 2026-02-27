@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.35.0 (2026-02-27)
+
+Full Changelog: [v4.34.0...v4.35.0](https://github.com/team-telnyx/telnyx-go/compare/v4.34.0...v4.35.0)
+
+### Features
+
+* Add TTS file-based endpoint spec ([26587e5](https://github.com/team-telnyx/telnyx-go/commit/26587e5b35c6edf2bf325a80e019a257e9f9c45b))
+* **api:** manual updates ([bb9f4ad](https://github.com/team-telnyx/telnyx-go/commit/bb9f4ad3954d0ecb0327add86d27890e7b2236c3))
+* **api:** manual updates ([b6ceabe](https://github.com/team-telnyx/telnyx-go/commit/b6ceabe43f90fdff66dc3e93988dd21b504b53b6))
+* **api:** manual updates ([69d8bcf](https://github.com/team-telnyx/telnyx-go/commit/69d8bcf92c50627f562bb89ab19661c45d42a139))
+
 ## 4.34.0 (2026-02-26)
 
 Full Changelog: [v4.33.0...v4.34.0](https://github.com/team-telnyx/telnyx-go/compare/v4.33.0...v4.34.0)
