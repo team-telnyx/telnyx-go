@@ -35,7 +35,11 @@ func NewTextToSpeechService(opts ...option.RequestOption) (r TextToSpeechService
 	return
 }
 
-// Returns a list of voices that can be used with the text to speech commands.
+// Retrieve a list of available voices from one or all TTS providers. When
+// `provider` is specified, returns voices for that provider only. Otherwise,
+// returns voices from all providers.
+//
+// Some providers (ElevenLabs, Resemble) require an API key to list voices.
 func (r *TextToSpeechService) ListVoices(ctx context.Context, query TextToSpeechListVoicesParams, opts ...option.RequestOption) (res *TextToSpeechListVoicesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "text-to-speech/voices"
@@ -71,6 +75,7 @@ func (r *TextToSpeechService) Stream(ctx context.Context, query TextToSpeechStre
 	return
 }
 
+// List of available voices.
 type TextToSpeechListVoicesResponse struct {
 	Voices []TextToSpeechListVoicesResponseVoice `json:"voices"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -87,25 +92,25 @@ func (r *TextToSpeechListVoicesResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// A voice available for text-to-speech synthesis.
 type TextToSpeechListVoicesResponseVoice struct {
-	ID       string `json:"id"`
-	Accent   string `json:"accent"`
-	Age      string `json:"age"`
-	Gender   string `json:"gender"`
-	Label    string `json:"label"`
+	// Voice gender.
+	Gender string `json:"gender"`
+	// Language code.
 	Language string `json:"language"`
-	Name     string `json:"name"`
+	// Voice name.
+	Name string `json:"name"`
+	// The TTS provider.
 	Provider string `json:"provider"`
+	// Voice identifier.
+	VoiceID string `json:"voice_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Accent      respjson.Field
-		Age         respjson.Field
 		Gender      respjson.Field
-		Label       respjson.Field
 		Language    respjson.Field
 		Name        respjson.Field
 		Provider    respjson.Field
+		VoiceID     respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -118,11 +123,11 @@ func (r *TextToSpeechListVoicesResponseVoice) UnmarshalJSON(data []byte) error {
 }
 
 type TextToSpeechListVoicesParams struct {
-	// Reference to your ElevenLabs API key stored in the Telnyx Portal
-	ElevenlabsAPIKeyRef param.Opt[string] `query:"elevenlabs_api_key_ref,omitzero" json:"-"`
-	// Filter voices by provider
+	// API key for providers that require one to list voices (e.g. ElevenLabs).
+	APIKey param.Opt[string] `query:"api_key,omitzero" json:"-"`
+	// Filter voices by provider. If omitted, voices from all providers are returned.
 	//
-	// Any of "aws", "azure", "elevenlabs", "telnyx".
+	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "rime", "resemble".
 	Provider TextToSpeechListVoicesParamsProvider `query:"provider,omitzero" json:"-"`
 	paramObj
 }
@@ -136,14 +141,17 @@ func (r TextToSpeechListVoicesParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter voices by provider
+// Filter voices by provider. If omitted, voices from all providers are returned.
 type TextToSpeechListVoicesParamsProvider string
 
 const (
 	TextToSpeechListVoicesParamsProviderAws        TextToSpeechListVoicesParamsProvider = "aws"
+	TextToSpeechListVoicesParamsProviderTelnyx     TextToSpeechListVoicesParamsProvider = "telnyx"
 	TextToSpeechListVoicesParamsProviderAzure      TextToSpeechListVoicesParamsProvider = "azure"
 	TextToSpeechListVoicesParamsProviderElevenlabs TextToSpeechListVoicesParamsProvider = "elevenlabs"
-	TextToSpeechListVoicesParamsProviderTelnyx     TextToSpeechListVoicesParamsProvider = "telnyx"
+	TextToSpeechListVoicesParamsProviderMinimax    TextToSpeechListVoicesParamsProvider = "minimax"
+	TextToSpeechListVoicesParamsProviderRime       TextToSpeechListVoicesParamsProvider = "rime"
+	TextToSpeechListVoicesParamsProviderResemble   TextToSpeechListVoicesParamsProvider = "resemble"
 )
 
 type TextToSpeechStreamParams struct {
