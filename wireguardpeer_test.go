@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestWireguardPeerNewWithOptionalParams(t *testing.T) {
+func TestWireguardPeerNew(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -28,7 +28,6 @@ func TestWireguardPeerNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.WireguardPeers.New(context.TODO(), telnyx.WireguardPeerNewParams{
 		WireguardInterfaceID: "6a09cdc3-8948-47f0-aa62-74ac943d6c58",
-		PublicKey:            telnyx.String("qF4EqlZq+5JL2IKYY8ij49daYyfKVhevJrcDxdqC8GU="),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

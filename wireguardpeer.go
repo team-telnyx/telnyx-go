@@ -121,33 +121,6 @@ func (r *WireguardPeerService) GetConfig(ctx context.Context, id string, opts ..
 	return
 }
 
-type WireguardPeerPatch struct {
-	// The WireGuard `PublicKey`.<br /><br />If you do not provide a Public Key, a new
-	// Public and Private key pair will be generated for you.
-	PublicKey string `json:"public_key"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PublicKey   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WireguardPeerPatch) RawJSON() string { return r.JSON.raw }
-func (r *WireguardPeerPatch) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this WireguardPeerPatch to a WireguardPeerPatchParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// WireguardPeerPatchParam.Overrides()
-func (r WireguardPeerPatch) ToParam() WireguardPeerPatchParam {
-	return param.Override[WireguardPeerPatchParam](json.RawMessage(r.RawJSON()))
-}
-
 type WireguardPeerPatchParam struct {
 	// The WireGuard `PublicKey`.<br /><br />If you do not provide a Public Key, a new
 	// Public and Private key pair will be generated for you.
@@ -199,7 +172,6 @@ type WireguardPeerNewResponseData struct {
 		raw                  string
 	} `json:"-"`
 	Record
-	WireguardPeerPatch
 }
 
 // Returns the unmodified JSON received from the API
@@ -244,7 +216,6 @@ type WireguardPeerGetResponseData struct {
 		raw                  string
 	} `json:"-"`
 	Record
-	WireguardPeerPatch
 }
 
 // Returns the unmodified JSON received from the API
@@ -289,7 +260,6 @@ type WireguardPeerUpdateResponseData struct {
 		raw                  string
 	} `json:"-"`
 	Record
-	WireguardPeerPatch
 }
 
 // Returns the unmodified JSON received from the API
@@ -318,7 +288,6 @@ type WireguardPeerListResponse struct {
 		raw                  string
 	} `json:"-"`
 	Record
-	WireguardPeerPatch
 }
 
 // Returns the unmodified JSON received from the API
@@ -363,7 +332,6 @@ type WireguardPeerDeleteResponseData struct {
 		raw                  string
 	} `json:"-"`
 	Record
-	WireguardPeerPatch
 }
 
 // Returns the unmodified JSON received from the API
@@ -375,9 +343,6 @@ func (r *WireguardPeerDeleteResponseData) UnmarshalJSON(data []byte) error {
 type WireguardPeerNewParams struct {
 	// The id of the wireguard interface associated with the peer.
 	WireguardInterfaceID string `json:"wireguard_interface_id" api:"required" format:"uuid"`
-	// The WireGuard `PublicKey`.<br /><br />If you do not provide a Public Key, a new
-	// Public and Private key pair will be generated for you.
-	PublicKey param.Opt[string] `json:"public_key,omitzero"`
 	paramObj
 }
 
