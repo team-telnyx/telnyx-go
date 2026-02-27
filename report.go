@@ -25,8 +25,10 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewReportService] method instead.
 type ReportService struct {
-	Options         []option.RequestOption
+	Options []option.RequestOption
+	// Voice usage reports
 	CdrUsageReports ReportCdrUsageReportService
+	// Messaging usage reports
 	MdrUsageReports ReportMdrUsageReportService
 }
 

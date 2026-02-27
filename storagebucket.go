@@ -17,6 +17,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Presigned object URL operations
+//
 // StorageBucketService contains methods and other services that help with
 // interacting with the telnyx API.
 //
@@ -24,9 +26,11 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewStorageBucketService] method instead.
 type StorageBucketService struct {
-	Options        []option.RequestOption
+	Options []option.RequestOption
+	// SSL certificate operations
 	SslCertificate StorageBucketSslCertificateService
-	Usage          StorageBucketUsageService
+	// Bucket Usage operations
+	Usage StorageBucketUsageService
 }
 
 // NewStorageBucketService generates a new service that applies the given options

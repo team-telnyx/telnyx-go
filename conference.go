@@ -20,6 +20,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Conference command operations
+//
 // ConferenceService contains methods and other services that help with interacting
 // with the telnyx API.
 //
@@ -28,6 +30,7 @@ import (
 // the [NewConferenceService] method instead.
 type ConferenceService struct {
 	Options []option.RequestOption
+	// Conference command operations
 	Actions ConferenceActionService
 }
 

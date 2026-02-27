@@ -25,6 +25,7 @@ import (
 // the [NewCallService] method instead.
 type CallService struct {
 	Options []option.RequestOption
+	// Call Control command operations
 	Actions CallActionService
 }
 

@@ -20,6 +20,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Campaign operations
+//
 // Messaging10dlcCampaignService contains methods and other services that help with
 // interacting with the telnyx API.
 //
@@ -28,8 +30,10 @@ import (
 // the [NewMessaging10dlcCampaignService] method instead.
 type Messaging10dlcCampaignService struct {
 	Options []option.RequestOption
+	// Campaign operations
 	Usecase Messaging10dlcCampaignUsecaseService
-	Osr     Messaging10dlcCampaignOsrService
+	// Campaign operations
+	Osr Messaging10dlcCampaignOsrService
 }
 
 // NewMessaging10dlcCampaignService generates a new service that applies the given

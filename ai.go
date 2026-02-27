@@ -14,6 +14,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Generate text with LLMs
+//
 // AIService contains methods and other services that help with interacting with
 // the telnyx API.
 //
@@ -21,18 +23,24 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewAIService] method instead.
 type AIService struct {
-	Options       []option.RequestOption
-	Assistants    AIAssistantService
-	Audio         AIAudioService
-	Chat          AIChatService
-	Clusters      AIClusterService
+	Options []option.RequestOption
+	// Configure AI assistant specifications
+	Assistants AIAssistantService
+	// Turn audio into text or text into audio.
+	Audio AIAudioService
+	// Generate text with LLMs
+	Chat AIChatService
+	// Identify common themes and patterns in your embedded documents
+	Clusters AIClusterService
+	// Manage historical AI assistant conversations
 	Conversations AIConversationService
-	Embeddings    AIEmbeddingService
-	FineTuning    AIFineTuningService
-	Integrations  AIIntegrationService
-	McpServers    AIMcpServerService
-	Missions      AIMissionService
-	OpenAI        AIOpenAIService
+	// Embed documents and perform text searches
+	Embeddings   AIEmbeddingService
+	FineTuning   AIFineTuningService
+	Integrations AIIntegrationService
+	McpServers   AIMcpServerService
+	Missions     AIMissionService
+	OpenAI       AIOpenAIService
 }
 
 // NewAIService generates a new service that applies the given options to each

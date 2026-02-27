@@ -20,6 +20,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Rooms Recordings operations.
+//
 // RoomRecordingService contains methods and other services that help with
 // interacting with the telnyx API.
 //

@@ -17,6 +17,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Rooms Client Tokens operations.
+//
 // RoomActionService contains methods and other services that help with interacting
 // with the telnyx API.
 //

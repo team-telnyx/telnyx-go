@@ -21,6 +21,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// TeXML REST Commands
+//
 // TexmlAccountCallService contains methods and other services that help with
 // interacting with the telnyx API.
 //
@@ -28,11 +30,15 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewTexmlAccountCallService] method instead.
 type TexmlAccountCallService struct {
-	Options        []option.RequestOption
+	Options []option.RequestOption
+	// TeXML REST Commands
 	RecordingsJson TexmlAccountCallRecordingsJsonService
-	Recordings     TexmlAccountCallRecordingService
-	Siprec         TexmlAccountCallSiprecService
-	Streams        TexmlAccountCallStreamService
+	// TeXML REST Commands
+	Recordings TexmlAccountCallRecordingService
+	// TeXML REST Commands
+	Siprec TexmlAccountCallSiprecService
+	// TeXML REST Commands
+	Streams TexmlAccountCallStreamService
 }
 
 // NewTexmlAccountCallService generates a new service that applies the given

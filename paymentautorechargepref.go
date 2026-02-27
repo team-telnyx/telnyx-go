@@ -14,6 +14,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// V2 Auto Recharge Preferences API
+//
 // PaymentAutoRechargePrefService contains methods and other services that help
 // with interacting with the telnyx API.
 //

@@ -29,6 +29,7 @@ import (
 // the [NewRoomSessionService] method instead.
 type RoomSessionService struct {
 	Options []option.RequestOption
+	// Rooms Sessions operations.
 	Actions RoomSessionActionService
 }
 

@@ -16,6 +16,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Send RCS messages
+//
 // MessagingRcService contains methods and other services that help with
 // interacting with the telnyx API.
 //
@@ -24,7 +26,8 @@ import (
 // the [NewMessagingRcService] method instead.
 type MessagingRcService struct {
 	Options []option.RequestOption
-	Agents  MessagingRcAgentService
+	// Send RCS messages
+	Agents MessagingRcAgentService
 }
 
 // NewMessagingRcService generates a new service that applies the given options to

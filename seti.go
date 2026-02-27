@@ -16,6 +16,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Observability into Telnyx platform stability and performance.
+//
 // SetiService contains methods and other services that help with interacting with
 // the telnyx API.
 //

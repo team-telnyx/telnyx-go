@@ -19,6 +19,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Embed documents and perform text searches
+//
 // AIEmbeddingService contains methods and other services that help with
 // interacting with the telnyx API.
 //
@@ -27,6 +29,7 @@ import (
 // the [NewAIEmbeddingService] method instead.
 type AIEmbeddingService struct {
 	Options []option.RequestOption
+	// Embed documents and perform text searches
 	Buckets AIEmbeddingBucketService
 }
 

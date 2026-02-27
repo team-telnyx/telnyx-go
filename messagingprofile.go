@@ -29,7 +29,8 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewMessagingProfileService] method instead.
 type MessagingProfileService struct {
-	Options         []option.RequestOption
+	Options []option.RequestOption
+	// Opt-Out Management
 	AutorespConfigs MessagingProfileAutorespConfigService
 	Actions         MessagingProfileActionService
 }

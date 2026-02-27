@@ -21,6 +21,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
+// FQDN connection operations
+//
 // FqdnConnectionService contains methods and other services that help with
 // interacting with the telnyx API.
 //

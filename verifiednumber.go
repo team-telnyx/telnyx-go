@@ -19,6 +19,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Verified Numbers operations
+//
 // VerifiedNumberService contains methods and other services that help with
 // interacting with the telnyx API.
 //
@@ -27,6 +29,7 @@ import (
 // the [NewVerifiedNumberService] method instead.
 type VerifiedNumberService struct {
 	Options []option.RequestOption
+	// Verified Numbers operations
 	Actions VerifiedNumberActionService
 }
 

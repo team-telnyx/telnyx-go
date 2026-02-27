@@ -19,6 +19,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Queue commands operations
+//
 // QueueService contains methods and other services that help with interacting with
 // the telnyx API.
 //
@@ -27,7 +29,8 @@ import (
 // the [NewQueueService] method instead.
 type QueueService struct {
 	Options []option.RequestOption
-	Calls   QueueCallService
+	// Queue commands operations
+	Calls QueueCallService
 }
 
 // NewQueueService generates a new service that applies the given options to each

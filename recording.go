@@ -19,6 +19,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Call Recordings operations.
+//
 // RecordingService contains methods and other services that help with interacting
 // with the telnyx API.
 //
@@ -27,6 +29,7 @@ import (
 // the [NewRecordingService] method instead.
 type RecordingService struct {
 	Options []option.RequestOption
+	// Call Recordings operations.
 	Actions RecordingActionService
 }
 

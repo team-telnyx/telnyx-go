@@ -14,7 +14,8 @@ import (
 // the [NewMessagingService] method instead.
 type MessagingService struct {
 	Options []option.RequestOption
-	Rcs     MessagingRcService
+	// Send RCS messages
+	Rcs MessagingRcService
 }
 
 // NewMessagingService generates a new service that applies the given options to

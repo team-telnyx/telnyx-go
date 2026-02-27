@@ -20,6 +20,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
+// Manage your messaging hosted numbers
+//
 // MessagingHostedNumberOrderService contains methods and other services that help
 // with interacting with the telnyx API.
 //
@@ -28,6 +30,7 @@ import (
 // the [NewMessagingHostedNumberOrderService] method instead.
 type MessagingHostedNumberOrderService struct {
 	Options []option.RequestOption
+	// Manage your messaging hosted numbers
 	Actions MessagingHostedNumberOrderActionService
 }
 

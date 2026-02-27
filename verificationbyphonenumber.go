@@ -15,6 +15,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Two factor authentication API
+//
 // VerificationByPhoneNumberService contains methods and other services that help
 // with interacting with the telnyx API.
 //
@@ -23,6 +25,7 @@ import (
 // the [NewVerificationByPhoneNumberService] method instead.
 type VerificationByPhoneNumberService struct {
 	Options []option.RequestOption
+	// Two factor authentication API
 	Actions VerificationByPhoneNumberActionService
 }
 

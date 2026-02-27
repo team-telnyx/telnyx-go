@@ -18,6 +18,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
+// Virtual Cross Connect operations
+//
 // VirtualCrossConnectsCoverageService contains methods and other services that
 // help with interacting with the telnyx API.
 //

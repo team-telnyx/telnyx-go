@@ -20,6 +20,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Background jobs performed over a phone-numbers block's phone numbers
+//
 // PhoneNumberBlockJobService contains methods and other services that help with
 // interacting with the telnyx API.
 //

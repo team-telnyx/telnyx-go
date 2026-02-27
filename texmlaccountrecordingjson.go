@@ -13,6 +13,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
+// TeXML REST Commands
+//
 // TexmlAccountRecordingJsonService contains methods and other services that help
 // with interacting with the telnyx API.
 //

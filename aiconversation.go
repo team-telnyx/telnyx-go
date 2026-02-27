@@ -19,6 +19,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Manage historical AI assistant conversations
+//
 // AIConversationService contains methods and other services that help with
 // interacting with the telnyx API.
 //
@@ -26,10 +28,13 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewAIConversationService] method instead.
 type AIConversationService struct {
-	Options       []option.RequestOption
+	Options []option.RequestOption
+	// Manage historical AI assistant conversations
 	InsightGroups AIConversationInsightGroupService
-	Insights      AIConversationInsightService
-	Messages      AIConversationMessageService
+	// Manage historical AI assistant conversations
+	Insights AIConversationInsightService
+	// Manage historical AI assistant conversations
+	Messages AIConversationMessageService
 }
 
 // NewAIConversationService generates a new service that applies the given options

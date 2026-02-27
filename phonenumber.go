@@ -20,6 +20,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Configure your phone numbers
+//
 // PhoneNumberService contains methods and other services that help with
 // interacting with the telnyx API.
 //
@@ -27,13 +29,18 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewPhoneNumberService] method instead.
 type PhoneNumberService struct {
-	Options      []option.RequestOption
+	Options []option.RequestOption
+	// Configure your phone numbers
 	Actions      PhoneNumberActionService
 	CsvDownloads PhoneNumberCsvDownloadService
-	Jobs         PhoneNumberJobService
-	Messaging    PhoneNumberMessagingService
-	Voice        PhoneNumberVoiceService
-	Voicemail    PhoneNumberVoicemailService
+	// Background jobs performed over a batch of phone numbers
+	Jobs PhoneNumberJobService
+	// Configure your phone numbers
+	Messaging PhoneNumberMessagingService
+	// Configure your phone numbers
+	Voice PhoneNumberVoiceService
+	// Voicemail API
+	Voicemail PhoneNumberVoicemailService
 }
 
 // NewPhoneNumberService generates a new service that applies the given options to
