@@ -19,6 +19,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Operations related to users in your organization
+//
 // OrganizationUserService contains methods and other services that help with
 // interacting with the telnyx API.
 //
@@ -27,6 +29,7 @@ import (
 // the [NewOrganizationUserService] method instead.
 type OrganizationUserService struct {
 	Options []option.RequestOption
+	// Operations related to users in your organization
 	Actions OrganizationUserActionService
 }
 

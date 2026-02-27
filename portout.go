@@ -20,6 +20,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Number portout operations
+//
 // PortoutService contains methods and other services that help with interacting
 // with the telnyx API.
 //
@@ -27,10 +29,14 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewPortoutService] method instead.
 type PortoutService struct {
-	Options             []option.RequestOption
-	Events              PortoutEventService
-	Reports             PortoutReportService
-	Comments            PortoutCommentService
+	Options []option.RequestOption
+	// Number portout operations
+	Events PortoutEventService
+	// Number portout operations
+	Reports PortoutReportService
+	// Number portout operations
+	Comments PortoutCommentService
+	// Number portout operations
 	SupportingDocuments PortoutSupportingDocumentService
 }
 

@@ -15,6 +15,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Migrate data from an external provider into Telnyx Cloud Storage
+//
 // StorageMigrationActionService contains methods and other services that help with
 // interacting with the telnyx API.
 //

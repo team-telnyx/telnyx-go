@@ -19,6 +19,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Phone number campaign bulk assignment
+//
 // Messaging10dlcPhoneNumberAssignmentByProfileService contains methods and other
 // services that help with interacting with the telnyx API.
 //

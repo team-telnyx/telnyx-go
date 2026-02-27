@@ -13,7 +13,8 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewMessagingTollfreeVerificationService] method instead.
 type MessagingTollfreeVerificationService struct {
-	Options  []option.RequestOption
+	Options []option.RequestOption
+	// Manage your tollfree verification requests
 	Requests MessagingTollfreeVerificationRequestService
 }
 

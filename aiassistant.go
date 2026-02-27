@@ -21,6 +21,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
+// Configure AI assistant specifications
+//
 // AIAssistantService contains methods and other services that help with
 // interacting with the telnyx API.
 //
@@ -28,12 +30,17 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewAIAssistantService] method instead.
 type AIAssistantService struct {
-	Options         []option.RequestOption
-	Tests           AIAssistantTestService
-	CanaryDeploys   AIAssistantCanaryDeployService
+	Options []option.RequestOption
+	// Configure AI assistant specifications
+	Tests AIAssistantTestService
+	// Configure AI assistant specifications
+	CanaryDeploys AIAssistantCanaryDeployService
+	// Configure AI assistant specifications
 	ScheduledEvents AIAssistantScheduledEventService
-	Tools           AIAssistantToolService
-	Versions        AIAssistantVersionService
+	// Configure AI assistant specifications
+	Tools AIAssistantToolService
+	// Configure AI assistant specifications
+	Versions AIAssistantVersionService
 }
 
 // NewAIAssistantService generates a new service that applies the given options to

@@ -14,6 +14,7 @@ import (
 // the [NewOperatorConnectService] method instead.
 type OperatorConnectService struct {
 	Options []option.RequestOption
+	// External Connections operations
 	Actions OperatorConnectActionService
 }
 

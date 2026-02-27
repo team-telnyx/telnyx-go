@@ -22,6 +22,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
+// SIM Cards operations
+//
 // SimCardService contains methods and other services that help with interacting
 // with the telnyx API.
 //

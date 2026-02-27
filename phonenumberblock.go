@@ -14,7 +14,8 @@ import (
 // the [NewPhoneNumberBlockService] method instead.
 type PhoneNumberBlockService struct {
 	Options []option.RequestOption
-	Jobs    PhoneNumberBlockJobService
+	// Background jobs performed over a phone-numbers block's phone numbers
+	Jobs PhoneNumberBlockJobService
 }
 
 // NewPhoneNumberBlockService generates a new service that applies the given

@@ -15,8 +15,10 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewActionService] method instead.
 type ActionService struct {
-	Options  []option.RequestOption
+	Options []option.RequestOption
+	// SIM Cards operations
 	Purchase ActionPurchaseService
+	// SIM Cards operations
 	Register ActionRegisterService
 }
 

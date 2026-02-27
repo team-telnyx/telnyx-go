@@ -21,6 +21,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
+// Background jobs performed over a batch of phone numbers
+//
 // PhoneNumberJobService contains methods and other services that help with
 // interacting with the telnyx API.
 //

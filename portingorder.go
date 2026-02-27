@@ -22,6 +22,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
+// Endpoints related to porting orders management.
+//
 // PortingOrderService contains methods and other services that help with
 // interacting with the telnyx API.
 //
@@ -29,17 +31,27 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewPortingOrderService] method instead.
 type PortingOrderService struct {
-	Options                   []option.RequestOption
+	Options []option.RequestOption
+	// Endpoints related to porting orders management.
 	PhoneNumberConfigurations PortingOrderPhoneNumberConfigurationService
-	Actions                   PortingOrderActionService
-	ActivationJobs            PortingOrderActivationJobService
-	AdditionalDocuments       PortingOrderAdditionalDocumentService
-	Comments                  PortingOrderCommentService
-	VerificationCodes         PortingOrderVerificationCodeService
-	ActionRequirements        PortingOrderActionRequirementService
-	AssociatedPhoneNumbers    PortingOrderAssociatedPhoneNumberService
-	PhoneNumberBlocks         PortingOrderPhoneNumberBlockService
-	PhoneNumberExtensions     PortingOrderPhoneNumberExtensionService
+	// Endpoints related to porting orders management.
+	Actions PortingOrderActionService
+	// Endpoints related to porting orders management.
+	ActivationJobs PortingOrderActivationJobService
+	// Endpoints related to porting orders management.
+	AdditionalDocuments PortingOrderAdditionalDocumentService
+	// Endpoints related to porting orders management.
+	Comments PortingOrderCommentService
+	// Endpoints related to porting orders management.
+	VerificationCodes PortingOrderVerificationCodeService
+	// Endpoints related to porting orders management.
+	ActionRequirements PortingOrderActionRequirementService
+	// Endpoints related to porting orders management.
+	AssociatedPhoneNumbers PortingOrderAssociatedPhoneNumberService
+	// Endpoints related to porting orders management.
+	PhoneNumberBlocks PortingOrderPhoneNumberBlockService
+	// Endpoints related to porting orders management.
+	PhoneNumberExtensions PortingOrderPhoneNumberExtensionService
 }
 
 // NewPortingOrderService generates a new service that applies the given options to

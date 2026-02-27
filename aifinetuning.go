@@ -14,7 +14,8 @@ import (
 // the [NewAIFineTuningService] method instead.
 type AIFineTuningService struct {
 	Options []option.RequestOption
-	Jobs    AIFineTuningJobService
+	// Customize LLMs for your unique needs
+	Jobs AIFineTuningJobService
 }
 
 // NewAIFineTuningService generates a new service that applies the given options to

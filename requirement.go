@@ -20,6 +20,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
+// Requirements for international numbers and porting orders
+//
 // RequirementService contains methods and other services that help with
 // interacting with the telnyx API.
 //

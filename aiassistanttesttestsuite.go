@@ -13,6 +13,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Configure AI assistant specifications
+//
 // AIAssistantTestTestSuiteService contains methods and other services that help
 // with interacting with the telnyx API.
 //
@@ -21,7 +23,8 @@ import (
 // the [NewAIAssistantTestTestSuiteService] method instead.
 type AIAssistantTestTestSuiteService struct {
 	Options []option.RequestOption
-	Runs    AIAssistantTestTestSuiteRunService
+	// Configure AI assistant specifications
+	Runs AIAssistantTestTestSuiteRunService
 }
 
 // NewAIAssistantTestTestSuiteService generates a new service that applies the

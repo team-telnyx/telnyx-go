@@ -17,6 +17,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Number lookup usage reports
+//
 // LegacyReportingUsageReportNumberLookupService contains methods and other
 // services that help with interacting with the telnyx API.
 //

@@ -21,6 +21,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
+// Rooms operations.
+//
 // RoomService contains methods and other services that help with interacting with
 // the telnyx API.
 //
@@ -28,7 +30,8 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewRoomService] method instead.
 type RoomService struct {
-	Options  []option.RequestOption
+	Options []option.RequestOption
+	// Rooms Client Tokens operations.
 	Actions  RoomActionService
 	Sessions RoomSessionService
 }

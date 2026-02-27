@@ -21,6 +21,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
+// Credential connection operations
+//
 // CredentialConnectionService contains methods and other services that help with
 // interacting with the telnyx API.
 //
@@ -29,6 +31,7 @@ import (
 // the [NewCredentialConnectionService] method instead.
 type CredentialConnectionService struct {
 	Options []option.RequestOption
+	// Credential connection operations
 	Actions CredentialConnectionActionService
 }
 

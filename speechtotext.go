@@ -14,6 +14,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 )
 
+// Speech to text command operations
+//
 // SpeechToTextService contains methods and other services that help with
 // interacting with the telnyx API.
 //

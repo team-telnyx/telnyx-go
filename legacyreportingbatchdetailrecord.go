@@ -18,10 +18,13 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewLegacyReportingBatchDetailRecordService] method instead.
 type LegacyReportingBatchDetailRecordService struct {
-	Options      []option.RequestOption
-	Messaging    LegacyReportingBatchDetailRecordMessagingService
+	Options []option.RequestOption
+	// Messaging batch detail records
+	Messaging LegacyReportingBatchDetailRecordMessagingService
+	// Speech to text batch detail records
 	SpeechToText LegacyReportingBatchDetailRecordSpeechToTextService
-	Voice        LegacyReportingBatchDetailRecordVoiceService
+	// Voice batch detail records
+	Voice LegacyReportingBatchDetailRecordVoiceService
 }
 
 // NewLegacyReportingBatchDetailRecordService generates a new service that applies

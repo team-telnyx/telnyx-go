@@ -16,160 +16,294 @@ import (
 // interacting with the telnyx API. You should not instantiate this client
 // directly, and instead use the [NewClient] method instead.
 type Client struct {
-	Options                            []option.RequestOption
-	Legacy                             LegacyService
-	OAuth                              OAuthService
-	OAuthClients                       OAuthClientService
-	OAuthGrants                        OAuthGrantService
-	Webhooks                           WebhookService
-	AccessIPAddress                    AccessIPAddressService
-	AccessIPRanges                     AccessIPRangeService
-	Actions                            ActionService
-	Addresses                          AddressService
-	AdvancedOrders                     AdvancedOrderService
-	AI                                 AIService
-	AuditEvents                        AuditEventService
-	AuthenticationProviders            AuthenticationProviderService
-	AvailablePhoneNumberBlocks         AvailablePhoneNumberBlockService
-	AvailablePhoneNumbers              AvailablePhoneNumberService
-	Balance                            BalanceService
-	BillingGroups                      BillingGroupService
-	BulkSimCardActions                 BulkSimCardActionService
-	BundlePricing                      BundlePricingService
-	CallControlApplications            CallControlApplicationService
-	CallEvents                         CallEventService
-	Calls                              CallService
-	ChannelZones                       ChannelZoneService
-	ChargesBreakdown                   ChargesBreakdownService
-	ChargesSummary                     ChargesSummaryService
-	Comments                           CommentService
-	Conferences                        ConferenceService
-	Connections                        ConnectionService
-	CountryCoverage                    CountryCoverageService
-	CredentialConnections              CredentialConnectionService
-	CustomStorageCredentials           CustomStorageCredentialService
-	CustomerServiceRecords             CustomerServiceRecordService
-	DetailRecords                      DetailRecordService
-	DialogflowConnections              DialogflowConnectionService
-	DocumentLinks                      DocumentLinkService
-	Documents                          DocumentService
-	DynamicEmergencyAddresses          DynamicEmergencyAddressService
-	DynamicEmergencyEndpoints          DynamicEmergencyEndpointService
-	ExternalConnections                ExternalConnectionService
-	FaxApplications                    FaxApplicationService
-	Faxes                              FaxService
-	FqdnConnections                    FqdnConnectionService
-	Fqdns                              FqdnService
-	GlobalIPAllowedPorts               GlobalIPAllowedPortService
-	GlobalIPAssignmentHealth           GlobalIPAssignmentHealthService
-	GlobalIPAssignments                GlobalIPAssignmentService
-	GlobalIPAssignmentsUsage           GlobalIPAssignmentsUsageService
-	GlobalIPHealthCheckTypes           GlobalIPHealthCheckTypeService
-	GlobalIPHealthChecks               GlobalIPHealthCheckService
-	GlobalIPLatency                    GlobalIPLatencyService
-	GlobalIPProtocols                  GlobalIPProtocolService
-	GlobalIPUsage                      GlobalIPUsageService
-	GlobalIPs                          GlobalIPService
-	InboundChannels                    InboundChannelService
-	IntegrationSecrets                 IntegrationSecretService
-	InventoryCoverage                  InventoryCoverageService
-	Invoices                           InvoiceService
-	IPConnections                      IPConnectionService
-	IPs                                IPService
-	LedgerBillingGroupReports          LedgerBillingGroupReportService
-	List                               ListService
-	ManagedAccounts                    ManagedAccountService
-	Media                              MediaService
-	Messages                           MessageService
-	Messaging                          MessagingService
-	MessagingHostedNumberOrders        MessagingHostedNumberOrderService
-	MessagingHostedNumbers             MessagingHostedNumberService
-	MessagingNumbersBulkUpdates        MessagingNumbersBulkUpdateService
-	MessagingOptouts                   MessagingOptoutService
-	MessagingProfiles                  MessagingProfileService
-	MessagingTollfree                  MessagingTollfreeService
-	MessagingURLDomains                MessagingURLDomainService
-	MobileNetworkOperators             MobileNetworkOperatorService
-	MobilePushCredentials              MobilePushCredentialService
-	NetworkCoverage                    NetworkCoverageService
-	Networks                           NetworkService
-	NotificationChannels               NotificationChannelService
-	NotificationEventConditions        NotificationEventConditionService
-	NotificationEvents                 NotificationEventService
-	NotificationProfiles               NotificationProfileService
-	NotificationSettings               NotificationSettingService
-	NumberBlockOrders                  NumberBlockOrderService
-	NumberLookup                       NumberLookupService
-	NumberOrderPhoneNumbers            NumberOrderPhoneNumberService
-	NumberOrders                       NumberOrderService
-	NumberReservations                 NumberReservationService
-	NumbersFeatures                    NumbersFeatureService
-	OperatorConnect                    OperatorConnectService
-	OtaUpdates                         OtaUpdateService
-	OutboundVoiceProfiles              OutboundVoiceProfileService
-	Payment                            PaymentService
-	PhoneNumberBlocks                  PhoneNumberBlockService
-	PhoneNumbers                       PhoneNumberService
+	Options      []option.RequestOption
+	Legacy       LegacyService
+	OAuth        OAuthService
+	OAuthClients OAuthClientService
+	OAuthGrants  OAuthGrantService
+	Webhooks     WebhookService
+	// IP Address Operations
+	AccessIPAddress AccessIPAddressService
+	// IP Range Operations
+	AccessIPRanges AccessIPRangeService
+	Actions        ActionService
+	// Operations to work with Address records. Address records are emergency-validated
+	// addresses meant to be associated with phone numbers. They are validated for
+	// emergency usage purposes at creation time, although you may validate them
+	// separately with a custom workflow using the ValidateAddress operation
+	// separately. Address records are not usable for physical orders, such as for
+	// Telnyx SIM cards, please use UserAddress for that. It is not possible to
+	// entirely skip emergency service validation for Address records; if an emergency
+	// provider for a phone number rejects the address then it cannot be used on a
+	// phone number. To prevent records from getting out of sync, Address records are
+	// immutable and cannot be altered once created. If you realize you need to alter
+	// an address, a new record must be created with the differing address.
+	Addresses      AddressService
+	AdvancedOrders AdvancedOrderService
+	// Generate text with LLMs
+	AI AIService
+	// Audit log operations.
+	AuditEvents             AuditEventService
+	AuthenticationProviders AuthenticationProviderService
+	// Number search
+	AvailablePhoneNumberBlocks AvailablePhoneNumberBlockService
+	// Number search
+	AvailablePhoneNumbers AvailablePhoneNumberService
+	// Billing operations
+	Balance BalanceService
+	// Billing groups operations
+	BillingGroups BillingGroupService
+	// View SIM card actions, their progress and timestamps using the SIM Card Actions
+	// API
+	BulkSimCardActions BulkSimCardActionService
+	BundlePricing      BundlePricingService
+	// Call Control applications operations
+	CallControlApplications CallControlApplicationService
+	// Call Control debugging
+	CallEvents CallEventService
+	Calls      CallService
+	// Voice Channels
+	ChannelZones     ChannelZoneService
+	ChargesBreakdown ChargesBreakdownService
+	ChargesSummary   ChargesSummaryService
+	// Number orders
+	Comments CommentService
+	// Conference command operations
+	Conferences ConferenceService
+	Connections ConnectionService
+	// Country Coverage
+	CountryCoverage CountryCoverageService
+	// Credential connection operations
+	CredentialConnections CredentialConnectionService
+	// Call Recordings operations.
+	CustomStorageCredentials CustomStorageCredentialService
+	// Customer Service Record operations
+	CustomerServiceRecords CustomerServiceRecordService
+	// Detail Records operations
+	DetailRecords DetailRecordService
+	// Dialogflow Connection Operations.
+	DialogflowConnections DialogflowConnectionService
+	// Documents
+	DocumentLinks DocumentLinkService
+	// Documents
+	Documents DocumentService
+	// Dynamic emergency address operations
+	DynamicEmergencyAddresses DynamicEmergencyAddressService
+	// Dynamic Emergency Endpoints
+	DynamicEmergencyEndpoints DynamicEmergencyEndpointService
+	// External Connections operations
+	ExternalConnections ExternalConnectionService
+	// Fax Applications operations
+	FaxApplications FaxApplicationService
+	// Programmable fax command operations
+	Faxes FaxService
+	// FQDN connection operations
+	FqdnConnections FqdnConnectionService
+	// FQDN operations
+	Fqdns FqdnService
+	// Global IPs
+	GlobalIPAllowedPorts GlobalIPAllowedPortService
+	// Global IPs
+	GlobalIPAssignmentHealth GlobalIPAssignmentHealthService
+	// Global IPs
+	GlobalIPAssignments GlobalIPAssignmentService
+	// Global IPs
+	GlobalIPAssignmentsUsage GlobalIPAssignmentsUsageService
+	// Global IPs
+	GlobalIPHealthCheckTypes GlobalIPHealthCheckTypeService
+	// Global IPs
+	GlobalIPHealthChecks GlobalIPHealthCheckService
+	// Global IPs
+	GlobalIPLatency GlobalIPLatencyService
+	// Global IPs
+	GlobalIPProtocols GlobalIPProtocolService
+	// Global IPs
+	GlobalIPUsage GlobalIPUsageService
+	// Global IPs
+	GlobalIPs GlobalIPService
+	// Voice Channels
+	InboundChannels InboundChannelService
+	// Store and retrieve integration secrets
+	IntegrationSecrets IntegrationSecretService
+	// Inventory Level
+	InventoryCoverage InventoryCoverageService
+	Invoices          InvoiceService
+	// IP connection operations
+	IPConnections IPConnectionService
+	// IP operations
+	IPs IPService
+	// Ledger billing reports
+	LedgerBillingGroupReports LedgerBillingGroupReportService
+	// Voice Channels
+	List ListService
+	// Managed Accounts operations
+	ManagedAccounts ManagedAccountService
+	// Media Storage operations
+	Media     MediaService
+	Messages  MessageService
+	Messaging MessagingService
+	// Manage your messaging hosted numbers
+	MessagingHostedNumberOrders MessagingHostedNumberOrderService
+	MessagingHostedNumbers      MessagingHostedNumberService
+	// Configure your phone numbers
+	MessagingNumbersBulkUpdates MessagingNumbersBulkUpdateService
+	// Opt-Out Management
+	MessagingOptouts  MessagingOptoutService
+	MessagingProfiles MessagingProfileService
+	MessagingTollfree MessagingTollfreeService
+	// Messaging URL Domains
+	MessagingURLDomains MessagingURLDomainService
+	// Mobile network operators operations
+	MobileNetworkOperators MobileNetworkOperatorService
+	// Mobile push credential management
+	MobilePushCredentials MobilePushCredentialService
+	NetworkCoverage       NetworkCoverageService
+	// Network operations
+	Networks NetworkService
+	// Notification settings operations
+	NotificationChannels NotificationChannelService
+	// Notification settings operations
+	NotificationEventConditions NotificationEventConditionService
+	// Notification settings operations
+	NotificationEvents NotificationEventService
+	// Notification settings operations
+	NotificationProfiles NotificationProfileService
+	// Notification settings operations
+	NotificationSettings NotificationSettingService
+	NumberBlockOrders    NumberBlockOrderService
+	// Look up phone number data
+	NumberLookup            NumberLookupService
+	NumberOrderPhoneNumbers NumberOrderPhoneNumberService
+	// Number orders
+	NumberOrders NumberOrderService
+	// Number reservations
+	NumberReservations NumberReservationService
+	NumbersFeatures    NumbersFeatureService
+	OperatorConnect    OperatorConnectService
+	// OTA updates operations
+	OtaUpdates OtaUpdateService
+	// Outbound voice profiles operations
+	OutboundVoiceProfiles OutboundVoiceProfileService
+	// Operations for managing stored payment transactions.
+	Payment           PaymentService
+	PhoneNumberBlocks PhoneNumberBlockService
+	// Configure your phone numbers
+	PhoneNumbers PhoneNumberService
+	// Regulatory Requirements
 	PhoneNumbersRegulatoryRequirements PhoneNumbersRegulatoryRequirementService
-	PortabilityChecks                  PortabilityCheckService
-	Porting                            PortingService
-	PortingOrders                      PortingOrderService
-	PortingPhoneNumbers                PortingPhoneNumberService
-	Portouts                           PortoutService
-	PrivateWirelessGateways            PrivateWirelessGatewayService
-	PublicInternetGateways             PublicInternetGatewayService
-	Queues                             QueueService
-	RcsAgents                          RcsAgentService
-	RecordingTranscriptions            RecordingTranscriptionService
-	Recordings                         RecordingService
-	Regions                            RegionService
-	RegulatoryRequirements             RegulatoryRequirementService
-	Reports                            ReportService
-	RequirementGroups                  RequirementGroupService
-	RequirementTypes                   RequirementTypeService
-	Requirements                       RequirementService
-	RoomCompositions                   RoomCompositionService
-	RoomParticipants                   RoomParticipantService
-	RoomRecordings                     RoomRecordingService
-	Rooms                              RoomService
-	Seti                               SetiService
-	ShortCodes                         ShortCodeService
-	SimCardDataUsageNotifications      SimCardDataUsageNotificationService
-	SimCardGroups                      SimCardGroupService
-	SimCardOrderPreview                SimCardOrderPreviewService
-	SimCardOrders                      SimCardOrderService
-	SimCards                           SimCardService
-	SiprecConnectors                   SiprecConnectorService
-	Storage                            StorageService
-	SubNumberOrders                    SubNumberOrderService
-	SubNumberOrdersReport              SubNumberOrdersReportService
-	TelephonyCredentials               TelephonyCredentialService
-	Texml                              TexmlService
-	TexmlApplications                  TexmlApplicationService
-	TextToSpeech                       TextToSpeechService
-	UsageReports                       UsageReportService
-	UserAddresses                      UserAddressService
-	UserTags                           UserTagService
-	Verifications                      VerificationService
-	VerifiedNumbers                    VerifiedNumberService
-	VerifyProfiles                     VerifyProfileService
-	VirtualCrossConnects               VirtualCrossConnectService
-	VirtualCrossConnectsCoverage       VirtualCrossConnectsCoverageService
-	WebhookDeliveries                  WebhookDeliveryService
-	WireguardInterfaces                WireguardInterfaceService
-	WireguardPeers                     WireguardPeerService
-	Wireless                           WirelessService
-	WirelessBlocklistValues            WirelessBlocklistValueService
-	WirelessBlocklists                 WirelessBlocklistService
-	WellKnown                          WellKnownService
-	InexplicitNumberOrders             InexplicitNumberOrderService
-	MobilePhoneNumbers                 MobilePhoneNumberService
-	MobileVoiceConnections             MobileVoiceConnectionService
-	Messaging10dlc                     Messaging10dlcService
-	SpeechToText                       SpeechToTextService
-	Organizations                      OrganizationService
-	AlphanumericSenderIDs              AlphanumericSenderIDService
-	MessagingProfileMetrics            MessagingProfileMetricService
+	// Determining portability of phone numbers
+	PortabilityChecks PortabilityCheckService
+	// Endpoints related to porting orders management.
+	Porting PortingService
+	// Endpoints related to porting orders management.
+	PortingOrders PortingOrderService
+	// Endpoints related to porting orders management.
+	PortingPhoneNumbers PortingPhoneNumberService
+	// Number portout operations
+	Portouts PortoutService
+	// Private Wireless Gateways operations
+	PrivateWirelessGateways PrivateWirelessGatewayService
+	// Public Internet Gateway operations
+	PublicInternetGateways PublicInternetGatewayService
+	// Queue commands operations
+	Queues    QueueService
+	RcsAgents RcsAgentService
+	// Call Recordings operations.
+	RecordingTranscriptions RecordingTranscriptionService
+	// Call Recordings operations.
+	Recordings RecordingService
+	// Regions
+	Regions RegionService
+	// Regulatory Requirements
+	RegulatoryRequirements RegulatoryRequirementService
+	Reports                ReportService
+	// Requirement Groups
+	RequirementGroups RequirementGroupService
+	// Types of requirements for international numbers and porting orders
+	RequirementTypes RequirementTypeService
+	// Requirements for international numbers and porting orders
+	Requirements RequirementService
+	// Rooms Compositions operations.
+	RoomCompositions RoomCompositionService
+	// Rooms Participants operations.
+	RoomParticipants RoomParticipantService
+	// Rooms Recordings operations.
+	RoomRecordings RoomRecordingService
+	// Rooms operations.
+	Rooms RoomService
+	// Observability into Telnyx platform stability and performance.
+	Seti SetiService
+	// Short codes
+	ShortCodes ShortCodeService
+	// SIM Cards operations
+	SimCardDataUsageNotifications SimCardDataUsageNotificationService
+	// SIM Card Groups operations
+	SimCardGroups SimCardGroupService
+	// SIM Card Orders operations
+	SimCardOrderPreview SimCardOrderPreviewService
+	// SIM Card Orders operations
+	SimCardOrders SimCardOrderService
+	// SIM Cards operations
+	SimCards SimCardService
+	// SIPREC connectors configuration.
+	SiprecConnectors SiprecConnectorService
+	// Migrate data from an external provider into Telnyx Cloud Storage
+	Storage         StorageService
+	SubNumberOrders SubNumberOrderService
+	// Number orders
+	SubNumberOrdersReport SubNumberOrdersReportService
+	TelephonyCredentials  TelephonyCredentialService
+	// TeXML REST Commands
+	Texml TexmlService
+	// TeXML Applications operations
+	TexmlApplications TexmlApplicationService
+	// Text to speech streaming command operations
+	TextToSpeech TextToSpeechService
+	// Usage data reporting across Telnyx products
+	UsageReports UsageReportService
+	// Operations for working with UserAddress records. UserAddress records are stored
+	// addresses that users can use for non-emergency-calling purposes, such as for
+	// shipping addresses for orders of wireless SIMs (or other physical items). They
+	// cannot be used for emergency calling and are distinct from Address records,
+	// which are used on phone numbers.
+	UserAddresses UserAddressService
+	// User-defined tags for Telnyx resources
+	UserTags UserTagService
+	// Two factor authentication API
+	Verifications VerificationService
+	// Verified Numbers operations
+	VerifiedNumbers VerifiedNumberService
+	// Two factor authentication API
+	VerifyProfiles VerifyProfileService
+	// Virtual Cross Connect operations
+	VirtualCrossConnects VirtualCrossConnectService
+	// Virtual Cross Connect operations
+	VirtualCrossConnectsCoverage VirtualCrossConnectsCoverageService
+	// Webhooks operations
+	WebhookDeliveries WebhookDeliveryService
+	// WireGuard Interface operations
+	WireguardInterfaces WireguardInterfaceService
+	// WireGuard Interface operations
+	WireguardPeers WireguardPeerService
+	// Regions for wireless services
+	Wireless WirelessService
+	// Wireless Blocklists operations
+	WirelessBlocklistValues WirelessBlocklistValueService
+	// Wireless Blocklists operations
+	WirelessBlocklists WirelessBlocklistService
+	WellKnown          WellKnownService
+	// Inexplicit number orders for bulk purchasing without specifying exact numbers
+	InexplicitNumberOrders InexplicitNumberOrderService
+	// Mobile phone number operations
+	MobilePhoneNumbers MobilePhoneNumberService
+	// Mobile voice connection operations
+	MobileVoiceConnections MobileVoiceConnectionService
+	Messaging10dlc         Messaging10dlcService
+	// Speech to text command operations
+	SpeechToText            SpeechToTextService
+	Organizations           OrganizationService
+	AlphanumericSenderIDs   AlphanumericSenderIDService
+	MessagingProfileMetrics MessagingProfileMetricService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,

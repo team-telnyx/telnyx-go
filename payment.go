@@ -15,6 +15,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Operations for managing stored payment transactions.
+//
 // PaymentService contains methods and other services that help with interacting
 // with the telnyx API.
 //
@@ -22,7 +24,8 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewPaymentService] method instead.
 type PaymentService struct {
-	Options           []option.RequestOption
+	Options []option.RequestOption
+	// V2 Auto Recharge Preferences API
 	AutoRechargePrefs PaymentAutoRechargePrefService
 }
 

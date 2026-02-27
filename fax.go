@@ -20,6 +20,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Programmable fax command operations
+//
 // FaxService contains methods and other services that help with interacting with
 // the telnyx API.
 //
@@ -28,6 +30,7 @@ import (
 // the [NewFaxService] method instead.
 type FaxService struct {
 	Options []option.RequestOption
+	// Programmable fax command operations
 	Actions FaxActionService
 }
 

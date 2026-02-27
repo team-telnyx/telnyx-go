@@ -14,6 +14,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Endpoints related to porting orders management.
+//
 // PortingService contains methods and other services that help with interacting
 // with the telnyx API.
 //
@@ -21,9 +23,12 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewPortingService] method instead.
 type PortingService struct {
-	Options           []option.RequestOption
-	Events            PortingEventService
-	Reports           PortingReportService
+	Options []option.RequestOption
+	// Endpoints related to porting orders management.
+	Events PortingEventService
+	// Endpoints related to porting orders management.
+	Reports PortingReportService
+	// Endpoints related to porting orders management.
 	LoaConfigurations PortingLoaConfigurationService
 }
 

@@ -19,6 +19,8 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// External Connections operations
+//
 // ExternalConnectionService contains methods and other services that help with
 // interacting with the telnyx API.
 //
@@ -26,12 +28,17 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewExternalConnectionService] method instead.
 type ExternalConnectionService struct {
-	Options        []option.RequestOption
-	LogMessages    ExternalConnectionLogMessageService
+	Options []option.RequestOption
+	// External Connections operations
+	LogMessages ExternalConnectionLogMessageService
+	// External Connections operations
 	CivicAddresses ExternalConnectionCivicAddressService
-	PhoneNumbers   ExternalConnectionPhoneNumberService
-	Releases       ExternalConnectionReleaseService
-	Uploads        ExternalConnectionUploadService
+	// External Connections operations
+	PhoneNumbers ExternalConnectionPhoneNumberService
+	// External Connections operations
+	Releases ExternalConnectionReleaseService
+	// External Connections operations
+	Uploads ExternalConnectionUploadService
 }
 
 // NewExternalConnectionService generates a new service that applies the given
