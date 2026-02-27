@@ -27,7 +27,6 @@ func TestVirtualCrossConnectNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.VirtualCrossConnects.New(context.TODO(), telnyx.VirtualCrossConnectNewParams{
-		RegionCode:              "ashburn-va",
 		BandwidthMbps:           telnyx.Float(50),
 		BgpAsn:                  telnyx.Float(1234),
 		CloudProvider:           telnyx.VirtualCrossConnectNewParamsCloudProviderAws,
