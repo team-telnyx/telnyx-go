@@ -133,6 +133,8 @@ func (r *VirtualCrossConnectNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VirtualCrossConnectNewResponseData struct {
+	// The region interface is deployed to.
+	RegionCode string `json:"region_code" api:"required"`
 	// The desired throughput in Megabits per Second (Mbps) for your Virtual Cross
 	// Connect.<br /><br />The available bandwidths can be found using the
 	// /virtual_cross_connect_regions endpoint.
@@ -169,8 +171,6 @@ type VirtualCrossConnectNewResponseData struct {
 	// of your assigned IP once the connection has been accepted.
 	PrimaryTelnyxIP string                                   `json:"primary_telnyx_ip"`
 	Region          VirtualCrossConnectNewResponseDataRegion `json:"region"`
-	// The region interface is deployed to.
-	RegionCode string `json:"region_code"`
 	// The authentication key for BGP peer configuration.
 	SecondaryBgpKey string `json:"secondary_bgp_key"`
 	// The identifier for your Virtual Private Cloud. The number will be different
@@ -193,6 +193,7 @@ type VirtualCrossConnectNewResponseData struct {
 	SecondaryTelnyxIP string `json:"secondary_telnyx_ip"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		RegionCode                   respjson.Field
 		BandwidthMbps                respjson.Field
 		BgpAsn                       respjson.Field
 		CloudProvider                respjson.Field
@@ -204,7 +205,6 @@ type VirtualCrossConnectNewResponseData struct {
 		PrimaryRoutingAnnouncement   respjson.Field
 		PrimaryTelnyxIP              respjson.Field
 		Region                       respjson.Field
-		RegionCode                   respjson.Field
 		SecondaryBgpKey              respjson.Field
 		SecondaryCloudAccountID      respjson.Field
 		SecondaryCloudIP             respjson.Field
@@ -216,7 +216,6 @@ type VirtualCrossConnectNewResponseData struct {
 	} `json:"-"`
 	Record
 	NetworkInterface
-	NetworkInterfaceRegion
 }
 
 // Returns the unmodified JSON received from the API
@@ -265,6 +264,8 @@ func (r *VirtualCrossConnectGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VirtualCrossConnectGetResponseData struct {
+	// The region interface is deployed to.
+	RegionCode string `json:"region_code" api:"required"`
 	// The desired throughput in Megabits per Second (Mbps) for your Virtual Cross
 	// Connect.<br /><br />The available bandwidths can be found using the
 	// /virtual_cross_connect_regions endpoint.
@@ -301,8 +302,6 @@ type VirtualCrossConnectGetResponseData struct {
 	// of your assigned IP once the connection has been accepted.
 	PrimaryTelnyxIP string                                   `json:"primary_telnyx_ip"`
 	Region          VirtualCrossConnectGetResponseDataRegion `json:"region"`
-	// The region interface is deployed to.
-	RegionCode string `json:"region_code"`
 	// The authentication key for BGP peer configuration.
 	SecondaryBgpKey string `json:"secondary_bgp_key"`
 	// The identifier for your Virtual Private Cloud. The number will be different
@@ -325,6 +324,7 @@ type VirtualCrossConnectGetResponseData struct {
 	SecondaryTelnyxIP string `json:"secondary_telnyx_ip"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		RegionCode                   respjson.Field
 		BandwidthMbps                respjson.Field
 		BgpAsn                       respjson.Field
 		CloudProvider                respjson.Field
@@ -336,7 +336,6 @@ type VirtualCrossConnectGetResponseData struct {
 		PrimaryRoutingAnnouncement   respjson.Field
 		PrimaryTelnyxIP              respjson.Field
 		Region                       respjson.Field
-		RegionCode                   respjson.Field
 		SecondaryBgpKey              respjson.Field
 		SecondaryCloudAccountID      respjson.Field
 		SecondaryCloudIP             respjson.Field
@@ -348,7 +347,6 @@ type VirtualCrossConnectGetResponseData struct {
 	} `json:"-"`
 	Record
 	NetworkInterface
-	NetworkInterfaceRegion
 }
 
 // Returns the unmodified JSON received from the API
@@ -397,6 +395,8 @@ func (r *VirtualCrossConnectUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VirtualCrossConnectUpdateResponseData struct {
+	// The region interface is deployed to.
+	RegionCode string `json:"region_code" api:"required"`
 	// The desired throughput in Megabits per Second (Mbps) for your Virtual Cross
 	// Connect.<br /><br />The available bandwidths can be found using the
 	// /virtual_cross_connect_regions endpoint.
@@ -433,8 +433,6 @@ type VirtualCrossConnectUpdateResponseData struct {
 	// of your assigned IP once the connection has been accepted.
 	PrimaryTelnyxIP string                                      `json:"primary_telnyx_ip"`
 	Region          VirtualCrossConnectUpdateResponseDataRegion `json:"region"`
-	// The region interface is deployed to.
-	RegionCode string `json:"region_code"`
 	// The authentication key for BGP peer configuration.
 	SecondaryBgpKey string `json:"secondary_bgp_key"`
 	// The identifier for your Virtual Private Cloud. The number will be different
@@ -457,6 +455,7 @@ type VirtualCrossConnectUpdateResponseData struct {
 	SecondaryTelnyxIP string `json:"secondary_telnyx_ip"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		RegionCode                   respjson.Field
 		BandwidthMbps                respjson.Field
 		BgpAsn                       respjson.Field
 		CloudProvider                respjson.Field
@@ -468,7 +467,6 @@ type VirtualCrossConnectUpdateResponseData struct {
 		PrimaryRoutingAnnouncement   respjson.Field
 		PrimaryTelnyxIP              respjson.Field
 		Region                       respjson.Field
-		RegionCode                   respjson.Field
 		SecondaryBgpKey              respjson.Field
 		SecondaryCloudAccountID      respjson.Field
 		SecondaryCloudIP             respjson.Field
@@ -480,7 +478,6 @@ type VirtualCrossConnectUpdateResponseData struct {
 	} `json:"-"`
 	Record
 	NetworkInterface
-	NetworkInterfaceRegion
 }
 
 // Returns the unmodified JSON received from the API
@@ -513,6 +510,8 @@ func (r *VirtualCrossConnectUpdateResponseDataRegion) UnmarshalJSON(data []byte)
 }
 
 type VirtualCrossConnectListResponse struct {
+	// The region interface is deployed to.
+	RegionCode string `json:"region_code" api:"required"`
 	// The desired throughput in Megabits per Second (Mbps) for your Virtual Cross
 	// Connect.<br /><br />The available bandwidths can be found using the
 	// /virtual_cross_connect_regions endpoint.
@@ -549,8 +548,6 @@ type VirtualCrossConnectListResponse struct {
 	// of your assigned IP once the connection has been accepted.
 	PrimaryTelnyxIP string                                `json:"primary_telnyx_ip"`
 	Region          VirtualCrossConnectListResponseRegion `json:"region"`
-	// The region interface is deployed to.
-	RegionCode string `json:"region_code"`
 	// The authentication key for BGP peer configuration.
 	SecondaryBgpKey string `json:"secondary_bgp_key"`
 	// The identifier for your Virtual Private Cloud. The number will be different
@@ -573,6 +570,7 @@ type VirtualCrossConnectListResponse struct {
 	SecondaryTelnyxIP string `json:"secondary_telnyx_ip"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		RegionCode                   respjson.Field
 		BandwidthMbps                respjson.Field
 		BgpAsn                       respjson.Field
 		CloudProvider                respjson.Field
@@ -584,7 +582,6 @@ type VirtualCrossConnectListResponse struct {
 		PrimaryRoutingAnnouncement   respjson.Field
 		PrimaryTelnyxIP              respjson.Field
 		Region                       respjson.Field
-		RegionCode                   respjson.Field
 		SecondaryBgpKey              respjson.Field
 		SecondaryCloudAccountID      respjson.Field
 		SecondaryCloudIP             respjson.Field
@@ -596,7 +593,6 @@ type VirtualCrossConnectListResponse struct {
 	} `json:"-"`
 	Record
 	NetworkInterface
-	NetworkInterfaceRegion
 }
 
 // Returns the unmodified JSON received from the API
@@ -645,6 +641,8 @@ func (r *VirtualCrossConnectDeleteResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VirtualCrossConnectDeleteResponseData struct {
+	// The region interface is deployed to.
+	RegionCode string `json:"region_code" api:"required"`
 	// The desired throughput in Megabits per Second (Mbps) for your Virtual Cross
 	// Connect.<br /><br />The available bandwidths can be found using the
 	// /virtual_cross_connect_regions endpoint.
@@ -681,8 +679,6 @@ type VirtualCrossConnectDeleteResponseData struct {
 	// of your assigned IP once the connection has been accepted.
 	PrimaryTelnyxIP string                                      `json:"primary_telnyx_ip"`
 	Region          VirtualCrossConnectDeleteResponseDataRegion `json:"region"`
-	// The region interface is deployed to.
-	RegionCode string `json:"region_code"`
 	// The authentication key for BGP peer configuration.
 	SecondaryBgpKey string `json:"secondary_bgp_key"`
 	// The identifier for your Virtual Private Cloud. The number will be different
@@ -705,6 +701,7 @@ type VirtualCrossConnectDeleteResponseData struct {
 	SecondaryTelnyxIP string `json:"secondary_telnyx_ip"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		RegionCode                   respjson.Field
 		BandwidthMbps                respjson.Field
 		BgpAsn                       respjson.Field
 		CloudProvider                respjson.Field
@@ -716,7 +713,6 @@ type VirtualCrossConnectDeleteResponseData struct {
 		PrimaryRoutingAnnouncement   respjson.Field
 		PrimaryTelnyxIP              respjson.Field
 		Region                       respjson.Field
-		RegionCode                   respjson.Field
 		SecondaryBgpKey              respjson.Field
 		SecondaryCloudAccountID      respjson.Field
 		SecondaryCloudIP             respjson.Field
@@ -728,7 +724,6 @@ type VirtualCrossConnectDeleteResponseData struct {
 	} `json:"-"`
 	Record
 	NetworkInterface
-	NetworkInterfaceRegion
 }
 
 // Returns the unmodified JSON received from the API
@@ -761,8 +756,6 @@ func (r *VirtualCrossConnectDeleteResponseDataRegion) UnmarshalJSON(data []byte)
 }
 
 type VirtualCrossConnectNewParams struct {
-	// The region the interface should be deployed to.
-	RegionCode string `json:"region_code" api:"required"`
 	// The desired throughput in Megabits per Second (Mbps) for your Virtual Cross
 	// Connect.<br /><br />The available bandwidths can be found using the
 	// /virtual_cross_connect_regions endpoint.
