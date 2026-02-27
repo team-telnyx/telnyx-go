@@ -756,6 +756,8 @@ func (r *VirtualCrossConnectDeleteResponseDataRegion) UnmarshalJSON(data []byte)
 }
 
 type VirtualCrossConnectNewParams struct {
+	// The region the interface should be deployed to.
+	RegionCode string `json:"region_code" api:"required"`
 	// The desired throughput in Megabits per Second (Mbps) for your Virtual Cross
 	// Connect.<br /><br />The available bandwidths can be found using the
 	// /virtual_cross_connect_regions endpoint.
