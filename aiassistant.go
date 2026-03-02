@@ -447,15 +447,15 @@ func (r *AssistantToolRetrievalRetrievalParam) UnmarshalJSON(data []byte) error 
 // AssistantToolsItemsUnion contains all possible properties and values from
 // [InferenceEmbeddingWebhookToolParamsResp], [RetrievalTool],
 // [AssistantToolHandoff], [HangupTool], [AssistantToolTransfer],
-// [AssistantToolRefer], [AssistantToolSendDtmf], [AssistantToolSendMessage],
-// [AssistantToolSkipTurn].
+// [AssistantToolInvite], [AssistantToolRefer], [AssistantToolSendDtmf],
+// [AssistantToolSendMessage], [AssistantToolSkipTurn].
 //
 // Use the [AssistantToolsItemsUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AssistantToolsItemsUnion struct {
-	// Any of "webhook", "retrieval", "handoff", "hangup", "transfer", "refer",
-	// "send_dtmf", "send_message", "skip_turn".
+	// Any of "webhook", "retrieval", "handoff", "hangup", "transfer", "invite",
+	// "refer", "send_dtmf", "send_message", "skip_turn".
 	Type string `json:"type"`
 	// This field is from variant [InferenceEmbeddingWebhookToolParamsResp].
 	Webhook InferenceEmbeddingWebhookToolParamsWebhookResp `json:"webhook"`
@@ -467,6 +467,8 @@ type AssistantToolsItemsUnion struct {
 	Hangup HangupToolParamsResp `json:"hangup"`
 	// This field is from variant [AssistantToolTransfer].
 	Transfer AssistantToolTransferTransfer `json:"transfer"`
+	// This field is from variant [AssistantToolInvite].
+	Invite AssistantToolInviteInvite `json:"invite"`
 	// This field is from variant [AssistantToolRefer].
 	Refer AssistantToolReferRefer `json:"refer"`
 	// This field is from variant [AssistantToolSendDtmf].
@@ -482,6 +484,7 @@ type AssistantToolsItemsUnion struct {
 		Handoff     respjson.Field
 		Hangup      respjson.Field
 		Transfer    respjson.Field
+		Invite      respjson.Field
 		Refer       respjson.Field
 		SendDtmf    respjson.Field
 		SendMessage respjson.Field
@@ -502,6 +505,7 @@ func (RetrievalTool) implAssistantToolsItemsUnion()                           {}
 func (AssistantToolHandoff) implAssistantToolsItemsUnion()                    {}
 func (HangupTool) implAssistantToolsItemsUnion()                              {}
 func (AssistantToolTransfer) implAssistantToolsItemsUnion()                   {}
+func (AssistantToolInvite) implAssistantToolsItemsUnion()                     {}
 func (AssistantToolRefer) implAssistantToolsItemsUnion()                      {}
 func (AssistantToolSendDtmf) implAssistantToolsItemsUnion()                   {}
 func (AssistantToolSendMessage) implAssistantToolsItemsUnion()                {}
@@ -515,6 +519,7 @@ func (AssistantToolSkipTurn) implAssistantToolsItemsUnion()                   {}
 //	case telnyx.AssistantToolHandoff:
 //	case telnyx.HangupTool:
 //	case telnyx.AssistantToolTransfer:
+//	case telnyx.AssistantToolInvite:
 //	case telnyx.AssistantToolRefer:
 //	case telnyx.AssistantToolSendDtmf:
 //	case telnyx.AssistantToolSendMessage:
@@ -534,6 +539,8 @@ func (u AssistantToolsItemsUnion) AsAny() anyAssistantToolsItems {
 		return u.AsHangup()
 	case "transfer":
 		return u.AsTransfer()
+	case "invite":
+		return u.AsInvite()
 	case "refer":
 		return u.AsRefer()
 	case "send_dtmf":
@@ -567,6 +574,11 @@ func (u AssistantToolsItemsUnion) AsHangup() (v HangupTool) {
 }
 
 func (u AssistantToolsItemsUnion) AsTransfer() (v AssistantToolTransfer) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u AssistantToolsItemsUnion) AsInvite() (v AssistantToolInvite) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -904,6 +916,117 @@ func (r *AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedVoice
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type AssistantToolInvite struct {
+	Invite AssistantToolInviteInvite `json:"invite" api:"required"`
+	Type   constant.Invite           `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Invite      respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolInvite) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolInvite) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AssistantToolInviteInvite struct {
+	// Custom headers to be added to the SIP INVITE for the invite command.
+	CustomHeaders []AssistantToolInviteInviteCustomHeader `json:"custom_headers"`
+	// Number or SIP URI placing the call.
+	From string `json:"from"`
+	// Configuration for voicemail detection (AMD - Answering Machine Detection) on the
+	// invited call.
+	VoicemailDetection AssistantToolInviteInviteVoicemailDetection `json:"voicemail_detection"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CustomHeaders      respjson.Field
+		From               respjson.Field
+		VoicemailDetection respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolInviteInvite) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolInviteInvite) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AssistantToolInviteInviteCustomHeader struct {
+	Name string `json:"name"`
+	// The value of the header. Note that we support mustache templating for the value.
+	// For example you can use
+	// `{{#integration_secret}}test-secret{{/integration_secret}}` to pass the value of
+	// the integration secret.
+	Value string `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolInviteInviteCustomHeader) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolInviteInviteCustomHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration for voicemail detection (AMD - Answering Machine Detection) on the
+// invited call.
+type AssistantToolInviteInviteVoicemailDetection struct {
+	// The AMD detection mode to use. 'premium' enables premium answering machine
+	// detection. 'disabled' turns off AMD detection.
+	//
+	// Any of "disabled", "premium".
+	DetectionMode string `json:"detection_mode"`
+	// Action to take when voicemail is detected on the invited call.
+	OnVoicemailDetected AssistantToolInviteInviteVoicemailDetectionOnVoicemailDetected `json:"on_voicemail_detected"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DetectionMode       respjson.Field
+		OnVoicemailDetected respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolInviteInviteVoicemailDetection) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolInviteInviteVoicemailDetection) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Action to take when voicemail is detected on the invited call.
+type AssistantToolInviteInviteVoicemailDetectionOnVoicemailDetected struct {
+	// The action to take when voicemail is detected.
+	//
+	// Any of "stop_invite".
+	Action string `json:"action"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Action      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolInviteInviteVoicemailDetectionOnVoicemailDetected) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *AssistantToolInviteInviteVoicemailDetectionOnVoicemailDetected) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AssistantToolRefer struct {
 	Refer AssistantToolReferRefer `json:"refer" api:"required"`
 	Type  constant.Refer          `json:"type" api:"required"`
@@ -1122,6 +1245,12 @@ func AssistantToolsItemsParamOfTransfer(transfer AssistantToolTransferTransferPa
 	return AssistantToolsItemsUnionParam{OfTransfer: &variant}
 }
 
+func AssistantToolsItemsParamOfInvite(invite AssistantToolInviteInviteParam) AssistantToolsItemsUnionParam {
+	var variant AssistantToolInviteParam
+	variant.Invite = invite
+	return AssistantToolsItemsUnionParam{OfInvite: &variant}
+}
+
 func AssistantToolsItemsParamOfRefer(refer AssistantToolReferReferParam) AssistantToolsItemsUnionParam {
 	var variant AssistantToolReferParam
 	variant.Refer = refer
@@ -1155,6 +1284,7 @@ type AssistantToolsItemsUnionParam struct {
 	OfHandoff     *AssistantToolHandoffParam           `json:",omitzero,inline"`
 	OfHangup      *HangupToolParam                     `json:",omitzero,inline"`
 	OfTransfer    *AssistantToolTransferParam          `json:",omitzero,inline"`
+	OfInvite      *AssistantToolInviteParam            `json:",omitzero,inline"`
 	OfRefer       *AssistantToolReferParam             `json:",omitzero,inline"`
 	OfSendDtmf    *AssistantToolSendDtmfParam          `json:",omitzero,inline"`
 	OfSendMessage *AssistantToolSendMessageParam       `json:",omitzero,inline"`
@@ -1168,6 +1298,7 @@ func (u AssistantToolsItemsUnionParam) MarshalJSON() ([]byte, error) {
 		u.OfHandoff,
 		u.OfHangup,
 		u.OfTransfer,
+		u.OfInvite,
 		u.OfRefer,
 		u.OfSendDtmf,
 		u.OfSendMessage,
@@ -1188,6 +1319,8 @@ func (u *AssistantToolsItemsUnionParam) asAny() any {
 		return u.OfHangup
 	} else if !param.IsOmitted(u.OfTransfer) {
 		return u.OfTransfer
+	} else if !param.IsOmitted(u.OfInvite) {
+		return u.OfInvite
 	} else if !param.IsOmitted(u.OfRefer) {
 		return u.OfRefer
 	} else if !param.IsOmitted(u.OfSendDtmf) {
@@ -1241,6 +1374,14 @@ func (u AssistantToolsItemsUnionParam) GetTransfer() *AssistantToolTransferTrans
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u AssistantToolsItemsUnionParam) GetInvite() *AssistantToolInviteInviteParam {
+	if vt := u.OfInvite; vt != nil {
+		return &vt.Invite
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u AssistantToolsItemsUnionParam) GetRefer() *AssistantToolReferReferParam {
 	if vt := u.OfRefer; vt != nil {
 		return &vt.Refer
@@ -1284,6 +1425,8 @@ func (u AssistantToolsItemsUnionParam) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfTransfer; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfInvite; vt != nil {
+		return (*string)(&vt.Type)
 	} else if vt := u.OfRefer; vt != nil {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfSendDtmf; vt != nil {
@@ -1304,6 +1447,7 @@ func init() {
 		apijson.Discriminator[AssistantToolHandoffParam]("handoff"),
 		apijson.Discriminator[HangupToolParam]("hangup"),
 		apijson.Discriminator[AssistantToolTransferParam]("transfer"),
+		apijson.Discriminator[AssistantToolInviteParam]("invite"),
 		apijson.Discriminator[AssistantToolReferParam]("refer"),
 		apijson.Discriminator[AssistantToolSendDtmfParam]("send_dtmf"),
 		apijson.Discriminator[AssistantToolSendMessageParam]("send_message"),
@@ -1573,6 +1717,109 @@ func (r *AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedVoice
 func init() {
 	apijson.RegisterFieldValidator[AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedVoicemailMessageParam](
 		"type", "message", "warm_transfer_instructions",
+	)
+}
+
+// The properties Invite, Type are required.
+type AssistantToolInviteParam struct {
+	Invite AssistantToolInviteInviteParam `json:"invite,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "invite".
+	Type constant.Invite `json:"type" api:"required"`
+	paramObj
+}
+
+func (r AssistantToolInviteParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolInviteParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolInviteParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AssistantToolInviteInviteParam struct {
+	// Number or SIP URI placing the call.
+	From param.Opt[string] `json:"from,omitzero"`
+	// Custom headers to be added to the SIP INVITE for the invite command.
+	CustomHeaders []AssistantToolInviteInviteCustomHeaderParam `json:"custom_headers,omitzero"`
+	// Configuration for voicemail detection (AMD - Answering Machine Detection) on the
+	// invited call.
+	VoicemailDetection AssistantToolInviteInviteVoicemailDetectionParam `json:"voicemail_detection,omitzero"`
+	paramObj
+}
+
+func (r AssistantToolInviteInviteParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolInviteInviteParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolInviteInviteParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AssistantToolInviteInviteCustomHeaderParam struct {
+	Name param.Opt[string] `json:"name,omitzero"`
+	// The value of the header. Note that we support mustache templating for the value.
+	// For example you can use
+	// `{{#integration_secret}}test-secret{{/integration_secret}}` to pass the value of
+	// the integration secret.
+	Value param.Opt[string] `json:"value,omitzero"`
+	paramObj
+}
+
+func (r AssistantToolInviteInviteCustomHeaderParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolInviteInviteCustomHeaderParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolInviteInviteCustomHeaderParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration for voicemail detection (AMD - Answering Machine Detection) on the
+// invited call.
+type AssistantToolInviteInviteVoicemailDetectionParam struct {
+	// The AMD detection mode to use. 'premium' enables premium answering machine
+	// detection. 'disabled' turns off AMD detection.
+	//
+	// Any of "disabled", "premium".
+	DetectionMode string `json:"detection_mode,omitzero"`
+	// Action to take when voicemail is detected on the invited call.
+	OnVoicemailDetected AssistantToolInviteInviteVoicemailDetectionOnVoicemailDetectedParam `json:"on_voicemail_detected,omitzero"`
+	paramObj
+}
+
+func (r AssistantToolInviteInviteVoicemailDetectionParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolInviteInviteVoicemailDetectionParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolInviteInviteVoicemailDetectionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AssistantToolInviteInviteVoicemailDetectionParam](
+		"detection_mode", "disabled", "premium",
+	)
+}
+
+// Action to take when voicemail is detected on the invited call.
+type AssistantToolInviteInviteVoicemailDetectionOnVoicemailDetectedParam struct {
+	// The action to take when voicemail is detected.
+	//
+	// Any of "stop_invite".
+	Action string `json:"action,omitzero"`
+	paramObj
+}
+
+func (r AssistantToolInviteInviteVoicemailDetectionOnVoicemailDetectedParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolInviteInviteVoicemailDetectionOnVoicemailDetectedParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolInviteInviteVoicemailDetectionOnVoicemailDetectedParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AssistantToolInviteInviteVoicemailDetectionOnVoicemailDetectedParam](
+		"action", "stop_invite",
 	)
 }
 

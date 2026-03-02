@@ -26,6 +26,7 @@ type Comparative string       // Always "comparative"
 type Developer string         // Always "developer"
 type Function string          // Always "function"
 type Handoff string           // Always "handoff"
+type Invite string            // Always "invite"
 type Ios string               // Always "ios"
 type MediaName string         // Always "media_name"
 type MediaURL string          // Always "media_url"
@@ -49,6 +50,7 @@ func (c Comparative) Default() Comparative             { return "comparative" }
 func (c Developer) Default() Developer                 { return "developer" }
 func (c Function) Default() Function                   { return "function" }
 func (c Handoff) Default() Handoff                     { return "handoff" }
+func (c Invite) Default() Invite                       { return "invite" }
 func (c Ios) Default() Ios                             { return "ios" }
 func (c MediaName) Default() MediaName                 { return "media_name" }
 func (c MediaURL) Default() MediaURL                   { return "media_url" }
@@ -72,6 +74,7 @@ func (c Comparative) MarshalJSON() ([]byte, error)       { return marshalString(
 func (c Developer) MarshalJSON() ([]byte, error)         { return marshalString(c) }
 func (c Function) MarshalJSON() ([]byte, error)          { return marshalString(c) }
 func (c Handoff) MarshalJSON() ([]byte, error)           { return marshalString(c) }
+func (c Invite) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c Ios) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c MediaName) MarshalJSON() ([]byte, error)         { return marshalString(c) }
 func (c MediaURL) MarshalJSON() ([]byte, error)          { return marshalString(c) }
