@@ -74,6 +74,8 @@ func TestOAuthIntrospect(t *testing.T) {
 	client := telnyx.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithClientID("My Client ID"),
+		option.WithClientSecret("My Client Secret"),
 	)
 	_, err := client.OAuth.Introspect(context.TODO(), telnyx.OAuthIntrospectParams{
 		Token: "token",
@@ -186,6 +188,8 @@ func TestOAuthTokenWithOptionalParams(t *testing.T) {
 	client := telnyx.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithClientID("My Client ID"),
+		option.WithClientSecret("My Client Secret"),
 	)
 	_, err := client.OAuth.Token(context.TODO(), telnyx.OAuthTokenParams{
 		GrantType:    telnyx.OAuthTokenParamsGrantTypeClientCredentials,
