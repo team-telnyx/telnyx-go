@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.37.0 (2026-03-02)
+
+Full Changelog: [v4.36.1...v4.37.0](https://github.com/team-telnyx/telnyx-go/compare/v4.36.1...v4.37.0)
+
+### Features
+
+* Merge TTS file-based spec into text-to-speech.json ([8368964](https://github.com/team-telnyx/telnyx-go/commit/8368964be47f11fb5121fd980735617eee12d8f4))
+
+
+### Bug Fixes
+
+* narrow porting event_type enums for SDK discriminator support ([64c4319](https://github.com/team-telnyx/telnyx-go/commit/64c431986412ab6bbfd3f9fa34071507fc4bf0d4))
+
 ## 4.36.1 (2026-03-02)
 
 Full Changelog: [v4.36.0...v4.36.1](https://github.com/team-telnyx/telnyx-go/compare/v4.36.0...v4.36.1)
