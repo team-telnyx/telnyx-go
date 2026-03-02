@@ -257,8 +257,7 @@ type Client struct {
 	Texml TexmlService
 	// TeXML Applications operations
 	TexmlApplications TexmlApplicationService
-	// Text to speech streaming command operations
-	TextToSpeech TextToSpeechService
+	TextToSpeech      TextToSpeechService
 	// Usage data reporting across Telnyx products
 	UsageReports UsageReportService
 	// Operations for working with UserAddress records. UserAddress records are stored

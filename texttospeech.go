@@ -16,8 +16,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
-// Text to speech streaming command operations
-//
 // TextToSpeechService contains methods and other services that help with
 // interacting with the telnyx API.
 //
@@ -34,6 +32,27 @@ type TextToSpeechService struct {
 func NewTextToSpeechService(opts ...option.RequestOption) (r TextToSpeechService) {
 	r = TextToSpeechService{}
 	r.Options = opts
+	return
+}
+
+// Generate synthesized speech audio from text input. Returns audio in the
+// requested format (binary audio stream, base64-encoded JSON, or an audio URL for
+// later retrieval).
+//
+// Authentication is provided via the standard `Authorization: Bearer <API_KEY>`
+// header.
+//
+// The `voice` parameter provides a convenient shorthand to specify provider,
+// model, and voice in a single string (e.g. `telnyx.NaturalHD.Alloy`).
+// Alternatively, specify `provider` explicitly along with provider-specific
+// parameters.
+//
+// Supported providers: `aws`, `telnyx`, `azure`, `elevenlabs`, `minimax`, `rime`,
+// `resemble`.
+func (r *TextToSpeechService) Generate(ctx context.Context, body TextToSpeechGenerateParams, opts ...option.RequestOption) (res *TextToSpeechGenerateResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "text-to-speech/speech"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
@@ -75,6 +94,24 @@ func (r *TextToSpeechService) Stream(ctx context.Context, query TextToSpeechStre
 	path := "text-to-speech/speech"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, nil, opts...)
 	return
+}
+
+// Response when `output_type` is `base64_output`.
+type TextToSpeechGenerateResponse struct {
+	// Base64-encoded audio data.
+	Base64Audio string `json:"base64_audio"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Base64Audio respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TextToSpeechGenerateResponse) RawJSON() string { return r.JSON.raw }
+func (r *TextToSpeechGenerateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // List of available voices.
@@ -123,6 +160,261 @@ func (r TextToSpeechListVoicesResponseVoice) RawJSON() string { return r.JSON.ra
 func (r *TextToSpeechListVoicesResponseVoice) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type TextToSpeechGenerateParams struct {
+	// When `true`, bypass the audio cache and generate fresh audio.
+	DisableCache param.Opt[bool] `json:"disable_cache,omitzero"`
+	// Language code (e.g. `en-US`). Usage varies by provider.
+	Language param.Opt[string] `json:"language,omitzero"`
+	// The text to convert to speech.
+	Text param.Opt[string] `json:"text,omitzero"`
+	// Voice identifier in the format `provider.model_id.voice_id` or
+	// `provider.voice_id`. Examples: `telnyx.NaturalHD.Alloy`,
+	// `azure.en-US-AvaMultilingualNeural`, `aws.Polly.Generative.Lucia`. When
+	// provided, `provider`, `model_id`, and `voice_id` are extracted automatically and
+	// take precedence over individual parameters.
+	Voice param.Opt[string] `json:"voice,omitzero"`
+	// AWS Polly provider-specific parameters.
+	Aws TextToSpeechGenerateParamsAws `json:"aws,omitzero"`
+	// Azure Cognitive Services provider-specific parameters.
+	Azure TextToSpeechGenerateParamsAzure `json:"azure,omitzero"`
+	// ElevenLabs provider-specific parameters.
+	Elevenlabs TextToSpeechGenerateParamsElevenlabs `json:"elevenlabs,omitzero"`
+	// Minimax provider-specific parameters.
+	Minimax TextToSpeechGenerateParamsMinimax `json:"minimax,omitzero"`
+	// Determines the response format. `binary_output` returns raw audio bytes,
+	// `base64_output` returns base64-encoded audio in JSON.
+	//
+	// Any of "binary_output", "base64_output".
+	OutputType TextToSpeechGenerateParamsOutputType `json:"output_type,omitzero"`
+	// TTS provider. Required unless `voice` is provided.
+	//
+	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "rime", "resemble".
+	Provider TextToSpeechGenerateParamsProvider `json:"provider,omitzero"`
+	// Resemble AI provider-specific parameters.
+	Resemble TextToSpeechGenerateParamsResemble `json:"resemble,omitzero"`
+	// Rime provider-specific parameters.
+	Rime TextToSpeechGenerateParamsRime `json:"rime,omitzero"`
+	// Telnyx provider-specific parameters.
+	Telnyx TextToSpeechGenerateParamsTelnyx `json:"telnyx,omitzero"`
+	// Text type. Use `ssml` for SSML-formatted input (supported by AWS and Azure).
+	//
+	// Any of "text", "ssml".
+	TextType TextToSpeechGenerateParamsTextType `json:"text_type,omitzero"`
+	// Provider-specific voice settings. Contents vary by provider — see
+	// provider-specific parameter objects below.
+	VoiceSettings map[string]any `json:"voice_settings,omitzero"`
+	paramObj
+}
+
+func (r TextToSpeechGenerateParams) MarshalJSON() (data []byte, err error) {
+	type shadow TextToSpeechGenerateParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TextToSpeechGenerateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// AWS Polly provider-specific parameters.
+type TextToSpeechGenerateParamsAws struct {
+	// Language code (e.g. `en-US`, `es-ES`).
+	LanguageCode param.Opt[string] `json:"language_code,omitzero"`
+	// Audio output format.
+	OutputFormat param.Opt[string] `json:"output_format,omitzero"`
+	// Audio sample rate.
+	SampleRate param.Opt[string] `json:"sample_rate,omitzero"`
+	// List of lexicon names to apply.
+	LexiconNames []string `json:"lexicon_names,omitzero"`
+	// Input text type.
+	//
+	// Any of "text", "ssml".
+	TextType string `json:"text_type,omitzero"`
+	paramObj
+}
+
+func (r TextToSpeechGenerateParamsAws) MarshalJSON() (data []byte, err error) {
+	type shadow TextToSpeechGenerateParamsAws
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TextToSpeechGenerateParamsAws) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TextToSpeechGenerateParamsAws](
+		"text_type", "text", "ssml",
+	)
+}
+
+// Azure Cognitive Services provider-specific parameters.
+type TextToSpeechGenerateParamsAzure struct {
+	// Custom Azure API key. If not provided, the default Telnyx key is used.
+	APIKey param.Opt[string] `json:"api_key,omitzero"`
+	// Custom Azure deployment ID.
+	DeploymentID param.Opt[string] `json:"deployment_id,omitzero"`
+	// Azure audio effect to apply.
+	Effect param.Opt[string] `json:"effect,omitzero"`
+	// Voice gender preference.
+	Gender param.Opt[string] `json:"gender,omitzero"`
+	// Language code (e.g. `en-US`).
+	LanguageCode param.Opt[string] `json:"language_code,omitzero"`
+	// Azure audio output format.
+	OutputFormat param.Opt[string] `json:"output_format,omitzero"`
+	// Azure region (e.g. `eastus`, `westeurope`).
+	Region param.Opt[string] `json:"region,omitzero"`
+	// Input text type. Use `ssml` for SSML-formatted input.
+	//
+	// Any of "text", "ssml".
+	TextType string `json:"text_type,omitzero"`
+	paramObj
+}
+
+func (r TextToSpeechGenerateParamsAzure) MarshalJSON() (data []byte, err error) {
+	type shadow TextToSpeechGenerateParamsAzure
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TextToSpeechGenerateParamsAzure) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TextToSpeechGenerateParamsAzure](
+		"text_type", "text", "ssml",
+	)
+}
+
+// ElevenLabs provider-specific parameters.
+type TextToSpeechGenerateParamsElevenlabs struct {
+	// Custom ElevenLabs API key. If not provided, the default Telnyx key is used.
+	APIKey param.Opt[string] `json:"api_key,omitzero"`
+	// Language code.
+	LanguageCode param.Opt[string] `json:"language_code,omitzero"`
+	// ElevenLabs voice settings (stability, similarity_boost, etc.).
+	VoiceSettings map[string]any `json:"voice_settings,omitzero"`
+	paramObj
+}
+
+func (r TextToSpeechGenerateParamsElevenlabs) MarshalJSON() (data []byte, err error) {
+	type shadow TextToSpeechGenerateParamsElevenlabs
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TextToSpeechGenerateParamsElevenlabs) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Minimax provider-specific parameters.
+type TextToSpeechGenerateParamsMinimax struct {
+	// Language code to boost pronunciation for.
+	LanguageBoost param.Opt[string] `json:"language_boost,omitzero"`
+	// Pitch adjustment.
+	Pitch param.Opt[int64] `json:"pitch,omitzero"`
+	// Audio output format.
+	ResponseFormat param.Opt[string] `json:"response_format,omitzero"`
+	// Speech speed multiplier.
+	Speed param.Opt[float64] `json:"speed,omitzero"`
+	// Volume level.
+	Vol param.Opt[float64] `json:"vol,omitzero"`
+	paramObj
+}
+
+func (r TextToSpeechGenerateParamsMinimax) MarshalJSON() (data []byte, err error) {
+	type shadow TextToSpeechGenerateParamsMinimax
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TextToSpeechGenerateParamsMinimax) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Determines the response format. `binary_output` returns raw audio bytes,
+// `base64_output` returns base64-encoded audio in JSON.
+type TextToSpeechGenerateParamsOutputType string
+
+const (
+	TextToSpeechGenerateParamsOutputTypeBinaryOutput TextToSpeechGenerateParamsOutputType = "binary_output"
+	TextToSpeechGenerateParamsOutputTypeBase64Output TextToSpeechGenerateParamsOutputType = "base64_output"
+)
+
+// TTS provider. Required unless `voice` is provided.
+type TextToSpeechGenerateParamsProvider string
+
+const (
+	TextToSpeechGenerateParamsProviderAws        TextToSpeechGenerateParamsProvider = "aws"
+	TextToSpeechGenerateParamsProviderTelnyx     TextToSpeechGenerateParamsProvider = "telnyx"
+	TextToSpeechGenerateParamsProviderAzure      TextToSpeechGenerateParamsProvider = "azure"
+	TextToSpeechGenerateParamsProviderElevenlabs TextToSpeechGenerateParamsProvider = "elevenlabs"
+	TextToSpeechGenerateParamsProviderMinimax    TextToSpeechGenerateParamsProvider = "minimax"
+	TextToSpeechGenerateParamsProviderRime       TextToSpeechGenerateParamsProvider = "rime"
+	TextToSpeechGenerateParamsProviderResemble   TextToSpeechGenerateParamsProvider = "resemble"
+)
+
+// Resemble AI provider-specific parameters.
+type TextToSpeechGenerateParamsResemble struct {
+	// Custom Resemble API key.
+	APIKey param.Opt[string] `json:"api_key,omitzero"`
+	// Audio output format.
+	Format param.Opt[string] `json:"format,omitzero"`
+	// Synthesis precision.
+	Precision param.Opt[string] `json:"precision,omitzero"`
+	// Audio sample rate.
+	SampleRate param.Opt[string] `json:"sample_rate,omitzero"`
+	paramObj
+}
+
+func (r TextToSpeechGenerateParamsResemble) MarshalJSON() (data []byte, err error) {
+	type shadow TextToSpeechGenerateParamsResemble
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TextToSpeechGenerateParamsResemble) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Rime provider-specific parameters.
+type TextToSpeechGenerateParamsRime struct {
+	// Audio output format.
+	ResponseFormat param.Opt[string] `json:"response_format,omitzero"`
+	// Audio sampling rate in Hz.
+	SamplingRate param.Opt[int64] `json:"sampling_rate,omitzero"`
+	// Voice speed multiplier.
+	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
+	paramObj
+}
+
+func (r TextToSpeechGenerateParamsRime) MarshalJSON() (data []byte, err error) {
+	type shadow TextToSpeechGenerateParamsRime
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TextToSpeechGenerateParamsRime) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Telnyx provider-specific parameters.
+type TextToSpeechGenerateParamsTelnyx struct {
+	// Audio response format.
+	ResponseFormat param.Opt[string] `json:"response_format,omitzero"`
+	// Audio sampling rate in Hz.
+	SamplingRate param.Opt[int64] `json:"sampling_rate,omitzero"`
+	// Sampling temperature.
+	Temperature param.Opt[float64] `json:"temperature,omitzero"`
+	// Voice speed multiplier.
+	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
+	paramObj
+}
+
+func (r TextToSpeechGenerateParamsTelnyx) MarshalJSON() (data []byte, err error) {
+	type shadow TextToSpeechGenerateParamsTelnyx
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TextToSpeechGenerateParamsTelnyx) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Text type. Use `ssml` for SSML-formatted input (supported by AWS and Azure).
+type TextToSpeechGenerateParamsTextType string
+
+const (
+	TextToSpeechGenerateParamsTextTypeText TextToSpeechGenerateParamsTextType = "text"
+	TextToSpeechGenerateParamsTextTypeSsml TextToSpeechGenerateParamsTextType = "ssml"
+)
 
 type TextToSpeechListVoicesParams struct {
 	// API key for providers that require one to list voices (e.g. ElevenLabs).
