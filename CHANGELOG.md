@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.36.1 (2026-03-02)
+
+Full Changelog: [v4.36.0...v4.36.1](https://github.com/team-telnyx/telnyx-go/compare/v4.36.0...v4.36.1)
+
+### Bug Fixes
+
+* fix test cases where required client options were not set ([d1d383a](https://github.com/team-telnyx/telnyx-go/commit/d1d383acc14162f74079e26563501efde22ea91a))
+
 ## 4.36.0 (2026-02-28)
 
 Full Changelog: [v4.35.0...v4.36.0](https://github.com/team-telnyx/telnyx-go/compare/v4.35.0...v4.36.0)
