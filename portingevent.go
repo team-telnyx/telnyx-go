@@ -100,10 +100,7 @@ type PortingEventDeletedPayload struct {
 	AvailableNotificationMethods []string `json:"available_notification_methods"`
 	// Identifies the event type
 	//
-	// Any of "porting_order.deleted", "porting_order.loa_updated",
-	// "porting_order.messaging_changed", "porting_order.status_changed",
-	// "porting_order.sharing_token_expired", "porting_order.new_comment",
-	// "porting_order.split".
+	// Any of "porting_order.deleted".
 	EventType PortingEventDeletedPayloadEventType `json:"event_type"`
 	Payload   PortingEventDeletedPayloadPayload   `json:"payload"`
 	// The status of the payload generation.
@@ -135,13 +132,7 @@ func (r *PortingEventDeletedPayload) UnmarshalJSON(data []byte) error {
 type PortingEventDeletedPayloadEventType string
 
 const (
-	PortingEventDeletedPayloadEventTypePortingOrderDeleted             PortingEventDeletedPayloadEventType = "porting_order.deleted"
-	PortingEventDeletedPayloadEventTypePortingOrderLoaUpdated          PortingEventDeletedPayloadEventType = "porting_order.loa_updated"
-	PortingEventDeletedPayloadEventTypePortingOrderMessagingChanged    PortingEventDeletedPayloadEventType = "porting_order.messaging_changed"
-	PortingEventDeletedPayloadEventTypePortingOrderStatusChanged       PortingEventDeletedPayloadEventType = "porting_order.status_changed"
-	PortingEventDeletedPayloadEventTypePortingOrderSharingTokenExpired PortingEventDeletedPayloadEventType = "porting_order.sharing_token_expired"
-	PortingEventDeletedPayloadEventTypePortingOrderNewComment          PortingEventDeletedPayloadEventType = "porting_order.new_comment"
-	PortingEventDeletedPayloadEventTypePortingOrderSplit               PortingEventDeletedPayloadEventType = "porting_order.split"
+	PortingEventDeletedPayloadEventTypePortingOrderDeleted PortingEventDeletedPayloadEventType = "porting_order.deleted"
 )
 
 type PortingEventDeletedPayloadPayload struct {
@@ -195,10 +186,7 @@ type PortingEventMessagingChangedPayload struct {
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Identifies the event type
 	//
-	// Any of "porting_order.deleted", "porting_order.loa_updated",
-	// "porting_order.messaging_changed", "porting_order.status_changed",
-	// "porting_order.sharing_token_expired", "porting_order.new_comment",
-	// "porting_order.split".
+	// Any of "porting_order.messaging_changed".
 	EventType PortingEventMessagingChangedPayloadEventType `json:"event_type"`
 	// The webhook payload for the porting_order.messaging_changed event
 	Payload PortingEventMessagingChangedPayloadPayload `json:"payload"`
@@ -238,13 +226,7 @@ func (r *PortingEventMessagingChangedPayload) UnmarshalJSON(data []byte) error {
 type PortingEventMessagingChangedPayloadEventType string
 
 const (
-	PortingEventMessagingChangedPayloadEventTypePortingOrderDeleted             PortingEventMessagingChangedPayloadEventType = "porting_order.deleted"
-	PortingEventMessagingChangedPayloadEventTypePortingOrderLoaUpdated          PortingEventMessagingChangedPayloadEventType = "porting_order.loa_updated"
-	PortingEventMessagingChangedPayloadEventTypePortingOrderMessagingChanged    PortingEventMessagingChangedPayloadEventType = "porting_order.messaging_changed"
-	PortingEventMessagingChangedPayloadEventTypePortingOrderStatusChanged       PortingEventMessagingChangedPayloadEventType = "porting_order.status_changed"
-	PortingEventMessagingChangedPayloadEventTypePortingOrderSharingTokenExpired PortingEventMessagingChangedPayloadEventType = "porting_order.sharing_token_expired"
-	PortingEventMessagingChangedPayloadEventTypePortingOrderNewComment          PortingEventMessagingChangedPayloadEventType = "porting_order.new_comment"
-	PortingEventMessagingChangedPayloadEventTypePortingOrderSplit               PortingEventMessagingChangedPayloadEventType = "porting_order.split"
+	PortingEventMessagingChangedPayloadEventTypePortingOrderMessagingChanged PortingEventMessagingChangedPayloadEventType = "porting_order.messaging_changed"
 )
 
 // The webhook payload for the porting_order.messaging_changed event
@@ -325,10 +307,7 @@ type PortingEventNewCommentEvent struct {
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Identifies the event type
 	//
-	// Any of "porting_order.deleted", "porting_order.loa_updated",
-	// "porting_order.messaging_changed", "porting_order.status_changed",
-	// "porting_order.sharing_token_expired", "porting_order.new_comment",
-	// "porting_order.split".
+	// Any of "porting_order.new_comment".
 	EventType PortingEventNewCommentEventEventType `json:"event_type"`
 	// The webhook payload for the porting_order.new_comment event
 	Payload PortingEventNewCommentEventPayload `json:"payload"`
@@ -368,13 +347,7 @@ func (r *PortingEventNewCommentEvent) UnmarshalJSON(data []byte) error {
 type PortingEventNewCommentEventEventType string
 
 const (
-	PortingEventNewCommentEventEventTypePortingOrderDeleted             PortingEventNewCommentEventEventType = "porting_order.deleted"
-	PortingEventNewCommentEventEventTypePortingOrderLoaUpdated          PortingEventNewCommentEventEventType = "porting_order.loa_updated"
-	PortingEventNewCommentEventEventTypePortingOrderMessagingChanged    PortingEventNewCommentEventEventType = "porting_order.messaging_changed"
-	PortingEventNewCommentEventEventTypePortingOrderStatusChanged       PortingEventNewCommentEventEventType = "porting_order.status_changed"
-	PortingEventNewCommentEventEventTypePortingOrderSharingTokenExpired PortingEventNewCommentEventEventType = "porting_order.sharing_token_expired"
-	PortingEventNewCommentEventEventTypePortingOrderNewComment          PortingEventNewCommentEventEventType = "porting_order.new_comment"
-	PortingEventNewCommentEventEventTypePortingOrderSplit               PortingEventNewCommentEventEventType = "porting_order.split"
+	PortingEventNewCommentEventEventTypePortingOrderNewComment PortingEventNewCommentEventEventType = "porting_order.new_comment"
 )
 
 // The webhook payload for the porting_order.new_comment event
@@ -452,10 +425,7 @@ type PortingEventSplitEvent struct {
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Identifies the event type
 	//
-	// Any of "porting_order.deleted", "porting_order.loa_updated",
-	// "porting_order.messaging_changed", "porting_order.status_changed",
-	// "porting_order.sharing_token_expired", "porting_order.new_comment",
-	// "porting_order.split".
+	// Any of "porting_order.split".
 	EventType PortingEventSplitEventEventType `json:"event_type"`
 	// The webhook payload for the porting_order.split event
 	Payload PortingEventSplitEventPayload `json:"payload"`
@@ -495,13 +465,7 @@ func (r *PortingEventSplitEvent) UnmarshalJSON(data []byte) error {
 type PortingEventSplitEventEventType string
 
 const (
-	PortingEventSplitEventEventTypePortingOrderDeleted             PortingEventSplitEventEventType = "porting_order.deleted"
-	PortingEventSplitEventEventTypePortingOrderLoaUpdated          PortingEventSplitEventEventType = "porting_order.loa_updated"
-	PortingEventSplitEventEventTypePortingOrderMessagingChanged    PortingEventSplitEventEventType = "porting_order.messaging_changed"
-	PortingEventSplitEventEventTypePortingOrderStatusChanged       PortingEventSplitEventEventType = "porting_order.status_changed"
-	PortingEventSplitEventEventTypePortingOrderSharingTokenExpired PortingEventSplitEventEventType = "porting_order.sharing_token_expired"
-	PortingEventSplitEventEventTypePortingOrderNewComment          PortingEventSplitEventEventType = "porting_order.new_comment"
-	PortingEventSplitEventEventTypePortingOrderSplit               PortingEventSplitEventEventType = "porting_order.split"
+	PortingEventSplitEventEventTypePortingOrderSplit PortingEventSplitEventEventType = "porting_order.split"
 )
 
 // The webhook payload for the porting_order.split event
@@ -600,10 +564,7 @@ type PortingEventStatusChangedEvent struct {
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Identifies the event type
 	//
-	// Any of "porting_order.deleted", "porting_order.loa_updated",
-	// "porting_order.messaging_changed", "porting_order.status_changed",
-	// "porting_order.sharing_token_expired", "porting_order.new_comment",
-	// "porting_order.split".
+	// Any of "porting_order.status_changed".
 	EventType PortingEventStatusChangedEventEventType `json:"event_type"`
 	// The webhook payload for the porting_order.status_changed event
 	Payload PortingEventStatusChangedEventPayload `json:"payload"`
@@ -643,13 +604,7 @@ func (r *PortingEventStatusChangedEvent) UnmarshalJSON(data []byte) error {
 type PortingEventStatusChangedEventEventType string
 
 const (
-	PortingEventStatusChangedEventEventTypePortingOrderDeleted             PortingEventStatusChangedEventEventType = "porting_order.deleted"
-	PortingEventStatusChangedEventEventTypePortingOrderLoaUpdated          PortingEventStatusChangedEventEventType = "porting_order.loa_updated"
-	PortingEventStatusChangedEventEventTypePortingOrderMessagingChanged    PortingEventStatusChangedEventEventType = "porting_order.messaging_changed"
-	PortingEventStatusChangedEventEventTypePortingOrderStatusChanged       PortingEventStatusChangedEventEventType = "porting_order.status_changed"
-	PortingEventStatusChangedEventEventTypePortingOrderSharingTokenExpired PortingEventStatusChangedEventEventType = "porting_order.sharing_token_expired"
-	PortingEventStatusChangedEventEventTypePortingOrderNewComment          PortingEventStatusChangedEventEventType = "porting_order.new_comment"
-	PortingEventStatusChangedEventEventTypePortingOrderSplit               PortingEventStatusChangedEventEventType = "porting_order.split"
+	PortingEventStatusChangedEventEventTypePortingOrderStatusChanged PortingEventStatusChangedEventEventType = "porting_order.status_changed"
 )
 
 // The webhook payload for the porting_order.status_changed event
@@ -704,10 +659,7 @@ type PortingEventWithoutWebhook struct {
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Identifies the event type
 	//
-	// Any of "porting_order.deleted", "porting_order.loa_updated",
-	// "porting_order.messaging_changed", "porting_order.status_changed",
-	// "porting_order.sharing_token_expired", "porting_order.new_comment",
-	// "porting_order.split".
+	// Any of "porting_order.loa_updated", "porting_order.sharing_token_expired".
 	EventType PortingEventWithoutWebhookEventType `json:"event_type"`
 	Payload   any                                 `json:"payload" api:"nullable"`
 	// The status of the payload generation.
@@ -746,13 +698,8 @@ func (r *PortingEventWithoutWebhook) UnmarshalJSON(data []byte) error {
 type PortingEventWithoutWebhookEventType string
 
 const (
-	PortingEventWithoutWebhookEventTypePortingOrderDeleted             PortingEventWithoutWebhookEventType = "porting_order.deleted"
 	PortingEventWithoutWebhookEventTypePortingOrderLoaUpdated          PortingEventWithoutWebhookEventType = "porting_order.loa_updated"
-	PortingEventWithoutWebhookEventTypePortingOrderMessagingChanged    PortingEventWithoutWebhookEventType = "porting_order.messaging_changed"
-	PortingEventWithoutWebhookEventTypePortingOrderStatusChanged       PortingEventWithoutWebhookEventType = "porting_order.status_changed"
 	PortingEventWithoutWebhookEventTypePortingOrderSharingTokenExpired PortingEventWithoutWebhookEventType = "porting_order.sharing_token_expired"
-	PortingEventWithoutWebhookEventTypePortingOrderNewComment          PortingEventWithoutWebhookEventType = "porting_order.new_comment"
-	PortingEventWithoutWebhookEventTypePortingOrderSplit               PortingEventWithoutWebhookEventType = "porting_order.split"
 )
 
 // The status of the payload generation.
@@ -791,7 +738,9 @@ func (r *PortingEventGetResponse) UnmarshalJSON(data []byte) error {
 type PortingEventGetResponseDataUnion struct {
 	ID                           string   `json:"id"`
 	AvailableNotificationMethods []string `json:"available_notification_methods"`
-	// Any of nil, nil, nil, nil, nil, nil.
+	// Any of "porting_order.deleted", "porting_order.messaging_changed",
+	// "porting_order.status_changed", "porting_order.new_comment",
+	// "porting_order.split", nil.
 	EventType string `json:"event_type"`
 	// This field is a union of [PortingEventDeletedPayloadPayload],
 	// [PortingEventMessagingChangedPayloadPayload],
@@ -817,27 +766,27 @@ type PortingEventGetResponseDataUnion struct {
 	} `json:"-"`
 }
 
-func (u PortingEventGetResponseDataUnion) AsPortingEventDeletedPayload() (v PortingEventDeletedPayload) {
+func (u PortingEventGetResponseDataUnion) AsPortingOrderDeleted() (v PortingEventDeletedPayload) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortingEventGetResponseDataUnion) AsPortingEventMessagingChangedPayload() (v PortingEventMessagingChangedPayload) {
+func (u PortingEventGetResponseDataUnion) AsPortingOrderMessagingChanged() (v PortingEventMessagingChangedPayload) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortingEventGetResponseDataUnion) AsPortingEventStatusChangedEvent() (v PortingEventStatusChangedEvent) {
+func (u PortingEventGetResponseDataUnion) AsPortingOrderStatusChanged() (v PortingEventStatusChangedEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortingEventGetResponseDataUnion) AsPortingEventNewCommentEvent() (v PortingEventNewCommentEvent) {
+func (u PortingEventGetResponseDataUnion) AsPortingOrderNewComment() (v PortingEventNewCommentEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortingEventGetResponseDataUnion) AsPortingEventSplitEvent() (v PortingEventSplitEvent) {
+func (u PortingEventGetResponseDataUnion) AsPortingOrderSplit() (v PortingEventSplitEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -928,7 +877,9 @@ func (r *PortingEventGetResponseDataUnionPayload) UnmarshalJSON(data []byte) err
 type PortingEventListResponseUnion struct {
 	ID                           string   `json:"id"`
 	AvailableNotificationMethods []string `json:"available_notification_methods"`
-	// Any of nil, nil, nil, nil, nil, nil.
+	// Any of "porting_order.deleted", "porting_order.messaging_changed",
+	// "porting_order.status_changed", "porting_order.new_comment",
+	// "porting_order.split", nil.
 	EventType string `json:"event_type"`
 	// This field is a union of [PortingEventDeletedPayloadPayload],
 	// [PortingEventMessagingChangedPayloadPayload],
@@ -954,27 +905,27 @@ type PortingEventListResponseUnion struct {
 	} `json:"-"`
 }
 
-func (u PortingEventListResponseUnion) AsPortingEventDeletedPayload() (v PortingEventDeletedPayload) {
+func (u PortingEventListResponseUnion) AsPortingOrderDeleted() (v PortingEventDeletedPayload) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortingEventListResponseUnion) AsPortingEventMessagingChangedPayload() (v PortingEventMessagingChangedPayload) {
+func (u PortingEventListResponseUnion) AsPortingOrderMessagingChanged() (v PortingEventMessagingChangedPayload) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortingEventListResponseUnion) AsPortingEventStatusChangedEvent() (v PortingEventStatusChangedEvent) {
+func (u PortingEventListResponseUnion) AsPortingOrderStatusChanged() (v PortingEventStatusChangedEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortingEventListResponseUnion) AsPortingEventNewCommentEvent() (v PortingEventNewCommentEvent) {
+func (u PortingEventListResponseUnion) AsPortingOrderNewComment() (v PortingEventNewCommentEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PortingEventListResponseUnion) AsPortingEventSplitEvent() (v PortingEventSplitEvent) {
+func (u PortingEventListResponseUnion) AsPortingOrderSplit() (v PortingEventSplitEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
