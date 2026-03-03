@@ -1,5 +1,21 @@
 # Changelog
 
+## 4.38.0 (2026-03-03)
+
+Full Changelog: [v4.37.0...v4.38.0](https://github.com/team-telnyx/telnyx-go/compare/v4.37.0...v4.38.0)
+
+### Features
+
+* AI-2106: Add invite tool schema to inference OpenAPI spec ([dc022c5](https://github.com/team-telnyx/telnyx-go/commit/dc022c5b9b84e25f82fed040fd42eb7636474548))
+* **api:** manual updates ([a276b8c](https://github.com/team-telnyx/telnyx-go/commit/a276b8ce08732afcd75db68fdde6c6ba5319e5ad))
+* **api:** manual updates ([d80b22f](https://github.com/team-telnyx/telnyx-go/commit/d80b22f320dd8bd64f1493dd09be9020aaa21e9a))
+* Changing the tag for TTS endpoint ([2696d43](https://github.com/team-telnyx/telnyx-go/commit/2696d43be1a53528713a5bb3267852e06f0259ce))
+
+
+### Chores
+
+* **tests:** update webhook tests ([df6882c](https://github.com/team-telnyx/telnyx-go/commit/df6882c2f53d85bbee9789241b36180dd7d6f023))
+
 ## 4.37.0 (2026-03-02)
 
 Full Changelog: [v4.36.1...v4.37.0](https://github.com/team-telnyx/telnyx-go/compare/v4.36.1...v4.37.0)
