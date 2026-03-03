@@ -59,6 +59,84 @@ func (r *SessionAnalysisMetadataService) GetRecordType(ctx context.Context, reco
 	return
 }
 
+type ChildRelationshipInfo struct {
+	ChildEvent       string               `json:"child_event" api:"required"`
+	ChildProduct     string               `json:"child_product" api:"required"`
+	ChildRecordType  string               `json:"child_record_type" api:"required"`
+	CostRollup       bool                 `json:"cost_rollup" api:"required"`
+	Description      string               `json:"description" api:"required"`
+	RelationshipType string               `json:"relationship_type" api:"required"`
+	TraversalEnabled bool                 `json:"traversal_enabled" api:"required"`
+	Via              MetadataFieldMapping `json:"via" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ChildEvent       respjson.Field
+		ChildProduct     respjson.Field
+		ChildRecordType  respjson.Field
+		CostRollup       respjson.Field
+		Description      respjson.Field
+		RelationshipType respjson.Field
+		TraversalEnabled respjson.Field
+		Via              respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ChildRelationshipInfo) RawJSON() string { return r.JSON.raw }
+func (r *ChildRelationshipInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MetadataFieldMapping struct {
+	LocalField  string `json:"local_field" api:"required"`
+	ParentField string `json:"parent_field" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		LocalField  respjson.Field
+		ParentField respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MetadataFieldMapping) RawJSON() string { return r.JSON.raw }
+func (r *MetadataFieldMapping) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ParentRelationshipInfo struct {
+	CostRollup       bool                 `json:"cost_rollup" api:"required"`
+	Description      string               `json:"description" api:"required"`
+	ParentEvent      string               `json:"parent_event" api:"required"`
+	ParentProduct    string               `json:"parent_product" api:"required"`
+	ParentRecordType string               `json:"parent_record_type" api:"required"`
+	RelationshipType string               `json:"relationship_type" api:"required"`
+	TraversalEnabled bool                 `json:"traversal_enabled" api:"required"`
+	Via              MetadataFieldMapping `json:"via" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CostRollup       respjson.Field
+		Description      respjson.Field
+		ParentEvent      respjson.Field
+		ParentProduct    respjson.Field
+		ParentRecordType respjson.Field
+		RelationshipType respjson.Field
+		TraversalEnabled respjson.Field
+		Via              respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ParentRelationshipInfo) RawJSON() string { return r.JSON.raw }
+func (r *ParentRelationshipInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type SessionAnalysisMetadataGetResponse struct {
 	Meta SessionAnalysisMetadataGetResponseMeta `json:"meta" api:"required"`
 	// Map of supported query parameter names to their definitions.
@@ -125,13 +203,13 @@ func (r *SessionAnalysisMetadataGetResponseQueryParameter) UnmarshalJSON(data []
 }
 
 type SessionAnalysisMetadataGetResponseRecordType struct {
-	Aliases             []string                                                         `json:"aliases" api:"required"`
-	ChildRelationships  []SessionAnalysisMetadataGetResponseRecordTypeChildRelationship  `json:"child_relationships" api:"required"`
-	Description         string                                                           `json:"description" api:"required"`
-	Event               string                                                           `json:"event" api:"required"`
-	ParentRelationships []SessionAnalysisMetadataGetResponseRecordTypeParentRelationship `json:"parent_relationships" api:"required"`
-	Product             string                                                           `json:"product" api:"required"`
-	RecordType          string                                                           `json:"record_type" api:"required"`
+	Aliases             []string                 `json:"aliases" api:"required"`
+	ChildRelationships  []ChildRelationshipInfo  `json:"child_relationships" api:"required"`
+	Description         string                   `json:"description" api:"required"`
+	Event               string                   `json:"event" api:"required"`
+	ParentRelationships []ParentRelationshipInfo `json:"parent_relationships" api:"required"`
+	Product             string                   `json:"product" api:"required"`
+	RecordType          string                   `json:"record_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Aliases             respjson.Field
@@ -152,120 +230,16 @@ func (r *SessionAnalysisMetadataGetResponseRecordType) UnmarshalJSON(data []byte
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type SessionAnalysisMetadataGetResponseRecordTypeChildRelationship struct {
-	ChildEvent       string                                                           `json:"child_event" api:"required"`
-	ChildProduct     string                                                           `json:"child_product" api:"required"`
-	ChildRecordType  string                                                           `json:"child_record_type" api:"required"`
-	CostRollup       bool                                                             `json:"cost_rollup" api:"required"`
-	Description      string                                                           `json:"description" api:"required"`
-	RelationshipType string                                                           `json:"relationship_type" api:"required"`
-	TraversalEnabled bool                                                             `json:"traversal_enabled" api:"required"`
-	Via              SessionAnalysisMetadataGetResponseRecordTypeChildRelationshipVia `json:"via" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ChildEvent       respjson.Field
-		ChildProduct     respjson.Field
-		ChildRecordType  respjson.Field
-		CostRollup       respjson.Field
-		Description      respjson.Field
-		RelationshipType respjson.Field
-		TraversalEnabled respjson.Field
-		Via              respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SessionAnalysisMetadataGetResponseRecordTypeChildRelationship) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *SessionAnalysisMetadataGetResponseRecordTypeChildRelationship) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SessionAnalysisMetadataGetResponseRecordTypeChildRelationshipVia struct {
-	LocalField  string `json:"local_field" api:"required"`
-	ParentField string `json:"parent_field" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		LocalField  respjson.Field
-		ParentField respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SessionAnalysisMetadataGetResponseRecordTypeChildRelationshipVia) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *SessionAnalysisMetadataGetResponseRecordTypeChildRelationshipVia) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SessionAnalysisMetadataGetResponseRecordTypeParentRelationship struct {
-	CostRollup       bool                                                              `json:"cost_rollup" api:"required"`
-	Description      string                                                            `json:"description" api:"required"`
-	ParentEvent      string                                                            `json:"parent_event" api:"required"`
-	ParentProduct    string                                                            `json:"parent_product" api:"required"`
-	ParentRecordType string                                                            `json:"parent_record_type" api:"required"`
-	RelationshipType string                                                            `json:"relationship_type" api:"required"`
-	TraversalEnabled bool                                                              `json:"traversal_enabled" api:"required"`
-	Via              SessionAnalysisMetadataGetResponseRecordTypeParentRelationshipVia `json:"via" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CostRollup       respjson.Field
-		Description      respjson.Field
-		ParentEvent      respjson.Field
-		ParentProduct    respjson.Field
-		ParentRecordType respjson.Field
-		RelationshipType respjson.Field
-		TraversalEnabled respjson.Field
-		Via              respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SessionAnalysisMetadataGetResponseRecordTypeParentRelationship) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *SessionAnalysisMetadataGetResponseRecordTypeParentRelationship) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SessionAnalysisMetadataGetResponseRecordTypeParentRelationshipVia struct {
-	LocalField  string `json:"local_field" api:"required"`
-	ParentField string `json:"parent_field" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		LocalField  respjson.Field
-		ParentField respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SessionAnalysisMetadataGetResponseRecordTypeParentRelationshipVia) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *SessionAnalysisMetadataGetResponseRecordTypeParentRelationshipVia) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type SessionAnalysisMetadataGetRecordTypeResponse struct {
-	Aliases            []string                                                        `json:"aliases" api:"required"`
-	ChildRelationships []SessionAnalysisMetadataGetRecordTypeResponseChildRelationship `json:"child_relationships" api:"required"`
-	Event              string                                                          `json:"event" api:"required"`
+	Aliases            []string                `json:"aliases" api:"required"`
+	ChildRelationships []ChildRelationshipInfo `json:"child_relationships" api:"required"`
+	Event              string                  `json:"event" api:"required"`
 	// Example queries and responses for this record type.
-	Examples            map[string]any                                                   `json:"examples" api:"required"`
-	Meta                SessionAnalysisMetadataGetRecordTypeResponseMeta                 `json:"meta" api:"required"`
-	ParentRelationships []SessionAnalysisMetadataGetRecordTypeResponseParentRelationship `json:"parent_relationships" api:"required"`
-	Product             string                                                           `json:"product" api:"required"`
-	RecordType          string                                                           `json:"record_type" api:"required"`
+	Examples            map[string]any                                   `json:"examples" api:"required"`
+	Meta                SessionAnalysisMetadataGetRecordTypeResponseMeta `json:"meta" api:"required"`
+	ParentRelationships []ParentRelationshipInfo                         `json:"parent_relationships" api:"required"`
+	Product             string                                           `json:"product" api:"required"`
+	RecordType          string                                           `json:"record_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Aliases             respjson.Field
@@ -284,58 +258,6 @@ type SessionAnalysisMetadataGetRecordTypeResponse struct {
 // Returns the unmodified JSON received from the API
 func (r SessionAnalysisMetadataGetRecordTypeResponse) RawJSON() string { return r.JSON.raw }
 func (r *SessionAnalysisMetadataGetRecordTypeResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SessionAnalysisMetadataGetRecordTypeResponseChildRelationship struct {
-	ChildEvent       string                                                           `json:"child_event" api:"required"`
-	ChildProduct     string                                                           `json:"child_product" api:"required"`
-	ChildRecordType  string                                                           `json:"child_record_type" api:"required"`
-	CostRollup       bool                                                             `json:"cost_rollup" api:"required"`
-	Description      string                                                           `json:"description" api:"required"`
-	RelationshipType string                                                           `json:"relationship_type" api:"required"`
-	TraversalEnabled bool                                                             `json:"traversal_enabled" api:"required"`
-	Via              SessionAnalysisMetadataGetRecordTypeResponseChildRelationshipVia `json:"via" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ChildEvent       respjson.Field
-		ChildProduct     respjson.Field
-		ChildRecordType  respjson.Field
-		CostRollup       respjson.Field
-		Description      respjson.Field
-		RelationshipType respjson.Field
-		TraversalEnabled respjson.Field
-		Via              respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SessionAnalysisMetadataGetRecordTypeResponseChildRelationship) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *SessionAnalysisMetadataGetRecordTypeResponseChildRelationship) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SessionAnalysisMetadataGetRecordTypeResponseChildRelationshipVia struct {
-	LocalField  string `json:"local_field" api:"required"`
-	ParentField string `json:"parent_field" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		LocalField  respjson.Field
-		ParentField respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SessionAnalysisMetadataGetRecordTypeResponseChildRelationshipVia) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *SessionAnalysisMetadataGetRecordTypeResponseChildRelationshipVia) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -358,57 +280,5 @@ type SessionAnalysisMetadataGetRecordTypeResponseMeta struct {
 // Returns the unmodified JSON received from the API
 func (r SessionAnalysisMetadataGetRecordTypeResponseMeta) RawJSON() string { return r.JSON.raw }
 func (r *SessionAnalysisMetadataGetRecordTypeResponseMeta) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SessionAnalysisMetadataGetRecordTypeResponseParentRelationship struct {
-	CostRollup       bool                                                              `json:"cost_rollup" api:"required"`
-	Description      string                                                            `json:"description" api:"required"`
-	ParentEvent      string                                                            `json:"parent_event" api:"required"`
-	ParentProduct    string                                                            `json:"parent_product" api:"required"`
-	ParentRecordType string                                                            `json:"parent_record_type" api:"required"`
-	RelationshipType string                                                            `json:"relationship_type" api:"required"`
-	TraversalEnabled bool                                                              `json:"traversal_enabled" api:"required"`
-	Via              SessionAnalysisMetadataGetRecordTypeResponseParentRelationshipVia `json:"via" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CostRollup       respjson.Field
-		Description      respjson.Field
-		ParentEvent      respjson.Field
-		ParentProduct    respjson.Field
-		ParentRecordType respjson.Field
-		RelationshipType respjson.Field
-		TraversalEnabled respjson.Field
-		Via              respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SessionAnalysisMetadataGetRecordTypeResponseParentRelationship) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *SessionAnalysisMetadataGetRecordTypeResponseParentRelationship) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SessionAnalysisMetadataGetRecordTypeResponseParentRelationshipVia struct {
-	LocalField  string `json:"local_field" api:"required"`
-	ParentField string `json:"parent_field" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		LocalField  respjson.Field
-		ParentField respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SessionAnalysisMetadataGetRecordTypeResponseParentRelationshipVia) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *SessionAnalysisMetadataGetRecordTypeResponseParentRelationshipVia) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
