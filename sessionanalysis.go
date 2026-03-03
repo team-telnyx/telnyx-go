@@ -60,12 +60,134 @@ func (r *SessionAnalysisService) Get(ctx context.Context, eventID string, params
 	return
 }
 
+type EventNode struct {
+	// Event identifier.
+	ID string `json:"id" api:"required"`
+	// Child events in the session tree.
+	Children []EventNode   `json:"children" api:"required"`
+	Cost     EventNodeCost `json:"cost" api:"required"`
+	// Name of the event type.
+	EventName string         `json:"event_name" api:"required"`
+	Links     EventNodeLinks `json:"links" api:"required"`
+	// Product that generated this event.
+	Product string `json:"product" api:"required"`
+	// The underlying detail record data. Contents vary by record type.
+	Record map[string]any `json:"record" api:"required"`
+	// Relationship to the parent node, null for root.
+	Relationship EventNodeRelationship `json:"relationship" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Children     respjson.Field
+		Cost         respjson.Field
+		EventName    respjson.Field
+		Links        respjson.Field
+		Product      respjson.Field
+		Record       respjson.Field
+		Relationship respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EventNode) RawJSON() string { return r.JSON.raw }
+func (r *EventNode) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EventNodeCost struct {
+	// Cumulative cost including all descendants.
+	CumulativeCost string `json:"cumulative_cost" api:"required"`
+	// ISO 4217 currency code.
+	Currency string `json:"currency" api:"required"`
+	// Cost of this individual event.
+	EventCost string `json:"event_cost" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CumulativeCost respjson.Field
+		Currency       respjson.Field
+		EventCost      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EventNodeCost) RawJSON() string { return r.JSON.raw }
+func (r *EventNodeCost) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EventNodeLinks struct {
+	// Link to the underlying detail records.
+	Records string `json:"records" api:"required"`
+	// Link to this session analysis node.
+	Self string `json:"self" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Records     respjson.Field
+		Self        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EventNodeLinks) RawJSON() string { return r.JSON.raw }
+func (r *EventNodeLinks) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Relationship to the parent node, null for root.
+type EventNodeRelationship struct {
+	// Identifier of the parent event.
+	ParentID string `json:"parent_id" api:"required"`
+	// Relationship type identifier.
+	Type string                   `json:"type" api:"required"`
+	Via  EventNodeRelationshipVia `json:"via" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ParentID    respjson.Field
+		Type        respjson.Field
+		Via         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EventNodeRelationship) RawJSON() string { return r.JSON.raw }
+func (r *EventNodeRelationship) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EventNodeRelationshipVia struct {
+	// Field name on the child record.
+	LocalField string `json:"local_field" api:"required"`
+	// Field name on the parent record.
+	ParentField string `json:"parent_field" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		LocalField  respjson.Field
+		ParentField respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EventNodeRelationshipVia) RawJSON() string { return r.JSON.raw }
+func (r *EventNodeRelationshipVia) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type SessionAnalysisGetResponse struct {
 	Cost SessionAnalysisGetResponseCost `json:"cost" api:"required"`
 	// When the session started.
 	CreatedAt time.Time                      `json:"created_at" api:"required" format:"date-time"`
 	Meta      SessionAnalysisGetResponseMeta `json:"meta" api:"required"`
-	Root      SessionAnalysisGetResponseRoot `json:"root" api:"required"`
+	Root      EventNode                      `json:"root" api:"required"`
 	// Identifier for the analyzed session.
 	SessionID string `json:"session_id" api:"required"`
 	// Analysis status (e.g. "completed").
@@ -129,128 +251,6 @@ type SessionAnalysisGetResponseMeta struct {
 // Returns the unmodified JSON received from the API
 func (r SessionAnalysisGetResponseMeta) RawJSON() string { return r.JSON.raw }
 func (r *SessionAnalysisGetResponseMeta) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SessionAnalysisGetResponseRoot struct {
-	// Event identifier.
-	ID string `json:"id" api:"required"`
-	// Child events in the session tree.
-	Children []any                              `json:"children" api:"required"`
-	Cost     SessionAnalysisGetResponseRootCost `json:"cost" api:"required"`
-	// Name of the event type.
-	EventName string                              `json:"event_name" api:"required"`
-	Links     SessionAnalysisGetResponseRootLinks `json:"links" api:"required"`
-	// Product that generated this event.
-	Product string `json:"product" api:"required"`
-	// The underlying detail record data. Contents vary by record type.
-	Record map[string]any `json:"record" api:"required"`
-	// Relationship to the parent node, null for root.
-	Relationship SessionAnalysisGetResponseRootRelationship `json:"relationship" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID           respjson.Field
-		Children     respjson.Field
-		Cost         respjson.Field
-		EventName    respjson.Field
-		Links        respjson.Field
-		Product      respjson.Field
-		Record       respjson.Field
-		Relationship respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SessionAnalysisGetResponseRoot) RawJSON() string { return r.JSON.raw }
-func (r *SessionAnalysisGetResponseRoot) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SessionAnalysisGetResponseRootCost struct {
-	// Cumulative cost including all descendants.
-	CumulativeCost string `json:"cumulative_cost" api:"required"`
-	// ISO 4217 currency code.
-	Currency string `json:"currency" api:"required"`
-	// Cost of this individual event.
-	EventCost string `json:"event_cost" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CumulativeCost respjson.Field
-		Currency       respjson.Field
-		EventCost      respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SessionAnalysisGetResponseRootCost) RawJSON() string { return r.JSON.raw }
-func (r *SessionAnalysisGetResponseRootCost) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SessionAnalysisGetResponseRootLinks struct {
-	// Link to the underlying detail records.
-	Records string `json:"records" api:"required"`
-	// Link to this session analysis node.
-	Self string `json:"self" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Records     respjson.Field
-		Self        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SessionAnalysisGetResponseRootLinks) RawJSON() string { return r.JSON.raw }
-func (r *SessionAnalysisGetResponseRootLinks) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Relationship to the parent node, null for root.
-type SessionAnalysisGetResponseRootRelationship struct {
-	// Identifier of the parent event.
-	ParentID string `json:"parent_id" api:"required"`
-	// Relationship type identifier.
-	Type string                                        `json:"type" api:"required"`
-	Via  SessionAnalysisGetResponseRootRelationshipVia `json:"via" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ParentID    respjson.Field
-		Type        respjson.Field
-		Via         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SessionAnalysisGetResponseRootRelationship) RawJSON() string { return r.JSON.raw }
-func (r *SessionAnalysisGetResponseRootRelationship) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SessionAnalysisGetResponseRootRelationshipVia struct {
-	// Field name on the child record.
-	LocalField string `json:"local_field" api:"required"`
-	// Field name on the parent record.
-	ParentField string `json:"parent_field" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		LocalField  respjson.Field
-		ParentField respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SessionAnalysisGetResponseRootRelationshipVia) RawJSON() string { return r.JSON.raw }
-func (r *SessionAnalysisGetResponseRootRelationshipVia) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
