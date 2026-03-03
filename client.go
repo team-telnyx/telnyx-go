@@ -304,6 +304,8 @@ type Client struct {
 	Organizations           OrganizationService
 	AlphanumericSenderIDs   AlphanumericSenderIDService
 	MessagingProfileMetrics MessagingProfileMetricService
+	// Analyze voice AI sessions, costs, and event hierarchies across Telnyx products.
+	SessionAnalysis SessionAnalysisService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -492,6 +494,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Organizations = NewOrganizationService(opts...)
 	r.AlphanumericSenderIDs = NewAlphanumericSenderIDService(opts...)
 	r.MessagingProfileMetrics = NewMessagingProfileMetricService(opts...)
+	r.SessionAnalysis = NewSessionAnalysisService(opts...)
 
 	return
 }
