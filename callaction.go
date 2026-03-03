@@ -736,7 +736,7 @@ func (r *CallControlCommandResultWithConversationID) UnmarshalJSON(data []byte) 
 
 // The properties TranscriptionEngine, TranscriptionModel are required.
 type DeepgramNova2ConfigParam struct {
-	// Any of "Deepgram".
+	// Any of "deepgram/nova-2".
 	TranscriptionEngine DeepgramNova2ConfigTranscriptionEngine `json:"transcription_engine,omitzero" api:"required"`
 	// Any of "deepgram/nova-2".
 	TranscriptionModel DeepgramNova2ConfigTranscriptionModel `json:"transcription_model,omitzero" api:"required"`
@@ -772,7 +772,7 @@ func (r *DeepgramNova2ConfigParam) UnmarshalJSON(data []byte) error {
 type DeepgramNova2ConfigTranscriptionEngine string
 
 const (
-	DeepgramNova2ConfigTranscriptionEngineDeepgram DeepgramNova2ConfigTranscriptionEngine = "Deepgram"
+	DeepgramNova2ConfigTranscriptionEngineDeepgramNova2 DeepgramNova2ConfigTranscriptionEngine = "deepgram/nova-2"
 )
 
 type DeepgramNova2ConfigTranscriptionModel string
@@ -833,7 +833,7 @@ const (
 
 // The properties TranscriptionEngine, TranscriptionModel are required.
 type DeepgramNova3ConfigParam struct {
-	// Any of "Deepgram".
+	// Any of "deepgram/nova-3".
 	TranscriptionEngine DeepgramNova3ConfigTranscriptionEngine `json:"transcription_engine,omitzero" api:"required"`
 	// Any of "deepgram/nova-3".
 	TranscriptionModel DeepgramNova3ConfigTranscriptionModel `json:"transcription_model,omitzero" api:"required"`
@@ -866,7 +866,7 @@ func (r *DeepgramNova3ConfigParam) UnmarshalJSON(data []byte) error {
 type DeepgramNova3ConfigTranscriptionEngine string
 
 const (
-	DeepgramNova3ConfigTranscriptionEngineDeepgram DeepgramNova3ConfigTranscriptionEngine = "Deepgram"
+	DeepgramNova3ConfigTranscriptionEngineDeepgramNova3 DeepgramNova3ConfigTranscriptionEngine = "deepgram/nova-3"
 )
 
 type DeepgramNova3ConfigTranscriptionModel string
@@ -1670,24 +1670,24 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type TranscriptionStartRequestTranscriptionEngineConfigUnionParam struct {
-	OfGoogle              *TranscriptionEngineGoogleConfigParam `json:",omitzero,inline"`
-	OfTelnyx              *TranscriptionEngineTelnyxConfigParam `json:",omitzero,inline"`
-	OfDeepgramNova2Config *DeepgramNova2ConfigParam             `json:",omitzero,inline"`
-	OfDeepgramNova3Config *DeepgramNova3ConfigParam             `json:",omitzero,inline"`
-	OfAzure               *TranscriptionEngineAzureConfigParam  `json:",omitzero,inline"`
-	OfA                   *TranscriptionEngineAConfigParam      `json:",omitzero,inline"`
-	OfB                   *TranscriptionEngineBConfigParam      `json:",omitzero,inline"`
+	OfGoogle        *TranscriptionEngineGoogleConfigParam `json:",omitzero,inline"`
+	OfTelnyx        *TranscriptionEngineTelnyxConfigParam `json:",omitzero,inline"`
+	OfAzure         *TranscriptionEngineAzureConfigParam  `json:",omitzero,inline"`
+	OfA             *TranscriptionEngineAConfigParam      `json:",omitzero,inline"`
+	OfB             *TranscriptionEngineBConfigParam      `json:",omitzero,inline"`
+	OfDeepgramNova2 *DeepgramNova2ConfigParam             `json:",omitzero,inline"`
+	OfDeepgramNova3 *DeepgramNova3ConfigParam             `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfGoogle,
 		u.OfTelnyx,
-		u.OfDeepgramNova2Config,
-		u.OfDeepgramNova3Config,
 		u.OfAzure,
 		u.OfA,
-		u.OfB)
+		u.OfB,
+		u.OfDeepgramNova2,
+		u.OfDeepgramNova3)
 }
 func (u *TranscriptionStartRequestTranscriptionEngineConfigUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1698,16 +1698,16 @@ func (u *TranscriptionStartRequestTranscriptionEngineConfigUnionParam) asAny() a
 		return u.OfGoogle
 	} else if !param.IsOmitted(u.OfTelnyx) {
 		return u.OfTelnyx
-	} else if !param.IsOmitted(u.OfDeepgramNova2Config) {
-		return u.OfDeepgramNova2Config
-	} else if !param.IsOmitted(u.OfDeepgramNova3Config) {
-		return u.OfDeepgramNova3Config
 	} else if !param.IsOmitted(u.OfAzure) {
 		return u.OfAzure
 	} else if !param.IsOmitted(u.OfA) {
 		return u.OfA
 	} else if !param.IsOmitted(u.OfB) {
 		return u.OfB
+	} else if !param.IsOmitted(u.OfDeepgramNova2) {
+		return u.OfDeepgramNova2
+	} else if !param.IsOmitted(u.OfDeepgramNova3) {
+		return u.OfDeepgramNova3
 	}
 	return nil
 }
@@ -1742,11 +1742,11 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetEnableS
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetInterimResults() *bool {
 	if vt := u.OfGoogle; vt != nil && vt.InterimResults.Valid() {
 		return &vt.InterimResults.Value
-	} else if vt := u.OfDeepgramNova2Config; vt != nil && vt.InterimResults.Valid() {
-		return &vt.InterimResults.Value
-	} else if vt := u.OfDeepgramNova3Config; vt != nil && vt.InterimResults.Valid() {
-		return &vt.InterimResults.Value
 	} else if vt := u.OfA; vt != nil && vt.InterimResults.Valid() {
+		return &vt.InterimResults.Value
+	} else if vt := u.OfDeepgramNova2; vt != nil && vt.InterimResults.Valid() {
+		return &vt.InterimResults.Value
+	} else if vt := u.OfDeepgramNova3; vt != nil && vt.InterimResults.Valid() {
 		return &vt.InterimResults.Value
 	}
 	return nil
@@ -1758,15 +1758,15 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetLanguag
 		return (*string)(&vt.Language)
 	} else if vt := u.OfTelnyx; vt != nil {
 		return (*string)(&vt.Language)
-	} else if vt := u.OfDeepgramNova2Config; vt != nil {
-		return (*string)(&vt.Language)
-	} else if vt := u.OfDeepgramNova3Config; vt != nil {
-		return (*string)(&vt.Language)
 	} else if vt := u.OfAzure; vt != nil {
 		return (*string)(&vt.Language)
 	} else if vt := u.OfA; vt != nil {
 		return (*string)(&vt.Language)
 	} else if vt := u.OfB; vt != nil {
+		return (*string)(&vt.Language)
+	} else if vt := u.OfDeepgramNova2; vt != nil {
+		return (*string)(&vt.Language)
+	} else if vt := u.OfDeepgramNova3; vt != nil {
 		return (*string)(&vt.Language)
 	}
 	return nil
@@ -1818,15 +1818,15 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscr
 		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfTelnyx; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
-	} else if vt := u.OfDeepgramNova2Config; vt != nil {
-		return (*string)(&vt.TranscriptionEngine)
-	} else if vt := u.OfDeepgramNova3Config; vt != nil {
-		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfAzure; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfA; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfB; vt != nil {
+		return (*string)(&vt.TranscriptionEngine)
+	} else if vt := u.OfDeepgramNova2; vt != nil {
+		return (*string)(&vt.TranscriptionEngine)
+	} else if vt := u.OfDeepgramNova3; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
 	}
 	return nil
@@ -1846,11 +1846,11 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetUseEnha
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscriptionModel() *string {
 	if vt := u.OfTelnyx; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
-	} else if vt := u.OfDeepgramNova2Config; vt != nil {
-		return (*string)(&vt.TranscriptionModel)
-	} else if vt := u.OfDeepgramNova3Config; vt != nil {
-		return (*string)(&vt.TranscriptionModel)
 	} else if vt := u.OfB; vt != nil {
+		return (*string)(&vt.TranscriptionModel)
+	} else if vt := u.OfDeepgramNova2; vt != nil {
+		return (*string)(&vt.TranscriptionModel)
+	} else if vt := u.OfDeepgramNova3; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
 	}
 	return nil
@@ -1858,9 +1858,9 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscr
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetUtteranceEndMs() *int64 {
-	if vt := u.OfDeepgramNova2Config; vt != nil && vt.UtteranceEndMs.Valid() {
+	if vt := u.OfDeepgramNova2; vt != nil && vt.UtteranceEndMs.Valid() {
 		return &vt.UtteranceEndMs.Value
-	} else if vt := u.OfDeepgramNova3Config; vt != nil && vt.UtteranceEndMs.Valid() {
+	} else if vt := u.OfDeepgramNova3; vt != nil && vt.UtteranceEndMs.Valid() {
 		return &vt.UtteranceEndMs.Value
 	}
 	return nil
@@ -1908,9 +1908,9 @@ func (u transcriptionStartRequestTranscriptionEngineConfigUnionParamSpeechContex
 // Returns a pointer to the underlying variant's KeywordsBoosting property, if
 // present.
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetKeywordsBoosting() map[string]float64 {
-	if vt := u.OfDeepgramNova2Config; vt != nil {
+	if vt := u.OfDeepgramNova2; vt != nil {
 		return vt.KeywordsBoosting
-	} else if vt := u.OfDeepgramNova3Config; vt != nil {
+	} else if vt := u.OfDeepgramNova3; vt != nil {
 		return vt.KeywordsBoosting
 	}
 	return nil
@@ -1921,11 +1921,11 @@ func init() {
 		"transcription_engine",
 		apijson.Discriminator[TranscriptionEngineGoogleConfigParam]("Google"),
 		apijson.Discriminator[TranscriptionEngineTelnyxConfigParam]("Telnyx"),
-		apijson.Discriminator[DeepgramNova2ConfigParam]("Deepgram"),
-		apijson.Discriminator[DeepgramNova3ConfigParam]("Deepgram"),
 		apijson.Discriminator[TranscriptionEngineAzureConfigParam]("Azure"),
 		apijson.Discriminator[TranscriptionEngineAConfigParam]("A"),
 		apijson.Discriminator[TranscriptionEngineBConfigParam]("B"),
+		apijson.Discriminator[DeepgramNova2ConfigParam]("deepgram/nova-2"),
+		apijson.Discriminator[DeepgramNova3ConfigParam]("deepgram/nova-3"),
 	)
 }
 
