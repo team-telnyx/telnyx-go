@@ -72,35 +72,19 @@ func (r *WebhookService) Unwrap(payload []byte, headers http.Header, opts ...opt
 }
 
 type CallAIGatherEnded struct {
-	Data CallAIGatherEndedData `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CallAIGatherEnded) RawJSON() string { return r.JSON.raw }
-func (r *CallAIGatherEnded) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CallAIGatherEndedData struct {
 	// Identifies the type of resource.
 	ID string `json:"id" format:"uuid"`
 	// The type of event being delivered.
 	//
 	// Any of "call.ai_gather.ended".
-	EventType string `json:"event_type"`
+	EventType CallAIGatherEndedEventType `json:"event_type"`
 	// ISO 8601 datetime of when the event occurred.
-	OccurredAt time.Time                    `json:"occurred_at" format:"date-time"`
-	Payload    CallAIGatherEndedDataPayload `json:"payload"`
+	OccurredAt time.Time                `json:"occurred_at" format:"date-time"`
+	Payload    CallAIGatherEndedPayload `json:"payload"`
 	// Identifies the type of the resource.
 	//
 	// Any of "event".
-	RecordType string `json:"record_type"`
+	RecordType CallAIGatherEndedRecordType `json:"record_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -114,12 +98,19 @@ type CallAIGatherEndedData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CallAIGatherEndedData) RawJSON() string { return r.JSON.raw }
-func (r *CallAIGatherEndedData) UnmarshalJSON(data []byte) error {
+func (r CallAIGatherEnded) RawJSON() string { return r.JSON.raw }
+func (r *CallAIGatherEnded) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CallAIGatherEndedDataPayload struct {
+// The type of event being delivered.
+type CallAIGatherEndedEventType string
+
+const (
+	CallAIGatherEndedEventTypeCallAIGatherEnded CallAIGatherEndedEventType = "call.ai_gather.ended"
+)
+
+type CallAIGatherEndedPayload struct {
 	// Call ID used to issue commands via Call Control API.
 	CallControlID string `json:"call_control_id"`
 	// ID that is unique to the call and can be used to correlate webhook events.
@@ -135,7 +126,7 @@ type CallAIGatherEndedDataPayload struct {
 	// Number or SIP URI placing the call.
 	From string `json:"from"`
 	// The history of the messages exchanged during the AI gather
-	MessageHistory []CallAIGatherEndedDataPayloadMessageHistory `json:"message_history"`
+	MessageHistory []CallAIGatherEndedPayloadMessageHistory `json:"message_history"`
 	// The result of the AI gather, its type depends of the `parameters` provided in
 	// the command
 	Result map[string]any `json:"result"`
@@ -163,12 +154,12 @@ type CallAIGatherEndedDataPayload struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CallAIGatherEndedDataPayload) RawJSON() string { return r.JSON.raw }
-func (r *CallAIGatherEndedDataPayload) UnmarshalJSON(data []byte) error {
+func (r CallAIGatherEndedPayload) RawJSON() string { return r.JSON.raw }
+func (r *CallAIGatherEndedPayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CallAIGatherEndedDataPayloadMessageHistory struct {
+type CallAIGatherEndedPayloadMessageHistory struct {
 	// The content of the message
 	Content string `json:"content"`
 	// The role of the message sender
@@ -185,41 +176,32 @@ type CallAIGatherEndedDataPayloadMessageHistory struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CallAIGatherEndedDataPayloadMessageHistory) RawJSON() string { return r.JSON.raw }
-func (r *CallAIGatherEndedDataPayloadMessageHistory) UnmarshalJSON(data []byte) error {
+func (r CallAIGatherEndedPayloadMessageHistory) RawJSON() string { return r.JSON.raw }
+func (r *CallAIGatherEndedPayloadMessageHistory) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Identifies the type of the resource.
+type CallAIGatherEndedRecordType string
+
+const (
+	CallAIGatherEndedRecordTypeEvent CallAIGatherEndedRecordType = "event"
+)
 
 type CallAIGatherMessageHistoryUpdated struct {
-	Data CallAIGatherMessageHistoryUpdatedData `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CallAIGatherMessageHistoryUpdated) RawJSON() string { return r.JSON.raw }
-func (r *CallAIGatherMessageHistoryUpdated) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CallAIGatherMessageHistoryUpdatedData struct {
 	// Identifies the type of resource.
 	ID string `json:"id" format:"uuid"`
 	// The type of event being delivered.
 	//
 	// Any of "call.ai_gather.message_history_updated".
-	EventType string `json:"event_type"`
+	EventType CallAIGatherMessageHistoryUpdatedEventType `json:"event_type"`
 	// ISO 8601 datetime of when the event occurred.
-	OccurredAt time.Time                                    `json:"occurred_at" format:"date-time"`
-	Payload    CallAIGatherMessageHistoryUpdatedDataPayload `json:"payload"`
+	OccurredAt time.Time                                `json:"occurred_at" format:"date-time"`
+	Payload    CallAIGatherMessageHistoryUpdatedPayload `json:"payload"`
 	// Identifies the type of the resource.
 	//
 	// Any of "event".
-	RecordType string `json:"record_type"`
+	RecordType CallAIGatherMessageHistoryUpdatedRecordType `json:"record_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -233,12 +215,19 @@ type CallAIGatherMessageHistoryUpdatedData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CallAIGatherMessageHistoryUpdatedData) RawJSON() string { return r.JSON.raw }
-func (r *CallAIGatherMessageHistoryUpdatedData) UnmarshalJSON(data []byte) error {
+func (r CallAIGatherMessageHistoryUpdated) RawJSON() string { return r.JSON.raw }
+func (r *CallAIGatherMessageHistoryUpdated) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CallAIGatherMessageHistoryUpdatedDataPayload struct {
+// The type of event being delivered.
+type CallAIGatherMessageHistoryUpdatedEventType string
+
+const (
+	CallAIGatherMessageHistoryUpdatedEventTypeCallAIGatherMessageHistoryUpdated CallAIGatherMessageHistoryUpdatedEventType = "call.ai_gather.message_history_updated"
+)
+
+type CallAIGatherMessageHistoryUpdatedPayload struct {
 	// Call ID used to issue commands via Call Control API.
 	CallControlID string `json:"call_control_id"`
 	// ID that is unique to the call and can be used to correlate webhook events.
@@ -254,7 +243,7 @@ type CallAIGatherMessageHistoryUpdatedDataPayload struct {
 	// Number or SIP URI placing the call.
 	From string `json:"from"`
 	// The history of the messages exchanged during the AI gather
-	MessageHistory []CallAIGatherMessageHistoryUpdatedDataPayloadMessageHistory `json:"message_history"`
+	MessageHistory []CallAIGatherMessageHistoryUpdatedPayloadMessageHistory `json:"message_history"`
 	// Destination number or SIP URI of the call.
 	To string `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -273,12 +262,12 @@ type CallAIGatherMessageHistoryUpdatedDataPayload struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CallAIGatherMessageHistoryUpdatedDataPayload) RawJSON() string { return r.JSON.raw }
-func (r *CallAIGatherMessageHistoryUpdatedDataPayload) UnmarshalJSON(data []byte) error {
+func (r CallAIGatherMessageHistoryUpdatedPayload) RawJSON() string { return r.JSON.raw }
+func (r *CallAIGatherMessageHistoryUpdatedPayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CallAIGatherMessageHistoryUpdatedDataPayloadMessageHistory struct {
+type CallAIGatherMessageHistoryUpdatedPayloadMessageHistory struct {
 	// The content of the message
 	Content string `json:"content"`
 	// The role of the message sender
@@ -295,12 +284,17 @@ type CallAIGatherMessageHistoryUpdatedDataPayloadMessageHistory struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CallAIGatherMessageHistoryUpdatedDataPayloadMessageHistory) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *CallAIGatherMessageHistoryUpdatedDataPayloadMessageHistory) UnmarshalJSON(data []byte) error {
+func (r CallAIGatherMessageHistoryUpdatedPayloadMessageHistory) RawJSON() string { return r.JSON.raw }
+func (r *CallAIGatherMessageHistoryUpdatedPayloadMessageHistory) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Identifies the type of the resource.
+type CallAIGatherMessageHistoryUpdatedRecordType string
+
+const (
+	CallAIGatherMessageHistoryUpdatedRecordTypeEvent CallAIGatherMessageHistoryUpdatedRecordType = "event"
+)
 
 type CallAIGatherPartialResults struct {
 	// Identifies the type of resource.
@@ -5660,6 +5654,38 @@ const (
 	TranscriptionRecordTypeEvent TranscriptionRecordType = "event"
 )
 
+type CallAIGatherEndedWebhookEvent struct {
+	Data CallAIGatherEnded `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallAIGatherEndedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *CallAIGatherEndedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallAIGatherMessageHistoryUpdatedWebhookEvent struct {
+	Data CallAIGatherMessageHistoryUpdated `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallAIGatherMessageHistoryUpdatedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *CallAIGatherMessageHistoryUpdatedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type CallAIGatherPartialResultsWebhookEvent struct {
 	Data CallAIGatherPartialResults `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -6483,7 +6509,8 @@ func (r *TranscriptionWebhookEvent) UnmarshalJSON(data []byte) error {
 }
 
 // UnsafeUnwrapWebhookEventUnion contains all possible properties and values from
-// [CallAIGatherEnded], [CallAIGatherMessageHistoryUpdated],
+// [CallAIGatherEndedWebhookEvent],
+// [CallAIGatherMessageHistoryUpdatedWebhookEvent],
 // [CallAIGatherPartialResultsWebhookEvent], [CallAnsweredWebhookEvent],
 // [CallBridgedWebhookEvent], [CallConversationEndedWebhookEvent],
 // [CallConversationInsightsGeneratedWebhookEvent], [CallDtmfReceivedWebhookEvent],
@@ -6518,8 +6545,8 @@ func (r *TranscriptionWebhookEvent) UnmarshalJSON(data []byte) error {
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnsafeUnwrapWebhookEventUnion struct {
-	// This field is a union of [CallAIGatherEndedData],
-	// [CallAIGatherMessageHistoryUpdatedData], [CallAIGatherPartialResults],
+	// This field is a union of [CallAIGatherEnded],
+	// [CallAIGatherMessageHistoryUpdated], [CallAIGatherPartialResults],
 	// [CallAnswered], [CallBridged], [CallConversationEnded],
 	// [CallConversationInsightsGenerated], [CallDtmfReceived], [CallEnqueued],
 	// [CallForkStarted], [CallForkStopped], [CallGatherEnded], [CallHangup],
@@ -6587,12 +6614,12 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	} `json:"-"`
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsCallAIGatherEndedEvent() (v CallAIGatherEnded) {
+func (u UnsafeUnwrapWebhookEventUnion) AsCallAIGatherEndedEvent() (v CallAIGatherEndedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsCallAIGatherMessageHistoryUpdatedEvent() (v CallAIGatherMessageHistoryUpdated) {
+func (u UnsafeUnwrapWebhookEventUnion) AsCallAIGatherMessageHistoryUpdatedEvent() (v CallAIGatherMessageHistoryUpdatedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -6904,10 +6931,9 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	ID         string    `json:"id"`
 	EventType  string    `json:"event_type"`
 	OccurredAt time.Time `json:"occurred_at"`
-	// This field is a union of [CallAIGatherEndedDataPayload],
-	// [CallAIGatherMessageHistoryUpdatedDataPayload],
-	// [CallAIGatherPartialResultsPayload], [CallAnsweredPayload],
-	// [CallBridgedPayload], [CallConversationEndedPayload],
+	// This field is a union of [CallAIGatherEndedPayload],
+	// [CallAIGatherMessageHistoryUpdatedPayload], [CallAIGatherPartialResultsPayload],
+	// [CallAnsweredPayload], [CallBridgedPayload], [CallConversationEndedPayload],
 	// [CallConversationInsightsGeneratedPayload], [CallDtmfReceivedPayload],
 	// [CallEnqueuedPayload], [CallForkStartedPayload], [CallForkStoppedPayload],
 	// [CallGatherEndedPayload], [CallHangupPayload], [CallInitiatedPayload],
@@ -6981,8 +7007,8 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	// [string], [string], [string], [string], [OutboundMessagePayloadFrom], [string],
 	// [string], [string], [string], [string], [shared.InboundMessagePayloadFrom]
 	From UnsafeUnwrapWebhookEventUnionDataPayloadFrom `json:"from"`
-	// This field is a union of [[]CallAIGatherEndedDataPayloadMessageHistory],
-	// [[]CallAIGatherMessageHistoryUpdatedDataPayloadMessageHistory],
+	// This field is a union of [[]CallAIGatherEndedPayloadMessageHistory],
+	// [[]CallAIGatherMessageHistoryUpdatedPayloadMessageHistory],
 	// [[]CallAIGatherPartialResultsPayloadMessageHistory]
 	MessageHistory UnsafeUnwrapWebhookEventUnionDataPayloadMessageHistory `json:"message_history"`
 	// This field is a union of [map[string]any], [string], [string], [string],
@@ -7304,25 +7330,24 @@ func (r *UnsafeUnwrapWebhookEventUnionDataPayloadFrom) UnmarshalJSON(data []byte
 // [UnsafeUnwrapWebhookEventUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfCallAIGatherEndedDataPayloadMessageHistoryArray
-// OfCallAIGatherMessageHistoryUpdatedDataPayloadMessageHistoryArray
+// will be valid: OfCallAIGatherEndedPayloadMessageHistoryArray
+// OfCallAIGatherMessageHistoryUpdatedPayloadMessageHistoryArray
 // OfCallAIGatherPartialResultsPayloadMessageHistoryArray]
 type UnsafeUnwrapWebhookEventUnionDataPayloadMessageHistory struct {
 	// This field will be present if the value is a
-	// [[]CallAIGatherEndedDataPayloadMessageHistory] instead of an object.
-	OfCallAIGatherEndedDataPayloadMessageHistoryArray []CallAIGatherEndedDataPayloadMessageHistory `json:",inline"`
+	// [[]CallAIGatherEndedPayloadMessageHistory] instead of an object.
+	OfCallAIGatherEndedPayloadMessageHistoryArray []CallAIGatherEndedPayloadMessageHistory `json:",inline"`
 	// This field will be present if the value is a
-	// [[]CallAIGatherMessageHistoryUpdatedDataPayloadMessageHistory] instead of an
-	// object.
-	OfCallAIGatherMessageHistoryUpdatedDataPayloadMessageHistoryArray []CallAIGatherMessageHistoryUpdatedDataPayloadMessageHistory `json:",inline"`
+	// [[]CallAIGatherMessageHistoryUpdatedPayloadMessageHistory] instead of an object.
+	OfCallAIGatherMessageHistoryUpdatedPayloadMessageHistoryArray []CallAIGatherMessageHistoryUpdatedPayloadMessageHistory `json:",inline"`
 	// This field will be present if the value is a
 	// [[]CallAIGatherPartialResultsPayloadMessageHistory] instead of an object.
 	OfCallAIGatherPartialResultsPayloadMessageHistoryArray []CallAIGatherPartialResultsPayloadMessageHistory `json:",inline"`
 	JSON                                                   struct {
-		OfCallAIGatherEndedDataPayloadMessageHistoryArray                 respjson.Field
-		OfCallAIGatherMessageHistoryUpdatedDataPayloadMessageHistoryArray respjson.Field
-		OfCallAIGatherPartialResultsPayloadMessageHistoryArray            respjson.Field
-		raw                                                               string
+		OfCallAIGatherEndedPayloadMessageHistoryArray                 respjson.Field
+		OfCallAIGatherMessageHistoryUpdatedPayloadMessageHistoryArray respjson.Field
+		OfCallAIGatherPartialResultsPayloadMessageHistoryArray        respjson.Field
+		raw                                                           string
 	} `json:"-"`
 }
 
@@ -7338,15 +7363,15 @@ func (r *UnsafeUnwrapWebhookEventUnionDataPayloadMessageHistory) UnmarshalJSON(d
 // [UnsafeUnwrapWebhookEventUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfCallAIGatherEndedDataPayloadResult
+// will be valid: OfCallAIGatherEndedPayloadResult
 // OfCallMachinePremiumGreetingEndedPayloadResult]
 type UnsafeUnwrapWebhookEventUnionDataPayloadResult struct {
 	// This field will be present if the value is a [any] instead of an object.
-	OfCallAIGatherEndedDataPayloadResult any `json:",inline"`
+	OfCallAIGatherEndedPayloadResult any `json:",inline"`
 	// This field will be present if the value is a [string] instead of an object.
 	OfCallMachinePremiumGreetingEndedPayloadResult string `json:",inline"`
 	JSON                                           struct {
-		OfCallAIGatherEndedDataPayloadResult           respjson.Field
+		OfCallAIGatherEndedPayloadResult               respjson.Field
 		OfCallMachinePremiumGreetingEndedPayloadResult respjson.Field
 		raw                                            string
 	} `json:"-"`
@@ -7591,7 +7616,8 @@ func (r *UnsafeUnwrapWebhookEventUnionMeta) UnmarshalJSON(data []byte) error {
 }
 
 // UnwrapWebhookEventUnion contains all possible properties and values from
-// [CallAIGatherEnded], [CallAIGatherMessageHistoryUpdated],
+// [CallAIGatherEndedWebhookEvent],
+// [CallAIGatherMessageHistoryUpdatedWebhookEvent],
 // [CallAIGatherPartialResultsWebhookEvent], [CallAnsweredWebhookEvent],
 // [CallBridgedWebhookEvent], [CallConversationEndedWebhookEvent],
 // [CallConversationInsightsGeneratedWebhookEvent], [CallDtmfReceivedWebhookEvent],
@@ -7626,8 +7652,8 @@ func (r *UnsafeUnwrapWebhookEventUnionMeta) UnmarshalJSON(data []byte) error {
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnwrapWebhookEventUnion struct {
-	// This field is a union of [CallAIGatherEndedData],
-	// [CallAIGatherMessageHistoryUpdatedData], [CallAIGatherPartialResults],
+	// This field is a union of [CallAIGatherEnded],
+	// [CallAIGatherMessageHistoryUpdated], [CallAIGatherPartialResults],
 	// [CallAnswered], [CallBridged], [CallConversationEnded],
 	// [CallConversationInsightsGenerated], [CallDtmfReceived], [CallEnqueued],
 	// [CallForkStarted], [CallForkStopped], [CallGatherEnded], [CallHangup],
@@ -7695,12 +7721,12 @@ type UnwrapWebhookEventUnion struct {
 	} `json:"-"`
 }
 
-func (u UnwrapWebhookEventUnion) AsCallAIGatherEndedEvent() (v CallAIGatherEnded) {
+func (u UnwrapWebhookEventUnion) AsCallAIGatherEndedEvent() (v CallAIGatherEndedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsCallAIGatherMessageHistoryUpdatedEvent() (v CallAIGatherMessageHistoryUpdated) {
+func (u UnwrapWebhookEventUnion) AsCallAIGatherMessageHistoryUpdatedEvent() (v CallAIGatherMessageHistoryUpdatedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -8012,10 +8038,9 @@ type UnwrapWebhookEventUnionData struct {
 	ID         string    `json:"id"`
 	EventType  string    `json:"event_type"`
 	OccurredAt time.Time `json:"occurred_at"`
-	// This field is a union of [CallAIGatherEndedDataPayload],
-	// [CallAIGatherMessageHistoryUpdatedDataPayload],
-	// [CallAIGatherPartialResultsPayload], [CallAnsweredPayload],
-	// [CallBridgedPayload], [CallConversationEndedPayload],
+	// This field is a union of [CallAIGatherEndedPayload],
+	// [CallAIGatherMessageHistoryUpdatedPayload], [CallAIGatherPartialResultsPayload],
+	// [CallAnsweredPayload], [CallBridgedPayload], [CallConversationEndedPayload],
 	// [CallConversationInsightsGeneratedPayload], [CallDtmfReceivedPayload],
 	// [CallEnqueuedPayload], [CallForkStartedPayload], [CallForkStoppedPayload],
 	// [CallGatherEndedPayload], [CallHangupPayload], [CallInitiatedPayload],
@@ -8089,8 +8114,8 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	// [string], [string], [string], [string], [OutboundMessagePayloadFrom], [string],
 	// [string], [string], [string], [string], [shared.InboundMessagePayloadFrom]
 	From UnwrapWebhookEventUnionDataPayloadFrom `json:"from"`
-	// This field is a union of [[]CallAIGatherEndedDataPayloadMessageHistory],
-	// [[]CallAIGatherMessageHistoryUpdatedDataPayloadMessageHistory],
+	// This field is a union of [[]CallAIGatherEndedPayloadMessageHistory],
+	// [[]CallAIGatherMessageHistoryUpdatedPayloadMessageHistory],
 	// [[]CallAIGatherPartialResultsPayloadMessageHistory]
 	MessageHistory UnwrapWebhookEventUnionDataPayloadMessageHistory `json:"message_history"`
 	// This field is a union of [map[string]any], [string], [string], [string],
@@ -8411,25 +8436,24 @@ func (r *UnwrapWebhookEventUnionDataPayloadFrom) UnmarshalJSON(data []byte) erro
 // [UnwrapWebhookEventUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfCallAIGatherEndedDataPayloadMessageHistoryArray
-// OfCallAIGatherMessageHistoryUpdatedDataPayloadMessageHistoryArray
+// will be valid: OfCallAIGatherEndedPayloadMessageHistoryArray
+// OfCallAIGatherMessageHistoryUpdatedPayloadMessageHistoryArray
 // OfCallAIGatherPartialResultsPayloadMessageHistoryArray]
 type UnwrapWebhookEventUnionDataPayloadMessageHistory struct {
 	// This field will be present if the value is a
-	// [[]CallAIGatherEndedDataPayloadMessageHistory] instead of an object.
-	OfCallAIGatherEndedDataPayloadMessageHistoryArray []CallAIGatherEndedDataPayloadMessageHistory `json:",inline"`
+	// [[]CallAIGatherEndedPayloadMessageHistory] instead of an object.
+	OfCallAIGatherEndedPayloadMessageHistoryArray []CallAIGatherEndedPayloadMessageHistory `json:",inline"`
 	// This field will be present if the value is a
-	// [[]CallAIGatherMessageHistoryUpdatedDataPayloadMessageHistory] instead of an
-	// object.
-	OfCallAIGatherMessageHistoryUpdatedDataPayloadMessageHistoryArray []CallAIGatherMessageHistoryUpdatedDataPayloadMessageHistory `json:",inline"`
+	// [[]CallAIGatherMessageHistoryUpdatedPayloadMessageHistory] instead of an object.
+	OfCallAIGatherMessageHistoryUpdatedPayloadMessageHistoryArray []CallAIGatherMessageHistoryUpdatedPayloadMessageHistory `json:",inline"`
 	// This field will be present if the value is a
 	// [[]CallAIGatherPartialResultsPayloadMessageHistory] instead of an object.
 	OfCallAIGatherPartialResultsPayloadMessageHistoryArray []CallAIGatherPartialResultsPayloadMessageHistory `json:",inline"`
 	JSON                                                   struct {
-		OfCallAIGatherEndedDataPayloadMessageHistoryArray                 respjson.Field
-		OfCallAIGatherMessageHistoryUpdatedDataPayloadMessageHistoryArray respjson.Field
-		OfCallAIGatherPartialResultsPayloadMessageHistoryArray            respjson.Field
-		raw                                                               string
+		OfCallAIGatherEndedPayloadMessageHistoryArray                 respjson.Field
+		OfCallAIGatherMessageHistoryUpdatedPayloadMessageHistoryArray respjson.Field
+		OfCallAIGatherPartialResultsPayloadMessageHistoryArray        respjson.Field
+		raw                                                           string
 	} `json:"-"`
 }
 
@@ -8445,15 +8469,15 @@ func (r *UnwrapWebhookEventUnionDataPayloadMessageHistory) UnmarshalJSON(data []
 // [UnwrapWebhookEventUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfCallAIGatherEndedDataPayloadResult
+// will be valid: OfCallAIGatherEndedPayloadResult
 // OfCallMachinePremiumGreetingEndedPayloadResult]
 type UnwrapWebhookEventUnionDataPayloadResult struct {
 	// This field will be present if the value is a [any] instead of an object.
-	OfCallAIGatherEndedDataPayloadResult any `json:",inline"`
+	OfCallAIGatherEndedPayloadResult any `json:",inline"`
 	// This field will be present if the value is a [string] instead of an object.
 	OfCallMachinePremiumGreetingEndedPayloadResult string `json:",inline"`
 	JSON                                           struct {
-		OfCallAIGatherEndedDataPayloadResult           respjson.Field
+		OfCallAIGatherEndedPayloadResult               respjson.Field
 		OfCallMachinePremiumGreetingEndedPayloadResult respjson.Field
 		raw                                            string
 	} `json:"-"`
