@@ -674,22 +674,22 @@ const ResembleVoiceSettingsPrecisionMulaw = shared.ResembleVoiceSettingsPrecisio
 type ResembleVoiceSettingsSampleRate = shared.ResembleVoiceSettingsSampleRate
 
 // Equals "8000"
-const ResembleVoiceSettingsSampleRate_8000 = shared.ResembleVoiceSettingsSampleRate_8000
+const ResembleVoiceSettingsSampleRate8000 = shared.ResembleVoiceSettingsSampleRate8000
 
 // Equals "16000"
-const ResembleVoiceSettingsSampleRate_16000 = shared.ResembleVoiceSettingsSampleRate_16000
+const ResembleVoiceSettingsSampleRate16000 = shared.ResembleVoiceSettingsSampleRate16000
 
 // Equals "22050"
-const ResembleVoiceSettingsSampleRate_22050 = shared.ResembleVoiceSettingsSampleRate_22050
+const ResembleVoiceSettingsSampleRate22050 = shared.ResembleVoiceSettingsSampleRate22050
 
 // Equals "32000"
-const ResembleVoiceSettingsSampleRate_32000 = shared.ResembleVoiceSettingsSampleRate_32000
+const ResembleVoiceSettingsSampleRate32000 = shared.ResembleVoiceSettingsSampleRate32000
 
 // Equals "44100"
-const ResembleVoiceSettingsSampleRate_44100 = shared.ResembleVoiceSettingsSampleRate_44100
+const ResembleVoiceSettingsSampleRate44100 = shared.ResembleVoiceSettingsSampleRate44100
 
 // Equals "48000"
-const ResembleVoiceSettingsSampleRate_48000 = shared.ResembleVoiceSettingsSampleRate_48000
+const ResembleVoiceSettingsSampleRate48000 = shared.ResembleVoiceSettingsSampleRate48000
 
 // This is an alias to an internal type.
 type RimeVoiceSettingsParam = shared.RimeVoiceSettingsParam
