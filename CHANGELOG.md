@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.39.0 (2026-03-03)
+
+Full Changelog: [v4.38.0...v4.39.0](https://github.com/team-telnyx/telnyx-go/compare/v4.38.0...v4.39.0)
+
+### Features
+
+* [TDA-6425] Add Session Analysis API spec to public docs ([19c208e](https://github.com/team-telnyx/telnyx-go/commit/19c208ec8a07642c4536c21927d7cfd872027389))
+* **api:** manual updates ([ba56cae](https://github.com/team-telnyx/telnyx-go/commit/ba56cae11a527d4a47af1e3a988177f3808c7ef2))
+* **api:** manual updates ([f039a3b](https://github.com/team-telnyx/telnyx-go/commit/f039a3b2e64b14e9a6358de81ebe983c6af0a5a6))
+
 ## 4.38.0 (2026-03-03)
 
 Full Changelog: [v4.37.0...v4.38.0](https://github.com/team-telnyx/telnyx-go/compare/v4.37.0...v4.38.0)

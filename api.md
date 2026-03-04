@@ -4661,3 +4661,29 @@ Response Types:
 Methods:
 
 - <code title="get /messaging_profile_metrics">client.MessagingProfileMetrics.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#MessagingProfileMetricService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#MessagingProfileMetricListParams">MessagingProfileMetricListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#MessagingProfileMetricListResponse">MessagingProfileMetricListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+# SessionAnalysis
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EventNode">EventNode</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SessionAnalysisGetResponse">SessionAnalysisGetResponse</a>
+
+Methods:
+
+- <code title="get /session_analysis/{record_type}/{event_id}">client.SessionAnalysis.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SessionAnalysisService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, eventID <a href="https://pkg.go.dev/builtin#string">string</a>, params <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SessionAnalysisGetParams">SessionAnalysisGetParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SessionAnalysisGetResponse">SessionAnalysisGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+## Metadata
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ChildRelationshipInfo">ChildRelationshipInfo</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#MetadataFieldMapping">MetadataFieldMapping</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ParentRelationshipInfo">ParentRelationshipInfo</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SessionAnalysisMetadataGetResponse">SessionAnalysisMetadataGetResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SessionAnalysisMetadataGetRecordTypeResponse">SessionAnalysisMetadataGetRecordTypeResponse</a>
+
+Methods:
+
+- <code title="get /session_analysis/metadata">client.SessionAnalysis.Metadata.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SessionAnalysisMetadataService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SessionAnalysisMetadataGetResponse">SessionAnalysisMetadataGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /session_analysis/metadata/{record_type}">client.SessionAnalysis.Metadata.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SessionAnalysisMetadataService.GetRecordType">GetRecordType</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, recordType <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SessionAnalysisMetadataGetRecordTypeResponse">SessionAnalysisMetadataGetRecordTypeResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
