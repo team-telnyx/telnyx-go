@@ -201,19 +201,23 @@ func (r *StreamClientEventParam) UnmarshalJSON(data []byte) error {
 }
 
 // StreamServerEventUnion contains all possible properties and values from
-// [StreamServerEventAudioChunkFrame], [StreamServerEventFinalFrame],
-// [StreamServerEventErrorFrame].
+// [StreamServerEventAudioChunk], [StreamServerEventFinal],
+// [StreamServerEventError].
+//
+// Use the [StreamServerEventUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type StreamServerEventUnion struct {
 	// This field is a union of [string], [any]
 	Audio StreamServerEventUnionAudio `json:"audio"`
-	// This field is from variant [StreamServerEventAudioChunkFrame].
+	// This field is from variant [StreamServerEventAudioChunk].
 	Cached                  bool   `json:"cached"`
 	IsFinal                 bool   `json:"isFinal"`
 	Text                    string `json:"text"`
 	TimeToFirstAudioFrameMs int64  `json:"timeToFirstAudioFrameMs"`
-	// This field is from variant [StreamServerEventErrorFrame].
+	// Any of "audio_chunk", "final", "error".
+	Type string `json:"type"`
+	// This field is from variant [StreamServerEventError].
 	Error string `json:"error"`
 	JSON  struct {
 		Audio                   respjson.Field
@@ -221,22 +225,54 @@ type StreamServerEventUnion struct {
 		IsFinal                 respjson.Field
 		Text                    respjson.Field
 		TimeToFirstAudioFrameMs respjson.Field
+		Type                    respjson.Field
 		Error                   respjson.Field
 		raw                     string
 	} `json:"-"`
 }
 
-func (u StreamServerEventUnion) AsStreamServerEventAudioChunkFrame() (v StreamServerEventAudioChunkFrame) {
+// anyStreamServerEvent is implemented by each variant of [StreamServerEventUnion]
+// to add type safety for the return type of [StreamServerEventUnion.AsAny]
+type anyStreamServerEvent interface {
+	implStreamServerEventUnion()
+}
+
+func (StreamServerEventAudioChunk) implStreamServerEventUnion() {}
+func (StreamServerEventFinal) implStreamServerEventUnion()      {}
+func (StreamServerEventError) implStreamServerEventUnion()      {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := StreamServerEventUnion.AsAny().(type) {
+//	case telnyx.StreamServerEventAudioChunk:
+//	case telnyx.StreamServerEventFinal:
+//	case telnyx.StreamServerEventError:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u StreamServerEventUnion) AsAny() anyStreamServerEvent {
+	switch u.Type {
+	case "audio_chunk":
+		return u.AsAudioChunk()
+	case "final":
+		return u.AsFinal()
+	case "error":
+		return u.AsError()
+	}
+	return nil
+}
+
+func (u StreamServerEventUnion) AsAudioChunk() (v StreamServerEventAudioChunk) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u StreamServerEventUnion) AsStreamServerEventFinalFrame() (v StreamServerEventFinalFrame) {
+func (u StreamServerEventUnion) AsFinal() (v StreamServerEventFinal) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u StreamServerEventUnion) AsStreamServerEventErrorFrame() (v StreamServerEventErrorFrame) {
+func (u StreamServerEventUnion) AsError() (v StreamServerEventError) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -256,16 +292,16 @@ func (r *StreamServerEventUnion) UnmarshalJSON(data []byte) error {
 // [StreamServerEventUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfStreamServerEventFinalFrameAudio]
+// will be valid: OfString OfStreamServerEventFinalAudio]
 type StreamServerEventUnionAudio struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a [any] instead of an object.
-	OfStreamServerEventFinalFrameAudio any `json:",inline"`
-	JSON                               struct {
-		OfString                           respjson.Field
-		OfStreamServerEventFinalFrameAudio respjson.Field
-		raw                                string
+	OfStreamServerEventFinalAudio any `json:",inline"`
+	JSON                          struct {
+		OfString                      respjson.Field
+		OfStreamServerEventFinalAudio respjson.Field
+		raw                           string
 	} `json:"-"`
 }
 
@@ -274,7 +310,7 @@ func (r *StreamServerEventUnionAudio) UnmarshalJSON(data []byte) error {
 }
 
 // Server-to-client frame containing a base64-encoded audio chunk.
-type StreamServerEventAudioChunkFrame struct {
+type StreamServerEventAudioChunk struct {
 	// Base64-encoded audio data. May be `null` for providers that use
 	// `drop_concatenated_audio` mode (Telnyx Natural/NaturalHD, Rime, Minimax, MurfAI,
 	// Resemble) — in that case only streamed chunks carry audio.
@@ -288,6 +324,10 @@ type StreamServerEventAudioChunkFrame struct {
 	// Milliseconds from the start-of-speech request to the first audio frame. Only
 	// present on the first audio chunk of a synthesis request.
 	TimeToFirstAudioFrameMs int64 `json:"timeToFirstAudioFrameMs"`
+	// Frame type identifier.
+	//
+	// Any of "audio_chunk".
+	Type string `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Audio                   respjson.Field
@@ -295,19 +335,20 @@ type StreamServerEventAudioChunkFrame struct {
 		IsFinal                 respjson.Field
 		Text                    respjson.Field
 		TimeToFirstAudioFrameMs respjson.Field
+		Type                    respjson.Field
 		ExtraFields             map[string]respjson.Field
 		raw                     string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r StreamServerEventAudioChunkFrame) RawJSON() string { return r.JSON.raw }
-func (r *StreamServerEventAudioChunkFrame) UnmarshalJSON(data []byte) error {
+func (r StreamServerEventAudioChunk) RawJSON() string { return r.JSON.raw }
+func (r *StreamServerEventAudioChunk) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Server-to-client frame indicating synthesis is complete for the current text.
-type StreamServerEventFinalFrame struct {
+type StreamServerEventFinal struct {
 	// Always `null` for the final frame.
 	Audio any `json:"audio" api:"nullable"`
 	// Always `true`.
@@ -318,39 +359,49 @@ type StreamServerEventFinalFrame struct {
 	Text string `json:"text"`
 	// Present if this was the first response frame.
 	TimeToFirstAudioFrameMs int64 `json:"timeToFirstAudioFrameMs"`
+	// Frame type identifier.
+	//
+	// Any of "final".
+	Type string `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Audio                   respjson.Field
 		IsFinal                 respjson.Field
 		Text                    respjson.Field
 		TimeToFirstAudioFrameMs respjson.Field
+		Type                    respjson.Field
 		ExtraFields             map[string]respjson.Field
 		raw                     string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r StreamServerEventFinalFrame) RawJSON() string { return r.JSON.raw }
-func (r *StreamServerEventFinalFrame) UnmarshalJSON(data []byte) error {
+func (r StreamServerEventFinal) RawJSON() string { return r.JSON.raw }
+func (r *StreamServerEventFinal) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Server-to-client frame indicating an error during synthesis. The connection is
 // closed shortly after.
-type StreamServerEventErrorFrame struct {
+type StreamServerEventError struct {
 	// Error message describing what went wrong.
 	Error string `json:"error"`
+	// Frame type identifier.
+	//
+	// Any of "error".
+	Type string `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Error       respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r StreamServerEventErrorFrame) RawJSON() string { return r.JSON.raw }
-func (r *StreamServerEventErrorFrame) UnmarshalJSON(data []byte) error {
+func (r StreamServerEventError) RawJSON() string { return r.JSON.raw }
+func (r *StreamServerEventError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
