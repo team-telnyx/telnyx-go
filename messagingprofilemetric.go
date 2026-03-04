@@ -83,10 +83,10 @@ func (r MessagingProfileMetricListParams) URLQuery() (v url.Values, err error) {
 type MessagingProfileMetricListParamsTimeFrame string
 
 const (
-	MessagingProfileMetricListParamsTimeFrame_1H  MessagingProfileMetricListParamsTimeFrame = "1h"
-	MessagingProfileMetricListParamsTimeFrame_3H  MessagingProfileMetricListParamsTimeFrame = "3h"
-	MessagingProfileMetricListParamsTimeFrame_24H MessagingProfileMetricListParamsTimeFrame = "24h"
-	MessagingProfileMetricListParamsTimeFrame_3D  MessagingProfileMetricListParamsTimeFrame = "3d"
-	MessagingProfileMetricListParamsTimeFrame_7D  MessagingProfileMetricListParamsTimeFrame = "7d"
-	MessagingProfileMetricListParamsTimeFrame_30D MessagingProfileMetricListParamsTimeFrame = "30d"
+	MessagingProfileMetricListParamsTimeFrame1h  MessagingProfileMetricListParamsTimeFrame = "1h"
+	MessagingProfileMetricListParamsTimeFrame3h  MessagingProfileMetricListParamsTimeFrame = "3h"
+	MessagingProfileMetricListParamsTimeFrame24h MessagingProfileMetricListParamsTimeFrame = "24h"
+	MessagingProfileMetricListParamsTimeFrame3d  MessagingProfileMetricListParamsTimeFrame = "3d"
+	MessagingProfileMetricListParamsTimeFrame7d  MessagingProfileMetricListParamsTimeFrame = "7d"
+	MessagingProfileMetricListParamsTimeFrame30d MessagingProfileMetricListParamsTimeFrame = "30d"
 )
