@@ -27,7 +27,7 @@ func TestMessagingProfileMetricListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.MessagingProfileMetrics.List(context.TODO(), telnyx.MessagingProfileMetricListParams{
-		TimeFrame: telnyx.MessagingProfileMetricListParamsTimeFrame1h,
+		TimeFrame: telnyx.MessagingProfileMetricListParamsTimeFrame_1H,
 	})
 	if err != nil {
 		var apierr *telnyx.Error
