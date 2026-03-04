@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.40.0 (2026-03-04)
+
+Full Changelog: [v4.39.0...v4.40.0](https://github.com/team-telnyx/telnyx-go/compare/v4.39.0...v4.40.0)
+
+### Features
+
+* **api:** manual updates ([24bbede](https://github.com/team-telnyx/telnyx-go/commit/24bbede1f44d1ddf01de4cd728cfd5bc94aff156))
+
+
+### Bug Fixes
+
+* add discriminator to TtsServerEvent for Stainless SDK generation ([cb741ee](https://github.com/team-telnyx/telnyx-go/commit/cb741ee3032ca1aa6753eb32777d731c6bfb90ab))
+
 ## 4.39.0 (2026-03-03)
 
 Full Changelog: [v4.38.0...v4.39.0](https://github.com/team-telnyx/telnyx-go/compare/v4.38.0...v4.39.0)
