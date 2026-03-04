@@ -1403,12 +1403,12 @@ const (
 type ResembleVoiceSettingsSampleRate string
 
 const (
-	ResembleVoiceSettingsSampleRate_8000  ResembleVoiceSettingsSampleRate = "8000"
-	ResembleVoiceSettingsSampleRate_16000 ResembleVoiceSettingsSampleRate = "16000"
-	ResembleVoiceSettingsSampleRate_22050 ResembleVoiceSettingsSampleRate = "22050"
-	ResembleVoiceSettingsSampleRate_32000 ResembleVoiceSettingsSampleRate = "32000"
-	ResembleVoiceSettingsSampleRate_44100 ResembleVoiceSettingsSampleRate = "44100"
-	ResembleVoiceSettingsSampleRate_48000 ResembleVoiceSettingsSampleRate = "48000"
+	ResembleVoiceSettingsSampleRate8000  ResembleVoiceSettingsSampleRate = "8000"
+	ResembleVoiceSettingsSampleRate16000 ResembleVoiceSettingsSampleRate = "16000"
+	ResembleVoiceSettingsSampleRate22050 ResembleVoiceSettingsSampleRate = "22050"
+	ResembleVoiceSettingsSampleRate32000 ResembleVoiceSettingsSampleRate = "32000"
+	ResembleVoiceSettingsSampleRate44100 ResembleVoiceSettingsSampleRate = "44100"
+	ResembleVoiceSettingsSampleRate48000 ResembleVoiceSettingsSampleRate = "48000"
 )
 
 // The property Type is required.
