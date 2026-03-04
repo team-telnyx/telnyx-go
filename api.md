@@ -4608,12 +4608,6 @@ Methods:
 - <code title="get /10dlc/phoneNumberAssignmentByProfile/{taskId}/phoneNumbers">client.Messaging10dlc.PhoneNumberAssignmentByProfile.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#Messaging10dlcPhoneNumberAssignmentByProfileService.GetPhoneNumberStatus">GetPhoneNumberStatus</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, taskID <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusParams">Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusResponse">Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /10dlc/phoneNumberAssignmentByProfile/{taskId}">client.Messaging10dlc.PhoneNumberAssignmentByProfile.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#Messaging10dlcPhoneNumberAssignmentByProfileService.GetStatus">GetStatus</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, taskID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#Messaging10dlcPhoneNumberAssignmentByProfileGetStatusResponse">Messaging10dlcPhoneNumberAssignmentByProfileGetStatusResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
-# SpeechToText
-
-Methods:
-
-- <code title="get /speech-to-text/transcription">client.SpeechToText.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SpeechToTextService.Transcribe">Transcribe</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SpeechToTextTranscribeParams">SpeechToTextTranscribeParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
-
 # Organizations
 
 ## Users

@@ -297,10 +297,8 @@ type Client struct {
 	// Mobile phone number operations
 	MobilePhoneNumbers MobilePhoneNumberService
 	// Mobile voice connection operations
-	MobileVoiceConnections MobileVoiceConnectionService
-	Messaging10dlc         Messaging10dlcService
-	// Speech to text command operations
-	SpeechToText            SpeechToTextService
+	MobileVoiceConnections  MobileVoiceConnectionService
+	Messaging10dlc          Messaging10dlcService
 	Organizations           OrganizationService
 	AlphanumericSenderIDs   AlphanumericSenderIDService
 	MessagingProfileMetrics MessagingProfileMetricService
@@ -490,7 +488,6 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.MobilePhoneNumbers = NewMobilePhoneNumberService(opts...)
 	r.MobileVoiceConnections = NewMobileVoiceConnectionService(opts...)
 	r.Messaging10dlc = NewMessaging10dlcService(opts...)
-	r.SpeechToText = NewSpeechToTextService(opts...)
 	r.Organizations = NewOrganizationService(opts...)
 	r.AlphanumericSenderIDs = NewAlphanumericSenderIDService(opts...)
 	r.MessagingProfileMetrics = NewMessagingProfileMetricService(opts...)
