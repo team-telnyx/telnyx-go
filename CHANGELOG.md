@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.43.0 (2026-03-05)
+
+Full Changelog: [v4.42.0...v4.43.0](https://github.com/team-telnyx/telnyx-go/compare/v4.42.0...v4.43.0)
+
+### Features
+
+* Changing a tag for filebased STT endpoint ([ba25f80](https://github.com/team-telnyx/telnyx-go/commit/ba25f8051f3c296c15d23ec7c4ab204d3e589d49))
+
+
+### Documentation
+
+* **messaging:** Add wait_seconds to message response schemas ([0145fd3](https://github.com/team-telnyx/telnyx-go/commit/0145fd32934dddd7df16360b7cd61042fa5a1d72))
+
 ## 4.42.0 (2026-03-05)
 
 Full Changelog: [v4.41.0...v4.42.0](https://github.com/team-telnyx/telnyx-go/compare/v4.41.0...v4.42.0)
