@@ -1,5 +1,24 @@
 # Changelog
 
+## 4.42.0 (2026-03-05)
+
+Full Changelog: [v4.41.0...v4.42.0](https://github.com/team-telnyx/telnyx-go/compare/v4.41.0...v4.42.0)
+
+### Features
+
+* **api:** manual updates ([55dd97a](https://github.com/team-telnyx/telnyx-go/commit/55dd97aeaaf1a2cf266b2214d983dcce6e30d0e7))
+* **api:** manual updates ([7f276c7](https://github.com/team-telnyx/telnyx-go/commit/7f276c75ab6c935ef331006edc90e179d7c56ba2))
+* **api:** manual updates ([50f631d](https://github.com/team-telnyx/telnyx-go/commit/50f631ddce3328ed5ae963f929d87dc03576b65d))
+* **api:** manual updates ([46a26ed](https://github.com/team-telnyx/telnyx-go/commit/46a26ed340f5cb1a50ef75bd3c0880fff1bd1b2b))
+* **api:** manual updates ([090607f](https://github.com/team-telnyx/telnyx-go/commit/090607fe5a6f4b9de15c377ae09e56425fba157f))
+* **api:** manual updates ([6953d48](https://github.com/team-telnyx/telnyx-go/commit/6953d48daf8d0f062578bdc69167040a3ef55d56))
+* **stt:** add WebSocket event schemas for Stainless SDK generation ([30858ac](https://github.com/team-telnyx/telnyx-go/commit/30858ac548922104708e0e6f4ac2c7f5311e6610))
+
+
+### Bug Fixes
+
+* fix request delays for retrying to be more respectful of high requested delays ([07c4cec](https://github.com/team-telnyx/telnyx-go/commit/07c4cecfd18d885b47a8ce44d4dd0af2d0fc37a0))
+
 ## 4.41.0 (2026-03-04)
 
 Full Changelog: [v4.40.0...v4.41.0](https://github.com/team-telnyx/telnyx-go/compare/v4.40.0...v4.41.0)
