@@ -123,6 +123,10 @@ type MessageRcSendResponseData struct {
 	RecordType         string                        `json:"record_type"`
 	To                 []RcsToItem                   `json:"to"`
 	Type               string                        `json:"type"`
+	// Seconds the message is queued due to rate limiting before being sent to the
+	// carrier. Represents the maximum wait across all applicable rate limits (account,
+	// carrier, campaign). 0.0 = no queuing delay.
+	WaitSeconds float64 `json:"wait_seconds" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -136,6 +140,7 @@ type MessageRcSendResponseData struct {
 		RecordType         respjson.Field
 		To                 respjson.Field
 		Type               respjson.Field
+		WaitSeconds        respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`

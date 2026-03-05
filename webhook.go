@@ -7147,8 +7147,10 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	Text                  string    `json:"text"`
 	Type                  string    `json:"type"`
 	ValidUntil            time.Time `json:"valid_until"`
-	WebhookFailoverURL    string    `json:"webhook_failover_url"`
-	WebhookURL            string    `json:"webhook_url"`
+	// This field is from variant [OutboundMessagePayload].
+	WaitSeconds        float64 `json:"wait_seconds"`
+	WebhookFailoverURL string  `json:"webhook_failover_url"`
+	WebhookURL         string  `json:"webhook_url"`
 	// This field is from variant [FaxDeliveredDataPayload].
 	CallDurationSecs int64  `json:"call_duration_secs"`
 	FaxID            string `json:"fax_id"`
@@ -7266,6 +7268,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		Text                     respjson.Field
 		Type                     respjson.Field
 		ValidUntil               respjson.Field
+		WaitSeconds              respjson.Field
 		WebhookFailoverURL       respjson.Field
 		WebhookURL               respjson.Field
 		CallDurationSecs         respjson.Field
@@ -8254,8 +8257,10 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	Text                  string    `json:"text"`
 	Type                  string    `json:"type"`
 	ValidUntil            time.Time `json:"valid_until"`
-	WebhookFailoverURL    string    `json:"webhook_failover_url"`
-	WebhookURL            string    `json:"webhook_url"`
+	// This field is from variant [OutboundMessagePayload].
+	WaitSeconds        float64 `json:"wait_seconds"`
+	WebhookFailoverURL string  `json:"webhook_failover_url"`
+	WebhookURL         string  `json:"webhook_url"`
 	// This field is from variant [FaxDeliveredDataPayload].
 	CallDurationSecs int64  `json:"call_duration_secs"`
 	FaxID            string `json:"fax_id"`
@@ -8373,6 +8378,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		Text                     respjson.Field
 		Type                     respjson.Field
 		ValidUntil               respjson.Field
+		WaitSeconds              respjson.Field
 		WebhookFailoverURL       respjson.Field
 		WebhookURL               respjson.Field
 		CallDurationSecs         respjson.Field
