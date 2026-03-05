@@ -860,10 +860,10 @@ func (r MessagingProfileGetMetricsParams) URLQuery() (v url.Values, err error) {
 type MessagingProfileGetMetricsParamsTimeFrame string
 
 const (
-	MessagingProfileGetMetricsParamsTimeFrame_1H  MessagingProfileGetMetricsParamsTimeFrame = "1h"
-	MessagingProfileGetMetricsParamsTimeFrame_3H  MessagingProfileGetMetricsParamsTimeFrame = "3h"
-	MessagingProfileGetMetricsParamsTimeFrame_24H MessagingProfileGetMetricsParamsTimeFrame = "24h"
-	MessagingProfileGetMetricsParamsTimeFrame_3D  MessagingProfileGetMetricsParamsTimeFrame = "3d"
-	MessagingProfileGetMetricsParamsTimeFrame_7D  MessagingProfileGetMetricsParamsTimeFrame = "7d"
-	MessagingProfileGetMetricsParamsTimeFrame_30D MessagingProfileGetMetricsParamsTimeFrame = "30d"
+	MessagingProfileGetMetricsParamsTimeFrameTimeFrame1H  MessagingProfileGetMetricsParamsTimeFrame = "1h"
+	MessagingProfileGetMetricsParamsTimeFrameTimeFrame3H  MessagingProfileGetMetricsParamsTimeFrame = "3h"
+	MessagingProfileGetMetricsParamsTimeFrameTimeFrame24H MessagingProfileGetMetricsParamsTimeFrame = "24h"
+	MessagingProfileGetMetricsParamsTimeFrameTimeFrame3D  MessagingProfileGetMetricsParamsTimeFrame = "3d"
+	MessagingProfileGetMetricsParamsTimeFrameTimeFrame7D  MessagingProfileGetMetricsParamsTimeFrame = "7d"
+	MessagingProfileGetMetricsParamsTimeFrameTimeFrame30D MessagingProfileGetMetricsParamsTimeFrame = "30d"
 )
