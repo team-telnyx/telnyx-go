@@ -26,8 +26,7 @@ type AIService struct {
 	Options []option.RequestOption
 	// Configure AI assistant specifications
 	Assistants AIAssistantService
-	// Turn audio into text or text into audio.
-	Audio AIAudioService
+	Audio      AIAudioService
 	// Generate text with LLMs
 	Chat AIChatService
 	// Identify common themes and patterns in your embedded documents
