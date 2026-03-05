@@ -262,6 +262,10 @@ type OutboundMessagePayload struct {
 	// marked as 'sending_failed'. Once the message moves out of the queue, this field
 	// will be nulled
 	ValidUntil time.Time `json:"valid_until" api:"nullable" format:"date-time"`
+	// Seconds the message is queued due to rate limiting before being sent to the
+	// carrier. Represents the maximum wait across all applicable rate limits (account,
+	// carrier, campaign). 0.0 = no queuing delay.
+	WaitSeconds float64 `json:"wait_seconds" api:"nullable"`
 	// The failover URL where webhooks related to this message will be sent if sending
 	// to the primary URL fails.
 	WebhookFailoverURL string `json:"webhook_failover_url" api:"nullable" format:"url"`
@@ -295,6 +299,7 @@ type OutboundMessagePayload struct {
 		To                    respjson.Field
 		Type                  respjson.Field
 		ValidUntil            respjson.Field
+		WaitSeconds           respjson.Field
 		WebhookFailoverURL    respjson.Field
 		WebhookURL            respjson.Field
 		ExtraFields           map[string]respjson.Field
@@ -2493,11 +2498,13 @@ type MessageGetResponseDataUnion struct {
 	Text                  string   `json:"text"`
 	// This field is a union of [[]OutboundMessagePayloadTo],
 	// [[]shared.InboundMessagePayloadTo]
-	To                 MessageGetResponseDataUnionTo `json:"to"`
-	Type               string                        `json:"type"`
-	ValidUntil         time.Time                     `json:"valid_until"`
-	WebhookFailoverURL string                        `json:"webhook_failover_url"`
-	WebhookURL         string                        `json:"webhook_url"`
+	To         MessageGetResponseDataUnionTo `json:"to"`
+	Type       string                        `json:"type"`
+	ValidUntil time.Time                     `json:"valid_until"`
+	// This field is from variant [OutboundMessagePayload].
+	WaitSeconds        float64 `json:"wait_seconds"`
+	WebhookFailoverURL string  `json:"webhook_failover_url"`
+	WebhookURL         string  `json:"webhook_url"`
 	JSON               struct {
 		ID                    respjson.Field
 		Cc                    respjson.Field
@@ -2525,6 +2532,7 @@ type MessageGetResponseDataUnion struct {
 		To                    respjson.Field
 		Type                  respjson.Field
 		ValidUntil            respjson.Field
+		WaitSeconds           respjson.Field
 		WebhookFailoverURL    respjson.Field
 		WebhookURL            respjson.Field
 		raw                   string
@@ -3232,6 +3240,10 @@ type MessageSendWhatsappResponseData struct {
 	RecordType         string                              `json:"record_type"`
 	To                 []RcsToItem                         `json:"to"`
 	Type               string                              `json:"type"`
+	// Seconds the message is queued due to rate limiting before being sent to the
+	// carrier. Represents the maximum wait across all applicable rate limits (account,
+	// carrier, campaign). 0.0 = no queuing delay.
+	WaitSeconds float64 `json:"wait_seconds" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -3245,6 +3257,7 @@ type MessageSendWhatsappResponseData struct {
 		RecordType         respjson.Field
 		To                 respjson.Field
 		Type               respjson.Field
+		WaitSeconds        respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
