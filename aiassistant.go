@@ -41,6 +41,8 @@ type AIAssistantService struct {
 	Tools AIAssistantToolService
 	// Configure AI assistant specifications
 	Versions AIAssistantVersionService
+	// Configure AI assistant specifications
+	Tags AIAssistantTagService
 }
 
 // NewAIAssistantService generates a new service that applies the given options to
@@ -54,6 +56,7 @@ func NewAIAssistantService(opts ...option.RequestOption) (r AIAssistantService) 
 	r.ScheduledEvents = NewAIAssistantScheduledEventService(opts...)
 	r.Tools = NewAIAssistantToolService(opts...)
 	r.Versions = NewAIAssistantVersionService(opts...)
+	r.Tags = NewAIAssistantTagService(opts...)
 	return
 }
 
