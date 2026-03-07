@@ -30,7 +30,7 @@ func TestAIAudioTranscribeWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.AI.Audio.Transcribe(context.TODO(), telnyx.AIAudioTranscribeParams{
 		Model:    telnyx.AIAudioTranscribeParamsModelDistilWhisperDistilLargeV2,
-		File:     io.Reader(bytes.NewBuffer([]byte("some file contents"))),
+		File:     io.Reader(bytes.NewBuffer([]byte("Example data"))),
 		FileURL:  telnyx.String("https://example.com/file.mp3"),
 		Language: telnyx.String("en-US"),
 		ModelConfig: map[string]any{
