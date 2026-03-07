@@ -32,8 +32,8 @@ func TestStorageBucketSslCertificateNewWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"",
 		telnyx.StorageBucketSslCertificateNewParams{
-			Certificate: io.Reader(bytes.NewBuffer([]byte("some file contents"))),
-			PrivateKey:  io.Reader(bytes.NewBuffer([]byte("some file contents"))),
+			Certificate: io.Reader(bytes.NewBuffer([]byte("Example data"))),
+			PrivateKey:  io.Reader(bytes.NewBuffer([]byte("Example data"))),
 		},
 	)
 	if err != nil {

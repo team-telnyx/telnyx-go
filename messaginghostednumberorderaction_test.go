@@ -32,8 +32,8 @@ func TestMessagingHostedNumberOrderActionUploadFileWithOptionalParams(t *testing
 		context.TODO(),
 		"id",
 		telnyx.MessagingHostedNumberOrderActionUploadFileParams{
-			Bill: io.Reader(bytes.NewBuffer([]byte("some file contents"))),
-			Loa:  io.Reader(bytes.NewBuffer([]byte("some file contents"))),
+			Bill: io.Reader(bytes.NewBuffer([]byte("Example data"))),
+			Loa:  io.Reader(bytes.NewBuffer([]byte("Example data"))),
 		},
 	)
 	if err != nil {
