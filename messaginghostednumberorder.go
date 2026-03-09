@@ -257,7 +257,7 @@ type MessagingHostedNumberOrderNewVerificationCodesResponseData struct {
 	Error string `json:"error"`
 	// Type of verification method used
 	//
-	// Any of "sms", "call", "flashcall".
+	// Any of "sms", "call".
 	Type string `json:"type"`
 	// Unique identifier for the verification code
 	VerificationCodeID string `json:"verification_code_id" format:"uuid"`
@@ -383,7 +383,7 @@ func (r *MessagingHostedNumberOrderCheckEligibilityParams) UnmarshalJSON(data []
 
 type MessagingHostedNumberOrderNewVerificationCodesParams struct {
 	PhoneNumbers []string `json:"phone_numbers,omitzero" api:"required"`
-	// Any of "sms", "call", "flashcall".
+	// Any of "sms", "call".
 	VerificationMethod MessagingHostedNumberOrderNewVerificationCodesParamsVerificationMethod `json:"verification_method,omitzero" api:"required"`
 	paramObj
 }
@@ -399,9 +399,8 @@ func (r *MessagingHostedNumberOrderNewVerificationCodesParams) UnmarshalJSON(dat
 type MessagingHostedNumberOrderNewVerificationCodesParamsVerificationMethod string
 
 const (
-	MessagingHostedNumberOrderNewVerificationCodesParamsVerificationMethodSMS       MessagingHostedNumberOrderNewVerificationCodesParamsVerificationMethod = "sms"
-	MessagingHostedNumberOrderNewVerificationCodesParamsVerificationMethodCall      MessagingHostedNumberOrderNewVerificationCodesParamsVerificationMethod = "call"
-	MessagingHostedNumberOrderNewVerificationCodesParamsVerificationMethodFlashcall MessagingHostedNumberOrderNewVerificationCodesParamsVerificationMethod = "flashcall"
+	MessagingHostedNumberOrderNewVerificationCodesParamsVerificationMethodSMS  MessagingHostedNumberOrderNewVerificationCodesParamsVerificationMethod = "sms"
+	MessagingHostedNumberOrderNewVerificationCodesParamsVerificationMethodCall MessagingHostedNumberOrderNewVerificationCodesParamsVerificationMethod = "call"
 )
 
 type MessagingHostedNumberOrderValidateCodesParams struct {
