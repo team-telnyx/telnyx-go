@@ -51,7 +51,7 @@ func NewTextToSpeechService(opts ...option.RequestOption) (r TextToSpeechService
 // parameters.
 //
 // Supported providers: `aws`, `telnyx`, `azure`, `elevenlabs`, `minimax`, `rime`,
-// `resemble`.
+// `resemble`, `inworld`.
 func (r *TextToSpeechService) Generate(ctx context.Context, body TextToSpeechGenerateParams, opts ...option.RequestOption) (res *TextToSpeechGenerateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "text-to-speech/speech"
@@ -424,6 +424,8 @@ type TextToSpeechGenerateParams struct {
 	Azure TextToSpeechGenerateParamsAzure `json:"azure,omitzero"`
 	// ElevenLabs provider-specific parameters.
 	Elevenlabs TextToSpeechGenerateParamsElevenlabs `json:"elevenlabs,omitzero"`
+	// Inworld provider-specific parameters.
+	Inworld any `json:"inworld,omitzero"`
 	// Minimax provider-specific parameters.
 	Minimax TextToSpeechGenerateParamsMinimax `json:"minimax,omitzero"`
 	// Determines the response format. `binary_output` returns raw audio bytes,
@@ -433,7 +435,8 @@ type TextToSpeechGenerateParams struct {
 	OutputType TextToSpeechGenerateParamsOutputType `json:"output_type,omitzero"`
 	// TTS provider. Required unless `voice` is provided.
 	//
-	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "rime", "resemble".
+	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "rime", "resemble",
+	// "inworld".
 	Provider TextToSpeechGenerateParamsProvider `json:"provider,omitzero"`
 	// Resemble AI provider-specific parameters.
 	Resemble TextToSpeechGenerateParamsResemble `json:"resemble,omitzero"`
@@ -589,6 +592,7 @@ const (
 	TextToSpeechGenerateParamsProviderMinimax    TextToSpeechGenerateParamsProvider = "minimax"
 	TextToSpeechGenerateParamsProviderRime       TextToSpeechGenerateParamsProvider = "rime"
 	TextToSpeechGenerateParamsProviderResemble   TextToSpeechGenerateParamsProvider = "resemble"
+	TextToSpeechGenerateParamsProviderInworld    TextToSpeechGenerateParamsProvider = "inworld"
 )
 
 // Resemble AI provider-specific parameters.
@@ -665,7 +669,8 @@ type TextToSpeechListVoicesParams struct {
 	APIKey param.Opt[string] `query:"api_key,omitzero" json:"-"`
 	// Filter voices by provider. If omitted, voices from all providers are returned.
 	//
-	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "rime", "resemble".
+	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "rime", "resemble",
+	// "inworld".
 	Provider TextToSpeechListVoicesParamsProvider `query:"provider,omitzero" json:"-"`
 	paramObj
 }
@@ -690,4 +695,5 @@ const (
 	TextToSpeechListVoicesParamsProviderMinimax    TextToSpeechListVoicesParamsProvider = "minimax"
 	TextToSpeechListVoicesParamsProviderRime       TextToSpeechListVoicesParamsProvider = "rime"
 	TextToSpeechListVoicesParamsProviderResemble   TextToSpeechListVoicesParamsProvider = "resemble"
+	TextToSpeechListVoicesParamsProviderInworld    TextToSpeechListVoicesParamsProvider = "inworld"
 )

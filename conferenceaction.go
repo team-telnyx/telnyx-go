@@ -17,6 +17,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v4/shared"
+	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
 // Conference command operations
@@ -1205,6 +1206,8 @@ type ConferenceActionSpeakParams struct {
 	//   - **Resemble:** Use `Resemble.Turbo.<voice_id>` (e.g.,
 	//     `Resemble.Turbo.my_voice`). Only `Turbo` model is supported. Use
 	//     `voice_settings` to configure precision, sample_rate, and format.
+	//   - **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`,
+	//     `Inworld.Max.Oliver`). Supported models: `Mini`, `Max`.
 	//
 	// For service_level basic, you may define the gender of the speaker (male or
 	// female).
@@ -1307,13 +1310,14 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type ConferenceActionSpeakParamsVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam      `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam          `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam             `json:",omitzero,inline"`
-	OfMinimax    *shared.MinimaxVoiceSettingsParam  `json:",omitzero,inline"`
-	OfAzure      *shared.AzureVoiceSettingsParam    `json:",omitzero,inline"`
-	OfRime       *shared.RimeVoiceSettingsParam     `json:",omitzero,inline"`
-	OfResemble   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam                    `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam                        `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam                           `json:",omitzero,inline"`
+	OfMinimax    *shared.MinimaxVoiceSettingsParam                `json:",omitzero,inline"`
+	OfAzure      *shared.AzureVoiceSettingsParam                  `json:",omitzero,inline"`
+	OfRime       *shared.RimeVoiceSettingsParam                   `json:",omitzero,inline"`
+	OfResemble   *shared.ResembleVoiceSettingsParam               `json:",omitzero,inline"`
+	OfInworld    *ConferenceActionSpeakParamsVoiceSettingsInworld `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1324,7 +1328,8 @@ func (u ConferenceActionSpeakParamsVoiceSettingsUnion) MarshalJSON() ([]byte, er
 		u.OfMinimax,
 		u.OfAzure,
 		u.OfRime,
-		u.OfResemble)
+		u.OfResemble,
+		u.OfInworld)
 }
 func (u *ConferenceActionSpeakParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1345,6 +1350,8 @@ func (u *ConferenceActionSpeakParamsVoiceSettingsUnion) asAny() any {
 		return u.OfRime
 	} else if !param.IsOmitted(u.OfResemble) {
 		return u.OfResemble
+	} else if !param.IsOmitted(u.OfInworld) {
+		return u.OfInworld
 	}
 	return nil
 }
@@ -1453,6 +1460,8 @@ func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfResemble; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfInworld; vt != nil {
+		return (*string)(&vt.Type)
 	}
 	return nil
 }
@@ -1487,7 +1496,30 @@ func init() {
 		apijson.Discriminator[shared.AzureVoiceSettingsParam]("azure"),
 		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
 		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
+		apijson.Discriminator[ConferenceActionSpeakParamsVoiceSettingsInworld]("inworld"),
 	)
+}
+
+func NewConferenceActionSpeakParamsVoiceSettingsInworld() ConferenceActionSpeakParamsVoiceSettingsInworld {
+	return ConferenceActionSpeakParamsVoiceSettingsInworld{
+		Type: "inworld",
+	}
+}
+
+// This struct has a constant value, construct it with
+// [NewConferenceActionSpeakParamsVoiceSettingsInworld].
+type ConferenceActionSpeakParamsVoiceSettingsInworld struct {
+	// Voice settings provider type
+	Type constant.Inworld `json:"type" api:"required"`
+	paramObj
+}
+
+func (r ConferenceActionSpeakParamsVoiceSettingsInworld) MarshalJSON() (data []byte, err error) {
+	type shadow ConferenceActionSpeakParamsVoiceSettingsInworld
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ConferenceActionSpeakParamsVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type ConferenceActionStopParams struct {
