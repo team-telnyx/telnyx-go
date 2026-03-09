@@ -52,6 +52,7 @@ func TestTextToSpeechGenerateWithOptionalParams(t *testing.T) {
 				"foo": "bar",
 			},
 		},
+		Inworld:  map[string]any{},
 		Language: telnyx.String("language"),
 		Minimax: telnyx.TextToSpeechGenerateParamsMinimax{
 			LanguageBoost:  telnyx.String("language_boost"),

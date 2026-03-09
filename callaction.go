@@ -3366,6 +3366,8 @@ type CallActionGatherUsingAIParams struct {
 	//     for details. Check
 	//     [available voices](https://elevenlabs.io/docs/api-reference/get-voices).
 	//   - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>`
+	//   - **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`,
+	//     `Inworld.Max.Oliver`). Supported models: `Mini`, `Max`.
 	Voice param.Opt[string] `json:"voice,omitzero"`
 	// Assistant configuration including choice of LLM, custom instructions, and tools.
 	Assistant AssistantParam `json:"assistant,omitzero"`
@@ -3670,6 +3672,8 @@ type CallActionGatherUsingSpeakParams struct {
 	//   - **Resemble:** Use `Resemble.Turbo.<voice_id>` (e.g.,
 	//     `Resemble.Turbo.my_voice`). Only `Turbo` model is supported. Use
 	//     `voice_settings` to configure precision, sample_rate, and format.
+	//   - **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`,
+	//     `Inworld.Max.Oliver`). Supported models: `Mini`, `Max`.
 	//
 	// For service_level basic, you may define the gender of the speaker (male or
 	// female).
@@ -3791,13 +3795,14 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CallActionGatherUsingSpeakParamsVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam      `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam          `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam             `json:",omitzero,inline"`
-	OfMinimax    *shared.MinimaxVoiceSettingsParam  `json:",omitzero,inline"`
-	OfAzure      *shared.AzureVoiceSettingsParam    `json:",omitzero,inline"`
-	OfRime       *shared.RimeVoiceSettingsParam     `json:",omitzero,inline"`
-	OfResemble   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam                         `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam                             `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam                                `json:",omitzero,inline"`
+	OfMinimax    *shared.MinimaxVoiceSettingsParam                     `json:",omitzero,inline"`
+	OfAzure      *shared.AzureVoiceSettingsParam                       `json:",omitzero,inline"`
+	OfRime       *shared.RimeVoiceSettingsParam                        `json:",omitzero,inline"`
+	OfResemble   *shared.ResembleVoiceSettingsParam                    `json:",omitzero,inline"`
+	OfInworld    *CallActionGatherUsingSpeakParamsVoiceSettingsInworld `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -3808,7 +3813,8 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) MarshalJSON() ([]byt
 		u.OfMinimax,
 		u.OfAzure,
 		u.OfRime,
-		u.OfResemble)
+		u.OfResemble,
+		u.OfInworld)
 }
 func (u *CallActionGatherUsingSpeakParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -3829,6 +3835,8 @@ func (u *CallActionGatherUsingSpeakParamsVoiceSettingsUnion) asAny() any {
 		return u.OfRime
 	} else if !param.IsOmitted(u.OfResemble) {
 		return u.OfResemble
+	} else if !param.IsOmitted(u.OfInworld) {
+		return u.OfInworld
 	}
 	return nil
 }
@@ -3937,6 +3945,8 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfResemble; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfInworld; vt != nil {
+		return (*string)(&vt.Type)
 	}
 	return nil
 }
@@ -3971,7 +3981,30 @@ func init() {
 		apijson.Discriminator[shared.AzureVoiceSettingsParam]("azure"),
 		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
 		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
+		apijson.Discriminator[CallActionGatherUsingSpeakParamsVoiceSettingsInworld]("inworld"),
 	)
+}
+
+func NewCallActionGatherUsingSpeakParamsVoiceSettingsInworld() CallActionGatherUsingSpeakParamsVoiceSettingsInworld {
+	return CallActionGatherUsingSpeakParamsVoiceSettingsInworld{
+		Type: "inworld",
+	}
+}
+
+// This struct has a constant value, construct it with
+// [NewCallActionGatherUsingSpeakParamsVoiceSettingsInworld].
+type CallActionGatherUsingSpeakParamsVoiceSettingsInworld struct {
+	// Voice settings provider type
+	Type constant.Inworld `json:"type" api:"required"`
+	paramObj
+}
+
+func (r CallActionGatherUsingSpeakParamsVoiceSettingsInworld) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionGatherUsingSpeakParamsVoiceSettingsInworld
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionGatherUsingSpeakParamsVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type CallActionHangupParams struct {
@@ -4199,6 +4232,8 @@ type CallActionSpeakParams struct {
 	//   - **Resemble:** Use `Resemble.Turbo.<voice_id>` (e.g.,
 	//     `Resemble.Turbo.my_voice`). Only `Turbo` model is supported. Use
 	//     `voice_settings` to configure precision, sample_rate, and format.
+	//   - **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`,
+	//     `Inworld.Max.Oliver`). Supported models: `Mini`, `Max`.
 	//
 	// For service_level basic, you may define the gender of the speaker (male or
 	// female).
@@ -4319,13 +4354,14 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CallActionSpeakParamsVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam      `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam          `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam             `json:",omitzero,inline"`
-	OfMinimax    *shared.MinimaxVoiceSettingsParam  `json:",omitzero,inline"`
-	OfAzure      *shared.AzureVoiceSettingsParam    `json:",omitzero,inline"`
-	OfRime       *shared.RimeVoiceSettingsParam     `json:",omitzero,inline"`
-	OfResemble   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam              `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam                  `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam                     `json:",omitzero,inline"`
+	OfMinimax    *shared.MinimaxVoiceSettingsParam          `json:",omitzero,inline"`
+	OfAzure      *shared.AzureVoiceSettingsParam            `json:",omitzero,inline"`
+	OfRime       *shared.RimeVoiceSettingsParam             `json:",omitzero,inline"`
+	OfResemble   *shared.ResembleVoiceSettingsParam         `json:",omitzero,inline"`
+	OfInworld    *CallActionSpeakParamsVoiceSettingsInworld `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -4336,7 +4372,8 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) MarshalJSON() ([]byte, error) {
 		u.OfMinimax,
 		u.OfAzure,
 		u.OfRime,
-		u.OfResemble)
+		u.OfResemble,
+		u.OfInworld)
 }
 func (u *CallActionSpeakParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -4357,6 +4394,8 @@ func (u *CallActionSpeakParamsVoiceSettingsUnion) asAny() any {
 		return u.OfRime
 	} else if !param.IsOmitted(u.OfResemble) {
 		return u.OfResemble
+	} else if !param.IsOmitted(u.OfInworld) {
+		return u.OfInworld
 	}
 	return nil
 }
@@ -4465,6 +4504,8 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfResemble; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfInworld; vt != nil {
+		return (*string)(&vt.Type)
 	}
 	return nil
 }
@@ -4499,7 +4540,30 @@ func init() {
 		apijson.Discriminator[shared.AzureVoiceSettingsParam]("azure"),
 		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
 		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
+		apijson.Discriminator[CallActionSpeakParamsVoiceSettingsInworld]("inworld"),
 	)
+}
+
+func NewCallActionSpeakParamsVoiceSettingsInworld() CallActionSpeakParamsVoiceSettingsInworld {
+	return CallActionSpeakParamsVoiceSettingsInworld{
+		Type: "inworld",
+	}
+}
+
+// This struct has a constant value, construct it with
+// [NewCallActionSpeakParamsVoiceSettingsInworld].
+type CallActionSpeakParamsVoiceSettingsInworld struct {
+	// Voice settings provider type
+	Type constant.Inworld `json:"type" api:"required"`
+	paramObj
+}
+
+func (r CallActionSpeakParamsVoiceSettingsInworld) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionSpeakParamsVoiceSettingsInworld
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionSpeakParamsVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type CallActionStartAIAssistantParams struct {
@@ -4535,6 +4599,8 @@ type CallActionStartAIAssistantParams struct {
 	//     for details. Check
 	//     [available voices](https://elevenlabs.io/docs/api-reference/get-voices).
 	//   - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>`
+	//   - **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`,
+	//     `Inworld.Max.Oliver`). Supported models: `Mini`, `Max`.
 	Voice param.Opt[string] `json:"voice,omitzero"`
 	// AI Assistant configuration
 	Assistant CallActionStartAIAssistantParamsAssistant `json:"assistant,omitzero"`
