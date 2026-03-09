@@ -452,6 +452,9 @@ type CallDialParams struct {
 	// The list of comma-separated codecs in a preferred order for the forked media to
 	// be received.
 	PreferredCodecs param.Opt[string] `json:"preferred_codecs,omitzero"`
+	// Prevents bridging and hangs up the call if the target is already bridged.
+	// Disabled by default.
+	PreventDoubleBridge param.Opt[bool] `json:"prevent_double_bridge,omitzero"`
 	// The custom recording file name to be used instead of the default `call_leg_id`.
 	// Telnyx will still add a Unix timestamp suffix.
 	RecordCustomFileName param.Opt[string] `json:"record_custom_file_name,omitzero"`
