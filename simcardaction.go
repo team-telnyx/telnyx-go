@@ -218,62 +218,6 @@ func (r *SimCardActionService) ValidateRegistrationCodes(ctx context.Context, bo
 	return res, err
 }
 
-// This object represents a bulk SIM card action. It groups SIM card actions
-// created through a bulk endpoint under a single resource for further lookup.
-type BulkSimCardAction struct {
-	// Identifies the resource.
-	ID string `json:"id" format:"uuid"`
-	// The action type. It can be one of the following: <br/>
-	//
-	// <ul>
-	// <li><code>bulk_disable_voice</code> - disable voice for every SIM Card in a SIM Card Group.</li>
-	// <li><code>bulk_enable_voice</code> - enable voice for every SIM Card in a SIM Card Group.</li>
-	// <li><code>bulk_set_public_ips</code> - set a public IP for each specified SIM Card.</li>
-	// </ul>
-	//
-	// Any of "bulk_disable_voice", "bulk_enable_voice", "bulk_set_public_ips".
-	ActionType BulkSimCardActionActionType `json:"action_type"`
-	// ISO 8601 formatted date-time indicating when the resource was created.
-	CreatedAt  string `json:"created_at"`
-	RecordType string `json:"record_type"`
-	// A JSON object representation of the bulk action payload.
-	Settings map[string]any `json:"settings"`
-	// ISO 8601 formatted date-time indicating when the resource was updated.
-	UpdatedAt string `json:"updated_at"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		ActionType  respjson.Field
-		CreatedAt   respjson.Field
-		RecordType  respjson.Field
-		Settings    respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BulkSimCardAction) RawJSON() string { return r.JSON.raw }
-func (r *BulkSimCardAction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The action type. It can be one of the following: <br/>
-//
-// <ul>
-// <li><code>bulk_disable_voice</code> - disable voice for every SIM Card in a SIM Card Group.</li>
-// <li><code>bulk_enable_voice</code> - enable voice for every SIM Card in a SIM Card Group.</li>
-// <li><code>bulk_set_public_ips</code> - set a public IP for each specified SIM Card.</li>
-// </ul>
-type BulkSimCardActionActionType string
-
-const (
-	BulkSimCardActionActionTypeBulkDisableVoice BulkSimCardActionActionType = "bulk_disable_voice"
-	BulkSimCardActionActionTypeBulkEnableVoice  BulkSimCardActionActionType = "bulk_enable_voice"
-	BulkSimCardActionActionTypeBulkSetPublicIPs BulkSimCardActionActionType = "bulk_set_public_ips"
-)
-
 // This object represents a SIM card action. It allows tracking the current status
 // of an operation that impacts the SIM card.
 type SimCardAction struct {
@@ -386,7 +330,7 @@ func (r *SimCardActionGetResponse) UnmarshalJSON(data []byte) error {
 type SimCardActionBulkDisableVoiceResponse struct {
 	// This object represents a bulk SIM card action. It groups SIM card actions
 	// created through a bulk endpoint under a single resource for further lookup.
-	Data BulkSimCardAction `json:"data"`
+	Data SimCardActionBulkDisableVoiceResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -401,10 +345,51 @@ func (r *SimCardActionBulkDisableVoiceResponse) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// This object represents a bulk SIM card action. It groups SIM card actions
+// created through a bulk endpoint under a single resource for further lookup.
+type SimCardActionBulkDisableVoiceResponseData struct {
+	// Identifies the resource.
+	ID string `json:"id" format:"uuid"`
+	// The action type. It can be one of the following: <br/>
+	//
+	// <ul>
+	// <li><code>bulk_disable_voice</code> - disable voice for every SIM Card in a SIM Card Group.</li>
+	// <li><code>bulk_enable_voice</code> - enable voice for every SIM Card in a SIM Card Group.</li>
+	// <li><code>bulk_set_public_ips</code> - set a public IP for each specified SIM Card.</li>
+	// </ul>
+	//
+	// Any of "bulk_disable_voice", "bulk_enable_voice", "bulk_set_public_ips".
+	ActionType string `json:"action_type"`
+	// ISO 8601 formatted date-time indicating when the resource was created.
+	CreatedAt  string `json:"created_at"`
+	RecordType string `json:"record_type"`
+	// A JSON object representation of the bulk action payload.
+	Settings map[string]any `json:"settings"`
+	// ISO 8601 formatted date-time indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ActionType  respjson.Field
+		CreatedAt   respjson.Field
+		RecordType  respjson.Field
+		Settings    respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SimCardActionBulkDisableVoiceResponseData) RawJSON() string { return r.JSON.raw }
+func (r *SimCardActionBulkDisableVoiceResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type SimCardActionBulkEnableVoiceResponse struct {
 	// This object represents a bulk SIM card action. It groups SIM card actions
 	// created through a bulk endpoint under a single resource for further lookup.
-	Data BulkSimCardAction `json:"data"`
+	Data SimCardActionBulkEnableVoiceResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -419,10 +404,51 @@ func (r *SimCardActionBulkEnableVoiceResponse) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// This object represents a bulk SIM card action. It groups SIM card actions
+// created through a bulk endpoint under a single resource for further lookup.
+type SimCardActionBulkEnableVoiceResponseData struct {
+	// Identifies the resource.
+	ID string `json:"id" format:"uuid"`
+	// The action type. It can be one of the following: <br/>
+	//
+	// <ul>
+	// <li><code>bulk_disable_voice</code> - disable voice for every SIM Card in a SIM Card Group.</li>
+	// <li><code>bulk_enable_voice</code> - enable voice for every SIM Card in a SIM Card Group.</li>
+	// <li><code>bulk_set_public_ips</code> - set a public IP for each specified SIM Card.</li>
+	// </ul>
+	//
+	// Any of "bulk_disable_voice", "bulk_enable_voice", "bulk_set_public_ips".
+	ActionType string `json:"action_type"`
+	// ISO 8601 formatted date-time indicating when the resource was created.
+	CreatedAt  string `json:"created_at"`
+	RecordType string `json:"record_type"`
+	// A JSON object representation of the bulk action payload.
+	Settings map[string]any `json:"settings"`
+	// ISO 8601 formatted date-time indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ActionType  respjson.Field
+		CreatedAt   respjson.Field
+		RecordType  respjson.Field
+		Settings    respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SimCardActionBulkEnableVoiceResponseData) RawJSON() string { return r.JSON.raw }
+func (r *SimCardActionBulkEnableVoiceResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type SimCardActionBulkSetPublicIPsResponse struct {
 	// This object represents a bulk SIM card action. It groups SIM card actions
 	// created through a bulk endpoint under a single resource for further lookup.
-	Data BulkSimCardAction `json:"data"`
+	Data SimCardActionBulkSetPublicIPsResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -434,6 +460,47 @@ type SimCardActionBulkSetPublicIPsResponse struct {
 // Returns the unmodified JSON received from the API
 func (r SimCardActionBulkSetPublicIPsResponse) RawJSON() string { return r.JSON.raw }
 func (r *SimCardActionBulkSetPublicIPsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// This object represents a bulk SIM card action. It groups SIM card actions
+// created through a bulk endpoint under a single resource for further lookup.
+type SimCardActionBulkSetPublicIPsResponseData struct {
+	// Identifies the resource.
+	ID string `json:"id" format:"uuid"`
+	// The action type. It can be one of the following: <br/>
+	//
+	// <ul>
+	// <li><code>bulk_disable_voice</code> - disable voice for every SIM Card in a SIM Card Group.</li>
+	// <li><code>bulk_enable_voice</code> - enable voice for every SIM Card in a SIM Card Group.</li>
+	// <li><code>bulk_set_public_ips</code> - set a public IP for each specified SIM Card.</li>
+	// </ul>
+	//
+	// Any of "bulk_disable_voice", "bulk_enable_voice", "bulk_set_public_ips".
+	ActionType string `json:"action_type"`
+	// ISO 8601 formatted date-time indicating when the resource was created.
+	CreatedAt  string `json:"created_at"`
+	RecordType string `json:"record_type"`
+	// A JSON object representation of the bulk action payload.
+	Settings map[string]any `json:"settings"`
+	// ISO 8601 formatted date-time indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ActionType  respjson.Field
+		CreatedAt   respjson.Field
+		RecordType  respjson.Field
+		Settings    respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SimCardActionBulkSetPublicIPsResponseData) RawJSON() string { return r.JSON.raw }
+func (r *SimCardActionBulkSetPublicIPsResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
