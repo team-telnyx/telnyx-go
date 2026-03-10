@@ -1658,6 +1658,8 @@ type SimpleSimCard struct {
 	UpdatedAt string `json:"updated_at"`
 	// The version of the SIM card.
 	Version string `json:"version"`
+	// Indicates whether voice services are enabled for the SIM card.
+	VoiceEnabled bool `json:"voice_enabled"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                               respjson.Field
@@ -1679,6 +1681,7 @@ type SimpleSimCard struct {
 		Type                             respjson.Field
 		UpdatedAt                        respjson.Field
 		Version                          respjson.Field
+		VoiceEnabled                     respjson.Field
 		ExtraFields                      map[string]respjson.Field
 		raw                              string
 	} `json:"-"`

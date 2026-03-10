@@ -126,13 +126,15 @@ func (r *BulkSimCardActionGetResponse) UnmarshalJSON(data []byte) error {
 type BulkSimCardActionGetResponseData struct {
 	// Identifies the resource.
 	ID string `json:"id" format:"uuid"`
-	// The operation type. It can be one of the following: <br/>
+	// The action type. It can be one of the following: <br/>
 	//
 	// <ul>
-	// <li><code>bulk_set_public_ips</code> - set a public IP for each specified SIM card.</li>
+	// <li><code>bulk_disable_voice</code> - disable voice for every SIM Card in a SIM Card Group.</li>
+	// <li><code>bulk_enable_voice</code> - enable voice for every SIM Card in a SIM Card Group.</li>
+	// <li><code>bulk_set_public_ips</code> - set a public IP for each specified SIM Card.</li>
 	// </ul>
 	//
-	// Any of "bulk_set_public_ips".
+	// Any of "bulk_disable_voice", "bulk_enable_voice", "bulk_set_public_ips".
 	ActionType string `json:"action_type"`
 	// ISO 8601 formatted date-time indicating when the resource was created.
 	CreatedAt  string `json:"created_at"`
@@ -165,13 +167,15 @@ func (r *BulkSimCardActionGetResponseData) UnmarshalJSON(data []byte) error {
 type BulkSimCardActionListResponse struct {
 	// Identifies the resource.
 	ID string `json:"id" format:"uuid"`
-	// The operation type. It can be one of the following: <br/>
+	// The action type. It can be one of the following: <br/>
 	//
 	// <ul>
-	// <li><code>bulk_set_public_ips</code> - set a public IP for each specified SIM card.</li>
+	// <li><code>bulk_disable_voice</code> - disable voice for every SIM Card in a SIM Card Group.</li>
+	// <li><code>bulk_enable_voice</code> - enable voice for every SIM Card in a SIM Card Group.</li>
+	// <li><code>bulk_set_public_ips</code> - set a public IP for each specified SIM Card.</li>
 	// </ul>
 	//
-	// Any of "bulk_set_public_ips".
+	// Any of "bulk_disable_voice", "bulk_enable_voice", "bulk_set_public_ips".
 	ActionType BulkSimCardActionListResponseActionType `json:"action_type"`
 	// ISO 8601 formatted date-time indicating when the resource was created.
 	CreatedAt  string `json:"created_at"`
@@ -201,14 +205,18 @@ func (r *BulkSimCardActionListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The operation type. It can be one of the following: <br/>
+// The action type. It can be one of the following: <br/>
 //
 // <ul>
-// <li><code>bulk_set_public_ips</code> - set a public IP for each specified SIM card.</li>
+// <li><code>bulk_disable_voice</code> - disable voice for every SIM Card in a SIM Card Group.</li>
+// <li><code>bulk_enable_voice</code> - enable voice for every SIM Card in a SIM Card Group.</li>
+// <li><code>bulk_set_public_ips</code> - set a public IP for each specified SIM Card.</li>
 // </ul>
 type BulkSimCardActionListResponseActionType string
 
 const (
+	BulkSimCardActionListResponseActionTypeBulkDisableVoice BulkSimCardActionListResponseActionType = "bulk_disable_voice"
+	BulkSimCardActionListResponseActionTypeBulkEnableVoice  BulkSimCardActionListResponseActionType = "bulk_enable_voice"
 	BulkSimCardActionListResponseActionTypeBulkSetPublicIPs BulkSimCardActionListResponseActionType = "bulk_set_public_ips"
 )
 
