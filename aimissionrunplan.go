@@ -41,15 +41,15 @@ func (r *AIMissionRunPlanService) New(ctx context.Context, runID string, params 
 	opts = slices.Concat(r.Options, opts)
 	if params.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	if runID == "" {
 		err = errors.New("missing required run_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/runs/%s/plan", params.MissionID, runID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Get the plan (all steps) for a run
@@ -57,15 +57,15 @@ func (r *AIMissionRunPlanService) Get(ctx context.Context, runID string, query A
 	opts = slices.Concat(r.Options, opts)
 	if query.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	if runID == "" {
 		err = errors.New("missing required run_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/runs/%s/plan", query.MissionID, runID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Add one or more steps to an existing plan
@@ -73,15 +73,15 @@ func (r *AIMissionRunPlanService) AddStepsToPlan(ctx context.Context, runID stri
 	opts = slices.Concat(r.Options, opts)
 	if params.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	if runID == "" {
 		err = errors.New("missing required run_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/runs/%s/plan/steps", params.MissionID, runID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Get details of a specific plan step
@@ -89,19 +89,19 @@ func (r *AIMissionRunPlanService) GetStepDetails(ctx context.Context, stepID str
 	opts = slices.Concat(r.Options, opts)
 	if query.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	if query.RunID == "" {
 		err = errors.New("missing required run_id parameter")
-		return
+		return nil, err
 	}
 	if stepID == "" {
 		err = errors.New("missing required step_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/runs/%s/plan/steps/%s", query.MissionID, query.RunID, stepID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update the status of a plan step
@@ -109,19 +109,19 @@ func (r *AIMissionRunPlanService) UpdateStep(ctx context.Context, stepID string,
 	opts = slices.Concat(r.Options, opts)
 	if params.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	if params.RunID == "" {
 		err = errors.New("missing required run_id parameter")
-		return
+		return nil, err
 	}
 	if stepID == "" {
 		err = errors.New("missing required step_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/runs/%s/plan/steps/%s", params.MissionID, params.RunID, stepID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type PlanStepData struct {

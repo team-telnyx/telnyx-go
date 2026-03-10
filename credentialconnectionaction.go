@@ -43,11 +43,11 @@ func (r *CredentialConnectionActionService) CheckRegistrationStatus(ctx context.
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("credential_connections/%s/actions/check_registration_status", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type CredentialConnectionActionCheckRegistrationStatusResponse struct {

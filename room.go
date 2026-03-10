@@ -52,7 +52,7 @@ func (r *RoomService) New(ctx context.Context, body RoomNewParams, opts ...optio
 	opts = slices.Concat(r.Options, opts)
 	path := "rooms"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // View a room.
@@ -60,11 +60,11 @@ func (r *RoomService) Get(ctx context.Context, roomID string, query RoomGetParam
 	opts = slices.Concat(r.Options, opts)
 	if roomID == "" {
 		err = errors.New("missing required room_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("rooms/%s", roomID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Synchronously update a Room.
@@ -72,11 +72,11 @@ func (r *RoomService) Update(ctx context.Context, roomID string, body RoomUpdate
 	opts = slices.Concat(r.Options, opts)
 	if roomID == "" {
 		err = errors.New("missing required room_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("rooms/%s", roomID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // View a list of rooms.
@@ -110,11 +110,11 @@ func (r *RoomService) Delete(ctx context.Context, roomID string, opts ...option.
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if roomID == "" {
 		err = errors.New("missing required room_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("rooms/%s", roomID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type Room struct {

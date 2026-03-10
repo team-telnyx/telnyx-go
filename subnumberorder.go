@@ -43,11 +43,11 @@ func (r *SubNumberOrderService) Get(ctx context.Context, subNumberOrderID string
 	opts = slices.Concat(r.Options, opts)
 	if subNumberOrderID == "" {
 		err = errors.New("missing required sub_number_order_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sub_number_orders/%s", subNumberOrderID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a sub number order.
@@ -55,11 +55,11 @@ func (r *SubNumberOrderService) Update(ctx context.Context, subNumberOrderID str
 	opts = slices.Concat(r.Options, opts)
 	if subNumberOrderID == "" {
 		err = errors.New("missing required sub_number_order_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sub_number_orders/%s", subNumberOrderID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a paginated list of sub number orders.
@@ -67,7 +67,7 @@ func (r *SubNumberOrderService) List(ctx context.Context, query SubNumberOrderLi
 	opts = slices.Concat(r.Options, opts)
 	path := "sub_number_orders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Allows you to cancel a sub number order in 'pending' status.
@@ -75,11 +75,11 @@ func (r *SubNumberOrderService) Cancel(ctx context.Context, subNumberOrderID str
 	opts = slices.Concat(r.Options, opts)
 	if subNumberOrderID == "" {
 		err = errors.New("missing required sub_number_order_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sub_number_orders/%s/cancel", subNumberOrderID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update requirement group for a sub number order
@@ -87,11 +87,11 @@ func (r *SubNumberOrderService) UpdateRequirementGroup(ctx context.Context, id s
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sub_number_orders/%s/requirement_group", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type SubNumberOrder struct {

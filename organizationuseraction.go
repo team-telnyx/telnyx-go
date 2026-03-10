@@ -41,11 +41,11 @@ func (r *OrganizationUserActionService) Remove(ctx context.Context, id string, o
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("organizations/users/%s/actions/remove", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type OrganizationUserActionRemoveResponse struct {

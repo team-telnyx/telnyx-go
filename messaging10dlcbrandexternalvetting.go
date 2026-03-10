@@ -43,11 +43,11 @@ func (r *Messaging10dlcBrandExternalVettingService) List(ctx context.Context, br
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/brand/%s/externalVetting", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // This operation can be used to import an external vetting record from a
@@ -58,11 +58,11 @@ func (r *Messaging10dlcBrandExternalVettingService) Imports(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/brand/%s/externalVetting", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Order new external vetting for a brand
@@ -70,11 +70,11 @@ func (r *Messaging10dlcBrandExternalVettingService) Order(ctx context.Context, b
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/brand/%s/externalVetting", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type Messaging10dlcBrandExternalVettingListResponse struct {

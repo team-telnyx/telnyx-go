@@ -43,7 +43,7 @@ func (r *AlphanumericSenderIDService) New(ctx context.Context, body Alphanumeric
 	opts = slices.Concat(r.Options, opts)
 	path := "alphanumeric_sender_ids"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a specific alphanumeric sender ID.
@@ -51,11 +51,11 @@ func (r *AlphanumericSenderIDService) Get(ctx context.Context, id string, opts .
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("alphanumeric_sender_ids/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List all alphanumeric sender IDs for the authenticated user.
@@ -86,11 +86,11 @@ func (r *AlphanumericSenderIDService) Delete(ctx context.Context, id string, opt
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("alphanumeric_sender_ids/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AlphanumericSenderID struct {

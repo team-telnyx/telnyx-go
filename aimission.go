@@ -52,7 +52,7 @@ func (r *AIMissionService) New(ctx context.Context, body AIMissionNewParams, opt
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/missions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a mission by ID (includes tools, knowledge_bases, mcp_servers)
@@ -60,11 +60,11 @@ func (r *AIMissionService) Get(ctx context.Context, missionID string, opts ...op
 	opts = slices.Concat(r.Options, opts)
 	if missionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s", missionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List all missions for the organization
@@ -95,11 +95,11 @@ func (r *AIMissionService) CloneMission(ctx context.Context, missionID string, o
 	opts = slices.Concat(r.Options, opts)
 	if missionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/clone", missionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a mission
@@ -108,11 +108,11 @@ func (r *AIMissionService) DeleteMission(ctx context.Context, missionID string, 
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if missionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("ai/missions/%s", missionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // List recent events across all missions
@@ -143,11 +143,11 @@ func (r *AIMissionService) UpdateMission(ctx context.Context, missionID string, 
 	opts = slices.Concat(r.Options, opts)
 	if missionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s", missionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type MissionData struct {

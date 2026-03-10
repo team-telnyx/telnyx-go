@@ -44,7 +44,7 @@ func (r *ActionRegisterService) New(ctx context.Context, body ActionRegisterNewP
 	opts = slices.Concat(r.Options, opts)
 	path := "actions/register/sim_cards"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ActionRegisterNewResponse struct {

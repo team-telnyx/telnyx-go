@@ -42,7 +42,7 @@ func (r *AIAssistantTagService) List(ctx context.Context, opts ...option.Request
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants/tags"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Add Assistant Tag
@@ -50,11 +50,11 @@ func (r *AIAssistantTagService) Add(ctx context.Context, assistantID string, bod
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/tags", assistantID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Remove Assistant Tag
@@ -62,15 +62,15 @@ func (r *AIAssistantTagService) Remove(ctx context.Context, tag string, body AIA
 	opts = slices.Concat(r.Options, opts)
 	if body.AssistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return nil, err
 	}
 	if tag == "" {
 		err = errors.New("missing required tag parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/tags/%s", body.AssistantID, tag)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AIAssistantTagListResponse struct {

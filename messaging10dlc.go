@@ -56,7 +56,7 @@ func (r *Messaging10dlcService) GetEnum(ctx context.Context, endpoint Messaging1
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("10dlc/enum/%v", endpoint)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Messaging10dlcGetEnumResponseUnion contains all possible properties and values

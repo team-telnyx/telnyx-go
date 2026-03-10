@@ -47,7 +47,7 @@ func (r *AIConversationInsightService) New(ctx context.Context, body AIConversat
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/conversations/insights"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get insight by ID
@@ -55,11 +55,11 @@ func (r *AIConversationInsightService) Get(ctx context.Context, insightID string
 	opts = slices.Concat(r.Options, opts)
 	if insightID == "" {
 		err = errors.New("missing required insight_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/conversations/insights/%s", insightID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an insight template
@@ -67,11 +67,11 @@ func (r *AIConversationInsightService) Update(ctx context.Context, insightID str
 	opts = slices.Concat(r.Options, opts)
 	if insightID == "" {
 		err = errors.New("missing required insight_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/conversations/insights/%s", insightID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get all insights
@@ -103,11 +103,11 @@ func (r *AIConversationInsightService) Delete(ctx context.Context, insightID str
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if insightID == "" {
 		err = errors.New("missing required insight_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("ai/conversations/insights/%s", insightID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type InsightTemplate struct {

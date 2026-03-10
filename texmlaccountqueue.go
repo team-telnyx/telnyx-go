@@ -45,11 +45,11 @@ func (r *TexmlAccountQueueService) New(ctx context.Context, accountSid string, b
 	opts = slices.Concat(r.Options, opts)
 	if accountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Queues", accountSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a queue resource.
@@ -57,15 +57,15 @@ func (r *TexmlAccountQueueService) Get(ctx context.Context, queueSid string, que
 	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	if queueSid == "" {
 		err = errors.New("missing required queue_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Queues/%s", query.AccountSid, queueSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a queue resource.
@@ -73,15 +73,15 @@ func (r *TexmlAccountQueueService) Update(ctx context.Context, queueSid string, 
 	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	if queueSid == "" {
 		err = errors.New("missing required queue_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Queues/%s", params.AccountSid, queueSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists queue resources.
@@ -91,7 +91,7 @@ func (r *TexmlAccountQueueService) List(ctx context.Context, accountSid string, 
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if accountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Queues", accountSid)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -117,15 +117,15 @@ func (r *TexmlAccountQueueService) Delete(ctx context.Context, queueSid string, 
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return err
 	}
 	if queueSid == "" {
 		err = errors.New("missing required queue_sid parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Queues/%s", body.AccountSid, queueSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type TexmlAccountQueueNewResponse struct {

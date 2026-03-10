@@ -48,11 +48,11 @@ func (r *ChannelZoneService) Update(ctx context.Context, channelZoneID string, b
 	opts = slices.Concat(r.Options, opts)
 	if channelZoneID == "" {
 		err = errors.New("missing required channel_zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("channel_zones/%s", channelZoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the non-US voice channels for your account. voice channels allow you to

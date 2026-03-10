@@ -43,7 +43,7 @@ func (r *ChargesSummaryService) Get(ctx context.Context, query ChargesSummaryGet
 	opts = slices.Concat(r.Options, opts)
 	path := "charges_summary"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type MonthDetail struct {

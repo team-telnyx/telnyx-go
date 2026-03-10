@@ -48,11 +48,11 @@ func (r *MessagingProfileAutorespConfigService) New(ctx context.Context, profile
 	opts = slices.Concat(r.Options, opts)
 	if profileID == "" {
 		err = errors.New("missing required profile_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_profiles/%s/autoresp_configs", profileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get Auto-Response Setting
@@ -60,15 +60,15 @@ func (r *MessagingProfileAutorespConfigService) Get(ctx context.Context, autores
 	opts = slices.Concat(r.Options, opts)
 	if query.ProfileID == "" {
 		err = errors.New("missing required profile_id parameter")
-		return
+		return nil, err
 	}
 	if autorespCfgID == "" {
 		err = errors.New("missing required autoresp_cfg_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_profiles/%s/autoresp_configs/%s", query.ProfileID, autorespCfgID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update Auto-Response Setting
@@ -76,15 +76,15 @@ func (r *MessagingProfileAutorespConfigService) Update(ctx context.Context, auto
 	opts = slices.Concat(r.Options, opts)
 	if params.ProfileID == "" {
 		err = errors.New("missing required profile_id parameter")
-		return
+		return nil, err
 	}
 	if autorespCfgID == "" {
 		err = errors.New("missing required autoresp_cfg_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_profiles/%s/autoresp_configs/%s", params.ProfileID, autorespCfgID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // List Auto-Response Settings
@@ -92,11 +92,11 @@ func (r *MessagingProfileAutorespConfigService) List(ctx context.Context, profil
 	opts = slices.Concat(r.Options, opts)
 	if profileID == "" {
 		err = errors.New("missing required profile_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_profiles/%s/autoresp_configs", profileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete Auto-Response Setting
@@ -104,15 +104,15 @@ func (r *MessagingProfileAutorespConfigService) Delete(ctx context.Context, auto
 	opts = slices.Concat(r.Options, opts)
 	if body.ProfileID == "" {
 		err = errors.New("missing required profile_id parameter")
-		return
+		return nil, err
 	}
 	if autorespCfgID == "" {
 		err = errors.New("missing required autoresp_cfg_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_profiles/%s/autoresp_configs/%s", body.ProfileID, autorespCfgID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AutoRespConfig struct {

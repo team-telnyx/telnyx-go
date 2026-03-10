@@ -47,11 +47,11 @@ func (r *RoomParticipantService) Get(ctx context.Context, roomParticipantID stri
 	opts = slices.Concat(r.Options, opts)
 	if roomParticipantID == "" {
 		err = errors.New("missing required room_participant_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("room_participants/%s", roomParticipantID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // View a list of room participants.

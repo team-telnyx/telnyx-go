@@ -43,7 +43,7 @@ func (r *SessionAnalysisMetadataService) Get(ctx context.Context, opts ...option
 	opts = slices.Concat(r.Options, opts)
 	path := "session_analysis/metadata"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns detailed metadata for a specific record type, including relationships
@@ -52,11 +52,11 @@ func (r *SessionAnalysisMetadataService) GetRecordType(ctx context.Context, reco
 	opts = slices.Concat(r.Options, opts)
 	if recordType == "" {
 		err = errors.New("missing required record_type parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("session_analysis/metadata/%s", recordType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type ChildRelationshipInfo struct {

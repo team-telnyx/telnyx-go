@@ -46,11 +46,11 @@ func (r *AIMissionRunEventService) List(ctx context.Context, runID string, param
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if params.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	if runID == "" {
 		err = errors.New("missing required run_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/runs/%s/events", params.MissionID, runID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
@@ -75,19 +75,19 @@ func (r *AIMissionRunEventService) GetEventDetails(ctx context.Context, eventID 
 	opts = slices.Concat(r.Options, opts)
 	if query.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	if query.RunID == "" {
 		err = errors.New("missing required run_id parameter")
-		return
+		return nil, err
 	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/runs/%s/events/%s", query.MissionID, query.RunID, eventID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Log an event for a run
@@ -95,15 +95,15 @@ func (r *AIMissionRunEventService) Log(ctx context.Context, runID string, params
 	opts = slices.Concat(r.Options, opts)
 	if params.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	if runID == "" {
 		err = errors.New("missing required run_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/runs/%s/events", params.MissionID, runID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type EventData struct {

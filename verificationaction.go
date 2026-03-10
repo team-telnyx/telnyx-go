@@ -41,11 +41,11 @@ func (r *VerificationActionService) Verify(ctx context.Context, verificationID s
 	opts = slices.Concat(r.Options, opts)
 	if verificationID == "" {
 		err = errors.New("missing required verification_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("verifications/%s/actions/verify", verificationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type VerificationActionVerifyParams struct {

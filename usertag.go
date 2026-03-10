@@ -42,7 +42,7 @@ func (r *UserTagService) List(ctx context.Context, query UserTagListParams, opts
 	opts = slices.Concat(r.Options, opts)
 	path := "user_tags"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type UserTagListResponse struct {

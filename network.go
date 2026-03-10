@@ -50,7 +50,7 @@ func (r *NetworkService) New(ctx context.Context, body NetworkNewParams, opts ..
 	opts = slices.Concat(r.Options, opts)
 	path := "networks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a Network.
@@ -58,11 +58,11 @@ func (r *NetworkService) Get(ctx context.Context, id string, opts ...option.Requ
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("networks/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a Network.
@@ -70,11 +70,11 @@ func (r *NetworkService) Update(ctx context.Context, networkID string, body Netw
 	opts = slices.Concat(r.Options, opts)
 	if networkID == "" {
 		err = errors.New("missing required network_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("networks/%s", networkID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all Networks.
@@ -105,11 +105,11 @@ func (r *NetworkService) Delete(ctx context.Context, id string, opts ...option.R
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("networks/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List all Interfaces for a Network.
@@ -119,7 +119,7 @@ func (r *NetworkService) ListInterfaces(ctx context.Context, id string, query Ne
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("networks/%s/network_interfaces", id)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)

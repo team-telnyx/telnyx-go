@@ -63,7 +63,7 @@ func (r *CallService) Dial(ctx context.Context, body CallDialParams, opts ...opt
 	opts = slices.Concat(r.Options, opts)
 	path := "calls"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the status of a call (data is available 10 minutes after call ended).
@@ -71,11 +71,11 @@ func (r *CallService) GetStatus(ctx context.Context, callControlID string, opts 
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type CustomSipHeader struct {

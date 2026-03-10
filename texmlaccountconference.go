@@ -47,15 +47,15 @@ func (r *TexmlAccountConferenceService) Get(ctx context.Context, conferenceSid s
 	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	if conferenceSid == "" {
 		err = errors.New("missing required conference_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s", query.AccountSid, conferenceSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a conference resource.
@@ -63,15 +63,15 @@ func (r *TexmlAccountConferenceService) Update(ctx context.Context, conferenceSi
 	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	if conferenceSid == "" {
 		err = errors.New("missing required conference_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s", params.AccountSid, conferenceSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists conference resources.
@@ -79,11 +79,11 @@ func (r *TexmlAccountConferenceService) GetConferences(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Conferences", accountSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists conference recordings
@@ -91,15 +91,15 @@ func (r *TexmlAccountConferenceService) GetRecordings(ctx context.Context, confe
 	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	if conferenceSid == "" {
 		err = errors.New("missing required conference_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s/Recordings", query.AccountSid, conferenceSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns recordings for a conference identified by conference_sid.
@@ -107,15 +107,15 @@ func (r *TexmlAccountConferenceService) GetRecordingsJson(ctx context.Context, c
 	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	if conferenceSid == "" {
 		err = errors.New("missing required conference_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s/Recordings.json", query.AccountSid, conferenceSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type TexmlAccountConferenceGetResponse struct {

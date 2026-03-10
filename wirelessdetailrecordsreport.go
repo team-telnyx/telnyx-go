@@ -45,7 +45,7 @@ func (r *WirelessDetailRecordsReportService) New(ctx context.Context, body Wirel
 	opts = slices.Concat(r.Options, opts)
 	path := "wireless/detail_records_reports"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns one specific WDR report
@@ -53,11 +53,11 @@ func (r *WirelessDetailRecordsReportService) Get(ctx context.Context, id string,
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("wireless/detail_records_reports/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the WDR Reports that match the given parameters.
@@ -65,7 +65,7 @@ func (r *WirelessDetailRecordsReportService) List(ctx context.Context, query Wir
 	opts = slices.Concat(r.Options, opts)
 	path := "wireless/detail_records_reports"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes one specific WDR report.
@@ -73,11 +73,11 @@ func (r *WirelessDetailRecordsReportService) Delete(ctx context.Context, id stri
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("wireless/detail_records_reports/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type WdrReport struct {

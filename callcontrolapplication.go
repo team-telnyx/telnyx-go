@@ -46,7 +46,7 @@ func (r *CallControlApplicationService) New(ctx context.Context, body CallContro
 	opts = slices.Concat(r.Options, opts)
 	path := "call_control_applications"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the details of an existing call control application.
@@ -54,11 +54,11 @@ func (r *CallControlApplicationService) Get(ctx context.Context, id string, opts
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("call_control_applications/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates settings of an existing call control application.
@@ -66,11 +66,11 @@ func (r *CallControlApplicationService) Update(ctx context.Context, id string, b
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("call_control_applications/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Return a list of call control applications.
@@ -101,11 +101,11 @@ func (r *CallControlApplicationService) Delete(ctx context.Context, id string, o
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("call_control_applications/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type CallControlApplication struct {

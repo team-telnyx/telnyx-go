@@ -47,11 +47,11 @@ func (r *BundlePricingBillingBundleService) Get(ctx context.Context, bundleID st
 	opts = slices.Concat(r.Options, opts)
 	if bundleID == "" {
 		err = errors.New("missing required bundle_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("bundle_pricing/billing_bundles/%s", bundleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get all allowed bundles.

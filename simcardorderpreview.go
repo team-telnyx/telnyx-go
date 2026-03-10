@@ -40,7 +40,7 @@ func (r *SimCardOrderPreviewService) Preview(ctx context.Context, body SimCardOr
 	opts = slices.Concat(r.Options, opts)
 	path := "sim_card_order_preview"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type SimCardOrderPreviewPreviewResponse struct {

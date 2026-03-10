@@ -47,7 +47,7 @@ func (r *SimCardGroupService) New(ctx context.Context, body SimCardGroupNewParam
 	opts = slices.Concat(r.Options, opts)
 	path := "sim_card_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the details regarding a specific SIM card group
@@ -55,11 +55,11 @@ func (r *SimCardGroupService) Get(ctx context.Context, id string, query SimCardG
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_card_groups/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a SIM card group
@@ -67,11 +67,11 @@ func (r *SimCardGroupService) Update(ctx context.Context, id string, body SimCar
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_card_groups/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get all SIM card groups belonging to the user that match the given filters.
@@ -102,11 +102,11 @@ func (r *SimCardGroupService) Delete(ctx context.Context, id string, opts ...opt
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_card_groups/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Represents the amount of data consumed.

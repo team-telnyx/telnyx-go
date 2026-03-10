@@ -41,7 +41,7 @@ func (r *MessagingProfileMetricService) List(ctx context.Context, query Messagin
 	opts = slices.Concat(r.Options, opts)
 	path := "messaging_profile_metrics"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type MessagingProfileMetricListResponse struct {

@@ -41,11 +41,11 @@ func (r *StorageMigrationActionService) Stop(ctx context.Context, id string, opt
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("storage/migrations/%s/actions/stop", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type StorageMigrationActionStopResponse struct {

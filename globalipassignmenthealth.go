@@ -43,7 +43,7 @@ func (r *GlobalIPAssignmentHealthService) Get(ctx context.Context, query GlobalI
 	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_assignment_health"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type GlobalIPAssignmentHealthGetResponse struct {

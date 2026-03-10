@@ -44,7 +44,7 @@ func (r *LegacyReportingBatchDetailRecordMessagingService) New(ctx context.Conte
 	opts = slices.Concat(r.Options, opts)
 	path := "legacy/reporting/batch_detail_records/messaging"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves a specific MDR detailed report request by ID
@@ -52,11 +52,11 @@ func (r *LegacyReportingBatchDetailRecordMessagingService) Get(ctx context.Conte
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("legacy/reporting/batch_detail_records/messaging/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves all MDR detailed report requests for the authenticated user
@@ -64,7 +64,7 @@ func (r *LegacyReportingBatchDetailRecordMessagingService) List(ctx context.Cont
 	opts = slices.Concat(r.Options, opts)
 	path := "legacy/reporting/batch_detail_records/messaging"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a specific MDR detailed report request by ID
@@ -72,11 +72,11 @@ func (r *LegacyReportingBatchDetailRecordMessagingService) Delete(ctx context.Co
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("legacy/reporting/batch_detail_records/messaging/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type BatchCsvPaginationMeta struct {

@@ -45,15 +45,15 @@ func (r *MessagingRcService) InviteTestNumber(ctx context.Context, phoneNumber s
 	opts = slices.Concat(r.Options, opts)
 	if body.ID == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	if phoneNumber == "" {
 		err = errors.New("missing required phone_number parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging/rcs/test_number_invite/%s/%s", body.ID, phoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Check RCS capabilities (batch)
@@ -61,7 +61,7 @@ func (r *MessagingRcService) ListBulkCapabilities(ctx context.Context, body Mess
 	opts = slices.Concat(r.Options, opts)
 	path := "messaging/rcs/bulk_capabilities"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Check RCS capabilities
@@ -69,15 +69,15 @@ func (r *MessagingRcService) GetCapabilities(ctx context.Context, phoneNumber st
 	opts = slices.Concat(r.Options, opts)
 	if query.AgentID == "" {
 		err = errors.New("missing required agent_id parameter")
-		return
+		return nil, err
 	}
 	if phoneNumber == "" {
 		err = errors.New("missing required phone_number parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging/rcs/capabilities/%s/%s", query.AgentID, phoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type RcsCapabilities struct {

@@ -46,11 +46,11 @@ func (r *RequirementService) Get(ctx context.Context, id string, opts ...option.
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("requirements/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List all requirements with filtering, sorting, and pagination

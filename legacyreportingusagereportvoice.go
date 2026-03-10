@@ -46,7 +46,7 @@ func (r *LegacyReportingUsageReportVoiceService) New(ctx context.Context, body L
 	opts = slices.Concat(r.Options, opts)
 	path := "legacy/reporting/usage_reports/voice"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch single cdr usage report by id.
@@ -54,11 +54,11 @@ func (r *LegacyReportingUsageReportVoiceService) Get(ctx context.Context, id str
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("legacy/reporting/usage_reports/voice/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch all previous requests for cdr usage reports.
@@ -89,11 +89,11 @@ func (r *LegacyReportingUsageReportVoiceService) Delete(ctx context.Context, id 
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("legacy/reporting/usage_reports/voice/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Legacy V2 CDR usage report response

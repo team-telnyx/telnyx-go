@@ -44,11 +44,11 @@ func (r *RoomSessionActionService) End(ctx context.Context, roomSessionID string
 	opts = slices.Concat(r.Options, opts)
 	if roomSessionID == "" {
 		err = errors.New("missing required room_session_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("room_sessions/%s/actions/end", roomSessionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Kick participants from a room session.
@@ -56,11 +56,11 @@ func (r *RoomSessionActionService) Kick(ctx context.Context, roomSessionID strin
 	opts = slices.Concat(r.Options, opts)
 	if roomSessionID == "" {
 		err = errors.New("missing required room_session_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("room_sessions/%s/actions/kick", roomSessionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Mute participants in room session.
@@ -68,11 +68,11 @@ func (r *RoomSessionActionService) Mute(ctx context.Context, roomSessionID strin
 	opts = slices.Concat(r.Options, opts)
 	if roomSessionID == "" {
 		err = errors.New("missing required room_session_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("room_sessions/%s/actions/mute", roomSessionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Unmute participants in room session.
@@ -80,11 +80,11 @@ func (r *RoomSessionActionService) Unmute(ctx context.Context, roomSessionID str
 	opts = slices.Concat(r.Options, opts)
 	if roomSessionID == "" {
 		err = errors.New("missing required room_session_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("room_sessions/%s/actions/unmute", roomSessionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ActionsParticipantsRequestParam struct {

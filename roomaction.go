@@ -46,11 +46,11 @@ func (r *RoomActionService) GenerateJoinClientToken(ctx context.Context, roomID 
 	opts = slices.Concat(r.Options, opts)
 	if roomID == "" {
 		err = errors.New("missing required room_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("rooms/%s/actions/generate_join_client_token", roomID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Synchronously refresh an Client Token to join a Room. Client Token is necessary
@@ -59,11 +59,11 @@ func (r *RoomActionService) RefreshClientToken(ctx context.Context, roomID strin
 	opts = slices.Concat(r.Options, opts)
 	if roomID == "" {
 		err = errors.New("missing required room_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("rooms/%s/actions/refresh_client_token", roomID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type RoomActionGenerateJoinClientTokenResponse struct {

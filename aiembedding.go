@@ -76,7 +76,7 @@ func (r *AIEmbeddingService) New(ctx context.Context, body AIEmbeddingNewParams,
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/embeddings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Check the status of a current embedding task. Will be one of the following:
@@ -91,11 +91,11 @@ func (r *AIEmbeddingService) Get(ctx context.Context, taskID string, opts ...opt
 	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
 		err = errors.New("missing required task_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/embeddings/%s", taskID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve tasks for the user that are either `queued`, `processing`, `failed`,
@@ -105,7 +105,7 @@ func (r *AIEmbeddingService) List(ctx context.Context, query AIEmbeddingListPara
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/embeddings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Perform a similarity search on a Telnyx Storage Bucket, returning the most
@@ -125,7 +125,7 @@ func (r *AIEmbeddingService) SimilaritySearch(ctx context.Context, body AIEmbedd
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/embeddings/similarity-search"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Embed website content from a specified URL, including child pages up to 5 levels
@@ -139,7 +139,7 @@ func (r *AIEmbeddingService) URL(ctx context.Context, body AIEmbeddingURLParams,
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/embeddings/url"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Status of an embeddings task.

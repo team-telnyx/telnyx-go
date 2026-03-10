@@ -53,7 +53,7 @@ func (r *AIAssistantTestService) New(ctx context.Context, body AIAssistantTestNe
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants/tests"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves detailed information about a specific assistant test
@@ -61,11 +61,11 @@ func (r *AIAssistantTestService) Get(ctx context.Context, testID string, opts ..
 	opts = slices.Concat(r.Options, opts)
 	if testID == "" {
 		err = errors.New("missing required test_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/tests/%s", testID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates an existing assistant test configuration with new settings
@@ -73,11 +73,11 @@ func (r *AIAssistantTestService) Update(ctx context.Context, testID string, body
 	opts = slices.Concat(r.Options, opts)
 	if testID == "" {
 		err = errors.New("missing required test_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/tests/%s", testID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves a paginated list of assistant tests with optional filtering
@@ -111,11 +111,11 @@ func (r *AIAssistantTestService) Delete(ctx context.Context, testID string, opts
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if testID == "" {
 		err = errors.New("missing required test_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("ai/assistants/tests/%s", testID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Response model containing complete assistant test information.

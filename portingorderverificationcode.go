@@ -48,7 +48,7 @@ func (r *PortingOrderVerificationCodeService) List(ctx context.Context, id strin
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("porting_orders/%s/verification_codes", id)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -74,11 +74,11 @@ func (r *PortingOrderVerificationCodeService) Send(ctx context.Context, id strin
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("porting_orders/%s/verification_codes/send", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Verifies the verification code for a list of phone numbers.
@@ -86,11 +86,11 @@ func (r *PortingOrderVerificationCodeService) Verify(ctx context.Context, id str
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("porting_orders/%s/verification_codes/verify", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type PortingOrderVerificationCodeListResponse struct {

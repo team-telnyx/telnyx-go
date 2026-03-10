@@ -42,15 +42,15 @@ func (r *AIAssistantToolService) Test(ctx context.Context, toolID string, params
 	opts = slices.Concat(r.Options, opts)
 	if params.AssistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return nil, err
 	}
 	if toolID == "" {
 		err = errors.New("missing required tool_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/tools/%s/test", params.AssistantID, toolID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Response model for webhook tool test results

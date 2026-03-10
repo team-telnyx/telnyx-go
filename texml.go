@@ -47,7 +47,7 @@ func (r *TexmlService) Secrets(ctx context.Context, body TexmlSecretsParams, opt
 	opts = slices.Concat(r.Options, opts)
 	path := "texml/secrets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type TexmlSecretsResponse struct {

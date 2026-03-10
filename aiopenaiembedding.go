@@ -45,7 +45,7 @@ func (r *AIOpenAIEmbeddingService) NewEmbeddings(ctx context.Context, body AIOpe
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/openai/embeddings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of available embedding models. This endpoint is compatible with
@@ -54,7 +54,7 @@ func (r *AIOpenAIEmbeddingService) ListEmbeddingModels(ctx context.Context, opts
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/openai/embeddings/models"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AIOpenAIEmbeddingNewEmbeddingsResponse struct {

@@ -46,7 +46,7 @@ func (r *AccessIPAddressService) New(ctx context.Context, body AccessIPAddressNe
 	opts = slices.Concat(r.Options, opts)
 	path := "access_ip_address"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve an access IP address
@@ -54,11 +54,11 @@ func (r *AccessIPAddressService) Get(ctx context.Context, accessIPAddressID stri
 	opts = slices.Concat(r.Options, opts)
 	if accessIPAddressID == "" {
 		err = errors.New("missing required access_ip_address_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("access_ip_address/%s", accessIPAddressID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List all Access IP Addresses
@@ -89,11 +89,11 @@ func (r *AccessIPAddressService) Delete(ctx context.Context, accessIPAddressID s
 	opts = slices.Concat(r.Options, opts)
 	if accessIPAddressID == "" {
 		err = errors.New("missing required access_ip_address_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("access_ip_address/%s", accessIPAddressID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccessIPAddressResponse struct {

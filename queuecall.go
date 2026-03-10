@@ -45,15 +45,15 @@ func (r *QueueCallService) Get(ctx context.Context, callControlID string, query 
 	opts = slices.Concat(r.Options, opts)
 	if query.QueueName == "" {
 		err = errors.New("missing required queue_name parameter")
-		return
+		return nil, err
 	}
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("queues/%s/calls/%s", query.QueueName, callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update queued call's keep_after_hangup flag
@@ -62,15 +62,15 @@ func (r *QueueCallService) Update(ctx context.Context, callControlID string, par
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if params.QueueName == "" {
 		err = errors.New("missing required queue_name parameter")
-		return
+		return err
 	}
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("queues/%s/calls/%s", params.QueueName, callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, nil, opts...)
-	return
+	return err
 }
 
 // Retrieve the list of calls in an existing queue
@@ -80,7 +80,7 @@ func (r *QueueCallService) List(ctx context.Context, queueName string, query Que
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if queueName == "" {
 		err = errors.New("missing required queue_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("queues/%s/calls", queueName)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -107,15 +107,15 @@ func (r *QueueCallService) Remove(ctx context.Context, callControlID string, bod
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.QueueName == "" {
 		err = errors.New("missing required queue_name parameter")
-		return
+		return err
 	}
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("queues/%s/calls/%s", body.QueueName, callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type QueueCallGetResponse struct {

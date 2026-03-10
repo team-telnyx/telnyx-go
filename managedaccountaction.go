@@ -45,11 +45,11 @@ func (r *ManagedAccountActionService) Disable(ctx context.Context, id string, op
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("managed_accounts/%s/actions/disable", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Enables a managed account and its sub-users to use Telnyx services.
@@ -57,11 +57,11 @@ func (r *ManagedAccountActionService) Enable(ctx context.Context, id string, bod
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("managed_accounts/%s/actions/enable", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ManagedAccountActionDisableResponse struct {

@@ -47,7 +47,7 @@ func (r *ReportMdrUsageReportService) New(ctx context.Context, body ReportMdrUsa
 	opts = slices.Concat(r.Options, opts)
 	path := "reports/mdr_usage_reports"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch a single messaging usage report by id
@@ -55,11 +55,11 @@ func (r *ReportMdrUsageReportService) Get(ctx context.Context, id string, opts .
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("reports/mdr_usage_reports/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch all messaging usage reports. Usage reports are aggregated messaging data
@@ -92,11 +92,11 @@ func (r *ReportMdrUsageReportService) Delete(ctx context.Context, id string, opt
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("reports/mdr_usage_reports/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Generate and fetch messaging usage report synchronously. This endpoint will both
@@ -106,7 +106,7 @@ func (r *ReportMdrUsageReportService) FetchSync(ctx context.Context, query Repor
 	opts = slices.Concat(r.Options, opts)
 	path := "reports/mdr_usage_reports/sync"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type MdrUsageReport struct {

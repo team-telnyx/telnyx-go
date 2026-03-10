@@ -44,7 +44,7 @@ func (r *InventoryCoverageService) List(ctx context.Context, query InventoryCove
 	opts = slices.Concat(r.Options, opts)
 	path := "inventory_coverage"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type InventoryCoverageListResponse struct {

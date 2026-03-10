@@ -47,7 +47,7 @@ func (r *GlobalIPAssignmentService) New(ctx context.Context, body GlobalIPAssign
 	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_assignments"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a Global IP assignment.
@@ -55,11 +55,11 @@ func (r *GlobalIPAssignmentService) Get(ctx context.Context, id string, opts ...
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("global_ip_assignments/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a Global IP assignment.
@@ -67,11 +67,11 @@ func (r *GlobalIPAssignmentService) Update(ctx context.Context, globalIPAssignme
 	opts = slices.Concat(r.Options, opts)
 	if globalIPAssignmentID == "" {
 		err = errors.New("missing required global_ip_assignment_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("global_ip_assignments/%s", globalIPAssignmentID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all Global IP assignments.
@@ -102,11 +102,11 @@ func (r *GlobalIPAssignmentService) Delete(ctx context.Context, id string, opts 
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("global_ip_assignments/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type GlobalIPAssignment struct {

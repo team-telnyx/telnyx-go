@@ -42,19 +42,19 @@ func (r *TexmlAccountConferenceParticipantService) Get(ctx context.Context, call
 	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	if query.ConferenceSid == "" {
 		err = errors.New("missing required conference_sid parameter")
-		return
+		return nil, err
 	}
 	if callSidOrParticipantLabel == "" {
 		err = errors.New("missing required call_sid_or_participant_label parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s/Participants/%s", query.AccountSid, query.ConferenceSid, callSidOrParticipantLabel)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a conference participant
@@ -62,19 +62,19 @@ func (r *TexmlAccountConferenceParticipantService) Update(ctx context.Context, c
 	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	if params.ConferenceSid == "" {
 		err = errors.New("missing required conference_sid parameter")
-		return
+		return nil, err
 	}
 	if callSidOrParticipantLabel == "" {
 		err = errors.New("missing required call_sid_or_participant_label parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s/Participants/%s", params.AccountSid, params.ConferenceSid, callSidOrParticipantLabel)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a conference participant
@@ -83,19 +83,19 @@ func (r *TexmlAccountConferenceParticipantService) Delete(ctx context.Context, c
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return err
 	}
 	if body.ConferenceSid == "" {
 		err = errors.New("missing required conference_sid parameter")
-		return
+		return err
 	}
 	if callSidOrParticipantLabel == "" {
 		err = errors.New("missing required call_sid_or_participant_label parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s/Participants/%s", body.AccountSid, body.ConferenceSid, callSidOrParticipantLabel)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Dials a new conference participant
@@ -103,15 +103,15 @@ func (r *TexmlAccountConferenceParticipantService) Participants(ctx context.Cont
 	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	if conferenceSid == "" {
 		err = errors.New("missing required conference_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s/Participants", params.AccountSid, conferenceSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists conference participants
@@ -119,15 +119,15 @@ func (r *TexmlAccountConferenceParticipantService) GetParticipants(ctx context.C
 	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	if conferenceSid == "" {
 		err = errors.New("missing required conference_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s/Participants", query.AccountSid, conferenceSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type TexmlAccountConferenceParticipantGetResponse struct {

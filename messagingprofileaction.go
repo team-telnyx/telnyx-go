@@ -39,11 +39,11 @@ func (r *MessagingProfileActionService) RegenerateSecret(ctx context.Context, id
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_profiles/%s/actions/regenerate_secret", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type MessagingProfileActionRegenerateSecretResponse struct {

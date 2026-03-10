@@ -46,7 +46,7 @@ func (r *CustomerServiceRecordService) New(ctx context.Context, body CustomerSer
 	opts = slices.Concat(r.Options, opts)
 	path := "customer_service_records"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a specific customer service record.
@@ -54,11 +54,11 @@ func (r *CustomerServiceRecordService) Get(ctx context.Context, customerServiceR
 	opts = slices.Concat(r.Options, opts)
 	if customerServiceRecordID == "" {
 		err = errors.New("missing required customer_service_record_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("customer_service_records/%s", customerServiceRecordID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List customer service records.
@@ -89,7 +89,7 @@ func (r *CustomerServiceRecordService) VerifyPhoneNumberCoverage(ctx context.Con
 	opts = slices.Concat(r.Options, opts)
 	path := "customer_service_records/phone_number_coverages"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type CustomerServiceRecord struct {

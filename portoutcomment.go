@@ -43,11 +43,11 @@ func (r *PortoutCommentService) New(ctx context.Context, id string, body Portout
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("portouts/%s/comments", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of comments for a portout request.
@@ -55,11 +55,11 @@ func (r *PortoutCommentService) List(ctx context.Context, id string, opts ...opt
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("portouts/%s/comments", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type PortoutComment struct {

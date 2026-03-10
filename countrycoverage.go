@@ -41,7 +41,7 @@ func (r *CountryCoverageService) Get(ctx context.Context, opts ...option.Request
 	opts = slices.Concat(r.Options, opts)
 	path := "country_coverage"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get coverage for a specific country
@@ -49,11 +49,11 @@ func (r *CountryCoverageService) GetCountry(ctx context.Context, countryCode str
 	opts = slices.Concat(r.Options, opts)
 	if countryCode == "" {
 		err = errors.New("missing required country_code parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("country_coverage/countries/%s", countryCode)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type CountryCoverage struct {

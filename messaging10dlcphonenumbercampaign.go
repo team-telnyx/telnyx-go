@@ -47,7 +47,7 @@ func (r *Messaging10dlcPhoneNumberCampaignService) New(ctx context.Context, body
 	opts = slices.Concat(r.Options, opts)
 	path := "10dlc/phone_number_campaigns"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve an individual phone number/campaign assignment by `phoneNumber`.
@@ -55,11 +55,11 @@ func (r *Messaging10dlcPhoneNumberCampaignService) Get(ctx context.Context, phon
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
 		err = errors.New("missing required phoneNumber parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/phone_number_campaigns/%s", phoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Create New Phone Number Campaign
@@ -67,11 +67,11 @@ func (r *Messaging10dlcPhoneNumberCampaignService) Update(ctx context.Context, c
 	opts = slices.Concat(r.Options, opts)
 	if campaignPhoneNumber == "" {
 		err = errors.New("missing required campaign_phone_number parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/phone_number_campaigns/%s", campaignPhoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List phone number campaigns
@@ -103,11 +103,11 @@ func (r *Messaging10dlcPhoneNumberCampaignService) Delete(ctx context.Context, p
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
 		err = errors.New("missing required phoneNumber parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/phone_number_campaigns/%s", phoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type PhoneNumberCampaign struct {

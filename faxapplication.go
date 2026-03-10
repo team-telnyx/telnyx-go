@@ -47,7 +47,7 @@ func (r *FaxApplicationService) New(ctx context.Context, body FaxApplicationNewP
 	opts = slices.Concat(r.Options, opts)
 	path := "fax_applications"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Return the details of an existing Fax Application inside the 'data' attribute of
@@ -56,11 +56,11 @@ func (r *FaxApplicationService) Get(ctx context.Context, id string, opts ...opti
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("fax_applications/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates settings of an existing Fax Application based on the parameters of the
@@ -69,11 +69,11 @@ func (r *FaxApplicationService) Update(ctx context.Context, id string, body FaxA
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("fax_applications/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This endpoint returns a list of your Fax Applications inside the 'data'
@@ -111,11 +111,11 @@ func (r *FaxApplicationService) Delete(ctx context.Context, id string, opts ...o
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("fax_applications/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type FaxApplication struct {

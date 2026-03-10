@@ -48,11 +48,11 @@ func (r *DocumentService) Get(ctx context.Context, id string, opts ...option.Req
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("documents/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a document.
@@ -60,11 +60,11 @@ func (r *DocumentService) Update(ctx context.Context, documentID string, body Do
 	opts = slices.Concat(r.Options, opts)
 	if documentID == "" {
 		err = errors.New("missing required document_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("documents/%s", documentID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all documents ordered by created_at descending.
@@ -97,11 +97,11 @@ func (r *DocumentService) Delete(ctx context.Context, id string, opts ...option.
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("documents/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Download a document.
@@ -110,11 +110,11 @@ func (r *DocumentService) Download(ctx context.Context, id string, opts ...optio
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("documents/%s/download", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Generates a temporary pre-signed URL that can be used to download the document
@@ -123,11 +123,11 @@ func (r *DocumentService) GenerateDownloadLink(ctx context.Context, id string, o
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("documents/%s/download_link", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Upload a document.<br /><br />Uploaded files must be linked to a service within
@@ -136,7 +136,7 @@ func (r *DocumentService) Upload(ctx context.Context, body DocumentUploadParams,
 	opts = slices.Concat(r.Options, opts)
 	path := "documents?content-type=multipart"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Upload a document.<br /><br />Uploaded files must be linked to a service within
@@ -145,7 +145,7 @@ func (r *DocumentService) UploadJson(ctx context.Context, body DocumentUploadJso
 	opts = slices.Concat(r.Options, opts)
 	path := "documents"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type DocServiceDocument struct {

@@ -47,7 +47,7 @@ func (r *MobilePushCredentialService) New(ctx context.Context, body MobilePushCr
 	opts = slices.Concat(r.Options, opts)
 	path := "mobile_push_credentials"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves mobile push credential based on the given `push_credential_id`
@@ -55,11 +55,11 @@ func (r *MobilePushCredentialService) Get(ctx context.Context, pushCredentialID 
 	opts = slices.Concat(r.Options, opts)
 	if pushCredentialID == "" {
 		err = errors.New("missing required push_credential_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("mobile_push_credentials/%s", pushCredentialID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List mobile push credentials
@@ -91,11 +91,11 @@ func (r *MobilePushCredentialService) Delete(ctx context.Context, pushCredential
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if pushCredentialID == "" {
 		err = errors.New("missing required push_credential_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("mobile_push_credentials/%s", pushCredentialID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type PushCredential struct {

@@ -44,7 +44,7 @@ func (r *OAuthClientService) New(ctx context.Context, body OAuthClientNewParams,
 	opts = slices.Concat(r.Options, opts)
 	path := "oauth_clients"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a single OAuth client by ID
@@ -52,11 +52,11 @@ func (r *OAuthClientService) Get(ctx context.Context, id string, opts ...option.
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("oauth_clients/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an existing OAuth client
@@ -64,11 +64,11 @@ func (r *OAuthClientService) Update(ctx context.Context, id string, body OAuthCl
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("oauth_clients/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a paginated list of OAuth clients for the authenticated user
@@ -100,11 +100,11 @@ func (r *OAuthClientService) Delete(ctx context.Context, id string, opts ...opti
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("oauth_clients/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type OAuthClient struct {

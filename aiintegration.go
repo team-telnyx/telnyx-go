@@ -41,11 +41,11 @@ func (r *AIIntegrationService) Get(ctx context.Context, integrationID string, op
 	opts = slices.Concat(r.Options, opts)
 	if integrationID == "" {
 		err = errors.New("missing required integration_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/integrations/%s", integrationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List all available integrations.
@@ -53,7 +53,7 @@ func (r *AIIntegrationService) List(ctx context.Context, opts ...option.RequestO
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/integrations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AIIntegrationGetResponse struct {

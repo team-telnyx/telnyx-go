@@ -44,7 +44,7 @@ func (r *ActionPurchaseService) New(ctx context.Context, body ActionPurchaseNewP
 	opts = slices.Concat(r.Options, opts)
 	path := "actions/purchase/esims"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ActionPurchaseNewResponse struct {

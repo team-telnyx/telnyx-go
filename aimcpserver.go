@@ -44,7 +44,7 @@ func (r *AIMcpServerService) New(ctx context.Context, body AIMcpServerNewParams,
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/mcp_servers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve details for a specific MCP server.
@@ -52,11 +52,11 @@ func (r *AIMcpServerService) Get(ctx context.Context, mcpServerID string, opts .
 	opts = slices.Concat(r.Options, opts)
 	if mcpServerID == "" {
 		err = errors.New("missing required mcp_server_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/mcp_servers/%s", mcpServerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an existing MCP server.
@@ -64,11 +64,11 @@ func (r *AIMcpServerService) Update(ctx context.Context, mcpServerID string, bod
 	opts = slices.Concat(r.Options, opts)
 	if mcpServerID == "" {
 		err = errors.New("missing required mcp_server_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/mcp_servers/%s", mcpServerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a list of MCP servers.
@@ -100,11 +100,11 @@ func (r *AIMcpServerService) Delete(ctx context.Context, mcpServerID string, opt
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if mcpServerID == "" {
 		err = errors.New("missing required mcp_server_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("ai/mcp_servers/%s", mcpServerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type AIMcpServerNewResponse struct {

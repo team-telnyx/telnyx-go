@@ -43,15 +43,15 @@ func (r *Messaging10dlcCampaignBuilderBrandService) QualifyByUsecase(ctx context
 	opts = slices.Concat(r.Options, opts)
 	if query.BrandID == "" {
 		err = errors.New("missing required brandId parameter")
-		return
+		return nil, err
 	}
 	if usecase == "" {
 		err = errors.New("missing required usecase parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/campaignBuilder/brand/%s/usecase/%s", query.BrandID, usecase)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type Messaging10dlcCampaignBuilderBrandQualifyByUsecaseResponse struct {

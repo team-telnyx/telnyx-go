@@ -40,7 +40,7 @@ func (r *RecordingActionService) Delete(ctx context.Context, body RecordingActio
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "recordings/actions/delete"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 type RecordingActionDeleteParams struct {

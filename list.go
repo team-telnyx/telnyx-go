@@ -41,7 +41,7 @@ func (r *ListService) GetAll(ctx context.Context, opts ...option.RequestOption) 
 	opts = slices.Concat(r.Options, opts)
 	path := "list"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a list of phone numbers using Channel Billing for a specific Zone.
@@ -49,11 +49,11 @@ func (r *ListService) GetByZone(ctx context.Context, channelZoneID string, opts 
 	opts = slices.Concat(r.Options, opts)
 	if channelZoneID == "" {
 		err = errors.New("missing required channel_zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("list/%s", channelZoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type ListGetAllResponse struct {

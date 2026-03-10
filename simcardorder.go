@@ -46,7 +46,7 @@ func (r *SimCardOrderService) New(ctx context.Context, body SimCardOrderNewParam
 	opts = slices.Concat(r.Options, opts)
 	path := "sim_card_orders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a single SIM card order by its ID.
@@ -54,11 +54,11 @@ func (r *SimCardOrderService) Get(ctx context.Context, id string, opts ...option
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_card_orders/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get all SIM card orders according to filters.

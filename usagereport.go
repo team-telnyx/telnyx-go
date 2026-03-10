@@ -74,7 +74,7 @@ func (r *UsageReportService) GetOptions(ctx context.Context, params UsageReportG
 	opts = slices.Concat(r.Options, opts)
 	path := "usage_reports/options"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type UsageReportListResponse map[string]any

@@ -60,15 +60,15 @@ func (r *TexmlAccountCallService) Get(ctx context.Context, callSid string, query
 	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	if callSid == "" {
 		err = errors.New("missing required call_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Calls/%s", query.AccountSid, callSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update TeXML call. Please note that the keys present in the payload MUST BE
@@ -77,15 +77,15 @@ func (r *TexmlAccountCallService) Update(ctx context.Context, callSid string, pa
 	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	if callSid == "" {
 		err = errors.New("missing required call_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Calls/%s", params.AccountSid, callSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Initiate an outbound TeXML call. Telnyx will request TeXML from the XML Request
@@ -94,11 +94,11 @@ func (r *TexmlAccountCallService) Calls(ctx context.Context, accountSid string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Calls", accountSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns multiple call resouces for an account. This endpoint is eventually
@@ -107,11 +107,11 @@ func (r *TexmlAccountCallService) GetCalls(ctx context.Context, accountSid strin
 	opts = slices.Concat(r.Options, opts)
 	if accountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Calls", accountSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Starts siprec session with specified parameters for call idientified by
@@ -120,15 +120,15 @@ func (r *TexmlAccountCallService) SiprecJson(ctx context.Context, callSid string
 	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	if callSid == "" {
 		err = errors.New("missing required call_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Calls/%s/Siprec.json", params.AccountSid, callSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Starts streaming media from a call to a specific WebSocket address.
@@ -136,15 +136,15 @@ func (r *TexmlAccountCallService) StreamsJson(ctx context.Context, callSid strin
 	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	if callSid == "" {
 		err = errors.New("missing required call_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Calls/%s/Streams.json", params.AccountSid, callSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type UpdateCallParam struct {

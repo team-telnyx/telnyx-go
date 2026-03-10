@@ -44,11 +44,11 @@ func (r *VerificationByPhoneNumberService) List(ctx context.Context, phoneNumber
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
 		err = errors.New("missing required phone_number parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("verifications/by_phone_number/%s", phoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type VerifyMeta struct {

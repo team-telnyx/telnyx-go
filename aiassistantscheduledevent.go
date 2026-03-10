@@ -47,11 +47,11 @@ func (r *AIAssistantScheduledEventService) New(ctx context.Context, assistantID 
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/scheduled_events", assistantID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a scheduled event by event ID
@@ -59,15 +59,15 @@ func (r *AIAssistantScheduledEventService) Get(ctx context.Context, eventID stri
 	opts = slices.Concat(r.Options, opts)
 	if query.AssistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return nil, err
 	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/scheduled_events/%s", query.AssistantID, eventID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get scheduled events for an assistant with pagination and filtering
@@ -77,7 +77,7 @@ func (r *AIAssistantScheduledEventService) List(ctx context.Context, assistantID
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/scheduled_events", assistantID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -104,15 +104,15 @@ func (r *AIAssistantScheduledEventService) Delete(ctx context.Context, eventID s
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.AssistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return err
 	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/scheduled_events/%s", body.AssistantID, eventID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type ConversationChannelType string

@@ -43,11 +43,11 @@ func (r *AIEmbeddingBucketService) Get(ctx context.Context, bucketName string, o
 	opts = slices.Concat(r.Options, opts)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/embeddings/buckets/%s", bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get all embedding buckets for a user.
@@ -55,7 +55,7 @@ func (r *AIEmbeddingBucketService) List(ctx context.Context, opts ...option.Requ
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/embeddings/buckets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes an entire bucket's embeddings and disables the bucket for AI-use,
@@ -65,11 +65,11 @@ func (r *AIEmbeddingBucketService) Delete(ctx context.Context, bucketName string
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("ai/embeddings/buckets/%s", bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type AIEmbeddingBucketGetResponse struct {

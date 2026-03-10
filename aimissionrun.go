@@ -50,11 +50,11 @@ func (r *AIMissionRunService) New(ctx context.Context, missionID string, body AI
 	opts = slices.Concat(r.Options, opts)
 	if missionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/runs", missionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get details of a specific run
@@ -62,15 +62,15 @@ func (r *AIMissionRunService) Get(ctx context.Context, runID string, query AIMis
 	opts = slices.Concat(r.Options, opts)
 	if query.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	if runID == "" {
 		err = errors.New("missing required run_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/runs/%s", query.MissionID, runID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update run status and/or result
@@ -78,15 +78,15 @@ func (r *AIMissionRunService) Update(ctx context.Context, runID string, params A
 	opts = slices.Concat(r.Options, opts)
 	if params.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	if runID == "" {
 		err = errors.New("missing required run_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/runs/%s", params.MissionID, runID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // List all runs for a specific mission
@@ -96,7 +96,7 @@ func (r *AIMissionRunService) List(ctx context.Context, missionID string, query 
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if missionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/runs", missionID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -121,15 +121,15 @@ func (r *AIMissionRunService) CancelRun(ctx context.Context, runID string, body 
 	opts = slices.Concat(r.Options, opts)
 	if body.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	if runID == "" {
 		err = errors.New("missing required run_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/runs/%s/cancel", body.MissionID, runID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List recent runs across all missions
@@ -160,15 +160,15 @@ func (r *AIMissionRunService) PauseRun(ctx context.Context, runID string, body A
 	opts = slices.Concat(r.Options, opts)
 	if body.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	if runID == "" {
 		err = errors.New("missing required run_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/runs/%s/pause", body.MissionID, runID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Resume a paused run
@@ -176,15 +176,15 @@ func (r *AIMissionRunService) ResumeRun(ctx context.Context, runID string, body 
 	opts = slices.Concat(r.Options, opts)
 	if body.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	if runID == "" {
 		err = errors.New("missing required run_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/runs/%s/resume", body.MissionID, runID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type MissionRunData struct {

@@ -44,7 +44,7 @@ func (r *StorageMigrationSourceService) New(ctx context.Context, body StorageMig
 	opts = slices.Concat(r.Options, opts)
 	path := "storage/migration_sources"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a Migration Source
@@ -52,11 +52,11 @@ func (r *StorageMigrationSourceService) Get(ctx context.Context, id string, opts
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("storage/migration_sources/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List all Migration Sources
@@ -64,7 +64,7 @@ func (r *StorageMigrationSourceService) List(ctx context.Context, opts ...option
 	opts = slices.Concat(r.Options, opts)
 	path := "storage/migration_sources"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a Migration Source
@@ -72,11 +72,11 @@ func (r *StorageMigrationSourceService) Delete(ctx context.Context, id string, o
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("storage/migration_sources/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type MigrationSourceParamsResp struct {

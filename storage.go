@@ -48,7 +48,7 @@ func (r *StorageService) ListMigrationSourceCoverage(ctx context.Context, opts .
 	opts = slices.Concat(r.Options, opts)
 	path := "storage/migration_source_coverage"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type StorageListMigrationSourceCoverageResponse struct {

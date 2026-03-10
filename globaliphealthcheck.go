@@ -45,7 +45,7 @@ func (r *GlobalIPHealthCheckService) New(ctx context.Context, body GlobalIPHealt
 	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_health_checks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a Global IP health check.
@@ -53,11 +53,11 @@ func (r *GlobalIPHealthCheckService) Get(ctx context.Context, id string, opts ..
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("global_ip_health_checks/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List all Global IP health checks.
@@ -88,11 +88,11 @@ func (r *GlobalIPHealthCheckService) Delete(ctx context.Context, id string, opts
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("global_ip_health_checks/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type GlobalIPHealthCheckNewResponse struct {

@@ -45,7 +45,7 @@ func (r *GlobalIPService) New(ctx context.Context, body GlobalIPNewParams, opts 
 	opts = slices.Concat(r.Options, opts)
 	path := "global_ips"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a Global IP.
@@ -53,11 +53,11 @@ func (r *GlobalIPService) Get(ctx context.Context, id string, opts ...option.Req
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("global_ips/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List all Global IPs.
@@ -88,11 +88,11 @@ func (r *GlobalIPService) Delete(ctx context.Context, id string, opts ...option.
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("global_ips/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type GlobalIPNewResponse struct {

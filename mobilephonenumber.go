@@ -48,11 +48,11 @@ func (r *MobilePhoneNumberService) Get(ctx context.Context, id string, opts ...o
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v2/mobile_phone_numbers/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a Mobile Phone Number
@@ -60,11 +60,11 @@ func (r *MobilePhoneNumberService) Update(ctx context.Context, id string, body M
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v2/mobile_phone_numbers/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List Mobile Phone Numbers
