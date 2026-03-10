@@ -425,7 +425,7 @@ type TextToSpeechGenerateParams struct {
 	// ElevenLabs provider-specific parameters.
 	Elevenlabs TextToSpeechGenerateParamsElevenlabs `json:"elevenlabs,omitzero"`
 	// Inworld provider-specific parameters.
-	Inworld any `json:"inworld,omitzero"`
+	Inworld map[string]any `json:"inworld,omitzero"`
 	// Minimax provider-specific parameters.
 	Minimax TextToSpeechGenerateParamsMinimax `json:"minimax,omitzero"`
 	// Determines the response format. `binary_output` returns raw audio bytes,
