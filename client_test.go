@@ -38,7 +38,7 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	client.NumberOrders.New(context.Background(), telnyx.NumberOrderNewParams{
+	_, _ = client.NumberOrders.New(context.Background(), telnyx.NumberOrderNewParams{
 		PhoneNumbers: []telnyx.NumberOrderNewParamsPhoneNumber{{
 			PhoneNumber: "+15558675309",
 		}},
