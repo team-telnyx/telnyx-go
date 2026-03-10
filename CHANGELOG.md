@@ -1,5 +1,25 @@
 # Changelog
 
+## 4.44.0 (2026-03-10)
+
+Full Changelog: [v4.43.0...v4.44.0](https://github.com/team-telnyx/telnyx-go/compare/v4.43.0...v4.44.0)
+
+### Features
+
+* **api:** manual updates ([156c285](https://github.com/team-telnyx/telnyx-go/commit/156c2855302082ce14bf76a1b4f3197c26ed6ab5))
+* Assistant tags ([3c74d33](https://github.com/team-telnyx/telnyx-go/commit/3c74d33e99c36c8215bca6ce25ccf988bdaa47a2))
+* CW-2881 publish wireless VoLTE docs to prod ([9c16512](https://github.com/team-telnyx/telnyx-go/commit/9c1651289e816252a022ca6c24b80f06531a7dd8))
+* MSG-6418: remove flashcall from hosted number verification codes endpoint ([64284b4](https://github.com/team-telnyx/telnyx-go/commit/64284b46640ade8533493156897542dd3a17a0cf))
+* TELAPPS-ENGDESK-49737 Add prevent_double_bridge param to dial ([a455f5c](https://github.com/team-telnyx/telnyx-go/commit/a455f5ca425a3ece6f476bc25eb3df87f8f0a396))
+
+
+### Chores
+
+* **ci:** skip uploading artifacts on stainless-internal branches ([626f387](https://github.com/team-telnyx/telnyx-go/commit/626f387fe9fde8b69874f219251f5f79af2c897e))
+* **internal:** minor cleanup ([5424a9f](https://github.com/team-telnyx/telnyx-go/commit/5424a9ff200b05c8816f46327ecaff7f9f1ff49c))
+* **internal:** use explicit returns ([ae07632](https://github.com/team-telnyx/telnyx-go/commit/ae0763212ccbe13761dd7b653f053f8caa461cc5))
+* update placeholder string ([0175443](https://github.com/team-telnyx/telnyx-go/commit/01754435c64ece5a3011fe9aa25feac8c6e7cca7))
+
 ## 4.43.0 (2026-03-05)
 
 Full Changelog: [v4.42.0...v4.43.0](https://github.com/team-telnyx/telnyx-go/compare/v4.42.0...v4.43.0)
