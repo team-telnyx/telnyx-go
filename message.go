@@ -49,11 +49,11 @@ func (r *MessageService) Get(ctx context.Context, id string, opts ...option.Requ
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messages/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Cancel a scheduled message that has not yet been sent. Only messages with
@@ -62,11 +62,11 @@ func (r *MessageService) CancelScheduled(ctx context.Context, id string, opts ..
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messages/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve all messages in a group MMS conversation by the group message ID.
@@ -74,11 +74,11 @@ func (r *MessageService) GetGroupMessages(ctx context.Context, messageID string,
 	opts = slices.Concat(r.Options, opts)
 	if messageID == "" {
 		err = errors.New("missing required message_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messages/group/%s", messageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Schedule a message with a Phone Number, Alphanumeric Sender ID, Short Code or
@@ -91,7 +91,7 @@ func (r *MessageService) Schedule(ctx context.Context, body MessageScheduleParam
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/schedule"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Send a message with a Phone Number, Alphanumeric Sender ID, Short Code or Number
@@ -104,7 +104,7 @@ func (r *MessageService) Send(ctx context.Context, body MessageSendParams, opts 
 	opts = slices.Concat(r.Options, opts)
 	path := "messages"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Send a group MMS message
@@ -112,7 +112,7 @@ func (r *MessageService) SendGroupMms(ctx context.Context, body MessageSendGroup
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/group_mms"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Send a long code message
@@ -120,7 +120,7 @@ func (r *MessageService) SendLongCode(ctx context.Context, body MessageSendLongC
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/long_code"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Send a message using number pool
@@ -128,7 +128,7 @@ func (r *MessageService) SendNumberPool(ctx context.Context, body MessageSendNum
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/number_pool"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Send a short code message
@@ -136,7 +136,7 @@ func (r *MessageService) SendShortCode(ctx context.Context, body MessageSendShor
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/short_code"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Send a Whatsapp message
@@ -144,7 +144,7 @@ func (r *MessageService) SendWhatsapp(ctx context.Context, body MessageSendWhats
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/whatsapp"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Send an SMS message using an alphanumeric sender ID. This is SMS only.
@@ -152,7 +152,7 @@ func (r *MessageService) SendWithAlphanumericSender(ctx context.Context, body Me
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/alphanumeric_sender_id"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type MessagingError struct {

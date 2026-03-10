@@ -49,7 +49,7 @@ func (r *StorageMigrationService) New(ctx context.Context, body StorageMigration
 	opts = slices.Concat(r.Options, opts)
 	path := "storage/migrations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a Migration
@@ -57,11 +57,11 @@ func (r *StorageMigrationService) Get(ctx context.Context, id string, opts ...op
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("storage/migrations/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List all Migrations
@@ -69,7 +69,7 @@ func (r *StorageMigrationService) List(ctx context.Context, opts ...option.Reque
 	opts = slices.Concat(r.Options, opts)
 	path := "storage/migrations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type MigrationParamsResp struct {

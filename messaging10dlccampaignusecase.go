@@ -41,7 +41,7 @@ func (r *Messaging10dlcCampaignUsecaseService) GetCost(ctx context.Context, quer
 	opts = slices.Concat(r.Options, opts)
 	path := "10dlc/campaign/usecase/cost"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type Messaging10dlcCampaignUsecaseGetCostResponse struct {

@@ -42,19 +42,19 @@ func (r *TexmlAccountCallSiprecService) SiprecSidJson(ctx context.Context, sipre
 	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	if params.CallSid == "" {
 		err = errors.New("missing required call_sid parameter")
-		return
+		return nil, err
 	}
 	if siprecSid == "" {
 		err = errors.New("missing required siprec_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Calls/%s/Siprec/%s.json", params.AccountSid, params.CallSid, siprecSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type TexmlAccountCallSiprecSiprecSidJsonResponse struct {

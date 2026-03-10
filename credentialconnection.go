@@ -50,7 +50,7 @@ func (r *CredentialConnectionService) New(ctx context.Context, body CredentialCo
 	opts = slices.Concat(r.Options, opts)
 	path := "credential_connections"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the details of an existing credential connection.
@@ -58,11 +58,11 @@ func (r *CredentialConnectionService) Get(ctx context.Context, id string, opts .
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("credential_connections/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates settings of an existing credential connection.
@@ -70,11 +70,11 @@ func (r *CredentialConnectionService) Update(ctx context.Context, id string, bod
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("credential_connections/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of your credential connections.
@@ -105,11 +105,11 @@ func (r *CredentialConnectionService) Delete(ctx context.Context, id string, opt
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("credential_connections/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // `Latency` directs Telnyx to route media through the site with the lowest

@@ -44,11 +44,11 @@ func (r *SimCardActionService) Get(ctx context.Context, id string, opts ...optio
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_card_actions/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // This API lists a paginated collection of SIM card actions. It enables exploring
@@ -90,7 +90,7 @@ func (r *SimCardActionService) BulkDisableVoice(ctx context.Context, body SimCar
 	opts = slices.Concat(r.Options, opts)
 	path := "sim_cards/actions/bulk_disable_voice"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This API triggers an asynchronous operation to enable voice on SIM cards
@@ -107,7 +107,7 @@ func (r *SimCardActionService) BulkEnableVoice(ctx context.Context, body SimCard
 	opts = slices.Concat(r.Options, opts)
 	path := "sim_cards/actions/bulk_enable_voice"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This API triggers an asynchronous operation to set a public IP for each of the
@@ -119,7 +119,7 @@ func (r *SimCardActionService) BulkSetPublicIPs(ctx context.Context, body SimCar
 	opts = slices.Concat(r.Options, opts)
 	path := "sim_cards/actions/bulk_set_public_ips"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This API disables a SIM card, disconnecting it from the network and making it
@@ -132,11 +132,11 @@ func (r *SimCardActionService) Disable(ctx context.Context, id string, opts ...o
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_cards/%s/actions/disable", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // This API enables a SIM card, connecting it to the network and making it possible
@@ -150,11 +150,11 @@ func (r *SimCardActionService) Enable(ctx context.Context, id string, opts ...op
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_cards/%s/actions/enable", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // This API removes an existing public IP from a SIM card. <br/><br/> The API will
@@ -166,11 +166,11 @@ func (r *SimCardActionService) RemovePublicIP(ctx context.Context, id string, op
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_cards/%s/actions/remove_public_ip", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // This API makes a SIM card reachable on the public internet by mapping a random
@@ -184,11 +184,11 @@ func (r *SimCardActionService) SetPublicIP(ctx context.Context, id string, body 
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_cards/%s/actions/set_public_ip", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // The SIM card will be able to connect to the network once the process to set it
@@ -203,11 +203,11 @@ func (r *SimCardActionService) SetStandby(ctx context.Context, id string, opts .
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_cards/%s/actions/set_standby", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // It validates whether SIM card registration codes are valid or not.
@@ -215,7 +215,7 @@ func (r *SimCardActionService) ValidateRegistrationCodes(ctx context.Context, bo
 	opts = slices.Concat(r.Options, opts)
 	path := "sim_cards/actions/validate_registration_codes"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This object represents a SIM card action. It allows tracking the current status

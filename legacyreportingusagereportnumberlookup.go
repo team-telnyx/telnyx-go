@@ -44,7 +44,7 @@ func (r *LegacyReportingUsageReportNumberLookupService) New(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	path := "legacy/reporting/usage_reports/number_lookup"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a specific telco data usage report by its ID
@@ -52,11 +52,11 @@ func (r *LegacyReportingUsageReportNumberLookupService) Get(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("legacy/reporting/usage_reports/number_lookup/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a paginated list of telco data usage reports
@@ -64,7 +64,7 @@ func (r *LegacyReportingUsageReportNumberLookupService) List(ctx context.Context
 	opts = slices.Concat(r.Options, opts)
 	path := "legacy/reporting/usage_reports/number_lookup"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a specific telco data usage report by its ID
@@ -73,11 +73,11 @@ func (r *LegacyReportingUsageReportNumberLookupService) Delete(ctx context.Conte
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("legacy/reporting/usage_reports/number_lookup/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type TelcoDataAggregation struct {

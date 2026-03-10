@@ -58,11 +58,11 @@ func (r *PortoutService) Get(ctx context.Context, id string, opts ...option.Requ
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("portouts/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the portout requests according to filters
@@ -93,11 +93,11 @@ func (r *PortoutService) ListRejectionCodes(ctx context.Context, portoutID strin
 	opts = slices.Concat(r.Options, opts)
 	if portoutID == "" {
 		err = errors.New("missing required portout_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("portouts/rejections/%s", portoutID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Authorize or reject portout request
@@ -105,11 +105,11 @@ func (r *PortoutService) UpdateStatus(ctx context.Context, status PortoutUpdateS
 	opts = slices.Concat(r.Options, opts)
 	if params.ID == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("portouts/%s/%v", params.ID, status)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type PortoutDetails struct {

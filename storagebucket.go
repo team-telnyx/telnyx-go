@@ -54,15 +54,15 @@ func (r *StorageBucketService) NewPresignedURL(ctx context.Context, objectName s
 	opts = slices.Concat(r.Options, opts)
 	if params.BucketName == "" {
 		err = errors.New("missing required bucketName parameter")
-		return
+		return nil, err
 	}
 	if objectName == "" {
 		err = errors.New("missing required objectName parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("storage/buckets/%s/%s/presigned_url", params.BucketName, objectName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type StorageBucketNewPresignedURLResponse struct {

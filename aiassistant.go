@@ -65,7 +65,7 @@ func (r *AIAssistantService) New(ctx context.Context, body AIAssistantNewParams,
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve an AI Assistant configuration by `assistant_id`.
@@ -73,11 +73,11 @@ func (r *AIAssistantService) Get(ctx context.Context, assistantID string, query 
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s", assistantID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an AI Assistant's attributes.
@@ -85,11 +85,11 @@ func (r *AIAssistantService) Update(ctx context.Context, assistantID string, bod
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s", assistantID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a list of all AI Assistants configured by the user.
@@ -97,7 +97,7 @@ func (r *AIAssistantService) List(ctx context.Context, opts ...option.RequestOpt
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete an AI Assistant by `assistant_id`.
@@ -105,11 +105,11 @@ func (r *AIAssistantService) Delete(ctx context.Context, assistantID string, opt
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s", assistantID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // This endpoint allows a client to send a chat message to a specific AI Assistant.
@@ -124,11 +124,11 @@ func (r *AIAssistantService) Chat(ctx context.Context, assistantID string, body 
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/chat", assistantID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Clone an existing assistant, excluding telephony and messaging settings.
@@ -136,11 +136,11 @@ func (r *AIAssistantService) Clone(ctx context.Context, assistantID string, opts
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/clone", assistantID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get an assistant texml by `assistant_id`.
@@ -148,11 +148,11 @@ func (r *AIAssistantService) GetTexml(ctx context.Context, assistantID string, o
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/texml", assistantID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Import assistants from external providers. Any assistant that has already been
@@ -162,7 +162,7 @@ func (r *AIAssistantService) Imports(ctx context.Context, body AIAssistantImport
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants/import"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Send an SMS message for an assistant. This endpoint:
@@ -180,11 +180,11 @@ func (r *AIAssistantService) SendSMS(ctx context.Context, assistantID string, bo
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/chat/sms", assistantID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Assistant configuration including choice of LLM, custom instructions, and tools.

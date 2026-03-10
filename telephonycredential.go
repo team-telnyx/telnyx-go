@@ -43,7 +43,7 @@ func (r *TelephonyCredentialService) New(ctx context.Context, body TelephonyCred
 	opts = slices.Concat(r.Options, opts)
 	path := "telephony_credentials"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get the details of an existing On-demand Credential.
@@ -51,11 +51,11 @@ func (r *TelephonyCredentialService) Get(ctx context.Context, id string, opts ..
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("telephony_credentials/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an existing credential.
@@ -63,11 +63,11 @@ func (r *TelephonyCredentialService) Update(ctx context.Context, id string, body
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("telephony_credentials/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all On-demand Credentials.
@@ -98,11 +98,11 @@ func (r *TelephonyCredentialService) Delete(ctx context.Context, id string, opts
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("telephony_credentials/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Create an Access Token (JWT) for the credential.
@@ -111,11 +111,11 @@ func (r *TelephonyCredentialService) NewToken(ctx context.Context, id string, op
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/plain")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("telephony_credentials/%s/token", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type TelephonyCredential struct {

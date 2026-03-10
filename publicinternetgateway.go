@@ -45,7 +45,7 @@ func (r *PublicInternetGatewayService) New(ctx context.Context, body PublicInter
 	opts = slices.Concat(r.Options, opts)
 	path := "public_internet_gateways"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a Public Internet Gateway.
@@ -53,11 +53,11 @@ func (r *PublicInternetGatewayService) Get(ctx context.Context, id string, opts 
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("public_internet_gateways/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List all Public Internet Gateways.
@@ -88,11 +88,11 @@ func (r *PublicInternetGatewayService) Delete(ctx context.Context, id string, op
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("public_internet_gateways/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type NetworkInterface struct {

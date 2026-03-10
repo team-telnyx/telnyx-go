@@ -42,7 +42,7 @@ func (r *SiprecConnectorService) New(ctx context.Context, body SiprecConnectorNe
 	opts = slices.Concat(r.Options, opts)
 	path := "siprec_connectors"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns details of a stored SIPREC connector.
@@ -50,11 +50,11 @@ func (r *SiprecConnectorService) Get(ctx context.Context, connectorName string, 
 	opts = slices.Concat(r.Options, opts)
 	if connectorName == "" {
 		err = errors.New("missing required connector_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("siprec_connectors/%s", connectorName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a stored SIPREC connector configuration.
@@ -62,11 +62,11 @@ func (r *SiprecConnectorService) Update(ctx context.Context, connectorName strin
 	opts = slices.Concat(r.Options, opts)
 	if connectorName == "" {
 		err = errors.New("missing required connector_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("siprec_connectors/%s", connectorName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a stored SIPREC connector.
@@ -75,11 +75,11 @@ func (r *SiprecConnectorService) Delete(ctx context.Context, connectorName strin
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if connectorName == "" {
 		err = errors.New("missing required connector_name parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("siprec_connectors/%s", connectorName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type SiprecConnectorNewResponse struct {

@@ -46,11 +46,11 @@ func (r *AIClusterService) Get(ctx context.Context, taskID string, query AIClust
 	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
 		err = errors.New("missing required task_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/clusters/%s", taskID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // List all clusters
@@ -82,11 +82,11 @@ func (r *AIClusterService) Delete(ctx context.Context, taskID string, opts ...op
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if taskID == "" {
 		err = errors.New("missing required task_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("ai/clusters/%s", taskID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Starts a background task to compute how the data in an
@@ -96,7 +96,7 @@ func (r *AIClusterService) Compute(ctx context.Context, body AIClusterComputePar
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/clusters"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch a cluster visualization
@@ -105,11 +105,11 @@ func (r *AIClusterService) FetchGraph(ctx context.Context, taskID string, query 
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "image/png")}, opts...)
 	if taskID == "" {
 		err = errors.New("missing required task_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/clusters/%s/graph", taskID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RecursiveCluster struct {

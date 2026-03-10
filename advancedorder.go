@@ -42,7 +42,7 @@ func (r *AdvancedOrderService) New(ctx context.Context, body AdvancedOrderNewPar
 	opts = slices.Concat(r.Options, opts)
 	path := "advanced_orders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get Advanced Order
@@ -50,11 +50,11 @@ func (r *AdvancedOrderService) Get(ctx context.Context, orderID string, opts ...
 	opts = slices.Concat(r.Options, opts)
 	if orderID == "" {
 		err = errors.New("missing required order_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("advanced_orders/%s", orderID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List Advanced Orders
@@ -62,7 +62,7 @@ func (r *AdvancedOrderService) List(ctx context.Context, opts ...option.RequestO
 	opts = slices.Concat(r.Options, opts)
 	path := "advanced_orders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update Advanced Order
@@ -70,11 +70,11 @@ func (r *AdvancedOrderService) UpdateRequirementGroup(ctx context.Context, advan
 	opts = slices.Concat(r.Options, opts)
 	if advancedOrderID == "" {
 		err = errors.New("missing required advanced-order-id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("advanced_orders/%s/requirement_group", advancedOrderID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AdvancedOrderParam struct {

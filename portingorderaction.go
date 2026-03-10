@@ -44,11 +44,11 @@ func (r *PortingOrderActionService) Activate(ctx context.Context, id string, opt
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("porting_orders/%s/actions/activate", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Cancel a porting order
@@ -56,11 +56,11 @@ func (r *PortingOrderActionService) Cancel(ctx context.Context, id string, opts 
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("porting_orders/%s/actions/cancel", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Confirm and submit your porting order.
@@ -68,11 +68,11 @@ func (r *PortingOrderActionService) Confirm(ctx context.Context, id string, opts
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("porting_orders/%s/actions/confirm", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Creates a sharing token for a porting order. The token can be used to share the
@@ -81,11 +81,11 @@ func (r *PortingOrderActionService) Share(ctx context.Context, id string, body P
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("porting_orders/%s/actions/share", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type PortingOrderActionActivateResponse struct {

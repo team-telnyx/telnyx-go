@@ -46,11 +46,11 @@ func (r *MessageRcService) GenerateDeeplink(ctx context.Context, agentID string,
 	opts = slices.Concat(r.Options, opts)
 	if agentID == "" {
 		err = errors.New("missing required agent_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messages/rcs/deeplinks/%s", agentID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Send an RCS message
@@ -58,7 +58,7 @@ func (r *MessageRcService) Send(ctx context.Context, body MessageRcSendParams, o
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/rcs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type MessageRcGenerateDeeplinkResponse struct {

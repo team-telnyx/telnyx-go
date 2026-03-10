@@ -44,11 +44,11 @@ func (r *ConnectionService) Get(ctx context.Context, id string, opts ...option.R
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("connections/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of your connections irrespective of type.
@@ -83,7 +83,7 @@ func (r *ConnectionService) ListActiveCalls(ctx context.Context, connectionID st
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("connections/%s/active_calls", connectionID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)

@@ -44,11 +44,11 @@ func (r *MediaService) Get(ctx context.Context, mediaName string, opts ...option
 	opts = slices.Concat(r.Options, opts)
 	if mediaName == "" {
 		err = errors.New("missing required media_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("media/%s", mediaName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a stored media file.
@@ -56,11 +56,11 @@ func (r *MediaService) Update(ctx context.Context, mediaName string, body MediaU
 	opts = slices.Concat(r.Options, opts)
 	if mediaName == "" {
 		err = errors.New("missing required media_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("media/%s", mediaName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of stored media files.
@@ -68,7 +68,7 @@ func (r *MediaService) List(ctx context.Context, query MediaListParams, opts ...
 	opts = slices.Concat(r.Options, opts)
 	path := "media"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a stored media file.
@@ -77,11 +77,11 @@ func (r *MediaService) Delete(ctx context.Context, mediaName string, opts ...opt
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if mediaName == "" {
 		err = errors.New("missing required media_name parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("media/%s", mediaName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Downloads a stored media file.
@@ -90,11 +90,11 @@ func (r *MediaService) Download(ctx context.Context, mediaName string, opts ...o
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
 	if mediaName == "" {
 		err = errors.New("missing required media_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("media/%s/download", mediaName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Upload media file to Telnyx so it can be used with other Telnyx services
@@ -102,7 +102,7 @@ func (r *MediaService) Upload(ctx context.Context, body MediaUploadParams, opts 
 	opts = slices.Concat(r.Options, opts)
 	path := "media"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type MediaResource struct {

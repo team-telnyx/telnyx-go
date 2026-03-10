@@ -40,15 +40,15 @@ func (r *TexmlAccountRecordingJsonService) DeleteRecordingSidJson(ctx context.Co
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return err
 	}
 	if recordingSid == "" {
 		err = errors.New("missing required recording_sid parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Recordings/%s.json", body.AccountSid, recordingSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Returns recording resource identified by recording id.
@@ -56,15 +56,15 @@ func (r *TexmlAccountRecordingJsonService) GetRecordingSidJson(ctx context.Conte
 	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	if recordingSid == "" {
 		err = errors.New("missing required recording_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Recordings/%s.json", query.AccountSid, recordingSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type TexmlAccountRecordingJsonDeleteRecordingSidJsonParams struct {

@@ -44,7 +44,7 @@ func (r *AuthenticationProviderService) New(ctx context.Context, body Authentica
 	opts = slices.Concat(r.Options, opts)
 	path := "authentication_providers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the details of an existing authentication provider.
@@ -52,11 +52,11 @@ func (r *AuthenticationProviderService) Get(ctx context.Context, id string, opts
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("authentication_providers/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates settings of an existing authentication provider.
@@ -64,11 +64,11 @@ func (r *AuthenticationProviderService) Update(ctx context.Context, id string, b
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("authentication_providers/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of your SSO authentication providers.
@@ -99,11 +99,11 @@ func (r *AuthenticationProviderService) Delete(ctx context.Context, id string, o
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("authentication_providers/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AuthenticationProvider struct {

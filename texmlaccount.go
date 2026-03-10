@@ -58,11 +58,11 @@ func (r *TexmlAccountService) GetRecordingsJson(ctx context.Context, accountSid 
 	opts = slices.Concat(r.Options, opts)
 	if accountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Recordings.json", accountSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns multiple recording transcription resources for an account.
@@ -70,11 +70,11 @@ func (r *TexmlAccountService) GetTranscriptionsJson(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Transcriptions.json", accountSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type TexmlGetCallRecordingResponseBody struct {

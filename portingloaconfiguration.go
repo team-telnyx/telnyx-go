@@ -46,7 +46,7 @@ func (r *PortingLoaConfigurationService) New(ctx context.Context, body PortingLo
 	opts = slices.Concat(r.Options, opts)
 	path := "porting/loa_configurations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a specific LOA configuration.
@@ -54,11 +54,11 @@ func (r *PortingLoaConfigurationService) Get(ctx context.Context, id string, opt
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("porting/loa_configurations/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a specific LOA configuration.
@@ -66,11 +66,11 @@ func (r *PortingLoaConfigurationService) Update(ctx context.Context, id string, 
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("porting/loa_configurations/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List the LOA configurations.
@@ -102,11 +102,11 @@ func (r *PortingLoaConfigurationService) Delete(ctx context.Context, id string, 
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("porting/loa_configurations/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Preview the LOA template that would be generated without need to create LOA
@@ -116,7 +116,7 @@ func (r *PortingLoaConfigurationService) Preview0(ctx context.Context, body Port
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/pdf")}, opts...)
 	path := "porting/loa_configuration/preview"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Preview a specific LOA configuration.
@@ -125,11 +125,11 @@ func (r *PortingLoaConfigurationService) Preview1(ctx context.Context, id string
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/pdf")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("porting/loa_configurations/%s/preview", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type PortingLoaConfiguration struct {

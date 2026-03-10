@@ -48,7 +48,7 @@ func (r *WireguardPeerService) New(ctx context.Context, body WireguardPeerNewPar
 	opts = slices.Concat(r.Options, opts)
 	path := "wireguard_peers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve the WireGuard peer.
@@ -56,11 +56,11 @@ func (r *WireguardPeerService) Get(ctx context.Context, id string, opts ...optio
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("wireguard_peers/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update the WireGuard peer.
@@ -68,11 +68,11 @@ func (r *WireguardPeerService) Update(ctx context.Context, id string, body Wireg
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("wireguard_peers/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all WireGuard peers.
@@ -103,11 +103,11 @@ func (r *WireguardPeerService) Delete(ctx context.Context, id string, opts ...op
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("wireguard_peers/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve Wireguard config template for Peer
@@ -116,11 +116,11 @@ func (r *WireguardPeerService) GetConfig(ctx context.Context, id string, opts ..
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/plain")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("wireguard_peers/%s/config", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type WireguardPeerPatchParam struct {

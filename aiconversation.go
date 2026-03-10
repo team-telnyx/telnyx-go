@@ -54,7 +54,7 @@ func (r *AIConversationService) New(ctx context.Context, body AIConversationNewP
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/conversations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a specific AI conversation by its ID.
@@ -62,11 +62,11 @@ func (r *AIConversationService) Get(ctx context.Context, conversationID string, 
 	opts = slices.Concat(r.Options, opts)
 	if conversationID == "" {
 		err = errors.New("missing required conversation_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/conversations/%s", conversationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update metadata for a specific conversation.
@@ -74,11 +74,11 @@ func (r *AIConversationService) Update(ctx context.Context, conversationID strin
 	opts = slices.Concat(r.Options, opts)
 	if conversationID == "" {
 		err = errors.New("missing required conversation_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/conversations/%s", conversationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a list of all AI conversations configured by the user. Supports
@@ -90,7 +90,7 @@ func (r *AIConversationService) List(ctx context.Context, query AIConversationLi
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/conversations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a specific conversation by its ID.
@@ -99,11 +99,11 @@ func (r *AIConversationService) Delete(ctx context.Context, conversationID strin
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if conversationID == "" {
 		err = errors.New("missing required conversation_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("ai/conversations/%s", conversationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Add a new message to the conversation. Used to insert a new messages to a
@@ -113,11 +113,11 @@ func (r *AIConversationService) AddMessage(ctx context.Context, conversationID s
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if conversationID == "" {
 		err = errors.New("missing required conversation_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("ai/conversations/%s/message", conversationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Retrieve insights for a specific conversation
@@ -125,11 +125,11 @@ func (r *AIConversationService) GetConversationsInsights(ctx context.Context, co
 	opts = slices.Concat(r.Options, opts)
 	if conversationID == "" {
 		err = errors.New("missing required conversation_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/conversations/%s/conversations-insights", conversationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type Conversation struct {

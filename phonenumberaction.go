@@ -43,11 +43,11 @@ func (r *PhoneNumberActionService) ChangeBundleStatus(ctx context.Context, id st
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("phone_numbers/%s/actions/bundle_status_change", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Enable emergency for a phone number
@@ -55,11 +55,11 @@ func (r *PhoneNumberActionService) EnableEmergency(ctx context.Context, id strin
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("phone_numbers/%s/actions/enable_emergency", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Verifies ownership of the provided phone numbers and returns a mapping of
@@ -68,7 +68,7 @@ func (r *PhoneNumberActionService) VerifyOwnership(ctx context.Context, body Pho
 	opts = slices.Concat(r.Options, opts)
 	path := "phone_numbers/actions/verify_ownership"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type PhoneNumberWithVoiceSettings struct {

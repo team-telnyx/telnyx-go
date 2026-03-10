@@ -48,7 +48,7 @@ func (r *PortingOrderActionRequirementService) List(ctx context.Context, porting
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if portingOrderID == "" {
 		err = errors.New("missing required porting_order_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("porting_orders/%s/action_requirements", portingOrderID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -73,15 +73,15 @@ func (r *PortingOrderActionRequirementService) Initiate(ctx context.Context, id 
 	opts = slices.Concat(r.Options, opts)
 	if params.PortingOrderID == "" {
 		err = errors.New("missing required porting_order_id parameter")
-		return
+		return nil, err
 	}
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("porting_orders/%s/action_requirements/%s/initiate", params.PortingOrderID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type PortingOrderActionRequirementListResponse struct {

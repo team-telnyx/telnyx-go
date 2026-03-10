@@ -45,7 +45,7 @@ func (r *TexmlApplicationService) New(ctx context.Context, body TexmlApplication
 	opts = slices.Concat(r.Options, opts)
 	path := "texml_applications"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the details of an existing TeXML Application.
@@ -53,11 +53,11 @@ func (r *TexmlApplicationService) Get(ctx context.Context, id string, opts ...op
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml_applications/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates settings of an existing TeXML Application.
@@ -65,11 +65,11 @@ func (r *TexmlApplicationService) Update(ctx context.Context, id string, body Te
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml_applications/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of your TeXML Applications.
@@ -100,11 +100,11 @@ func (r *TexmlApplicationService) Delete(ctx context.Context, id string, opts ..
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml_applications/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type TexmlApplication struct {

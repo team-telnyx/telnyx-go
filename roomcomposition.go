@@ -47,7 +47,7 @@ func (r *RoomCompositionService) New(ctx context.Context, body RoomCompositionNe
 	opts = slices.Concat(r.Options, opts)
 	path := "room_compositions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // View a room composition.
@@ -55,11 +55,11 @@ func (r *RoomCompositionService) Get(ctx context.Context, roomCompositionID stri
 	opts = slices.Concat(r.Options, opts)
 	if roomCompositionID == "" {
 		err = errors.New("missing required room_composition_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("room_compositions/%s", roomCompositionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // View a list of room compositions.
@@ -91,11 +91,11 @@ func (r *RoomCompositionService) Delete(ctx context.Context, roomCompositionID s
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if roomCompositionID == "" {
 		err = errors.New("missing required room_composition_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("room_compositions/%s", roomCompositionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type RoomComposition struct {

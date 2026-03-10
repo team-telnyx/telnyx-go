@@ -47,11 +47,11 @@ func (r *PhoneNumberJobService) Get(ctx context.Context, id string, opts ...opti
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("phone_numbers/jobs/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists the phone numbers jobs
@@ -83,7 +83,7 @@ func (r *PhoneNumberJobService) DeleteBatch(ctx context.Context, body PhoneNumbe
 	opts = slices.Concat(r.Options, opts)
 	path := "phone_numbers/jobs/delete_phone_numbers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Creates a new background job to update a batch of numbers. At most one thousand
@@ -99,7 +99,7 @@ func (r *PhoneNumberJobService) UpdateBatch(ctx context.Context, params PhoneNum
 	opts = slices.Concat(r.Options, opts)
 	path := "phone_numbers/jobs/update_phone_numbers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Creates a background job to update the emergency settings of a collection of
@@ -108,7 +108,7 @@ func (r *PhoneNumberJobService) UpdateEmergencySettingsBatch(ctx context.Context
 	opts = slices.Concat(r.Options, opts)
 	path := "phone_numbers/jobs/update_emergency_settings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type PhoneNumbersJob struct {

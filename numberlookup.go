@@ -43,11 +43,11 @@ func (r *NumberLookupService) Get(ctx context.Context, phoneNumber string, query
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
 		err = errors.New("missing required phone_number parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("number_lookup/%s", phoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type NumberLookupGetResponse struct {

@@ -42,11 +42,11 @@ func (r *VerificationByPhoneNumberActionService) Verify(ctx context.Context, pho
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
 		err = errors.New("missing required phone_number parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("verifications/by_phone_number/%s/actions/verify", phoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type VerifyVerificationCodeResponse struct {

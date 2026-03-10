@@ -44,11 +44,11 @@ func (r *MessagingHostedNumberService) Get(ctx context.Context, id string, opts 
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_hosted_numbers/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update the messaging settings for a hosted number.
@@ -56,11 +56,11 @@ func (r *MessagingHostedNumberService) Update(ctx context.Context, id string, bo
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_hosted_numbers/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all hosted numbers associated with the authenticated user.
@@ -91,11 +91,11 @@ func (r *MessagingHostedNumberService) Delete(ctx context.Context, id string, op
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_hosted_numbers/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type MessagingHostedNumberGetResponse struct {

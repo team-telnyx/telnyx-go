@@ -46,11 +46,11 @@ func (r *PortingOrderPhoneNumberExtensionService) New(ctx context.Context, porti
 	opts = slices.Concat(r.Options, opts)
 	if portingOrderID == "" {
 		err = errors.New("missing required porting_order_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("porting_orders/%s/phone_number_extensions", portingOrderID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of all phone number extensions of a porting order.
@@ -60,7 +60,7 @@ func (r *PortingOrderPhoneNumberExtensionService) List(ctx context.Context, port
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if portingOrderID == "" {
 		err = errors.New("missing required porting_order_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("porting_orders/%s/phone_number_extensions", portingOrderID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -85,15 +85,15 @@ func (r *PortingOrderPhoneNumberExtensionService) Delete(ctx context.Context, id
 	opts = slices.Concat(r.Options, opts)
 	if body.PortingOrderID == "" {
 		err = errors.New("missing required porting_order_id parameter")
-		return
+		return nil, err
 	}
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("porting_orders/%s/phone_number_extensions/%s", body.PortingOrderID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type PortingPhoneNumberExtension struct {

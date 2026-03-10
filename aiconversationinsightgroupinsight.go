@@ -40,15 +40,15 @@ func (r *AIConversationInsightGroupInsightService) Assign(ctx context.Context, i
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.GroupID == "" {
 		err = errors.New("missing required group_id parameter")
-		return
+		return err
 	}
 	if insightID == "" {
 		err = errors.New("missing required insight_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("ai/conversations/insight-groups/%s/insights/%s/assign", body.GroupID, insightID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Remove an insight from a group
@@ -57,15 +57,15 @@ func (r *AIConversationInsightGroupInsightService) DeleteUnassign(ctx context.Co
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.GroupID == "" {
 		err = errors.New("missing required group_id parameter")
-		return
+		return err
 	}
 	if insightID == "" {
 		err = errors.New("missing required insight_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("ai/conversations/insight-groups/%s/insights/%s/unassign", body.GroupID, insightID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type AIConversationInsightGroupInsightAssignParams struct {

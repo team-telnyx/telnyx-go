@@ -44,11 +44,11 @@ func (r *CustomStorageCredentialService) New(ctx context.Context, connectionID s
 	opts = slices.Concat(r.Options, opts)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("custom_storage_credentials/%s", connectionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the information about custom storage credentials.
@@ -56,11 +56,11 @@ func (r *CustomStorageCredentialService) Get(ctx context.Context, connectionID s
 	opts = slices.Concat(r.Options, opts)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("custom_storage_credentials/%s", connectionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a stored custom credentials configuration.
@@ -68,11 +68,11 @@ func (r *CustomStorageCredentialService) Update(ctx context.Context, connectionI
 	opts = slices.Concat(r.Options, opts)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("custom_storage_credentials/%s", connectionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a stored custom credentials configuration.
@@ -81,11 +81,11 @@ func (r *CustomStorageCredentialService) Delete(ctx context.Context, connectionI
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("custom_storage_credentials/%s", connectionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type AzureConfigurationData struct {

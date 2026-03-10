@@ -40,7 +40,7 @@ func (r *PortabilityCheckService) Run(ctx context.Context, body PortabilityCheck
 	opts = slices.Concat(r.Options, opts)
 	path := "portability_checks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type PortabilityCheckRunResponse struct {

@@ -56,7 +56,7 @@ func (r *TextToSpeechService) Generate(ctx context.Context, body TextToSpeechGen
 	opts = slices.Concat(r.Options, opts)
 	path := "text-to-speech/speech"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a list of available voices from one or all TTS providers. When
@@ -68,7 +68,7 @@ func (r *TextToSpeechService) ListVoices(ctx context.Context, query TextToSpeech
 	opts = slices.Concat(r.Options, opts)
 	path := "text-to-speech/voices"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Response when `output_type` is `base64_output`.

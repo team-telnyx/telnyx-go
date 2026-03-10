@@ -44,11 +44,11 @@ func (r *PhoneNumberVoicemailService) New(ctx context.Context, phoneNumberID str
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumberID == "" {
 		err = errors.New("missing required phone_number_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("phone_numbers/%s/voicemail", phoneNumberID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the voicemail settings for a phone number
@@ -56,11 +56,11 @@ func (r *PhoneNumberVoicemailService) Get(ctx context.Context, phoneNumberID str
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumberID == "" {
 		err = errors.New("missing required phone_number_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("phone_numbers/%s/voicemail", phoneNumberID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update voicemail settings for a phone number
@@ -68,11 +68,11 @@ func (r *PhoneNumberVoicemailService) Update(ctx context.Context, phoneNumberID 
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumberID == "" {
 		err = errors.New("missing required phone_number_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("phone_numbers/%s/voicemail", phoneNumberID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type VoicemailPrefResponse struct {

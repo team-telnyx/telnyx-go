@@ -44,7 +44,7 @@ func (r *AIChatService) NewCompletion(ctx context.Context, body AIChatNewComplet
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/chat/completions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type BucketIDs struct {

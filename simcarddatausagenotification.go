@@ -47,7 +47,7 @@ func (r *SimCardDataUsageNotificationService) New(ctx context.Context, body SimC
 	opts = slices.Concat(r.Options, opts)
 	path := "sim_card_data_usage_notifications"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a single SIM Card Data Usage Notification.
@@ -55,11 +55,11 @@ func (r *SimCardDataUsageNotificationService) Get(ctx context.Context, id string
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_card_data_usage_notifications/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates information for a SIM Card Data Usage Notification.
@@ -67,11 +67,11 @@ func (r *SimCardDataUsageNotificationService) Update(ctx context.Context, simCar
 	opts = slices.Concat(r.Options, opts)
 	if simCardDataUsageNotificationID == "" {
 		err = errors.New("missing required sim_card_data_usage_notification_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_card_data_usage_notifications/%s", simCardDataUsageNotificationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists a paginated collection of SIM card data usage notifications. It enables
@@ -104,11 +104,11 @@ func (r *SimCardDataUsageNotificationService) Delete(ctx context.Context, id str
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_card_data_usage_notifications/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // The SIM card individual data usage notification information.

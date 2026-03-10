@@ -42,7 +42,7 @@ func (r *PhoneNumbersRegulatoryRequirementService) Get(ctx context.Context, quer
 	opts = slices.Concat(r.Options, opts)
 	path := "phone_numbers_regulatory_requirements"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type PhoneNumbersRegulatoryRequirementGetResponse struct {

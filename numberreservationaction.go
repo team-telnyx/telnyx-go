@@ -41,11 +41,11 @@ func (r *NumberReservationActionService) Extend(ctx context.Context, numberReser
 	opts = slices.Concat(r.Options, opts)
 	if numberReservationID == "" {
 		err = errors.New("missing required number_reservation_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("number_reservations/%s/actions/extend", numberReservationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type NumberReservationActionExtendResponse struct {

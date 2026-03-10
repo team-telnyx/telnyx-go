@@ -49,7 +49,7 @@ func (r *MessagingTollfreeVerificationRequestService) New(ctx context.Context, b
 	opts = slices.Concat(r.Options, opts)
 	path := "messaging_tollfree/verification/requests"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a single verification request by its ID.
@@ -57,11 +57,11 @@ func (r *MessagingTollfreeVerificationRequestService) Get(ctx context.Context, i
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_tollfree/verification/requests/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an existing tollfree verification request. This is particularly useful
@@ -70,11 +70,11 @@ func (r *MessagingTollfreeVerificationRequestService) Update(ctx context.Context
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_tollfree/verification/requests/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a list of previously-submitted tollfree verification requests
@@ -112,11 +112,11 @@ func (r *MessagingTollfreeVerificationRequestService) Delete(ctx context.Context
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("messaging_tollfree/verification/requests/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get the history of status changes for a verification request.
@@ -127,11 +127,11 @@ func (r *MessagingTollfreeVerificationRequestService) GetStatusHistory(ctx conte
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_tollfree/verification/requests/%s/status_history", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // A phone number

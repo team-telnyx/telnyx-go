@@ -45,7 +45,7 @@ func (r *SubNumberOrdersReportService) New(ctx context.Context, body SubNumberOr
 	opts = slices.Concat(r.Options, opts)
 	path := "sub_number_orders_report"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get the status and details of a sub number orders report.
@@ -53,11 +53,11 @@ func (r *SubNumberOrdersReportService) Get(ctx context.Context, reportID string,
 	opts = slices.Concat(r.Options, opts)
 	if reportID == "" {
 		err = errors.New("missing required report_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sub_number_orders_report/%s", reportID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Download the CSV file for a completed sub number orders report. The report
@@ -67,11 +67,11 @@ func (r *SubNumberOrdersReportService) Download(ctx context.Context, reportID st
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/csv")}, opts...)
 	if reportID == "" {
 		err = errors.New("missing required report_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sub_number_orders_report/%s/download", reportID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type SubNumberOrdersReport struct {

@@ -47,7 +47,7 @@ func (r *LegacyReportingUsageReportMessagingService) New(ctx context.Context, bo
 	opts = slices.Concat(r.Options, opts)
 	path := "legacy/reporting/usage_reports/messaging"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch single MDR usage report by id.
@@ -55,11 +55,11 @@ func (r *LegacyReportingUsageReportMessagingService) Get(ctx context.Context, id
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("legacy/reporting/usage_reports/messaging/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch all previous requests for MDR usage reports.
@@ -90,11 +90,11 @@ func (r *LegacyReportingUsageReportMessagingService) Delete(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("legacy/reporting/usage_reports/messaging/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Legacy V2 MDR usage report response

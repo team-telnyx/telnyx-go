@@ -44,7 +44,7 @@ func (r *PaymentService) NewStoredPaymentTransaction(ctx context.Context, body P
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/payment/stored_payment_transactions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type PaymentNewStoredPaymentTransactionResponse struct {

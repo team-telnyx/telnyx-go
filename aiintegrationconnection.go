@@ -39,11 +39,11 @@ func (r *AIIntegrationConnectionService) Get(ctx context.Context, userConnection
 	opts = slices.Concat(r.Options, opts)
 	if userConnectionID == "" {
 		err = errors.New("missing required user_connection_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/integrations/connections/%s", userConnectionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List user setup integrations
@@ -51,7 +51,7 @@ func (r *AIIntegrationConnectionService) List(ctx context.Context, opts ...optio
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/integrations/connections"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a specific integration connection.
@@ -60,11 +60,11 @@ func (r *AIIntegrationConnectionService) Delete(ctx context.Context, userConnect
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if userConnectionID == "" {
 		err = errors.New("missing required user_connection_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("ai/integrations/connections/%s", userConnectionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type IntegrationConnection struct {

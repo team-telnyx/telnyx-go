@@ -52,11 +52,11 @@ func (r *Messaging10dlcCampaignService) Get(ctx context.Context, campaignID stri
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/campaign/%s", campaignID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a campaign's properties by `campaignId`. **Please note:** only sample
@@ -65,11 +65,11 @@ func (r *Messaging10dlcCampaignService) Update(ctx context.Context, campaignID s
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/campaign/%s", campaignID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a list of campaigns associated with a supplied `brandId`.
@@ -100,11 +100,11 @@ func (r *Messaging10dlcCampaignService) AcceptSharing(ctx context.Context, campa
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/campaign/acceptSharing/%s", campaignID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Terminate a campaign. Note that once deactivated, a campaign cannot be restored.
@@ -112,11 +112,11 @@ func (r *Messaging10dlcCampaignService) Deactivate(ctx context.Context, campaign
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/campaign/%s", campaignID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get the campaign metadata for each MNO it was submitted to.
@@ -124,11 +124,11 @@ func (r *Messaging10dlcCampaignService) GetMnoMetadata(ctx context.Context, camp
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/campaign/%s/mnoMetadata", campaignID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve campaign's operation status at MNO level.
@@ -136,11 +136,11 @@ func (r *Messaging10dlcCampaignService) GetOperationStatus(ctx context.Context, 
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/campaign/%s/operationStatus", campaignID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get Sharing Status
@@ -148,11 +148,11 @@ func (r *Messaging10dlcCampaignService) GetSharingStatus(ctx context.Context, ca
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/campaign/%s/sharing", campaignID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Submits an appeal for rejected native campaigns in TELNYX_FAILED or MNO_REJECTED
@@ -163,11 +163,11 @@ func (r *Messaging10dlcCampaignService) SubmitAppeal(ctx context.Context, campai
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/campaign/%s/appeal", campaignID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type CampaignSharingStatus struct {

@@ -47,11 +47,11 @@ func (r *StorageBucketSslCertificateService) New(ctx context.Context, bucketName
 	opts = slices.Concat(r.Options, opts)
 	if bucketName == "" {
 		err = errors.New("missing required bucketName parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("storage/buckets/%s/ssl_certificate", bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the stored certificate detail of a bucket, if applicable.
@@ -59,11 +59,11 @@ func (r *StorageBucketSslCertificateService) Get(ctx context.Context, bucketName
 	opts = slices.Concat(r.Options, opts)
 	if bucketName == "" {
 		err = errors.New("missing required bucketName parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("storage/buckets/%s/ssl_certificate", bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes an SSL certificate and its matching secret.
@@ -71,11 +71,11 @@ func (r *StorageBucketSslCertificateService) Delete(ctx context.Context, bucketN
 	opts = slices.Concat(r.Options, opts)
 	if bucketName == "" {
 		err = errors.New("missing required bucketName parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("storage/buckets/%s/ssl_certificate", bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type SslCertificate struct {

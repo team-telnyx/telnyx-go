@@ -45,11 +45,11 @@ func (r *RequirementTypeService) Get(ctx context.Context, id string, opts ...opt
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("requirement_types/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List all requirement types ordered by created_at descending
@@ -57,7 +57,7 @@ func (r *RequirementTypeService) List(ctx context.Context, query RequirementType
 	opts = slices.Concat(r.Options, opts)
 	path := "requirement_types"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RequirementTypeGetResponse struct {

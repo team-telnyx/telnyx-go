@@ -47,7 +47,7 @@ func (r *BundlePricingUserBundleService) New(ctx context.Context, params BundleP
 	opts = slices.Concat(r.Options, opts)
 	path := "bundle_pricing/user_bundles/bulk"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves a user bundle by its ID.
@@ -58,11 +58,11 @@ func (r *BundlePricingUserBundleService) Get(ctx context.Context, userBundleID s
 	opts = slices.Concat(r.Options, opts)
 	if userBundleID == "" {
 		err = errors.New("missing required user_bundle_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("bundle_pricing/user_bundles/%s", userBundleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a paginated list of user bundles.
@@ -99,11 +99,11 @@ func (r *BundlePricingUserBundleService) Deactivate(ctx context.Context, userBun
 	opts = slices.Concat(r.Options, opts)
 	if userBundleID == "" {
 		err = errors.New("missing required user_bundle_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("bundle_pricing/user_bundles/%s", userBundleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the resources of a user bundle by its ID.
@@ -114,11 +114,11 @@ func (r *BundlePricingUserBundleService) ListResources(ctx context.Context, user
 	opts = slices.Concat(r.Options, opts)
 	if userBundleID == "" {
 		err = errors.New("missing required user_bundle_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("bundle_pricing/user_bundles/%s/resources", userBundleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns all user bundles that aren't in use.
@@ -129,7 +129,7 @@ func (r *BundlePricingUserBundleService) ListUnused(ctx context.Context, params 
 	opts = slices.Concat(r.Options, opts)
 	path := "bundle_pricing/user_bundles/unused"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type UserBundle struct {

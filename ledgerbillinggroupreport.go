@@ -43,7 +43,7 @@ func (r *LedgerBillingGroupReportService) New(ctx context.Context, body LedgerBi
 	opts = slices.Concat(r.Options, opts)
 	path := "ledger_billing_group_reports"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a ledger billing group report
@@ -51,11 +51,11 @@ func (r *LedgerBillingGroupReportService) Get(ctx context.Context, id string, op
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ledger_billing_group_reports/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type LedgerBillingGroupReport struct {

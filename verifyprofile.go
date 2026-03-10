@@ -45,7 +45,7 @@ func (r *VerifyProfileService) New(ctx context.Context, body VerifyProfileNewPar
 	opts = slices.Concat(r.Options, opts)
 	path := "verify_profiles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets a single Verify profile.
@@ -53,11 +53,11 @@ func (r *VerifyProfileService) Get(ctx context.Context, verifyProfileID string, 
 	opts = slices.Concat(r.Options, opts)
 	if verifyProfileID == "" {
 		err = errors.New("missing required verify_profile_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("verify_profiles/%s", verifyProfileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update Verify profile
@@ -65,11 +65,11 @@ func (r *VerifyProfileService) Update(ctx context.Context, verifyProfileID strin
 	opts = slices.Concat(r.Options, opts)
 	if verifyProfileID == "" {
 		err = errors.New("missing required verify_profile_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("verify_profiles/%s", verifyProfileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets a paginated list of Verify profiles.
@@ -100,11 +100,11 @@ func (r *VerifyProfileService) Delete(ctx context.Context, verifyProfileID strin
 	opts = slices.Concat(r.Options, opts)
 	if verifyProfileID == "" {
 		err = errors.New("missing required verify_profile_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("verify_profiles/%s", verifyProfileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Create a new Verify profile message template.
@@ -112,7 +112,7 @@ func (r *VerifyProfileService) NewTemplate(ctx context.Context, body VerifyProfi
 	opts = slices.Concat(r.Options, opts)
 	path := "verify_profiles/templates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all Verify profile message templates.
@@ -120,7 +120,7 @@ func (r *VerifyProfileService) GetTemplates(ctx context.Context, opts ...option.
 	opts = slices.Concat(r.Options, opts)
 	path := "verify_profiles/templates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an existing Verify profile message template.
@@ -128,11 +128,11 @@ func (r *VerifyProfileService) UpdateTemplate(ctx context.Context, templateID st
 	opts = slices.Concat(r.Options, opts)
 	if templateID == "" {
 		err = errors.New("missing required template_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("verify_profiles/templates/%s", templateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type MessageTemplate struct {

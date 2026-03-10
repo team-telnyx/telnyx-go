@@ -42,7 +42,7 @@ func (r *InboundChannelService) Update(ctx context.Context, body InboundChannelU
 	opts = slices.Concat(r.Options, opts)
 	path := "inbound_channels"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the US Zone voice channels for your account. voice channels allows you
@@ -54,7 +54,7 @@ func (r *InboundChannelService) List(ctx context.Context, opts ...option.Request
 	opts = slices.Concat(r.Options, opts)
 	path := "inbound_channels"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type InboundChannelUpdateResponse struct {

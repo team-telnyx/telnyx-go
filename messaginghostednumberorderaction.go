@@ -46,11 +46,11 @@ func (r *MessagingHostedNumberOrderActionService) UploadFile(ctx context.Context
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_hosted_number_orders/%s/actions/file_upload", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type MessagingHostedNumberOrderActionUploadFileResponse struct {

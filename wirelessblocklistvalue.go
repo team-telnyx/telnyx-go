@@ -42,7 +42,7 @@ func (r *WirelessBlocklistValueService) List(ctx context.Context, query Wireless
 	opts = slices.Concat(r.Options, opts)
 	path := "wireless_blocklist_values"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type WirelessBlocklistValueListResponse struct {

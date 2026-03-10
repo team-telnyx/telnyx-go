@@ -45,7 +45,7 @@ func (r *IPService) New(ctx context.Context, body IPNewParams, opts ...option.Re
 	opts = slices.Concat(r.Options, opts)
 	path := "ips"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Return the details regarding a specific IP.
@@ -53,11 +53,11 @@ func (r *IPService) Get(ctx context.Context, id string, opts ...option.RequestOp
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ips/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update the details of a specific IP.
@@ -65,11 +65,11 @@ func (r *IPService) Update(ctx context.Context, id string, body IPUpdateParams, 
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ips/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get all IPs belonging to the user that match the given filters.
@@ -100,11 +100,11 @@ func (r *IPService) Delete(ctx context.Context, id string, opts ...option.Reques
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ips/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type IP struct {

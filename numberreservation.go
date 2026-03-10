@@ -50,7 +50,7 @@ func (r *NumberReservationService) New(ctx context.Context, body NumberReservati
 	opts = slices.Concat(r.Options, opts)
 	path := "number_reservations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets a single phone number reservation.
@@ -58,11 +58,11 @@ func (r *NumberReservationService) Get(ctx context.Context, numberReservationID 
 	opts = slices.Concat(r.Options, opts)
 	if numberReservationID == "" {
 		err = errors.New("missing required number_reservation_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("number_reservations/%s", numberReservationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets a paginated list of phone number reservations.

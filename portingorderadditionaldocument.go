@@ -46,11 +46,11 @@ func (r *PortingOrderAdditionalDocumentService) New(ctx context.Context, id stri
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("porting_orders/%s/additional_documents", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of additional documents for a porting order.
@@ -60,7 +60,7 @@ func (r *PortingOrderAdditionalDocumentService) List(ctx context.Context, id str
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("porting_orders/%s/additional_documents", id)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -86,15 +86,15 @@ func (r *PortingOrderAdditionalDocumentService) Delete(ctx context.Context, addi
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.ID == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return err
 	}
 	if additionalDocumentID == "" {
 		err = errors.New("missing required additional_document_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("porting_orders/%s/additional_documents/%s", body.ID, additionalDocumentID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type PortingOrderAdditionalDocumentNewResponse struct {

@@ -42,7 +42,7 @@ func (r *AIAssistantTestTestSuiteService) List(ctx context.Context, opts ...opti
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants/tests/test-suites"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Response containing all available test suite names.

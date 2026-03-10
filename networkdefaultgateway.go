@@ -42,11 +42,11 @@ func (r *NetworkDefaultGatewayService) New(ctx context.Context, networkIdentifie
 	opts = slices.Concat(r.Options, opts)
 	if networkIdentifier == "" {
 		err = errors.New("missing required network_identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("networks/%s/default_gateway", networkIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get Default Gateway status.
@@ -54,11 +54,11 @@ func (r *NetworkDefaultGatewayService) Get(ctx context.Context, id string, opts 
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("networks/%s/default_gateway", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete Default Gateway.
@@ -66,11 +66,11 @@ func (r *NetworkDefaultGatewayService) Delete(ctx context.Context, id string, op
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("networks/%s/default_gateway", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type NetworkDefaultGatewayNewResponse struct {

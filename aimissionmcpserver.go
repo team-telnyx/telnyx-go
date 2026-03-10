@@ -37,11 +37,11 @@ func (r *AIMissionMcpServerService) NewMcpServer(ctx context.Context, missionID 
 	opts = slices.Concat(r.Options, opts)
 	if missionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/mcp-servers", missionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete an MCP server from a mission
@@ -50,15 +50,15 @@ func (r *AIMissionMcpServerService) DeleteMcpServer(ctx context.Context, mcpServ
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return err
 	}
 	if mcpServerID == "" {
 		err = errors.New("missing required mcp_server_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("ai/missions/%s/mcp-servers/%s", body.MissionID, mcpServerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get a specific MCP server by ID
@@ -66,15 +66,15 @@ func (r *AIMissionMcpServerService) GetMcpServer(ctx context.Context, mcpServerI
 	opts = slices.Concat(r.Options, opts)
 	if query.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	if mcpServerID == "" {
 		err = errors.New("missing required mcp_server_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/mcp-servers/%s", query.MissionID, mcpServerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List all MCP servers for a mission
@@ -82,11 +82,11 @@ func (r *AIMissionMcpServerService) ListMcpServers(ctx context.Context, missionI
 	opts = slices.Concat(r.Options, opts)
 	if missionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/mcp-servers", missionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an MCP server definition
@@ -94,15 +94,15 @@ func (r *AIMissionMcpServerService) UpdateMcpServer(ctx context.Context, mcpServ
 	opts = slices.Concat(r.Options, opts)
 	if body.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	if mcpServerID == "" {
 		err = errors.New("missing required mcp_server_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/mcp-servers/%s", body.MissionID, mcpServerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AIMissionMcpServerNewMcpServerResponse = any

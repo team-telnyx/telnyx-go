@@ -46,11 +46,11 @@ func (r *ConferenceActionService) Update(ctx context.Context, id string, body Co
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("conferences/%s/actions/update", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // End a conference and terminate all active participants.
@@ -58,11 +58,11 @@ func (r *ConferenceActionService) EndConference(ctx context.Context, id string, 
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("conferences/%s/actions/end", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Play an audio file to a specific conference participant and gather DTMF input.
@@ -70,11 +70,11 @@ func (r *ConferenceActionService) GatherDtmfAudio(ctx context.Context, id string
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("conferences/%s/actions/gather_using_audio", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Hold a list of participants in a conference call
@@ -82,11 +82,11 @@ func (r *ConferenceActionService) Hold(ctx context.Context, id string, body Conf
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("conferences/%s/actions/hold", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Join an existing call leg to a conference. Issue the Join Conference command
@@ -103,11 +103,11 @@ func (r *ConferenceActionService) Join(ctx context.Context, id string, body Conf
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("conferences/%s/actions/join", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Removes a call leg from a conference and moves it back to parked state.
@@ -119,11 +119,11 @@ func (r *ConferenceActionService) Leave(ctx context.Context, id string, body Con
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("conferences/%s/actions/leave", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Mute a list of participants in a conference call
@@ -131,11 +131,11 @@ func (r *ConferenceActionService) Mute(ctx context.Context, id string, body Conf
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("conferences/%s/actions/mute", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Play audio to all or some participants on a conference call.
@@ -143,11 +143,11 @@ func (r *ConferenceActionService) Play(ctx context.Context, id string, body Conf
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("conferences/%s/actions/play", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Pause conference recording.
@@ -155,11 +155,11 @@ func (r *ConferenceActionService) RecordPause(ctx context.Context, id string, bo
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("conferences/%s/actions/record_pause", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Resume conference recording.
@@ -167,11 +167,11 @@ func (r *ConferenceActionService) RecordResume(ctx context.Context, id string, b
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("conferences/%s/actions/record_resume", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Start recording the conference. Recording will stop on conference end, or via
@@ -184,11 +184,11 @@ func (r *ConferenceActionService) RecordStart(ctx context.Context, id string, bo
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("conferences/%s/actions/record_start", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Stop recording the conference.
@@ -200,11 +200,11 @@ func (r *ConferenceActionService) RecordStop(ctx context.Context, id string, bod
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("conferences/%s/actions/record_stop", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Send DTMF tones to one or more conference participants.
@@ -212,11 +212,11 @@ func (r *ConferenceActionService) SendDtmf(ctx context.Context, id string, body 
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("conferences/%s/actions/send_dtmf", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Convert text to speech and play it to all or some participants.
@@ -224,11 +224,11 @@ func (r *ConferenceActionService) Speak(ctx context.Context, id string, body Con
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("conferences/%s/actions/speak", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Stop audio being played to all or some participants on a conference call.
@@ -236,11 +236,11 @@ func (r *ConferenceActionService) Stop(ctx context.Context, id string, body Conf
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("conferences/%s/actions/stop", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Unhold a list of participants in a conference call
@@ -248,11 +248,11 @@ func (r *ConferenceActionService) Unhold(ctx context.Context, id string, body Co
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("conferences/%s/actions/unhold", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Unmute a list of participants in a conference call
@@ -260,11 +260,11 @@ func (r *ConferenceActionService) Unmute(ctx context.Context, id string, body Co
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("conferences/%s/actions/unmute", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ConferenceCommandResult struct {

@@ -47,7 +47,7 @@ func (r *IPConnectionService) New(ctx context.Context, body IPConnectionNewParam
 	opts = slices.Concat(r.Options, opts)
 	path := "ip_connections"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the details of an existing ip connection.
@@ -55,11 +55,11 @@ func (r *IPConnectionService) Get(ctx context.Context, id string, opts ...option
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ip_connections/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates settings of an existing IP connection.
@@ -67,11 +67,11 @@ func (r *IPConnectionService) Update(ctx context.Context, id string, body IPConn
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ip_connections/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of your IP connections.
@@ -102,11 +102,11 @@ func (r *IPConnectionService) Delete(ctx context.Context, id string, opts ...opt
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ip_connections/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type InboundIP struct {

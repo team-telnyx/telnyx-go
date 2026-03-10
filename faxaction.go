@@ -42,11 +42,11 @@ func (r *FaxActionService) Cancel(ctx context.Context, id string, opts ...option
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("faxes/%s/actions/cancel", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Refreshes the inbound fax's media_url when it has expired
@@ -54,11 +54,11 @@ func (r *FaxActionService) Refresh(ctx context.Context, id string, opts ...optio
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("faxes/%s/actions/refresh", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type FaxActionCancelResponse struct {

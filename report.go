@@ -48,7 +48,7 @@ func (r *ReportService) ListMdrs(ctx context.Context, query ReportListMdrsParams
 	opts = slices.Concat(r.Options, opts)
 	path := "reports/mdrs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch all Wdr records

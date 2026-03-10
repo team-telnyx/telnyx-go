@@ -49,7 +49,7 @@ func (r *UserAddressService) New(ctx context.Context, body UserAddressNewParams,
 	opts = slices.Concat(r.Options, opts)
 	path := "user_addresses"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the details of an existing user address.
@@ -57,11 +57,11 @@ func (r *UserAddressService) Get(ctx context.Context, id string, opts ...option.
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("user_addresses/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of your user addresses.

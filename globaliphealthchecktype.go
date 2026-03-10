@@ -39,7 +39,7 @@ func (r *GlobalIPHealthCheckTypeService) List(ctx context.Context, opts ...optio
 	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_health_check_types"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type GlobalIPHealthCheckTypeListResponse struct {

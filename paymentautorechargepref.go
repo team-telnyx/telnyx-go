@@ -40,7 +40,7 @@ func (r *PaymentAutoRechargePrefService) Update(ctx context.Context, body Paymen
 	opts = slices.Concat(r.Options, opts)
 	path := "payment/auto_recharge_prefs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the payment auto recharge preferences.
@@ -48,7 +48,7 @@ func (r *PaymentAutoRechargePrefService) List(ctx context.Context, opts ...optio
 	opts = slices.Concat(r.Options, opts)
 	path := "payment/auto_recharge_prefs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AutoRechargePref struct {

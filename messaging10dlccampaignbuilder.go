@@ -49,7 +49,7 @@ func (r *Messaging10dlcCampaignBuilderService) Submit(ctx context.Context, body 
 	opts = slices.Concat(r.Options, opts)
 	path := "10dlc/campaignBuilder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type Messaging10dlcCampaignBuilderSubmitParams struct {

@@ -43,15 +43,15 @@ func (r *TexmlAccountTranscriptionJsonService) DeleteRecordingTranscriptionSidJs
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return err
 	}
 	if recordingTranscriptionSid == "" {
 		err = errors.New("missing required recording_transcription_sid parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Transcriptions/%s.json", body.AccountSid, recordingTranscriptionSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Returns the recording transcription resource identified by its ID.
@@ -59,15 +59,15 @@ func (r *TexmlAccountTranscriptionJsonService) GetRecordingTranscriptionSidJson(
 	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	if recordingTranscriptionSid == "" {
 		err = errors.New("missing required recording_transcription_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Transcriptions/%s.json", query.AccountSid, recordingTranscriptionSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type TexmlAccountTranscriptionJsonGetRecordingTranscriptionSidJsonResponse struct {

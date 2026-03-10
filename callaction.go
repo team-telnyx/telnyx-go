@@ -46,11 +46,11 @@ func (r *CallActionService) AddAIAssistantMessages(ctx context.Context, callCont
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/ai_assistant_add_messages", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Answer an incoming call. You must issue this command before executing subsequent
@@ -68,11 +68,11 @@ func (r *CallActionService) Answer(ctx context.Context, callControlID string, bo
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/answer", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Bridge two call control calls.
@@ -85,11 +85,11 @@ func (r *CallActionService) Bridge(ctx context.Context, callControlIDToBridge st
 	opts = slices.Concat(r.Options, opts)
 	if callControlIDToBridge == "" {
 		err = errors.New("missing required call_control_id_to_bridge parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/bridge", callControlIDToBridge)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Put the call in a queue.
@@ -97,11 +97,11 @@ func (r *CallActionService) Enqueue(ctx context.Context, callControlID string, b
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/enqueue", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Gather DTMF signals to build interactive menus.
@@ -117,11 +117,11 @@ func (r *CallActionService) Gather(ctx context.Context, callControlID string, bo
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/gather", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Gather parameters defined in the request payload using a voice assistant.
@@ -140,11 +140,11 @@ func (r *CallActionService) GatherUsingAI(ctx context.Context, callControlID str
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/gather_using_ai", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Play an audio file on the call until the required DTMF signals are gathered to
@@ -165,11 +165,11 @@ func (r *CallActionService) GatherUsingAudio(ctx context.Context, callControlID 
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/gather_using_audio", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Convert text to speech and play it on the call until the required DTMF signals
@@ -188,11 +188,11 @@ func (r *CallActionService) GatherUsingSpeak(ctx context.Context, callControlID 
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/gather_using_speak", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Hang up the call.
@@ -205,11 +205,11 @@ func (r *CallActionService) Hangup(ctx context.Context, callControlID string, bo
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/hangup", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Removes the call from a queue.
@@ -217,11 +217,11 @@ func (r *CallActionService) LeaveQueue(ctx context.Context, callControlID string
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/leave_queue", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Pause recording the call. Recording can be resumed via Resume recording command.
@@ -233,11 +233,11 @@ func (r *CallActionService) PauseRecording(ctx context.Context, callControlID st
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/record_pause", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Initiate a SIP Refer on a Call Control call. You can initiate a SIP Refer at any
@@ -252,11 +252,11 @@ func (r *CallActionService) Refer(ctx context.Context, callControlID string, bod
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/refer", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Reject an incoming call.
@@ -268,11 +268,11 @@ func (r *CallActionService) Reject(ctx context.Context, callControlID string, bo
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/reject", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Resume recording the call.
@@ -284,11 +284,11 @@ func (r *CallActionService) ResumeRecording(ctx context.Context, callControlID s
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/record_resume", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Sends DTMF tones from this leg. DTMF tones will be heard by the other end of the
@@ -301,11 +301,11 @@ func (r *CallActionService) SendDtmf(ctx context.Context, callControlID string, 
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/send_dtmf", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Sends SIP info from this leg.
@@ -317,11 +317,11 @@ func (r *CallActionService) SendSipInfo(ctx context.Context, callControlID strin
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/send_sip_info", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Convert text to speech and play it back on the call. If multiple speak text
@@ -336,11 +336,11 @@ func (r *CallActionService) Speak(ctx context.Context, callControlID string, bod
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/speak", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Start an AI assistant on the call.
@@ -353,11 +353,11 @@ func (r *CallActionService) StartAIAssistant(ctx context.Context, callControlID 
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/ai_assistant_start", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Call forking allows you to stream the media from a call to a specific target in
@@ -374,11 +374,11 @@ func (r *CallActionService) StartForking(ctx context.Context, callControlID stri
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/fork_start", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Noise Suppression Start (BETA)
@@ -386,11 +386,11 @@ func (r *CallActionService) StartNoiseSuppression(ctx context.Context, callContr
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/suppression_start", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Play an audio file on the call. If multiple play audio commands are issued
@@ -410,11 +410,11 @@ func (r *CallActionService) StartPlayback(ctx context.Context, callControlID str
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/playback_start", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Start recording the call. Recording will stop on call hang-up, or can be
@@ -429,11 +429,11 @@ func (r *CallActionService) StartRecording(ctx context.Context, callControlID st
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/record_start", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Start siprec session to configured in SIPREC connector SRS.
@@ -447,11 +447,11 @@ func (r *CallActionService) StartSiprec(ctx context.Context, callControlID strin
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/siprec_start", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Start streaming the media from a call to a specific WebSocket address or
@@ -464,11 +464,11 @@ func (r *CallActionService) StartStreaming(ctx context.Context, callControlID st
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/streaming_start", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Start real-time transcription. Transcription will stop on call hang-up, or can
@@ -481,11 +481,11 @@ func (r *CallActionService) StartTranscription(ctx context.Context, callControlI
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/transcription_start", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Stop an AI assistant on the call.
@@ -493,11 +493,11 @@ func (r *CallActionService) StopAIAssistant(ctx context.Context, callControlID s
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/ai_assistant_stop", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Stop forking a call.
@@ -509,11 +509,11 @@ func (r *CallActionService) StopForking(ctx context.Context, callControlID strin
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/fork_stop", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Stop current gather.
@@ -525,11 +525,11 @@ func (r *CallActionService) StopGather(ctx context.Context, callControlID string
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/gather_stop", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Noise Suppression Stop (BETA)
@@ -537,11 +537,11 @@ func (r *CallActionService) StopNoiseSuppression(ctx context.Context, callContro
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/suppression_stop", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Stop audio being played on the call.
@@ -553,11 +553,11 @@ func (r *CallActionService) StopPlayback(ctx context.Context, callControlID stri
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/playback_stop", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Stop recording the call.
@@ -569,11 +569,11 @@ func (r *CallActionService) StopRecording(ctx context.Context, callControlID str
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/record_stop", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Stop SIPREC session.
@@ -585,11 +585,11 @@ func (r *CallActionService) StopSiprec(ctx context.Context, callControlID string
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/siprec_stop", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Stop streaming a call to a WebSocket.
@@ -601,11 +601,11 @@ func (r *CallActionService) StopStreaming(ctx context.Context, callControlID str
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/streaming_stop", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Stop real-time transcription.
@@ -613,11 +613,11 @@ func (r *CallActionService) StopTranscription(ctx context.Context, callControlID
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/transcription_stop", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Switch the supervisor role for a bridged call. This allows switching between
@@ -626,11 +626,11 @@ func (r *CallActionService) SwitchSupervisorRole(ctx context.Context, callContro
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/switch_supervisor_role", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Transfer a call to a new destination. If the transfer is unsuccessful, a
@@ -655,11 +655,11 @@ func (r *CallActionService) Transfer(ctx context.Context, callControlID string, 
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/transfer", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates client state
@@ -667,11 +667,11 @@ func (r *CallActionService) UpdateClientState(ctx context.Context, callControlID
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
 		err = errors.New("missing required call_control_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("calls/%s/actions/client_state_update", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // The property Type is required.

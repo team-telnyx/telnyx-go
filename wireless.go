@@ -45,7 +45,7 @@ func (r *WirelessService) GetRegions(ctx context.Context, query WirelessGetRegio
 	opts = slices.Concat(r.Options, opts)
 	path := "wireless/regions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type WirelessGetRegionsResponse struct {

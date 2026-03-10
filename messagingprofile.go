@@ -51,7 +51,7 @@ func (r *MessagingProfileService) New(ctx context.Context, body MessagingProfile
 	opts = slices.Concat(r.Options, opts)
 	path := "messaging_profiles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a messaging profile
@@ -59,11 +59,11 @@ func (r *MessagingProfileService) Get(ctx context.Context, messagingProfileID st
 	opts = slices.Concat(r.Options, opts)
 	if messagingProfileID == "" {
 		err = errors.New("missing required messaging_profile_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_profiles/%s", messagingProfileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a messaging profile
@@ -71,11 +71,11 @@ func (r *MessagingProfileService) Update(ctx context.Context, messagingProfileID
 	opts = slices.Concat(r.Options, opts)
 	if messagingProfileID == "" {
 		err = errors.New("missing required messaging_profile_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_profiles/%s", messagingProfileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List messaging profiles
@@ -106,11 +106,11 @@ func (r *MessagingProfileService) Delete(ctx context.Context, messagingProfileID
 	opts = slices.Concat(r.Options, opts)
 	if messagingProfileID == "" {
 		err = errors.New("missing required messaging_profile_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_profiles/%s", messagingProfileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List all alphanumeric sender IDs associated with a specific messaging profile.
@@ -120,7 +120,7 @@ func (r *MessagingProfileService) ListAlphanumericSenderIDs(ctx context.Context,
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_profiles/%s/alphanumeric_sender_ids", id)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -147,7 +147,7 @@ func (r *MessagingProfileService) ListPhoneNumbers(ctx context.Context, messagin
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if messagingProfileID == "" {
 		err = errors.New("missing required messaging_profile_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_profiles/%s/phone_numbers", messagingProfileID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -174,7 +174,7 @@ func (r *MessagingProfileService) ListShortCodes(ctx context.Context, messagingP
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if messagingProfileID == "" {
 		err = errors.New("missing required messaging_profile_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_profiles/%s/short_codes", messagingProfileID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -200,11 +200,11 @@ func (r *MessagingProfileService) GetMetrics(ctx context.Context, id string, que
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_profiles/%s/metrics", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type MessagingProfile struct {

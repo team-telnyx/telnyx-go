@@ -42,7 +42,7 @@ func (r *RegulatoryRequirementService) Get(ctx context.Context, query Regulatory
 	opts = slices.Concat(r.Options, opts)
 	path := "regulatory_requirements"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RegulatoryRequirementGetResponse struct {

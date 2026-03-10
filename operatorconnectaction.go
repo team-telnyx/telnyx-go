@@ -43,7 +43,7 @@ func (r *OperatorConnectActionService) Refresh(ctx context.Context, opts ...opti
 	opts = slices.Concat(r.Options, opts)
 	path := "operator_connect/actions/refresh"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type OperatorConnectActionRefreshResponse struct {

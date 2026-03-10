@@ -62,7 +62,7 @@ func (r *ConferenceService) New(ctx context.Context, body ConferenceNewParams, o
 	opts = slices.Concat(r.Options, opts)
 	path := "conferences"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve an existing conference
@@ -70,11 +70,11 @@ func (r *ConferenceService) Get(ctx context.Context, id string, query Conference
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("conferences/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists conferences. Conferences are created on demand, and will expire after all
@@ -113,7 +113,7 @@ func (r *ConferenceService) ListParticipants(ctx context.Context, conferenceID s
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if conferenceID == "" {
 		err = errors.New("missing required conference_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("conferences/%s/participants", conferenceID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -138,15 +138,15 @@ func (r *ConferenceService) GetParticipant(ctx context.Context, participantID st
 	opts = slices.Concat(r.Options, opts)
 	if query.ID == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	if participantID == "" {
 		err = errors.New("missing required participant_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("conferences/%s/participants/%s", query.ID, participantID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update properties of a conference participant.
@@ -154,15 +154,15 @@ func (r *ConferenceService) UpdateParticipant(ctx context.Context, participantID
 	opts = slices.Concat(r.Options, opts)
 	if params.ID == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	if participantID == "" {
 		err = errors.New("missing required participant_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("conferences/%s/participants/%s", params.ID, participantID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type Conference struct {

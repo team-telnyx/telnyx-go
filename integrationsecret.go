@@ -47,7 +47,7 @@ func (r *IntegrationSecretService) New(ctx context.Context, body IntegrationSecr
 	opts = slices.Concat(r.Options, opts)
 	path := "integration_secrets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a list of all integration secrets configured by the user.
@@ -79,11 +79,11 @@ func (r *IntegrationSecretService) Delete(ctx context.Context, id string, opts .
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("integration_secrets/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type IntegrationSecret struct {

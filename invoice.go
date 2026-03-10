@@ -44,11 +44,11 @@ func (r *InvoiceService) Get(ctx context.Context, id string, query InvoiceGetPar
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("invoices/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a paginated list of invoices.

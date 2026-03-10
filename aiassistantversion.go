@@ -45,15 +45,15 @@ func (r *AIAssistantVersionService) Get(ctx context.Context, versionID string, p
 	opts = slices.Concat(r.Options, opts)
 	if params.AssistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return nil, err
 	}
 	if versionID == "" {
 		err = errors.New("missing required version_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/versions/%s", params.AssistantID, versionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates the configuration of a specific assistant version. Can not update main
@@ -62,15 +62,15 @@ func (r *AIAssistantVersionService) Update(ctx context.Context, versionID string
 	opts = slices.Concat(r.Options, opts)
 	if params.AssistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return nil, err
 	}
 	if versionID == "" {
 		err = errors.New("missing required version_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/versions/%s", params.AssistantID, versionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves all versions of a specific assistant with complete configuration and
@@ -79,11 +79,11 @@ func (r *AIAssistantVersionService) List(ctx context.Context, assistantID string
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/versions", assistantID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Permanently removes a specific version of an assistant. Can not delete main
@@ -93,15 +93,15 @@ func (r *AIAssistantVersionService) Delete(ctx context.Context, versionID string
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.AssistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return err
 	}
 	if versionID == "" {
 		err = errors.New("missing required version_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/versions/%s", body.AssistantID, versionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Promotes a specific version to be the main/current version of the assistant.
@@ -111,15 +111,15 @@ func (r *AIAssistantVersionService) Promote(ctx context.Context, versionID strin
 	opts = slices.Concat(r.Options, opts)
 	if body.AssistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return nil, err
 	}
 	if versionID == "" {
 		err = errors.New("missing required version_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/versions/%s/promote", body.AssistantID, versionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type UpdateAssistantParam struct {

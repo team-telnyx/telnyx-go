@@ -46,7 +46,7 @@ func (r *BillingGroupService) New(ctx context.Context, body BillingGroupNewParam
 	opts = slices.Concat(r.Options, opts)
 	path := "billing_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a billing group
@@ -54,11 +54,11 @@ func (r *BillingGroupService) Get(ctx context.Context, id string, opts ...option
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("billing_groups/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a billing group
@@ -66,11 +66,11 @@ func (r *BillingGroupService) Update(ctx context.Context, id string, body Billin
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("billing_groups/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all billing groups
@@ -101,11 +101,11 @@ func (r *BillingGroupService) Delete(ctx context.Context, id string, opts ...opt
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("billing_groups/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type BillingGroup struct {

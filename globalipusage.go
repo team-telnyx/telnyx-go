@@ -43,7 +43,7 @@ func (r *GlobalIPUsageService) Get(ctx context.Context, query GlobalIPUsageGetPa
 	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_usage"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type GlobalIPUsageGetResponse struct {
