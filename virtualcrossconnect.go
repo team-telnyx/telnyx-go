@@ -50,7 +50,7 @@ func (r *VirtualCrossConnectService) New(ctx context.Context, body VirtualCrossC
 	opts = slices.Concat(r.Options, opts)
 	path := "virtual_cross_connects"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a Virtual Cross Connect.
@@ -58,11 +58,11 @@ func (r *VirtualCrossConnectService) Get(ctx context.Context, id string, opts ..
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("virtual_cross_connects/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update the Virtual Cross Connect.<br /><br />Cloud IPs can only be patched
@@ -76,11 +76,11 @@ func (r *VirtualCrossConnectService) Update(ctx context.Context, id string, body
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("virtual_cross_connects/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all Virtual Cross Connects.
@@ -111,11 +111,11 @@ func (r *VirtualCrossConnectService) Delete(ctx context.Context, id string, opts
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("virtual_cross_connects/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type VirtualCrossConnectNewResponse struct {

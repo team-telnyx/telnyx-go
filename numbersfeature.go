@@ -38,7 +38,7 @@ func (r *NumbersFeatureService) New(ctx context.Context, body NumbersFeatureNewP
 	opts = slices.Concat(r.Options, opts)
 	path := "numbers_features"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type NumbersFeatureNewResponse struct {

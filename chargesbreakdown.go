@@ -42,7 +42,7 @@ func (r *ChargesBreakdownService) Get(ctx context.Context, query ChargesBreakdow
 	opts = slices.Concat(r.Options, opts)
 	path := "charges_breakdown"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type ChargesBreakdownGetResponse struct {

@@ -52,7 +52,7 @@ func (r *Messaging10dlcPhoneNumberAssignmentByProfileService) Assign(ctx context
 	opts = slices.Concat(r.Options, opts)
 	path := "10dlc/phoneNumberAssignmentByProfile"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Check the status of the individual phone number/campaign assignments associated
@@ -61,11 +61,11 @@ func (r *Messaging10dlcPhoneNumberAssignmentByProfileService) ListPhoneNumberSta
 	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
 		err = errors.New("missing required taskId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/phoneNumberAssignmentByProfile/%s/phoneNumbers", taskID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Check the status of the individual phone number/campaign assignments associated
@@ -74,11 +74,11 @@ func (r *Messaging10dlcPhoneNumberAssignmentByProfileService) GetPhoneNumberStat
 	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
 		err = errors.New("missing required taskId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/phoneNumberAssignmentByProfile/%s/phoneNumbers", taskID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Check the status of the task associated with assigning all phone numbers on a
@@ -87,11 +87,11 @@ func (r *Messaging10dlcPhoneNumberAssignmentByProfileService) GetStatus(ctx cont
 	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
 		err = errors.New("missing required taskId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/phoneNumberAssignmentByProfile/%s", taskID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type ProfileAssignmentPhoneNumbers struct {

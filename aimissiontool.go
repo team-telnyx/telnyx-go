@@ -37,11 +37,11 @@ func (r *AIMissionToolService) NewTool(ctx context.Context, missionID string, op
 	opts = slices.Concat(r.Options, opts)
 	if missionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/tools", missionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a tool from a mission
@@ -50,15 +50,15 @@ func (r *AIMissionToolService) DeleteTool(ctx context.Context, toolID string, bo
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return err
 	}
 	if toolID == "" {
 		err = errors.New("missing required tool_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("ai/missions/%s/tools/%s", body.MissionID, toolID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get a specific tool by ID
@@ -66,15 +66,15 @@ func (r *AIMissionToolService) GetTool(ctx context.Context, toolID string, query
 	opts = slices.Concat(r.Options, opts)
 	if query.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	if toolID == "" {
 		err = errors.New("missing required tool_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/tools/%s", query.MissionID, toolID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List all tools for a mission
@@ -82,11 +82,11 @@ func (r *AIMissionToolService) ListTools(ctx context.Context, missionID string, 
 	opts = slices.Concat(r.Options, opts)
 	if missionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/tools", missionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a tool definition
@@ -94,15 +94,15 @@ func (r *AIMissionToolService) UpdateTool(ctx context.Context, toolID string, bo
 	opts = slices.Concat(r.Options, opts)
 	if body.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	if toolID == "" {
 		err = errors.New("missing required tool_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/tools/%s", body.MissionID, toolID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AIMissionToolNewToolResponse = any

@@ -42,11 +42,11 @@ func (r *PortoutSupportingDocumentService) New(ctx context.Context, id string, b
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("portouts/%s/supporting_documents", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List every supporting documents for a portout request.
@@ -54,11 +54,11 @@ func (r *PortoutSupportingDocumentService) List(ctx context.Context, id string, 
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("portouts/%s/supporting_documents", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type PortOutSupportingDocument struct {

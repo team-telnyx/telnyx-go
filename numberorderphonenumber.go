@@ -44,11 +44,11 @@ func (r *NumberOrderPhoneNumberService) Get(ctx context.Context, numberOrderPhon
 	opts = slices.Concat(r.Options, opts)
 	if numberOrderPhoneNumberID == "" {
 		err = errors.New("missing required number_order_phone_number_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("number_order_phone_numbers/%s", numberOrderPhoneNumberID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a list of phone numbers associated to orders.
@@ -56,7 +56,7 @@ func (r *NumberOrderPhoneNumberService) List(ctx context.Context, query NumberOr
 	opts = slices.Concat(r.Options, opts)
 	path := "number_order_phone_numbers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Update requirement group for a phone number order
@@ -64,11 +64,11 @@ func (r *NumberOrderPhoneNumberService) UpdateRequirementGroup(ctx context.Conte
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("number_order_phone_numbers/%s/requirement_group", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates requirements for a single phone number within a number order.
@@ -76,11 +76,11 @@ func (r *NumberOrderPhoneNumberService) UpdateRequirements(ctx context.Context, 
 	opts = slices.Concat(r.Options, opts)
 	if numberOrderPhoneNumberID == "" {
 		err = errors.New("missing required number_order_phone_number_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("number_order_phone_numbers/%s", numberOrderPhoneNumberID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type NumberOrderPhoneNumber struct {

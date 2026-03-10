@@ -46,7 +46,7 @@ func (r *AccessIPRangeService) New(ctx context.Context, body AccessIPRangeNewPar
 	opts = slices.Concat(r.Options, opts)
 	path := "access_ip_ranges"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all Access IP Ranges
@@ -77,11 +77,11 @@ func (r *AccessIPRangeService) Delete(ctx context.Context, accessIPRangeID strin
 	opts = slices.Concat(r.Options, opts)
 	if accessIPRangeID == "" {
 		err = errors.New("missing required access_ip_range_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("access_ip_ranges/%s", accessIPRangeID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccessIPRange struct {

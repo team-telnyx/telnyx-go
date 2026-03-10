@@ -52,7 +52,7 @@ func (r *Messaging10dlcBrandService) New(ctx context.Context, body Messaging10dl
 	opts = slices.Concat(r.Options, opts)
 	path := "10dlc/brand"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a brand by `brandId`.
@@ -60,11 +60,11 @@ func (r *Messaging10dlcBrandService) Get(ctx context.Context, brandID string, op
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/brand/%s", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a brand's attributes by `brandId`.
@@ -72,11 +72,11 @@ func (r *Messaging10dlcBrandService) Update(ctx context.Context, brandID string,
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/brand/%s", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This endpoint is used to list all brands associated with your organization.
@@ -110,11 +110,11 @@ func (r *Messaging10dlcBrandService) Delete(ctx context.Context, brandID string,
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("10dlc/brand/%s", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get feedback about a brand by ID. This endpoint can be used after creating or
@@ -134,11 +134,11 @@ func (r *Messaging10dlcBrandService) GetFeedback(ctx context.Context, brandID st
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/brand/feedback/%s", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Query the status of an SMS OTP (One-Time Password) for Sole Proprietor brand
@@ -157,11 +157,11 @@ func (r *Messaging10dlcBrandService) GetSMSOtpByReference(ctx context.Context, r
 	opts = slices.Concat(r.Options, opts)
 	if referenceID == "" {
 		err = errors.New("missing required referenceId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/brand/smsOtp/%s", referenceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Resend brand 2FA email
@@ -170,11 +170,11 @@ func (r *Messaging10dlcBrandService) Resend2faEmail(ctx context.Context, brandID
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("10dlc/brand/%s/2faEmail", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Query the status of an SMS OTP (One-Time Password) for Sole Proprietor brand
@@ -193,11 +193,11 @@ func (r *Messaging10dlcBrandService) GetSMSOtpStatus(ctx context.Context, brandI
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/brand/%s/smsOtp", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // This operation allows you to revet the brand. However, revetting is allowed once
@@ -207,11 +207,11 @@ func (r *Messaging10dlcBrandService) Revet(ctx context.Context, brandID string, 
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/brand/%s/revet", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Trigger or re-trigger an SMS OTP (One-Time Password) for Sole Proprietor brand
@@ -236,11 +236,11 @@ func (r *Messaging10dlcBrandService) TriggerSMSOtp(ctx context.Context, brandID 
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/brand/%s/smsOtp", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Verify the SMS OTP (One-Time Password) for Sole Proprietor brand verification.
@@ -266,11 +266,11 @@ func (r *Messaging10dlcBrandService) VerifySMSOtp(ctx context.Context, brandID s
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("10dlc/brand/%s/smsOtp", brandID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, nil, opts...)
-	return
+	return err
 }
 
 // An enumeration.

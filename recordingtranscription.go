@@ -42,11 +42,11 @@ func (r *RecordingTranscriptionService) Get(ctx context.Context, recordingTransc
 	opts = slices.Concat(r.Options, opts)
 	if recordingTranscriptionID == "" {
 		err = errors.New("missing required recording_transcription_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("recording_transcriptions/%s", recordingTranscriptionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of your recording transcriptions.
@@ -54,7 +54,7 @@ func (r *RecordingTranscriptionService) List(ctx context.Context, opts ...option
 	opts = slices.Concat(r.Options, opts)
 	path := "recording_transcriptions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Permanently deletes a recording transcription.
@@ -62,11 +62,11 @@ func (r *RecordingTranscriptionService) Delete(ctx context.Context, recordingTra
 	opts = slices.Concat(r.Options, opts)
 	if recordingTranscriptionID == "" {
 		err = errors.New("missing required recording_transcription_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("recording_transcriptions/%s", recordingTranscriptionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type RecordingTranscription struct {

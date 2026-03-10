@@ -44,15 +44,15 @@ func (r *ExternalConnectionCivicAddressService) Get(ctx context.Context, address
 	opts = slices.Concat(r.Options, opts)
 	if query.ID == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	if addressID == "" {
 		err = errors.New("missing required address_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("external_connections/%s/civic_addresses/%s", query.ID, addressID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the civic addresses and locations from Microsoft Teams.
@@ -60,11 +60,11 @@ func (r *ExternalConnectionCivicAddressService) List(ctx context.Context, id str
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("external_connections/%s/civic_addresses", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type CivicAddress struct {

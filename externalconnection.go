@@ -63,7 +63,7 @@ func (r *ExternalConnectionService) New(ctx context.Context, body ExternalConnec
 	opts = slices.Concat(r.Options, opts)
 	path := "external_connections"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Return the details of an existing External Connection inside the 'data'
@@ -72,11 +72,11 @@ func (r *ExternalConnectionService) Get(ctx context.Context, id string, opts ...
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("external_connections/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates settings of an existing External Connection based on the parameters of
@@ -85,11 +85,11 @@ func (r *ExternalConnectionService) Update(ctx context.Context, id string, body 
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("external_connections/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This endpoint returns a list of your External Connections inside the 'data'
@@ -129,11 +129,11 @@ func (r *ExternalConnectionService) Delete(ctx context.Context, id string, opts 
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("external_connections/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a location's static emergency address
@@ -141,15 +141,15 @@ func (r *ExternalConnectionService) UpdateLocation(ctx context.Context, location
 	opts = slices.Concat(r.Options, opts)
 	if params.ID == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	if locationID == "" {
 		err = errors.New("missing required location_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("external_connections/%s/locations/%s", params.ID, locationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type ExternalConnection struct {

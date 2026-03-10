@@ -37,11 +37,11 @@ func (r *AIMissionKnowledgeBaseService) NewKnowledgeBase(ctx context.Context, mi
 	opts = slices.Concat(r.Options, opts)
 	if missionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/knowledge-bases", missionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a knowledge base from a mission
@@ -50,15 +50,15 @@ func (r *AIMissionKnowledgeBaseService) DeleteKnowledgeBase(ctx context.Context,
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return err
 	}
 	if knowledgeBaseID == "" {
 		err = errors.New("missing required knowledge_base_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("ai/missions/%s/knowledge-bases/%s", body.MissionID, knowledgeBaseID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get a specific knowledge base by ID
@@ -66,15 +66,15 @@ func (r *AIMissionKnowledgeBaseService) GetKnowledgeBase(ctx context.Context, kn
 	opts = slices.Concat(r.Options, opts)
 	if query.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	if knowledgeBaseID == "" {
 		err = errors.New("missing required knowledge_base_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/knowledge-bases/%s", query.MissionID, knowledgeBaseID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List all knowledge bases for a mission
@@ -82,11 +82,11 @@ func (r *AIMissionKnowledgeBaseService) ListKnowledgeBases(ctx context.Context, 
 	opts = slices.Concat(r.Options, opts)
 	if missionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/knowledge-bases", missionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a knowledge base definition
@@ -94,15 +94,15 @@ func (r *AIMissionKnowledgeBaseService) UpdateKnowledgeBase(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	if body.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	if knowledgeBaseID == "" {
 		err = errors.New("missing required knowledge_base_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/knowledge-bases/%s", body.MissionID, knowledgeBaseID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AIMissionKnowledgeBaseNewKnowledgeBaseResponse = any

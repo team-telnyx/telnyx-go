@@ -47,7 +47,7 @@ func (r *InexplicitNumberOrderService) New(ctx context.Context, body InexplicitN
 	opts = slices.Concat(r.Options, opts)
 	path := "inexplicit_number_orders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get an existing inexplicit number order by ID.
@@ -55,11 +55,11 @@ func (r *InexplicitNumberOrderService) Get(ctx context.Context, id string, opts 
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("inexplicit_number_orders/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a paginated list of inexplicit number orders.

@@ -48,7 +48,7 @@ func (r *AIAssistantTestTestSuiteRunService) List(ctx context.Context, suiteName
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if suiteName == "" {
 		err = errors.New("missing required suite_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/tests/test-suites/%s/runs", suiteName)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -74,11 +74,11 @@ func (r *AIAssistantTestTestSuiteRunService) Trigger(ctx context.Context, suiteN
 	opts = slices.Concat(r.Options, opts)
 	if suiteName == "" {
 		err = errors.New("missing required suite_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/tests/test-suites/%s/runs", suiteName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type Meta struct {

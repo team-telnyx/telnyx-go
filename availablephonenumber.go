@@ -43,7 +43,7 @@ func (r *AvailablePhoneNumberService) List(ctx context.Context, query AvailableP
 	opts = slices.Concat(r.Options, opts)
 	path := "available_phone_numbers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type AvailablePhoneNumberListResponse struct {

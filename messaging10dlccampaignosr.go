@@ -39,11 +39,11 @@ func (r *Messaging10dlcCampaignOsrService) GetAttributes(ctx context.Context, ca
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {
 		err = errors.New("missing required campaignId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("10dlc/campaign/%s/osr/attributes", campaignID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type Messaging10dlcCampaignOsrGetAttributesResponse map[string]any

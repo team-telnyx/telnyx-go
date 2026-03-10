@@ -43,7 +43,7 @@ func (r *GlobalIPLatencyService) Get(ctx context.Context, query GlobalIPLatencyG
 	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_latency"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type GlobalIPLatencyGetResponse struct {

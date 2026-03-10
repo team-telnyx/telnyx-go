@@ -45,7 +45,7 @@ func (r *ReportCdrUsageReportService) FetchSync(ctx context.Context, query Repor
 	opts = slices.Concat(r.Options, opts)
 	path := "reports/cdr_usage_reports/sync"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type ReportCdrUsageReportFetchSyncResponse struct {

@@ -48,7 +48,7 @@ func (r *NotificationProfileService) New(ctx context.Context, body NotificationP
 	opts = slices.Concat(r.Options, opts)
 	path := "notification_profiles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a notification profile.
@@ -56,11 +56,11 @@ func (r *NotificationProfileService) Get(ctx context.Context, id string, opts ..
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("notification_profiles/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a notification profile.
@@ -68,11 +68,11 @@ func (r *NotificationProfileService) Update(ctx context.Context, notificationPro
 	opts = slices.Concat(r.Options, opts)
 	if notificationProfileID == "" {
 		err = errors.New("missing required notification_profile_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("notification_profiles/%s", notificationProfileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of your notifications profiles.
@@ -103,11 +103,11 @@ func (r *NotificationProfileService) Delete(ctx context.Context, id string, opts
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("notification_profiles/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // A Collection of Notification Channels

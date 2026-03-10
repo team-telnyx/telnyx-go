@@ -38,7 +38,7 @@ func (r *WellKnownService) GetAuthorizationServerMetadata(ctx context.Context, o
 	opts = append([]option.RequestOption{option.WithBaseURL("https://api.telnyx.com/")}, opts...)
 	path := ".well-known/oauth-authorization-server"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // OAuth 2.0 Protected Resource Metadata for resource discovery
@@ -47,7 +47,7 @@ func (r *WellKnownService) GetProtectedResourceMetadata(ctx context.Context, opt
 	opts = append([]option.RequestOption{option.WithBaseURL("https://api.telnyx.com/")}, opts...)
 	path := ".well-known/oauth-protected-resource"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type WellKnownGetAuthorizationServerMetadataResponse struct {

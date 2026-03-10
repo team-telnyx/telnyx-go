@@ -54,11 +54,11 @@ func (r *AddressActionService) AcceptSuggestions(ctx context.Context, addressUui
 	opts = slices.Concat(r.Options, opts)
 	if addressUuid == "" {
 		err = errors.New("missing required address_uuid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("addresses/%s/actions/accept_suggestions", addressUuid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Validates an address for emergency services.
@@ -66,7 +66,7 @@ func (r *AddressActionService) Validate(ctx context.Context, body AddressActionV
 	opts = slices.Concat(r.Options, opts)
 	path := "addresses/actions/validate"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AddressActionAcceptSuggestionsResponse struct {

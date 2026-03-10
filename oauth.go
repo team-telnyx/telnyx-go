@@ -42,11 +42,11 @@ func (r *OAuthService) Get(ctx context.Context, consentToken string, opts ...opt
 	opts = slices.Concat(r.Options, opts)
 	if consentToken == "" {
 		err = errors.New("missing required consent_token parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("oauth/consent/%s", consentToken)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Create an OAuth authorization grant
@@ -54,7 +54,7 @@ func (r *OAuthService) Grants(ctx context.Context, body OAuthGrantsParams, opts 
 	opts = slices.Concat(r.Options, opts)
 	path := "oauth/grants"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Introspect an OAuth access token to check its validity and metadata
@@ -62,7 +62,7 @@ func (r *OAuthService) Introspect(ctx context.Context, body OAuthIntrospectParam
 	opts = slices.Concat(r.Options, opts)
 	path := "oauth/introspect"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Register a new OAuth client dynamically (RFC 7591)
@@ -70,7 +70,7 @@ func (r *OAuthService) Register(ctx context.Context, body OAuthRegisterParams, o
 	opts = slices.Concat(r.Options, opts)
 	path := "oauth/register"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // OAuth 2.0 authorization endpoint for the authorization code flow
@@ -79,7 +79,7 @@ func (r *OAuthService) GetAuthorize(ctx context.Context, query OAuthGetAuthorize
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "oauth/authorize"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, nil, opts...)
-	return
+	return err
 }
 
 // Retrieve the JSON Web Key Set for token verification
@@ -87,7 +87,7 @@ func (r *OAuthService) GetJwks(ctx context.Context, opts ...option.RequestOption
 	opts = slices.Concat(r.Options, opts)
 	path := "oauth/jwks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Exchange authorization code, client credentials, or refresh token for access
@@ -96,7 +96,7 @@ func (r *OAuthService) Token(ctx context.Context, body OAuthTokenParams, opts ..
 	opts = slices.Concat(r.Options, opts)
 	path := "oauth/token"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type OAuthGetResponse struct {

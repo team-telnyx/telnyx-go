@@ -42,7 +42,7 @@ func (r *SetiService) GetBlackBoxTestResults(ctx context.Context, query SetiGetB
 	opts = slices.Concat(r.Options, opts)
 	path := "seti/black_box_test_results"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type SetiGetBlackBoxTestResultsResponse struct {

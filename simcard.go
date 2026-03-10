@@ -50,11 +50,11 @@ func (r *SimCardService) Get(ctx context.Context, id string, query SimCardGetPar
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_cards/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates SIM card data
@@ -62,11 +62,11 @@ func (r *SimCardService) Update(ctx context.Context, simCardID string, body SimC
 	opts = slices.Concat(r.Options, opts)
 	if simCardID == "" {
 		err = errors.New("missing required sim_card_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_cards/%s", simCardID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get all SIM cards belonging to the user that match the given filters.
@@ -103,11 +103,11 @@ func (r *SimCardService) Delete(ctx context.Context, id string, body SimCardDele
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_cards/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // It returns the activation code for an eSIM.<br/><br/> This API is only available
@@ -117,11 +117,11 @@ func (r *SimCardService) GetActivationCode(ctx context.Context, id string, opts 
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_cards/%s/activation_code", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // It returns the device details where a SIM card is currently being used.
@@ -129,11 +129,11 @@ func (r *SimCardService) GetDeviceDetails(ctx context.Context, id string, opts .
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_cards/%s/device_details", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // It returns the public IP requested for a SIM card.
@@ -141,11 +141,11 @@ func (r *SimCardService) GetPublicIP(ctx context.Context, id string, opts ...opt
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_cards/%s/public_ip", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // This API allows listing a paginated collection of Wireless Connectivity Logs
@@ -156,7 +156,7 @@ func (r *SimCardService) ListWirelessConnectivityLogs(ctx context.Context, id st
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_cards/%s/wireless_connectivity_logs", id)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)

@@ -41,11 +41,11 @@ func (r *VerifiedNumberActionService) SubmitVerificationCode(ctx context.Context
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
 		err = errors.New("missing required phone_number parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("verified_numbers/%s/actions/verify", phoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type VerifiedNumberActionSubmitVerificationCodeParams struct {

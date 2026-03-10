@@ -44,7 +44,7 @@ func (r *LegacyReportingBatchDetailRecordSpeechToTextService) New(ctx context.Co
 	opts = slices.Concat(r.Options, opts)
 	path := "legacy/reporting/batch_detail_records/speech_to_text"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves a specific Speech to Text batch report request by ID
@@ -52,11 +52,11 @@ func (r *LegacyReportingBatchDetailRecordSpeechToTextService) Get(ctx context.Co
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("legacy/reporting/batch_detail_records/speech_to_text/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves all Speech to Text batch report requests for the authenticated user
@@ -64,7 +64,7 @@ func (r *LegacyReportingBatchDetailRecordSpeechToTextService) List(ctx context.C
 	opts = slices.Concat(r.Options, opts)
 	path := "legacy/reporting/batch_detail_records/speech_to_text"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a specific Speech to Text batch report request by ID
@@ -72,11 +72,11 @@ func (r *LegacyReportingBatchDetailRecordSpeechToTextService) Delete(ctx context
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("legacy/reporting/batch_detail_records/speech_to_text/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type SttDetailReportResponse struct {

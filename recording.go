@@ -48,11 +48,11 @@ func (r *RecordingService) Get(ctx context.Context, recordingID string, opts ...
 	opts = slices.Concat(r.Options, opts)
 	if recordingID == "" {
 		err = errors.New("missing required recording_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("recordings/%s", recordingID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of your call recordings.
@@ -83,11 +83,11 @@ func (r *RecordingService) Delete(ctx context.Context, recordingID string, opts 
 	opts = slices.Concat(r.Options, opts)
 	if recordingID == "" {
 		err = errors.New("missing required recording_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("recordings/%s", recordingID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type RecordingResponseData struct {

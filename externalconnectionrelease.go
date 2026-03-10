@@ -45,15 +45,15 @@ func (r *ExternalConnectionReleaseService) Get(ctx context.Context, releaseID st
 	opts = slices.Concat(r.Options, opts)
 	if query.ID == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	if releaseID == "" {
 		err = errors.New("missing required release_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("external_connections/%s/releases/%s", query.ID, releaseID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of your Releases for the given external connection. These are
@@ -65,7 +65,7 @@ func (r *ExternalConnectionReleaseService) List(ctx context.Context, id string, 
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("external_connections/%s/releases", id)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)

@@ -46,11 +46,11 @@ func (r *PhoneNumberBlockJobService) Get(ctx context.Context, id string, opts ..
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("phone_number_blocks/jobs/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists the phone number blocks jobs
@@ -85,7 +85,7 @@ func (r *PhoneNumberBlockJobService) DeletePhoneNumberBlock(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	path := "phone_number_blocks/jobs/delete_phone_number_block"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type Job struct {

@@ -48,7 +48,7 @@ func (r *QueueService) New(ctx context.Context, body QueueNewParams, opts ...opt
 	opts = slices.Concat(r.Options, opts)
 	path := "queues"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve an existing call queue
@@ -56,11 +56,11 @@ func (r *QueueService) Get(ctx context.Context, queueName string, opts ...option
 	opts = slices.Concat(r.Options, opts)
 	if queueName == "" {
 		err = errors.New("missing required queue_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("queues/%s", queueName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update properties of an existing call queue.
@@ -68,11 +68,11 @@ func (r *QueueService) Update(ctx context.Context, queueName string, body QueueU
 	opts = slices.Concat(r.Options, opts)
 	if queueName == "" {
 		err = errors.New("missing required queue_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("queues/%s", queueName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all queues for the authenticated user.
@@ -104,11 +104,11 @@ func (r *QueueService) Delete(ctx context.Context, queueName string, opts ...opt
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if queueName == "" {
 		err = errors.New("missing required queue_name parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("queues/%s", queueName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type Queue struct {

@@ -44,7 +44,7 @@ func (r *AIAudioService) Transcribe(ctx context.Context, body AIAudioTranscribeP
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/audio/transcriptions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AIAudioTranscribeResponse struct {

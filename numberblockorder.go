@@ -44,7 +44,7 @@ func (r *NumberBlockOrderService) New(ctx context.Context, body NumberBlockOrder
 	opts = slices.Concat(r.Options, opts)
 	path := "number_block_orders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get an existing phone number block order.
@@ -52,11 +52,11 @@ func (r *NumberBlockOrderService) Get(ctx context.Context, numberBlockOrderID st
 	opts = slices.Concat(r.Options, opts)
 	if numberBlockOrderID == "" {
 		err = errors.New("missing required number_block_order_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("number_block_orders/%s", numberBlockOrderID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a paginated list of number block orders.

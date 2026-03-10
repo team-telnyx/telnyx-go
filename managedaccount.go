@@ -49,7 +49,7 @@ func (r *ManagedAccountService) New(ctx context.Context, body ManagedAccountNewP
 	opts = slices.Concat(r.Options, opts)
 	path := "managed_accounts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the details of a single managed account.
@@ -57,11 +57,11 @@ func (r *ManagedAccountService) Get(ctx context.Context, id string, opts ...opti
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("managed_accounts/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a single managed account.
@@ -69,11 +69,11 @@ func (r *ManagedAccountService) Update(ctx context.Context, id string, body Mana
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("managed_accounts/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists the accounts managed by the current user. Users need to be explictly
@@ -107,7 +107,7 @@ func (r *ManagedAccountService) GetAllocatableGlobalOutboundChannels(ctx context
 	opts = slices.Concat(r.Options, opts)
 	path := "managed_accounts/allocatable_global_outbound_channels"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update the amount of allocatable global outbound channels allocated to a
@@ -116,11 +116,11 @@ func (r *ManagedAccountService) UpdateGlobalChannelLimit(ctx context.Context, id
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("managed_accounts/%s/update_global_channel_limit", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ManagedAccount struct {

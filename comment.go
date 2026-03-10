@@ -47,7 +47,7 @@ func (r *CommentService) New(ctx context.Context, body CommentNewParams, opts ..
 	opts = slices.Concat(r.Options, opts)
 	path := "comments"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a comment
@@ -55,11 +55,11 @@ func (r *CommentService) Get(ctx context.Context, id string, opts ...option.Requ
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("comments/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve all comments
@@ -67,7 +67,7 @@ func (r *CommentService) List(ctx context.Context, query CommentListParams, opts
 	opts = slices.Concat(r.Options, opts)
 	path := "comments"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Mark a comment as read
@@ -75,11 +75,11 @@ func (r *CommentService) MarkAsRead(ctx context.Context, id string, opts ...opti
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("comments/%s/read", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type Comment struct {

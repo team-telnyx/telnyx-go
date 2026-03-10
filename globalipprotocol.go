@@ -39,7 +39,7 @@ func (r *GlobalIPProtocolService) List(ctx context.Context, opts ...option.Reque
 	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_protocols"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type GlobalIPProtocolListResponse struct {

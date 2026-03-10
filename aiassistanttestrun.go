@@ -46,15 +46,15 @@ func (r *AIAssistantTestRunService) Get(ctx context.Context, runID string, query
 	opts = slices.Concat(r.Options, opts)
 	if query.TestID == "" {
 		err = errors.New("missing required test_id parameter")
-		return
+		return nil, err
 	}
 	if runID == "" {
 		err = errors.New("missing required run_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/tests/%s/runs/%s", query.TestID, runID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves paginated execution history for a specific assistant test with
@@ -65,7 +65,7 @@ func (r *AIAssistantTestRunService) List(ctx context.Context, testID string, que
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if testID == "" {
 		err = errors.New("missing required test_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/tests/%s/runs", testID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -91,11 +91,11 @@ func (r *AIAssistantTestRunService) Trigger(ctx context.Context, testID string, 
 	opts = slices.Concat(r.Options, opts)
 	if testID == "" {
 		err = errors.New("missing required test_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/tests/%s/runs", testID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type TestRunDetailResult struct {

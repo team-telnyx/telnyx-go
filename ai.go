@@ -71,7 +71,7 @@ func (r *AIService) GetModels(ctx context.Context, opts ...option.RequestOption)
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/models"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Generate a summary of a file's contents.
@@ -89,7 +89,7 @@ func (r *AIService) Summarize(ctx context.Context, body AISummarizeParams, opts 
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/summarize"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AIGetModelsResponse struct {

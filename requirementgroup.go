@@ -45,7 +45,7 @@ func (r *RequirementGroupService) New(ctx context.Context, body RequirementGroup
 	opts = slices.Concat(r.Options, opts)
 	path := "requirement_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a single requirement group by ID
@@ -53,11 +53,11 @@ func (r *RequirementGroupService) Get(ctx context.Context, id string, opts ...op
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("requirement_groups/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update requirement values in requirement group
@@ -65,11 +65,11 @@ func (r *RequirementGroupService) Update(ctx context.Context, id string, body Re
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("requirement_groups/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List requirement groups
@@ -77,7 +77,7 @@ func (r *RequirementGroupService) List(ctx context.Context, query RequirementGro
 	opts = slices.Concat(r.Options, opts)
 	path := "requirement_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a requirement group by ID
@@ -85,11 +85,11 @@ func (r *RequirementGroupService) Delete(ctx context.Context, id string, opts ..
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("requirement_groups/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Submit a Requirement Group for Approval
@@ -97,11 +97,11 @@ func (r *RequirementGroupService) SubmitForApproval(ctx context.Context, id stri
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("requirement_groups/%s/submit_for_approval", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type RequirementGroup struct {

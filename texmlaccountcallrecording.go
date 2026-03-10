@@ -43,19 +43,19 @@ func (r *TexmlAccountCallRecordingService) RecordingSidJson(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
-		return
+		return nil, err
 	}
 	if params.CallSid == "" {
 		err = errors.New("missing required call_sid parameter")
-		return
+		return nil, err
 	}
 	if recordingSid == "" {
 		err = errors.New("missing required recording_sid parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("texml/Accounts/%s/Calls/%s/Recordings/%s.json", params.AccountSid, params.CallSid, recordingSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type TexmlAccountCallRecordingRecordingSidJsonResponse struct {

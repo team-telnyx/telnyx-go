@@ -49,15 +49,15 @@ func (r *SessionAnalysisService) Get(ctx context.Context, eventID string, params
 	opts = slices.Concat(r.Options, opts)
 	if params.RecordType == "" {
 		err = errors.New("missing required record_type parameter")
-		return
+		return nil, err
 	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("session_analysis/%s/%s", params.RecordType, eventID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type EventNode struct {

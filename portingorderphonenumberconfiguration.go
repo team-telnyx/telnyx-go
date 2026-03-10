@@ -45,7 +45,7 @@ func (r *PortingOrderPhoneNumberConfigurationService) New(ctx context.Context, b
 	opts = slices.Concat(r.Options, opts)
 	path := "porting_orders/phone_number_configurations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of phone number configurations paginated.

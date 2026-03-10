@@ -49,11 +49,11 @@ func (r *AIConversationInsightGroupService) Get(ctx context.Context, groupID str
 	opts = slices.Concat(r.Options, opts)
 	if groupID == "" {
 		err = errors.New("missing required group_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/conversations/insight-groups/%s", groupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an insight template group
@@ -61,11 +61,11 @@ func (r *AIConversationInsightGroupService) Update(ctx context.Context, groupID 
 	opts = slices.Concat(r.Options, opts)
 	if groupID == "" {
 		err = errors.New("missing required group_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/conversations/insight-groups/%s", groupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete insight group by ID
@@ -74,11 +74,11 @@ func (r *AIConversationInsightGroupService) Delete(ctx context.Context, groupID 
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if groupID == "" {
 		err = errors.New("missing required group_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("ai/conversations/insight-groups/%s", groupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Create a new insight group
@@ -86,7 +86,7 @@ func (r *AIConversationInsightGroupService) InsightGroups(ctx context.Context, b
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/conversations/insight-groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get all insight groups

@@ -46,11 +46,11 @@ func (r *RoomRecordingService) Get(ctx context.Context, roomRecordingID string, 
 	opts = slices.Concat(r.Options, opts)
 	if roomRecordingID == "" {
 		err = errors.New("missing required room_recording_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("room_recordings/%s", roomRecordingID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // View a list of room recordings.
@@ -82,11 +82,11 @@ func (r *RoomRecordingService) Delete(ctx context.Context, roomRecordingID strin
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if roomRecordingID == "" {
 		err = errors.New("missing required room_recording_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("room_recordings/%s", roomRecordingID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Delete several room recordings in a bulk.
@@ -94,7 +94,7 @@ func (r *RoomRecordingService) DeleteBulk(ctx context.Context, body RoomRecordin
 	opts = slices.Concat(r.Options, opts)
 	path := "room_recordings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type RoomRecordingGetResponse struct {

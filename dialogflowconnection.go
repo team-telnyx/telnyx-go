@@ -43,11 +43,11 @@ func (r *DialogflowConnectionService) New(ctx context.Context, connectionID stri
 	opts = slices.Concat(r.Options, opts)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dialogflow_connections/%s", connectionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Return details of the Dialogflow connection associated with the given
@@ -56,11 +56,11 @@ func (r *DialogflowConnectionService) Get(ctx context.Context, connectionID stri
 	opts = slices.Concat(r.Options, opts)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dialogflow_connections/%s", connectionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a stored Dialogflow Connection.
@@ -68,11 +68,11 @@ func (r *DialogflowConnectionService) Update(ctx context.Context, connectionID s
 	opts = slices.Concat(r.Options, opts)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dialogflow_connections/%s", connectionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a stored Dialogflow Connection.
@@ -81,11 +81,11 @@ func (r *DialogflowConnectionService) Delete(ctx context.Context, connectionID s
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("dialogflow_connections/%s", connectionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type DialogflowConnectionNewResponse struct {

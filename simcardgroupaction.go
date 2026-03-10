@@ -44,11 +44,11 @@ func (r *SimCardGroupActionService) Get(ctx context.Context, id string, opts ...
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_card_group_actions/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // This API allows listing a paginated collection a SIM card group actions. It
@@ -86,11 +86,11 @@ func (r *SimCardGroupActionService) RemovePrivateWirelessGateway(ctx context.Con
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_card_groups/%s/actions/remove_private_wireless_gateway", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // This action will asynchronously remove an existing Wireless Blocklist to all the
@@ -99,11 +99,11 @@ func (r *SimCardGroupActionService) RemoveWirelessBlocklist(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_card_groups/%s/actions/remove_wireless_blocklist", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // This action will asynchronously assign a provisioned Private Wireless Gateway to
@@ -117,11 +117,11 @@ func (r *SimCardGroupActionService) SetPrivateWirelessGateway(ctx context.Contex
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_card_groups/%s/actions/set_private_wireless_gateway", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This action will asynchronously assign a Wireless Blocklist to all the SIMs in
@@ -130,11 +130,11 @@ func (r *SimCardGroupActionService) SetWirelessBlocklist(ctx context.Context, id
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("sim_card_groups/%s/actions/set_wireless_blocklist", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This object represents a SIM card group action request. It allows tracking the

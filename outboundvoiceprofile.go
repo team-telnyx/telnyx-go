@@ -46,7 +46,7 @@ func (r *OutboundVoiceProfileService) New(ctx context.Context, body OutboundVoic
 	opts = slices.Concat(r.Options, opts)
 	path := "outbound_voice_profiles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the details of an existing outbound voice profile.
@@ -54,11 +54,11 @@ func (r *OutboundVoiceProfileService) Get(ctx context.Context, id string, opts .
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("outbound_voice_profiles/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates an existing outbound voice profile.
@@ -66,11 +66,11 @@ func (r *OutboundVoiceProfileService) Update(ctx context.Context, id string, bod
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("outbound_voice_profiles/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get all outbound voice profiles belonging to the user that match the given
@@ -103,11 +103,11 @@ func (r *OutboundVoiceProfileService) Delete(ctx context.Context, id string, opt
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("outbound_voice_profiles/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type OutboundCallRecording struct {

@@ -47,11 +47,11 @@ func (r *ExternalConnectionUploadService) New(ctx context.Context, id string, bo
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("external_connections/%s/uploads", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Return the details of an Upload request and its phone numbers.
@@ -59,15 +59,15 @@ func (r *ExternalConnectionUploadService) Get(ctx context.Context, ticketID stri
 	opts = slices.Concat(r.Options, opts)
 	if query.ID == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	if ticketID == "" {
 		err = errors.New("missing required ticket_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("external_connections/%s/uploads/%s", query.ID, ticketID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of your Upload requests for the given external connection.
@@ -77,7 +77,7 @@ func (r *ExternalConnectionUploadService) List(ctx context.Context, id string, q
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("external_connections/%s/uploads", id)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -103,11 +103,11 @@ func (r *ExternalConnectionUploadService) PendingCount(ctx context.Context, id s
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("external_connections/%s/uploads/status", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Forces a recheck of the status of all pending Upload requests for the given
@@ -116,11 +116,11 @@ func (r *ExternalConnectionUploadService) RefreshStatus(ctx context.Context, id 
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("external_connections/%s/uploads/refresh", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // If there were any errors during the upload process, this endpoint will retry the
@@ -131,15 +131,15 @@ func (r *ExternalConnectionUploadService) Retry(ctx context.Context, ticketID st
 	opts = slices.Concat(r.Options, opts)
 	if body.ID == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	if ticketID == "" {
 		err = errors.New("missing required ticket_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("external_connections/%s/uploads/%s/retry", body.ID, ticketID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type TnUploadEntry struct {

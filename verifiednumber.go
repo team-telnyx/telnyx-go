@@ -49,7 +49,7 @@ func (r *VerifiedNumberService) New(ctx context.Context, body VerifiedNumberNewP
 	opts = slices.Concat(r.Options, opts)
 	path := "verified_numbers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a verified number
@@ -57,11 +57,11 @@ func (r *VerifiedNumberService) Get(ctx context.Context, phoneNumber string, opt
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
 		err = errors.New("missing required phone_number parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("verified_numbers/%s", phoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets a paginated list of Verified Numbers.
@@ -92,11 +92,11 @@ func (r *VerifiedNumberService) Delete(ctx context.Context, phoneNumber string, 
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
 		err = errors.New("missing required phone_number parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("verified_numbers/%s", phoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type VerifiedNumber struct {

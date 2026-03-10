@@ -46,15 +46,15 @@ func (r *PortingOrderActivationJobService) Get(ctx context.Context, activationJo
 	opts = slices.Concat(r.Options, opts)
 	if query.ID == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	if activationJobID == "" {
 		err = errors.New("missing required activationJobId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("porting_orders/%s/activation_jobs/%s", query.ID, activationJobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates the activation time of a porting activation job.
@@ -62,15 +62,15 @@ func (r *PortingOrderActivationJobService) Update(ctx context.Context, activatio
 	opts = slices.Concat(r.Options, opts)
 	if params.ID == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	if activationJobID == "" {
 		err = errors.New("missing required activationJobId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("porting_orders/%s/activation_jobs/%s", params.ID, activationJobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of your porting activation jobs.
@@ -80,7 +80,7 @@ func (r *PortingOrderActivationJobService) List(ctx context.Context, id string, 
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("porting_orders/%s/activation_jobs", id)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)

@@ -48,11 +48,11 @@ func (r *RoomSessionService) Get(ctx context.Context, roomSessionID string, quer
 	opts = slices.Concat(r.Options, opts)
 	if roomSessionID == "" {
 		err = errors.New("missing required room_session_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("room_sessions/%s", roomSessionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // View a list of room sessions.
@@ -85,7 +85,7 @@ func (r *RoomSessionService) List1(ctx context.Context, roomID string, query Roo
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if roomID == "" {
 		err = errors.New("missing required room_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("rooms/%s/sessions", roomID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -112,7 +112,7 @@ func (r *RoomSessionService) GetParticipants(ctx context.Context, roomSessionID 
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if roomSessionID == "" {
 		err = errors.New("missing required room_session_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("room_sessions/%s/participants", roomSessionID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)

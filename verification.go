@@ -48,11 +48,11 @@ func (r *VerificationService) Get(ctx context.Context, verificationID string, op
 	opts = slices.Concat(r.Options, opts)
 	if verificationID == "" {
 		err = errors.New("missing required verification_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("verifications/%s", verificationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Trigger Call verification
@@ -60,7 +60,7 @@ func (r *VerificationService) TriggerCall(ctx context.Context, body Verification
 	opts = slices.Concat(r.Options, opts)
 	path := "verifications/call"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Trigger Flash call verification
@@ -68,7 +68,7 @@ func (r *VerificationService) TriggerFlashcall(ctx context.Context, body Verific
 	opts = slices.Concat(r.Options, opts)
 	path := "verifications/flashcall"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Trigger SMS verification
@@ -76,7 +76,7 @@ func (r *VerificationService) TriggerSMS(ctx context.Context, body VerificationT
 	opts = slices.Concat(r.Options, opts)
 	path := "verifications/sms"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type CreateVerificationResponse struct {

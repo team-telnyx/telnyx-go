@@ -45,11 +45,11 @@ func (r *StorageBucketUsageService) GetAPIUsage(ctx context.Context, bucketName 
 	opts = slices.Concat(r.Options, opts)
 	if bucketName == "" {
 		err = errors.New("missing required bucketName parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("storage/buckets/%s/usage/api", bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the amount of storage space and number of files a bucket takes up.
@@ -57,11 +57,11 @@ func (r *StorageBucketUsageService) GetBucketUsage(ctx context.Context, bucketNa
 	opts = slices.Concat(r.Options, opts)
 	if bucketName == "" {
 		err = errors.New("missing required bucketName parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("storage/buckets/%s/usage/storage", bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type PaginationMetaSimple struct {

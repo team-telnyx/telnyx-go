@@ -44,7 +44,7 @@ func (r *LegacyReportingBatchDetailRecordVoiceService) New(ctx context.Context, 
 	opts = slices.Concat(r.Options, opts)
 	path := "legacy/reporting/batch_detail_records/voice"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves a specific CDR report request by ID
@@ -52,11 +52,11 @@ func (r *LegacyReportingBatchDetailRecordVoiceService) Get(ctx context.Context, 
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("legacy/reporting/batch_detail_records/voice/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves all CDR report requests for the authenticated user
@@ -64,7 +64,7 @@ func (r *LegacyReportingBatchDetailRecordVoiceService) List(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	path := "legacy/reporting/batch_detail_records/voice"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a specific CDR report request by ID
@@ -72,11 +72,11 @@ func (r *LegacyReportingBatchDetailRecordVoiceService) Delete(ctx context.Contex
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("legacy/reporting/batch_detail_records/voice/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves all available fields that can be used in CDR reports
@@ -84,7 +84,7 @@ func (r *LegacyReportingBatchDetailRecordVoiceService) GetFields(ctx context.Con
 	opts = slices.Concat(r.Options, opts)
 	path := "legacy/reporting/batch_detail_records/voice/fields"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Response object for CDR detailed report

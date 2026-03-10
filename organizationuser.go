@@ -48,11 +48,11 @@ func (r *OrganizationUserService) Get(ctx context.Context, id string, query Orga
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("organizations/users/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of the users in your organization.
@@ -89,7 +89,7 @@ func (r *OrganizationUserService) GetGroupsReport(ctx context.Context, query Org
 	opts = slices.Concat(r.Options, opts)
 	path := "organizations/users/users_groups_report"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type OrganizationUser struct {

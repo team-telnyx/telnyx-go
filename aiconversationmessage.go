@@ -43,11 +43,11 @@ func (r *AIConversationMessageService) List(ctx context.Context, conversationID 
 	opts = slices.Concat(r.Options, opts)
 	if conversationID == "" {
 		err = errors.New("missing required conversation_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/conversations/%s/messages", conversationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AIConversationMessageListResponse struct {

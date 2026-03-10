@@ -53,7 +53,7 @@ func (r *LegacyReportingUsageReportService) GetSpeechToText(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	path := "legacy/reporting/usage_reports/speech_to_text"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type LegacyReportingUsageReportGetSpeechToTextResponse struct {

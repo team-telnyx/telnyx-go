@@ -47,7 +47,7 @@ func (r *PrivateWirelessGatewayService) New(ctx context.Context, body PrivateWir
 	opts = slices.Concat(r.Options, opts)
 	path := "private_wireless_gateways"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve information about a Private Wireless Gateway.
@@ -55,11 +55,11 @@ func (r *PrivateWirelessGatewayService) Get(ctx context.Context, id string, opts
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("private_wireless_gateways/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get all Private Wireless Gateways belonging to the user.
@@ -90,11 +90,11 @@ func (r *PrivateWirelessGatewayService) Delete(ctx context.Context, id string, o
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("private_wireless_gateways/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type PrivateWirelessGateway struct {

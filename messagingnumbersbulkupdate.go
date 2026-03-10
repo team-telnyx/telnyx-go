@@ -42,7 +42,7 @@ func (r *MessagingNumbersBulkUpdateService) New(ctx context.Context, body Messag
 	opts = slices.Concat(r.Options, opts)
 	path := "messaging_numbers_bulk_updates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve bulk update status
@@ -50,11 +50,11 @@ func (r *MessagingNumbersBulkUpdateService) Get(ctx context.Context, orderID str
 	opts = slices.Concat(r.Options, opts)
 	if orderID == "" {
 		err = errors.New("missing required order_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_numbers_bulk_updates/%s", orderID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type BulkMessagingSettingsUpdatePhoneNumbers struct {

@@ -47,7 +47,7 @@ func (r *DynamicEmergencyAddressService) New(ctx context.Context, body DynamicEm
 	opts = slices.Concat(r.Options, opts)
 	path := "dynamic_emergency_addresses"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the dynamic emergency address based on the ID provided
@@ -55,11 +55,11 @@ func (r *DynamicEmergencyAddressService) Get(ctx context.Context, id string, opt
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dynamic_emergency_addresses/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the dynamic emergency addresses according to filters
@@ -90,11 +90,11 @@ func (r *DynamicEmergencyAddressService) Delete(ctx context.Context, id string, 
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("dynamic_emergency_addresses/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type DynamicEmergencyAddress struct {

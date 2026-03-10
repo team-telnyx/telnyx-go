@@ -48,11 +48,11 @@ func (r *AIAssistantCanaryDeployService) New(ctx context.Context, assistantID st
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/canary-deploys", assistantID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Endpoint to get a canary deploy configuration for an assistant.
@@ -63,11 +63,11 @@ func (r *AIAssistantCanaryDeployService) Get(ctx context.Context, assistantID st
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/canary-deploys", assistantID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Endpoint to update a canary deploy configuration for an assistant.
@@ -79,11 +79,11 @@ func (r *AIAssistantCanaryDeployService) Update(ctx context.Context, assistantID
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/canary-deploys", assistantID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Endpoint to delete a canary deploy configuration for an assistant.
@@ -94,11 +94,11 @@ func (r *AIAssistantCanaryDeployService) Delete(ctx context.Context, assistantID
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/canary-deploys", assistantID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Request model for creating or updating canary deploys.

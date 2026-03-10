@@ -41,15 +41,15 @@ func (r *AIMissionRunTelnyxAgentService) List(ctx context.Context, runID string,
 	opts = slices.Concat(r.Options, opts)
 	if query.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	if runID == "" {
 		err = errors.New("missing required run_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/runs/%s/telnyx-agents", query.MissionID, runID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Link a Telnyx AI agent (voice/messaging) to a run
@@ -57,15 +57,15 @@ func (r *AIMissionRunTelnyxAgentService) Link(ctx context.Context, runID string,
 	opts = slices.Concat(r.Options, opts)
 	if params.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return nil, err
 	}
 	if runID == "" {
 		err = errors.New("missing required run_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("ai/missions/%s/runs/%s/telnyx-agents", params.MissionID, runID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Unlink a Telnyx agent from a run
@@ -74,19 +74,19 @@ func (r *AIMissionRunTelnyxAgentService) Unlink(ctx context.Context, telnyxAgent
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
-		return
+		return err
 	}
 	if body.RunID == "" {
 		err = errors.New("missing required run_id parameter")
-		return
+		return err
 	}
 	if telnyxAgentID == "" {
 		err = errors.New("missing required telnyx_agent_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("ai/missions/%s/runs/%s/telnyx-agents/%s", body.MissionID, body.RunID, telnyxAgentID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type TelnyxAgentData struct {

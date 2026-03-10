@@ -49,7 +49,7 @@ func (r *MessagingHostedNumberOrderService) New(ctx context.Context, body Messag
 	opts = slices.Concat(r.Options, opts)
 	path := "messaging_hosted_number_orders"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a messaging hosted number order
@@ -57,11 +57,11 @@ func (r *MessagingHostedNumberOrderService) Get(ctx context.Context, id string, 
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_hosted_number_orders/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List messaging hosted number orders
@@ -92,11 +92,11 @@ func (r *MessagingHostedNumberOrderService) Delete(ctx context.Context, id strin
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_hosted_number_orders/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Check hosted messaging eligibility
@@ -104,7 +104,7 @@ func (r *MessagingHostedNumberOrderService) CheckEligibility(ctx context.Context
 	opts = slices.Concat(r.Options, opts)
 	path := "messaging_hosted_number_orders/eligibility_numbers_check"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Create verification codes to validate numbers of the hosted order. The
@@ -113,11 +113,11 @@ func (r *MessagingHostedNumberOrderService) NewVerificationCodes(ctx context.Con
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_hosted_number_orders/%s/verification_codes", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Validate the verification codes sent to the numbers of the hosted order. The
@@ -126,11 +126,11 @@ func (r *MessagingHostedNumberOrderService) ValidateCodes(ctx context.Context, i
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("messaging_hosted_number_orders/%s/validation_codes", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type MessagingHostedNumberOrderNewResponse struct {

@@ -45,11 +45,11 @@ func (r *ExternalConnectionLogMessageService) Get(ctx context.Context, id string
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("external_connections/log_messages/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a list of log messages for all external connections associated with
@@ -82,11 +82,11 @@ func (r *ExternalConnectionLogMessageService) Dismiss(ctx context.Context, id st
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("external_connections/log_messages/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type ExternalConnectionLogMessageGetResponse struct {

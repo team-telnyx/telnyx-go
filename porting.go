@@ -49,7 +49,7 @@ func (r *PortingService) ListUkCarriers(ctx context.Context, opts ...option.Requ
 	opts = slices.Concat(r.Options, opts)
 	path := "porting/uk_carriers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type PortingListUkCarriersResponse struct {
