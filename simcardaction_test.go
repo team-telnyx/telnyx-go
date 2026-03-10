@@ -68,6 +68,56 @@ func TestSimCardActionListWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestSimCardActionBulkDisableVoice(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.SimCards.Actions.BulkDisableVoice(context.TODO(), telnyx.SimCardActionBulkDisableVoiceParams{
+		SimCardGroupID: "6b14e151-8493-4fa1-8664-1cc4e6d14158",
+	})
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestSimCardActionBulkEnableVoice(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.SimCards.Actions.BulkEnableVoice(context.TODO(), telnyx.SimCardActionBulkEnableVoiceParams{
+		SimCardGroupID: "6b14e151-8493-4fa1-8664-1cc4e6d14158",
+	})
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestSimCardActionBulkSetPublicIPs(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
