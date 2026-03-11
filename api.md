@@ -37,6 +37,7 @@
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#SimCardStatus">SimCardStatus</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#SimpleSimCard">SimpleSimCard</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#SubNumberOrderRegulatoryRequirementWithValue">SubNumberOrderRegulatoryRequirementWithValue</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#WhatsappTemplateData">WhatsappTemplateData</a>
 
 # Legacy
 
@@ -4736,6 +4737,7 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WabaSettings">WabaSettings</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountSettingGetResponse">WhatsappBusinessAccountSettingGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountSettingUpdateResponse">WhatsappBusinessAccountSettingUpdateResponse</a>
 
@@ -4749,12 +4751,11 @@ Methods:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappTemplateNewResponse">WhatsappTemplateNewResponse</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappTemplateListResponse">WhatsappTemplateListResponse</a>
 
 Methods:
 
 - <code title="post /v2/whatsapp/message_templates">client.Whatsapp.Templates.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappTemplateService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappTemplateNewParams">WhatsappTemplateNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappTemplateNewResponse">WhatsappTemplateNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="get /v2/whatsapp/message_templates">client.Whatsapp.Templates.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappTemplateService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappTemplateListParams">WhatsappTemplateListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappTemplateListResponse">WhatsappTemplateListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /v2/whatsapp/message_templates">client.Whatsapp.Templates.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappTemplateService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappTemplateListParams">WhatsappTemplateListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#WhatsappTemplateData">WhatsappTemplateData</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## PhoneNumbers
 
@@ -4773,6 +4774,7 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappCallingSettingsData">WhatsappCallingSettingsData</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberCallingSettingGetResponse">WhatsappPhoneNumberCallingSettingGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberCallingSettingUpdateResponse">WhatsappPhoneNumberCallingSettingUpdateResponse</a>
 
@@ -4785,6 +4787,7 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappProfileData">WhatsappProfileData</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberProfileGetResponse">WhatsappPhoneNumberProfileGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberProfileUpdateResponse">WhatsappPhoneNumberProfileUpdateResponse</a>
 

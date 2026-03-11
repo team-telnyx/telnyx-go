@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
-	"time"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
@@ -16,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // Manage Whatsapp message templates
@@ -48,7 +48,7 @@ func (r *WhatsappTemplateService) New(ctx context.Context, body WhatsappTemplate
 }
 
 // List Whatsapp message templates
-func (r *WhatsappTemplateService) List(ctx context.Context, query WhatsappTemplateListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[WhatsappTemplateListResponse], err error) {
+func (r *WhatsappTemplateService) List(ctx context.Context, query WhatsappTemplateListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[shared.WhatsappTemplateData], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -66,12 +66,12 @@ func (r *WhatsappTemplateService) List(ctx context.Context, query WhatsappTempla
 }
 
 // List Whatsapp message templates
-func (r *WhatsappTemplateService) ListAutoPaging(ctx context.Context, query WhatsappTemplateListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[WhatsappTemplateListResponse] {
+func (r *WhatsappTemplateService) ListAutoPaging(ctx context.Context, query WhatsappTemplateListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[shared.WhatsappTemplateData] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type WhatsappTemplateNewResponse struct {
-	Data WhatsappTemplateNewResponseData `json:"data"`
+	Data shared.WhatsappTemplateData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -83,126 +83,6 @@ type WhatsappTemplateNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r WhatsappTemplateNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *WhatsappTemplateNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappTemplateNewResponseData struct {
-	ID string `json:"id"`
-	// Any of "MARKETING", "UTILITY", "AUTHENTICATION".
-	Category string `json:"category"`
-	// Whatsapp template components (header, body, footer, buttons)
-	Components              []any                                                  `json:"components"`
-	CreatedAt               time.Time                                              `json:"created_at" format:"date-time"`
-	Language                string                                                 `json:"language"`
-	Name                    string                                                 `json:"name"`
-	RecordType              string                                                 `json:"record_type"`
-	RejectionReason         string                                                 `json:"rejection_reason"`
-	Status                  string                                                 `json:"status"`
-	TemplateID              string                                                 `json:"template_id"`
-	UpdatedAt               time.Time                                              `json:"updated_at" format:"date-time"`
-	WhatsappBusinessAccount WhatsappTemplateNewResponseDataWhatsappBusinessAccount `json:"whatsapp_business_account"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                      respjson.Field
-		Category                respjson.Field
-		Components              respjson.Field
-		CreatedAt               respjson.Field
-		Language                respjson.Field
-		Name                    respjson.Field
-		RecordType              respjson.Field
-		RejectionReason         respjson.Field
-		Status                  respjson.Field
-		TemplateID              respjson.Field
-		UpdatedAt               respjson.Field
-		WhatsappBusinessAccount respjson.Field
-		ExtraFields             map[string]respjson.Field
-		raw                     string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WhatsappTemplateNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *WhatsappTemplateNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappTemplateNewResponseDataWhatsappBusinessAccount struct {
-	ID string `json:"id"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WhatsappTemplateNewResponseDataWhatsappBusinessAccount) RawJSON() string { return r.JSON.raw }
-func (r *WhatsappTemplateNewResponseDataWhatsappBusinessAccount) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappTemplateListResponse struct {
-	ID string `json:"id"`
-	// Any of "MARKETING", "UTILITY", "AUTHENTICATION".
-	Category WhatsappTemplateListResponseCategory `json:"category"`
-	// Whatsapp template components (header, body, footer, buttons)
-	Components              []any                                               `json:"components"`
-	CreatedAt               time.Time                                           `json:"created_at" format:"date-time"`
-	Language                string                                              `json:"language"`
-	Name                    string                                              `json:"name"`
-	RecordType              string                                              `json:"record_type"`
-	RejectionReason         string                                              `json:"rejection_reason"`
-	Status                  string                                              `json:"status"`
-	TemplateID              string                                              `json:"template_id"`
-	UpdatedAt               time.Time                                           `json:"updated_at" format:"date-time"`
-	WhatsappBusinessAccount WhatsappTemplateListResponseWhatsappBusinessAccount `json:"whatsapp_business_account"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                      respjson.Field
-		Category                respjson.Field
-		Components              respjson.Field
-		CreatedAt               respjson.Field
-		Language                respjson.Field
-		Name                    respjson.Field
-		RecordType              respjson.Field
-		RejectionReason         respjson.Field
-		Status                  respjson.Field
-		TemplateID              respjson.Field
-		UpdatedAt               respjson.Field
-		WhatsappBusinessAccount respjson.Field
-		ExtraFields             map[string]respjson.Field
-		raw                     string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WhatsappTemplateListResponse) RawJSON() string { return r.JSON.raw }
-func (r *WhatsappTemplateListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappTemplateListResponseCategory string
-
-const (
-	WhatsappTemplateListResponseCategoryMarketing      WhatsappTemplateListResponseCategory = "MARKETING"
-	WhatsappTemplateListResponseCategoryUtility        WhatsappTemplateListResponseCategory = "UTILITY"
-	WhatsappTemplateListResponseCategoryAuthentication WhatsappTemplateListResponseCategory = "AUTHENTICATION"
-)
-
-type WhatsappTemplateListResponseWhatsappBusinessAccount struct {
-	ID string `json:"id"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WhatsappTemplateListResponseWhatsappBusinessAccount) RawJSON() string { return r.JSON.raw }
-func (r *WhatsappTemplateListResponseWhatsappBusinessAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
