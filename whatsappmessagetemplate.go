@@ -110,7 +110,7 @@ func (r *WhatsappMessageTemplateUpdateResponse) UnmarshalJSON(data []byte) error
 type WhatsappMessageTemplateUpdateParams struct {
 	// Any of "MARKETING", "UTILITY", "AUTHENTICATION".
 	Category   WhatsappMessageTemplateUpdateParamsCategory `json:"category,omitzero"`
-	Components []any                                       `json:"components,omitzero"`
+	Components []map[string]any                            `json:"components,omitzero"`
 	paramObj
 }
 

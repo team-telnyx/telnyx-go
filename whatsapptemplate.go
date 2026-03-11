@@ -89,7 +89,7 @@ func (r *WhatsappTemplateNewResponse) UnmarshalJSON(data []byte) error {
 type WhatsappTemplateNewParams struct {
 	// Any of "MARKETING", "UTILITY", "AUTHENTICATION".
 	Category   WhatsappTemplateNewParamsCategory `json:"category,omitzero" api:"required"`
-	Components []any                             `json:"components,omitzero" api:"required"`
+	Components []map[string]any                  `json:"components,omitzero" api:"required"`
 	Language   string                            `json:"language" api:"required"`
 	Name       string                            `json:"name" api:"required"`
 	WabaID     string                            `json:"waba_id" api:"required"`

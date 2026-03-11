@@ -53,8 +53,10 @@ func TestWhatsappMessageTemplateUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		telnyx.WhatsappMessageTemplateUpdateParams{
-			Category:   telnyx.WhatsappMessageTemplateUpdateParamsCategoryMarketing,
-			Components: []any{map[string]any{}},
+			Category: telnyx.WhatsappMessageTemplateUpdateParamsCategoryMarketing,
+			Components: []map[string]any{{
+				"foo": "bar",
+			}},
 		},
 	)
 	if err != nil {
