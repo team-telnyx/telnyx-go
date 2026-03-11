@@ -27,11 +27,13 @@ func TestWhatsappTemplateNew(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Whatsapp.Templates.New(context.TODO(), telnyx.WhatsappTemplateNewParams{
-		Category:   telnyx.WhatsappTemplateNewParamsCategoryMarketing,
-		Components: []any{map[string]any{}},
-		Language:   "language",
-		Name:       "name",
-		WabaID:     "waba_id",
+		Category: telnyx.WhatsappTemplateNewParamsCategoryMarketing,
+		Components: []map[string]any{{
+			"foo": "bar",
+		}},
+		Language: "language",
+		Name:     "name",
+		WabaID:   "waba_id",
 	})
 	if err != nil {
 		var apierr *telnyx.Error

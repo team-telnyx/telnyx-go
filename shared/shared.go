@@ -1787,7 +1787,7 @@ type WhatsappTemplateData struct {
 	// Any of "MARKETING", "UTILITY", "AUTHENTICATION".
 	Category WhatsappTemplateDataCategory `json:"category"`
 	// Whatsapp template components (header, body, footer, buttons)
-	Components              []any                                       `json:"components"`
+	Components              []map[string]any                            `json:"components"`
 	CreatedAt               time.Time                                   `json:"created_at" format:"date-time"`
 	Language                string                                      `json:"language"`
 	Name                    string                                      `json:"name"`
