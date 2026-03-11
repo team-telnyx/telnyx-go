@@ -201,7 +201,7 @@ func (r *StreamClientEventParam) UnmarshalJSON(data []byte) error {
 }
 
 // StreamServerEventUnion contains all possible properties and values from
-// [StreamServerEventAudioChunk], [StreamServerEventFinal],
+// [StreamServerEventAudioChunk], [StreamServerEventFinalFrameEvent],
 // [StreamServerEventError].
 //
 // Use the [StreamServerEventUnion.AsAny] method to switch on the variant.
@@ -237,15 +237,15 @@ type anyStreamServerEvent interface {
 	implStreamServerEventUnion()
 }
 
-func (StreamServerEventAudioChunk) implStreamServerEventUnion() {}
-func (StreamServerEventFinal) implStreamServerEventUnion()      {}
-func (StreamServerEventError) implStreamServerEventUnion()      {}
+func (StreamServerEventAudioChunk) implStreamServerEventUnion()      {}
+func (StreamServerEventFinalFrameEvent) implStreamServerEventUnion() {}
+func (StreamServerEventError) implStreamServerEventUnion()           {}
 
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := StreamServerEventUnion.AsAny().(type) {
 //	case telnyx.StreamServerEventAudioChunk:
-//	case telnyx.StreamServerEventFinal:
+//	case telnyx.StreamServerEventFinalFrameEvent:
 //	case telnyx.StreamServerEventError:
 //	default:
 //	  fmt.Errorf("no variant present")
@@ -255,7 +255,7 @@ func (u StreamServerEventUnion) AsAny() anyStreamServerEvent {
 	case "audio_chunk":
 		return u.AsAudioChunk()
 	case "final":
-		return u.AsFinal()
+		return u.AsFinalFrameEvent()
 	case "error":
 		return u.AsError()
 	}
@@ -267,7 +267,7 @@ func (u StreamServerEventUnion) AsAudioChunk() (v StreamServerEventAudioChunk) {
 	return
 }
 
-func (u StreamServerEventUnion) AsFinal() (v StreamServerEventFinal) {
+func (u StreamServerEventUnion) AsFinalFrameEvent() (v StreamServerEventFinalFrameEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -292,16 +292,16 @@ func (r *StreamServerEventUnion) UnmarshalJSON(data []byte) error {
 // [StreamServerEventUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfStreamServerEventFinalAudio]
+// will be valid: OfString OfStreamServerEventFinalFrameEventAudio]
 type StreamServerEventUnionAudio struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a [any] instead of an object.
-	OfStreamServerEventFinalAudio any `json:",inline"`
-	JSON                          struct {
-		OfString                      respjson.Field
-		OfStreamServerEventFinalAudio respjson.Field
-		raw                           string
+	OfStreamServerEventFinalFrameEventAudio any `json:",inline"`
+	JSON                                    struct {
+		OfString                                respjson.Field
+		OfStreamServerEventFinalFrameEventAudio respjson.Field
+		raw                                     string
 	} `json:"-"`
 }
 
@@ -348,7 +348,7 @@ func (r *StreamServerEventAudioChunk) UnmarshalJSON(data []byte) error {
 }
 
 // Server-to-client frame indicating synthesis is complete for the current text.
-type StreamServerEventFinal struct {
+type StreamServerEventFinalFrameEvent struct {
 	// Always `null` for the final frame.
 	Audio any `json:"audio" api:"nullable"`
 	// Always `true`.
@@ -376,8 +376,8 @@ type StreamServerEventFinal struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r StreamServerEventFinal) RawJSON() string { return r.JSON.raw }
-func (r *StreamServerEventFinal) UnmarshalJSON(data []byte) error {
+func (r StreamServerEventFinalFrameEvent) RawJSON() string { return r.JSON.raw }
+func (r *StreamServerEventFinalFrameEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
