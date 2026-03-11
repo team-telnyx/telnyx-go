@@ -4705,3 +4705,114 @@ Methods:
 
 - <code title="get /session_analysis/metadata">client.SessionAnalysis.Metadata.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SessionAnalysisMetadataService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SessionAnalysisMetadataGetResponse">SessionAnalysisMetadataGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /session_analysis/metadata/{record_type}">client.SessionAnalysis.Metadata.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SessionAnalysisMetadataService.GetRecordType">GetRecordType</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, recordType <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SessionAnalysisMetadataGetRecordTypeResponse">SessionAnalysisMetadataGetRecordTypeResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+# Whatsapp
+
+## BusinessAccounts
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountGetResponse">WhatsappBusinessAccountGetResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountListResponse">WhatsappBusinessAccountListResponse</a>
+
+Methods:
+
+- <code title="get /v2/whatsapp/business_accounts/{id}">client.Whatsapp.BusinessAccounts.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountGetResponse">WhatsappBusinessAccountGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /v2/whatsapp/business_accounts">client.Whatsapp.BusinessAccounts.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountListParams">WhatsappBusinessAccountListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountListResponse">WhatsappBusinessAccountListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /v2/whatsapp/business_accounts/{id}">client.Whatsapp.BusinessAccounts.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+
+### PhoneNumbers
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountPhoneNumberListResponse">WhatsappBusinessAccountPhoneNumberListResponse</a>
+
+Methods:
+
+- <code title="get /v2/whatsapp/business_accounts/{id}/phone_numbers">client.Whatsapp.BusinessAccounts.PhoneNumbers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountPhoneNumberService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountPhoneNumberListParams">WhatsappBusinessAccountPhoneNumberListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountPhoneNumberListResponse">WhatsappBusinessAccountPhoneNumberListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /v2/whatsapp/business_accounts/{id}/phone_numbers">client.Whatsapp.BusinessAccounts.PhoneNumbers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountPhoneNumberService.InitializeVerification">InitializeVerification</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountPhoneNumberInitializeVerificationParams">WhatsappBusinessAccountPhoneNumberInitializeVerificationParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+
+### Settings
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountSettingGetResponse">WhatsappBusinessAccountSettingGetResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountSettingUpdateResponse">WhatsappBusinessAccountSettingUpdateResponse</a>
+
+Methods:
+
+- <code title="get /v2/whatsapp/business_accounts/{id}/settings">client.Whatsapp.BusinessAccounts.Settings.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountSettingService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountSettingGetResponse">WhatsappBusinessAccountSettingGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="patch /v2/whatsapp/business_accounts/{id}/settings">client.Whatsapp.BusinessAccounts.Settings.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountSettingService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountSettingUpdateParams">WhatsappBusinessAccountSettingUpdateParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountSettingUpdateResponse">WhatsappBusinessAccountSettingUpdateResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+## MessageTemplates
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappMessageTemplateNewResponse">WhatsappMessageTemplateNewResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappMessageTemplateListResponse">WhatsappMessageTemplateListResponse</a>
+
+Methods:
+
+- <code title="post /v2/whatsapp/message_templates">client.Whatsapp.MessageTemplates.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappMessageTemplateService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappMessageTemplateNewParams">WhatsappMessageTemplateNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappMessageTemplateNewResponse">WhatsappMessageTemplateNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /v2/whatsapp/message_templates">client.Whatsapp.MessageTemplates.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappMessageTemplateService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappMessageTemplateListParams">WhatsappMessageTemplateListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappMessageTemplateListResponse">WhatsappMessageTemplateListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+## PhoneNumbers
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberListResponse">WhatsappPhoneNumberListResponse</a>
+
+Methods:
+
+- <code title="get /v2/whatsapp/phone_numbers">client.Whatsapp.PhoneNumbers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberListParams">WhatsappPhoneNumberListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberListResponse">WhatsappPhoneNumberListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /v2/whatsapp/phone_numbers/{phone_number}">client.Whatsapp.PhoneNumbers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, phoneNumber <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+- <code title="post /v2/whatsapp/phone_numbers/{phone_number}/resend_verification">client.Whatsapp.PhoneNumbers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberService.ResendVerification">ResendVerification</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, phoneNumber <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberResendVerificationParams">WhatsappPhoneNumberResendVerificationParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+- <code title="post /v2/whatsapp/phone_numbers/{phone_number}/verify">client.Whatsapp.PhoneNumbers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberService.Verify">Verify</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, phoneNumber <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberVerifyParams">WhatsappPhoneNumberVerifyParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+
+### CallingSettings
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberCallingSettingGetResponse">WhatsappPhoneNumberCallingSettingGetResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberCallingSettingUpdateResponse">WhatsappPhoneNumberCallingSettingUpdateResponse</a>
+
+Methods:
+
+- <code title="get /v2/whatsapp/phone_numbers/{phone_number}/calling_settings">client.Whatsapp.PhoneNumbers.CallingSettings.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberCallingSettingService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, phoneNumber <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberCallingSettingGetResponse">WhatsappPhoneNumberCallingSettingGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="patch /v2/whatsapp/phone_numbers/{phone_number}/calling_settings">client.Whatsapp.PhoneNumbers.CallingSettings.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberCallingSettingService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, phoneNumber <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberCallingSettingUpdateParams">WhatsappPhoneNumberCallingSettingUpdateParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberCallingSettingUpdateResponse">WhatsappPhoneNumberCallingSettingUpdateResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+### Profile
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberProfileGetResponse">WhatsappPhoneNumberProfileGetResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberProfileUpdateResponse">WhatsappPhoneNumberProfileUpdateResponse</a>
+
+Methods:
+
+- <code title="get /v2/whatsapp/phone_numbers/{phone_number}/profile">client.Whatsapp.PhoneNumbers.Profile.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberProfileService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, phoneNumber <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberProfileGetResponse">WhatsappPhoneNumberProfileGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="patch /v2/whatsapp/phone_numbers/{phone_number}/profile">client.Whatsapp.PhoneNumbers.Profile.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberProfileService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, phoneNumber <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberProfileUpdateParams">WhatsappPhoneNumberProfileUpdateParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberProfileUpdateResponse">WhatsappPhoneNumberProfileUpdateResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+#### Photo
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberProfilePhotoUploadResponse">WhatsappPhoneNumberProfilePhotoUploadResponse</a>
+
+Methods:
+
+- <code title="delete /v2/whatsapp/phone_numbers/{phone_number}/profile/photo">client.Whatsapp.PhoneNumbers.Profile.Photo.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberProfilePhotoService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, phoneNumber <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+- <code title="post /v2/whatsapp/phone_numbers/{phone_number}/profile/photo">client.Whatsapp.PhoneNumbers.Profile.Photo.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberProfilePhotoService.Upload">Upload</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, phoneNumber <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberProfilePhotoUploadParams">WhatsappPhoneNumberProfilePhotoUploadParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberProfilePhotoUploadResponse">WhatsappPhoneNumberProfilePhotoUploadResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+# WhatsappMessageTemplates
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappMessageTemplateGetResponse">WhatsappMessageTemplateGetResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappMessageTemplateUpdateResponse">WhatsappMessageTemplateUpdateResponse</a>
+
+Methods:
+
+- <code title="get /v2/whatsapp_message_templates/{id}">client.WhatsappMessageTemplates.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappMessageTemplateService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappMessageTemplateGetResponse">WhatsappMessageTemplateGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="patch /v2/whatsapp_message_templates/{id}">client.WhatsappMessageTemplates.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappMessageTemplateService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappMessageTemplateUpdateParams">WhatsappMessageTemplateUpdateParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappMessageTemplateUpdateResponse">WhatsappMessageTemplateUpdateResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /v2/whatsapp_message_templates/{id}">client.WhatsappMessageTemplates.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappMessageTemplateService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>

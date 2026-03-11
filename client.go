@@ -304,6 +304,9 @@ type Client struct {
 	MessagingProfileMetrics MessagingProfileMetricService
 	// Analyze voice AI sessions, costs, and event hierarchies across Telnyx products.
 	SessionAnalysis SessionAnalysisService
+	Whatsapp        WhatsappService
+	// Manage Whatsapp message templates
+	WhatsappMessageTemplates WhatsappMessageTemplateService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -492,6 +495,8 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.AlphanumericSenderIDs = NewAlphanumericSenderIDService(opts...)
 	r.MessagingProfileMetrics = NewMessagingProfileMetricService(opts...)
 	r.SessionAnalysis = NewSessionAnalysisService(opts...)
+	r.Whatsapp = NewWhatsappService(opts...)
+	r.WhatsappMessageTemplates = NewWhatsappMessageTemplateService(opts...)
 
 	return
 }
