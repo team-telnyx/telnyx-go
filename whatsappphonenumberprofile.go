@@ -65,8 +65,49 @@ func (r *WhatsappPhoneNumberProfileService) Update(ctx context.Context, phoneNum
 	return res, err
 }
 
+type WhatsappProfileData struct {
+	ID          string    `json:"id"`
+	About       string    `json:"about"`
+	Address     string    `json:"address"`
+	Category    string    `json:"category"`
+	CreatedAt   time.Time `json:"created_at" format:"date-time"`
+	Description string    `json:"description"`
+	DisplayName string    `json:"display_name"`
+	Email       string    `json:"email"`
+	// Whatsapp phone number ID
+	PhoneNumberID   string    `json:"phone_number_id"`
+	ProfilePhotoURL string    `json:"profile_photo_url"`
+	RecordType      string    `json:"record_type"`
+	UpdatedAt       time.Time `json:"updated_at" format:"date-time"`
+	Website         string    `json:"website"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID              respjson.Field
+		About           respjson.Field
+		Address         respjson.Field
+		Category        respjson.Field
+		CreatedAt       respjson.Field
+		Description     respjson.Field
+		DisplayName     respjson.Field
+		Email           respjson.Field
+		PhoneNumberID   respjson.Field
+		ProfilePhotoURL respjson.Field
+		RecordType      respjson.Field
+		UpdatedAt       respjson.Field
+		Website         respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappProfileData) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappProfileData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type WhatsappPhoneNumberProfileGetResponse struct {
-	Data WhatsappPhoneNumberProfileGetResponseData `json:"data"`
+	Data WhatsappProfileData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -81,49 +122,8 @@ func (r *WhatsappPhoneNumberProfileGetResponse) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WhatsappPhoneNumberProfileGetResponseData struct {
-	ID          string    `json:"id"`
-	About       string    `json:"about"`
-	Address     string    `json:"address"`
-	Category    string    `json:"category"`
-	CreatedAt   time.Time `json:"created_at" format:"date-time"`
-	Description string    `json:"description"`
-	DisplayName string    `json:"display_name"`
-	Email       string    `json:"email"`
-	// Whatsapp phone number ID
-	PhoneNumberID   string    `json:"phone_number_id"`
-	ProfilePhotoURL string    `json:"profile_photo_url"`
-	RecordType      string    `json:"record_type"`
-	UpdatedAt       time.Time `json:"updated_at" format:"date-time"`
-	Website         string    `json:"website"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID              respjson.Field
-		About           respjson.Field
-		Address         respjson.Field
-		Category        respjson.Field
-		CreatedAt       respjson.Field
-		Description     respjson.Field
-		DisplayName     respjson.Field
-		Email           respjson.Field
-		PhoneNumberID   respjson.Field
-		ProfilePhotoURL respjson.Field
-		RecordType      respjson.Field
-		UpdatedAt       respjson.Field
-		Website         respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WhatsappPhoneNumberProfileGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *WhatsappPhoneNumberProfileGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type WhatsappPhoneNumberProfileUpdateResponse struct {
-	Data WhatsappPhoneNumberProfileUpdateResponseData `json:"data"`
+	Data WhatsappProfileData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -135,47 +135,6 @@ type WhatsappPhoneNumberProfileUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r WhatsappPhoneNumberProfileUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *WhatsappPhoneNumberProfileUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappPhoneNumberProfileUpdateResponseData struct {
-	ID          string    `json:"id"`
-	About       string    `json:"about"`
-	Address     string    `json:"address"`
-	Category    string    `json:"category"`
-	CreatedAt   time.Time `json:"created_at" format:"date-time"`
-	Description string    `json:"description"`
-	DisplayName string    `json:"display_name"`
-	Email       string    `json:"email"`
-	// Whatsapp phone number ID
-	PhoneNumberID   string    `json:"phone_number_id"`
-	ProfilePhotoURL string    `json:"profile_photo_url"`
-	RecordType      string    `json:"record_type"`
-	UpdatedAt       time.Time `json:"updated_at" format:"date-time"`
-	Website         string    `json:"website"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID              respjson.Field
-		About           respjson.Field
-		Address         respjson.Field
-		Category        respjson.Field
-		CreatedAt       respjson.Field
-		Description     respjson.Field
-		DisplayName     respjson.Field
-		Email           respjson.Field
-		PhoneNumberID   respjson.Field
-		ProfilePhotoURL respjson.Field
-		RecordType      respjson.Field
-		UpdatedAt       respjson.Field
-		Website         respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WhatsappPhoneNumberProfileUpdateResponseData) RawJSON() string { return r.JSON.raw }
-func (r *WhatsappPhoneNumberProfileUpdateResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
