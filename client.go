@@ -307,6 +307,11 @@ type Client struct {
 	Whatsapp        WhatsappService
 	// Manage Whatsapp message templates
 	WhatsappMessageTemplates WhatsappMessageTemplateService
+	// Capture and manage voice identities as clones for use in text-to-speech
+	// synthesis.
+	VoiceClones VoiceCloneService
+	// Create and manage AI-generated voice designs using natural language prompts.
+	VoiceDesigns VoiceDesignService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -497,6 +502,8 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.SessionAnalysis = NewSessionAnalysisService(opts...)
 	r.Whatsapp = NewWhatsappService(opts...)
 	r.WhatsappMessageTemplates = NewWhatsappMessageTemplateService(opts...)
+	r.VoiceClones = NewVoiceCloneService(opts...)
+	r.VoiceDesigns = NewVoiceDesignService(opts...)
 
 	return
 }
