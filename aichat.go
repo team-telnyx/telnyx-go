@@ -114,6 +114,10 @@ type AIChatNewCompletionParams struct {
 	// there are `best_of` complete candidates; if `false`, a heuristic is applied and
 	// the generation stops when is it very unlikely to find better candidates.
 	EarlyStopping param.Opt[bool] `json:"early_stopping,omitzero"`
+	// Whether to enable the thinking/reasoning phase for models that support it (e.g.,
+	// QwQ, Qwen3). When set to false, the model will skip the internal reasoning step
+	// and respond directly, which can reduce latency. Defaults to true.
+	EnableThinking param.Opt[bool] `json:"enable_thinking,omitzero"`
 	// Higher values will penalize the model from repeating the same output tokens.
 	FrequencyPenalty param.Opt[float64] `json:"frequency_penalty,omitzero"`
 	// If specified, the output will follow the regex pattern.

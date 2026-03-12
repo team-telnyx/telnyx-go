@@ -1,5 +1,37 @@
 # Changelog
 
+## 4.45.0 (2026-03-12)
+
+Full Changelog: [v4.44.0...v4.45.0](https://github.com/team-telnyx/telnyx-go/compare/v4.44.0...v4.45.0)
+
+### Features
+
+* Add enable_thinking parameter to chat completions API ([eff37c5](https://github.com/team-telnyx/telnyx-go/commit/eff37c531dddec8c18cf919fc1f437c86b7826df))
+* Add Voice Designs and Voice Clones API specification ([ba5f82c](https://github.com/team-telnyx/telnyx-go/commit/ba5f82caacbeb020c9b2e0533ac6405157c33e3c))
+* **api:** manual updates ([cb17191](https://github.com/team-telnyx/telnyx-go/commit/cb1719158bf561fd8873ee37b5751a206c9dd4de))
+* **api:** manual updates ([a09a3dd](https://github.com/team-telnyx/telnyx-go/commit/a09a3dda033e78ed6900119ec1d655cd43b56433))
+* **api:** manual updates ([6af49e0](https://github.com/team-telnyx/telnyx-go/commit/6af49e0b290c54e1df93de47b91b12c2e86cc83e))
+* **api:** Merge pull request [#27](https://github.com/team-telnyx/telnyx-go/issues/27) from stainless-sdks/fix/whatsapp-message-templates-conflict ([5315a88](https://github.com/team-telnyx/telnyx-go/commit/5315a8802e0d7c6227888e19aeb4c38f821c23e4))
+* **messaging:** add wait_seconds to OutboundMessagePayload example ([db135bd](https://github.com/team-telnyx/telnyx-go/commit/db135bd23a00b7e1389b8e4e170c8c1c616e9a2c))
+
+
+### Bug Fixes
+
+* add missing vertical enum values for 10DLC brand creation (ENGDESK-49040) ([451baf3](https://github.com/team-telnyx/telnyx-go/commit/451baf33567ae89cf5e7cd9cdd5e184cd768265f))
+* add title to InviteTool.invite for Stainless SDK ([156a718](https://github.com/team-telnyx/telnyx-go/commit/156a7183ce71a8f9df09d58c74296f4bdefbf777))
+* rename whatsapp.message_templates to whatsapp.templates to avoid conflict ([5315a88](https://github.com/team-telnyx/telnyx-go/commit/5315a8802e0d7c6227888e19aeb4c38f821c23e4))
+* update wait_seconds example to 0.5 ([122039b](https://github.com/team-telnyx/telnyx-go/commit/122039b13d398e38c6b2e6c06d924b209175c1ba))
+
+
+### Reverts
+
+* restore stainless.yml changes removed in 1de6067 ([14d71cb](https://github.com/team-telnyx/telnyx-go/commit/14d71cb7e4c18059341a6fdb2e9aec862ed1f1e6))
+
+
+### Chores
+
+* **internal:** use explicit returns in more places ([3ea4295](https://github.com/team-telnyx/telnyx-go/commit/3ea4295e5243761699d3af3a5976b63839ce0ad1))
+
 ## 4.44.0 (2026-03-10)
 
 Full Changelog: [v4.43.0...v4.44.0](https://github.com/team-telnyx/telnyx-go/compare/v4.43.0...v4.44.0)

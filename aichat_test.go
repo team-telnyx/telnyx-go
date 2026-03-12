@@ -41,6 +41,7 @@ func TestAIChatNewCompletionWithOptionalParams(t *testing.T) {
 		APIKeyRef:        telnyx.String("api_key_ref"),
 		BestOf:           telnyx.Int(0),
 		EarlyStopping:    telnyx.Bool(true),
+		EnableThinking:   telnyx.Bool(true),
 		FrequencyPenalty: telnyx.Float(0),
 		GuidedChoice:     []string{"string"},
 		GuidedJson: map[string]any{
