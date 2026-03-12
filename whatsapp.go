@@ -17,7 +17,7 @@ type WhatsappService struct {
 	// Manage Whatsapp business accounts
 	BusinessAccounts WhatsappBusinessAccountService
 	// Manage Whatsapp message templates
-	Templates WhatsappTemplateService
+	MessageTemplates WhatsappMessageTemplateService
 	// Manage Whatsapp phone numbers
 	PhoneNumbers WhatsappPhoneNumberService
 }
@@ -29,7 +29,7 @@ func NewWhatsappService(opts ...option.RequestOption) (r WhatsappService) {
 	r = WhatsappService{}
 	r.Options = opts
 	r.BusinessAccounts = NewWhatsappBusinessAccountService(opts...)
-	r.Templates = NewWhatsappTemplateService(opts...)
+	r.MessageTemplates = NewWhatsappMessageTemplateService(opts...)
 	r.PhoneNumbers = NewWhatsappPhoneNumberService(opts...)
 	return
 }

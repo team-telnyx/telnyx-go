@@ -523,23 +523,29 @@ const (
 type Vertical string
 
 const (
-	VerticalRealEstate    Vertical = "REAL_ESTATE"
-	VerticalHealthcare    Vertical = "HEALTHCARE"
-	VerticalEnergy        Vertical = "ENERGY"
-	VerticalEntertainment Vertical = "ENTERTAINMENT"
-	VerticalRetail        Vertical = "RETAIL"
-	VerticalAgriculture   Vertical = "AGRICULTURE"
-	VerticalInsurance     Vertical = "INSURANCE"
-	VerticalEducation     Vertical = "EDUCATION"
-	VerticalHospitality   Vertical = "HOSPITALITY"
-	VerticalFinancial     Vertical = "FINANCIAL"
-	VerticalGambling      Vertical = "GAMBLING"
-	VerticalConstruction  Vertical = "CONSTRUCTION"
-	VerticalNgo           Vertical = "NGO"
-	VerticalManufacturing Vertical = "MANUFACTURING"
-	VerticalGovernment    Vertical = "GOVERNMENT"
-	VerticalTechnology    Vertical = "TECHNOLOGY"
-	VerticalCommunication Vertical = "COMMUNICATION"
+	VerticalAgriculture    Vertical = "AGRICULTURE"
+	VerticalCommunication  Vertical = "COMMUNICATION"
+	VerticalConstruction   Vertical = "CONSTRUCTION"
+	VerticalEducation      Vertical = "EDUCATION"
+	VerticalEnergy         Vertical = "ENERGY"
+	VerticalEntertainment  Vertical = "ENTERTAINMENT"
+	VerticalFinancial      Vertical = "FINANCIAL"
+	VerticalGambling       Vertical = "GAMBLING"
+	VerticalGovernment     Vertical = "GOVERNMENT"
+	VerticalHealthcare     Vertical = "HEALTHCARE"
+	VerticalHospitality    Vertical = "HOSPITALITY"
+	VerticalHumanResources Vertical = "HUMAN_RESOURCES"
+	VerticalInsurance      Vertical = "INSURANCE"
+	VerticalLegal          Vertical = "LEGAL"
+	VerticalManufacturing  Vertical = "MANUFACTURING"
+	VerticalNgo            Vertical = "NGO"
+	VerticalPolitical      Vertical = "POLITICAL"
+	VerticalPostal         Vertical = "POSTAL"
+	VerticalProfessional   Vertical = "PROFESSIONAL"
+	VerticalRealEstate     Vertical = "REAL_ESTATE"
+	VerticalRetail         Vertical = "RETAIL"
+	VerticalTechnology     Vertical = "TECHNOLOGY"
+	VerticalTransportation Vertical = "TRANSPORTATION"
 )
 
 // Telnyx-specific extensions to The Campaign Registry's `Brand` type
@@ -791,10 +797,11 @@ type Messaging10dlcBrandNewParams struct {
 	EntityType EntityType `json:"entityType,omitzero" api:"required"`
 	// Vertical or industry segment of the brand or campaign.
 	//
-	// Any of "REAL_ESTATE", "HEALTHCARE", "ENERGY", "ENTERTAINMENT", "RETAIL",
-	// "AGRICULTURE", "INSURANCE", "EDUCATION", "HOSPITALITY", "FINANCIAL", "GAMBLING",
-	// "CONSTRUCTION", "NGO", "MANUFACTURING", "GOVERNMENT", "TECHNOLOGY",
-	// "COMMUNICATION".
+	// Any of "AGRICULTURE", "COMMUNICATION", "CONSTRUCTION", "EDUCATION", "ENERGY",
+	// "ENTERTAINMENT", "FINANCIAL", "GAMBLING", "GOVERNMENT", "HEALTHCARE",
+	// "HOSPITALITY", "HUMAN_RESOURCES", "INSURANCE", "LEGAL", "MANUFACTURING", "NGO",
+	// "POLITICAL", "POSTAL", "PROFESSIONAL", "REAL_ESTATE", "RETAIL", "TECHNOLOGY",
+	// "TRANSPORTATION".
 	Vertical Vertical `json:"vertical,omitzero" api:"required"`
 	// Business contact email.
 	//
@@ -866,10 +873,11 @@ type Messaging10dlcBrandUpdateParams struct {
 	EntityType EntityType `json:"entityType,omitzero" api:"required"`
 	// Vertical or industry segment of the brand or campaign.
 	//
-	// Any of "REAL_ESTATE", "HEALTHCARE", "ENERGY", "ENTERTAINMENT", "RETAIL",
-	// "AGRICULTURE", "INSURANCE", "EDUCATION", "HOSPITALITY", "FINANCIAL", "GAMBLING",
-	// "CONSTRUCTION", "NGO", "MANUFACTURING", "GOVERNMENT", "TECHNOLOGY",
-	// "COMMUNICATION".
+	// Any of "AGRICULTURE", "COMMUNICATION", "CONSTRUCTION", "EDUCATION", "ENERGY",
+	// "ENTERTAINMENT", "FINANCIAL", "GAMBLING", "GOVERNMENT", "HEALTHCARE",
+	// "HOSPITALITY", "HUMAN_RESOURCES", "INSURANCE", "LEGAL", "MANUFACTURING", "NGO",
+	// "POLITICAL", "POSTAL", "PROFESSIONAL", "REAL_ESTATE", "RETAIL", "TECHNOLOGY",
+	// "TRANSPORTATION".
 	Vertical Vertical `json:"vertical,omitzero" api:"required"`
 	// Alternate business identifier such as DUNS, LEI, or GIIN
 	AltBusinessID param.Opt[string] `json:"altBusinessId,omitzero"`
