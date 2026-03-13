@@ -26,7 +26,7 @@ func TestRecordingActionDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Recordings.Actions.Delete(context.TODO(), telnyx.RecordingActionDeleteParams{
+	_, err := client.Recordings.Actions.Delete(context.TODO(), telnyx.RecordingActionDeleteParams{
 		IDs: []string{"428c31b6-7af4-4bcb-b7f5-5013ef9657c1", "428c31b6-7af4-4bcb-b7f5-5013ef9657c2"},
 	})
 	if err != nil {

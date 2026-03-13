@@ -108,12 +108,21 @@ type RecordingResponseData struct {
 	Channels RecordingResponseDataChannels `json:"channels"`
 	// Uniquely identifies the conference.
 	ConferenceID string `json:"conference_id"`
+	// Identifies the Telnyx application (Call Control, TeXML) or SIP connection
+	// resource associated with this recording.
+	ConnectionID string `json:"connection_id"`
 	// ISO 8601 formatted date indicating when the resource was created.
 	CreatedAt string `json:"created_at"`
 	// Links to download the recording files.
 	DownloadURLs RecordingResponseDataDownloadURLs `json:"download_urls"`
 	// The duration of the recording in milliseconds.
 	DurationMillis int64 `json:"duration_millis"`
+	// The `from` (caller) number for the call that generated this recording.
+	From string `json:"from"`
+	// Indicates what triggered the recording. Possible values include `DialVerb`,
+	// `Conference`, `OutboundAPI`, `Trunking`, `RecordVerb`, `StartCallRecordingAPI`,
+	// `StartConferenceRecordingAPI`.
+	InitiatedBy string `json:"initiated_by"`
 	// Any of "recording".
 	RecordType RecordingResponseDataRecordType `json:"record_type"`
 	// ISO 8601 formatted date of when the recording ended.
@@ -129,6 +138,8 @@ type RecordingResponseData struct {
 	//
 	// Any of "completed".
 	Status RecordingResponseDataStatus `json:"status"`
+	// The `to` (callee) number for the call that generated this recording.
+	To string `json:"to"`
 	// ISO 8601 formatted date indicating when the resource was updated.
 	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -139,14 +150,18 @@ type RecordingResponseData struct {
 		CallSessionID      respjson.Field
 		Channels           respjson.Field
 		ConferenceID       respjson.Field
+		ConnectionID       respjson.Field
 		CreatedAt          respjson.Field
 		DownloadURLs       respjson.Field
 		DurationMillis     respjson.Field
+		From               respjson.Field
+		InitiatedBy        respjson.Field
 		RecordType         respjson.Field
 		RecordingEndedAt   respjson.Field
 		RecordingStartedAt respjson.Field
 		Source             respjson.Field
 		Status             respjson.Field
+		To                 respjson.Field
 		UpdatedAt          respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
@@ -246,10 +261,7 @@ func (r *RecordingDeleteResponse) UnmarshalJSON(data []byte) error {
 type RecordingListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
-	// Consolidated filter parameter (deepObject style). Originally:
-	// filter[conference_id], filter[created_at][gte], filter[created_at][lte],
-	// filter[call_leg_id], filter[call_session_id], filter[from], filter[to],
-	// filter[connection_id], filter[sip_call_id]
+	// Filter recordings by various attributes.
 	Filter RecordingListParamsFilter `query:"filter,omitzero" json:"-"`
 	paramObj
 }
@@ -262,11 +274,11 @@ func (r RecordingListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Consolidated filter parameter (deepObject style). Originally:
-// filter[conference_id], filter[created_at][gte], filter[created_at][lte],
-// filter[call_leg_id], filter[call_session_id], filter[from], filter[to],
-// filter[connection_id], filter[sip_call_id]
+// Filter recordings by various attributes.
 type RecordingListParamsFilter struct {
+	// If present, recordings will be filtered to those with a matching
+	// `call_control_id`.
+	CallControlID param.Opt[string] `query:"call_control_id,omitzero" json:"-"`
 	// If present, recordings will be filtered to those with a matching call_leg_id.
 	CallLegID param.Opt[string] `query:"call_leg_id,omitzero" format:"uuid" json:"-"`
 	// If present, recordings will be filtered to those with a matching
@@ -274,6 +286,9 @@ type RecordingListParamsFilter struct {
 	CallSessionID param.Opt[string] `query:"call_session_id,omitzero" format:"uuid" json:"-"`
 	// Returns only recordings associated with a given conference.
 	ConferenceID param.Opt[string] `query:"conference_id,omitzero" json:"-"`
+	// If present, recordings will be filtered to those with a matching
+	// `conference_region`.
+	ConferenceRegion param.Opt[string] `query:"conference_region,omitzero" json:"-"`
 	// If present, recordings will be filtered to those with a matching `connection_id`
 	// attribute (case-sensitive).
 	ConnectionID param.Opt[string] `query:"connection_id,omitzero" json:"-"`
@@ -281,12 +296,14 @@ type RecordingListParamsFilter struct {
 	// attribute (case-sensitive).
 	From param.Opt[string] `query:"from,omitzero" json:"-"`
 	// If present, recordings will be filtered to those with a matching `sip_call_id`
-	// attribute. Matching is case-sensitive
+	// attribute. Matching is case-sensitive.
 	SipCallID param.Opt[string] `query:"sip_call_id,omitzero" json:"-"`
 	// If present, recordings will be filtered to those with a matching `to` attribute
 	// (case-sensitive).
 	To        param.Opt[string]                  `query:"to,omitzero" json:"-"`
 	CreatedAt RecordingListParamsFilterCreatedAt `query:"created_at,omitzero" json:"-"`
+	EndTime   RecordingListParamsFilterEndTime   `query:"end_time,omitzero" json:"-"`
+	StartTime RecordingListParamsFilterStartTime `query:"start_time,omitzero" json:"-"`
 	paramObj
 }
 
@@ -310,6 +327,44 @@ type RecordingListParamsFilterCreatedAt struct {
 // URLQuery serializes [RecordingListParamsFilterCreatedAt]'s query parameters as
 // `url.Values`.
 func (r RecordingListParamsFilterCreatedAt) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type RecordingListParamsFilterEndTime struct {
+	// Returns only recordings with an end time later than or equal to the given ISO
+	// 8601 datetime.
+	Gte param.Opt[string] `query:"gte,omitzero" json:"-"`
+	// Returns only recordings with an end time earlier than or equal to the given ISO
+	// 8601 datetime.
+	Lte param.Opt[string] `query:"lte,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [RecordingListParamsFilterEndTime]'s query parameters as
+// `url.Values`.
+func (r RecordingListParamsFilterEndTime) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type RecordingListParamsFilterStartTime struct {
+	// Returns only recordings with a start time later than or equal to the given ISO
+	// 8601 datetime.
+	Gte param.Opt[string] `query:"gte,omitzero" json:"-"`
+	// Returns only recordings with a start time earlier than or equal to the given ISO
+	// 8601 datetime.
+	Lte param.Opt[string] `query:"lte,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [RecordingListParamsFilterStartTime]'s query parameters as
+// `url.Values`.
+func (r RecordingListParamsFilterStartTime) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

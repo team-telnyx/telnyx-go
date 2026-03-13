@@ -7,13 +7,16 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // Call Recordings operations.
@@ -50,11 +53,26 @@ func (r *RecordingTranscriptionService) Get(ctx context.Context, recordingTransc
 }
 
 // Returns a list of your recording transcriptions.
-func (r *RecordingTranscriptionService) List(ctx context.Context, opts ...option.RequestOption) (res *RecordingTranscriptionListResponse, err error) {
+func (r *RecordingTranscriptionService) List(ctx context.Context, query RecordingTranscriptionListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[RecordingTranscription], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "recording_transcriptions"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Returns a list of your recording transcriptions.
+func (r *RecordingTranscriptionService) ListAutoPaging(ctx context.Context, query RecordingTranscriptionListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[RecordingTranscription] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Permanently deletes a recording transcription.
@@ -141,46 +159,6 @@ func (r *RecordingTranscriptionGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RecordingTranscriptionListResponse struct {
-	Data []RecordingTranscription               `json:"data"`
-	Meta RecordingTranscriptionListResponseMeta `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RecordingTranscriptionListResponse) RawJSON() string { return r.JSON.raw }
-func (r *RecordingTranscriptionListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type RecordingTranscriptionListResponseMeta struct {
-	Cursors shared.Cursor `json:"cursors"`
-	// Path to next page.
-	Next string `json:"next"`
-	// Path to previous page.
-	Previous string `json:"previous"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Cursors     respjson.Field
-		Next        respjson.Field
-		Previous    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RecordingTranscriptionListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *RecordingTranscriptionListResponseMeta) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type RecordingTranscriptionDeleteResponse struct {
 	Data RecordingTranscription `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -195,4 +173,56 @@ type RecordingTranscriptionDeleteResponse struct {
 func (r RecordingTranscriptionDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *RecordingTranscriptionDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type RecordingTranscriptionListParams struct {
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Filter recording transcriptions by various attributes.
+	Filter RecordingTranscriptionListParamsFilter `query:"filter,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [RecordingTranscriptionListParams]'s query parameters as
+// `url.Values`.
+func (r RecordingTranscriptionListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Filter recording transcriptions by various attributes.
+type RecordingTranscriptionListParamsFilter struct {
+	// If present, transcriptions will be filtered to those associated with the given
+	// recording.
+	RecordingID param.Opt[string]                               `query:"recording_id,omitzero" format:"uuid" json:"-"`
+	CreatedAt   RecordingTranscriptionListParamsFilterCreatedAt `query:"created_at,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [RecordingTranscriptionListParamsFilter]'s query parameters
+// as `url.Values`.
+func (r RecordingTranscriptionListParamsFilter) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type RecordingTranscriptionListParamsFilterCreatedAt struct {
+	// Returns only transcriptions created later than or at given ISO 8601 datetime.
+	Gte param.Opt[string] `query:"gte,omitzero" json:"-"`
+	// Returns only transcriptions created earlier than or at given ISO 8601 datetime.
+	Lte param.Opt[string] `query:"lte,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [RecordingTranscriptionListParamsFilterCreatedAt]'s query
+// parameters as `url.Values`.
+func (r RecordingTranscriptionListParamsFilterCreatedAt) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
