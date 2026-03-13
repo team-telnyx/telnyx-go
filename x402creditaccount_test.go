@@ -53,8 +53,8 @@ func TestX402CreditAccountSettleWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.X402.CreditAccount.Settle(context.TODO(), telnyx.X402CreditAccountSettleParams{
 		ID:                     "quote_abc123",
-		BodyPaymentSignature:   telnyx.String("0xabc123..."),
-		HeaderPaymentSignature: telnyx.String("PAYMENT-SIGNATURE"),
+		PaymentSignature:       telnyx.String("0xabc123..."),
+		PaymentSignatureHeader: telnyx.String("PAYMENT-SIGNATURE"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
