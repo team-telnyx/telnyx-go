@@ -168,6 +168,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 							Value: "silence",
 						},
 					},
+					ExpressiveMode:  telnyx.Bool(true),
 					LanguageBoost:   telnyx.VoiceSettingsLanguageBoostAuto,
 					SimilarityBoost: telnyx.Float(0),
 					Speed:           telnyx.Float(0),

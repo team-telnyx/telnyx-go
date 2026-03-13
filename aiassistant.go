@@ -3479,6 +3479,10 @@ type VoiceSettings struct {
 	// supply a looped MP3 URL. If a media URL is chosen in the portal, customers can
 	// preview it before saving.
 	BackgroundAudio VoiceSettingsBackgroundAudioUnion `json:"background_audio"`
+	// Enables emotionally expressive speech using SSML emotion tags. When enabled, the
+	// assistant uses audio tags like angry, excited, content, and sad to add emotional
+	// nuance. Only supported for Telnyx Ultra voices.
+	ExpressiveMode bool `json:"expressive_mode"`
 	// Enhances recognition for specific languages and dialects during MiniMax TTS
 	// synthesis. Default is null (no boost). Set to 'auto' for automatic language
 	// detection. Only applicable when using MiniMax voices.
@@ -3517,6 +3521,7 @@ type VoiceSettings struct {
 		Voice           respjson.Field
 		APIKeyRef       respjson.Field
 		BackgroundAudio respjson.Field
+		ExpressiveMode  respjson.Field
 		LanguageBoost   respjson.Field
 		SimilarityBoost respjson.Field
 		Speed           respjson.Field
@@ -3745,6 +3750,10 @@ type VoiceSettingsParam struct {
 	// that refers to your ElevenLabs API key. Warning: Free plans are unlikely to work
 	// with this integration.
 	APIKeyRef param.Opt[string] `json:"api_key_ref,omitzero"`
+	// Enables emotionally expressive speech using SSML emotion tags. When enabled, the
+	// assistant uses audio tags like angry, excited, content, and sad to add emotional
+	// nuance. Only supported for Telnyx Ultra voices.
+	ExpressiveMode param.Opt[bool] `json:"expressive_mode,omitzero"`
 	// Determines how closely the AI should adhere to the original voice when
 	// attempting to replicate it. Only applicable when using ElevenLabs.
 	SimilarityBoost param.Opt[float64] `json:"similarity_boost,omitzero"`
