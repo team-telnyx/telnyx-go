@@ -1,5 +1,22 @@
 # Changelog
 
+## 4.46.0 (2026-03-13)
+
+Full Changelog: [v4.45.0...v4.46.0](https://github.com/team-telnyx/telnyx-go/compare/v4.45.0...v4.46.0)
+
+### Features
+
+* add public x402 payment endpoints to external specs ([2dd0be8](https://github.com/team-telnyx/telnyx-go/commit/2dd0be82a2fcc58973375df4abfe6cdfc97d9596))
+* AI-2131: Add expressive_mode boolean to VoiceSettings ([fa8e60c](https://github.com/team-telnyx/telnyx-go/commit/fa8e60c2ecc65c7d856655dabae364d3aa9fa469))
+* **api:** manual updates ([0f82678](https://github.com/team-telnyx/telnyx-go/commit/0f8267856b844ef6013438833f41124ccca8a389))
+* **api:** Merge pull request [#29](https://github.com/team-telnyx/telnyx-go/issues/29) from stainless-sdks/fix-add-voice-model ([f467ebe](https://github.com/team-telnyx/telnyx-go/commit/f467ebe8ca34038ddfe1b4f65da0322623006c57))
+* **api:** update OpenAPI spec or Stainless config ([f467ebe](https://github.com/team-telnyx/telnyx-go/commit/f467ebe8ca34038ddfe1b4f65da0322623006c57))
+
+
+### Bug Fixes
+
+* **call-recordings:** align OpenAPI spec with implementation ([868ec49](https://github.com/team-telnyx/telnyx-go/commit/868ec49125b4bfb36f3a39309c6f86cd6689d47d))
+
 ## 4.45.0 (2026-03-12)
 
 Full Changelog: [v4.44.0...v4.45.0](https://github.com/team-telnyx/telnyx-go/compare/v4.44.0...v4.45.0)
