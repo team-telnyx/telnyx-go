@@ -312,6 +312,7 @@ type Client struct {
 	VoiceClones VoiceCloneService
 	// Create and manage AI-generated voice designs using natural language prompts.
 	VoiceDesigns VoiceDesignService
+	X402         X402Service
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -504,6 +505,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.WhatsappMessageTemplates = NewWhatsappMessageTemplateService(opts...)
 	r.VoiceClones = NewVoiceCloneService(opts...)
 	r.VoiceDesigns = NewVoiceDesignService(opts...)
+	r.X402 = NewX402Service(opts...)
 
 	return
 }
