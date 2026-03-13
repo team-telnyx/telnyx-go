@@ -3351,13 +3351,12 @@ Response Types:
 
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RecordingTranscription">RecordingTranscription</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RecordingTranscriptionGetResponse">RecordingTranscriptionGetResponse</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RecordingTranscriptionListResponse">RecordingTranscriptionListResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RecordingTranscriptionDeleteResponse">RecordingTranscriptionDeleteResponse</a>
 
 Methods:
 
 - <code title="get /recording_transcriptions/{recording_transcription_id}">client.RecordingTranscriptions.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RecordingTranscriptionService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, recordingTranscriptionID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RecordingTranscriptionGetResponse">RecordingTranscriptionGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="get /recording_transcriptions">client.RecordingTranscriptions.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RecordingTranscriptionService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RecordingTranscriptionListResponse">RecordingTranscriptionListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /recording_transcriptions">client.RecordingTranscriptions.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RecordingTranscriptionService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RecordingTranscriptionListParams">RecordingTranscriptionListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RecordingTranscription">RecordingTranscription</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /recording_transcriptions/{recording_transcription_id}">client.RecordingTranscriptions.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RecordingTranscriptionService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, recordingTranscriptionID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RecordingTranscriptionDeleteResponse">RecordingTranscriptionDeleteResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # Recordings
@@ -3376,9 +3375,13 @@ Methods:
 
 ## Actions
 
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RecordingActionDeleteResponse">RecordingActionDeleteResponse</a>
+
 Methods:
 
-- <code title="post /recordings/actions/delete">client.Recordings.Actions.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RecordingActionService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RecordingActionDeleteParams">RecordingActionDeleteParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+- <code title="post /recordings/actions/delete">client.Recordings.Actions.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RecordingActionService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RecordingActionDeleteParams">RecordingActionDeleteParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RecordingActionDeleteResponse">RecordingActionDeleteResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # Regions
 

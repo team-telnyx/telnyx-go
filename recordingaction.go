@@ -11,6 +11,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // Call Recordings operations.
@@ -35,13 +36,35 @@ func NewRecordingActionService(opts ...option.RequestOption) (r RecordingActionS
 }
 
 // Permanently deletes a list of call recordings.
-func (r *RecordingActionService) Delete(ctx context.Context, body RecordingActionDeleteParams, opts ...option.RequestOption) (err error) {
+func (r *RecordingActionService) Delete(ctx context.Context, body RecordingActionDeleteParams, opts ...option.RequestOption) (res *RecordingActionDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "recordings/actions/delete"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
+
+type RecordingActionDeleteResponse struct {
+	// Any of "ok".
+	Status RecordingActionDeleteResponseStatus `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RecordingActionDeleteResponse) RawJSON() string { return r.JSON.raw }
+func (r *RecordingActionDeleteResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type RecordingActionDeleteResponseStatus string
+
+const (
+	RecordingActionDeleteResponseStatusOk RecordingActionDeleteResponseStatus = "ok"
+)
 
 type RecordingActionDeleteParams struct {
 	// List of call recording IDs to delete.
