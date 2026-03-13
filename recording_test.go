@@ -51,17 +51,27 @@ func TestRecordingListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Recordings.List(context.TODO(), telnyx.RecordingListParams{
 		Filter: telnyx.RecordingListParamsFilter{
-			CallLegID:     telnyx.String("428c31b6-7af4-4bcb-b7f5-5013ef9657c1"),
-			CallSessionID: telnyx.String("428c31b6-7af4-4bcb-b7f5-5013ef9657c1"),
-			ConferenceID:  telnyx.String("428c31b6-7af4-4bcb-b7f5-5013ef9657c1"),
-			ConnectionID:  telnyx.String("175237942907135762"),
+			CallControlID:    telnyx.String("v3:e-31OnvjEM7Y4wvxr3TKNk8M3QyLcGZPiUIzCGtwQtOtEjY-B0urkw"),
+			CallLegID:        telnyx.String("428c31b6-7af4-4bcb-b7f5-5013ef9657c1"),
+			CallSessionID:    telnyx.String("428c31b6-7af4-4bcb-b7f5-5013ef9657c1"),
+			ConferenceID:     telnyx.String("428c31b6-7af4-4bcb-b7f5-5013ef9657c1"),
+			ConferenceRegion: telnyx.String("us"),
+			ConnectionID:     telnyx.String("175237942907135762"),
 			CreatedAt: telnyx.RecordingListParamsFilterCreatedAt{
+				Gte: telnyx.String("2019-03-29T11:10:00Z"),
+				Lte: telnyx.String("2019-03-29T11:10:00Z"),
+			},
+			EndTime: telnyx.RecordingListParamsFilterEndTime{
 				Gte: telnyx.String("2019-03-29T11:10:00Z"),
 				Lte: telnyx.String("2019-03-29T11:10:00Z"),
 			},
 			From:      telnyx.String("1234567890"),
 			SipCallID: telnyx.String("428c31b6-7af4-4bcb-b7f5-5013ef9657c1"),
-			To:        telnyx.String("1234567890"),
+			StartTime: telnyx.RecordingListParamsFilterStartTime{
+				Gte: telnyx.String("2019-03-29T11:10:00Z"),
+				Lte: telnyx.String("2019-03-29T11:10:00Z"),
+			},
+			To: telnyx.String("1234567890"),
 		},
 		PageNumber: telnyx.Int(0),
 		PageSize:   telnyx.Int(0),
