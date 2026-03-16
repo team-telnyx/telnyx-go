@@ -227,7 +227,7 @@ type BulkSimCardActionListParams struct {
 	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Filter by action type.
 	//
-	// Any of "bulk_set_public_ips".
+	// Any of "bulk_disable_voice", "bulk_enable_voice", "bulk_set_public_ips".
 	FilterActionType BulkSimCardActionListParamsFilterActionType `query:"filter[action_type],omitzero" json:"-"`
 	paramObj
 }
@@ -245,5 +245,7 @@ func (r BulkSimCardActionListParams) URLQuery() (v url.Values, err error) {
 type BulkSimCardActionListParamsFilterActionType string
 
 const (
+	BulkSimCardActionListParamsFilterActionTypeBulkDisableVoice BulkSimCardActionListParamsFilterActionType = "bulk_disable_voice"
+	BulkSimCardActionListParamsFilterActionTypeBulkEnableVoice  BulkSimCardActionListParamsFilterActionType = "bulk_enable_voice"
 	BulkSimCardActionListParamsFilterActionTypeBulkSetPublicIPs BulkSimCardActionListParamsFilterActionType = "bulk_set_public_ips"
 )
