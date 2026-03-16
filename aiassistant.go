@@ -719,6 +719,11 @@ type AssistantToolTransferTransfer struct {
 	// transferred call. Allows the assistant to detect when a voicemail system answers
 	// the transferred call and take appropriate action.
 	VoicemailDetection AssistantToolTransferTransferVoicemailDetection `json:"voicemail_detection"`
+	// Optional delay in milliseconds before playing the warm message audio when the
+	// transferred call is answered. When set, the audio_url is not included in the
+	// dial command; instead, playback starts after the specified delay. When not set,
+	// existing behavior (audio_url in dial) is preserved.
+	WarmMessageDelayMs int64 `json:"warm_message_delay_ms" api:"nullable"`
 	// Natural language instructions for your agent for how to provide context for the
 	// transfer recipient.
 	WarmTransferInstructions string `json:"warm_transfer_instructions"`
@@ -728,6 +733,7 @@ type AssistantToolTransferTransfer struct {
 		Targets                  respjson.Field
 		CustomHeaders            respjson.Field
 		VoicemailDetection       respjson.Field
+		WarmMessageDelayMs       respjson.Field
 		WarmTransferInstructions respjson.Field
 		ExtraFields              map[string]respjson.Field
 		raw                      string
@@ -1546,6 +1552,11 @@ type AssistantToolTransferTransferParam struct {
 	// The different possible targets of the transfer. The assistant will be able to
 	// choose one of the targets to transfer the call to.
 	Targets []AssistantToolTransferTransferTargetParam `json:"targets,omitzero" api:"required"`
+	// Optional delay in milliseconds before playing the warm message audio when the
+	// transferred call is answered. When set, the audio_url is not included in the
+	// dial command; instead, playback starts after the specified delay. When not set,
+	// existing behavior (audio_url in dial) is preserved.
+	WarmMessageDelayMs param.Opt[int64] `json:"warm_message_delay_ms,omitzero"`
 	// Natural language instructions for your agent for how to provide context for the
 	// transfer recipient.
 	WarmTransferInstructions param.Opt[string] `json:"warm_transfer_instructions,omitzero"`
