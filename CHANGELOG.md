@@ -1,5 +1,19 @@
 # Changelog
 
+## 4.47.0 (2026-03-16)
+
+Full Changelog: [v4.46.0...v4.47.0](https://github.com/team-telnyx/telnyx-go/compare/v4.46.0...v4.47.0)
+
+### Features
+
+* AI-2132: Add warm_message_delay_ms to transfer tool OpenAPI spec ([a656b37](https://github.com/team-telnyx/telnyx-go/commit/a656b3783625ca809fcd5686b7cd276931a6f88f))
+* CW-2881 update `filter[action_type]` enum ([9564d7d](https://github.com/team-telnyx/telnyx-go/commit/9564d7d70054598dd72cdc332a8f17389dcf6581))
+
+
+### Chores
+
+* **internal:** tweak CI branches ([dccd4e5](https://github.com/team-telnyx/telnyx-go/commit/dccd4e5a50f10728b51f9c5e7590b5924281dda7))
+
 ## 4.46.0 (2026-03-13)
 
 Full Changelog: [v4.45.0...v4.46.0](https://github.com/team-telnyx/telnyx-go/compare/v4.45.0...v4.46.0)
