@@ -475,6 +475,43 @@ func TestCallActionHangupWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestCallActionJoinAIAssistantWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Calls.Actions.JoinAIAssistant(
+		context.TODO(),
+		"call_control_id",
+		telnyx.CallActionJoinAIAssistantParams{
+			ConversationID: "v3:abc123",
+			Participant: telnyx.CallActionJoinAIAssistantParamsParticipant{
+				ID:       "v3:abc123def456",
+				Role:     "user",
+				Name:     telnyx.String("John Doe"),
+				OnHangup: "continue_conversation",
+			},
+			ClientState: telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
+			CommandID:   telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestCallActionLeaveQueueWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
