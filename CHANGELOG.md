@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.48.0 (2026-03-17)
+
+Full Changelog: [v4.47.0...v4.48.0](https://github.com/team-telnyx/telnyx-go/compare/v4.47.0...v4.48.0)
+
+### Features
+
+* add ai_assistant_join call control command OpenAPI spec ([974db54](https://github.com/team-telnyx/telnyx-go/commit/974db544592340b57389299c8996f3c6272e82ca))
+
 ## 4.47.0 (2026-03-16)
 
 Full Changelog: [v4.46.0...v4.47.0](https://github.com/team-telnyx/telnyx-go/compare/v4.46.0...v4.47.0)
