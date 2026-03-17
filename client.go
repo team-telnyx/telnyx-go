@@ -313,6 +313,8 @@ type Client struct {
 	// Create and manage AI-generated voice designs using natural language prompts.
 	VoiceDesigns VoiceDesignService
 	X402         X402Service
+	// Speech to text command operations
+	SpeechToText SpeechToTextService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -506,6 +508,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.VoiceClones = NewVoiceCloneService(opts...)
 	r.VoiceDesigns = NewVoiceDesignService(opts...)
 	r.X402 = NewX402Service(opts...)
+	r.SpeechToText = NewSpeechToTextService(opts...)
 
 	return
 }
