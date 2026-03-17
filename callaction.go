@@ -212,6 +212,19 @@ func (r *CallActionService) Hangup(ctx context.Context, callControlID string, bo
 	return res, err
 }
 
+// Add a participant to an existing AI assistant conversation. Use this command to
+// bring an additional call leg into a running AI conversation.
+func (r *CallActionService) JoinAIAssistant(ctx context.Context, callControlID string, body CallActionJoinAIAssistantParams, opts ...option.RequestOption) (res *CallActionJoinAIAssistantResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if callControlID == "" {
+		err = errors.New("missing required call_control_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("calls/%s/actions/ai_assistant_join", callControlID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
 // Removes the call from a queue.
 func (r *CallActionService) LeaveQueue(ctx context.Context, callControlID string, body CallActionLeaveQueueParams, opts ...option.RequestOption) (res *CallActionLeaveQueueResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -2090,6 +2103,22 @@ type CallActionHangupResponse struct {
 // Returns the unmodified JSON received from the API
 func (r CallActionHangupResponse) RawJSON() string { return r.JSON.raw }
 func (r *CallActionHangupResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallActionJoinAIAssistantResponse struct {
+	Data CallControlCommandResultWithConversationID `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallActionJoinAIAssistantResponse) RawJSON() string { return r.JSON.raw }
+func (r *CallActionJoinAIAssistantResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -4025,6 +4054,61 @@ func (r CallActionHangupParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *CallActionHangupParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallActionJoinAIAssistantParams struct {
+	// The ID of the AI assistant conversation to join.
+	ConversationID string                                     `json:"conversation_id" api:"required"`
+	Participant    CallActionJoinAIAssistantParamsParticipant `json:"participant,omitzero" api:"required"`
+	// Use this field to add state to every subsequent webhook. It must be a valid
+	// Base-64 encoded string.
+	ClientState param.Opt[string] `json:"client_state,omitzero"`
+	// Use this field to avoid duplicate commands. Telnyx will ignore any command with
+	// the same `command_id` for the same `call_control_id`.
+	CommandID param.Opt[string] `json:"command_id,omitzero"`
+	paramObj
+}
+
+func (r CallActionJoinAIAssistantParams) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionJoinAIAssistantParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionJoinAIAssistantParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties ID, Role are required.
+type CallActionJoinAIAssistantParamsParticipant struct {
+	// The call_control_id of the participant to add to the conversation.
+	ID string `json:"id" api:"required"`
+	// The role of the participant in the conversation.
+	//
+	// Any of "user".
+	Role string `json:"role,omitzero" api:"required"`
+	// Display name for the participant.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Determines what happens to the conversation when this participant hangs up.
+	//
+	// Any of "continue_conversation", "end_conversation".
+	OnHangup string `json:"on_hangup,omitzero"`
+	paramObj
+}
+
+func (r CallActionJoinAIAssistantParamsParticipant) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionJoinAIAssistantParamsParticipant
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionJoinAIAssistantParamsParticipant) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallActionJoinAIAssistantParamsParticipant](
+		"role", "user",
+	)
+	apijson.RegisterFieldValidator[CallActionJoinAIAssistantParamsParticipant](
+		"on_hangup", "continue_conversation", "end_conversation",
+	)
 }
 
 type CallActionLeaveQueueParams struct {

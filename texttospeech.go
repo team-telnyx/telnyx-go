@@ -4,7 +4,6 @@ package telnyx
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 	"net/url"
 	"slices"
@@ -71,6 +70,34 @@ func (r *TextToSpeechService) ListVoices(ctx context.Context, query TextToSpeech
 	return res, err
 }
 
+// Open a WebSocket connection to stream text and receive synthesized audio in real
+// time. Authentication is provided via the standard
+// `Authorization: Bearer <API_KEY>` header. Send JSON frames with text to
+// synthesize; receive JSON frames containing base64-encoded audio chunks.
+//
+// Supported providers: `aws`, `telnyx`, `azure`, `murfai`, `minimax`, `rime`,
+// `resemble`, `elevenlabs`, `inworld`.
+//
+// **Connection flow:**
+//
+//  1. Open WebSocket with query parameters specifying provider, voice, and model.
+//  2. Send an initial handshake message `{"text": " "}` (single space) with
+//     optional `voice_settings` to initialize the session.
+//  3. Send text messages as `{"text": "Hello world"}`.
+//  4. Receive audio chunks as JSON frames with base64-encoded audio.
+//  5. A final frame with `isFinal: true` indicates the end of audio for the current
+//     text.
+//
+// To interrupt and restart synthesis mid-stream, send `{"force": true}` — the
+// current worker is stopped and a new one is started.
+func (r *TextToSpeechService) Stream(ctx context.Context, query TextToSpeechStreamParams, opts ...option.RequestOption) (err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	path := "text-to-speech/speech"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, nil, opts...)
+	return err
+}
+
 // Response when `output_type` is `base64_output`.
 type TextToSpeechGenerateResponse struct {
 	// Base64-encoded audio data.
@@ -133,275 +160,6 @@ type TextToSpeechListVoicesResponseVoice struct {
 // Returns the unmodified JSON received from the API
 func (r TextToSpeechListVoicesResponseVoice) RawJSON() string { return r.JSON.raw }
 func (r *TextToSpeechListVoicesResponseVoice) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Client-to-server frame containing text to synthesize.
-type StreamClientEvent struct {
-	// Text to convert to speech. Send `" "` (single space) as an initial handshake
-	// with optional `voice_settings`. Subsequent messages contain the actual text to
-	// synthesize.
-	Text string `json:"text" api:"required"`
-	// When `true`, stops the current synthesis worker and starts a new one. Used to
-	// interrupt speech mid-stream and begin synthesizing new text.
-	Force bool `json:"force"`
-	// Provider-specific voice settings sent with the initial handshake. Contents vary
-	// by provider — e.g. `{"speed": 1.2}` for Minimax, `{"voice_speed": 1.5}` for
-	// Telnyx.
-	VoiceSettings map[string]any `json:"voice_settings"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Text          respjson.Field
-		Force         respjson.Field
-		VoiceSettings respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StreamClientEvent) RawJSON() string { return r.JSON.raw }
-func (r *StreamClientEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this StreamClientEvent to a StreamClientEventParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// StreamClientEventParam.Overrides()
-func (r StreamClientEvent) ToParam() StreamClientEventParam {
-	return param.Override[StreamClientEventParam](json.RawMessage(r.RawJSON()))
-}
-
-// Client-to-server frame containing text to synthesize.
-//
-// The property Text is required.
-type StreamClientEventParam struct {
-	// Text to convert to speech. Send `" "` (single space) as an initial handshake
-	// with optional `voice_settings`. Subsequent messages contain the actual text to
-	// synthesize.
-	Text string `json:"text" api:"required"`
-	// When `true`, stops the current synthesis worker and starts a new one. Used to
-	// interrupt speech mid-stream and begin synthesizing new text.
-	Force param.Opt[bool] `json:"force,omitzero"`
-	// Provider-specific voice settings sent with the initial handshake. Contents vary
-	// by provider — e.g. `{"speed": 1.2}` for Minimax, `{"voice_speed": 1.5}` for
-	// Telnyx.
-	VoiceSettings map[string]any `json:"voice_settings,omitzero"`
-	paramObj
-}
-
-func (r StreamClientEventParam) MarshalJSON() (data []byte, err error) {
-	type shadow StreamClientEventParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *StreamClientEventParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// StreamServerEventUnion contains all possible properties and values from
-// [StreamServerEventAudioChunk], [StreamServerEventFinalFrameEvent],
-// [StreamServerEventError].
-//
-// Use the [StreamServerEventUnion.AsAny] method to switch on the variant.
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type StreamServerEventUnion struct {
-	// This field is a union of [string], [any]
-	Audio StreamServerEventUnionAudio `json:"audio"`
-	// This field is from variant [StreamServerEventAudioChunk].
-	Cached                  bool   `json:"cached"`
-	IsFinal                 bool   `json:"isFinal"`
-	Text                    string `json:"text"`
-	TimeToFirstAudioFrameMs int64  `json:"timeToFirstAudioFrameMs"`
-	// Any of "audio_chunk", "final", "error".
-	Type string `json:"type"`
-	// This field is from variant [StreamServerEventError].
-	Error string `json:"error"`
-	JSON  struct {
-		Audio                   respjson.Field
-		Cached                  respjson.Field
-		IsFinal                 respjson.Field
-		Text                    respjson.Field
-		TimeToFirstAudioFrameMs respjson.Field
-		Type                    respjson.Field
-		Error                   respjson.Field
-		raw                     string
-	} `json:"-"`
-}
-
-// anyStreamServerEvent is implemented by each variant of [StreamServerEventUnion]
-// to add type safety for the return type of [StreamServerEventUnion.AsAny]
-type anyStreamServerEvent interface {
-	implStreamServerEventUnion()
-}
-
-func (StreamServerEventAudioChunk) implStreamServerEventUnion()      {}
-func (StreamServerEventFinalFrameEvent) implStreamServerEventUnion() {}
-func (StreamServerEventError) implStreamServerEventUnion()           {}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := StreamServerEventUnion.AsAny().(type) {
-//	case telnyx.StreamServerEventAudioChunk:
-//	case telnyx.StreamServerEventFinalFrameEvent:
-//	case telnyx.StreamServerEventError:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u StreamServerEventUnion) AsAny() anyStreamServerEvent {
-	switch u.Type {
-	case "audio_chunk":
-		return u.AsAudioChunk()
-	case "final":
-		return u.AsFinalFrameEvent()
-	case "error":
-		return u.AsError()
-	}
-	return nil
-}
-
-func (u StreamServerEventUnion) AsAudioChunk() (v StreamServerEventAudioChunk) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u StreamServerEventUnion) AsFinalFrameEvent() (v StreamServerEventFinalFrameEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u StreamServerEventUnion) AsError() (v StreamServerEventError) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u StreamServerEventUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *StreamServerEventUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// StreamServerEventUnionAudio is an implicit subunion of [StreamServerEventUnion].
-// StreamServerEventUnionAudio provides convenient access to the sub-properties of
-// the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [StreamServerEventUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfStreamServerEventFinalFrameEventAudio]
-type StreamServerEventUnionAudio struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [any] instead of an object.
-	OfStreamServerEventFinalFrameEventAudio any `json:",inline"`
-	JSON                                    struct {
-		OfString                                respjson.Field
-		OfStreamServerEventFinalFrameEventAudio respjson.Field
-		raw                                     string
-	} `json:"-"`
-}
-
-func (r *StreamServerEventUnionAudio) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Server-to-client frame containing a base64-encoded audio chunk.
-type StreamServerEventAudioChunk struct {
-	// Base64-encoded audio data. May be `null` for providers that use
-	// `drop_concatenated_audio` mode (Telnyx Natural/NaturalHD, Rime, Minimax, MurfAI,
-	// Resemble) — in that case only streamed chunks carry audio.
-	Audio string `json:"audio" api:"nullable"`
-	// Whether this audio was served from cache.
-	Cached bool `json:"cached"`
-	// Always `false` for audio chunk frames.
-	IsFinal bool `json:"isFinal"`
-	// The text segment that this audio chunk corresponds to.
-	Text string `json:"text" api:"nullable"`
-	// Milliseconds from the start-of-speech request to the first audio frame. Only
-	// present on the first audio chunk of a synthesis request.
-	TimeToFirstAudioFrameMs int64 `json:"timeToFirstAudioFrameMs"`
-	// Frame type identifier.
-	//
-	// Any of "audio_chunk".
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Audio                   respjson.Field
-		Cached                  respjson.Field
-		IsFinal                 respjson.Field
-		Text                    respjson.Field
-		TimeToFirstAudioFrameMs respjson.Field
-		Type                    respjson.Field
-		ExtraFields             map[string]respjson.Field
-		raw                     string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StreamServerEventAudioChunk) RawJSON() string { return r.JSON.raw }
-func (r *StreamServerEventAudioChunk) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Server-to-client frame indicating synthesis is complete for the current text.
-type StreamServerEventFinalFrameEvent struct {
-	// Always `null` for the final frame.
-	Audio any `json:"audio" api:"nullable"`
-	// Always `true`.
-	//
-	// Any of true.
-	IsFinal bool `json:"isFinal"`
-	// Empty string.
-	Text string `json:"text"`
-	// Present if this was the first response frame.
-	TimeToFirstAudioFrameMs int64 `json:"timeToFirstAudioFrameMs"`
-	// Frame type identifier.
-	//
-	// Any of "final".
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Audio                   respjson.Field
-		IsFinal                 respjson.Field
-		Text                    respjson.Field
-		TimeToFirstAudioFrameMs respjson.Field
-		Type                    respjson.Field
-		ExtraFields             map[string]respjson.Field
-		raw                     string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StreamServerEventFinalFrameEvent) RawJSON() string { return r.JSON.raw }
-func (r *StreamServerEventFinalFrameEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Server-to-client frame indicating an error during synthesis. The connection is
-// closed shortly after.
-type StreamServerEventError struct {
-	// Error message describing what went wrong.
-	Error string `json:"error"`
-	// Frame type identifier.
-	//
-	// Any of "error".
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Error       respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StreamServerEventError) RawJSON() string { return r.JSON.raw }
-func (r *StreamServerEventError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -696,4 +454,69 @@ const (
 	TextToSpeechListVoicesParamsProviderRime       TextToSpeechListVoicesParamsProvider = "rime"
 	TextToSpeechListVoicesParamsProviderResemble   TextToSpeechListVoicesParamsProvider = "resemble"
 	TextToSpeechListVoicesParamsProviderInworld    TextToSpeechListVoicesParamsProvider = "inworld"
+)
+
+type TextToSpeechStreamParams struct {
+	// When `true`, bypass the audio cache and generate fresh audio.
+	DisableCache param.Opt[bool] `query:"disable_cache,omitzero" json:"-"`
+	// Model identifier for the chosen provider. Examples: `Natural`, `NaturalHD`
+	// (Telnyx); `Polly.Generative` (AWS).
+	ModelID param.Opt[string] `query:"model_id,omitzero" json:"-"`
+	// Client-provided socket identifier for tracking. If not provided, one is
+	// generated server-side.
+	SocketID param.Opt[string] `query:"socket_id,omitzero" json:"-"`
+	// Voice identifier in the format `provider.model_id.voice_id` or
+	// `provider.voice_id` (e.g. `telnyx.NaturalHD.Telnyx_Alloy` or
+	// `azure.en-US-AvaMultilingualNeural`). When provided, the `provider`, `model_id`,
+	// and `voice_id` are extracted automatically. Takes precedence over individual
+	// `provider`/`model_id`/`voice_id` parameters.
+	Voice param.Opt[string] `query:"voice,omitzero" json:"-"`
+	// Voice identifier for the chosen provider.
+	VoiceID param.Opt[string] `query:"voice_id,omitzero" json:"-"`
+	// Audio output format override. Supported for Telnyx `Natural`/`NaturalHD` models
+	// only. Accepted values: `pcm`, `wav`.
+	//
+	// Any of "pcm", "wav".
+	AudioFormat TextToSpeechStreamParamsAudioFormat `query:"audio_format,omitzero" json:"-"`
+	// TTS provider. Defaults to `telnyx` if not specified. Ignored when `voice` is
+	// provided.
+	//
+	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "murfai", "rime",
+	// "resemble", "inworld".
+	Provider TextToSpeechStreamParamsProvider `query:"provider,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [TextToSpeechStreamParams]'s query parameters as
+// `url.Values`.
+func (r TextToSpeechStreamParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Audio output format override. Supported for Telnyx `Natural`/`NaturalHD` models
+// only. Accepted values: `pcm`, `wav`.
+type TextToSpeechStreamParamsAudioFormat string
+
+const (
+	TextToSpeechStreamParamsAudioFormatPcm TextToSpeechStreamParamsAudioFormat = "pcm"
+	TextToSpeechStreamParamsAudioFormatWav TextToSpeechStreamParamsAudioFormat = "wav"
+)
+
+// TTS provider. Defaults to `telnyx` if not specified. Ignored when `voice` is
+// provided.
+type TextToSpeechStreamParamsProvider string
+
+const (
+	TextToSpeechStreamParamsProviderAws        TextToSpeechStreamParamsProvider = "aws"
+	TextToSpeechStreamParamsProviderTelnyx     TextToSpeechStreamParamsProvider = "telnyx"
+	TextToSpeechStreamParamsProviderAzure      TextToSpeechStreamParamsProvider = "azure"
+	TextToSpeechStreamParamsProviderElevenlabs TextToSpeechStreamParamsProvider = "elevenlabs"
+	TextToSpeechStreamParamsProviderMinimax    TextToSpeechStreamParamsProvider = "minimax"
+	TextToSpeechStreamParamsProviderMurfai     TextToSpeechStreamParamsProvider = "murfai"
+	TextToSpeechStreamParamsProviderRime       TextToSpeechStreamParamsProvider = "rime"
+	TextToSpeechStreamParamsProviderResemble   TextToSpeechStreamParamsProvider = "resemble"
+	TextToSpeechStreamParamsProviderInworld    TextToSpeechStreamParamsProvider = "inworld"
 )
