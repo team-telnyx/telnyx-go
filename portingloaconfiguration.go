@@ -111,10 +111,10 @@ func (r *PortingLoaConfigurationService) Delete(ctx context.Context, id string, 
 
 // Preview the LOA template that would be generated without need to create LOA
 // configuration.
-func (r *PortingLoaConfigurationService) Preview0(ctx context.Context, body PortingLoaConfigurationPreview0Params, opts ...option.RequestOption) (res *http.Response, err error) {
+func (r *PortingLoaConfigurationService) Preview(ctx context.Context, body PortingLoaConfigurationPreviewParams, opts ...option.RequestOption) (res *http.Response, err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/pdf")}, opts...)
-	path := "porting/loa_configuration/preview"
+	path := "porting/loa_configurations/preview"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -486,32 +486,32 @@ func (r PortingLoaConfigurationListParams) URLQuery() (v url.Values, err error) 
 	})
 }
 
-type PortingLoaConfigurationPreview0Params struct {
+type PortingLoaConfigurationPreviewParams struct {
 	// The address of the company.
-	Address PortingLoaConfigurationPreview0ParamsAddress `json:"address,omitzero" api:"required"`
+	Address PortingLoaConfigurationPreviewParamsAddress `json:"address,omitzero" api:"required"`
 	// The name of the company
 	CompanyName string `json:"company_name" api:"required"`
 	// The contact information of the company.
-	Contact PortingLoaConfigurationPreview0ParamsContact `json:"contact,omitzero" api:"required"`
+	Contact PortingLoaConfigurationPreviewParamsContact `json:"contact,omitzero" api:"required"`
 	// The logo of the LOA configuration
-	Logo PortingLoaConfigurationPreview0ParamsLogo `json:"logo,omitzero" api:"required"`
+	Logo PortingLoaConfigurationPreviewParamsLogo `json:"logo,omitzero" api:"required"`
 	// The name of the LOA configuration
 	Name string `json:"name" api:"required"`
 	paramObj
 }
 
-func (r PortingLoaConfigurationPreview0Params) MarshalJSON() (data []byte, err error) {
-	type shadow PortingLoaConfigurationPreview0Params
+func (r PortingLoaConfigurationPreviewParams) MarshalJSON() (data []byte, err error) {
+	type shadow PortingLoaConfigurationPreviewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *PortingLoaConfigurationPreview0Params) UnmarshalJSON(data []byte) error {
+func (r *PortingLoaConfigurationPreviewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The address of the company.
 //
 // The properties City, CountryCode, State, StreetAddress, ZipCode are required.
-type PortingLoaConfigurationPreview0ParamsAddress struct {
+type PortingLoaConfigurationPreviewParamsAddress struct {
 	// The locality of the company
 	City string `json:"city" api:"required"`
 	// The country code of the company
@@ -527,18 +527,18 @@ type PortingLoaConfigurationPreview0ParamsAddress struct {
 	paramObj
 }
 
-func (r PortingLoaConfigurationPreview0ParamsAddress) MarshalJSON() (data []byte, err error) {
-	type shadow PortingLoaConfigurationPreview0ParamsAddress
+func (r PortingLoaConfigurationPreviewParamsAddress) MarshalJSON() (data []byte, err error) {
+	type shadow PortingLoaConfigurationPreviewParamsAddress
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *PortingLoaConfigurationPreview0ParamsAddress) UnmarshalJSON(data []byte) error {
+func (r *PortingLoaConfigurationPreviewParamsAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact information of the company.
 //
 // The properties Email, PhoneNumber are required.
-type PortingLoaConfigurationPreview0ParamsContact struct {
+type PortingLoaConfigurationPreviewParamsContact struct {
 	// The email address of the contact
 	Email string `json:"email" api:"required"`
 	// The phone number of the contact
@@ -546,27 +546,27 @@ type PortingLoaConfigurationPreview0ParamsContact struct {
 	paramObj
 }
 
-func (r PortingLoaConfigurationPreview0ParamsContact) MarshalJSON() (data []byte, err error) {
-	type shadow PortingLoaConfigurationPreview0ParamsContact
+func (r PortingLoaConfigurationPreviewParamsContact) MarshalJSON() (data []byte, err error) {
+	type shadow PortingLoaConfigurationPreviewParamsContact
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *PortingLoaConfigurationPreview0ParamsContact) UnmarshalJSON(data []byte) error {
+func (r *PortingLoaConfigurationPreviewParamsContact) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The logo of the LOA configuration
 //
 // The property DocumentID is required.
-type PortingLoaConfigurationPreview0ParamsLogo struct {
+type PortingLoaConfigurationPreviewParamsLogo struct {
 	// The document identification
 	DocumentID string `json:"document_id" api:"required" format:"uuid"`
 	paramObj
 }
 
-func (r PortingLoaConfigurationPreview0ParamsLogo) MarshalJSON() (data []byte, err error) {
-	type shadow PortingLoaConfigurationPreview0ParamsLogo
+func (r PortingLoaConfigurationPreviewParamsLogo) MarshalJSON() (data []byte, err error) {
+	type shadow PortingLoaConfigurationPreviewParamsLogo
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *PortingLoaConfigurationPreview0ParamsLogo) UnmarshalJSON(data []byte) error {
+func (r *PortingLoaConfigurationPreviewParamsLogo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
