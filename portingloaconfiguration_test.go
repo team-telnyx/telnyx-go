@@ -175,7 +175,7 @@ func TestPortingLoaConfigurationDelete(t *testing.T) {
 	}
 }
 
-func TestPortingLoaConfigurationPreview0WithOptionalParams(t *testing.T) {
+func TestPortingLoaConfigurationPreviewWithOptionalParams(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 		w.Write([]byte("abc"))
@@ -186,8 +186,8 @@ func TestPortingLoaConfigurationPreview0WithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	resp, err := client.Porting.LoaConfigurations.Preview0(context.TODO(), telnyx.PortingLoaConfigurationPreview0Params{
-		Address: telnyx.PortingLoaConfigurationPreview0ParamsAddress{
+	resp, err := client.Porting.LoaConfigurations.Preview(context.TODO(), telnyx.PortingLoaConfigurationPreviewParams{
+		Address: telnyx.PortingLoaConfigurationPreviewParamsAddress{
 			City:            "Austin",
 			CountryCode:     "US",
 			State:           "TX",
@@ -196,11 +196,11 @@ func TestPortingLoaConfigurationPreview0WithOptionalParams(t *testing.T) {
 			ExtendedAddress: telnyx.String("14th Floor"),
 		},
 		CompanyName: "Telnyx",
-		Contact: telnyx.PortingLoaConfigurationPreview0ParamsContact{
+		Contact: telnyx.PortingLoaConfigurationPreviewParamsContact{
 			Email:       "testing@telnyx.com",
 			PhoneNumber: "+12003270001",
 		},
-		Logo: telnyx.PortingLoaConfigurationPreview0ParamsLogo{
+		Logo: telnyx.PortingLoaConfigurationPreviewParamsLogo{
 			DocumentID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		},
 		Name: "My LOA Configuration",
