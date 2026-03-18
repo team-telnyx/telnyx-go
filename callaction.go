@@ -4661,6 +4661,9 @@ type CallActionStartAIAssistantParams struct {
 	// played when the assistant starts. The greeting can be text for any voice or SSML
 	// for `AWS.Polly.<voice_id>` voices. There is a 3,000 character limit.
 	Greeting param.Opt[string] `json:"greeting,omitzero"`
+	// When `true`, a webhook is sent each time the conversation message history is
+	// updated.
+	SendMessageHistoryUpdates param.Opt[bool] `json:"send_message_history_updates,omitzero"`
 	// The voice to be used by the voice assistant. Currently we support ElevenLabs,
 	// Telnyx and AWS voices.
 	//
@@ -4690,6 +4693,11 @@ type CallActionStartAIAssistantParams struct {
 	Assistant CallActionStartAIAssistantParamsAssistant `json:"assistant,omitzero"`
 	// Settings for handling user interruptions during assistant speech
 	InterruptionSettings InterruptionSettingsParam `json:"interruption_settings,omitzero"`
+	// A list of messages to seed the conversation history before the assistant starts.
+	// Follows the same message format as the `ai_assistant_add_messages` command.
+	MessageHistory []CallActionStartAIAssistantParamsMessageHistoryUnion `json:"message_history,omitzero"`
+	// A list of participants to add to the conversation when it starts.
+	Participants []CallActionStartAIAssistantParamsParticipant `json:"participants,omitzero"`
 	// The settings associated with speech to text for the voice assistant. This is
 	// only relevant if the assistant uses a text-to-text language model. Any assistant
 	// using a model with native audio support (e.g. `fixie-ai/ultravox-v0_4`) will
@@ -4727,6 +4735,318 @@ func (r CallActionStartAIAssistantParamsAssistant) MarshalJSON() (data []byte, e
 }
 func (r *CallActionStartAIAssistantParamsAssistant) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type CallActionStartAIAssistantParamsMessageHistoryUnion struct {
+	OfUser      *CallActionStartAIAssistantParamsMessageHistoryUser      `json:",omitzero,inline"`
+	OfAssistant *CallActionStartAIAssistantParamsMessageHistoryAssistant `json:",omitzero,inline"`
+	OfTool      *CallActionStartAIAssistantParamsMessageHistoryTool      `json:",omitzero,inline"`
+	OfSystem    *CallActionStartAIAssistantParamsMessageHistorySystem    `json:",omitzero,inline"`
+	OfDeveloper *CallActionStartAIAssistantParamsMessageHistoryDeveloper `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u CallActionStartAIAssistantParamsMessageHistoryUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfUser,
+		u.OfAssistant,
+		u.OfTool,
+		u.OfSystem,
+		u.OfDeveloper)
+}
+func (u *CallActionStartAIAssistantParamsMessageHistoryUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *CallActionStartAIAssistantParamsMessageHistoryUnion) asAny() any {
+	if !param.IsOmitted(u.OfUser) {
+		return u.OfUser
+	} else if !param.IsOmitted(u.OfAssistant) {
+		return u.OfAssistant
+	} else if !param.IsOmitted(u.OfTool) {
+		return u.OfTool
+	} else if !param.IsOmitted(u.OfSystem) {
+		return u.OfSystem
+	} else if !param.IsOmitted(u.OfDeveloper) {
+		return u.OfDeveloper
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsMessageHistoryUnion) GetToolCalls() []CallActionStartAIAssistantParamsMessageHistoryAssistantToolCall {
+	if vt := u.OfAssistant; vt != nil {
+		return vt.ToolCalls
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsMessageHistoryUnion) GetToolCallID() *string {
+	if vt := u.OfTool; vt != nil {
+		return &vt.ToolCallID
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsMessageHistoryUnion) GetContent() *string {
+	if vt := u.OfUser; vt != nil {
+		return (*string)(&vt.Content)
+	} else if vt := u.OfAssistant; vt != nil && vt.Content.Valid() {
+		return &vt.Content.Value
+	} else if vt := u.OfTool; vt != nil {
+		return (*string)(&vt.Content)
+	} else if vt := u.OfSystem; vt != nil {
+		return (*string)(&vt.Content)
+	} else if vt := u.OfDeveloper; vt != nil {
+		return (*string)(&vt.Content)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsMessageHistoryUnion) GetRole() *string {
+	if vt := u.OfUser; vt != nil {
+		return (*string)(&vt.Role)
+	} else if vt := u.OfAssistant; vt != nil {
+		return (*string)(&vt.Role)
+	} else if vt := u.OfTool; vt != nil {
+		return (*string)(&vt.Role)
+	} else if vt := u.OfSystem; vt != nil {
+		return (*string)(&vt.Role)
+	} else if vt := u.OfDeveloper; vt != nil {
+		return (*string)(&vt.Role)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's Metadata property, if present.
+func (u CallActionStartAIAssistantParamsMessageHistoryUnion) GetMetadata() map[string]any {
+	if vt := u.OfUser; vt != nil {
+		return vt.Metadata
+	} else if vt := u.OfAssistant; vt != nil {
+		return vt.Metadata
+	} else if vt := u.OfTool; vt != nil {
+		return vt.Metadata
+	} else if vt := u.OfSystem; vt != nil {
+		return vt.Metadata
+	} else if vt := u.OfDeveloper; vt != nil {
+		return vt.Metadata
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[CallActionStartAIAssistantParamsMessageHistoryUnion](
+		"role",
+		apijson.Discriminator[CallActionStartAIAssistantParamsMessageHistoryUser]("user"),
+		apijson.Discriminator[CallActionStartAIAssistantParamsMessageHistoryAssistant]("assistant"),
+		apijson.Discriminator[CallActionStartAIAssistantParamsMessageHistoryTool]("tool"),
+		apijson.Discriminator[CallActionStartAIAssistantParamsMessageHistorySystem]("system"),
+		apijson.Discriminator[CallActionStartAIAssistantParamsMessageHistoryDeveloper]("developer"),
+	)
+}
+
+// Messages sent by an end user
+//
+// The properties Content, Role are required.
+type CallActionStartAIAssistantParamsMessageHistoryUser struct {
+	// The contents of the user message.
+	Content string `json:"content" api:"required"`
+	// Metadata to add to the message
+	Metadata map[string]any `json:"metadata,omitzero"`
+	// The role of the messages author, in this case `user`.
+	//
+	// This field can be elided, and will marshal its zero value as "user".
+	Role constant.User `json:"role" api:"required"`
+	paramObj
+}
+
+func (r CallActionStartAIAssistantParamsMessageHistoryUser) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionStartAIAssistantParamsMessageHistoryUser
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionStartAIAssistantParamsMessageHistoryUser) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Messages sent by the model in response to user messages.
+//
+// The property Role is required.
+type CallActionStartAIAssistantParamsMessageHistoryAssistant struct {
+	// The contents of the assistant message. Required unless `tool_calls`
+	Content param.Opt[string] `json:"content,omitzero"`
+	// Metadata to add to the message
+	Metadata map[string]any `json:"metadata,omitzero"`
+	// The tool calls generated by the model, such as function calls.
+	ToolCalls []CallActionStartAIAssistantParamsMessageHistoryAssistantToolCall `json:"tool_calls,omitzero"`
+	// The role of the messages author, in this case `assistant`.
+	//
+	// This field can be elided, and will marshal its zero value as "assistant".
+	Role constant.Assistant `json:"role" api:"required"`
+	paramObj
+}
+
+func (r CallActionStartAIAssistantParamsMessageHistoryAssistant) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionStartAIAssistantParamsMessageHistoryAssistant
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionStartAIAssistantParamsMessageHistoryAssistant) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A call to a function tool created by the model.
+//
+// The properties ID, Function, Type are required.
+type CallActionStartAIAssistantParamsMessageHistoryAssistantToolCall struct {
+	// The ID of the tool call.
+	ID string `json:"id" api:"required"`
+	// The function that the model called.
+	Function CallActionStartAIAssistantParamsMessageHistoryAssistantToolCallFunction `json:"function,omitzero" api:"required"`
+	// The type of the tool. Currently, only `function` is supported.
+	//
+	// Any of "function".
+	Type string `json:"type,omitzero" api:"required"`
+	paramObj
+}
+
+func (r CallActionStartAIAssistantParamsMessageHistoryAssistantToolCall) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionStartAIAssistantParamsMessageHistoryAssistantToolCall
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionStartAIAssistantParamsMessageHistoryAssistantToolCall) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallActionStartAIAssistantParamsMessageHistoryAssistantToolCall](
+		"type", "function",
+	)
+}
+
+// The function that the model called.
+//
+// The property Name is required.
+type CallActionStartAIAssistantParamsMessageHistoryAssistantToolCallFunction struct {
+	// The name of the function to call.
+	Name string `json:"name" api:"required"`
+	paramObj
+}
+
+func (r CallActionStartAIAssistantParamsMessageHistoryAssistantToolCallFunction) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionStartAIAssistantParamsMessageHistoryAssistantToolCallFunction
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionStartAIAssistantParamsMessageHistoryAssistantToolCallFunction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Content, Role, ToolCallID are required.
+type CallActionStartAIAssistantParamsMessageHistoryTool struct {
+	// The contents of the tool message.
+	Content string `json:"content" api:"required"`
+	// Tool call that this message is responding to.
+	ToolCallID string `json:"tool_call_id" api:"required"`
+	// Metadata to add to the message
+	Metadata map[string]any `json:"metadata,omitzero"`
+	// The role of the messages author, in this case `tool`.
+	//
+	// This field can be elided, and will marshal its zero value as "tool".
+	Role constant.Tool `json:"role" api:"required"`
+	paramObj
+}
+
+func (r CallActionStartAIAssistantParamsMessageHistoryTool) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionStartAIAssistantParamsMessageHistoryTool
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionStartAIAssistantParamsMessageHistoryTool) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Developer-provided instructions that the model should follow, regardless of
+// messages sent by the user.
+//
+// The properties Content, Role are required.
+type CallActionStartAIAssistantParamsMessageHistorySystem struct {
+	// The contents of the system message.
+	Content string `json:"content" api:"required"`
+	// Metadata to add to the message
+	Metadata map[string]any `json:"metadata,omitzero"`
+	// The role of the messages author, in this case `system`.
+	//
+	// This field can be elided, and will marshal its zero value as "system".
+	Role constant.System `json:"role" api:"required"`
+	paramObj
+}
+
+func (r CallActionStartAIAssistantParamsMessageHistorySystem) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionStartAIAssistantParamsMessageHistorySystem
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionStartAIAssistantParamsMessageHistorySystem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Developer-provided instructions that the model should follow, regardless of
+// messages sent by the user.
+//
+// The properties Content, Role are required.
+type CallActionStartAIAssistantParamsMessageHistoryDeveloper struct {
+	// The contents of the developer message.
+	Content string `json:"content" api:"required"`
+	// Metadata to add to the message
+	Metadata map[string]any `json:"metadata,omitzero"`
+	// The role of the messages author, in this case developer.
+	//
+	// This field can be elided, and will marshal its zero value as "developer".
+	Role constant.Developer `json:"role" api:"required"`
+	paramObj
+}
+
+func (r CallActionStartAIAssistantParamsMessageHistoryDeveloper) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionStartAIAssistantParamsMessageHistoryDeveloper
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionStartAIAssistantParamsMessageHistoryDeveloper) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties ID, Role are required.
+type CallActionStartAIAssistantParamsParticipant struct {
+	// The call_control_id of the participant to add to the conversation.
+	ID string `json:"id" api:"required"`
+	// The role of the participant in the conversation.
+	//
+	// Any of "user".
+	Role string `json:"role,omitzero" api:"required"`
+	// Display name for the participant.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Determines what happens to the conversation when this participant hangs up.
+	//
+	// Any of "continue_conversation", "end_conversation".
+	OnHangup string `json:"on_hangup,omitzero"`
+	paramObj
+}
+
+func (r CallActionStartAIAssistantParamsParticipant) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionStartAIAssistantParamsParticipant
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionStartAIAssistantParamsParticipant) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallActionStartAIAssistantParamsParticipant](
+		"role", "user",
+	)
+	apijson.RegisterFieldValidator[CallActionStartAIAssistantParamsParticipant](
+		"on_hangup", "continue_conversation", "end_conversation",
+	)
 }
 
 // Only one field can be non-zero.

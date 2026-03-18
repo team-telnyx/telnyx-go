@@ -817,6 +817,21 @@ func TestCallActionStartAIAssistantWithOptionalParams(t *testing.T) {
 			InterruptionSettings: telnyx.InterruptionSettingsParam{
 				Enable: telnyx.Bool(true),
 			},
+			MessageHistory: []telnyx.CallActionStartAIAssistantParamsMessageHistoryUnion{{
+				OfUser: &telnyx.CallActionStartAIAssistantParamsMessageHistoryUser{
+					Content: "Hello, I would like some help.",
+					Metadata: map[string]any{
+						"foo": "bar",
+					},
+				},
+			}},
+			Participants: []telnyx.CallActionStartAIAssistantParamsParticipant{{
+				ID:       "v3:abc123def456",
+				Role:     "user",
+				Name:     telnyx.String("John Doe"),
+				OnHangup: "continue_conversation",
+			}},
+			SendMessageHistoryUpdates: telnyx.Bool(true),
 			Transcription: telnyx.TranscriptionConfigParam{
 				Model: telnyx.String("distil-whisper/distil-large-v2"),
 			},
