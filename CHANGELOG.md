@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.49.0 (2026-03-18)
+
+Full Changelog: [v4.48.0...v4.49.0](https://github.com/team-telnyx/telnyx-go/compare/v4.48.0...v4.49.0)
+
+### Features
+
+* add message_history, send_message_history_updates, participants to AIAssistantStartRequest ([f196dbb](https://github.com/team-telnyx/telnyx-go/commit/f196dbb2249f5007f562bf54069ab2cee0e98c25))
+* port-4690: fix LOA configuration preview path (singular → plural) ([cd68f85](https://github.com/team-telnyx/telnyx-go/commit/cd68f85debcc5587e4b193757bef1d99d7846bd3))
+
 ## 4.48.0 (2026-03-17)
 
 Full Changelog: [v4.47.0...v4.48.0](https://github.com/team-telnyx/telnyx-go/compare/v4.47.0...v4.48.0)
