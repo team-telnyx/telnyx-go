@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestWhatsappTemplateNew(t *testing.T) {
+func TestWhatsappMessageTemplateGet(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,15 +26,7 @@ func TestWhatsappTemplateNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Whatsapp.Templates.New(context.TODO(), telnyx.WhatsappTemplateNewParams{
-		Category: telnyx.WhatsappTemplateNewParamsCategoryMarketing,
-		Components: []map[string]any{{
-			"foo": "bar",
-		}},
-		Language: "language",
-		Name:     "name",
-		WabaID:   "waba_id",
-	})
+	_, err := client.WhatsappMessageTemplates.Get(context.TODO(), "id")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -44,7 +36,7 @@ func TestWhatsappTemplateNew(t *testing.T) {
 	}
 }
 
-func TestWhatsappTemplateListWithOptionalParams(t *testing.T) {
+func TestWhatsappMessageTemplateUpdateWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -57,14 +49,37 @@ func TestWhatsappTemplateListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Whatsapp.Templates.List(context.TODO(), telnyx.WhatsappTemplateListParams{
-		FilterCategory: telnyx.WhatsappTemplateListParamsFilterCategoryMarketing,
-		FilterSearch:   telnyx.String("filter[search]"),
-		FilterStatus:   telnyx.String("filter[status]"),
-		FilterWabaID:   telnyx.String("filter[waba_id]"),
-		PageNumber:     telnyx.Int(0),
-		PageSize:       telnyx.Int(0),
-	})
+	_, err := client.WhatsappMessageTemplates.Update(
+		context.TODO(),
+		"id",
+		telnyx.WhatsappMessageTemplateUpdateParams{
+			Category:   telnyx.WhatsappMessageTemplateUpdateParamsCategoryMarketing,
+			Components: []any{map[string]any{}},
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestWhatsappMessageTemplateDelete(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	err := client.WhatsappMessageTemplates.Delete(context.TODO(), "id")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

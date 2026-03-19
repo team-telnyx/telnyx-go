@@ -62,7 +62,23 @@ func (r *WhatsappPhoneNumberCallingSettingService) Update(ctx context.Context, p
 	return res, err
 }
 
-type WhatsappCallingSettingsData struct {
+type WhatsappPhoneNumberCallingSettingGetResponse struct {
+	Data WhatsappPhoneNumberCallingSettingGetResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappPhoneNumberCallingSettingGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappPhoneNumberCallingSettingGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappPhoneNumberCallingSettingGetResponseData struct {
 	// True if calling is enabled on the phone
 	Enabled bool `json:"enabled"`
 	// Phone number in E164 format
@@ -81,29 +97,13 @@ type WhatsappCallingSettingsData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WhatsappCallingSettingsData) RawJSON() string { return r.JSON.raw }
-func (r *WhatsappCallingSettingsData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappPhoneNumberCallingSettingGetResponse struct {
-	Data WhatsappCallingSettingsData `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WhatsappPhoneNumberCallingSettingGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *WhatsappPhoneNumberCallingSettingGetResponse) UnmarshalJSON(data []byte) error {
+func (r WhatsappPhoneNumberCallingSettingGetResponseData) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappPhoneNumberCallingSettingGetResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type WhatsappPhoneNumberCallingSettingUpdateResponse struct {
-	Data WhatsappCallingSettingsData `json:"data"`
+	Data WhatsappPhoneNumberCallingSettingUpdateResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -115,6 +115,30 @@ type WhatsappPhoneNumberCallingSettingUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r WhatsappPhoneNumberCallingSettingUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *WhatsappPhoneNumberCallingSettingUpdateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappPhoneNumberCallingSettingUpdateResponseData struct {
+	// True if calling is enabled on the phone
+	Enabled bool `json:"enabled"`
+	// Phone number in E164 format
+	PhoneNumber string    `json:"phone_number"`
+	RecordType  string    `json:"record_type"`
+	UpdatedAt   time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Enabled     respjson.Field
+		PhoneNumber respjson.Field
+		RecordType  respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappPhoneNumberCallingSettingUpdateResponseData) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappPhoneNumberCallingSettingUpdateResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
