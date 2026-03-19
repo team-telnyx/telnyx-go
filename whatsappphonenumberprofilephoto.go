@@ -11,7 +11,6 @@ import (
 	"mime/multipart"
 	"net/http"
 	"slices"
-	"time"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiform"
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -67,7 +66,7 @@ func (r *WhatsappPhoneNumberProfilePhotoService) Upload(ctx context.Context, pho
 }
 
 type WhatsappPhoneNumberProfilePhotoUploadResponse struct {
-	Data WhatsappPhoneNumberProfilePhotoUploadResponseData `json:"data"`
+	Data WhatsappProfileData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -79,47 +78,6 @@ type WhatsappPhoneNumberProfilePhotoUploadResponse struct {
 // Returns the unmodified JSON received from the API
 func (r WhatsappPhoneNumberProfilePhotoUploadResponse) RawJSON() string { return r.JSON.raw }
 func (r *WhatsappPhoneNumberProfilePhotoUploadResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappPhoneNumberProfilePhotoUploadResponseData struct {
-	ID          string    `json:"id"`
-	About       string    `json:"about"`
-	Address     string    `json:"address"`
-	Category    string    `json:"category"`
-	CreatedAt   time.Time `json:"created_at" format:"date-time"`
-	Description string    `json:"description"`
-	DisplayName string    `json:"display_name"`
-	Email       string    `json:"email"`
-	// Whatsapp phone number ID
-	PhoneNumberID   string    `json:"phone_number_id"`
-	ProfilePhotoURL string    `json:"profile_photo_url"`
-	RecordType      string    `json:"record_type"`
-	UpdatedAt       time.Time `json:"updated_at" format:"date-time"`
-	Website         string    `json:"website"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID              respjson.Field
-		About           respjson.Field
-		Address         respjson.Field
-		Category        respjson.Field
-		CreatedAt       respjson.Field
-		Description     respjson.Field
-		DisplayName     respjson.Field
-		Email           respjson.Field
-		PhoneNumberID   respjson.Field
-		ProfilePhotoURL respjson.Field
-		RecordType      respjson.Field
-		UpdatedAt       respjson.Field
-		Website         respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WhatsappPhoneNumberProfilePhotoUploadResponseData) RawJSON() string { return r.JSON.raw }
-func (r *WhatsappPhoneNumberProfilePhotoUploadResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
