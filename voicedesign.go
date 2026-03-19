@@ -145,8 +145,26 @@ func (r *VoiceDesignService) Rename(ctx context.Context, id string, body VoiceDe
 	return res, err
 }
 
+// Response envelope for a single voice design with full version detail.
+type VoiceDesignNewResponse struct {
+	// A voice design object with full version detail.
+	Data VoiceDesignNewResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VoiceDesignNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *VoiceDesignNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // A voice design object with full version detail.
-type VoiceDesignData struct {
+type VoiceDesignNewResponseData struct {
 	// Unique identifier for the voice design.
 	ID string `json:"id" format:"uuid"`
 	// Timestamp when the voice design was first created.
@@ -158,7 +176,7 @@ type VoiceDesignData struct {
 	// Identifies the resource type.
 	//
 	// Any of "voice_design".
-	RecordType VoiceDesignDataRecordType `json:"record_type"`
+	RecordType string `json:"record_type"`
 	// Sample text used to synthesize this version.
 	Text string `json:"text"`
 	// Timestamp when the voice design was last updated.
@@ -187,40 +205,15 @@ type VoiceDesignData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VoiceDesignData) RawJSON() string { return r.JSON.raw }
-func (r *VoiceDesignData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Identifies the resource type.
-type VoiceDesignDataRecordType string
-
-const (
-	VoiceDesignDataRecordTypeVoiceDesign VoiceDesignDataRecordType = "voice_design"
-)
-
-// Response envelope for a single voice design with full version detail.
-type VoiceDesignNewResponse struct {
-	// A voice design object with full version detail.
-	Data VoiceDesignData `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VoiceDesignNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *VoiceDesignNewResponse) UnmarshalJSON(data []byte) error {
+func (r VoiceDesignNewResponseData) RawJSON() string { return r.JSON.raw }
+func (r *VoiceDesignNewResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Response envelope for a single voice design with full version detail.
 type VoiceDesignGetResponse struct {
 	// A voice design object with full version detail.
-	Data VoiceDesignData `json:"data"`
+	Data VoiceDesignGetResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -232,6 +225,53 @@ type VoiceDesignGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r VoiceDesignGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *VoiceDesignGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A voice design object with full version detail.
+type VoiceDesignGetResponseData struct {
+	// Unique identifier for the voice design.
+	ID string `json:"id" format:"uuid"`
+	// Timestamp when the voice design was first created.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Name of the voice design.
+	Name string `json:"name"`
+	// Natural language prompt used to define the voice style for this version.
+	Prompt string `json:"prompt"`
+	// Identifies the resource type.
+	//
+	// Any of "voice_design".
+	RecordType string `json:"record_type"`
+	// Sample text used to synthesize this version.
+	Text string `json:"text"`
+	// Timestamp when the voice design was last updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// Version number of this voice design.
+	Version int64 `json:"version"`
+	// Timestamp when this specific version was created.
+	VersionCreatedAt time.Time `json:"version_created_at" format:"date-time"`
+	// Size of the voice sample audio in bytes.
+	VoiceSampleSize int64 `json:"voice_sample_size"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		CreatedAt        respjson.Field
+		Name             respjson.Field
+		Prompt           respjson.Field
+		RecordType       respjson.Field
+		Text             respjson.Field
+		UpdatedAt        respjson.Field
+		Version          respjson.Field
+		VersionCreatedAt respjson.Field
+		VoiceSampleSize  respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VoiceDesignGetResponseData) RawJSON() string { return r.JSON.raw }
+func (r *VoiceDesignGetResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
