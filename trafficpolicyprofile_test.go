@@ -3,12 +3,8 @@
 package telnyx_test
 
 import (
-	"bytes"
 	"context"
 	"errors"
-	"io"
-	"net/http"
-	"net/http/httptest"
 	"os"
 	"testing"
 
@@ -17,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestVoiceDesignNewWithOptionalParams(t *testing.T) {
+func TestTrafficPolicyProfileNewWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -30,17 +26,12 @@ func TestVoiceDesignNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.VoiceDesigns.New(context.TODO(), telnyx.VoiceDesignNewParams{
-		Prompt:            "Speak in a warm, friendly tone",
-		Text:              "Hello, welcome to our service.",
-		Language:          telnyx.String("Auto"),
-		MaxNewTokens:      telnyx.Int(100),
-		Name:              telnyx.String("friendly-narrator"),
-		RepetitionPenalty: telnyx.Float(1),
-		Temperature:       telnyx.Float(0),
-		TopK:              telnyx.Int(1),
-		TopP:              telnyx.Float(0),
-		VoiceDesignID:     telnyx.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+	_, err := client.TrafficPolicyProfiles.New(context.TODO(), telnyx.TrafficPolicyProfileNewParams{
+		Type:        telnyx.TrafficPolicyProfileNewParamsTypeWhitelist,
+		Domains:     []string{"www.hbomax.com", "netflix.com"},
+		IPRanges:    []string{"10.64.0.0/24", "10.64.0.0/25"},
+		LimitBwKbps: 512,
+		Services:    []string{"service_123", "service_456"},
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -51,7 +42,7 @@ func TestVoiceDesignNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestVoiceDesignGetWithOptionalParams(t *testing.T) {
+func TestTrafficPolicyProfileGet(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -64,11 +55,38 @@ func TestVoiceDesignGetWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.VoiceDesigns.Get(
+	_, err := client.TrafficPolicyProfiles.Get(context.TODO(), "6a09cdc3-8948-47f0-aa62-74ac943d6c58")
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestTrafficPolicyProfileUpdateWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.TrafficPolicyProfiles.Update(
 		context.TODO(),
-		"id",
-		telnyx.VoiceDesignGetParams{
-			Version: telnyx.Int(1),
+		"6a09cdc3-8948-47f0-aa62-74ac943d6c58",
+		telnyx.TrafficPolicyProfileUpdateParams{
+			Domains:     []string{"netflix.com"},
+			IPRanges:    []string{"10.64.0.0/24"},
+			LimitBwKbps: 1024,
+			Services:    []string{"service_123"},
+			Type:        telnyx.TrafficPolicyProfileUpdateParamsTypeWhitelist,
 		},
 	)
 	if err != nil {
@@ -80,7 +98,7 @@ func TestVoiceDesignGetWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestVoiceDesignUpdate(t *testing.T) {
+func TestTrafficPolicyProfileListWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -93,40 +111,12 @@ func TestVoiceDesignUpdate(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.VoiceDesigns.Update(
-		context.TODO(),
-		"id",
-		telnyx.VoiceDesignUpdateParams{
-			Name: "updated-narrator",
-		},
-	)
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestVoiceDesignListWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.VoiceDesigns.List(context.TODO(), telnyx.VoiceDesignListParams{
-		FilterName: telnyx.String("filter[name]"),
-		PageNumber: telnyx.Int(1),
-		PageSize:   telnyx.Int(1),
-		Sort:       telnyx.VoiceDesignListParamsSortName,
+	_, err := client.TrafficPolicyProfiles.List(context.TODO(), telnyx.TrafficPolicyProfileListParams{
+		FilterService: telnyx.String("filter[service]"),
+		FilterType:    telnyx.TrafficPolicyProfileListParamsFilterTypeWhitelist,
+		PageNumber:    telnyx.Int(1),
+		PageSize:      telnyx.Int(1),
+		Sort:          telnyx.TrafficPolicyProfileListParamsSortService,
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -137,7 +127,7 @@ func TestVoiceDesignListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestVoiceDesignDelete(t *testing.T) {
+func TestTrafficPolicyProfileDelete(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -150,7 +140,7 @@ func TestVoiceDesignDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.VoiceDesigns.Delete(context.TODO(), "id")
+	_, err := client.TrafficPolicyProfiles.Delete(context.TODO(), "6a09cdc3-8948-47f0-aa62-74ac943d6c58")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -160,7 +150,7 @@ func TestVoiceDesignDelete(t *testing.T) {
 	}
 }
 
-func TestVoiceDesignDeleteVersion(t *testing.T) {
+func TestTrafficPolicyProfileListServicesWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -173,58 +163,17 @@ func TestVoiceDesignDeleteVersion(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.VoiceDesigns.DeleteVersion(
-		context.TODO(),
-		1,
-		telnyx.VoiceDesignDeleteVersionParams{
-			ID: "id",
-		},
-	)
+	_, err := client.TrafficPolicyProfiles.ListServices(context.TODO(), telnyx.TrafficPolicyProfileListServicesParams{
+		FilterGroup: telnyx.String("filter[group]"),
+		FilterName:  telnyx.String("filter[name]"),
+		PageNumber:  telnyx.Int(1),
+		PageSize:    telnyx.Int(1),
+	})
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
 		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestVoiceDesignDownloadSampleWithOptionalParams(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(200)
-		w.Write([]byte("abc"))
-	}))
-	defer server.Close()
-	baseURL := server.URL
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	resp, err := client.VoiceDesigns.DownloadSample(
-		context.TODO(),
-		"id",
-		telnyx.VoiceDesignDownloadSampleParams{
-			Version: telnyx.Int(1),
-		},
-	)
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-	defer resp.Body.Close()
-
-	b, err := io.ReadAll(resp.Body)
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-	if !bytes.Equal(b, []byte("abc")) {
-		t.Fatalf("return value not %s: %s", "abc", b)
 	}
 }

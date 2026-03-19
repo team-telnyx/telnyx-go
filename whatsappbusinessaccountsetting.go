@@ -62,7 +62,23 @@ func (r *WhatsappBusinessAccountSettingService) Update(ctx context.Context, id s
 	return res, err
 }
 
-type WabaSettings struct {
+type WhatsappBusinessAccountSettingGetResponse struct {
+	Data WhatsappBusinessAccountSettingGetResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappBusinessAccountSettingGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappBusinessAccountSettingGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappBusinessAccountSettingGetResponseData struct {
 	// Internal ID of Whatsapp business account
 	ID         string    `json:"id" format:"uuid"`
 	Name       string    `json:"name"`
@@ -93,29 +109,13 @@ type WabaSettings struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WabaSettings) RawJSON() string { return r.JSON.raw }
-func (r *WabaSettings) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappBusinessAccountSettingGetResponse struct {
-	Data WabaSettings `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WhatsappBusinessAccountSettingGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *WhatsappBusinessAccountSettingGetResponse) UnmarshalJSON(data []byte) error {
+func (r WhatsappBusinessAccountSettingGetResponseData) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappBusinessAccountSettingGetResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type WhatsappBusinessAccountSettingUpdateResponse struct {
-	Data WabaSettings `json:"data"`
+	Data WhatsappBusinessAccountSettingUpdateResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -127,6 +127,42 @@ type WhatsappBusinessAccountSettingUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r WhatsappBusinessAccountSettingUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *WhatsappBusinessAccountSettingUpdateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappBusinessAccountSettingUpdateResponseData struct {
+	// Internal ID of Whatsapp business account
+	ID         string    `json:"id" format:"uuid"`
+	Name       string    `json:"name"`
+	RecordType string    `json:"record_type"`
+	Timezone   string    `json:"timezone"`
+	UpdatedAt  time.Time `json:"updated_at" format:"date-time"`
+	// Enable/disable receiving Whatsapp events
+	WebhookEnabled bool     `json:"webhook_enabled"`
+	WebhookEvents  []string `json:"webhook_events"`
+	// Failover URL to receive Whatsapp events
+	WebhookFailoverURL string `json:"webhook_failover_url" format:"url"`
+	// URL to receive Whatsapp events
+	WebhookURL string `json:"webhook_url" format:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                 respjson.Field
+		Name               respjson.Field
+		RecordType         respjson.Field
+		Timezone           respjson.Field
+		UpdatedAt          respjson.Field
+		WebhookEnabled     respjson.Field
+		WebhookEvents      respjson.Field
+		WebhookFailoverURL respjson.Field
+		WebhookURL         respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappBusinessAccountSettingUpdateResponseData) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappBusinessAccountSettingUpdateResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

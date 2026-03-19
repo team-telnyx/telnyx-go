@@ -68,7 +68,7 @@ func (r *WhatsappBusinessAccountPhoneNumberService) ListAutoPaging(ctx context.C
 }
 
 // Initialize Whatsapp phone number verification
-func (r *WhatsappBusinessAccountPhoneNumberService) InitializeVerification(ctx context.Context, id string, body WhatsappBusinessAccountPhoneNumberInitializeVerificationParams, opts ...option.RequestOption) (err error) {
+func (r *WhatsappBusinessAccountPhoneNumberService) NewVerification(ctx context.Context, id string, body WhatsappBusinessAccountPhoneNumberNewVerificationParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
@@ -136,26 +136,26 @@ func (r WhatsappBusinessAccountPhoneNumberListParams) URLQuery() (v url.Values, 
 	})
 }
 
-type WhatsappBusinessAccountPhoneNumberInitializeVerificationParams struct {
+type WhatsappBusinessAccountPhoneNumberNewVerificationParams struct {
 	DisplayName string            `json:"display_name" api:"required"`
 	PhoneNumber string            `json:"phone_number" api:"required"`
 	Language    param.Opt[string] `json:"language,omitzero"`
 	// Any of "sms", "voice".
-	VerificationMethod WhatsappBusinessAccountPhoneNumberInitializeVerificationParamsVerificationMethod `json:"verification_method,omitzero"`
+	VerificationMethod WhatsappBusinessAccountPhoneNumberNewVerificationParamsVerificationMethod `json:"verification_method,omitzero"`
 	paramObj
 }
 
-func (r WhatsappBusinessAccountPhoneNumberInitializeVerificationParams) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappBusinessAccountPhoneNumberInitializeVerificationParams
+func (r WhatsappBusinessAccountPhoneNumberNewVerificationParams) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappBusinessAccountPhoneNumberNewVerificationParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *WhatsappBusinessAccountPhoneNumberInitializeVerificationParams) UnmarshalJSON(data []byte) error {
+func (r *WhatsappBusinessAccountPhoneNumberNewVerificationParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WhatsappBusinessAccountPhoneNumberInitializeVerificationParamsVerificationMethod string
+type WhatsappBusinessAccountPhoneNumberNewVerificationParamsVerificationMethod string
 
 const (
-	WhatsappBusinessAccountPhoneNumberInitializeVerificationParamsVerificationMethodSMS   WhatsappBusinessAccountPhoneNumberInitializeVerificationParamsVerificationMethod = "sms"
-	WhatsappBusinessAccountPhoneNumberInitializeVerificationParamsVerificationMethodVoice WhatsappBusinessAccountPhoneNumberInitializeVerificationParamsVerificationMethod = "voice"
+	WhatsappBusinessAccountPhoneNumberNewVerificationParamsVerificationMethodSMS   WhatsappBusinessAccountPhoneNumberNewVerificationParamsVerificationMethod = "sms"
+	WhatsappBusinessAccountPhoneNumberNewVerificationParamsVerificationMethodVoice WhatsappBusinessAccountPhoneNumberNewVerificationParamsVerificationMethod = "voice"
 )

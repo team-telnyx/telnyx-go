@@ -817,21 +817,3 @@ const SubNumberOrderRegulatoryRequirementWithValueFieldTypeAddress = shared.SubN
 
 // Equals "document"
 const SubNumberOrderRegulatoryRequirementWithValueFieldTypeDocument = shared.SubNumberOrderRegulatoryRequirementWithValueFieldTypeDocument
-
-// This is an alias to an internal type.
-type WhatsappTemplateData = shared.WhatsappTemplateData
-
-// This is an alias to an internal type.
-type WhatsappTemplateDataCategory = shared.WhatsappTemplateDataCategory
-
-// Equals "MARKETING"
-const WhatsappTemplateDataCategoryMarketing = shared.WhatsappTemplateDataCategoryMarketing
-
-// Equals "UTILITY"
-const WhatsappTemplateDataCategoryUtility = shared.WhatsappTemplateDataCategoryUtility
-
-// Equals "AUTHENTICATION"
-const WhatsappTemplateDataCategoryAuthentication = shared.WhatsappTemplateDataCategoryAuthentication
-
-// This is an alias to an internal type.
-type WhatsappTemplateDataWhatsappBusinessAccount = shared.WhatsappTemplateDataWhatsappBusinessAccount
