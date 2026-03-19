@@ -1,5 +1,19 @@
 # Changelog
 
+## 4.50.0 (2026-03-19)
+
+Full Changelog: [v4.49.0...v4.50.0](https://github.com/team-telnyx/telnyx-go/compare/v4.49.0...v4.50.0)
+
+### Features
+
+* **api:** manual updates ([274ea9a](https://github.com/team-telnyx/telnyx-go/commit/274ea9a70286f528b4ab308c773b7ddb19b4ea0a))
+* TELAPPS-5668: Add call.cost webhook event documentation ([fb830a5](https://github.com/team-telnyx/telnyx-go/commit/fb830a5c768f09b644ea308f503603ae88b522a6))
+
+
+### Documentation
+
+* **tts:** Add Telnyx.Ultra model documentation ([65d8694](https://github.com/team-telnyx/telnyx-go/commit/65d86946fb9ae20808fb26527dea0d9dcc2cf033))
+
 ## 4.49.0 (2026-03-18)
 
 Full Changelog: [v4.48.0...v4.49.0](https://github.com/team-telnyx/telnyx-go/compare/v4.48.0...v4.49.0)
