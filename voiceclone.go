@@ -46,6 +46,15 @@ func NewVoiceCloneService(opts ...option.RequestOption) (r VoiceCloneService) {
 	return
 }
 
+// Creates a new voice clone by capturing the voice identity of an existing voice
+// design. The clone can then be used for text-to-speech synthesis.
+func (r *VoiceCloneService) New(ctx context.Context, body VoiceCloneNewParams, opts ...option.RequestOption) (res *VoiceCloneNewResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "voice_clones"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
 // Updates the name, language, or gender of a voice clone.
 func (r *VoiceCloneService) Update(ctx context.Context, id string, body VoiceCloneUpdateParams, opts ...option.RequestOption) (res *VoiceCloneUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -94,15 +103,6 @@ func (r *VoiceCloneService) Delete(ctx context.Context, id string, opts ...optio
 	return err
 }
 
-// Creates a new voice clone by capturing the voice identity of an existing voice
-// design. The clone can then be used for text-to-speech synthesis.
-func (r *VoiceCloneService) NewFromDesign(ctx context.Context, body VoiceCloneNewFromDesignParams, opts ...option.RequestOption) (res *VoiceCloneNewFromDesignResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "voice_clones"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
-}
-
 // Creates a new voice clone by uploading an audio file directly. Supported
 // formats: WAV, MP3, FLAC, OGG, M4A. For best results, provide 5–10 seconds of
 // clear speech. Maximum file size: 2MB.
@@ -124,6 +124,74 @@ func (r *VoiceCloneService) DownloadSample(ctx context.Context, id string, opts 
 	path := fmt.Sprintf("voice_clones/%s/sample", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
+}
+
+// Response envelope for a single voice clone.
+type VoiceCloneNewResponse struct {
+	// A voice clone object.
+	Data VoiceCloneNewResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VoiceCloneNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *VoiceCloneNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A voice clone object.
+type VoiceCloneNewResponseData struct {
+	// Unique identifier for the voice clone.
+	ID string `json:"id" format:"uuid"`
+	// Timestamp when the voice clone was created.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Gender of the voice clone.
+	//
+	// Any of "male", "female", "neutral".
+	Gender string `json:"gender" api:"nullable"`
+	// Voice style description. If not explicitly set on upload, falls back to the
+	// source design's prompt text.
+	Label string `json:"label" api:"nullable"`
+	// ISO 639-1 language code of the voice clone.
+	Language string `json:"language" api:"nullable"`
+	// Name of the voice clone.
+	Name string `json:"name"`
+	// Identifies the resource type.
+	//
+	// Any of "voice_clone".
+	RecordType string `json:"record_type"`
+	// UUID of the source voice design. `null` for upload-based clones.
+	SourceVoiceDesignID string `json:"source_voice_design_id" api:"nullable" format:"uuid"`
+	// Version of the source voice design used. `null` for upload-based clones.
+	SourceVoiceDesignVersion int64 `json:"source_voice_design_version" api:"nullable"`
+	// Timestamp when the voice clone was last updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                       respjson.Field
+		CreatedAt                respjson.Field
+		Gender                   respjson.Field
+		Label                    respjson.Field
+		Language                 respjson.Field
+		Name                     respjson.Field
+		RecordType               respjson.Field
+		SourceVoiceDesignID      respjson.Field
+		SourceVoiceDesignVersion respjson.Field
+		UpdatedAt                respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VoiceCloneNewResponseData) RawJSON() string { return r.JSON.raw }
+func (r *VoiceCloneNewResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Response envelope for a single voice clone.
@@ -261,74 +329,6 @@ const (
 )
 
 // Response envelope for a single voice clone.
-type VoiceCloneNewFromDesignResponse struct {
-	// A voice clone object.
-	Data VoiceCloneNewFromDesignResponseData `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VoiceCloneNewFromDesignResponse) RawJSON() string { return r.JSON.raw }
-func (r *VoiceCloneNewFromDesignResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A voice clone object.
-type VoiceCloneNewFromDesignResponseData struct {
-	// Unique identifier for the voice clone.
-	ID string `json:"id" format:"uuid"`
-	// Timestamp when the voice clone was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Gender of the voice clone.
-	//
-	// Any of "male", "female", "neutral".
-	Gender string `json:"gender" api:"nullable"`
-	// Voice style description. If not explicitly set on upload, falls back to the
-	// source design's prompt text.
-	Label string `json:"label" api:"nullable"`
-	// ISO 639-1 language code of the voice clone.
-	Language string `json:"language" api:"nullable"`
-	// Name of the voice clone.
-	Name string `json:"name"`
-	// Identifies the resource type.
-	//
-	// Any of "voice_clone".
-	RecordType string `json:"record_type"`
-	// UUID of the source voice design. `null` for upload-based clones.
-	SourceVoiceDesignID string `json:"source_voice_design_id" api:"nullable" format:"uuid"`
-	// Version of the source voice design used. `null` for upload-based clones.
-	SourceVoiceDesignVersion int64 `json:"source_voice_design_version" api:"nullable"`
-	// Timestamp when the voice clone was last updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                       respjson.Field
-		CreatedAt                respjson.Field
-		Gender                   respjson.Field
-		Label                    respjson.Field
-		Language                 respjson.Field
-		Name                     respjson.Field
-		RecordType               respjson.Field
-		SourceVoiceDesignID      respjson.Field
-		SourceVoiceDesignVersion respjson.Field
-		UpdatedAt                respjson.Field
-		ExtraFields              map[string]respjson.Field
-		raw                      string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VoiceCloneNewFromDesignResponseData) RawJSON() string { return r.JSON.raw }
-func (r *VoiceCloneNewFromDesignResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Response envelope for a single voice clone.
 type VoiceCloneNewFromUploadResponse struct {
 	// A voice clone object.
 	Data VoiceCloneNewFromUploadResponseData `json:"data"`
@@ -396,6 +396,37 @@ func (r *VoiceCloneNewFromUploadResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type VoiceCloneNewParams struct {
+	// Gender of the voice clone.
+	//
+	// Any of "male", "female", "neutral".
+	Gender VoiceCloneNewParamsGender `json:"gender,omitzero" api:"required"`
+	// ISO 639-1 language code for the clone (e.g. `en`, `fr`, `de`).
+	Language string `json:"language" api:"required"`
+	// Name for the voice clone.
+	Name string `json:"name" api:"required"`
+	// UUID of the source voice design to clone.
+	VoiceDesignID string `json:"voice_design_id" api:"required" format:"uuid"`
+	paramObj
+}
+
+func (r VoiceCloneNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow VoiceCloneNewParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VoiceCloneNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Gender of the voice clone.
+type VoiceCloneNewParamsGender string
+
+const (
+	VoiceCloneNewParamsGenderMale    VoiceCloneNewParamsGender = "male"
+	VoiceCloneNewParamsGenderFemale  VoiceCloneNewParamsGender = "female"
+	VoiceCloneNewParamsGenderNeutral VoiceCloneNewParamsGender = "neutral"
+)
+
 type VoiceCloneUpdateParams struct {
 	// New name for the voice clone.
 	Name string `json:"name" api:"required"`
@@ -455,37 +486,6 @@ const (
 	VoiceCloneListParamsSortNameDesc      VoiceCloneListParamsSort = "-name"
 	VoiceCloneListParamsSortCreatedAt     VoiceCloneListParamsSort = "created_at"
 	VoiceCloneListParamsSortCreatedAtDesc VoiceCloneListParamsSort = "-created_at"
-)
-
-type VoiceCloneNewFromDesignParams struct {
-	// Gender of the voice clone.
-	//
-	// Any of "male", "female", "neutral".
-	Gender VoiceCloneNewFromDesignParamsGender `json:"gender,omitzero" api:"required"`
-	// ISO 639-1 language code for the clone (e.g. `en`, `fr`, `de`).
-	Language string `json:"language" api:"required"`
-	// Name for the voice clone.
-	Name string `json:"name" api:"required"`
-	// UUID of the source voice design to clone.
-	VoiceDesignID string `json:"voice_design_id" api:"required" format:"uuid"`
-	paramObj
-}
-
-func (r VoiceCloneNewFromDesignParams) MarshalJSON() (data []byte, err error) {
-	type shadow VoiceCloneNewFromDesignParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *VoiceCloneNewFromDesignParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Gender of the voice clone.
-type VoiceCloneNewFromDesignParamsGender string
-
-const (
-	VoiceCloneNewFromDesignParamsGenderMale    VoiceCloneNewFromDesignParamsGender = "male"
-	VoiceCloneNewFromDesignParamsGenderFemale  VoiceCloneNewFromDesignParamsGender = "female"
-	VoiceCloneNewFromDesignParamsGenderNeutral VoiceCloneNewFromDesignParamsGender = "neutral"
 )
 
 type VoiceCloneNewFromUploadParams struct {
