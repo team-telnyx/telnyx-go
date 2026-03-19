@@ -52,9 +52,6 @@ func TestTextToSpeechGenerateWithOptionalParams(t *testing.T) {
 				"foo": "bar",
 			},
 		},
-		Inworld: map[string]any{
-			"foo": "bar",
-		},
 		Language: telnyx.String("language"),
 		Minimax: telnyx.TextToSpeechGenerateParamsMinimax{
 			LanguageBoost:  telnyx.String("language_boost"),
@@ -77,10 +74,12 @@ func TestTextToSpeechGenerateWithOptionalParams(t *testing.T) {
 			VoiceSpeed:     telnyx.Float(0),
 		},
 		Telnyx: telnyx.TextToSpeechGenerateParamsTelnyx{
+			Emotion:        "neutral",
 			ResponseFormat: telnyx.String("response_format"),
 			SamplingRate:   telnyx.Int(0),
 			Temperature:    telnyx.Float(0),
-			VoiceSpeed:     telnyx.Float(0),
+			VoiceSpeed:     telnyx.Float(0.5),
+			Volume:         telnyx.Float(0),
 		},
 		Text:     telnyx.String("text"),
 		TextType: telnyx.TextToSpeechGenerateParamsTextTypeText,
@@ -114,37 +113,6 @@ func TestTextToSpeechListVoicesWithOptionalParams(t *testing.T) {
 	_, err := client.TextToSpeech.ListVoices(context.TODO(), telnyx.TextToSpeechListVoicesParams{
 		APIKey:   telnyx.String("api_key"),
 		Provider: telnyx.TextToSpeechListVoicesParamsProviderAws,
-	})
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestTextToSpeechStreamWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	err := client.TextToSpeech.Stream(context.TODO(), telnyx.TextToSpeechStreamParams{
-		AudioFormat:  telnyx.TextToSpeechStreamParamsAudioFormatPcm,
-		DisableCache: telnyx.Bool(true),
-		ModelID:      telnyx.String("model_id"),
-		Provider:     telnyx.TextToSpeechStreamParamsProviderAws,
-		SocketID:     telnyx.String("socket_id"),
-		Voice:        telnyx.String("voice"),
-		VoiceID:      telnyx.String("voice_id"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
