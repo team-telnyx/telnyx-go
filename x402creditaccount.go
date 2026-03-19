@@ -53,8 +53,8 @@ func (r *X402CreditAccountService) NewQuote(ctx context.Context, body X402Credit
 // `payment_signature` body parameter. Settlement is idempotent — submitting the
 // same quote ID multiple times returns the existing transaction.
 func (r *X402CreditAccountService) Settle(ctx context.Context, params X402CreditAccountSettleParams, opts ...option.RequestOption) (res *X402CreditAccountSettleResponse, err error) {
-	if !param.IsOmitted(params.PaymentSignatureHeader) {
-		opts = append(opts, option.WithHeader("PAYMENT-SIGNATURE", fmt.Sprintf("%v", params.PaymentSignatureHeader.Value)))
+	if !param.IsOmitted(params.HeaderPaymentSignature) {
+		opts = append(opts, option.WithHeader("PAYMENT-SIGNATURE", fmt.Sprintf("%v", params.HeaderPaymentSignature.Value)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/x402/credit_account"
@@ -310,8 +310,8 @@ type X402CreditAccountSettleParams struct {
 	ID string `json:"id" api:"required"`
 	// Base64-encoded signed payment authorization (x402 PaymentPayload). Can
 	// alternatively be provided via the PAYMENT-SIGNATURE header.
-	PaymentSignature       param.Opt[string] `json:"payment_signature,omitzero"`
-	PaymentSignatureHeader param.Opt[string] `header:"PAYMENT-SIGNATURE,omitzero" json:"-"`
+	BodyPaymentSignature   param.Opt[string] `json:"payment_signature,omitzero"`
+	HeaderPaymentSignature param.Opt[string] `header:"PAYMENT-SIGNATURE,omitzero" json:"-"`
 	paramObj
 }
 
