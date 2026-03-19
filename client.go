@@ -307,9 +307,7 @@ type Client struct {
 	// Traffic Policy Profiles operations
 	TrafficPolicyProfiles TrafficPolicyProfileService
 	Whatsapp              WhatsappService
-	// Manage Whatsapp message templates
-	WhatsappMessageTemplates WhatsappMessageTemplateService
-	X402                     X402Service
+	X402                  X402Service
 	// Capture and manage voice identities as clones for use in text-to-speech
 	// synthesis.
 	VoiceClones VoiceCloneService
@@ -505,7 +503,6 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.SessionAnalysis = NewSessionAnalysisService(opts...)
 	r.TrafficPolicyProfiles = NewTrafficPolicyProfileService(opts...)
 	r.Whatsapp = NewWhatsappService(opts...)
-	r.WhatsappMessageTemplates = NewWhatsappMessageTemplateService(opts...)
 	r.X402 = NewX402Service(opts...)
 	r.VoiceClones = NewVoiceCloneService(opts...)
 	r.VoiceDesigns = NewVoiceDesignService(opts...)
