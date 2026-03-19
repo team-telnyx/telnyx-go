@@ -43,7 +43,7 @@ func TestWhatsappBusinessAccountPhoneNumberListWithOptionalParams(t *testing.T) 
 	}
 }
 
-func TestWhatsappBusinessAccountPhoneNumberInitializeVerificationWithOptionalParams(t *testing.T) {
+func TestWhatsappBusinessAccountPhoneNumberNewVerificationWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -56,14 +56,14 @@ func TestWhatsappBusinessAccountPhoneNumberInitializeVerificationWithOptionalPar
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Whatsapp.BusinessAccounts.PhoneNumbers.InitializeVerification(
+	err := client.Whatsapp.BusinessAccounts.PhoneNumbers.NewVerification(
 		context.TODO(),
 		"id",
-		telnyx.WhatsappBusinessAccountPhoneNumberInitializeVerificationParams{
+		telnyx.WhatsappBusinessAccountPhoneNumberNewVerificationParams{
 			DisplayName:        "display_name",
 			PhoneNumber:        "phone_number",
 			Language:           telnyx.String("language"),
-			VerificationMethod: telnyx.WhatsappBusinessAccountPhoneNumberInitializeVerificationParamsVerificationMethodSMS,
+			VerificationMethod: telnyx.WhatsappBusinessAccountPhoneNumberNewVerificationParamsVerificationMethodSMS,
 		},
 	)
 	if err != nil {

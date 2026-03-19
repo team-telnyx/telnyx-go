@@ -304,7 +304,9 @@ type Client struct {
 	MessagingProfileMetrics MessagingProfileMetricService
 	// Analyze voice AI sessions, costs, and event hierarchies across Telnyx products.
 	SessionAnalysis SessionAnalysisService
-	Whatsapp        WhatsappService
+	// Traffic Policy Profiles operations
+	TrafficPolicyProfiles TrafficPolicyProfileService
+	Whatsapp              WhatsappService
 	// Manage Whatsapp message templates
 	WhatsappMessageTemplates WhatsappMessageTemplateService
 	X402                     X402Service
@@ -501,6 +503,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.AlphanumericSenderIDs = NewAlphanumericSenderIDService(opts...)
 	r.MessagingProfileMetrics = NewMessagingProfileMetricService(opts...)
 	r.SessionAnalysis = NewSessionAnalysisService(opts...)
+	r.TrafficPolicyProfiles = NewTrafficPolicyProfileService(opts...)
 	r.Whatsapp = NewWhatsappService(opts...)
 	r.WhatsappMessageTemplates = NewWhatsappMessageTemplateService(opts...)
 	r.X402 = NewX402Service(opts...)
