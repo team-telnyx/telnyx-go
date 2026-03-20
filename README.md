@@ -2,12 +2,12 @@
 
 <!-- x-release-please-start-version -->
 
-<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4"><img src="https://pkg.go.dev/badge/github.com/team-telnyx/telnyx-go.svg" alt="Go Reference"></a>
+<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4"><img src="https://pkg.go.dev/badge/github.com/team-telnyx/telnyx-go/v4.svg" alt="Go Reference"></a>
 
 <!-- x-release-please-end -->
 
-The official Telnyx Go SDK — providing APIs for Voice, SMS, MMS, WhatsApp, Fax, SIP Trunking, Wireless IoT, Call Control, Number Management, and more.  
-Build global communications applications on Telnyx’s private, carrier-grade network with simple Go bindings to the Telnyx REST API.
+The Telnyx Go library provides convenient access to the Telnyx REST API
+from applications written in Go.
 
 It is generated with [Stainless](https://www.stainless.com/).
 
@@ -37,7 +37,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/team-telnyx/telnyx-go@v4.50.0'
+go get -u 'github.com/team-telnyx/telnyx-go/v4@v4.50.0'
 ```
 
 <!-- x-release-please-end -->
@@ -292,7 +292,7 @@ client.NumberOrders.New(context.TODO(), ...,
 
 The request option `option.WithDebugLog(nil)` may be helpful while debugging.
 
-See the [full list of request options](https://pkg.go.dev/github.com/team-telnyx/telnyx-go/option).
+See the [full list of request options](https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/option).
 
 ### Pagination
 
