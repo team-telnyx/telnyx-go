@@ -1786,13 +1786,17 @@ type WhatsappTemplateData struct {
 	ID string `json:"id"`
 	// Any of "MARKETING", "UTILITY", "AUTHENTICATION".
 	Category WhatsappTemplateDataCategory `json:"category"`
-	// Whatsapp template components (header, body, footer, buttons)
-	Components              []map[string]any                            `json:"components"`
-	CreatedAt               time.Time                                   `json:"created_at" format:"date-time"`
-	Language                string                                      `json:"language"`
-	Name                    string                                      `json:"name"`
-	RecordType              string                                      `json:"record_type"`
-	RejectionReason         string                                      `json:"rejection_reason"`
+	// Template components (header, body, footer, buttons) as submitted, including
+	// example values.
+	Components      []map[string]any `json:"components"`
+	CreatedAt       time.Time        `json:"created_at" format:"date-time"`
+	Language        string           `json:"language"`
+	Name            string           `json:"name"`
+	RecordType      string           `json:"record_type"`
+	RejectionReason string           `json:"rejection_reason"`
+	// Current template status from Meta (e.g. PENDING, APPROVED, REJECTED, PAUSED,
+	// DISABLED). Additional statuses may be returned as Meta evolves the template
+	// lifecycle.
 	Status                  string                                      `json:"status"`
 	TemplateID              string                                      `json:"template_id"`
 	UpdatedAt               time.Time                                   `json:"updated_at" format:"date-time"`

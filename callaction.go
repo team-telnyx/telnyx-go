@@ -5248,12 +5248,13 @@ type CallActionStartNoiseSuppressionParams struct {
 	// Any of "inbound", "outbound", "both".
 	Direction CallActionStartNoiseSuppressionParamsDirection `json:"direction,omitzero"`
 	// The engine to use for noise suppression. For backward compatibility, engines A,
-	// B, and C are also supported, but are deprecated: A - Denoiser B - DeepFilterNet
-	// C - Krisp
+	// B, C, and D are also supported, but are deprecated: A - Denoiser B -
+	// DeepFilterNet C - Krisp D - AiCoustics
 	//
-	// Any of "Denoiser", "DeepFilterNet", "Krisp".
+	// Any of "Denoiser", "DeepFilterNet", "Krisp", "AiCoustics".
 	NoiseSuppressionEngine CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine `json:"noise_suppression_engine,omitzero"`
-	// Configuration parameters for noise suppression engines.
+	// Configuration parameters for noise suppression engines. Different engines
+	// support different parameters.
 	NoiseSuppressionEngineConfig CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineConfig `json:"noise_suppression_engine_config,omitzero"`
 	paramObj
 }
@@ -5276,21 +5277,49 @@ const (
 )
 
 // The engine to use for noise suppression. For backward compatibility, engines A,
-// B, and C are also supported, but are deprecated: A - Denoiser B - DeepFilterNet
-// C - Krisp
+// B, C, and D are also supported, but are deprecated: A - Denoiser B -
+// DeepFilterNet C - Krisp D - AiCoustics
 type CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine string
 
 const (
 	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineDenoiser      CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "Denoiser"
 	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineDeepFilterNet CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "DeepFilterNet"
 	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineKrisp         CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "Krisp"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineAICoustics    CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "AiCoustics"
 )
 
-// Configuration parameters for noise suppression engines.
+// Configuration parameters for noise suppression engines. Different engines
+// support different parameters.
 type CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineConfig struct {
 	// The attenuation limit for noise suppression (0-100). Only applicable for
 	// DeepFilterNet.
 	AttenuationLimit param.Opt[int64] `json:"attenuation_limit,omitzero"`
+	// Enhancement intensity (0.0-1.0). Only applicable for AiCoustics.
+	EnhancementLevel param.Opt[float64] `json:"enhancement_level,omitzero"`
+	// Suppression level (0.0-100.0). Only applicable for Krisp.
+	SuppressionLevel param.Opt[float64] `json:"suppression_level,omitzero"`
+	// Voice gain multiplier (0.1-4.0). Only applicable for AiCoustics.
+	VoiceGain param.Opt[float64] `json:"voice_gain,omitzero"`
+	// AiCoustics model family. 'sparrow' optimized for human-to-human calls, 'quail'
+	// optimized for Voice AI/STT. Only applicable for AiCoustics.
+	//
+	// Any of "sparrow", "quail".
+	Family string `json:"family,omitzero"`
+	// Processing mode. Only applicable for DeepFilterNet.
+	//
+	// Any of "standard", "advanced".
+	Mode string `json:"mode,omitzero"`
+	// The Krisp model to use. Only applicable for Krisp.
+	//
+	// Any of "krisp-viva-tel-v2.kef", "krisp-viva-tel-lite-v1.kef",
+	// "krisp-viva-pro-v1.kef", "krisp-viva-ss-v1.kef".
+	Model string `json:"model,omitzero"`
+	// AiCoustics model size. 's' and 'l' work with both families. 'xs' and 'xxs' are
+	// sparrow-only. 'vf_l' and 'vf_1_1_l' are quail-only. Only applicable for
+	// AiCoustics.
+	//
+	// Any of "s", "l", "xs", "xxs", "vf_l", "vf_1_1_l".
+	Size string `json:"size,omitzero"`
 	paramObj
 }
 
@@ -5300,6 +5329,21 @@ func (r CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineConfig) Marsh
 }
 func (r *CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineConfig](
+		"family", "sparrow", "quail",
+	)
+	apijson.RegisterFieldValidator[CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineConfig](
+		"mode", "standard", "advanced",
+	)
+	apijson.RegisterFieldValidator[CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineConfig](
+		"model", "krisp-viva-tel-v2.kef", "krisp-viva-tel-lite-v1.kef", "krisp-viva-pro-v1.kef", "krisp-viva-ss-v1.kef",
+	)
+	apijson.RegisterFieldValidator[CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineConfig](
+		"size", "s", "l", "xs", "xxs", "vf_l", "vf_1_1_l",
+	)
 }
 
 type CallActionStartPlaybackParams struct {
