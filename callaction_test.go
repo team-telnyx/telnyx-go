@@ -909,6 +909,13 @@ func TestCallActionStartNoiseSuppressionWithOptionalParams(t *testing.T) {
 			NoiseSuppressionEngine: telnyx.CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineDeepFilterNet,
 			NoiseSuppressionEngineConfig: telnyx.CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineConfig{
 				AttenuationLimit: telnyx.Int(100),
+				EnhancementLevel: telnyx.Float(0.5),
+				Family:           "sparrow",
+				Mode:             "standard",
+				Model:            "krisp-viva-tel-v2.kef",
+				Size:             "l",
+				SuppressionLevel: telnyx.Float(50),
+				VoiceGain:        telnyx.Float(1),
 			},
 		},
 	)
