@@ -37,8 +37,16 @@ func NewAIAssistantTagService(opts ...option.RequestOption) (r AIAssistantTagSer
 	return
 }
 
+// Get All Tags
+func (r *AIAssistantTagService) List(ctx context.Context, opts ...option.RequestOption) (res *AIAssistantTagListResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "ai/assistants/tags"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
 // Add Assistant Tag
-func (r *AIAssistantTagService) New(ctx context.Context, assistantID string, body AIAssistantTagNewParams, opts ...option.RequestOption) (res *AIAssistantTagNewResponse, err error) {
+func (r *AIAssistantTagService) Add(ctx context.Context, assistantID string, body AIAssistantTagAddParams, opts ...option.RequestOption) (res *AIAssistantTagAddResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
@@ -49,16 +57,8 @@ func (r *AIAssistantTagService) New(ctx context.Context, assistantID string, bod
 	return res, err
 }
 
-// Get All Tags
-func (r *AIAssistantTagService) List(ctx context.Context, opts ...option.RequestOption) (res *AIAssistantTagListResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "ai/assistants/tags"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
-}
-
 // Remove Assistant Tag
-func (r *AIAssistantTagService) Delete(ctx context.Context, tag string, body AIAssistantTagDeleteParams, opts ...option.RequestOption) (res *AIAssistantTagDeleteResponse, err error) {
+func (r *AIAssistantTagService) Remove(ctx context.Context, tag string, body AIAssistantTagRemoveParams, opts ...option.RequestOption) (res *AIAssistantTagRemoveResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if body.AssistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
@@ -71,22 +71,6 @@ func (r *AIAssistantTagService) Delete(ctx context.Context, tag string, body AIA
 	path := fmt.Sprintf("ai/assistants/%s/tags/%s", body.AssistantID, tag)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
-}
-
-type AIAssistantTagNewResponse struct {
-	Tags []string `json:"tags" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Tags        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIAssistantTagNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIAssistantTagNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type AIAssistantTagListResponse struct {
@@ -105,7 +89,7 @@ func (r *AIAssistantTagListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIAssistantTagDeleteResponse struct {
+type AIAssistantTagAddResponse struct {
 	Tags []string `json:"tags" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -116,25 +100,41 @@ type AIAssistantTagDeleteResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AIAssistantTagDeleteResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIAssistantTagDeleteResponse) UnmarshalJSON(data []byte) error {
+func (r AIAssistantTagAddResponse) RawJSON() string { return r.JSON.raw }
+func (r *AIAssistantTagAddResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIAssistantTagNewParams struct {
+type AIAssistantTagRemoveResponse struct {
+	Tags []string `json:"tags" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Tags        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AIAssistantTagRemoveResponse) RawJSON() string { return r.JSON.raw }
+func (r *AIAssistantTagRemoveResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AIAssistantTagAddParams struct {
 	Tag string `json:"tag" api:"required"`
 	paramObj
 }
 
-func (r AIAssistantTagNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow AIAssistantTagNewParams
+func (r AIAssistantTagAddParams) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantTagAddParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AIAssistantTagNewParams) UnmarshalJSON(data []byte) error {
+func (r *AIAssistantTagAddParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIAssistantTagDeleteParams struct {
+type AIAssistantTagRemoveParams struct {
 	AssistantID string `path:"assistant_id" api:"required" json:"-"`
 	paramObj
 }

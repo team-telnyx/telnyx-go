@@ -13,35 +13,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestAIAssistantTagNew(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.AI.Assistants.Tags.New(
-		context.TODO(),
-		"assistant_id",
-		telnyx.AIAssistantTagNewParams{
-			Tag: "tag",
-		},
-	)
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
 func TestAIAssistantTagList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
@@ -65,7 +36,7 @@ func TestAIAssistantTagList(t *testing.T) {
 	}
 }
 
-func TestAIAssistantTagDelete(t *testing.T) {
+func TestAIAssistantTagAdd(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -78,10 +49,39 @@ func TestAIAssistantTagDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Assistants.Tags.Delete(
+	_, err := client.AI.Assistants.Tags.Add(
+		context.TODO(),
+		"assistant_id",
+		telnyx.AIAssistantTagAddParams{
+			Tag: "tag",
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestAIAssistantTagRemove(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.AI.Assistants.Tags.Remove(
 		context.TODO(),
 		"tag",
-		telnyx.AIAssistantTagDeleteParams{
+		telnyx.AIAssistantTagRemoveParams{
 			AssistantID: "assistant_id",
 		},
 	)

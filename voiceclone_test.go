@@ -17,7 +17,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestVoiceCloneNew(t *testing.T) {
+func TestVoiceCloneNewWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -35,6 +35,7 @@ func TestVoiceCloneNew(t *testing.T) {
 		Language:      "en",
 		Name:          "clone-narrator",
 		VoiceDesignID: "550e8400-e29b-41d4-a716-446655440000",
+		Provider:      telnyx.VoiceCloneNewParamsProviderTelnyx,
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -90,10 +91,11 @@ func TestVoiceCloneListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.VoiceClones.List(context.TODO(), telnyx.VoiceCloneListParams{
-		FilterName: telnyx.String("filter[name]"),
-		PageNumber: telnyx.Int(1),
-		PageSize:   telnyx.Int(1),
-		Sort:       telnyx.VoiceCloneListParamsSortName,
+		FilterName:     telnyx.String("filter[name]"),
+		FilterProvider: telnyx.VoiceCloneListParamsFilterProviderTelnyx,
+		PageNumber:     telnyx.Int(1),
+		PageSize:       telnyx.Int(1),
+		Sort:           telnyx.VoiceCloneListParamsSortName,
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -146,6 +148,7 @@ func TestVoiceCloneNewFromUploadWithOptionalParams(t *testing.T) {
 		Name:      "name",
 		Gender:    telnyx.VoiceCloneNewFromUploadParamsGenderMale,
 		Label:     telnyx.String("label"),
+		Provider:  telnyx.VoiceCloneNewFromUploadParamsProviderTelnyx,
 		RefText:   telnyx.String("ref_text"),
 	})
 	if err != nil {

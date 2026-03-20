@@ -41,7 +41,7 @@ func NewX402CreditAccountService(opts ...option.RequestOption) (r X402CreditAcco
 // Creates a payment quote for the specified USD amount. Returns payment details
 // including the x402 payment requirements, network, and expiration time. The quote
 // must be settled before it expires.
-func (r *X402CreditAccountService) NewPaymentQuote(ctx context.Context, body X402CreditAccountNewPaymentQuoteParams, opts ...option.RequestOption) (res *X402CreditAccountNewPaymentQuoteResponse, err error) {
+func (r *X402CreditAccountService) NewQuote(ctx context.Context, body X402CreditAccountNewQuoteParams, opts ...option.RequestOption) (res *X402CreditAccountNewQuoteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/x402/credit_account/quote"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -52,7 +52,7 @@ func (r *X402CreditAccountService) NewPaymentQuote(ctx context.Context, body X40
 // The payment signature can be provided via the `PAYMENT-SIGNATURE` header or the
 // `payment_signature` body parameter. Settlement is idempotent — submitting the
 // same quote ID multiple times returns the existing transaction.
-func (r *X402CreditAccountService) SettlePayment(ctx context.Context, params X402CreditAccountSettlePaymentParams, opts ...option.RequestOption) (res *X402CreditAccountSettlePaymentResponse, err error) {
+func (r *X402CreditAccountService) Settle(ctx context.Context, params X402CreditAccountSettleParams, opts ...option.RequestOption) (res *X402CreditAccountSettleResponse, err error) {
 	if !param.IsOmitted(params.HeaderPaymentSignature) {
 		opts = append(opts, option.WithHeader("PAYMENT-SIGNATURE", fmt.Sprintf("%v", params.HeaderPaymentSignature.Value)))
 	}
@@ -62,8 +62,8 @@ func (r *X402CreditAccountService) SettlePayment(ctx context.Context, params X40
 	return res, err
 }
 
-type X402CreditAccountNewPaymentQuoteResponse struct {
-	Data X402CreditAccountNewPaymentQuoteResponseData `json:"data"`
+type X402CreditAccountNewQuoteResponse struct {
+	Data X402CreditAccountNewQuoteResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -73,12 +73,12 @@ type X402CreditAccountNewPaymentQuoteResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r X402CreditAccountNewPaymentQuoteResponse) RawJSON() string { return r.JSON.raw }
-func (r *X402CreditAccountNewPaymentQuoteResponse) UnmarshalJSON(data []byte) error {
+func (r X402CreditAccountNewQuoteResponse) RawJSON() string { return r.JSON.raw }
+func (r *X402CreditAccountNewQuoteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type X402CreditAccountNewPaymentQuoteResponseData struct {
+type X402CreditAccountNewQuoteResponseData struct {
 	// Unique quote identifier. Use this to settle the payment.
 	ID string `json:"id"`
 	// The equivalent amount in the payment cryptocurrency's smallest unit (e.g. USDC
@@ -93,7 +93,7 @@ type X402CreditAccountNewPaymentQuoteResponseData struct {
 	Network string `json:"network"`
 	// x402 protocol v2 payment requirements. Contains all information needed to
 	// construct and sign a payment authorization.
-	PaymentRequirements X402CreditAccountNewPaymentQuoteResponseDataPaymentRequirements `json:"payment_requirements"`
+	PaymentRequirements X402CreditAccountNewQuoteResponseDataPaymentRequirements `json:"payment_requirements"`
 	// Any of "quote".
 	RecordType string `json:"record_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -111,18 +111,18 @@ type X402CreditAccountNewPaymentQuoteResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r X402CreditAccountNewPaymentQuoteResponseData) RawJSON() string { return r.JSON.raw }
-func (r *X402CreditAccountNewPaymentQuoteResponseData) UnmarshalJSON(data []byte) error {
+func (r X402CreditAccountNewQuoteResponseData) RawJSON() string { return r.JSON.raw }
+func (r *X402CreditAccountNewQuoteResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // x402 protocol v2 payment requirements. Contains all information needed to
 // construct and sign a payment authorization.
-type X402CreditAccountNewPaymentQuoteResponseDataPaymentRequirements struct {
+type X402CreditAccountNewQuoteResponseDataPaymentRequirements struct {
 	// Accepted payment schemes. Currently only the `exact` EVM scheme is supported.
-	Accepts []X402CreditAccountNewPaymentQuoteResponseDataPaymentRequirementsAccept `json:"accepts"`
+	Accepts []X402CreditAccountNewQuoteResponseDataPaymentRequirementsAccept `json:"accepts"`
 	// The resource being paid for. Included in the payment signature.
-	Resource X402CreditAccountNewPaymentQuoteResponseDataPaymentRequirementsResource `json:"resource"`
+	Resource X402CreditAccountNewQuoteResponseDataPaymentRequirementsResource `json:"resource"`
 	// x402 protocol version. Currently always 2.
 	//
 	// Any of 2.
@@ -138,21 +138,19 @@ type X402CreditAccountNewPaymentQuoteResponseDataPaymentRequirements struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r X402CreditAccountNewPaymentQuoteResponseDataPaymentRequirements) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *X402CreditAccountNewPaymentQuoteResponseDataPaymentRequirements) UnmarshalJSON(data []byte) error {
+func (r X402CreditAccountNewQuoteResponseDataPaymentRequirements) RawJSON() string { return r.JSON.raw }
+func (r *X402CreditAccountNewQuoteResponseDataPaymentRequirements) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type X402CreditAccountNewPaymentQuoteResponseDataPaymentRequirementsAccept struct {
+type X402CreditAccountNewQuoteResponseDataPaymentRequirementsAccept struct {
 	// Amount in the token's smallest unit.
 	Amount string `json:"amount"`
 	// Token contract address (e.g. USDC on Base).
 	Asset string `json:"asset"`
 	// Additional scheme-specific parameters including EIP-712 domain info and the
 	// facilitator URL.
-	Extra X402CreditAccountNewPaymentQuoteResponseDataPaymentRequirementsAcceptExtra `json:"extra"`
+	Extra X402CreditAccountNewQuoteResponseDataPaymentRequirementsAcceptExtra `json:"extra"`
 	// Maximum time in seconds before the payment authorization expires.
 	MaxTimeoutSeconds int64 `json:"maxTimeoutSeconds"`
 	// Blockchain network identifier in CAIP-2 format (e.g. "eip155:8453" for Base).
@@ -176,16 +174,16 @@ type X402CreditAccountNewPaymentQuoteResponseDataPaymentRequirementsAccept struc
 }
 
 // Returns the unmodified JSON received from the API
-func (r X402CreditAccountNewPaymentQuoteResponseDataPaymentRequirementsAccept) RawJSON() string {
+func (r X402CreditAccountNewQuoteResponseDataPaymentRequirementsAccept) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *X402CreditAccountNewPaymentQuoteResponseDataPaymentRequirementsAccept) UnmarshalJSON(data []byte) error {
+func (r *X402CreditAccountNewQuoteResponseDataPaymentRequirementsAccept) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Additional scheme-specific parameters including EIP-712 domain info and the
 // facilitator URL.
-type X402CreditAccountNewPaymentQuoteResponseDataPaymentRequirementsAcceptExtra struct {
+type X402CreditAccountNewQuoteResponseDataPaymentRequirementsAcceptExtra struct {
 	FacilitatorURL string `json:"facilitatorUrl"`
 	// EIP-712 domain name (e.g. "USD Coin").
 	Name    string `json:"name"`
@@ -204,15 +202,15 @@ type X402CreditAccountNewPaymentQuoteResponseDataPaymentRequirementsAcceptExtra 
 }
 
 // Returns the unmodified JSON received from the API
-func (r X402CreditAccountNewPaymentQuoteResponseDataPaymentRequirementsAcceptExtra) RawJSON() string {
+func (r X402CreditAccountNewQuoteResponseDataPaymentRequirementsAcceptExtra) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *X402CreditAccountNewPaymentQuoteResponseDataPaymentRequirementsAcceptExtra) UnmarshalJSON(data []byte) error {
+func (r *X402CreditAccountNewQuoteResponseDataPaymentRequirementsAcceptExtra) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The resource being paid for. Included in the payment signature.
-type X402CreditAccountNewPaymentQuoteResponseDataPaymentRequirementsResource struct {
+type X402CreditAccountNewQuoteResponseDataPaymentRequirementsResource struct {
 	// Human-readable description of the payment.
 	Description string `json:"description"`
 	// MIME type of the resource.
@@ -230,15 +228,15 @@ type X402CreditAccountNewPaymentQuoteResponseDataPaymentRequirementsResource str
 }
 
 // Returns the unmodified JSON received from the API
-func (r X402CreditAccountNewPaymentQuoteResponseDataPaymentRequirementsResource) RawJSON() string {
+func (r X402CreditAccountNewQuoteResponseDataPaymentRequirementsResource) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *X402CreditAccountNewPaymentQuoteResponseDataPaymentRequirementsResource) UnmarshalJSON(data []byte) error {
+func (r *X402CreditAccountNewQuoteResponseDataPaymentRequirementsResource) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type X402CreditAccountSettlePaymentResponse struct {
-	Data X402CreditAccountSettlePaymentResponseData `json:"data"`
+type X402CreditAccountSettleResponse struct {
+	Data X402CreditAccountSettleResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -248,12 +246,12 @@ type X402CreditAccountSettlePaymentResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r X402CreditAccountSettlePaymentResponse) RawJSON() string { return r.JSON.raw }
-func (r *X402CreditAccountSettlePaymentResponse) UnmarshalJSON(data []byte) error {
+func (r X402CreditAccountSettleResponse) RawJSON() string { return r.JSON.raw }
+func (r *X402CreditAccountSettleResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type X402CreditAccountSettlePaymentResponseData struct {
+type X402CreditAccountSettleResponseData struct {
 	// Unique transaction identifier.
 	ID string `json:"id"`
 	// The transaction amount in the specified currency.
@@ -288,26 +286,26 @@ type X402CreditAccountSettlePaymentResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r X402CreditAccountSettlePaymentResponseData) RawJSON() string { return r.JSON.raw }
-func (r *X402CreditAccountSettlePaymentResponseData) UnmarshalJSON(data []byte) error {
+func (r X402CreditAccountSettleResponseData) RawJSON() string { return r.JSON.raw }
+func (r *X402CreditAccountSettleResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type X402CreditAccountNewPaymentQuoteParams struct {
+type X402CreditAccountNewQuoteParams struct {
 	// Amount in USD to fund (minimum 5.00, maximum 10000.00).
 	AmountUsd string `json:"amount_usd" api:"required"`
 	paramObj
 }
 
-func (r X402CreditAccountNewPaymentQuoteParams) MarshalJSON() (data []byte, err error) {
-	type shadow X402CreditAccountNewPaymentQuoteParams
+func (r X402CreditAccountNewQuoteParams) MarshalJSON() (data []byte, err error) {
+	type shadow X402CreditAccountNewQuoteParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *X402CreditAccountNewPaymentQuoteParams) UnmarshalJSON(data []byte) error {
+func (r *X402CreditAccountNewQuoteParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type X402CreditAccountSettlePaymentParams struct {
+type X402CreditAccountSettleParams struct {
 	// The quote ID to settle.
 	ID string `json:"id" api:"required"`
 	// Base64-encoded signed payment authorization (x402 PaymentPayload). Can
@@ -317,10 +315,10 @@ type X402CreditAccountSettlePaymentParams struct {
 	paramObj
 }
 
-func (r X402CreditAccountSettlePaymentParams) MarshalJSON() (data []byte, err error) {
-	type shadow X402CreditAccountSettlePaymentParams
+func (r X402CreditAccountSettleParams) MarshalJSON() (data []byte, err error) {
+	type shadow X402CreditAccountSettleParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *X402CreditAccountSettlePaymentParams) UnmarshalJSON(data []byte) error {
+func (r *X402CreditAccountSettleParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
