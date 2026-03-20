@@ -227,6 +227,58 @@ func TestPortingLoaConfigurationPreviewWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestPortingLoaConfigurationPreview0WithOptionalParams(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		w.Write([]byte("abc"))
+	}))
+	defer server.Close()
+	baseURL := server.URL
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	resp, err := client.Porting.LoaConfigurations.Preview0(context.TODO(), telnyx.PortingLoaConfigurationPreview0Params{
+		Address: telnyx.PortingLoaConfigurationPreview0ParamsAddress{
+			City:            "Austin",
+			CountryCode:     "US",
+			State:           "TX",
+			StreetAddress:   "600 Congress Avenue",
+			ZipCode:         "78701",
+			ExtendedAddress: telnyx.String("14th Floor"),
+		},
+		CompanyName: "Telnyx",
+		Contact: telnyx.PortingLoaConfigurationPreview0ParamsContact{
+			Email:       "testing@telnyx.com",
+			PhoneNumber: "+12003270001",
+		},
+		Logo: telnyx.PortingLoaConfigurationPreview0ParamsLogo{
+			DocumentID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		},
+		Name: "My LOA Configuration",
+	})
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+	defer resp.Body.Close()
+
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+	if !bytes.Equal(b, []byte("abc")) {
+		t.Fatalf("return value not %s: %s", "abc", b)
+	}
+}
+
 func TestPortingLoaConfigurationPreview1(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
