@@ -1,5 +1,28 @@
 # Changelog
 
+## 4.51.0 (2026-03-20)
+
+Full Changelog: [v4.50.0...v4.51.0](https://github.com/team-telnyx/telnyx-go/compare/v4.50.0...v4.51.0)
+
+### Features
+
+* Add Minimax provider support to Voice Designs and Voice Clones API spec ([bec9d43](https://github.com/team-telnyx/telnyx-go/commit/bec9d43284fa65f425598be10bfa375f252efee7))
+* **api:** manual updates ([43d12db](https://github.com/team-telnyx/telnyx-go/commit/43d12db0a5b1f4861de113a682cdbc72c0731a4c))
+* **api:** manual updates ([ece1771](https://github.com/team-telnyx/telnyx-go/commit/ece177187db12ed07b9d11c29876fb7087447239))
+* **api:** manual updates ([3e9dd03](https://github.com/team-telnyx/telnyx-go/commit/3e9dd039e2c9ca0039783dc53321fa26e5c241cc))
+* **api:** manual updates ([76696ea](https://github.com/team-telnyx/telnyx-go/commit/76696ea5fc52ce63e1f26b8d176ea9a05099eece))
+* **wireless:** add traffic policy profiles endpoints to OpenAPI spec ([87f32c2](https://github.com/team-telnyx/telnyx-go/commit/87f32c2d4ab04e80585f420f3363f5d54156fd0d))
+
+
+### Documentation
+
+* WhatsApp template components schema ([25dfdda](https://github.com/team-telnyx/telnyx-go/commit/25dfddac0f5175bdd1eb687b4eb6cde364ffe43f))
+
+
+### Refactors
+
+* move webhook verification to lib package to avoid merge conflicts ([c238d65](https://github.com/team-telnyx/telnyx-go/commit/c238d655ed20417cbb88e9dad6bd1b3b2db725ad))
+
 ## 4.44.0 (2026-03-10)
 
 Full Changelog: [v4.43.0...v4.44.0](https://github.com/team-telnyx/telnyx-go/compare/v4.43.0...v4.44.0)
