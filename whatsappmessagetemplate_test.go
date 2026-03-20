@@ -54,8 +54,16 @@ func TestWhatsappMessageTemplateUpdateWithOptionalParams(t *testing.T) {
 		"id",
 		telnyx.WhatsappMessageTemplateUpdateParams{
 			Category: telnyx.WhatsappMessageTemplateUpdateParamsCategoryMarketing,
-			Components: []map[string]any{{
-				"foo": "bar",
+			Components: []telnyx.WhatsappMessageTemplateUpdateParamsComponentUnion{{
+				OfWhatsappMessageTemplateUpdatesComponentWhatsappTemplateHeaderComponent: &telnyx.WhatsappMessageTemplateUpdateParamsComponentWhatsappTemplateHeaderComponent{
+					Format: "TEXT",
+					Type:   "HEADER",
+					Example: telnyx.WhatsappMessageTemplateUpdateParamsComponentWhatsappTemplateHeaderComponentExample{
+						HeaderHandle: []string{"string"},
+						HeaderText:   []string{"string"},
+					},
+					Text: telnyx.String("text"),
+				},
 			}},
 		},
 	)
