@@ -68,7 +68,7 @@ func (r *VoiceCloneService) Update(ctx context.Context, id string, body VoiceClo
 }
 
 // Returns a paginated list of voice clones belonging to the authenticated account.
-func (r *VoiceCloneService) List(ctx context.Context, query VoiceCloneListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[VoiceCloneData], err error) {
+func (r *VoiceCloneService) List(ctx context.Context, query VoiceCloneListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[VoiceCloneListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -86,7 +86,7 @@ func (r *VoiceCloneService) List(ctx context.Context, query VoiceCloneListParams
 }
 
 // Returns a paginated list of voice clones belonging to the authenticated account.
-func (r *VoiceCloneService) ListAutoPaging(ctx context.Context, query VoiceCloneListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[VoiceCloneData] {
+func (r *VoiceCloneService) ListAutoPaging(ctx context.Context, query VoiceCloneListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[VoiceCloneListResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -126,76 +126,10 @@ func (r *VoiceCloneService) DownloadSample(ctx context.Context, id string, opts 
 	return res, err
 }
 
-// A voice clone object.
-type VoiceCloneData struct {
-	// Unique identifier for the voice clone.
-	ID string `json:"id" format:"uuid"`
-	// Timestamp when the voice clone was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Gender of the voice clone.
-	//
-	// Any of "male", "female", "neutral".
-	Gender VoiceCloneDataGender `json:"gender" api:"nullable"`
-	// Voice style description. If not explicitly set on upload, falls back to the
-	// source design's prompt text.
-	Label string `json:"label" api:"nullable"`
-	// ISO 639-1 language code of the voice clone.
-	Language string `json:"language" api:"nullable"`
-	// Name of the voice clone.
-	Name string `json:"name"`
-	// Identifies the resource type.
-	//
-	// Any of "voice_clone".
-	RecordType VoiceCloneDataRecordType `json:"record_type"`
-	// UUID of the source voice design. `null` for upload-based clones.
-	SourceVoiceDesignID string `json:"source_voice_design_id" api:"nullable" format:"uuid"`
-	// Version of the source voice design used. `null` for upload-based clones.
-	SourceVoiceDesignVersion int64 `json:"source_voice_design_version" api:"nullable"`
-	// Timestamp when the voice clone was last updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                       respjson.Field
-		CreatedAt                respjson.Field
-		Gender                   respjson.Field
-		Label                    respjson.Field
-		Language                 respjson.Field
-		Name                     respjson.Field
-		RecordType               respjson.Field
-		SourceVoiceDesignID      respjson.Field
-		SourceVoiceDesignVersion respjson.Field
-		UpdatedAt                respjson.Field
-		ExtraFields              map[string]respjson.Field
-		raw                      string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VoiceCloneData) RawJSON() string { return r.JSON.raw }
-func (r *VoiceCloneData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Gender of the voice clone.
-type VoiceCloneDataGender string
-
-const (
-	VoiceCloneDataGenderMale    VoiceCloneDataGender = "male"
-	VoiceCloneDataGenderFemale  VoiceCloneDataGender = "female"
-	VoiceCloneDataGenderNeutral VoiceCloneDataGender = "neutral"
-)
-
-// Identifies the resource type.
-type VoiceCloneDataRecordType string
-
-const (
-	VoiceCloneDataRecordTypeVoiceClone VoiceCloneDataRecordType = "voice_clone"
-)
-
 // Response envelope for a single voice clone.
 type VoiceCloneNewResponse struct {
 	// A voice clone object.
-	Data VoiceCloneData `json:"data"`
+	Data VoiceCloneNewResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -210,10 +144,72 @@ func (r *VoiceCloneNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// A voice clone object.
+type VoiceCloneNewResponseData struct {
+	// Unique identifier for the voice clone.
+	ID string `json:"id" format:"uuid"`
+	// Timestamp when the voice clone was created.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Gender of the voice clone.
+	//
+	// Any of "male", "female", "neutral".
+	Gender string `json:"gender" api:"nullable"`
+	// Voice style description. If not explicitly set on upload, falls back to the
+	// source design's prompt text.
+	Label string `json:"label" api:"nullable"`
+	// ISO 639-1 language code of the voice clone.
+	Language string `json:"language" api:"nullable"`
+	// Name of the voice clone.
+	Name string `json:"name"`
+	// Voice synthesis provider used for this clone.
+	//
+	// Any of "telnyx", "minimax", "Telnyx", "Minimax".
+	Provider string `json:"provider"`
+	// List of TTS model identifiers supported by this clone's provider.
+	ProviderSupportedModels []string `json:"provider_supported_models"`
+	// Provider-specific voice identifier used for TTS synthesis. For Telnyx clones
+	// this equals the clone ID; for Minimax it is the Minimax-assigned voice ID.
+	ProviderVoiceID string `json:"provider_voice_id" api:"nullable"`
+	// Identifies the resource type.
+	//
+	// Any of "voice_clone".
+	RecordType string `json:"record_type"`
+	// UUID of the source voice design. `null` for upload-based clones.
+	SourceVoiceDesignID string `json:"source_voice_design_id" api:"nullable" format:"uuid"`
+	// Version of the source voice design used. `null` for upload-based clones.
+	SourceVoiceDesignVersion int64 `json:"source_voice_design_version" api:"nullable"`
+	// Timestamp when the voice clone was last updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                       respjson.Field
+		CreatedAt                respjson.Field
+		Gender                   respjson.Field
+		Label                    respjson.Field
+		Language                 respjson.Field
+		Name                     respjson.Field
+		Provider                 respjson.Field
+		ProviderSupportedModels  respjson.Field
+		ProviderVoiceID          respjson.Field
+		RecordType               respjson.Field
+		SourceVoiceDesignID      respjson.Field
+		SourceVoiceDesignVersion respjson.Field
+		UpdatedAt                respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VoiceCloneNewResponseData) RawJSON() string { return r.JSON.raw }
+func (r *VoiceCloneNewResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Response envelope for a single voice clone.
 type VoiceCloneUpdateResponse struct {
 	// A voice clone object.
-	Data VoiceCloneData `json:"data"`
+	Data VoiceCloneUpdateResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -228,10 +224,160 @@ func (r *VoiceCloneUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// A voice clone object.
+type VoiceCloneUpdateResponseData struct {
+	// Unique identifier for the voice clone.
+	ID string `json:"id" format:"uuid"`
+	// Timestamp when the voice clone was created.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Gender of the voice clone.
+	//
+	// Any of "male", "female", "neutral".
+	Gender string `json:"gender" api:"nullable"`
+	// Voice style description. If not explicitly set on upload, falls back to the
+	// source design's prompt text.
+	Label string `json:"label" api:"nullable"`
+	// ISO 639-1 language code of the voice clone.
+	Language string `json:"language" api:"nullable"`
+	// Name of the voice clone.
+	Name string `json:"name"`
+	// Voice synthesis provider used for this clone.
+	//
+	// Any of "telnyx", "minimax", "Telnyx", "Minimax".
+	Provider string `json:"provider"`
+	// List of TTS model identifiers supported by this clone's provider.
+	ProviderSupportedModels []string `json:"provider_supported_models"`
+	// Provider-specific voice identifier used for TTS synthesis. For Telnyx clones
+	// this equals the clone ID; for Minimax it is the Minimax-assigned voice ID.
+	ProviderVoiceID string `json:"provider_voice_id" api:"nullable"`
+	// Identifies the resource type.
+	//
+	// Any of "voice_clone".
+	RecordType string `json:"record_type"`
+	// UUID of the source voice design. `null` for upload-based clones.
+	SourceVoiceDesignID string `json:"source_voice_design_id" api:"nullable" format:"uuid"`
+	// Version of the source voice design used. `null` for upload-based clones.
+	SourceVoiceDesignVersion int64 `json:"source_voice_design_version" api:"nullable"`
+	// Timestamp when the voice clone was last updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                       respjson.Field
+		CreatedAt                respjson.Field
+		Gender                   respjson.Field
+		Label                    respjson.Field
+		Language                 respjson.Field
+		Name                     respjson.Field
+		Provider                 respjson.Field
+		ProviderSupportedModels  respjson.Field
+		ProviderVoiceID          respjson.Field
+		RecordType               respjson.Field
+		SourceVoiceDesignID      respjson.Field
+		SourceVoiceDesignVersion respjson.Field
+		UpdatedAt                respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VoiceCloneUpdateResponseData) RawJSON() string { return r.JSON.raw }
+func (r *VoiceCloneUpdateResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A voice clone object.
+type VoiceCloneListResponse struct {
+	// Unique identifier for the voice clone.
+	ID string `json:"id" format:"uuid"`
+	// Timestamp when the voice clone was created.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Gender of the voice clone.
+	//
+	// Any of "male", "female", "neutral".
+	Gender VoiceCloneListResponseGender `json:"gender" api:"nullable"`
+	// Voice style description. If not explicitly set on upload, falls back to the
+	// source design's prompt text.
+	Label string `json:"label" api:"nullable"`
+	// ISO 639-1 language code of the voice clone.
+	Language string `json:"language" api:"nullable"`
+	// Name of the voice clone.
+	Name string `json:"name"`
+	// Voice synthesis provider used for this clone.
+	//
+	// Any of "telnyx", "minimax", "Telnyx", "Minimax".
+	Provider VoiceCloneListResponseProvider `json:"provider"`
+	// List of TTS model identifiers supported by this clone's provider.
+	ProviderSupportedModels []string `json:"provider_supported_models"`
+	// Provider-specific voice identifier used for TTS synthesis. For Telnyx clones
+	// this equals the clone ID; for Minimax it is the Minimax-assigned voice ID.
+	ProviderVoiceID string `json:"provider_voice_id" api:"nullable"`
+	// Identifies the resource type.
+	//
+	// Any of "voice_clone".
+	RecordType VoiceCloneListResponseRecordType `json:"record_type"`
+	// UUID of the source voice design. `null` for upload-based clones.
+	SourceVoiceDesignID string `json:"source_voice_design_id" api:"nullable" format:"uuid"`
+	// Version of the source voice design used. `null` for upload-based clones.
+	SourceVoiceDesignVersion int64 `json:"source_voice_design_version" api:"nullable"`
+	// Timestamp when the voice clone was last updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                       respjson.Field
+		CreatedAt                respjson.Field
+		Gender                   respjson.Field
+		Label                    respjson.Field
+		Language                 respjson.Field
+		Name                     respjson.Field
+		Provider                 respjson.Field
+		ProviderSupportedModels  respjson.Field
+		ProviderVoiceID          respjson.Field
+		RecordType               respjson.Field
+		SourceVoiceDesignID      respjson.Field
+		SourceVoiceDesignVersion respjson.Field
+		UpdatedAt                respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VoiceCloneListResponse) RawJSON() string { return r.JSON.raw }
+func (r *VoiceCloneListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Gender of the voice clone.
+type VoiceCloneListResponseGender string
+
+const (
+	VoiceCloneListResponseGenderMale    VoiceCloneListResponseGender = "male"
+	VoiceCloneListResponseGenderFemale  VoiceCloneListResponseGender = "female"
+	VoiceCloneListResponseGenderNeutral VoiceCloneListResponseGender = "neutral"
+)
+
+// Voice synthesis provider used for this clone.
+type VoiceCloneListResponseProvider string
+
+const (
+	VoiceCloneListResponseProviderTelnyx           VoiceCloneListResponseProvider = "telnyx"
+	VoiceCloneListResponseProviderMinimax          VoiceCloneListResponseProvider = "minimax"
+	VoiceCloneListResponseProviderTelnyxMixedCase  VoiceCloneListResponseProvider = "Telnyx"
+	VoiceCloneListResponseProviderMinimaxMixedCase VoiceCloneListResponseProvider = "Minimax"
+)
+
+// Identifies the resource type.
+type VoiceCloneListResponseRecordType string
+
+const (
+	VoiceCloneListResponseRecordTypeVoiceClone VoiceCloneListResponseRecordType = "voice_clone"
+)
+
 // Response envelope for a single voice clone.
 type VoiceCloneNewFromUploadResponse struct {
 	// A voice clone object.
-	Data VoiceCloneData `json:"data"`
+	Data VoiceCloneNewFromUploadResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -246,6 +392,68 @@ func (r *VoiceCloneNewFromUploadResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// A voice clone object.
+type VoiceCloneNewFromUploadResponseData struct {
+	// Unique identifier for the voice clone.
+	ID string `json:"id" format:"uuid"`
+	// Timestamp when the voice clone was created.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Gender of the voice clone.
+	//
+	// Any of "male", "female", "neutral".
+	Gender string `json:"gender" api:"nullable"`
+	// Voice style description. If not explicitly set on upload, falls back to the
+	// source design's prompt text.
+	Label string `json:"label" api:"nullable"`
+	// ISO 639-1 language code of the voice clone.
+	Language string `json:"language" api:"nullable"`
+	// Name of the voice clone.
+	Name string `json:"name"`
+	// Voice synthesis provider used for this clone.
+	//
+	// Any of "telnyx", "minimax", "Telnyx", "Minimax".
+	Provider string `json:"provider"`
+	// List of TTS model identifiers supported by this clone's provider.
+	ProviderSupportedModels []string `json:"provider_supported_models"`
+	// Provider-specific voice identifier used for TTS synthesis. For Telnyx clones
+	// this equals the clone ID; for Minimax it is the Minimax-assigned voice ID.
+	ProviderVoiceID string `json:"provider_voice_id" api:"nullable"`
+	// Identifies the resource type.
+	//
+	// Any of "voice_clone".
+	RecordType string `json:"record_type"`
+	// UUID of the source voice design. `null` for upload-based clones.
+	SourceVoiceDesignID string `json:"source_voice_design_id" api:"nullable" format:"uuid"`
+	// Version of the source voice design used. `null` for upload-based clones.
+	SourceVoiceDesignVersion int64 `json:"source_voice_design_version" api:"nullable"`
+	// Timestamp when the voice clone was last updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                       respjson.Field
+		CreatedAt                respjson.Field
+		Gender                   respjson.Field
+		Label                    respjson.Field
+		Language                 respjson.Field
+		Name                     respjson.Field
+		Provider                 respjson.Field
+		ProviderSupportedModels  respjson.Field
+		ProviderVoiceID          respjson.Field
+		RecordType               respjson.Field
+		SourceVoiceDesignID      respjson.Field
+		SourceVoiceDesignVersion respjson.Field
+		UpdatedAt                respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VoiceCloneNewFromUploadResponseData) RawJSON() string { return r.JSON.raw }
+func (r *VoiceCloneNewFromUploadResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type VoiceCloneNewParams struct {
 	// Gender of the voice clone.
 	//
@@ -257,6 +465,10 @@ type VoiceCloneNewParams struct {
 	Name string `json:"name" api:"required"`
 	// UUID of the source voice design to clone.
 	VoiceDesignID string `json:"voice_design_id" api:"required" format:"uuid"`
+	// Voice synthesis provider. Case-insensitive. Defaults to `telnyx`.
+	//
+	// Any of "telnyx", "minimax", "Telnyx", "Minimax".
+	Provider VoiceCloneNewParamsProvider `json:"provider,omitzero"`
 	paramObj
 }
 
@@ -275,6 +487,16 @@ const (
 	VoiceCloneNewParamsGenderMale    VoiceCloneNewParamsGender = "male"
 	VoiceCloneNewParamsGenderFemale  VoiceCloneNewParamsGender = "female"
 	VoiceCloneNewParamsGenderNeutral VoiceCloneNewParamsGender = "neutral"
+)
+
+// Voice synthesis provider. Case-insensitive. Defaults to `telnyx`.
+type VoiceCloneNewParamsProvider string
+
+const (
+	VoiceCloneNewParamsProviderTelnyx           VoiceCloneNewParamsProvider = "telnyx"
+	VoiceCloneNewParamsProviderMinimax          VoiceCloneNewParamsProvider = "minimax"
+	VoiceCloneNewParamsProviderTelnyxMixedCase  VoiceCloneNewParamsProvider = "Telnyx"
+	VoiceCloneNewParamsProviderMinimaxMixedCase VoiceCloneNewParamsProvider = "Minimax"
 )
 
 type VoiceCloneUpdateParams struct {
@@ -313,6 +535,10 @@ type VoiceCloneListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	// Number of results per page.
 	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Filter by voice synthesis provider. Case-insensitive.
+	//
+	// Any of "telnyx", "minimax", "Telnyx", "Minimax".
+	FilterProvider VoiceCloneListParamsFilterProvider `query:"filter[provider],omitzero" json:"-"`
 	// Sort order. Prefix with `-` for descending. Defaults to `-created_at`.
 	//
 	// Any of "name", "-name", "created_at", "-created_at".
@@ -328,6 +554,16 @@ func (r VoiceCloneListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
+// Filter by voice synthesis provider. Case-insensitive.
+type VoiceCloneListParamsFilterProvider string
+
+const (
+	VoiceCloneListParamsFilterProviderTelnyx           VoiceCloneListParamsFilterProvider = "telnyx"
+	VoiceCloneListParamsFilterProviderMinimax          VoiceCloneListParamsFilterProvider = "minimax"
+	VoiceCloneListParamsFilterProviderTelnyxMixedCase  VoiceCloneListParamsFilterProvider = "Telnyx"
+	VoiceCloneListParamsFilterProviderMinimaxMixedCase VoiceCloneListParamsFilterProvider = "Minimax"
+)
+
 // Sort order. Prefix with `-` for descending. Defaults to `-created_at`.
 type VoiceCloneListParamsSort string
 
@@ -341,7 +577,7 @@ const (
 type VoiceCloneNewFromUploadParams struct {
 	// Audio file to clone the voice from. Supported formats: WAV, MP3, FLAC, OGG, M4A.
 	// For best quality, provide 5–10 seconds of clear, uninterrupted speech. Maximum
-	// size: 2MB.
+	// size: 5MB for Telnyx, 20MB for Minimax.
 	AudioFile io.Reader `json:"audio_file,omitzero" api:"required" format:"binary"`
 	// ISO 639-1 language code (e.g. `en`, `fr`) or `auto` for automatic detection.
 	Language string `json:"language" api:"required"`
@@ -356,6 +592,10 @@ type VoiceCloneNewFromUploadParams struct {
 	//
 	// Any of "male", "female", "neutral".
 	Gender VoiceCloneNewFromUploadParamsGender `json:"gender,omitzero"`
+	// Voice synthesis provider. Case-insensitive. Defaults to `telnyx`.
+	//
+	// Any of "telnyx", "minimax", "Telnyx", "Minimax".
+	Provider VoiceCloneNewFromUploadParamsProvider `json:"provider,omitzero"`
 	paramObj
 }
 
@@ -384,4 +624,14 @@ const (
 	VoiceCloneNewFromUploadParamsGenderMale    VoiceCloneNewFromUploadParamsGender = "male"
 	VoiceCloneNewFromUploadParamsGenderFemale  VoiceCloneNewFromUploadParamsGender = "female"
 	VoiceCloneNewFromUploadParamsGenderNeutral VoiceCloneNewFromUploadParamsGender = "neutral"
+)
+
+// Voice synthesis provider. Case-insensitive. Defaults to `telnyx`.
+type VoiceCloneNewFromUploadParamsProvider string
+
+const (
+	VoiceCloneNewFromUploadParamsProviderTelnyx           VoiceCloneNewFromUploadParamsProvider = "telnyx"
+	VoiceCloneNewFromUploadParamsProviderMinimax          VoiceCloneNewFromUploadParamsProvider = "minimax"
+	VoiceCloneNewFromUploadParamsProviderTelnyxMixedCase  VoiceCloneNewFromUploadParamsProvider = "Telnyx"
+	VoiceCloneNewFromUploadParamsProviderMinimaxMixedCase VoiceCloneNewFromUploadParamsProvider = "Minimax"
 )

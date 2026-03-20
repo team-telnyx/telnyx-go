@@ -304,15 +304,17 @@ type Client struct {
 	MessagingProfileMetrics MessagingProfileMetricService
 	// Analyze voice AI sessions, costs, and event hierarchies across Telnyx products.
 	SessionAnalysis SessionAnalysisService
-	// Traffic Policy Profiles operations
-	TrafficPolicyProfiles TrafficPolicyProfileService
-	Whatsapp              WhatsappService
-	X402                  X402Service
+	Whatsapp        WhatsappService
+	// Manage Whatsapp message templates
+	WhatsappMessageTemplates WhatsappMessageTemplateService
+	X402                     X402Service
 	// Capture and manage voice identities as clones for use in text-to-speech
 	// synthesis.
 	VoiceClones VoiceCloneService
 	// Create and manage AI-generated voice designs using natural language prompts.
 	VoiceDesigns VoiceDesignService
+	// Traffic Policy Profiles operations
+	TrafficPolicyProfiles TrafficPolicyProfileService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -501,11 +503,12 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.AlphanumericSenderIDs = NewAlphanumericSenderIDService(opts...)
 	r.MessagingProfileMetrics = NewMessagingProfileMetricService(opts...)
 	r.SessionAnalysis = NewSessionAnalysisService(opts...)
-	r.TrafficPolicyProfiles = NewTrafficPolicyProfileService(opts...)
 	r.Whatsapp = NewWhatsappService(opts...)
+	r.WhatsappMessageTemplates = NewWhatsappMessageTemplateService(opts...)
 	r.X402 = NewX402Service(opts...)
 	r.VoiceClones = NewVoiceCloneService(opts...)
 	r.VoiceDesigns = NewVoiceDesignService(opts...)
+	r.TrafficPolicyProfiles = NewTrafficPolicyProfileService(opts...)
 
 	return
 }

@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestWhatsappBusinessAccountPhoneNumberListWithOptionalParams(t *testing.T) {
+func TestWhatsappTemplateNew(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,14 +26,15 @@ func TestWhatsappBusinessAccountPhoneNumberListWithOptionalParams(t *testing.T) 
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Whatsapp.BusinessAccounts.PhoneNumbers.List(
-		context.TODO(),
-		"id",
-		telnyx.WhatsappBusinessAccountPhoneNumberListParams{
-			PageNumber: telnyx.Int(0),
-			PageSize:   telnyx.Int(0),
-		},
-	)
+	_, err := client.Whatsapp.Templates.New(context.TODO(), telnyx.WhatsappTemplateNewParams{
+		Category: telnyx.WhatsappTemplateNewParamsCategoryMarketing,
+		Components: []map[string]any{{
+			"foo": "bar",
+		}},
+		Language: "language",
+		Name:     "name",
+		WabaID:   "waba_id",
+	})
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -43,7 +44,7 @@ func TestWhatsappBusinessAccountPhoneNumberListWithOptionalParams(t *testing.T) 
 	}
 }
 
-func TestWhatsappBusinessAccountPhoneNumberInitializeVerificationWithOptionalParams(t *testing.T) {
+func TestWhatsappTemplateListWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -56,16 +57,14 @@ func TestWhatsappBusinessAccountPhoneNumberInitializeVerificationWithOptionalPar
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Whatsapp.BusinessAccounts.PhoneNumbers.InitializeVerification(
-		context.TODO(),
-		"id",
-		telnyx.WhatsappBusinessAccountPhoneNumberInitializeVerificationParams{
-			DisplayName:        "display_name",
-			PhoneNumber:        "phone_number",
-			Language:           telnyx.String("language"),
-			VerificationMethod: telnyx.WhatsappBusinessAccountPhoneNumberInitializeVerificationParamsVerificationMethodSMS,
-		},
-	)
+	_, err := client.Whatsapp.Templates.List(context.TODO(), telnyx.WhatsappTemplateListParams{
+		FilterCategory: telnyx.WhatsappTemplateListParamsFilterCategoryMarketing,
+		FilterSearch:   telnyx.String("filter[search]"),
+		FilterStatus:   telnyx.String("filter[status]"),
+		FilterWabaID:   telnyx.String("filter[waba_id]"),
+		PageNumber:     telnyx.Int(0),
+		PageSize:       telnyx.Int(0),
+	})
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

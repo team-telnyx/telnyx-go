@@ -28,8 +28,7 @@ import (
 type WhatsappPhoneNumberProfileService struct {
 	Options []option.RequestOption
 	// Manage Whatsapp phone numbers
-	Photo  WhatsappPhoneNumberProfilePhotoService
-	Models WhatsappPhoneNumberProfileModelService
+	Photo WhatsappPhoneNumberProfilePhotoService
 }
 
 // NewWhatsappPhoneNumberProfileService generates a new service that applies the
@@ -39,7 +38,6 @@ func NewWhatsappPhoneNumberProfileService(opts ...option.RequestOption) (r Whats
 	r = WhatsappPhoneNumberProfileService{}
 	r.Options = opts
 	r.Photo = NewWhatsappPhoneNumberProfilePhotoService(opts...)
-	r.Models = NewWhatsappPhoneNumberProfileModelService(opts...)
 	return
 }
 
