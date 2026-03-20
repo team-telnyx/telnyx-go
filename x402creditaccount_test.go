@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestX402CreditAccountNewPaymentQuote(t *testing.T) {
+func TestX402CreditAccountNewQuote(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,7 @@ func TestX402CreditAccountNewPaymentQuote(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.X402.CreditAccount.NewPaymentQuote(context.TODO(), telnyx.X402CreditAccountNewPaymentQuoteParams{
+	_, err := client.X402.CreditAccount.NewQuote(context.TODO(), telnyx.X402CreditAccountNewQuoteParams{
 		AmountUsd: "50.00",
 	})
 	if err != nil {
@@ -38,7 +38,7 @@ func TestX402CreditAccountNewPaymentQuote(t *testing.T) {
 	}
 }
 
-func TestX402CreditAccountSettlePaymentWithOptionalParams(t *testing.T) {
+func TestX402CreditAccountSettleWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -51,7 +51,7 @@ func TestX402CreditAccountSettlePaymentWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.X402.CreditAccount.SettlePayment(context.TODO(), telnyx.X402CreditAccountSettlePaymentParams{
+	_, err := client.X402.CreditAccount.Settle(context.TODO(), telnyx.X402CreditAccountSettleParams{
 		ID:                     "quote_abc123",
 		BodyPaymentSignature:   telnyx.String("0xabc123..."),
 		HeaderPaymentSignature: telnyx.String("PAYMENT-SIGNATURE"),

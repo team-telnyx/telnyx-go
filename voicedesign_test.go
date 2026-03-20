@@ -36,6 +36,7 @@ func TestVoiceDesignNewWithOptionalParams(t *testing.T) {
 		Language:          telnyx.String("Auto"),
 		MaxNewTokens:      telnyx.Int(100),
 		Name:              telnyx.String("friendly-narrator"),
+		Provider:          telnyx.VoiceDesignNewParamsProviderTelnyx,
 		RepetitionPenalty: telnyx.Float(1),
 		Temperature:       telnyx.Float(0),
 		TopK:              telnyx.Int(1),
@@ -69,35 +70,6 @@ func TestVoiceDesignGetWithOptionalParams(t *testing.T) {
 		"id",
 		telnyx.VoiceDesignGetParams{
 			Version: telnyx.Int(1),
-		},
-	)
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestVoiceDesignUpdate(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.VoiceDesigns.Update(
-		context.TODO(),
-		"id",
-		telnyx.VoiceDesignUpdateParams{
-			Name: "updated-narrator",
 		},
 	)
 	if err != nil {
@@ -226,5 +198,34 @@ func TestVoiceDesignDownloadSampleWithOptionalParams(t *testing.T) {
 	}
 	if !bytes.Equal(b, []byte("abc")) {
 		t.Fatalf("return value not %s: %s", "abc", b)
+	}
+}
+
+func TestVoiceDesignRename(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.VoiceDesigns.Rename(
+		context.TODO(),
+		"id",
+		telnyx.VoiceDesignRenameParams{
+			Name: "updated-narrator",
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
 	}
 }
