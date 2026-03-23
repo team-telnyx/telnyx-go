@@ -480,7 +480,7 @@ func init() {
 }
 
 type WhatsappTemplateNewParamsComponentWhatsappTemplateCarouselComponentCard struct {
-	Components []any `json:"components,omitzero"`
+	Components []map[string]any `json:"components,omitzero"`
 	paramObj
 }
 
