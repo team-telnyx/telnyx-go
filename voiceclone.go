@@ -145,7 +145,7 @@ type VoiceCloneData struct {
 	Name string `json:"name"`
 	// Voice synthesis provider used for this clone.
 	//
-	// Any of "telnyx", "minimax", "Telnyx", "Minimax".
+	// Any of "telnyx", "minimax".
 	Provider VoiceCloneDataProvider `json:"provider"`
 	// List of TTS model identifiers supported by this clone's provider.
 	ProviderSupportedModels []string `json:"provider_supported_models"`
@@ -201,10 +201,8 @@ const (
 type VoiceCloneDataProvider string
 
 const (
-	VoiceCloneDataProviderTelnyx           VoiceCloneDataProvider = "telnyx"
-	VoiceCloneDataProviderMinimax          VoiceCloneDataProvider = "minimax"
-	VoiceCloneDataProviderTelnyxMixedCase  VoiceCloneDataProvider = "Telnyx"
-	VoiceCloneDataProviderMinimaxMixedCase VoiceCloneDataProvider = "Minimax"
+	VoiceCloneDataProviderTelnyx  VoiceCloneDataProvider = "telnyx"
+	VoiceCloneDataProviderMinimax VoiceCloneDataProvider = "minimax"
 )
 
 // Identifies the resource type.
@@ -281,7 +279,7 @@ type VoiceCloneNewParams struct {
 	VoiceDesignID string `json:"voice_design_id" api:"required" format:"uuid"`
 	// Voice synthesis provider. Case-insensitive. Defaults to `telnyx`.
 	//
-	// Any of "telnyx", "minimax", "Telnyx", "Minimax".
+	// Any of "telnyx", "minimax".
 	Provider VoiceCloneNewParamsProvider `json:"provider,omitzero"`
 	paramObj
 }
@@ -307,10 +305,8 @@ const (
 type VoiceCloneNewParamsProvider string
 
 const (
-	VoiceCloneNewParamsProviderTelnyx           VoiceCloneNewParamsProvider = "telnyx"
-	VoiceCloneNewParamsProviderMinimax          VoiceCloneNewParamsProvider = "minimax"
-	VoiceCloneNewParamsProviderTelnyxMixedCase  VoiceCloneNewParamsProvider = "Telnyx"
-	VoiceCloneNewParamsProviderMinimaxMixedCase VoiceCloneNewParamsProvider = "Minimax"
+	VoiceCloneNewParamsProviderTelnyx  VoiceCloneNewParamsProvider = "telnyx"
+	VoiceCloneNewParamsProviderMinimax VoiceCloneNewParamsProvider = "minimax"
 )
 
 type VoiceCloneUpdateParams struct {
@@ -351,7 +347,7 @@ type VoiceCloneListParams struct {
 	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Filter by voice synthesis provider. Case-insensitive.
 	//
-	// Any of "telnyx", "minimax", "Telnyx", "Minimax".
+	// Any of "telnyx", "minimax".
 	FilterProvider VoiceCloneListParamsFilterProvider `query:"filter[provider],omitzero" json:"-"`
 	// Sort order. Prefix with `-` for descending. Defaults to `-created_at`.
 	//
@@ -372,10 +368,8 @@ func (r VoiceCloneListParams) URLQuery() (v url.Values, err error) {
 type VoiceCloneListParamsFilterProvider string
 
 const (
-	VoiceCloneListParamsFilterProviderTelnyx           VoiceCloneListParamsFilterProvider = "telnyx"
-	VoiceCloneListParamsFilterProviderMinimax          VoiceCloneListParamsFilterProvider = "minimax"
-	VoiceCloneListParamsFilterProviderTelnyxMixedCase  VoiceCloneListParamsFilterProvider = "Telnyx"
-	VoiceCloneListParamsFilterProviderMinimaxMixedCase VoiceCloneListParamsFilterProvider = "Minimax"
+	VoiceCloneListParamsFilterProviderTelnyx  VoiceCloneListParamsFilterProvider = "telnyx"
+	VoiceCloneListParamsFilterProviderMinimax VoiceCloneListParamsFilterProvider = "minimax"
 )
 
 // Sort order. Prefix with `-` for descending. Defaults to `-created_at`.
@@ -408,7 +402,7 @@ type VoiceCloneNewFromUploadParams struct {
 	Gender VoiceCloneNewFromUploadParamsGender `json:"gender,omitzero"`
 	// Voice synthesis provider. Case-insensitive. Defaults to `telnyx`.
 	//
-	// Any of "telnyx", "minimax", "Telnyx", "Minimax".
+	// Any of "telnyx", "minimax".
 	Provider VoiceCloneNewFromUploadParamsProvider `json:"provider,omitzero"`
 	paramObj
 }
@@ -444,8 +438,6 @@ const (
 type VoiceCloneNewFromUploadParamsProvider string
 
 const (
-	VoiceCloneNewFromUploadParamsProviderTelnyx           VoiceCloneNewFromUploadParamsProvider = "telnyx"
-	VoiceCloneNewFromUploadParamsProviderMinimax          VoiceCloneNewFromUploadParamsProvider = "minimax"
-	VoiceCloneNewFromUploadParamsProviderTelnyxMixedCase  VoiceCloneNewFromUploadParamsProvider = "Telnyx"
-	VoiceCloneNewFromUploadParamsProviderMinimaxMixedCase VoiceCloneNewFromUploadParamsProvider = "Minimax"
+	VoiceCloneNewFromUploadParamsProviderTelnyx  VoiceCloneNewFromUploadParamsProvider = "telnyx"
+	VoiceCloneNewFromUploadParamsProviderMinimax VoiceCloneNewFromUploadParamsProvider = "minimax"
 )

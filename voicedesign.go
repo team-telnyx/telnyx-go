@@ -157,7 +157,7 @@ type VoiceDesignData struct {
 	Prompt string `json:"prompt"`
 	// Voice synthesis provider used for this design.
 	//
-	// Any of "telnyx", "minimax", "Telnyx", "Minimax".
+	// Any of "telnyx", "minimax".
 	Provider VoiceDesignDataProvider `json:"provider" api:"nullable"`
 	// List of TTS model identifiers supported by this design's provider (e.g.
 	// `Qwen3TTS`, `speech-02-turbo`).
@@ -209,10 +209,8 @@ func (r *VoiceDesignData) UnmarshalJSON(data []byte) error {
 type VoiceDesignDataProvider string
 
 const (
-	VoiceDesignDataProviderTelnyx           VoiceDesignDataProvider = "telnyx"
-	VoiceDesignDataProviderMinimax          VoiceDesignDataProvider = "minimax"
-	VoiceDesignDataProviderTelnyxMixedCase  VoiceDesignDataProvider = "Telnyx"
-	VoiceDesignDataProviderMinimaxMixedCase VoiceDesignDataProvider = "Minimax"
+	VoiceDesignDataProviderTelnyx  VoiceDesignDataProvider = "telnyx"
+	VoiceDesignDataProviderMinimax VoiceDesignDataProvider = "minimax"
 )
 
 // Identifies the resource type.
@@ -268,7 +266,7 @@ type VoiceDesignListResponse struct {
 	Name string `json:"name"`
 	// Voice synthesis provider used for this design.
 	//
-	// Any of "telnyx", "minimax", "Telnyx", "Minimax".
+	// Any of "telnyx", "minimax".
 	Provider VoiceDesignListResponseProvider `json:"provider" api:"nullable"`
 	// List of TTS model identifiers supported by this design's provider.
 	ProviderSupportedModels []string `json:"provider_supported_models"`
@@ -302,10 +300,8 @@ func (r *VoiceDesignListResponse) UnmarshalJSON(data []byte) error {
 type VoiceDesignListResponseProvider string
 
 const (
-	VoiceDesignListResponseProviderTelnyx           VoiceDesignListResponseProvider = "telnyx"
-	VoiceDesignListResponseProviderMinimax          VoiceDesignListResponseProvider = "minimax"
-	VoiceDesignListResponseProviderTelnyxMixedCase  VoiceDesignListResponseProvider = "Telnyx"
-	VoiceDesignListResponseProviderMinimaxMixedCase VoiceDesignListResponseProvider = "Minimax"
+	VoiceDesignListResponseProviderTelnyx  VoiceDesignListResponseProvider = "telnyx"
+	VoiceDesignListResponseProviderMinimax VoiceDesignListResponseProvider = "minimax"
 )
 
 // Identifies the resource type.
@@ -344,7 +340,7 @@ type VoiceDesignRenameResponseData struct {
 	Name string `json:"name"`
 	// Voice synthesis provider used for this design.
 	//
-	// Any of "telnyx", "minimax", "Telnyx", "Minimax".
+	// Any of "telnyx", "minimax".
 	Provider string `json:"provider" api:"nullable"`
 	// List of TTS model identifiers supported by this design's provider.
 	ProviderSupportedModels []string `json:"provider_supported_models"`
@@ -407,7 +403,7 @@ type VoiceDesignNewParams struct {
 	// Voice synthesis provider. `telnyx` uses the Qwen3TTS model; `minimax` uses the
 	// Minimax speech models. Case-insensitive. Defaults to `telnyx`.
 	//
-	// Any of "telnyx", "minimax", "Telnyx", "Minimax".
+	// Any of "telnyx", "minimax".
 	Provider VoiceDesignNewParamsProvider `json:"provider,omitzero"`
 	paramObj
 }
@@ -425,10 +421,8 @@ func (r *VoiceDesignNewParams) UnmarshalJSON(data []byte) error {
 type VoiceDesignNewParamsProvider string
 
 const (
-	VoiceDesignNewParamsProviderTelnyx           VoiceDesignNewParamsProvider = "telnyx"
-	VoiceDesignNewParamsProviderMinimax          VoiceDesignNewParamsProvider = "minimax"
-	VoiceDesignNewParamsProviderTelnyxMixedCase  VoiceDesignNewParamsProvider = "Telnyx"
-	VoiceDesignNewParamsProviderMinimaxMixedCase VoiceDesignNewParamsProvider = "Minimax"
+	VoiceDesignNewParamsProviderTelnyx  VoiceDesignNewParamsProvider = "telnyx"
+	VoiceDesignNewParamsProviderMinimax VoiceDesignNewParamsProvider = "minimax"
 )
 
 type VoiceDesignGetParams struct {

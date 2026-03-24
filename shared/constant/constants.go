@@ -20,12 +20,17 @@ func ValueOf[T Constant[T]]() T {
 
 type Android string           // Always "android"
 type Assistant string         // Always "assistant"
+type Body string              // Always "BODY"
 type BookAppointment string   // Always "book_appointment"
+type Buttons string           // Always "BUTTONS"
+type Carousel string          // Always "CAROUSEL"
 type CheckAvailability string // Always "check_availability"
 type Comparative string       // Always "comparative"
 type Developer string         // Always "developer"
+type Footer string            // Always "FOOTER"
 type Function string          // Always "function"
 type Handoff string           // Always "handoff"
+type Header string            // Always "HEADER"
 type Invite string            // Always "invite"
 type Inworld string           // Always "inworld"
 type Ios string               // Always "ios"
@@ -45,12 +50,17 @@ type User string              // Always "user"
 
 func (c Android) Default() Android                     { return "android" }
 func (c Assistant) Default() Assistant                 { return "assistant" }
+func (c Body) Default() Body                           { return "BODY" }
 func (c BookAppointment) Default() BookAppointment     { return "book_appointment" }
+func (c Buttons) Default() Buttons                     { return "BUTTONS" }
+func (c Carousel) Default() Carousel                   { return "CAROUSEL" }
 func (c CheckAvailability) Default() CheckAvailability { return "check_availability" }
 func (c Comparative) Default() Comparative             { return "comparative" }
 func (c Developer) Default() Developer                 { return "developer" }
+func (c Footer) Default() Footer                       { return "FOOTER" }
 func (c Function) Default() Function                   { return "function" }
 func (c Handoff) Default() Handoff                     { return "handoff" }
+func (c Header) Default() Header                       { return "HEADER" }
 func (c Invite) Default() Invite                       { return "invite" }
 func (c Inworld) Default() Inworld                     { return "inworld" }
 func (c Ios) Default() Ios                             { return "ios" }
@@ -70,12 +80,17 @@ func (c User) Default() User                           { return "user" }
 
 func (c Android) MarshalJSON() ([]byte, error)           { return marshalString(c) }
 func (c Assistant) MarshalJSON() ([]byte, error)         { return marshalString(c) }
+func (c Body) MarshalJSON() ([]byte, error)              { return marshalString(c) }
 func (c BookAppointment) MarshalJSON() ([]byte, error)   { return marshalString(c) }
+func (c Buttons) MarshalJSON() ([]byte, error)           { return marshalString(c) }
+func (c Carousel) MarshalJSON() ([]byte, error)          { return marshalString(c) }
 func (c CheckAvailability) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c Comparative) MarshalJSON() ([]byte, error)       { return marshalString(c) }
 func (c Developer) MarshalJSON() ([]byte, error)         { return marshalString(c) }
+func (c Footer) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c Function) MarshalJSON() ([]byte, error)          { return marshalString(c) }
 func (c Handoff) MarshalJSON() ([]byte, error)           { return marshalString(c) }
+func (c Header) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c Invite) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c Inworld) MarshalJSON() ([]byte, error)           { return marshalString(c) }
 func (c Ios) MarshalJSON() ([]byte, error)               { return marshalString(c) }
