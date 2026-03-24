@@ -2361,23 +2361,28 @@ type InferenceEmbeddingWebhookToolParamsWebhookResp struct {
 	// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
 	// documentation about the format
 	QueryParameters InferenceEmbeddingWebhookToolParamsWebhookQueryParametersResp `json:"query_parameters"`
+	// A list of mappings that extract values from the webhook response and store them
+	// as dynamic variables. Each mapping specifies a dynamic variable name and a
+	// dot-notation path to the value in the response body.
+	StoreFieldsAsVariables []InferenceEmbeddingWebhookToolParamsWebhookStoreFieldsAsVariableResp `json:"store_fields_as_variables"`
 	// The maximum number of milliseconds to wait for the webhook to respond. Only
 	// applicable when async is false.
 	TimeoutMs int64 `json:"timeout_ms"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Description     respjson.Field
-		Name            respjson.Field
-		URL             respjson.Field
-		Async           respjson.Field
-		BodyParameters  respjson.Field
-		Headers         respjson.Field
-		Method          respjson.Field
-		PathParameters  respjson.Field
-		QueryParameters respjson.Field
-		TimeoutMs       respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
+		Description            respjson.Field
+		Name                   respjson.Field
+		URL                    respjson.Field
+		Async                  respjson.Field
+		BodyParameters         respjson.Field
+		Headers                respjson.Field
+		Method                 respjson.Field
+		PathParameters         respjson.Field
+		QueryParameters        respjson.Field
+		StoreFieldsAsVariables respjson.Field
+		TimeoutMs              respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -2500,6 +2505,29 @@ func (r *InferenceEmbeddingWebhookToolParamsWebhookQueryParametersResp) Unmarsha
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type InferenceEmbeddingWebhookToolParamsWebhookStoreFieldsAsVariableResp struct {
+	// The name of the dynamic variable to store the extracted value in.
+	Name string `json:"name" api:"required"`
+	// A dot-notation path to the value in the webhook response body (e.g.
+	// 'customer.name' or 'id').
+	ValuePath string `json:"value_path" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		ValuePath   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingWebhookToolParamsWebhookStoreFieldsAsVariableResp) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingWebhookToolParamsWebhookStoreFieldsAsVariableResp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The properties Type, Webhook are required.
 type InferenceEmbeddingWebhookToolParams struct {
 	// Any of "webhook".
@@ -2556,6 +2584,10 @@ type InferenceEmbeddingWebhookToolParamsWebhook struct {
 	// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
 	// documentation about the format
 	QueryParameters InferenceEmbeddingWebhookToolParamsWebhookQueryParameters `json:"query_parameters,omitzero"`
+	// A list of mappings that extract values from the webhook response and store them
+	// as dynamic variables. Each mapping specifies a dynamic variable name and a
+	// dot-notation path to the value in the response body.
+	StoreFieldsAsVariables []InferenceEmbeddingWebhookToolParamsWebhookStoreFieldsAsVariable `json:"store_fields_as_variables,omitzero"`
 	paramObj
 }
 
@@ -2677,6 +2709,24 @@ func init() {
 	apijson.RegisterFieldValidator[InferenceEmbeddingWebhookToolParamsWebhookQueryParameters](
 		"type", "object",
 	)
+}
+
+// The properties Name, ValuePath are required.
+type InferenceEmbeddingWebhookToolParamsWebhookStoreFieldsAsVariable struct {
+	// The name of the dynamic variable to store the extracted value in.
+	Name string `json:"name" api:"required"`
+	// A dot-notation path to the value in the webhook response body (e.g.
+	// 'customer.name' or 'id').
+	ValuePath string `json:"value_path" api:"required"`
+	paramObj
+}
+
+func (r InferenceEmbeddingWebhookToolParamsWebhookStoreFieldsAsVariable) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceEmbeddingWebhookToolParamsWebhookStoreFieldsAsVariable
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceEmbeddingWebhookToolParamsWebhookStoreFieldsAsVariable) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type InsightSettings struct {

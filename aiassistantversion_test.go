@@ -144,6 +144,10 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 								Required: []string{"page"},
 								Type:     "object",
 							},
+							StoreFieldsAsVariables: []telnyx.InferenceEmbeddingWebhookToolParamsWebhookStoreFieldsAsVariable{{
+								Name:      "x",
+								ValuePath: "x",
+							}},
 							TimeoutMs: telnyx.Int(500),
 						},
 					},

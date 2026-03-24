@@ -109,6 +109,10 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 						Required: []string{"page"},
 						Type:     "object",
 					},
+					StoreFieldsAsVariables: []telnyx.InferenceEmbeddingWebhookToolParamsWebhookStoreFieldsAsVariable{{
+						Name:      "x",
+						ValuePath: "x",
+					}},
 					TimeoutMs: telnyx.Int(500),
 				},
 			},
@@ -300,6 +304,10 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 							Required: []string{"page"},
 							Type:     "object",
 						},
+						StoreFieldsAsVariables: []telnyx.InferenceEmbeddingWebhookToolParamsWebhookStoreFieldsAsVariable{{
+							Name:      "x",
+							ValuePath: "x",
+						}},
 						TimeoutMs: telnyx.Int(500),
 					},
 				},
