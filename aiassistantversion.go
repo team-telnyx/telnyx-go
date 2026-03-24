@@ -157,6 +157,7 @@ type UpdateAssistantParam struct {
 	MessagingSettings MessagingSettingsParam `json:"messaging_settings,omitzero"`
 	PrivacySettings   PrivacySettingsParam   `json:"privacy_settings,omitzero"`
 	TelephonySettings TelephonySettingsParam `json:"telephony_settings,omitzero"`
+	ToolIDs           []string               `json:"tool_ids,omitzero"`
 	// The tools that the assistant can use. These may be templated with
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
 	Tools         []AssistantToolsItemsUnionParam `json:"tools,omitzero"`
