@@ -74,6 +74,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 				},
 			},
 		},
+		ToolIDs: []string{"string"},
 		Tools: []telnyx.AssistantToolsItemsUnionParam{{
 			OfWebhook: &telnyx.InferenceEmbeddingWebhookToolParams{
 				Type: telnyx.InferenceEmbeddingWebhookToolParamsTypeWebhook,
@@ -269,6 +270,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 					},
 				},
 			},
+			ToolIDs: []string{"string"},
 			Tools: []telnyx.AssistantToolsItemsUnionParam{{
 				OfWebhook: &telnyx.InferenceEmbeddingWebhookToolParams{
 					Type: telnyx.InferenceEmbeddingWebhookToolParamsTypeWebhook,

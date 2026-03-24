@@ -40,6 +40,8 @@ type AIService struct {
 	McpServers   AIMcpServerService
 	Missions     AIMissionService
 	OpenAI       AIOpenAIService
+	// Configure AI assistant specifications
+	Tools AIToolService
 }
 
 // NewAIService generates a new service that applies the given options to each
@@ -59,6 +61,7 @@ func NewAIService(opts ...option.RequestOption) (r AIService) {
 	r.McpServers = NewAIMcpServerService(opts...)
 	r.Missions = NewAIMissionService(opts...)
 	r.OpenAI = NewAIOpenAIService(opts...)
+	r.Tools = NewAIToolService(opts...)
 	return
 }
 

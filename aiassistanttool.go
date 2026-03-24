@@ -37,6 +37,38 @@ func NewAIAssistantToolService(opts ...option.RequestOption) (r AIAssistantToolS
 	return
 }
 
+// Add Assistant Tool
+func (r *AIAssistantToolService) Add(ctx context.Context, toolID string, body AIAssistantToolAddParams, opts ...option.RequestOption) (res *AIAssistantToolAddResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if body.AssistantID == "" {
+		err = errors.New("missing required assistant_id parameter")
+		return nil, err
+	}
+	if toolID == "" {
+		err = errors.New("missing required tool_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("ai/assistants/%s/tools/%s", body.AssistantID, toolID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
+	return res, err
+}
+
+// Remove Assistant Tool
+func (r *AIAssistantToolService) Remove(ctx context.Context, toolID string, body AIAssistantToolRemoveParams, opts ...option.RequestOption) (res *AIAssistantToolRemoveResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if body.AssistantID == "" {
+		err = errors.New("missing required assistant_id parameter")
+		return nil, err
+	}
+	if toolID == "" {
+		err = errors.New("missing required tool_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("ai/assistants/%s/tools/%s", body.AssistantID, toolID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	return res, err
+}
+
 // Test a webhook tool for an assistant
 func (r *AIAssistantToolService) Test(ctx context.Context, toolID string, params AIAssistantToolTestParams, opts ...option.RequestOption) (res *AIAssistantToolTestResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -52,6 +84,10 @@ func (r *AIAssistantToolService) Test(ctx context.Context, toolID string, params
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
+
+type AIAssistantToolAddResponse = any
+
+type AIAssistantToolRemoveResponse = any
 
 // Response model for webhook tool test results
 type AIAssistantToolTestResponse struct {
@@ -94,6 +130,16 @@ type AIAssistantToolTestResponseData struct {
 func (r AIAssistantToolTestResponseData) RawJSON() string { return r.JSON.raw }
 func (r *AIAssistantToolTestResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type AIAssistantToolAddParams struct {
+	AssistantID string `path:"assistant_id" api:"required" json:"-"`
+	paramObj
+}
+
+type AIAssistantToolRemoveParams struct {
+	AssistantID string `path:"assistant_id" api:"required" json:"-"`
+	paramObj
 }
 
 type AIAssistantToolTestParams struct {
