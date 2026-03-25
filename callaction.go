@@ -2714,7 +2714,7 @@ type CallActionAddAIAssistantMessagesParamsMessageUser struct {
 	// The role of the messages author, in this case `user`.
 	//
 	// This field can be elided, and will marshal its zero value as "user".
-	Role constant.User `json:"role" api:"required"`
+	Role constant.User `json:"role" default:"user"`
 	paramObj
 }
 
@@ -2739,7 +2739,7 @@ type CallActionAddAIAssistantMessagesParamsMessageAssistant struct {
 	// The role of the messages author, in this case `assistant`.
 	//
 	// This field can be elided, and will marshal its zero value as "assistant".
-	Role constant.Assistant `json:"role" api:"required"`
+	Role constant.Assistant `json:"role" default:"assistant"`
 	paramObj
 }
 
@@ -2808,7 +2808,7 @@ type CallActionAddAIAssistantMessagesParamsMessageTool struct {
 	// The role of the messages author, in this case `tool`.
 	//
 	// This field can be elided, and will marshal its zero value as "tool".
-	Role constant.Tool `json:"role" api:"required"`
+	Role constant.Tool `json:"role" default:"tool"`
 	paramObj
 }
 
@@ -2832,7 +2832,7 @@ type CallActionAddAIAssistantMessagesParamsMessageSystem struct {
 	// The role of the messages author, in this case `system`.
 	//
 	// This field can be elided, and will marshal its zero value as "system".
-	Role constant.System `json:"role" api:"required"`
+	Role constant.System `json:"role" default:"system"`
 	paramObj
 }
 
@@ -2856,7 +2856,7 @@ type CallActionAddAIAssistantMessagesParamsMessageDeveloper struct {
 	// The role of the messages author, in this case developer.
 	//
 	// This field can be elided, and will marshal its zero value as "developer".
-	Role constant.Developer `json:"role" api:"required"`
+	Role constant.Developer `json:"role" default:"developer"`
 	paramObj
 }
 
@@ -4024,7 +4024,7 @@ func NewCallActionGatherUsingSpeakParamsVoiceSettingsInworld() CallActionGatherU
 // [NewCallActionGatherUsingSpeakParamsVoiceSettingsInworld].
 type CallActionGatherUsingSpeakParamsVoiceSettingsInworld struct {
 	// Voice settings provider type
-	Type constant.Inworld `json:"type" api:"required"`
+	Type constant.Inworld `json:"type" default:"inworld"`
 	paramObj
 }
 
@@ -4638,7 +4638,7 @@ func NewCallActionSpeakParamsVoiceSettingsInworld() CallActionSpeakParamsVoiceSe
 // [NewCallActionSpeakParamsVoiceSettingsInworld].
 type CallActionSpeakParamsVoiceSettingsInworld struct {
 	// Voice settings provider type
-	Type constant.Inworld `json:"type" api:"required"`
+	Type constant.Inworld `json:"type" default:"inworld"`
 	paramObj
 }
 
@@ -4861,7 +4861,7 @@ type CallActionStartAIAssistantParamsMessageHistoryUser struct {
 	// The role of the messages author, in this case `user`.
 	//
 	// This field can be elided, and will marshal its zero value as "user".
-	Role constant.User `json:"role" api:"required"`
+	Role constant.User `json:"role" default:"user"`
 	paramObj
 }
 
@@ -4886,7 +4886,7 @@ type CallActionStartAIAssistantParamsMessageHistoryAssistant struct {
 	// The role of the messages author, in this case `assistant`.
 	//
 	// This field can be elided, and will marshal its zero value as "assistant".
-	Role constant.Assistant `json:"role" api:"required"`
+	Role constant.Assistant `json:"role" default:"assistant"`
 	paramObj
 }
 
@@ -4955,7 +4955,7 @@ type CallActionStartAIAssistantParamsMessageHistoryTool struct {
 	// The role of the messages author, in this case `tool`.
 	//
 	// This field can be elided, and will marshal its zero value as "tool".
-	Role constant.Tool `json:"role" api:"required"`
+	Role constant.Tool `json:"role" default:"tool"`
 	paramObj
 }
 
@@ -4979,7 +4979,7 @@ type CallActionStartAIAssistantParamsMessageHistorySystem struct {
 	// The role of the messages author, in this case `system`.
 	//
 	// This field can be elided, and will marshal its zero value as "system".
-	Role constant.System `json:"role" api:"required"`
+	Role constant.System `json:"role" default:"system"`
 	paramObj
 }
 
@@ -5003,7 +5003,7 @@ type CallActionStartAIAssistantParamsMessageHistoryDeveloper struct {
 	// The role of the messages author, in this case developer.
 	//
 	// This field can be elided, and will marshal its zero value as "developer".
-	Role constant.Developer `json:"role" api:"required"`
+	Role constant.Developer `json:"role" default:"developer"`
 	paramObj
 }
 

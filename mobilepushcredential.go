@@ -188,7 +188,7 @@ type MobilePushCredentialNewParamsCreateMobilePushCredentialRequestIos struct {
 	// Type of mobile push credential. Should be <code>ios</code> here
 	//
 	// This field can be elided, and will marshal its zero value as "ios".
-	Type constant.Ios `json:"type" api:"required"`
+	Type constant.Ios `json:"type" default:"ios"`
 	paramObj
 }
 
@@ -209,7 +209,7 @@ type MobilePushCredentialNewParamsCreateMobilePushCredentialRequestAndroid struc
 	// Type of mobile push credential. Should be <code>android</code> here
 	//
 	// This field can be elided, and will marshal its zero value as "android".
-	Type constant.Android `json:"type" api:"required"`
+	Type constant.Android `json:"type" default:"android"`
 	paramObj
 }
 
