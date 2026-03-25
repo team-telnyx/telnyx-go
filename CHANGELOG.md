@@ -1,5 +1,29 @@
 # Changelog
 
+## 4.54.0 (2026-03-25)
+
+Full Changelog: [v4.53.0...v4.54.0](https://github.com/team-telnyx/telnyx-go/compare/v4.53.0...v4.54.0)
+
+### Features
+
+* **websocket:** add STT/TTS WebSocket streaming support ([4f59511](https://github.com/team-telnyx/telnyx-go/commit/4f595110ac958c275c84fa9dd16a272ba34b11b5))
+
+
+### Bug Fixes
+
+* rename number-reputation ToS route to use underscores ([694fb77](https://github.com/team-telnyx/telnyx-go/commit/694fb7792a1822affd01bf51b11bbab3236eb345))
+
+
+### Chores
+
+* **client:** fix multipart serialisation of Default() fields ([9e422c9](https://github.com/team-telnyx/telnyx-go/commit/9e422c9c2c833e3dd3f22247aeb9e5a3defe00d0))
+* **internal:** support default value struct tag ([3649c34](https://github.com/team-telnyx/telnyx-go/commit/3649c343caf487301d1984e00e1e72190905316f))
+
+
+### Documentation
+
+* **branded-calling:** add Number Reputation API specs ([70e90a3](https://github.com/team-telnyx/telnyx-go/commit/70e90a30b8a0bb27bde20ba3969de0f21ae8788c))
+
 ## 4.53.0 (2026-03-25)
 
 Full Changelog: [v4.52.0...v4.53.0](https://github.com/team-telnyx/telnyx-go/compare/v4.52.0...v4.53.0)
