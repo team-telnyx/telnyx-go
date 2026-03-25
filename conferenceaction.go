@@ -1510,7 +1510,7 @@ func NewConferenceActionSpeakParamsVoiceSettingsInworld() ConferenceActionSpeakP
 // [NewConferenceActionSpeakParamsVoiceSettingsInworld].
 type ConferenceActionSpeakParamsVoiceSettingsInworld struct {
 	// Voice settings provider type
-	Type constant.Inworld `json:"type" api:"required"`
+	Type constant.Inworld `json:"type" default:"inworld"`
 	paramObj
 }
 

@@ -272,7 +272,7 @@ type WhatsappTemplateNewParamsComponentHeader struct {
 	// Sample values for header variables.
 	Example WhatsappTemplateNewParamsComponentHeaderExample `json:"example,omitzero"`
 	// This field can be elided, and will marshal its zero value as "HEADER".
-	Type constant.Header `json:"type" api:"required"`
+	Type constant.Header `json:"type" default:"HEADER"`
 	paramObj
 }
 
@@ -320,7 +320,7 @@ type WhatsappTemplateNewParamsComponentBody struct {
 	// Sample values for body variables. Required when body text contains parameters.
 	Example WhatsappTemplateNewParamsComponentBodyExample `json:"example,omitzero"`
 	// This field can be elided, and will marshal its zero value as "BODY".
-	Type constant.Body `json:"type" api:"required"`
+	Type constant.Body `json:"type" default:"BODY"`
 	paramObj
 }
 
@@ -358,7 +358,7 @@ type WhatsappTemplateNewParamsComponentFooter struct {
 	// Footer text. Maximum 60 characters. For non-authentication templates.
 	Text param.Opt[string] `json:"text,omitzero"`
 	// This field can be elided, and will marshal its zero value as "FOOTER".
-	Type constant.Footer `json:"type" api:"required"`
+	Type constant.Footer `json:"type" default:"FOOTER"`
 	paramObj
 }
 
@@ -377,7 +377,7 @@ type WhatsappTemplateNewParamsComponentButtons struct {
 	// Array of button objects. Meta supports various combinations of button types.
 	Buttons []WhatsappTemplateNewParamsComponentButtonsButton `json:"buttons,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "BUTTONS".
-	Type constant.Buttons `json:"type" api:"required"`
+	Type constant.Buttons `json:"type" default:"BUTTONS"`
 	paramObj
 }
 
@@ -451,7 +451,7 @@ type WhatsappTemplateNewParamsComponentCarousel struct {
 	// Array of card objects, each with its own components.
 	Cards []WhatsappTemplateNewParamsComponentCarouselCard `json:"cards,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "CAROUSEL".
-	Type constant.Carousel `json:"type" api:"required"`
+	Type constant.Carousel `json:"type" default:"CAROUSEL"`
 	paramObj
 }
 

@@ -250,7 +250,7 @@ type ChargesSummaryGetResponseDataSummaryLineComparative struct {
 	// Service name
 	Name         string               `json:"name" api:"required"`
 	NewThisMonth MonthDetail          `json:"new_this_month" api:"required"`
-	Type         constant.Comparative `json:"type" api:"required"`
+	Type         constant.Comparative `json:"type" default:"comparative"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Alias             respjson.Field
@@ -278,7 +278,7 @@ type ChargesSummaryGetResponseDataSummaryLineSimple struct {
 	Name string `json:"name" api:"required"`
 	// Number of items
 	Quantity int64           `json:"quantity" api:"required"`
-	Type     constant.Simple `json:"type" api:"required"`
+	Type     constant.Simple `json:"type" default:"simple"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Alias       respjson.Field
