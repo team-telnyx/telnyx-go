@@ -349,7 +349,7 @@ func init() {
 type AIChatNewCompletionParamsToolFunction struct {
 	Function AIChatNewCompletionParamsToolFunctionFunction `json:"function,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "function".
-	Type constant.Function `json:"type" api:"required"`
+	Type constant.Function `json:"type" default:"function"`
 	paramObj
 }
 
@@ -381,7 +381,7 @@ func (r *AIChatNewCompletionParamsToolFunctionFunction) UnmarshalJSON(data []byt
 type AIChatNewCompletionParamsToolRetrieval struct {
 	Retrieval BucketIDsParam `json:"retrieval,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "retrieval".
-	Type constant.Retrieval `json:"type" api:"required"`
+	Type constant.Retrieval `json:"type" default:"retrieval"`
 	paramObj
 }
 
