@@ -1,5 +1,22 @@
 # Changelog
 
+## 4.53.0 (2026-03-25)
+
+Full Changelog: [v4.52.0...v4.53.0](https://github.com/team-telnyx/telnyx-go/compare/v4.52.0...v4.53.0)
+
+### Features
+
+* **api:** manual updates ([39ed85c](https://github.com/team-telnyx/telnyx-go/commit/39ed85cbb4cbc79057d65184ff85903101639e02))
+* **api:** manual updates ([e7d17ab](https://github.com/team-telnyx/telnyx-go/commit/e7d17ab7851961c43b2a22133c2bbc91f44a0b9b))
+* **api:** Merge pull request [#30](https://github.com/team-telnyx/telnyx-go/issues/30) from stainless-sdks/fix-schemaUnionDiscriminatorMissing ([c0c650e](https://github.com/team-telnyx/telnyx-go/commit/c0c650ec463a2087d393072df14d57bc78853abf))
+* New tools api ([fa8d724](https://github.com/team-telnyx/telnyx-go/commit/fa8d724e524641f80e8845aeb9cdf6224c870451))
+* TELAPPS-5685: Add store_fields_as_variables to WebhookToolParams ([3c0f71a](https://github.com/team-telnyx/telnyx-go/commit/3c0f71acaea7e95dfd0c527743ff476bf9b99d30))
+
+
+### Chores
+
+* **ci:** skip lint on metadata-only changes ([54db857](https://github.com/team-telnyx/telnyx-go/commit/54db857938ef8514d66199e06a720322f4d06a5c))
+
 ## 4.52.0 (2026-03-23)
 
 Full Changelog: [v4.51.0...v4.52.0](https://github.com/team-telnyx/telnyx-go/compare/v4.51.0...v4.52.0)
