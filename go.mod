@@ -3,6 +3,7 @@ module github.com/team-telnyx/telnyx-go/v4
 go 1.22
 
 require (
+	github.com/gorilla/websocket v1.5.3
 	github.com/tidwall/gjson v1.18.0
 	github.com/tidwall/sjson v1.2.5
 )
