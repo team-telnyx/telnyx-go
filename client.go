@@ -315,6 +315,10 @@ type Client struct {
 	VoiceDesigns VoiceDesignService
 	// Traffic Policy Profiles operations
 	TrafficPolicyProfiles TrafficPolicyProfileService
+	// Enterprise management for Branded Calling and Number Reputation services
+	Enterprises    EnterpriseService
+	Reputation     ReputationService
+	TermsOfService TermsOfServiceService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -509,6 +513,9 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.VoiceClones = NewVoiceCloneService(opts...)
 	r.VoiceDesigns = NewVoiceDesignService(opts...)
 	r.TrafficPolicyProfiles = NewTrafficPolicyProfileService(opts...)
+	r.Enterprises = NewEnterpriseService(opts...)
+	r.Reputation = NewReputationService(opts...)
+	r.TermsOfService = NewTermsOfServiceService(opts...)
 
 	return
 }
