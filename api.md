@@ -4990,4 +4990,4 @@ Methods:
 
 Methods:
 
-- <code title="post /terms-of-service/number-reputation/agree">client.TermsOfService.NumberReputation.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TermsOfServiceNumberReputationService.Agree">Agree</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+- <code title="post /terms_of_service/number_reputation/agree">client.TermsOfService.NumberReputation.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TermsOfServiceNumberReputationService.Agree">Agree</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
