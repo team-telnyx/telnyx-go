@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
-	"time"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
@@ -18,6 +17,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // Associate phone numbers with an enterprise for reputation monitoring and
@@ -62,7 +62,7 @@ func (r *ReputationNumberService) Get(ctx context.Context, phoneNumber string, q
 // — it returns numbers across all your enterprises.
 //
 // Supports pagination and filtering by phone number.
-func (r *ReputationNumberService) List(ctx context.Context, query ReputationNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[ReputationNumberListResponse], err error) {
+func (r *ReputationNumberService) List(ctx context.Context, query ReputationNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[shared.ReputationPhoneNumberWithReputationData], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -84,7 +84,7 @@ func (r *ReputationNumberService) List(ctx context.Context, query ReputationNumb
 // — it returns numbers across all your enterprises.
 //
 // Supports pagination and filtering by phone number.
-func (r *ReputationNumberService) ListAutoPaging(ctx context.Context, query ReputationNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[ReputationNumberListResponse] {
+func (r *ReputationNumberService) ListAutoPaging(ctx context.Context, query ReputationNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[shared.ReputationPhoneNumberWithReputationData] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -103,7 +103,7 @@ func (r *ReputationNumberService) Delete(ctx context.Context, phoneNumber string
 }
 
 type ReputationNumberGetResponse struct {
-	Data ReputationNumberGetResponseData `json:"data"`
+	Data shared.ReputationPhoneNumberWithReputationData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -115,146 +115,6 @@ type ReputationNumberGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ReputationNumberGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *ReputationNumberGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ReputationNumberGetResponseData struct {
-	// Unique identifier
-	ID string `json:"id" format:"uuid"`
-	// When the number was associated
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// ID of the associated enterprise
-	EnterpriseID string `json:"enterprise_id" format:"uuid"`
-	// Phone number in E.164 format
-	PhoneNumber string `json:"phone_number"`
-	// Reputation metrics (null if not yet fetched)
-	ReputationData ReputationNumberGetResponseDataReputationData `json:"reputation_data"`
-	// When the record was last updated
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		CreatedAt      respjson.Field
-		EnterpriseID   respjson.Field
-		PhoneNumber    respjson.Field
-		ReputationData respjson.Field
-		UpdatedAt      respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ReputationNumberGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *ReputationNumberGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Reputation metrics
-type ReputationNumberGetResponseDataReputationData struct {
-	// Connection quality metric (0–100)
-	ConnectionScore int64 `json:"connection_score" api:"nullable"`
-	// Engagement metric (0–100). Higher = more positive engagement
-	EngagementScore int64 `json:"engagement_score" api:"nullable"`
-	// Timestamp of the last reputation data refresh
-	LastRefreshedAt time.Time `json:"last_refreshed_at" api:"nullable" format:"date-time"`
-	// Maturity metric (0–100). Higher = more established number
-	MaturityScore int64 `json:"maturity_score" api:"nullable"`
-	// Sentiment metric (0–100). Higher = more positive sentiment
-	SentimentScore int64 `json:"sentiment_score" api:"nullable"`
-	// Spam category classification (e.g., Telemarketing, Debt Collector)
-	SpamCategory string `json:"spam_category" api:"nullable"`
-	// Overall spam risk level
-	//
-	// Any of "low", "medium", "high".
-	SpamRisk string `json:"spam_risk" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ConnectionScore respjson.Field
-		EngagementScore respjson.Field
-		LastRefreshedAt respjson.Field
-		MaturityScore   respjson.Field
-		SentimentScore  respjson.Field
-		SpamCategory    respjson.Field
-		SpamRisk        respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ReputationNumberGetResponseDataReputationData) RawJSON() string { return r.JSON.raw }
-func (r *ReputationNumberGetResponseDataReputationData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ReputationNumberListResponse struct {
-	// Unique identifier
-	ID string `json:"id" format:"uuid"`
-	// When the number was associated
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// ID of the associated enterprise
-	EnterpriseID string `json:"enterprise_id" format:"uuid"`
-	// Phone number in E.164 format
-	PhoneNumber string `json:"phone_number"`
-	// Reputation metrics (null if not yet fetched)
-	ReputationData ReputationNumberListResponseReputationData `json:"reputation_data"`
-	// When the record was last updated
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		CreatedAt      respjson.Field
-		EnterpriseID   respjson.Field
-		PhoneNumber    respjson.Field
-		ReputationData respjson.Field
-		UpdatedAt      respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ReputationNumberListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ReputationNumberListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Reputation metrics
-type ReputationNumberListResponseReputationData struct {
-	// Connection quality metric (0–100)
-	ConnectionScore int64 `json:"connection_score" api:"nullable"`
-	// Engagement metric (0–100). Higher = more positive engagement
-	EngagementScore int64 `json:"engagement_score" api:"nullable"`
-	// Timestamp of the last reputation data refresh
-	LastRefreshedAt time.Time `json:"last_refreshed_at" api:"nullable" format:"date-time"`
-	// Maturity metric (0–100). Higher = more established number
-	MaturityScore int64 `json:"maturity_score" api:"nullable"`
-	// Sentiment metric (0–100). Higher = more positive sentiment
-	SentimentScore int64 `json:"sentiment_score" api:"nullable"`
-	// Spam category classification (e.g., Telemarketing, Debt Collector)
-	SpamCategory string `json:"spam_category" api:"nullable"`
-	// Overall spam risk level
-	//
-	// Any of "low", "medium", "high".
-	SpamRisk string `json:"spam_risk" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ConnectionScore respjson.Field
-		EngagementScore respjson.Field
-		LastRefreshedAt respjson.Field
-		MaturityScore   respjson.Field
-		SentimentScore  respjson.Field
-		SpamCategory    respjson.Field
-		SpamRisk        respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ReputationNumberListResponseReputationData) RawJSON() string { return r.JSON.raw }
-func (r *ReputationNumberListResponseReputationData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

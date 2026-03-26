@@ -27,7 +27,7 @@ func TestEnterpriseNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Enterprises.New(context.TODO(), telnyx.EnterpriseNewParams{
-		BillingAddress: telnyx.EnterpriseNewParamsBillingAddress{
+		BillingAddress: telnyx.BillingAddressParam{
 			AdministrativeArea: "Illinois",
 			City:               "Chicago",
 			Country:            "United States",
@@ -35,7 +35,7 @@ func TestEnterpriseNewWithOptionalParams(t *testing.T) {
 			StreetAddress:      "123 Main St",
 			ExtendedAddress:    telnyx.String("Suite 400"),
 		},
-		BillingContact: telnyx.EnterpriseNewParamsBillingContact{
+		BillingContact: telnyx.BillingContactParam{
 			Email:       "billing@acme.com",
 			FirstName:   "John",
 			LastName:    "Doe",
@@ -47,7 +47,7 @@ func TestEnterpriseNewWithOptionalParams(t *testing.T) {
 		Industry:          "technology",
 		LegalName:         "Acme Corp Inc.",
 		NumberOfEmployees: telnyx.EnterpriseNewParamsNumberOfEmployees51_200,
-		OrganizationContact: telnyx.EnterpriseNewParamsOrganizationContact{
+		OrganizationContact: telnyx.OrganizationContactParam{
 			Email:     "jane.smith@acme.com",
 			FirstName: "Jane",
 			JobTitle:  "VP of Engineering",
@@ -55,7 +55,7 @@ func TestEnterpriseNewWithOptionalParams(t *testing.T) {
 			Phone:     "+16035551234",
 		},
 		OrganizationLegalType: telnyx.EnterpriseNewParamsOrganizationLegalTypeCorporation,
-		OrganizationPhysicalAddress: telnyx.EnterpriseNewParamsOrganizationPhysicalAddress{
+		OrganizationPhysicalAddress: telnyx.PhysicalAddressParam{
 			AdministrativeArea: "Illinois",
 			City:               "Chicago",
 			Country:            "United States",
@@ -121,7 +121,7 @@ func TestEnterpriseUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"6a09cdc3-8948-47f0-aa62-74ac943d6c58",
 		telnyx.EnterpriseUpdateParams{
-			BillingAddress: telnyx.EnterpriseUpdateParamsBillingAddress{
+			BillingAddress: telnyx.BillingAddressParam{
 				AdministrativeArea: "Illinois",
 				City:               "Chicago",
 				Country:            "United States",
@@ -129,7 +129,7 @@ func TestEnterpriseUpdateWithOptionalParams(t *testing.T) {
 				StreetAddress:      "123 Main St",
 				ExtendedAddress:    telnyx.String("Suite 400"),
 			},
-			BillingContact: telnyx.EnterpriseUpdateParamsBillingContact{
+			BillingContact: telnyx.BillingContactParam{
 				Email:       "billing@acme.com",
 				FirstName:   "John",
 				LastName:    "Doe",
@@ -143,7 +143,7 @@ func TestEnterpriseUpdateWithOptionalParams(t *testing.T) {
 			Industry:                    telnyx.String("industry"),
 			LegalName:                   telnyx.String("xxx"),
 			NumberOfEmployees:           telnyx.EnterpriseUpdateParamsNumberOfEmployees1_10,
-			OrganizationContact: telnyx.EnterpriseUpdateParamsOrganizationContact{
+			OrganizationContact: telnyx.OrganizationContactParam{
 				Email:     "jane.smith@acme.com",
 				FirstName: "Jane",
 				JobTitle:  "VP of Engineering",
@@ -151,7 +151,7 @@ func TestEnterpriseUpdateWithOptionalParams(t *testing.T) {
 				Phone:     "+16035551234",
 			},
 			OrganizationLegalType: telnyx.EnterpriseUpdateParamsOrganizationLegalTypeCorporation,
-			OrganizationPhysicalAddress: telnyx.EnterpriseUpdateParamsOrganizationPhysicalAddress{
+			OrganizationPhysicalAddress: telnyx.PhysicalAddressParam{
 				AdministrativeArea: "Illinois",
 				City:               "Chicago",
 				Country:            "United States",

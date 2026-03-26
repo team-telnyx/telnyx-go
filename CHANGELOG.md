@@ -1,5 +1,23 @@
 # Changelog
 
+## 4.55.0 (2026-03-26)
+
+Full Changelog: [v4.54.0...v4.55.0](https://github.com/team-telnyx/telnyx-go/compare/v4.54.0...v4.55.0)
+
+### Features
+
+* **internal:** support comma format in multipart form encoding ([df166a3](https://github.com/team-telnyx/telnyx-go/commit/df166a35358164b24e810ce12ea13b1b0bd832e2))
+
+
+### Bug Fixes
+
+* prevent duplicate ? in query params ([89e80d1](https://github.com/team-telnyx/telnyx-go/commit/89e80d12547e98b2ed8ccbadd5e3ae40e88072fa))
+
+
+### Chores
+
+* remove unnecessary error check for url parsing ([56a5052](https://github.com/team-telnyx/telnyx-go/commit/56a505257d97beea70839c2f1c842535e4b95c58))
+
 ## 4.54.0 (2026-03-25)
 
 Full Changelog: [v4.53.0...v4.54.0](https://github.com/team-telnyx/telnyx-go/compare/v4.53.0...v4.54.0)
