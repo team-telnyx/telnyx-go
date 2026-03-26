@@ -141,8 +141,69 @@ func (r *EnterpriseReputationService) UpdateFrequency(ctx context.Context, enter
 	return res, err
 }
 
+type EnterpriseReputationPublic struct {
+	// Frequency for refreshing reputation data
+	//
+	// Any of "business_daily", "daily", "weekly", "biweekly", "monthly", "never".
+	CheckFrequency EnterpriseReputationPublicCheckFrequency `json:"check_frequency"`
+	// When the reputation settings were created
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// ID of the associated enterprise
+	EnterpriseID string `json:"enterprise_id" format:"uuid"`
+	// ID of the signed LOA document
+	LoaDocumentID string `json:"loa_document_id" api:"nullable"`
+	// Reasons for rejection (present when status is rejected)
+	RejectionReasons []string `json:"rejection_reasons" api:"nullable"`
+	// Current enrollment status
+	//
+	// Any of "pending", "approved", "rejected", "deleted".
+	Status EnterpriseReputationPublicStatus `json:"status"`
+	// When the reputation settings were last updated
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CheckFrequency   respjson.Field
+		CreatedAt        respjson.Field
+		EnterpriseID     respjson.Field
+		LoaDocumentID    respjson.Field
+		RejectionReasons respjson.Field
+		Status           respjson.Field
+		UpdatedAt        respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseReputationPublic) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseReputationPublic) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Frequency for refreshing reputation data
+type EnterpriseReputationPublicCheckFrequency string
+
+const (
+	EnterpriseReputationPublicCheckFrequencyBusinessDaily EnterpriseReputationPublicCheckFrequency = "business_daily"
+	EnterpriseReputationPublicCheckFrequencyDaily         EnterpriseReputationPublicCheckFrequency = "daily"
+	EnterpriseReputationPublicCheckFrequencyWeekly        EnterpriseReputationPublicCheckFrequency = "weekly"
+	EnterpriseReputationPublicCheckFrequencyBiweekly      EnterpriseReputationPublicCheckFrequency = "biweekly"
+	EnterpriseReputationPublicCheckFrequencyMonthly       EnterpriseReputationPublicCheckFrequency = "monthly"
+	EnterpriseReputationPublicCheckFrequencyNever         EnterpriseReputationPublicCheckFrequency = "never"
+)
+
+// Current enrollment status
+type EnterpriseReputationPublicStatus string
+
+const (
+	EnterpriseReputationPublicStatusPending  EnterpriseReputationPublicStatus = "pending"
+	EnterpriseReputationPublicStatusApproved EnterpriseReputationPublicStatus = "approved"
+	EnterpriseReputationPublicStatusRejected EnterpriseReputationPublicStatus = "rejected"
+	EnterpriseReputationPublicStatusDeleted  EnterpriseReputationPublicStatus = "deleted"
+)
+
 type EnterpriseReputationNewResponse struct {
-	Data EnterpriseReputationNewResponseData `json:"data"`
+	Data EnterpriseReputationPublic `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -157,47 +218,8 @@ func (r *EnterpriseReputationNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type EnterpriseReputationNewResponseData struct {
-	// Frequency for refreshing reputation data
-	//
-	// Any of "business_daily", "daily", "weekly", "biweekly", "monthly", "never".
-	CheckFrequency string `json:"check_frequency"`
-	// When the reputation settings were created
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// ID of the associated enterprise
-	EnterpriseID string `json:"enterprise_id" format:"uuid"`
-	// ID of the signed LOA document
-	LoaDocumentID string `json:"loa_document_id" api:"nullable"`
-	// Reasons for rejection (present when status is rejected)
-	RejectionReasons []string `json:"rejection_reasons" api:"nullable"`
-	// Current enrollment status
-	//
-	// Any of "pending", "approved", "rejected", "deleted".
-	Status string `json:"status"`
-	// When the reputation settings were last updated
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CheckFrequency   respjson.Field
-		CreatedAt        respjson.Field
-		EnterpriseID     respjson.Field
-		LoaDocumentID    respjson.Field
-		RejectionReasons respjson.Field
-		Status           respjson.Field
-		UpdatedAt        respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EnterpriseReputationNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseReputationNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type EnterpriseReputationListResponse struct {
-	Data EnterpriseReputationListResponseData `json:"data"`
+	Data EnterpriseReputationPublic `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -212,47 +234,8 @@ func (r *EnterpriseReputationListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type EnterpriseReputationListResponseData struct {
-	// Frequency for refreshing reputation data
-	//
-	// Any of "business_daily", "daily", "weekly", "biweekly", "monthly", "never".
-	CheckFrequency string `json:"check_frequency"`
-	// When the reputation settings were created
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// ID of the associated enterprise
-	EnterpriseID string `json:"enterprise_id" format:"uuid"`
-	// ID of the signed LOA document
-	LoaDocumentID string `json:"loa_document_id" api:"nullable"`
-	// Reasons for rejection (present when status is rejected)
-	RejectionReasons []string `json:"rejection_reasons" api:"nullable"`
-	// Current enrollment status
-	//
-	// Any of "pending", "approved", "rejected", "deleted".
-	Status string `json:"status"`
-	// When the reputation settings were last updated
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CheckFrequency   respjson.Field
-		CreatedAt        respjson.Field
-		EnterpriseID     respjson.Field
-		LoaDocumentID    respjson.Field
-		RejectionReasons respjson.Field
-		Status           respjson.Field
-		UpdatedAt        respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EnterpriseReputationListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseReputationListResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type EnterpriseReputationUpdateFrequencyResponse struct {
-	Data EnterpriseReputationUpdateFrequencyResponseData `json:"data"`
+	Data EnterpriseReputationPublic `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -264,45 +247,6 @@ type EnterpriseReputationUpdateFrequencyResponse struct {
 // Returns the unmodified JSON received from the API
 func (r EnterpriseReputationUpdateFrequencyResponse) RawJSON() string { return r.JSON.raw }
 func (r *EnterpriseReputationUpdateFrequencyResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EnterpriseReputationUpdateFrequencyResponseData struct {
-	// Frequency for refreshing reputation data
-	//
-	// Any of "business_daily", "daily", "weekly", "biweekly", "monthly", "never".
-	CheckFrequency string `json:"check_frequency"`
-	// When the reputation settings were created
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// ID of the associated enterprise
-	EnterpriseID string `json:"enterprise_id" format:"uuid"`
-	// ID of the signed LOA document
-	LoaDocumentID string `json:"loa_document_id" api:"nullable"`
-	// Reasons for rejection (present when status is rejected)
-	RejectionReasons []string `json:"rejection_reasons" api:"nullable"`
-	// Current enrollment status
-	//
-	// Any of "pending", "approved", "rejected", "deleted".
-	Status string `json:"status"`
-	// When the reputation settings were last updated
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CheckFrequency   respjson.Field
-		CreatedAt        respjson.Field
-		EnterpriseID     respjson.Field
-		LoaDocumentID    respjson.Field
-		RejectionReasons respjson.Field
-		Status           respjson.Field
-		UpdatedAt        respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EnterpriseReputationUpdateFrequencyResponseData) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseReputationUpdateFrequencyResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
