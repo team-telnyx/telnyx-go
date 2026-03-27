@@ -1428,8 +1428,8 @@ type ReputationPhoneNumberWithReputationData struct {
 	EnterpriseID string `json:"enterprise_id" format:"uuid"`
 	// Phone number in E.164 format
 	PhoneNumber string `json:"phone_number"`
-	// Reputation metrics (null if not yet fetched)
-	ReputationData ReputationPhoneNumberWithReputationDataReputationDataUnion `json:"reputation_data"`
+	// Reputation metrics
+	ReputationData ReputationData `json:"reputation_data"`
 	// When the record was last updated
 	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1448,63 +1448,6 @@ type ReputationPhoneNumberWithReputationData struct {
 // Returns the unmodified JSON received from the API
 func (r ReputationPhoneNumberWithReputationData) RawJSON() string { return r.JSON.raw }
 func (r *ReputationPhoneNumberWithReputationData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ReputationPhoneNumberWithReputationDataReputationDataUnion contains all possible
-// properties and values from [ReputationData], [map[string]any].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid:
-// OfReputationPhoneNumberWithReputationDataReputationDataEmptyReputationDataItem]
-type ReputationPhoneNumberWithReputationDataReputationDataUnion struct {
-	// This field will be present if the value is a [any] instead of an object.
-	OfReputationPhoneNumberWithReputationDataReputationDataEmptyReputationDataItem any `json:",inline"`
-	// This field is from variant [ReputationData].
-	ConnectionScore int64 `json:"connection_score"`
-	// This field is from variant [ReputationData].
-	EngagementScore int64 `json:"engagement_score"`
-	// This field is from variant [ReputationData].
-	LastRefreshedAt time.Time `json:"last_refreshed_at"`
-	// This field is from variant [ReputationData].
-	MaturityScore int64 `json:"maturity_score"`
-	// This field is from variant [ReputationData].
-	SentimentScore int64 `json:"sentiment_score"`
-	// This field is from variant [ReputationData].
-	SpamCategory string `json:"spam_category"`
-	// This field is from variant [ReputationData].
-	SpamRisk ReputationDataSpamRisk `json:"spam_risk"`
-	JSON     struct {
-		OfReputationPhoneNumberWithReputationDataReputationDataEmptyReputationDataItem respjson.Field
-		ConnectionScore                                                                respjson.Field
-		EngagementScore                                                                respjson.Field
-		LastRefreshedAt                                                                respjson.Field
-		MaturityScore                                                                  respjson.Field
-		SentimentScore                                                                 respjson.Field
-		SpamCategory                                                                   respjson.Field
-		SpamRisk                                                                       respjson.Field
-		raw                                                                            string
-	} `json:"-"`
-}
-
-func (u ReputationPhoneNumberWithReputationDataReputationDataUnion) AsReputationData() (v ReputationData) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u ReputationPhoneNumberWithReputationDataReputationDataUnion) AsEmptyReputationData() (v map[string]any) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u ReputationPhoneNumberWithReputationDataReputationDataUnion) RawJSON() string {
-	return u.JSON.raw
-}
-
-func (r *ReputationPhoneNumberWithReputationDataReputationDataUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
