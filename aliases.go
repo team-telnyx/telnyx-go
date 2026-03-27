@@ -654,11 +654,6 @@ const ReputationDataSpamRiskHigh = shared.ReputationDataSpamRiskHigh
 // This is an alias to an internal type.
 type ReputationPhoneNumberWithReputationData = shared.ReputationPhoneNumberWithReputationData
 
-// Reputation metrics (null if not yet fetched)
-//
-// This is an alias to an internal type.
-type ReputationPhoneNumberWithReputationDataReputationDataUnion = shared.ReputationPhoneNumberWithReputationDataReputationDataUnion
-
 // This is an alias to an internal type.
 type ResembleVoiceSettingsParam = shared.ResembleVoiceSettingsParam
 
