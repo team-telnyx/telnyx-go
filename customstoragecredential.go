@@ -649,7 +649,7 @@ func (r CustomStorageCredentialNewParams) MarshalJSON() (data []byte, err error)
 	return shimjson.Marshal(r.CustomStorageConfiguration)
 }
 func (r *CustomStorageCredentialNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.CustomStorageConfiguration)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type CustomStorageCredentialUpdateParams struct {
@@ -661,5 +661,5 @@ func (r CustomStorageCredentialUpdateParams) MarshalJSON() (data []byte, err err
 	return shimjson.Marshal(r.CustomStorageConfiguration)
 }
 func (r *CustomStorageCredentialUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.CustomStorageConfiguration)
+	return apijson.UnmarshalRoot(data, r)
 }

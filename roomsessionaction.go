@@ -4,7 +4,6 @@ package telnyx
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -273,7 +272,7 @@ func (r RoomSessionActionKickParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.ActionsParticipantsRequest)
 }
 func (r *RoomSessionActionKickParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.ActionsParticipantsRequest)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type RoomSessionActionMuteParams struct {
@@ -285,7 +284,7 @@ func (r RoomSessionActionMuteParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.ActionsParticipantsRequest)
 }
 func (r *RoomSessionActionMuteParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.ActionsParticipantsRequest)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type RoomSessionActionUnmuteParams struct {
@@ -297,5 +296,5 @@ func (r RoomSessionActionUnmuteParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.ActionsParticipantsRequest)
 }
 func (r *RoomSessionActionUnmuteParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.ActionsParticipantsRequest)
+	return apijson.UnmarshalRoot(data, r)
 }

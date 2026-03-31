@@ -276,7 +276,7 @@ func (r GlobalIPAssignmentNewParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.GlobalIPAssignment)
 }
 func (r *GlobalIPAssignmentNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.GlobalIPAssignment)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type GlobalIPAssignmentUpdateParams struct {
@@ -288,7 +288,7 @@ func (r GlobalIPAssignmentUpdateParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.GlobalIPAssignmentUpdateRequest)
 }
 func (r *GlobalIPAssignmentUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.GlobalIPAssignmentUpdateRequest)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type GlobalIPAssignmentUpdateParamsGlobalIPAssignmentUpdateRequest struct {

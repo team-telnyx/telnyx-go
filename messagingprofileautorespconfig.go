@@ -4,7 +4,6 @@ package telnyx
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -222,7 +221,7 @@ func (r MessagingProfileAutorespConfigNewParams) MarshalJSON() (data []byte, err
 	return shimjson.Marshal(r.AutoRespConfigCreate)
 }
 func (r *MessagingProfileAutorespConfigNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.AutoRespConfigCreate)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type MessagingProfileAutorespConfigGetParams struct {
@@ -240,7 +239,7 @@ func (r MessagingProfileAutorespConfigUpdateParams) MarshalJSON() (data []byte, 
 	return shimjson.Marshal(r.AutoRespConfigCreate)
 }
 func (r *MessagingProfileAutorespConfigUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.AutoRespConfigCreate)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type MessagingProfileAutorespConfigListParams struct {

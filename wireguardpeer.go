@@ -4,7 +4,6 @@ package telnyx
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -365,7 +364,7 @@ func (r WireguardPeerUpdateParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.WireguardPeerPatch)
 }
 func (r *WireguardPeerUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.WireguardPeerPatch)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type WireguardPeerListParams struct {

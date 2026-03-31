@@ -4,7 +4,6 @@ package telnyx
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -376,7 +375,7 @@ func (r NetworkNewParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.NetworkCreate)
 }
 func (r *NetworkNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.NetworkCreate)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type NetworkUpdateParams struct {
@@ -388,7 +387,7 @@ func (r NetworkUpdateParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.NetworkCreate)
 }
 func (r *NetworkUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.NetworkCreate)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type NetworkListParams struct {

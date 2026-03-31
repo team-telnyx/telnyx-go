@@ -4,7 +4,6 @@ package telnyx
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -625,7 +624,7 @@ func (r ConferenceActionUpdateParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.UpdateConference)
 }
 func (r *ConferenceActionUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.UpdateConference)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type ConferenceActionEndConferenceParams struct {
