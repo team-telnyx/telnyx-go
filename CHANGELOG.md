@@ -1,5 +1,24 @@
 # Changelog
 
+## 4.55.1 (2026-03-31)
+
+Full Changelog: [v4.55.0...v4.55.1](https://github.com/team-telnyx/telnyx-go/compare/v4.55.0...v4.55.1)
+
+### Bug Fixes
+
+* fix issue with unmarshaling in some cases ([0d4afda](https://github.com/team-telnyx/telnyx-go/commit/0d4afda8991038c2b9676360eeff676dcc7d6978))
+
+
+### Chores
+
+* **ci:** support opting out of skipping builds on metadata-only commits ([3406f7d](https://github.com/team-telnyx/telnyx-go/commit/3406f7d7b1a732ab692ca939c0bab332ed7533d7))
+* update docs for api:"required" ([49e614c](https://github.com/team-telnyx/telnyx-go/commit/49e614cd13c55041760c8993e2c95b05073db954))
+
+
+### Documentation
+
+* fix voice settings available voices link ([c4d6bfa](https://github.com/team-telnyx/telnyx-go/commit/c4d6bfa48f6b898fbc8f8ca0bf0cff4d40c12e3d))
+
 ## 4.55.0 (2026-03-26)
 
 Full Changelog: [v4.54.0...v4.55.0](https://github.com/team-telnyx/telnyx-go/compare/v4.54.0...v4.55.0)
