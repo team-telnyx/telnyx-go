@@ -239,7 +239,7 @@ func (r NotificationProfileNewParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.NotificationProfile)
 }
 func (r *NotificationProfileNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.NotificationProfile)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type NotificationProfileUpdateParams struct {
@@ -252,7 +252,7 @@ func (r NotificationProfileUpdateParams) MarshalJSON() (data []byte, err error) 
 	return shimjson.Marshal(r.NotificationProfile)
 }
 func (r *NotificationProfileUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.NotificationProfile)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type NotificationProfileListParams struct {

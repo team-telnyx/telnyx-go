@@ -829,7 +829,7 @@ func (r SimCardUpdateParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.SimCard)
 }
 func (r *SimCardUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.SimCard)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type SimCardListParams struct {

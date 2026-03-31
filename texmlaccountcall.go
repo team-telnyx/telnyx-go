@@ -4,7 +4,6 @@ package telnyx
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -679,7 +678,7 @@ func (r TexmlAccountCallUpdateParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.UpdateCall)
 }
 func (r *TexmlAccountCallUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.UpdateCall)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type TexmlAccountCallCallsParams struct {

@@ -263,7 +263,7 @@ func (r DynamicEmergencyAddressNewParams) MarshalJSON() (data []byte, err error)
 	return shimjson.Marshal(r.DynamicEmergencyAddress)
 }
 func (r *DynamicEmergencyAddressNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.DynamicEmergencyAddress)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type DynamicEmergencyAddressListParams struct {

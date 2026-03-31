@@ -263,7 +263,7 @@ func (r NotificationChannelNewParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.NotificationChannel)
 }
 func (r *NotificationChannelNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.NotificationChannel)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type NotificationChannelUpdateParams struct {
@@ -276,7 +276,7 @@ func (r NotificationChannelUpdateParams) MarshalJSON() (data []byte, err error) 
 	return shimjson.Marshal(r.NotificationChannel)
 }
 func (r *NotificationChannelUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.NotificationChannel)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type NotificationChannelListParams struct {

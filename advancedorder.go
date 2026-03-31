@@ -4,7 +4,6 @@ package telnyx
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -296,7 +295,7 @@ func (r AdvancedOrderNewParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.AdvancedOrder)
 }
 func (r *AdvancedOrderNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.AdvancedOrder)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type AdvancedOrderUpdateRequirementGroupParams struct {
@@ -308,5 +307,5 @@ func (r AdvancedOrderUpdateRequirementGroupParams) MarshalJSON() (data []byte, e
 	return shimjson.Marshal(r.AdvancedOrder)
 }
 func (r *AdvancedOrderUpdateRequirementGroupParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.AdvancedOrder)
+	return apijson.UnmarshalRoot(data, r)
 }

@@ -200,7 +200,7 @@ func (r AIAssistantCanaryDeployNewParams) MarshalJSON() (data []byte, err error)
 	return shimjson.Marshal(r.CanaryDeploy)
 }
 func (r *AIAssistantCanaryDeployNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.CanaryDeploy)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type AIAssistantCanaryDeployUpdateParams struct {
@@ -213,5 +213,5 @@ func (r AIAssistantCanaryDeployUpdateParams) MarshalJSON() (data []byte, err err
 	return shimjson.Marshal(r.CanaryDeploy)
 }
 func (r *AIAssistantCanaryDeployUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.CanaryDeploy)
+	return apijson.UnmarshalRoot(data, r)
 }

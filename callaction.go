@@ -4,7 +4,6 @@ package telnyx
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -5954,7 +5953,7 @@ func (r CallActionStartTranscriptionParams) MarshalJSON() (data []byte, err erro
 	return shimjson.Marshal(r.TranscriptionStartRequest)
 }
 func (r *CallActionStartTranscriptionParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.TranscriptionStartRequest)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type CallActionStopAIAssistantParams struct {
@@ -6075,7 +6074,7 @@ func (r CallActionStopRecordingParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.StopRecordingRequest)
 }
 func (r *CallActionStopRecordingParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.StopRecordingRequest)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type CallActionStopSiprecParams struct {
