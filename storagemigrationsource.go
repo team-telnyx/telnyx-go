@@ -266,5 +266,5 @@ func (r StorageMigrationSourceNewParams) MarshalJSON() (data []byte, err error) 
 	return shimjson.Marshal(r.MigrationSourceParams)
 }
 func (r *StorageMigrationSourceNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.MigrationSourceParams)
+	return apijson.UnmarshalRoot(data, r)
 }

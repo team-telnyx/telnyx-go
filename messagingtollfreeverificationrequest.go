@@ -716,7 +716,7 @@ func (r MessagingTollfreeVerificationRequestNewParams) MarshalJSON() (data []byt
 	return shimjson.Marshal(r.TfVerificationRequest)
 }
 func (r *MessagingTollfreeVerificationRequestNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.TfVerificationRequest)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type MessagingTollfreeVerificationRequestUpdateParams struct {
@@ -729,7 +729,7 @@ func (r MessagingTollfreeVerificationRequestUpdateParams) MarshalJSON() (data []
 	return shimjson.Marshal(r.TfVerificationRequest)
 }
 func (r *MessagingTollfreeVerificationRequestUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.TfVerificationRequest)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type MessagingTollfreeVerificationRequestListParams struct {

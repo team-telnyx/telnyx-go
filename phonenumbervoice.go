@@ -453,7 +453,7 @@ func (r PhoneNumberVoiceUpdateParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.UpdateVoiceSettings)
 }
 func (r *PhoneNumberVoiceUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.UpdateVoiceSettings)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type PhoneNumberVoiceListParams struct {

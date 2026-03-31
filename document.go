@@ -399,7 +399,7 @@ func (r DocumentUpdateParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.DocServiceDocument)
 }
 func (r *DocumentUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.DocServiceDocument)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type DocumentListParams struct {
@@ -502,7 +502,7 @@ func (r DocumentUploadParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.Document)
 }
 func (r *DocumentUploadParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Document)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type DocumentUploadParamsDocument struct {
@@ -536,7 +536,7 @@ func (r DocumentUploadJsonParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.Document)
 }
 func (r *DocumentUploadJsonParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Document)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type DocumentUploadJsonParamsDocument struct {

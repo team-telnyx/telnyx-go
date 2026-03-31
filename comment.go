@@ -278,7 +278,7 @@ func (r CommentNewParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.Comment)
 }
 func (r *CommentNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Comment)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type CommentListParams struct {

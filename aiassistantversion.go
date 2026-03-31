@@ -4,7 +4,6 @@ package telnyx
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -201,7 +200,7 @@ func (r AIAssistantVersionUpdateParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.UpdateAssistant)
 }
 func (r *AIAssistantVersionUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.UpdateAssistant)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type AIAssistantVersionDeleteParams struct {

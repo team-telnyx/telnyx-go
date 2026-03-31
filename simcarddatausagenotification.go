@@ -328,7 +328,7 @@ func (r SimCardDataUsageNotificationUpdateParams) MarshalJSON() (data []byte, er
 	return shimjson.Marshal(r.SimCardDataUsageNotification)
 }
 func (r *SimCardDataUsageNotificationUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.SimCardDataUsageNotification)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type SimCardDataUsageNotificationListParams struct {

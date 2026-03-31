@@ -4,7 +4,6 @@ package telnyx
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -193,7 +192,7 @@ func (r Messaging10dlcPhoneNumberCampaignNewParams) MarshalJSON() (data []byte, 
 	return shimjson.Marshal(r.PhoneNumberCampaignCreate)
 }
 func (r *Messaging10dlcPhoneNumberCampaignNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.PhoneNumberCampaignCreate)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type Messaging10dlcPhoneNumberCampaignUpdateParams struct {
@@ -205,7 +204,7 @@ func (r Messaging10dlcPhoneNumberCampaignUpdateParams) MarshalJSON() (data []byt
 	return shimjson.Marshal(r.PhoneNumberCampaignCreate)
 }
 func (r *Messaging10dlcPhoneNumberCampaignUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.PhoneNumberCampaignCreate)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type Messaging10dlcPhoneNumberCampaignListParams struct {
