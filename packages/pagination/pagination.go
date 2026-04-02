@@ -66,7 +66,7 @@ func (r *DefaultFlatPagination[T]) GetNextPage() (res *DefaultFlatPagination[T],
 		return nil, nil
 	}
 	currentPage := r.Meta.PageNumber
-	if currentPage >= r.Meta.TotalPages {
+	if r.Meta.TotalPages > 0 && currentPage >= r.Meta.TotalPages {
 		return nil, nil
 	}
 	cfg := r.cfg.Clone(context.Background())
@@ -281,7 +281,7 @@ func (r *DefaultPaginationForLogMessages[T]) GetNextPage() (res *DefaultPaginati
 		return nil, nil
 	}
 	currentPage := r.Meta.PageNumber
-	if currentPage >= r.Meta.TotalPages {
+	if r.Meta.TotalPages > 0 && currentPage >= r.Meta.TotalPages {
 		return nil, nil
 	}
 	cfg := r.cfg.Clone(context.Background())
@@ -384,7 +384,7 @@ func (r *DefaultPaginationForMessagingTollfree[T]) GetNextPage() (res *DefaultPa
 	if err != nil {
 		currentPage = 1
 	}
-	if currentPage >= r.TotalRecords {
+	if r.TotalRecords > 0 && currentPage >= r.TotalRecords {
 		return nil, nil
 	}
 	cfg := r.cfg.Clone(context.Background())
@@ -599,7 +599,7 @@ func (r *DefaultFlatPaginationForInexplicitNumberOrders[T]) GetNextPage() (res *
 		return nil, nil
 	}
 	currentPage := r.Meta.PageNumber
-	if currentPage >= r.Meta.TotalPages {
+	if r.Meta.TotalPages > 0 && currentPage >= r.Meta.TotalPages {
 		return nil, nil
 	}
 	cfg := r.cfg.Clone(context.Background())
@@ -716,7 +716,7 @@ func (r *PerPagePagination[T]) GetNextPage() (res *PerPagePagination[T], err err
 		return nil, nil
 	}
 	currentPage := r.Meta.PageNumber
-	if currentPage >= r.Meta.TotalPages {
+	if r.Meta.TotalPages > 0 && currentPage >= r.Meta.TotalPages {
 		return nil, nil
 	}
 	cfg := r.cfg.Clone(context.Background())
@@ -817,7 +817,7 @@ func (r *PerPagePaginationV2[T]) GetNextPage() (res *PerPagePaginationV2[T], err
 		return nil, nil
 	}
 	currentPage := r.Page
-	if currentPage >= r.TotalRecords {
+	if r.TotalRecords > 0 && currentPage >= r.TotalRecords {
 		return nil, nil
 	}
 	cfg := r.cfg.Clone(context.Background())
