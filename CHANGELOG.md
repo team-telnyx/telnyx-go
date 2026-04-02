@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.55.2 (2026-04-02)
+
+Full Changelog: [v4.55.1...v4.55.2](https://github.com/team-telnyx/telnyx-go/compare/v4.55.1...v4.55.2)
+
+### Bug Fixes
+
+* fixes for pagination and iteration, plus iter.Seq support ([22c5ffc](https://github.com/team-telnyx/telnyx-go/commit/22c5ffcbf9b032f12fe4770abc7b69018cfa9942))
+
 ## 4.55.1 (2026-03-31)
 
 Full Changelog: [v4.55.0...v4.55.1](https://github.com/team-telnyx/telnyx-go/compare/v4.55.0...v4.55.1)
