@@ -2319,8 +2319,13 @@ type WhatsappMessageContent struct {
 	Location              WhatsappLocation    `json:"location"`
 	Reaction              WhatsappReaction    `json:"reaction"`
 	Sticker               WhatsappMedia       `json:"sticker"`
+	// Template message object. Provide either template_id or name + language to
+	// identify the template.
+	Template WhatsappMessageContentTemplate `json:"template"`
+	// Text message content. Can only be sent within a 24-hour customer service window.
+	Text WhatsappMessageContentText `json:"text"`
 	// Any of "audio", "document", "image", "sticker", "video", "interactive",
-	// "location", "template", "reaction", "contacts".
+	// "location", "template", "reaction", "contacts", "text".
 	Type  WhatsappMessageContentType `json:"type"`
 	Video WhatsappMedia              `json:"video"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2334,6 +2339,8 @@ type WhatsappMessageContent struct {
 		Location              respjson.Field
 		Reaction              respjson.Field
 		Sticker               respjson.Field
+		Template              respjson.Field
+		Text                  respjson.Field
 		Type                  respjson.Field
 		Video                 respjson.Field
 		ExtraFields           map[string]respjson.Field
@@ -2356,6 +2363,120 @@ func (r WhatsappMessageContent) ToParam() WhatsappMessageContentParam {
 	return param.Override[WhatsappMessageContentParam](json.RawMessage(r.RawJSON()))
 }
 
+// Template message object. Provide either template_id or name + language to
+// identify the template.
+type WhatsappMessageContentTemplate struct {
+	// Template parameter values for header, body, and button components.
+	Components []WhatsappMessageContentTemplateComponent `json:"components"`
+	// Template language. Required unless template_id is provided.
+	Language WhatsappMessageContentTemplateLanguage `json:"language"`
+	// Template name as registered with Meta. Required unless template_id is provided.
+	Name string `json:"name"`
+	// Telnyx template ID (the id field from template list/get responses). When
+	// provided, name and language are resolved automatically.
+	TemplateID string `json:"template_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Components  respjson.Field
+		Language    respjson.Field
+		Name        respjson.Field
+		TemplateID  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappMessageContentTemplate) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappMessageContentTemplate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappMessageContentTemplateComponent struct {
+	// Button index (required for button components)
+	Index      int64                                              `json:"index"`
+	Parameters []WhatsappMessageContentTemplateComponentParameter `json:"parameters"`
+	// Any of "quick_reply", "url".
+	SubType string `json:"sub_type"`
+	// Any of "header", "body", "button".
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Index       respjson.Field
+		Parameters  respjson.Field
+		SubType     respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappMessageContentTemplateComponent) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappMessageContentTemplateComponent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappMessageContentTemplateComponentParameter struct {
+	Text string `json:"text"`
+	// Any of "text", "image", "video", "document", "currency", "date_time".
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Text        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappMessageContentTemplateComponentParameter) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappMessageContentTemplateComponentParameter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Template language. Required unless template_id is provided.
+type WhatsappMessageContentTemplateLanguage struct {
+	// Language code (e.g. en_US)
+	Code   string `json:"code" api:"required"`
+	Policy string `json:"policy"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Code        respjson.Field
+		Policy      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappMessageContentTemplateLanguage) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappMessageContentTemplateLanguage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Text message content. Can only be sent within a 24-hour customer service window.
+type WhatsappMessageContentText struct {
+	// The text message body.
+	Body string `json:"body" api:"required"`
+	// Whether to show a URL preview in the message.
+	PreviewURL bool `json:"preview_url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Body        respjson.Field
+		PreviewURL  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappMessageContentText) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappMessageContentText) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type WhatsappMessageContentType string
 
 const (
@@ -2369,6 +2490,7 @@ const (
 	WhatsappMessageContentTypeTemplate    WhatsappMessageContentType = "template"
 	WhatsappMessageContentTypeReaction    WhatsappMessageContentType = "reaction"
 	WhatsappMessageContentTypeContacts    WhatsappMessageContentType = "contacts"
+	WhatsappMessageContentTypeText        WhatsappMessageContentType = "text"
 )
 
 type WhatsappMessageContentParam struct {
@@ -2382,8 +2504,13 @@ type WhatsappMessageContentParam struct {
 	Location              WhatsappLocationParam    `json:"location,omitzero"`
 	Reaction              WhatsappReactionParam    `json:"reaction,omitzero"`
 	Sticker               WhatsappMediaParam       `json:"sticker,omitzero"`
+	// Template message object. Provide either template_id or name + language to
+	// identify the template.
+	Template WhatsappMessageContentTemplateParam `json:"template,omitzero"`
+	// Text message content. Can only be sent within a 24-hour customer service window.
+	Text WhatsappMessageContentTextParam `json:"text,omitzero"`
 	// Any of "audio", "document", "image", "sticker", "video", "interactive",
-	// "location", "template", "reaction", "contacts".
+	// "location", "template", "reaction", "contacts", "text".
 	Type  WhatsappMessageContentType `json:"type,omitzero"`
 	Video WhatsappMediaParam         `json:"video,omitzero"`
 	paramObj
@@ -2394,6 +2521,115 @@ func (r WhatsappMessageContentParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *WhatsappMessageContentParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Template message object. Provide either template_id or name + language to
+// identify the template.
+type WhatsappMessageContentTemplateParam struct {
+	// Template name as registered with Meta. Required unless template_id is provided.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Telnyx template ID (the id field from template list/get responses). When
+	// provided, name and language are resolved automatically.
+	TemplateID param.Opt[string] `json:"template_id,omitzero"`
+	// Template parameter values for header, body, and button components.
+	Components []WhatsappMessageContentTemplateComponentParam `json:"components,omitzero"`
+	// Template language. Required unless template_id is provided.
+	Language WhatsappMessageContentTemplateLanguageParam `json:"language,omitzero"`
+	paramObj
+}
+
+func (r WhatsappMessageContentTemplateParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappMessageContentTemplateParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappMessageContentTemplateParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappMessageContentTemplateComponentParam struct {
+	// Button index (required for button components)
+	Index      param.Opt[int64]                                        `json:"index,omitzero"`
+	Parameters []WhatsappMessageContentTemplateComponentParameterParam `json:"parameters,omitzero"`
+	// Any of "quick_reply", "url".
+	SubType string `json:"sub_type,omitzero"`
+	// Any of "header", "body", "button".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r WhatsappMessageContentTemplateComponentParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappMessageContentTemplateComponentParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappMessageContentTemplateComponentParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[WhatsappMessageContentTemplateComponentParam](
+		"sub_type", "quick_reply", "url",
+	)
+	apijson.RegisterFieldValidator[WhatsappMessageContentTemplateComponentParam](
+		"type", "header", "body", "button",
+	)
+}
+
+type WhatsappMessageContentTemplateComponentParameterParam struct {
+	Text param.Opt[string] `json:"text,omitzero"`
+	// Any of "text", "image", "video", "document", "currency", "date_time".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r WhatsappMessageContentTemplateComponentParameterParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappMessageContentTemplateComponentParameterParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappMessageContentTemplateComponentParameterParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[WhatsappMessageContentTemplateComponentParameterParam](
+		"type", "text", "image", "video", "document", "currency", "date_time",
+	)
+}
+
+// Template language. Required unless template_id is provided.
+//
+// The property Code is required.
+type WhatsappMessageContentTemplateLanguageParam struct {
+	// Language code (e.g. en_US)
+	Code   string            `json:"code" api:"required"`
+	Policy param.Opt[string] `json:"policy,omitzero"`
+	paramObj
+}
+
+func (r WhatsappMessageContentTemplateLanguageParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappMessageContentTemplateLanguageParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappMessageContentTemplateLanguageParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Text message content. Can only be sent within a 24-hour customer service window.
+//
+// The property Body is required.
+type WhatsappMessageContentTextParam struct {
+	// The text message body.
+	Body string `json:"body" api:"required"`
+	// Whether to show a URL preview in the message.
+	PreviewURL param.Opt[bool] `json:"preview_url,omitzero"`
+	paramObj
+}
+
+func (r WhatsappMessageContentTextParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappMessageContentTextParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappMessageContentTextParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
