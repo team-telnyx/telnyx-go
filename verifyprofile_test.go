@@ -59,6 +59,11 @@ func TestVerifyProfileNewWithOptionalParams(t *testing.T) {
 		},
 		WebhookFailoverURL: telnyx.String("http://example.com/webhook/failover"),
 		WebhookURL:         telnyx.String("http://example.com/webhook"),
+		Whatsapp: telnyx.VerifyProfileNewParamsWhatsapp{
+			AppName:                        telnyx.String("Example Secure App"),
+			DefaultVerificationTimeoutSecs: telnyx.Int(300),
+			WhitelistedDestinations:        []string{"US", "CA"},
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -141,6 +146,11 @@ func TestVerifyProfileUpdateWithOptionalParams(t *testing.T) {
 			},
 			WebhookFailoverURL: telnyx.String("http://example.com/webhook/failover"),
 			WebhookURL:         telnyx.String("http://example.com/webhook"),
+			Whatsapp: telnyx.VerifyProfileUpdateParamsWhatsapp{
+				AppName:                        telnyx.String("Example Secure App"),
+				DefaultVerificationTimeoutSecs: telnyx.Int(300),
+				WhitelistedDestinations:        []string{"US", "CA"},
+			},
 		},
 	)
 	if err != nil {

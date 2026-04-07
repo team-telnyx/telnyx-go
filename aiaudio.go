@@ -47,20 +47,31 @@ func (r *AIAudioService) Transcribe(ctx context.Context, body AIAudioTranscribeP
 	return res, err
 }
 
+// Response fields vary by model. `distil-whisper/distil-large-v2` returns `text`,
+// `duration`, and `segments` in `verbose_json` mode.
+// `openai/whisper-large-v3-turbo` returns `text` only. `deepgram/nova-3` returns
+// `text` and, depending on `model_config`, may include `words` with per-word
+// timestamps and speaker labels.
 type AIAudioTranscribeResponse struct {
 	// The transcribed text for the audio file.
 	Text string `json:"text" api:"required"`
-	// The duration of the audio file in seconds. This is only included if
-	// `response_format` is set to `verbose_json`.
+	// The duration of the audio file in seconds. Returned by
+	// `distil-whisper/distil-large-v2` and `deepgram/nova-3` when `response_format` is
+	// `verbose_json`. Not returned by `openai/whisper-large-v3-turbo`.
 	Duration float64 `json:"duration"`
-	// Segments of the transcribed text and their corresponding details. This is only
-	// included if `response_format` is set to `verbose_json`.
+	// Segments of the transcribed text and their corresponding details. Returned by
+	// `distil-whisper/distil-large-v2` when `response_format` is `verbose_json`. Not
+	// returned by `openai/whisper-large-v3-turbo`.
 	Segments []AIAudioTranscribeResponseSegment `json:"segments"`
+	// Word-level timestamps and optional speaker labels. Only returned by
+	// `deepgram/nova-3` when word-level output is enabled via `model_config`.
+	Words []AIAudioTranscribeResponseWord `json:"words"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
 		Duration    respjson.Field
 		Segments    respjson.Field
+		Words       respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -95,6 +106,37 @@ type AIAudioTranscribeResponseSegment struct {
 // Returns the unmodified JSON received from the API
 func (r AIAudioTranscribeResponseSegment) RawJSON() string { return r.JSON.raw }
 func (r *AIAudioTranscribeResponseSegment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Word-level timing detail. Only present when using `deepgram/nova-3` with
+// `model_config` options that enable word timestamps.
+type AIAudioTranscribeResponseWord struct {
+	// End time of the word in seconds.
+	End float64 `json:"end" api:"required"`
+	// Start time of the word in seconds.
+	Start float64 `json:"start" api:"required"`
+	// The transcribed word.
+	Word string `json:"word" api:"required"`
+	// Confidence score for the word (0.0 to 1.0).
+	Confidence float64 `json:"confidence"`
+	// Speaker index. Only present when diarization is enabled via `model_config`.
+	Speaker int64 `json:"speaker"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		End         respjson.Field
+		Start       respjson.Field
+		Word        respjson.Field
+		Confidence  respjson.Field
+		Speaker     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AIAudioTranscribeResponseWord) RawJSON() string { return r.JSON.raw }
+func (r *AIAudioTranscribeResponseWord) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
