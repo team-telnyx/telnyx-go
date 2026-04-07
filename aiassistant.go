@@ -3088,6 +3088,9 @@ type TelephonySettingsRecordingSettings struct {
 	//
 	// Any of "single", "dual".
 	Channels string `json:"channels"`
+	// Whether call recording is enabled. When set to false, calls will not be recorded
+	// regardless of other recording configuration.
+	Enabled bool `json:"enabled"`
 	// The format of the recording file.
 	//
 	// Any of "wav", "mp3".
@@ -3095,6 +3098,7 @@ type TelephonySettingsRecordingSettings struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Channels    respjson.Field
+		Enabled     respjson.Field
 		Format      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -3261,6 +3265,9 @@ func init() {
 
 // Configuration for call recording format and channel settings.
 type TelephonySettingsRecordingSettingsParam struct {
+	// Whether call recording is enabled. When set to false, calls will not be recorded
+	// regardless of other recording configuration.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// The number of channels for the recording. 'single' for mono, 'dual' for stereo.
 	//
 	// Any of "single", "dual".

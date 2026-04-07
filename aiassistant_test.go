@@ -64,6 +64,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			},
 			RecordingSettings: telnyx.TelephonySettingsRecordingSettingsParam{
 				Channels: "single",
+				Enabled:  telnyx.Bool(true),
 				Format:   "wav",
 			},
 			SupportsUnauthenticatedWebCalls: telnyx.Bool(true),
@@ -266,6 +267,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				},
 				RecordingSettings: telnyx.TelephonySettingsRecordingSettingsParam{
 					Channels: "single",
+					Enabled:  telnyx.Bool(true),
 					Format:   "wav",
 				},
 				SupportsUnauthenticatedWebCalls: telnyx.Bool(true),
