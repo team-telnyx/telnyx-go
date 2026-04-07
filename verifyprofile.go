@@ -399,6 +399,7 @@ type VerifyProfileNewParams struct {
 	Flashcall          VerifyProfileNewParamsFlashcall `json:"flashcall,omitzero"`
 	Rcs                VerifyProfileNewParamsRcs       `json:"rcs,omitzero"`
 	SMS                VerifyProfileNewParamsSMS       `json:"sms,omitzero"`
+	Whatsapp           VerifyProfileNewParamsWhatsapp  `json:"whatsapp,omitzero"`
 	paramObj
 }
 
@@ -527,6 +528,31 @@ func (r *VerifyProfileNewParamsSMS) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type VerifyProfileNewParamsWhatsapp struct {
+	// The name that identifies the application requesting 2fa in the verification
+	// message.
+	AppName param.Opt[string] `json:"app_name,omitzero"`
+	// For every request that is initiated via this Verify profile, this sets the
+	// number of seconds before a verification request code expires. Once the
+	// verification request expires, the user cannot use the code to verify their
+	// identity.
+	DefaultVerificationTimeoutSecs param.Opt[int64] `json:"default_verification_timeout_secs,omitzero"`
+	// Enabled country destinations to send verification codes. The elements in the
+	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
+	// destinations will be allowed.
+	WhitelistedDestinations []string       `json:"whitelisted_destinations,omitzero"`
+	ExtraFields             map[string]any `json:"-"`
+	paramObj
+}
+
+func (r VerifyProfileNewParamsWhatsapp) MarshalJSON() (data []byte, err error) {
+	type shadow VerifyProfileNewParamsWhatsapp
+	return param.MarshalWithExtras(r, (*shadow)(&r), r.ExtraFields)
+}
+func (r *VerifyProfileNewParamsWhatsapp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type VerifyProfileUpdateParams struct {
 	Language           param.Opt[string]                  `json:"language,omitzero"`
 	Name               param.Opt[string]                  `json:"name,omitzero"`
@@ -536,6 +562,7 @@ type VerifyProfileUpdateParams struct {
 	Flashcall          VerifyProfileUpdateParamsFlashcall `json:"flashcall,omitzero"`
 	Rcs                VerifyProfileUpdateParamsRcs       `json:"rcs,omitzero"`
 	SMS                VerifyProfileUpdateParamsSMS       `json:"sms,omitzero"`
+	Whatsapp           VerifyProfileUpdateParamsWhatsapp  `json:"whatsapp,omitzero"`
 	paramObj
 }
 
@@ -661,6 +688,31 @@ func (r VerifyProfileUpdateParamsSMS) MarshalJSON() (data []byte, err error) {
 	return param.MarshalWithExtras(r, (*shadow)(&r), r.ExtraFields)
 }
 func (r *VerifyProfileUpdateParamsSMS) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VerifyProfileUpdateParamsWhatsapp struct {
+	// The name that identifies the application requesting 2fa in the verification
+	// message.
+	AppName param.Opt[string] `json:"app_name,omitzero"`
+	// For every request that is initiated via this Verify profile, this sets the
+	// number of seconds before a verification request code expires. Once the
+	// verification request expires, the user cannot use the code to verify their
+	// identity.
+	DefaultVerificationTimeoutSecs param.Opt[int64] `json:"default_verification_timeout_secs,omitzero"`
+	// Enabled country destinations to send verification codes. The elements in the
+	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
+	// destinations will be allowed.
+	WhitelistedDestinations []string       `json:"whitelisted_destinations,omitzero"`
+	ExtraFields             map[string]any `json:"-"`
+	paramObj
+}
+
+func (r VerifyProfileUpdateParamsWhatsapp) MarshalJSON() (data []byte, err error) {
+	type shadow VerifyProfileUpdateParamsWhatsapp
+	return param.MarshalWithExtras(r, (*shadow)(&r), r.ExtraFields)
+}
+func (r *VerifyProfileUpdateParamsWhatsapp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
