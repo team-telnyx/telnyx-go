@@ -2246,11 +2246,11 @@ type InferenceEmbedding struct {
 	// [/v2/integration_secrets](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
 	// that refers to your LLM provider's API key. Warning: Free plans are unlikely to
 	// work with this integration.
-	LlmAPIKeyRef          string                                  `json:"llm_api_key_ref"`
-	MessagingSettings     MessagingSettings                       `json:"messaging_settings"`
-	ObservabilitySettings InferenceEmbeddingObservabilitySettings `json:"observability_settings"`
-	PrivacySettings       PrivacySettings                         `json:"privacy_settings"`
-	TelephonySettings     TelephonySettings                       `json:"telephony_settings"`
+	LlmAPIKeyRef          string            `json:"llm_api_key_ref"`
+	MessagingSettings     MessagingSettings `json:"messaging_settings"`
+	ObservabilitySettings Observability     `json:"observability_settings"`
+	PrivacySettings       PrivacySettings   `json:"privacy_settings"`
+	TelephonySettings     TelephonySettings `json:"telephony_settings"`
 	// The tools that the assistant can use. These may be templated with
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
 	Tools         []AssistantToolsItemsUnion `json:"tools"`
@@ -2289,29 +2289,6 @@ type InferenceEmbedding struct {
 // Returns the unmodified JSON received from the API
 func (r InferenceEmbedding) RawJSON() string { return r.JSON.raw }
 func (r *InferenceEmbedding) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type InferenceEmbeddingObservabilitySettings struct {
-	Host         string `json:"host"`
-	PublicKeyRef string `json:"public_key_ref"`
-	SecretKeyRef string `json:"secret_key_ref"`
-	// Any of "enabled", "disabled".
-	Status string `json:"status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Host         respjson.Field
-		PublicKeyRef respjson.Field
-		SecretKeyRef respjson.Field
-		Status       respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InferenceEmbeddingObservabilitySettings) RawJSON() string { return r.JSON.raw }
-func (r *InferenceEmbeddingObservabilitySettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2851,6 +2828,60 @@ func (r MessagingSettingsParam) MarshalJSON() (data []byte, err error) {
 func (r *MessagingSettingsParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type Observability struct {
+	Host         string `json:"host"`
+	PublicKeyRef string `json:"public_key_ref"`
+	SecretKeyRef string `json:"secret_key_ref"`
+	// Any of "enabled", "disabled".
+	Status ObservabilityStatus `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Host         respjson.Field
+		PublicKeyRef respjson.Field
+		SecretKeyRef respjson.Field
+		Status       respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Observability) RawJSON() string { return r.JSON.raw }
+func (r *Observability) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ObservabilityStatus string
+
+const (
+	ObservabilityStatusEnabled  ObservabilityStatus = "enabled"
+	ObservabilityStatusDisabled ObservabilityStatus = "disabled"
+)
+
+type ObservabilityReqParam struct {
+	Host         param.Opt[string] `json:"host,omitzero"`
+	PublicKeyRef param.Opt[string] `json:"public_key_ref,omitzero"`
+	SecretKeyRef param.Opt[string] `json:"secret_key_ref,omitzero"`
+	// Any of "enabled", "disabled".
+	Status ObservabilityReqStatus `json:"status,omitzero"`
+	paramObj
+}
+
+func (r ObservabilityReqParam) MarshalJSON() (data []byte, err error) {
+	type shadow ObservabilityReqParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ObservabilityReqParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ObservabilityReqStatus string
+
+const (
+	ObservabilityReqStatusEnabled  ObservabilityReqStatus = "enabled"
+	ObservabilityReqStatusDisabled ObservabilityReqStatus = "disabled"
+)
 
 type PrivacySettings struct {
 	// If true, conversation history and insights will be stored. If false, they will
@@ -4403,14 +4434,14 @@ type AIAssistantNewParams struct {
 	// work with this integration.
 	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
 	// Map of dynamic variables and their default values
-	DynamicVariables      map[string]any                            `json:"dynamic_variables,omitzero"`
-	EnabledFeatures       []EnabledFeatures                         `json:"enabled_features,omitzero"`
-	InsightSettings       InsightSettingsParam                      `json:"insight_settings,omitzero"`
-	MessagingSettings     MessagingSettingsParam                    `json:"messaging_settings,omitzero"`
-	ObservabilitySettings AIAssistantNewParamsObservabilitySettings `json:"observability_settings,omitzero"`
-	PrivacySettings       PrivacySettingsParam                      `json:"privacy_settings,omitzero"`
-	TelephonySettings     TelephonySettingsParam                    `json:"telephony_settings,omitzero"`
-	ToolIDs               []string                                  `json:"tool_ids,omitzero"`
+	DynamicVariables      map[string]any         `json:"dynamic_variables,omitzero"`
+	EnabledFeatures       []EnabledFeatures      `json:"enabled_features,omitzero"`
+	InsightSettings       InsightSettingsParam   `json:"insight_settings,omitzero"`
+	MessagingSettings     MessagingSettingsParam `json:"messaging_settings,omitzero"`
+	ObservabilitySettings ObservabilityReqParam  `json:"observability_settings,omitzero"`
+	PrivacySettings       PrivacySettingsParam   `json:"privacy_settings,omitzero"`
+	TelephonySettings     TelephonySettingsParam `json:"telephony_settings,omitzero"`
+	ToolIDs               []string               `json:"tool_ids,omitzero"`
 	// The tools that the assistant can use. These may be templated with
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
 	Tools         []AssistantToolsItemsUnionParam `json:"tools,omitzero"`
@@ -4427,29 +4458,6 @@ func (r AIAssistantNewParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *AIAssistantNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIAssistantNewParamsObservabilitySettings struct {
-	Host         param.Opt[string] `json:"host,omitzero"`
-	PublicKeyRef param.Opt[string] `json:"public_key_ref,omitzero"`
-	SecretKeyRef param.Opt[string] `json:"secret_key_ref,omitzero"`
-	// Any of "enabled", "disabled".
-	Status string `json:"status,omitzero"`
-	paramObj
-}
-
-func (r AIAssistantNewParamsObservabilitySettings) MarshalJSON() (data []byte, err error) {
-	type shadow AIAssistantNewParamsObservabilitySettings
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AIAssistantNewParamsObservabilitySettings) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[AIAssistantNewParamsObservabilitySettings](
-		"status", "enabled", "disabled",
-	)
 }
 
 type AIAssistantGetParams struct {
@@ -4500,14 +4508,14 @@ type AIAssistantUpdateParams struct {
 	// to true.
 	PromoteToMain param.Opt[bool] `json:"promote_to_main,omitzero"`
 	// Map of dynamic variables and their default values
-	DynamicVariables      map[string]any                               `json:"dynamic_variables,omitzero"`
-	EnabledFeatures       []EnabledFeatures                            `json:"enabled_features,omitzero"`
-	InsightSettings       InsightSettingsParam                         `json:"insight_settings,omitzero"`
-	MessagingSettings     MessagingSettingsParam                       `json:"messaging_settings,omitzero"`
-	ObservabilitySettings AIAssistantUpdateParamsObservabilitySettings `json:"observability_settings,omitzero"`
-	PrivacySettings       PrivacySettingsParam                         `json:"privacy_settings,omitzero"`
-	TelephonySettings     TelephonySettingsParam                       `json:"telephony_settings,omitzero"`
-	ToolIDs               []string                                     `json:"tool_ids,omitzero"`
+	DynamicVariables      map[string]any         `json:"dynamic_variables,omitzero"`
+	EnabledFeatures       []EnabledFeatures      `json:"enabled_features,omitzero"`
+	InsightSettings       InsightSettingsParam   `json:"insight_settings,omitzero"`
+	MessagingSettings     MessagingSettingsParam `json:"messaging_settings,omitzero"`
+	ObservabilitySettings ObservabilityReqParam  `json:"observability_settings,omitzero"`
+	PrivacySettings       PrivacySettingsParam   `json:"privacy_settings,omitzero"`
+	TelephonySettings     TelephonySettingsParam `json:"telephony_settings,omitzero"`
+	ToolIDs               []string               `json:"tool_ids,omitzero"`
 	// The tools that the assistant can use. These may be templated with
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
 	Tools         []AssistantToolsItemsUnionParam `json:"tools,omitzero"`
@@ -4524,29 +4532,6 @@ func (r AIAssistantUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *AIAssistantUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIAssistantUpdateParamsObservabilitySettings struct {
-	Host         param.Opt[string] `json:"host,omitzero"`
-	PublicKeyRef param.Opt[string] `json:"public_key_ref,omitzero"`
-	SecretKeyRef param.Opt[string] `json:"secret_key_ref,omitzero"`
-	// Any of "enabled", "disabled".
-	Status string `json:"status,omitzero"`
-	paramObj
-}
-
-func (r AIAssistantUpdateParamsObservabilitySettings) MarshalJSON() (data []byte, err error) {
-	type shadow AIAssistantUpdateParamsObservabilitySettings
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AIAssistantUpdateParamsObservabilitySettings) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[AIAssistantUpdateParamsObservabilitySettings](
-		"status", "enabled", "disabled",
-	)
 }
 
 type AIAssistantChatParams struct {
