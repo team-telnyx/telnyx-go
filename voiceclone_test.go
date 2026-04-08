@@ -31,11 +31,13 @@ func TestVoiceCloneNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.VoiceClones.New(context.TODO(), telnyx.VoiceCloneNewParams{
-		Gender:        telnyx.VoiceCloneNewParamsGenderMale,
-		Language:      "en",
-		Name:          "clone-narrator",
-		VoiceDesignID: "550e8400-e29b-41d4-a716-446655440000",
-		Provider:      telnyx.VoiceCloneNewParamsProviderTelnyx,
+		OfTelnyxDesignClone: &telnyx.VoiceCloneNewParamsBodyTelnyxDesignClone{
+			Gender:        "male",
+			Language:      "en",
+			Name:          "clone-narrator",
+			VoiceDesignID: "550e8400-e29b-41d4-a716-446655440000",
+			Provider:      "telnyx",
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -143,13 +145,16 @@ func TestVoiceCloneNewFromUploadWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.VoiceClones.NewFromUpload(context.TODO(), telnyx.VoiceCloneNewFromUploadParams{
-		AudioFile: io.Reader(bytes.NewBuffer([]byte("Example data"))),
-		Language:  "lkf-Lz1vLbBu-9uDh-9AHaOS2D-Cbf",
-		Name:      "name",
-		Gender:    telnyx.VoiceCloneNewFromUploadParamsGenderMale,
-		Label:     telnyx.String("label"),
-		Provider:  telnyx.VoiceCloneNewFromUploadParamsProviderTelnyx,
-		RefText:   telnyx.String("ref_text"),
+		OfTelnyxQwen3TtsClone: &telnyx.VoiceCloneNewFromUploadParamsBodyTelnyxQwen3TtsClone{
+			AudioFile: io.Reader(bytes.NewBuffer([]byte("Example data"))),
+			Gender:    "male",
+			Language:  "lkf-Lz1vLbBu-9uDh-9AHaOS2D-Cbf",
+			Name:      "name",
+			Provider:  "telnyx",
+			Label:     telnyx.String("label"),
+			ModelID:   "Qwen3TTS",
+			RefText:   telnyx.String("ref_text"),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

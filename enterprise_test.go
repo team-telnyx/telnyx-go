@@ -46,7 +46,7 @@ func TestEnterpriseNewWithOptionalParams(t *testing.T) {
 		Fein:              "12-3456789",
 		Industry:          "technology",
 		LegalName:         "Acme Corp Inc.",
-		NumberOfEmployees: telnyx.EnterpriseNewParamsNumberOfEmployees_51_200,
+		NumberOfEmployees: telnyx.EnterpriseNewParamsNumberOfEmployees51_200,
 		OrganizationContact: telnyx.OrganizationContactParam{
 			Email:     "jane.smith@acme.com",
 			FirstName: "Jane",
@@ -142,7 +142,7 @@ func TestEnterpriseUpdateWithOptionalParams(t *testing.T) {
 			Fein:                        telnyx.String("fein"),
 			Industry:                    telnyx.String("industry"),
 			LegalName:                   telnyx.String("xxx"),
-			NumberOfEmployees:           telnyx.EnterpriseUpdateParamsNumberOfEmployees_1_10,
+			NumberOfEmployees:           telnyx.EnterpriseUpdateParamsNumberOfEmployees1_10,
 			OrganizationContact: telnyx.OrganizationContactParam{
 				Email:     "jane.smith@acme.com",
 				FirstName: "Jane",

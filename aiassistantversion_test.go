@@ -81,11 +81,11 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 				},
 				Model: telnyx.String("model"),
 				Name:  telnyx.String("name"),
-				ObservabilitySettings: telnyx.ObservabilityReqParam{
+				ObservabilitySettings: telnyx.UpdateAssistantObservabilitySettingsParam{
 					Host:         telnyx.String("host"),
 					PublicKeyRef: telnyx.String("public_key_ref"),
 					SecretKeyRef: telnyx.String("secret_key_ref"),
-					Status:       telnyx.ObservabilityReqStatusEnabled,
+					Status:       "enabled",
 				},
 				PrivacySettings: telnyx.PrivacySettingsParam{
 					DataRetention: telnyx.Bool(true),
