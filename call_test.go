@@ -86,6 +86,7 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 		ParkAfterUnbridge:    telnyx.String("self"),
 		PreferredCodecs:      telnyx.String("G722,PCMU,PCMA,G729,OPUS,VP8,H264"),
 		PreventDoubleBridge:  telnyx.Bool(true),
+		Privacy:              telnyx.CallDialParamsPrivacyID,
 		Record:               telnyx.CallDialParamsRecordRecordFromAnswer,
 		RecordChannels:       telnyx.CallDialParamsRecordChannelsSingle,
 		RecordCustomFileName: telnyx.String("my_recording_file_name"),

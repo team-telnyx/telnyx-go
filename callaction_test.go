@@ -1506,6 +1506,7 @@ func TestCallActionTransferWithOptionalParams(t *testing.T) {
 			MuteDtmf:             telnyx.CallActionTransferParamsMuteDtmfOpposite,
 			ParkAfterUnbridge:    telnyx.String("self"),
 			PreferredCodecs:      telnyx.String("G722,PCMU,PCMA,G729,OPUS,VP8,H264"),
+			Privacy:              telnyx.CallActionTransferParamsPrivacyID,
 			Record:               telnyx.CallActionTransferParamsRecordRecordFromAnswer,
 			RecordChannels:       telnyx.CallActionTransferParamsRecordChannelsSingle,
 			RecordCustomFileName: telnyx.String("my_recording_file_name"),

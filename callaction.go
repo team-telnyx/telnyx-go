@@ -6260,6 +6260,12 @@ type CallActionTransferParams struct {
 	//
 	// Any of "none", "both", "self", "opposite".
 	MuteDtmf CallActionTransferParamsMuteDtmf `json:"mute_dtmf,omitzero"`
+	// Indicates the privacy level to be used for the call. When set to `id`, caller ID
+	// information (name and number) will be hidden from the called party. When set to
+	// `none` or omitted, caller ID will be shown normally.
+	//
+	// Any of "id", "none".
+	Privacy CallActionTransferParamsPrivacy `json:"privacy,omitzero"`
 	// Start recording automatically after an event. Disabled by default.
 	//
 	// Any of "record-from-answer".
@@ -6398,6 +6404,16 @@ const (
 	CallActionTransferParamsMuteDtmfBoth     CallActionTransferParamsMuteDtmf = "both"
 	CallActionTransferParamsMuteDtmfSelf     CallActionTransferParamsMuteDtmf = "self"
 	CallActionTransferParamsMuteDtmfOpposite CallActionTransferParamsMuteDtmf = "opposite"
+)
+
+// Indicates the privacy level to be used for the call. When set to `id`, caller ID
+// information (name and number) will be hidden from the called party. When set to
+// `none` or omitted, caller ID will be shown normally.
+type CallActionTransferParamsPrivacy string
+
+const (
+	CallActionTransferParamsPrivacyID   CallActionTransferParamsPrivacy = "id"
+	CallActionTransferParamsPrivacyNone CallActionTransferParamsPrivacy = "none"
 )
 
 // Start recording automatically after an event. Disabled by default.

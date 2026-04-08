@@ -535,6 +535,12 @@ type CallDialParams struct {
 	//
 	// Any of "disabled", "SRTP", "DTLS".
 	MediaEncryption CallDialParamsMediaEncryption `json:"media_encryption,omitzero"`
+	// Indicates the privacy level to be used for the call. When set to `id`, caller ID
+	// information (name and number) will be hidden from the called party. When set to
+	// `none` or omitted, caller ID will be shown normally.
+	//
+	// Any of "id", "none".
+	Privacy CallDialParamsPrivacy `json:"privacy,omitzero"`
 	// Start recording automatically after an event. Disabled by default.
 	//
 	// Any of "record-from-answer".
@@ -799,6 +805,16 @@ const (
 	CallDialParamsMediaEncryptionDisabled CallDialParamsMediaEncryption = "disabled"
 	CallDialParamsMediaEncryptionSrtp     CallDialParamsMediaEncryption = "SRTP"
 	CallDialParamsMediaEncryptionDtls     CallDialParamsMediaEncryption = "DTLS"
+)
+
+// Indicates the privacy level to be used for the call. When set to `id`, caller ID
+// information (name and number) will be hidden from the called party. When set to
+// `none` or omitted, caller ID will be shown normally.
+type CallDialParamsPrivacy string
+
+const (
+	CallDialParamsPrivacyID   CallDialParamsPrivacy = "id"
+	CallDialParamsPrivacyNone CallDialParamsPrivacy = "none"
 )
 
 // Start recording automatically after an event. Disabled by default.
