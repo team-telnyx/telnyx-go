@@ -1,5 +1,26 @@
 # Changelog
 
+## 4.56.0 (2026-04-08)
+
+Full Changelog: [v4.55.2...v4.56.0](https://github.com/team-telnyx/telnyx-go/compare/v4.55.2...v4.56.0)
+
+### Features
+
+* Add ai_calls endpoint documentation to OpenAPI spec ([fda8750](https://github.com/team-telnyx/telnyx-go/commit/fda875063c485f442f6558e2ae5d89f121570621))
+* add enabled boolean to recording_settings [AI-2178] ([5492e73](https://github.com/team-telnyx/telnyx-go/commit/5492e735ab2d9120b337308cdb8465c5bb895999))
+* Add oneOf constraint for Url/Texml mutual exclusivity in InitiateCallRequest ([8bebb65](https://github.com/team-telnyx/telnyx-go/commit/8bebb65ea7e4d9e31e1d8bc2e0a4c94d5c6d4adc))
+* AI-2180: Add message_template to SendMessageTool schema ([5ac41fa](https://github.com/team-telnyx/telnyx-go/commit/5ac41faeddad4d27a86a20772ad2b73c9e52c52f))
+* **api:** manual updates ([c8d37fe](https://github.com/team-telnyx/telnyx-go/commit/c8d37fe5b28455d1d5872d693b1aa37387fb58e6))
+* **api:** Merge pull request [#39](https://github.com/team-telnyx/telnyx-go/issues/39) from stainless-sdks/revert-a988c49-stainless-changes ([f2c0f4f](https://github.com/team-telnyx/telnyx-go/commit/f2c0f4f1ba523ce5038caeec99d66ca330f91a75))
+* Assistants: add observability ([5318f99](https://github.com/team-telnyx/telnyx-go/commit/5318f99fe333cd662db7eefe4fcc23e99c670134))
+* MSG-6666: Add template and text properties to WhatsApp send message schema ([5c7b934](https://github.com/team-telnyx/telnyx-go/commit/5c7b9345be30ead7fa1619bad70c74ff77cdb868))
+* MSG-6673: Add WhatsApp verification endpoint and profile settings ([cbb9984](https://github.com/team-telnyx/telnyx-go/commit/cbb9984951767dba886f028ff5460daf1e01da1c))
+
+
+### Reverts
+
+* restore stainless.yml SDK generation fixes ([f2c0f4f](https://github.com/team-telnyx/telnyx-go/commit/f2c0f4f1ba523ce5038caeec99d66ca330f91a75))
+
 ## 4.55.2 (2026-04-02)
 
 Full Changelog: [v4.55.1...v4.55.2](https://github.com/team-telnyx/telnyx-go/compare/v4.55.1...v4.55.2)

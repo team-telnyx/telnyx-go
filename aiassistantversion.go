@@ -150,13 +150,14 @@ type UpdateAssistantParam struct {
 	Model param.Opt[string] `json:"model,omitzero"`
 	Name  param.Opt[string] `json:"name,omitzero"`
 	// Map of dynamic variables and their default values
-	DynamicVariables  map[string]any         `json:"dynamic_variables,omitzero"`
-	EnabledFeatures   []EnabledFeatures      `json:"enabled_features,omitzero"`
-	InsightSettings   InsightSettingsParam   `json:"insight_settings,omitzero"`
-	MessagingSettings MessagingSettingsParam `json:"messaging_settings,omitzero"`
-	PrivacySettings   PrivacySettingsParam   `json:"privacy_settings,omitzero"`
-	TelephonySettings TelephonySettingsParam `json:"telephony_settings,omitzero"`
-	ToolIDs           []string               `json:"tool_ids,omitzero"`
+	DynamicVariables      map[string]any         `json:"dynamic_variables,omitzero"`
+	EnabledFeatures       []EnabledFeatures      `json:"enabled_features,omitzero"`
+	InsightSettings       InsightSettingsParam   `json:"insight_settings,omitzero"`
+	MessagingSettings     MessagingSettingsParam `json:"messaging_settings,omitzero"`
+	ObservabilitySettings ObservabilityReqParam  `json:"observability_settings,omitzero"`
+	PrivacySettings       PrivacySettingsParam   `json:"privacy_settings,omitzero"`
+	TelephonySettings     TelephonySettingsParam `json:"telephony_settings,omitzero"`
+	ToolIDs               []string               `json:"tool_ids,omitzero"`
 	// The tools that the assistant can use. These may be templated with
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
 	Tools         []AssistantToolsItemsUnionParam `json:"tools,omitzero"`

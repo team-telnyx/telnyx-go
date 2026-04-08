@@ -79,6 +79,14 @@ func (r *VerificationService) TriggerSMS(ctx context.Context, body VerificationT
 	return res, err
 }
 
+// Trigger WhatsApp verification
+func (r *VerificationService) TriggerWhatsappVerification(ctx context.Context, body VerificationTriggerWhatsappVerificationParams, opts ...option.RequestOption) (res *CreateVerificationResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "verifications/whatsapp"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
 type CreateVerificationResponse struct {
 	Data Verification `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -116,7 +124,7 @@ type Verification struct {
 	TimeoutSecs int64 `json:"timeout_secs"`
 	// The possible types of verification.
 	//
-	// Any of "sms", "call", "flashcall".
+	// Any of "sms", "call", "flashcall", "whatsapp".
 	Type      VerificationType `json:"type"`
 	UpdatedAt string           `json:"updated_at"`
 	// The identifier of the associated Verify profile.
@@ -169,6 +177,7 @@ const (
 	VerificationTypeSMS       VerificationType = "sms"
 	VerificationTypeCall      VerificationType = "call"
 	VerificationTypeFlashcall VerificationType = "flashcall"
+	VerificationTypeWhatsapp  VerificationType = "whatsapp"
 )
 
 type VerificationGetResponse struct {
@@ -245,5 +254,25 @@ func (r VerificationTriggerSMSParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *VerificationTriggerSMSParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VerificationTriggerWhatsappVerificationParams struct {
+	// +E164 formatted phone number.
+	PhoneNumber string `json:"phone_number" api:"required"`
+	// The identifier of the associated Verify profile.
+	VerifyProfileID string `json:"verify_profile_id" api:"required" format:"uuid"`
+	// Send a self-generated numeric code to the end-user
+	CustomCode param.Opt[string] `json:"custom_code,omitzero"`
+	// The number of seconds the verification code is valid for.
+	TimeoutSecs param.Opt[int64] `json:"timeout_secs,omitzero"`
+	paramObj
+}
+
+func (r VerificationTriggerWhatsappVerificationParams) MarshalJSON() (data []byte, err error) {
+	type shadow VerificationTriggerWhatsappVerificationParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VerificationTriggerWhatsappVerificationParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

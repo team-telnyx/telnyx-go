@@ -46,6 +46,12 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			DefaultMessagingProfileID:     telnyx.String("default_messaging_profile_id"),
 			DeliveryStatusWebhookURL:      telnyx.String("delivery_status_webhook_url"),
 		},
+		ObservabilitySettings: telnyx.ObservabilityReqParam{
+			Host:         telnyx.String("host"),
+			PublicKeyRef: telnyx.String("public_key_ref"),
+			SecretKeyRef: telnyx.String("secret_key_ref"),
+			Status:       telnyx.ObservabilityReqStatusEnabled,
+		},
 		PrivacySettings: telnyx.PrivacySettingsParam{
 			DataRetention: telnyx.Bool(true),
 		},
@@ -58,6 +64,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			},
 			RecordingSettings: telnyx.TelephonySettingsRecordingSettingsParam{
 				Channels: "single",
+				Enabled:  telnyx.Bool(true),
 				Format:   "wav",
 			},
 			SupportsUnauthenticatedWebCalls: telnyx.Bool(true),
@@ -241,6 +248,12 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 			},
 			Model: telnyx.String("model"),
 			Name:  telnyx.String("name"),
+			ObservabilitySettings: telnyx.ObservabilityReqParam{
+				Host:         telnyx.String("host"),
+				PublicKeyRef: telnyx.String("public_key_ref"),
+				SecretKeyRef: telnyx.String("secret_key_ref"),
+				Status:       telnyx.ObservabilityReqStatusEnabled,
+			},
 			PrivacySettings: telnyx.PrivacySettingsParam{
 				DataRetention: telnyx.Bool(true),
 			},
@@ -254,6 +267,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				},
 				RecordingSettings: telnyx.TelephonySettingsRecordingSettingsParam{
 					Channels: "single",
+					Enabled:  telnyx.Bool(true),
 					Format:   "wav",
 				},
 				SupportsUnauthenticatedWebCalls: telnyx.Bool(true),

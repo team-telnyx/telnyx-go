@@ -462,6 +462,27 @@ func TestMessageSendWhatsappWithOptionalParams(t *testing.T) {
 				Link:     telnyx.String("http://example.com/media.jpg"),
 				Voice:    telnyx.Bool(true),
 			},
+			Template: telnyx.WhatsappMessageContentTemplateParam{
+				Components: []telnyx.WhatsappMessageContentTemplateComponentParam{{
+					Index: telnyx.Int(0),
+					Parameters: []telnyx.WhatsappMessageContentTemplateComponentParameterParam{{
+						Text: telnyx.String("text"),
+						Type: "text",
+					}},
+					SubType: "quick_reply",
+					Type:    "header",
+				}},
+				Language: telnyx.WhatsappMessageContentTemplateLanguageParam{
+					Code:   "en_US",
+					Policy: telnyx.String("deterministic"),
+				},
+				Name:       telnyx.String("order_confirmation"),
+				TemplateID: telnyx.String("019cd44b-3a1c-781b-956e-bd33e9fd2ac6"),
+			},
+			Text: telnyx.WhatsappMessageContentTextParam{
+				Body:       "Hello from Telnyx!",
+				PreviewURL: telnyx.Bool(true),
+			},
 			Type: telnyx.WhatsappMessageContentTypeAudio,
 			Video: telnyx.WhatsappMediaParam{
 				Caption:  telnyx.String("caption"),
