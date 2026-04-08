@@ -145,10 +145,85 @@ func (r *VoiceDesignService) Rename(ctx context.Context, id string, body VoiceDe
 	return res, err
 }
 
+// A voice design object with full version detail.
+type VoiceDesignData struct {
+	// Unique identifier for the voice design.
+	ID string `json:"id" format:"uuid"`
+	// Timestamp when the voice design was first created.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Name of the voice design.
+	Name string `json:"name"`
+	// Natural language prompt used to define the voice style for this version.
+	Prompt string `json:"prompt"`
+	// Voice synthesis provider used for this design.
+	//
+	// Any of "telnyx", "minimax".
+	Provider VoiceDesignDataProvider `json:"provider" api:"nullable"`
+	// List of TTS model identifiers supported by this design's provider (e.g.
+	// `Qwen3TTS`, `speech-02-turbo`).
+	ProviderSupportedModels []string `json:"provider_supported_models"`
+	// Provider-specific voice identifier. For Telnyx designs this is the design
+	// version ID; for Minimax it is the Minimax-assigned voice ID.
+	ProviderVoiceID string `json:"provider_voice_id" api:"nullable"`
+	// Identifies the resource type.
+	//
+	// Any of "voice_design".
+	RecordType VoiceDesignDataRecordType `json:"record_type"`
+	// Sample text used to synthesize this version.
+	Text string `json:"text"`
+	// Timestamp when the voice design was last updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// Version number of this voice design.
+	Version int64 `json:"version"`
+	// Timestamp when this specific version was created.
+	VersionCreatedAt time.Time `json:"version_created_at" format:"date-time"`
+	// Size of the voice sample audio in bytes.
+	VoiceSampleSize int64 `json:"voice_sample_size"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                      respjson.Field
+		CreatedAt               respjson.Field
+		Name                    respjson.Field
+		Prompt                  respjson.Field
+		Provider                respjson.Field
+		ProviderSupportedModels respjson.Field
+		ProviderVoiceID         respjson.Field
+		RecordType              respjson.Field
+		Text                    respjson.Field
+		UpdatedAt               respjson.Field
+		Version                 respjson.Field
+		VersionCreatedAt        respjson.Field
+		VoiceSampleSize         respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VoiceDesignData) RawJSON() string { return r.JSON.raw }
+func (r *VoiceDesignData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Voice synthesis provider used for this design.
+type VoiceDesignDataProvider string
+
+const (
+	VoiceDesignDataProviderTelnyx  VoiceDesignDataProvider = "telnyx"
+	VoiceDesignDataProviderMinimax VoiceDesignDataProvider = "minimax"
+)
+
+// Identifies the resource type.
+type VoiceDesignDataRecordType string
+
+const (
+	VoiceDesignDataRecordTypeVoiceDesign VoiceDesignDataRecordType = "voice_design"
+)
+
 // Response envelope for a single voice design with full version detail.
 type VoiceDesignNewResponse struct {
 	// A voice design object with full version detail.
-	Data VoiceDesignNewResponseData `json:"data"`
+	Data VoiceDesignData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -163,70 +238,10 @@ func (r *VoiceDesignNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A voice design object with full version detail.
-type VoiceDesignNewResponseData struct {
-	// Unique identifier for the voice design.
-	ID string `json:"id" format:"uuid"`
-	// Timestamp when the voice design was first created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Name of the voice design.
-	Name string `json:"name"`
-	// Natural language prompt used to define the voice style for this version.
-	Prompt string `json:"prompt"`
-	// Voice synthesis provider used for this design.
-	//
-	// Any of "telnyx", "minimax", "Telnyx", "Minimax".
-	Provider string `json:"provider" api:"nullable"`
-	// List of TTS model identifiers supported by this design's provider (e.g.
-	// `Qwen3TTS`, `speech-02-turbo`).
-	ProviderSupportedModels []string `json:"provider_supported_models"`
-	// Provider-specific voice identifier. For Telnyx designs this is the design
-	// version ID; for Minimax it is the Minimax-assigned voice ID.
-	ProviderVoiceID string `json:"provider_voice_id" api:"nullable"`
-	// Identifies the resource type.
-	//
-	// Any of "voice_design".
-	RecordType string `json:"record_type"`
-	// Sample text used to synthesize this version.
-	Text string `json:"text"`
-	// Timestamp when the voice design was last updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// Version number of this voice design.
-	Version int64 `json:"version"`
-	// Timestamp when this specific version was created.
-	VersionCreatedAt time.Time `json:"version_created_at" format:"date-time"`
-	// Size of the voice sample audio in bytes.
-	VoiceSampleSize int64 `json:"voice_sample_size"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                      respjson.Field
-		CreatedAt               respjson.Field
-		Name                    respjson.Field
-		Prompt                  respjson.Field
-		Provider                respjson.Field
-		ProviderSupportedModels respjson.Field
-		ProviderVoiceID         respjson.Field
-		RecordType              respjson.Field
-		Text                    respjson.Field
-		UpdatedAt               respjson.Field
-		Version                 respjson.Field
-		VersionCreatedAt        respjson.Field
-		VoiceSampleSize         respjson.Field
-		ExtraFields             map[string]respjson.Field
-		raw                     string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VoiceDesignNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *VoiceDesignNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Response envelope for a single voice design with full version detail.
 type VoiceDesignGetResponse struct {
 	// A voice design object with full version detail.
-	Data VoiceDesignGetResponseData `json:"data"`
+	Data VoiceDesignData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -241,66 +256,6 @@ func (r *VoiceDesignGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A voice design object with full version detail.
-type VoiceDesignGetResponseData struct {
-	// Unique identifier for the voice design.
-	ID string `json:"id" format:"uuid"`
-	// Timestamp when the voice design was first created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Name of the voice design.
-	Name string `json:"name"`
-	// Natural language prompt used to define the voice style for this version.
-	Prompt string `json:"prompt"`
-	// Voice synthesis provider used for this design.
-	//
-	// Any of "telnyx", "minimax", "Telnyx", "Minimax".
-	Provider string `json:"provider" api:"nullable"`
-	// List of TTS model identifiers supported by this design's provider (e.g.
-	// `Qwen3TTS`, `speech-02-turbo`).
-	ProviderSupportedModels []string `json:"provider_supported_models"`
-	// Provider-specific voice identifier. For Telnyx designs this is the design
-	// version ID; for Minimax it is the Minimax-assigned voice ID.
-	ProviderVoiceID string `json:"provider_voice_id" api:"nullable"`
-	// Identifies the resource type.
-	//
-	// Any of "voice_design".
-	RecordType string `json:"record_type"`
-	// Sample text used to synthesize this version.
-	Text string `json:"text"`
-	// Timestamp when the voice design was last updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// Version number of this voice design.
-	Version int64 `json:"version"`
-	// Timestamp when this specific version was created.
-	VersionCreatedAt time.Time `json:"version_created_at" format:"date-time"`
-	// Size of the voice sample audio in bytes.
-	VoiceSampleSize int64 `json:"voice_sample_size"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                      respjson.Field
-		CreatedAt               respjson.Field
-		Name                    respjson.Field
-		Prompt                  respjson.Field
-		Provider                respjson.Field
-		ProviderSupportedModels respjson.Field
-		ProviderVoiceID         respjson.Field
-		RecordType              respjson.Field
-		Text                    respjson.Field
-		UpdatedAt               respjson.Field
-		Version                 respjson.Field
-		VersionCreatedAt        respjson.Field
-		VoiceSampleSize         respjson.Field
-		ExtraFields             map[string]respjson.Field
-		raw                     string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VoiceDesignGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *VoiceDesignGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // A summarized voice design object (without version-specific fields).
 type VoiceDesignListResponse struct {
 	// Unique identifier for the voice design.
@@ -311,7 +266,7 @@ type VoiceDesignListResponse struct {
 	Name string `json:"name"`
 	// Voice synthesis provider used for this design.
 	//
-	// Any of "telnyx", "minimax", "Telnyx", "Minimax".
+	// Any of "telnyx", "minimax".
 	Provider VoiceDesignListResponseProvider `json:"provider" api:"nullable"`
 	// List of TTS model identifiers supported by this design's provider.
 	ProviderSupportedModels []string `json:"provider_supported_models"`
@@ -345,10 +300,8 @@ func (r *VoiceDesignListResponse) UnmarshalJSON(data []byte) error {
 type VoiceDesignListResponseProvider string
 
 const (
-	VoiceDesignListResponseProviderTelnyx           VoiceDesignListResponseProvider = "telnyx"
-	VoiceDesignListResponseProviderMinimax          VoiceDesignListResponseProvider = "minimax"
-	VoiceDesignListResponseProviderTelnyxMixedCase  VoiceDesignListResponseProvider = "Telnyx"
-	VoiceDesignListResponseProviderMinimaxMixedCase VoiceDesignListResponseProvider = "Minimax"
+	VoiceDesignListResponseProviderTelnyx  VoiceDesignListResponseProvider = "telnyx"
+	VoiceDesignListResponseProviderMinimax VoiceDesignListResponseProvider = "minimax"
 )
 
 // Identifies the resource type.
@@ -387,7 +340,7 @@ type VoiceDesignRenameResponseData struct {
 	Name string `json:"name"`
 	// Voice synthesis provider used for this design.
 	//
-	// Any of "telnyx", "minimax", "Telnyx", "Minimax".
+	// Any of "telnyx", "minimax".
 	Provider string `json:"provider" api:"nullable"`
 	// List of TTS model identifiers supported by this design's provider.
 	ProviderSupportedModels []string `json:"provider_supported_models"`
@@ -450,7 +403,7 @@ type VoiceDesignNewParams struct {
 	// Voice synthesis provider. `telnyx` uses the Qwen3TTS model; `minimax` uses the
 	// Minimax speech models. Case-insensitive. Defaults to `telnyx`.
 	//
-	// Any of "telnyx", "minimax", "Telnyx", "Minimax".
+	// Any of "telnyx", "minimax".
 	Provider VoiceDesignNewParamsProvider `json:"provider,omitzero"`
 	paramObj
 }
@@ -468,10 +421,8 @@ func (r *VoiceDesignNewParams) UnmarshalJSON(data []byte) error {
 type VoiceDesignNewParamsProvider string
 
 const (
-	VoiceDesignNewParamsProviderTelnyx           VoiceDesignNewParamsProvider = "telnyx"
-	VoiceDesignNewParamsProviderMinimax          VoiceDesignNewParamsProvider = "minimax"
-	VoiceDesignNewParamsProviderTelnyxMixedCase  VoiceDesignNewParamsProvider = "Telnyx"
-	VoiceDesignNewParamsProviderMinimaxMixedCase VoiceDesignNewParamsProvider = "Minimax"
+	VoiceDesignNewParamsProviderTelnyx  VoiceDesignNewParamsProvider = "telnyx"
+	VoiceDesignNewParamsProviderMinimax VoiceDesignNewParamsProvider = "minimax"
 )
 
 type VoiceDesignGetParams struct {

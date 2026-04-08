@@ -924,6 +924,32 @@ func (r *MessagingPaginationMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type MetaInfo struct {
+	// Current page number
+	PageNumber int64 `json:"page_number"`
+	// Items per page
+	PageSize int64 `json:"page_size"`
+	// Total number of pages
+	TotalPages int64 `json:"total_pages"`
+	// Total number of results
+	TotalResults int64 `json:"total_results"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MetaInfo) RawJSON() string { return r.JSON.raw }
+func (r *MetaInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type Metadata struct {
 	// Current Page based on pagination settings (included when defaults are used.)
 	PageNumber int64 `json:"page_number" api:"required"`
@@ -1345,6 +1371,85 @@ const (
 	RegionInformationRegionTypeState       RegionInformationRegionType = "state"
 	RegionInformationRegionTypeLocation    RegionInformationRegionType = "location"
 )
+
+// Reputation metrics
+type ReputationData struct {
+	// Connection quality metric (0–100)
+	ConnectionScore int64 `json:"connection_score" api:"nullable"`
+	// Engagement metric (0–100). Higher = more positive engagement
+	EngagementScore int64 `json:"engagement_score" api:"nullable"`
+	// Timestamp of the last reputation data refresh
+	LastRefreshedAt time.Time `json:"last_refreshed_at" api:"nullable" format:"date-time"`
+	// Maturity metric (0–100). Higher = more established number
+	MaturityScore int64 `json:"maturity_score" api:"nullable"`
+	// Sentiment metric (0–100). Higher = more positive sentiment
+	SentimentScore int64 `json:"sentiment_score" api:"nullable"`
+	// Spam category classification (e.g., Telemarketing, Debt Collector)
+	SpamCategory string `json:"spam_category" api:"nullable"`
+	// Overall spam risk level
+	//
+	// Any of "low", "medium", "high".
+	SpamRisk ReputationDataSpamRisk `json:"spam_risk" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ConnectionScore respjson.Field
+		EngagementScore respjson.Field
+		LastRefreshedAt respjson.Field
+		MaturityScore   respjson.Field
+		SentimentScore  respjson.Field
+		SpamCategory    respjson.Field
+		SpamRisk        respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ReputationData) RawJSON() string { return r.JSON.raw }
+func (r *ReputationData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Overall spam risk level
+type ReputationDataSpamRisk string
+
+const (
+	ReputationDataSpamRiskLow    ReputationDataSpamRisk = "low"
+	ReputationDataSpamRiskMedium ReputationDataSpamRisk = "medium"
+	ReputationDataSpamRiskHigh   ReputationDataSpamRisk = "high"
+)
+
+type ReputationPhoneNumberWithReputationData struct {
+	// Unique identifier
+	ID string `json:"id" format:"uuid"`
+	// When the number was associated
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// ID of the associated enterprise
+	EnterpriseID string `json:"enterprise_id" format:"uuid"`
+	// Phone number in E.164 format
+	PhoneNumber string `json:"phone_number"`
+	// Reputation metrics
+	ReputationData ReputationData `json:"reputation_data"`
+	// When the record was last updated
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID             respjson.Field
+		CreatedAt      respjson.Field
+		EnterpriseID   respjson.Field
+		PhoneNumber    respjson.Field
+		ReputationData respjson.Field
+		UpdatedAt      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ReputationPhoneNumberWithReputationData) RawJSON() string { return r.JSON.raw }
+func (r *ReputationPhoneNumberWithReputationData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The property Type is required.
 type ResembleVoiceSettingsParam struct {

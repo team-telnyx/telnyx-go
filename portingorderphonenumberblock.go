@@ -343,33 +343,33 @@ func (r PortingOrderPhoneNumberBlockListParamsFilter) URLQuery() (v url.Values, 
 // Use [param.IsOmitted] to confirm if a field is set.
 type PortingOrderPhoneNumberBlockListParamsFilterStatusUnion struct {
 	// Check if union is this variant with
-	// !param.IsOmitted(union.OfPortingOrderSingleStatus)
-	OfPortingOrderSingleStatus                                                 param.Opt[string] `query:",omitzero,inline"`
-	OfPortingOrderPhoneNumberBlockListsFilterStatusUnionArrayVariant1ItemArray []string          `query:",omitzero,inline"`
+	// !param.IsOmitted(union.OfPortingOrderMultipleStatus)
+	OfPortingOrderMultipleStatus param.Opt[string] `query:",omitzero,inline"`
+	OfPortingOrderStatusList     []string          `query:",omitzero,inline"`
 	paramUnion
 }
 
 func (u *PortingOrderPhoneNumberBlockListParamsFilterStatusUnion) asAny() any {
-	if !param.IsOmitted(u.OfPortingOrderSingleStatus) {
-		return &u.OfPortingOrderSingleStatus
-	} else if !param.IsOmitted(u.OfPortingOrderPhoneNumberBlockListsFilterStatusUnionArrayVariant1ItemArray) {
-		return &u.OfPortingOrderPhoneNumberBlockListsFilterStatusUnionArrayVariant1ItemArray
+	if !param.IsOmitted(u.OfPortingOrderMultipleStatus) {
+		return &u.OfPortingOrderMultipleStatus
+	} else if !param.IsOmitted(u.OfPortingOrderStatusList) {
+		return &u.OfPortingOrderStatusList
 	}
 	return nil
 }
 
 // Filter by single status
-type PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatus string
+type PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderMultipleStatus string
 
 const (
-	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatusDraft            PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatus = "draft"
-	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatusInProcess        PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatus = "in-process"
-	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatusSubmitted        PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatus = "submitted"
-	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatusException        PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatus = "exception"
-	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatusFocDateConfirmed PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatus = "foc-date-confirmed"
-	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatusCancelPending    PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatus = "cancel-pending"
-	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatusPorted           PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatus = "ported"
-	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatusCancelled        PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderSingleStatus = "cancelled"
+	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderMultipleStatusDraft            PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderMultipleStatus = "draft"
+	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderMultipleStatusInProcess        PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderMultipleStatus = "in-process"
+	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderMultipleStatusSubmitted        PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderMultipleStatus = "submitted"
+	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderMultipleStatusException        PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderMultipleStatus = "exception"
+	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderMultipleStatusFocDateConfirmed PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderMultipleStatus = "foc-date-confirmed"
+	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderMultipleStatusCancelPending    PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderMultipleStatus = "cancel-pending"
+	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderMultipleStatusPorted           PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderMultipleStatus = "ported"
+	PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderMultipleStatusCancelled        PortingOrderPhoneNumberBlockListParamsFilterStatusPortingOrderMultipleStatus = "cancelled"
 )
 
 // Only one field can be non-zero.
