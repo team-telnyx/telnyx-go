@@ -43,6 +43,32 @@ func NewEnterpriseReputationNumberService(opts ...option.RequestOption) (r Enter
 	return
 }
 
+// Associate one or more phone numbers with an enterprise for Number Reputation
+// monitoring.
+//
+// **Validations:**
+//
+//   - Phone numbers must be in E.164 format (e.g., `+16035551234`)
+//   - Phone numbers must be in-service and belong to your account (verified via
+//     Warehouse)
+//   - Phone numbers must be US local numbers
+//   - Phone numbers cannot already be associated with any enterprise
+//
+// **Note:** This operation is atomic — if any number fails validation, the entire
+// request fails.
+//
+// **Maximum:** 100 phone numbers per request.
+func (r *EnterpriseReputationNumberService) New(ctx context.Context, enterpriseID string, body EnterpriseReputationNumberNewParams, opts ...option.RequestOption) (res *EnterpriseReputationNumberNewResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if enterpriseID == "" {
+		err = errors.New("missing required enterprise_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("enterprises/%s/reputation/numbers", enterpriseID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
 // Get detailed reputation data for a specific phone number associated with an
 // enterprise.
 //
@@ -111,37 +137,11 @@ func (r *EnterpriseReputationNumberService) ListAutoPaging(ctx context.Context, 
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, enterpriseID, query, opts...))
 }
 
-// Associate one or more phone numbers with an enterprise for Number Reputation
-// monitoring.
-//
-// **Validations:**
-//
-//   - Phone numbers must be in E.164 format (e.g., `+16035551234`)
-//   - Phone numbers must be in-service and belong to your account (verified via
-//     Warehouse)
-//   - Phone numbers must be US local numbers
-//   - Phone numbers cannot already be associated with any enterprise
-//
-// **Note:** This operation is atomic — if any number fails validation, the entire
-// request fails.
-//
-// **Maximum:** 100 phone numbers per request.
-func (r *EnterpriseReputationNumberService) Associate(ctx context.Context, enterpriseID string, body EnterpriseReputationNumberAssociateParams, opts ...option.RequestOption) (res *EnterpriseReputationNumberAssociateResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	if enterpriseID == "" {
-		err = errors.New("missing required enterprise_id parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("enterprises/%s/reputation/numbers", enterpriseID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
-}
-
 // Remove a phone number from Number Reputation monitoring for an enterprise.
 //
 // The number will no longer be tracked and reputation data will no longer be
 // refreshed.
-func (r *EnterpriseReputationNumberService) Disassociate(ctx context.Context, phoneNumber string, body EnterpriseReputationNumberDisassociateParams, opts ...option.RequestOption) (err error) {
+func (r *EnterpriseReputationNumberService) Delete(ctx context.Context, phoneNumber string, body EnterpriseReputationNumberDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.EnterpriseID == "" {
@@ -157,25 +157,9 @@ func (r *EnterpriseReputationNumberService) Disassociate(ctx context.Context, ph
 	return err
 }
 
-type EnterpriseReputationNumberGetResponse struct {
-	Data shared.ReputationPhoneNumberWithReputationData `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EnterpriseReputationNumberGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseReputationNumberGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EnterpriseReputationNumberAssociateResponse struct {
-	Data []EnterpriseReputationNumberAssociateResponseData `json:"data"`
-	Meta shared.MetaInfo                                   `json:"meta"`
+type EnterpriseReputationNumberNewResponse struct {
+	Data []EnterpriseReputationNumberNewResponseData `json:"data"`
+	Meta shared.MetaInfo                             `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -186,12 +170,12 @@ type EnterpriseReputationNumberAssociateResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r EnterpriseReputationNumberAssociateResponse) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseReputationNumberAssociateResponse) UnmarshalJSON(data []byte) error {
+func (r EnterpriseReputationNumberNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseReputationNumberNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type EnterpriseReputationNumberAssociateResponseData struct {
+type EnterpriseReputationNumberNewResponseData struct {
 	// Unique identifier
 	ID string `json:"id" format:"uuid"`
 	// When the number was associated
@@ -215,8 +199,38 @@ type EnterpriseReputationNumberAssociateResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r EnterpriseReputationNumberAssociateResponseData) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseReputationNumberAssociateResponseData) UnmarshalJSON(data []byte) error {
+func (r EnterpriseReputationNumberNewResponseData) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseReputationNumberNewResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EnterpriseReputationNumberGetResponse struct {
+	Data shared.ReputationPhoneNumberWithReputationData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseReputationNumberGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseReputationNumberGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EnterpriseReputationNumberNewParams struct {
+	// List of phone numbers to associate for reputation monitoring (max 100)
+	PhoneNumbers []string `json:"phone_numbers,omitzero" api:"required"`
+	paramObj
+}
+
+func (r EnterpriseReputationNumberNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow EnterpriseReputationNumberNewParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *EnterpriseReputationNumberNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -256,21 +270,7 @@ func (r EnterpriseReputationNumberListParams) URLQuery() (v url.Values, err erro
 	})
 }
 
-type EnterpriseReputationNumberAssociateParams struct {
-	// List of phone numbers to associate for reputation monitoring (max 100)
-	PhoneNumbers []string `json:"phone_numbers,omitzero" api:"required"`
-	paramObj
-}
-
-func (r EnterpriseReputationNumberAssociateParams) MarshalJSON() (data []byte, err error) {
-	type shadow EnterpriseReputationNumberAssociateParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *EnterpriseReputationNumberAssociateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EnterpriseReputationNumberDisassociateParams struct {
+type EnterpriseReputationNumberDeleteParams struct {
 	EnterpriseID string `path:"enterprise_id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }

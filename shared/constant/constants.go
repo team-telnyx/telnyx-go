@@ -18,6 +18,7 @@ func ValueOf[T Constant[T]]() T {
 	return t.Default()
 }
 
+type Alias string             // Always "alias"
 type Android string           // Always "android"
 type Assistant string         // Always "assistant"
 type Body string              // Always "BODY"
@@ -36,6 +37,7 @@ type Inworld string           // Always "inworld"
 type Ios string               // Always "ios"
 type MediaName string         // Always "media_name"
 type MediaURL string          // Always "media_url"
+type Phoneme string           // Always "phoneme"
 type PredefinedMedia string   // Always "predefined_media"
 type Refer string             // Always "refer"
 type Retrieval string         // Always "retrieval"
@@ -48,6 +50,7 @@ type Tool string              // Always "tool"
 type Transfer string          // Always "transfer"
 type User string              // Always "user"
 
+func (c Alias) Default() Alias                         { return "alias" }
 func (c Android) Default() Android                     { return "android" }
 func (c Assistant) Default() Assistant                 { return "assistant" }
 func (c Body) Default() Body                           { return "BODY" }
@@ -66,6 +69,7 @@ func (c Inworld) Default() Inworld                     { return "inworld" }
 func (c Ios) Default() Ios                             { return "ios" }
 func (c MediaName) Default() MediaName                 { return "media_name" }
 func (c MediaURL) Default() MediaURL                   { return "media_url" }
+func (c Phoneme) Default() Phoneme                     { return "phoneme" }
 func (c PredefinedMedia) Default() PredefinedMedia     { return "predefined_media" }
 func (c Refer) Default() Refer                         { return "refer" }
 func (c Retrieval) Default() Retrieval                 { return "retrieval" }
@@ -78,6 +82,7 @@ func (c Tool) Default() Tool                           { return "tool" }
 func (c Transfer) Default() Transfer                   { return "transfer" }
 func (c User) Default() User                           { return "user" }
 
+func (c Alias) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Android) MarshalJSON() ([]byte, error)           { return marshalString(c) }
 func (c Assistant) MarshalJSON() ([]byte, error)         { return marshalString(c) }
 func (c Body) MarshalJSON() ([]byte, error)              { return marshalString(c) }
@@ -96,6 +101,7 @@ func (c Inworld) MarshalJSON() ([]byte, error)           { return marshalString(
 func (c Ios) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c MediaName) MarshalJSON() ([]byte, error)         { return marshalString(c) }
 func (c MediaURL) MarshalJSON() ([]byte, error)          { return marshalString(c) }
+func (c Phoneme) MarshalJSON() ([]byte, error)           { return marshalString(c) }
 func (c PredefinedMedia) MarshalJSON() ([]byte, error)   { return marshalString(c) }
 func (c Refer) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Retrieval) MarshalJSON() ([]byte, error)         { return marshalString(c) }
