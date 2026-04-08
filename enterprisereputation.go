@@ -43,6 +43,44 @@ func NewEnterpriseReputationService(opts ...option.RequestOption) (r EnterpriseR
 	return
 }
 
+// Retrieve the current Number Reputation settings for an enterprise.
+//
+// Returns the enrollment status (`pending`, `approved`, `rejected`, `deleted`),
+// check frequency, and any rejection reasons.
+//
+// Returns `404` if reputation has not been enabled for this enterprise.
+func (r *EnterpriseReputationService) Get(ctx context.Context, enterpriseID string, opts ...option.RequestOption) (res *EnterpriseReputationGetResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if enterpriseID == "" {
+		err = errors.New("missing required enterprise_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("enterprises/%s/reputation", enterpriseID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
+// Disable Number Reputation for an enterprise.
+//
+// This will:
+//
+// - Delete the reputation settings record
+// - Log the deletion for audit purposes
+// - Stop all future automated reputation checks
+//
+// **Note:** Can only be performed on `approved` reputation settings.
+func (r *EnterpriseReputationService) Disable(ctx context.Context, enterpriseID string, opts ...option.RequestOption) (err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	if enterpriseID == "" {
+		err = errors.New("missing required enterprise_id parameter")
+		return err
+	}
+	path := fmt.Sprintf("enterprises/%s/reputation", enterpriseID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
+	return err
+}
+
 // Enable Number Reputation service for an enterprise.
 //
 // **Requirements:**
@@ -68,7 +106,7 @@ func NewEnterpriseReputationService(opts ...option.RequestOption) (r EnterpriseR
 // - `biweekly` — Once every two weeks
 // - `monthly` — Once per month
 // - `never` — Manual refresh only
-func (r *EnterpriseReputationService) New(ctx context.Context, enterpriseID string, body EnterpriseReputationNewParams, opts ...option.RequestOption) (res *EnterpriseReputationNewResponse, err error) {
+func (r *EnterpriseReputationService) Enable(ctx context.Context, enterpriseID string, body EnterpriseReputationEnableParams, opts ...option.RequestOption) (res *EnterpriseReputationEnableResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if enterpriseID == "" {
 		err = errors.New("missing required enterprise_id parameter")
@@ -77,44 +115,6 @@ func (r *EnterpriseReputationService) New(ctx context.Context, enterpriseID stri
 	path := fmt.Sprintf("enterprises/%s/reputation", enterpriseID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
-}
-
-// Retrieve the current Number Reputation settings for an enterprise.
-//
-// Returns the enrollment status (`pending`, `approved`, `rejected`, `deleted`),
-// check frequency, and any rejection reasons.
-//
-// Returns `404` if reputation has not been enabled for this enterprise.
-func (r *EnterpriseReputationService) List(ctx context.Context, enterpriseID string, opts ...option.RequestOption) (res *EnterpriseReputationListResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	if enterpriseID == "" {
-		err = errors.New("missing required enterprise_id parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("enterprises/%s/reputation", enterpriseID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
-}
-
-// Disable Number Reputation for an enterprise.
-//
-// This will:
-//
-// - Delete the reputation settings record
-// - Log the deletion for audit purposes
-// - Stop all future automated reputation checks
-//
-// **Note:** Can only be performed on `approved` reputation settings.
-func (r *EnterpriseReputationService) DeleteAll(ctx context.Context, enterpriseID string, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	if enterpriseID == "" {
-		err = errors.New("missing required enterprise_id parameter")
-		return err
-	}
-	path := fmt.Sprintf("enterprises/%s/reputation", enterpriseID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return err
 }
 
 // Update how often reputation data is automatically refreshed.
@@ -202,7 +202,7 @@ const (
 	EnterpriseReputationPublicStatusDeleted  EnterpriseReputationPublicStatus = "deleted"
 )
 
-type EnterpriseReputationNewResponse struct {
+type EnterpriseReputationGetResponse struct {
 	Data EnterpriseReputationPublic `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -213,12 +213,12 @@ type EnterpriseReputationNewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r EnterpriseReputationNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseReputationNewResponse) UnmarshalJSON(data []byte) error {
+func (r EnterpriseReputationGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseReputationGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type EnterpriseReputationListResponse struct {
+type EnterpriseReputationEnableResponse struct {
 	Data EnterpriseReputationPublic `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -229,8 +229,8 @@ type EnterpriseReputationListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r EnterpriseReputationListResponse) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseReputationListResponse) UnmarshalJSON(data []byte) error {
+func (r EnterpriseReputationEnableResponse) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseReputationEnableResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -250,35 +250,35 @@ func (r *EnterpriseReputationUpdateFrequencyResponse) UnmarshalJSON(data []byte)
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type EnterpriseReputationNewParams struct {
+type EnterpriseReputationEnableParams struct {
 	// ID of the signed Letter of Authorization (LOA) document uploaded to the document
 	// service
 	LoaDocumentID string `json:"loa_document_id" api:"required"`
 	// Frequency for automatically refreshing reputation data
 	//
 	// Any of "business_daily", "daily", "weekly", "biweekly", "monthly", "never".
-	CheckFrequency EnterpriseReputationNewParamsCheckFrequency `json:"check_frequency,omitzero"`
+	CheckFrequency EnterpriseReputationEnableParamsCheckFrequency `json:"check_frequency,omitzero"`
 	paramObj
 }
 
-func (r EnterpriseReputationNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow EnterpriseReputationNewParams
+func (r EnterpriseReputationEnableParams) MarshalJSON() (data []byte, err error) {
+	type shadow EnterpriseReputationEnableParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *EnterpriseReputationNewParams) UnmarshalJSON(data []byte) error {
+func (r *EnterpriseReputationEnableParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Frequency for automatically refreshing reputation data
-type EnterpriseReputationNewParamsCheckFrequency string
+type EnterpriseReputationEnableParamsCheckFrequency string
 
 const (
-	EnterpriseReputationNewParamsCheckFrequencyBusinessDaily EnterpriseReputationNewParamsCheckFrequency = "business_daily"
-	EnterpriseReputationNewParamsCheckFrequencyDaily         EnterpriseReputationNewParamsCheckFrequency = "daily"
-	EnterpriseReputationNewParamsCheckFrequencyWeekly        EnterpriseReputationNewParamsCheckFrequency = "weekly"
-	EnterpriseReputationNewParamsCheckFrequencyBiweekly      EnterpriseReputationNewParamsCheckFrequency = "biweekly"
-	EnterpriseReputationNewParamsCheckFrequencyMonthly       EnterpriseReputationNewParamsCheckFrequency = "monthly"
-	EnterpriseReputationNewParamsCheckFrequencyNever         EnterpriseReputationNewParamsCheckFrequency = "never"
+	EnterpriseReputationEnableParamsCheckFrequencyBusinessDaily EnterpriseReputationEnableParamsCheckFrequency = "business_daily"
+	EnterpriseReputationEnableParamsCheckFrequencyDaily         EnterpriseReputationEnableParamsCheckFrequency = "daily"
+	EnterpriseReputationEnableParamsCheckFrequencyWeekly        EnterpriseReputationEnableParamsCheckFrequency = "weekly"
+	EnterpriseReputationEnableParamsCheckFrequencyBiweekly      EnterpriseReputationEnableParamsCheckFrequency = "biweekly"
+	EnterpriseReputationEnableParamsCheckFrequencyMonthly       EnterpriseReputationEnableParamsCheckFrequency = "monthly"
+	EnterpriseReputationEnableParamsCheckFrequencyNever         EnterpriseReputationEnableParamsCheckFrequency = "never"
 )
 
 type EnterpriseReputationUpdateFrequencyParams struct {
