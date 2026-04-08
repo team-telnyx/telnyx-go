@@ -31,7 +31,7 @@ func TestVoiceCloneNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.VoiceClones.New(context.TODO(), telnyx.VoiceCloneNewParams{
-		OfTelnyxDesignClone: &telnyx.VoiceCloneNewParamsBodyTelnyxDesignClone{
+		OfTelnyxDesignClone: &telnyx.VoiceCloneNewParamsParamsTelnyxDesignClone{
 			Gender:        "male",
 			Language:      "en",
 			Name:          "clone-narrator",
@@ -145,7 +145,7 @@ func TestVoiceCloneNewFromUploadWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.VoiceClones.NewFromUpload(context.TODO(), telnyx.VoiceCloneNewFromUploadParams{
-		OfTelnyxQwen3TtsClone: &telnyx.VoiceCloneNewFromUploadParamsBodyTelnyxQwen3TtsClone{
+		OfTelnyxQwen3TtsClone: &telnyx.VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone{
 			AudioFile: io.Reader(bytes.NewBuffer([]byte("Example data"))),
 			Gender:    "male",
 			Language:  "lkf-Lz1vLbBu-9uDh-9AHaOS2D-Cbf",

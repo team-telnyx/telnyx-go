@@ -28,9 +28,10 @@ func TestPronunciationDictNew(t *testing.T) {
 	)
 	_, err := client.PronunciationDicts.New(context.TODO(), telnyx.PronunciationDictNewParams{
 		Items: []telnyx.PronunciationDictNewParamsItemUnion{{
-			OfAlias: &telnyx.PronunciationDictNewParamsItemAlias{
+			OfAlias: &telnyx.PronunciationDictAliasItemParam{
 				Alias: "tel-nicks",
 				Text:  "Telnyx",
+				Type:  telnyx.PronunciationDictAliasItemTypeAlias,
 			},
 		}},
 		Name: "Brand Names",
@@ -85,9 +86,10 @@ func TestPronunciationDictUpdateWithOptionalParams(t *testing.T) {
 		"c215a3e1-be41-4701-97e8-1d3c22f9a5b7",
 		telnyx.PronunciationDictUpdateParams{
 			Items: []telnyx.PronunciationDictUpdateParamsItemUnion{{
-				OfAlias: &telnyx.PronunciationDictUpdateParamsItemAlias{
+				OfAlias: &telnyx.PronunciationDictAliasItemParam{
 					Alias: "tel-nicks",
 					Text:  "Telnyx",
+					Type:  telnyx.PronunciationDictAliasItemTypeAlias,
 				},
 			}},
 			Name: telnyx.String("Updated Brand Names"),
