@@ -319,6 +319,10 @@ type Client struct {
 	Enterprises    EnterpriseService
 	Reputation     ReputationService
 	TermsOfService TermsOfServiceService
+	// Manage pronunciation dictionaries for text-to-speech synthesis. Dictionaries
+	// contain alias items (text replacement) and phoneme items (IPA pronunciation
+	// notation) that control how specific words are spoken.
+	PronunciationDicts PronunciationDictService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -516,6 +520,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Enterprises = NewEnterpriseService(opts...)
 	r.Reputation = NewReputationService(opts...)
 	r.TermsOfService = NewTermsOfServiceService(opts...)
+	r.PronunciationDicts = NewPronunciationDictService(opts...)
 
 	return
 }
