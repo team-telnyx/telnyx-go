@@ -118,6 +118,7 @@ func TestTexmlAccountCallCallsWithOptionalParams(t *testing.T) {
 			MachineDetectionSpeechEndThreshold: telnyx.Int(2000),
 			MachineDetectionSpeechThreshold:    telnyx.Int(2000),
 			MachineDetectionTimeout:            telnyx.Int(5000),
+			MediaEncryption:                    telnyx.TexmlAccountCallCallsParamsMediaEncryptionDisabled,
 			PreferredCodecs:                    telnyx.String("PCMA,PCMU"),
 			Record:                             telnyx.Bool(false),
 			RecordingChannels:                  telnyx.TexmlAccountCallCallsParamsRecordingChannelsDual,

@@ -774,6 +774,13 @@ type TexmlAccountCallCallsParams struct {
 	//
 	// Any of "Enable", "Disable", "DetectMessageEnd".
 	MachineDetection TexmlAccountCallCallsParamsMachineDetection `json:"MachineDetection,omitzero"`
+	// Defines whether media should be encrypted on the call. When set to `SRTP`, the
+	// call will use Secure Real-time Transport Protocol for media encryption. When set
+	// to `DTLS`, the call will use DTLS for media encryption. Only supported for SIP
+	// destinations.
+	//
+	// Any of "disabled", "SRTP", "DTLS".
+	MediaEncryption TexmlAccountCallCallsParamsMediaEncryption `json:"MediaEncryption,omitzero"`
 	// The number of channels in the final recording. Defaults to `mono`.
 	//
 	// Any of "mono", "dual".
@@ -867,6 +874,18 @@ const (
 	TexmlAccountCallCallsParamsMachineDetectionEnable           TexmlAccountCallCallsParamsMachineDetection = "Enable"
 	TexmlAccountCallCallsParamsMachineDetectionDisable          TexmlAccountCallCallsParamsMachineDetection = "Disable"
 	TexmlAccountCallCallsParamsMachineDetectionDetectMessageEnd TexmlAccountCallCallsParamsMachineDetection = "DetectMessageEnd"
+)
+
+// Defines whether media should be encrypted on the call. When set to `SRTP`, the
+// call will use Secure Real-time Transport Protocol for media encryption. When set
+// to `DTLS`, the call will use DTLS for media encryption. Only supported for SIP
+// destinations.
+type TexmlAccountCallCallsParamsMediaEncryption string
+
+const (
+	TexmlAccountCallCallsParamsMediaEncryptionDisabled TexmlAccountCallCallsParamsMediaEncryption = "disabled"
+	TexmlAccountCallCallsParamsMediaEncryptionSrtp     TexmlAccountCallCallsParamsMediaEncryption = "SRTP"
+	TexmlAccountCallCallsParamsMediaEncryptionDtls     TexmlAccountCallCallsParamsMediaEncryption = "DTLS"
 )
 
 // The number of channels in the final recording. Defaults to `mono`.
