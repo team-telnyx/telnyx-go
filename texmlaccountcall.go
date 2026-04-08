@@ -688,11 +688,11 @@ type TexmlAccountCallCallsParams struct {
 	//
 
 	// This field is a request body variant, only one variant field can be set.
-	OfWithURL *TexmlAccountCallCallsParamsBodyWithURL `json:",inline"`
+	OfWithURL *TexmlAccountCallCallsParamsParamsWithURL `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	OfWithTeXml *TexmlAccountCallCallsParamsBodyWithTeXml `json:",inline"`
+	OfWithTeXml *TexmlAccountCallCallsParamsParamsWithTeXml `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	OfApplicationDefault *TexmlAccountCallCallsParamsBodyApplicationDefault `json:",inline"`
+	OfApplicationDefault *TexmlAccountCallCallsParamsParamsApplicationDefault `json:",inline"`
 
 	paramObj
 }
@@ -705,9 +705,10 @@ func (r *TexmlAccountCallCallsParams) UnmarshalJSON(data []byte) error {
 }
 
 // The property URL is required.
-type TexmlAccountCallCallsParamsBodyWithURL struct {
+type TexmlAccountCallCallsParamsParamsWithURL struct {
 	// The URL from which Telnyx will retrieve the TeXML call instructions.
-	URL string `json:"Url" api:"required"`
+	URL   string            `json:"Url" api:"required"`
+	Texml param.Opt[string] `json:"Texml,omitzero"`
 	// The ID of the TeXML Application.
 	ApplicationSid param.Opt[string] `json:"ApplicationSid,omitzero"`
 	// Select whether to perform answering machine detection in the background. By
@@ -786,7 +787,7 @@ type TexmlAccountCallCallsParamsBodyWithURL struct {
 	AsyncAmdStatusCallbackMethod string `json:"AsyncAmdStatusCallbackMethod,omitzero"`
 	// Custom HTTP headers to be sent with the call. Each header should be an object
 	// with 'name' and 'value' properties.
-	CustomHeaders []TexmlAccountCallCallsParamsBodyWithURLCustomHeader `json:"CustomHeaders,omitzero"`
+	CustomHeaders []TexmlAccountCallCallsParamsParamsWithURLCustomHeader `json:"CustomHeaders,omitzero"`
 	// Allows you to chose between Premium and Standard detections.
 	//
 	// Any of "Premium", "Regular".
@@ -833,7 +834,6 @@ type TexmlAccountCallCallsParamsBodyWithURL struct {
 	//
 	// Any of "barge", "whisper", "monitor".
 	SupervisingRole string `json:"SupervisingRole,omitzero"`
-	Texml           any    `json:"Texml,omitzero"`
 	// Whether to trim any leading and trailing silence from the recording. Defaults to
 	// `trim-silence`.
 	//
@@ -847,58 +847,58 @@ type TexmlAccountCallCallsParamsBodyWithURL struct {
 	paramObj
 }
 
-func (r TexmlAccountCallCallsParamsBodyWithURL) MarshalJSON() (data []byte, err error) {
-	type shadow TexmlAccountCallCallsParamsBodyWithURL
+func (r TexmlAccountCallCallsParamsParamsWithURL) MarshalJSON() (data []byte, err error) {
+	type shadow TexmlAccountCallCallsParamsParamsWithURL
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *TexmlAccountCallCallsParamsBodyWithURL) UnmarshalJSON(data []byte) error {
+func (r *TexmlAccountCallCallsParamsParamsWithURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
 		"AsyncAmdStatusCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
 		"DetectionMode", "Premium", "Regular",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
 		"MachineDetection", "Enable", "Disable", "DetectMessageEnd",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
 		"MediaEncryption", "disabled", "SRTP", "DTLS",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
 		"RecordingChannels", "mono", "dual",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
 		"RecordingStatusCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
 		"RecordingTrack", "inbound", "outbound", "both",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
 		"SipRegion", "US", "Europe", "Canada", "Australia", "Middle East",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
 		"StatusCallbackEvent", "initiated", "ringing", "answered", "completed",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
 		"StatusCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
 		"SupervisingRole", "barge", "whisper", "monitor",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
 		"Trim", "trim-silence", "do-not-trim",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
 		"UrlMethod", "GET", "POST",
 	)
 }
 
 // The properties Name, Value are required.
-type TexmlAccountCallCallsParamsBodyWithURLCustomHeader struct {
+type TexmlAccountCallCallsParamsParamsWithURLCustomHeader struct {
 	// The name of the custom header
 	Name string `json:"name" api:"required"`
 	// The value of the custom header
@@ -906,19 +906,20 @@ type TexmlAccountCallCallsParamsBodyWithURLCustomHeader struct {
 	paramObj
 }
 
-func (r TexmlAccountCallCallsParamsBodyWithURLCustomHeader) MarshalJSON() (data []byte, err error) {
-	type shadow TexmlAccountCallCallsParamsBodyWithURLCustomHeader
+func (r TexmlAccountCallCallsParamsParamsWithURLCustomHeader) MarshalJSON() (data []byte, err error) {
+	type shadow TexmlAccountCallCallsParamsParamsWithURLCustomHeader
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *TexmlAccountCallCallsParamsBodyWithURLCustomHeader) UnmarshalJSON(data []byte) error {
+func (r *TexmlAccountCallCallsParamsParamsWithURLCustomHeader) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property Texml is required.
-type TexmlAccountCallCallsParamsBodyWithTeXml struct {
+type TexmlAccountCallCallsParamsParamsWithTeXml struct {
 	// TeXML to be used as instructions for the call. If provided, the call will
 	// execute these instructions instead of fetching from the Url.
-	Texml string `json:"Texml" api:"required"`
+	Texml string            `json:"Texml" api:"required"`
+	URL   param.Opt[string] `json:"Url,omitzero"`
 	// The ID of the TeXML Application.
 	ApplicationSid param.Opt[string] `json:"ApplicationSid,omitzero"`
 	// Select whether to perform answering machine detection in the background. By
@@ -997,7 +998,7 @@ type TexmlAccountCallCallsParamsBodyWithTeXml struct {
 	AsyncAmdStatusCallbackMethod string `json:"AsyncAmdStatusCallbackMethod,omitzero"`
 	// Custom HTTP headers to be sent with the call. Each header should be an object
 	// with 'name' and 'value' properties.
-	CustomHeaders []TexmlAccountCallCallsParamsBodyWithTeXmlCustomHeader `json:"CustomHeaders,omitzero"`
+	CustomHeaders []TexmlAccountCallCallsParamsParamsWithTeXmlCustomHeader `json:"CustomHeaders,omitzero"`
 	// Allows you to chose between Premium and Standard detections.
 	//
 	// Any of "Premium", "Regular".
@@ -1049,7 +1050,6 @@ type TexmlAccountCallCallsParamsBodyWithTeXml struct {
 	//
 	// Any of "trim-silence", "do-not-trim".
 	Trim string `json:"Trim,omitzero"`
-	URL  any    `json:"Url,omitzero"`
 	// HTTP request type used for `Url`. The default value is inherited from TeXML
 	// Application setting.
 	//
@@ -1058,58 +1058,58 @@ type TexmlAccountCallCallsParamsBodyWithTeXml struct {
 	paramObj
 }
 
-func (r TexmlAccountCallCallsParamsBodyWithTeXml) MarshalJSON() (data []byte, err error) {
-	type shadow TexmlAccountCallCallsParamsBodyWithTeXml
+func (r TexmlAccountCallCallsParamsParamsWithTeXml) MarshalJSON() (data []byte, err error) {
+	type shadow TexmlAccountCallCallsParamsParamsWithTeXml
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *TexmlAccountCallCallsParamsBodyWithTeXml) UnmarshalJSON(data []byte) error {
+func (r *TexmlAccountCallCallsParamsParamsWithTeXml) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
 		"AsyncAmdStatusCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
 		"DetectionMode", "Premium", "Regular",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
 		"MachineDetection", "Enable", "Disable", "DetectMessageEnd",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
 		"MediaEncryption", "disabled", "SRTP", "DTLS",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
 		"RecordingChannels", "mono", "dual",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
 		"RecordingStatusCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
 		"RecordingTrack", "inbound", "outbound", "both",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
 		"SipRegion", "US", "Europe", "Canada", "Australia", "Middle East",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
 		"StatusCallbackEvent", "initiated", "ringing", "answered", "completed",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
 		"StatusCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
 		"SupervisingRole", "barge", "whisper", "monitor",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
 		"Trim", "trim-silence", "do-not-trim",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
 		"UrlMethod", "GET", "POST",
 	)
 }
 
 // The properties Name, Value are required.
-type TexmlAccountCallCallsParamsBodyWithTeXmlCustomHeader struct {
+type TexmlAccountCallCallsParamsParamsWithTeXmlCustomHeader struct {
 	// The name of the custom header
 	Name string `json:"name" api:"required"`
 	// The value of the custom header
@@ -1117,15 +1117,17 @@ type TexmlAccountCallCallsParamsBodyWithTeXmlCustomHeader struct {
 	paramObj
 }
 
-func (r TexmlAccountCallCallsParamsBodyWithTeXmlCustomHeader) MarshalJSON() (data []byte, err error) {
-	type shadow TexmlAccountCallCallsParamsBodyWithTeXmlCustomHeader
+func (r TexmlAccountCallCallsParamsParamsWithTeXmlCustomHeader) MarshalJSON() (data []byte, err error) {
+	type shadow TexmlAccountCallCallsParamsParamsWithTeXmlCustomHeader
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *TexmlAccountCallCallsParamsBodyWithTeXmlCustomHeader) UnmarshalJSON(data []byte) error {
+func (r *TexmlAccountCallCallsParamsParamsWithTeXmlCustomHeader) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type TexmlAccountCallCallsParamsBodyApplicationDefault struct {
+type TexmlAccountCallCallsParamsParamsApplicationDefault struct {
+	Texml param.Opt[string] `json:"Texml,omitzero"`
+	URL   param.Opt[string] `json:"Url,omitzero"`
 	// The ID of the TeXML Application.
 	ApplicationSid param.Opt[string] `json:"ApplicationSid,omitzero"`
 	// Select whether to perform answering machine detection in the background. By
@@ -1204,7 +1206,7 @@ type TexmlAccountCallCallsParamsBodyApplicationDefault struct {
 	AsyncAmdStatusCallbackMethod string `json:"AsyncAmdStatusCallbackMethod,omitzero"`
 	// Custom HTTP headers to be sent with the call. Each header should be an object
 	// with 'name' and 'value' properties.
-	CustomHeaders []TexmlAccountCallCallsParamsBodyApplicationDefaultCustomHeader `json:"CustomHeaders,omitzero"`
+	CustomHeaders []TexmlAccountCallCallsParamsParamsApplicationDefaultCustomHeader `json:"CustomHeaders,omitzero"`
 	// Allows you to chose between Premium and Standard detections.
 	//
 	// Any of "Premium", "Regular".
@@ -1251,13 +1253,11 @@ type TexmlAccountCallCallsParamsBodyApplicationDefault struct {
 	//
 	// Any of "barge", "whisper", "monitor".
 	SupervisingRole string `json:"SupervisingRole,omitzero"`
-	Texml           any    `json:"Texml,omitzero"`
 	// Whether to trim any leading and trailing silence from the recording. Defaults to
 	// `trim-silence`.
 	//
 	// Any of "trim-silence", "do-not-trim".
 	Trim string `json:"Trim,omitzero"`
-	URL  any    `json:"Url,omitzero"`
 	// HTTP request type used for `Url`. The default value is inherited from TeXML
 	// Application setting.
 	//
@@ -1266,58 +1266,58 @@ type TexmlAccountCallCallsParamsBodyApplicationDefault struct {
 	paramObj
 }
 
-func (r TexmlAccountCallCallsParamsBodyApplicationDefault) MarshalJSON() (data []byte, err error) {
-	type shadow TexmlAccountCallCallsParamsBodyApplicationDefault
+func (r TexmlAccountCallCallsParamsParamsApplicationDefault) MarshalJSON() (data []byte, err error) {
+	type shadow TexmlAccountCallCallsParamsParamsApplicationDefault
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *TexmlAccountCallCallsParamsBodyApplicationDefault) UnmarshalJSON(data []byte) error {
+func (r *TexmlAccountCallCallsParamsParamsApplicationDefault) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
 		"AsyncAmdStatusCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
 		"DetectionMode", "Premium", "Regular",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
 		"MachineDetection", "Enable", "Disable", "DetectMessageEnd",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
 		"MediaEncryption", "disabled", "SRTP", "DTLS",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
 		"RecordingChannels", "mono", "dual",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
 		"RecordingStatusCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
 		"RecordingTrack", "inbound", "outbound", "both",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
 		"SipRegion", "US", "Europe", "Canada", "Australia", "Middle East",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
 		"StatusCallbackEvent", "initiated", "ringing", "answered", "completed",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
 		"StatusCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
 		"SupervisingRole", "barge", "whisper", "monitor",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
 		"Trim", "trim-silence", "do-not-trim",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
 		"UrlMethod", "GET", "POST",
 	)
 }
 
 // The properties Name, Value are required.
-type TexmlAccountCallCallsParamsBodyApplicationDefaultCustomHeader struct {
+type TexmlAccountCallCallsParamsParamsApplicationDefaultCustomHeader struct {
 	// The name of the custom header
 	Name string `json:"name" api:"required"`
 	// The value of the custom header
@@ -1325,11 +1325,11 @@ type TexmlAccountCallCallsParamsBodyApplicationDefaultCustomHeader struct {
 	paramObj
 }
 
-func (r TexmlAccountCallCallsParamsBodyApplicationDefaultCustomHeader) MarshalJSON() (data []byte, err error) {
-	type shadow TexmlAccountCallCallsParamsBodyApplicationDefaultCustomHeader
+func (r TexmlAccountCallCallsParamsParamsApplicationDefaultCustomHeader) MarshalJSON() (data []byte, err error) {
+	type shadow TexmlAccountCallCallsParamsParamsApplicationDefaultCustomHeader
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *TexmlAccountCallCallsParamsBodyApplicationDefaultCustomHeader) UnmarshalJSON(data []byte) error {
+func (r *TexmlAccountCallCallsParamsParamsApplicationDefaultCustomHeader) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

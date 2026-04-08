@@ -19,7 +19,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
 // Manage pronunciation dictionaries for text-to-speech synthesis. Dictionaries
@@ -98,7 +97,7 @@ func (r *PronunciationDictService) Update(ctx context.Context, id string, body P
 
 // List all pronunciation dictionaries for the authenticated organization. Results
 // are paginated using offset-based pagination.
-func (r *PronunciationDictService) List(ctx context.Context, query PronunciationDictListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PronunciationDictListResponse], err error) {
+func (r *PronunciationDictService) List(ctx context.Context, query PronunciationDictListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PronunciationDictData], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -117,7 +116,7 @@ func (r *PronunciationDictService) List(ctx context.Context, query Pronunciation
 
 // List all pronunciation dictionaries for the authenticated organization. Results
 // are paginated using offset-based pagination.
-func (r *PronunciationDictService) ListAutoPaging(ctx context.Context, query PronunciationDictListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PronunciationDictListResponse] {
+func (r *PronunciationDictService) ListAutoPaging(ctx context.Context, query PronunciationDictListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PronunciationDictData] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -134,10 +133,283 @@ func (r *PronunciationDictService) Delete(ctx context.Context, id string, opts .
 	return err
 }
 
+// An alias pronunciation item. When the `text` value is found in input, it is
+// replaced with the `alias` before speech synthesis.
+type PronunciationDictAliasItem struct {
+	// The replacement text that will be spoken instead.
+	Alias string `json:"alias" api:"required"`
+	// The text to match in the input. Case-insensitive matching is used during
+	// synthesis.
+	Text string `json:"text" api:"required"`
+	// The item type.
+	//
+	// Any of "alias".
+	Type PronunciationDictAliasItemType `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Alias       respjson.Field
+		Text        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PronunciationDictAliasItem) RawJSON() string { return r.JSON.raw }
+func (r *PronunciationDictAliasItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this PronunciationDictAliasItem to a
+// PronunciationDictAliasItemParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// PronunciationDictAliasItemParam.Overrides()
+func (r PronunciationDictAliasItem) ToParam() PronunciationDictAliasItemParam {
+	return param.Override[PronunciationDictAliasItemParam](json.RawMessage(r.RawJSON()))
+}
+
+// The item type.
+type PronunciationDictAliasItemType string
+
+const (
+	PronunciationDictAliasItemTypeAlias PronunciationDictAliasItemType = "alias"
+)
+
+// An alias pronunciation item. When the `text` value is found in input, it is
+// replaced with the `alias` before speech synthesis.
+//
+// The properties Alias, Text, Type are required.
+type PronunciationDictAliasItemParam struct {
+	// The replacement text that will be spoken instead.
+	Alias string `json:"alias" api:"required"`
+	// The text to match in the input. Case-insensitive matching is used during
+	// synthesis.
+	Text string `json:"text" api:"required"`
+	// The item type.
+	//
+	// Any of "alias".
+	Type PronunciationDictAliasItemType `json:"type,omitzero" api:"required"`
+	paramObj
+}
+
+func (r PronunciationDictAliasItemParam) MarshalJSON() (data []byte, err error) {
+	type shadow PronunciationDictAliasItemParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PronunciationDictAliasItemParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A pronunciation dictionary record.
+type PronunciationDictData struct {
+	// Unique identifier for the pronunciation dictionary.
+	ID string `json:"id" format:"uuid"`
+	// ISO 8601 timestamp with millisecond precision.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// List of pronunciation items (alias or phoneme type).
+	Items []PronunciationDictDataItemUnion `json:"items"`
+	// Human-readable name for the dictionary. Must be unique within the organization.
+	Name string `json:"name"`
+	// Identifies the resource type.
+	//
+	// Any of "pronunciation_dict".
+	RecordType PronunciationDictDataRecordType `json:"record_type"`
+	// ISO 8601 timestamp with millisecond precision.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// Auto-incrementing version number. Increases by 1 on each update. Used for
+	// optimistic concurrency control and cache invalidation.
+	Version int64 `json:"version"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Items       respjson.Field
+		Name        respjson.Field
+		RecordType  respjson.Field
+		UpdatedAt   respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PronunciationDictData) RawJSON() string { return r.JSON.raw }
+func (r *PronunciationDictData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// PronunciationDictDataItemUnion contains all possible properties and values from
+// [PronunciationDictAliasItem], [PronunciationDictPhonemeItem].
+//
+// Use the [PronunciationDictDataItemUnion.AsAny] method to switch on the variant.
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type PronunciationDictDataItemUnion struct {
+	// This field is from variant [PronunciationDictAliasItem].
+	Alias string `json:"alias"`
+	Text  string `json:"text"`
+	// Any of "alias", "phoneme".
+	Type string `json:"type"`
+	// This field is from variant [PronunciationDictPhonemeItem].
+	Alphabet PronunciationDictPhonemeItemAlphabet `json:"alphabet"`
+	// This field is from variant [PronunciationDictPhonemeItem].
+	Phoneme string `json:"phoneme"`
+	JSON    struct {
+		Alias    respjson.Field
+		Text     respjson.Field
+		Type     respjson.Field
+		Alphabet respjson.Field
+		Phoneme  respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+// anyPronunciationDictDataItem is implemented by each variant of
+// [PronunciationDictDataItemUnion] to add type safety for the return type of
+// [PronunciationDictDataItemUnion.AsAny]
+type anyPronunciationDictDataItem interface {
+	implPronunciationDictDataItemUnion()
+}
+
+func (PronunciationDictAliasItem) implPronunciationDictDataItemUnion()   {}
+func (PronunciationDictPhonemeItem) implPronunciationDictDataItemUnion() {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := PronunciationDictDataItemUnion.AsAny().(type) {
+//	case telnyx.PronunciationDictAliasItem:
+//	case telnyx.PronunciationDictPhonemeItem:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u PronunciationDictDataItemUnion) AsAny() anyPronunciationDictDataItem {
+	switch u.Type {
+	case "alias":
+		return u.AsAlias()
+	case "phoneme":
+		return u.AsPhoneme()
+	}
+	return nil
+}
+
+func (u PronunciationDictDataItemUnion) AsAlias() (v PronunciationDictAliasItem) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u PronunciationDictDataItemUnion) AsPhoneme() (v PronunciationDictPhonemeItem) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u PronunciationDictDataItemUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *PronunciationDictDataItemUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies the resource type.
+type PronunciationDictDataRecordType string
+
+const (
+	PronunciationDictDataRecordTypePronunciationDict PronunciationDictDataRecordType = "pronunciation_dict"
+)
+
+// A phoneme pronunciation item. When the `text` value is found in input, it is
+// pronounced using the specified IPA phoneme notation.
+type PronunciationDictPhonemeItem struct {
+	// The phonetic alphabet used for the phoneme notation.
+	//
+	// Any of "ipa".
+	Alphabet PronunciationDictPhonemeItemAlphabet `json:"alphabet" api:"required"`
+	// The phoneme notation representing the desired pronunciation.
+	Phoneme string `json:"phoneme" api:"required"`
+	// The text to match in the input. Case-insensitive matching is used during
+	// synthesis.
+	Text string `json:"text" api:"required"`
+	// The item type.
+	//
+	// Any of "phoneme".
+	Type PronunciationDictPhonemeItemType `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Alphabet    respjson.Field
+		Phoneme     respjson.Field
+		Text        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PronunciationDictPhonemeItem) RawJSON() string { return r.JSON.raw }
+func (r *PronunciationDictPhonemeItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this PronunciationDictPhonemeItem to a
+// PronunciationDictPhonemeItemParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// PronunciationDictPhonemeItemParam.Overrides()
+func (r PronunciationDictPhonemeItem) ToParam() PronunciationDictPhonemeItemParam {
+	return param.Override[PronunciationDictPhonemeItemParam](json.RawMessage(r.RawJSON()))
+}
+
+// The phonetic alphabet used for the phoneme notation.
+type PronunciationDictPhonemeItemAlphabet string
+
+const (
+	PronunciationDictPhonemeItemAlphabetIpa PronunciationDictPhonemeItemAlphabet = "ipa"
+)
+
+// The item type.
+type PronunciationDictPhonemeItemType string
+
+const (
+	PronunciationDictPhonemeItemTypePhoneme PronunciationDictPhonemeItemType = "phoneme"
+)
+
+// A phoneme pronunciation item. When the `text` value is found in input, it is
+// pronounced using the specified IPA phoneme notation.
+//
+// The properties Alphabet, Phoneme, Text, Type are required.
+type PronunciationDictPhonemeItemParam struct {
+	// The phonetic alphabet used for the phoneme notation.
+	//
+	// Any of "ipa".
+	Alphabet PronunciationDictPhonemeItemAlphabet `json:"alphabet,omitzero" api:"required"`
+	// The phoneme notation representing the desired pronunciation.
+	Phoneme string `json:"phoneme" api:"required"`
+	// The text to match in the input. Case-insensitive matching is used during
+	// synthesis.
+	Text string `json:"text" api:"required"`
+	// The item type.
+	//
+	// Any of "phoneme".
+	Type PronunciationDictPhonemeItemType `json:"type,omitzero" api:"required"`
+	paramObj
+}
+
+func (r PronunciationDictPhonemeItemParam) MarshalJSON() (data []byte, err error) {
+	type shadow PronunciationDictPhonemeItemParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PronunciationDictPhonemeItemParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Response containing a single pronunciation dictionary.
 type PronunciationDictNewResponse struct {
 	// A pronunciation dictionary record.
-	Data PronunciationDictNewResponseData `json:"data"`
+	Data PronunciationDictData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -152,179 +424,10 @@ func (r *PronunciationDictNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A pronunciation dictionary record.
-type PronunciationDictNewResponseData struct {
-	// Unique identifier for the pronunciation dictionary.
-	ID string `json:"id" format:"uuid"`
-	// ISO 8601 timestamp with millisecond precision.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// List of pronunciation items (alias or phoneme type).
-	Items []PronunciationDictNewResponseDataItemUnion `json:"items"`
-	// Human-readable name for the dictionary. Must be unique within the organization.
-	Name string `json:"name"`
-	// Identifies the resource type.
-	//
-	// Any of "pronunciation_dict".
-	RecordType string `json:"record_type"`
-	// ISO 8601 timestamp with millisecond precision.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// Auto-incrementing version number. Increases by 1 on each update. Used for
-	// optimistic concurrency control and cache invalidation.
-	Version int64 `json:"version"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Items       respjson.Field
-		Name        respjson.Field
-		RecordType  respjson.Field
-		UpdatedAt   respjson.Field
-		Version     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PronunciationDictNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *PronunciationDictNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// PronunciationDictNewResponseDataItemUnion contains all possible properties and
-// values from [PronunciationDictNewResponseDataItemAlias],
-// [PronunciationDictNewResponseDataItemPhoneme].
-//
-// Use the [PronunciationDictNewResponseDataItemUnion.AsAny] method to switch on
-// the variant.
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type PronunciationDictNewResponseDataItemUnion struct {
-	// This field is from variant [PronunciationDictNewResponseDataItemAlias].
-	Alias string `json:"alias"`
-	Text  string `json:"text"`
-	// Any of "alias", "phoneme".
-	Type string `json:"type"`
-	// This field is from variant [PronunciationDictNewResponseDataItemPhoneme].
-	Alphabet string `json:"alphabet"`
-	// This field is from variant [PronunciationDictNewResponseDataItemPhoneme].
-	Phoneme string `json:"phoneme"`
-	JSON    struct {
-		Alias    respjson.Field
-		Text     respjson.Field
-		Type     respjson.Field
-		Alphabet respjson.Field
-		Phoneme  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-// anyPronunciationDictNewResponseDataItem is implemented by each variant of
-// [PronunciationDictNewResponseDataItemUnion] to add type safety for the return
-// type of [PronunciationDictNewResponseDataItemUnion.AsAny]
-type anyPronunciationDictNewResponseDataItem interface {
-	implPronunciationDictNewResponseDataItemUnion()
-}
-
-func (PronunciationDictNewResponseDataItemAlias) implPronunciationDictNewResponseDataItemUnion()   {}
-func (PronunciationDictNewResponseDataItemPhoneme) implPronunciationDictNewResponseDataItemUnion() {}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := PronunciationDictNewResponseDataItemUnion.AsAny().(type) {
-//	case telnyx.PronunciationDictNewResponseDataItemAlias:
-//	case telnyx.PronunciationDictNewResponseDataItemPhoneme:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u PronunciationDictNewResponseDataItemUnion) AsAny() anyPronunciationDictNewResponseDataItem {
-	switch u.Type {
-	case "alias":
-		return u.AsAlias()
-	case "phoneme":
-		return u.AsPhoneme()
-	}
-	return nil
-}
-
-func (u PronunciationDictNewResponseDataItemUnion) AsAlias() (v PronunciationDictNewResponseDataItemAlias) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u PronunciationDictNewResponseDataItemUnion) AsPhoneme() (v PronunciationDictNewResponseDataItemPhoneme) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u PronunciationDictNewResponseDataItemUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *PronunciationDictNewResponseDataItemUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// An alias pronunciation item. When the `text` value is found in input, it is
-// replaced with the `alias` before speech synthesis.
-type PronunciationDictNewResponseDataItemAlias struct {
-	// The replacement text that will be spoken instead.
-	Alias string `json:"alias" api:"required"`
-	// The text to match in the input. Case-insensitive matching is used during
-	// synthesis.
-	Text string `json:"text" api:"required"`
-	// The item type.
-	Type constant.Alias `json:"type" default:"alias"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Alias       respjson.Field
-		Text        respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PronunciationDictNewResponseDataItemAlias) RawJSON() string { return r.JSON.raw }
-func (r *PronunciationDictNewResponseDataItemAlias) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A phoneme pronunciation item. When the `text` value is found in input, it is
-// pronounced using the specified IPA phoneme notation.
-type PronunciationDictNewResponseDataItemPhoneme struct {
-	// The phonetic alphabet used for the phoneme notation.
-	//
-	// Any of "ipa".
-	Alphabet string `json:"alphabet" api:"required"`
-	// The phoneme notation representing the desired pronunciation.
-	Phoneme string `json:"phoneme" api:"required"`
-	// The text to match in the input. Case-insensitive matching is used during
-	// synthesis.
-	Text string `json:"text" api:"required"`
-	// The item type.
-	Type constant.Phoneme `json:"type" default:"phoneme"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Alphabet    respjson.Field
-		Phoneme     respjson.Field
-		Text        respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PronunciationDictNewResponseDataItemPhoneme) RawJSON() string { return r.JSON.raw }
-func (r *PronunciationDictNewResponseDataItemPhoneme) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Response containing a single pronunciation dictionary.
 type PronunciationDictGetResponse struct {
 	// A pronunciation dictionary record.
-	Data PronunciationDictGetResponseData `json:"data"`
+	Data PronunciationDictData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -339,179 +442,10 @@ func (r *PronunciationDictGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A pronunciation dictionary record.
-type PronunciationDictGetResponseData struct {
-	// Unique identifier for the pronunciation dictionary.
-	ID string `json:"id" format:"uuid"`
-	// ISO 8601 timestamp with millisecond precision.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// List of pronunciation items (alias or phoneme type).
-	Items []PronunciationDictGetResponseDataItemUnion `json:"items"`
-	// Human-readable name for the dictionary. Must be unique within the organization.
-	Name string `json:"name"`
-	// Identifies the resource type.
-	//
-	// Any of "pronunciation_dict".
-	RecordType string `json:"record_type"`
-	// ISO 8601 timestamp with millisecond precision.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// Auto-incrementing version number. Increases by 1 on each update. Used for
-	// optimistic concurrency control and cache invalidation.
-	Version int64 `json:"version"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Items       respjson.Field
-		Name        respjson.Field
-		RecordType  respjson.Field
-		UpdatedAt   respjson.Field
-		Version     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PronunciationDictGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *PronunciationDictGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// PronunciationDictGetResponseDataItemUnion contains all possible properties and
-// values from [PronunciationDictGetResponseDataItemAlias],
-// [PronunciationDictGetResponseDataItemPhoneme].
-//
-// Use the [PronunciationDictGetResponseDataItemUnion.AsAny] method to switch on
-// the variant.
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type PronunciationDictGetResponseDataItemUnion struct {
-	// This field is from variant [PronunciationDictGetResponseDataItemAlias].
-	Alias string `json:"alias"`
-	Text  string `json:"text"`
-	// Any of "alias", "phoneme".
-	Type string `json:"type"`
-	// This field is from variant [PronunciationDictGetResponseDataItemPhoneme].
-	Alphabet string `json:"alphabet"`
-	// This field is from variant [PronunciationDictGetResponseDataItemPhoneme].
-	Phoneme string `json:"phoneme"`
-	JSON    struct {
-		Alias    respjson.Field
-		Text     respjson.Field
-		Type     respjson.Field
-		Alphabet respjson.Field
-		Phoneme  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-// anyPronunciationDictGetResponseDataItem is implemented by each variant of
-// [PronunciationDictGetResponseDataItemUnion] to add type safety for the return
-// type of [PronunciationDictGetResponseDataItemUnion.AsAny]
-type anyPronunciationDictGetResponseDataItem interface {
-	implPronunciationDictGetResponseDataItemUnion()
-}
-
-func (PronunciationDictGetResponseDataItemAlias) implPronunciationDictGetResponseDataItemUnion()   {}
-func (PronunciationDictGetResponseDataItemPhoneme) implPronunciationDictGetResponseDataItemUnion() {}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := PronunciationDictGetResponseDataItemUnion.AsAny().(type) {
-//	case telnyx.PronunciationDictGetResponseDataItemAlias:
-//	case telnyx.PronunciationDictGetResponseDataItemPhoneme:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u PronunciationDictGetResponseDataItemUnion) AsAny() anyPronunciationDictGetResponseDataItem {
-	switch u.Type {
-	case "alias":
-		return u.AsAlias()
-	case "phoneme":
-		return u.AsPhoneme()
-	}
-	return nil
-}
-
-func (u PronunciationDictGetResponseDataItemUnion) AsAlias() (v PronunciationDictGetResponseDataItemAlias) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u PronunciationDictGetResponseDataItemUnion) AsPhoneme() (v PronunciationDictGetResponseDataItemPhoneme) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u PronunciationDictGetResponseDataItemUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *PronunciationDictGetResponseDataItemUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// An alias pronunciation item. When the `text` value is found in input, it is
-// replaced with the `alias` before speech synthesis.
-type PronunciationDictGetResponseDataItemAlias struct {
-	// The replacement text that will be spoken instead.
-	Alias string `json:"alias" api:"required"`
-	// The text to match in the input. Case-insensitive matching is used during
-	// synthesis.
-	Text string `json:"text" api:"required"`
-	// The item type.
-	Type constant.Alias `json:"type" default:"alias"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Alias       respjson.Field
-		Text        respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PronunciationDictGetResponseDataItemAlias) RawJSON() string { return r.JSON.raw }
-func (r *PronunciationDictGetResponseDataItemAlias) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A phoneme pronunciation item. When the `text` value is found in input, it is
-// pronounced using the specified IPA phoneme notation.
-type PronunciationDictGetResponseDataItemPhoneme struct {
-	// The phonetic alphabet used for the phoneme notation.
-	//
-	// Any of "ipa".
-	Alphabet string `json:"alphabet" api:"required"`
-	// The phoneme notation representing the desired pronunciation.
-	Phoneme string `json:"phoneme" api:"required"`
-	// The text to match in the input. Case-insensitive matching is used during
-	// synthesis.
-	Text string `json:"text" api:"required"`
-	// The item type.
-	Type constant.Phoneme `json:"type" default:"phoneme"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Alphabet    respjson.Field
-		Phoneme     respjson.Field
-		Text        respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PronunciationDictGetResponseDataItemPhoneme) RawJSON() string { return r.JSON.raw }
-func (r *PronunciationDictGetResponseDataItemPhoneme) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Response containing a single pronunciation dictionary.
 type PronunciationDictUpdateResponse struct {
 	// A pronunciation dictionary record.
-	Data PronunciationDictUpdateResponseData `json:"data"`
+	Data PronunciationDictData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -525,353 +459,6 @@ func (r PronunciationDictUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *PronunciationDictUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// A pronunciation dictionary record.
-type PronunciationDictUpdateResponseData struct {
-	// Unique identifier for the pronunciation dictionary.
-	ID string `json:"id" format:"uuid"`
-	// ISO 8601 timestamp with millisecond precision.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// List of pronunciation items (alias or phoneme type).
-	Items []PronunciationDictUpdateResponseDataItemUnion `json:"items"`
-	// Human-readable name for the dictionary. Must be unique within the organization.
-	Name string `json:"name"`
-	// Identifies the resource type.
-	//
-	// Any of "pronunciation_dict".
-	RecordType string `json:"record_type"`
-	// ISO 8601 timestamp with millisecond precision.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// Auto-incrementing version number. Increases by 1 on each update. Used for
-	// optimistic concurrency control and cache invalidation.
-	Version int64 `json:"version"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Items       respjson.Field
-		Name        respjson.Field
-		RecordType  respjson.Field
-		UpdatedAt   respjson.Field
-		Version     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PronunciationDictUpdateResponseData) RawJSON() string { return r.JSON.raw }
-func (r *PronunciationDictUpdateResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// PronunciationDictUpdateResponseDataItemUnion contains all possible properties
-// and values from [PronunciationDictUpdateResponseDataItemAlias],
-// [PronunciationDictUpdateResponseDataItemPhoneme].
-//
-// Use the [PronunciationDictUpdateResponseDataItemUnion.AsAny] method to switch on
-// the variant.
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type PronunciationDictUpdateResponseDataItemUnion struct {
-	// This field is from variant [PronunciationDictUpdateResponseDataItemAlias].
-	Alias string `json:"alias"`
-	Text  string `json:"text"`
-	// Any of "alias", "phoneme".
-	Type string `json:"type"`
-	// This field is from variant [PronunciationDictUpdateResponseDataItemPhoneme].
-	Alphabet string `json:"alphabet"`
-	// This field is from variant [PronunciationDictUpdateResponseDataItemPhoneme].
-	Phoneme string `json:"phoneme"`
-	JSON    struct {
-		Alias    respjson.Field
-		Text     respjson.Field
-		Type     respjson.Field
-		Alphabet respjson.Field
-		Phoneme  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-// anyPronunciationDictUpdateResponseDataItem is implemented by each variant of
-// [PronunciationDictUpdateResponseDataItemUnion] to add type safety for the return
-// type of [PronunciationDictUpdateResponseDataItemUnion.AsAny]
-type anyPronunciationDictUpdateResponseDataItem interface {
-	implPronunciationDictUpdateResponseDataItemUnion()
-}
-
-func (PronunciationDictUpdateResponseDataItemAlias) implPronunciationDictUpdateResponseDataItemUnion() {
-}
-func (PronunciationDictUpdateResponseDataItemPhoneme) implPronunciationDictUpdateResponseDataItemUnion() {
-}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := PronunciationDictUpdateResponseDataItemUnion.AsAny().(type) {
-//	case telnyx.PronunciationDictUpdateResponseDataItemAlias:
-//	case telnyx.PronunciationDictUpdateResponseDataItemPhoneme:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u PronunciationDictUpdateResponseDataItemUnion) AsAny() anyPronunciationDictUpdateResponseDataItem {
-	switch u.Type {
-	case "alias":
-		return u.AsAlias()
-	case "phoneme":
-		return u.AsPhoneme()
-	}
-	return nil
-}
-
-func (u PronunciationDictUpdateResponseDataItemUnion) AsAlias() (v PronunciationDictUpdateResponseDataItemAlias) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u PronunciationDictUpdateResponseDataItemUnion) AsPhoneme() (v PronunciationDictUpdateResponseDataItemPhoneme) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u PronunciationDictUpdateResponseDataItemUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *PronunciationDictUpdateResponseDataItemUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// An alias pronunciation item. When the `text` value is found in input, it is
-// replaced with the `alias` before speech synthesis.
-type PronunciationDictUpdateResponseDataItemAlias struct {
-	// The replacement text that will be spoken instead.
-	Alias string `json:"alias" api:"required"`
-	// The text to match in the input. Case-insensitive matching is used during
-	// synthesis.
-	Text string `json:"text" api:"required"`
-	// The item type.
-	Type constant.Alias `json:"type" default:"alias"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Alias       respjson.Field
-		Text        respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PronunciationDictUpdateResponseDataItemAlias) RawJSON() string { return r.JSON.raw }
-func (r *PronunciationDictUpdateResponseDataItemAlias) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A phoneme pronunciation item. When the `text` value is found in input, it is
-// pronounced using the specified IPA phoneme notation.
-type PronunciationDictUpdateResponseDataItemPhoneme struct {
-	// The phonetic alphabet used for the phoneme notation.
-	//
-	// Any of "ipa".
-	Alphabet string `json:"alphabet" api:"required"`
-	// The phoneme notation representing the desired pronunciation.
-	Phoneme string `json:"phoneme" api:"required"`
-	// The text to match in the input. Case-insensitive matching is used during
-	// synthesis.
-	Text string `json:"text" api:"required"`
-	// The item type.
-	Type constant.Phoneme `json:"type" default:"phoneme"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Alphabet    respjson.Field
-		Phoneme     respjson.Field
-		Text        respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PronunciationDictUpdateResponseDataItemPhoneme) RawJSON() string { return r.JSON.raw }
-func (r *PronunciationDictUpdateResponseDataItemPhoneme) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A pronunciation dictionary record.
-type PronunciationDictListResponse struct {
-	// Unique identifier for the pronunciation dictionary.
-	ID string `json:"id" format:"uuid"`
-	// ISO 8601 timestamp with millisecond precision.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// List of pronunciation items (alias or phoneme type).
-	Items []PronunciationDictListResponseItemUnion `json:"items"`
-	// Human-readable name for the dictionary. Must be unique within the organization.
-	Name string `json:"name"`
-	// Identifies the resource type.
-	//
-	// Any of "pronunciation_dict".
-	RecordType PronunciationDictListResponseRecordType `json:"record_type"`
-	// ISO 8601 timestamp with millisecond precision.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// Auto-incrementing version number. Increases by 1 on each update. Used for
-	// optimistic concurrency control and cache invalidation.
-	Version int64 `json:"version"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Items       respjson.Field
-		Name        respjson.Field
-		RecordType  respjson.Field
-		UpdatedAt   respjson.Field
-		Version     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PronunciationDictListResponse) RawJSON() string { return r.JSON.raw }
-func (r *PronunciationDictListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// PronunciationDictListResponseItemUnion contains all possible properties and
-// values from [PronunciationDictListResponseItemAlias],
-// [PronunciationDictListResponseItemPhoneme].
-//
-// Use the [PronunciationDictListResponseItemUnion.AsAny] method to switch on the
-// variant.
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type PronunciationDictListResponseItemUnion struct {
-	// This field is from variant [PronunciationDictListResponseItemAlias].
-	Alias string `json:"alias"`
-	Text  string `json:"text"`
-	// Any of "alias", "phoneme".
-	Type string `json:"type"`
-	// This field is from variant [PronunciationDictListResponseItemPhoneme].
-	Alphabet string `json:"alphabet"`
-	// This field is from variant [PronunciationDictListResponseItemPhoneme].
-	Phoneme string `json:"phoneme"`
-	JSON    struct {
-		Alias    respjson.Field
-		Text     respjson.Field
-		Type     respjson.Field
-		Alphabet respjson.Field
-		Phoneme  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-// anyPronunciationDictListResponseItem is implemented by each variant of
-// [PronunciationDictListResponseItemUnion] to add type safety for the return type
-// of [PronunciationDictListResponseItemUnion.AsAny]
-type anyPronunciationDictListResponseItem interface {
-	implPronunciationDictListResponseItemUnion()
-}
-
-func (PronunciationDictListResponseItemAlias) implPronunciationDictListResponseItemUnion()   {}
-func (PronunciationDictListResponseItemPhoneme) implPronunciationDictListResponseItemUnion() {}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := PronunciationDictListResponseItemUnion.AsAny().(type) {
-//	case telnyx.PronunciationDictListResponseItemAlias:
-//	case telnyx.PronunciationDictListResponseItemPhoneme:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u PronunciationDictListResponseItemUnion) AsAny() anyPronunciationDictListResponseItem {
-	switch u.Type {
-	case "alias":
-		return u.AsAlias()
-	case "phoneme":
-		return u.AsPhoneme()
-	}
-	return nil
-}
-
-func (u PronunciationDictListResponseItemUnion) AsAlias() (v PronunciationDictListResponseItemAlias) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u PronunciationDictListResponseItemUnion) AsPhoneme() (v PronunciationDictListResponseItemPhoneme) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u PronunciationDictListResponseItemUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *PronunciationDictListResponseItemUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// An alias pronunciation item. When the `text` value is found in input, it is
-// replaced with the `alias` before speech synthesis.
-type PronunciationDictListResponseItemAlias struct {
-	// The replacement text that will be spoken instead.
-	Alias string `json:"alias" api:"required"`
-	// The text to match in the input. Case-insensitive matching is used during
-	// synthesis.
-	Text string `json:"text" api:"required"`
-	// The item type.
-	Type constant.Alias `json:"type" default:"alias"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Alias       respjson.Field
-		Text        respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PronunciationDictListResponseItemAlias) RawJSON() string { return r.JSON.raw }
-func (r *PronunciationDictListResponseItemAlias) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A phoneme pronunciation item. When the `text` value is found in input, it is
-// pronounced using the specified IPA phoneme notation.
-type PronunciationDictListResponseItemPhoneme struct {
-	// The phonetic alphabet used for the phoneme notation.
-	//
-	// Any of "ipa".
-	Alphabet string `json:"alphabet" api:"required"`
-	// The phoneme notation representing the desired pronunciation.
-	Phoneme string `json:"phoneme" api:"required"`
-	// The text to match in the input. Case-insensitive matching is used during
-	// synthesis.
-	Text string `json:"text" api:"required"`
-	// The item type.
-	Type constant.Phoneme `json:"type" default:"phoneme"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Alphabet    respjson.Field
-		Phoneme     respjson.Field
-		Text        respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PronunciationDictListResponseItemPhoneme) RawJSON() string { return r.JSON.raw }
-func (r *PronunciationDictListResponseItemPhoneme) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Identifies the resource type.
-type PronunciationDictListResponseRecordType string
-
-const (
-	PronunciationDictListResponseRecordTypePronunciationDict PronunciationDictListResponseRecordType = "pronunciation_dict"
-)
 
 type PronunciationDictNewParams struct {
 	// List of pronunciation items (alias or phoneme type). At least one item is
@@ -894,8 +481,8 @@ func (r *PronunciationDictNewParams) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type PronunciationDictNewParamsItemUnion struct {
-	OfAlias   *PronunciationDictNewParamsItemAlias   `json:",omitzero,inline"`
-	OfPhoneme *PronunciationDictNewParamsItemPhoneme `json:",omitzero,inline"`
+	OfAlias   *PronunciationDictAliasItemParam   `json:",omitzero,inline"`
+	OfPhoneme *PronunciationDictPhonemeItemParam `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -926,7 +513,7 @@ func (u PronunciationDictNewParamsItemUnion) GetAlias() *string {
 // Returns a pointer to the underlying variant's property, if present.
 func (u PronunciationDictNewParamsItemUnion) GetAlphabet() *string {
 	if vt := u.OfPhoneme; vt != nil {
-		return &vt.Alphabet
+		return (*string)(&vt.Alphabet)
 	}
 	return nil
 }
@@ -962,68 +549,8 @@ func (u PronunciationDictNewParamsItemUnion) GetType() *string {
 func init() {
 	apijson.RegisterUnion[PronunciationDictNewParamsItemUnion](
 		"type",
-		apijson.Discriminator[PronunciationDictNewParamsItemAlias]("alias"),
-		apijson.Discriminator[PronunciationDictNewParamsItemPhoneme]("phoneme"),
-	)
-}
-
-// An alias pronunciation item. When the `text` value is found in input, it is
-// replaced with the `alias` before speech synthesis.
-//
-// The properties Alias, Text, Type are required.
-type PronunciationDictNewParamsItemAlias struct {
-	// The replacement text that will be spoken instead.
-	Alias string `json:"alias" api:"required"`
-	// The text to match in the input. Case-insensitive matching is used during
-	// synthesis.
-	Text string `json:"text" api:"required"`
-	// The item type.
-	//
-	// This field can be elided, and will marshal its zero value as "alias".
-	Type constant.Alias `json:"type" default:"alias"`
-	paramObj
-}
-
-func (r PronunciationDictNewParamsItemAlias) MarshalJSON() (data []byte, err error) {
-	type shadow PronunciationDictNewParamsItemAlias
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *PronunciationDictNewParamsItemAlias) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A phoneme pronunciation item. When the `text` value is found in input, it is
-// pronounced using the specified IPA phoneme notation.
-//
-// The properties Alphabet, Phoneme, Text, Type are required.
-type PronunciationDictNewParamsItemPhoneme struct {
-	// The phonetic alphabet used for the phoneme notation.
-	//
-	// Any of "ipa".
-	Alphabet string `json:"alphabet,omitzero" api:"required"`
-	// The phoneme notation representing the desired pronunciation.
-	Phoneme string `json:"phoneme" api:"required"`
-	// The text to match in the input. Case-insensitive matching is used during
-	// synthesis.
-	Text string `json:"text" api:"required"`
-	// The item type.
-	//
-	// This field can be elided, and will marshal its zero value as "phoneme".
-	Type constant.Phoneme `json:"type" default:"phoneme"`
-	paramObj
-}
-
-func (r PronunciationDictNewParamsItemPhoneme) MarshalJSON() (data []byte, err error) {
-	type shadow PronunciationDictNewParamsItemPhoneme
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *PronunciationDictNewParamsItemPhoneme) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[PronunciationDictNewParamsItemPhoneme](
-		"alphabet", "ipa",
+		apijson.Discriminator[PronunciationDictAliasItemParam]("alias"),
+		apijson.Discriminator[PronunciationDictPhonemeItemParam]("phoneme"),
 	)
 }
 
@@ -1047,8 +574,8 @@ func (r *PronunciationDictUpdateParams) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type PronunciationDictUpdateParamsItemUnion struct {
-	OfAlias   *PronunciationDictUpdateParamsItemAlias   `json:",omitzero,inline"`
-	OfPhoneme *PronunciationDictUpdateParamsItemPhoneme `json:",omitzero,inline"`
+	OfAlias   *PronunciationDictAliasItemParam   `json:",omitzero,inline"`
+	OfPhoneme *PronunciationDictPhonemeItemParam `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1079,7 +606,7 @@ func (u PronunciationDictUpdateParamsItemUnion) GetAlias() *string {
 // Returns a pointer to the underlying variant's property, if present.
 func (u PronunciationDictUpdateParamsItemUnion) GetAlphabet() *string {
 	if vt := u.OfPhoneme; vt != nil {
-		return &vt.Alphabet
+		return (*string)(&vt.Alphabet)
 	}
 	return nil
 }
@@ -1115,68 +642,8 @@ func (u PronunciationDictUpdateParamsItemUnion) GetType() *string {
 func init() {
 	apijson.RegisterUnion[PronunciationDictUpdateParamsItemUnion](
 		"type",
-		apijson.Discriminator[PronunciationDictUpdateParamsItemAlias]("alias"),
-		apijson.Discriminator[PronunciationDictUpdateParamsItemPhoneme]("phoneme"),
-	)
-}
-
-// An alias pronunciation item. When the `text` value is found in input, it is
-// replaced with the `alias` before speech synthesis.
-//
-// The properties Alias, Text, Type are required.
-type PronunciationDictUpdateParamsItemAlias struct {
-	// The replacement text that will be spoken instead.
-	Alias string `json:"alias" api:"required"`
-	// The text to match in the input. Case-insensitive matching is used during
-	// synthesis.
-	Text string `json:"text" api:"required"`
-	// The item type.
-	//
-	// This field can be elided, and will marshal its zero value as "alias".
-	Type constant.Alias `json:"type" default:"alias"`
-	paramObj
-}
-
-func (r PronunciationDictUpdateParamsItemAlias) MarshalJSON() (data []byte, err error) {
-	type shadow PronunciationDictUpdateParamsItemAlias
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *PronunciationDictUpdateParamsItemAlias) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A phoneme pronunciation item. When the `text` value is found in input, it is
-// pronounced using the specified IPA phoneme notation.
-//
-// The properties Alphabet, Phoneme, Text, Type are required.
-type PronunciationDictUpdateParamsItemPhoneme struct {
-	// The phonetic alphabet used for the phoneme notation.
-	//
-	// Any of "ipa".
-	Alphabet string `json:"alphabet,omitzero" api:"required"`
-	// The phoneme notation representing the desired pronunciation.
-	Phoneme string `json:"phoneme" api:"required"`
-	// The text to match in the input. Case-insensitive matching is used during
-	// synthesis.
-	Text string `json:"text" api:"required"`
-	// The item type.
-	//
-	// This field can be elided, and will marshal its zero value as "phoneme".
-	Type constant.Phoneme `json:"type" default:"phoneme"`
-	paramObj
-}
-
-func (r PronunciationDictUpdateParamsItemPhoneme) MarshalJSON() (data []byte, err error) {
-	type shadow PronunciationDictUpdateParamsItemPhoneme
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *PronunciationDictUpdateParamsItemPhoneme) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[PronunciationDictUpdateParamsItemPhoneme](
-		"alphabet", "ipa",
+		apijson.Discriminator[PronunciationDictAliasItemParam]("alias"),
+		apijson.Discriminator[PronunciationDictPhonemeItemParam]("phoneme"),
 	)
 }
 

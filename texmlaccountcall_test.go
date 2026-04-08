@@ -98,7 +98,7 @@ func TestTexmlAccountCallCallsWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"account_sid",
 		telnyx.TexmlAccountCallCallsParams{
-			OfWithURL: &telnyx.TexmlAccountCallCallsParamsBodyWithURL{
+			OfWithURL: &telnyx.TexmlAccountCallCallsParamsParamsWithURL{
 				URL:                              "https://www.example.com/texml.xml",
 				ApplicationSid:                   telnyx.String("example-app-sid"),
 				AsyncAmd:                         telnyx.Bool(true),
@@ -107,7 +107,7 @@ func TestTexmlAccountCallCallsWithOptionalParams(t *testing.T) {
 				CallerID:                         telnyx.String("Info"),
 				CancelPlaybackOnDetectMessageEnd: telnyx.Bool(false),
 				CancelPlaybackOnMachineDetection: telnyx.Bool(false),
-				CustomHeaders: []telnyx.TexmlAccountCallCallsParamsBodyWithURLCustomHeader{{
+				CustomHeaders: []telnyx.TexmlAccountCallCallsParamsParamsWithURLCustomHeader{{
 					Name:  "X-Custom-Header",
 					Value: "custom-value",
 				}},
@@ -137,7 +137,7 @@ func TestTexmlAccountCallCallsWithOptionalParams(t *testing.T) {
 				StatusCallbackMethod:               "GET",
 				SuperviseCallSid:                   telnyx.String("v3:MdI91X4lWFEs7IgbBEOT9M4AigoY08M0WWZFISt1Yw2axZ_IiE4pqg"),
 				SupervisingRole:                    "monitor",
-				Texml:                              map[string]any{},
+				Texml:                              telnyx.String("Texml"),
 				TimeLimit:                          telnyx.Int(3600),
 				Timeout:                            telnyx.Int(60),
 				To:                                 telnyx.String("+13121230000"),
