@@ -16,7 +16,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v4/shared"
-	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
 // Manage Whatsapp message templates
@@ -126,43 +125,43 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type WhatsappTemplateNewParamsComponentUnion struct {
-	OfHeader   *WhatsappTemplateNewParamsComponentHeader   `json:",omitzero,inline"`
-	OfBody     *WhatsappTemplateNewParamsComponentBody     `json:",omitzero,inline"`
-	OfFooter   *WhatsappTemplateNewParamsComponentFooter   `json:",omitzero,inline"`
-	OfButtons  *WhatsappTemplateNewParamsComponentButtons  `json:",omitzero,inline"`
-	OfCarousel *WhatsappTemplateNewParamsComponentCarousel `json:",omitzero,inline"`
+	OfWhatsappTemplateNewsComponentWhatsappTemplateHeaderComponent   *WhatsappTemplateNewParamsComponentWhatsappTemplateHeaderComponent   `json:",omitzero,inline"`
+	OfWhatsappTemplateNewsComponentWhatsappTemplateBodyComponent     *WhatsappTemplateNewParamsComponentWhatsappTemplateBodyComponent     `json:",omitzero,inline"`
+	OfWhatsappTemplateNewsComponentWhatsappTemplateFooterComponent   *WhatsappTemplateNewParamsComponentWhatsappTemplateFooterComponent   `json:",omitzero,inline"`
+	OfWhatsappTemplateNewsComponentWhatsappTemplateButtonsComponent  *WhatsappTemplateNewParamsComponentWhatsappTemplateButtonsComponent  `json:",omitzero,inline"`
+	OfWhatsappTemplateNewsComponentWhatsappTemplateCarouselComponent *WhatsappTemplateNewParamsComponentWhatsappTemplateCarouselComponent `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u WhatsappTemplateNewParamsComponentUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfHeader,
-		u.OfBody,
-		u.OfFooter,
-		u.OfButtons,
-		u.OfCarousel)
+	return param.MarshalUnion(u, u.OfWhatsappTemplateNewsComponentWhatsappTemplateHeaderComponent,
+		u.OfWhatsappTemplateNewsComponentWhatsappTemplateBodyComponent,
+		u.OfWhatsappTemplateNewsComponentWhatsappTemplateFooterComponent,
+		u.OfWhatsappTemplateNewsComponentWhatsappTemplateButtonsComponent,
+		u.OfWhatsappTemplateNewsComponentWhatsappTemplateCarouselComponent)
 }
 func (u *WhatsappTemplateNewParamsComponentUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *WhatsappTemplateNewParamsComponentUnion) asAny() any {
-	if !param.IsOmitted(u.OfHeader) {
-		return u.OfHeader
-	} else if !param.IsOmitted(u.OfBody) {
-		return u.OfBody
-	} else if !param.IsOmitted(u.OfFooter) {
-		return u.OfFooter
-	} else if !param.IsOmitted(u.OfButtons) {
-		return u.OfButtons
-	} else if !param.IsOmitted(u.OfCarousel) {
-		return u.OfCarousel
+	if !param.IsOmitted(u.OfWhatsappTemplateNewsComponentWhatsappTemplateHeaderComponent) {
+		return u.OfWhatsappTemplateNewsComponentWhatsappTemplateHeaderComponent
+	} else if !param.IsOmitted(u.OfWhatsappTemplateNewsComponentWhatsappTemplateBodyComponent) {
+		return u.OfWhatsappTemplateNewsComponentWhatsappTemplateBodyComponent
+	} else if !param.IsOmitted(u.OfWhatsappTemplateNewsComponentWhatsappTemplateFooterComponent) {
+		return u.OfWhatsappTemplateNewsComponentWhatsappTemplateFooterComponent
+	} else if !param.IsOmitted(u.OfWhatsappTemplateNewsComponentWhatsappTemplateButtonsComponent) {
+		return u.OfWhatsappTemplateNewsComponentWhatsappTemplateButtonsComponent
+	} else if !param.IsOmitted(u.OfWhatsappTemplateNewsComponentWhatsappTemplateCarouselComponent) {
+		return u.OfWhatsappTemplateNewsComponentWhatsappTemplateCarouselComponent
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u WhatsappTemplateNewParamsComponentUnion) GetFormat() *string {
-	if vt := u.OfHeader; vt != nil {
+	if vt := u.OfWhatsappTemplateNewsComponentWhatsappTemplateHeaderComponent; vt != nil {
 		return &vt.Format
 	}
 	return nil
@@ -170,23 +169,23 @@ func (u WhatsappTemplateNewParamsComponentUnion) GetFormat() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u WhatsappTemplateNewParamsComponentUnion) GetCodeExpirationMinutes() *int64 {
-	if vt := u.OfFooter; vt != nil && vt.CodeExpirationMinutes.Valid() {
+	if vt := u.OfWhatsappTemplateNewsComponentWhatsappTemplateFooterComponent; vt != nil && vt.CodeExpirationMinutes.Valid() {
 		return &vt.CodeExpirationMinutes.Value
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u WhatsappTemplateNewParamsComponentUnion) GetButtons() []WhatsappTemplateNewParamsComponentButtonsButton {
-	if vt := u.OfButtons; vt != nil {
+func (u WhatsappTemplateNewParamsComponentUnion) GetButtons() []WhatsappTemplateNewParamsComponentWhatsappTemplateButtonsComponentButton {
+	if vt := u.OfWhatsappTemplateNewsComponentWhatsappTemplateButtonsComponent; vt != nil {
 		return vt.Buttons
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u WhatsappTemplateNewParamsComponentUnion) GetCards() []WhatsappTemplateNewParamsComponentCarouselCard {
-	if vt := u.OfCarousel; vt != nil {
+func (u WhatsappTemplateNewParamsComponentUnion) GetCards() []WhatsappTemplateNewParamsComponentWhatsappTemplateCarouselComponentCard {
+	if vt := u.OfWhatsappTemplateNewsComponentWhatsappTemplateCarouselComponent; vt != nil {
 		return vt.Cards
 	}
 	return nil
@@ -194,15 +193,15 @@ func (u WhatsappTemplateNewParamsComponentUnion) GetCards() []WhatsappTemplateNe
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u WhatsappTemplateNewParamsComponentUnion) GetType() *string {
-	if vt := u.OfHeader; vt != nil {
+	if vt := u.OfWhatsappTemplateNewsComponentWhatsappTemplateHeaderComponent; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfBody; vt != nil {
+	} else if vt := u.OfWhatsappTemplateNewsComponentWhatsappTemplateBodyComponent; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfFooter; vt != nil {
+	} else if vt := u.OfWhatsappTemplateNewsComponentWhatsappTemplateFooterComponent; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfButtons; vt != nil {
+	} else if vt := u.OfWhatsappTemplateNewsComponentWhatsappTemplateButtonsComponent; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfCarousel; vt != nil {
+	} else if vt := u.OfWhatsappTemplateNewsComponentWhatsappTemplateCarouselComponent; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -210,11 +209,11 @@ func (u WhatsappTemplateNewParamsComponentUnion) GetType() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u WhatsappTemplateNewParamsComponentUnion) GetText() *string {
-	if vt := u.OfHeader; vt != nil && vt.Text.Valid() {
+	if vt := u.OfWhatsappTemplateNewsComponentWhatsappTemplateHeaderComponent; vt != nil && vt.Text.Valid() {
 		return &vt.Text.Value
-	} else if vt := u.OfBody; vt != nil && vt.Text.Valid() {
+	} else if vt := u.OfWhatsappTemplateNewsComponentWhatsappTemplateBodyComponent; vt != nil && vt.Text.Valid() {
 		return &vt.Text.Value
-	} else if vt := u.OfFooter; vt != nil && vt.Text.Valid() {
+	} else if vt := u.OfWhatsappTemplateNewsComponentWhatsappTemplateFooterComponent; vt != nil && vt.Text.Valid() {
 		return &vt.Text.Value
 	}
 	return nil
@@ -224,74 +223,67 @@ func (u WhatsappTemplateNewParamsComponentUnion) GetText() *string {
 //
 // Or use AsAny() to get the underlying value
 func (u WhatsappTemplateNewParamsComponentUnion) GetExample() (res whatsappTemplateNewParamsComponentUnionExample) {
-	if vt := u.OfHeader; vt != nil {
+	if vt := u.OfWhatsappTemplateNewsComponentWhatsappTemplateHeaderComponent; vt != nil {
 		res.any = &vt.Example
-	} else if vt := u.OfBody; vt != nil {
+	} else if vt := u.OfWhatsappTemplateNewsComponentWhatsappTemplateBodyComponent; vt != nil {
 		res.any = &vt.Example
 	}
 	return
 }
 
-// Can have the runtime types [*WhatsappTemplateNewParamsComponentHeaderExample],
-// [*WhatsappTemplateNewParamsComponentBodyExample]
+// Can have the runtime types
+// [*WhatsappTemplateNewParamsComponentWhatsappTemplateHeaderComponentExample],
+// [*WhatsappTemplateNewParamsComponentWhatsappTemplateBodyComponentExample]
 type whatsappTemplateNewParamsComponentUnionExample struct{ any }
 
 // Use the following switch statement to get the type of the union:
 //
 //	switch u.AsAny().(type) {
-//	case *telnyx.WhatsappTemplateNewParamsComponentHeaderExample:
-//	case *telnyx.WhatsappTemplateNewParamsComponentBodyExample:
+//	case *telnyx.WhatsappTemplateNewParamsComponentWhatsappTemplateHeaderComponentExample:
+//	case *telnyx.WhatsappTemplateNewParamsComponentWhatsappTemplateBodyComponentExample:
 //	default:
 //	    fmt.Errorf("not present")
 //	}
 func (u whatsappTemplateNewParamsComponentUnionExample) AsAny() any { return u.any }
 
-func init() {
-	apijson.RegisterUnion[WhatsappTemplateNewParamsComponentUnion](
-		"type",
-		apijson.Discriminator[WhatsappTemplateNewParamsComponentHeader]("HEADER"),
-		apijson.Discriminator[WhatsappTemplateNewParamsComponentBody]("BODY"),
-		apijson.Discriminator[WhatsappTemplateNewParamsComponentFooter]("FOOTER"),
-		apijson.Discriminator[WhatsappTemplateNewParamsComponentButtons]("BUTTONS"),
-		apijson.Discriminator[WhatsappTemplateNewParamsComponentCarousel]("CAROUSEL"),
-	)
-}
-
 // Optional header displayed at the top of the message.
 //
 // The properties Format, Type are required.
-type WhatsappTemplateNewParamsComponentHeader struct {
+type WhatsappTemplateNewParamsComponentWhatsappTemplateHeaderComponent struct {
 	// Header format type: TEXT (supports one variable), IMAGE, VIDEO, DOCUMENT, or
 	// LOCATION.
 	//
 	// Any of "TEXT", "IMAGE", "VIDEO", "DOCUMENT", "LOCATION".
 	Format string `json:"format,omitzero" api:"required"`
+	// Any of "HEADER".
+	Type string `json:"type,omitzero" api:"required"`
 	// Header text. Required when format is TEXT. Supports one variable ({{1}}).
 	// Variables cannot be at the start or end.
 	Text param.Opt[string] `json:"text,omitzero"`
 	// Sample values for header variables.
-	Example WhatsappTemplateNewParamsComponentHeaderExample `json:"example,omitzero"`
-	// This field can be elided, and will marshal its zero value as "HEADER".
-	Type constant.Header `json:"type" default:"HEADER"`
+	Example WhatsappTemplateNewParamsComponentWhatsappTemplateHeaderComponentExample `json:"example,omitzero"`
 	paramObj
 }
 
-func (r WhatsappTemplateNewParamsComponentHeader) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappTemplateNewParamsComponentHeader
+func (r WhatsappTemplateNewParamsComponentWhatsappTemplateHeaderComponent) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappTemplateNewParamsComponentWhatsappTemplateHeaderComponent
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *WhatsappTemplateNewParamsComponentHeader) UnmarshalJSON(data []byte) error {
+func (r *WhatsappTemplateNewParamsComponentWhatsappTemplateHeaderComponent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[WhatsappTemplateNewParamsComponentHeader](
+	apijson.RegisterFieldValidator[WhatsappTemplateNewParamsComponentWhatsappTemplateHeaderComponent](
 		"format", "TEXT", "IMAGE", "VIDEO", "DOCUMENT", "LOCATION",
+	)
+	apijson.RegisterFieldValidator[WhatsappTemplateNewParamsComponentWhatsappTemplateHeaderComponent](
+		"type", "HEADER",
 	)
 }
 
 // Sample values for header variables.
-type WhatsappTemplateNewParamsComponentHeaderExample struct {
+type WhatsappTemplateNewParamsComponentWhatsappTemplateHeaderComponentExample struct {
 	// Media handle for IMAGE, VIDEO, or DOCUMENT headers.
 	HeaderHandle []string `json:"header_handle,omitzero"`
 	// Sample values for text header variables.
@@ -299,11 +291,11 @@ type WhatsappTemplateNewParamsComponentHeaderExample struct {
 	paramObj
 }
 
-func (r WhatsappTemplateNewParamsComponentHeaderExample) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappTemplateNewParamsComponentHeaderExample
+func (r WhatsappTemplateNewParamsComponentWhatsappTemplateHeaderComponentExample) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappTemplateNewParamsComponentWhatsappTemplateHeaderComponentExample
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *WhatsappTemplateNewParamsComponentHeaderExample) UnmarshalJSON(data []byte) error {
+func (r *WhatsappTemplateNewParamsComponentWhatsappTemplateHeaderComponentExample) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -312,38 +304,44 @@ func (r *WhatsappTemplateNewParamsComponentHeaderExample) UnmarshalJSON(data []b
 // characters.
 //
 // The property Type is required.
-type WhatsappTemplateNewParamsComponentBody struct {
+type WhatsappTemplateNewParamsComponentWhatsappTemplateBodyComponent struct {
+	// Any of "BODY".
+	Type string `json:"type,omitzero" api:"required"`
 	// Body text content. Use {{1}}, {{2}}, etc. for variable placeholders. Required
 	// for MARKETING and UTILITY templates. Optional for AUTHENTICATION templates where
 	// Meta provides the built-in OTP body.
 	Text param.Opt[string] `json:"text,omitzero"`
 	// Sample values for body variables. Required when body text contains parameters.
-	Example WhatsappTemplateNewParamsComponentBodyExample `json:"example,omitzero"`
-	// This field can be elided, and will marshal its zero value as "BODY".
-	Type constant.Body `json:"type" default:"BODY"`
+	Example WhatsappTemplateNewParamsComponentWhatsappTemplateBodyComponentExample `json:"example,omitzero"`
 	paramObj
 }
 
-func (r WhatsappTemplateNewParamsComponentBody) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappTemplateNewParamsComponentBody
+func (r WhatsappTemplateNewParamsComponentWhatsappTemplateBodyComponent) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappTemplateNewParamsComponentWhatsappTemplateBodyComponent
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *WhatsappTemplateNewParamsComponentBody) UnmarshalJSON(data []byte) error {
+func (r *WhatsappTemplateNewParamsComponentWhatsappTemplateBodyComponent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func init() {
+	apijson.RegisterFieldValidator[WhatsappTemplateNewParamsComponentWhatsappTemplateBodyComponent](
+		"type", "BODY",
+	)
+}
+
 // Sample values for body variables. Required when body text contains parameters.
-type WhatsappTemplateNewParamsComponentBodyExample struct {
+type WhatsappTemplateNewParamsComponentWhatsappTemplateBodyComponentExample struct {
 	// Array containing one array of sample values, one per variable in order.
 	BodyText [][]string `json:"body_text,omitzero"`
 	paramObj
 }
 
-func (r WhatsappTemplateNewParamsComponentBodyExample) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappTemplateNewParamsComponentBodyExample
+func (r WhatsappTemplateNewParamsComponentWhatsappTemplateBodyComponentExample) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappTemplateNewParamsComponentWhatsappTemplateBodyComponentExample
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *WhatsappTemplateNewParamsComponentBodyExample) UnmarshalJSON(data []byte) error {
+func (r *WhatsappTemplateNewParamsComponentWhatsappTemplateBodyComponentExample) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -351,46 +349,58 @@ func (r *WhatsappTemplateNewParamsComponentBodyExample) UnmarshalJSON(data []byt
 // variables.
 //
 // The property Type is required.
-type WhatsappTemplateNewParamsComponentFooter struct {
+type WhatsappTemplateNewParamsComponentWhatsappTemplateFooterComponent struct {
+	// Any of "FOOTER".
+	Type string `json:"type,omitzero" api:"required"`
 	// OTP code expiration time in minutes. Used in AUTHENTICATION template footers
 	// instead of free-form text.
 	CodeExpirationMinutes param.Opt[int64] `json:"code_expiration_minutes,omitzero"`
 	// Footer text. Maximum 60 characters. For non-authentication templates.
 	Text param.Opt[string] `json:"text,omitzero"`
-	// This field can be elided, and will marshal its zero value as "FOOTER".
-	Type constant.Footer `json:"type" default:"FOOTER"`
 	paramObj
 }
 
-func (r WhatsappTemplateNewParamsComponentFooter) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappTemplateNewParamsComponentFooter
+func (r WhatsappTemplateNewParamsComponentWhatsappTemplateFooterComponent) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappTemplateNewParamsComponentWhatsappTemplateFooterComponent
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *WhatsappTemplateNewParamsComponentFooter) UnmarshalJSON(data []byte) error {
+func (r *WhatsappTemplateNewParamsComponentWhatsappTemplateFooterComponent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[WhatsappTemplateNewParamsComponentWhatsappTemplateFooterComponent](
+		"type", "FOOTER",
+	)
 }
 
 // Optional interactive buttons. Maximum 3 buttons per template.
 //
 // The properties Buttons, Type are required.
-type WhatsappTemplateNewParamsComponentButtons struct {
+type WhatsappTemplateNewParamsComponentWhatsappTemplateButtonsComponent struct {
 	// Array of button objects. Meta supports various combinations of button types.
-	Buttons []WhatsappTemplateNewParamsComponentButtonsButton `json:"buttons,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as "BUTTONS".
-	Type constant.Buttons `json:"type" default:"BUTTONS"`
+	Buttons []WhatsappTemplateNewParamsComponentWhatsappTemplateButtonsComponentButton `json:"buttons,omitzero" api:"required"`
+	// Any of "BUTTONS".
+	Type string `json:"type,omitzero" api:"required"`
 	paramObj
 }
 
-func (r WhatsappTemplateNewParamsComponentButtons) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappTemplateNewParamsComponentButtons
+func (r WhatsappTemplateNewParamsComponentWhatsappTemplateButtonsComponent) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappTemplateNewParamsComponentWhatsappTemplateButtonsComponent
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *WhatsappTemplateNewParamsComponentButtons) UnmarshalJSON(data []byte) error {
+func (r *WhatsappTemplateNewParamsComponentWhatsappTemplateButtonsComponent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func init() {
+	apijson.RegisterFieldValidator[WhatsappTemplateNewParamsComponentWhatsappTemplateButtonsComponent](
+		"type", "BUTTONS",
+	)
+}
+
 // The property Type is required.
-type WhatsappTemplateNewParamsComponentButtonsButton struct {
+type WhatsappTemplateNewParamsComponentWhatsappTemplateButtonsComponentButton struct {
 	// Any of "URL", "PHONE_NUMBER", "QUICK_REPLY", "OTP", "COPY_CODE", "FLOW".
 	Type string `json:"type,omitzero" api:"required"`
 	// Custom autofill button text for ONE_TAP OTP buttons.
@@ -423,22 +433,22 @@ type WhatsappTemplateNewParamsComponentButtonsButton struct {
 	paramObj
 }
 
-func (r WhatsappTemplateNewParamsComponentButtonsButton) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappTemplateNewParamsComponentButtonsButton
+func (r WhatsappTemplateNewParamsComponentWhatsappTemplateButtonsComponentButton) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappTemplateNewParamsComponentWhatsappTemplateButtonsComponentButton
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *WhatsappTemplateNewParamsComponentButtonsButton) UnmarshalJSON(data []byte) error {
+func (r *WhatsappTemplateNewParamsComponentWhatsappTemplateButtonsComponentButton) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[WhatsappTemplateNewParamsComponentButtonsButton](
+	apijson.RegisterFieldValidator[WhatsappTemplateNewParamsComponentWhatsappTemplateButtonsComponentButton](
 		"type", "URL", "PHONE_NUMBER", "QUICK_REPLY", "OTP", "COPY_CODE", "FLOW",
 	)
-	apijson.RegisterFieldValidator[WhatsappTemplateNewParamsComponentButtonsButton](
+	apijson.RegisterFieldValidator[WhatsappTemplateNewParamsComponentWhatsappTemplateButtonsComponentButton](
 		"flow_action", "navigate", "data_exchange",
 	)
-	apijson.RegisterFieldValidator[WhatsappTemplateNewParamsComponentButtonsButton](
+	apijson.RegisterFieldValidator[WhatsappTemplateNewParamsComponentWhatsappTemplateButtonsComponentButton](
 		"otp_type", "COPY_CODE", "ONE_TAP",
 	)
 }
@@ -447,32 +457,38 @@ func init() {
 // header, body, and buttons.
 //
 // The properties Cards, Type are required.
-type WhatsappTemplateNewParamsComponentCarousel struct {
+type WhatsappTemplateNewParamsComponentWhatsappTemplateCarouselComponent struct {
 	// Array of card objects, each with its own components.
-	Cards []WhatsappTemplateNewParamsComponentCarouselCard `json:"cards,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as "CAROUSEL".
-	Type constant.Carousel `json:"type" default:"CAROUSEL"`
+	Cards []WhatsappTemplateNewParamsComponentWhatsappTemplateCarouselComponentCard `json:"cards,omitzero" api:"required"`
+	// Any of "CAROUSEL".
+	Type string `json:"type,omitzero" api:"required"`
 	paramObj
 }
 
-func (r WhatsappTemplateNewParamsComponentCarousel) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappTemplateNewParamsComponentCarousel
+func (r WhatsappTemplateNewParamsComponentWhatsappTemplateCarouselComponent) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappTemplateNewParamsComponentWhatsappTemplateCarouselComponent
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *WhatsappTemplateNewParamsComponentCarousel) UnmarshalJSON(data []byte) error {
+func (r *WhatsappTemplateNewParamsComponentWhatsappTemplateCarouselComponent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WhatsappTemplateNewParamsComponentCarouselCard struct {
-	Components []map[string]any `json:"components,omitzero"`
+func init() {
+	apijson.RegisterFieldValidator[WhatsappTemplateNewParamsComponentWhatsappTemplateCarouselComponent](
+		"type", "CAROUSEL",
+	)
+}
+
+type WhatsappTemplateNewParamsComponentWhatsappTemplateCarouselComponentCard struct {
+	Components []any `json:"components,omitzero"`
 	paramObj
 }
 
-func (r WhatsappTemplateNewParamsComponentCarouselCard) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappTemplateNewParamsComponentCarouselCard
+func (r WhatsappTemplateNewParamsComponentWhatsappTemplateCarouselComponentCard) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappTemplateNewParamsComponentWhatsappTemplateCarouselComponentCard
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *WhatsappTemplateNewParamsComponentCarouselCard) UnmarshalJSON(data []byte) error {
+func (r *WhatsappTemplateNewParamsComponentWhatsappTemplateCarouselComponentCard) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

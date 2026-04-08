@@ -29,9 +29,10 @@ func TestWhatsappTemplateNew(t *testing.T) {
 	_, err := client.Whatsapp.Templates.New(context.TODO(), telnyx.WhatsappTemplateNewParams{
 		Category: telnyx.WhatsappTemplateNewParamsCategoryMarketing,
 		Components: []telnyx.WhatsappTemplateNewParamsComponentUnion{{
-			OfHeader: &telnyx.WhatsappTemplateNewParamsComponentHeader{
+			OfWhatsappTemplateNewsComponentWhatsappTemplateHeaderComponent: &telnyx.WhatsappTemplateNewParamsComponentWhatsappTemplateHeaderComponent{
 				Format: "TEXT",
-				Example: telnyx.WhatsappTemplateNewParamsComponentHeaderExample{
+				Type:   "HEADER",
+				Example: telnyx.WhatsappTemplateNewParamsComponentWhatsappTemplateHeaderComponentExample{
 					HeaderHandle: []string{"string"},
 					HeaderText:   []string{"string"},
 				},

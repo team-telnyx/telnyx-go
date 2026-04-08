@@ -75,7 +75,7 @@ func (r *TrafficPolicyProfileService) Update(ctx context.Context, id string, bod
 
 // Get all traffic policy profiles belonging to the user that match the given
 // filters.
-func (r *TrafficPolicyProfileService) List(ctx context.Context, query TrafficPolicyProfileListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[TrafficPolicyProfile], err error) {
+func (r *TrafficPolicyProfileService) List(ctx context.Context, query TrafficPolicyProfileListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[TrafficPolicyProfileListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -94,7 +94,7 @@ func (r *TrafficPolicyProfileService) List(ctx context.Context, query TrafficPol
 
 // Get all traffic policy profiles belonging to the user that match the given
 // filters.
-func (r *TrafficPolicyProfileService) ListAutoPaging(ctx context.Context, query TrafficPolicyProfileListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[TrafficPolicyProfile] {
+func (r *TrafficPolicyProfileService) ListAutoPaging(ctx context.Context, query TrafficPolicyProfileListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[TrafficPolicyProfileListResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -133,7 +133,23 @@ func (r *TrafficPolicyProfileService) ListServicesAutoPaging(ctx context.Context
 	return pagination.NewDefaultFlatPaginationAutoPager(r.ListServices(ctx, query, opts...))
 }
 
-type TrafficPolicyProfile struct {
+type TrafficPolicyProfileNewResponse struct {
+	Data TrafficPolicyProfileNewResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TrafficPolicyProfileNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *TrafficPolicyProfileNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TrafficPolicyProfileNewResponseData struct {
 	// Identifies the resource.
 	ID string `json:"id" format:"uuid"`
 	// ISO 8601 formatted date-time indicating when the resource was created.
@@ -150,7 +166,7 @@ type TrafficPolicyProfile struct {
 	// The type of the traffic policy profile.
 	//
 	// Any of "whitelist", "blacklist", "throttling".
-	Type TrafficPolicyProfileType `json:"type"`
+	Type string `json:"type"`
 	// ISO 8601 formatted date-time indicating when the resource was updated.
 	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -170,38 +186,13 @@ type TrafficPolicyProfile struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r TrafficPolicyProfile) RawJSON() string { return r.JSON.raw }
-func (r *TrafficPolicyProfile) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The type of the traffic policy profile.
-type TrafficPolicyProfileType string
-
-const (
-	TrafficPolicyProfileTypeWhitelist  TrafficPolicyProfileType = "whitelist"
-	TrafficPolicyProfileTypeBlacklist  TrafficPolicyProfileType = "blacklist"
-	TrafficPolicyProfileTypeThrottling TrafficPolicyProfileType = "throttling"
-)
-
-type TrafficPolicyProfileNewResponse struct {
-	Data TrafficPolicyProfile `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TrafficPolicyProfileNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *TrafficPolicyProfileNewResponse) UnmarshalJSON(data []byte) error {
+func (r TrafficPolicyProfileNewResponseData) RawJSON() string { return r.JSON.raw }
+func (r *TrafficPolicyProfileNewResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type TrafficPolicyProfileGetResponse struct {
-	Data TrafficPolicyProfile `json:"data"`
+	Data TrafficPolicyProfileGetResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -216,8 +207,50 @@ func (r *TrafficPolicyProfileGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type TrafficPolicyProfileGetResponseData struct {
+	// Identifies the resource.
+	ID string `json:"id" format:"uuid"`
+	// ISO 8601 formatted date-time indicating when the resource was created.
+	CreatedAt string `json:"created_at"`
+	// Array of domain names.
+	Domains []string `json:"domains"`
+	// Array of IP ranges in CIDR notation.
+	IPRanges []string `json:"ip_ranges"`
+	// Bandwidth limit in kbps.
+	LimitBwKbps int64  `json:"limit_bw_kbps" api:"nullable"`
+	RecordType  string `json:"record_type"`
+	// Array of PCEF service IDs included in the profile.
+	Services []string `json:"services"`
+	// The type of the traffic policy profile.
+	//
+	// Any of "whitelist", "blacklist", "throttling".
+	Type string `json:"type"`
+	// ISO 8601 formatted date-time indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Domains     respjson.Field
+		IPRanges    respjson.Field
+		LimitBwKbps respjson.Field
+		RecordType  respjson.Field
+		Services    respjson.Field
+		Type        respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TrafficPolicyProfileGetResponseData) RawJSON() string { return r.JSON.raw }
+func (r *TrafficPolicyProfileGetResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type TrafficPolicyProfileUpdateResponse struct {
-	Data TrafficPolicyProfile `json:"data"`
+	Data TrafficPolicyProfileUpdateResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -231,6 +264,99 @@ func (r TrafficPolicyProfileUpdateResponse) RawJSON() string { return r.JSON.raw
 func (r *TrafficPolicyProfileUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type TrafficPolicyProfileUpdateResponseData struct {
+	// Identifies the resource.
+	ID string `json:"id" format:"uuid"`
+	// ISO 8601 formatted date-time indicating when the resource was created.
+	CreatedAt string `json:"created_at"`
+	// Array of domain names.
+	Domains []string `json:"domains"`
+	// Array of IP ranges in CIDR notation.
+	IPRanges []string `json:"ip_ranges"`
+	// Bandwidth limit in kbps.
+	LimitBwKbps int64  `json:"limit_bw_kbps" api:"nullable"`
+	RecordType  string `json:"record_type"`
+	// Array of PCEF service IDs included in the profile.
+	Services []string `json:"services"`
+	// The type of the traffic policy profile.
+	//
+	// Any of "whitelist", "blacklist", "throttling".
+	Type string `json:"type"`
+	// ISO 8601 formatted date-time indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Domains     respjson.Field
+		IPRanges    respjson.Field
+		LimitBwKbps respjson.Field
+		RecordType  respjson.Field
+		Services    respjson.Field
+		Type        respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TrafficPolicyProfileUpdateResponseData) RawJSON() string { return r.JSON.raw }
+func (r *TrafficPolicyProfileUpdateResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TrafficPolicyProfileListResponse struct {
+	// Identifies the resource.
+	ID string `json:"id" format:"uuid"`
+	// ISO 8601 formatted date-time indicating when the resource was created.
+	CreatedAt string `json:"created_at"`
+	// Array of domain names.
+	Domains []string `json:"domains"`
+	// Array of IP ranges in CIDR notation.
+	IPRanges []string `json:"ip_ranges"`
+	// Bandwidth limit in kbps.
+	LimitBwKbps int64  `json:"limit_bw_kbps" api:"nullable"`
+	RecordType  string `json:"record_type"`
+	// Array of PCEF service IDs included in the profile.
+	Services []string `json:"services"`
+	// The type of the traffic policy profile.
+	//
+	// Any of "whitelist", "blacklist", "throttling".
+	Type TrafficPolicyProfileListResponseType `json:"type"`
+	// ISO 8601 formatted date-time indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Domains     respjson.Field
+		IPRanges    respjson.Field
+		LimitBwKbps respjson.Field
+		RecordType  respjson.Field
+		Services    respjson.Field
+		Type        respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TrafficPolicyProfileListResponse) RawJSON() string { return r.JSON.raw }
+func (r *TrafficPolicyProfileListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The type of the traffic policy profile.
+type TrafficPolicyProfileListResponseType string
+
+const (
+	TrafficPolicyProfileListResponseTypeWhitelist  TrafficPolicyProfileListResponseType = "whitelist"
+	TrafficPolicyProfileListResponseTypeBlacklist  TrafficPolicyProfileListResponseType = "blacklist"
+	TrafficPolicyProfileListResponseTypeThrottling TrafficPolicyProfileListResponseType = "throttling"
+)
 
 type TrafficPolicyProfileDeleteResponse struct {
 	Data TrafficPolicyProfileDeleteResponseData `json:"data"`

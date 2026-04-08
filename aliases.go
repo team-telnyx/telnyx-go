@@ -312,9 +312,6 @@ const MessagingHostedNumberOrderStatusSuccessful = shared.MessagingHostedNumberO
 type MessagingPaginationMeta = shared.MessagingPaginationMeta
 
 // This is an alias to an internal type.
-type MetaInfo = shared.MetaInfo
-
-// This is an alias to an internal type.
 type Metadata = shared.Metadata
 
 // This is an alias to an internal type.
@@ -631,28 +628,6 @@ const RegionInformationRegionTypeState = shared.RegionInformationRegionTypeState
 
 // Equals "location"
 const RegionInformationRegionTypeLocation = shared.RegionInformationRegionTypeLocation
-
-// Reputation metrics
-//
-// This is an alias to an internal type.
-type ReputationData = shared.ReputationData
-
-// Overall spam risk level
-//
-// This is an alias to an internal type.
-type ReputationDataSpamRisk = shared.ReputationDataSpamRisk
-
-// Equals "low"
-const ReputationDataSpamRiskLow = shared.ReputationDataSpamRiskLow
-
-// Equals "medium"
-const ReputationDataSpamRiskMedium = shared.ReputationDataSpamRiskMedium
-
-// Equals "high"
-const ReputationDataSpamRiskHigh = shared.ReputationDataSpamRiskHigh
-
-// This is an alias to an internal type.
-type ReputationPhoneNumberWithReputationData = shared.ReputationPhoneNumberWithReputationData
 
 // This is an alias to an internal type.
 type ResembleVoiceSettingsParam = shared.ResembleVoiceSettingsParam

@@ -4,7 +4,6 @@ package telnyx
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -89,7 +88,7 @@ func (r *EnterpriseService) Update(ctx context.Context, enterpriseID string, bod
 }
 
 // Retrieve a paginated list of enterprises associated with your account.
-func (r *EnterpriseService) List(ctx context.Context, query EnterpriseListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[EnterprisePublic], err error) {
+func (r *EnterpriseService) List(ctx context.Context, query EnterpriseListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[EnterpriseListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -107,7 +106,7 @@ func (r *EnterpriseService) List(ctx context.Context, query EnterpriseListParams
 }
 
 // Retrieve a paginated list of enterprises associated with your account.
-func (r *EnterpriseService) ListAutoPaging(ctx context.Context, query EnterpriseListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[EnterprisePublic] {
+func (r *EnterpriseService) ListAutoPaging(ctx context.Context, query EnterpriseListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[EnterpriseListResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -124,134 +123,27 @@ func (r *EnterpriseService) Delete(ctx context.Context, enterpriseID string, opt
 	return err
 }
 
-type BillingAddress struct {
-	// State or province
-	AdministrativeArea string `json:"administrative_area" api:"required"`
-	// City name
-	City string `json:"city" api:"required"`
-	// Country name (e.g., United States)
-	Country string `json:"country" api:"required"`
-	// ZIP or postal code
-	PostalCode string `json:"postal_code" api:"required"`
-	// Street address
-	StreetAddress string `json:"street_address" api:"required"`
-	// Additional address line (suite, apt, etc.)
-	ExtendedAddress string `json:"extended_address" api:"nullable"`
+type EnterpriseNewResponse struct {
+	Data EnterpriseNewResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AdministrativeArea respjson.Field
-		City               respjson.Field
-		Country            respjson.Field
-		PostalCode         respjson.Field
-		StreetAddress      respjson.Field
-		ExtendedAddress    respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BillingAddress) RawJSON() string { return r.JSON.raw }
-func (r *BillingAddress) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this BillingAddress to a BillingAddressParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// BillingAddressParam.Overrides()
-func (r BillingAddress) ToParam() BillingAddressParam {
-	return param.Override[BillingAddressParam](json.RawMessage(r.RawJSON()))
-}
-
-// The properties AdministrativeArea, City, Country, PostalCode, StreetAddress are
-// required.
-type BillingAddressParam struct {
-	// State or province
-	AdministrativeArea string `json:"administrative_area" api:"required"`
-	// City name
-	City string `json:"city" api:"required"`
-	// Country name (e.g., United States)
-	Country string `json:"country" api:"required"`
-	// ZIP or postal code
-	PostalCode string `json:"postal_code" api:"required"`
-	// Street address
-	StreetAddress string `json:"street_address" api:"required"`
-	// Additional address line (suite, apt, etc.)
-	ExtendedAddress param.Opt[string] `json:"extended_address,omitzero"`
-	paramObj
-}
-
-func (r BillingAddressParam) MarshalJSON() (data []byte, err error) {
-	type shadow BillingAddressParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BillingAddressParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type BillingContact struct {
-	// Contact's email address
-	Email string `json:"email" api:"required" format:"email"`
-	// Contact's first name
-	FirstName string `json:"first_name" api:"required"`
-	// Contact's last name
-	LastName string `json:"last_name" api:"required"`
-	// Contact's phone number (10-15 digits)
-	PhoneNumber string `json:"phone_number" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Email       respjson.Field
-		FirstName   respjson.Field
-		LastName    respjson.Field
-		PhoneNumber respjson.Field
+		Data        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r BillingContact) RawJSON() string { return r.JSON.raw }
-func (r *BillingContact) UnmarshalJSON(data []byte) error {
+func (r EnterpriseNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// ToParam converts this BillingContact to a BillingContactParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// BillingContactParam.Overrides()
-func (r BillingContact) ToParam() BillingContactParam {
-	return param.Override[BillingContactParam](json.RawMessage(r.RawJSON()))
-}
-
-// The properties Email, FirstName, LastName, PhoneNumber are required.
-type BillingContactParam struct {
-	// Contact's email address
-	Email string `json:"email" api:"required" format:"email"`
-	// Contact's first name
-	FirstName string `json:"first_name" api:"required"`
-	// Contact's last name
-	LastName string `json:"last_name" api:"required"`
-	// Contact's phone number (10-15 digits)
-	PhoneNumber string `json:"phone_number" api:"required"`
-	paramObj
-}
-
-func (r BillingContactParam) MarshalJSON() (data []byte, err error) {
-	type shadow BillingContactParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BillingContactParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EnterprisePublic struct {
+type EnterpriseNewResponseData struct {
 	// Unique identifier of the enterprise
-	ID             string         `json:"id" format:"uuid"`
-	BillingAddress BillingAddress `json:"billing_address"`
-	BillingContact BillingContact `json:"billing_contact"`
+	ID             string                                  `json:"id" format:"uuid"`
+	BillingAddress EnterpriseNewResponseDataBillingAddress `json:"billing_address"`
+	BillingContact EnterpriseNewResponseDataBillingContact `json:"billing_contact"`
 	// Corporate registration number
 	CorporateRegistrationNumber string `json:"corporate_registration_number" api:"nullable"`
 	// ISO 3166-1 alpha-2 country code
@@ -273,19 +165,19 @@ type EnterprisePublic struct {
 	// Employee count range
 	//
 	// Any of "1-10", "11-50", "51-200", "201-500", "501-2000", "2001-10000", "10001+".
-	NumberOfEmployees EnterprisePublicNumberOfEmployees `json:"number_of_employees" api:"nullable"`
+	NumberOfEmployees string `json:"number_of_employees" api:"nullable"`
 	// Organization contact information. Note: the response returns this object with
 	// the phone field as 'phone' (not 'phone_number').
-	OrganizationContact OrganizationContact `json:"organization_contact"`
+	OrganizationContact EnterpriseNewResponseDataOrganizationContact `json:"organization_contact"`
 	// Legal structure type
 	//
 	// Any of "corporation", "llc", "partnership", "nonprofit", "other".
-	OrganizationLegalType       EnterprisePublicOrganizationLegalType `json:"organization_legal_type" api:"nullable"`
-	OrganizationPhysicalAddress PhysicalAddress                       `json:"organization_physical_address"`
+	OrganizationLegalType       string                                               `json:"organization_legal_type" api:"nullable"`
+	OrganizationPhysicalAddress EnterpriseNewResponseDataOrganizationPhysicalAddress `json:"organization_physical_address"`
 	// Type of organization
 	//
 	// Any of "commercial", "government", "non_profit".
-	OrganizationType EnterprisePublicOrganizationType `json:"organization_type"`
+	OrganizationType string `json:"organization_type"`
 	// SIC Code
 	PrimaryBusinessDomainSicCode string `json:"primary_business_domain_sic_code" api:"nullable"`
 	// Professional license number
@@ -293,7 +185,7 @@ type EnterprisePublic struct {
 	// Role type in Branded Calling / Number Reputation services
 	//
 	// Any of "enterprise", "bpo".
-	RoleType EnterprisePublicRoleType `json:"role_type"`
+	RoleType string `json:"role_type"`
 	// When the enterprise was last updated
 	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
 	// Company website URL
@@ -328,119 +220,12 @@ type EnterprisePublic struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r EnterprisePublic) RawJSON() string { return r.JSON.raw }
-func (r *EnterprisePublic) UnmarshalJSON(data []byte) error {
+func (r EnterpriseNewResponseData) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseNewResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Employee count range
-type EnterprisePublicNumberOfEmployees string
-
-const (
-	EnterprisePublicNumberOfEmployees_1_10       EnterprisePublicNumberOfEmployees = "1-10"
-	EnterprisePublicNumberOfEmployees_11_50      EnterprisePublicNumberOfEmployees = "11-50"
-	EnterprisePublicNumberOfEmployees_51_200     EnterprisePublicNumberOfEmployees = "51-200"
-	EnterprisePublicNumberOfEmployees_201_500    EnterprisePublicNumberOfEmployees = "201-500"
-	EnterprisePublicNumberOfEmployees_501_2000   EnterprisePublicNumberOfEmployees = "501-2000"
-	EnterprisePublicNumberOfEmployees_2001_10000 EnterprisePublicNumberOfEmployees = "2001-10000"
-	EnterprisePublicNumberOfEmployees_10001Plus  EnterprisePublicNumberOfEmployees = "10001+"
-)
-
-// Legal structure type
-type EnterprisePublicOrganizationLegalType string
-
-const (
-	EnterprisePublicOrganizationLegalTypeCorporation EnterprisePublicOrganizationLegalType = "corporation"
-	EnterprisePublicOrganizationLegalTypeLlc         EnterprisePublicOrganizationLegalType = "llc"
-	EnterprisePublicOrganizationLegalTypePartnership EnterprisePublicOrganizationLegalType = "partnership"
-	EnterprisePublicOrganizationLegalTypeNonprofit   EnterprisePublicOrganizationLegalType = "nonprofit"
-	EnterprisePublicOrganizationLegalTypeOther       EnterprisePublicOrganizationLegalType = "other"
-)
-
-// Type of organization
-type EnterprisePublicOrganizationType string
-
-const (
-	EnterprisePublicOrganizationTypeCommercial EnterprisePublicOrganizationType = "commercial"
-	EnterprisePublicOrganizationTypeGovernment EnterprisePublicOrganizationType = "government"
-	EnterprisePublicOrganizationTypeNonProfit  EnterprisePublicOrganizationType = "non_profit"
-)
-
-// Role type in Branded Calling / Number Reputation services
-type EnterprisePublicRoleType string
-
-const (
-	EnterprisePublicRoleTypeEnterprise EnterprisePublicRoleType = "enterprise"
-	EnterprisePublicRoleTypeBpo        EnterprisePublicRoleType = "bpo"
-)
-
-// Organization contact information. Note: the response returns this object with
-// the phone field as 'phone' (not 'phone_number').
-type OrganizationContact struct {
-	// Contact's email address
-	Email string `json:"email" api:"required" format:"email"`
-	// Contact's first name
-	FirstName string `json:"first_name" api:"required"`
-	// Contact's job title (required)
-	JobTitle string `json:"job_title" api:"required"`
-	// Contact's last name
-	LastName string `json:"last_name" api:"required"`
-	// Contact's phone number in E.164 format
-	Phone string `json:"phone" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Email       respjson.Field
-		FirstName   respjson.Field
-		JobTitle    respjson.Field
-		LastName    respjson.Field
-		Phone       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r OrganizationContact) RawJSON() string { return r.JSON.raw }
-func (r *OrganizationContact) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this OrganizationContact to a OrganizationContactParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// OrganizationContactParam.Overrides()
-func (r OrganizationContact) ToParam() OrganizationContactParam {
-	return param.Override[OrganizationContactParam](json.RawMessage(r.RawJSON()))
-}
-
-// Organization contact information. Note: the response returns this object with
-// the phone field as 'phone' (not 'phone_number').
-//
-// The properties Email, FirstName, JobTitle, LastName, Phone are required.
-type OrganizationContactParam struct {
-	// Contact's email address
-	Email string `json:"email" api:"required" format:"email"`
-	// Contact's first name
-	FirstName string `json:"first_name" api:"required"`
-	// Contact's job title (required)
-	JobTitle string `json:"job_title" api:"required"`
-	// Contact's last name
-	LastName string `json:"last_name" api:"required"`
-	// Contact's phone number in E.164 format
-	Phone string `json:"phone" api:"required"`
-	paramObj
-}
-
-func (r OrganizationContactParam) MarshalJSON() (data []byte, err error) {
-	type shadow OrganizationContactParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *OrganizationContactParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PhysicalAddress struct {
+type EnterpriseNewResponseDataBillingAddress struct {
 	// State or province
 	AdministrativeArea string `json:"administrative_area" api:"required"`
 	// City name
@@ -467,23 +252,69 @@ type PhysicalAddress struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PhysicalAddress) RawJSON() string { return r.JSON.raw }
-func (r *PhysicalAddress) UnmarshalJSON(data []byte) error {
+func (r EnterpriseNewResponseDataBillingAddress) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseNewResponseDataBillingAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// ToParam converts this PhysicalAddress to a PhysicalAddressParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// PhysicalAddressParam.Overrides()
-func (r PhysicalAddress) ToParam() PhysicalAddressParam {
-	return param.Override[PhysicalAddressParam](json.RawMessage(r.RawJSON()))
+type EnterpriseNewResponseDataBillingContact struct {
+	// Contact's email address
+	Email string `json:"email" api:"required" format:"email"`
+	// Contact's first name
+	FirstName string `json:"first_name" api:"required"`
+	// Contact's last name
+	LastName string `json:"last_name" api:"required"`
+	// Contact's phone number (10-15 digits)
+	PhoneNumber string `json:"phone_number" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Email       respjson.Field
+		FirstName   respjson.Field
+		LastName    respjson.Field
+		PhoneNumber respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// The properties AdministrativeArea, City, Country, PostalCode, StreetAddress are
-// required.
-type PhysicalAddressParam struct {
+// Returns the unmodified JSON received from the API
+func (r EnterpriseNewResponseDataBillingContact) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseNewResponseDataBillingContact) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Organization contact information. Note: the response returns this object with
+// the phone field as 'phone' (not 'phone_number').
+type EnterpriseNewResponseDataOrganizationContact struct {
+	// Contact's email address
+	Email string `json:"email" api:"required" format:"email"`
+	// Contact's first name
+	FirstName string `json:"first_name" api:"required"`
+	// Contact's job title (required)
+	JobTitle string `json:"job_title" api:"required"`
+	// Contact's last name
+	LastName string `json:"last_name" api:"required"`
+	// Contact's phone number in E.164 format
+	Phone string `json:"phone" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Email       respjson.Field
+		FirstName   respjson.Field
+		JobTitle    respjson.Field
+		LastName    respjson.Field
+		Phone       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseNewResponseDataOrganizationContact) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseNewResponseDataOrganizationContact) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EnterpriseNewResponseDataOrganizationPhysicalAddress struct {
 	// State or province
 	AdministrativeArea string `json:"administrative_area" api:"required"`
 	// City name
@@ -495,36 +326,28 @@ type PhysicalAddressParam struct {
 	// Street address
 	StreetAddress string `json:"street_address" api:"required"`
 	// Additional address line (suite, apt, etc.)
-	ExtendedAddress param.Opt[string] `json:"extended_address,omitzero"`
-	paramObj
-}
-
-func (r PhysicalAddressParam) MarshalJSON() (data []byte, err error) {
-	type shadow PhysicalAddressParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *PhysicalAddressParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EnterpriseNewResponse struct {
-	Data EnterprisePublic `json:"data"`
+	ExtendedAddress string `json:"extended_address" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		AdministrativeArea respjson.Field
+		City               respjson.Field
+		Country            respjson.Field
+		PostalCode         respjson.Field
+		StreetAddress      respjson.Field
+		ExtendedAddress    respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r EnterpriseNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseNewResponse) UnmarshalJSON(data []byte) error {
+func (r EnterpriseNewResponseDataOrganizationPhysicalAddress) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseNewResponseDataOrganizationPhysicalAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type EnterpriseGetResponse struct {
-	Data EnterprisePublic `json:"data"`
+	Data EnterpriseGetResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -539,8 +362,215 @@ func (r *EnterpriseGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type EnterpriseGetResponseData struct {
+	// Unique identifier of the enterprise
+	ID             string                                  `json:"id" format:"uuid"`
+	BillingAddress EnterpriseGetResponseDataBillingAddress `json:"billing_address"`
+	BillingContact EnterpriseGetResponseDataBillingContact `json:"billing_contact"`
+	// Corporate registration number
+	CorporateRegistrationNumber string `json:"corporate_registration_number" api:"nullable"`
+	// ISO 3166-1 alpha-2 country code
+	CountryCode string `json:"country_code"`
+	// When the enterprise was created
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Customer reference identifier
+	CustomerReference string `json:"customer_reference" api:"nullable"`
+	// DBA name
+	DoingBusinessAs string `json:"doing_business_as"`
+	// D-U-N-S Number
+	DunBradstreetNumber string `json:"dun_bradstreet_number" api:"nullable"`
+	// Federal Employer Identification Number
+	Fein string `json:"fein" api:"nullable"`
+	// Industry classification
+	Industry string `json:"industry" api:"nullable"`
+	// Legal name of the enterprise
+	LegalName string `json:"legal_name"`
+	// Employee count range
+	//
+	// Any of "1-10", "11-50", "51-200", "201-500", "501-2000", "2001-10000", "10001+".
+	NumberOfEmployees string `json:"number_of_employees" api:"nullable"`
+	// Organization contact information. Note: the response returns this object with
+	// the phone field as 'phone' (not 'phone_number').
+	OrganizationContact EnterpriseGetResponseDataOrganizationContact `json:"organization_contact"`
+	// Legal structure type
+	//
+	// Any of "corporation", "llc", "partnership", "nonprofit", "other".
+	OrganizationLegalType       string                                               `json:"organization_legal_type" api:"nullable"`
+	OrganizationPhysicalAddress EnterpriseGetResponseDataOrganizationPhysicalAddress `json:"organization_physical_address"`
+	// Type of organization
+	//
+	// Any of "commercial", "government", "non_profit".
+	OrganizationType string `json:"organization_type"`
+	// SIC Code
+	PrimaryBusinessDomainSicCode string `json:"primary_business_domain_sic_code" api:"nullable"`
+	// Professional license number
+	ProfessionalLicenseNumber string `json:"professional_license_number" api:"nullable"`
+	// Role type in Branded Calling / Number Reputation services
+	//
+	// Any of "enterprise", "bpo".
+	RoleType string `json:"role_type"`
+	// When the enterprise was last updated
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// Company website URL
+	Website string `json:"website" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                           respjson.Field
+		BillingAddress               respjson.Field
+		BillingContact               respjson.Field
+		CorporateRegistrationNumber  respjson.Field
+		CountryCode                  respjson.Field
+		CreatedAt                    respjson.Field
+		CustomerReference            respjson.Field
+		DoingBusinessAs              respjson.Field
+		DunBradstreetNumber          respjson.Field
+		Fein                         respjson.Field
+		Industry                     respjson.Field
+		LegalName                    respjson.Field
+		NumberOfEmployees            respjson.Field
+		OrganizationContact          respjson.Field
+		OrganizationLegalType        respjson.Field
+		OrganizationPhysicalAddress  respjson.Field
+		OrganizationType             respjson.Field
+		PrimaryBusinessDomainSicCode respjson.Field
+		ProfessionalLicenseNumber    respjson.Field
+		RoleType                     respjson.Field
+		UpdatedAt                    respjson.Field
+		Website                      respjson.Field
+		ExtraFields                  map[string]respjson.Field
+		raw                          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseGetResponseData) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseGetResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EnterpriseGetResponseDataBillingAddress struct {
+	// State or province
+	AdministrativeArea string `json:"administrative_area" api:"required"`
+	// City name
+	City string `json:"city" api:"required"`
+	// Country name (e.g., United States)
+	Country string `json:"country" api:"required"`
+	// ZIP or postal code
+	PostalCode string `json:"postal_code" api:"required"`
+	// Street address
+	StreetAddress string `json:"street_address" api:"required"`
+	// Additional address line (suite, apt, etc.)
+	ExtendedAddress string `json:"extended_address" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AdministrativeArea respjson.Field
+		City               respjson.Field
+		Country            respjson.Field
+		PostalCode         respjson.Field
+		StreetAddress      respjson.Field
+		ExtendedAddress    respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseGetResponseDataBillingAddress) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseGetResponseDataBillingAddress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EnterpriseGetResponseDataBillingContact struct {
+	// Contact's email address
+	Email string `json:"email" api:"required" format:"email"`
+	// Contact's first name
+	FirstName string `json:"first_name" api:"required"`
+	// Contact's last name
+	LastName string `json:"last_name" api:"required"`
+	// Contact's phone number (10-15 digits)
+	PhoneNumber string `json:"phone_number" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Email       respjson.Field
+		FirstName   respjson.Field
+		LastName    respjson.Field
+		PhoneNumber respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseGetResponseDataBillingContact) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseGetResponseDataBillingContact) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Organization contact information. Note: the response returns this object with
+// the phone field as 'phone' (not 'phone_number').
+type EnterpriseGetResponseDataOrganizationContact struct {
+	// Contact's email address
+	Email string `json:"email" api:"required" format:"email"`
+	// Contact's first name
+	FirstName string `json:"first_name" api:"required"`
+	// Contact's job title (required)
+	JobTitle string `json:"job_title" api:"required"`
+	// Contact's last name
+	LastName string `json:"last_name" api:"required"`
+	// Contact's phone number in E.164 format
+	Phone string `json:"phone" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Email       respjson.Field
+		FirstName   respjson.Field
+		JobTitle    respjson.Field
+		LastName    respjson.Field
+		Phone       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseGetResponseDataOrganizationContact) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseGetResponseDataOrganizationContact) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EnterpriseGetResponseDataOrganizationPhysicalAddress struct {
+	// State or province
+	AdministrativeArea string `json:"administrative_area" api:"required"`
+	// City name
+	City string `json:"city" api:"required"`
+	// Country name (e.g., United States)
+	Country string `json:"country" api:"required"`
+	// ZIP or postal code
+	PostalCode string `json:"postal_code" api:"required"`
+	// Street address
+	StreetAddress string `json:"street_address" api:"required"`
+	// Additional address line (suite, apt, etc.)
+	ExtendedAddress string `json:"extended_address" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AdministrativeArea respjson.Field
+		City               respjson.Field
+		Country            respjson.Field
+		PostalCode         respjson.Field
+		StreetAddress      respjson.Field
+		ExtendedAddress    respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseGetResponseDataOrganizationPhysicalAddress) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseGetResponseDataOrganizationPhysicalAddress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type EnterpriseUpdateResponse struct {
-	Data EnterprisePublic `json:"data"`
+	Data EnterpriseUpdateResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -555,9 +585,464 @@ func (r *EnterpriseUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type EnterpriseUpdateResponseData struct {
+	// Unique identifier of the enterprise
+	ID             string                                     `json:"id" format:"uuid"`
+	BillingAddress EnterpriseUpdateResponseDataBillingAddress `json:"billing_address"`
+	BillingContact EnterpriseUpdateResponseDataBillingContact `json:"billing_contact"`
+	// Corporate registration number
+	CorporateRegistrationNumber string `json:"corporate_registration_number" api:"nullable"`
+	// ISO 3166-1 alpha-2 country code
+	CountryCode string `json:"country_code"`
+	// When the enterprise was created
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Customer reference identifier
+	CustomerReference string `json:"customer_reference" api:"nullable"`
+	// DBA name
+	DoingBusinessAs string `json:"doing_business_as"`
+	// D-U-N-S Number
+	DunBradstreetNumber string `json:"dun_bradstreet_number" api:"nullable"`
+	// Federal Employer Identification Number
+	Fein string `json:"fein" api:"nullable"`
+	// Industry classification
+	Industry string `json:"industry" api:"nullable"`
+	// Legal name of the enterprise
+	LegalName string `json:"legal_name"`
+	// Employee count range
+	//
+	// Any of "1-10", "11-50", "51-200", "201-500", "501-2000", "2001-10000", "10001+".
+	NumberOfEmployees string `json:"number_of_employees" api:"nullable"`
+	// Organization contact information. Note: the response returns this object with
+	// the phone field as 'phone' (not 'phone_number').
+	OrganizationContact EnterpriseUpdateResponseDataOrganizationContact `json:"organization_contact"`
+	// Legal structure type
+	//
+	// Any of "corporation", "llc", "partnership", "nonprofit", "other".
+	OrganizationLegalType       string                                                  `json:"organization_legal_type" api:"nullable"`
+	OrganizationPhysicalAddress EnterpriseUpdateResponseDataOrganizationPhysicalAddress `json:"organization_physical_address"`
+	// Type of organization
+	//
+	// Any of "commercial", "government", "non_profit".
+	OrganizationType string `json:"organization_type"`
+	// SIC Code
+	PrimaryBusinessDomainSicCode string `json:"primary_business_domain_sic_code" api:"nullable"`
+	// Professional license number
+	ProfessionalLicenseNumber string `json:"professional_license_number" api:"nullable"`
+	// Role type in Branded Calling / Number Reputation services
+	//
+	// Any of "enterprise", "bpo".
+	RoleType string `json:"role_type"`
+	// When the enterprise was last updated
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// Company website URL
+	Website string `json:"website" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                           respjson.Field
+		BillingAddress               respjson.Field
+		BillingContact               respjson.Field
+		CorporateRegistrationNumber  respjson.Field
+		CountryCode                  respjson.Field
+		CreatedAt                    respjson.Field
+		CustomerReference            respjson.Field
+		DoingBusinessAs              respjson.Field
+		DunBradstreetNumber          respjson.Field
+		Fein                         respjson.Field
+		Industry                     respjson.Field
+		LegalName                    respjson.Field
+		NumberOfEmployees            respjson.Field
+		OrganizationContact          respjson.Field
+		OrganizationLegalType        respjson.Field
+		OrganizationPhysicalAddress  respjson.Field
+		OrganizationType             respjson.Field
+		PrimaryBusinessDomainSicCode respjson.Field
+		ProfessionalLicenseNumber    respjson.Field
+		RoleType                     respjson.Field
+		UpdatedAt                    respjson.Field
+		Website                      respjson.Field
+		ExtraFields                  map[string]respjson.Field
+		raw                          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseUpdateResponseData) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseUpdateResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EnterpriseUpdateResponseDataBillingAddress struct {
+	// State or province
+	AdministrativeArea string `json:"administrative_area" api:"required"`
+	// City name
+	City string `json:"city" api:"required"`
+	// Country name (e.g., United States)
+	Country string `json:"country" api:"required"`
+	// ZIP or postal code
+	PostalCode string `json:"postal_code" api:"required"`
+	// Street address
+	StreetAddress string `json:"street_address" api:"required"`
+	// Additional address line (suite, apt, etc.)
+	ExtendedAddress string `json:"extended_address" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AdministrativeArea respjson.Field
+		City               respjson.Field
+		Country            respjson.Field
+		PostalCode         respjson.Field
+		StreetAddress      respjson.Field
+		ExtendedAddress    respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseUpdateResponseDataBillingAddress) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseUpdateResponseDataBillingAddress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EnterpriseUpdateResponseDataBillingContact struct {
+	// Contact's email address
+	Email string `json:"email" api:"required" format:"email"`
+	// Contact's first name
+	FirstName string `json:"first_name" api:"required"`
+	// Contact's last name
+	LastName string `json:"last_name" api:"required"`
+	// Contact's phone number (10-15 digits)
+	PhoneNumber string `json:"phone_number" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Email       respjson.Field
+		FirstName   respjson.Field
+		LastName    respjson.Field
+		PhoneNumber respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseUpdateResponseDataBillingContact) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseUpdateResponseDataBillingContact) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Organization contact information. Note: the response returns this object with
+// the phone field as 'phone' (not 'phone_number').
+type EnterpriseUpdateResponseDataOrganizationContact struct {
+	// Contact's email address
+	Email string `json:"email" api:"required" format:"email"`
+	// Contact's first name
+	FirstName string `json:"first_name" api:"required"`
+	// Contact's job title (required)
+	JobTitle string `json:"job_title" api:"required"`
+	// Contact's last name
+	LastName string `json:"last_name" api:"required"`
+	// Contact's phone number in E.164 format
+	Phone string `json:"phone" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Email       respjson.Field
+		FirstName   respjson.Field
+		JobTitle    respjson.Field
+		LastName    respjson.Field
+		Phone       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseUpdateResponseDataOrganizationContact) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseUpdateResponseDataOrganizationContact) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EnterpriseUpdateResponseDataOrganizationPhysicalAddress struct {
+	// State or province
+	AdministrativeArea string `json:"administrative_area" api:"required"`
+	// City name
+	City string `json:"city" api:"required"`
+	// Country name (e.g., United States)
+	Country string `json:"country" api:"required"`
+	// ZIP or postal code
+	PostalCode string `json:"postal_code" api:"required"`
+	// Street address
+	StreetAddress string `json:"street_address" api:"required"`
+	// Additional address line (suite, apt, etc.)
+	ExtendedAddress string `json:"extended_address" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AdministrativeArea respjson.Field
+		City               respjson.Field
+		Country            respjson.Field
+		PostalCode         respjson.Field
+		StreetAddress      respjson.Field
+		ExtendedAddress    respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseUpdateResponseDataOrganizationPhysicalAddress) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseUpdateResponseDataOrganizationPhysicalAddress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EnterpriseListResponse struct {
+	// Unique identifier of the enterprise
+	ID             string                               `json:"id" format:"uuid"`
+	BillingAddress EnterpriseListResponseBillingAddress `json:"billing_address"`
+	BillingContact EnterpriseListResponseBillingContact `json:"billing_contact"`
+	// Corporate registration number
+	CorporateRegistrationNumber string `json:"corporate_registration_number" api:"nullable"`
+	// ISO 3166-1 alpha-2 country code
+	CountryCode string `json:"country_code"`
+	// When the enterprise was created
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Customer reference identifier
+	CustomerReference string `json:"customer_reference" api:"nullable"`
+	// DBA name
+	DoingBusinessAs string `json:"doing_business_as"`
+	// D-U-N-S Number
+	DunBradstreetNumber string `json:"dun_bradstreet_number" api:"nullable"`
+	// Federal Employer Identification Number
+	Fein string `json:"fein" api:"nullable"`
+	// Industry classification
+	Industry string `json:"industry" api:"nullable"`
+	// Legal name of the enterprise
+	LegalName string `json:"legal_name"`
+	// Employee count range
+	//
+	// Any of "1-10", "11-50", "51-200", "201-500", "501-2000", "2001-10000", "10001+".
+	NumberOfEmployees EnterpriseListResponseNumberOfEmployees `json:"number_of_employees" api:"nullable"`
+	// Organization contact information. Note: the response returns this object with
+	// the phone field as 'phone' (not 'phone_number').
+	OrganizationContact EnterpriseListResponseOrganizationContact `json:"organization_contact"`
+	// Legal structure type
+	//
+	// Any of "corporation", "llc", "partnership", "nonprofit", "other".
+	OrganizationLegalType       EnterpriseListResponseOrganizationLegalType       `json:"organization_legal_type" api:"nullable"`
+	OrganizationPhysicalAddress EnterpriseListResponseOrganizationPhysicalAddress `json:"organization_physical_address"`
+	// Type of organization
+	//
+	// Any of "commercial", "government", "non_profit".
+	OrganizationType EnterpriseListResponseOrganizationType `json:"organization_type"`
+	// SIC Code
+	PrimaryBusinessDomainSicCode string `json:"primary_business_domain_sic_code" api:"nullable"`
+	// Professional license number
+	ProfessionalLicenseNumber string `json:"professional_license_number" api:"nullable"`
+	// Role type in Branded Calling / Number Reputation services
+	//
+	// Any of "enterprise", "bpo".
+	RoleType EnterpriseListResponseRoleType `json:"role_type"`
+	// When the enterprise was last updated
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// Company website URL
+	Website string `json:"website" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                           respjson.Field
+		BillingAddress               respjson.Field
+		BillingContact               respjson.Field
+		CorporateRegistrationNumber  respjson.Field
+		CountryCode                  respjson.Field
+		CreatedAt                    respjson.Field
+		CustomerReference            respjson.Field
+		DoingBusinessAs              respjson.Field
+		DunBradstreetNumber          respjson.Field
+		Fein                         respjson.Field
+		Industry                     respjson.Field
+		LegalName                    respjson.Field
+		NumberOfEmployees            respjson.Field
+		OrganizationContact          respjson.Field
+		OrganizationLegalType        respjson.Field
+		OrganizationPhysicalAddress  respjson.Field
+		OrganizationType             respjson.Field
+		PrimaryBusinessDomainSicCode respjson.Field
+		ProfessionalLicenseNumber    respjson.Field
+		RoleType                     respjson.Field
+		UpdatedAt                    respjson.Field
+		Website                      respjson.Field
+		ExtraFields                  map[string]respjson.Field
+		raw                          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseListResponse) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EnterpriseListResponseBillingAddress struct {
+	// State or province
+	AdministrativeArea string `json:"administrative_area" api:"required"`
+	// City name
+	City string `json:"city" api:"required"`
+	// Country name (e.g., United States)
+	Country string `json:"country" api:"required"`
+	// ZIP or postal code
+	PostalCode string `json:"postal_code" api:"required"`
+	// Street address
+	StreetAddress string `json:"street_address" api:"required"`
+	// Additional address line (suite, apt, etc.)
+	ExtendedAddress string `json:"extended_address" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AdministrativeArea respjson.Field
+		City               respjson.Field
+		Country            respjson.Field
+		PostalCode         respjson.Field
+		StreetAddress      respjson.Field
+		ExtendedAddress    respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseListResponseBillingAddress) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseListResponseBillingAddress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EnterpriseListResponseBillingContact struct {
+	// Contact's email address
+	Email string `json:"email" api:"required" format:"email"`
+	// Contact's first name
+	FirstName string `json:"first_name" api:"required"`
+	// Contact's last name
+	LastName string `json:"last_name" api:"required"`
+	// Contact's phone number (10-15 digits)
+	PhoneNumber string `json:"phone_number" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Email       respjson.Field
+		FirstName   respjson.Field
+		LastName    respjson.Field
+		PhoneNumber respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseListResponseBillingContact) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseListResponseBillingContact) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Employee count range
+type EnterpriseListResponseNumberOfEmployees string
+
+const (
+	EnterpriseListResponseNumberOfEmployees1_10       EnterpriseListResponseNumberOfEmployees = "1-10"
+	EnterpriseListResponseNumberOfEmployees11_50      EnterpriseListResponseNumberOfEmployees = "11-50"
+	EnterpriseListResponseNumberOfEmployees51_200     EnterpriseListResponseNumberOfEmployees = "51-200"
+	EnterpriseListResponseNumberOfEmployees201_500    EnterpriseListResponseNumberOfEmployees = "201-500"
+	EnterpriseListResponseNumberOfEmployees501_2000   EnterpriseListResponseNumberOfEmployees = "501-2000"
+	EnterpriseListResponseNumberOfEmployees2001_10000 EnterpriseListResponseNumberOfEmployees = "2001-10000"
+	EnterpriseListResponseNumberOfEmployees10001      EnterpriseListResponseNumberOfEmployees = "10001+"
+)
+
+// Organization contact information. Note: the response returns this object with
+// the phone field as 'phone' (not 'phone_number').
+type EnterpriseListResponseOrganizationContact struct {
+	// Contact's email address
+	Email string `json:"email" api:"required" format:"email"`
+	// Contact's first name
+	FirstName string `json:"first_name" api:"required"`
+	// Contact's job title (required)
+	JobTitle string `json:"job_title" api:"required"`
+	// Contact's last name
+	LastName string `json:"last_name" api:"required"`
+	// Contact's phone number in E.164 format
+	Phone string `json:"phone" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Email       respjson.Field
+		FirstName   respjson.Field
+		JobTitle    respjson.Field
+		LastName    respjson.Field
+		Phone       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseListResponseOrganizationContact) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseListResponseOrganizationContact) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Legal structure type
+type EnterpriseListResponseOrganizationLegalType string
+
+const (
+	EnterpriseListResponseOrganizationLegalTypeCorporation EnterpriseListResponseOrganizationLegalType = "corporation"
+	EnterpriseListResponseOrganizationLegalTypeLlc         EnterpriseListResponseOrganizationLegalType = "llc"
+	EnterpriseListResponseOrganizationLegalTypePartnership EnterpriseListResponseOrganizationLegalType = "partnership"
+	EnterpriseListResponseOrganizationLegalTypeNonprofit   EnterpriseListResponseOrganizationLegalType = "nonprofit"
+	EnterpriseListResponseOrganizationLegalTypeOther       EnterpriseListResponseOrganizationLegalType = "other"
+)
+
+type EnterpriseListResponseOrganizationPhysicalAddress struct {
+	// State or province
+	AdministrativeArea string `json:"administrative_area" api:"required"`
+	// City name
+	City string `json:"city" api:"required"`
+	// Country name (e.g., United States)
+	Country string `json:"country" api:"required"`
+	// ZIP or postal code
+	PostalCode string `json:"postal_code" api:"required"`
+	// Street address
+	StreetAddress string `json:"street_address" api:"required"`
+	// Additional address line (suite, apt, etc.)
+	ExtendedAddress string `json:"extended_address" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AdministrativeArea respjson.Field
+		City               respjson.Field
+		Country            respjson.Field
+		PostalCode         respjson.Field
+		StreetAddress      respjson.Field
+		ExtendedAddress    respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseListResponseOrganizationPhysicalAddress) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseListResponseOrganizationPhysicalAddress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Type of organization
+type EnterpriseListResponseOrganizationType string
+
+const (
+	EnterpriseListResponseOrganizationTypeCommercial EnterpriseListResponseOrganizationType = "commercial"
+	EnterpriseListResponseOrganizationTypeGovernment EnterpriseListResponseOrganizationType = "government"
+	EnterpriseListResponseOrganizationTypeNonProfit  EnterpriseListResponseOrganizationType = "non_profit"
+)
+
+// Role type in Branded Calling / Number Reputation services
+type EnterpriseListResponseRoleType string
+
+const (
+	EnterpriseListResponseRoleTypeEnterprise EnterpriseListResponseRoleType = "enterprise"
+	EnterpriseListResponseRoleTypeBpo        EnterpriseListResponseRoleType = "bpo"
+)
+
 type EnterpriseNewParams struct {
-	BillingAddress BillingAddressParam `json:"billing_address,omitzero" api:"required"`
-	BillingContact BillingContactParam `json:"billing_contact,omitzero" api:"required"`
+	BillingAddress EnterpriseNewParamsBillingAddress `json:"billing_address,omitzero" api:"required"`
+	BillingContact EnterpriseNewParamsBillingContact `json:"billing_contact,omitzero" api:"required"`
 	// Country code. Currently only 'US' is accepted.
 	CountryCode string `json:"country_code" api:"required"`
 	// Primary business name / DBA name
@@ -581,12 +1066,12 @@ type EnterpriseNewParams struct {
 	NumberOfEmployees EnterpriseNewParamsNumberOfEmployees `json:"number_of_employees,omitzero" api:"required"`
 	// Organization contact information. Note: the response returns this object with
 	// the phone field as 'phone' (not 'phone_number').
-	OrganizationContact OrganizationContactParam `json:"organization_contact,omitzero" api:"required"`
+	OrganizationContact EnterpriseNewParamsOrganizationContact `json:"organization_contact,omitzero" api:"required"`
 	// Legal structure type
 	//
 	// Any of "corporation", "llc", "partnership", "nonprofit", "other".
-	OrganizationLegalType       EnterpriseNewParamsOrganizationLegalType `json:"organization_legal_type,omitzero" api:"required"`
-	OrganizationPhysicalAddress PhysicalAddressParam                     `json:"organization_physical_address,omitzero" api:"required"`
+	OrganizationLegalType       EnterpriseNewParamsOrganizationLegalType       `json:"organization_legal_type,omitzero" api:"required"`
+	OrganizationPhysicalAddress EnterpriseNewParamsOrganizationPhysicalAddress `json:"organization_physical_address,omitzero" api:"required"`
 	// Type of organization
 	//
 	// Any of "commercial", "government", "non_profit".
@@ -618,18 +1103,91 @@ func (r *EnterpriseNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The properties AdministrativeArea, City, Country, PostalCode, StreetAddress are
+// required.
+type EnterpriseNewParamsBillingAddress struct {
+	// State or province
+	AdministrativeArea string `json:"administrative_area" api:"required"`
+	// City name
+	City string `json:"city" api:"required"`
+	// Country name (e.g., United States)
+	Country string `json:"country" api:"required"`
+	// ZIP or postal code
+	PostalCode string `json:"postal_code" api:"required"`
+	// Street address
+	StreetAddress string `json:"street_address" api:"required"`
+	// Additional address line (suite, apt, etc.)
+	ExtendedAddress param.Opt[string] `json:"extended_address,omitzero"`
+	paramObj
+}
+
+func (r EnterpriseNewParamsBillingAddress) MarshalJSON() (data []byte, err error) {
+	type shadow EnterpriseNewParamsBillingAddress
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *EnterpriseNewParamsBillingAddress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Email, FirstName, LastName, PhoneNumber are required.
+type EnterpriseNewParamsBillingContact struct {
+	// Contact's email address
+	Email string `json:"email" api:"required" format:"email"`
+	// Contact's first name
+	FirstName string `json:"first_name" api:"required"`
+	// Contact's last name
+	LastName string `json:"last_name" api:"required"`
+	// Contact's phone number (10-15 digits)
+	PhoneNumber string `json:"phone_number" api:"required"`
+	paramObj
+}
+
+func (r EnterpriseNewParamsBillingContact) MarshalJSON() (data []byte, err error) {
+	type shadow EnterpriseNewParamsBillingContact
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *EnterpriseNewParamsBillingContact) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Employee count range
 type EnterpriseNewParamsNumberOfEmployees string
 
 const (
-	EnterpriseNewParamsNumberOfEmployees_1_10       EnterpriseNewParamsNumberOfEmployees = "1-10"
-	EnterpriseNewParamsNumberOfEmployees_11_50      EnterpriseNewParamsNumberOfEmployees = "11-50"
-	EnterpriseNewParamsNumberOfEmployees_51_200     EnterpriseNewParamsNumberOfEmployees = "51-200"
-	EnterpriseNewParamsNumberOfEmployees_201_500    EnterpriseNewParamsNumberOfEmployees = "201-500"
-	EnterpriseNewParamsNumberOfEmployees_501_2000   EnterpriseNewParamsNumberOfEmployees = "501-2000"
-	EnterpriseNewParamsNumberOfEmployees_2001_10000 EnterpriseNewParamsNumberOfEmployees = "2001-10000"
-	EnterpriseNewParamsNumberOfEmployees_10001Plus  EnterpriseNewParamsNumberOfEmployees = "10001+"
+	EnterpriseNewParamsNumberOfEmployees1_10       EnterpriseNewParamsNumberOfEmployees = "1-10"
+	EnterpriseNewParamsNumberOfEmployees11_50      EnterpriseNewParamsNumberOfEmployees = "11-50"
+	EnterpriseNewParamsNumberOfEmployees51_200     EnterpriseNewParamsNumberOfEmployees = "51-200"
+	EnterpriseNewParamsNumberOfEmployees201_500    EnterpriseNewParamsNumberOfEmployees = "201-500"
+	EnterpriseNewParamsNumberOfEmployees501_2000   EnterpriseNewParamsNumberOfEmployees = "501-2000"
+	EnterpriseNewParamsNumberOfEmployees2001_10000 EnterpriseNewParamsNumberOfEmployees = "2001-10000"
+	EnterpriseNewParamsNumberOfEmployees10001      EnterpriseNewParamsNumberOfEmployees = "10001+"
 )
+
+// Organization contact information. Note: the response returns this object with
+// the phone field as 'phone' (not 'phone_number').
+//
+// The properties Email, FirstName, JobTitle, LastName, Phone are required.
+type EnterpriseNewParamsOrganizationContact struct {
+	// Contact's email address
+	Email string `json:"email" api:"required" format:"email"`
+	// Contact's first name
+	FirstName string `json:"first_name" api:"required"`
+	// Contact's job title (required)
+	JobTitle string `json:"job_title" api:"required"`
+	// Contact's last name
+	LastName string `json:"last_name" api:"required"`
+	// Contact's phone number in E.164 format
+	Phone string `json:"phone" api:"required"`
+	paramObj
+}
+
+func (r EnterpriseNewParamsOrganizationContact) MarshalJSON() (data []byte, err error) {
+	type shadow EnterpriseNewParamsOrganizationContact
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *EnterpriseNewParamsOrganizationContact) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Legal structure type
 type EnterpriseNewParamsOrganizationLegalType string
@@ -641,6 +1199,32 @@ const (
 	EnterpriseNewParamsOrganizationLegalTypeNonprofit   EnterpriseNewParamsOrganizationLegalType = "nonprofit"
 	EnterpriseNewParamsOrganizationLegalTypeOther       EnterpriseNewParamsOrganizationLegalType = "other"
 )
+
+// The properties AdministrativeArea, City, Country, PostalCode, StreetAddress are
+// required.
+type EnterpriseNewParamsOrganizationPhysicalAddress struct {
+	// State or province
+	AdministrativeArea string `json:"administrative_area" api:"required"`
+	// City name
+	City string `json:"city" api:"required"`
+	// Country name (e.g., United States)
+	Country string `json:"country" api:"required"`
+	// ZIP or postal code
+	PostalCode string `json:"postal_code" api:"required"`
+	// Street address
+	StreetAddress string `json:"street_address" api:"required"`
+	// Additional address line (suite, apt, etc.)
+	ExtendedAddress param.Opt[string] `json:"extended_address,omitzero"`
+	paramObj
+}
+
+func (r EnterpriseNewParamsOrganizationPhysicalAddress) MarshalJSON() (data []byte, err error) {
+	type shadow EnterpriseNewParamsOrganizationPhysicalAddress
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *EnterpriseNewParamsOrganizationPhysicalAddress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Type of organization
 type EnterpriseNewParamsOrganizationType string
@@ -679,21 +1263,21 @@ type EnterpriseUpdateParams struct {
 	// Professional license number
 	ProfessionalLicenseNumber param.Opt[string] `json:"professional_license_number,omitzero"`
 	// Company website URL
-	Website        param.Opt[string]   `json:"website,omitzero"`
-	BillingAddress BillingAddressParam `json:"billing_address,omitzero"`
-	BillingContact BillingContactParam `json:"billing_contact,omitzero"`
+	Website        param.Opt[string]                    `json:"website,omitzero"`
+	BillingAddress EnterpriseUpdateParamsBillingAddress `json:"billing_address,omitzero"`
+	BillingContact EnterpriseUpdateParamsBillingContact `json:"billing_contact,omitzero"`
 	// Employee count range
 	//
 	// Any of "1-10", "11-50", "51-200", "201-500", "501-2000", "2001-10000", "10001+".
 	NumberOfEmployees EnterpriseUpdateParamsNumberOfEmployees `json:"number_of_employees,omitzero"`
 	// Organization contact information. Note: the response returns this object with
 	// the phone field as 'phone' (not 'phone_number').
-	OrganizationContact OrganizationContactParam `json:"organization_contact,omitzero"`
+	OrganizationContact EnterpriseUpdateParamsOrganizationContact `json:"organization_contact,omitzero"`
 	// Legal structure type
 	//
 	// Any of "corporation", "llc", "partnership", "nonprofit", "other".
-	OrganizationLegalType       EnterpriseUpdateParamsOrganizationLegalType `json:"organization_legal_type,omitzero"`
-	OrganizationPhysicalAddress PhysicalAddressParam                        `json:"organization_physical_address,omitzero"`
+	OrganizationLegalType       EnterpriseUpdateParamsOrganizationLegalType       `json:"organization_legal_type,omitzero"`
+	OrganizationPhysicalAddress EnterpriseUpdateParamsOrganizationPhysicalAddress `json:"organization_physical_address,omitzero"`
 	paramObj
 }
 
@@ -705,18 +1289,91 @@ func (r *EnterpriseUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The properties AdministrativeArea, City, Country, PostalCode, StreetAddress are
+// required.
+type EnterpriseUpdateParamsBillingAddress struct {
+	// State or province
+	AdministrativeArea string `json:"administrative_area" api:"required"`
+	// City name
+	City string `json:"city" api:"required"`
+	// Country name (e.g., United States)
+	Country string `json:"country" api:"required"`
+	// ZIP or postal code
+	PostalCode string `json:"postal_code" api:"required"`
+	// Street address
+	StreetAddress string `json:"street_address" api:"required"`
+	// Additional address line (suite, apt, etc.)
+	ExtendedAddress param.Opt[string] `json:"extended_address,omitzero"`
+	paramObj
+}
+
+func (r EnterpriseUpdateParamsBillingAddress) MarshalJSON() (data []byte, err error) {
+	type shadow EnterpriseUpdateParamsBillingAddress
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *EnterpriseUpdateParamsBillingAddress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Email, FirstName, LastName, PhoneNumber are required.
+type EnterpriseUpdateParamsBillingContact struct {
+	// Contact's email address
+	Email string `json:"email" api:"required" format:"email"`
+	// Contact's first name
+	FirstName string `json:"first_name" api:"required"`
+	// Contact's last name
+	LastName string `json:"last_name" api:"required"`
+	// Contact's phone number (10-15 digits)
+	PhoneNumber string `json:"phone_number" api:"required"`
+	paramObj
+}
+
+func (r EnterpriseUpdateParamsBillingContact) MarshalJSON() (data []byte, err error) {
+	type shadow EnterpriseUpdateParamsBillingContact
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *EnterpriseUpdateParamsBillingContact) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Employee count range
 type EnterpriseUpdateParamsNumberOfEmployees string
 
 const (
-	EnterpriseUpdateParamsNumberOfEmployees_1_10       EnterpriseUpdateParamsNumberOfEmployees = "1-10"
-	EnterpriseUpdateParamsNumberOfEmployees_11_50      EnterpriseUpdateParamsNumberOfEmployees = "11-50"
-	EnterpriseUpdateParamsNumberOfEmployees_51_200     EnterpriseUpdateParamsNumberOfEmployees = "51-200"
-	EnterpriseUpdateParamsNumberOfEmployees_201_500    EnterpriseUpdateParamsNumberOfEmployees = "201-500"
-	EnterpriseUpdateParamsNumberOfEmployees_501_2000   EnterpriseUpdateParamsNumberOfEmployees = "501-2000"
-	EnterpriseUpdateParamsNumberOfEmployees_2001_10000 EnterpriseUpdateParamsNumberOfEmployees = "2001-10000"
-	EnterpriseUpdateParamsNumberOfEmployees_10001Plus  EnterpriseUpdateParamsNumberOfEmployees = "10001+"
+	EnterpriseUpdateParamsNumberOfEmployees1_10       EnterpriseUpdateParamsNumberOfEmployees = "1-10"
+	EnterpriseUpdateParamsNumberOfEmployees11_50      EnterpriseUpdateParamsNumberOfEmployees = "11-50"
+	EnterpriseUpdateParamsNumberOfEmployees51_200     EnterpriseUpdateParamsNumberOfEmployees = "51-200"
+	EnterpriseUpdateParamsNumberOfEmployees201_500    EnterpriseUpdateParamsNumberOfEmployees = "201-500"
+	EnterpriseUpdateParamsNumberOfEmployees501_2000   EnterpriseUpdateParamsNumberOfEmployees = "501-2000"
+	EnterpriseUpdateParamsNumberOfEmployees2001_10000 EnterpriseUpdateParamsNumberOfEmployees = "2001-10000"
+	EnterpriseUpdateParamsNumberOfEmployees10001      EnterpriseUpdateParamsNumberOfEmployees = "10001+"
 )
+
+// Organization contact information. Note: the response returns this object with
+// the phone field as 'phone' (not 'phone_number').
+//
+// The properties Email, FirstName, JobTitle, LastName, Phone are required.
+type EnterpriseUpdateParamsOrganizationContact struct {
+	// Contact's email address
+	Email string `json:"email" api:"required" format:"email"`
+	// Contact's first name
+	FirstName string `json:"first_name" api:"required"`
+	// Contact's job title (required)
+	JobTitle string `json:"job_title" api:"required"`
+	// Contact's last name
+	LastName string `json:"last_name" api:"required"`
+	// Contact's phone number in E.164 format
+	Phone string `json:"phone" api:"required"`
+	paramObj
+}
+
+func (r EnterpriseUpdateParamsOrganizationContact) MarshalJSON() (data []byte, err error) {
+	type shadow EnterpriseUpdateParamsOrganizationContact
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *EnterpriseUpdateParamsOrganizationContact) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Legal structure type
 type EnterpriseUpdateParamsOrganizationLegalType string
@@ -728,6 +1385,32 @@ const (
 	EnterpriseUpdateParamsOrganizationLegalTypeNonprofit   EnterpriseUpdateParamsOrganizationLegalType = "nonprofit"
 	EnterpriseUpdateParamsOrganizationLegalTypeOther       EnterpriseUpdateParamsOrganizationLegalType = "other"
 )
+
+// The properties AdministrativeArea, City, Country, PostalCode, StreetAddress are
+// required.
+type EnterpriseUpdateParamsOrganizationPhysicalAddress struct {
+	// State or province
+	AdministrativeArea string `json:"administrative_area" api:"required"`
+	// City name
+	City string `json:"city" api:"required"`
+	// Country name (e.g., United States)
+	Country string `json:"country" api:"required"`
+	// ZIP or postal code
+	PostalCode string `json:"postal_code" api:"required"`
+	// Street address
+	StreetAddress string `json:"street_address" api:"required"`
+	// Additional address line (suite, apt, etc.)
+	ExtendedAddress param.Opt[string] `json:"extended_address,omitzero"`
+	paramObj
+}
+
+func (r EnterpriseUpdateParamsOrganizationPhysicalAddress) MarshalJSON() (data []byte, err error) {
+	type shadow EnterpriseUpdateParamsOrganizationPhysicalAddress
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *EnterpriseUpdateParamsOrganizationPhysicalAddress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type EnterpriseListParams struct {
 	// Filter by legal name (partial match)

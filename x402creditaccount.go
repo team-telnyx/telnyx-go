@@ -310,7 +310,7 @@ type X402CreditAccountSettleParams struct {
 	ID string `json:"id" api:"required"`
 	// Base64-encoded signed payment authorization (x402 PaymentPayload). Can
 	// alternatively be provided via the PAYMENT-SIGNATURE header.
-	PaymentSignature       param.Opt[string] `json:"payment_signature,omitzero"`
+	BodyPaymentSignature   param.Opt[string] `json:"payment_signature,omitzero"`
 	HeaderPaymentSignature param.Opt[string] `header:"PAYMENT-SIGNATURE,omitzero" json:"-"`
 	paramObj
 }
