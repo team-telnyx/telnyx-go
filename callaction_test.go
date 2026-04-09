@@ -68,6 +68,35 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"call_control_id",
 		telnyx.CallActionAnswerParams{
+			Assistant: telnyx.CallActionAnswerParamsAssistant{
+				ID: "asst_123",
+				DynamicVariables: map[string]telnyx.CallActionAnswerParamsAssistantDynamicVariableUnion{
+					"customer_name": {
+						OfString: telnyx.String("John"),
+					},
+					"account_id": {
+						OfString: telnyx.String("ACC-12345"),
+					},
+				},
+				ExternalLlm:           map[string]any{},
+				FallbackConfig:        map[string]any{},
+				Greeting:              telnyx.String("Hi, I'm your assistant. How can I help?"),
+				Instructions:          telnyx.String("You are a friendly voice assistant."),
+				LlmAPIKeyRef:          telnyx.String("my_llm_api_key"),
+				McpServers:            []any{map[string]any{}},
+				Model:                 telnyx.String("gpt-4o"),
+				Name:                  telnyx.String("name"),
+				ObservabilitySettings: map[string]any{},
+				OpenAIAPIKeyRef:       telnyx.String("my_openai_api_key"),
+				Tools: []telnyx.CallActionAnswerParamsAssistantToolUnion{{
+					OfHangup: &telnyx.HangupToolParam{
+						Hangup: telnyx.HangupToolParams{
+							Description: telnyx.String("description"),
+						},
+						Type: telnyx.HangupToolTypeHangup,
+					},
+				}},
+			},
 			BillingGroupID: telnyx.String("f5586561-8ff0-4291-a0ac-84fe544797bd"),
 			ClientState:    telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
 			CommandID:      telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
@@ -807,9 +836,35 @@ func TestCallActionStartAIAssistantWithOptionalParams(t *testing.T) {
 		"call_control_id",
 		telnyx.CallActionStartAIAssistantParams{
 			Assistant: telnyx.CallActionStartAIAssistantParamsAssistant{
-				ID:              telnyx.String("id"),
-				Instructions:    telnyx.String("You are a friendly voice assistant."),
-				OpenAIAPIKeyRef: telnyx.String("openai_api_key_ref"),
+				ID: "id",
+				DynamicVariables: map[string]telnyx.CallActionStartAIAssistantParamsAssistantDynamicVariableUnion{
+					"customer_name": {
+						OfString: telnyx.String("John"),
+					},
+					"account_id": {
+						OfString: telnyx.String("ACC-12345"),
+					},
+				},
+				ExternalLlm:           map[string]any{},
+				FallbackConfig:        map[string]any{},
+				Greeting:              telnyx.String("greeting"),
+				Instructions:          telnyx.String("You are a friendly voice assistant."),
+				LlmAPIKeyRef:          telnyx.String("my_llm_api_key"),
+				McpServers:            []any{map[string]any{}},
+				Model:                 telnyx.String("gpt-4o"),
+				Name:                  telnyx.String("name"),
+				ObservabilitySettings: map[string]any{},
+				OpenAIAPIKeyRef:       telnyx.String("my_openai_api_key"),
+				Tools: []telnyx.CallActionStartAIAssistantParamsAssistantToolUnion{{
+					OfBookAppointment: &telnyx.CallActionStartAIAssistantParamsAssistantToolBookAppointment{
+						BookAppointment: telnyx.CallActionStartAIAssistantParamsAssistantToolBookAppointmentBookAppointment{
+							APIKeyRef:        "my_calcom_api_key",
+							EventTypeID:      0,
+							AttendeeName:     telnyx.String("attendee_name"),
+							AttendeeTimezone: telnyx.String("attendee_timezone"),
+						},
+					},
+				}},
 			},
 			ClientState: telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
 			CommandID:   telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
