@@ -45,6 +45,37 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 			SilenceThreshold:                telnyx.Int(512),
 			TotalAnalysisTimeMillis:         telnyx.Int(5000),
 		},
+		Assistant: telnyx.CallDialParamsAssistant{
+			ID: "id",
+			DynamicVariables: map[string]telnyx.CallDialParamsAssistantDynamicVariableUnion{
+				"customer_name": {
+					OfString: telnyx.String("John"),
+				},
+				"account_id": {
+					OfString: telnyx.String("ACC-12345"),
+				},
+			},
+			ExternalLlm:           map[string]any{},
+			FallbackConfig:        map[string]any{},
+			Greeting:              telnyx.String("greeting"),
+			Instructions:          telnyx.String("You are a friendly voice assistant."),
+			LlmAPIKeyRef:          telnyx.String("my_llm_api_key"),
+			McpServers:            []any{map[string]any{}},
+			Model:                 telnyx.String("gpt-4o"),
+			Name:                  telnyx.String("name"),
+			ObservabilitySettings: map[string]any{},
+			OpenAIAPIKeyRef:       telnyx.String("my_openai_api_key"),
+			Tools: []telnyx.CallDialParamsAssistantToolUnion{{
+				OfBookAppointment: &telnyx.CallDialParamsAssistantToolBookAppointment{
+					BookAppointment: telnyx.CallDialParamsAssistantToolBookAppointmentBookAppointment{
+						APIKeyRef:        "my_calcom_api_key",
+						EventTypeID:      0,
+						AttendeeName:     telnyx.String("attendee_name"),
+						AttendeeTimezone: telnyx.String("attendee_timezone"),
+					},
+				},
+			}},
+		},
 		AudioURL:       telnyx.String("http://www.example.com/sounds/greeting.wav"),
 		BillingGroupID: telnyx.String("f5586561-8ff0-4291-a0ac-84fe544797bd"),
 		BridgeIntent:   telnyx.Bool(true),
