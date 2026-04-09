@@ -76,11 +76,14 @@ func TestWirelessBlocklistUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.WirelessBlocklists.Update(context.TODO(), telnyx.WirelessBlocklistUpdateParams{
-		Name:   telnyx.String("My Wireless Blocklist"),
-		Type:   telnyx.WirelessBlocklistUpdateParamsTypeCountry,
-		Values: []string{"CA", "US"},
-	})
+	_, err := client.WirelessBlocklists.Update(
+		context.TODO(),
+		"6a09cdc3-8948-47f0-aa62-74ac943d6c58",
+		telnyx.WirelessBlocklistUpdateParams{
+			Name:   telnyx.String("My Wireless Blocklist"),
+			Values: []string{"CA", "US"},
+		},
+	)
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

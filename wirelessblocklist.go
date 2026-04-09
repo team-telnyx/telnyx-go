@@ -61,9 +61,13 @@ func (r *WirelessBlocklistService) Get(ctx context.Context, id string, opts ...o
 }
 
 // Update a Wireless Blocklist.
-func (r *WirelessBlocklistService) Update(ctx context.Context, body WirelessBlocklistUpdateParams, opts ...option.RequestOption) (res *WirelessBlocklistUpdateResponse, err error) {
+func (r *WirelessBlocklistService) Update(ctx context.Context, id string, body WirelessBlocklistUpdateParams, opts ...option.RequestOption) (res *WirelessBlocklistUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "wireless_blocklists"
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("wireless_blocklists/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -244,10 +248,6 @@ const (
 type WirelessBlocklistUpdateParams struct {
 	// The name of the Wireless Blocklist.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// The type of wireless blocklist.
-	//
-	// Any of "country", "mcc", "plmn".
-	Type WirelessBlocklistUpdateParamsType `json:"type,omitzero"`
 	// Values to block. The values here depend on the `type` of Wireless Blocklist.
 	Values []string `json:"values,omitzero"`
 	paramObj
@@ -260,15 +260,6 @@ func (r WirelessBlocklistUpdateParams) MarshalJSON() (data []byte, err error) {
 func (r *WirelessBlocklistUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// The type of wireless blocklist.
-type WirelessBlocklistUpdateParamsType string
-
-const (
-	WirelessBlocklistUpdateParamsTypeCountry WirelessBlocklistUpdateParamsType = "country"
-	WirelessBlocklistUpdateParamsTypeMcc     WirelessBlocklistUpdateParamsType = "mcc"
-	WirelessBlocklistUpdateParamsTypePlmn    WirelessBlocklistUpdateParamsType = "plmn"
-)
 
 type WirelessBlocklistListParams struct {
 	// The name of the Wireless Blocklist.
