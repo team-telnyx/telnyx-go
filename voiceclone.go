@@ -337,7 +337,7 @@ type VoiceCloneNewParamsParamsTelnyxDesignClone struct {
 	VoiceDesignID string `json:"voice_design_id" api:"required" format:"uuid"`
 	// Voice synthesis provider. Defaults to `telnyx`.
 	//
-	// Any of "telnyx", "Telnyx".
+	// Any of "telnyx", "minimax".
 	Provider string `json:"provider,omitzero"`
 	paramObj
 }
@@ -355,7 +355,7 @@ func init() {
 		"gender", "male", "female", "neutral",
 	)
 	apijson.RegisterFieldValidator[VoiceCloneNewParamsParamsTelnyxDesignClone](
-		"provider", "telnyx", "Telnyx",
+		"provider", "telnyx", "minimax",
 	)
 }
 
@@ -373,7 +373,7 @@ type VoiceCloneNewParamsParamsMinimaxDesignClone struct {
 	Name string `json:"name" api:"required"`
 	// Voice synthesis provider. Must be `minimax`.
 	//
-	// Any of "minimax", "Minimax".
+	// Any of "telnyx", "minimax".
 	Provider string `json:"provider,omitzero" api:"required"`
 	// UUID of the source voice design to clone.
 	VoiceDesignID string `json:"voice_design_id" api:"required" format:"uuid"`
@@ -393,7 +393,7 @@ func init() {
 		"gender", "male", "female", "neutral",
 	)
 	apijson.RegisterFieldValidator[VoiceCloneNewParamsParamsMinimaxDesignClone](
-		"provider", "minimax", "Minimax",
+		"provider", "telnyx", "minimax",
 	)
 }
 
@@ -525,7 +525,7 @@ type VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone struct {
 	Name string `json:"name" api:"required"`
 	// Voice synthesis provider. Must be `telnyx`.
 	//
-	// Any of "telnyx", "Telnyx".
+	// Any of "telnyx", "minimax".
 	Provider string `json:"provider,omitzero" api:"required"`
 	// Optional custom label describing the voice style.
 	Label param.Opt[string] `json:"label,omitzero"`
@@ -551,7 +551,7 @@ func init() {
 		"gender", "male", "female", "neutral",
 	)
 	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone](
-		"provider", "telnyx", "Telnyx",
+		"provider", "telnyx", "minimax",
 	)
 	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone](
 		"model_id", "Qwen3TTS",
@@ -581,7 +581,7 @@ type VoiceCloneNewFromUploadParamsParamsTelnyxUltraClone struct {
 	Name string `json:"name" api:"required"`
 	// Voice synthesis provider. Must be `telnyx`.
 	//
-	// Any of "telnyx", "Telnyx".
+	// Any of "telnyx", "minimax".
 	Provider string `json:"provider,omitzero" api:"required"`
 	// Optional custom label describing the voice style.
 	Label param.Opt[string] `json:"label,omitzero"`
@@ -606,7 +606,7 @@ func init() {
 		"model_id", "Ultra",
 	)
 	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsTelnyxUltraClone](
-		"provider", "telnyx", "Telnyx",
+		"provider", "telnyx", "minimax",
 	)
 }
 
@@ -628,7 +628,7 @@ type VoiceCloneNewFromUploadParamsParamsMinimaxClone struct {
 	Name string `json:"name" api:"required"`
 	// Voice synthesis provider. Must be `minimax`.
 	//
-	// Any of "minimax", "Minimax".
+	// Any of "telnyx", "minimax".
 	Provider string `json:"provider,omitzero" api:"required"`
 	// Optional custom label describing the voice style.
 	Label param.Opt[string] `json:"label,omitzero"`
@@ -654,7 +654,7 @@ func init() {
 		"gender", "male", "female", "neutral",
 	)
 	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsMinimaxClone](
-		"provider", "minimax", "Minimax",
+		"provider", "telnyx", "minimax",
 	)
 	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsMinimaxClone](
 		"model_id", "speech-2.8-turbo",
