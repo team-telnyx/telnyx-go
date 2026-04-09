@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.57.0 (2026-04-09)
+
+Full Changelog: [v4.56.0...v4.57.0](https://github.com/team-telnyx/telnyx-go/compare/v4.56.0...v4.57.0)
+
+### Features
+
+* Add oneOf constraint for Url/Texml mutual exclusivity in InitiateCallRequest ([190ec78](https://github.com/team-telnyx/telnyx-go/commit/190ec780c665897724a757bc2bbb7510bf61ae22))
+
 ## 4.56.0 (2026-04-08)
 
 Full Changelog: [v4.55.2...v4.56.0](https://github.com/team-telnyx/telnyx-go/compare/v4.55.2...v4.56.0)
