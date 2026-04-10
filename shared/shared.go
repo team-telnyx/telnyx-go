@@ -135,6 +135,138 @@ const (
 	AzureVoiceSettingsGenderFemale AzureVoiceSettingsGender = "Female"
 )
 
+// The properties BookAppointment, Type are required.
+type BookAppointmentToolParam struct {
+	BookAppointment BookAppointmentToolParams `json:"book_appointment,omitzero" api:"required"`
+	// Any of "book_appointment".
+	Type BookAppointmentToolType `json:"type,omitzero" api:"required"`
+	paramObj
+}
+
+func (r BookAppointmentToolParam) MarshalJSON() (data []byte, err error) {
+	type shadow BookAppointmentToolParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BookAppointmentToolParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type BookAppointmentToolType string
+
+const (
+	BookAppointmentToolTypeBookAppointment BookAppointmentToolType = "book_appointment"
+)
+
+// The properties APIKeyRef, EventTypeID are required.
+type BookAppointmentToolParams struct {
+	// Reference to an integration secret that contains your Cal.com API key. You would
+	// pass the `identifier` for an integration secret
+	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
+	// that refers to your Cal.com API key.
+	APIKeyRef string `json:"api_key_ref" api:"required"`
+	// Event Type ID for which slots are being fetched.
+	// [cal.com](https://cal.com/docs/api-reference/v2/bookings/create-a-booking#body-event-type-id)
+	EventTypeID int64 `json:"event_type_id" api:"required"`
+	// The name of the attendee
+	// [cal.com](https://cal.com/docs/api-reference/v2/bookings/create-a-booking#body-attendee-name).
+	// If not provided, the assistant will ask for the attendee's name.
+	AttendeeName param.Opt[string] `json:"attendee_name,omitzero"`
+	// The timezone of the attendee
+	// [cal.com](https://cal.com/docs/api-reference/v2/bookings/create-a-booking#body-attendee-timezone).
+	// If not provided, the assistant will ask for the attendee's timezone.
+	AttendeeTimezone param.Opt[string] `json:"attendee_timezone,omitzero"`
+	paramObj
+}
+
+func (r BookAppointmentToolParams) MarshalJSON() (data []byte, err error) {
+	type shadow BookAppointmentToolParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BookAppointmentToolParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property BucketIDs is required.
+type CallControlBucketIDsParam struct {
+	BucketIDs []string `json:"bucket_ids,omitzero" api:"required"`
+	// The maximum number of results to retrieve as context for the language model.
+	MaxNumResults param.Opt[int64] `json:"max_num_results,omitzero"`
+	paramObj
+}
+
+func (r CallControlBucketIDsParam) MarshalJSON() (data []byte, err error) {
+	type shadow CallControlBucketIDsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallControlBucketIDsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Retrieval, Type are required.
+type CallControlRetrievalToolParam struct {
+	Retrieval CallControlBucketIDsParam `json:"retrieval,omitzero" api:"required"`
+	// Any of "retrieval".
+	Type CallControlRetrievalToolType `json:"type,omitzero" api:"required"`
+	paramObj
+}
+
+func (r CallControlRetrievalToolParam) MarshalJSON() (data []byte, err error) {
+	type shadow CallControlRetrievalToolParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallControlRetrievalToolParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallControlRetrievalToolType string
+
+const (
+	CallControlRetrievalToolTypeRetrieval CallControlRetrievalToolType = "retrieval"
+)
+
+// The properties CheckAvailability, Type are required.
+type CheckAvailabilityToolParam struct {
+	CheckAvailability CheckAvailabilityToolParams `json:"check_availability,omitzero" api:"required"`
+	// Any of "check_availability".
+	Type CheckAvailabilityToolType `json:"type,omitzero" api:"required"`
+	paramObj
+}
+
+func (r CheckAvailabilityToolParam) MarshalJSON() (data []byte, err error) {
+	type shadow CheckAvailabilityToolParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CheckAvailabilityToolParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CheckAvailabilityToolType string
+
+const (
+	CheckAvailabilityToolTypeCheckAvailability CheckAvailabilityToolType = "check_availability"
+)
+
+// The properties APIKeyRef, EventTypeID are required.
+type CheckAvailabilityToolParams struct {
+	// Reference to an integration secret that contains your Cal.com API key. You would
+	// pass the `identifier` for an integration secret
+	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
+	// that refers to your Cal.com API key.
+	APIKeyRef string `json:"api_key_ref" api:"required"`
+	// Event Type ID for which slots are being fetched.
+	// [cal.com](https://cal.com/docs/api-reference/v2/slots/get-available-slots#parameter-event-type-id)
+	EventTypeID int64 `json:"event_type_id" api:"required"`
+	paramObj
+}
+
+func (r CheckAvailabilityToolParams) MarshalJSON() (data []byte, err error) {
+	type shadow CheckAvailabilityToolParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CheckAvailabilityToolParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Configuration options for Jitter Buffer. Enables Jitter Buffer for RTP streams
 // of SIP Trunking calls. The feature is off unless enabled. You may define min and
 // max values in msec for customized buffering behaviors. Larger values add latency

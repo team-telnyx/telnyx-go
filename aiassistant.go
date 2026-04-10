@@ -18,6 +18,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
@@ -216,12 +217,12 @@ func (r *AssistantParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type AssistantToolUnionParam struct {
-	OfBookAppointment   *AssistantToolBookAppointmentParam   `json:",omitzero,inline"`
-	OfCheckAvailability *AssistantToolCheckAvailabilityParam `json:",omitzero,inline"`
-	OfWebhook           *WebhookToolParam                    `json:",omitzero,inline"`
-	OfHangup            *HangupToolParam                     `json:",omitzero,inline"`
-	OfTransfer          *TransferToolParam                   `json:",omitzero,inline"`
-	OfRetrieval         *AssistantToolRetrievalParam         `json:",omitzero,inline"`
+	OfBookAppointment   *shared.BookAppointmentToolParam      `json:",omitzero,inline"`
+	OfCheckAvailability *shared.CheckAvailabilityToolParam    `json:",omitzero,inline"`
+	OfWebhook           *WebhookToolParam                     `json:",omitzero,inline"`
+	OfHangup            *HangupToolParam                      `json:",omitzero,inline"`
+	OfTransfer          *TransferToolParam                    `json:",omitzero,inline"`
+	OfRetrieval         *shared.CallControlRetrievalToolParam `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -255,7 +256,7 @@ func (u *AssistantToolUnionParam) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u AssistantToolUnionParam) GetBookAppointment() *AssistantToolBookAppointmentBookAppointmentParam {
+func (u AssistantToolUnionParam) GetBookAppointment() *shared.BookAppointmentToolParams {
 	if vt := u.OfBookAppointment; vt != nil {
 		return &vt.BookAppointment
 	}
@@ -263,7 +264,7 @@ func (u AssistantToolUnionParam) GetBookAppointment() *AssistantToolBookAppointm
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u AssistantToolUnionParam) GetCheckAvailability() *AssistantToolCheckAvailabilityCheckAvailabilityParam {
+func (u AssistantToolUnionParam) GetCheckAvailability() *shared.CheckAvailabilityToolParams {
 	if vt := u.OfCheckAvailability; vt != nil {
 		return &vt.CheckAvailability
 	}
@@ -295,7 +296,7 @@ func (u AssistantToolUnionParam) GetTransfer() *TransferToolTransferParam {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u AssistantToolUnionParam) GetRetrieval() *AssistantToolRetrievalRetrievalParam {
+func (u AssistantToolUnionParam) GetRetrieval() *shared.CallControlBucketIDsParam {
 	if vt := u.OfRetrieval; vt != nil {
 		return &vt.Retrieval
 	}
@@ -323,128 +324,13 @@ func (u AssistantToolUnionParam) GetType() *string {
 func init() {
 	apijson.RegisterUnion[AssistantToolUnionParam](
 		"type",
-		apijson.Discriminator[AssistantToolBookAppointmentParam]("book_appointment"),
-		apijson.Discriminator[AssistantToolCheckAvailabilityParam]("check_availability"),
+		apijson.Discriminator[shared.BookAppointmentToolParam]("book_appointment"),
+		apijson.Discriminator[shared.CheckAvailabilityToolParam]("check_availability"),
 		apijson.Discriminator[WebhookToolParam]("webhook"),
 		apijson.Discriminator[HangupToolParam]("hangup"),
 		apijson.Discriminator[TransferToolParam]("transfer"),
-		apijson.Discriminator[AssistantToolRetrievalParam]("retrieval"),
+		apijson.Discriminator[shared.CallControlRetrievalToolParam]("retrieval"),
 	)
-}
-
-// The properties BookAppointment, Type are required.
-type AssistantToolBookAppointmentParam struct {
-	BookAppointment AssistantToolBookAppointmentBookAppointmentParam `json:"book_appointment,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as "book_appointment".
-	Type constant.BookAppointment `json:"type" default:"book_appointment"`
-	paramObj
-}
-
-func (r AssistantToolBookAppointmentParam) MarshalJSON() (data []byte, err error) {
-	type shadow AssistantToolBookAppointmentParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AssistantToolBookAppointmentParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties APIKeyRef, EventTypeID are required.
-type AssistantToolBookAppointmentBookAppointmentParam struct {
-	// Reference to an integration secret that contains your Cal.com API key. You would
-	// pass the `identifier` for an integration secret
-	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
-	// that refers to your Cal.com API key.
-	APIKeyRef string `json:"api_key_ref" api:"required"`
-	// Event Type ID for which slots are being fetched.
-	// [cal.com](https://cal.com/docs/api-reference/v2/bookings/create-a-booking#body-event-type-id)
-	EventTypeID int64 `json:"event_type_id" api:"required"`
-	// The name of the attendee
-	// [cal.com](https://cal.com/docs/api-reference/v2/bookings/create-a-booking#body-attendee-name).
-	// If not provided, the assistant will ask for the attendee's name.
-	AttendeeName param.Opt[string] `json:"attendee_name,omitzero"`
-	// The timezone of the attendee
-	// [cal.com](https://cal.com/docs/api-reference/v2/bookings/create-a-booking#body-attendee-timezone).
-	// If not provided, the assistant will ask for the attendee's timezone.
-	AttendeeTimezone param.Opt[string] `json:"attendee_timezone,omitzero"`
-	paramObj
-}
-
-func (r AssistantToolBookAppointmentBookAppointmentParam) MarshalJSON() (data []byte, err error) {
-	type shadow AssistantToolBookAppointmentBookAppointmentParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AssistantToolBookAppointmentBookAppointmentParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties CheckAvailability, Type are required.
-type AssistantToolCheckAvailabilityParam struct {
-	CheckAvailability AssistantToolCheckAvailabilityCheckAvailabilityParam `json:"check_availability,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as
-	// "check_availability".
-	Type constant.CheckAvailability `json:"type" default:"check_availability"`
-	paramObj
-}
-
-func (r AssistantToolCheckAvailabilityParam) MarshalJSON() (data []byte, err error) {
-	type shadow AssistantToolCheckAvailabilityParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AssistantToolCheckAvailabilityParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties APIKeyRef, EventTypeID are required.
-type AssistantToolCheckAvailabilityCheckAvailabilityParam struct {
-	// Reference to an integration secret that contains your Cal.com API key. You would
-	// pass the `identifier` for an integration secret
-	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
-	// that refers to your Cal.com API key.
-	APIKeyRef string `json:"api_key_ref" api:"required"`
-	// Event Type ID for which slots are being fetched.
-	// [cal.com](https://cal.com/docs/api-reference/v2/slots/get-available-slots#parameter-event-type-id)
-	EventTypeID int64 `json:"event_type_id" api:"required"`
-	paramObj
-}
-
-func (r AssistantToolCheckAvailabilityCheckAvailabilityParam) MarshalJSON() (data []byte, err error) {
-	type shadow AssistantToolCheckAvailabilityCheckAvailabilityParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AssistantToolCheckAvailabilityCheckAvailabilityParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties Retrieval, Type are required.
-type AssistantToolRetrievalParam struct {
-	Retrieval AssistantToolRetrievalRetrievalParam `json:"retrieval,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as "retrieval".
-	Type constant.Retrieval `json:"type" default:"retrieval"`
-	paramObj
-}
-
-func (r AssistantToolRetrievalParam) MarshalJSON() (data []byte, err error) {
-	type shadow AssistantToolRetrievalParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AssistantToolRetrievalParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property BucketIDs is required.
-type AssistantToolRetrievalRetrievalParam struct {
-	BucketIDs []string `json:"bucket_ids,omitzero" api:"required"`
-	// The maximum number of results to retrieve as context for the language model.
-	MaxNumResults param.Opt[int64] `json:"max_num_results,omitzero"`
-	paramObj
-}
-
-func (r AssistantToolRetrievalRetrievalParam) MarshalJSON() (data []byte, err error) {
-	type shadow AssistantToolRetrievalRetrievalParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AssistantToolRetrievalRetrievalParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 // AssistantToolsItemsUnion contains all possible properties and values from

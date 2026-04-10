@@ -15,7 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // CallService contains methods and other services that help with interacting with
@@ -77,6 +77,218 @@ func (r *CallService) GetStatus(ctx context.Context, callControlID string, opts 
 	path := fmt.Sprintf("calls/%s", callControlID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
+}
+
+// AI Assistant configuration. All fields except `id` are optional — the
+// assistant's stored configuration will be used as fallback for any omitted
+// fields.
+//
+// The property ID is required.
+type CallAssistantRequestParam struct {
+	// The identifier of the AI assistant to use.
+	ID string `json:"id" api:"required"`
+	// Initial greeting text spoken when the assistant starts. Can be plain text for
+	// any voice or SSML for `AWS.Polly.<voice_id>` voices. There is a 3,000 character
+	// limit.
+	Greeting param.Opt[string] `json:"greeting,omitzero"`
+	// System instructions for the voice assistant. Can be templated with
+	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables).
+	// This will overwrite the instructions set in the assistant configuration.
+	Instructions param.Opt[string] `json:"instructions,omitzero"`
+	// Integration secret identifier for the LLM provider API key. Use this field to
+	// reference an
+	// [integration secret](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
+	// containing your LLM provider API key. Supports any LLM provider (OpenAI,
+	// Anthropic, etc.).
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// LLM model override for this call. If omitted, the assistant's configured model
+	// is used.
+	Model param.Opt[string] `json:"model,omitzero"`
+	// Assistant name override for this call.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Deprecated — use `llm_api_key_ref` instead. Integration secret identifier for
+	// the OpenAI API key. This field is maintained for backward compatibility;
+	// `llm_api_key_ref` is the canonical field name and supports all LLM providers.
+	//
+	// Deprecated: This field is deprecated and will be removed soon
+	OpenAIAPIKeyRef param.Opt[string] `json:"openai_api_key_ref,omitzero"`
+	// Map of dynamic variables and their default values. Dynamic variables can be
+	// referenced in instructions, greeting, and tool definitions using the
+	// `{{variable_name}}` syntax. Call-control-agent automatically merges in
+	// `telnyx_call_*` variables (telnyx_call_to, telnyx_call_from,
+	// telnyx_conversation_channel, telnyx_agent_target, telnyx_end_user_target,
+	// telnyx_call_caller_id_name) and custom header variables.
+	DynamicVariables map[string]CallAssistantRequestDynamicVariableUnionParam `json:"dynamic_variables,omitzero"`
+	// External LLM configuration for bringing your own LLM endpoint.
+	ExternalLlm map[string]any `json:"external_llm,omitzero"`
+	// Fallback LLM configuration used when the primary LLM provider is unavailable.
+	FallbackConfig map[string]any `json:"fallback_config,omitzero"`
+	// MCP (Model Context Protocol) server configurations for extending the assistant's
+	// capabilities with external tools and data sources.
+	McpServers []map[string]any `json:"mcp_servers,omitzero"`
+	// Observability configuration for the assistant session, including Langfuse
+	// integration for tracing and monitoring.
+	ObservabilitySettings map[string]any `json:"observability_settings,omitzero"`
+	// Inline tool definitions available to the assistant (webhook, retrieval,
+	// transfer, hangup, etc.). Overrides the assistant's stored tools if provided.
+	Tools []CallAssistantRequestToolUnionParam `json:"tools,omitzero"`
+	paramObj
+}
+
+func (r CallAssistantRequestParam) MarshalJSON() (data []byte, err error) {
+	type shadow CallAssistantRequestParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallAssistantRequestParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type CallAssistantRequestDynamicVariableUnionParam struct {
+	OfString param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]    `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u CallAssistantRequestDynamicVariableUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool)
+}
+func (u *CallAssistantRequestDynamicVariableUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *CallAssistantRequestDynamicVariableUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	}
+	return nil
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type CallAssistantRequestToolUnionParam struct {
+	OfBookAppointment   *shared.BookAppointmentToolParam      `json:",omitzero,inline"`
+	OfCheckAvailability *shared.CheckAvailabilityToolParam    `json:",omitzero,inline"`
+	OfWebhook           *WebhookToolParam                     `json:",omitzero,inline"`
+	OfHangup            *HangupToolParam                      `json:",omitzero,inline"`
+	OfTransfer          *TransferToolParam                    `json:",omitzero,inline"`
+	OfRetrieval         *shared.CallControlRetrievalToolParam `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u CallAssistantRequestToolUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfBookAppointment,
+		u.OfCheckAvailability,
+		u.OfWebhook,
+		u.OfHangup,
+		u.OfTransfer,
+		u.OfRetrieval)
+}
+func (u *CallAssistantRequestToolUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *CallAssistantRequestToolUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfBookAppointment) {
+		return u.OfBookAppointment
+	} else if !param.IsOmitted(u.OfCheckAvailability) {
+		return u.OfCheckAvailability
+	} else if !param.IsOmitted(u.OfWebhook) {
+		return u.OfWebhook
+	} else if !param.IsOmitted(u.OfHangup) {
+		return u.OfHangup
+	} else if !param.IsOmitted(u.OfTransfer) {
+		return u.OfTransfer
+	} else if !param.IsOmitted(u.OfRetrieval) {
+		return u.OfRetrieval
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallAssistantRequestToolUnionParam) GetBookAppointment() *shared.BookAppointmentToolParams {
+	if vt := u.OfBookAppointment; vt != nil {
+		return &vt.BookAppointment
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallAssistantRequestToolUnionParam) GetCheckAvailability() *shared.CheckAvailabilityToolParams {
+	if vt := u.OfCheckAvailability; vt != nil {
+		return &vt.CheckAvailability
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallAssistantRequestToolUnionParam) GetWebhook() *WebhookToolWebhookParam {
+	if vt := u.OfWebhook; vt != nil {
+		return &vt.Webhook
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallAssistantRequestToolUnionParam) GetHangup() *HangupToolParams {
+	if vt := u.OfHangup; vt != nil {
+		return &vt.Hangup
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallAssistantRequestToolUnionParam) GetTransfer() *TransferToolTransferParam {
+	if vt := u.OfTransfer; vt != nil {
+		return &vt.Transfer
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallAssistantRequestToolUnionParam) GetRetrieval() *shared.CallControlBucketIDsParam {
+	if vt := u.OfRetrieval; vt != nil {
+		return &vt.Retrieval
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallAssistantRequestToolUnionParam) GetType() *string {
+	if vt := u.OfBookAppointment; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfCheckAvailability; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfWebhook; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfHangup; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfTransfer; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfRetrieval; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[CallAssistantRequestToolUnionParam](
+		"type",
+		apijson.Discriminator[shared.BookAppointmentToolParam]("book_appointment"),
+		apijson.Discriminator[shared.CheckAvailabilityToolParam]("check_availability"),
+		apijson.Discriminator[WebhookToolParam]("webhook"),
+		apijson.Discriminator[HangupToolParam]("hangup"),
+		apijson.Discriminator[TransferToolParam]("transfer"),
+		apijson.Discriminator[shared.CallControlRetrievalToolParam]("retrieval"),
+	)
 }
 
 type CustomSipHeader struct {
@@ -530,7 +742,7 @@ type CallDialParams struct {
 	// AI Assistant configuration. All fields except `id` are optional — the
 	// assistant's stored configuration will be used as fallback for any omitted
 	// fields.
-	Assistant CallDialParamsAssistant `json:"assistant,omitzero"`
+	Assistant CallAssistantRequestParam `json:"assistant,omitzero"`
 	// Optional configuration parameters to dial new participant into a conference.
 	ConferenceConfig CallDialParamsConferenceConfig `json:"conference_config,omitzero"`
 	// Custom headers to be added to the SIP INVITE.
@@ -721,333 +933,6 @@ func (r CallDialParamsAnsweringMachineDetectionConfig) MarshalJSON() (data []byt
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *CallDialParamsAnsweringMachineDetectionConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// AI Assistant configuration. All fields except `id` are optional — the
-// assistant's stored configuration will be used as fallback for any omitted
-// fields.
-//
-// The property ID is required.
-type CallDialParamsAssistant struct {
-	// The identifier of the AI assistant to use.
-	ID string `json:"id" api:"required"`
-	// Initial greeting text spoken when the assistant starts. Can be plain text for
-	// any voice or SSML for `AWS.Polly.<voice_id>` voices. There is a 3,000 character
-	// limit.
-	Greeting param.Opt[string] `json:"greeting,omitzero"`
-	// System instructions for the voice assistant. Can be templated with
-	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables).
-	// This will overwrite the instructions set in the assistant configuration.
-	Instructions param.Opt[string] `json:"instructions,omitzero"`
-	// Integration secret identifier for the LLM provider API key. Use this field to
-	// reference an
-	// [integration secret](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
-	// containing your LLM provider API key. Supports any LLM provider (OpenAI,
-	// Anthropic, etc.).
-	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
-	// LLM model override for this call. If omitted, the assistant's configured model
-	// is used.
-	Model param.Opt[string] `json:"model,omitzero"`
-	// Assistant name override for this call.
-	Name param.Opt[string] `json:"name,omitzero"`
-	// Deprecated — use `llm_api_key_ref` instead. Integration secret identifier for
-	// the OpenAI API key. This field is maintained for backward compatibility;
-	// `llm_api_key_ref` is the canonical field name and supports all LLM providers.
-	//
-	// Deprecated: deprecated
-	OpenAIAPIKeyRef param.Opt[string] `json:"openai_api_key_ref,omitzero"`
-	// Map of dynamic variables and their default values. Dynamic variables can be
-	// referenced in instructions, greeting, and tool definitions using the
-	// `{{variable_name}}` syntax. Call-control-agent automatically merges in
-	// `telnyx_call_*` variables (telnyx_call_to, telnyx_call_from,
-	// telnyx_conversation_channel, telnyx_agent_target, telnyx_end_user_target,
-	// telnyx_call_caller_id_name) and custom header variables.
-	DynamicVariables map[string]CallDialParamsAssistantDynamicVariableUnion `json:"dynamic_variables,omitzero"`
-	// External LLM configuration for bringing your own LLM endpoint.
-	ExternalLlm any `json:"external_llm,omitzero"`
-	// Fallback LLM configuration used when the primary LLM provider is unavailable.
-	FallbackConfig any `json:"fallback_config,omitzero"`
-	// MCP (Model Context Protocol) server configurations for extending the assistant's
-	// capabilities with external tools and data sources.
-	McpServers []any `json:"mcp_servers,omitzero"`
-	// Observability configuration for the assistant session, including Langfuse
-	// integration for tracing and monitoring.
-	ObservabilitySettings any `json:"observability_settings,omitzero"`
-	// Inline tool definitions available to the assistant (webhook, retrieval,
-	// transfer, hangup, etc.). Overrides the assistant's stored tools if provided.
-	Tools []CallDialParamsAssistantToolUnion `json:"tools,omitzero"`
-	paramObj
-}
-
-func (r CallDialParamsAssistant) MarshalJSON() (data []byte, err error) {
-	type shadow CallDialParamsAssistant
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CallDialParamsAssistant) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type CallDialParamsAssistantDynamicVariableUnion struct {
-	OfString param.Opt[string]  `json:",omitzero,inline"`
-	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
-	OfBool   param.Opt[bool]    `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u CallDialParamsAssistantDynamicVariableUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool)
-}
-func (u *CallDialParamsAssistantDynamicVariableUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *CallDialParamsAssistantDynamicVariableUnion) asAny() any {
-	if !param.IsOmitted(u.OfString) {
-		return &u.OfString.Value
-	} else if !param.IsOmitted(u.OfFloat) {
-		return &u.OfFloat.Value
-	} else if !param.IsOmitted(u.OfBool) {
-		return &u.OfBool.Value
-	}
-	return nil
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type CallDialParamsAssistantToolUnion struct {
-	OfBookAppointment   *CallDialParamsAssistantToolBookAppointment   `json:",omitzero,inline"`
-	OfCheckAvailability *CallDialParamsAssistantToolCheckAvailability `json:",omitzero,inline"`
-	OfWebhook           *WebhookToolParam                             `json:",omitzero,inline"`
-	OfHangup            *HangupToolParam                              `json:",omitzero,inline"`
-	OfTransfer          *TransferToolParam                            `json:",omitzero,inline"`
-	OfRetrieval         *CallDialParamsAssistantToolRetrieval         `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u CallDialParamsAssistantToolUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfBookAppointment,
-		u.OfCheckAvailability,
-		u.OfWebhook,
-		u.OfHangup,
-		u.OfTransfer,
-		u.OfRetrieval)
-}
-func (u *CallDialParamsAssistantToolUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *CallDialParamsAssistantToolUnion) asAny() any {
-	if !param.IsOmitted(u.OfBookAppointment) {
-		return u.OfBookAppointment
-	} else if !param.IsOmitted(u.OfCheckAvailability) {
-		return u.OfCheckAvailability
-	} else if !param.IsOmitted(u.OfWebhook) {
-		return u.OfWebhook
-	} else if !param.IsOmitted(u.OfHangup) {
-		return u.OfHangup
-	} else if !param.IsOmitted(u.OfTransfer) {
-		return u.OfTransfer
-	} else if !param.IsOmitted(u.OfRetrieval) {
-		return u.OfRetrieval
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsAssistantToolUnion) GetBookAppointment() *CallDialParamsAssistantToolBookAppointmentBookAppointment {
-	if vt := u.OfBookAppointment; vt != nil {
-		return &vt.BookAppointment
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsAssistantToolUnion) GetCheckAvailability() *CallDialParamsAssistantToolCheckAvailabilityCheckAvailability {
-	if vt := u.OfCheckAvailability; vt != nil {
-		return &vt.CheckAvailability
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsAssistantToolUnion) GetWebhook() *WebhookToolWebhookParam {
-	if vt := u.OfWebhook; vt != nil {
-		return &vt.Webhook
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsAssistantToolUnion) GetHangup() *HangupToolParams {
-	if vt := u.OfHangup; vt != nil {
-		return &vt.Hangup
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsAssistantToolUnion) GetTransfer() *TransferToolTransferParam {
-	if vt := u.OfTransfer; vt != nil {
-		return &vt.Transfer
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsAssistantToolUnion) GetRetrieval() *CallDialParamsAssistantToolRetrievalRetrieval {
-	if vt := u.OfRetrieval; vt != nil {
-		return &vt.Retrieval
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsAssistantToolUnion) GetType() *string {
-	if vt := u.OfBookAppointment; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfCheckAvailability; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfWebhook; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfHangup; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfTransfer; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfRetrieval; vt != nil {
-		return (*string)(&vt.Type)
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[CallDialParamsAssistantToolUnion](
-		"type",
-		apijson.Discriminator[CallDialParamsAssistantToolBookAppointment]("book_appointment"),
-		apijson.Discriminator[CallDialParamsAssistantToolCheckAvailability]("check_availability"),
-		apijson.Discriminator[WebhookToolParam]("webhook"),
-		apijson.Discriminator[HangupToolParam]("hangup"),
-		apijson.Discriminator[TransferToolParam]("transfer"),
-		apijson.Discriminator[CallDialParamsAssistantToolRetrieval]("retrieval"),
-	)
-}
-
-// The properties BookAppointment, Type are required.
-type CallDialParamsAssistantToolBookAppointment struct {
-	BookAppointment CallDialParamsAssistantToolBookAppointmentBookAppointment `json:"book_appointment,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as "book_appointment".
-	Type constant.BookAppointment `json:"type" default:"book_appointment"`
-	paramObj
-}
-
-func (r CallDialParamsAssistantToolBookAppointment) MarshalJSON() (data []byte, err error) {
-	type shadow CallDialParamsAssistantToolBookAppointment
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CallDialParamsAssistantToolBookAppointment) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties APIKeyRef, EventTypeID are required.
-type CallDialParamsAssistantToolBookAppointmentBookAppointment struct {
-	// Reference to an integration secret that contains your Cal.com API key. You would
-	// pass the `identifier` for an integration secret
-	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
-	// that refers to your Cal.com API key.
-	APIKeyRef string `json:"api_key_ref" api:"required"`
-	// Event Type ID for which slots are being fetched.
-	// [cal.com](https://cal.com/docs/api-reference/v2/bookings/create-a-booking#body-event-type-id)
-	EventTypeID int64 `json:"event_type_id" api:"required"`
-	// The name of the attendee
-	// [cal.com](https://cal.com/docs/api-reference/v2/bookings/create-a-booking#body-attendee-name).
-	// If not provided, the assistant will ask for the attendee's name.
-	AttendeeName param.Opt[string] `json:"attendee_name,omitzero"`
-	// The timezone of the attendee
-	// [cal.com](https://cal.com/docs/api-reference/v2/bookings/create-a-booking#body-attendee-timezone).
-	// If not provided, the assistant will ask for the attendee's timezone.
-	AttendeeTimezone param.Opt[string] `json:"attendee_timezone,omitzero"`
-	paramObj
-}
-
-func (r CallDialParamsAssistantToolBookAppointmentBookAppointment) MarshalJSON() (data []byte, err error) {
-	type shadow CallDialParamsAssistantToolBookAppointmentBookAppointment
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CallDialParamsAssistantToolBookAppointmentBookAppointment) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties CheckAvailability, Type are required.
-type CallDialParamsAssistantToolCheckAvailability struct {
-	CheckAvailability CallDialParamsAssistantToolCheckAvailabilityCheckAvailability `json:"check_availability,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as
-	// "check_availability".
-	Type constant.CheckAvailability `json:"type" default:"check_availability"`
-	paramObj
-}
-
-func (r CallDialParamsAssistantToolCheckAvailability) MarshalJSON() (data []byte, err error) {
-	type shadow CallDialParamsAssistantToolCheckAvailability
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CallDialParamsAssistantToolCheckAvailability) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties APIKeyRef, EventTypeID are required.
-type CallDialParamsAssistantToolCheckAvailabilityCheckAvailability struct {
-	// Reference to an integration secret that contains your Cal.com API key. You would
-	// pass the `identifier` for an integration secret
-	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
-	// that refers to your Cal.com API key.
-	APIKeyRef string `json:"api_key_ref" api:"required"`
-	// Event Type ID for which slots are being fetched.
-	// [cal.com](https://cal.com/docs/api-reference/v2/slots/get-available-slots#parameter-event-type-id)
-	EventTypeID int64 `json:"event_type_id" api:"required"`
-	paramObj
-}
-
-func (r CallDialParamsAssistantToolCheckAvailabilityCheckAvailability) MarshalJSON() (data []byte, err error) {
-	type shadow CallDialParamsAssistantToolCheckAvailabilityCheckAvailability
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CallDialParamsAssistantToolCheckAvailabilityCheckAvailability) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties Retrieval, Type are required.
-type CallDialParamsAssistantToolRetrieval struct {
-	Retrieval CallDialParamsAssistantToolRetrievalRetrieval `json:"retrieval,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as "retrieval".
-	Type constant.Retrieval `json:"type" default:"retrieval"`
-	paramObj
-}
-
-func (r CallDialParamsAssistantToolRetrieval) MarshalJSON() (data []byte, err error) {
-	type shadow CallDialParamsAssistantToolRetrieval
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CallDialParamsAssistantToolRetrieval) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property BucketIDs is required.
-type CallDialParamsAssistantToolRetrievalRetrieval struct {
-	BucketIDs []string `json:"bucket_ids,omitzero" api:"required"`
-	// The maximum number of results to retrieve as context for the language model.
-	MaxNumResults param.Opt[int64] `json:"max_num_results,omitzero"`
-	paramObj
-}
-
-func (r CallDialParamsAssistantToolRetrievalRetrieval) MarshalJSON() (data []byte, err error) {
-	type shadow CallDialParamsAssistantToolRetrievalRetrieval
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CallDialParamsAssistantToolRetrievalRetrieval) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
