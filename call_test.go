@@ -11,6 +11,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4"
 	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 func TestCallDialWithOptionalParams(t *testing.T) {
@@ -45,9 +46,9 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 			SilenceThreshold:                telnyx.Int(512),
 			TotalAnalysisTimeMillis:         telnyx.Int(5000),
 		},
-		Assistant: telnyx.CallDialParamsAssistant{
+		Assistant: telnyx.CallAssistantRequestParam{
 			ID: "id",
-			DynamicVariables: map[string]telnyx.CallDialParamsAssistantDynamicVariableUnion{
+			DynamicVariables: map[string]telnyx.CallAssistantRequestDynamicVariableUnionParam{
 				"customer_name": {
 					OfString: telnyx.String("John"),
 				},
@@ -55,24 +56,33 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 					OfString: telnyx.String("ACC-12345"),
 				},
 			},
-			ExternalLlm:           map[string]any{},
-			FallbackConfig:        map[string]any{},
-			Greeting:              telnyx.String("greeting"),
-			Instructions:          telnyx.String("You are a friendly voice assistant."),
-			LlmAPIKeyRef:          telnyx.String("my_llm_api_key"),
-			McpServers:            []any{map[string]any{}},
-			Model:                 telnyx.String("gpt-4o"),
-			Name:                  telnyx.String("name"),
-			ObservabilitySettings: map[string]any{},
-			OpenAIAPIKeyRef:       telnyx.String("my_openai_api_key"),
-			Tools: []telnyx.CallDialParamsAssistantToolUnion{{
-				OfBookAppointment: &telnyx.CallDialParamsAssistantToolBookAppointment{
-					BookAppointment: telnyx.CallDialParamsAssistantToolBookAppointmentBookAppointment{
+			ExternalLlm: map[string]any{
+				"foo": "bar",
+			},
+			FallbackConfig: map[string]any{
+				"foo": "bar",
+			},
+			Greeting:     telnyx.String("greeting"),
+			Instructions: telnyx.String("You are a friendly voice assistant."),
+			LlmAPIKeyRef: telnyx.String("my_llm_api_key"),
+			McpServers: []map[string]any{{
+				"foo": "bar",
+			}},
+			Model: telnyx.String("gpt-4o"),
+			Name:  telnyx.String("name"),
+			ObservabilitySettings: map[string]any{
+				"foo": "bar",
+			},
+			OpenAIAPIKeyRef: telnyx.String("my_openai_api_key"),
+			Tools: []telnyx.CallAssistantRequestToolUnionParam{{
+				OfBookAppointment: &shared.BookAppointmentToolParam{
+					BookAppointment: shared.BookAppointmentToolParams{
 						APIKeyRef:        "my_calcom_api_key",
 						EventTypeID:      0,
 						AttendeeName:     telnyx.String("attendee_name"),
 						AttendeeTimezone: telnyx.String("attendee_timezone"),
 					},
+					Type: shared.BookAppointmentToolTypeBookAppointment,
 				},
 			}},
 		},
