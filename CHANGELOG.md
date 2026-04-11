@@ -1,5 +1,37 @@
 # Changelog
 
+## 4.57.0 (2026-04-11)
+
+Full Changelog: [v4.56.0...v4.57.0](https://github.com/team-telnyx/telnyx-go/compare/v4.56.0...v4.57.0)
+
+### Features
+
+* add shared CallAssistantRequest schema for call-control assistant object ([d7f4420](https://github.com/team-telnyx/telnyx-go/commit/d7f4420c6537c4c779512deb0f380729e1d3b655))
+* **api:** manual updates ([719d033](https://github.com/team-telnyx/telnyx-go/commit/719d033cda6244cde115f9497747e415ef34d9d2))
+* **api:** Merge pull request [#46](https://github.com/team-telnyx/telnyx-go/issues/46) from stainless-sdks/FixModelRecommendation ([35f93a3](https://github.com/team-telnyx/telnyx-go/commit/35f93a31250aab1b11b5073108e2a4557883b96f))
+* CW-3815 fix PATCH /wirelss_blocklists/{id} endpoint ([a4c0b0d](https://github.com/team-telnyx/telnyx-go/commit/a4c0b0d4b9ab4171ed66fcd6e0f7c44c96762c66))
+* MSG-6846: add GET /profile/photo docs for whatsapp API ([f19fac6](https://github.com/team-telnyx/telnyx-go/commit/f19fac6442ba4b8830ced2211c024436e1962f4e))
+* TELAPPS-5689: Pronunciation dictionaries API docs ([1f643ea](https://github.com/team-telnyx/telnyx-go/commit/1f643ea419110596d56aa028a0a357492d60a1a3))
+* TELAPPS-5707: Add privacy parameter to Call Control dial and transfer ([769f3aa](https://github.com/team-telnyx/telnyx-go/commit/769f3aaf33d9fb90ab8ad8a4a20e14a170fb7600))
+
+
+### Reverts
+
+* restore stainless.yml to pre-6a6df5b state ([891f9f4](https://github.com/team-telnyx/telnyx-go/commit/891f9f44e0fb44045ab51954e11b31f3deeff0b7))
+* revert stainless.yml changes from 9c5e8d8 ([4b0926f](https://github.com/team-telnyx/telnyx-go/commit/4b0926f13c015154da5eace34746c0ddcd8f59a1))
+* revert stainless.yml changes from pronunciation dictionaries commit ([d4b2d27](https://github.com/team-telnyx/telnyx-go/commit/d4b2d27977d4fedc5d45e65e6b7e3b5072cce75a))
+
+
+### Chores
+
+* **internal:** version bump ([676c7c4](https://github.com/team-telnyx/telnyx-go/commit/676c7c40d79a813eeb3337f88776bc28e2b5f8dc))
+
+
+### Documentation
+
+* improve examples ([a6c09d6](https://github.com/team-telnyx/telnyx-go/commit/a6c09d60e63b3d209f8b53e8c6b265f9b956efb9))
+* update voice clone schemas to match Ultra/model_id implementation ([2118703](https://github.com/team-telnyx/telnyx-go/commit/2118703868d58f253b1b86db54b4314065fd9162))
+
 ## 4.57.0 (2026-04-09)
 
 Full Changelog: [v4.56.0...v4.57.0](https://github.com/team-telnyx/telnyx-go/compare/v4.56.0...v4.57.0)
