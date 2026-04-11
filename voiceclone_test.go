@@ -145,7 +145,7 @@ func TestVoiceCloneNewFromUploadWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.VoiceClones.NewFromUpload(context.TODO(), telnyx.VoiceCloneNewFromUploadParams{
-		OfTelnyxQwen3TtsClone: &telnyx.VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone{
+		OfTelnyxQwen3TtsClone: &telnyx.VoiceCloneNewFromUploadParamsUploadParamsTelnyxQwen3TtsClone{
 			AudioFile: io.Reader(bytes.NewBuffer([]byte("Example data"))),
 			Gender:    "male",
 			Language:  "lkf-Lz1vLbBu-9uDh-9AHaOS2D-Cbf",
