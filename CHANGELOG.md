@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.57.1 (2026-04-12)
+
+Full Changelog: [v4.57.0...v4.57.1](https://github.com/team-telnyx/telnyx-go/compare/v4.57.0...v4.57.1)
+
+### Bug Fixes
+
+* set additionalProperties=false on VoiceCloneUploadRequest to prevent codegen errors ([ba0aa93](https://github.com/team-telnyx/telnyx-go/commit/ba0aa9333684a82de760e2decf8cfaeb15095f39))
+
+
+### Refactors
+
+* separate custom webhook methods from generated code ([e0895e5](https://github.com/team-telnyx/telnyx-go/commit/e0895e52cecaebde3a67ad6f9a3af608f40cca47))
+
 ## 4.57.0 (2026-04-11)
 
 Full Changelog: [v4.56.0...v4.57.0](https://github.com/team-telnyx/telnyx-go/compare/v4.56.0...v4.57.0)
