@@ -2899,6 +2899,10 @@ type CallActionAnswerParams struct {
 	// Use this field to override the URL for which Telnyx will send subsequent
 	// webhooks to for this call.
 	WebhookURL param.Opt[string] `json:"webhook_url,omitzero"`
+	// AI Assistant configuration. All fields except `id` are optional — the
+	// assistant's stored configuration will be used as fallback for any omitted
+	// fields.
+	Assistant CallAssistantRequestParam `json:"assistant,omitzero"`
 	// Custom headers to be added to the SIP INVITE response.
 	CustomHeaders []CustomSipHeaderParam `json:"custom_headers,omitzero"`
 	// The list of comma-separated codecs in a preferred order for the forked media to
@@ -4688,8 +4692,10 @@ type CallActionStartAIAssistantParams struct {
 	//   - **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`,
 	//     `Inworld.Max.Oliver`). Supported models: `Mini`, `Max`.
 	Voice param.Opt[string] `json:"voice,omitzero"`
-	// AI Assistant configuration
-	Assistant CallActionStartAIAssistantParamsAssistant `json:"assistant,omitzero"`
+	// AI Assistant configuration. All fields except `id` are optional — the
+	// assistant's stored configuration will be used as fallback for any omitted
+	// fields.
+	Assistant CallAssistantRequestParam `json:"assistant,omitzero"`
 	// Settings for handling user interruptions during assistant speech
 	InterruptionSettings InterruptionSettingsParam `json:"interruption_settings,omitzero"`
 	// A list of messages to seed the conversation history before the assistant starts.
@@ -4712,27 +4718,6 @@ func (r CallActionStartAIAssistantParams) MarshalJSON() (data []byte, err error)
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *CallActionStartAIAssistantParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// AI Assistant configuration
-type CallActionStartAIAssistantParamsAssistant struct {
-	// The identifier of the AI assistant to use
-	ID param.Opt[string] `json:"id,omitzero"`
-	// The system instructions that the voice assistant uses during the start assistant
-	// command. This will overwrite the instructions set in the assistant
-	// configuration.
-	Instructions param.Opt[string] `json:"instructions,omitzero"`
-	// Reference to the OpenAI API key. Required only when using OpenAI models
-	OpenAIAPIKeyRef param.Opt[string] `json:"openai_api_key_ref,omitzero"`
-	paramObj
-}
-
-func (r CallActionStartAIAssistantParamsAssistant) MarshalJSON() (data []byte, err error) {
-	type shadow CallActionStartAIAssistantParamsAssistant
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CallActionStartAIAssistantParamsAssistant) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -6260,6 +6245,12 @@ type CallActionTransferParams struct {
 	//
 	// Any of "none", "both", "self", "opposite".
 	MuteDtmf CallActionTransferParamsMuteDtmf `json:"mute_dtmf,omitzero"`
+	// Indicates the privacy level to be used for the call. When set to `id`, caller ID
+	// information (name and number) will be hidden from the called party. When set to
+	// `none` or omitted, caller ID will be shown normally.
+	//
+	// Any of "id", "none".
+	Privacy CallActionTransferParamsPrivacy `json:"privacy,omitzero"`
 	// Start recording automatically after an event. Disabled by default.
 	//
 	// Any of "record-from-answer".
@@ -6398,6 +6389,16 @@ const (
 	CallActionTransferParamsMuteDtmfBoth     CallActionTransferParamsMuteDtmf = "both"
 	CallActionTransferParamsMuteDtmfSelf     CallActionTransferParamsMuteDtmf = "self"
 	CallActionTransferParamsMuteDtmfOpposite CallActionTransferParamsMuteDtmf = "opposite"
+)
+
+// Indicates the privacy level to be used for the call. When set to `id`, caller ID
+// information (name and number) will be hidden from the called party. When set to
+// `none` or omitted, caller ID will be shown normally.
+type CallActionTransferParamsPrivacy string
+
+const (
+	CallActionTransferParamsPrivacyID   CallActionTransferParamsPrivacy = "id"
+	CallActionTransferParamsPrivacyNone CallActionTransferParamsPrivacy = "none"
 )
 
 // Start recording automatically after an event. Disabled by default.

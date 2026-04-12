@@ -58,6 +58,42 @@ const AzureVoiceSettingsGenderMale = shared.AzureVoiceSettingsGenderMale
 // Equals "Female"
 const AzureVoiceSettingsGenderFemale = shared.AzureVoiceSettingsGenderFemale
 
+// This is an alias to an internal type.
+type BookAppointmentToolParam = shared.BookAppointmentToolParam
+
+// This is an alias to an internal type.
+type BookAppointmentToolType = shared.BookAppointmentToolType
+
+// Equals "book_appointment"
+const BookAppointmentToolTypeBookAppointment = shared.BookAppointmentToolTypeBookAppointment
+
+// This is an alias to an internal type.
+type BookAppointmentToolParams = shared.BookAppointmentToolParams
+
+// This is an alias to an internal type.
+type CallControlBucketIDsParam = shared.CallControlBucketIDsParam
+
+// This is an alias to an internal type.
+type CallControlRetrievalToolParam = shared.CallControlRetrievalToolParam
+
+// This is an alias to an internal type.
+type CallControlRetrievalToolType = shared.CallControlRetrievalToolType
+
+// Equals "retrieval"
+const CallControlRetrievalToolTypeRetrieval = shared.CallControlRetrievalToolTypeRetrieval
+
+// This is an alias to an internal type.
+type CheckAvailabilityToolParam = shared.CheckAvailabilityToolParam
+
+// This is an alias to an internal type.
+type CheckAvailabilityToolType = shared.CheckAvailabilityToolType
+
+// Equals "check_availability"
+const CheckAvailabilityToolTypeCheckAvailability = shared.CheckAvailabilityToolTypeCheckAvailability
+
+// This is an alias to an internal type.
+type CheckAvailabilityToolParams = shared.CheckAvailabilityToolParams
+
 // Configuration options for Jitter Buffer. Enables Jitter Buffer for RTP streams
 // of SIP Trunking calls. The feature is off unless enabled. You may define min and
 // max values in msec for customized buffering behaviors. Larger values add latency

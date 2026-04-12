@@ -11,6 +11,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4"
 	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 func TestCallDialWithOptionalParams(t *testing.T) {
@@ -44,6 +45,46 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 			MaximumWordLengthMillis:         telnyx.Int(2000),
 			SilenceThreshold:                telnyx.Int(512),
 			TotalAnalysisTimeMillis:         telnyx.Int(5000),
+		},
+		Assistant: telnyx.CallAssistantRequestParam{
+			ID: "id",
+			DynamicVariables: map[string]telnyx.CallAssistantRequestDynamicVariableUnionParam{
+				"customer_name": {
+					OfString: telnyx.String("John"),
+				},
+				"account_id": {
+					OfString: telnyx.String("ACC-12345"),
+				},
+			},
+			ExternalLlm: map[string]any{
+				"foo": "bar",
+			},
+			FallbackConfig: map[string]any{
+				"foo": "bar",
+			},
+			Greeting:     telnyx.String("greeting"),
+			Instructions: telnyx.String("You are a friendly voice assistant."),
+			LlmAPIKeyRef: telnyx.String("my_llm_api_key"),
+			McpServers: []map[string]any{{
+				"foo": "bar",
+			}},
+			Model: telnyx.String("gpt-4o"),
+			Name:  telnyx.String("name"),
+			ObservabilitySettings: map[string]any{
+				"foo": "bar",
+			},
+			OpenAIAPIKeyRef: telnyx.String("my_openai_api_key"),
+			Tools: []telnyx.CallAssistantRequestToolUnionParam{{
+				OfBookAppointment: &shared.BookAppointmentToolParam{
+					BookAppointment: shared.BookAppointmentToolParams{
+						APIKeyRef:        "my_calcom_api_key",
+						EventTypeID:      0,
+						AttendeeName:     telnyx.String("attendee_name"),
+						AttendeeTimezone: telnyx.String("attendee_timezone"),
+					},
+					Type: shared.BookAppointmentToolTypeBookAppointment,
+				},
+			}},
 		},
 		AudioURL:       telnyx.String("http://www.example.com/sounds/greeting.wav"),
 		BillingGroupID: telnyx.String("f5586561-8ff0-4291-a0ac-84fe544797bd"),
@@ -86,6 +127,7 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 		ParkAfterUnbridge:    telnyx.String("self"),
 		PreferredCodecs:      telnyx.String("G722,PCMU,PCMA,G729,OPUS,VP8,H264"),
 		PreventDoubleBridge:  telnyx.Bool(true),
+		Privacy:              telnyx.CallDialParamsPrivacyID,
 		Record:               telnyx.CallDialParamsRecordRecordFromAnswer,
 		RecordChannels:       telnyx.CallDialParamsRecordChannelsSingle,
 		RecordCustomFileName: telnyx.String("my_recording_file_name"),

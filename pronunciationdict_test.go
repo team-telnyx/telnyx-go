@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestWirelessBlocklistNew(t *testing.T) {
+func TestPronunciationDictNew(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,10 +26,15 @@ func TestWirelessBlocklistNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.WirelessBlocklists.New(context.TODO(), telnyx.WirelessBlocklistNewParams{
-		Name:   "My Wireless Blocklist",
-		Type:   telnyx.WirelessBlocklistNewParamsTypeCountry,
-		Values: []string{"CA", "US"},
+	_, err := client.PronunciationDicts.New(context.TODO(), telnyx.PronunciationDictNewParams{
+		Items: []telnyx.PronunciationDictNewParamsItemUnion{{
+			OfAlias: &telnyx.PronunciationDictAliasItemParam{
+				Alias: "tel-nicks",
+				Text:  "Telnyx",
+				Type:  telnyx.PronunciationDictAliasItemTypeAlias,
+			},
+		}},
+		Name: "Brand Names",
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -40,7 +45,7 @@ func TestWirelessBlocklistNew(t *testing.T) {
 	}
 }
 
-func TestWirelessBlocklistGet(t *testing.T) {
+func TestPronunciationDictGet(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -53,7 +58,7 @@ func TestWirelessBlocklistGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.WirelessBlocklists.Get(context.TODO(), "6a09cdc3-8948-47f0-aa62-74ac943d6c58")
+	_, err := client.PronunciationDicts.Get(context.TODO(), "c215a3e1-be41-4701-97e8-1d3c22f9a5b7")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -63,7 +68,7 @@ func TestWirelessBlocklistGet(t *testing.T) {
 	}
 }
 
-func TestWirelessBlocklistUpdateWithOptionalParams(t *testing.T) {
+func TestPronunciationDictUpdateWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -76,12 +81,18 @@ func TestWirelessBlocklistUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.WirelessBlocklists.Update(
+	_, err := client.PronunciationDicts.Update(
 		context.TODO(),
-		"6a09cdc3-8948-47f0-aa62-74ac943d6c58",
-		telnyx.WirelessBlocklistUpdateParams{
-			Name:   telnyx.String("My Wireless Blocklist"),
-			Values: []string{"CA", "US"},
+		"c215a3e1-be41-4701-97e8-1d3c22f9a5b7",
+		telnyx.PronunciationDictUpdateParams{
+			Items: []telnyx.PronunciationDictUpdateParamsItemUnion{{
+				OfAlias: &telnyx.PronunciationDictAliasItemParam{
+					Alias: "tel-nicks",
+					Text:  "Telnyx",
+					Type:  telnyx.PronunciationDictAliasItemTypeAlias,
+				},
+			}},
+			Name: telnyx.String("Updated Brand Names"),
 		},
 	)
 	if err != nil {
@@ -93,7 +104,7 @@ func TestWirelessBlocklistUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestWirelessBlocklistListWithOptionalParams(t *testing.T) {
+func TestPronunciationDictListWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -106,12 +117,9 @@ func TestWirelessBlocklistListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.WirelessBlocklists.List(context.TODO(), telnyx.WirelessBlocklistListParams{
-		FilterName:   telnyx.String("filter[name]"),
-		FilterType:   telnyx.String("filter[type]"),
-		FilterValues: telnyx.String("filter[values]"),
-		PageNumber:   telnyx.Int(1),
-		PageSize:     telnyx.Int(1),
+	_, err := client.PronunciationDicts.List(context.TODO(), telnyx.PronunciationDictListParams{
+		PageNumber: telnyx.Int(1),
+		PageSize:   telnyx.Int(1),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -122,7 +130,7 @@ func TestWirelessBlocklistListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestWirelessBlocklistDelete(t *testing.T) {
+func TestPronunciationDictDelete(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -135,7 +143,7 @@ func TestWirelessBlocklistDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.WirelessBlocklists.Delete(context.TODO(), "6a09cdc3-8948-47f0-aa62-74ac943d6c58")
+	err := client.PronunciationDicts.Delete(context.TODO(), "c215a3e1-be41-4701-97e8-1d3c22f9a5b7")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

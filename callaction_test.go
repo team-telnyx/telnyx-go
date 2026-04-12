@@ -11,6 +11,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4"
 	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 func TestCallActionAddAIAssistantMessagesWithOptionalParams(t *testing.T) {
@@ -68,6 +69,43 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"call_control_id",
 		telnyx.CallActionAnswerParams{
+			Assistant: telnyx.CallAssistantRequestParam{
+				ID: "asst_123",
+				DynamicVariables: map[string]telnyx.CallAssistantRequestDynamicVariableUnionParam{
+					"customer_name": {
+						OfString: telnyx.String("John"),
+					},
+					"account_id": {
+						OfString: telnyx.String("ACC-12345"),
+					},
+				},
+				ExternalLlm: map[string]any{
+					"foo": "bar",
+				},
+				FallbackConfig: map[string]any{
+					"foo": "bar",
+				},
+				Greeting:     telnyx.String("Hi, I'm your assistant. How can I help?"),
+				Instructions: telnyx.String("You are a friendly voice assistant."),
+				LlmAPIKeyRef: telnyx.String("my_llm_api_key"),
+				McpServers: []map[string]any{{
+					"foo": "bar",
+				}},
+				Model: telnyx.String("gpt-4o"),
+				Name:  telnyx.String("name"),
+				ObservabilitySettings: map[string]any{
+					"foo": "bar",
+				},
+				OpenAIAPIKeyRef: telnyx.String("my_openai_api_key"),
+				Tools: []telnyx.CallAssistantRequestToolUnionParam{{
+					OfHangup: &telnyx.HangupToolParam{
+						Hangup: telnyx.HangupToolParams{
+							Description: telnyx.String("description"),
+						},
+						Type: telnyx.HangupToolTypeHangup,
+					},
+				}},
+			},
 			BillingGroupID: telnyx.String("f5586561-8ff0-4291-a0ac-84fe544797bd"),
 			ClientState:    telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
 			CommandID:      telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
@@ -299,13 +337,14 @@ func TestCallActionGatherUsingAIWithOptionalParams(t *testing.T) {
 				Model:           telnyx.String("Qwen/Qwen3-235B-A22B"),
 				OpenAIAPIKeyRef: telnyx.String("my_openai_api_key"),
 				Tools: []telnyx.AssistantToolUnionParam{{
-					OfBookAppointment: &telnyx.AssistantToolBookAppointmentParam{
-						BookAppointment: telnyx.AssistantToolBookAppointmentBookAppointmentParam{
+					OfBookAppointment: &shared.BookAppointmentToolParam{
+						BookAppointment: shared.BookAppointmentToolParams{
 							APIKeyRef:        "my_calcom_api_key",
 							EventTypeID:      0,
 							AttendeeName:     telnyx.String("attendee_name"),
 							AttendeeTimezone: telnyx.String("attendee_timezone"),
 						},
+						Type: shared.BookAppointmentToolTypeBookAppointment,
 					},
 				}},
 			},
@@ -806,10 +845,45 @@ func TestCallActionStartAIAssistantWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"call_control_id",
 		telnyx.CallActionStartAIAssistantParams{
-			Assistant: telnyx.CallActionStartAIAssistantParamsAssistant{
-				ID:              telnyx.String("id"),
-				Instructions:    telnyx.String("You are a friendly voice assistant."),
-				OpenAIAPIKeyRef: telnyx.String("openai_api_key_ref"),
+			Assistant: telnyx.CallAssistantRequestParam{
+				ID: "id",
+				DynamicVariables: map[string]telnyx.CallAssistantRequestDynamicVariableUnionParam{
+					"customer_name": {
+						OfString: telnyx.String("John"),
+					},
+					"account_id": {
+						OfString: telnyx.String("ACC-12345"),
+					},
+				},
+				ExternalLlm: map[string]any{
+					"foo": "bar",
+				},
+				FallbackConfig: map[string]any{
+					"foo": "bar",
+				},
+				Greeting:     telnyx.String("greeting"),
+				Instructions: telnyx.String("You are a friendly voice assistant."),
+				LlmAPIKeyRef: telnyx.String("my_llm_api_key"),
+				McpServers: []map[string]any{{
+					"foo": "bar",
+				}},
+				Model: telnyx.String("gpt-4o"),
+				Name:  telnyx.String("name"),
+				ObservabilitySettings: map[string]any{
+					"foo": "bar",
+				},
+				OpenAIAPIKeyRef: telnyx.String("my_openai_api_key"),
+				Tools: []telnyx.CallAssistantRequestToolUnionParam{{
+					OfBookAppointment: &shared.BookAppointmentToolParam{
+						BookAppointment: shared.BookAppointmentToolParams{
+							APIKeyRef:        "my_calcom_api_key",
+							EventTypeID:      0,
+							AttendeeName:     telnyx.String("attendee_name"),
+							AttendeeTimezone: telnyx.String("attendee_timezone"),
+						},
+						Type: shared.BookAppointmentToolTypeBookAppointment,
+					},
+				}},
 			},
 			ClientState: telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
 			CommandID:   telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
@@ -1506,6 +1580,7 @@ func TestCallActionTransferWithOptionalParams(t *testing.T) {
 			MuteDtmf:             telnyx.CallActionTransferParamsMuteDtmfOpposite,
 			ParkAfterUnbridge:    telnyx.String("self"),
 			PreferredCodecs:      telnyx.String("G722,PCMU,PCMA,G729,OPUS,VP8,H264"),
+			Privacy:              telnyx.CallActionTransferParamsPrivacyID,
 			Record:               telnyx.CallActionTransferParamsRecordRecordFromAnswer,
 			RecordChannels:       telnyx.CallActionTransferParamsRecordChannelsSingle,
 			RecordCustomFileName: telnyx.String("my_recording_file_name"),
