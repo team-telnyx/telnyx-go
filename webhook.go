@@ -1,36 +1,17 @@
 // Telnyx webhook event types and unwrapping.
 //
 // This file contains generated webhook event types and the WebhookService
-// that provides methods for parsing and verifying webhook payloads.
-//
-// Signature verification logic is in lib/webhook_verification.go to avoid
-// merge conflicts when Stainless regenerates event types.
-//
-// Example usage:
-//
-//	client := telnyx.NewClient(
-//		option.WithAPIKey(os.Getenv("TELNYX_API_KEY")),
-//		option.WithPublicKey(os.Getenv("TELNYX_PUBLIC_KEY")), // Base64 from Mission Control
-//	)
-//
-//	// In your webhook handler:
-//	event, err := client.Webhooks.Unwrap(payload, req.Header)
-//	if err != nil {
-//		// Signature verification failed
-//	}
+// struct definition. Custom methods (NewWebhookService, Unwrap, Verify, etc.)
+// are in webhook_custom.go to avoid merge conflicts when Stainless regenerates
+// event types.
 
 package telnyx
 
 import (
 	"encoding/json"
-	"errors"
-	"net/http"
-	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v4/lib"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v4/shared"
@@ -44,68 +25,6 @@ import (
 // the [NewWebhookService] method instead.
 type WebhookService struct {
 	Options []option.RequestOption
-}
-
-// NewWebhookService generates a new service that applies the given options to each
-// request. These options are applied after the parent client's options (if there
-// is one), and before any request-specific options.
-func NewWebhookService(opts ...option.RequestOption) (r WebhookService) {
-	r = WebhookService{}
-	r.Options = opts
-	return
-}
-
-// UnsafeUnwrap parses a webhook payload without verifying the signature.
-// Use this only if you have already verified the signature separately.
-func (r *WebhookService) UnsafeUnwrap(payload []byte, opts ...option.RequestOption) (*UnsafeUnwrapWebhookEventUnion, error) {
-	res := &UnsafeUnwrapWebhookEventUnion{}
-	err := res.UnmarshalJSON(payload)
-	if err != nil {
-		return res, err
-	}
-	return res, nil
-}
-
-// Unwrap verifies the webhook signature and parses the payload.
-// Returns an error if signature verification fails or the payload is invalid.
-func (r *WebhookService) Unwrap(payload []byte, headers http.Header, opts ...option.RequestOption) (*UnwrapWebhookEventUnion, error) {
-	opts = slices.Concat(r.Options, opts)
-	cfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return nil, err
-	}
-	key := cfg.PublicKey
-	if key == "" {
-		return nil, errors.New("The PublicKey option must be set in order to verify webhook headers")
-	}
-
-	// Verify the webhook signature using ED25519 (via lib package)
-	if err := lib.VerifyWebhookSignature(payload, headers, key); err != nil {
-		return nil, err
-	}
-
-	res := &UnwrapWebhookEventUnion{}
-	err = res.UnmarshalJSON(payload)
-	if err != nil {
-		return res, err
-	}
-	return res, nil
-}
-
-// Verify checks the webhook signature without parsing the payload.
-// Returns nil if the signature is valid, or an error describing why verification failed.
-func (r *WebhookService) Verify(payload []byte, headers http.Header, opts ...option.RequestOption) error {
-	opts = slices.Concat(r.Options, opts)
-	cfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return err
-	}
-	key := cfg.PublicKey
-	if key == "" {
-		return errors.New("The PublicKey option must be set in order to verify webhook headers")
-	}
-
-	return lib.VerifyWebhookSignature(payload, headers, key)
 }
 
 type CallAIGatherEnded struct {

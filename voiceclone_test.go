@@ -131,7 +131,7 @@ func TestVoiceCloneDelete(t *testing.T) {
 	}
 }
 
-func TestVoiceCloneNewFromUploadWithOptionalParams(t *testing.T) {
+func TestVoiceCloneNewFromUpload(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -145,16 +145,7 @@ func TestVoiceCloneNewFromUploadWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.VoiceClones.NewFromUpload(context.TODO(), telnyx.VoiceCloneNewFromUploadParams{
-		OfTelnyxQwen3TtsClone: &telnyx.VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone{
-			AudioFile: io.Reader(bytes.NewBuffer([]byte("Example data"))),
-			Gender:    "male",
-			Language:  "lkf-Lz1vLbBu-9uDh-9AHaOS2D-Cbf",
-			Name:      "name",
-			Provider:  "telnyx",
-			Label:     telnyx.String("label"),
-			ModelID:   "Qwen3TTS",
-			RefText:   telnyx.String("ref_text"),
-		},
+		UploadParams: map[string]any{},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

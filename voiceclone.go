@@ -7,7 +7,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
 	"mime/multipart"
 	"net/http"
 	"net/url"
@@ -471,28 +470,14 @@ const (
 )
 
 type VoiceCloneNewFromUploadParams struct {
-
-	//
-	// Request body variants
-	//
-
-	// This field is a request body variant, only one variant field can be set.
-	// Upload-based voice clone using the Telnyx Qwen3TTS model (default).
-	OfTelnyxQwen3TtsClone *VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone `json:",inline"`
-	// This field is a request body variant, only one variant field can be set.
-	// Upload-based voice clone using the Telnyx Ultra model.
-	OfTelnyxUltraClone *VoiceCloneNewFromUploadParamsParamsTelnyxUltraClone `json:",inline"`
-	// This field is a request body variant, only one variant field can be set.
-	// Upload-based voice clone using the Minimax provider.
-	OfMinimaxClone *VoiceCloneNewFromUploadParamsParamsMinimaxClone `json:",inline"`
-
+	UploadParams any
 	paramObj
 }
 
 func (r VoiceCloneNewFromUploadParams) MarshalMultipart() (data []byte, contentType string, err error) {
 	buf := bytes.NewBuffer(nil)
 	writer := multipart.NewWriter(buf)
-	err = apiform.MarshalRoot(r, writer)
+	err = apiform.MarshalRoot(r.UploadParams, writer)
 	if err == nil {
 		err = apiform.WriteExtras(writer, r.ExtraFields())
 	}
@@ -505,158 +490,4 @@ func (r VoiceCloneNewFromUploadParams) MarshalMultipart() (data []byte, contentT
 		return nil, "", err
 	}
 	return buf.Bytes(), writer.FormDataContentType(), nil
-}
-
-// Upload-based voice clone using the Telnyx Qwen3TTS model (default).
-//
-// The properties AudioFile, Gender, Language, Name, Provider are required.
-type VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone struct {
-	// Audio file to clone the voice from. Supported formats: WAV, MP3, FLAC, OGG, M4A.
-	// For best quality, provide 5–10 seconds of clear, uninterrupted speech. Maximum
-	// size: 5MB.
-	AudioFile io.Reader `json:"audio_file,omitzero" api:"required" format:"binary"`
-	// Gender of the voice clone.
-	//
-	// Any of "male", "female", "neutral".
-	Gender string `json:"gender,omitzero" api:"required"`
-	// ISO 639-1 language code from the Qwen language set.
-	Language string `json:"language" api:"required"`
-	// Name for the voice clone.
-	Name string `json:"name" api:"required"`
-	// Voice synthesis provider. Must be `telnyx`.
-	//
-	// Any of "telnyx", "minimax".
-	Provider string `json:"provider,omitzero" api:"required"`
-	// Optional custom label describing the voice style.
-	Label param.Opt[string] `json:"label,omitzero"`
-	// Optional transcript of the audio file. Providing this improves clone quality.
-	RefText param.Opt[string] `json:"ref_text,omitzero"`
-	// TTS model identifier. Nullable/omittable — defaults to Qwen3TTS.
-	//
-	// Any of "Qwen3TTS".
-	ModelID string `json:"model_id,omitzero"`
-	paramObj
-}
-
-func (r VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone) MarshalJSON() (data []byte, err error) {
-	type shadow VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone](
-		"gender", "male", "female", "neutral",
-	)
-	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone](
-		"provider", "telnyx", "minimax",
-	)
-	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone](
-		"model_id", "Qwen3TTS",
-	)
-}
-
-// Upload-based voice clone using the Telnyx Ultra model.
-//
-// The properties AudioFile, Gender, Language, ModelID, Name, Provider are
-// required.
-type VoiceCloneNewFromUploadParamsParamsTelnyxUltraClone struct {
-	// Audio file to clone the voice from. Supported formats: WAV, MP3, FLAC, OGG, M4A.
-	// For best quality, provide 5–10 seconds of clear, uninterrupted speech. Maximum
-	// size: 5MB.
-	AudioFile io.Reader `json:"audio_file,omitzero" api:"required" format:"binary"`
-	// Gender of the voice clone.
-	//
-	// Any of "male", "female", "neutral".
-	Gender string `json:"gender,omitzero" api:"required"`
-	// ISO 639-1 language code from the Ultra language set (40 languages).
-	Language string `json:"language" api:"required"`
-	// TTS model identifier. Must be `Ultra`.
-	//
-	// Any of "Ultra".
-	ModelID string `json:"model_id,omitzero" api:"required"`
-	// Name for the voice clone.
-	Name string `json:"name" api:"required"`
-	// Voice synthesis provider. Must be `telnyx`.
-	//
-	// Any of "telnyx", "minimax".
-	Provider string `json:"provider,omitzero" api:"required"`
-	// Optional custom label describing the voice style.
-	Label param.Opt[string] `json:"label,omitzero"`
-	// Optional transcript of the audio file. Providing this improves clone quality.
-	RefText param.Opt[string] `json:"ref_text,omitzero"`
-	paramObj
-}
-
-func (r VoiceCloneNewFromUploadParamsParamsTelnyxUltraClone) MarshalJSON() (data []byte, err error) {
-	type shadow VoiceCloneNewFromUploadParamsParamsTelnyxUltraClone
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *VoiceCloneNewFromUploadParamsParamsTelnyxUltraClone) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsTelnyxUltraClone](
-		"gender", "male", "female", "neutral",
-	)
-	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsTelnyxUltraClone](
-		"model_id", "Ultra",
-	)
-	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsTelnyxUltraClone](
-		"provider", "telnyx", "minimax",
-	)
-}
-
-// Upload-based voice clone using the Minimax provider.
-//
-// The properties AudioFile, Gender, Language, Name, Provider are required.
-type VoiceCloneNewFromUploadParamsParamsMinimaxClone struct {
-	// Audio file to clone the voice from. Supported formats: WAV, MP3, FLAC, OGG, M4A.
-	// For best quality, provide 5–10 seconds of clear, uninterrupted speech. Maximum
-	// size: 20MB.
-	AudioFile io.Reader `json:"audio_file,omitzero" api:"required" format:"binary"`
-	// Gender of the voice clone.
-	//
-	// Any of "male", "female", "neutral".
-	Gender string `json:"gender,omitzero" api:"required"`
-	// ISO 639-1 language code from the Minimax language set.
-	Language string `json:"language" api:"required"`
-	// Name for the voice clone.
-	Name string `json:"name" api:"required"`
-	// Voice synthesis provider. Must be `minimax`.
-	//
-	// Any of "telnyx", "minimax".
-	Provider string `json:"provider,omitzero" api:"required"`
-	// Optional custom label describing the voice style.
-	Label param.Opt[string] `json:"label,omitzero"`
-	// Optional transcript of the audio file. Providing this improves clone quality.
-	RefText param.Opt[string] `json:"ref_text,omitzero"`
-	// TTS model identifier. Nullable — defaults to speech-2.8-turbo.
-	//
-	// Any of "speech-2.8-turbo".
-	ModelID string `json:"model_id,omitzero"`
-	paramObj
-}
-
-func (r VoiceCloneNewFromUploadParamsParamsMinimaxClone) MarshalJSON() (data []byte, err error) {
-	type shadow VoiceCloneNewFromUploadParamsParamsMinimaxClone
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *VoiceCloneNewFromUploadParamsParamsMinimaxClone) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsMinimaxClone](
-		"gender", "male", "female", "neutral",
-	)
-	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsMinimaxClone](
-		"provider", "telnyx", "minimax",
-	)
-	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsMinimaxClone](
-		"model_id", "speech-2.8-turbo",
-	)
 }
