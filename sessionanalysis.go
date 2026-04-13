@@ -184,25 +184,16 @@ func (r *EventNodeRelationshipVia) UnmarshalJSON(data []byte) error {
 
 type SessionAnalysisGetResponse struct {
 	Cost SessionAnalysisGetResponseCost `json:"cost" api:"required"`
-	// When the session started.
-	CreatedAt time.Time                      `json:"created_at" api:"required" format:"date-time"`
-	Meta      SessionAnalysisGetResponseMeta `json:"meta" api:"required"`
-	Root      EventNode                      `json:"root" api:"required"`
+	Meta SessionAnalysisGetResponseMeta `json:"meta" api:"required"`
+	Root EventNode                      `json:"root" api:"required"`
 	// Identifier for the analyzed session.
 	SessionID string `json:"session_id" api:"required"`
-	// Analysis status (e.g. "completed").
-	Status string `json:"status" api:"required"`
-	// When the session completed.
-	CompletedAt time.Time `json:"completed_at" api:"nullable" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Cost        respjson.Field
-		CreatedAt   respjson.Field
 		Meta        respjson.Field
 		Root        respjson.Field
 		SessionID   respjson.Field
-		Status      respjson.Field
-		CompletedAt respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -256,7 +247,9 @@ func (r *SessionAnalysisGetResponseMeta) UnmarshalJSON(data []byte) error {
 
 type SessionAnalysisGetParams struct {
 	RecordType string `path:"record_type" api:"required" json:"-"`
-	// ISO 8601 timestamp to narrow index selection for faster lookups.
+	// ISO 8601 timestamp or date to narrow index selection for faster lookups. Accepts
+	// full datetime (e.g., 2026-03-17T10:00:00Z) or date-only format (e.g.,
+	// 2026-03-17).
 	DateTime param.Opt[time.Time] `query:"date_time,omitzero" format:"date-time" json:"-"`
 	// Whether to include child events in the response.
 	IncludeChildren param.Opt[bool] `query:"include_children,omitzero" json:"-"`
