@@ -830,10 +830,23 @@ type CallDialParams struct {
 	// Any of "barge", "whisper", "monitor".
 	SupervisorRole      CallDialParamsSupervisorRole   `json:"supervisor_role,omitzero"`
 	TranscriptionConfig TranscriptionStartRequestParam `json:"transcription_config,omitzero"`
+	// A map of event types to retry policies. Each retry policy contains an array of
+	// `retries_ms` specifying the delays between retry attempts in milliseconds.
+	// Maximum 5 retries, total delay cannot exceed 60 seconds.
+	WebhookRetriesPolicies map[string]CallDialParamsWebhookRetriesPolicy `json:"webhook_retries_policies,omitzero"`
 	// HTTP request type used for `webhook_url`.
 	//
 	// Any of "POST", "GET".
 	WebhookURLMethod CallDialParamsWebhookURLMethod `json:"webhook_url_method,omitzero"`
+	// A map of event types to webhook URLs. When an event of the specified type
+	// occurs, the webhook URL associated with that event type will be called instead
+	// of the default webhook URL. Events not mapped here will use the default webhook
+	// URL.
+	WebhookURLs map[string]string `json:"webhook_urls,omitzero" format:"uri"`
+	// HTTP request method to invoke `webhook_urls`.
+	//
+	// Any of "POST", "GET".
+	WebhookURLsMethod CallDialParamsWebhookURLsMethod `json:"webhook_urls_method,omitzero"`
 	paramObj
 }
 
@@ -1119,10 +1132,33 @@ const (
 	CallDialParamsSupervisorRoleMonitor CallDialParamsSupervisorRole = "monitor"
 )
 
+type CallDialParamsWebhookRetriesPolicy struct {
+	// Array of delays in milliseconds between retry attempts. Total sum cannot exceed
+	// 60000ms.
+	RetriesMs []int64 `json:"retries_ms,omitzero"`
+	paramObj
+}
+
+func (r CallDialParamsWebhookRetriesPolicy) MarshalJSON() (data []byte, err error) {
+	type shadow CallDialParamsWebhookRetriesPolicy
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallDialParamsWebhookRetriesPolicy) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // HTTP request type used for `webhook_url`.
 type CallDialParamsWebhookURLMethod string
 
 const (
 	CallDialParamsWebhookURLMethodPost CallDialParamsWebhookURLMethod = "POST"
 	CallDialParamsWebhookURLMethodGet  CallDialParamsWebhookURLMethod = "GET"
+)
+
+// HTTP request method to invoke `webhook_urls`.
+type CallDialParamsWebhookURLsMethod string
+
+const (
+	CallDialParamsWebhookURLsMethodPost CallDialParamsWebhookURLsMethod = "POST"
+	CallDialParamsWebhookURLsMethodGet  CallDialParamsWebhookURLsMethod = "GET"
 )
