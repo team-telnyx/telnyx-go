@@ -115,6 +115,11 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 			Name:  "head_2",
 			Value: "val_2",
 		}},
+		DeepfakeDetection: telnyx.CallDialParamsDeepfakeDetection{
+			Enabled:    true,
+			RtpTimeout: telnyx.Int(30),
+			Timeout:    telnyx.Int(15),
+		},
 		DialogflowConfig: telnyx.DialogflowConfigParam{
 			AnalyzeSentiment:           telnyx.Bool(false),
 			PartialAutomatedAgentReply: telnyx.Bool(false),
