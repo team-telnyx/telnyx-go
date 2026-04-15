@@ -7,12 +7,16 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
@@ -39,40 +43,38 @@ func NewAIConversationMessageService(opts ...option.RequestOption) (r AIConversa
 
 // Retrieve messages for a specific conversation, including tool calls made by the
 // assistant.
-func (r *AIConversationMessageService) List(ctx context.Context, conversationID string, opts ...option.RequestOption) (res *AIConversationMessageListResponse, err error) {
+func (r *AIConversationMessageService) List(ctx context.Context, conversationID string, query AIConversationMessageListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[AIConversationMessageListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if conversationID == "" {
 		err = errors.New("missing required conversation_id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("ai/conversations/%s/messages", conversationID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve messages for a specific conversation, including tool calls made by the
+// assistant.
+func (r *AIConversationMessageService) ListAutoPaging(ctx context.Context, conversationID string, query AIConversationMessageListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[AIConversationMessageListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, conversationID, query, opts...))
 }
 
 type AIConversationMessageListResponse struct {
-	Data []AIConversationMessageListResponseData `json:"data" api:"required"`
-	Meta Meta                                    `json:"meta" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIConversationMessageListResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIConversationMessageListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIConversationMessageListResponseData struct {
 	// The role of the message sender.
 	//
 	// Any of "user", "assistant", "tool".
-	Role string `json:"role" api:"required"`
+	Role AIConversationMessageListResponseRole `json:"role" api:"required"`
 	// The message content. Can be null for tool calls.
 	Text string `json:"text" api:"required"`
 	// The datetime the message was created on the conversation. This does not
@@ -82,7 +84,7 @@ type AIConversationMessageListResponseData struct {
 	// The datetime the message was sent to the end user.
 	SentAt time.Time `json:"sent_at" format:"date-time"`
 	// Optional tool calls made by the assistant.
-	ToolCalls []AIConversationMessageListResponseDataToolCall `json:"tool_calls"`
+	ToolCalls []AIConversationMessageListResponseToolCall `json:"tool_calls"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Role        respjson.Field
@@ -96,15 +98,24 @@ type AIConversationMessageListResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AIConversationMessageListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIConversationMessageListResponseData) UnmarshalJSON(data []byte) error {
+func (r AIConversationMessageListResponse) RawJSON() string { return r.JSON.raw }
+func (r *AIConversationMessageListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIConversationMessageListResponseDataToolCall struct {
+// The role of the message sender.
+type AIConversationMessageListResponseRole string
+
+const (
+	AIConversationMessageListResponseRoleUser      AIConversationMessageListResponseRole = "user"
+	AIConversationMessageListResponseRoleAssistant AIConversationMessageListResponseRole = "assistant"
+	AIConversationMessageListResponseRoleTool      AIConversationMessageListResponseRole = "tool"
+)
+
+type AIConversationMessageListResponseToolCall struct {
 	// Unique identifier for the tool call.
-	ID       string                                                `json:"id" api:"required"`
-	Function AIConversationMessageListResponseDataToolCallFunction `json:"function" api:"required"`
+	ID       string                                            `json:"id" api:"required"`
+	Function AIConversationMessageListResponseToolCallFunction `json:"function" api:"required"`
 	// Type of the tool call.
 	//
 	// Any of "function".
@@ -120,12 +131,12 @@ type AIConversationMessageListResponseDataToolCall struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AIConversationMessageListResponseDataToolCall) RawJSON() string { return r.JSON.raw }
-func (r *AIConversationMessageListResponseDataToolCall) UnmarshalJSON(data []byte) error {
+func (r AIConversationMessageListResponseToolCall) RawJSON() string { return r.JSON.raw }
+func (r *AIConversationMessageListResponseToolCall) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIConversationMessageListResponseDataToolCallFunction struct {
+type AIConversationMessageListResponseToolCallFunction struct {
 	// JSON-formatted arguments to pass to the function.
 	Arguments string `json:"arguments" api:"required"`
 	// Name of the function to call.
@@ -140,7 +151,24 @@ type AIConversationMessageListResponseDataToolCallFunction struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AIConversationMessageListResponseDataToolCallFunction) RawJSON() string { return r.JSON.raw }
-func (r *AIConversationMessageListResponseDataToolCallFunction) UnmarshalJSON(data []byte) error {
+func (r AIConversationMessageListResponseToolCallFunction) RawJSON() string { return r.JSON.raw }
+func (r *AIConversationMessageListResponseToolCallFunction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type AIConversationMessageListParams struct {
+	// The page number to retrieve.
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	// The number of messages to return per page.
+	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [AIConversationMessageListParams]'s query parameters as
+// `url.Values`.
+func (r AIConversationMessageListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
