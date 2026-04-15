@@ -207,7 +207,9 @@ type VerifyProfileCall struct {
 	MessagingTemplateID string `json:"messaging_template_id" format:"uuid"`
 	// Enabled country destinations to send verification codes. The elements in the
 	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
-	// destinations will be allowed.
+	// destinations will be allowed. **Conditionally required:** this field must be
+	// provided when your organization is configured to require explicit whitelisted
+	// destinations; otherwise it is optional.
 	WhitelistedDestinations []string       `json:"whitelisted_destinations"`
 	ExtraFields             map[string]any `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -270,7 +272,9 @@ type VerifyProfileRcs struct {
 	SMSFallback bool `json:"sms_fallback"`
 	// Enabled country destinations to send verification codes. The elements in the
 	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
-	// destinations will be allowed.
+	// destinations will be allowed. **Conditionally required:** this field must be
+	// provided when your organization is configured to require explicit whitelisted
+	// destinations; otherwise it is optional.
 	WhitelistedDestinations []string       `json:"whitelisted_destinations"`
 	ExtraFields             map[string]any `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -317,7 +321,9 @@ type VerifyProfileSMS struct {
 	MessagingTemplateID string `json:"messaging_template_id" format:"uuid"`
 	// Enabled country destinations to send verification codes. The elements in the
 	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
-	// destinations will be allowed.
+	// destinations will be allowed. **Conditionally required:** this field must be
+	// provided when your organization is configured to require explicit whitelisted
+	// destinations; otherwise it is optional.
 	WhitelistedDestinations []string       `json:"whitelisted_destinations"`
 	ExtraFields             map[string]any `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -426,7 +432,9 @@ type VerifyProfileNewParamsCall struct {
 	MessagingTemplateID param.Opt[string] `json:"messaging_template_id,omitzero" format:"uuid"`
 	// Enabled country destinations to send verification codes. The elements in the
 	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
-	// destinations will be allowed.
+	// destinations will be allowed. **Conditionally required:** this field must be
+	// provided when your organization is configured to require explicit whitelisted
+	// destinations; otherwise it is optional.
 	WhitelistedDestinations []string       `json:"whitelisted_destinations,omitzero"`
 	ExtraFields             map[string]any `json:"-"`
 	paramObj
@@ -451,7 +459,9 @@ type VerifyProfileNewParamsFlashcall struct {
 	DefaultVerificationTimeoutSecs param.Opt[int64] `json:"default_verification_timeout_secs,omitzero"`
 	// Enabled country destinations to send verification codes. The elements in the
 	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
-	// destinations will be allowed.
+	// destinations will be allowed. **Conditionally required:** this field must be
+	// provided when your organization is configured to require explicit whitelisted
+	// destinations; otherwise it is optional.
 	WhitelistedDestinations []string       `json:"whitelisted_destinations,omitzero"`
 	ExtraFields             map[string]any `json:"-"`
 	paramObj
@@ -482,7 +492,9 @@ type VerifyProfileNewParamsRcs struct {
 	SMSFallback param.Opt[bool] `json:"sms_fallback,omitzero"`
 	// Enabled country destinations to send verification codes. The elements in the
 	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
-	// destinations will be allowed.
+	// destinations will be allowed. **Conditionally required:** this field must be
+	// provided when your organization is configured to require explicit whitelisted
+	// destinations; otherwise it is optional.
 	WhitelistedDestinations []string       `json:"whitelisted_destinations,omitzero"`
 	ExtraFields             map[string]any `json:"-"`
 	paramObj
@@ -514,7 +526,9 @@ type VerifyProfileNewParamsSMS struct {
 	MessagingTemplateID param.Opt[string] `json:"messaging_template_id,omitzero" format:"uuid"`
 	// Enabled country destinations to send verification codes. The elements in the
 	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
-	// destinations will be allowed.
+	// destinations will be allowed. **Conditionally required:** this field must be
+	// provided when your organization is configured to require explicit whitelisted
+	// destinations; otherwise it is optional.
 	WhitelistedDestinations []string       `json:"whitelisted_destinations,omitzero"`
 	ExtraFields             map[string]any `json:"-"`
 	paramObj
@@ -539,7 +553,9 @@ type VerifyProfileNewParamsWhatsapp struct {
 	DefaultVerificationTimeoutSecs param.Opt[int64] `json:"default_verification_timeout_secs,omitzero"`
 	// Enabled country destinations to send verification codes. The elements in the
 	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
-	// destinations will be allowed.
+	// destinations will be allowed. **Conditionally required:** this field must be
+	// provided when your organization is configured to require explicit whitelisted
+	// destinations; otherwise it is optional.
 	WhitelistedDestinations []string       `json:"whitelisted_destinations,omitzero"`
 	ExtraFields             map[string]any `json:"-"`
 	paramObj
@@ -589,7 +605,9 @@ type VerifyProfileUpdateParamsCall struct {
 	MessagingTemplateID param.Opt[string] `json:"messaging_template_id,omitzero" format:"uuid"`
 	// Enabled country destinations to send verification codes. The elements in the
 	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
-	// destinations will be allowed.
+	// destinations will be allowed. **Conditionally required:** this field must be
+	// provided when your organization is configured to require explicit whitelisted
+	// destinations; otherwise it is optional.
 	WhitelistedDestinations []string       `json:"whitelisted_destinations,omitzero"`
 	ExtraFields             map[string]any `json:"-"`
 	paramObj
@@ -614,7 +632,9 @@ type VerifyProfileUpdateParamsFlashcall struct {
 	DefaultVerificationTimeoutSecs param.Opt[int64] `json:"default_verification_timeout_secs,omitzero"`
 	// Enabled country destinations to send verification codes. The elements in the
 	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
-	// destinations will be allowed.
+	// destinations will be allowed. **Conditionally required:** this field must be
+	// provided when your organization is configured to require explicit whitelisted
+	// destinations; otherwise it is optional.
 	WhitelistedDestinations []string       `json:"whitelisted_destinations,omitzero"`
 	ExtraFields             map[string]any `json:"-"`
 	paramObj
@@ -645,7 +665,9 @@ type VerifyProfileUpdateParamsRcs struct {
 	SMSFallback param.Opt[bool] `json:"sms_fallback,omitzero"`
 	// Enabled country destinations to send verification codes. The elements in the
 	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
-	// destinations will be allowed.
+	// destinations will be allowed. **Conditionally required:** this field must be
+	// provided when your organization is configured to require explicit whitelisted
+	// destinations; otherwise it is optional.
 	WhitelistedDestinations []string       `json:"whitelisted_destinations,omitzero"`
 	ExtraFields             map[string]any `json:"-"`
 	paramObj
@@ -677,7 +699,9 @@ type VerifyProfileUpdateParamsSMS struct {
 	MessagingTemplateID param.Opt[string] `json:"messaging_template_id,omitzero" format:"uuid"`
 	// Enabled country destinations to send verification codes. The elements in the
 	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
-	// destinations will be allowed.
+	// destinations will be allowed. **Conditionally required:** this field must be
+	// provided when your organization is configured to require explicit whitelisted
+	// destinations; otherwise it is optional.
 	WhitelistedDestinations []string       `json:"whitelisted_destinations,omitzero"`
 	ExtraFields             map[string]any `json:"-"`
 	paramObj
@@ -702,7 +726,9 @@ type VerifyProfileUpdateParamsWhatsapp struct {
 	DefaultVerificationTimeoutSecs param.Opt[int64] `json:"default_verification_timeout_secs,omitzero"`
 	// Enabled country destinations to send verification codes. The elements in the
 	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
-	// destinations will be allowed.
+	// destinations will be allowed. **Conditionally required:** this field must be
+	// provided when your organization is configured to require explicit whitelisted
+	// destinations; otherwise it is optional.
 	WhitelistedDestinations []string       `json:"whitelisted_destinations,omitzero"`
 	ExtraFields             map[string]any `json:"-"`
 	paramObj
