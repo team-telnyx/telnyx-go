@@ -401,10 +401,10 @@ const (
 type TrafficPolicyProfileListParamsSort string
 
 const (
-	TrafficPolicyProfileListParamsSortService      TrafficPolicyProfileListParamsSort = "service"
-	TrafficPolicyProfileListParamsSortMinusService TrafficPolicyProfileListParamsSort = "-service"
-	TrafficPolicyProfileListParamsSortType         TrafficPolicyProfileListParamsSort = "type"
-	TrafficPolicyProfileListParamsSortMinusType    TrafficPolicyProfileListParamsSort = "-type"
+	TrafficPolicyProfileListParamsSortService     TrafficPolicyProfileListParamsSort = "service"
+	TrafficPolicyProfileListParamsSortDescService TrafficPolicyProfileListParamsSort = "-service"
+	TrafficPolicyProfileListParamsSortType        TrafficPolicyProfileListParamsSort = "type"
+	TrafficPolicyProfileListParamsSortDescType    TrafficPolicyProfileListParamsSort = "-type"
 )
 
 type TrafficPolicyProfileListServicesParams struct {
