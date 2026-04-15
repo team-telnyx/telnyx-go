@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestAIConversationMessageList(t *testing.T) {
+func TestAIConversationMessageListWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,14 @@ func TestAIConversationMessageList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Conversations.Messages.List(context.TODO(), "conversation_id")
+	_, err := client.AI.Conversations.Messages.List(
+		context.TODO(),
+		"conversation_id",
+		telnyx.AIConversationMessageListParams{
+			PageNumber: telnyx.Int(1),
+			PageSize:   telnyx.Int(1),
+		},
+	)
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
