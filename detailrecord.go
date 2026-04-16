@@ -882,7 +882,7 @@ type DetailRecordListParamsFilter struct {
 	// Any of "yesterday", "today", "tomorrow", "last_week", "this_week", "next_week",
 	// "last_month", "this_month", "next_month".
 	DateRange   string         `query:"date_range,omitzero" json:"-"`
-	ExtraFields map[string]any `json:"-"`
+	ExtraFields map[string]any `query:"-"`
 	paramObj
 }
 
