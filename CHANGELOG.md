@@ -1,5 +1,26 @@
 # Changelog
 
+## 4.58.0 (2026-04-16)
+
+Full Changelog: [v4.57.1...v4.58.0](https://github.com/team-telnyx/telnyx-go/compare/v4.57.1...v4.58.0)
+
+### Features
+
+* [TDA-6425] Fix session analysis API spec: relaxed date_time, remove status & completed_at ([cff36ab](https://github.com/team-telnyx/telnyx-go/commit/cff36abea565824e25ed18bbf77ea1b953a1d632))
+* Add webhook_urls, webhook_urls_method, webhook_retries_policies to Dial endpoint ([cd9077d](https://github.com/team-telnyx/telnyx-go/commit/cd9077db39767a3c8eb92b06649d3d7f4fa39f65))
+* MSG-6868: document whitelisted_destinations as conditionally required ([8519e0b](https://github.com/team-telnyx/telnyx-go/commit/8519e0b3fc86324ec901be234c333c024bc15aa0))
+* TELAPPS-5712: Add deepfake detection to call-control API spec ([d48d0d1](https://github.com/team-telnyx/telnyx-go/commit/d48d0d192ab3b046985c494ce066790eaeac2ee8))
+
+
+### Bug Fixes
+
+* correct VoiceCloneNewFromUploadParams field reference in MarshalMultipart ([d70642b](https://github.com/team-telnyx/telnyx-go/commit/d70642b6e269519926c9255ada0fc1da9ad6e931))
+
+
+### Documentation
+
+* add pagination params to conversation messages endpoint ([e32fae9](https://github.com/team-telnyx/telnyx-go/commit/e32fae95eb64378b3e92a59fd170fb0dd7908c55))
+
 ## 4.57.1 (2026-04-12)
 
 Full Changelog: [v4.57.0...v4.57.1](https://github.com/team-telnyx/telnyx-go/compare/v4.57.0...v4.57.1)
