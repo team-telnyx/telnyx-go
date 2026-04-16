@@ -55,6 +55,9 @@ func NewCallService(opts ...option.RequestOption) (r CallService) {
 //     `answering_machine_detection=premium` was requested
 //   - `call.machine.premium.greeting.ended` if `answering_machine_detection=premium`
 //     was requested and a beep was detected
+//   - `call.deepfake_detection.result` if `deepfake_detection` was enabled
+//   - `call.deepfake_detection.error` if `deepfake_detection` was enabled and an
+//     error occurred
 //   - `streaming.started`, `streaming.stopped` or `streaming.failed` if `stream_url`
 //     was set
 //
@@ -746,8 +749,13 @@ type CallDialParams struct {
 	// Optional configuration parameters to dial new participant into a conference.
 	ConferenceConfig CallDialParamsConferenceConfig `json:"conference_config,omitzero"`
 	// Custom headers to be added to the SIP INVITE.
-	CustomHeaders    []CustomSipHeaderParam `json:"custom_headers,omitzero"`
-	DialogflowConfig DialogflowConfigParam  `json:"dialogflow_config,omitzero"`
+	CustomHeaders []CustomSipHeaderParam `json:"custom_headers,omitzero"`
+	// Enables deepfake detection on the call. When enabled, audio from the remote
+	// party is streamed to a detection service that analyzes whether the voice is
+	// AI-generated. Results are delivered via the `call.deepfake_detection.result`
+	// webhook.
+	DeepfakeDetection CallDialParamsDeepfakeDetection `json:"deepfake_detection,omitzero"`
+	DialogflowConfig  DialogflowConfigParam           `json:"dialogflow_config,omitzero"`
 	// Defines whether media should be encrypted on the call.
 	//
 	// Any of "disabled", "SRTP", "DTLS".
@@ -830,10 +838,23 @@ type CallDialParams struct {
 	// Any of "barge", "whisper", "monitor".
 	SupervisorRole      CallDialParamsSupervisorRole   `json:"supervisor_role,omitzero"`
 	TranscriptionConfig TranscriptionStartRequestParam `json:"transcription_config,omitzero"`
+	// A map of event types to retry policies. Each retry policy contains an array of
+	// `retries_ms` specifying the delays between retry attempts in milliseconds.
+	// Maximum 5 retries, total delay cannot exceed 60 seconds.
+	WebhookRetriesPolicies map[string]CallDialParamsWebhookRetriesPolicy `json:"webhook_retries_policies,omitzero"`
 	// HTTP request type used for `webhook_url`.
 	//
 	// Any of "POST", "GET".
 	WebhookURLMethod CallDialParamsWebhookURLMethod `json:"webhook_url_method,omitzero"`
+	// A map of event types to webhook URLs. When an event of the specified type
+	// occurs, the webhook URL associated with that event type will be called instead
+	// of the default webhook URL. Events not mapped here will use the default webhook
+	// URL.
+	WebhookURLs map[string]string `json:"webhook_urls,omitzero" format:"uri"`
+	// HTTP request method to invoke `webhook_urls`.
+	//
+	// Any of "POST", "GET".
+	WebhookURLsMethod CallDialParamsWebhookURLsMethod `json:"webhook_urls_method,omitzero"`
 	paramObj
 }
 
@@ -1015,6 +1036,31 @@ func init() {
 	)
 }
 
+// Enables deepfake detection on the call. When enabled, audio from the remote
+// party is streamed to a detection service that analyzes whether the voice is
+// AI-generated. Results are delivered via the `call.deepfake_detection.result`
+// webhook.
+//
+// The property Enabled is required.
+type CallDialParamsDeepfakeDetection struct {
+	// Whether deepfake detection is enabled.
+	Enabled bool `json:"enabled" api:"required"`
+	// Maximum time in seconds to wait for RTP audio before timing out. If no audio is
+	// received within this window, detection stops with an error.
+	RtpTimeout param.Opt[int64] `json:"rtp_timeout,omitzero"`
+	// Maximum time in seconds to wait for a detection result before timing out.
+	Timeout param.Opt[int64] `json:"timeout,omitzero"`
+	paramObj
+}
+
+func (r CallDialParamsDeepfakeDetection) MarshalJSON() (data []byte, err error) {
+	type shadow CallDialParamsDeepfakeDetection
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallDialParamsDeepfakeDetection) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Defines whether media should be encrypted on the call.
 type CallDialParamsMediaEncryption string
 
@@ -1119,10 +1165,33 @@ const (
 	CallDialParamsSupervisorRoleMonitor CallDialParamsSupervisorRole = "monitor"
 )
 
+type CallDialParamsWebhookRetriesPolicy struct {
+	// Array of delays in milliseconds between retry attempts. Total sum cannot exceed
+	// 60000ms.
+	RetriesMs []int64 `json:"retries_ms,omitzero"`
+	paramObj
+}
+
+func (r CallDialParamsWebhookRetriesPolicy) MarshalJSON() (data []byte, err error) {
+	type shadow CallDialParamsWebhookRetriesPolicy
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallDialParamsWebhookRetriesPolicy) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // HTTP request type used for `webhook_url`.
 type CallDialParamsWebhookURLMethod string
 
 const (
 	CallDialParamsWebhookURLMethodPost CallDialParamsWebhookURLMethod = "POST"
 	CallDialParamsWebhookURLMethodGet  CallDialParamsWebhookURLMethod = "GET"
+)
+
+// HTTP request method to invoke `webhook_urls`.
+type CallDialParamsWebhookURLsMethod string
+
+const (
+	CallDialParamsWebhookURLsMethodPost CallDialParamsWebhookURLsMethod = "POST"
+	CallDialParamsWebhookURLsMethodGet  CallDialParamsWebhookURLsMethod = "GET"
 )

@@ -116,6 +116,11 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 				Name:  "head_2",
 				Value: "val_2",
 			}},
+			DeepfakeDetection: telnyx.CallActionAnswerParamsDeepfakeDetection{
+				Enabled:    true,
+				RtpTimeout: telnyx.Int(30),
+				Timeout:    telnyx.Int(15),
+			},
 			PreferredCodecs:      telnyx.CallActionAnswerParamsPreferredCodecsG722PcmuPcmaG729OpusVp8H264,
 			Record:               telnyx.CallActionAnswerParamsRecordRecordFromAnswer,
 			RecordChannels:       telnyx.CallActionAnswerParamsRecordChannelsSingle,

@@ -58,6 +58,9 @@ func (r *CallActionService) AddAIAssistantMessages(ctx context.Context, callCont
 // **Expected Webhooks:**
 //
 //   - `call.answered`
+//   - `call.deepfake_detection.result` if `deepfake_detection` was enabled
+//   - `call.deepfake_detection.error` if `deepfake_detection` was enabled and an
+//     error occurred
 //   - `streaming.started`, `streaming.stopped` or `streaming.failed` if `stream_url`
 //     was set
 //
@@ -2905,6 +2908,11 @@ type CallActionAnswerParams struct {
 	Assistant CallAssistantRequestParam `json:"assistant,omitzero"`
 	// Custom headers to be added to the SIP INVITE response.
 	CustomHeaders []CustomSipHeaderParam `json:"custom_headers,omitzero"`
+	// Enables deepfake detection on the call. When enabled, audio from the remote
+	// party is streamed to a detection service that analyzes whether the voice is
+	// AI-generated. Results are delivered via the `call.deepfake_detection.result`
+	// webhook.
+	DeepfakeDetection CallActionAnswerParamsDeepfakeDetection `json:"deepfake_detection,omitzero"`
 	// The list of comma-separated codecs in a preferred order for the forked media to
 	// be received.
 	//
@@ -2986,6 +2994,31 @@ func (r CallActionAnswerParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *CallActionAnswerParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Enables deepfake detection on the call. When enabled, audio from the remote
+// party is streamed to a detection service that analyzes whether the voice is
+// AI-generated. Results are delivered via the `call.deepfake_detection.result`
+// webhook.
+//
+// The property Enabled is required.
+type CallActionAnswerParamsDeepfakeDetection struct {
+	// Whether deepfake detection is enabled.
+	Enabled bool `json:"enabled" api:"required"`
+	// Maximum time in seconds to wait for RTP audio before timing out. If no audio is
+	// received within this window, detection stops with an error.
+	RtpTimeout param.Opt[int64] `json:"rtp_timeout,omitzero"`
+	// Maximum time in seconds to wait for a detection result before timing out.
+	Timeout param.Opt[int64] `json:"timeout,omitzero"`
+	paramObj
+}
+
+func (r CallActionAnswerParamsDeepfakeDetection) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionAnswerParamsDeepfakeDetection
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionAnswerParamsDeepfakeDetection) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

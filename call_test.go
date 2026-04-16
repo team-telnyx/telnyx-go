@@ -115,6 +115,11 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 			Name:  "head_2",
 			Value: "val_2",
 		}},
+		DeepfakeDetection: telnyx.CallDialParamsDeepfakeDetection{
+			Enabled:    true,
+			RtpTimeout: telnyx.Int(30),
+			Timeout:    telnyx.Int(15),
+		},
 		DialogflowConfig: telnyx.DialogflowConfigParam{
 			AnalyzeSentiment:           telnyx.Bool(false),
 			PartialAutomatedAgentReply: telnyx.Bool(false),
@@ -189,8 +194,18 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 			},
 			TranscriptionTracks: telnyx.String("both"),
 		},
+		WebhookRetriesPolicies: map[string]telnyx.CallDialParamsWebhookRetriesPolicy{
+			"call.hangup": {
+				RetriesMs: []int64{1000, 2000, 5000},
+			},
+		},
 		WebhookURL:       telnyx.String("https://www.example.com/server-b/"),
 		WebhookURLMethod: telnyx.CallDialParamsWebhookURLMethodPost,
+		WebhookURLs: map[string]string{
+			"call.hangup": "https://www.example.com/webhooks/hangup",
+			"call.bridge": "https://www.example.com/webhooks/bridge",
+		},
+		WebhookURLsMethod: telnyx.CallDialParamsWebhookURLsMethodPost,
 	})
 	if err != nil {
 		var apierr *telnyx.Error

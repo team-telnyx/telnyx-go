@@ -899,8 +899,8 @@ func (r SimCardListParamsFilter) URLQuery() (v url.Values, err error) {
 type SimCardListParamsSort string
 
 const (
-	SimCardListParamsSortCurrentBillingPeriodConsumedDataAmount      SimCardListParamsSort = "current_billing_period_consumed_data.amount"
-	SimCardListParamsSortMinusCurrentBillingPeriodConsumedDataAmount SimCardListParamsSort = "-current_billing_period_consumed_data.amount"
+	SimCardListParamsSortCurrentBillingPeriodConsumedDataAmount     SimCardListParamsSort = "current_billing_period_consumed_data.amount"
+	SimCardListParamsSortDescCurrentBillingPeriodConsumedDataAmount SimCardListParamsSort = "-current_billing_period_consumed_data.amount"
 )
 
 type SimCardDeleteParams struct {

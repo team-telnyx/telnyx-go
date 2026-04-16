@@ -337,13 +337,13 @@ func (r *EnterprisePublic) UnmarshalJSON(data []byte) error {
 type EnterprisePublicNumberOfEmployees string
 
 const (
-	EnterprisePublicNumberOfEmployees_1_10       EnterprisePublicNumberOfEmployees = "1-10"
-	EnterprisePublicNumberOfEmployees_11_50      EnterprisePublicNumberOfEmployees = "11-50"
-	EnterprisePublicNumberOfEmployees_51_200     EnterprisePublicNumberOfEmployees = "51-200"
-	EnterprisePublicNumberOfEmployees_201_500    EnterprisePublicNumberOfEmployees = "201-500"
-	EnterprisePublicNumberOfEmployees_501_2000   EnterprisePublicNumberOfEmployees = "501-2000"
-	EnterprisePublicNumberOfEmployees_2001_10000 EnterprisePublicNumberOfEmployees = "2001-10000"
-	EnterprisePublicNumberOfEmployees_10001Plus  EnterprisePublicNumberOfEmployees = "10001+"
+	EnterprisePublicNumberOfEmployeesNumberOfEmployees1_10       EnterprisePublicNumberOfEmployees = "1-10"
+	EnterprisePublicNumberOfEmployeesNumberOfEmployees11_50      EnterprisePublicNumberOfEmployees = "11-50"
+	EnterprisePublicNumberOfEmployeesNumberOfEmployees51_200     EnterprisePublicNumberOfEmployees = "51-200"
+	EnterprisePublicNumberOfEmployeesNumberOfEmployees201_500    EnterprisePublicNumberOfEmployees = "201-500"
+	EnterprisePublicNumberOfEmployeesNumberOfEmployees501_2000   EnterprisePublicNumberOfEmployees = "501-2000"
+	EnterprisePublicNumberOfEmployeesNumberOfEmployees2001_10000 EnterprisePublicNumberOfEmployees = "2001-10000"
+	EnterprisePublicNumberOfEmployeesNumberOfEmployees10001Plus  EnterprisePublicNumberOfEmployees = "10001+"
 )
 
 // Legal structure type
@@ -622,13 +622,13 @@ func (r *EnterpriseNewParams) UnmarshalJSON(data []byte) error {
 type EnterpriseNewParamsNumberOfEmployees string
 
 const (
-	EnterpriseNewParamsNumberOfEmployees_1_10       EnterpriseNewParamsNumberOfEmployees = "1-10"
-	EnterpriseNewParamsNumberOfEmployees_11_50      EnterpriseNewParamsNumberOfEmployees = "11-50"
-	EnterpriseNewParamsNumberOfEmployees_51_200     EnterpriseNewParamsNumberOfEmployees = "51-200"
-	EnterpriseNewParamsNumberOfEmployees_201_500    EnterpriseNewParamsNumberOfEmployees = "201-500"
-	EnterpriseNewParamsNumberOfEmployees_501_2000   EnterpriseNewParamsNumberOfEmployees = "501-2000"
-	EnterpriseNewParamsNumberOfEmployees_2001_10000 EnterpriseNewParamsNumberOfEmployees = "2001-10000"
-	EnterpriseNewParamsNumberOfEmployees_10001Plus  EnterpriseNewParamsNumberOfEmployees = "10001+"
+	EnterpriseNewParamsNumberOfEmployeesNumberOfEmployees1_10       EnterpriseNewParamsNumberOfEmployees = "1-10"
+	EnterpriseNewParamsNumberOfEmployeesNumberOfEmployees11_50      EnterpriseNewParamsNumberOfEmployees = "11-50"
+	EnterpriseNewParamsNumberOfEmployeesNumberOfEmployees51_200     EnterpriseNewParamsNumberOfEmployees = "51-200"
+	EnterpriseNewParamsNumberOfEmployeesNumberOfEmployees201_500    EnterpriseNewParamsNumberOfEmployees = "201-500"
+	EnterpriseNewParamsNumberOfEmployeesNumberOfEmployees501_2000   EnterpriseNewParamsNumberOfEmployees = "501-2000"
+	EnterpriseNewParamsNumberOfEmployeesNumberOfEmployees2001_10000 EnterpriseNewParamsNumberOfEmployees = "2001-10000"
+	EnterpriseNewParamsNumberOfEmployeesNumberOfEmployees10001Plus  EnterpriseNewParamsNumberOfEmployees = "10001+"
 )
 
 // Legal structure type
@@ -709,13 +709,13 @@ func (r *EnterpriseUpdateParams) UnmarshalJSON(data []byte) error {
 type EnterpriseUpdateParamsNumberOfEmployees string
 
 const (
-	EnterpriseUpdateParamsNumberOfEmployees_1_10       EnterpriseUpdateParamsNumberOfEmployees = "1-10"
-	EnterpriseUpdateParamsNumberOfEmployees_11_50      EnterpriseUpdateParamsNumberOfEmployees = "11-50"
-	EnterpriseUpdateParamsNumberOfEmployees_51_200     EnterpriseUpdateParamsNumberOfEmployees = "51-200"
-	EnterpriseUpdateParamsNumberOfEmployees_201_500    EnterpriseUpdateParamsNumberOfEmployees = "201-500"
-	EnterpriseUpdateParamsNumberOfEmployees_501_2000   EnterpriseUpdateParamsNumberOfEmployees = "501-2000"
-	EnterpriseUpdateParamsNumberOfEmployees_2001_10000 EnterpriseUpdateParamsNumberOfEmployees = "2001-10000"
-	EnterpriseUpdateParamsNumberOfEmployees_10001Plus  EnterpriseUpdateParamsNumberOfEmployees = "10001+"
+	EnterpriseUpdateParamsNumberOfEmployeesNumberOfEmployees1_10       EnterpriseUpdateParamsNumberOfEmployees = "1-10"
+	EnterpriseUpdateParamsNumberOfEmployeesNumberOfEmployees11_50      EnterpriseUpdateParamsNumberOfEmployees = "11-50"
+	EnterpriseUpdateParamsNumberOfEmployeesNumberOfEmployees51_200     EnterpriseUpdateParamsNumberOfEmployees = "51-200"
+	EnterpriseUpdateParamsNumberOfEmployeesNumberOfEmployees201_500    EnterpriseUpdateParamsNumberOfEmployees = "201-500"
+	EnterpriseUpdateParamsNumberOfEmployeesNumberOfEmployees501_2000   EnterpriseUpdateParamsNumberOfEmployees = "501-2000"
+	EnterpriseUpdateParamsNumberOfEmployeesNumberOfEmployees2001_10000 EnterpriseUpdateParamsNumberOfEmployees = "2001-10000"
+	EnterpriseUpdateParamsNumberOfEmployeesNumberOfEmployees10001Plus  EnterpriseUpdateParamsNumberOfEmployees = "10001+"
 )
 
 // Legal structure type
