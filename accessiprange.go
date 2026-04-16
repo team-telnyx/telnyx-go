@@ -158,7 +158,7 @@ type AccessIPRangeListParamsFilter struct {
 	CidrBlock AccessIPRangeListParamsFilterCidrBlockUnion `query:"cidr_block,omitzero" json:"-"`
 	// Filter by exact creation date-time
 	CreatedAt   AccessIPRangeListParamsFilterCreatedAtUnion `query:"created_at,omitzero" format:"date-time" json:"-"`
-	ExtraFields map[string]any                              `json:"-"`
+	ExtraFields map[string]any                              `query:"-"`
 	paramObj
 }
 
