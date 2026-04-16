@@ -69,7 +69,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			},
 			SupportsUnauthenticatedWebCalls: telnyx.Bool(true),
 			TimeLimitSecs:                   telnyx.Int(30),
-			UserIdleTimeoutSecs:             telnyx.Int(30),
+			UserIdleTimeoutSecs:             telnyx.Int(10),
 			VoicemailDetection: telnyx.TelephonySettingsVoicemailDetectionParam{
 				OnVoicemailDetected: telnyx.TelephonySettingsVoicemailDetectionOnVoicemailDetectedParam{
 					Action: "stop_assistant",
@@ -272,7 +272,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				},
 				SupportsUnauthenticatedWebCalls: telnyx.Bool(true),
 				TimeLimitSecs:                   telnyx.Int(30),
-				UserIdleTimeoutSecs:             telnyx.Int(30),
+				UserIdleTimeoutSecs:             telnyx.Int(10),
 				VoicemailDetection: telnyx.TelephonySettingsVoicemailDetectionParam{
 					OnVoicemailDetected: telnyx.TelephonySettingsVoicemailDetectionOnVoicemailDetectedParam{
 						Action: "stop_assistant",
