@@ -104,6 +104,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					},
 					SupportsUnauthenticatedWebCalls: telnyx.Bool(true),
 					TimeLimitSecs:                   telnyx.Int(30),
+					UserIdleReplySecs:               telnyx.Int(0),
 					UserIdleTimeoutSecs:             telnyx.Int(10),
 					VoicemailDetection: telnyx.TelephonySettingsVoicemailDetectionParam{
 						OnVoicemailDetected: telnyx.TelephonySettingsVoicemailDetectionOnVoicemailDetectedParam{

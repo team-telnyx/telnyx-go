@@ -2935,6 +2935,10 @@ type TelephonySettings struct {
 	// apply to portions of a call without an active assistant (for instance, a call
 	// transferred to a human representative).
 	TimeLimitSecs int64 `json:"time_limit_secs"`
+	// Duration in seconds of end user silence before the assistant checks in on the
+	// user. When this limit is reached the assistant will prompt the user to respond.
+	// This is distinct from user_idle_timeout_secs which stops the assistant entirely.
+	UserIdleReplySecs int64 `json:"user_idle_reply_secs"`
 	// Maximum duration in seconds of end user silence on the call. When this limit is
 	// reached the assistant will be stopped. This limit does not apply to portions of
 	// a call without an active assistant (for instance, a call transferred to a human
@@ -2955,6 +2959,7 @@ type TelephonySettings struct {
 		RecordingSettings               respjson.Field
 		SupportsUnauthenticatedWebCalls respjson.Field
 		TimeLimitSecs                   respjson.Field
+		UserIdleReplySecs               respjson.Field
 		UserIdleTimeoutSecs             respjson.Field
 		VoicemailDetection              respjson.Field
 		ExtraFields                     map[string]respjson.Field
@@ -3133,6 +3138,10 @@ type TelephonySettingsParam struct {
 	// apply to portions of a call without an active assistant (for instance, a call
 	// transferred to a human representative).
 	TimeLimitSecs param.Opt[int64] `json:"time_limit_secs,omitzero"`
+	// Duration in seconds of end user silence before the assistant checks in on the
+	// user. When this limit is reached the assistant will prompt the user to respond.
+	// This is distinct from user_idle_timeout_secs which stops the assistant entirely.
+	UserIdleReplySecs param.Opt[int64] `json:"user_idle_reply_secs,omitzero"`
 	// Maximum duration in seconds of end user silence on the call. When this limit is
 	// reached the assistant will be stopped. This limit does not apply to portions of
 	// a call without an active assistant (for instance, a call transferred to a human
