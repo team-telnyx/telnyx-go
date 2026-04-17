@@ -6265,7 +6265,9 @@ type CallActionTransferParams struct {
 	// "disabled".
 	AnsweringMachineDetection CallActionTransferParamsAnsweringMachineDetection `json:"answering_machine_detection,omitzero"`
 	// Optional configuration parameters to modify 'answering_machine_detection'
-	// performance.
+	// performance. Only `total_analysis_time_millis` and `greeting_duration_millis`
+	// parameters are applicable when `premium` is selected as
+	// answering_machine_detection.
 	AnsweringMachineDetectionConfig CallActionTransferParamsAnsweringMachineDetectionConfig `json:"answering_machine_detection_config,omitzero"`
 	// Custom headers to be added to the SIP INVITE.
 	CustomHeaders []CustomSipHeaderParam `json:"custom_headers,omitzero"`
@@ -6367,7 +6369,9 @@ const (
 )
 
 // Optional configuration parameters to modify 'answering_machine_detection'
-// performance.
+// performance. Only `total_analysis_time_millis` and `greeting_duration_millis`
+// parameters are applicable when `premium` is selected as
+// answering_machine_detection.
 type CallActionTransferParamsAnsweringMachineDetectionConfig struct {
 	// Silence duration threshold after a greeting message or voice for it be
 	// considered human.
