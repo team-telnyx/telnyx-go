@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.59.0 (2026-04-17)
+
+Full Changelog: [v4.58.0...v4.59.0](https://github.com/team-telnyx/telnyx-go/compare/v4.58.0...v4.59.0)
+
+### Features
+
+* Add user_idle_reply_secs to TelephonySettings spec ([0d8ed6f](https://github.com/team-telnyx/telnyx-go/commit/0d8ed6f8b456ab3c7e9c9c3715c966fa072d75a9))
+* **client:** update apidata interface ([13dc2fb](https://github.com/team-telnyx/telnyx-go/commit/13dc2fbca4fb88b5d4dfab517119c5787ddccb6f))
+* Lower user_idle_timeout_secs minimum from 30s to 10s ([8b822f8](https://github.com/team-telnyx/telnyx-go/commit/8b822f82c794aafb7085c04b78aa4b825b475ca8))
+* TELAPPS Provide description what params can be used for premium amd ([12b7550](https://github.com/team-telnyx/telnyx-go/commit/12b755046ce6dd1c372731937a9e9824a1d55dcb))
+
 ## 4.58.0 (2026-04-16)
 
 Full Changelog: [v4.57.1...v4.58.0](https://github.com/team-telnyx/telnyx-go/compare/v4.57.1...v4.58.0)
