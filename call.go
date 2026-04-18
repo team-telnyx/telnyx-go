@@ -740,7 +740,9 @@ type CallDialParams struct {
 	// "disabled".
 	AnsweringMachineDetection CallDialParamsAnsweringMachineDetection `json:"answering_machine_detection,omitzero"`
 	// Optional configuration parameters to modify 'answering_machine_detection'
-	// performance.
+	// performance. Only `total_analysis_time_millis` and `greeting_duration_millis`
+	// parameters are applicable when `premium` is selected as
+	// answering_machine_detection.
 	AnsweringMachineDetectionConfig CallDialParamsAnsweringMachineDetectionConfig `json:"answering_machine_detection_config,omitzero"`
 	// AI Assistant configuration. All fields except `id` are optional — the
 	// assistant's stored configuration will be used as fallback for any omitted
@@ -920,7 +922,9 @@ const (
 )
 
 // Optional configuration parameters to modify 'answering_machine_detection'
-// performance.
+// performance. Only `total_analysis_time_millis` and `greeting_duration_millis`
+// parameters are applicable when `premium` is selected as
+// answering_machine_detection.
 type CallDialParamsAnsweringMachineDetectionConfig struct {
 	// Silence duration threshold after a greeting message or voice for it be
 	// considered human.

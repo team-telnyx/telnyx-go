@@ -202,7 +202,7 @@ type AccessIPAddressListParamsFilter struct {
 	IPSource param.Opt[string] `query:"ip_source,omitzero" json:"-"`
 	// Filter by exact creation date-time
 	CreatedAt   AccessIPAddressListParamsFilterCreatedAtUnion `query:"created_at,omitzero" format:"date-time" json:"-"`
-	ExtraFields map[string]any                                `json:"-"`
+	ExtraFields map[string]any                                `query:"-"`
 	paramObj
 }
 
