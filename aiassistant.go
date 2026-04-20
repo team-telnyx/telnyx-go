@@ -3413,13 +3413,18 @@ type TranscriptionSettingsConfig struct {
 	// Available only for deepgram/flux. Maximum milliseconds of silence before forcing
 	// an end of turn, regardless of confidence.
 	EotTimeoutMs int64 `json:"eot_timeout_ms"`
-	Numerals     bool  `json:"numerals"`
-	SmartFormat  bool  `json:"smart_format"`
+	// Available only for deepgram/nova-3 and deepgram/flux. A comma-separated list of
+	// key terms to boost for recognition during transcription. Helps improve accuracy
+	// for domain-specific terminology, proper nouns, or uncommon words.
+	Keyterm     string `json:"keyterm"`
+	Numerals    bool   `json:"numerals"`
+	SmartFormat bool   `json:"smart_format"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EagerEotThreshold respjson.Field
 		EotThreshold      respjson.Field
 		EotTimeoutMs      respjson.Field
+		Keyterm           respjson.Field
 		Numerals          respjson.Field
 		SmartFormat       respjson.Field
 		ExtraFields       map[string]respjson.Field
@@ -3454,8 +3459,12 @@ type TranscriptionSettingsConfigParam struct {
 	// Available only for deepgram/flux. Maximum milliseconds of silence before forcing
 	// an end of turn, regardless of confidence.
 	EotTimeoutMs param.Opt[int64] `json:"eot_timeout_ms,omitzero"`
-	Numerals     param.Opt[bool]  `json:"numerals,omitzero"`
-	SmartFormat  param.Opt[bool]  `json:"smart_format,omitzero"`
+	// Available only for deepgram/nova-3 and deepgram/flux. A comma-separated list of
+	// key terms to boost for recognition during transcription. Helps improve accuracy
+	// for domain-specific terminology, proper nouns, or uncommon words.
+	Keyterm     param.Opt[string] `json:"keyterm,omitzero"`
+	Numerals    param.Opt[bool]   `json:"numerals,omitzero"`
+	SmartFormat param.Opt[bool]   `json:"smart_format,omitzero"`
 	paramObj
 }
 
