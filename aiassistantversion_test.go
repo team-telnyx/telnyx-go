@@ -169,6 +169,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 						EagerEotThreshold: telnyx.Float(0.3),
 						EotThreshold:      telnyx.Float(0),
 						EotTimeoutMs:      telnyx.Int(0),
+						Keyterm:           telnyx.String("keyterm"),
 						Numerals:          telnyx.Bool(true),
 						SmartFormat:       telnyx.Bool(true),
 					},
