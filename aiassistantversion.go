@@ -155,9 +155,16 @@ type UpdateAssistantParam struct {
 	InsightSettings       InsightSettingsParam   `json:"insight_settings,omitzero"`
 	MessagingSettings     MessagingSettingsParam `json:"messaging_settings,omitzero"`
 	ObservabilitySettings ObservabilityReqParam  `json:"observability_settings,omitzero"`
-	PrivacySettings       PrivacySettingsParam   `json:"privacy_settings,omitzero"`
-	TelephonySettings     TelephonySettingsParam `json:"telephony_settings,omitzero"`
-	ToolIDs               []string               `json:"tool_ids,omitzero"`
+	// Configuration for post-conversation processing. When enabled, the assistant
+	// receives one additional LLM turn after the conversation ends, allowing it to
+	// execute tool calls such as logging to a CRM or sending a summary. The assistant
+	// can execute multiple parallel or sequential tools during this phase.
+	// Telephony-control tools (e.g. hangup, transfer) are unavailable
+	// post-conversation. Beta feature.
+	PostConversationSettings UpdateAssistantPostConversationSettingsParam `json:"post_conversation_settings,omitzero"`
+	PrivacySettings          PrivacySettingsParam                         `json:"privacy_settings,omitzero"`
+	TelephonySettings        TelephonySettingsParam                       `json:"telephony_settings,omitzero"`
+	ToolIDs                  []string                                     `json:"tool_ids,omitzero"`
 	// The tools that the assistant can use. These may be templated with
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
 	Tools         []AssistantToolsItemsUnionParam `json:"tools,omitzero"`
@@ -173,6 +180,28 @@ func (r UpdateAssistantParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *UpdateAssistantParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration for post-conversation processing. When enabled, the assistant
+// receives one additional LLM turn after the conversation ends, allowing it to
+// execute tool calls such as logging to a CRM or sending a summary. The assistant
+// can execute multiple parallel or sequential tools during this phase.
+// Telephony-control tools (e.g. hangup, transfer) are unavailable
+// post-conversation. Beta feature.
+type UpdateAssistantPostConversationSettingsParam struct {
+	// Whether post-conversation processing is enabled. When true, the assistant will
+	// be invoked after the conversation ends to perform any final tool calls. Defaults
+	// to false.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	paramObj
+}
+
+func (r UpdateAssistantPostConversationSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow UpdateAssistantPostConversationSettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UpdateAssistantPostConversationSettingsParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
