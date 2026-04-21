@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.60.0 (2026-04-20)
+
+Full Changelog: [v4.59.0...v4.60.0](https://github.com/team-telnyx/telnyx-go/compare/v4.59.0...v4.60.0)
+
+### Features
+
+* Add keyterm field to TranscriptionSettingsConfig ([f0f24fe](https://github.com/team-telnyx/telnyx-go/commit/f0f24fe17b8ed971b1f79cfaffea35e3d61a198e))
+
 ## 4.59.0 (2026-04-17)
 
 Full Changelog: [v4.58.0...v4.59.0](https://github.com/team-telnyx/telnyx-go/compare/v4.58.0...v4.59.0)
