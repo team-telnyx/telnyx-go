@@ -167,6 +167,7 @@ type VerifyProfile struct {
 	UpdatedAt          string                  `json:"updated_at"`
 	WebhookFailoverURL string                  `json:"webhook_failover_url"`
 	WebhookURL         string                  `json:"webhook_url"`
+	Whatsapp           VerifyProfileWhatsapp   `json:"whatsapp"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -181,6 +182,7 @@ type VerifyProfile struct {
 		UpdatedAt          respjson.Field
 		WebhookFailoverURL respjson.Field
 		WebhookURL         respjson.Field
+		Whatsapp           respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -342,6 +344,53 @@ type VerifyProfileSMS struct {
 // Returns the unmodified JSON received from the API
 func (r VerifyProfileSMS) RawJSON() string { return r.JSON.raw }
 func (r *VerifyProfileSMS) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VerifyProfileWhatsapp struct {
+	// The name that identifies the application requesting 2fa in the verification
+	// message.
+	AppName string `json:"app_name"`
+	// The length of the verify code to generate.
+	CodeLength int64 `json:"code_length"`
+	// For every request that is initiated via this Verify profile, this sets the
+	// number of seconds before a verification request code expires. Once the
+	// verification request expires, the user cannot use the code to verify their
+	// identity.
+	DefaultVerificationTimeoutSecs int64 `json:"default_verification_timeout_secs"`
+	// The message template identifier selected from /verify_profiles/templates
+	MessagingTemplateID string `json:"messaging_template_id" format:"uuid"`
+	// Phone number registered on the customer WABA to send OTPs from
+	SenderPhoneNumber string `json:"sender_phone_number" api:"nullable"`
+	// Customer pre-approved authentication template name registered on Meta
+	TemplateID string `json:"template_id" api:"nullable"`
+	// Customer Meta WABA ID for Bring-Your-Own-WABA sending
+	WabaID string `json:"waba_id" api:"nullable"`
+	// Enabled country destinations to send verification codes. The elements in the
+	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
+	// destinations will be allowed. **Conditionally required:** this field must be
+	// provided when your organization is configured to require explicit whitelisted
+	// destinations; otherwise it is optional.
+	WhitelistedDestinations []string       `json:"whitelisted_destinations"`
+	ExtraFields             map[string]any `json:"" api:"extrafields"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AppName                        respjson.Field
+		CodeLength                     respjson.Field
+		DefaultVerificationTimeoutSecs respjson.Field
+		MessagingTemplateID            respjson.Field
+		SenderPhoneNumber              respjson.Field
+		TemplateID                     respjson.Field
+		WabaID                         respjson.Field
+		WhitelistedDestinations        respjson.Field
+		ExtraFields                    map[string]respjson.Field
+		raw                            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VerifyProfileWhatsapp) RawJSON() string { return r.JSON.raw }
+func (r *VerifyProfileWhatsapp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -543,9 +592,12 @@ func (r *VerifyProfileNewParamsSMS) UnmarshalJSON(data []byte) error {
 }
 
 type VerifyProfileNewParamsWhatsapp struct {
-	// The name that identifies the application requesting 2fa in the verification
-	// message.
-	AppName param.Opt[string] `json:"app_name,omitzero"`
+	// Phone number registered on the customer WABA to send OTPs from
+	SenderPhoneNumber param.Opt[string] `json:"sender_phone_number,omitzero"`
+	// Customer pre-approved authentication template name registered on Meta
+	TemplateID param.Opt[string] `json:"template_id,omitzero"`
+	// Customer Meta WABA ID for Bring-Your-Own-WABA sending
+	WabaID param.Opt[string] `json:"waba_id,omitzero"`
 	// For every request that is initiated via this Verify profile, this sets the
 	// number of seconds before a verification request code expires. Once the
 	// verification request expires, the user cannot use the code to verify their
@@ -716,9 +768,12 @@ func (r *VerifyProfileUpdateParamsSMS) UnmarshalJSON(data []byte) error {
 }
 
 type VerifyProfileUpdateParamsWhatsapp struct {
-	// The name that identifies the application requesting 2fa in the verification
-	// message.
-	AppName param.Opt[string] `json:"app_name,omitzero"`
+	// Phone number registered on the customer WABA to send OTPs from
+	SenderPhoneNumber param.Opt[string] `json:"sender_phone_number,omitzero"`
+	// Customer pre-approved authentication template name registered on Meta
+	TemplateID param.Opt[string] `json:"template_id,omitzero"`
+	// Customer Meta WABA ID for Bring-Your-Own-WABA sending
+	WabaID param.Opt[string] `json:"waba_id,omitzero"`
 	// For every request that is initiated via this Verify profile, this sets the
 	// number of seconds before a verification request code expires. Once the
 	// verification request expires, the user cannot use the code to verify their
