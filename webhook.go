@@ -6772,6 +6772,137 @@ func (r *DeliveryUpdateWebhookEventMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type HostedNumberOrderEventWebhookEvent struct {
+	Data HostedNumberOrderEventWebhookEventData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r HostedNumberOrderEventWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *HostedNumberOrderEventWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type HostedNumberOrderEventWebhookEventData struct {
+	// Unique identifier for the event.
+	ID string `json:"id" format:"uuid"`
+	// The type of event being delivered. Internal transfer events are only emitted for
+	// orders where the numbers are already active on another Telnyx account.
+	//
+	// Any of "messaging_hosted_numbers_orders.created",
+	// "messaging_hosted_numbers_orders.updated",
+	// "messaging_hosted_numbers_orders.deleted",
+	// "messaging_hosted_numbers_orders.internal_transfer_detected",
+	// "messaging_hosted_numbers_orders.internal_transfer_approval_requested",
+	// "messaging_hosted_numbers_orders.internal_transfer_approved",
+	// "messaging_hosted_numbers_orders.internal_transfer_rejected",
+	// "messaging_hosted_numbers_orders.internal_transfer_auto_approved".
+	EventType string `json:"event_type"`
+	// ISO 8601 formatted date indicating when the event was generated.
+	OccurredAt time.Time `json:"occurred_at" format:"date-time"`
+	// Payload delivered with every messaging*hosted_numbers_orders.\* event.
+	// `approval_deadline` and `decision` are meaningful only for
+	// `internal_transfer*\*` events.
+	Payload HostedNumberOrderEventWebhookEventDataPayload `json:"payload"`
+	// Identifies the type of the resource.
+	//
+	// Any of "event".
+	RecordType string `json:"record_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r HostedNumberOrderEventWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *HostedNumberOrderEventWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Payload delivered with every messaging*hosted_numbers_orders.\* event.
+// `approval_deadline` and `decision` are meaningful only for
+// `internal_transfer*\*` events.
+type HostedNumberOrderEventWebhookEventDataPayload struct {
+	// Unix timestamp (seconds) by which the losing organization must respond before
+	// auto-approval. Populated on internal-transfer events once an approval window has
+	// been issued.
+	ApprovalDeadline int64 `json:"approval_deadline" api:"nullable"`
+	// Approval decision for the internal transfer. Defaults to `pending` for
+	// non-internal-transfer events.
+	//
+	// Any of "pending", "approved", "rejected".
+	Decision string                                                `json:"decision"`
+	Numbers  []HostedNumberOrderEventWebhookEventDataPayloadNumber `json:"numbers"`
+	// The ID of the hosted number order.
+	OrderID string `json:"order_id" format:"uuid"`
+	// Current status of the order.
+	//
+	// Any of "pending", "provisioning", "successful", "failed", "deleted",
+	// "carrier_rejected", "compliance_review_failed", "incomplete_documentation",
+	// "incorrect_billing_information", "ineligible_carrier", "loa_file_invalid",
+	// "loa_file_successful".
+	OrderStatus string `json:"order_status"`
+	// The messaging profile associated with the order.
+	ProfileID string `json:"profile_id" format:"uuid"`
+	// The organization that owns the order.
+	UserID string `json:"user_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ApprovalDeadline respjson.Field
+		Decision         respjson.Field
+		Numbers          respjson.Field
+		OrderID          respjson.Field
+		OrderStatus      respjson.Field
+		ProfileID        respjson.Field
+		UserID           respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r HostedNumberOrderEventWebhookEventDataPayload) RawJSON() string { return r.JSON.raw }
+func (r *HostedNumberOrderEventWebhookEventDataPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type HostedNumberOrderEventWebhookEventDataPayloadNumber struct {
+	// Current status of this phone number within the order.
+	//
+	// Any of "deleted", "failed", "failed_activation", "failed_carrier_rejected",
+	// "failed_ineligible_carrier", "failed_number_already_hosted",
+	// "failed_number_not_found", "failed_ownership_verification", "failed_timeout",
+	// "ownership_successful", "pending", "provisioning", "successful".
+	Status string `json:"status"`
+	// Phone number in +E.164 format.
+	Value string `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Status      respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r HostedNumberOrderEventWebhookEventDataPayloadNumber) RawJSON() string { return r.JSON.raw }
+func (r *HostedNumberOrderEventWebhookEventDataPayloadNumber) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type InboundMessageWebhookEvent struct {
 	Data InboundMessage `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -6854,7 +6985,8 @@ func (r *TranscriptionWebhookEvent) UnmarshalJSON(data []byte) error {
 // [ConferenceRecordingSavedWebhookEvent], [ConferenceSpeakEndedWebhookEvent],
 // [ConferenceSpeakStartedWebhookEvent], [DeliveryUpdateWebhookEvent],
 // [FaxDelivered], [FaxFailed], [FaxMediaProcessed], [FaxQueued],
-// [FaxSendingStarted], [InboundMessageWebhookEvent], [NumberOrderStatusUpdate],
+// [FaxSendingStarted], [HostedNumberOrderEventWebhookEvent],
+// [InboundMessageWebhookEvent], [NumberOrderStatusUpdate],
 // [ReplacedLinkClickWebhookEvent], [TranscriptionWebhookEvent].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
@@ -6880,8 +7012,9 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// [ConferencePlaybackStarted], [ConferenceRecordingSaved], [ConferenceSpeakEnded],
 	// [ConferenceSpeakStarted], [OutboundMessage], [FaxDeliveredData],
 	// [FaxFailedData], [FaxMediaProcessedData], [FaxQueuedData],
-	// [FaxSendingStartedData], [InboundMessage], [NumberOrderStatusUpdateData],
-	// [ReplacedLinkClick], [Transcription]
+	// [FaxSendingStartedData], [HostedNumberOrderEventWebhookEventData],
+	// [InboundMessage], [NumberOrderStatusUpdateData], [ReplacedLinkClick],
+	// [Transcription]
 	Data UnsafeUnwrapWebhookEventUnionData `json:"data"`
 	// This field is from variant [CampaignStatusUpdate].
 	BrandID string `json:"brandId"`
@@ -7225,6 +7358,11 @@ func (u UnsafeUnwrapWebhookEventUnion) AsFaxSendingStarted() (v FaxSendingStarte
 	return
 }
 
+func (u UnsafeUnwrapWebhookEventUnion) AsHostedNumberOrderEventWebhookEvent() (v HostedNumberOrderEventWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 func (u UnsafeUnwrapWebhookEventUnion) AsInboundMessageWebhookEvent() (v InboundMessageWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
@@ -7290,8 +7428,9 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	// [ConferenceSpeakEndedPayload], [ConferenceSpeakStartedPayload],
 	// [OutboundMessagePayload], [FaxDeliveredDataPayload], [FaxFailedDataPayload],
 	// [FaxMediaProcessedDataPayload], [FaxQueuedDataPayload],
-	// [FaxSendingStartedDataPayload], [shared.InboundMessagePayload],
-	// [NumberOrderWithPhoneNumbers], [TranscriptionPayload]
+	// [FaxSendingStartedDataPayload], [HostedNumberOrderEventWebhookEventDataPayload],
+	// [shared.InboundMessagePayload], [NumberOrderWithPhoneNumbers],
+	// [TranscriptionPayload]
 	Payload    UnsafeUnwrapWebhookEventUnionDataPayload `json:"payload"`
 	RecordType string                                   `json:"record_type"`
 	// This field is from variant [CallConversationEnded].
@@ -7504,6 +7643,18 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	// This field is from variant [FaxDeliveredDataPayload].
 	PageCount int64  `json:"page_count"`
 	UserID    string `json:"user_id"`
+	// This field is from variant [HostedNumberOrderEventWebhookEventDataPayload].
+	ApprovalDeadline int64 `json:"approval_deadline"`
+	// This field is from variant [HostedNumberOrderEventWebhookEventDataPayload].
+	Decision string `json:"decision"`
+	// This field is from variant [HostedNumberOrderEventWebhookEventDataPayload].
+	Numbers []HostedNumberOrderEventWebhookEventDataPayloadNumber `json:"numbers"`
+	// This field is from variant [HostedNumberOrderEventWebhookEventDataPayload].
+	OrderID string `json:"order_id"`
+	// This field is from variant [HostedNumberOrderEventWebhookEventDataPayload].
+	OrderStatus string `json:"order_status"`
+	// This field is from variant [HostedNumberOrderEventWebhookEventDataPayload].
+	ProfileID string `json:"profile_id"`
 	// This field is from variant [NumberOrderWithPhoneNumbers].
 	CreatedAt time.Time `json:"created_at"`
 	// This field is from variant [NumberOrderWithPhoneNumbers].
@@ -7627,6 +7778,12 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		OriginalMediaURL         respjson.Field
 		PageCount                respjson.Field
 		UserID                   respjson.Field
+		ApprovalDeadline         respjson.Field
+		Decision                 respjson.Field
+		Numbers                  respjson.Field
+		OrderID                  respjson.Field
+		OrderStatus              respjson.Field
+		ProfileID                respjson.Field
 		CreatedAt                respjson.Field
 		CustomerReference        respjson.Field
 		PhoneNumbers             respjson.Field
@@ -8002,7 +8159,8 @@ func (r *UnsafeUnwrapWebhookEventUnionMeta) UnmarshalJSON(data []byte) error {
 // [ConferenceRecordingSavedWebhookEvent], [ConferenceSpeakEndedWebhookEvent],
 // [ConferenceSpeakStartedWebhookEvent], [DeliveryUpdateWebhookEvent],
 // [FaxDelivered], [FaxFailed], [FaxMediaProcessed], [FaxQueued],
-// [FaxSendingStarted], [InboundMessageWebhookEvent], [NumberOrderStatusUpdate],
+// [FaxSendingStarted], [HostedNumberOrderEventWebhookEvent],
+// [InboundMessageWebhookEvent], [NumberOrderStatusUpdate],
 // [ReplacedLinkClickWebhookEvent], [TranscriptionWebhookEvent].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
@@ -8028,8 +8186,9 @@ type UnwrapWebhookEventUnion struct {
 	// [ConferencePlaybackStarted], [ConferenceRecordingSaved], [ConferenceSpeakEnded],
 	// [ConferenceSpeakStarted], [OutboundMessage], [FaxDeliveredData],
 	// [FaxFailedData], [FaxMediaProcessedData], [FaxQueuedData],
-	// [FaxSendingStartedData], [InboundMessage], [NumberOrderStatusUpdateData],
-	// [ReplacedLinkClick], [Transcription]
+	// [FaxSendingStartedData], [HostedNumberOrderEventWebhookEventData],
+	// [InboundMessage], [NumberOrderStatusUpdateData], [ReplacedLinkClick],
+	// [Transcription]
 	Data UnwrapWebhookEventUnionData `json:"data"`
 	// This field is from variant [CampaignStatusUpdate].
 	BrandID string `json:"brandId"`
@@ -8373,6 +8532,11 @@ func (u UnwrapWebhookEventUnion) AsFaxSendingStarted() (v FaxSendingStarted) {
 	return
 }
 
+func (u UnwrapWebhookEventUnion) AsHostedNumberOrderEventWebhookEvent() (v HostedNumberOrderEventWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 func (u UnwrapWebhookEventUnion) AsInboundMessageWebhookEvent() (v InboundMessageWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
@@ -8438,8 +8602,9 @@ type UnwrapWebhookEventUnionData struct {
 	// [ConferenceSpeakEndedPayload], [ConferenceSpeakStartedPayload],
 	// [OutboundMessagePayload], [FaxDeliveredDataPayload], [FaxFailedDataPayload],
 	// [FaxMediaProcessedDataPayload], [FaxQueuedDataPayload],
-	// [FaxSendingStartedDataPayload], [shared.InboundMessagePayload],
-	// [NumberOrderWithPhoneNumbers], [TranscriptionPayload]
+	// [FaxSendingStartedDataPayload], [HostedNumberOrderEventWebhookEventDataPayload],
+	// [shared.InboundMessagePayload], [NumberOrderWithPhoneNumbers],
+	// [TranscriptionPayload]
 	Payload    UnwrapWebhookEventUnionDataPayload `json:"payload"`
 	RecordType string                             `json:"record_type"`
 	// This field is from variant [CallConversationEnded].
@@ -8652,6 +8817,18 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	// This field is from variant [FaxDeliveredDataPayload].
 	PageCount int64  `json:"page_count"`
 	UserID    string `json:"user_id"`
+	// This field is from variant [HostedNumberOrderEventWebhookEventDataPayload].
+	ApprovalDeadline int64 `json:"approval_deadline"`
+	// This field is from variant [HostedNumberOrderEventWebhookEventDataPayload].
+	Decision string `json:"decision"`
+	// This field is from variant [HostedNumberOrderEventWebhookEventDataPayload].
+	Numbers []HostedNumberOrderEventWebhookEventDataPayloadNumber `json:"numbers"`
+	// This field is from variant [HostedNumberOrderEventWebhookEventDataPayload].
+	OrderID string `json:"order_id"`
+	// This field is from variant [HostedNumberOrderEventWebhookEventDataPayload].
+	OrderStatus string `json:"order_status"`
+	// This field is from variant [HostedNumberOrderEventWebhookEventDataPayload].
+	ProfileID string `json:"profile_id"`
 	// This field is from variant [NumberOrderWithPhoneNumbers].
 	CreatedAt time.Time `json:"created_at"`
 	// This field is from variant [NumberOrderWithPhoneNumbers].
@@ -8775,6 +8952,12 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		OriginalMediaURL         respjson.Field
 		PageCount                respjson.Field
 		UserID                   respjson.Field
+		ApprovalDeadline         respjson.Field
+		Decision                 respjson.Field
+		Numbers                  respjson.Field
+		OrderID                  respjson.Field
+		OrderStatus              respjson.Field
+		ProfileID                respjson.Field
 		CreatedAt                respjson.Field
 		CustomerReference        respjson.Field
 		PhoneNumbers             respjson.Field
