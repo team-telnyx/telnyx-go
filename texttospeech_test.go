@@ -87,6 +87,12 @@ func TestTextToSpeechGenerateWithOptionalParams(t *testing.T) {
 		VoiceSettings: map[string]any{
 			"foo": "bar",
 		},
+		Xai: telnyx.TextToSpeechGenerateParamsXai{
+			VoiceID:      "eve",
+			Language:     telnyx.String("language"),
+			OutputFormat: "mp3",
+			SampleRate:   8000,
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

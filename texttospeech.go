@@ -51,7 +51,7 @@ func NewTextToSpeechService(opts ...option.RequestOption) (r TextToSpeechService
 // with provider-specific parameters.
 //
 // Supported providers: `aws`, `telnyx`, `azure`, `elevenlabs`, `minimax`, `rime`,
-// `resemble`.
+// `resemble`, `xai`.
 //
 // The Telnyx `Ultra` model supports 44 languages with emotion control, speed
 // adjustment, and volume control. Use the `telnyx` provider-specific parameters to
@@ -438,7 +438,8 @@ type TextToSpeechGenerateParams struct {
 	OutputType TextToSpeechGenerateParamsOutputType `json:"output_type,omitzero"`
 	// TTS provider. Required unless `voice` is provided.
 	//
-	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "rime", "resemble".
+	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "rime", "resemble",
+	// "xai".
 	Provider TextToSpeechGenerateParamsProvider `json:"provider,omitzero"`
 	// Resemble AI provider-specific parameters.
 	Resemble TextToSpeechGenerateParamsResemble `json:"resemble,omitzero"`
@@ -455,6 +456,8 @@ type TextToSpeechGenerateParams struct {
 	// Provider-specific voice settings. Contents vary by provider — see
 	// provider-specific parameter objects below.
 	VoiceSettings map[string]any `json:"voice_settings,omitzero"`
+	// xAI provider-specific parameters.
+	Xai TextToSpeechGenerateParamsXai `json:"xai,omitzero"`
 	paramObj
 }
 
@@ -596,6 +599,7 @@ const (
 	TextToSpeechGenerateParamsProviderMinimax    TextToSpeechGenerateParamsProvider = "minimax"
 	TextToSpeechGenerateParamsProviderRime       TextToSpeechGenerateParamsProvider = "rime"
 	TextToSpeechGenerateParamsProviderResemble   TextToSpeechGenerateParamsProvider = "resemble"
+	TextToSpeechGenerateParamsProviderXai        TextToSpeechGenerateParamsProvider = "xai"
 )
 
 // Resemble AI provider-specific parameters.
@@ -682,12 +686,54 @@ const (
 	TextToSpeechGenerateParamsTextTypeSsml TextToSpeechGenerateParamsTextType = "ssml"
 )
 
+// xAI provider-specific parameters.
+//
+// The property VoiceID is required.
+type TextToSpeechGenerateParamsXai struct {
+	// xAI voice identifier.
+	//
+	// Any of "eve", "ara", "rex", "sal", "leo".
+	VoiceID string `json:"voice_id,omitzero" api:"required"`
+	// Language code, or `auto` to detect.
+	Language param.Opt[string] `json:"language,omitzero"`
+	// Audio output format.
+	//
+	// Any of "mp3", "wav", "pcm", "mulaw", "alaw".
+	OutputFormat string `json:"output_format,omitzero"`
+	// Audio sample rate in Hz.
+	//
+	// Any of 8000, 16000, 22050, 24000, 44100, 48000.
+	SampleRate int64 `json:"sample_rate,omitzero"`
+	paramObj
+}
+
+func (r TextToSpeechGenerateParamsXai) MarshalJSON() (data []byte, err error) {
+	type shadow TextToSpeechGenerateParamsXai
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TextToSpeechGenerateParamsXai) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TextToSpeechGenerateParamsXai](
+		"voice_id", "eve", "ara", "rex", "sal", "leo",
+	)
+	apijson.RegisterFieldValidator[TextToSpeechGenerateParamsXai](
+		"output_format", "mp3", "wav", "pcm", "mulaw", "alaw",
+	)
+	apijson.RegisterFieldValidator[TextToSpeechGenerateParamsXai](
+		"sample_rate", 8000, 16000, 22050, 24000, 44100, 48000,
+	)
+}
+
 type TextToSpeechListVoicesParams struct {
 	// API key for providers that require one to list voices (e.g. ElevenLabs).
 	APIKey param.Opt[string] `query:"api_key,omitzero" json:"-"`
 	// Filter voices by provider. If omitted, voices from all providers are returned.
 	//
-	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "rime", "resemble".
+	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "rime", "resemble",
+	// "xai".
 	Provider TextToSpeechListVoicesParamsProvider `query:"provider,omitzero" json:"-"`
 	paramObj
 }
@@ -712,4 +758,5 @@ const (
 	TextToSpeechListVoicesParamsProviderMinimax    TextToSpeechListVoicesParamsProvider = "minimax"
 	TextToSpeechListVoicesParamsProviderRime       TextToSpeechListVoicesParamsProvider = "rime"
 	TextToSpeechListVoicesParamsProviderResemble   TextToSpeechListVoicesParamsProvider = "resemble"
+	TextToSpeechListVoicesParamsProviderXai        TextToSpeechListVoicesParamsProvider = "xai"
 )
