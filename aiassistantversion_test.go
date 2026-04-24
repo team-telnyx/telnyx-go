@@ -87,6 +87,9 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					SecretKeyRef: telnyx.String("secret_key_ref"),
 					Status:       telnyx.ObservabilityReqStatusEnabled,
 				},
+				PostConversationSettings: telnyx.UpdateAssistantPostConversationSettingsParam{
+					Enabled: telnyx.Bool(true),
+				},
 				PrivacySettings: telnyx.PrivacySettingsParam{
 					DataRetention: telnyx.Bool(true),
 				},

@@ -1,5 +1,27 @@
 # Changelog
 
+## 4.61.0 (2026-04-24)
+
+Full Changelog: [v4.60.0...v4.61.0](https://github.com/team-telnyx/telnyx-go/compare/v4.60.0...v4.61.0)
+
+### Features
+
+* Add call.hold and call.unhold webhook event documentation ([b6a463c](https://github.com/team-telnyx/telnyx-go/commit/b6a463cf0ff263ab1bfa74aa67cc97dea2621909))
+* Add post_conversation_settings to AI Assistants API spec ([b71d0de](https://github.com/team-telnyx/telnyx-go/commit/b71d0deab84139cb78db973bdc68920f589d6cc6))
+* Add xAI provider to standalone STT and TTS specs ([70291a7](https://github.com/team-telnyx/telnyx-go/commit/70291a79a0c97eb76bf6a681a11e6cc31cc944c1))
+* MSG-6841: add missing whatsapp api docs ([b8ef6b8](https://github.com/team-telnyx/telnyx-go/commit/b8ef6b8c5ecffd65bb7d7f0b533954d2588452c5))
+* MSG-6857: ([1682cd6](https://github.com/team-telnyx/telnyx-go/commit/1682cd66609f19522603532695561d035efaff80))
+
+
+### Chores
+
+* **internal:** more robust bootstrap script ([139d6bf](https://github.com/team-telnyx/telnyx-go/commit/139d6bfb30ac1f915974c68fa36eeddf0376059b))
+
+
+### Documentation
+
+* document dynamic variable support for voice_settings.voice ([96872af](https://github.com/team-telnyx/telnyx-go/commit/96872af390fa44014fa982c36771d6162d2a29f1))
+
 ## 4.60.0 (2026-04-20)
 
 Full Changelog: [v4.59.0...v4.60.0](https://github.com/team-telnyx/telnyx-go/compare/v4.59.0...v4.60.0)

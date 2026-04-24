@@ -52,6 +52,9 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			SecretKeyRef: telnyx.String("secret_key_ref"),
 			Status:       telnyx.ObservabilityReqStatusEnabled,
 		},
+		PostConversationSettings: telnyx.AIAssistantNewParamsPostConversationSettings{
+			Enabled: telnyx.Bool(true),
+		},
 		PrivacySettings: telnyx.PrivacySettingsParam{
 			DataRetention: telnyx.Bool(true),
 		},
@@ -255,6 +258,9 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				PublicKeyRef: telnyx.String("public_key_ref"),
 				SecretKeyRef: telnyx.String("secret_key_ref"),
 				Status:       telnyx.ObservabilityReqStatusEnabled,
+			},
+			PostConversationSettings: telnyx.AIAssistantUpdateParamsPostConversationSettings{
+				Enabled: telnyx.Bool(true),
 			},
 			PrivacySettings: telnyx.PrivacySettingsParam{
 				DataRetention: telnyx.Bool(true),
