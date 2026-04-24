@@ -1,5 +1,19 @@
 # Changelog
 
+## 4.62.0 (2026-04-24)
+
+Full Changelog: [v4.61.0...v4.62.0](https://github.com/team-telnyx/telnyx-go/compare/v4.61.0...v4.62.0)
+
+### Features
+
+* **go:** add default http client with timeout ([2c7beb9](https://github.com/team-telnyx/telnyx-go/commit/2c7beb9aa8bdb75627a662b0f3d607a8f2723a9e))
+
+
+### Chores
+
+* **internal:** codegen related update ([e024fe5](https://github.com/team-telnyx/telnyx-go/commit/e024fe5bbcee5e21282a4aa5425ac5a83fbac97f))
+* update example date in inference-embedding ([a0af590](https://github.com/team-telnyx/telnyx-go/commit/a0af590506ddaa3025f8300805288b1c4cbf5628))
+
 ## 4.61.0 (2026-04-24)
 
 Full Changelog: [v4.60.0...v4.61.0](https://github.com/team-telnyx/telnyx-go/compare/v4.60.0...v4.61.0)
