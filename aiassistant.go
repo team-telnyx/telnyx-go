@@ -3346,25 +3346,34 @@ func init() {
 }
 
 type TranscriptionSettings struct {
-	// The language of the audio to be transcribed. If not set, of if set to `auto`,
+	// Integration secret identifier for the transcription provider API key. Currently
+	// used for Azure transcription regions that require a customer-provided API key.
+	APIKeyRef string `json:"api_key_ref"`
+	// The language of the audio to be transcribed. If not set, or if set to `auto`,
 	// the model will automatically detect the language.
 	Language string `json:"language"`
-	// The speech to text model to be used by the voice assistant. All the deepgram
-	// models are run on-premise.
+	// The speech to text model to be used by the voice assistant. All Deepgram models
+	// are run on-premise.
 	//
 	//   - `deepgram/flux` is optimized for turn-taking but is English-only.
-	//   - `deepgram/nova-3` is multi-lingual with automatic language detection but
-	//     slightly higher latency.
+	//   - `deepgram/nova-3` is multilingual with automatic language detection.
+	//   - `deepgram/nova-2` is Deepgram's previous-generation multilingual model.
+	//   - `azure/fast` is a multilingual Azure transcription model.
+	//   - `assemblyai/universal-streaming` is a multilingual streaming model with
+	//     configurable turn detection.
+	//   - `xai/grok-stt` is a multilingual Grok STT model.
 	//
 	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
+	// "assemblyai/universal-streaming", "xai/grok-stt",
 	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
 	Model TranscriptionSettingsModel `json:"model"`
 	// Region on third party cloud providers (currently Azure) if using one of their
-	// models
+	// models. Some regions require `api_key_ref`.
 	Region   string                      `json:"region"`
 	Settings TranscriptionSettingsConfig `json:"settings"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		APIKeyRef   respjson.Field
 		Language    respjson.Field
 		Model       respjson.Field
 		Region      respjson.Field
@@ -3389,38 +3398,52 @@ func (r TranscriptionSettings) ToParam() TranscriptionSettingsParam {
 	return param.Override[TranscriptionSettingsParam](json.RawMessage(r.RawJSON()))
 }
 
-// The speech to text model to be used by the voice assistant. All the deepgram
-// models are run on-premise.
+// The speech to text model to be used by the voice assistant. All Deepgram models
+// are run on-premise.
 //
 //   - `deepgram/flux` is optimized for turn-taking but is English-only.
-//   - `deepgram/nova-3` is multi-lingual with automatic language detection but
-//     slightly higher latency.
+//   - `deepgram/nova-3` is multilingual with automatic language detection.
+//   - `deepgram/nova-2` is Deepgram's previous-generation multilingual model.
+//   - `azure/fast` is a multilingual Azure transcription model.
+//   - `assemblyai/universal-streaming` is a multilingual streaming model with
+//     configurable turn detection.
+//   - `xai/grok-stt` is a multilingual Grok STT model.
 type TranscriptionSettingsModel string
 
 const (
-	TranscriptionSettingsModelDeepgramFlux               TranscriptionSettingsModel = "deepgram/flux"
-	TranscriptionSettingsModelDeepgramNova3              TranscriptionSettingsModel = "deepgram/nova-3"
-	TranscriptionSettingsModelDeepgramNova2              TranscriptionSettingsModel = "deepgram/nova-2"
-	TranscriptionSettingsModelAzureFast                  TranscriptionSettingsModel = "azure/fast"
-	TranscriptionSettingsModelDistilWhisperDistilLargeV2 TranscriptionSettingsModel = "distil-whisper/distil-large-v2"
-	TranscriptionSettingsModelOpenAIWhisperLargeV3Turbo  TranscriptionSettingsModel = "openai/whisper-large-v3-turbo"
+	TranscriptionSettingsModelDeepgramFlux                 TranscriptionSettingsModel = "deepgram/flux"
+	TranscriptionSettingsModelDeepgramNova3                TranscriptionSettingsModel = "deepgram/nova-3"
+	TranscriptionSettingsModelDeepgramNova2                TranscriptionSettingsModel = "deepgram/nova-2"
+	TranscriptionSettingsModelAzureFast                    TranscriptionSettingsModel = "azure/fast"
+	TranscriptionSettingsModelAssemblyaiUniversalStreaming TranscriptionSettingsModel = "assemblyai/universal-streaming"
+	TranscriptionSettingsModelXaiGrokStt                   TranscriptionSettingsModel = "xai/grok-stt"
+	TranscriptionSettingsModelDistilWhisperDistilLargeV2   TranscriptionSettingsModel = "distil-whisper/distil-large-v2"
+	TranscriptionSettingsModelOpenAIWhisperLargeV3Turbo    TranscriptionSettingsModel = "openai/whisper-large-v3-turbo"
 )
 
 type TranscriptionSettingsParam struct {
-	// The language of the audio to be transcribed. If not set, of if set to `auto`,
+	// Integration secret identifier for the transcription provider API key. Currently
+	// used for Azure transcription regions that require a customer-provided API key.
+	APIKeyRef param.Opt[string] `json:"api_key_ref,omitzero"`
+	// The language of the audio to be transcribed. If not set, or if set to `auto`,
 	// the model will automatically detect the language.
 	Language param.Opt[string] `json:"language,omitzero"`
 	// Region on third party cloud providers (currently Azure) if using one of their
-	// models
+	// models. Some regions require `api_key_ref`.
 	Region param.Opt[string] `json:"region,omitzero"`
-	// The speech to text model to be used by the voice assistant. All the deepgram
-	// models are run on-premise.
+	// The speech to text model to be used by the voice assistant. All Deepgram models
+	// are run on-premise.
 	//
 	//   - `deepgram/flux` is optimized for turn-taking but is English-only.
-	//   - `deepgram/nova-3` is multi-lingual with automatic language detection but
-	//     slightly higher latency.
+	//   - `deepgram/nova-3` is multilingual with automatic language detection.
+	//   - `deepgram/nova-2` is Deepgram's previous-generation multilingual model.
+	//   - `azure/fast` is a multilingual Azure transcription model.
+	//   - `assemblyai/universal-streaming` is a multilingual streaming model with
+	//     configurable turn detection.
+	//   - `xai/grok-stt` is a multilingual Grok STT model.
 	//
 	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
+	// "assemblyai/universal-streaming", "xai/grok-stt",
 	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
 	Model    TranscriptionSettingsModel       `json:"model,omitzero"`
 	Settings TranscriptionSettingsConfigParam `json:"settings,omitzero"`
@@ -3440,6 +3463,10 @@ type TranscriptionSettingsConfig struct {
 	// detection. Must be lower than or equal to eot_threshold. Setting this equal to
 	// eot_threshold effectively disables eager end of turn.
 	EagerEotThreshold float64 `json:"eager_eot_threshold"`
+	// Available only for assemblyai/universal-streaming. Confidence level required to
+	// trigger an end of turn. Higher values require more certainty before ending a
+	// turn.
+	EndOfTurnConfidenceThreshold float64 `json:"end_of_turn_confidence_threshold"`
 	// Available only for deepgram/flux. Confidence required to trigger an end of turn.
 	// Higher values = more reliable turn detection but slightly increased latency.
 	EotThreshold float64 `json:"eot_threshold"`
@@ -3449,19 +3476,29 @@ type TranscriptionSettingsConfig struct {
 	// Available only for deepgram/nova-3 and deepgram/flux. A comma-separated list of
 	// key terms to boost for recognition during transcription. Helps improve accuracy
 	// for domain-specific terminology, proper nouns, or uncommon words.
-	Keyterm     string `json:"keyterm"`
-	Numerals    bool   `json:"numerals"`
-	SmartFormat bool   `json:"smart_format"`
+	Keyterm string `json:"keyterm"`
+	// Available only for assemblyai/universal-streaming. Maximum duration of silence
+	// in milliseconds before forcing an end of turn.
+	MaxTurnSilence int64 `json:"max_turn_silence"`
+	// Available only for assemblyai/universal-streaming. Minimum duration of silence
+	// in milliseconds before a turn can end. Must be less than or equal to
+	// max_turn_silence.
+	MinTurnSilence int64 `json:"min_turn_silence"`
+	Numerals       bool  `json:"numerals"`
+	SmartFormat    bool  `json:"smart_format"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		EagerEotThreshold respjson.Field
-		EotThreshold      respjson.Field
-		EotTimeoutMs      respjson.Field
-		Keyterm           respjson.Field
-		Numerals          respjson.Field
-		SmartFormat       respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
+		EagerEotThreshold            respjson.Field
+		EndOfTurnConfidenceThreshold respjson.Field
+		EotThreshold                 respjson.Field
+		EotTimeoutMs                 respjson.Field
+		Keyterm                      respjson.Field
+		MaxTurnSilence               respjson.Field
+		MinTurnSilence               respjson.Field
+		Numerals                     respjson.Field
+		SmartFormat                  respjson.Field
+		ExtraFields                  map[string]respjson.Field
+		raw                          string
 	} `json:"-"`
 }
 
@@ -3486,6 +3523,10 @@ type TranscriptionSettingsConfigParam struct {
 	// detection. Must be lower than or equal to eot_threshold. Setting this equal to
 	// eot_threshold effectively disables eager end of turn.
 	EagerEotThreshold param.Opt[float64] `json:"eager_eot_threshold,omitzero"`
+	// Available only for assemblyai/universal-streaming. Confidence level required to
+	// trigger an end of turn. Higher values require more certainty before ending a
+	// turn.
+	EndOfTurnConfidenceThreshold param.Opt[float64] `json:"end_of_turn_confidence_threshold,omitzero"`
 	// Available only for deepgram/flux. Confidence required to trigger an end of turn.
 	// Higher values = more reliable turn detection but slightly increased latency.
 	EotThreshold param.Opt[float64] `json:"eot_threshold,omitzero"`
@@ -3495,9 +3536,16 @@ type TranscriptionSettingsConfigParam struct {
 	// Available only for deepgram/nova-3 and deepgram/flux. A comma-separated list of
 	// key terms to boost for recognition during transcription. Helps improve accuracy
 	// for domain-specific terminology, proper nouns, or uncommon words.
-	Keyterm     param.Opt[string] `json:"keyterm,omitzero"`
-	Numerals    param.Opt[bool]   `json:"numerals,omitzero"`
-	SmartFormat param.Opt[bool]   `json:"smart_format,omitzero"`
+	Keyterm param.Opt[string] `json:"keyterm,omitzero"`
+	// Available only for assemblyai/universal-streaming. Maximum duration of silence
+	// in milliseconds before forcing an end of turn.
+	MaxTurnSilence param.Opt[int64] `json:"max_turn_silence,omitzero"`
+	// Available only for assemblyai/universal-streaming. Minimum duration of silence
+	// in milliseconds before a turn can end. Must be less than or equal to
+	// max_turn_silence.
+	MinTurnSilence param.Opt[int64] `json:"min_turn_silence,omitzero"`
+	Numerals       param.Opt[bool]  `json:"numerals,omitzero"`
+	SmartFormat    param.Opt[bool]  `json:"smart_format,omitzero"`
 	paramObj
 }
 
