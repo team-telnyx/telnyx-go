@@ -3350,12 +3350,15 @@ type TranscriptionSettings struct {
 	// used for Azure transcription regions that require a customer-provided API key.
 	APIKeyRef string `json:"api_key_ref"`
 	// The language of the audio to be transcribed. If not set, or if set to `auto`,
-	// the model will automatically detect the language.
+	// supported models will automatically detect the language. For `deepgram/flux`,
+	// supported values are: `auto` (Telnyx language detection controls the language
+	// hint), `multi` (no language hint), and language-specific hints `en`, `es`, `fr`,
+	// `de`, `hi`, `ru`, `pt`, `ja`, `it`, and `nl`.
 	Language string `json:"language"`
 	// The speech to text model to be used by the voice assistant. All Deepgram models
 	// are run on-premise.
 	//
-	//   - `deepgram/flux` is optimized for turn-taking but is English-only.
+	//   - `deepgram/flux` is optimized for turn-taking with multilingual language hints.
 	//   - `deepgram/nova-3` is multilingual with automatic language detection.
 	//   - `deepgram/nova-2` is Deepgram's previous-generation multilingual model.
 	//   - `azure/fast` is a multilingual Azure transcription model.
@@ -3401,7 +3404,7 @@ func (r TranscriptionSettings) ToParam() TranscriptionSettingsParam {
 // The speech to text model to be used by the voice assistant. All Deepgram models
 // are run on-premise.
 //
-//   - `deepgram/flux` is optimized for turn-taking but is English-only.
+//   - `deepgram/flux` is optimized for turn-taking with multilingual language hints.
 //   - `deepgram/nova-3` is multilingual with automatic language detection.
 //   - `deepgram/nova-2` is Deepgram's previous-generation multilingual model.
 //   - `azure/fast` is a multilingual Azure transcription model.
@@ -3426,7 +3429,10 @@ type TranscriptionSettingsParam struct {
 	// used for Azure transcription regions that require a customer-provided API key.
 	APIKeyRef param.Opt[string] `json:"api_key_ref,omitzero"`
 	// The language of the audio to be transcribed. If not set, or if set to `auto`,
-	// the model will automatically detect the language.
+	// supported models will automatically detect the language. For `deepgram/flux`,
+	// supported values are: `auto` (Telnyx language detection controls the language
+	// hint), `multi` (no language hint), and language-specific hints `en`, `es`, `fr`,
+	// `de`, `hi`, `ru`, `pt`, `ja`, `it`, and `nl`.
 	Language param.Opt[string] `json:"language,omitzero"`
 	// Region on third party cloud providers (currently Azure) if using one of their
 	// models. Some regions require `api_key_ref`.
@@ -3434,7 +3440,7 @@ type TranscriptionSettingsParam struct {
 	// The speech to text model to be used by the voice assistant. All Deepgram models
 	// are run on-premise.
 	//
-	//   - `deepgram/flux` is optimized for turn-taking but is English-only.
+	//   - `deepgram/flux` is optimized for turn-taking with multilingual language hints.
 	//   - `deepgram/nova-3` is multilingual with automatic language detection.
 	//   - `deepgram/nova-2` is Deepgram's previous-generation multilingual model.
 	//   - `azure/fast` is a multilingual Azure transcription model.
