@@ -59,6 +59,7 @@ func TestWhatsappPhoneNumberProfileUpdateWithOptionalParams(t *testing.T) {
 			Description: telnyx.String("description"),
 			DisplayName: telnyx.String("display_name"),
 			Email:       telnyx.String("email"),
+			ProfileID:   telnyx.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			Website:     telnyx.String("website"),
 		},
 	)

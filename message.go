@@ -3943,6 +3943,8 @@ type MessageSendWhatsappParams struct {
 	// Phone number in +E.164 format
 	To              string                      `json:"to" api:"required"`
 	WhatsappMessage WhatsappMessageContentParam `json:"whatsapp_message,omitzero" api:"required"`
+	// Messaging profile ID - required if the 'from' number is not SMS-enabled
+	MessagingProfileID param.Opt[string] `json:"messaging_profile_id,omitzero" format:"uuid"`
 	// The URL where webhooks related to this message will be sent.
 	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
 	// Message type - must be set to "WHATSAPP"
