@@ -152,13 +152,16 @@ func (r *MessageTemplate) UnmarshalJSON(data []byte) error {
 }
 
 type VerifyProfile struct {
-	ID        string                 `json:"id" format:"uuid"`
-	Call      VerifyProfileCall      `json:"call"`
-	CreatedAt string                 `json:"created_at"`
-	Flashcall VerifyProfileFlashcall `json:"flashcall"`
-	Language  string                 `json:"language"`
-	Name      string                 `json:"name"`
-	Rcs       VerifyProfileRcs       `json:"rcs"`
+	ID        string            `json:"id" format:"uuid"`
+	Call      VerifyProfileCall `json:"call"`
+	CreatedAt string            `json:"created_at"`
+	// The maximum daily spend allowed on this verify profile, in USD.
+	DailySpendLimit float64 `json:"daily_spend_limit"`
+	// Whether the daily spend limit is enforced for this verify profile.
+	DailySpendLimitEnabled bool                   `json:"daily_spend_limit_enabled"`
+	Flashcall              VerifyProfileFlashcall `json:"flashcall"`
+	Language               string                 `json:"language"`
+	Name                   string                 `json:"name"`
 	// The possible verification profile record types.
 	//
 	// Any of "verification_profile".
@@ -170,21 +173,22 @@ type VerifyProfile struct {
 	Whatsapp           VerifyProfileWhatsapp   `json:"whatsapp"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 respjson.Field
-		Call               respjson.Field
-		CreatedAt          respjson.Field
-		Flashcall          respjson.Field
-		Language           respjson.Field
-		Name               respjson.Field
-		Rcs                respjson.Field
-		RecordType         respjson.Field
-		SMS                respjson.Field
-		UpdatedAt          respjson.Field
-		WebhookFailoverURL respjson.Field
-		WebhookURL         respjson.Field
-		Whatsapp           respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
+		ID                     respjson.Field
+		Call                   respjson.Field
+		CreatedAt              respjson.Field
+		DailySpendLimit        respjson.Field
+		DailySpendLimitEnabled respjson.Field
+		Flashcall              respjson.Field
+		Language               respjson.Field
+		Name                   respjson.Field
+		RecordType             respjson.Field
+		SMS                    respjson.Field
+		UpdatedAt              respjson.Field
+		WebhookFailoverURL     respjson.Field
+		WebhookURL             respjson.Field
+		Whatsapp               respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -254,47 +258,6 @@ type VerifyProfileFlashcall struct {
 // Returns the unmodified JSON received from the API
 func (r VerifyProfileFlashcall) RawJSON() string { return r.JSON.raw }
 func (r *VerifyProfileFlashcall) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VerifyProfileRcs struct {
-	// The name that identifies the application requesting 2fa in the verification
-	// message.
-	AppName string `json:"app_name"`
-	// The length of the verify code to generate.
-	CodeLength int64 `json:"code_length"`
-	// For every request that is initiated via this Verify profile, this sets the
-	// number of seconds before a verification request code expires. Once the
-	// verification request expires, the user cannot use the code to verify their
-	// identity.
-	DefaultVerificationTimeoutSecs int64 `json:"default_verification_timeout_secs"`
-	// The message template identifier selected from /verify_profiles/templates
-	MessagingTemplateID string `json:"messaging_template_id" format:"uuid"`
-	// Enable SMS fallback when RCS delivery fails.
-	SMSFallback bool `json:"sms_fallback"`
-	// Enabled country destinations to send verification codes. The elements in the
-	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
-	// destinations will be allowed. **Conditionally required:** this field must be
-	// provided when your organization is configured to require explicit whitelisted
-	// destinations; otherwise it is optional.
-	WhitelistedDestinations []string       `json:"whitelisted_destinations"`
-	ExtraFields             map[string]any `json:"" api:"extrafields"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AppName                        respjson.Field
-		CodeLength                     respjson.Field
-		DefaultVerificationTimeoutSecs respjson.Field
-		MessagingTemplateID            respjson.Field
-		SMSFallback                    respjson.Field
-		WhitelistedDestinations        respjson.Field
-		ExtraFields                    map[string]respjson.Field
-		raw                            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VerifyProfileRcs) RawJSON() string { return r.JSON.raw }
-func (r *VerifyProfileRcs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -446,15 +409,18 @@ func (r *VerifyProfileGetTemplatesResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VerifyProfileNewParams struct {
-	Name               string                          `json:"name" api:"required"`
-	Language           param.Opt[string]               `json:"language,omitzero"`
-	WebhookFailoverURL param.Opt[string]               `json:"webhook_failover_url,omitzero"`
-	WebhookURL         param.Opt[string]               `json:"webhook_url,omitzero"`
-	Call               VerifyProfileNewParamsCall      `json:"call,omitzero"`
-	Flashcall          VerifyProfileNewParamsFlashcall `json:"flashcall,omitzero"`
-	Rcs                VerifyProfileNewParamsRcs       `json:"rcs,omitzero"`
-	SMS                VerifyProfileNewParamsSMS       `json:"sms,omitzero"`
-	Whatsapp           VerifyProfileNewParamsWhatsapp  `json:"whatsapp,omitzero"`
+	Name string `json:"name" api:"required"`
+	// The maximum daily spend allowed on this verify profile, in USD.
+	DailySpendLimit param.Opt[float64] `json:"daily_spend_limit,omitzero"`
+	// Whether the daily spend limit is enforced for this verify profile.
+	DailySpendLimitEnabled param.Opt[bool]                 `json:"daily_spend_limit_enabled,omitzero"`
+	Language               param.Opt[string]               `json:"language,omitzero"`
+	WebhookFailoverURL     param.Opt[string]               `json:"webhook_failover_url,omitzero"`
+	WebhookURL             param.Opt[string]               `json:"webhook_url,omitzero"`
+	Call                   VerifyProfileNewParamsCall      `json:"call,omitzero"`
+	Flashcall              VerifyProfileNewParamsFlashcall `json:"flashcall,omitzero"`
+	SMS                    VerifyProfileNewParamsSMS       `json:"sms,omitzero"`
+	Whatsapp               VerifyProfileNewParamsWhatsapp  `json:"whatsapp,omitzero"`
 	paramObj
 }
 
@@ -524,39 +490,6 @@ func (r *VerifyProfileNewParamsFlashcall) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VerifyProfileNewParamsRcs struct {
-	// The name that identifies the application requesting 2fa in the verification
-	// message.
-	AppName param.Opt[string] `json:"app_name,omitzero"`
-	// The length of the verify code to generate.
-	CodeLength param.Opt[int64] `json:"code_length,omitzero"`
-	// For every request that is initiated via this Verify profile, this sets the
-	// number of seconds before a verification request code expires. Once the
-	// verification request expires, the user cannot use the code to verify their
-	// identity.
-	DefaultVerificationTimeoutSecs param.Opt[int64] `json:"default_verification_timeout_secs,omitzero"`
-	// The message template identifier selected from /verify_profiles/templates
-	MessagingTemplateID param.Opt[string] `json:"messaging_template_id,omitzero" format:"uuid"`
-	// Enable SMS fallback when RCS delivery fails.
-	SMSFallback param.Opt[bool] `json:"sms_fallback,omitzero"`
-	// Enabled country destinations to send verification codes. The elements in the
-	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
-	// destinations will be allowed. **Conditionally required:** this field must be
-	// provided when your organization is configured to require explicit whitelisted
-	// destinations; otherwise it is optional.
-	WhitelistedDestinations []string       `json:"whitelisted_destinations,omitzero"`
-	ExtraFields             map[string]any `json:"-"`
-	paramObj
-}
-
-func (r VerifyProfileNewParamsRcs) MarshalJSON() (data []byte, err error) {
-	type shadow VerifyProfileNewParamsRcs
-	return param.MarshalWithExtras(r, (*shadow)(&r), r.ExtraFields)
-}
-func (r *VerifyProfileNewParamsRcs) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type VerifyProfileNewParamsSMS struct {
 	// The alphanumeric sender ID to use when sending to destinations that require an
 	// alphanumeric sender ID.
@@ -622,15 +555,17 @@ func (r *VerifyProfileNewParamsWhatsapp) UnmarshalJSON(data []byte) error {
 }
 
 type VerifyProfileUpdateParams struct {
-	Language           param.Opt[string]                  `json:"language,omitzero"`
-	Name               param.Opt[string]                  `json:"name,omitzero"`
-	WebhookFailoverURL param.Opt[string]                  `json:"webhook_failover_url,omitzero"`
-	WebhookURL         param.Opt[string]                  `json:"webhook_url,omitzero"`
-	Call               VerifyProfileUpdateParamsCall      `json:"call,omitzero"`
-	Flashcall          VerifyProfileUpdateParamsFlashcall `json:"flashcall,omitzero"`
-	Rcs                VerifyProfileUpdateParamsRcs       `json:"rcs,omitzero"`
-	SMS                VerifyProfileUpdateParamsSMS       `json:"sms,omitzero"`
-	Whatsapp           VerifyProfileUpdateParamsWhatsapp  `json:"whatsapp,omitzero"`
+	// The maximum daily spend allowed on this verify profile, in USD.
+	DailySpendLimit param.Opt[float64] `json:"daily_spend_limit,omitzero"`
+	// Whether the daily spend limit is enforced for this verify profile.
+	DailySpendLimitEnabled param.Opt[bool]                   `json:"daily_spend_limit_enabled,omitzero"`
+	Language               param.Opt[string]                 `json:"language,omitzero"`
+	Name                   param.Opt[string]                 `json:"name,omitzero"`
+	WebhookFailoverURL     param.Opt[string]                 `json:"webhook_failover_url,omitzero"`
+	WebhookURL             param.Opt[string]                 `json:"webhook_url,omitzero"`
+	Call                   VerifyProfileUpdateParamsCall     `json:"call,omitzero"`
+	SMS                    VerifyProfileUpdateParamsSMS      `json:"sms,omitzero"`
+	Whatsapp               VerifyProfileUpdateParamsWhatsapp `json:"whatsapp,omitzero"`
 	paramObj
 }
 
@@ -670,66 +605,6 @@ func (r VerifyProfileUpdateParamsCall) MarshalJSON() (data []byte, err error) {
 	return param.MarshalWithExtras(r, (*shadow)(&r), r.ExtraFields)
 }
 func (r *VerifyProfileUpdateParamsCall) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VerifyProfileUpdateParamsFlashcall struct {
-	// The name that identifies the application requesting 2fa in the verification
-	// message.
-	AppName param.Opt[string] `json:"app_name,omitzero"`
-	// For every request that is initiated via this Verify profile, this sets the
-	// number of seconds before a verification request code expires. Once the
-	// verification request expires, the user cannot use the code to verify their
-	// identity.
-	DefaultVerificationTimeoutSecs param.Opt[int64] `json:"default_verification_timeout_secs,omitzero"`
-	// Enabled country destinations to send verification codes. The elements in the
-	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
-	// destinations will be allowed. **Conditionally required:** this field must be
-	// provided when your organization is configured to require explicit whitelisted
-	// destinations; otherwise it is optional.
-	WhitelistedDestinations []string       `json:"whitelisted_destinations,omitzero"`
-	ExtraFields             map[string]any `json:"-"`
-	paramObj
-}
-
-func (r VerifyProfileUpdateParamsFlashcall) MarshalJSON() (data []byte, err error) {
-	type shadow VerifyProfileUpdateParamsFlashcall
-	return param.MarshalWithExtras(r, (*shadow)(&r), r.ExtraFields)
-}
-func (r *VerifyProfileUpdateParamsFlashcall) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VerifyProfileUpdateParamsRcs struct {
-	// The name that identifies the application requesting 2fa in the verification
-	// message.
-	AppName param.Opt[string] `json:"app_name,omitzero"`
-	// The length of the verify code to generate.
-	CodeLength param.Opt[int64] `json:"code_length,omitzero"`
-	// For every request that is initiated via this Verify profile, this sets the
-	// number of seconds before a verification request code expires. Once the
-	// verification request expires, the user cannot use the code to verify their
-	// identity.
-	DefaultVerificationTimeoutSecs param.Opt[int64] `json:"default_verification_timeout_secs,omitzero"`
-	// The message template identifier selected from /verify_profiles/templates
-	MessagingTemplateID param.Opt[string] `json:"messaging_template_id,omitzero" format:"uuid"`
-	// Enable SMS fallback when RCS delivery fails.
-	SMSFallback param.Opt[bool] `json:"sms_fallback,omitzero"`
-	// Enabled country destinations to send verification codes. The elements in the
-	// list must be valid ISO 3166-1 alpha-2 country codes. If set to `["*"]`, all
-	// destinations will be allowed. **Conditionally required:** this field must be
-	// provided when your organization is configured to require explicit whitelisted
-	// destinations; otherwise it is optional.
-	WhitelistedDestinations []string       `json:"whitelisted_destinations,omitzero"`
-	ExtraFields             map[string]any `json:"-"`
-	paramObj
-}
-
-func (r VerifyProfileUpdateParamsRcs) MarshalJSON() (data []byte, err error) {
-	type shadow VerifyProfileUpdateParamsRcs
-	return param.MarshalWithExtras(r, (*shadow)(&r), r.ExtraFields)
-}
-func (r *VerifyProfileUpdateParamsRcs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
