@@ -56,11 +56,27 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 					OfString: telnyx.String("ACC-12345"),
 				},
 			},
-			ExternalLlm: map[string]any{
-				"foo": "bar",
+			ExternalLlm: telnyx.CallAssistantRequestExternalLlmParam{
+				AuthenticationMethod: "token",
+				BaseURL:              telnyx.String("base_url"),
+				CertificateRef:       telnyx.String("certificate_ref"),
+				ForwardMetadata:      telnyx.Bool(true),
+				LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
+				Model:                telnyx.String("model"),
+				TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
 			},
-			FallbackConfig: map[string]any{
-				"foo": "bar",
+			FallbackConfig: telnyx.CallAssistantRequestFallbackConfigParam{
+				ExternalLlm: telnyx.CallAssistantRequestFallbackConfigExternalLlmParam{
+					AuthenticationMethod: "token",
+					BaseURL:              telnyx.String("base_url"),
+					CertificateRef:       telnyx.String("certificate_ref"),
+					ForwardMetadata:      telnyx.Bool(true),
+					LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
+					Model:                telnyx.String("model"),
+					TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
+				},
+				LlmAPIKeyRef: telnyx.String("llm_api_key_ref"),
+				Model:        telnyx.String("model"),
 			},
 			Greeting:     telnyx.String("greeting"),
 			Instructions: telnyx.String("You are a friendly voice assistant."),

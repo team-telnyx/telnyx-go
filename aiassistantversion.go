@@ -150,11 +150,13 @@ type UpdateAssistantParam struct {
 	Model param.Opt[string] `json:"model,omitzero"`
 	Name  param.Opt[string] `json:"name,omitzero"`
 	// Map of dynamic variables and their default values
-	DynamicVariables      map[string]any         `json:"dynamic_variables,omitzero"`
-	EnabledFeatures       []EnabledFeatures      `json:"enabled_features,omitzero"`
-	InsightSettings       InsightSettingsParam   `json:"insight_settings,omitzero"`
-	MessagingSettings     MessagingSettingsParam `json:"messaging_settings,omitzero"`
-	ObservabilitySettings ObservabilityReqParam  `json:"observability_settings,omitzero"`
+	DynamicVariables      map[string]any                     `json:"dynamic_variables,omitzero"`
+	EnabledFeatures       []EnabledFeatures                  `json:"enabled_features,omitzero"`
+	ExternalLlm           UpdateAssistantExternalLlmParam    `json:"external_llm,omitzero"`
+	FallbackConfig        UpdateAssistantFallbackConfigParam `json:"fallback_config,omitzero"`
+	InsightSettings       InsightSettingsParam               `json:"insight_settings,omitzero"`
+	MessagingSettings     MessagingSettingsParam             `json:"messaging_settings,omitzero"`
+	ObservabilitySettings ObservabilityReqParam              `json:"observability_settings,omitzero"`
 	// Configuration for post-conversation processing. When enabled, the assistant
 	// receives one additional LLM turn after the conversation ends, allowing it to
 	// execute tool calls such as logging to a CRM or sending a summary. The assistant
@@ -181,6 +183,104 @@ func (r UpdateAssistantParam) MarshalJSON() (data []byte, err error) {
 }
 func (r *UpdateAssistantParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties BaseURL, Model are required.
+type UpdateAssistantExternalLlmParam struct {
+	// Base URL for the external LLM endpoint.
+	BaseURL string `json:"base_url" api:"required"`
+	// Model identifier to use with the external LLM endpoint.
+	Model string `json:"model" api:"required"`
+	// Integration secret identifier for the client certificate used with certificate
+	// authentication.
+	CertificateRef param.Opt[string] `json:"certificate_ref,omitzero"`
+	// When enabled, Telnyx forwards conversation metadata and dynamic variables to the
+	// external LLM endpoint. Defaults to false. The external endpoint receives the
+	// standard chat completions payload with top-level `metadata` and
+	// `dynamic_variables` objects when values are available. For example:
+	// `{"metadata":{"conversation_id":"conv_123","assistant_id":"assistant_456","call_control_id":"v3:abc123","telnyx_conversation_channel":"phone_call"},"dynamic_variables":{"customer_name":"Jane","account_id":"acct_789","telnyx_agent_target":"+13125550100","telnyx_end_user_target":"+13125550123"}}`.
+	ForwardMetadata param.Opt[bool] `json:"forward_metadata,omitzero"`
+	// Integration secret identifier for the external LLM API key.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// URL used to retrieve an access token when certificate authentication is enabled.
+	TokenRetrievalURL param.Opt[string] `json:"token_retrieval_url,omitzero"`
+	// Authentication method used when connecting to the external LLM endpoint.
+	//
+	// Any of "token", "certificate".
+	AuthenticationMethod string `json:"authentication_method,omitzero"`
+	paramObj
+}
+
+func (r UpdateAssistantExternalLlmParam) MarshalJSON() (data []byte, err error) {
+	type shadow UpdateAssistantExternalLlmParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UpdateAssistantExternalLlmParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[UpdateAssistantExternalLlmParam](
+		"authentication_method", "token", "certificate",
+	)
+}
+
+type UpdateAssistantFallbackConfigParam struct {
+	// Integration secret identifier for the fallback model API key.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// Fallback Telnyx-hosted model to use when the primary LLM provider is
+	// unavailable.
+	Model       param.Opt[string]                             `json:"model,omitzero"`
+	ExternalLlm UpdateAssistantFallbackConfigExternalLlmParam `json:"external_llm,omitzero"`
+	paramObj
+}
+
+func (r UpdateAssistantFallbackConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow UpdateAssistantFallbackConfigParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UpdateAssistantFallbackConfigParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties BaseURL, Model are required.
+type UpdateAssistantFallbackConfigExternalLlmParam struct {
+	// Base URL for the external LLM endpoint.
+	BaseURL string `json:"base_url" api:"required"`
+	// Model identifier to use with the external LLM endpoint.
+	Model string `json:"model" api:"required"`
+	// Integration secret identifier for the client certificate used with certificate
+	// authentication.
+	CertificateRef param.Opt[string] `json:"certificate_ref,omitzero"`
+	// When enabled, Telnyx forwards conversation metadata and dynamic variables to the
+	// external LLM endpoint. Defaults to false. The external endpoint receives the
+	// standard chat completions payload with top-level `metadata` and
+	// `dynamic_variables` objects when values are available. For example:
+	// `{"metadata":{"conversation_id":"conv_123","assistant_id":"assistant_456","call_control_id":"v3:abc123","telnyx_conversation_channel":"phone_call"},"dynamic_variables":{"customer_name":"Jane","account_id":"acct_789","telnyx_agent_target":"+13125550100","telnyx_end_user_target":"+13125550123"}}`.
+	ForwardMetadata param.Opt[bool] `json:"forward_metadata,omitzero"`
+	// Integration secret identifier for the external LLM API key.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// URL used to retrieve an access token when certificate authentication is enabled.
+	TokenRetrievalURL param.Opt[string] `json:"token_retrieval_url,omitzero"`
+	// Authentication method used when connecting to the external LLM endpoint.
+	//
+	// Any of "token", "certificate".
+	AuthenticationMethod string `json:"authentication_method,omitzero"`
+	paramObj
+}
+
+func (r UpdateAssistantFallbackConfigExternalLlmParam) MarshalJSON() (data []byte, err error) {
+	type shadow UpdateAssistantFallbackConfigExternalLlmParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UpdateAssistantFallbackConfigExternalLlmParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[UpdateAssistantFallbackConfigExternalLlmParam](
+		"authentication_method", "token", "certificate",
+	)
 }
 
 // Configuration for post-conversation processing. When enabled, the assistant
