@@ -2245,11 +2245,11 @@ type InferenceEmbeddingExternalLlm struct {
 	// Integration secret identifier for the client certificate used with certificate
 	// authentication.
 	CertificateRef string `json:"certificate_ref"`
-	// When enabled, Telnyx forwards conversation metadata and dynamic variables to the
-	// external LLM endpoint. Defaults to false. The external endpoint receives the
-	// standard chat completions payload with top-level `metadata` and
-	// `dynamic_variables` objects when values are available. For example:
-	// `{"metadata":{"conversation_id":"conv_123","assistant_id":"assistant_456","call_control_id":"v3:abc123","telnyx_conversation_channel":"phone_call"},"dynamic_variables":{"customer_name":"Jane","account_id":"acct_789","telnyx_agent_target":"+13125550100","telnyx_end_user_target":"+13125550123"}}`.
+	// When enabled, Telnyx forwards the assistant's dynamic variables to the external
+	// LLM endpoint. Defaults to false. The chat completion request includes a
+	// top-level `extra_metadata` object when dynamic variables are available. For
+	// example:
+	// `{"extra_metadata":{"customer_name":"Jane","account_id":"acct_789","telnyx_agent_target":"+13125550100","telnyx_end_user_target":"+13125550123"}}`.
 	ForwardMetadata bool `json:"forward_metadata"`
 	// Integration secret identifier for the external LLM API key.
 	LlmAPIKeyRef string `json:"llm_api_key_ref"`
@@ -2310,11 +2310,11 @@ type InferenceEmbeddingFallbackConfigExternalLlm struct {
 	// Integration secret identifier for the client certificate used with certificate
 	// authentication.
 	CertificateRef string `json:"certificate_ref"`
-	// When enabled, Telnyx forwards conversation metadata and dynamic variables to the
-	// external LLM endpoint. Defaults to false. The external endpoint receives the
-	// standard chat completions payload with top-level `metadata` and
-	// `dynamic_variables` objects when values are available. For example:
-	// `{"metadata":{"conversation_id":"conv_123","assistant_id":"assistant_456","call_control_id":"v3:abc123","telnyx_conversation_channel":"phone_call"},"dynamic_variables":{"customer_name":"Jane","account_id":"acct_789","telnyx_agent_target":"+13125550100","telnyx_end_user_target":"+13125550123"}}`.
+	// When enabled, Telnyx forwards the assistant's dynamic variables to the external
+	// LLM endpoint. Defaults to false. The chat completion request includes a
+	// top-level `extra_metadata` object when dynamic variables are available. For
+	// example:
+	// `{"extra_metadata":{"customer_name":"Jane","account_id":"acct_789","telnyx_agent_target":"+13125550100","telnyx_end_user_target":"+13125550123"}}`.
 	ForwardMetadata bool `json:"forward_metadata"`
 	// Integration secret identifier for the external LLM API key.
 	LlmAPIKeyRef string `json:"llm_api_key_ref"`
@@ -4638,11 +4638,11 @@ type AIAssistantNewParamsExternalLlm struct {
 	// Integration secret identifier for the client certificate used with certificate
 	// authentication.
 	CertificateRef param.Opt[string] `json:"certificate_ref,omitzero"`
-	// When enabled, Telnyx forwards conversation metadata and dynamic variables to the
-	// external LLM endpoint. Defaults to false. The external endpoint receives the
-	// standard chat completions payload with top-level `metadata` and
-	// `dynamic_variables` objects when values are available. For example:
-	// `{"metadata":{"conversation_id":"conv_123","assistant_id":"assistant_456","call_control_id":"v3:abc123","telnyx_conversation_channel":"phone_call"},"dynamic_variables":{"customer_name":"Jane","account_id":"acct_789","telnyx_agent_target":"+13125550100","telnyx_end_user_target":"+13125550123"}}`.
+	// When enabled, Telnyx forwards the assistant's dynamic variables to the external
+	// LLM endpoint. Defaults to false. The chat completion request includes a
+	// top-level `extra_metadata` object when dynamic variables are available. For
+	// example:
+	// `{"extra_metadata":{"customer_name":"Jane","account_id":"acct_789","telnyx_agent_target":"+13125550100","telnyx_end_user_target":"+13125550123"}}`.
 	ForwardMetadata param.Opt[bool] `json:"forward_metadata,omitzero"`
 	// Integration secret identifier for the external LLM API key.
 	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
@@ -4696,11 +4696,11 @@ type AIAssistantNewParamsFallbackConfigExternalLlm struct {
 	// Integration secret identifier for the client certificate used with certificate
 	// authentication.
 	CertificateRef param.Opt[string] `json:"certificate_ref,omitzero"`
-	// When enabled, Telnyx forwards conversation metadata and dynamic variables to the
-	// external LLM endpoint. Defaults to false. The external endpoint receives the
-	// standard chat completions payload with top-level `metadata` and
-	// `dynamic_variables` objects when values are available. For example:
-	// `{"metadata":{"conversation_id":"conv_123","assistant_id":"assistant_456","call_control_id":"v3:abc123","telnyx_conversation_channel":"phone_call"},"dynamic_variables":{"customer_name":"Jane","account_id":"acct_789","telnyx_agent_target":"+13125550100","telnyx_end_user_target":"+13125550123"}}`.
+	// When enabled, Telnyx forwards the assistant's dynamic variables to the external
+	// LLM endpoint. Defaults to false. The chat completion request includes a
+	// top-level `extra_metadata` object when dynamic variables are available. For
+	// example:
+	// `{"extra_metadata":{"customer_name":"Jane","account_id":"acct_789","telnyx_agent_target":"+13125550100","telnyx_end_user_target":"+13125550123"}}`.
 	ForwardMetadata param.Opt[bool] `json:"forward_metadata,omitzero"`
 	// Integration secret identifier for the external LLM API key.
 	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
@@ -4841,11 +4841,11 @@ type AIAssistantUpdateParamsExternalLlm struct {
 	// Integration secret identifier for the client certificate used with certificate
 	// authentication.
 	CertificateRef param.Opt[string] `json:"certificate_ref,omitzero"`
-	// When enabled, Telnyx forwards conversation metadata and dynamic variables to the
-	// external LLM endpoint. Defaults to false. The external endpoint receives the
-	// standard chat completions payload with top-level `metadata` and
-	// `dynamic_variables` objects when values are available. For example:
-	// `{"metadata":{"conversation_id":"conv_123","assistant_id":"assistant_456","call_control_id":"v3:abc123","telnyx_conversation_channel":"phone_call"},"dynamic_variables":{"customer_name":"Jane","account_id":"acct_789","telnyx_agent_target":"+13125550100","telnyx_end_user_target":"+13125550123"}}`.
+	// When enabled, Telnyx forwards the assistant's dynamic variables to the external
+	// LLM endpoint. Defaults to false. The chat completion request includes a
+	// top-level `extra_metadata` object when dynamic variables are available. For
+	// example:
+	// `{"extra_metadata":{"customer_name":"Jane","account_id":"acct_789","telnyx_agent_target":"+13125550100","telnyx_end_user_target":"+13125550123"}}`.
 	ForwardMetadata param.Opt[bool] `json:"forward_metadata,omitzero"`
 	// Integration secret identifier for the external LLM API key.
 	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
@@ -4899,11 +4899,11 @@ type AIAssistantUpdateParamsFallbackConfigExternalLlm struct {
 	// Integration secret identifier for the client certificate used with certificate
 	// authentication.
 	CertificateRef param.Opt[string] `json:"certificate_ref,omitzero"`
-	// When enabled, Telnyx forwards conversation metadata and dynamic variables to the
-	// external LLM endpoint. Defaults to false. The external endpoint receives the
-	// standard chat completions payload with top-level `metadata` and
-	// `dynamic_variables` objects when values are available. For example:
-	// `{"metadata":{"conversation_id":"conv_123","assistant_id":"assistant_456","call_control_id":"v3:abc123","telnyx_conversation_channel":"phone_call"},"dynamic_variables":{"customer_name":"Jane","account_id":"acct_789","telnyx_agent_target":"+13125550100","telnyx_end_user_target":"+13125550123"}}`.
+	// When enabled, Telnyx forwards the assistant's dynamic variables to the external
+	// LLM endpoint. Defaults to false. The chat completion request includes a
+	// top-level `extra_metadata` object when dynamic variables are available. For
+	// example:
+	// `{"extra_metadata":{"customer_name":"Jane","account_id":"acct_789","telnyx_agent_target":"+13125550100","telnyx_end_user_target":"+13125550123"}}`.
 	ForwardMetadata param.Opt[bool] `json:"forward_metadata,omitzero"`
 	// Integration secret identifier for the external LLM API key.
 	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
