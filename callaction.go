@@ -1655,7 +1655,7 @@ type TranscriptionStartRequestParam struct {
 	// Engine to use for speech recognition. Legacy values `A` - `Google`, `B` -
 	// `Telnyx` are supported for backward compatibility.
 	//
-	// Any of "Google", "Telnyx", "Deepgram", "Azure", "A", "B".
+	// Any of "Google", "Telnyx", "Deepgram", "Azure", "xAI", "AssemblyAI", "A", "B".
 	TranscriptionEngine       TranscriptionStartRequestTranscriptionEngine                 `json:"transcription_engine,omitzero"`
 	TranscriptionEngineConfig TranscriptionStartRequestTranscriptionEngineConfigUnionParam `json:"transcription_engine_config,omitzero"`
 	paramObj
@@ -1674,25 +1674,29 @@ func (r *TranscriptionStartRequestParam) UnmarshalJSON(data []byte) error {
 type TranscriptionStartRequestTranscriptionEngine string
 
 const (
-	TranscriptionStartRequestTranscriptionEngineGoogle   TranscriptionStartRequestTranscriptionEngine = "Google"
-	TranscriptionStartRequestTranscriptionEngineTelnyx   TranscriptionStartRequestTranscriptionEngine = "Telnyx"
-	TranscriptionStartRequestTranscriptionEngineDeepgram TranscriptionStartRequestTranscriptionEngine = "Deepgram"
-	TranscriptionStartRequestTranscriptionEngineAzure    TranscriptionStartRequestTranscriptionEngine = "Azure"
-	TranscriptionStartRequestTranscriptionEngineA        TranscriptionStartRequestTranscriptionEngine = "A"
-	TranscriptionStartRequestTranscriptionEngineB        TranscriptionStartRequestTranscriptionEngine = "B"
+	TranscriptionStartRequestTranscriptionEngineGoogle     TranscriptionStartRequestTranscriptionEngine = "Google"
+	TranscriptionStartRequestTranscriptionEngineTelnyx     TranscriptionStartRequestTranscriptionEngine = "Telnyx"
+	TranscriptionStartRequestTranscriptionEngineDeepgram   TranscriptionStartRequestTranscriptionEngine = "Deepgram"
+	TranscriptionStartRequestTranscriptionEngineAzure      TranscriptionStartRequestTranscriptionEngine = "Azure"
+	TranscriptionStartRequestTranscriptionEngineXAI        TranscriptionStartRequestTranscriptionEngine = "xAI"
+	TranscriptionStartRequestTranscriptionEngineAssemblyAI TranscriptionStartRequestTranscriptionEngine = "AssemblyAI"
+	TranscriptionStartRequestTranscriptionEngineA          TranscriptionStartRequestTranscriptionEngine = "A"
+	TranscriptionStartRequestTranscriptionEngineB          TranscriptionStartRequestTranscriptionEngine = "B"
 )
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type TranscriptionStartRequestTranscriptionEngineConfigUnionParam struct {
-	OfGoogle        *TranscriptionEngineGoogleConfigParam `json:",omitzero,inline"`
-	OfTelnyx        *TranscriptionEngineTelnyxConfigParam `json:",omitzero,inline"`
-	OfAzure         *TranscriptionEngineAzureConfigParam  `json:",omitzero,inline"`
-	OfA             *TranscriptionEngineAConfigParam      `json:",omitzero,inline"`
-	OfB             *TranscriptionEngineBConfigParam      `json:",omitzero,inline"`
-	OfDeepgramNova2 *DeepgramNova2ConfigParam             `json:",omitzero,inline"`
-	OfDeepgramNova3 *DeepgramNova3ConfigParam             `json:",omitzero,inline"`
+	OfGoogle        *TranscriptionEngineGoogleConfigParam                              `json:",omitzero,inline"`
+	OfTelnyx        *TranscriptionEngineTelnyxConfigParam                              `json:",omitzero,inline"`
+	OfAzure         *TranscriptionEngineAzureConfigParam                               `json:",omitzero,inline"`
+	OfXAI           *TranscriptionStartRequestTranscriptionEngineConfigXAIParam        `json:",omitzero,inline"`
+	OfAssemblyAI    *TranscriptionStartRequestTranscriptionEngineConfigAssemblyAIParam `json:",omitzero,inline"`
+	OfA             *TranscriptionEngineAConfigParam                                   `json:",omitzero,inline"`
+	OfB             *TranscriptionEngineBConfigParam                                   `json:",omitzero,inline"`
+	OfDeepgramNova2 *DeepgramNova2ConfigParam                                          `json:",omitzero,inline"`
+	OfDeepgramNova3 *DeepgramNova3ConfigParam                                          `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1700,6 +1704,8 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) MarshalJSO
 	return param.MarshalUnion(u, u.OfGoogle,
 		u.OfTelnyx,
 		u.OfAzure,
+		u.OfXAI,
+		u.OfAssemblyAI,
 		u.OfA,
 		u.OfB,
 		u.OfDeepgramNova2,
@@ -1716,6 +1722,10 @@ func (u *TranscriptionStartRequestTranscriptionEngineConfigUnionParam) asAny() a
 		return u.OfTelnyx
 	} else if !param.IsOmitted(u.OfAzure) {
 		return u.OfAzure
+	} else if !param.IsOmitted(u.OfXAI) {
+		return u.OfXAI
+	} else if !param.IsOmitted(u.OfAssemblyAI) {
+		return u.OfAssemblyAI
 	} else if !param.IsOmitted(u.OfA) {
 		return u.OfA
 	} else if !param.IsOmitted(u.OfB) {
@@ -1758,6 +1768,10 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetEnableS
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetInterimResults() *bool {
 	if vt := u.OfGoogle; vt != nil && vt.InterimResults.Valid() {
 		return &vt.InterimResults.Value
+	} else if vt := u.OfXAI; vt != nil && vt.InterimResults.Valid() {
+		return &vt.InterimResults.Value
+	} else if vt := u.OfAssemblyAI; vt != nil && vt.InterimResults.Valid() {
+		return &vt.InterimResults.Value
 	} else if vt := u.OfA; vt != nil && vt.InterimResults.Valid() {
 		return &vt.InterimResults.Value
 	} else if vt := u.OfDeepgramNova2; vt != nil && vt.InterimResults.Valid() {
@@ -1775,6 +1789,8 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetLanguag
 	} else if vt := u.OfTelnyx; vt != nil {
 		return (*string)(&vt.Language)
 	} else if vt := u.OfAzure; vt != nil {
+		return (*string)(&vt.Language)
+	} else if vt := u.OfXAI; vt != nil {
 		return (*string)(&vt.Language)
 	} else if vt := u.OfA; vt != nil {
 		return (*string)(&vt.Language)
@@ -1836,6 +1852,10 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscr
 		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfAzure; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
+	} else if vt := u.OfXAI; vt != nil {
+		return (*string)(&vt.TranscriptionEngine)
+	} else if vt := u.OfAssemblyAI; vt != nil {
+		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfA; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfB; vt != nil {
@@ -1861,6 +1881,10 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetUseEnha
 // Returns a pointer to the underlying variant's property, if present.
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscriptionModel() *string {
 	if vt := u.OfTelnyx; vt != nil {
+		return (*string)(&vt.TranscriptionModel)
+	} else if vt := u.OfXAI; vt != nil {
+		return (*string)(&vt.TranscriptionModel)
+	} else if vt := u.OfAssemblyAI; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
 	} else if vt := u.OfB; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
@@ -1938,10 +1962,84 @@ func init() {
 		apijson.Discriminator[TranscriptionEngineGoogleConfigParam]("Google"),
 		apijson.Discriminator[TranscriptionEngineTelnyxConfigParam]("Telnyx"),
 		apijson.Discriminator[TranscriptionEngineAzureConfigParam]("Azure"),
+		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigXAIParam]("xAI"),
+		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigAssemblyAIParam]("AssemblyAI"),
 		apijson.Discriminator[TranscriptionEngineAConfigParam]("A"),
 		apijson.Discriminator[TranscriptionEngineBConfigParam]("B"),
 		apijson.Discriminator[DeepgramNova2ConfigParam]("deepgram/nova-2"),
 		apijson.Discriminator[DeepgramNova3ConfigParam]("deepgram/nova-3"),
+	)
+}
+
+type TranscriptionStartRequestTranscriptionEngineConfigXAIParam struct {
+	// Whether to send also interim results. If set to false, only final results will
+	// be sent.
+	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
+	// Language to use for speech recognition
+	//
+	// Any of "ar", "cs", "da", "de", "en", "es", "fa", "fil", "fr", "hi", "id", "it",
+	// "ja", "ko", "mk", "ms", "nl", "pl", "pt", "ro", "ru", "sv", "th", "tr", "vi".
+	Language string `json:"language,omitzero"`
+	// Engine identifier for xAI transcription service
+	//
+	// Any of "xAI".
+	TranscriptionEngine string `json:"transcription_engine,omitzero"`
+	// The model to use for transcription.
+	//
+	// Any of "xai/grok-stt".
+	TranscriptionModel string `json:"transcription_model,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionStartRequestTranscriptionEngineConfigXAIParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionStartRequestTranscriptionEngineConfigXAIParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionStartRequestTranscriptionEngineConfigXAIParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigXAIParam](
+		"language", "ar", "cs", "da", "de", "en", "es", "fa", "fil", "fr", "hi", "id", "it", "ja", "ko", "mk", "ms", "nl", "pl", "pt", "ro", "ru", "sv", "th", "tr", "vi",
+	)
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigXAIParam](
+		"transcription_engine", "xAI",
+	)
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigXAIParam](
+		"transcription_model", "xai/grok-stt",
+	)
+}
+
+type TranscriptionStartRequestTranscriptionEngineConfigAssemblyAIParam struct {
+	// Whether to send also interim results. If set to false, only final results will
+	// be sent.
+	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
+	// Engine identifier for AssemblyAI transcription service
+	//
+	// Any of "AssemblyAI".
+	TranscriptionEngine string `json:"transcription_engine,omitzero"`
+	// The model to use for transcription.
+	//
+	// Any of "assemblyai/universal-streaming".
+	TranscriptionModel string `json:"transcription_model,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionStartRequestTranscriptionEngineConfigAssemblyAIParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionStartRequestTranscriptionEngineConfigAssemblyAIParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionStartRequestTranscriptionEngineConfigAssemblyAIParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigAssemblyAIParam](
+		"transcription_engine", "AssemblyAI",
+	)
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigAssemblyAIParam](
+		"transcription_model", "assemblyai/universal-streaming",
 	)
 }
 
