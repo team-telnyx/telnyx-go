@@ -28,14 +28,14 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.AI.Assistants.New(context.TODO(), telnyx.AIAssistantNewParams{
 		Instructions: "instructions",
-		Model:        "model",
 		Name:         "name",
 		Description:  telnyx.String("description"),
 		DynamicVariables: map[string]any{
 			"foo": "bar",
 		},
-		DynamicVariablesWebhookURL: telnyx.String("dynamic_variables_webhook_url"),
-		EnabledFeatures:            []telnyx.EnabledFeatures{telnyx.EnabledFeaturesTelephony},
+		DynamicVariablesWebhookTimeoutMs: telnyx.Int(1),
+		DynamicVariablesWebhookURL:       telnyx.String("dynamic_variables_webhook_url"),
+		EnabledFeatures:                  []telnyx.EnabledFeatures{telnyx.EnabledFeaturesTelephony},
 		ExternalLlm: telnyx.AIAssistantNewParamsExternalLlm{
 			BaseURL:              "base_url",
 			Model:                "model",
@@ -62,12 +62,32 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 		InsightSettings: telnyx.InsightSettingsParam{
 			InsightGroupID: telnyx.String("insight_group_id"),
 		},
+		Integrations: []telnyx.AIAssistantNewParamsIntegration{{
+			IntegrationID: "integration_id",
+			AllowedList:   []string{"string"},
+		}},
+		InterruptionSettings: telnyx.AIAssistantNewParamsInterruptionSettings{
+			Enable: telnyx.Bool(true),
+			StartSpeakingPlan: telnyx.AIAssistantNewParamsInterruptionSettingsStartSpeakingPlan{
+				TranscriptionEndpointingPlan: telnyx.AIAssistantNewParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan{
+					OnNoPunctuationSeconds: telnyx.Float(0),
+					OnNumberSeconds:        telnyx.Float(0),
+					OnPunctuationSeconds:   telnyx.Float(0),
+				},
+				WaitSeconds: telnyx.Float(0),
+			},
+		},
 		LlmAPIKeyRef: telnyx.String("llm_api_key_ref"),
+		McpServers: []telnyx.AIAssistantNewParamsMcpServer{{
+			ID:           "id",
+			AllowedTools: []string{"string"},
+		}},
 		MessagingSettings: telnyx.MessagingSettingsParam{
 			ConversationInactivityMinutes: telnyx.Int(1),
 			DefaultMessagingProfileID:     telnyx.String("default_messaging_profile_id"),
 			DeliveryStatusWebhookURL:      telnyx.String("delivery_status_webhook_url"),
 		},
+		Model: telnyx.String("model"),
 		ObservabilitySettings: telnyx.ObservabilityReqParam{
 			Host:         telnyx.String("host"),
 			PublicKeyRef: telnyx.String("public_key_ref"),
@@ -80,6 +100,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 		PrivacySettings: telnyx.PrivacySettingsParam{
 			DataRetention: telnyx.Bool(true),
 		},
+		Tags: []string{"string"},
 		TelephonySettings: telnyx.TelephonySettingsParam{
 			DefaultTexmlAppID: telnyx.String("default_texml_app_id"),
 			NoiseSuppression:  telnyx.TelephonySettingsNoiseSuppressionKrisp,
@@ -264,8 +285,9 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 			DynamicVariables: map[string]any{
 				"foo": "bar",
 			},
-			DynamicVariablesWebhookURL: telnyx.String("dynamic_variables_webhook_url"),
-			EnabledFeatures:            []telnyx.EnabledFeatures{telnyx.EnabledFeaturesTelephony},
+			DynamicVariablesWebhookTimeoutMs: telnyx.Int(1),
+			DynamicVariablesWebhookURL:       telnyx.String("dynamic_variables_webhook_url"),
+			EnabledFeatures:                  []telnyx.EnabledFeatures{telnyx.EnabledFeaturesTelephony},
 			ExternalLlm: telnyx.AIAssistantUpdateParamsExternalLlm{
 				BaseURL:              "base_url",
 				Model:                "model",
@@ -293,7 +315,26 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				InsightGroupID: telnyx.String("insight_group_id"),
 			},
 			Instructions: telnyx.String("instructions"),
+			Integrations: []telnyx.AIAssistantUpdateParamsIntegration{{
+				IntegrationID: "integration_id",
+				AllowedList:   []string{"string"},
+			}},
+			InterruptionSettings: telnyx.AIAssistantUpdateParamsInterruptionSettings{
+				Enable: telnyx.Bool(true),
+				StartSpeakingPlan: telnyx.AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlan{
+					TranscriptionEndpointingPlan: telnyx.AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan{
+						OnNoPunctuationSeconds: telnyx.Float(0),
+						OnNumberSeconds:        telnyx.Float(0),
+						OnPunctuationSeconds:   telnyx.Float(0),
+					},
+					WaitSeconds: telnyx.Float(0),
+				},
+			},
 			LlmAPIKeyRef: telnyx.String("llm_api_key_ref"),
+			McpServers: []telnyx.AIAssistantUpdateParamsMcpServer{{
+				ID:           "id",
+				AllowedTools: []string{"string"},
+			}},
 			MessagingSettings: telnyx.MessagingSettingsParam{
 				ConversationInactivityMinutes: telnyx.Int(1),
 				DefaultMessagingProfileID:     telnyx.String("default_messaging_profile_id"),
@@ -314,6 +355,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				DataRetention: telnyx.Bool(true),
 			},
 			PromoteToMain: telnyx.Bool(true),
+			Tags:          []string{"string"},
 			TelephonySettings: telnyx.TelephonySettingsParam{
 				DefaultTexmlAppID: telnyx.String("default_texml_app_id"),
 				NoiseSuppression:  telnyx.TelephonySettingsNoiseSuppressionKrisp,
@@ -402,6 +444,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 					SmartFormat:                  telnyx.Bool(true),
 				},
 			},
+			VersionName: telnyx.String("version_name"),
 			VoiceSettings: telnyx.VoiceSettingsParam{
 				Voice:     "voice",
 				APIKeyRef: telnyx.String("api_key_ref"),
