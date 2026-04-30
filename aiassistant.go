@@ -597,8 +597,10 @@ type AssistantToolTransferTransfer struct {
 	// Number or SIP URI placing the call.
 	From string `json:"from" api:"required"`
 	// The different possible targets of the transfer. The assistant will be able to
-	// choose one of the targets to transfer the call to.
-	Targets []AssistantToolTransferTransferTarget `json:"targets" api:"required"`
+	// choose one of the targets to transfer the call to. This can also be a dynamic
+	// variable string like `{{ targets }}` where `targets` is returned by the dynamic
+	// variables webhook and resolves to an array of target objects at runtime.
+	Targets AssistantToolTransferTransferTargetsUnion `json:"targets" api:"required"`
 	// Custom headers to be added to the SIP INVITE for the transfer command.
 	CustomHeaders []AssistantToolTransferTransferCustomHeader `json:"custom_headers"`
 	// Configuration for voicemail detection (AMD - Answering Machine Detection) on the
@@ -632,23 +634,60 @@ func (r *AssistantToolTransferTransfer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AssistantToolTransferTransferTarget struct {
+// AssistantToolTransferTransferTargetsUnion contains all possible properties and
+// values from [[]AssistantToolTransferTransferTargetsArrayItem], [string].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfAssistantToolTransferTransferTargetsArray OfString]
+type AssistantToolTransferTransferTargetsUnion struct {
+	// This field will be present if the value is a
+	// [[]AssistantToolTransferTransferTargetsArrayItem] instead of an object.
+	OfAssistantToolTransferTransferTargetsArray []AssistantToolTransferTransferTargetsArrayItem `json:",inline"`
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	JSON     struct {
+		OfAssistantToolTransferTransferTargetsArray respjson.Field
+		OfString                                    respjson.Field
+		raw                                         string
+	} `json:"-"`
+}
+
+func (u AssistantToolTransferTransferTargetsUnion) AsAssistantToolTransferTransferTargetsArray() (v []AssistantToolTransferTransferTargetsArrayItem) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u AssistantToolTransferTransferTargetsUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u AssistantToolTransferTransferTargetsUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *AssistantToolTransferTransferTargetsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AssistantToolTransferTransferTargetsArrayItem struct {
+	// The destination number or SIP URI of the call.
+	To string `json:"to" api:"required"`
 	// The name of the target.
 	Name string `json:"name"`
-	// The destination number or SIP URI of the call.
-	To string `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Name        respjson.Field
 		To          respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r AssistantToolTransferTransferTarget) RawJSON() string { return r.JSON.raw }
-func (r *AssistantToolTransferTransferTarget) UnmarshalJSON(data []byte) error {
+func (r AssistantToolTransferTransferTargetsArrayItem) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolTransferTransferTargetsArrayItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -834,6 +873,13 @@ type AssistantToolInviteInviteConfig struct {
 	CustomHeaders []AssistantToolInviteInviteConfigCustomHeader `json:"custom_headers"`
 	// Number or SIP URI placing the call.
 	From string `json:"from"`
+	// The different possible targets of the invite. The assistant will be able to
+	// choose one of the targets to invite to the call. This can also be a dynamic
+	// variable string like `{{ targets }}` where `targets` is returned by the dynamic
+	// variables webhook and resolves to an array of target objects at runtime. If
+	// omitted or null, the invite tool can still be configured and targets may be
+	// supplied dynamically at runtime.
+	Targets AssistantToolInviteInviteConfigTargetsUnion `json:"targets" api:"nullable"`
 	// Configuration for voicemail detection (AMD - Answering Machine Detection) on the
 	// invited call.
 	VoicemailDetection AssistantToolInviteInviteConfigVoicemailDetection `json:"voicemail_detection"`
@@ -841,6 +887,7 @@ type AssistantToolInviteInviteConfig struct {
 	JSON struct {
 		CustomHeaders      respjson.Field
 		From               respjson.Field
+		Targets            respjson.Field
 		VoicemailDetection respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
@@ -872,6 +919,63 @@ type AssistantToolInviteInviteConfigCustomHeader struct {
 // Returns the unmodified JSON received from the API
 func (r AssistantToolInviteInviteConfigCustomHeader) RawJSON() string { return r.JSON.raw }
 func (r *AssistantToolInviteInviteConfigCustomHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// AssistantToolInviteInviteConfigTargetsUnion contains all possible properties and
+// values from [[]AssistantToolInviteInviteConfigTargetsArrayItem], [string].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfAssistantToolInviteInviteConfigTargetsArray OfString]
+type AssistantToolInviteInviteConfigTargetsUnion struct {
+	// This field will be present if the value is a
+	// [[]AssistantToolInviteInviteConfigTargetsArrayItem] instead of an object.
+	OfAssistantToolInviteInviteConfigTargetsArray []AssistantToolInviteInviteConfigTargetsArrayItem `json:",inline"`
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	JSON     struct {
+		OfAssistantToolInviteInviteConfigTargetsArray respjson.Field
+		OfString                                      respjson.Field
+		raw                                           string
+	} `json:"-"`
+}
+
+func (u AssistantToolInviteInviteConfigTargetsUnion) AsAssistantToolInviteInviteConfigTargetsArray() (v []AssistantToolInviteInviteConfigTargetsArrayItem) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u AssistantToolInviteInviteConfigTargetsUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u AssistantToolInviteInviteConfigTargetsUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *AssistantToolInviteInviteConfigTargetsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AssistantToolInviteInviteConfigTargetsArrayItem struct {
+	// The destination number or SIP URI of the call.
+	To string `json:"to" api:"required"`
+	// The name of the target.
+	Name string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		To          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolInviteInviteConfigTargetsArrayItem) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolInviteInviteConfigTargetsArrayItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1459,8 +1563,10 @@ type AssistantToolTransferTransferParam struct {
 	// Number or SIP URI placing the call.
 	From string `json:"from" api:"required"`
 	// The different possible targets of the transfer. The assistant will be able to
-	// choose one of the targets to transfer the call to.
-	Targets []AssistantToolTransferTransferTargetParam `json:"targets,omitzero" api:"required"`
+	// choose one of the targets to transfer the call to. This can also be a dynamic
+	// variable string like `{{ targets }}` where `targets` is returned by the dynamic
+	// variables webhook and resolves to an array of target objects at runtime.
+	Targets AssistantToolTransferTransferTargetsUnionParam `json:"targets,omitzero" api:"required"`
 	// Optional delay in milliseconds before playing the warm message audio when the
 	// transferred call is answered. When set, the audio_url is not included in the
 	// dial command; instead, playback starts after the specified delay. When not set,
@@ -1486,19 +1592,45 @@ func (r *AssistantToolTransferTransferParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AssistantToolTransferTransferTargetParam struct {
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AssistantToolTransferTransferTargetsUnionParam struct {
+	OfAssistantToolTransferTransferTargetsArray []AssistantToolTransferTransferTargetsArrayItemParam `json:",omitzero,inline"`
+	OfString                                    param.Opt[string]                                    `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AssistantToolTransferTransferTargetsUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfAssistantToolTransferTransferTargetsArray, u.OfString)
+}
+func (u *AssistantToolTransferTransferTargetsUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AssistantToolTransferTransferTargetsUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfAssistantToolTransferTransferTargetsArray) {
+		return &u.OfAssistantToolTransferTransferTargetsArray
+	} else if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	}
+	return nil
+}
+
+// The property To is required.
+type AssistantToolTransferTransferTargetsArrayItemParam struct {
+	// The destination number or SIP URI of the call.
+	To string `json:"to" api:"required"`
 	// The name of the target.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// The destination number or SIP URI of the call.
-	To param.Opt[string] `json:"to,omitzero"`
 	paramObj
 }
 
-func (r AssistantToolTransferTransferTargetParam) MarshalJSON() (data []byte, err error) {
-	type shadow AssistantToolTransferTransferTargetParam
+func (r AssistantToolTransferTransferTargetsArrayItemParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolTransferTransferTargetsArrayItemParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AssistantToolTransferTransferTargetParam) UnmarshalJSON(data []byte) error {
+func (r *AssistantToolTransferTransferTargetsArrayItemParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1662,6 +1794,13 @@ func (r *AssistantToolInviteParam) UnmarshalJSON(data []byte) error {
 type AssistantToolInviteInviteConfigParam struct {
 	// Number or SIP URI placing the call.
 	From param.Opt[string] `json:"from,omitzero"`
+	// The different possible targets of the invite. The assistant will be able to
+	// choose one of the targets to invite to the call. This can also be a dynamic
+	// variable string like `{{ targets }}` where `targets` is returned by the dynamic
+	// variables webhook and resolves to an array of target objects at runtime. If
+	// omitted or null, the invite tool can still be configured and targets may be
+	// supplied dynamically at runtime.
+	Targets AssistantToolInviteInviteConfigTargetsUnionParam `json:"targets,omitzero"`
 	// Custom headers to be added to the SIP INVITE for the invite command.
 	CustomHeaders []AssistantToolInviteInviteConfigCustomHeaderParam `json:"custom_headers,omitzero"`
 	// Configuration for voicemail detection (AMD - Answering Machine Detection) on the
@@ -1693,6 +1832,48 @@ func (r AssistantToolInviteInviteConfigCustomHeaderParam) MarshalJSON() (data []
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *AssistantToolInviteInviteConfigCustomHeaderParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AssistantToolInviteInviteConfigTargetsUnionParam struct {
+	OfAssistantToolInviteInviteConfigTargetsArray []AssistantToolInviteInviteConfigTargetsArrayItemParam `json:",omitzero,inline"`
+	OfString                                      param.Opt[string]                                      `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AssistantToolInviteInviteConfigTargetsUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfAssistantToolInviteInviteConfigTargetsArray, u.OfString)
+}
+func (u *AssistantToolInviteInviteConfigTargetsUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AssistantToolInviteInviteConfigTargetsUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfAssistantToolInviteInviteConfigTargetsArray) {
+		return &u.OfAssistantToolInviteInviteConfigTargetsArray
+	} else if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	}
+	return nil
+}
+
+// The property To is required.
+type AssistantToolInviteInviteConfigTargetsArrayItemParam struct {
+	// The destination number or SIP URI of the call.
+	To string `json:"to" api:"required"`
+	// The name of the target.
+	Name param.Opt[string] `json:"name,omitzero"`
+	paramObj
+}
+
+func (r AssistantToolInviteInviteConfigTargetsArrayItemParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolInviteInviteConfigTargetsArrayItemParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolInviteInviteConfigTargetsArrayItemParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3886,8 +4067,10 @@ type TransferToolTransferParam struct {
 	// Number or SIP URI placing the call.
 	From string `json:"from" api:"required"`
 	// The different possible targets of the transfer. The assistant will be able to
-	// choose one of the targets to transfer the call to.
-	Targets []TransferToolTransferTargetParam `json:"targets,omitzero" api:"required"`
+	// choose one of the targets to transfer the call to. This can also be a dynamic
+	// variable string like `{{ targets }}` where `targets` is returned by the dynamic
+	// variables webhook and resolves to an array of target objects at runtime.
+	Targets TransferToolTransferTargetsUnionParam `json:"targets,omitzero" api:"required"`
 	paramObj
 }
 
@@ -3899,19 +4082,45 @@ func (r *TransferToolTransferParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type TransferToolTransferTargetParam struct {
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type TransferToolTransferTargetsUnionParam struct {
+	OfTransferToolTransferTargetsArray []TransferToolTransferTargetsArrayItemParam `json:",omitzero,inline"`
+	OfString                           param.Opt[string]                           `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u TransferToolTransferTargetsUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfTransferToolTransferTargetsArray, u.OfString)
+}
+func (u *TransferToolTransferTargetsUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *TransferToolTransferTargetsUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfTransferToolTransferTargetsArray) {
+		return &u.OfTransferToolTransferTargetsArray
+	} else if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	}
+	return nil
+}
+
+// The property To is required.
+type TransferToolTransferTargetsArrayItemParam struct {
+	// The destination number or SIP URI of the call.
+	To string `json:"to" api:"required"`
 	// The name of the target.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// The destination number or SIP URI of the call.
-	To param.Opt[string] `json:"to,omitzero"`
 	paramObj
 }
 
-func (r TransferToolTransferTargetParam) MarshalJSON() (data []byte, err error) {
-	type shadow TransferToolTransferTargetParam
+func (r TransferToolTransferTargetsArrayItemParam) MarshalJSON() (data []byte, err error) {
+	type shadow TransferToolTransferTargetsArrayItemParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *TransferToolTransferTargetParam) UnmarshalJSON(data []byte) error {
+func (r *TransferToolTransferTargetsArrayItemParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
