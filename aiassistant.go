@@ -3964,7 +3964,11 @@ type TranscriptionSettingsConfig struct {
 	EotTimeoutMs int64 `json:"eot_timeout_ms"`
 	// Available only for deepgram/nova-3 and deepgram/flux. A comma-separated list of
 	// key terms to boost for recognition during transcription. Helps improve accuracy
-	// for domain-specific terminology, proper nouns, or uncommon words.
+	// for domain-specific terminology, proper nouns, or uncommon words. This field may
+	// be templated with
+	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
+	// using mustache syntax (e.g. `Telnyx,{{customer_name}},VoIP`). Variables are
+	// resolved at call time before the value is sent to the speech-to-text engine.
 	Keyterm string `json:"keyterm"`
 	// Available only for assemblyai/universal-streaming. Maximum duration of silence
 	// in milliseconds before forcing an end of turn.
@@ -4024,7 +4028,11 @@ type TranscriptionSettingsConfigParam struct {
 	EotTimeoutMs param.Opt[int64] `json:"eot_timeout_ms,omitzero"`
 	// Available only for deepgram/nova-3 and deepgram/flux. A comma-separated list of
 	// key terms to boost for recognition during transcription. Helps improve accuracy
-	// for domain-specific terminology, proper nouns, or uncommon words.
+	// for domain-specific terminology, proper nouns, or uncommon words. This field may
+	// be templated with
+	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
+	// using mustache syntax (e.g. `Telnyx,{{customer_name}},VoIP`). Variables are
+	// resolved at call time before the value is sent to the speech-to-text engine.
 	Keyterm param.Opt[string] `json:"keyterm,omitzero"`
 	// Available only for assemblyai/universal-streaming. Maximum duration of silence
 	// in milliseconds before forcing an end of turn.
