@@ -869,10 +869,10 @@ func (r *AssistantToolInvite) UnmarshalJSON(data []byte) error {
 }
 
 type AssistantToolInviteInvite struct {
+	// Number or SIP URI placing the call.
+	From string `json:"from" api:"required"`
 	// Custom headers to be added to the SIP INVITE for the invite command.
 	CustomHeaders []AssistantToolInviteInviteCustomHeader `json:"custom_headers"`
-	// Number or SIP URI placing the call.
-	From string `json:"from"`
 	// The different possible targets of the invite. The assistant will be able to
 	// choose one of the targets to invite to the call. This can also be a dynamic
 	// variable string like `{{ targets }}` where `targets` is returned by the dynamic
@@ -885,8 +885,8 @@ type AssistantToolInviteInvite struct {
 	VoicemailDetection AssistantToolInviteInviteVoicemailDetection `json:"voicemail_detection"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CustomHeaders      respjson.Field
 		From               respjson.Field
+		CustomHeaders      respjson.Field
 		Targets            respjson.Field
 		VoicemailDetection respjson.Field
 		ExtraFields        map[string]respjson.Field
@@ -1791,9 +1791,10 @@ func (r *AssistantToolInviteParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property From is required.
 type AssistantToolInviteInviteParam struct {
 	// Number or SIP URI placing the call.
-	From param.Opt[string] `json:"from,omitzero"`
+	From string `json:"from" api:"required"`
 	// The different possible targets of the invite. The assistant will be able to
 	// choose one of the targets to invite to the call. This can also be a dynamic
 	// variable string like `{{ targets }}` where `targets` is returned by the dynamic
