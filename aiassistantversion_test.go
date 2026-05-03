@@ -124,10 +124,14 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 				Model: telnyx.String("model"),
 				Name:  telnyx.String("name"),
 				ObservabilitySettings: telnyx.ObservabilityReqParam{
-					Host:         telnyx.String("host"),
-					PublicKeyRef: telnyx.String("public_key_ref"),
-					SecretKeyRef: telnyx.String("secret_key_ref"),
-					Status:       telnyx.ObservabilityReqStatusEnabled,
+					Host:          telnyx.String("host"),
+					PromptLabel:   telnyx.String("prompt_label"),
+					PromptName:    telnyx.String("prompt_name"),
+					PromptSync:    telnyx.ObservabilityReqPromptSyncEnabled,
+					PromptVersion: telnyx.Int(1),
+					PublicKeyRef:  telnyx.String("public_key_ref"),
+					SecretKeyRef:  telnyx.String("secret_key_ref"),
+					Status:        telnyx.ObservabilityReqStatusEnabled,
 				},
 				PostConversationSettings: telnyx.UpdateAssistantPostConversationSettingsParam{
 					Enabled: telnyx.Bool(true),

@@ -3276,19 +3276,34 @@ func (r *MessagingSettingsParam) UnmarshalJSON(data []byte) error {
 }
 
 type Observability struct {
-	Host         string `json:"host"`
-	PublicKeyRef string `json:"public_key_ref"`
-	SecretKeyRef string `json:"secret_key_ref"`
+	Host        string `json:"host"`
+	PromptLabel string `json:"prompt_label"`
+	PromptName  string `json:"prompt_name"`
+	// Whether to auto-publish the assistant's instructions as a Langfuse prompt.
+	//
+	// When ENABLED + prompt_name set, every assistant create/update pushes
+	// `instructions` to Langfuse via create_prompt and stores the returned version in
+	// prompt_version.
+	//
+	// Any of "enabled", "disabled".
+	PromptSync    ObservabilityPromptSync `json:"prompt_sync"`
+	PromptVersion int64                   `json:"prompt_version"`
+	PublicKeyRef  string                  `json:"public_key_ref"`
+	SecretKeyRef  string                  `json:"secret_key_ref"`
 	// Any of "enabled", "disabled".
 	Status ObservabilityStatus `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Host         respjson.Field
-		PublicKeyRef respjson.Field
-		SecretKeyRef respjson.Field
-		Status       respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		Host          respjson.Field
+		PromptLabel   respjson.Field
+		PromptName    respjson.Field
+		PromptSync    respjson.Field
+		PromptVersion respjson.Field
+		PublicKeyRef  respjson.Field
+		SecretKeyRef  respjson.Field
+		Status        respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -3298,6 +3313,18 @@ func (r *Observability) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Whether to auto-publish the assistant's instructions as a Langfuse prompt.
+//
+// When ENABLED + prompt_name set, every assistant create/update pushes
+// `instructions` to Langfuse via create_prompt and stores the returned version in
+// prompt_version.
+type ObservabilityPromptSync string
+
+const (
+	ObservabilityPromptSyncEnabled  ObservabilityPromptSync = "enabled"
+	ObservabilityPromptSyncDisabled ObservabilityPromptSync = "disabled"
+)
+
 type ObservabilityStatus string
 
 const (
@@ -3306,9 +3333,20 @@ const (
 )
 
 type ObservabilityReqParam struct {
-	Host         param.Opt[string] `json:"host,omitzero"`
-	PublicKeyRef param.Opt[string] `json:"public_key_ref,omitzero"`
-	SecretKeyRef param.Opt[string] `json:"secret_key_ref,omitzero"`
+	Host          param.Opt[string] `json:"host,omitzero"`
+	PromptLabel   param.Opt[string] `json:"prompt_label,omitzero"`
+	PromptName    param.Opt[string] `json:"prompt_name,omitzero"`
+	PromptVersion param.Opt[int64]  `json:"prompt_version,omitzero"`
+	PublicKeyRef  param.Opt[string] `json:"public_key_ref,omitzero"`
+	SecretKeyRef  param.Opt[string] `json:"secret_key_ref,omitzero"`
+	// Whether to auto-publish the assistant's instructions as a Langfuse prompt.
+	//
+	// When ENABLED + prompt_name set, every assistant create/update pushes
+	// `instructions` to Langfuse via create_prompt and stores the returned version in
+	// prompt_version.
+	//
+	// Any of "enabled", "disabled".
+	PromptSync ObservabilityReqPromptSync `json:"prompt_sync,omitzero"`
 	// Any of "enabled", "disabled".
 	Status ObservabilityReqStatus `json:"status,omitzero"`
 	paramObj
@@ -3321,6 +3359,18 @@ func (r ObservabilityReqParam) MarshalJSON() (data []byte, err error) {
 func (r *ObservabilityReqParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Whether to auto-publish the assistant's instructions as a Langfuse prompt.
+//
+// When ENABLED + prompt_name set, every assistant create/update pushes
+// `instructions` to Langfuse via create_prompt and stores the returned version in
+// prompt_version.
+type ObservabilityReqPromptSync string
+
+const (
+	ObservabilityReqPromptSyncEnabled  ObservabilityReqPromptSync = "enabled"
+	ObservabilityReqPromptSyncDisabled ObservabilityReqPromptSync = "disabled"
+)
 
 type ObservabilityReqStatus string
 
