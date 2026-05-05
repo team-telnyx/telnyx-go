@@ -491,8 +491,9 @@ func TestMessageSendWhatsappWithOptionalParams(t *testing.T) {
 				Voice:    telnyx.Bool(true),
 			},
 		},
-		Type:       telnyx.MessageSendWhatsappParamsTypeWhatsapp,
-		WebhookURL: telnyx.String("webhook_url"),
+		MessagingProfileID: telnyx.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		Type:               telnyx.MessageSendWhatsappParamsTypeWhatsapp,
+		WebhookURL:         telnyx.String("webhook_url"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
