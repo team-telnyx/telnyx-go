@@ -324,6 +324,8 @@ type Client struct {
 	// contain alias items (text replacement) and phoneme items (IPA pronunciation
 	// notation) that control how specific words are spoken.
 	PronunciationDicts PronunciationDictService
+	// UAC connection operations
+	UacConnections UacConnectionService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -530,6 +532,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Reputation = NewReputationService(opts...)
 	r.TermsOfService = NewTermsOfServiceService(opts...)
 	r.PronunciationDicts = NewPronunciationDictService(opts...)
+	r.UacConnections = NewUacConnectionService(opts...)
 
 	return
 }
