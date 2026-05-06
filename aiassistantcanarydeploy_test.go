@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestAIAssistantCanaryDeployNew(t *testing.T) {
+func TestAIAssistantCanaryDeployNewWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -31,9 +31,19 @@ func TestAIAssistantCanaryDeployNew(t *testing.T) {
 		"assistant_id",
 		telnyx.AIAssistantCanaryDeployNewParams{
 			CanaryDeploy: telnyx.CanaryDeployParam{
-				Versions: []telnyx.VersionConfigParam{{
-					Percentage: 1,
-					VersionID:  "version_id",
+				Rules: []telnyx.CanaryDeployRuleParam{{
+					Serve: telnyx.CanaryDeployRuleServeParam{
+						Rollout: []telnyx.CanaryDeployRuleServeRolloutParam{{
+							VersionID: "version_id",
+							Weight:    0,
+						}},
+						VersionID: telnyx.String("version_id"),
+					},
+					Match: []telnyx.CanaryDeployRuleMatchParam{{
+						Attribute: "attribute",
+						Operator:  "in",
+						Values:    []string{"string"},
+					}},
 				}},
 			},
 		},
@@ -70,7 +80,7 @@ func TestAIAssistantCanaryDeployGet(t *testing.T) {
 	}
 }
 
-func TestAIAssistantCanaryDeployUpdate(t *testing.T) {
+func TestAIAssistantCanaryDeployUpdateWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -88,9 +98,19 @@ func TestAIAssistantCanaryDeployUpdate(t *testing.T) {
 		"assistant_id",
 		telnyx.AIAssistantCanaryDeployUpdateParams{
 			CanaryDeploy: telnyx.CanaryDeployParam{
-				Versions: []telnyx.VersionConfigParam{{
-					Percentage: 1,
-					VersionID:  "version_id",
+				Rules: []telnyx.CanaryDeployRuleParam{{
+					Serve: telnyx.CanaryDeployRuleServeParam{
+						Rollout: []telnyx.CanaryDeployRuleServeRolloutParam{{
+							VersionID: "version_id",
+							Weight:    0,
+						}},
+						VersionID: telnyx.String("version_id"),
+					},
+					Match: []telnyx.CanaryDeployRuleMatchParam{{
+						Attribute: "attribute",
+						Operator:  "in",
+						Values:    []string{"string"},
+					}},
 				}},
 			},
 		},

@@ -654,12 +654,10 @@ Methods:
 Params Types:
 
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#CanaryDeployParam">CanaryDeployParam</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#VersionConfigParam">VersionConfigParam</a>
 
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#CanaryDeployResponse">CanaryDeployResponse</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#VersionConfig">VersionConfig</a>
 
 Methods:
 

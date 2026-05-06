@@ -4,7 +4,6 @@ package telnyx
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -101,12 +100,11 @@ func (r *AIAssistantCanaryDeployService) Delete(ctx context.Context, assistantID
 	return err
 }
 
-// Request model for creating or updating canary deploys.
+// Create/update request body. Accepts:
 //
-// The property Versions is required.
+// - `rules` — canonical ordered list of routing rules
 type CanaryDeployParam struct {
-	// List of version configurations
-	Versions []VersionConfigParam `json:"versions,omitzero" api:"required"`
+	Rules []CanaryDeployRuleParam `json:"rules,omitzero"`
 	paramObj
 }
 
@@ -118,18 +116,115 @@ func (r *CanaryDeployParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Response model for canary deploy operations.
+// A targeting rule: `match` clauses (AND) gate `serve`.
+//
+// An empty `match` is a catch-all (always fires).
+//
+// The property Serve is required.
+type CanaryDeployRuleParam struct {
+	// What a rule serves when matched.
+	//
+	// Exactly one of:
+	//
+	//   - `version_id` — serve a specific version
+	//   - `rollout` — weighted random across versions; weights must sum to less than
+	//     100, with the leftover routing to the main version
+	Serve CanaryDeployRuleServeParam   `json:"serve,omitzero" api:"required"`
+	Match []CanaryDeployRuleMatchParam `json:"match,omitzero"`
+	paramObj
+}
+
+func (r CanaryDeployRuleParam) MarshalJSON() (data []byte, err error) {
+	type shadow CanaryDeployRuleParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CanaryDeployRuleParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// What a rule serves when matched.
+//
+// Exactly one of:
+//
+//   - `version_id` — serve a specific version
+//   - `rollout` — weighted random across versions; weights must sum to less than
+//     100, with the leftover routing to the main version
+type CanaryDeployRuleServeParam struct {
+	VersionID param.Opt[string]                   `json:"version_id,omitzero"`
+	Rollout   []CanaryDeployRuleServeRolloutParam `json:"rollout,omitzero"`
+	paramObj
+}
+
+func (r CanaryDeployRuleServeParam) MarshalJSON() (data []byte, err error) {
+	type shadow CanaryDeployRuleServeParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CanaryDeployRuleServeParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// One slot in a percentage rollout.
+//
+// The properties VersionID, Weight are required.
+type CanaryDeployRuleServeRolloutParam struct {
+	VersionID string  `json:"version_id" api:"required"`
+	Weight    float64 `json:"weight" api:"required"`
+	paramObj
+}
+
+func (r CanaryDeployRuleServeRolloutParam) MarshalJSON() (data []byte, err error) {
+	type shadow CanaryDeployRuleServeRolloutParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CanaryDeployRuleServeRolloutParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single attribute/operator/values check.
+//
+// A clause matches when the routing context's value for `attribute` satisfies
+// `operator` against any of `values`.
+//
+// The properties Attribute, Operator, Values are required.
+type CanaryDeployRuleMatchParam struct {
+	// Attribute name from the routing context
+	Attribute string `json:"attribute" api:"required"`
+	// Match operator
+	//
+	// Any of "in", "not_in", "starts_with".
+	Operator string   `json:"operator,omitzero" api:"required"`
+	Values   []string `json:"values,omitzero" api:"required"`
+	paramObj
+}
+
+func (r CanaryDeployRuleMatchParam) MarshalJSON() (data []byte, err error) {
+	type shadow CanaryDeployRuleMatchParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CanaryDeployRuleMatchParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CanaryDeployRuleMatchParam](
+		"operator", "in", "not_in", "starts_with",
+	)
+}
+
+// Response shape.
+//
+// Always carries `rules` (canonical).
 type CanaryDeployResponse struct {
-	AssistantID string          `json:"assistant_id" api:"required"`
-	CreatedAt   time.Time       `json:"created_at" api:"required" format:"date-time"`
-	UpdatedAt   time.Time       `json:"updated_at" api:"required" format:"date-time"`
-	Versions    []VersionConfig `json:"versions" api:"required"`
+	AssistantID string                     `json:"assistant_id" api:"required"`
+	CreatedAt   time.Time                  `json:"created_at" api:"required" format:"date-time"`
+	Rules       []CanaryDeployResponseRule `json:"rules" api:"required"`
+	UpdatedAt   time.Time                  `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AssistantID respjson.Field
 		CreatedAt   respjson.Field
+		Rules       respjson.Field
 		UpdatedAt   respjson.Field
-		Versions    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -141,15 +236,47 @@ func (r *CanaryDeployResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Configuration for a single version in canary deploy.
-type VersionConfig struct {
-	// Percentage of traffic for this version [1-99]
-	Percentage float64 `json:"percentage" api:"required"`
-	// Version ID string that references assistant_versions.version_id
-	VersionID string `json:"version_id" api:"required"`
+// A targeting rule: `match` clauses (AND) gate `serve`.
+//
+// An empty `match` is a catch-all (always fires).
+type CanaryDeployResponseRule struct {
+	// What a rule serves when matched.
+	//
+	// Exactly one of:
+	//
+	//   - `version_id` — serve a specific version
+	//   - `rollout` — weighted random across versions; weights must sum to less than
+	//     100, with the leftover routing to the main version
+	Serve CanaryDeployResponseRuleServe   `json:"serve" api:"required"`
+	Match []CanaryDeployResponseRuleMatch `json:"match"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Percentage  respjson.Field
+		Serve       respjson.Field
+		Match       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CanaryDeployResponseRule) RawJSON() string { return r.JSON.raw }
+func (r *CanaryDeployResponseRule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// What a rule serves when matched.
+//
+// Exactly one of:
+//
+//   - `version_id` — serve a specific version
+//   - `rollout` — weighted random across versions; weights must sum to less than
+//     100, with the leftover routing to the main version
+type CanaryDeployResponseRuleServe struct {
+	Rollout   []CanaryDeployResponseRuleServeRollout `json:"rollout"`
+	VersionID string                                 `json:"version_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Rollout     respjson.Field
 		VersionID   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -157,41 +284,62 @@ type VersionConfig struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VersionConfig) RawJSON() string { return r.JSON.raw }
-func (r *VersionConfig) UnmarshalJSON(data []byte) error {
+func (r CanaryDeployResponseRuleServe) RawJSON() string { return r.JSON.raw }
+func (r *CanaryDeployResponseRuleServe) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// ToParam converts this VersionConfig to a VersionConfigParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// VersionConfigParam.Overrides()
-func (r VersionConfig) ToParam() VersionConfigParam {
-	return param.Override[VersionConfigParam](json.RawMessage(r.RawJSON()))
+// One slot in a percentage rollout.
+type CanaryDeployResponseRuleServeRollout struct {
+	VersionID string  `json:"version_id" api:"required"`
+	Weight    float64 `json:"weight" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		VersionID   respjson.Field
+		Weight      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// Configuration for a single version in canary deploy.
-//
-// The properties Percentage, VersionID are required.
-type VersionConfigParam struct {
-	// Percentage of traffic for this version [1-99]
-	Percentage float64 `json:"percentage" api:"required"`
-	// Version ID string that references assistant_versions.version_id
-	VersionID string `json:"version_id" api:"required"`
-	paramObj
+// Returns the unmodified JSON received from the API
+func (r CanaryDeployResponseRuleServeRollout) RawJSON() string { return r.JSON.raw }
+func (r *CanaryDeployResponseRuleServeRollout) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r VersionConfigParam) MarshalJSON() (data []byte, err error) {
-	type shadow VersionConfigParam
-	return param.MarshalObject(r, (*shadow)(&r))
+// A single attribute/operator/values check.
+//
+// A clause matches when the routing context's value for `attribute` satisfies
+// `operator` against any of `values`.
+type CanaryDeployResponseRuleMatch struct {
+	// Attribute name from the routing context
+	Attribute string `json:"attribute" api:"required"`
+	// Match operator
+	//
+	// Any of "in", "not_in", "starts_with".
+	Operator string   `json:"operator" api:"required"`
+	Values   []string `json:"values" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Attribute   respjson.Field
+		Operator    respjson.Field
+		Values      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
-func (r *VersionConfigParam) UnmarshalJSON(data []byte) error {
+
+// Returns the unmodified JSON received from the API
+func (r CanaryDeployResponseRuleMatch) RawJSON() string { return r.JSON.raw }
+func (r *CanaryDeployResponseRuleMatch) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type AIAssistantCanaryDeployNewParams struct {
-	// Request model for creating or updating canary deploys.
+	// Create/update request body. Accepts:
+	//
+	// - `rules` — canonical ordered list of routing rules
 	CanaryDeploy CanaryDeployParam
 	paramObj
 }
@@ -204,7 +352,9 @@ func (r *AIAssistantCanaryDeployNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type AIAssistantCanaryDeployUpdateParams struct {
-	// Request model for creating or updating canary deploys.
+	// Create/update request body. Accepts:
+	//
+	// - `rules` — canonical ordered list of routing rules
 	CanaryDeploy CanaryDeployParam
 	paramObj
 }
