@@ -726,6 +726,9 @@ type TexmlAccountCallCallsParamsParamsWithURL struct {
 	CancelPlaybackOnDetectMessageEnd param.Opt[bool] `json:"CancelPlaybackOnDetectMessageEnd,omitzero"`
 	// Whether to cancel ongoing playback on `machine` detection. Defaults to `true`.
 	CancelPlaybackOnMachineDetection param.Opt[bool] `json:"CancelPlaybackOnMachineDetection,omitzero"`
+	// URL destination for Telnyx to send deepfake detection callback events to for the
+	// call.
+	DeepfakeDetectionCallbackURL param.Opt[string] `json:"DeepfakeDetectionCallbackUrl,omitzero"`
 	// A failover URL for which Telnyx will retrieve the TeXML call instructions if the
 	// `Url` is not responding.
 	FallbackURL param.Opt[string] `json:"FallbackUrl,omitzero"`
@@ -788,6 +791,16 @@ type TexmlAccountCallCallsParamsParamsWithURL struct {
 	// Custom HTTP headers to be sent with the call. Each header should be an object
 	// with 'name' and 'value' properties.
 	CustomHeaders []TexmlAccountCallCallsParamsParamsWithURLCustomHeader `json:"CustomHeaders,omitzero"`
+	// Enables Deepfake Detection on the dialed call. When enabled, audio from the
+	// remote party is analyzed to determine whether the voice is AI-generated. Results
+	// are delivered asynchronously via a callback.
+	//
+	// Any of "Enable".
+	DeepfakeDetection string `json:"DeepfakeDetection,omitzero"`
+	// HTTP request type used for `DeepfakeDetectionCallbackUrl`.
+	//
+	// Any of "GET", "POST".
+	DeepfakeDetectionCallbackMethod string `json:"DeepfakeDetectionCallbackMethod,omitzero"`
 	// Allows you to chose between Premium and Standard detections.
 	//
 	// Any of "Premium", "Regular".
@@ -858,6 +871,12 @@ func (r *TexmlAccountCallCallsParamsParamsWithURL) UnmarshalJSON(data []byte) er
 func init() {
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
 		"AsyncAmdStatusCallbackMethod", "GET", "POST",
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
+		"DeepfakeDetection", "Enable",
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
+		"DeepfakeDetectionCallbackMethod", "GET", "POST",
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
 		"DetectionMode", "Premium", "Regular",
@@ -937,6 +956,9 @@ type TexmlAccountCallCallsParamsParamsWithTeXml struct {
 	CancelPlaybackOnDetectMessageEnd param.Opt[bool] `json:"CancelPlaybackOnDetectMessageEnd,omitzero"`
 	// Whether to cancel ongoing playback on `machine` detection. Defaults to `true`.
 	CancelPlaybackOnMachineDetection param.Opt[bool] `json:"CancelPlaybackOnMachineDetection,omitzero"`
+	// URL destination for Telnyx to send deepfake detection callback events to for the
+	// call.
+	DeepfakeDetectionCallbackURL param.Opt[string] `json:"DeepfakeDetectionCallbackUrl,omitzero"`
 	// A failover URL for which Telnyx will retrieve the TeXML call instructions if the
 	// `Url` is not responding.
 	FallbackURL param.Opt[string] `json:"FallbackUrl,omitzero"`
@@ -999,6 +1021,16 @@ type TexmlAccountCallCallsParamsParamsWithTeXml struct {
 	// Custom HTTP headers to be sent with the call. Each header should be an object
 	// with 'name' and 'value' properties.
 	CustomHeaders []TexmlAccountCallCallsParamsParamsWithTeXmlCustomHeader `json:"CustomHeaders,omitzero"`
+	// Enables Deepfake Detection on the dialed call. When enabled, audio from the
+	// remote party is analyzed to determine whether the voice is AI-generated. Results
+	// are delivered asynchronously via a callback.
+	//
+	// Any of "Enable".
+	DeepfakeDetection string `json:"DeepfakeDetection,omitzero"`
+	// HTTP request type used for `DeepfakeDetectionCallbackUrl`.
+	//
+	// Any of "GET", "POST".
+	DeepfakeDetectionCallbackMethod string `json:"DeepfakeDetectionCallbackMethod,omitzero"`
 	// Allows you to chose between Premium and Standard detections.
 	//
 	// Any of "Premium", "Regular".
@@ -1069,6 +1101,12 @@ func (r *TexmlAccountCallCallsParamsParamsWithTeXml) UnmarshalJSON(data []byte) 
 func init() {
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
 		"AsyncAmdStatusCallbackMethod", "GET", "POST",
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
+		"DeepfakeDetection", "Enable",
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
+		"DeepfakeDetectionCallbackMethod", "GET", "POST",
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
 		"DetectionMode", "Premium", "Regular",
@@ -1145,6 +1183,9 @@ type TexmlAccountCallCallsParamsParamsApplicationDefault struct {
 	CancelPlaybackOnDetectMessageEnd param.Opt[bool] `json:"CancelPlaybackOnDetectMessageEnd,omitzero"`
 	// Whether to cancel ongoing playback on `machine` detection. Defaults to `true`.
 	CancelPlaybackOnMachineDetection param.Opt[bool] `json:"CancelPlaybackOnMachineDetection,omitzero"`
+	// URL destination for Telnyx to send deepfake detection callback events to for the
+	// call.
+	DeepfakeDetectionCallbackURL param.Opt[string] `json:"DeepfakeDetectionCallbackUrl,omitzero"`
 	// A failover URL for which Telnyx will retrieve the TeXML call instructions if the
 	// `Url` is not responding.
 	FallbackURL param.Opt[string] `json:"FallbackUrl,omitzero"`
@@ -1207,6 +1248,16 @@ type TexmlAccountCallCallsParamsParamsApplicationDefault struct {
 	// Custom HTTP headers to be sent with the call. Each header should be an object
 	// with 'name' and 'value' properties.
 	CustomHeaders []TexmlAccountCallCallsParamsParamsApplicationDefaultCustomHeader `json:"CustomHeaders,omitzero"`
+	// Enables Deepfake Detection on the dialed call. When enabled, audio from the
+	// remote party is analyzed to determine whether the voice is AI-generated. Results
+	// are delivered asynchronously via a callback.
+	//
+	// Any of "Enable".
+	DeepfakeDetection string `json:"DeepfakeDetection,omitzero"`
+	// HTTP request type used for `DeepfakeDetectionCallbackUrl`.
+	//
+	// Any of "GET", "POST".
+	DeepfakeDetectionCallbackMethod string `json:"DeepfakeDetectionCallbackMethod,omitzero"`
 	// Allows you to chose between Premium and Standard detections.
 	//
 	// Any of "Premium", "Regular".
@@ -1277,6 +1328,12 @@ func (r *TexmlAccountCallCallsParamsParamsApplicationDefault) UnmarshalJSON(data
 func init() {
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
 		"AsyncAmdStatusCallbackMethod", "GET", "POST",
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+		"DeepfakeDetection", "Enable",
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+		"DeepfakeDetectionCallbackMethod", "GET", "POST",
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
 		"DetectionMode", "Premium", "Regular",

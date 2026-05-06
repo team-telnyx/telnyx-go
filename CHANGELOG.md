@@ -1,5 +1,38 @@
 # Changelog
 
+## 4.62.0 (2026-05-05)
+
+Full Changelog: [v4.61.0...v4.62.0](https://github.com/team-telnyx/telnyx-go/compare/v4.61.0...v4.62.0)
+
+### Features
+
+* Add assistant external LLM forward metadata to OpenAPI ([f22f67f](https://github.com/team-telnyx/telnyx-go/commit/f22f67f175360f264c71664ad3e8a468973ca9ad))
+* Add xAI and AssemblyAI transcription engines to call-control API docs ([2fbdc0f](https://github.com/team-telnyx/telnyx-go/commit/2fbdc0ff8a32eb2d4c7095a88ec3e4e2009d9d84))
+* Add xAI and missing voice providers to Call Control API ([8f2c634](https://github.com/team-telnyx/telnyx-go/commit/8f2c634650ba171734569ae1707d98204365ce15))
+* AI-2183: Document dynamic variable support for transcription keyterm ([179bc1b](https://github.com/team-telnyx/telnyx-go/commit/179bc1b5f07286751c8a5fffdc1785e1bc75308b))
+* **api:** manual updates ([e123bab](https://github.com/team-telnyx/telnyx-go/commit/e123bab03d2e3ac4933d94336b28bfc2e05c11ba))
+* Assistant tool targets master ([599ffad](https://github.com/team-telnyx/telnyx-go/commit/599ffad5df8e2bf3feb6f9795ffc9ee3bdbf4350))
+* Correct external LLM forwarded metadata docs ([e927652](https://github.com/team-telnyx/telnyx-go/commit/e927652fbeecfd1d926124d7fd934d60c6c5f27f))
+* Document assistant CRUD fields ([398e2dd](https://github.com/team-telnyx/telnyx-go/commit/398e2dd176379715cac25aa2ac4ce20f41a9cef8))
+* Document Flux transcription language hints ([12b1ab2](https://github.com/team-telnyx/telnyx-go/commit/12b1ab2efb752156c7d7ab58288a63252a484c91))
+* ENGDESK-51445: added profile ID fields to Whatsapp messages ([d1c2acf](https://github.com/team-telnyx/telnyx-go/commit/d1c2acf7f1f65346281b60535c1797097704cb69))
+* Fix CreateVerifyProfileRequest to match messaging-2fa schema ([c5012e7](https://github.com/team-telnyx/telnyx-go/commit/c5012e785f40a64d58b41a2482e0603a0112f2ca))
+* **go:** add default http client with timeout ([2c7beb9](https://github.com/team-telnyx/telnyx-go/commit/2c7beb9aa8bdb75627a662b0f3d607a8f2723a9e))
+* Mark 'from' as required on InviteToolConfig ([715f324](https://github.com/team-telnyx/telnyx-go/commit/715f32406c888f1b23f39fb159996acc2b378239))
+* Revert "fix: stainless ([#2371](https://github.com/team-telnyx/telnyx-go/issues/2371))" ([7dc0607](https://github.com/team-telnyx/telnyx-go/commit/7dc0607243963e4f1ab1ff24fe079e593fa4c505))
+* support setting headers via env ([f553ae4](https://github.com/team-telnyx/telnyx-go/commit/f553ae4785575617dcdae95712d0ea3607d614a7))
+* TELAPPS-5725: Add deepfake detection params to call-scripting API docs ([f6c96a2](https://github.com/team-telnyx/telnyx-go/commit/f6c96a2f714e8a565a5c733349732f434a447728))
+* Update assistant transcription settings spec ([b029340](https://github.com/team-telnyx/telnyx-go/commit/b0293404ee41a1a621c2d0c095d0df5799786210))
+* Update observability ([2bc22b1](https://github.com/team-telnyx/telnyx-go/commit/2bc22b1167fba0cc669ee52b0bb8d28a621ce5e9))
+
+
+### Chores
+
+* avoid embedding reflect.Type for dead code elimination ([61b9565](https://github.com/team-telnyx/telnyx-go/commit/61b9565662bc0809cc3de3cfbf5b356e82fa34a4))
+* **internal:** codegen related update ([4202ea2](https://github.com/team-telnyx/telnyx-go/commit/4202ea2e968b07bd63fd0e48b027e63c9374ba62))
+* **internal:** codegen related update ([e024fe5](https://github.com/team-telnyx/telnyx-go/commit/e024fe5bbcee5e21282a4aa5425ac5a83fbac97f))
+* update example date in inference-embedding ([a0af590](https://github.com/team-telnyx/telnyx-go/commit/a0af590506ddaa3025f8300805288b1c4cbf5628))
+
 ## 4.61.0 (2026-04-24)
 
 Full Changelog: [v4.60.0...v4.61.0](https://github.com/team-telnyx/telnyx-go/compare/v4.60.0...v4.61.0)

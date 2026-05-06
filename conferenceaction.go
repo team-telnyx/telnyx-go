@@ -1207,6 +1207,8 @@ type ConferenceActionSpeakParams struct {
 	//     `voice_settings` to configure precision, sample_rate, and format.
 	//   - **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`,
 	//     `Inworld.Max.Oliver`). Supported models: `Mini`, `Max`.
+	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
+	//     `ara`, `rex`, `sal`, `leo`.
 	//
 	// For service_level basic, you may define the gender of the speaker (male or
 	// female).
@@ -1317,6 +1319,7 @@ type ConferenceActionSpeakParamsVoiceSettingsUnion struct {
 	OfRime       *shared.RimeVoiceSettingsParam                   `json:",omitzero,inline"`
 	OfResemble   *shared.ResembleVoiceSettingsParam               `json:",omitzero,inline"`
 	OfInworld    *ConferenceActionSpeakParamsVoiceSettingsInworld `json:",omitzero,inline"`
+	OfXai        *ConferenceActionSpeakParamsVoiceSettingsXai     `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1328,7 +1331,8 @@ func (u ConferenceActionSpeakParamsVoiceSettingsUnion) MarshalJSON() ([]byte, er
 		u.OfAzure,
 		u.OfRime,
 		u.OfResemble,
-		u.OfInworld)
+		u.OfInworld,
+		u.OfXai)
 }
 func (u *ConferenceActionSpeakParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1351,6 +1355,8 @@ func (u *ConferenceActionSpeakParamsVoiceSettingsUnion) asAny() any {
 		return u.OfResemble
 	} else if !param.IsOmitted(u.OfInworld) {
 		return u.OfInworld
+	} else if !param.IsOmitted(u.OfXai) {
+		return u.OfXai
 	}
 	return nil
 }
@@ -1444,6 +1450,14 @@ func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetSampleRate() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetLanguage() *string {
+	if vt := u.OfXai; vt != nil && vt.Language.Valid() {
+		return &vt.Language.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetType() *string {
 	if vt := u.OfElevenlabs; vt != nil {
 		return (*string)(&vt.Type)
@@ -1460,6 +1474,8 @@ func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetType() *string {
 	} else if vt := u.OfResemble; vt != nil {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfInworld; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfXai; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -1496,6 +1512,7 @@ func init() {
 		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
 		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
 		apijson.Discriminator[ConferenceActionSpeakParamsVoiceSettingsInworld]("inworld"),
+		apijson.Discriminator[ConferenceActionSpeakParamsVoiceSettingsXai]("xai"),
 	)
 }
 
@@ -1518,6 +1535,25 @@ func (r ConferenceActionSpeakParamsVoiceSettingsInworld) MarshalJSON() (data []b
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *ConferenceActionSpeakParamsVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Type is required.
+type ConferenceActionSpeakParamsVoiceSettingsXai struct {
+	// Language code, or `auto` to detect automatically.
+	Language param.Opt[string] `json:"language,omitzero"`
+	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "xai".
+	Type constant.Xai `json:"type" default:"xai"`
+	paramObj
+}
+
+func (r ConferenceActionSpeakParamsVoiceSettingsXai) MarshalJSON() (data []byte, err error) {
+	type shadow ConferenceActionSpeakParamsVoiceSettingsXai
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ConferenceActionSpeakParamsVoiceSettingsXai) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

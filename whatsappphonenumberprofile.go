@@ -76,6 +76,7 @@ type WhatsappProfileData struct {
 	Email       string    `json:"email"`
 	// Whatsapp phone number ID
 	PhoneNumberID   string    `json:"phone_number_id"`
+	ProfileID       string    `json:"profile_id"`
 	ProfilePhotoURL string    `json:"profile_photo_url"`
 	RecordType      string    `json:"record_type"`
 	UpdatedAt       time.Time `json:"updated_at" format:"date-time"`
@@ -91,6 +92,7 @@ type WhatsappProfileData struct {
 		DisplayName     respjson.Field
 		Email           respjson.Field
 		PhoneNumberID   respjson.Field
+		ProfileID       respjson.Field
 		ProfilePhotoURL respjson.Field
 		RecordType      respjson.Field
 		UpdatedAt       respjson.Field
@@ -145,7 +147,9 @@ type WhatsappPhoneNumberProfileUpdateParams struct {
 	Description param.Opt[string] `json:"description,omitzero"`
 	DisplayName param.Opt[string] `json:"display_name,omitzero"`
 	Email       param.Opt[string] `json:"email,omitzero"`
-	Website     param.Opt[string] `json:"website,omitzero"`
+	// Messaging profile ID for inbound messages
+	ProfileID param.Opt[string] `json:"profile_id,omitzero" format:"uuid"`
+	Website   param.Opt[string] `json:"website,omitzero"`
 	paramObj
 }
 
