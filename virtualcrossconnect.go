@@ -135,89 +135,73 @@ func (r *VirtualCrossConnectNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VirtualCrossConnectNewResponseData struct {
-	// The region interface is deployed to.
-	RegionCode string `json:"region_code" api:"required"`
+	// Identifies the resource.
+	ID string `json:"id" format:"uuid"`
 	// The desired throughput in Megabits per Second (Mbps) for your Virtual Cross
-	// Connect.<br /><br />The available bandwidths can be found using the
-	// /virtual_cross_connect_regions endpoint.
+	// Connect.
 	BandwidthMbps float64 `json:"bandwidth_mbps"`
-	// The Border Gateway Protocol (BGP) Autonomous System Number (ASN). If null, value
-	// will be assigned by Telnyx.
+	// The Border Gateway Protocol (BGP) Autonomous System Number (ASN).
 	BgpAsn float64 `json:"bgp_asn"`
 	// The Virtual Private Cloud with which you would like to establish a cross
 	// connect.
 	//
 	// Any of "aws", "azure", "gce".
 	CloudProvider string `json:"cloud_provider"`
-	// The region where your Virtual Private Cloud hosts are located.<br /><br />The
-	// available regions can be found using the /virtual_cross_connect_regions
-	// endpoint.
+	// The region where your Virtual Private Cloud hosts are located.
 	CloudProviderRegion string `json:"cloud_provider_region"`
+	// ISO 8601 formatted date-time indicating when the resource was created.
+	CreatedAt string `json:"created_at"`
+	// A user specified name for the interface.
+	Name string `json:"name"`
+	// The id of the network associated with the interface.
+	NetworkID string `json:"network_id" format:"uuid"`
 	// The authentication key for BGP peer configuration.
 	PrimaryBgpKey string `json:"primary_bgp_key"`
-	// The identifier for your Virtual Private Cloud. The number will be different
-	// based upon your Cloud provider.
+	// The identifier for your Virtual Private Cloud.
 	PrimaryCloudAccountID string `json:"primary_cloud_account_id"`
-	// The IP address assigned for your side of the Virtual Cross
-	// Connect.<br /><br />If none is provided, one will be generated for
-	// you.<br /><br />This value can not be patched once the VXC has bene provisioned.
+	// The IP address assigned for your side of the Virtual Cross Connect.
 	PrimaryCloudIP string `json:"primary_cloud_ip"`
-	// Indicates whether the primary circuit is enabled. Setting this to `false` will
-	// disable the circuit.
+	// Indicates whether the primary circuit is enabled.
 	PrimaryEnabled bool `json:"primary_enabled"`
-	// Whether the primary BGP route is being announced.
+	// Whether
 	PrimaryRoutingAnnouncement bool `json:"primary_routing_announcement"`
-	// The IP address assigned to the Telnyx side of the Virtual Cross
-	// Connect.<br /><br />If none is provided, one will be generated for
-	// you.<br /><br />This value should be null for GCE as Google will only inform you
-	// of your assigned IP once the connection has been accepted.
-	PrimaryTelnyxIP string                                   `json:"primary_telnyx_ip"`
-	Region          VirtualCrossConnectNewResponseDataRegion `json:"region"`
-	// The authentication key for BGP peer configuration.
-	SecondaryBgpKey string `json:"secondary_bgp_key"`
-	// The identifier for your Virtual Private Cloud. The number will be different
-	// based upon your Cloud provider.<br /><br />This attribute is only necessary for
-	// GCE.
-	SecondaryCloudAccountID string `json:"secondary_cloud_account_id"`
-	// The IP address assigned for your side of the Virtual Cross
-	// Connect.<br /><br />If none is provided, one will be generated for
-	// you.<br /><br />This value can not be patched once the VXC has bene provisioned.
-	SecondaryCloudIP string `json:"secondary_cloud_ip"`
-	// Indicates whether the secondary circuit is enabled. Setting this to `false` will
-	// disable the circuit.
-	SecondaryEnabled bool `json:"secondary_enabled"`
-	// Whether the secondary BGP route is being announced.
-	SecondaryRoutingAnnouncement bool `json:"secondary_routing_announcement"`
-	// The IP address assigned to the Telnyx side of the Virtual Cross
-	// Connect.<br /><br />If none is provided, one will be generated for
-	// you.<br /><br />This value should be null for GCE as Google will only inform you
-	// of your assigned IP once the connection has been accepted.
-	SecondaryTelnyxIP string `json:"secondary_telnyx_ip"`
+	// The IP address assigned to the Telnyx side of the Virtual Cross Connect.
+	PrimaryTelnyxIP string `json:"primary_telnyx_ip"`
+	// Identifies the type of the resource.
+	RecordType string                                   `json:"record_type"`
+	Region     VirtualCrossConnectNewResponseDataRegion `json:"region"`
+	// The region interface is deployed to.
+	RegionCode string `json:"region_code"`
+	// The current status of the interface deployment.
+	//
+	// Any of "created", "provisioning", "provisioned", "deleting".
+	Status InterfaceStatus `json:"status"`
+	// ISO 8601 formatted date-time indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		RegionCode                   respjson.Field
-		BandwidthMbps                respjson.Field
-		BgpAsn                       respjson.Field
-		CloudProvider                respjson.Field
-		CloudProviderRegion          respjson.Field
-		PrimaryBgpKey                respjson.Field
-		PrimaryCloudAccountID        respjson.Field
-		PrimaryCloudIP               respjson.Field
-		PrimaryEnabled               respjson.Field
-		PrimaryRoutingAnnouncement   respjson.Field
-		PrimaryTelnyxIP              respjson.Field
-		Region                       respjson.Field
-		SecondaryBgpKey              respjson.Field
-		SecondaryCloudAccountID      respjson.Field
-		SecondaryCloudIP             respjson.Field
-		SecondaryEnabled             respjson.Field
-		SecondaryRoutingAnnouncement respjson.Field
-		SecondaryTelnyxIP            respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
+		ID                         respjson.Field
+		BandwidthMbps              respjson.Field
+		BgpAsn                     respjson.Field
+		CloudProvider              respjson.Field
+		CloudProviderRegion        respjson.Field
+		CreatedAt                  respjson.Field
+		Name                       respjson.Field
+		NetworkID                  respjson.Field
+		PrimaryBgpKey              respjson.Field
+		PrimaryCloudAccountID      respjson.Field
+		PrimaryCloudIP             respjson.Field
+		PrimaryEnabled             respjson.Field
+		PrimaryRoutingAnnouncement respjson.Field
+		PrimaryTelnyxIP            respjson.Field
+		RecordType                 respjson.Field
+		Region                     respjson.Field
+		RegionCode                 respjson.Field
+		Status                     respjson.Field
+		UpdatedAt                  respjson.Field
+		ExtraFields                map[string]respjson.Field
+		raw                        string
 	} `json:"-"`
-	Record
-	NetworkInterface
 }
 
 // Returns the unmodified JSON received from the API
@@ -266,89 +250,73 @@ func (r *VirtualCrossConnectGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VirtualCrossConnectGetResponseData struct {
-	// The region interface is deployed to.
-	RegionCode string `json:"region_code" api:"required"`
+	// Identifies the resource.
+	ID string `json:"id" format:"uuid"`
 	// The desired throughput in Megabits per Second (Mbps) for your Virtual Cross
-	// Connect.<br /><br />The available bandwidths can be found using the
-	// /virtual_cross_connect_regions endpoint.
+	// Connect.
 	BandwidthMbps float64 `json:"bandwidth_mbps"`
-	// The Border Gateway Protocol (BGP) Autonomous System Number (ASN). If null, value
-	// will be assigned by Telnyx.
+	// The Border Gateway Protocol (BGP) Autonomous System Number (ASN).
 	BgpAsn float64 `json:"bgp_asn"`
 	// The Virtual Private Cloud with which you would like to establish a cross
 	// connect.
 	//
 	// Any of "aws", "azure", "gce".
 	CloudProvider string `json:"cloud_provider"`
-	// The region where your Virtual Private Cloud hosts are located.<br /><br />The
-	// available regions can be found using the /virtual_cross_connect_regions
-	// endpoint.
+	// The region where your Virtual Private Cloud hosts are located.
 	CloudProviderRegion string `json:"cloud_provider_region"`
+	// ISO 8601 formatted date-time indicating when the resource was created.
+	CreatedAt string `json:"created_at"`
+	// A user specified name for the interface.
+	Name string `json:"name"`
+	// The id of the network associated with the interface.
+	NetworkID string `json:"network_id" format:"uuid"`
 	// The authentication key for BGP peer configuration.
 	PrimaryBgpKey string `json:"primary_bgp_key"`
-	// The identifier for your Virtual Private Cloud. The number will be different
-	// based upon your Cloud provider.
+	// The identifier for your Virtual Private Cloud.
 	PrimaryCloudAccountID string `json:"primary_cloud_account_id"`
-	// The IP address assigned for your side of the Virtual Cross
-	// Connect.<br /><br />If none is provided, one will be generated for
-	// you.<br /><br />This value can not be patched once the VXC has bene provisioned.
+	// The IP address assigned for your side of the Virtual Cross Connect.
 	PrimaryCloudIP string `json:"primary_cloud_ip"`
-	// Indicates whether the primary circuit is enabled. Setting this to `false` will
-	// disable the circuit.
+	// Indicates whether the primary circuit is enabled.
 	PrimaryEnabled bool `json:"primary_enabled"`
-	// Whether the primary BGP route is being announced.
+	// Whether
 	PrimaryRoutingAnnouncement bool `json:"primary_routing_announcement"`
-	// The IP address assigned to the Telnyx side of the Virtual Cross
-	// Connect.<br /><br />If none is provided, one will be generated for
-	// you.<br /><br />This value should be null for GCE as Google will only inform you
-	// of your assigned IP once the connection has been accepted.
-	PrimaryTelnyxIP string                                   `json:"primary_telnyx_ip"`
-	Region          VirtualCrossConnectGetResponseDataRegion `json:"region"`
-	// The authentication key for BGP peer configuration.
-	SecondaryBgpKey string `json:"secondary_bgp_key"`
-	// The identifier for your Virtual Private Cloud. The number will be different
-	// based upon your Cloud provider.<br /><br />This attribute is only necessary for
-	// GCE.
-	SecondaryCloudAccountID string `json:"secondary_cloud_account_id"`
-	// The IP address assigned for your side of the Virtual Cross
-	// Connect.<br /><br />If none is provided, one will be generated for
-	// you.<br /><br />This value can not be patched once the VXC has bene provisioned.
-	SecondaryCloudIP string `json:"secondary_cloud_ip"`
-	// Indicates whether the secondary circuit is enabled. Setting this to `false` will
-	// disable the circuit.
-	SecondaryEnabled bool `json:"secondary_enabled"`
-	// Whether the secondary BGP route is being announced.
-	SecondaryRoutingAnnouncement bool `json:"secondary_routing_announcement"`
-	// The IP address assigned to the Telnyx side of the Virtual Cross
-	// Connect.<br /><br />If none is provided, one will be generated for
-	// you.<br /><br />This value should be null for GCE as Google will only inform you
-	// of your assigned IP once the connection has been accepted.
-	SecondaryTelnyxIP string `json:"secondary_telnyx_ip"`
+	// The IP address assigned to the Telnyx side of the Virtual Cross Connect.
+	PrimaryTelnyxIP string `json:"primary_telnyx_ip"`
+	// Identifies the type of the resource.
+	RecordType string                                   `json:"record_type"`
+	Region     VirtualCrossConnectGetResponseDataRegion `json:"region"`
+	// The region interface is deployed to.
+	RegionCode string `json:"region_code"`
+	// The current status of the interface deployment.
+	//
+	// Any of "created", "provisioning", "provisioned", "deleting".
+	Status InterfaceStatus `json:"status"`
+	// ISO 8601 formatted date-time indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		RegionCode                   respjson.Field
-		BandwidthMbps                respjson.Field
-		BgpAsn                       respjson.Field
-		CloudProvider                respjson.Field
-		CloudProviderRegion          respjson.Field
-		PrimaryBgpKey                respjson.Field
-		PrimaryCloudAccountID        respjson.Field
-		PrimaryCloudIP               respjson.Field
-		PrimaryEnabled               respjson.Field
-		PrimaryRoutingAnnouncement   respjson.Field
-		PrimaryTelnyxIP              respjson.Field
-		Region                       respjson.Field
-		SecondaryBgpKey              respjson.Field
-		SecondaryCloudAccountID      respjson.Field
-		SecondaryCloudIP             respjson.Field
-		SecondaryEnabled             respjson.Field
-		SecondaryRoutingAnnouncement respjson.Field
-		SecondaryTelnyxIP            respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
+		ID                         respjson.Field
+		BandwidthMbps              respjson.Field
+		BgpAsn                     respjson.Field
+		CloudProvider              respjson.Field
+		CloudProviderRegion        respjson.Field
+		CreatedAt                  respjson.Field
+		Name                       respjson.Field
+		NetworkID                  respjson.Field
+		PrimaryBgpKey              respjson.Field
+		PrimaryCloudAccountID      respjson.Field
+		PrimaryCloudIP             respjson.Field
+		PrimaryEnabled             respjson.Field
+		PrimaryRoutingAnnouncement respjson.Field
+		PrimaryTelnyxIP            respjson.Field
+		RecordType                 respjson.Field
+		Region                     respjson.Field
+		RegionCode                 respjson.Field
+		Status                     respjson.Field
+		UpdatedAt                  respjson.Field
+		ExtraFields                map[string]respjson.Field
+		raw                        string
 	} `json:"-"`
-	Record
-	NetworkInterface
 }
 
 // Returns the unmodified JSON received from the API
@@ -397,89 +365,73 @@ func (r *VirtualCrossConnectUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VirtualCrossConnectUpdateResponseData struct {
-	// The region interface is deployed to.
-	RegionCode string `json:"region_code" api:"required"`
+	// Identifies the resource.
+	ID string `json:"id" format:"uuid"`
 	// The desired throughput in Megabits per Second (Mbps) for your Virtual Cross
-	// Connect.<br /><br />The available bandwidths can be found using the
-	// /virtual_cross_connect_regions endpoint.
+	// Connect.
 	BandwidthMbps float64 `json:"bandwidth_mbps"`
-	// The Border Gateway Protocol (BGP) Autonomous System Number (ASN). If null, value
-	// will be assigned by Telnyx.
+	// The Border Gateway Protocol (BGP) Autonomous System Number (ASN).
 	BgpAsn float64 `json:"bgp_asn"`
 	// The Virtual Private Cloud with which you would like to establish a cross
 	// connect.
 	//
 	// Any of "aws", "azure", "gce".
 	CloudProvider string `json:"cloud_provider"`
-	// The region where your Virtual Private Cloud hosts are located.<br /><br />The
-	// available regions can be found using the /virtual_cross_connect_regions
-	// endpoint.
+	// The region where your Virtual Private Cloud hosts are located.
 	CloudProviderRegion string `json:"cloud_provider_region"`
+	// ISO 8601 formatted date-time indicating when the resource was created.
+	CreatedAt string `json:"created_at"`
+	// A user specified name for the interface.
+	Name string `json:"name"`
+	// The id of the network associated with the interface.
+	NetworkID string `json:"network_id" format:"uuid"`
 	// The authentication key for BGP peer configuration.
 	PrimaryBgpKey string `json:"primary_bgp_key"`
-	// The identifier for your Virtual Private Cloud. The number will be different
-	// based upon your Cloud provider.
+	// The identifier for your Virtual Private Cloud.
 	PrimaryCloudAccountID string `json:"primary_cloud_account_id"`
-	// The IP address assigned for your side of the Virtual Cross
-	// Connect.<br /><br />If none is provided, one will be generated for
-	// you.<br /><br />This value can not be patched once the VXC has bene provisioned.
+	// The IP address assigned for your side of the Virtual Cross Connect.
 	PrimaryCloudIP string `json:"primary_cloud_ip"`
-	// Indicates whether the primary circuit is enabled. Setting this to `false` will
-	// disable the circuit.
+	// Indicates whether the primary circuit is enabled.
 	PrimaryEnabled bool `json:"primary_enabled"`
-	// Whether the primary BGP route is being announced.
+	// Whether
 	PrimaryRoutingAnnouncement bool `json:"primary_routing_announcement"`
-	// The IP address assigned to the Telnyx side of the Virtual Cross
-	// Connect.<br /><br />If none is provided, one will be generated for
-	// you.<br /><br />This value should be null for GCE as Google will only inform you
-	// of your assigned IP once the connection has been accepted.
-	PrimaryTelnyxIP string                                      `json:"primary_telnyx_ip"`
-	Region          VirtualCrossConnectUpdateResponseDataRegion `json:"region"`
-	// The authentication key for BGP peer configuration.
-	SecondaryBgpKey string `json:"secondary_bgp_key"`
-	// The identifier for your Virtual Private Cloud. The number will be different
-	// based upon your Cloud provider.<br /><br />This attribute is only necessary for
-	// GCE.
-	SecondaryCloudAccountID string `json:"secondary_cloud_account_id"`
-	// The IP address assigned for your side of the Virtual Cross
-	// Connect.<br /><br />If none is provided, one will be generated for
-	// you.<br /><br />This value can not be patched once the VXC has bene provisioned.
-	SecondaryCloudIP string `json:"secondary_cloud_ip"`
-	// Indicates whether the secondary circuit is enabled. Setting this to `false` will
-	// disable the circuit.
-	SecondaryEnabled bool `json:"secondary_enabled"`
-	// Whether the secondary BGP route is being announced.
-	SecondaryRoutingAnnouncement bool `json:"secondary_routing_announcement"`
-	// The IP address assigned to the Telnyx side of the Virtual Cross
-	// Connect.<br /><br />If none is provided, one will be generated for
-	// you.<br /><br />This value should be null for GCE as Google will only inform you
-	// of your assigned IP once the connection has been accepted.
-	SecondaryTelnyxIP string `json:"secondary_telnyx_ip"`
+	// The IP address assigned to the Telnyx side of the Virtual Cross Connect.
+	PrimaryTelnyxIP string `json:"primary_telnyx_ip"`
+	// Identifies the type of the resource.
+	RecordType string                                      `json:"record_type"`
+	Region     VirtualCrossConnectUpdateResponseDataRegion `json:"region"`
+	// The region interface is deployed to.
+	RegionCode string `json:"region_code"`
+	// The current status of the interface deployment.
+	//
+	// Any of "created", "provisioning", "provisioned", "deleting".
+	Status InterfaceStatus `json:"status"`
+	// ISO 8601 formatted date-time indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		RegionCode                   respjson.Field
-		BandwidthMbps                respjson.Field
-		BgpAsn                       respjson.Field
-		CloudProvider                respjson.Field
-		CloudProviderRegion          respjson.Field
-		PrimaryBgpKey                respjson.Field
-		PrimaryCloudAccountID        respjson.Field
-		PrimaryCloudIP               respjson.Field
-		PrimaryEnabled               respjson.Field
-		PrimaryRoutingAnnouncement   respjson.Field
-		PrimaryTelnyxIP              respjson.Field
-		Region                       respjson.Field
-		SecondaryBgpKey              respjson.Field
-		SecondaryCloudAccountID      respjson.Field
-		SecondaryCloudIP             respjson.Field
-		SecondaryEnabled             respjson.Field
-		SecondaryRoutingAnnouncement respjson.Field
-		SecondaryTelnyxIP            respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
+		ID                         respjson.Field
+		BandwidthMbps              respjson.Field
+		BgpAsn                     respjson.Field
+		CloudProvider              respjson.Field
+		CloudProviderRegion        respjson.Field
+		CreatedAt                  respjson.Field
+		Name                       respjson.Field
+		NetworkID                  respjson.Field
+		PrimaryBgpKey              respjson.Field
+		PrimaryCloudAccountID      respjson.Field
+		PrimaryCloudIP             respjson.Field
+		PrimaryEnabled             respjson.Field
+		PrimaryRoutingAnnouncement respjson.Field
+		PrimaryTelnyxIP            respjson.Field
+		RecordType                 respjson.Field
+		Region                     respjson.Field
+		RegionCode                 respjson.Field
+		Status                     respjson.Field
+		UpdatedAt                  respjson.Field
+		ExtraFields                map[string]respjson.Field
+		raw                        string
 	} `json:"-"`
-	Record
-	NetworkInterface
 }
 
 // Returns the unmodified JSON received from the API
@@ -512,89 +464,73 @@ func (r *VirtualCrossConnectUpdateResponseDataRegion) UnmarshalJSON(data []byte)
 }
 
 type VirtualCrossConnectListResponse struct {
-	// The region interface is deployed to.
-	RegionCode string `json:"region_code" api:"required"`
+	// Identifies the resource.
+	ID string `json:"id" format:"uuid"`
 	// The desired throughput in Megabits per Second (Mbps) for your Virtual Cross
-	// Connect.<br /><br />The available bandwidths can be found using the
-	// /virtual_cross_connect_regions endpoint.
+	// Connect.
 	BandwidthMbps float64 `json:"bandwidth_mbps"`
-	// The Border Gateway Protocol (BGP) Autonomous System Number (ASN). If null, value
-	// will be assigned by Telnyx.
+	// The Border Gateway Protocol (BGP) Autonomous System Number (ASN).
 	BgpAsn float64 `json:"bgp_asn"`
 	// The Virtual Private Cloud with which you would like to establish a cross
 	// connect.
 	//
 	// Any of "aws", "azure", "gce".
-	CloudProvider string `json:"cloud_provider"`
-	// The region where your Virtual Private Cloud hosts are located.<br /><br />The
-	// available regions can be found using the /virtual_cross_connect_regions
-	// endpoint.
+	CloudProvider VirtualCrossConnectListResponseCloudProvider `json:"cloud_provider"`
+	// The region where your Virtual Private Cloud hosts are located.
 	CloudProviderRegion string `json:"cloud_provider_region"`
+	// ISO 8601 formatted date-time indicating when the resource was created.
+	CreatedAt string `json:"created_at"`
+	// A user specified name for the interface.
+	Name string `json:"name"`
+	// The id of the network associated with the interface.
+	NetworkID string `json:"network_id" format:"uuid"`
 	// The authentication key for BGP peer configuration.
 	PrimaryBgpKey string `json:"primary_bgp_key"`
-	// The identifier for your Virtual Private Cloud. The number will be different
-	// based upon your Cloud provider.
+	// The identifier for your Virtual Private Cloud.
 	PrimaryCloudAccountID string `json:"primary_cloud_account_id"`
-	// The IP address assigned for your side of the Virtual Cross
-	// Connect.<br /><br />If none is provided, one will be generated for
-	// you.<br /><br />This value can not be patched once the VXC has bene provisioned.
+	// The IP address assigned for your side of the Virtual Cross Connect.
 	PrimaryCloudIP string `json:"primary_cloud_ip"`
-	// Indicates whether the primary circuit is enabled. Setting this to `false` will
-	// disable the circuit.
+	// Indicates whether the primary circuit is enabled.
 	PrimaryEnabled bool `json:"primary_enabled"`
-	// Whether the primary BGP route is being announced.
+	// Whether
 	PrimaryRoutingAnnouncement bool `json:"primary_routing_announcement"`
-	// The IP address assigned to the Telnyx side of the Virtual Cross
-	// Connect.<br /><br />If none is provided, one will be generated for
-	// you.<br /><br />This value should be null for GCE as Google will only inform you
-	// of your assigned IP once the connection has been accepted.
-	PrimaryTelnyxIP string                                `json:"primary_telnyx_ip"`
-	Region          VirtualCrossConnectListResponseRegion `json:"region"`
-	// The authentication key for BGP peer configuration.
-	SecondaryBgpKey string `json:"secondary_bgp_key"`
-	// The identifier for your Virtual Private Cloud. The number will be different
-	// based upon your Cloud provider.<br /><br />This attribute is only necessary for
-	// GCE.
-	SecondaryCloudAccountID string `json:"secondary_cloud_account_id"`
-	// The IP address assigned for your side of the Virtual Cross
-	// Connect.<br /><br />If none is provided, one will be generated for
-	// you.<br /><br />This value can not be patched once the VXC has bene provisioned.
-	SecondaryCloudIP string `json:"secondary_cloud_ip"`
-	// Indicates whether the secondary circuit is enabled. Setting this to `false` will
-	// disable the circuit.
-	SecondaryEnabled bool `json:"secondary_enabled"`
-	// Whether the secondary BGP route is being announced.
-	SecondaryRoutingAnnouncement bool `json:"secondary_routing_announcement"`
-	// The IP address assigned to the Telnyx side of the Virtual Cross
-	// Connect.<br /><br />If none is provided, one will be generated for
-	// you.<br /><br />This value should be null for GCE as Google will only inform you
-	// of your assigned IP once the connection has been accepted.
-	SecondaryTelnyxIP string `json:"secondary_telnyx_ip"`
+	// The IP address assigned to the Telnyx side of the Virtual Cross Connect.
+	PrimaryTelnyxIP string `json:"primary_telnyx_ip"`
+	// Identifies the type of the resource.
+	RecordType string                                `json:"record_type"`
+	Region     VirtualCrossConnectListResponseRegion `json:"region"`
+	// The region interface is deployed to.
+	RegionCode string `json:"region_code"`
+	// The current status of the interface deployment.
+	//
+	// Any of "created", "provisioning", "provisioned", "deleting".
+	Status InterfaceStatus `json:"status"`
+	// ISO 8601 formatted date-time indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		RegionCode                   respjson.Field
-		BandwidthMbps                respjson.Field
-		BgpAsn                       respjson.Field
-		CloudProvider                respjson.Field
-		CloudProviderRegion          respjson.Field
-		PrimaryBgpKey                respjson.Field
-		PrimaryCloudAccountID        respjson.Field
-		PrimaryCloudIP               respjson.Field
-		PrimaryEnabled               respjson.Field
-		PrimaryRoutingAnnouncement   respjson.Field
-		PrimaryTelnyxIP              respjson.Field
-		Region                       respjson.Field
-		SecondaryBgpKey              respjson.Field
-		SecondaryCloudAccountID      respjson.Field
-		SecondaryCloudIP             respjson.Field
-		SecondaryEnabled             respjson.Field
-		SecondaryRoutingAnnouncement respjson.Field
-		SecondaryTelnyxIP            respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
+		ID                         respjson.Field
+		BandwidthMbps              respjson.Field
+		BgpAsn                     respjson.Field
+		CloudProvider              respjson.Field
+		CloudProviderRegion        respjson.Field
+		CreatedAt                  respjson.Field
+		Name                       respjson.Field
+		NetworkID                  respjson.Field
+		PrimaryBgpKey              respjson.Field
+		PrimaryCloudAccountID      respjson.Field
+		PrimaryCloudIP             respjson.Field
+		PrimaryEnabled             respjson.Field
+		PrimaryRoutingAnnouncement respjson.Field
+		PrimaryTelnyxIP            respjson.Field
+		RecordType                 respjson.Field
+		Region                     respjson.Field
+		RegionCode                 respjson.Field
+		Status                     respjson.Field
+		UpdatedAt                  respjson.Field
+		ExtraFields                map[string]respjson.Field
+		raw                        string
 	} `json:"-"`
-	Record
-	NetworkInterface
 }
 
 // Returns the unmodified JSON received from the API
@@ -602,6 +538,16 @@ func (r VirtualCrossConnectListResponse) RawJSON() string { return r.JSON.raw }
 func (r *VirtualCrossConnectListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// The Virtual Private Cloud with which you would like to establish a cross
+// connect.
+type VirtualCrossConnectListResponseCloudProvider string
+
+const (
+	VirtualCrossConnectListResponseCloudProviderAws   VirtualCrossConnectListResponseCloudProvider = "aws"
+	VirtualCrossConnectListResponseCloudProviderAzure VirtualCrossConnectListResponseCloudProvider = "azure"
+	VirtualCrossConnectListResponseCloudProviderGce   VirtualCrossConnectListResponseCloudProvider = "gce"
+)
 
 type VirtualCrossConnectListResponseRegion struct {
 	// Region code of the interface.
@@ -643,89 +589,73 @@ func (r *VirtualCrossConnectDeleteResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VirtualCrossConnectDeleteResponseData struct {
-	// The region interface is deployed to.
-	RegionCode string `json:"region_code" api:"required"`
+	// Identifies the resource.
+	ID string `json:"id" format:"uuid"`
 	// The desired throughput in Megabits per Second (Mbps) for your Virtual Cross
-	// Connect.<br /><br />The available bandwidths can be found using the
-	// /virtual_cross_connect_regions endpoint.
+	// Connect.
 	BandwidthMbps float64 `json:"bandwidth_mbps"`
-	// The Border Gateway Protocol (BGP) Autonomous System Number (ASN). If null, value
-	// will be assigned by Telnyx.
+	// The Border Gateway Protocol (BGP) Autonomous System Number (ASN).
 	BgpAsn float64 `json:"bgp_asn"`
 	// The Virtual Private Cloud with which you would like to establish a cross
 	// connect.
 	//
 	// Any of "aws", "azure", "gce".
 	CloudProvider string `json:"cloud_provider"`
-	// The region where your Virtual Private Cloud hosts are located.<br /><br />The
-	// available regions can be found using the /virtual_cross_connect_regions
-	// endpoint.
+	// The region where your Virtual Private Cloud hosts are located.
 	CloudProviderRegion string `json:"cloud_provider_region"`
+	// ISO 8601 formatted date-time indicating when the resource was created.
+	CreatedAt string `json:"created_at"`
+	// A user specified name for the interface.
+	Name string `json:"name"`
+	// The id of the network associated with the interface.
+	NetworkID string `json:"network_id" format:"uuid"`
 	// The authentication key for BGP peer configuration.
 	PrimaryBgpKey string `json:"primary_bgp_key"`
-	// The identifier for your Virtual Private Cloud. The number will be different
-	// based upon your Cloud provider.
+	// The identifier for your Virtual Private Cloud.
 	PrimaryCloudAccountID string `json:"primary_cloud_account_id"`
-	// The IP address assigned for your side of the Virtual Cross
-	// Connect.<br /><br />If none is provided, one will be generated for
-	// you.<br /><br />This value can not be patched once the VXC has bene provisioned.
+	// The IP address assigned for your side of the Virtual Cross Connect.
 	PrimaryCloudIP string `json:"primary_cloud_ip"`
-	// Indicates whether the primary circuit is enabled. Setting this to `false` will
-	// disable the circuit.
+	// Indicates whether the primary circuit is enabled.
 	PrimaryEnabled bool `json:"primary_enabled"`
-	// Whether the primary BGP route is being announced.
+	// Whether
 	PrimaryRoutingAnnouncement bool `json:"primary_routing_announcement"`
-	// The IP address assigned to the Telnyx side of the Virtual Cross
-	// Connect.<br /><br />If none is provided, one will be generated for
-	// you.<br /><br />This value should be null for GCE as Google will only inform you
-	// of your assigned IP once the connection has been accepted.
-	PrimaryTelnyxIP string                                      `json:"primary_telnyx_ip"`
-	Region          VirtualCrossConnectDeleteResponseDataRegion `json:"region"`
-	// The authentication key for BGP peer configuration.
-	SecondaryBgpKey string `json:"secondary_bgp_key"`
-	// The identifier for your Virtual Private Cloud. The number will be different
-	// based upon your Cloud provider.<br /><br />This attribute is only necessary for
-	// GCE.
-	SecondaryCloudAccountID string `json:"secondary_cloud_account_id"`
-	// The IP address assigned for your side of the Virtual Cross
-	// Connect.<br /><br />If none is provided, one will be generated for
-	// you.<br /><br />This value can not be patched once the VXC has bene provisioned.
-	SecondaryCloudIP string `json:"secondary_cloud_ip"`
-	// Indicates whether the secondary circuit is enabled. Setting this to `false` will
-	// disable the circuit.
-	SecondaryEnabled bool `json:"secondary_enabled"`
-	// Whether the secondary BGP route is being announced.
-	SecondaryRoutingAnnouncement bool `json:"secondary_routing_announcement"`
-	// The IP address assigned to the Telnyx side of the Virtual Cross
-	// Connect.<br /><br />If none is provided, one will be generated for
-	// you.<br /><br />This value should be null for GCE as Google will only inform you
-	// of your assigned IP once the connection has been accepted.
-	SecondaryTelnyxIP string `json:"secondary_telnyx_ip"`
+	// The IP address assigned to the Telnyx side of the Virtual Cross Connect.
+	PrimaryTelnyxIP string `json:"primary_telnyx_ip"`
+	// Identifies the type of the resource.
+	RecordType string                                      `json:"record_type"`
+	Region     VirtualCrossConnectDeleteResponseDataRegion `json:"region"`
+	// The region interface is deployed to.
+	RegionCode string `json:"region_code"`
+	// The current status of the interface deployment.
+	//
+	// Any of "created", "provisioning", "provisioned", "deleting".
+	Status InterfaceStatus `json:"status"`
+	// ISO 8601 formatted date-time indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		RegionCode                   respjson.Field
-		BandwidthMbps                respjson.Field
-		BgpAsn                       respjson.Field
-		CloudProvider                respjson.Field
-		CloudProviderRegion          respjson.Field
-		PrimaryBgpKey                respjson.Field
-		PrimaryCloudAccountID        respjson.Field
-		PrimaryCloudIP               respjson.Field
-		PrimaryEnabled               respjson.Field
-		PrimaryRoutingAnnouncement   respjson.Field
-		PrimaryTelnyxIP              respjson.Field
-		Region                       respjson.Field
-		SecondaryBgpKey              respjson.Field
-		SecondaryCloudAccountID      respjson.Field
-		SecondaryCloudIP             respjson.Field
-		SecondaryEnabled             respjson.Field
-		SecondaryRoutingAnnouncement respjson.Field
-		SecondaryTelnyxIP            respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
+		ID                         respjson.Field
+		BandwidthMbps              respjson.Field
+		BgpAsn                     respjson.Field
+		CloudProvider              respjson.Field
+		CloudProviderRegion        respjson.Field
+		CreatedAt                  respjson.Field
+		Name                       respjson.Field
+		NetworkID                  respjson.Field
+		PrimaryBgpKey              respjson.Field
+		PrimaryCloudAccountID      respjson.Field
+		PrimaryCloudIP             respjson.Field
+		PrimaryEnabled             respjson.Field
+		PrimaryRoutingAnnouncement respjson.Field
+		PrimaryTelnyxIP            respjson.Field
+		RecordType                 respjson.Field
+		Region                     respjson.Field
+		RegionCode                 respjson.Field
+		Status                     respjson.Field
+		UpdatedAt                  respjson.Field
+		ExtraFields                map[string]respjson.Field
+		raw                        string
 	} `json:"-"`
-	Record
-	NetworkInterface
 }
 
 // Returns the unmodified JSON received from the API
