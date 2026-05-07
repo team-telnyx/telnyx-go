@@ -62,14 +62,14 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 		InsightSettings: telnyx.InsightSettingsParam{
 			InsightGroupID: telnyx.String("insight_group_id"),
 		},
-		Integrations: []telnyx.AssistantIntegrationParam{{
+		Integrations: []telnyx.AIAssistantNewParamsIntegration{{
 			IntegrationID: "integration_id",
 			AllowedList:   []string{"string"},
 		}},
-		InterruptionSettings: telnyx.InferenceEmbeddingInterruptionSettingsParam{
+		InterruptionSettings: telnyx.AIAssistantNewParamsInterruptionSettings{
 			Enable: telnyx.Bool(true),
-			StartSpeakingPlan: telnyx.StartSpeakingPlanParam{
-				TranscriptionEndpointingPlan: telnyx.TranscriptionEndpointingPlanParam{
+			StartSpeakingPlan: telnyx.AIAssistantNewParamsInterruptionSettingsStartSpeakingPlan{
+				TranscriptionEndpointingPlan: telnyx.AIAssistantNewParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan{
 					OnNoPunctuationSeconds: telnyx.Float(0),
 					OnNumberSeconds:        telnyx.Float(0),
 					OnPunctuationSeconds:   telnyx.Float(0),
@@ -78,7 +78,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			},
 		},
 		LlmAPIKeyRef: telnyx.String("llm_api_key_ref"),
-		McpServers: []telnyx.AssistantMcpServerParam{{
+		McpServers: []telnyx.AIAssistantNewParamsMcpServer{{
 			ID:           "id",
 			AllowedTools: []string{"string"},
 		}},
@@ -319,14 +319,14 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				InsightGroupID: telnyx.String("insight_group_id"),
 			},
 			Instructions: telnyx.String("instructions"),
-			Integrations: []telnyx.AssistantIntegrationParam{{
+			Integrations: []telnyx.AIAssistantUpdateParamsIntegration{{
 				IntegrationID: "integration_id",
 				AllowedList:   []string{"string"},
 			}},
-			InterruptionSettings: telnyx.InferenceEmbeddingInterruptionSettingsParam{
+			InterruptionSettings: telnyx.AIAssistantUpdateParamsInterruptionSettings{
 				Enable: telnyx.Bool(true),
-				StartSpeakingPlan: telnyx.StartSpeakingPlanParam{
-					TranscriptionEndpointingPlan: telnyx.TranscriptionEndpointingPlanParam{
+				StartSpeakingPlan: telnyx.AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlan{
+					TranscriptionEndpointingPlan: telnyx.AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan{
 						OnNoPunctuationSeconds: telnyx.Float(0),
 						OnNumberSeconds:        telnyx.Float(0),
 						OnPunctuationSeconds:   telnyx.Float(0),
@@ -335,7 +335,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				},
 			},
 			LlmAPIKeyRef: telnyx.String("llm_api_key_ref"),
-			McpServers: []telnyx.AssistantMcpServerParam{{
+			McpServers: []telnyx.AIAssistantUpdateParamsMcpServer{{
 				ID:           "id",
 				AllowedTools: []string{"string"},
 			}},

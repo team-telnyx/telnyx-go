@@ -97,7 +97,25 @@ func (r *AIService) Summarize(ctx context.Context, body AISummarizeParams, opts 
 	return res, err
 }
 
-type ModelMetadata struct {
+type AIGetModelsResponse struct {
+	Data   []AIGetModelsResponseData `json:"data" api:"required"`
+	Object string                    `json:"object"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Object      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AIGetModelsResponse) RawJSON() string { return r.JSON.raw }
+func (r *AIGetModelsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AIGetModelsResponseData struct {
 	ID      string `json:"id" api:"required"`
 	Created int64  `json:"created" api:"required"`
 	OwnedBy string `json:"owned_by" api:"required"`
@@ -114,26 +132,8 @@ type ModelMetadata struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ModelMetadata) RawJSON() string { return r.JSON.raw }
-func (r *ModelMetadata) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIGetModelsResponse struct {
-	Data   []ModelMetadata `json:"data" api:"required"`
-	Object string          `json:"object"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Object      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIGetModelsResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIGetModelsResponse) UnmarshalJSON(data []byte) error {
+func (r AIGetModelsResponseData) RawJSON() string { return r.JSON.raw }
+func (r *AIGetModelsResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

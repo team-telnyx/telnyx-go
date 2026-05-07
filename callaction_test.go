@@ -387,7 +387,8 @@ func TestCallActionGatherUsingAIWithOptionalParams(t *testing.T) {
 			SendMessageHistoryUpdates: telnyx.Bool(true),
 			SendPartialResults:        telnyx.Bool(true),
 			Transcription: telnyx.TranscriptionConfigParam{
-				Model: telnyx.String("distil-whisper/distil-large-v2"),
+				Language: telnyx.String("auto"),
+				Model:    telnyx.TranscriptionConfigModelDistilWhisperDistilLargeV2,
 			},
 			UserResponseTimeoutMs: telnyx.Int(5000),
 			Voice:                 telnyx.String("Telnyx.KokoroTTS.af"),
@@ -944,7 +945,8 @@ func TestCallActionStartAIAssistantWithOptionalParams(t *testing.T) {
 			}},
 			SendMessageHistoryUpdates: telnyx.Bool(true),
 			Transcription: telnyx.TranscriptionConfigParam{
-				Model: telnyx.String("distil-whisper/distil-large-v2"),
+				Language: telnyx.String("auto"),
+				Model:    telnyx.TranscriptionConfigModelDistilWhisperDistilLargeV2,
 			},
 			Voice: telnyx.String("Telnyx.KokoroTTS.af"),
 			VoiceSettings: telnyx.CallActionStartAIAssistantParamsVoiceSettingsUnion{
