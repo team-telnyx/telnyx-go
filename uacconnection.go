@@ -578,8 +578,8 @@ const (
 type UacInternalSettings struct {
 	// The SIP URI that Telnyx will call when handling an inbound request from the
 	// external peer. Do not include a `sip:` prefix. The value must be in the format
-	// `userinfo@[subdomain.]sip.telnyx.com` or
-	// `userinfo@[subdomain.]sipdev.telnyx.com`; the userinfo portion may contain only
+	// `userinfo@<subdomain.>sip.telnyx.com` or
+	// `userinfo@<subdomain.>sipdev.telnyx.com`; the userinfo portion may contain only
 	// letters, digits, hyphens, and underscores.
 	DestinationUri string `json:"destination_uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -609,8 +609,8 @@ func (r UacInternalSettings) ToParam() UacInternalSettingsParam {
 type UacInternalSettingsParam struct {
 	// The SIP URI that Telnyx will call when handling an inbound request from the
 	// external peer. Do not include a `sip:` prefix. The value must be in the format
-	// `userinfo@[subdomain.]sip.telnyx.com` or
-	// `userinfo@[subdomain.]sipdev.telnyx.com`; the userinfo portion may contain only
+	// `userinfo@<subdomain.>sip.telnyx.com` or
+	// `userinfo@<subdomain.>sipdev.telnyx.com`; the userinfo portion may contain only
 	// letters, digits, hyphens, and underscores.
 	DestinationUri param.Opt[string] `json:"destination_uri,omitzero"`
 	paramObj
