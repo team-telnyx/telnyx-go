@@ -317,24 +317,42 @@ func (r *NetworkDeleteResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type NetworkListInterfacesResponse struct {
+	// Identifies the resource.
+	ID string `json:"id" format:"uuid"`
+	// ISO 8601 formatted date-time indicating when the resource was created.
+	CreatedAt string `json:"created_at"`
+	// A user specified name for the interface.
+	Name string `json:"name"`
+	// The id of the network associated with the interface.
+	NetworkID string `json:"network_id" format:"uuid"`
 	// Identifies the type of the resource.
 	RecordType string                              `json:"record_type"`
 	Region     NetworkListInterfacesResponseRegion `json:"region"`
 	// The region interface is deployed to.
 	RegionCode string `json:"region_code"`
+	// The current status of the interface deployment.
+	//
+	// Any of "created", "provisioning", "provisioned", "deleting".
+	Status InterfaceStatus `json:"status"`
 	// Identifies the type of the interface.
 	Type string `json:"type"`
+	// ISO 8601 formatted date-time indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Name        respjson.Field
+		NetworkID   respjson.Field
 		RecordType  respjson.Field
 		Region      respjson.Field
 		RegionCode  respjson.Field
+		Status      respjson.Field
 		Type        respjson.Field
+		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	Record
-	NetworkInterface
 }
 
 // Returns the unmodified JSON received from the API

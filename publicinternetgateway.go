@@ -95,31 +95,6 @@ func (r *PublicInternetGatewayService) Delete(ctx context.Context, id string, op
 	return res, err
 }
 
-type NetworkInterface struct {
-	// A user specified name for the interface.
-	Name string `json:"name"`
-	// The id of the network associated with the interface.
-	NetworkID string `json:"network_id" format:"uuid"`
-	// The current status of the interface deployment.
-	//
-	// Any of "created", "provisioning", "provisioned", "deleting".
-	Status InterfaceStatus `json:"status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Name        respjson.Field
-		NetworkID   respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r NetworkInterface) RawJSON() string { return r.JSON.raw }
-func (r *NetworkInterface) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type PublicInternetGatewayNewResponse struct {
 	Data PublicInternetGatewayNewResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -137,19 +112,40 @@ func (r *PublicInternetGatewayNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type PublicInternetGatewayNewResponseData struct {
+	// Identifies the resource.
+	ID string `json:"id" format:"uuid"`
+	// ISO 8601 formatted date-time indicating when the resource was created.
+	CreatedAt string `json:"created_at"`
+	// A user specified name for the interface.
+	Name string `json:"name"`
+	// The id of the network associated with the interface.
+	NetworkID string `json:"network_id" format:"uuid"`
 	// The publically accessible ip for this interface.
 	PublicIP string `json:"public_ip"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
 	// The region interface is deployed to.
 	RegionCode string `json:"region_code"`
+	// The current status of the interface deployment.
+	//
+	// Any of "created", "provisioning", "provisioned", "deleting".
+	Status InterfaceStatus `json:"status"`
+	// ISO 8601 formatted date-time indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Name        respjson.Field
+		NetworkID   respjson.Field
 		PublicIP    respjson.Field
+		RecordType  respjson.Field
 		RegionCode  respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	Record
-	NetworkInterface
 }
 
 // Returns the unmodified JSON received from the API
@@ -175,19 +171,40 @@ func (r *PublicInternetGatewayGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type PublicInternetGatewayGetResponseData struct {
+	// Identifies the resource.
+	ID string `json:"id" format:"uuid"`
+	// ISO 8601 formatted date-time indicating when the resource was created.
+	CreatedAt string `json:"created_at"`
+	// A user specified name for the interface.
+	Name string `json:"name"`
+	// The id of the network associated with the interface.
+	NetworkID string `json:"network_id" format:"uuid"`
 	// The publically accessible ip for this interface.
 	PublicIP string `json:"public_ip"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
 	// The region interface is deployed to.
 	RegionCode string `json:"region_code"`
+	// The current status of the interface deployment.
+	//
+	// Any of "created", "provisioning", "provisioned", "deleting".
+	Status InterfaceStatus `json:"status"`
+	// ISO 8601 formatted date-time indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Name        respjson.Field
+		NetworkID   respjson.Field
 		PublicIP    respjson.Field
+		RecordType  respjson.Field
 		RegionCode  respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	Record
-	NetworkInterface
 }
 
 // Returns the unmodified JSON received from the API
@@ -197,19 +214,40 @@ func (r *PublicInternetGatewayGetResponseData) UnmarshalJSON(data []byte) error 
 }
 
 type PublicInternetGatewayListResponse struct {
+	// Identifies the resource.
+	ID string `json:"id" format:"uuid"`
+	// ISO 8601 formatted date-time indicating when the resource was created.
+	CreatedAt string `json:"created_at"`
+	// A user specified name for the interface.
+	Name string `json:"name"`
+	// The id of the network associated with the interface.
+	NetworkID string `json:"network_id" format:"uuid"`
 	// The publically accessible ip for this interface.
 	PublicIP string `json:"public_ip"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
 	// The region interface is deployed to.
 	RegionCode string `json:"region_code"`
+	// The current status of the interface deployment.
+	//
+	// Any of "created", "provisioning", "provisioned", "deleting".
+	Status InterfaceStatus `json:"status"`
+	// ISO 8601 formatted date-time indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Name        respjson.Field
+		NetworkID   respjson.Field
 		PublicIP    respjson.Field
+		RecordType  respjson.Field
 		RegionCode  respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	Record
-	NetworkInterface
 }
 
 // Returns the unmodified JSON received from the API
@@ -235,19 +273,40 @@ func (r *PublicInternetGatewayDeleteResponse) UnmarshalJSON(data []byte) error {
 }
 
 type PublicInternetGatewayDeleteResponseData struct {
+	// Identifies the resource.
+	ID string `json:"id" format:"uuid"`
+	// ISO 8601 formatted date-time indicating when the resource was created.
+	CreatedAt string `json:"created_at"`
+	// A user specified name for the interface.
+	Name string `json:"name"`
+	// The id of the network associated with the interface.
+	NetworkID string `json:"network_id" format:"uuid"`
 	// The publically accessible ip for this interface.
 	PublicIP string `json:"public_ip"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
 	// The region interface is deployed to.
 	RegionCode string `json:"region_code"`
+	// The current status of the interface deployment.
+	//
+	// Any of "created", "provisioning", "provisioned", "deleting".
+	Status InterfaceStatus `json:"status"`
+	// ISO 8601 formatted date-time indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Name        respjson.Field
+		NetworkID   respjson.Field
 		PublicIP    respjson.Field
+		RecordType  respjson.Field
 		RegionCode  respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	Record
-	NetworkInterface
 }
 
 // Returns the unmodified JSON received from the API
