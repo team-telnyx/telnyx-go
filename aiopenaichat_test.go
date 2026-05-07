@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestAIChatNewCompletionWithOptionalParams(t *testing.T) {
+func TestAIOpenAIChatNewCompletionWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,14 +26,14 @@ func TestAIChatNewCompletionWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Chat.NewCompletion(context.TODO(), telnyx.AIChatNewCompletionParams{
-		Messages: []telnyx.AIChatNewCompletionParamsMessage{{
-			Content: telnyx.AIChatNewCompletionParamsMessageContentUnion{
+	_, err := client.AI.OpenAI.Chat.NewCompletion(context.TODO(), telnyx.AIOpenAIChatNewCompletionParams{
+		Messages: []telnyx.AIOpenAIChatNewCompletionParamsMessage{{
+			Content: telnyx.AIOpenAIChatNewCompletionParamsMessageContentUnion{
 				OfString: telnyx.String("You are a friendly chatbot."),
 			},
 			Role: "system",
 		}, {
-			Content: telnyx.AIChatNewCompletionParamsMessageContentUnion{
+			Content: telnyx.AIOpenAIChatNewCompletionParamsMessageContentUnion{
 				OfString: telnyx.String("Hello, world!"),
 			},
 			Role: "user",
@@ -55,19 +55,19 @@ func TestAIChatNewCompletionWithOptionalParams(t *testing.T) {
 		Model:           telnyx.String("model"),
 		N:               telnyx.Float(0),
 		PresencePenalty: telnyx.Float(0),
-		ResponseFormat: telnyx.AIChatNewCompletionParamsResponseFormat{
+		ResponseFormat: telnyx.AIOpenAIChatNewCompletionParamsResponseFormat{
 			Type: "text",
 		},
 		Seed: telnyx.Int(0),
-		Stop: telnyx.AIChatNewCompletionParamsStopUnion{
+		Stop: telnyx.AIOpenAIChatNewCompletionParamsStopUnion{
 			OfString: telnyx.String("string"),
 		},
 		Stream:      telnyx.Bool(true),
 		Temperature: telnyx.Float(0),
-		ToolChoice:  telnyx.AIChatNewCompletionParamsToolChoiceNone,
-		Tools: []telnyx.AIChatNewCompletionParamsToolUnion{{
-			OfFunction: &telnyx.AIChatNewCompletionParamsToolFunction{
-				Function: telnyx.AIChatNewCompletionParamsToolFunctionFunction{
+		ToolChoice:  telnyx.AIOpenAIChatNewCompletionParamsToolChoiceNone,
+		Tools: []telnyx.AIOpenAIChatNewCompletionParamsToolUnion{{
+			OfFunction: &telnyx.AIOpenAIChatNewCompletionParamsToolFunction{
+				Function: telnyx.AIOpenAIChatNewCompletionParamsToolFunctionFunction{
 					Name:        "name",
 					Description: telnyx.String("description"),
 					Parameters: map[string]any{

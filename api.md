@@ -1072,6 +1072,14 @@ Methods:
 
 ## OpenAI
 
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIListModelsResponse">AIOpenAIListModelsResponse</a>
+
+Methods:
+
+- <code title="get /ai/openai/models">client.AI.OpenAI.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIService.ListModels">ListModels</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIListModelsResponse">AIOpenAIListModelsResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 ### Embeddings
 
 Response Types:
@@ -1083,6 +1091,16 @@ Methods:
 
 - <code title="post /ai/openai/embeddings">client.AI.OpenAI.Embeddings.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIEmbeddingService.NewEmbeddings">NewEmbeddings</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIEmbeddingNewEmbeddingsParams">AIOpenAIEmbeddingNewEmbeddingsParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIEmbeddingNewEmbeddingsResponse">AIOpenAIEmbeddingNewEmbeddingsResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /ai/openai/embeddings/models">client.AI.OpenAI.Embeddings.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIEmbeddingService.ListEmbeddingModels">ListEmbeddingModels</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIEmbeddingListEmbeddingModelsResponse">AIOpenAIEmbeddingListEmbeddingModelsResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+### Chat
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIChatNewCompletionResponse">AIOpenAIChatNewCompletionResponse</a>
+
+Methods:
+
+- <code title="post /ai/openai/chat/completions">client.AI.OpenAI.Chat.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIChatService.NewCompletion">NewCompletion</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIChatNewCompletionParams">AIOpenAIChatNewCompletionParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIChatNewCompletionResponse">AIOpenAIChatNewCompletionResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## Tools
 
