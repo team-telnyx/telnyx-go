@@ -51,8 +51,8 @@ func (r *AIOpenAIService) ListModels(ctx context.Context, opts ...option.Request
 }
 
 type AIOpenAIListModelsResponse struct {
-	Data   []ModelMetadata `json:"data" api:"required"`
-	Object string          `json:"object"`
+	Data   []AIOpenAIListModelsResponseData `json:"data" api:"required"`
+	Object string                           `json:"object"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -65,5 +65,27 @@ type AIOpenAIListModelsResponse struct {
 // Returns the unmodified JSON received from the API
 func (r AIOpenAIListModelsResponse) RawJSON() string { return r.JSON.raw }
 func (r *AIOpenAIListModelsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AIOpenAIListModelsResponseData struct {
+	ID      string `json:"id" api:"required"`
+	Created int64  `json:"created" api:"required"`
+	OwnedBy string `json:"owned_by" api:"required"`
+	Object  string `json:"object"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Created     respjson.Field
+		OwnedBy     respjson.Field
+		Object      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AIOpenAIListModelsResponseData) RawJSON() string { return r.JSON.raw }
+func (r *AIOpenAIListModelsResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
