@@ -144,18 +144,30 @@ type ScheduledEventResponseUnion struct {
 	// Any of nil, nil.
 	TelnyxConversationChannel ConversationChannelType `json:"telnyx_conversation_channel"`
 	TelnyxEndUserTarget       string                  `json:"telnyx_end_user_target"`
-	ConversationID            string                  `json:"conversation_id"`
+	// This field is from variant [ScheduledPhoneCallEventResponse].
+	CallAttempts []ScheduledPhoneCallEventResponseCallAttempt `json:"call_attempts"`
+	// This field is from variant [ScheduledPhoneCallEventResponse].
+	CallDuration int64 `json:"call_duration"`
+	// This field is from variant [ScheduledPhoneCallEventResponse].
+	CallStatus     string `json:"call_status"`
+	ConversationID string `json:"conversation_id"`
 	// This field is a union of
 	// [map[string]ScheduledPhoneCallEventResponseConversationMetadataUnion],
 	// [map[string]ScheduledSMSEventResponseConversationMetadataUnion]
 	ConversationMetadata ScheduledEventResponseUnionConversationMetadata `json:"conversation_metadata"`
 	CreatedAt            time.Time                                       `json:"created_at"`
-	DynamicVariables     string                                          `json:"dynamic_variables"`
-	Errors               []string                                        `json:"errors"`
 	// This field is from variant [ScheduledPhoneCallEventResponse].
-	RetryAttempts    int64  `json:"retry_attempts"`
-	RetryCount       int64  `json:"retry_count"`
-	ScheduledEventID string `json:"scheduled_event_id"`
+	DispatchedAt     time.Time `json:"dispatched_at"`
+	DynamicVariables string    `json:"dynamic_variables"`
+	Errors           []string  `json:"errors"`
+	// This field is from variant [ScheduledPhoneCallEventResponse].
+	MaxRetriesClientErrors int64 `json:"max_retries_client_errors"`
+	// This field is from variant [ScheduledPhoneCallEventResponse].
+	RetryAttempts int64 `json:"retry_attempts"`
+	RetryCount    int64 `json:"retry_count"`
+	// This field is from variant [ScheduledPhoneCallEventResponse].
+	RetryIntervalSecs int64  `json:"retry_interval_secs"`
+	ScheduledEventID  string `json:"scheduled_event_id"`
 	// This field is from variant [ScheduledPhoneCallEventResponse].
 	Status EventStatus `json:"status"`
 	// This field is from variant [ScheduledSMSEventResponse].
@@ -166,13 +178,19 @@ type ScheduledEventResponseUnion struct {
 		TelnyxAgentTarget         respjson.Field
 		TelnyxConversationChannel respjson.Field
 		TelnyxEndUserTarget       respjson.Field
+		CallAttempts              respjson.Field
+		CallDuration              respjson.Field
+		CallStatus                respjson.Field
 		ConversationID            respjson.Field
 		ConversationMetadata      respjson.Field
 		CreatedAt                 respjson.Field
+		DispatchedAt              respjson.Field
 		DynamicVariables          respjson.Field
 		Errors                    respjson.Field
+		MaxRetriesClientErrors    respjson.Field
 		RetryAttempts             respjson.Field
 		RetryCount                respjson.Field
+		RetryIntervalSecs         respjson.Field
 		ScheduledEventID          respjson.Field
 		Status                    respjson.Field
 		Text                      respjson.Field
@@ -230,18 +248,29 @@ type ScheduledPhoneCallEventResponse struct {
 	ScheduledAtFixedDatetime time.Time `json:"scheduled_at_fixed_datetime" api:"required" format:"date-time"`
 	TelnyxAgentTarget        string    `json:"telnyx_agent_target" api:"required"`
 	// Any of "phone_call", "sms_chat".
-	TelnyxConversationChannel ConversationChannelType                                             `json:"telnyx_conversation_channel" api:"required"`
-	TelnyxEndUserTarget       string                                                              `json:"telnyx_end_user_target" api:"required"`
-	ConversationID            string                                                              `json:"conversation_id"`
-	ConversationMetadata      map[string]ScheduledPhoneCallEventResponseConversationMetadataUnion `json:"conversation_metadata"`
-	CreatedAt                 time.Time                                                           `json:"created_at" format:"date-time"`
+	TelnyxConversationChannel ConversationChannelType                      `json:"telnyx_conversation_channel" api:"required"`
+	TelnyxEndUserTarget       string                                       `json:"telnyx_end_user_target" api:"required"`
+	CallAttempts              []ScheduledPhoneCallEventResponseCallAttempt `json:"call_attempts"`
+	// Duration of the call in seconds
+	CallDuration int64 `json:"call_duration"`
+	// Values: busy, canceled, no-answer, ringing, completed, failed, in-progress
+	CallStatus           string                                                              `json:"call_status"`
+	ConversationID       string                                                              `json:"conversation_id"`
+	ConversationMetadata map[string]ScheduledPhoneCallEventResponseConversationMetadataUnion `json:"conversation_metadata"`
+	CreatedAt            time.Time                                                           `json:"created_at" format:"date-time"`
+	// Date time at which call was sent
+	DispatchedAt time.Time `json:"dispatched_at" format:"date-time"`
 	// A map of dynamic variable names to values. These variables can be referenced in
 	// the assistant's instructions and messages using {{variable_name}} syntax.
 	DynamicVariables map[string]string `json:"dynamic_variables"`
 	Errors           []string          `json:"errors"`
-	RetryAttempts    int64             `json:"retry_attempts"`
-	RetryCount       int64             `json:"retry_count"`
-	ScheduledEventID string            `json:"scheduled_event_id"`
+	// Configure number of retries on client errors: busy, no-answer, failed, canceled
+	// (caller hung up before the callee answered)
+	MaxRetriesClientErrors int64  `json:"max_retries_client_errors"`
+	RetryAttempts          int64  `json:"retry_attempts"`
+	RetryCount             int64  `json:"retry_count"`
+	RetryIntervalSecs      int64  `json:"retry_interval_secs"`
+	ScheduledEventID       string `json:"scheduled_event_id"`
 	// Any of "pending", "in_progress", "completed", "failed".
 	Status EventStatus `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -251,13 +280,19 @@ type ScheduledPhoneCallEventResponse struct {
 		TelnyxAgentTarget         respjson.Field
 		TelnyxConversationChannel respjson.Field
 		TelnyxEndUserTarget       respjson.Field
+		CallAttempts              respjson.Field
+		CallDuration              respjson.Field
+		CallStatus                respjson.Field
 		ConversationID            respjson.Field
 		ConversationMetadata      respjson.Field
 		CreatedAt                 respjson.Field
+		DispatchedAt              respjson.Field
 		DynamicVariables          respjson.Field
 		Errors                    respjson.Field
+		MaxRetriesClientErrors    respjson.Field
 		RetryAttempts             respjson.Field
 		RetryCount                respjson.Field
+		RetryIntervalSecs         respjson.Field
 		ScheduledEventID          respjson.Field
 		Status                    respjson.Field
 		ExtraFields               map[string]respjson.Field
@@ -268,6 +303,33 @@ type ScheduledPhoneCallEventResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ScheduledPhoneCallEventResponse) RawJSON() string { return r.JSON.raw }
 func (r *ScheduledPhoneCallEventResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// One row in `call_attempts` — captures the terminal outcome of a single dispatch.
+type ScheduledPhoneCallEventResponseCallAttempt struct {
+	AttemptNumber int64     `json:"attempt_number" api:"required"`
+	AttemptedAt   time.Time `json:"attempted_at" api:"required" format:"date-time"`
+	// Values: busy, canceled, no-answer, ringing, completed, failed, in-progress
+	CallStatus string `json:"call_status" api:"required"`
+	// Duration of the call in seconds
+	CallDuration        int64  `json:"call_duration"`
+	TelnyxCallControlID string `json:"telnyx_call_control_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AttemptNumber       respjson.Field
+		AttemptedAt         respjson.Field
+		CallStatus          respjson.Field
+		CallDuration        respjson.Field
+		TelnyxCallControlID respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ScheduledPhoneCallEventResponseCallAttempt) RawJSON() string { return r.JSON.raw }
+func (r *ScheduledPhoneCallEventResponseCallAttempt) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -419,18 +481,30 @@ type AIAssistantScheduledEventListResponseUnion struct {
 	// Any of nil, nil.
 	TelnyxConversationChannel ConversationChannelType `json:"telnyx_conversation_channel"`
 	TelnyxEndUserTarget       string                  `json:"telnyx_end_user_target"`
-	ConversationID            string                  `json:"conversation_id"`
+	// This field is from variant [ScheduledPhoneCallEventResponse].
+	CallAttempts []ScheduledPhoneCallEventResponseCallAttempt `json:"call_attempts"`
+	// This field is from variant [ScheduledPhoneCallEventResponse].
+	CallDuration int64 `json:"call_duration"`
+	// This field is from variant [ScheduledPhoneCallEventResponse].
+	CallStatus     string `json:"call_status"`
+	ConversationID string `json:"conversation_id"`
 	// This field is a union of
 	// [map[string]ScheduledPhoneCallEventResponseConversationMetadataUnion],
 	// [map[string]ScheduledSMSEventResponseConversationMetadataUnion]
 	ConversationMetadata AIAssistantScheduledEventListResponseUnionConversationMetadata `json:"conversation_metadata"`
 	CreatedAt            time.Time                                                      `json:"created_at"`
-	DynamicVariables     string                                                         `json:"dynamic_variables"`
-	Errors               []string                                                       `json:"errors"`
 	// This field is from variant [ScheduledPhoneCallEventResponse].
-	RetryAttempts    int64  `json:"retry_attempts"`
-	RetryCount       int64  `json:"retry_count"`
-	ScheduledEventID string `json:"scheduled_event_id"`
+	DispatchedAt     time.Time `json:"dispatched_at"`
+	DynamicVariables string    `json:"dynamic_variables"`
+	Errors           []string  `json:"errors"`
+	// This field is from variant [ScheduledPhoneCallEventResponse].
+	MaxRetriesClientErrors int64 `json:"max_retries_client_errors"`
+	// This field is from variant [ScheduledPhoneCallEventResponse].
+	RetryAttempts int64 `json:"retry_attempts"`
+	RetryCount    int64 `json:"retry_count"`
+	// This field is from variant [ScheduledPhoneCallEventResponse].
+	RetryIntervalSecs int64  `json:"retry_interval_secs"`
+	ScheduledEventID  string `json:"scheduled_event_id"`
 	// This field is from variant [ScheduledPhoneCallEventResponse].
 	Status EventStatus `json:"status"`
 	// This field is from variant [ScheduledSMSEventResponse].
@@ -441,13 +515,19 @@ type AIAssistantScheduledEventListResponseUnion struct {
 		TelnyxAgentTarget         respjson.Field
 		TelnyxConversationChannel respjson.Field
 		TelnyxEndUserTarget       respjson.Field
+		CallAttempts              respjson.Field
+		CallDuration              respjson.Field
+		CallStatus                respjson.Field
 		ConversationID            respjson.Field
 		ConversationMetadata      respjson.Field
 		CreatedAt                 respjson.Field
+		DispatchedAt              respjson.Field
 		DynamicVariables          respjson.Field
 		Errors                    respjson.Field
+		MaxRetriesClientErrors    respjson.Field
 		RetryAttempts             respjson.Field
 		RetryCount                respjson.Field
+		RetryIntervalSecs         respjson.Field
 		ScheduledEventID          respjson.Field
 		Status                    respjson.Field
 		Text                      respjson.Field
@@ -510,6 +590,10 @@ type AIAssistantScheduledEventNewParams struct {
 	TelnyxConversationChannel ConversationChannelType `json:"telnyx_conversation_channel,omitzero" api:"required"`
 	// The phone number, SIP URI, to schedule the call or text to.
 	TelnyxEndUserTarget string `json:"telnyx_end_user_target" api:"required"`
+	// Configure number of retries on client errors: busy, no-answer, failed, canceled
+	// (caller hung up before the callee answered)
+	MaxRetriesClientErrors param.Opt[int64] `json:"max_retries_client_errors,omitzero"`
+	RetryIntervalSecs      param.Opt[int64] `json:"retry_interval_secs,omitzero"`
 	// Required for sms scheduled events. The text to be sent to the end user.
 	Text param.Opt[string] `json:"text,omitzero"`
 	// Metadata associated with the conversation. Telnyx provides several pieces of

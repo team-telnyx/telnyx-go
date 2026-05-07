@@ -31,17 +31,17 @@ func TestAIAssistantCanaryDeployNewWithOptionalParams(t *testing.T) {
 		"assistant_id",
 		telnyx.AIAssistantCanaryDeployNewParams{
 			CanaryDeploy: telnyx.CanaryDeployParam{
-				Rules: []telnyx.RuleInputParam{{
-					Serve: telnyx.ServeParam{
-						Rollout: []telnyx.RolloutSlotParam{{
+				Rules: []telnyx.CanaryDeployRuleParam{{
+					Serve: telnyx.CanaryDeployRuleServeParam{
+						Rollout: []telnyx.CanaryDeployRuleServeRolloutParam{{
 							VersionID: "version_id",
 							Weight:    0,
 						}},
 						VersionID: telnyx.String("version_id"),
 					},
-					Match: []telnyx.ClauseParam{{
+					Match: []telnyx.CanaryDeployRuleMatchParam{{
 						Attribute: "attribute",
-						Operator:  telnyx.ClauseOperatorIn,
+						Operator:  "in",
 						Values:    []string{"string"},
 					}},
 				}},
@@ -98,17 +98,17 @@ func TestAIAssistantCanaryDeployUpdateWithOptionalParams(t *testing.T) {
 		"assistant_id",
 		telnyx.AIAssistantCanaryDeployUpdateParams{
 			CanaryDeploy: telnyx.CanaryDeployParam{
-				Rules: []telnyx.RuleInputParam{{
-					Serve: telnyx.ServeParam{
-						Rollout: []telnyx.RolloutSlotParam{{
+				Rules: []telnyx.CanaryDeployRuleParam{{
+					Serve: telnyx.CanaryDeployRuleServeParam{
+						Rollout: []telnyx.CanaryDeployRuleServeRolloutParam{{
 							VersionID: "version_id",
 							Weight:    0,
 						}},
 						VersionID: telnyx.String("version_id"),
 					},
-					Match: []telnyx.ClauseParam{{
+					Match: []telnyx.CanaryDeployRuleMatchParam{{
 						Attribute: "attribute",
-						Operator:  telnyx.ClauseOperatorIn,
+						Operator:  "in",
 						Values:    []string{"string"},
 					}},
 				}},
