@@ -38,11 +38,21 @@ func NewAIOpenAIService(opts ...option.RequestOption) (r AIOpenAIService) {
 	return
 }
 
-// This endpoint returns a list of Open Source and OpenAI models that are available
-// for use. <br /><br /> **Note**: Model `id`'s will be in the form
-// `{source}/{model_name}`. For example `openai/gpt-4` or
-// `mistralai/Mistral-7B-Instruct-v0.1` consistent with HuggingFace naming
-// conventions.
+// Lists every model currently available to your account on Telnyx Inference,
+// including SOTA open-source LLMs hosted on Telnyx GPUs (for example
+// `moonshotai/Kimi-K2.6`, `zai-org/GLM-5.1-FP8`, and `MiniMaxAI/MiniMax-M2.7`),
+// embedding models, and any fine-tuned models you have created.
+//
+// Each entry is a `ModelMetadata` object describing the model id, owner, task,
+// context length, supported languages, billing tier, pricing per 1M tokens,
+// deployment regions, and whether the model supports vision or fine-tuning. Use
+// this endpoint to discover model ids you can pass to
+// `POST /v2/ai/openai/chat/completions`.
+//
+// Model ids follow the `{organization}/{model_name}` convention from Hugging Face
+// (for example `moonshotai/Kimi-K2.6`). This endpoint is OpenAI-compatible:
+// clients pointed at `https://api.telnyx.com/v2/ai/openai` can call
+// `client.models.list()` to retrieve the same payload.
 func (r *AIOpenAIService) ListModels(ctx context.Context, opts ...option.RequestOption) (res *AIOpenAIListModelsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/openai/models"
