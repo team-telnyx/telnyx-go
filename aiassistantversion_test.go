@@ -101,7 +101,8 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					AllowedList:   []string{"string"},
 				}},
 				InterruptionSettings: telnyx.InferenceEmbeddingInterruptionSettingsParam{
-					Enable: telnyx.Bool(true),
+					DisableGreetingInterruption: telnyx.Bool(true),
+					Enable:                      telnyx.Bool(true),
 					StartSpeakingPlan: telnyx.StartSpeakingPlanParam{
 						TranscriptionEndpointingPlan: telnyx.TranscriptionEndpointingPlanParam{
 							OnNoPunctuationSeconds: telnyx.Float(0),
