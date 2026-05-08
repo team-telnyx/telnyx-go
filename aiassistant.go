@@ -2728,6 +2728,8 @@ func (r *InferenceEmbedding) UnmarshalJSON(data []byte) error {
 // `transcription.settings` (`eot_threshold`, `eot_timeout_ms`,
 // `eager_eot_threshold`).
 type InferenceEmbeddingInterruptionSettings struct {
+	// When true, disables user interruptions while the assistant greeting is playing.
+	DisableGreetingInterruption bool `json:"disable_greeting_interruption"`
 	// Whether users can interrupt the assistant while it is speaking.
 	Enable bool `json:"enable"`
 	// Controls when the assistant starts speaking after the user stops. These
@@ -2737,10 +2739,11 @@ type InferenceEmbeddingInterruptionSettings struct {
 	StartSpeakingPlan StartSpeakingPlan `json:"start_speaking_plan"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Enable            respjson.Field
-		StartSpeakingPlan respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
+		DisableGreetingInterruption respjson.Field
+		Enable                      respjson.Field
+		StartSpeakingPlan           respjson.Field
+		ExtraFields                 map[string]respjson.Field
+		raw                         string
 	} `json:"-"`
 }
 
@@ -2767,6 +2770,8 @@ func (r InferenceEmbeddingInterruptionSettings) ToParam() InferenceEmbeddingInte
 // `transcription.settings` (`eot_threshold`, `eot_timeout_ms`,
 // `eager_eot_threshold`).
 type InferenceEmbeddingInterruptionSettingsParam struct {
+	// When true, disables user interruptions while the assistant greeting is playing.
+	DisableGreetingInterruption param.Opt[bool] `json:"disable_greeting_interruption,omitzero"`
 	// Whether users can interrupt the assistant while it is speaking.
 	Enable param.Opt[bool] `json:"enable,omitzero"`
 	// Controls when the assistant starts speaking after the user stops. These
