@@ -31,7 +31,7 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 		ConnectionID: "7267xxxxxxxxxxxxxx",
 		From:         "+18005550101",
 		To: telnyx.CallDialParamsToUnion{
-			OfString: telnyx.String("+18005550100 or sip:username@sip.telnyx.com"),
+			OfString: telnyx.String("+18005550100 or sip:username@sip.telnyx.com;secure=srtp"),
 		},
 		AnsweringMachineDetection: telnyx.CallDialParamsAnsweringMachineDetectionDetect,
 		AnsweringMachineDetectionConfig: telnyx.CallDialParamsAnsweringMachineDetectionConfig{

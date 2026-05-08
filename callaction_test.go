@@ -1587,7 +1587,7 @@ func TestCallActionTransferWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"call_control_id",
 		telnyx.CallActionTransferParams{
-			To:                        "+18005550100 or sip:username@sip.telnyx.com",
+			To:                        "+18005550100 or sip:username@sip.telnyx.com;secure=srtp",
 			AnsweringMachineDetection: telnyx.CallActionTransferParamsAnsweringMachineDetectionDetect,
 			AnsweringMachineDetectionConfig: telnyx.CallActionTransferParamsAnsweringMachineDetectionConfig{
 				AfterGreetingSilenceMillis:      telnyx.Int(1000),
