@@ -43,7 +43,9 @@ func TestAIAssistantScheduledEventNewWithOptionalParams(t *testing.T) {
 			DynamicVariables: map[string]string{
 				"foo": "string",
 			},
-			Text: telnyx.String("text"),
+			MaxRetriesClientErrors: telnyx.Int(0),
+			RetryIntervalSecs:      telnyx.Int(60),
+			Text:                   telnyx.String("text"),
 		},
 	)
 	if err != nil {

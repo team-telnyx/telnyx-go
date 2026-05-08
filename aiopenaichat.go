@@ -4,7 +4,6 @@ package telnyx
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 	"slices"
 
@@ -12,99 +11,44 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
-	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
-// Generate text with LLMs
-//
-// AIChatService contains methods and other services that help with interacting
-// with the telnyx API.
+// AIOpenAIChatService contains methods and other services that help with
+// interacting with the telnyx API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewAIChatService] method instead.
-type AIChatService struct {
+// the [NewAIOpenAIChatService] method instead.
+type AIOpenAIChatService struct {
 	Options []option.RequestOption
 }
 
-// NewAIChatService generates a new service that applies the given options to each
-// request. These options are applied after the parent client's options (if there
-// is one), and before any request-specific options.
-func NewAIChatService(opts ...option.RequestOption) (r AIChatService) {
-	r = AIChatService{}
+// NewAIOpenAIChatService generates a new service that applies the given options to
+// each request. These options are applied after the parent client's options (if
+// there is one), and before any request-specific options.
+func NewAIOpenAIChatService(opts ...option.RequestOption) (r AIOpenAIChatService) {
+	r = AIOpenAIChatService{}
 	r.Options = opts
 	return
 }
 
-// **Deprecated**: Use `POST /v2/ai/openai/chat/completions` instead. Chat with a
-// language model. This endpoint is consistent with the
+// Chat with a language model. This endpoint is consistent with the
 // [OpenAI Chat Completions API](https://platform.openai.com/docs/api-reference/chat)
-// and may be used with the OpenAI JS or Python SDK.
-//
-// Deprecated: deprecated
-func (r *AIChatService) NewCompletion(ctx context.Context, body AIChatNewCompletionParams, opts ...option.RequestOption) (res *AIChatNewCompletionResponse, err error) {
+// and may be used with the OpenAI JS or Python SDK by setting the base URL to
+// `https://api.telnyx.com/v2/ai/openai`.
+func (r *AIOpenAIChatService) NewCompletion(ctx context.Context, body AIOpenAIChatNewCompletionParams, opts ...option.RequestOption) (res *AIOpenAIChatNewCompletionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "ai/chat/completions"
+	path := "ai/openai/chat/completions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
 
-type BucketIDs struct {
-	// List of
-	// [embedded storage buckets](https://developers.telnyx.com/api-reference/embeddings/embed-documents)
-	// to use for retrieval-augmented generation.
-	BucketIDs []string `json:"bucket_ids" api:"required"`
-	// The maximum number of results to retrieve as context for the language model.
-	MaxNumResults int64 `json:"max_num_results"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		BucketIDs     respjson.Field
-		MaxNumResults respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
+type AIOpenAIChatNewCompletionResponse map[string]any
 
-// Returns the unmodified JSON received from the API
-func (r BucketIDs) RawJSON() string { return r.JSON.raw }
-func (r *BucketIDs) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this BucketIDs to a BucketIDsParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// BucketIDsParam.Overrides()
-func (r BucketIDs) ToParam() BucketIDsParam {
-	return param.Override[BucketIDsParam](json.RawMessage(r.RawJSON()))
-}
-
-// The property BucketIDs is required.
-type BucketIDsParam struct {
-	// List of
-	// [embedded storage buckets](https://developers.telnyx.com/api-reference/embeddings/embed-documents)
-	// to use for retrieval-augmented generation.
-	BucketIDs []string `json:"bucket_ids,omitzero" api:"required"`
-	// The maximum number of results to retrieve as context for the language model.
-	MaxNumResults param.Opt[int64] `json:"max_num_results,omitzero"`
-	paramObj
-}
-
-func (r BucketIDsParam) MarshalJSON() (data []byte, err error) {
-	type shadow BucketIDsParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BucketIDsParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIChatNewCompletionResponse map[string]any
-
-type AIChatNewCompletionParams struct {
+type AIOpenAIChatNewCompletionParams struct {
 	// A list of the previous chat messages for context.
-	Messages []AIChatNewCompletionParamsMessage `json:"messages,omitzero" api:"required"`
+	Messages []AIOpenAIChatNewCompletionParamsMessage `json:"messages,omitzero" api:"required"`
 	// If you are using an external inference provider like xAI or OpenAI, this field
 	// allows you to pass along a reference to your API key. After creating an
 	// [integration secret](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
@@ -171,47 +115,47 @@ type AIChatNewCompletionParams struct {
 	GuidedJson map[string]any `json:"guided_json,omitzero"`
 	// Use this is you want to guarantee a JSON output without defining a schema. For
 	// control over the schema, use `guided_json`.
-	ResponseFormat AIChatNewCompletionParamsResponseFormat `json:"response_format,omitzero"`
+	ResponseFormat AIOpenAIChatNewCompletionParamsResponseFormat `json:"response_format,omitzero"`
 	// Up to 4 sequences where the API will stop generating further tokens. The
 	// returned text will not contain the stop sequence.
-	Stop AIChatNewCompletionParamsStopUnion `json:"stop,omitzero"`
+	Stop AIOpenAIChatNewCompletionParamsStopUnion `json:"stop,omitzero"`
 	// Any of "none", "auto", "required".
-	ToolChoice AIChatNewCompletionParamsToolChoice `json:"tool_choice,omitzero"`
+	ToolChoice AIOpenAIChatNewCompletionParamsToolChoice `json:"tool_choice,omitzero"`
 	// The `function` tool type follows the same schema as the
 	// [OpenAI Chat Completions API](https://platform.openai.com/docs/api-reference/chat).
 	// The `retrieval` tool type is unique to Telnyx. You may pass a list of
 	// [embedded storage buckets](https://developers.telnyx.com/api-reference/embeddings/embed-documents)
 	// for retrieval-augmented generation.
-	Tools []AIChatNewCompletionParamsToolUnion `json:"tools,omitzero"`
+	Tools []AIOpenAIChatNewCompletionParamsToolUnion `json:"tools,omitzero"`
 	paramObj
 }
 
-func (r AIChatNewCompletionParams) MarshalJSON() (data []byte, err error) {
-	type shadow AIChatNewCompletionParams
+func (r AIOpenAIChatNewCompletionParams) MarshalJSON() (data []byte, err error) {
+	type shadow AIOpenAIChatNewCompletionParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AIChatNewCompletionParams) UnmarshalJSON(data []byte) error {
+func (r *AIOpenAIChatNewCompletionParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties Content, Role are required.
-type AIChatNewCompletionParamsMessage struct {
-	Content AIChatNewCompletionParamsMessageContentUnion `json:"content,omitzero" api:"required"`
+type AIOpenAIChatNewCompletionParamsMessage struct {
+	Content AIOpenAIChatNewCompletionParamsMessageContentUnion `json:"content,omitzero" api:"required"`
 	// Any of "system", "user", "assistant", "tool".
 	Role string `json:"role,omitzero" api:"required"`
 	paramObj
 }
 
-func (r AIChatNewCompletionParamsMessage) MarshalJSON() (data []byte, err error) {
-	type shadow AIChatNewCompletionParamsMessage
+func (r AIOpenAIChatNewCompletionParamsMessage) MarshalJSON() (data []byte, err error) {
+	type shadow AIOpenAIChatNewCompletionParamsMessage
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AIChatNewCompletionParamsMessage) UnmarshalJSON(data []byte) error {
+func (r *AIOpenAIChatNewCompletionParamsMessage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[AIChatNewCompletionParamsMessage](
+	apijson.RegisterFieldValidator[AIOpenAIChatNewCompletionParamsMessage](
 		"role", "system", "user", "assistant", "tool",
 	)
 }
@@ -219,20 +163,20 @@ func init() {
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type AIChatNewCompletionParamsMessageContentUnion struct {
-	OfString            param.Opt[string]                                              `json:",omitzero,inline"`
-	OfTextAndImageArray []AIChatNewCompletionParamsMessageContentTextAndImageArrayItem `json:",omitzero,inline"`
+type AIOpenAIChatNewCompletionParamsMessageContentUnion struct {
+	OfString            param.Opt[string]                                                    `json:",omitzero,inline"`
+	OfTextAndImageArray []AIOpenAIChatNewCompletionParamsMessageContentTextAndImageArrayItem `json:",omitzero,inline"`
 	paramUnion
 }
 
-func (u AIChatNewCompletionParamsMessageContentUnion) MarshalJSON() ([]byte, error) {
+func (u AIOpenAIChatNewCompletionParamsMessageContentUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfTextAndImageArray)
 }
-func (u *AIChatNewCompletionParamsMessageContentUnion) UnmarshalJSON(data []byte) error {
+func (u *AIOpenAIChatNewCompletionParamsMessageContentUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
-func (u *AIChatNewCompletionParamsMessageContentUnion) asAny() any {
+func (u *AIOpenAIChatNewCompletionParamsMessageContentUnion) asAny() any {
 	if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
 	} else if !param.IsOmitted(u.OfTextAndImageArray) {
@@ -242,7 +186,7 @@ func (u *AIChatNewCompletionParamsMessageContentUnion) asAny() any {
 }
 
 // The property Type is required.
-type AIChatNewCompletionParamsMessageContentTextAndImageArrayItem struct {
+type AIOpenAIChatNewCompletionParamsMessageContentTextAndImageArrayItem struct {
 	// Any of "text", "image_url".
 	Type     string            `json:"type,omitzero" api:"required"`
 	ImageURL param.Opt[string] `json:"image_url,omitzero"`
@@ -250,16 +194,16 @@ type AIChatNewCompletionParamsMessageContentTextAndImageArrayItem struct {
 	paramObj
 }
 
-func (r AIChatNewCompletionParamsMessageContentTextAndImageArrayItem) MarshalJSON() (data []byte, err error) {
-	type shadow AIChatNewCompletionParamsMessageContentTextAndImageArrayItem
+func (r AIOpenAIChatNewCompletionParamsMessageContentTextAndImageArrayItem) MarshalJSON() (data []byte, err error) {
+	type shadow AIOpenAIChatNewCompletionParamsMessageContentTextAndImageArrayItem
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AIChatNewCompletionParamsMessageContentTextAndImageArrayItem) UnmarshalJSON(data []byte) error {
+func (r *AIOpenAIChatNewCompletionParamsMessageContentTextAndImageArrayItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[AIChatNewCompletionParamsMessageContentTextAndImageArrayItem](
+	apijson.RegisterFieldValidator[AIOpenAIChatNewCompletionParamsMessageContentTextAndImageArrayItem](
 		"type", "text", "image_url",
 	)
 }
@@ -268,22 +212,22 @@ func init() {
 // control over the schema, use `guided_json`.
 //
 // The property Type is required.
-type AIChatNewCompletionParamsResponseFormat struct {
+type AIOpenAIChatNewCompletionParamsResponseFormat struct {
 	// Any of "text", "json_object".
 	Type string `json:"type,omitzero" api:"required"`
 	paramObj
 }
 
-func (r AIChatNewCompletionParamsResponseFormat) MarshalJSON() (data []byte, err error) {
-	type shadow AIChatNewCompletionParamsResponseFormat
+func (r AIOpenAIChatNewCompletionParamsResponseFormat) MarshalJSON() (data []byte, err error) {
+	type shadow AIOpenAIChatNewCompletionParamsResponseFormat
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AIChatNewCompletionParamsResponseFormat) UnmarshalJSON(data []byte) error {
+func (r *AIOpenAIChatNewCompletionParamsResponseFormat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[AIChatNewCompletionParamsResponseFormat](
+	apijson.RegisterFieldValidator[AIOpenAIChatNewCompletionParamsResponseFormat](
 		"type", "text", "json_object",
 	)
 }
@@ -291,20 +235,20 @@ func init() {
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type AIChatNewCompletionParamsStopUnion struct {
+type AIOpenAIChatNewCompletionParamsStopUnion struct {
 	OfString      param.Opt[string] `json:",omitzero,inline"`
 	OfStringArray []string          `json:",omitzero,inline"`
 	paramUnion
 }
 
-func (u AIChatNewCompletionParamsStopUnion) MarshalJSON() ([]byte, error) {
+func (u AIOpenAIChatNewCompletionParamsStopUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfStringArray)
 }
-func (u *AIChatNewCompletionParamsStopUnion) UnmarshalJSON(data []byte) error {
+func (u *AIOpenAIChatNewCompletionParamsStopUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
-func (u *AIChatNewCompletionParamsStopUnion) asAny() any {
+func (u *AIOpenAIChatNewCompletionParamsStopUnion) asAny() any {
 	if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
 	} else if !param.IsOmitted(u.OfStringArray) {
@@ -313,31 +257,31 @@ func (u *AIChatNewCompletionParamsStopUnion) asAny() any {
 	return nil
 }
 
-type AIChatNewCompletionParamsToolChoice string
+type AIOpenAIChatNewCompletionParamsToolChoice string
 
 const (
-	AIChatNewCompletionParamsToolChoiceNone     AIChatNewCompletionParamsToolChoice = "none"
-	AIChatNewCompletionParamsToolChoiceAuto     AIChatNewCompletionParamsToolChoice = "auto"
-	AIChatNewCompletionParamsToolChoiceRequired AIChatNewCompletionParamsToolChoice = "required"
+	AIOpenAIChatNewCompletionParamsToolChoiceNone     AIOpenAIChatNewCompletionParamsToolChoice = "none"
+	AIOpenAIChatNewCompletionParamsToolChoiceAuto     AIOpenAIChatNewCompletionParamsToolChoice = "auto"
+	AIOpenAIChatNewCompletionParamsToolChoiceRequired AIOpenAIChatNewCompletionParamsToolChoice = "required"
 )
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type AIChatNewCompletionParamsToolUnion struct {
-	OfFunction  *AIChatNewCompletionParamsToolFunction  `json:",omitzero,inline"`
-	OfRetrieval *AIChatNewCompletionParamsToolRetrieval `json:",omitzero,inline"`
+type AIOpenAIChatNewCompletionParamsToolUnion struct {
+	OfFunction  *AIOpenAIChatNewCompletionParamsToolFunction  `json:",omitzero,inline"`
+	OfRetrieval *AIOpenAIChatNewCompletionParamsToolRetrieval `json:",omitzero,inline"`
 	paramUnion
 }
 
-func (u AIChatNewCompletionParamsToolUnion) MarshalJSON() ([]byte, error) {
+func (u AIOpenAIChatNewCompletionParamsToolUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfFunction, u.OfRetrieval)
 }
-func (u *AIChatNewCompletionParamsToolUnion) UnmarshalJSON(data []byte) error {
+func (u *AIOpenAIChatNewCompletionParamsToolUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
-func (u *AIChatNewCompletionParamsToolUnion) asAny() any {
+func (u *AIOpenAIChatNewCompletionParamsToolUnion) asAny() any {
 	if !param.IsOmitted(u.OfFunction) {
 		return u.OfFunction
 	} else if !param.IsOmitted(u.OfRetrieval) {
@@ -347,7 +291,7 @@ func (u *AIChatNewCompletionParamsToolUnion) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u AIChatNewCompletionParamsToolUnion) GetFunction() *AIChatNewCompletionParamsToolFunctionFunction {
+func (u AIOpenAIChatNewCompletionParamsToolUnion) GetFunction() *AIOpenAIChatNewCompletionParamsToolFunctionFunction {
 	if vt := u.OfFunction; vt != nil {
 		return &vt.Function
 	}
@@ -355,7 +299,7 @@ func (u AIChatNewCompletionParamsToolUnion) GetFunction() *AIChatNewCompletionPa
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u AIChatNewCompletionParamsToolUnion) GetRetrieval() *BucketIDsParam {
+func (u AIOpenAIChatNewCompletionParamsToolUnion) GetRetrieval() *BucketIDsParam {
 	if vt := u.OfRetrieval; vt != nil {
 		return &vt.Retrieval
 	}
@@ -363,7 +307,7 @@ func (u AIChatNewCompletionParamsToolUnion) GetRetrieval() *BucketIDsParam {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u AIChatNewCompletionParamsToolUnion) GetType() *string {
+func (u AIOpenAIChatNewCompletionParamsToolUnion) GetType() *string {
 	if vt := u.OfFunction; vt != nil {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfRetrieval; vt != nil {
@@ -373,57 +317,57 @@ func (u AIChatNewCompletionParamsToolUnion) GetType() *string {
 }
 
 func init() {
-	apijson.RegisterUnion[AIChatNewCompletionParamsToolUnion](
+	apijson.RegisterUnion[AIOpenAIChatNewCompletionParamsToolUnion](
 		"type",
-		apijson.Discriminator[AIChatNewCompletionParamsToolFunction]("function"),
-		apijson.Discriminator[AIChatNewCompletionParamsToolRetrieval]("retrieval"),
+		apijson.Discriminator[AIOpenAIChatNewCompletionParamsToolFunction]("function"),
+		apijson.Discriminator[AIOpenAIChatNewCompletionParamsToolRetrieval]("retrieval"),
 	)
 }
 
 // The properties Function, Type are required.
-type AIChatNewCompletionParamsToolFunction struct {
-	Function AIChatNewCompletionParamsToolFunctionFunction `json:"function,omitzero" api:"required"`
+type AIOpenAIChatNewCompletionParamsToolFunction struct {
+	Function AIOpenAIChatNewCompletionParamsToolFunctionFunction `json:"function,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "function".
 	Type constant.Function `json:"type" default:"function"`
 	paramObj
 }
 
-func (r AIChatNewCompletionParamsToolFunction) MarshalJSON() (data []byte, err error) {
-	type shadow AIChatNewCompletionParamsToolFunction
+func (r AIOpenAIChatNewCompletionParamsToolFunction) MarshalJSON() (data []byte, err error) {
+	type shadow AIOpenAIChatNewCompletionParamsToolFunction
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AIChatNewCompletionParamsToolFunction) UnmarshalJSON(data []byte) error {
+func (r *AIOpenAIChatNewCompletionParamsToolFunction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property Name is required.
-type AIChatNewCompletionParamsToolFunctionFunction struct {
+type AIOpenAIChatNewCompletionParamsToolFunctionFunction struct {
 	Name        string            `json:"name" api:"required"`
 	Description param.Opt[string] `json:"description,omitzero"`
 	Parameters  map[string]any    `json:"parameters,omitzero"`
 	paramObj
 }
 
-func (r AIChatNewCompletionParamsToolFunctionFunction) MarshalJSON() (data []byte, err error) {
-	type shadow AIChatNewCompletionParamsToolFunctionFunction
+func (r AIOpenAIChatNewCompletionParamsToolFunctionFunction) MarshalJSON() (data []byte, err error) {
+	type shadow AIOpenAIChatNewCompletionParamsToolFunctionFunction
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AIChatNewCompletionParamsToolFunctionFunction) UnmarshalJSON(data []byte) error {
+func (r *AIOpenAIChatNewCompletionParamsToolFunctionFunction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties Retrieval, Type are required.
-type AIChatNewCompletionParamsToolRetrieval struct {
+type AIOpenAIChatNewCompletionParamsToolRetrieval struct {
 	Retrieval BucketIDsParam `json:"retrieval,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "retrieval".
 	Type constant.Retrieval `json:"type" default:"retrieval"`
 	paramObj
 }
 
-func (r AIChatNewCompletionParamsToolRetrieval) MarshalJSON() (data []byte, err error) {
-	type shadow AIChatNewCompletionParamsToolRetrieval
+func (r AIOpenAIChatNewCompletionParamsToolRetrieval) MarshalJSON() (data []byte, err error) {
+	type shadow AIOpenAIChatNewCompletionParamsToolRetrieval
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AIChatNewCompletionParamsToolRetrieval) UnmarshalJSON(data []byte) error {
+func (r *AIOpenAIChatNewCompletionParamsToolRetrieval) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

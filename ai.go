@@ -65,11 +65,13 @@ func NewAIService(opts ...option.RequestOption) (r AIService) {
 	return
 }
 
-// This endpoint returns a list of Open Source and OpenAI models that are available
-// for use. <br /><br /> **Note**: Model `id`'s will be in the form
-// `{source}/{model_name}`. For example `openai/gpt-4` or
-// `mistralai/Mistral-7B-Instruct-v0.1` consistent with HuggingFace naming
-// conventions.
+// **Deprecated**: Use `GET /v2/ai/openai/models` instead. This endpoint returns a
+// list of Open Source and OpenAI models that are available for use. <br /><br />
+// **Note**: Model `id`'s will be in the form `{source}/{model_name}`. For example
+// `openai/gpt-4` or `mistralai/Mistral-7B-Instruct-v0.1` consistent with
+// HuggingFace naming conventions.
+//
+// Deprecated: deprecated
 func (r *AIService) GetModels(ctx context.Context, opts ...option.RequestOption) (res *AIGetModelsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/models"
@@ -95,25 +97,7 @@ func (r *AIService) Summarize(ctx context.Context, body AISummarizeParams, opts 
 	return res, err
 }
 
-type AIGetModelsResponse struct {
-	Data   []AIGetModelsResponseData `json:"data" api:"required"`
-	Object string                    `json:"object"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Object      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIGetModelsResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIGetModelsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIGetModelsResponseData struct {
+type ModelMetadata struct {
 	ID      string `json:"id" api:"required"`
 	Created int64  `json:"created" api:"required"`
 	OwnedBy string `json:"owned_by" api:"required"`
@@ -130,8 +114,26 @@ type AIGetModelsResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AIGetModelsResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIGetModelsResponseData) UnmarshalJSON(data []byte) error {
+func (r ModelMetadata) RawJSON() string { return r.JSON.raw }
+func (r *ModelMetadata) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AIGetModelsResponse struct {
+	Data   []ModelMetadata `json:"data" api:"required"`
+	Object string          `json:"object"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Object      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AIGetModelsResponse) RawJSON() string { return r.JSON.raw }
+func (r *AIGetModelsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

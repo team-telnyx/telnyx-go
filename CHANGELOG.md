@@ -1,5 +1,45 @@
 # Changelog
 
+## 4.63.0 (2026-05-08)
+
+Full Changelog: [v4.62.0...v4.63.0](https://github.com/team-telnyx/telnyx-go/compare/v4.62.0...v4.63.0)
+
+### Features
+
+* Add Speechmatics provider to standalone STT spec ([6c9ead5](https://github.com/team-telnyx/telnyx-go/commit/6c9ead518d58bd243f350fb9b1a14bfd732f4038))
+* AI-2289 add disable greeting interruption OpenAPI fields ([b29d99f](https://github.com/team-telnyx/telnyx-go/commit/b29d99f193736b0819503e0b7648604aeb0906d3))
+* Ai-assistant: update scheduled events api ([0ccf846](https://github.com/team-telnyx/telnyx-go/commit/0ccf84697580bb5135b1c159c54f5243b0cff867))
+* Ai-assistants: support pattern in canary deploy ([52548e8](https://github.com/team-telnyx/telnyx-go/commit/52548e89e69aea65a851801acd351a9b72aa50f4))
+* **api:** manual updates ([0e31295](https://github.com/team-telnyx/telnyx-go/commit/0e31295f1f1a5a777b967aca6a212f5b33edca13))
+* **api:** manual updates ([7727acb](https://github.com/team-telnyx/telnyx-go/commit/7727acbe77e39ae271b7a3be808bc3a7f4fd5428))
+* inference: expose chat completions and models under /ai/openai ([df23f48](https://github.com/team-telnyx/telnyx-go/commit/df23f48579525b545752170fb844855858fd7ad9))
+* MSG-9000: document duplicate-vetting rejection on order brand external vetting ([5c8e04b](https://github.com/team-telnyx/telnyx-go/commit/5c8e04b2c801ca23d47e36a989d902aa06823ade))
+
+
+### Bug Fixes
+
+* **go:** avoid panic when http.DefaultTransport is wrapped ([b002ada](https://github.com/team-telnyx/telnyx-go/commit/b002ada2e6013a05e3cc6bfcfb36707b8a23572f))
+* revert stainless.yml changes from ad4f13c ([9a8d0c9](https://github.com/team-telnyx/telnyx-go/commit/9a8d0c9d9aaaaa0ad3479f86808ac61170e89b51))
+* update UAC internal settings URI examples ([9b3c153](https://github.com/team-telnyx/telnyx-go/commit/9b3c15361edc519b027fe50ce5603d0282cb37d7))
+
+
+### Reverts
+
+* restore stainless.yml from before 964956c ([28a372f](https://github.com/team-telnyx/telnyx-go/commit/28a372fa50d069185b1158c33b73ad0c64960a4a))
+* restore stainless.yml from before 9853597 ([e681b06](https://github.com/team-telnyx/telnyx-go/commit/e681b065a1e7ec402355febf1418e3e4eb61815b))
+
+
+### Chores
+
+* **internal:** codegen related update ([1a887ee](https://github.com/team-telnyx/telnyx-go/commit/1a887ee377d004b18f2269ba469db92616e2423f))
+* redact api-key headers in debug logs ([4900d53](https://github.com/team-telnyx/telnyx-go/commit/4900d53afa07bafe51923fee1a2523fa679a13ec))
+
+
+### Documentation
+
+* add UAC connection OpenAPI docs ([6f4ad4c](https://github.com/team-telnyx/telnyx-go/commit/6f4ad4c36099118fcc1eb730dc10671d3131f803))
+* update gather_using_ai transcription models ([f782b82](https://github.com/team-telnyx/telnyx-go/commit/f782b825ae9a41562e3a0fdf439a5c533c490b9e))
+
 ## 4.62.0 (2026-05-05)
 
 Full Changelog: [v4.61.0...v4.62.0](https://github.com/team-telnyx/telnyx-go/compare/v4.61.0...v4.62.0)
