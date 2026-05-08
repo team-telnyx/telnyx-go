@@ -6441,7 +6441,11 @@ const (
 )
 
 type CallActionTransferParams struct {
-	// The DID or SIP URI to dial out to.
+	// The DID or SIP URI to dial out to. For SIP URI destinations, append
+	// `;secure=true` or `;secure=srtp` to enable SRTP media encryption for that
+	// endpoint, or `;secure=dtls` to enable DTLS media encryption for that endpoint.
+	// If `media_encryption` is set to `SRTP` or `DTLS`, it takes precedence over any
+	// per-endpoint `secure` URI parameter.
 	To string `json:"to" api:"required"`
 	// The URL of a file to be played back when the transfer destination answers before
 	// bridging the call. The URL can point to either a WAV or MP3 file. media_name and
@@ -6532,7 +6536,11 @@ type CallActionTransferParams struct {
 	AnsweringMachineDetectionConfig CallActionTransferParamsAnsweringMachineDetectionConfig `json:"answering_machine_detection_config,omitzero"`
 	// Custom headers to be added to the SIP INVITE.
 	CustomHeaders []CustomSipHeaderParam `json:"custom_headers,omitzero"`
-	// Defines whether media should be encrypted on the new call leg.
+	// Defines whether media should be encrypted on the new call leg. For SIP URI
+	// destinations, media encryption can also be requested per endpoint with the
+	// `secure` URI parameter: `;secure=true` or `;secure=srtp` enables SRTP, and
+	// `;secure=dtls` enables DTLS. This parameter, when set to `SRTP` or `DTLS`, takes
+	// precedence over the per-endpoint `secure` value.
 	//
 	// Any of "disabled", "SRTP", "DTLS".
 	MediaEncryption CallActionTransferParamsMediaEncryption `json:"media_encryption,omitzero"`
@@ -6669,7 +6677,11 @@ func (r *CallActionTransferParamsAnsweringMachineDetectionConfig) UnmarshalJSON(
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Defines whether media should be encrypted on the new call leg.
+// Defines whether media should be encrypted on the new call leg. For SIP URI
+// destinations, media encryption can also be requested per endpoint with the
+// `secure` URI parameter: `;secure=true` or `;secure=srtp` enables SRTP, and
+// `;secure=dtls` enables DTLS. This parameter, when set to `SRTP` or `DTLS`, takes
+// precedence over the per-endpoint `secure` value.
 type CallActionTransferParamsMediaEncryption string
 
 const (
