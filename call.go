@@ -727,7 +727,11 @@ type CallDialParams struct {
 	// number). The number should be in +E164 format.
 	From string `json:"from" api:"required"`
 	// The DID or SIP URI to dial out to. Multiple DID or SIP URIs can be provided
-	// using an array of strings
+	// using an array of strings. For SIP URI destinations, append `;secure=true` or
+	// `;secure=srtp` to enable SRTP media encryption for that endpoint, or
+	// `;secure=dtls` to enable DTLS media encryption for that endpoint. If
+	// `media_encryption` is set to `SRTP` or `DTLS`, it takes precedence over any
+	// per-endpoint `secure` URI parameter.
 	To CallDialParamsToUnion `json:"to,omitzero" api:"required"`
 	// The URL of a file to be played back to the callee when the call is answered. The
 	// URL can point to either a WAV or MP3 file. media_name and audio_url cannot be
@@ -861,7 +865,11 @@ type CallDialParams struct {
 	// webhook.
 	DeepfakeDetection CallDialParamsDeepfakeDetection `json:"deepfake_detection,omitzero"`
 	DialogflowConfig  DialogflowConfigParam           `json:"dialogflow_config,omitzero"`
-	// Defines whether media should be encrypted on the call.
+	// Defines whether media should be encrypted on the call. For SIP URI destinations,
+	// media encryption can also be requested per endpoint with the `secure` URI
+	// parameter: `;secure=true` or `;secure=srtp` enables SRTP, and `;secure=dtls`
+	// enables DTLS. This parameter, when set to `SRTP` or `DTLS`, takes precedence
+	// over the per-endpoint `secure` value.
 	//
 	// Any of "disabled", "SRTP", "DTLS".
 	MediaEncryption CallDialParamsMediaEncryption `json:"media_encryption,omitzero"`
@@ -1168,7 +1176,11 @@ func (r *CallDialParamsDeepfakeDetection) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Defines whether media should be encrypted on the call.
+// Defines whether media should be encrypted on the call. For SIP URI destinations,
+// media encryption can also be requested per endpoint with the `secure` URI
+// parameter: `;secure=true` or `;secure=srtp` enables SRTP, and `;secure=dtls`
+// enables DTLS. This parameter, when set to `SRTP` or `DTLS`, takes precedence
+// over the per-endpoint `secure` value.
 type CallDialParamsMediaEncryption string
 
 const (
