@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.65.0 (2026-05-11)
+
+Full Changelog: [v4.64.0...v4.65.0](https://github.com/team-telnyx/telnyx-go/compare/v4.64.0...v4.65.0)
+
+### Features
+
+* AI-2312: document currency and unit in /models pricing schema ([eb32992](https://github.com/team-telnyx/telnyx-go/commit/eb32992fd739a609f5d4452cc1eaab270f331d9a))
+* Clean up OpenAI responses API docs ([f642ad9](https://github.com/team-telnyx/telnyx-go/commit/f642ad9b43275b7257713cb471c569280ce625ea))
+* Fix OpenAI chat API reference links ([7f713b7](https://github.com/team-telnyx/telnyx-go/commit/7f713b79fca38ceca4ce7e0cc3d55f1372a500e3))
+
 ## 4.64.0 (2026-05-11)
 
 Full Changelog: [v4.63.0...v4.64.0](https://github.com/team-telnyx/telnyx-go/compare/v4.63.0...v4.64.0)
