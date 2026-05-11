@@ -1,5 +1,20 @@
 # Changelog
 
+## 4.64.0 (2026-05-11)
+
+Full Changelog: [v4.63.0...v4.64.0](https://github.com/team-telnyx/telnyx-go/compare/v4.63.0...v4.64.0)
+
+### Features
+
+* AI-2294: document /ai/openai/models response and refresh LLM examples ([b55d6bc](https://github.com/team-telnyx/telnyx-go/commit/b55d6bc3da0ad7b416cec9bd747a6879678dbf72))
+* Document per-endpoint media encryption for call control ([207da37](https://github.com/team-telnyx/telnyx-go/commit/207da379aa5ba3a0ae9d7924b1edbf1df4195c08))
+* Responses endpoint ([0714266](https://github.com/team-telnyx/telnyx-go/commit/071426677da22c5ae37fd6d733f4808799b8e3c7))
+
+
+### Chores
+
+* **internal:** codegen related update ([8359d71](https://github.com/team-telnyx/telnyx-go/commit/8359d71cd3de40690aabe4186eae5d927bc34f02))
+
 ## 4.63.0 (2026-05-08)
 
 Full Changelog: [v4.62.0...v4.63.0](https://github.com/team-telnyx/telnyx-go/compare/v4.62.0...v4.63.0)
