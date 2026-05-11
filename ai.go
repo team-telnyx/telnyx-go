@@ -67,11 +67,14 @@ func NewAIService(opts ...option.RequestOption) (r AIService) {
 	return
 }
 
-// Chat with a language model. This endpoint is consistent with the
-// [OpenAI Chat Completions API](https://developers.openai.com/api/reference/resources/responses)
+// **Deprecated**: Use `POST /v2/ai/openai/responses` instead. Chat with a language
+// model. This endpoint is consistent with the
+// [OpenAI Responses API](https://platform.openai.com/docs/api-reference/responses)
 // and may be used with the OpenAI JS or Python SDK. Response id parameter is not
 // supported at the moment. Use 'conversation' parameter to leverage persistent
 // conversations feature.
+//
+// Deprecated: deprecated
 func (r *AIService) NewResponse(ctx context.Context, body AINewResponseParams, opts ...option.RequestOption) (res *AINewResponseResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/responses"
