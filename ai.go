@@ -67,11 +67,14 @@ func NewAIService(opts ...option.RequestOption) (r AIService) {
 	return
 }
 
-// Chat with a language model. This endpoint is consistent with the
-// [OpenAI Chat Completions API](https://developers.openai.com/api/reference/resources/responses)
+// **Deprecated**: Use `POST /v2/ai/openai/responses` instead. Chat with a language
+// model. This endpoint is consistent with the
+// [OpenAI Responses API](https://platform.openai.com/docs/api-reference/responses)
 // and may be used with the OpenAI JS or Python SDK. Response id parameter is not
 // supported at the moment. Use 'conversation' parameter to leverage persistent
 // conversations feature.
+//
+// Deprecated: deprecated
 func (r *AIService) NewResponse(ctx context.Context, body AINewResponseParams, opts ...option.RequestOption) (res *AINewResponseResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/responses"
@@ -167,9 +170,11 @@ type ModelMetadata struct {
 	Object string `json:"object"`
 	// Human-readable parameter count, e.g. `1.0T`, `753.9B`, `8B`.
 	ParametersStr string `json:"parameters_str" api:"nullable"`
-	// Mapping of token kind to price in USD per 1M tokens, as a string. Typical keys
-	// are `input` and `output`; embedding models expose `embedding`. Empty object when
-	// pricing is not yet published for the model.
+	// Mapping of token kind to price, as strings to preserve precision. Typical keys
+	// are `prompt`, `cached_prompt`, and `completion`. When pricing is available the
+	// block also includes `currency` (ISO 4217 code matching the account's configured
+	// billing currency) and `unit` (the denomination the prices are quoted in,
+	// currently always `1M_tokens` for token-priced models).
 	Pricing map[string]string `json:"pricing"`
 	// Whether Telnyx currently recommends this model as the LLM powering a Telnyx AI
 	// Assistant.
