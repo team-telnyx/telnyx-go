@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
@@ -64,6 +65,18 @@ func NewAIService(opts ...option.RequestOption) (r AIService) {
 	r.OpenAI = NewAIOpenAIService(opts...)
 	r.Tools = NewAIToolService(opts...)
 	return
+}
+
+// Chat with a language model. This endpoint is consistent with the
+// [OpenAI Chat Completions API](https://developers.openai.com/api/reference/resources/responses)
+// and may be used with the OpenAI JS or Python SDK. Response id parameter is not
+// supported at the moment. Use 'conversation' parameter to leverage persistent
+// conversations feature.
+func (r *AIService) NewResponse(ctx context.Context, body AINewResponseParams, opts ...option.RequestOption) (res *AINewResponseResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "ai/responses"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 // **Deprecated**: Use `GET /v2/ai/openai/models` instead.
@@ -211,6 +224,8 @@ const (
 	ModelMetadataTierUnlisted ModelMetadataTier = "unlisted"
 )
 
+type AINewResponseResponse map[string]any
+
 type AIGetModelsResponse struct {
 	Data   []ModelMetadata `json:"data" api:"required"`
 	Object string          `json:"object"`
@@ -258,6 +273,18 @@ type AISummarizeResponseData struct {
 // Returns the unmodified JSON received from the API
 func (r AISummarizeResponseData) RawJSON() string { return r.JSON.raw }
 func (r *AISummarizeResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AINewResponseParams struct {
+	Body map[string]any
+	paramObj
+}
+
+func (r AINewResponseParams) MarshalJSON() (data []byte, err error) {
+	return shimjson.Marshal(r.Body)
+}
+func (r *AINewResponseParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

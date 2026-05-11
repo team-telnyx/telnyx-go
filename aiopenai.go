@@ -8,6 +8,7 @@ import (
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
@@ -38,6 +39,18 @@ func NewAIOpenAIService(opts ...option.RequestOption) (r AIOpenAIService) {
 	return
 }
 
+// Chat with a language model. This endpoint is consistent with the
+// [OpenAI Chat Completions API](https://developers.openai.com/api/reference/resources/responses)
+// and may be used with the OpenAI JS or Python SDK. Response id parameter is not
+// supported at the moment. Use 'conversation' parameter to leverage persistent
+// conversations feature.
+func (r *AIOpenAIService) NewResponse(ctx context.Context, body AIOpenAINewResponseParams, opts ...option.RequestOption) (res *AIOpenAINewResponseResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "ai/openai/responses"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
 // Lists every model currently available to your account on Telnyx Inference,
 // including SOTA open-source LLMs hosted on Telnyx GPUs (for example
 // `moonshotai/Kimi-K2.6`, `zai-org/GLM-5.1-FP8`, and `MiniMaxAI/MiniMax-M2.7`),
@@ -60,6 +73,8 @@ func (r *AIOpenAIService) ListModels(ctx context.Context, opts ...option.Request
 	return res, err
 }
 
+type AIOpenAINewResponseResponse map[string]any
+
 type AIOpenAIListModelsResponse struct {
 	Data   []ModelMetadata `json:"data" api:"required"`
 	Object string          `json:"object"`
@@ -75,5 +90,17 @@ type AIOpenAIListModelsResponse struct {
 // Returns the unmodified JSON received from the API
 func (r AIOpenAIListModelsResponse) RawJSON() string { return r.JSON.raw }
 func (r *AIOpenAIListModelsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AIOpenAINewResponseParams struct {
+	Body map[string]any
+	paramObj
+}
+
+func (r AIOpenAINewResponseParams) MarshalJSON() (data []byte, err error) {
+	return shimjson.Marshal(r.Body)
+}
+func (r *AIOpenAINewResponseParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

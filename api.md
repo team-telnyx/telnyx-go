@@ -520,11 +520,13 @@ Methods:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ModelMetadata">ModelMetadata</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AINewResponseResponse">AINewResponseResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIGetModelsResponse">AIGetModelsResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AISummarizeResponse">AISummarizeResponse</a>
 
 Methods:
 
+- <code title="post /ai/responses">client.AI.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIService.NewResponse">NewResponse</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AINewResponseParams">AINewResponseParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AINewResponseResponse">AINewResponseResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /ai/models">client.AI.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIService.GetModels">GetModels</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIGetModelsResponse">AIGetModelsResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /ai/summarize">client.AI.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIService.Summarize">Summarize</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AISummarizeParams">AISummarizeParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AISummarizeResponse">AISummarizeResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
@@ -1094,10 +1096,12 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAINewResponseResponse">AIOpenAINewResponseResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIListModelsResponse">AIOpenAIListModelsResponse</a>
 
 Methods:
 
+- <code title="post /ai/openai/responses">client.AI.OpenAI.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIService.NewResponse">NewResponse</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAINewResponseParams">AIOpenAINewResponseParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAINewResponseResponse">AIOpenAINewResponseResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /ai/openai/models">client.AI.OpenAI.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIService.ListModels">ListModels</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIListModelsResponse">AIOpenAIListModelsResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ### Embeddings
