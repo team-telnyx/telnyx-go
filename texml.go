@@ -44,6 +44,17 @@ func NewTexmlService(opts ...option.RequestOption) (r TexmlService) {
 // an internal TeXML with an AI Assistant configuration, encodes instructions into
 // client state, and calls the dial API. The Twiml, Texml, and Url parameters are
 // not allowed and will result in a 422 error.
+//
+// **Expected callback events:**
+//
+// Status callbacks: `initiated`, `ringing`, `answered`, one terminal status
+// (`completed`, `no-answer`, `busy`, `canceled`, or `failed`), then `analyzed`
+// after post-call processing completes.
+//
+// Conversation callbacks: `conversation_created` and `conversation_ended`.
+//
+// Recording, AMD, transcription, and deepfake detection callbacks are only sent
+// when those features are enabled.
 func (r *TexmlService) InitiateAICall(ctx context.Context, connectionID string, body TexmlInitiateAICallParams, opts ...option.RequestOption) (res *TexmlInitiateAICallResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if connectionID == "" {
@@ -145,7 +156,8 @@ type TexmlInitiateAICallParams struct {
 	// containing only letters, numbers, spaces, and `-_~!.+` special characters. If
 	// omitted, the display name will be the same as the number in the `From` field.
 	CallerID param.Opt[string] `json:"CallerId,omitzero"`
-	// URL destination for Telnyx to send conversation callback events to.
+	// URL destination for Telnyx to send AI conversation callback events for this
+	// call. Events include `conversation_created` and `conversation_ended`.
 	ConversationCallback param.Opt[string] `json:"ConversationCallback,omitzero"`
 	// If initial silence duration is greater than this value, consider it a machine.
 	// Ignored when `premium` detection is used.
@@ -180,11 +192,15 @@ type TexmlInitiateAICallParams struct {
 	SipAuthPassword param.Opt[string] `json:"SipAuthPassword,omitzero"`
 	// The username to use for SIP authentication.
 	SipAuthUsername param.Opt[string] `json:"SipAuthUsername,omitzero"`
-	// URL destination for Telnyx to send status callback events to for the call.
+	// URL destination for Telnyx to send status callback events for this AI call. When
+	// provided, this per-call value overrides the status callback URL configured on
+	// the TeXML application/connection.
 	StatusCallback param.Opt[string] `json:"StatusCallback,omitzero"`
-	// The call events for which Telnyx should send a webhook. Multiple events can be
-	// defined when separated by a space. Valid values: initiated, ringing, answered,
-	// completed.
+	// The status callback events for which Telnyx should send a webhook for this AI
+	// call. Multiple events can be defined when separated by a space. Valid values:
+	// initiated, ringing, answered, completed, no-answer, busy, canceled, failed,
+	// analyzed. When provided, this per-call value overrides the status callback
+	// events configured on the TeXML application/connection.
 	StatusCallbackEvent param.Opt[string] `json:"StatusCallbackEvent,omitzero"`
 	// The maximum duration of the call in seconds. The minimum value is 30 and the
 	// maximum value is 14400 (4 hours). Default is 14400 seconds.
@@ -199,11 +215,12 @@ type TexmlInitiateAICallParams struct {
 	//
 	// Any of "GET", "POST".
 	AsyncAmdStatusCallbackMethod TexmlInitiateAICallParamsAsyncAmdStatusCallbackMethod `json:"AsyncAmdStatusCallbackMethod,omitzero"`
-	// HTTP request type used for `ConversationCallback`.
+	// HTTP request type used for `ConversationCallback` and `ConversationCallbacks`.
 	//
 	// Any of "GET", "POST".
 	ConversationCallbackMethod TexmlInitiateAICallParamsConversationCallbackMethod `json:"ConversationCallbackMethod,omitzero"`
-	// An array of URL destinations for conversation callback events.
+	// Array of URL destinations for AI conversation callback events for this call.
+	// Events include `conversation_created` and `conversation_ended`.
 	ConversationCallbacks []string `json:"ConversationCallbacks,omitzero"`
 	// Custom HTTP headers to be sent with the call. Each header should be an object
 	// with 'name' and 'value' properties.
@@ -232,12 +249,15 @@ type TexmlInitiateAICallParams struct {
 	//
 	// Any of "US", "Europe", "Canada", "Australia", "Middle East".
 	SipRegion TexmlInitiateAICallParamsSipRegion `json:"SipRegion,omitzero"`
-	// HTTP request type used for `StatusCallback`.
+	// HTTP request type used for `StatusCallback` and `StatusCallbacks` for this AI
+	// call. When provided, this per-call value overrides the status callback method
+	// configured on the TeXML application/connection.
 	//
 	// Any of "GET", "POST".
 	StatusCallbackMethod TexmlInitiateAICallParamsStatusCallbackMethod `json:"StatusCallbackMethod,omitzero"`
-	// An array of URL destinations for Telnyx to send status callback events to for
-	// the call.
+	// Array of URL destinations for Telnyx to send status callback events for this AI
+	// call. When provided, these per-call values override the status callback URL
+	// configured on the TeXML application/connection.
 	StatusCallbacks []string `json:"StatusCallbacks,omitzero"`
 	// Whether to trim any leading and trailing silence from the recording. Defaults to
 	// `trim-silence`.
@@ -263,7 +283,7 @@ const (
 	TexmlInitiateAICallParamsAsyncAmdStatusCallbackMethodPost TexmlInitiateAICallParamsAsyncAmdStatusCallbackMethod = "POST"
 )
 
-// HTTP request type used for `ConversationCallback`.
+// HTTP request type used for `ConversationCallback` and `ConversationCallbacks`.
 type TexmlInitiateAICallParamsConversationCallbackMethod string
 
 const (
@@ -341,7 +361,9 @@ const (
 	TexmlInitiateAICallParamsSipRegionMiddleEast TexmlInitiateAICallParamsSipRegion = "Middle East"
 )
 
-// HTTP request type used for `StatusCallback`.
+// HTTP request type used for `StatusCallback` and `StatusCallbacks` for this AI
+// call. When provided, this per-call value overrides the status callback method
+// configured on the TeXML application/connection.
 type TexmlInitiateAICallParamsStatusCallbackMethod string
 
 const (
