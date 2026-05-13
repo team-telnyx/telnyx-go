@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.66.0 (2026-05-13)
+
+Full Changelog: [v4.65.0...v4.66.0](https://github.com/team-telnyx/telnyx-go/compare/v4.65.0...v4.66.0)
+
+### Features
+
+* **client:** add compatibility aliases for old type names ([d4795ae](https://github.com/team-telnyx/telnyx-go/commit/d4795aed4589e3a2899033befb412fbbb253e9dc))
+* Document OpenAI responses conversation flow ([2df63fa](https://github.com/team-telnyx/telnyx-go/commit/2df63fa82c3a1e413ebca0f541c3b43c6d75e508))
+
 ## 4.65.0 (2026-05-11)
 
 Full Changelog: [v4.64.0...v4.65.0](https://github.com/team-telnyx/telnyx-go/compare/v4.64.0...v4.65.0)
