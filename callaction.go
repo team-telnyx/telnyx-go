@@ -384,7 +384,9 @@ func (r *CallActionService) StartAIAssistant(ctx context.Context, callControlID 
 //
 // **Expected Webhooks:**
 //
-// - `conversation_relay.disconnected`
+//   - `call.conversation.ended` - Sent when the Conversation Relay session ends. If
+//     the customer WebSocket disconnects, the webhook payload `reason` is
+//     `customer_disconnect`.
 func (r *CallActionService) StartConversationRelay(ctx context.Context, callControlID string, body CallActionStartConversationRelayParams, opts ...option.RequestOption) (res *CallActionStartConversationRelayResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
