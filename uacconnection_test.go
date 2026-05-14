@@ -37,14 +37,14 @@ func TestUacConnectionNewWithOptionalParams(t *testing.T) {
 		DtmfType:                         telnyx.DtmfTypeRfc2833,
 		EncodeContactHeaderEnabled:       telnyx.Bool(true),
 		EncryptedMedia:                   telnyx.EncryptedMediaSrtp,
-		ExternalUacSettings: telnyx.UacExternalSettingsParam{
+		ExternalUacSettings: telnyx.UacConnectionNewParamsExternalUacSettings{
 			AuthUsername:  telnyx.String("auth8492"),
 			ExpirationSec: telnyx.Int(600),
 			FromUser:      telnyx.String("8492"),
 			OutboundProxy: telnyx.String("outbound.sip-pbx.acme.example:5061"),
 			Password:      telnyx.String("testtesttest"),
 			Proxy:         telnyx.String("sip-pbx.acme.example"),
-			Transport:     telnyx.UacExternalSettingsTransportTls,
+			Transport:     "TLS",
 			Username:      telnyx.String("ext8492"),
 		},
 		Inbound: telnyx.UacConnectionNewParamsInbound{
@@ -62,7 +62,7 @@ func TestUacConnectionNewWithOptionalParams(t *testing.T) {
 			Timeout1xxSecs:           telnyx.Int(10),
 			Timeout2xxSecs:           telnyx.Int(20),
 		},
-		InternalUacSettings: telnyx.UacInternalSettingsParam{
+		InternalUacSettings: telnyx.UacConnectionNewParamsInternalUacSettings{
 			DestinationUri: telnyx.String("14155550123@acme.sip.telnyx.com"),
 		},
 		IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
@@ -77,16 +77,16 @@ func TestUacConnectionNewWithOptionalParams(t *testing.T) {
 			Engine:           shared.ConnectionNoiseSuppressionDetailsEngineDeepFilterNet,
 		},
 		OnnetT38PassthroughEnabled: telnyx.Bool(true),
-		Outbound: telnyx.UacOutboundParam{
+		Outbound: telnyx.UacConnectionNewParamsOutbound{
 			AniOverride:            telnyx.String("always"),
-			AniOverrideType:        telnyx.UacOutboundAniOverrideTypeAlways,
+			AniOverrideType:        "always",
 			CallParkingEnabled:     telnyx.Bool(true),
 			ChannelLimit:           telnyx.Int(10),
 			GenerateRingbackTone:   telnyx.Bool(true),
 			InstantRingbackEnabled: telnyx.Bool(true),
 			Localization:           telnyx.String("US"),
 			OutboundVoiceProfileID: telnyx.String("1293384261075731499"),
-			T38ReinviteSource:      telnyx.UacOutboundT38ReinviteSourceCustomer,
+			T38ReinviteSource:      "customer",
 		},
 		Password: telnyx.String("my123secure456password789"),
 		RtcpSettings: telnyx.ConnectionRtcpSettingsParam{
@@ -160,14 +160,14 @@ func TestUacConnectionUpdateWithOptionalParams(t *testing.T) {
 			DtmfType:                         telnyx.DtmfTypeRfc2833,
 			EncodeContactHeaderEnabled:       telnyx.Bool(true),
 			EncryptedMedia:                   telnyx.EncryptedMediaSrtp,
-			ExternalUacSettings: telnyx.UacExternalSettingsParam{
+			ExternalUacSettings: telnyx.UacConnectionUpdateParamsExternalUacSettings{
 				AuthUsername:  telnyx.String("auth8492"),
 				ExpirationSec: telnyx.Int(600),
 				FromUser:      telnyx.String("8492"),
 				OutboundProxy: telnyx.String("outbound.sip-pbx.acme.example:5061"),
 				Password:      telnyx.String("testtesttest"),
 				Proxy:         telnyx.String("sip-pbx.acme.example"),
-				Transport:     telnyx.UacExternalSettingsTransportTls,
+				Transport:     "TLS",
 				Username:      telnyx.String("ext8492"),
 			},
 			Inbound: telnyx.UacConnectionUpdateParamsInbound{
@@ -185,7 +185,7 @@ func TestUacConnectionUpdateWithOptionalParams(t *testing.T) {
 				Timeout1xxSecs:           telnyx.Int(10),
 				Timeout2xxSecs:           telnyx.Int(20),
 			},
-			InternalUacSettings: telnyx.UacInternalSettingsParam{
+			InternalUacSettings: telnyx.UacConnectionUpdateParamsInternalUacSettings{
 				DestinationUri: telnyx.String("14155550123@acme.sip.telnyx.com"),
 			},
 			IosPushCredentialID: telnyx.String("ec0c8e5d-439e-4620-a0c1-9d9c8d02a836"),
@@ -200,16 +200,16 @@ func TestUacConnectionUpdateWithOptionalParams(t *testing.T) {
 				Engine:           shared.ConnectionNoiseSuppressionDetailsEngineDeepFilterNet,
 			},
 			OnnetT38PassthroughEnabled: telnyx.Bool(true),
-			Outbound: telnyx.UacOutboundParam{
+			Outbound: telnyx.UacConnectionUpdateParamsOutbound{
 				AniOverride:            telnyx.String("always"),
-				AniOverrideType:        telnyx.UacOutboundAniOverrideTypeAlways,
+				AniOverrideType:        "always",
 				CallParkingEnabled:     telnyx.Bool(true),
 				ChannelLimit:           telnyx.Int(10),
 				GenerateRingbackTone:   telnyx.Bool(true),
 				InstantRingbackEnabled: telnyx.Bool(true),
 				Localization:           telnyx.String("US"),
 				OutboundVoiceProfileID: telnyx.String("1293384261075731499"),
-				T38ReinviteSource:      telnyx.UacOutboundT38ReinviteSourceCustomer,
+				T38ReinviteSource:      "customer",
 			},
 			Password: telnyx.String("my123secure456password789"),
 			RtcpSettings: telnyx.ConnectionRtcpSettingsParam{

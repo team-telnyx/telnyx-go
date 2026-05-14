@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"slices"
+	"time"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
@@ -98,8 +99,8 @@ func (r *AIOpenAIService) ListModels(ctx context.Context, opts ...option.Request
 type AIOpenAINewResponseResponse map[string]any
 
 type AIOpenAIListModelsResponse struct {
-	Data   []ModelMetadata `json:"data" api:"required"`
-	Object string          `json:"object"`
+	Data   []AIOpenAIListModelsResponseData `json:"data" api:"required"`
+	Object string                           `json:"object"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -112,6 +113,106 @@ type AIOpenAIListModelsResponse struct {
 // Returns the unmodified JSON received from the API
 func (r AIOpenAIListModelsResponse) RawJSON() string { return r.JSON.raw }
 func (r *AIOpenAIListModelsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Metadata for a model available on Telnyx Inference. Returned by
+// `GET /v2/ai/openai/models` (and the deprecated `GET /v2/ai/models`). Open-source
+// models live under their Hugging Face organization (e.g. `moonshotai/Kimi-K2.6`,
+// `zai-org/GLM-5.1-FP8`, `MiniMaxAI/MiniMax-M2.7`); fine-tuned models are owned by
+// the Telnyx organization that trained them.
+type AIOpenAIListModelsResponseData struct {
+	// Model identifier. For open-source models, follows the
+	// `{organization}/{model_name}` convention from Hugging Face (e.g.
+	// `moonshotai/Kimi-K2.6`).
+	ID string `json:"id" api:"required"`
+	// Maximum total tokens (prompt + completion) supported by the model in a single
+	// request.
+	ContextLength int64 `json:"context_length" api:"required"`
+	// Timestamp at which the model was registered on Telnyx Inference (ISO 8601).
+	Created time.Time `json:"created" api:"required" format:"date-time"`
+	// ISO language codes the model supports (e.g. `en`, `es`).
+	Languages []string `json:"languages" api:"required"`
+	// License the model is distributed under, e.g. `Apache 2.0`, `MIT`,
+	// `Llama 3 Community License`.
+	License string `json:"license" api:"required"`
+	// Organization that originally published the model, matching the prefix of `id`
+	// for open-source models.
+	Organization string `json:"organization" api:"required"`
+	// Owner of the model. `Telnyx` for Telnyx-hosted open-source models, the upstream
+	// provider name for proxied models, or the Telnyx organization id for fine-tuned
+	// models.
+	OwnedBy string `json:"owned_by" api:"required"`
+	// Total parameter count of the model.
+	Parameters int64 `json:"parameters" api:"required"`
+	// Billing tier the model belongs to. Used together with `pricing` to determine
+	// cost per 1M tokens.
+	//
+	// Any of "small", "medium", "large", "unlisted".
+	Tier string `json:"tier" api:"required"`
+	// Base model the fine-tuned model was trained from. Only set for fine-tuned
+	// models.
+	BaseModel string `json:"base_model" api:"nullable"`
+	// Short, human-readable summary of what the model is best suited for.
+	Description string `json:"description" api:"nullable"`
+	// Whether the model can be used as a base for a fine-tuning job via
+	// `POST /v2/ai/fine_tuning/jobs`.
+	IsFineTunable bool `json:"is_fine_tunable"`
+	// Whether the model accepts image inputs in chat completions (multimodal vision
+	// support).
+	IsVisionSupported bool `json:"is_vision_supported"`
+	// Maximum number of completion (output) tokens the model will generate per
+	// request. `null` if unconstrained beyond `context_length`.
+	MaxCompletionTokens int64 `json:"max_completion_tokens" api:"nullable"`
+	// Object type. Always `model`.
+	Object string `json:"object"`
+	// Human-readable parameter count, e.g. `1.0T`, `753.9B`, `8B`.
+	ParametersStr string `json:"parameters_str" api:"nullable"`
+	// Mapping of token kind to price, as strings to preserve precision. Typical keys
+	// are `prompt`, `cached_prompt`, and `completion`. When pricing is available the
+	// block also includes `currency` (ISO 4217 code matching the account's configured
+	// billing currency) and `unit` (the denomination the prices are quoted in,
+	// currently always `1M_tokens` for token-priced models).
+	Pricing map[string]string `json:"pricing"`
+	// Whether Telnyx currently recommends this model as the LLM powering a Telnyx AI
+	// Assistant.
+	RecommendedForAssistants bool `json:"recommended_for_assistants"`
+	// Public region names where the model is currently deployed (e.g. `us-central-1`,
+	// `eu-central-1`).
+	Regions []string `json:"regions"`
+	// Primary task the model is intended for, e.g. `text-generation`,
+	// `audio-text-to-text`, `feature-extraction` (embeddings).
+	Task string `json:"task"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                       respjson.Field
+		ContextLength            respjson.Field
+		Created                  respjson.Field
+		Languages                respjson.Field
+		License                  respjson.Field
+		Organization             respjson.Field
+		OwnedBy                  respjson.Field
+		Parameters               respjson.Field
+		Tier                     respjson.Field
+		BaseModel                respjson.Field
+		Description              respjson.Field
+		IsFineTunable            respjson.Field
+		IsVisionSupported        respjson.Field
+		MaxCompletionTokens      respjson.Field
+		Object                   respjson.Field
+		ParametersStr            respjson.Field
+		Pricing                  respjson.Field
+		RecommendedForAssistants respjson.Field
+		Regions                  respjson.Field
+		Task                     respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AIOpenAIListModelsResponseData) RawJSON() string { return r.JSON.raw }
+func (r *AIOpenAIListModelsResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
