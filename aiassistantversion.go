@@ -173,19 +173,19 @@ type UpdateAssistantParam struct {
 	// integrations is at `/ai/integrations`; the user's connected integrations are at
 	// `/ai/integrations/connections`. Each item references a catalog integration by
 	// `integration_id`.
-	Integrations []UpdateAssistantIntegrationParam `json:"integrations,omitzero"`
+	Integrations []AssistantIntegrationParam `json:"integrations,omitzero"`
 	// Settings for interruptions and how the assistant decides the user has finished
 	// speaking. These timings are most relevant when using non turn-taking
 	// transcription models. For turn-taking models like `deepgram/flux`, end-of-turn
 	// behavior is controlled by the transcription end-of-turn settings under
 	// `transcription.settings` (`eot_threshold`, `eot_timeout_ms`,
 	// `eager_eot_threshold`).
-	InterruptionSettings UpdateAssistantInterruptionSettingsParam `json:"interruption_settings,omitzero"`
+	InterruptionSettings InferenceEmbeddingInterruptionSettingsParam `json:"interruption_settings,omitzero"`
 	// MCP servers attached to the assistant. Create MCP servers with
 	// `/ai/mcp_servers`, then reference them by `id` here.
-	McpServers            []UpdateAssistantMcpServerParam `json:"mcp_servers,omitzero"`
-	MessagingSettings     MessagingSettingsParam          `json:"messaging_settings,omitzero"`
-	ObservabilitySettings ObservabilityReqParam           `json:"observability_settings,omitzero"`
+	McpServers            []AssistantMcpServerParam `json:"mcp_servers,omitzero"`
+	MessagingSettings     MessagingSettingsParam    `json:"messaging_settings,omitzero"`
+	ObservabilitySettings ObservabilityReqParam     `json:"observability_settings,omitzero"`
 	// Configuration for post-conversation processing. When enabled, the assistant
 	// receives one additional LLM turn after the conversation ends, allowing it to
 	// execute tool calls such as logging to a CRM or sending a summary. The assistant
@@ -217,127 +217,6 @@ func (r UpdateAssistantParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *UpdateAssistantParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Reference to a connected integration attached to an assistant. Discover
-// available integrations with `/ai/integrations` and connected integrations with
-// `/ai/integrations/connections`.
-//
-// The property IntegrationID is required.
-type UpdateAssistantIntegrationParam struct {
-	// Catalog integration ID to attach. This is the `id` from the integrations catalog
-	// at `/ai/integrations` (the same value also appears as `integration_id` on
-	// entries returned by `/ai/integrations/connections`). It is **not** the
-	// connection-level `id` from `/ai/integrations/connections`.
-	IntegrationID string `json:"integration_id" api:"required"`
-	// Optional per-assistant allowlist of integration tool names. When omitted or
-	// empty, all tools allowed by the connected integration are available to the
-	// assistant.
-	AllowedList []string `json:"allowed_list,omitzero"`
-	paramObj
-}
-
-func (r UpdateAssistantIntegrationParam) MarshalJSON() (data []byte, err error) {
-	type shadow UpdateAssistantIntegrationParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *UpdateAssistantIntegrationParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Settings for interruptions and how the assistant decides the user has finished
-// speaking. These timings are most relevant when using non turn-taking
-// transcription models. For turn-taking models like `deepgram/flux`, end-of-turn
-// behavior is controlled by the transcription end-of-turn settings under
-// `transcription.settings` (`eot_threshold`, `eot_timeout_ms`,
-// `eager_eot_threshold`).
-type UpdateAssistantInterruptionSettingsParam struct {
-	// When true, disables user interruptions while the assistant greeting is playing.
-	DisableGreetingInterruption param.Opt[bool] `json:"disable_greeting_interruption,omitzero"`
-	// Whether users can interrupt the assistant while it is speaking.
-	Enable param.Opt[bool] `json:"enable,omitzero"`
-	// Controls when the assistant starts speaking after the user stops. These
-	// thresholds primarily apply to non turn-taking transcription models. For
-	// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
-	// transcription end-of-turn settings under `transcription.settings` instead.
-	StartSpeakingPlan UpdateAssistantInterruptionSettingsStartSpeakingPlanParam `json:"start_speaking_plan,omitzero"`
-	paramObj
-}
-
-func (r UpdateAssistantInterruptionSettingsParam) MarshalJSON() (data []byte, err error) {
-	type shadow UpdateAssistantInterruptionSettingsParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *UpdateAssistantInterruptionSettingsParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Controls when the assistant starts speaking after the user stops. These
-// thresholds primarily apply to non turn-taking transcription models. For
-// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
-// transcription end-of-turn settings under `transcription.settings` instead.
-type UpdateAssistantInterruptionSettingsStartSpeakingPlanParam struct {
-	// Minimum seconds to wait before the assistant starts speaking.
-	WaitSeconds param.Opt[float64] `json:"wait_seconds,omitzero"`
-	// Endpointing thresholds used to decide when the user has finished speaking.
-	// Applies to non turn-taking transcription models. For `deepgram/flux`, use
-	// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
-	// `eager_eot_threshold`.
-	TranscriptionEndpointingPlan UpdateAssistantInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlanParam `json:"transcription_endpointing_plan,omitzero"`
-	paramObj
-}
-
-func (r UpdateAssistantInterruptionSettingsStartSpeakingPlanParam) MarshalJSON() (data []byte, err error) {
-	type shadow UpdateAssistantInterruptionSettingsStartSpeakingPlanParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *UpdateAssistantInterruptionSettingsStartSpeakingPlanParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Endpointing thresholds used to decide when the user has finished speaking.
-// Applies to non turn-taking transcription models. For `deepgram/flux`, use
-// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
-// `eager_eot_threshold`.
-type UpdateAssistantInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlanParam struct {
-	// Seconds to wait after the transcript ends without punctuation.
-	OnNoPunctuationSeconds param.Opt[float64] `json:"on_no_punctuation_seconds,omitzero"`
-	// Seconds to wait after the transcript ends with a number.
-	OnNumberSeconds param.Opt[float64] `json:"on_number_seconds,omitzero"`
-	// Seconds to wait after the transcript ends with punctuation.
-	OnPunctuationSeconds param.Opt[float64] `json:"on_punctuation_seconds,omitzero"`
-	paramObj
-}
-
-func (r UpdateAssistantInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlanParam) MarshalJSON() (data []byte, err error) {
-	type shadow UpdateAssistantInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlanParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *UpdateAssistantInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlanParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Reference to an MCP server attached to an assistant. Create and manage MCP
-// servers with the `/ai/mcp_servers` endpoints, then attach them to assistants by
-// ID.
-//
-// The property ID is required.
-type UpdateAssistantMcpServerParam struct {
-	// ID of the MCP server to attach. This must be the `id` of an MCP server returned
-	// by the `/ai/mcp_servers` endpoints.
-	ID string `json:"id" api:"required"`
-	// Optional per-assistant allowlist of MCP tool names. When omitted, the assistant
-	// uses the MCP server's configured `allowed_tools`.
-	AllowedTools []string `json:"allowed_tools,omitzero"`
-	paramObj
-}
-
-func (r UpdateAssistantMcpServerParam) MarshalJSON() (data []byte, err error) {
-	type shadow UpdateAssistantMcpServerParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *UpdateAssistantMcpServerParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
