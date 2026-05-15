@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestAIOpenAINewResponse(t *testing.T) {
+func TestAIOpenAINewResponseWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -27,10 +27,21 @@ func TestAIOpenAINewResponse(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.OpenAI.NewResponse(context.TODO(), telnyx.AIOpenAINewResponseParams{
-		Body: map[string]any{
-			"model": "bar",
-			"input": "bar",
+		Conversation: telnyx.String("6a09cdc3-8948-47f0-aa62-74ac943d6c58"),
+		Input: []any{
+			map[string]any{
+				"role": "user",
+				"content": []any{
+					map[string]any{
+						"type": "input_text",
+						"text": "Hello, world!",
+					},
+				},
+			},
 		},
+		Instructions: telnyx.String("You are a friendly chatbot."),
+		Model:        telnyx.String("zai-org/GLM-5.1-FP8"),
+		Stream:       telnyx.Bool(true),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
