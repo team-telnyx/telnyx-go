@@ -159,6 +159,9 @@ type TexmlInitiateAICallParams struct {
 	// URL destination for Telnyx to send AI conversation callback events for this
 	// call. Events include `conversation_created` and `conversation_ended`.
 	ConversationCallback param.Opt[string] `json:"ConversationCallback,omitzero"`
+	// Silence duration threshold after a call screening prompt before ending prompt
+	// detection, in milliseconds. Used when `DetectionMode` is `PremiumCallScreening`.
+	MachineDetectionPromptEndTimeout param.Opt[int64] `json:"MachineDetectionPromptEndTimeout,omitzero"`
 	// If initial silence duration is greater than this value, consider it a machine.
 	// Ignored when `premium` detection is used.
 	MachineDetectionSilenceTimeout param.Opt[int64] `json:"MachineDetectionSilenceTimeout,omitzero"`
@@ -225,9 +228,11 @@ type TexmlInitiateAICallParams struct {
 	// Custom HTTP headers to be sent with the call. Each header should be an object
 	// with 'name' and 'value' properties.
 	CustomHeaders []TexmlInitiateAICallParamsCustomHeader `json:"CustomHeaders,omitzero"`
-	// Allows you to choose between Premium and Standard detections.
+	// Allows you to choose between Regular, Premium, and PremiumCallScreening
+	// detections. See
+	// https://developers.telnyx.com/docs/voice/programmable-voice/answering-machine-detection
 	//
-	// Any of "Premium", "Regular".
+	// Any of "Premium", "Regular", "PremiumCallScreening".
 	DetectionMode TexmlInitiateAICallParamsDetectionMode `json:"DetectionMode,omitzero"`
 	// Enables Answering Machine Detection.
 	//
@@ -308,12 +313,15 @@ func (r *TexmlInitiateAICallParamsCustomHeader) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Allows you to choose between Premium and Standard detections.
+// Allows you to choose between Regular, Premium, and PremiumCallScreening
+// detections. See
+// https://developers.telnyx.com/docs/voice/programmable-voice/answering-machine-detection
 type TexmlInitiateAICallParamsDetectionMode string
 
 const (
-	TexmlInitiateAICallParamsDetectionModePremium TexmlInitiateAICallParamsDetectionMode = "Premium"
-	TexmlInitiateAICallParamsDetectionModeRegular TexmlInitiateAICallParamsDetectionMode = "Regular"
+	TexmlInitiateAICallParamsDetectionModePremium              TexmlInitiateAICallParamsDetectionMode = "Premium"
+	TexmlInitiateAICallParamsDetectionModeRegular              TexmlInitiateAICallParamsDetectionMode = "Regular"
+	TexmlInitiateAICallParamsDetectionModePremiumCallScreening TexmlInitiateAICallParamsDetectionMode = "PremiumCallScreening"
 )
 
 // Enables Answering Machine Detection.

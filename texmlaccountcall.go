@@ -735,6 +735,9 @@ type TexmlAccountCallCallsParamsParamsWithURL struct {
 	// The phone number of the party that initiated the call. Phone numbers are
 	// formatted with a `+` and country code.
 	From param.Opt[string] `json:"From,omitzero"`
+	// Silence duration threshold after a call screening prompt before ending prompt
+	// detection, in milliseconds. Used when `DetectionMode` is `PremiumCallScreening`.
+	MachineDetectionPromptEndTimeout param.Opt[int64] `json:"MachineDetectionPromptEndTimeout,omitzero"`
 	// If initial silence duration is greater than this value, consider it a machine.
 	// Ignored when `premium` detection is used.
 	MachineDetectionSilenceTimeout param.Opt[int64] `json:"MachineDetectionSilenceTimeout,omitzero"`
@@ -801,9 +804,11 @@ type TexmlAccountCallCallsParamsParamsWithURL struct {
 	//
 	// Any of "GET", "POST".
 	DeepfakeDetectionCallbackMethod string `json:"DeepfakeDetectionCallbackMethod,omitzero"`
-	// Allows you to chose between Premium and Standard detections.
+	// Allows you to choose between Regular, Premium, and PremiumCallScreening
+	// detections. See
+	// https://developers.telnyx.com/docs/voice/programmable-voice/answering-machine-detection
 	//
-	// Any of "Premium", "Regular".
+	// Any of "Premium", "Regular", "PremiumCallScreening".
 	DetectionMode string `json:"DetectionMode,omitzero"`
 	// Enables Answering Machine Detection.
 	//
@@ -879,7 +884,7 @@ func init() {
 		"DeepfakeDetectionCallbackMethod", "GET", "POST",
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
-		"DetectionMode", "Premium", "Regular",
+		"DetectionMode", "Premium", "Regular", "PremiumCallScreening",
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
 		"MachineDetection", "Enable", "Disable", "DetectMessageEnd",
@@ -965,6 +970,9 @@ type TexmlAccountCallCallsParamsParamsWithTeXml struct {
 	// The phone number of the party that initiated the call. Phone numbers are
 	// formatted with a `+` and country code.
 	From param.Opt[string] `json:"From,omitzero"`
+	// Silence duration threshold after a call screening prompt before ending prompt
+	// detection, in milliseconds. Used when `DetectionMode` is `PremiumCallScreening`.
+	MachineDetectionPromptEndTimeout param.Opt[int64] `json:"MachineDetectionPromptEndTimeout,omitzero"`
 	// If initial silence duration is greater than this value, consider it a machine.
 	// Ignored when `premium` detection is used.
 	MachineDetectionSilenceTimeout param.Opt[int64] `json:"MachineDetectionSilenceTimeout,omitzero"`
@@ -1031,9 +1039,11 @@ type TexmlAccountCallCallsParamsParamsWithTeXml struct {
 	//
 	// Any of "GET", "POST".
 	DeepfakeDetectionCallbackMethod string `json:"DeepfakeDetectionCallbackMethod,omitzero"`
-	// Allows you to chose between Premium and Standard detections.
+	// Allows you to choose between Regular, Premium, and PremiumCallScreening
+	// detections. See
+	// https://developers.telnyx.com/docs/voice/programmable-voice/answering-machine-detection
 	//
-	// Any of "Premium", "Regular".
+	// Any of "Premium", "Regular", "PremiumCallScreening".
 	DetectionMode string `json:"DetectionMode,omitzero"`
 	// Enables Answering Machine Detection.
 	//
@@ -1109,7 +1119,7 @@ func init() {
 		"DeepfakeDetectionCallbackMethod", "GET", "POST",
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
-		"DetectionMode", "Premium", "Regular",
+		"DetectionMode", "Premium", "Regular", "PremiumCallScreening",
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
 		"MachineDetection", "Enable", "Disable", "DetectMessageEnd",
@@ -1192,6 +1202,9 @@ type TexmlAccountCallCallsParamsParamsApplicationDefault struct {
 	// The phone number of the party that initiated the call. Phone numbers are
 	// formatted with a `+` and country code.
 	From param.Opt[string] `json:"From,omitzero"`
+	// Silence duration threshold after a call screening prompt before ending prompt
+	// detection, in milliseconds. Used when `DetectionMode` is `PremiumCallScreening`.
+	MachineDetectionPromptEndTimeout param.Opt[int64] `json:"MachineDetectionPromptEndTimeout,omitzero"`
 	// If initial silence duration is greater than this value, consider it a machine.
 	// Ignored when `premium` detection is used.
 	MachineDetectionSilenceTimeout param.Opt[int64] `json:"MachineDetectionSilenceTimeout,omitzero"`
@@ -1258,9 +1271,11 @@ type TexmlAccountCallCallsParamsParamsApplicationDefault struct {
 	//
 	// Any of "GET", "POST".
 	DeepfakeDetectionCallbackMethod string `json:"DeepfakeDetectionCallbackMethod,omitzero"`
-	// Allows you to chose between Premium and Standard detections.
+	// Allows you to choose between Regular, Premium, and PremiumCallScreening
+	// detections. See
+	// https://developers.telnyx.com/docs/voice/programmable-voice/answering-machine-detection
 	//
-	// Any of "Premium", "Regular".
+	// Any of "Premium", "Regular", "PremiumCallScreening".
 	DetectionMode string `json:"DetectionMode,omitzero"`
 	// Enables Answering Machine Detection.
 	//
@@ -1336,7 +1351,7 @@ func init() {
 		"DeepfakeDetectionCallbackMethod", "GET", "POST",
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
-		"DetectionMode", "Premium", "Regular",
+		"DetectionMode", "Premium", "Regular", "PremiumCallScreening",
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
 		"MachineDetection", "Enable", "Disable", "DetectMessageEnd",

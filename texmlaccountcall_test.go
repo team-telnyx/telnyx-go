@@ -118,6 +118,7 @@ func TestTexmlAccountCallCallsWithOptionalParams(t *testing.T) {
 				FallbackURL:                        telnyx.String("https://www.example.com/instructions-fallback.xml"),
 				From:                               telnyx.String("+13120001234"),
 				MachineDetection:                   "Enable",
+				MachineDetectionPromptEndTimeout:   telnyx.Int(5000),
 				MachineDetectionSilenceTimeout:     telnyx.Int(2000),
 				MachineDetectionSpeechEndThreshold: telnyx.Int(2000),
 				MachineDetectionSpeechThreshold:    telnyx.Int(2000),
