@@ -966,6 +966,85 @@ func TestCallActionStartAIAssistantWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestCallActionStartConversationRelayWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Calls.Actions.StartConversationRelay(
+		context.TODO(),
+		"call_control_id",
+		telnyx.CallActionStartConversationRelayParams{
+			Assistant: telnyx.CallActionStartConversationRelayParamsAssistant{
+				DynamicVariables: map[string]string{
+					"customer_id": "12345",
+				},
+			},
+			ClientState:                    telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
+			CommandID:                      telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
+			ConversationRelayDtmfDetection: telnyx.Bool(true),
+			ConversationRelaySettings: telnyx.CallActionStartConversationRelayParamsConversationRelaySettings{
+				URL:                   "wss://example.com/conversation-relay",
+				DtmfDetection:         telnyx.Bool(true),
+				Interruptible:         "speech",
+				InterruptibleGreeting: "any",
+				Languages: []telnyx.CallActionStartConversationRelayParamsConversationRelaySettingsLanguage{{
+					Code:                  telnyx.String("en-US"),
+					SpeechModel:           telnyx.String("nova-2"),
+					TranscriptionProvider: telnyx.String("Deepgram"),
+					TtsProvider:           telnyx.String("ElevenLabs"),
+					Voice:                 telnyx.String("alice"),
+				}},
+			},
+			ConversationRelayURL: telnyx.String("wss://example.com/conversation-relay"),
+			Greeting:             telnyx.String("Hi! Ask me anything!"),
+			InterruptionSettings: telnyx.CallActionStartConversationRelayParamsInterruptionSettings{
+				Enable:                       telnyx.Bool(true),
+				Interruptible:                "speech",
+				InterruptibleGreeting:        "speech",
+				WelcomeGreetingInterruptible: "speech",
+			},
+			Language: telnyx.String("en-US"),
+			Languages: []telnyx.CallActionStartConversationRelayParamsLanguage{{
+				Code:                  telnyx.String("en-US"),
+				SpeechModel:           telnyx.String("nova-2"),
+				TranscriptionProvider: telnyx.String("Deepgram"),
+				TtsProvider:           telnyx.String("ElevenLabs"),
+				Voice:                 telnyx.String("alice"),
+			}},
+			Transcription: telnyx.CallActionStartConversationRelayParamsTranscription{
+				Language: telnyx.String("en-US"),
+				Model:    telnyx.String("nova-2"),
+				Provider: telnyx.String("deepgram"),
+			},
+			TranscriptionLanguage: telnyx.String("en-US"),
+			TtsLanguage:           telnyx.String("es"),
+			Voice:                 telnyx.String("Telnyx.KokoroTTS.af"),
+			VoiceSettings: telnyx.CallActionStartConversationRelayParamsVoiceSettingsUnion{
+				OfElevenlabs: &telnyx.ElevenLabsVoiceSettingsParam{
+					Type:      telnyx.ElevenLabsVoiceSettingsTypeElevenlabs,
+					APIKeyRef: telnyx.String("my_elevenlabs_api_key"),
+				},
+			},
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestCallActionStartForkingWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
@@ -1281,6 +1360,36 @@ func TestCallActionStopAIAssistantWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"call_control_id",
 		telnyx.CallActionStopAIAssistantParams{
+			ClientState: telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
+			CommandID:   telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestCallActionStopConversationRelayWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Calls.Actions.StopConversationRelay(
+		context.TODO(),
+		"call_control_id",
+		telnyx.CallActionStopConversationRelayParams{
 			ClientState: telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
 			CommandID:   telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
 		},

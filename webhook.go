@@ -614,6 +614,9 @@ type CallConversationEndedPayload struct {
 	From string `json:"from"`
 	// The large language model used during the conversation.
 	LlmModel string `json:"llm_model"`
+	// Reason the conversation ended. For Conversation Relay, `customer_disconnect`
+	// indicates that the customer WebSocket disconnected.
+	Reason string `json:"reason" api:"nullable"`
 	// The speech-to-text model used in the conversation.
 	SttModel string `json:"stt_model"`
 	// The callee's number or SIP address.
@@ -637,6 +640,7 @@ type CallConversationEndedPayload struct {
 		DurationSec      respjson.Field
 		From             respjson.Field
 		LlmModel         respjson.Field
+		Reason           respjson.Field
 		SttModel         respjson.Field
 		To               respjson.Field
 		TtsModelID       respjson.Field
@@ -4753,8 +4757,9 @@ type FaxDeliveredDataPayload struct {
 	// The phone number, in E.164 format, the fax will be sent from.
 	From string `json:"from"`
 	// The media_name used for the fax's media. Must point to a file previously
-	// uploaded to api.telnyx.com/v2/media by the same user/organization. media_name
-	// and media_url/contents can't be submitted together.
+	// uploaded to api.telnyx.com/v2/media by the same user/organization. Supported
+	// formats: PDF, TIFF, JPEG, PNG, DOC, DOCX, RTF, and TXT. media_name and
+	// media_url/contents can't be submitted together.
 	MediaName string `json:"media_name"`
 	// The original URL to the PDF used for the fax's media. If media_name was
 	// supplied, this is omitted
@@ -4884,8 +4889,9 @@ type FaxFailedDataPayload struct {
 	// The phone number, in E.164 format, the fax will be sent from.
 	From string `json:"from"`
 	// The media_name used for the fax's media. Must point to a file previously
-	// uploaded to api.telnyx.com/v2/media by the same user/organization. media_name
-	// and media_url/contents can't be submitted together.
+	// uploaded to api.telnyx.com/v2/media by the same user/organization. Supported
+	// formats: PDF, TIFF, JPEG, PNG, DOC, DOCX, RTF, and TXT. media_name and
+	// media_url/contents can't be submitted together.
 	MediaName string `json:"media_name"`
 	// The original URL to the PDF used for the fax's media. If media_name was
 	// supplied, this is omitted
@@ -5008,8 +5014,9 @@ type FaxMediaProcessedDataPayload struct {
 	// The phone number, in E.164 format, the fax will be sent from.
 	From string `json:"from"`
 	// The media_name used for the fax's media. Must point to a file previously
-	// uploaded to api.telnyx.com/v2/media by the same user/organization. media_name
-	// and media_url/contents can't be submitted together.
+	// uploaded to api.telnyx.com/v2/media by the same user/organization. Supported
+	// formats: PDF, TIFF, JPEG, PNG, DOC, DOCX, RTF, and TXT. media_name and
+	// media_url/contents can't be submitted together.
 	MediaName string `json:"media_name"`
 	// The original URL to the PDF used for the fax's media. If media_name was
 	// supplied, this is omitted
@@ -5131,8 +5138,9 @@ type FaxQueuedDataPayload struct {
 	// The phone number, in E.164 format, the fax will be sent from.
 	From string `json:"from"`
 	// The media_name used for the fax's media. Must point to a file previously
-	// uploaded to api.telnyx.com/v2/media by the same user/organization. media_name
-	// and media_url/contents can't be submitted together.
+	// uploaded to api.telnyx.com/v2/media by the same user/organization. Supported
+	// formats: PDF, TIFF, JPEG, PNG, DOC, DOCX, RTF, and TXT. media_name and
+	// media_url/contents can't be submitted together.
 	MediaName string `json:"media_name"`
 	// The original URL to the PDF used for the fax's media. If media_name was
 	// supplied, this is omitted
@@ -5254,8 +5262,9 @@ type FaxSendingStartedDataPayload struct {
 	// The phone number, in E.164 format, the fax will be sent from.
 	From string `json:"from"`
 	// The media_name used for the fax's media. Must point to a file previously
-	// uploaded to api.telnyx.com/v2/media by the same user/organization. media_name
-	// and media_url/contents can't be submitted together.
+	// uploaded to api.telnyx.com/v2/media by the same user/organization. Supported
+	// formats: PDF, TIFF, JPEG, PNG, DOC, DOCX, RTF, and TXT. media_name and
+	// media_url/contents can't be submitted together.
 	MediaName string `json:"media_name"`
 	// The original URL to the PDF used for the fax's media. If media_name was
 	// supplied, this is omitted
@@ -7649,6 +7658,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	DurationSec int64 `json:"duration_sec"`
 	// This field is from variant [CallConversationEndedPayload].
 	LlmModel string `json:"llm_model"`
+	Reason   string `json:"reason"`
 	// This field is from variant [CallConversationEndedPayload].
 	SttModel string `json:"stt_model"`
 	// This field is from variant [CallConversationEndedPayload].
@@ -7706,8 +7716,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	// This field is from variant [CallInitiatedPayload].
 	ShakenStirValidated bool `json:"shaken_stir_validated"`
 	// This field is from variant [CallLeftQueuePayload].
-	QueuePosition int64  `json:"queue_position"`
-	Reason        string `json:"reason"`
+	QueuePosition int64 `json:"queue_position"`
 	// This field is from variant [CallLeftQueuePayload].
 	WaitTimeSecs int64  `json:"wait_time_secs"`
 	MediaName    string `json:"media_name"`
@@ -7834,6 +7843,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		ConversationID           respjson.Field
 		DurationSec              respjson.Field
 		LlmModel                 respjson.Field
+		Reason                   respjson.Field
 		SttModel                 respjson.Field
 		TtsModelID               respjson.Field
 		TtsProvider              respjson.Field
@@ -7866,7 +7876,6 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		ShakenStirAttestation    respjson.Field
 		ShakenStirValidated      respjson.Field
 		QueuePosition            respjson.Field
-		Reason                   respjson.Field
 		WaitTimeSecs             respjson.Field
 		MediaName                respjson.Field
 		MediaURL                 respjson.Field
@@ -8838,6 +8847,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	DurationSec int64 `json:"duration_sec"`
 	// This field is from variant [CallConversationEndedPayload].
 	LlmModel string `json:"llm_model"`
+	Reason   string `json:"reason"`
 	// This field is from variant [CallConversationEndedPayload].
 	SttModel string `json:"stt_model"`
 	// This field is from variant [CallConversationEndedPayload].
@@ -8895,8 +8905,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	// This field is from variant [CallInitiatedPayload].
 	ShakenStirValidated bool `json:"shaken_stir_validated"`
 	// This field is from variant [CallLeftQueuePayload].
-	QueuePosition int64  `json:"queue_position"`
-	Reason        string `json:"reason"`
+	QueuePosition int64 `json:"queue_position"`
 	// This field is from variant [CallLeftQueuePayload].
 	WaitTimeSecs int64  `json:"wait_time_secs"`
 	MediaName    string `json:"media_name"`
@@ -9023,6 +9032,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		ConversationID           respjson.Field
 		DurationSec              respjson.Field
 		LlmModel                 respjson.Field
+		Reason                   respjson.Field
 		SttModel                 respjson.Field
 		TtsModelID               respjson.Field
 		TtsProvider              respjson.Field
@@ -9055,7 +9065,6 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		ShakenStirAttestation    respjson.Field
 		ShakenStirValidated      respjson.Field
 		QueuePosition            respjson.Field
-		Reason                   respjson.Field
 		WaitTimeSecs             respjson.Field
 		MediaName                respjson.Field
 		MediaURL                 respjson.Field
