@@ -1,5 +1,24 @@
 # Changelog
 
+## 4.67.0 (2026-05-15)
+
+Full Changelog: [v4.66.0...v4.67.0](https://github.com/team-telnyx/telnyx-go/compare/v4.66.0...v4.67.0)
+
+### Features
+
+* Add Speechmatics transcription engine to Call Control API ([c51898b](https://github.com/team-telnyx/telnyx-go/commit/c51898ba07fadcd96e40e1a5c40a35c2ad26da7c))
+* **client:** optimize json encoder for internal types ([3806e47](https://github.com/team-telnyx/telnyx-go/commit/3806e47923921e7fce28a743eb3f8c99babd18c6))
+* Document AI call status callback overrides ([44a9d61](https://github.com/team-telnyx/telnyx-go/commit/44a9d611b7ce9c8a329336ea88ccd2dcb84f43ca))
+* Document Conversation Relay ([6f6f848](https://github.com/team-telnyx/telnyx-go/commit/6f6f848d63b5865e8ba44462e38800bcaa5e3be0))
+* Document PremiumCallScreening detection mode ([ee78e18](https://github.com/team-telnyx/telnyx-go/commit/ee78e18b283481b52d4c7f42290c48c9f8efc004))
+* Fix Conversation Relay expected webhook ([7b23a0d](https://github.com/team-telnyx/telnyx-go/commit/7b23a0d37cf38a11ad002fbe063d866fcdbb62ea))
+* Update Conversation Relay start parameters ([879fe5b](https://github.com/team-telnyx/telnyx-go/commit/879fe5bbd6254fca72abd60b63673893eb1153c5))
+
+
+### Documentation
+
+* add supported file formats to Send Fax endpoint ([bb859a7](https://github.com/team-telnyx/telnyx-go/commit/bb859a70c2bacfc25302d2897ab5455a010c5f03))
+
 ## 4.66.0 (2026-05-13)
 
 Full Changelog: [v4.65.0...v4.66.0](https://github.com/team-telnyx/telnyx-go/compare/v4.65.0...v4.66.0)
