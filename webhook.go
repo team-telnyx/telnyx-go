@@ -4757,8 +4757,9 @@ type FaxDeliveredDataPayload struct {
 	// The phone number, in E.164 format, the fax will be sent from.
 	From string `json:"from"`
 	// The media_name used for the fax's media. Must point to a file previously
-	// uploaded to api.telnyx.com/v2/media by the same user/organization. media_name
-	// and media_url/contents can't be submitted together.
+	// uploaded to api.telnyx.com/v2/media by the same user/organization. Supported
+	// formats: PDF, TIFF, JPEG, PNG, DOC, DOCX, RTF, and TXT. media_name and
+	// media_url/contents can't be submitted together.
 	MediaName string `json:"media_name"`
 	// The original URL to the PDF used for the fax's media. If media_name was
 	// supplied, this is omitted
@@ -4888,8 +4889,9 @@ type FaxFailedDataPayload struct {
 	// The phone number, in E.164 format, the fax will be sent from.
 	From string `json:"from"`
 	// The media_name used for the fax's media. Must point to a file previously
-	// uploaded to api.telnyx.com/v2/media by the same user/organization. media_name
-	// and media_url/contents can't be submitted together.
+	// uploaded to api.telnyx.com/v2/media by the same user/organization. Supported
+	// formats: PDF, TIFF, JPEG, PNG, DOC, DOCX, RTF, and TXT. media_name and
+	// media_url/contents can't be submitted together.
 	MediaName string `json:"media_name"`
 	// The original URL to the PDF used for the fax's media. If media_name was
 	// supplied, this is omitted
@@ -5012,8 +5014,9 @@ type FaxMediaProcessedDataPayload struct {
 	// The phone number, in E.164 format, the fax will be sent from.
 	From string `json:"from"`
 	// The media_name used for the fax's media. Must point to a file previously
-	// uploaded to api.telnyx.com/v2/media by the same user/organization. media_name
-	// and media_url/contents can't be submitted together.
+	// uploaded to api.telnyx.com/v2/media by the same user/organization. Supported
+	// formats: PDF, TIFF, JPEG, PNG, DOC, DOCX, RTF, and TXT. media_name and
+	// media_url/contents can't be submitted together.
 	MediaName string `json:"media_name"`
 	// The original URL to the PDF used for the fax's media. If media_name was
 	// supplied, this is omitted
@@ -5135,8 +5138,9 @@ type FaxQueuedDataPayload struct {
 	// The phone number, in E.164 format, the fax will be sent from.
 	From string `json:"from"`
 	// The media_name used for the fax's media. Must point to a file previously
-	// uploaded to api.telnyx.com/v2/media by the same user/organization. media_name
-	// and media_url/contents can't be submitted together.
+	// uploaded to api.telnyx.com/v2/media by the same user/organization. Supported
+	// formats: PDF, TIFF, JPEG, PNG, DOC, DOCX, RTF, and TXT. media_name and
+	// media_url/contents can't be submitted together.
 	MediaName string `json:"media_name"`
 	// The original URL to the PDF used for the fax's media. If media_name was
 	// supplied, this is omitted
@@ -5258,8 +5262,9 @@ type FaxSendingStartedDataPayload struct {
 	// The phone number, in E.164 format, the fax will be sent from.
 	From string `json:"from"`
 	// The media_name used for the fax's media. Must point to a file previously
-	// uploaded to api.telnyx.com/v2/media by the same user/organization. media_name
-	// and media_url/contents can't be submitted together.
+	// uploaded to api.telnyx.com/v2/media by the same user/organization. Supported
+	// formats: PDF, TIFF, JPEG, PNG, DOC, DOCX, RTF, and TXT. media_name and
+	// media_url/contents can't be submitted together.
 	MediaName string `json:"media_name"`
 	// The original URL to the PDF used for the fax's media. If media_name was
 	// supplied, this is omitted
