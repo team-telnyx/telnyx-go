@@ -118,32 +118,12 @@ func (r *AIService) Summarize(ctx context.Context, body AISummarizeParams, opts 
 	return res, err
 }
 
-type AINewResponseResponse map[string]any
-
-type AIGetModelsResponse struct {
-	Data   []AIGetModelsResponseData `json:"data" api:"required"`
-	Object string                    `json:"object"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Object      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIGetModelsResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIGetModelsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Metadata for a model available on Telnyx Inference. Returned by
 // `GET /v2/ai/openai/models` (and the deprecated `GET /v2/ai/models`). Open-source
 // models live under their Hugging Face organization (e.g. `moonshotai/Kimi-K2.6`,
 // `zai-org/GLM-5.1-FP8`, `MiniMaxAI/MiniMax-M2.7`); fine-tuned models are owned by
 // the Telnyx organization that trained them.
-type AIGetModelsResponseData struct {
+type ModelMetadata struct {
 	// Model identifier. For open-source models, follows the
 	// `{organization}/{model_name}` convention from Hugging Face (e.g.
 	// `moonshotai/Kimi-K2.6`).
@@ -171,7 +151,7 @@ type AIGetModelsResponseData struct {
 	// cost per 1M tokens.
 	//
 	// Any of "small", "medium", "large", "unlisted".
-	Tier string `json:"tier" api:"required"`
+	Tier ModelMetadataTier `json:"tier" api:"required"`
 	// Base model the fine-tuned model was trained from. Only set for fine-tuned
 	// models.
 	BaseModel string `json:"base_model" api:"nullable"`
@@ -233,8 +213,39 @@ type AIGetModelsResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AIGetModelsResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIGetModelsResponseData) UnmarshalJSON(data []byte) error {
+func (r ModelMetadata) RawJSON() string { return r.JSON.raw }
+func (r *ModelMetadata) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Billing tier the model belongs to. Used together with `pricing` to determine
+// cost per 1M tokens.
+type ModelMetadataTier string
+
+const (
+	ModelMetadataTierSmall    ModelMetadataTier = "small"
+	ModelMetadataTierMedium   ModelMetadataTier = "medium"
+	ModelMetadataTierLarge    ModelMetadataTier = "large"
+	ModelMetadataTierUnlisted ModelMetadataTier = "unlisted"
+)
+
+type AINewResponseResponse map[string]any
+
+type AIGetModelsResponse struct {
+	Data   []ModelMetadata `json:"data" api:"required"`
+	Object string          `json:"object"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Object      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AIGetModelsResponse) RawJSON() string { return r.JSON.raw }
+func (r *AIGetModelsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
