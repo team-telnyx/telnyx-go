@@ -983,17 +983,29 @@ func TestCallActionStartConversationRelayWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"call_control_id",
 		telnyx.CallActionStartConversationRelayParams{
-			ConversationRelayURL: "wss://example.com/conversation-relay",
 			Assistant: telnyx.CallActionStartConversationRelayParamsAssistant{
 				DynamicVariables: map[string]string{
 					"customer_id": "12345",
-					"tier":        "premium",
 				},
 			},
 			ClientState:                    telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
 			CommandID:                      telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
 			ConversationRelayDtmfDetection: telnyx.Bool(true),
-			Greeting:                       telnyx.String("Hi! Ask me anything!"),
+			ConversationRelaySettings: telnyx.CallActionStartConversationRelayParamsConversationRelaySettings{
+				URL:                   "wss://example.com/conversation-relay",
+				DtmfDetection:         telnyx.Bool(true),
+				Interruptible:         "speech",
+				InterruptibleGreeting: "any",
+				Languages: []telnyx.CallActionStartConversationRelayParamsConversationRelaySettingsLanguage{{
+					Code:                  telnyx.String("en-US"),
+					SpeechModel:           telnyx.String("nova-2"),
+					TranscriptionProvider: telnyx.String("Deepgram"),
+					TtsProvider:           telnyx.String("ElevenLabs"),
+					Voice:                 telnyx.String("alice"),
+				}},
+			},
+			ConversationRelayURL: telnyx.String("wss://example.com/conversation-relay"),
+			Greeting:             telnyx.String("Hi! Ask me anything!"),
 			InterruptionSettings: telnyx.CallActionStartConversationRelayParamsInterruptionSettings{
 				Enable:                       telnyx.Bool(true),
 				Interruptible:                "speech",
@@ -1008,13 +1020,6 @@ func TestCallActionStartConversationRelayWithOptionalParams(t *testing.T) {
 				TtsProvider:           telnyx.String("ElevenLabs"),
 				Voice:                 telnyx.String("alice"),
 			}},
-			Participants: []telnyx.CallActionStartConversationRelayParamsParticipant{{
-				ID:       "v3:abc123def456",
-				Role:     "user",
-				Name:     telnyx.String("John Doe"),
-				OnHangup: "continue_conversation",
-			}},
-			SendMessageHistoryUpdates: telnyx.Bool(true),
 			Transcription: telnyx.CallActionStartConversationRelayParamsTranscription{
 				Language: telnyx.String("en-US"),
 				Model:    telnyx.String("nova-2"),
@@ -1022,7 +1027,6 @@ func TestCallActionStartConversationRelayWithOptionalParams(t *testing.T) {
 			},
 			TranscriptionLanguage: telnyx.String("en-US"),
 			TtsLanguage:           telnyx.String("es"),
-			UserResponseTimeoutMs: telnyx.Int(10000),
 			Voice:                 telnyx.String("Telnyx.KokoroTTS.af"),
 			VoiceSettings: telnyx.CallActionStartConversationRelayParamsVoiceSettingsUnion{
 				OfElevenlabs: &telnyx.ElevenLabsVoiceSettingsParam{

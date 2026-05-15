@@ -5616,9 +5616,6 @@ func init() {
 }
 
 type CallActionStartConversationRelayParams struct {
-	// WebSocket URL for your Conversation Relay server. Must start with `ws://` or
-	// `wss://`.
-	ConversationRelayURL string `json:"conversation_relay_url" api:"required"`
 	// Use this field to add state to subsequent webhooks. It must be a valid Base-64
 	// encoded string.
 	ClientState param.Opt[string] `json:"client_state,omitzero"`
@@ -5627,21 +5624,20 @@ type CallActionStartConversationRelayParams struct {
 	CommandID param.Opt[string] `json:"command_id,omitzero"`
 	// Enable DTMF detection for the relay session.
 	ConversationRelayDtmfDetection param.Opt[bool] `json:"conversation_relay_dtmf_detection,omitzero"`
+	// WebSocket URL for your Conversation Relay server. Must start with `ws://` or
+	// `wss://`.
+	ConversationRelayURL param.Opt[string] `json:"conversation_relay_url,omitzero"`
 	// Text played when the relay session starts.
 	Greeting param.Opt[string] `json:"greeting,omitzero"`
 	// Default language for the relay session. This value is used for both
 	// text-to-speech and speech recognition unless `tts_language` or
 	// `transcription_language` are provided.
 	Language param.Opt[string] `json:"language,omitzero"`
-	// When true, sends message history update webhooks.
-	SendMessageHistoryUpdates param.Opt[bool] `json:"send_message_history_updates,omitzero"`
 	// Language to use for speech recognition. Overrides `language` for transcription
 	// when provided.
 	TranscriptionLanguage param.Opt[string] `json:"transcription_language,omitzero"`
 	// Language to use for text-to-speech. Overrides `language` for TTS when provided.
 	TtsLanguage param.Opt[string] `json:"tts_language,omitzero"`
-	// Time in milliseconds to wait for caller input before timing out.
-	UserResponseTimeoutMs param.Opt[int64] `json:"user_response_timeout_ms,omitzero"`
 	// The voice to be used by the voice assistant. Currently we support ElevenLabs,
 	// Telnyx and AWS voices.
 	//
@@ -5672,13 +5668,18 @@ type CallActionStartConversationRelayParams struct {
 	// Custom parameters for the Conversation Relay session. Pass key-value data as
 	// `assistant.dynamic_variables` to make it available to the relay session.
 	Assistant CallActionStartConversationRelayParamsAssistant `json:"assistant,omitzero"`
+	// Conversation Relay connection settings. This object is used by TeXML Call
+	// Scripting's `<ConversationRelay>` verb. The `interruptible` and
+	// `interruptible_greeting` fields are shorthand for
+	// `interruption_settings.interruptible` and
+	// `interruption_settings.interruptible_greeting`; use top-level
+	// `interruption_settings` for the full interruption settings shape.
+	ConversationRelaySettings CallActionStartConversationRelayParamsConversationRelaySettings `json:"conversation_relay_settings,omitzero"`
 	// Settings for handling caller interruptions during Conversation Relay speech.
 	InterruptionSettings CallActionStartConversationRelayParamsInterruptionSettings `json:"interruption_settings,omitzero"`
 	// Language-specific TTS and transcription settings. Use this when the relay
 	// session needs per-language provider, voice, or speech model configuration.
 	Languages []CallActionStartConversationRelayParamsLanguage `json:"languages,omitzero"`
-	// Participants to add to the conversation.
-	Participants []CallActionStartConversationRelayParamsParticipant `json:"participants,omitzero"`
 	// Speech-to-text settings for Conversation Relay.
 	Transcription CallActionStartConversationRelayParamsTranscription `json:"transcription,omitzero"`
 	// The settings associated with the voice selected
@@ -5708,6 +5709,77 @@ func (r CallActionStartConversationRelayParamsAssistant) MarshalJSON() (data []b
 	return param.MarshalWithExtras(r, (*shadow)(&r), r.ExtraFields)
 }
 func (r *CallActionStartConversationRelayParamsAssistant) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Conversation Relay connection settings. This object is used by TeXML Call
+// Scripting's `<ConversationRelay>` verb. The `interruptible` and
+// `interruptible_greeting` fields are shorthand for
+// `interruption_settings.interruptible` and
+// `interruption_settings.interruptible_greeting`; use top-level
+// `interruption_settings` for the full interruption settings shape.
+//
+// The property URL is required.
+type CallActionStartConversationRelayParamsConversationRelaySettings struct {
+	// WebSocket URL for your Conversation Relay server. Must start with `ws://` or
+	// `wss://`.
+	URL string `json:"url" api:"required"`
+	// Whether to enable DTMF detection during the relay session.
+	DtmfDetection param.Opt[bool] `json:"dtmf_detection,omitzero"`
+	// Controls when caller input can interrupt assistant speech. `any` allows speech
+	// or DTMF interruptions; `none` disables interruptions; `speech` allows speech
+	// only; `dtmf` allows DTMF only.
+	//
+	// Any of "none", "any", "speech", "dtmf".
+	Interruptible string `json:"interruptible,omitzero"`
+	// Controls when caller input can interrupt assistant speech. `any` allows speech
+	// or DTMF interruptions; `none` disables interruptions; `speech` allows speech
+	// only; `dtmf` allows DTMF only.
+	//
+	// Any of "none", "any", "speech", "dtmf".
+	InterruptibleGreeting string `json:"interruptible_greeting,omitzero"`
+	// Language-specific TTS and transcription settings.
+	Languages []CallActionStartConversationRelayParamsConversationRelaySettingsLanguage `json:"languages,omitzero"`
+	paramObj
+}
+
+func (r CallActionStartConversationRelayParamsConversationRelaySettings) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionStartConversationRelayParamsConversationRelaySettings
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionStartConversationRelayParamsConversationRelaySettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallActionStartConversationRelayParamsConversationRelaySettings](
+		"interruptible", "none", "any", "speech", "dtmf",
+	)
+	apijson.RegisterFieldValidator[CallActionStartConversationRelayParamsConversationRelaySettings](
+		"interruptible_greeting", "none", "any", "speech", "dtmf",
+	)
+}
+
+// Language-specific speech and transcription settings for Conversation Relay.
+type CallActionStartConversationRelayParamsConversationRelaySettingsLanguage struct {
+	// BCP 47 language code.
+	Code param.Opt[string] `json:"code,omitzero"`
+	// Speech recognition model for this language.
+	SpeechModel param.Opt[string] `json:"speech_model,omitzero"`
+	// Speech-to-text provider for this language.
+	TranscriptionProvider param.Opt[string] `json:"transcription_provider,omitzero"`
+	// Text-to-speech provider for this language.
+	TtsProvider param.Opt[string] `json:"tts_provider,omitzero"`
+	// Voice identifier for this language.
+	Voice param.Opt[string] `json:"voice,omitzero"`
+	paramObj
+}
+
+func (r CallActionStartConversationRelayParamsConversationRelaySettingsLanguage) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionStartConversationRelayParamsConversationRelaySettingsLanguage
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionStartConversationRelayParamsConversationRelaySettingsLanguage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -5778,40 +5850,6 @@ func (r CallActionStartConversationRelayParamsLanguage) MarshalJSON() (data []by
 }
 func (r *CallActionStartConversationRelayParamsLanguage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties ID, Role are required.
-type CallActionStartConversationRelayParamsParticipant struct {
-	// The call_control_id of the participant to add to the conversation.
-	ID string `json:"id" api:"required"`
-	// The role of the participant in the conversation.
-	//
-	// Any of "user".
-	Role string `json:"role,omitzero" api:"required"`
-	// Display name for the participant.
-	Name param.Opt[string] `json:"name,omitzero"`
-	// Determines what happens to the conversation when this participant hangs up.
-	//
-	// Any of "continue_conversation", "end_conversation".
-	OnHangup string `json:"on_hangup,omitzero"`
-	paramObj
-}
-
-func (r CallActionStartConversationRelayParamsParticipant) MarshalJSON() (data []byte, err error) {
-	type shadow CallActionStartConversationRelayParamsParticipant
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CallActionStartConversationRelayParamsParticipant) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[CallActionStartConversationRelayParamsParticipant](
-		"role", "user",
-	)
-	apijson.RegisterFieldValidator[CallActionStartConversationRelayParamsParticipant](
-		"on_hangup", "continue_conversation", "end_conversation",
-	)
 }
 
 // Speech-to-text settings for Conversation Relay.
