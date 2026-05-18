@@ -28,8 +28,16 @@ func TestAIOpenAINewResponseWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.AI.OpenAI.NewResponse(context.TODO(), telnyx.AIOpenAINewResponseParams{
 		Conversation: telnyx.String("6a09cdc3-8948-47f0-aa62-74ac943d6c58"),
-		Input: map[string]any{
-			"0": "bar",
+		Input: []any{
+			map[string]any{
+				"role": "user",
+				"content": []any{
+					map[string]any{
+						"type": "input_text",
+						"text": "Hello, world!",
+					},
+				},
+			},
 		},
 		Instructions: telnyx.String("You are a friendly chatbot."),
 		Model:        telnyx.String("zai-org/GLM-5.1-FP8"),

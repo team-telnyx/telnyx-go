@@ -4104,7 +4104,9 @@ type TranscriptionSettings struct {
 	// supported models will automatically detect the language. For `deepgram/flux`,
 	// supported values are: `auto` (Telnyx language detection controls the language
 	// hint), `multi` (no language hint), and language-specific hints `en`, `es`, `fr`,
-	// `de`, `hi`, `ru`, `pt`, `ja`, `it`, and `nl`.
+	// `de`, `hi`, `ru`, `pt`, `ja`, `it`, and `nl`. For `soniox/stt-rt-v4`, `auto`
+	// omits the language hint and lets Soniox auto-detect; ISO 639-1 codes (e.g. `en`,
+	// `es`) bias detection toward that language.
 	Language string `json:"language"`
 	// The speech to text model to be used by the voice assistant. All Deepgram models
 	// are run on-premise.
@@ -4116,9 +4118,11 @@ type TranscriptionSettings struct {
 	//   - `assemblyai/universal-streaming` is a multilingual streaming model with
 	//     configurable turn detection.
 	//   - `xai/grok-stt` is a multilingual Grok STT model.
+	//   - `soniox/stt-rt-v4` is a multilingual streaming model with automatic language
+	//     detection and configurable endpointing.
 	//
 	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
-	// "assemblyai/universal-streaming", "xai/grok-stt",
+	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
 	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
 	Model TranscriptionSettingsModel `json:"model"`
 	// Region on third party cloud providers (currently Azure) if using one of their
@@ -4162,6 +4166,8 @@ func (r TranscriptionSettings) ToParam() TranscriptionSettingsParam {
 //   - `assemblyai/universal-streaming` is a multilingual streaming model with
 //     configurable turn detection.
 //   - `xai/grok-stt` is a multilingual Grok STT model.
+//   - `soniox/stt-rt-v4` is a multilingual streaming model with automatic language
+//     detection and configurable endpointing.
 type TranscriptionSettingsModel string
 
 const (
@@ -4171,6 +4177,7 @@ const (
 	TranscriptionSettingsModelAzureFast                    TranscriptionSettingsModel = "azure/fast"
 	TranscriptionSettingsModelAssemblyaiUniversalStreaming TranscriptionSettingsModel = "assemblyai/universal-streaming"
 	TranscriptionSettingsModelXaiGrokStt                   TranscriptionSettingsModel = "xai/grok-stt"
+	TranscriptionSettingsModelSonioxSttRtV4                TranscriptionSettingsModel = "soniox/stt-rt-v4"
 	TranscriptionSettingsModelDistilWhisperDistilLargeV2   TranscriptionSettingsModel = "distil-whisper/distil-large-v2"
 	TranscriptionSettingsModelOpenAIWhisperLargeV3Turbo    TranscriptionSettingsModel = "openai/whisper-large-v3-turbo"
 )
@@ -4183,7 +4190,9 @@ type TranscriptionSettingsParam struct {
 	// supported models will automatically detect the language. For `deepgram/flux`,
 	// supported values are: `auto` (Telnyx language detection controls the language
 	// hint), `multi` (no language hint), and language-specific hints `en`, `es`, `fr`,
-	// `de`, `hi`, `ru`, `pt`, `ja`, `it`, and `nl`.
+	// `de`, `hi`, `ru`, `pt`, `ja`, `it`, and `nl`. For `soniox/stt-rt-v4`, `auto`
+	// omits the language hint and lets Soniox auto-detect; ISO 639-1 codes (e.g. `en`,
+	// `es`) bias detection toward that language.
 	Language param.Opt[string] `json:"language,omitzero"`
 	// Region on third party cloud providers (currently Azure) if using one of their
 	// models. Some regions require `api_key_ref`.
@@ -4198,9 +4207,11 @@ type TranscriptionSettingsParam struct {
 	//   - `assemblyai/universal-streaming` is a multilingual streaming model with
 	//     configurable turn detection.
 	//   - `xai/grok-stt` is a multilingual Grok STT model.
+	//   - `soniox/stt-rt-v4` is a multilingual streaming model with automatic language
+	//     detection and configurable endpointing.
 	//
 	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
-	// "assemblyai/universal-streaming", "xai/grok-stt",
+	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
 	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
 	Model    TranscriptionSettingsModel       `json:"model,omitzero"`
 	Settings TranscriptionSettingsConfigParam `json:"settings,omitzero"`
@@ -4220,6 +4231,9 @@ type TranscriptionSettingsConfig struct {
 	// detection. Must be lower than or equal to eot_threshold. Setting this equal to
 	// eot_threshold effectively disables eager end of turn.
 	EagerEotThreshold float64 `json:"eager_eot_threshold"`
+	// Available only for soniox/stt-rt-v4. When true, Soniox emits end-of-utterance
+	// events at the cadence configured by `max_endpoint_delay_ms`.
+	EnableEndpointDetection bool `json:"enable_endpoint_detection"`
 	// Available only for assemblyai/universal-streaming. Confidence level required to
 	// trigger an end of turn. Higher values require more certainty before ending a
 	// turn.
@@ -4230,6 +4244,9 @@ type TranscriptionSettingsConfig struct {
 	// Available only for deepgram/flux. Maximum milliseconds of silence before forcing
 	// an end of turn, regardless of confidence.
 	EotTimeoutMs int64 `json:"eot_timeout_ms"`
+	// Available only for soniox/stt-rt-v4. When true, Soniox streams interim
+	// (non-final) results in addition to finalized transcripts.
+	InterimResults bool `json:"interim_results"`
 	// Available only for deepgram/nova-3 and deepgram/flux. A comma-separated list of
 	// key terms to boost for recognition during transcription. Helps improve accuracy
 	// for domain-specific terminology, proper nouns, or uncommon words. This field may
@@ -4238,6 +4255,10 @@ type TranscriptionSettingsConfig struct {
 	// using mustache syntax (e.g. `Telnyx,{{customer_name}},VoIP`). Variables are
 	// resolved at call time before the value is sent to the speech-to-text engine.
 	Keyterm string `json:"keyterm"`
+	// Available only for soniox/stt-rt-v4. Maximum silence (in milliseconds) before
+	// Soniox emits an end-of-utterance event. Only honored when
+	// `enable_endpoint_detection` is true.
+	MaxEndpointDelayMs int64 `json:"max_endpoint_delay_ms"`
 	// Available only for assemblyai/universal-streaming. Maximum duration of silence
 	// in milliseconds before forcing an end of turn.
 	MaxTurnSilence int64 `json:"max_turn_silence"`
@@ -4250,10 +4271,13 @@ type TranscriptionSettingsConfig struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EagerEotThreshold            respjson.Field
+		EnableEndpointDetection      respjson.Field
 		EndOfTurnConfidenceThreshold respjson.Field
 		EotThreshold                 respjson.Field
 		EotTimeoutMs                 respjson.Field
+		InterimResults               respjson.Field
 		Keyterm                      respjson.Field
+		MaxEndpointDelayMs           respjson.Field
 		MaxTurnSilence               respjson.Field
 		MinTurnSilence               respjson.Field
 		Numerals                     respjson.Field
@@ -4284,6 +4308,9 @@ type TranscriptionSettingsConfigParam struct {
 	// detection. Must be lower than or equal to eot_threshold. Setting this equal to
 	// eot_threshold effectively disables eager end of turn.
 	EagerEotThreshold param.Opt[float64] `json:"eager_eot_threshold,omitzero"`
+	// Available only for soniox/stt-rt-v4. When true, Soniox emits end-of-utterance
+	// events at the cadence configured by `max_endpoint_delay_ms`.
+	EnableEndpointDetection param.Opt[bool] `json:"enable_endpoint_detection,omitzero"`
 	// Available only for assemblyai/universal-streaming. Confidence level required to
 	// trigger an end of turn. Higher values require more certainty before ending a
 	// turn.
@@ -4294,6 +4321,9 @@ type TranscriptionSettingsConfigParam struct {
 	// Available only for deepgram/flux. Maximum milliseconds of silence before forcing
 	// an end of turn, regardless of confidence.
 	EotTimeoutMs param.Opt[int64] `json:"eot_timeout_ms,omitzero"`
+	// Available only for soniox/stt-rt-v4. When true, Soniox streams interim
+	// (non-final) results in addition to finalized transcripts.
+	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
 	// Available only for deepgram/nova-3 and deepgram/flux. A comma-separated list of
 	// key terms to boost for recognition during transcription. Helps improve accuracy
 	// for domain-specific terminology, proper nouns, or uncommon words. This field may
@@ -4302,6 +4332,10 @@ type TranscriptionSettingsConfigParam struct {
 	// using mustache syntax (e.g. `Telnyx,{{customer_name}},VoIP`). Variables are
 	// resolved at call time before the value is sent to the speech-to-text engine.
 	Keyterm param.Opt[string] `json:"keyterm,omitzero"`
+	// Available only for soniox/stt-rt-v4. Maximum silence (in milliseconds) before
+	// Soniox emits an end-of-utterance event. Only honored when
+	// `enable_endpoint_detection` is true.
+	MaxEndpointDelayMs param.Opt[int64] `json:"max_endpoint_delay_ms,omitzero"`
 	// Available only for assemblyai/universal-streaming. Maximum duration of silence
 	// in milliseconds before forcing an end of turn.
 	MaxTurnSilence param.Opt[int64] `json:"max_turn_silence,omitzero"`
