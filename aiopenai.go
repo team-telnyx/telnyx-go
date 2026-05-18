@@ -132,7 +132,7 @@ type AIOpenAINewResponseParams struct {
 	// streaming format.
 	Stream param.Opt[bool] `json:"stream,omitzero"`
 	// The input items for this turn, using the OpenAI Responses API input format.
-	Input map[string]any `json:"input,omitzero"`
+	Input any `json:"input,omitzero"`
 	paramObj
 }
 

@@ -219,10 +219,13 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					Region:    telnyx.String("region"),
 					Settings: telnyx.TranscriptionSettingsConfigParam{
 						EagerEotThreshold:            telnyx.Float(0.3),
+						EnableEndpointDetection:      telnyx.Bool(true),
 						EndOfTurnConfidenceThreshold: telnyx.Float(0),
 						EotThreshold:                 telnyx.Float(0.5),
 						EotTimeoutMs:                 telnyx.Int(500),
+						InterimResults:               telnyx.Bool(true),
 						Keyterm:                      telnyx.String("keyterm"),
+						MaxEndpointDelayMs:           telnyx.Int(500),
 						MaxTurnSilence:               telnyx.Int(100),
 						MinTurnSilence:               telnyx.Int(100),
 						Numerals:                     telnyx.Bool(true),
