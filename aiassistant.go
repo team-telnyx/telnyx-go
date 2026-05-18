@@ -4510,10 +4510,13 @@ type VoiceSettingsBackgroundAudioUnion struct {
 	// Any of "predefined_media", "media_url", "media_name".
 	Type  string `json:"type"`
 	Value string `json:"value"`
-	JSON  struct {
-		Type  respjson.Field
-		Value respjson.Field
-		raw   string
+	// This field is from variant [VoiceSettingsBackgroundAudioPredefinedMedia].
+	Volume float64 `json:"volume"`
+	JSON   struct {
+		Type   respjson.Field
+		Value  respjson.Field
+		Volume respjson.Field
+		raw    string
 	} `json:"-"`
 }
 
@@ -4578,10 +4581,14 @@ type VoiceSettingsBackgroundAudioPredefinedMedia struct {
 	//
 	// Any of "silence", "office".
 	Value string `json:"value" api:"required"`
+	// Volume level for the predefined background audio. Supports values from 0.1 to
+	// 1.0 in 0.1 increments.
+	Volume float64 `json:"volume"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
 		Value       respjson.Field
+		Volume      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -4784,6 +4791,14 @@ func (u *VoiceSettingsBackgroundAudioUnionParam) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u VoiceSettingsBackgroundAudioUnionParam) GetVolume() *float64 {
+	if vt := u.OfPredefinedMedia; vt != nil && vt.Volume.Valid() {
+		return &vt.Volume.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u VoiceSettingsBackgroundAudioUnionParam) GetType() *string {
 	if vt := u.OfPredefinedMedia; vt != nil {
 		return (*string)(&vt.Type)
@@ -4822,6 +4837,9 @@ type VoiceSettingsBackgroundAudioPredefinedMediaParam struct {
 	//
 	// Any of "silence", "office".
 	Value string `json:"value,omitzero" api:"required"`
+	// Volume level for the predefined background audio. Supports values from 0.1 to
+	// 1.0 in 0.1 increments.
+	Volume param.Opt[float64] `json:"volume,omitzero"`
 	// Select from predefined media options.
 	//
 	// This field can be elided, and will marshal its zero value as "predefined_media".
