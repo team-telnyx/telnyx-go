@@ -199,7 +199,8 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			APIKeyRef: telnyx.String("api_key_ref"),
 			BackgroundAudio: telnyx.VoiceSettingsBackgroundAudioUnionParam{
 				OfPredefinedMedia: &telnyx.VoiceSettingsBackgroundAudioPredefinedMediaParam{
-					Value: "silence",
+					Value:  "silence",
+					Volume: telnyx.Float(0.1),
 				},
 			},
 			ExpressiveMode:  telnyx.Bool(true),
@@ -460,7 +461,8 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				APIKeyRef: telnyx.String("api_key_ref"),
 				BackgroundAudio: telnyx.VoiceSettingsBackgroundAudioUnionParam{
 					OfPredefinedMedia: &telnyx.VoiceSettingsBackgroundAudioPredefinedMediaParam{
-						Value: "silence",
+						Value:  "silence",
+						Volume: telnyx.Float(0.1),
 					},
 				},
 				ExpressiveMode:  telnyx.Bool(true),
