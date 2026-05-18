@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.69.0 (2026-05-18)
+
+Full Changelog: [v4.68.0...v4.69.0](https://github.com/team-telnyx/telnyx-go/compare/v4.68.0...v4.69.0)
+
+### Features
+
+* Add assistant background audio volume to OpenAPI spec ([73b3712](https://github.com/team-telnyx/telnyx-go/commit/73b3712ffb80ce088537777c591c081436da74b3))
+* Telapps 101 soniox spec ([d1b2646](https://github.com/team-telnyx/telnyx-go/commit/d1b2646dbed063352325b63898a485b3186a42a6))
+
 ## 4.68.0 (2026-05-15)
 
 Full Changelog: [v4.67.0...v4.68.0](https://github.com/team-telnyx/telnyx-go/compare/v4.67.0...v4.68.0)
