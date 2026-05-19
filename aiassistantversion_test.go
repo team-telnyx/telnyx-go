@@ -219,10 +219,13 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					Region:    telnyx.String("region"),
 					Settings: telnyx.TranscriptionSettingsConfigParam{
 						EagerEotThreshold:            telnyx.Float(0.3),
+						EnableEndpointDetection:      telnyx.Bool(true),
 						EndOfTurnConfidenceThreshold: telnyx.Float(0),
 						EotThreshold:                 telnyx.Float(0.5),
 						EotTimeoutMs:                 telnyx.Int(500),
+						InterimResults:               telnyx.Bool(true),
 						Keyterm:                      telnyx.String("keyterm"),
+						MaxEndpointDelayMs:           telnyx.Int(500),
 						MaxTurnSilence:               telnyx.Int(100),
 						MinTurnSilence:               telnyx.Int(100),
 						Numerals:                     telnyx.Bool(true),
@@ -235,7 +238,8 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					APIKeyRef: telnyx.String("api_key_ref"),
 					BackgroundAudio: telnyx.VoiceSettingsBackgroundAudioUnionParam{
 						OfPredefinedMedia: &telnyx.VoiceSettingsBackgroundAudioPredefinedMediaParam{
-							Value: "silence",
+							Value:  "silence",
+							Volume: telnyx.Float(0.1),
 						},
 					},
 					ExpressiveMode:  telnyx.Bool(true),
