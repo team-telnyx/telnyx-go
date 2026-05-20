@@ -2838,6 +2838,10 @@ type InferenceEmbeddingWebhookToolParamsWebhookResp struct {
 	// If async, the assistant will move forward without waiting for your server to
 	// respond.
 	Async bool `json:"async"`
+	// Maximum time in milliseconds that the conversation worker waits for an async
+	// webhook response before returning "Submitted" to the LLM. If unset, the platform
+	// default (currently 300ms) is used.
+	AsyncTimeoutMs int64 `json:"async_timeout_ms"`
 	// The body parameters the webhook tool accepts, described as a JSON Schema object.
 	// These parameters will be passed to the webhook as the body of the request. See
 	// the [JSON Schema reference](https://json-schema.org/understanding-json-schema)
@@ -2874,6 +2878,7 @@ type InferenceEmbeddingWebhookToolParamsWebhookResp struct {
 		Name                   respjson.Field
 		URL                    respjson.Field
 		Async                  respjson.Field
+		AsyncTimeoutMs         respjson.Field
 		BodyParameters         respjson.Field
 		Headers                respjson.Field
 		Method                 respjson.Field
@@ -3058,6 +3063,10 @@ type InferenceEmbeddingWebhookToolParamsWebhook struct {
 	// If async, the assistant will move forward without waiting for your server to
 	// respond.
 	Async param.Opt[bool] `json:"async,omitzero"`
+	// Maximum time in milliseconds that the conversation worker waits for an async
+	// webhook response before returning "Submitted" to the LLM. If unset, the platform
+	// default (currently 300ms) is used.
+	AsyncTimeoutMs param.Opt[int64] `json:"async_timeout_ms,omitzero"`
 	// The maximum number of milliseconds to wait for the webhook to respond. Only
 	// applicable when async is false.
 	TimeoutMs param.Opt[int64] `json:"timeout_ms,omitzero"`

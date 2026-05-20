@@ -138,10 +138,11 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			OfWebhook: &telnyx.InferenceEmbeddingWebhookToolParams{
 				Type: telnyx.InferenceEmbeddingWebhookToolParamsTypeWebhook,
 				Webhook: telnyx.InferenceEmbeddingWebhookToolParamsWebhook{
-					Description: "description",
-					Name:        "name",
-					URL:         "https://example.com/api/v1/function",
-					Async:       telnyx.Bool(true),
+					Description:    "description",
+					Name:           "name",
+					URL:            "https://example.com/api/v1/function",
+					Async:          telnyx.Bool(true),
+					AsyncTimeoutMs: telnyx.Int(1),
 					BodyParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookBodyParameters{
 						Properties: map[string]any{
 							"age":      "bar",
@@ -402,10 +403,11 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				OfWebhook: &telnyx.InferenceEmbeddingWebhookToolParams{
 					Type: telnyx.InferenceEmbeddingWebhookToolParamsTypeWebhook,
 					Webhook: telnyx.InferenceEmbeddingWebhookToolParamsWebhook{
-						Description: "description",
-						Name:        "name",
-						URL:         "https://example.com/api/v1/function",
-						Async:       telnyx.Bool(true),
+						Description:    "description",
+						Name:           "name",
+						URL:            "https://example.com/api/v1/function",
+						Async:          telnyx.Bool(true),
+						AsyncTimeoutMs: telnyx.Int(1),
 						BodyParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookBodyParameters{
 							Properties: map[string]any{
 								"age":      "bar",
