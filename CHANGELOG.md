@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.70.0 (2026-05-20)
+
+Full Changelog: [v4.69.0...v4.70.0](https://github.com/team-telnyx/telnyx-go/compare/v4.69.0...v4.70.0)
+
+### Features
+
+* TELAPPS-483: Add async webhook timeout to OpenAPI ([e9a8e5c](https://github.com/team-telnyx/telnyx-go/commit/e9a8e5c85f8e459c269378a5a1b9ad5eccf08458))
+
 ## 4.69.0 (2026-05-18)
 
 Full Changelog: [v4.68.0...v4.69.0](https://github.com/team-telnyx/telnyx-go/compare/v4.68.0...v4.69.0)
