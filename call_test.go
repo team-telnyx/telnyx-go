@@ -157,6 +157,7 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 		RecordTimeoutSecs:    telnyx.Int(100),
 		RecordTrack:          telnyx.CallDialParamsRecordTrackOutbound,
 		RecordTrim:           telnyx.CallDialParamsRecordTrimTrimSilence,
+		SendDigitsOnAnswer:   telnyx.String("wwww200"),
 		SendSilenceWhenIdle:  telnyx.Bool(true),
 		SipAuthPassword:      telnyx.String("password"),
 		SipAuthUsername:      telnyx.String("username"),
