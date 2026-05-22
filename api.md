@@ -4915,6 +4915,18 @@ Methods:
 - <code title="delete /v2/whatsapp/phone_numbers/{phone_number}/profile/photo">client.Whatsapp.PhoneNumbers.Profile.Photo.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberProfilePhotoService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, phoneNumber <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 - <code title="post /v2/whatsapp/phone_numbers/{phone_number}/profile/photo">client.Whatsapp.PhoneNumbers.Profile.Photo.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberProfilePhotoService.Upload">Upload</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, phoneNumber <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberProfilePhotoUploadParams">WhatsappPhoneNumberProfilePhotoUploadParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberProfilePhotoUploadResponse">WhatsappPhoneNumberProfilePhotoUploadResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+## UserData
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappUserDataGetResponse">WhatsappUserDataGetResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappUserDataUpdateResponse">WhatsappUserDataUpdateResponse</a>
+
+Methods:
+
+- <code title="get /v2/whatsapp/user_data">client.Whatsapp.UserData.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappUserDataService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappUserDataGetResponse">WhatsappUserDataGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="patch /v2/whatsapp/user_data">client.Whatsapp.UserData.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappUserDataService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappUserDataUpdateParams">WhatsappUserDataUpdateParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappUserDataUpdateResponse">WhatsappUserDataUpdateResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # WhatsappMessageTemplates
 
 Response Types:
