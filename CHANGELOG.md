@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.71.0 (2026-05-22)
+
+Full Changelog: [v4.70.0...v4.71.0](https://github.com/team-telnyx/telnyx-go/compare/v4.70.0...v4.71.0)
+
+### Features
+
+* MSG-919: documentation for Whatsapp user data ([1c13759](https://github.com/team-telnyx/telnyx-go/commit/1c137591127bb474d440deddeac34aa5195e016e))
+* TELAPPS-72: document send_digits_on_answer on Dial + Transfer ([6d5c4b0](https://github.com/team-telnyx/telnyx-go/commit/6d5c4b006a3ceeac4e74414c9f8694693cec437f))
+
 ## 4.70.0 (2026-05-20)
 
 Full Changelog: [v4.69.0...v4.70.0](https://github.com/team-telnyx/telnyx-go/compare/v4.69.0...v4.70.0)
