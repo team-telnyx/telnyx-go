@@ -731,7 +731,12 @@ type CallDialParams struct {
 	// `;secure=srtp` to enable SRTP media encryption for that endpoint, or
 	// `;secure=dtls` to enable DTLS media encryption for that endpoint. If
 	// `media_encryption` is set to `SRTP` or `DTLS`, it takes precedence over any
-	// per-endpoint `secure` URI parameter.
+	// per-endpoint `secure` URI parameter. For a single string destination, you may
+	// append a comma followed by DTMF digits (e.g. `+18004247767,200`) to play those
+	// digits as DTMF once the called party answers — equivalent to setting
+	// `send_digits_on_answer` separately. If both are present, the explicit
+	// `send_digits_on_answer` parameter takes precedence. This shorthand is not
+	// supported when `to` is an array.
 	To CallDialParamsToUnion `json:"to,omitzero" api:"required"`
 	// The URL of a file to be played back to the callee when the call is answered. The
 	// URL can point to either a WAV or MP3 file. media_name and audio_url cannot be
@@ -791,6 +796,14 @@ type CallDialParams struct {
 	// silence and the related charge will be applied. The minimum value is 0. The
 	// default value is 0 (infinite).
 	RecordTimeoutSecs param.Opt[int64] `json:"record_timeout_secs,omitzero"`
+	// DTMF digits to send automatically after the called party answers. Useful for
+	// reaching an extension behind an IVR (e.g. `"200"` to dial extension 200 once the
+	// called party picks up). Allowed characters: `0-9`, `A-D`, `w` (0.5s pause), `W`
+	// (1s pause), `*`, `#`. Maximum 64 characters. When omitted, no automatic DTMF is
+	// sent. May also be supplied inline by appending `,<digits>` to `to` (e.g.
+	// `to=+18004247767,200`); if both forms are present, this explicit field takes
+	// precedence.
+	SendDigitsOnAnswer param.Opt[string] `json:"send_digits_on_answer,omitzero"`
 	// Generate silence RTP packets when no transmission available.
 	SendSilenceWhenIdle param.Opt[bool] `json:"send_silence_when_idle,omitzero"`
 	// SIP Authentication password used for SIP challenges.
