@@ -896,14 +896,3 @@ const WhatsappTemplateDataCategoryAuthentication = shared.WhatsappTemplateDataCa
 
 // This is an alias to an internal type.
 type WhatsappTemplateDataWhatsappBusinessAccount = shared.WhatsappTemplateDataWhatsappBusinessAccount
-
-// This is an alias to an internal type.
-type XaiVoiceSettingsParam = shared.XaiVoiceSettingsParam
-
-// Voice settings provider type
-//
-// This is an alias to an internal type.
-type XaiVoiceSettingsType = shared.XaiVoiceSettingsType
-
-// Equals "xai"
-const XaiVoiceSettingsTypeXai = shared.XaiVoiceSettingsTypeXai

@@ -2133,29 +2133,3 @@ func (r MessagingErrorSource) RawJSON() string { return r.JSON.raw }
 func (r *MessagingErrorSource) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// The property Type is required.
-type XaiVoiceSettingsParam struct {
-	// Voice settings provider type
-	//
-	// Any of "xai".
-	Type XaiVoiceSettingsType `json:"type,omitzero" api:"required"`
-	// Language code, or `auto` to detect automatically.
-	Language param.Opt[string] `json:"language,omitzero"`
-	paramObj
-}
-
-func (r XaiVoiceSettingsParam) MarshalJSON() (data []byte, err error) {
-	type shadow XaiVoiceSettingsParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *XaiVoiceSettingsParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Voice settings provider type
-type XaiVoiceSettingsType string
-
-const (
-	XaiVoiceSettingsTypeXai XaiVoiceSettingsType = "xai"
-)

@@ -61,7 +61,7 @@ func (r *PublicInternetGatewayService) Get(ctx context.Context, id string, opts 
 }
 
 // List all Public Internet Gateways.
-func (r *PublicInternetGatewayService) List(ctx context.Context, query PublicInternetGatewayListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PublicInternetGatewayRead], err error) {
+func (r *PublicInternetGatewayService) List(ctx context.Context, query PublicInternetGatewayListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PublicInternetGatewayListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -79,7 +79,7 @@ func (r *PublicInternetGatewayService) List(ctx context.Context, query PublicInt
 }
 
 // List all Public Internet Gateways.
-func (r *PublicInternetGatewayService) ListAutoPaging(ctx context.Context, query PublicInternetGatewayListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PublicInternetGatewayRead] {
+func (r *PublicInternetGatewayService) ListAutoPaging(ctx context.Context, query PublicInternetGatewayListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PublicInternetGatewayListResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -95,51 +95,33 @@ func (r *PublicInternetGatewayService) Delete(ctx context.Context, id string, op
 	return res, err
 }
 
-type PublicInternetGatewayRead struct {
-	// Identifies the resource.
-	ID string `json:"id" format:"uuid"`
-	// ISO 8601 formatted date-time indicating when the resource was created.
-	CreatedAt string `json:"created_at"`
+type NetworkInterface struct {
 	// A user specified name for the interface.
 	Name string `json:"name"`
 	// The id of the network associated with the interface.
 	NetworkID string `json:"network_id" format:"uuid"`
-	// The publically accessible ip for this interface.
-	PublicIP string `json:"public_ip"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// The region interface is deployed to.
-	RegionCode string `json:"region_code"`
 	// The current status of the interface deployment.
 	//
 	// Any of "created", "provisioning", "provisioned", "deleting".
 	Status InterfaceStatus `json:"status"`
-	// ISO 8601 formatted date-time indicating when the resource was updated.
-	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
 		Name        respjson.Field
 		NetworkID   respjson.Field
-		PublicIP    respjson.Field
-		RecordType  respjson.Field
-		RegionCode  respjson.Field
 		Status      respjson.Field
-		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r PublicInternetGatewayRead) RawJSON() string { return r.JSON.raw }
-func (r *PublicInternetGatewayRead) UnmarshalJSON(data []byte) error {
+func (r NetworkInterface) RawJSON() string { return r.JSON.raw }
+func (r *NetworkInterface) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type PublicInternetGatewayNewResponse struct {
-	Data PublicInternetGatewayRead `json:"data"`
+	Data PublicInternetGatewayNewResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -154,8 +136,30 @@ func (r *PublicInternetGatewayNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type PublicInternetGatewayNewResponseData struct {
+	// The publically accessible ip for this interface.
+	PublicIP string `json:"public_ip"`
+	// The region interface is deployed to.
+	RegionCode string `json:"region_code"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PublicIP    respjson.Field
+		RegionCode  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	Record
+	NetworkInterface
+}
+
+// Returns the unmodified JSON received from the API
+func (r PublicInternetGatewayNewResponseData) RawJSON() string { return r.JSON.raw }
+func (r *PublicInternetGatewayNewResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type PublicInternetGatewayGetResponse struct {
-	Data PublicInternetGatewayRead `json:"data"`
+	Data PublicInternetGatewayGetResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -170,8 +174,52 @@ func (r *PublicInternetGatewayGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type PublicInternetGatewayGetResponseData struct {
+	// The publically accessible ip for this interface.
+	PublicIP string `json:"public_ip"`
+	// The region interface is deployed to.
+	RegionCode string `json:"region_code"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PublicIP    respjson.Field
+		RegionCode  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	Record
+	NetworkInterface
+}
+
+// Returns the unmodified JSON received from the API
+func (r PublicInternetGatewayGetResponseData) RawJSON() string { return r.JSON.raw }
+func (r *PublicInternetGatewayGetResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PublicInternetGatewayListResponse struct {
+	// The publically accessible ip for this interface.
+	PublicIP string `json:"public_ip"`
+	// The region interface is deployed to.
+	RegionCode string `json:"region_code"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PublicIP    respjson.Field
+		RegionCode  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	Record
+	NetworkInterface
+}
+
+// Returns the unmodified JSON received from the API
+func (r PublicInternetGatewayListResponse) RawJSON() string { return r.JSON.raw }
+func (r *PublicInternetGatewayListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type PublicInternetGatewayDeleteResponse struct {
-	Data PublicInternetGatewayRead `json:"data"`
+	Data PublicInternetGatewayDeleteResponseData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -183,6 +231,28 @@ type PublicInternetGatewayDeleteResponse struct {
 // Returns the unmodified JSON received from the API
 func (r PublicInternetGatewayDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *PublicInternetGatewayDeleteResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PublicInternetGatewayDeleteResponseData struct {
+	// The publically accessible ip for this interface.
+	PublicIP string `json:"public_ip"`
+	// The region interface is deployed to.
+	RegionCode string `json:"region_code"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PublicIP    respjson.Field
+		RegionCode  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	Record
+	NetworkInterface
+}
+
+// Returns the unmodified JSON received from the API
+func (r PublicInternetGatewayDeleteResponseData) RawJSON() string { return r.JSON.raw }
+func (r *PublicInternetGatewayDeleteResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

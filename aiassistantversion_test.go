@@ -96,15 +96,15 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					InsightGroupID: telnyx.String("insight_group_id"),
 				},
 				Instructions: telnyx.String("instructions"),
-				Integrations: []telnyx.AssistantIntegrationParam{{
+				Integrations: []telnyx.UpdateAssistantIntegrationParam{{
 					IntegrationID: "integration_id",
 					AllowedList:   []string{"string"},
 				}},
-				InterruptionSettings: telnyx.InferenceEmbeddingInterruptionSettingsParam{
+				InterruptionSettings: telnyx.UpdateAssistantInterruptionSettingsParam{
 					DisableGreetingInterruption: telnyx.Bool(true),
 					Enable:                      telnyx.Bool(true),
-					StartSpeakingPlan: telnyx.StartSpeakingPlanParam{
-						TranscriptionEndpointingPlan: telnyx.TranscriptionEndpointingPlanParam{
+					StartSpeakingPlan: telnyx.UpdateAssistantInterruptionSettingsStartSpeakingPlanParam{
+						TranscriptionEndpointingPlan: telnyx.UpdateAssistantInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlanParam{
 							OnNoPunctuationSeconds: telnyx.Float(0),
 							OnNumberSeconds:        telnyx.Float(0),
 							OnPunctuationSeconds:   telnyx.Float(0),
@@ -113,7 +113,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					},
 				},
 				LlmAPIKeyRef: telnyx.String("llm_api_key_ref"),
-				McpServers: []telnyx.AssistantMcpServerParam{{
+				McpServers: []telnyx.UpdateAssistantMcpServerParam{{
 					ID:           "id",
 					AllowedTools: []string{"string"},
 				}},

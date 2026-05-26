@@ -75,7 +75,7 @@ func NewAIService(opts ...option.RequestOption) (r AIService) {
 // Conversation ID to leverage persistent conversations.
 //
 // Deprecated: deprecated
-func (r *AIService) NewResponse(ctx context.Context, body AINewResponseParams, opts ...option.RequestOption) (res *AINewResponseResponse, err error) {
+func (r *AIService) NewResponseDeprecated(ctx context.Context, body AINewResponseDeprecatedParams, opts ...option.RequestOption) (res *AINewResponseDeprecatedResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/responses"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -118,12 +118,32 @@ func (r *AIService) Summarize(ctx context.Context, body AISummarizeParams, opts 
 	return res, err
 }
 
+type AINewResponseDeprecatedResponse map[string]any
+
+type AIGetModelsResponse struct {
+	Data   []AIGetModelsResponseData `json:"data" api:"required"`
+	Object string                    `json:"object"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Object      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AIGetModelsResponse) RawJSON() string { return r.JSON.raw }
+func (r *AIGetModelsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Metadata for a model available on Telnyx Inference. Returned by
 // `GET /v2/ai/openai/models` (and the deprecated `GET /v2/ai/models`). Open-source
 // models live under their Hugging Face organization (e.g. `moonshotai/Kimi-K2.6`,
 // `zai-org/GLM-5.1-FP8`, `MiniMaxAI/MiniMax-M2.7`); fine-tuned models are owned by
 // the Telnyx organization that trained them.
-type ModelMetadata struct {
+type AIGetModelsResponseData struct {
 	// Model identifier. For open-source models, follows the
 	// `{organization}/{model_name}` convention from Hugging Face (e.g.
 	// `moonshotai/Kimi-K2.6`).
@@ -151,7 +171,7 @@ type ModelMetadata struct {
 	// cost per 1M tokens.
 	//
 	// Any of "small", "medium", "large", "unlisted".
-	Tier ModelMetadataTier `json:"tier" api:"required"`
+	Tier string `json:"tier" api:"required"`
 	// Base model the fine-tuned model was trained from. Only set for fine-tuned
 	// models.
 	BaseModel string `json:"base_model" api:"nullable"`
@@ -213,39 +233,8 @@ type ModelMetadata struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ModelMetadata) RawJSON() string { return r.JSON.raw }
-func (r *ModelMetadata) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Billing tier the model belongs to. Used together with `pricing` to determine
-// cost per 1M tokens.
-type ModelMetadataTier string
-
-const (
-	ModelMetadataTierSmall    ModelMetadataTier = "small"
-	ModelMetadataTierMedium   ModelMetadataTier = "medium"
-	ModelMetadataTierLarge    ModelMetadataTier = "large"
-	ModelMetadataTierUnlisted ModelMetadataTier = "unlisted"
-)
-
-type AINewResponseResponse map[string]any
-
-type AIGetModelsResponse struct {
-	Data   []ModelMetadata `json:"data" api:"required"`
-	Object string          `json:"object"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Object      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIGetModelsResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIGetModelsResponse) UnmarshalJSON(data []byte) error {
+func (r AIGetModelsResponseData) RawJSON() string { return r.JSON.raw }
+func (r *AIGetModelsResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -281,15 +270,15 @@ func (r *AISummarizeResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AINewResponseParams struct {
+type AINewResponseDeprecatedParams struct {
 	Body map[string]any
 	paramObj
 }
 
-func (r AINewResponseParams) MarshalJSON() (data []byte, err error) {
+func (r AINewResponseDeprecatedParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.Body)
 }
-func (r *AINewResponseParams) UnmarshalJSON(data []byte) error {
+func (r *AINewResponseDeprecatedParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
