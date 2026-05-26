@@ -1426,43 +1426,6 @@ const (
 	TranscriptionEngineAConfigTranscriptionEngineA TranscriptionEngineAConfigTranscriptionEngine = "A"
 )
 
-type TranscriptionEngineAssemblyaiConfigParam struct {
-	// Whether to send also interim results. If set to false, only final results will
-	// be sent.
-	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
-	// Engine identifier for AssemblyAI transcription service
-	//
-	// Any of "AssemblyAI".
-	TranscriptionEngine TranscriptionEngineAssemblyaiConfigTranscriptionEngine `json:"transcription_engine,omitzero"`
-	// The model to use for transcription.
-	//
-	// Any of "assemblyai/universal-streaming".
-	TranscriptionModel TranscriptionEngineAssemblyaiConfigTranscriptionModel `json:"transcription_model,omitzero"`
-	paramObj
-}
-
-func (r TranscriptionEngineAssemblyaiConfigParam) MarshalJSON() (data []byte, err error) {
-	type shadow TranscriptionEngineAssemblyaiConfigParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscriptionEngineAssemblyaiConfigParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Engine identifier for AssemblyAI transcription service
-type TranscriptionEngineAssemblyaiConfigTranscriptionEngine string
-
-const (
-	TranscriptionEngineAssemblyaiConfigTranscriptionEngineAssemblyAI TranscriptionEngineAssemblyaiConfigTranscriptionEngine = "AssemblyAI"
-)
-
-// The model to use for transcription.
-type TranscriptionEngineAssemblyaiConfigTranscriptionModel string
-
-const (
-	TranscriptionEngineAssemblyaiConfigTranscriptionModelAssemblyaiUniversalStreaming TranscriptionEngineAssemblyaiConfigTranscriptionModel = "assemblyai/universal-streaming"
-)
-
 // The properties Region, TranscriptionEngine are required.
 type TranscriptionEngineAzureConfigParam struct {
 	// Azure region to use for speech recognition
@@ -1775,79 +1738,6 @@ const (
 	TranscriptionEngineTelnyxConfigTranscriptionModelOpenAIWhisperLargeV3Turbo TranscriptionEngineTelnyxConfigTranscriptionModel = "openai/whisper-large-v3-turbo"
 )
 
-type TranscriptionEngineXaiConfigParam struct {
-	// Whether to send also interim results. If set to false, only final results will
-	// be sent.
-	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
-	// Language to use for speech recognition
-	//
-	// Any of "ar", "cs", "da", "de", "en", "es", "fa", "fil", "fr", "hi", "id", "it",
-	// "ja", "ko", "mk", "ms", "nl", "pl", "pt", "ro", "ru", "sv", "th", "tr", "vi".
-	Language TranscriptionEngineXaiConfigLanguage `json:"language,omitzero"`
-	// Engine identifier for xAI transcription service
-	//
-	// Any of "xAI".
-	TranscriptionEngine TranscriptionEngineXaiConfigTranscriptionEngine `json:"transcription_engine,omitzero"`
-	// The model to use for transcription.
-	//
-	// Any of "xai/grok-stt".
-	TranscriptionModel TranscriptionEngineXaiConfigTranscriptionModel `json:"transcription_model,omitzero"`
-	paramObj
-}
-
-func (r TranscriptionEngineXaiConfigParam) MarshalJSON() (data []byte, err error) {
-	type shadow TranscriptionEngineXaiConfigParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscriptionEngineXaiConfigParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Language to use for speech recognition
-type TranscriptionEngineXaiConfigLanguage string
-
-const (
-	TranscriptionEngineXaiConfigLanguageAr  TranscriptionEngineXaiConfigLanguage = "ar"
-	TranscriptionEngineXaiConfigLanguageCs  TranscriptionEngineXaiConfigLanguage = "cs"
-	TranscriptionEngineXaiConfigLanguageDa  TranscriptionEngineXaiConfigLanguage = "da"
-	TranscriptionEngineXaiConfigLanguageDe  TranscriptionEngineXaiConfigLanguage = "de"
-	TranscriptionEngineXaiConfigLanguageEn  TranscriptionEngineXaiConfigLanguage = "en"
-	TranscriptionEngineXaiConfigLanguageEs  TranscriptionEngineXaiConfigLanguage = "es"
-	TranscriptionEngineXaiConfigLanguageFa  TranscriptionEngineXaiConfigLanguage = "fa"
-	TranscriptionEngineXaiConfigLanguageFil TranscriptionEngineXaiConfigLanguage = "fil"
-	TranscriptionEngineXaiConfigLanguageFr  TranscriptionEngineXaiConfigLanguage = "fr"
-	TranscriptionEngineXaiConfigLanguageHi  TranscriptionEngineXaiConfigLanguage = "hi"
-	TranscriptionEngineXaiConfigLanguageID  TranscriptionEngineXaiConfigLanguage = "id"
-	TranscriptionEngineXaiConfigLanguageIt  TranscriptionEngineXaiConfigLanguage = "it"
-	TranscriptionEngineXaiConfigLanguageJa  TranscriptionEngineXaiConfigLanguage = "ja"
-	TranscriptionEngineXaiConfigLanguageKo  TranscriptionEngineXaiConfigLanguage = "ko"
-	TranscriptionEngineXaiConfigLanguageMk  TranscriptionEngineXaiConfigLanguage = "mk"
-	TranscriptionEngineXaiConfigLanguageMs  TranscriptionEngineXaiConfigLanguage = "ms"
-	TranscriptionEngineXaiConfigLanguageNl  TranscriptionEngineXaiConfigLanguage = "nl"
-	TranscriptionEngineXaiConfigLanguagePl  TranscriptionEngineXaiConfigLanguage = "pl"
-	TranscriptionEngineXaiConfigLanguagePt  TranscriptionEngineXaiConfigLanguage = "pt"
-	TranscriptionEngineXaiConfigLanguageRo  TranscriptionEngineXaiConfigLanguage = "ro"
-	TranscriptionEngineXaiConfigLanguageRu  TranscriptionEngineXaiConfigLanguage = "ru"
-	TranscriptionEngineXaiConfigLanguageSv  TranscriptionEngineXaiConfigLanguage = "sv"
-	TranscriptionEngineXaiConfigLanguageTh  TranscriptionEngineXaiConfigLanguage = "th"
-	TranscriptionEngineXaiConfigLanguageTr  TranscriptionEngineXaiConfigLanguage = "tr"
-	TranscriptionEngineXaiConfigLanguageVi  TranscriptionEngineXaiConfigLanguage = "vi"
-)
-
-// Engine identifier for xAI transcription service
-type TranscriptionEngineXaiConfigTranscriptionEngine string
-
-const (
-	TranscriptionEngineXaiConfigTranscriptionEngineXAI TranscriptionEngineXaiConfigTranscriptionEngine = "xAI"
-)
-
-// The model to use for transcription.
-type TranscriptionEngineXaiConfigTranscriptionModel string
-
-const (
-	TranscriptionEngineXaiConfigTranscriptionModelXaiGrokStt TranscriptionEngineXaiConfigTranscriptionModel = "xai/grok-stt"
-)
-
 type TranscriptionStartRequestParam struct {
 	// Use this field to add state to every subsequent webhook. It must be a valid
 	// Base-64 encoded string.
@@ -1901,8 +1791,8 @@ type TranscriptionStartRequestTranscriptionEngineConfigUnionParam struct {
 	OfGoogle        *TranscriptionEngineGoogleConfigParam                                `json:",omitzero,inline"`
 	OfTelnyx        *TranscriptionEngineTelnyxConfigParam                                `json:",omitzero,inline"`
 	OfAzure         *TranscriptionEngineAzureConfigParam                                 `json:",omitzero,inline"`
-	OfXAI           *TranscriptionEngineXaiConfigParam                                   `json:",omitzero,inline"`
-	OfAssemblyAI    *TranscriptionEngineAssemblyaiConfigParam                            `json:",omitzero,inline"`
+	OfXAI           *TranscriptionStartRequestTranscriptionEngineConfigXAIParam          `json:",omitzero,inline"`
+	OfAssemblyAI    *TranscriptionStartRequestTranscriptionEngineConfigAssemblyAIParam   `json:",omitzero,inline"`
 	OfSpeechmatics  *TranscriptionStartRequestTranscriptionEngineConfigSpeechmaticsParam `json:",omitzero,inline"`
 	OfSoniox        *TranscriptionStartRequestTranscriptionEngineConfigSonioxParam       `json:",omitzero,inline"`
 	OfA             *TranscriptionEngineAConfigParam                                     `json:",omitzero,inline"`
@@ -2212,14 +2102,86 @@ func init() {
 		apijson.Discriminator[TranscriptionEngineGoogleConfigParam]("Google"),
 		apijson.Discriminator[TranscriptionEngineTelnyxConfigParam]("Telnyx"),
 		apijson.Discriminator[TranscriptionEngineAzureConfigParam]("Azure"),
-		apijson.Discriminator[TranscriptionEngineXaiConfigParam]("xAI"),
-		apijson.Discriminator[TranscriptionEngineAssemblyaiConfigParam]("AssemblyAI"),
+		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigXAIParam]("xAI"),
+		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigAssemblyAIParam]("AssemblyAI"),
 		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigSpeechmaticsParam]("Speechmatics"),
 		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigSonioxParam]("Soniox"),
 		apijson.Discriminator[TranscriptionEngineAConfigParam]("A"),
 		apijson.Discriminator[TranscriptionEngineBConfigParam]("B"),
 		apijson.Discriminator[DeepgramNova2ConfigParam]("deepgram/nova-2"),
 		apijson.Discriminator[DeepgramNova3ConfigParam]("deepgram/nova-3"),
+	)
+}
+
+type TranscriptionStartRequestTranscriptionEngineConfigXAIParam struct {
+	// Whether to send also interim results. If set to false, only final results will
+	// be sent.
+	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
+	// Language to use for speech recognition
+	//
+	// Any of "ar", "cs", "da", "de", "en", "es", "fa", "fil", "fr", "hi", "id", "it",
+	// "ja", "ko", "mk", "ms", "nl", "pl", "pt", "ro", "ru", "sv", "th", "tr", "vi".
+	Language string `json:"language,omitzero"`
+	// Engine identifier for xAI transcription service
+	//
+	// Any of "xAI".
+	TranscriptionEngine string `json:"transcription_engine,omitzero"`
+	// The model to use for transcription.
+	//
+	// Any of "xai/grok-stt".
+	TranscriptionModel string `json:"transcription_model,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionStartRequestTranscriptionEngineConfigXAIParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionStartRequestTranscriptionEngineConfigXAIParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionStartRequestTranscriptionEngineConfigXAIParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigXAIParam](
+		"language", "ar", "cs", "da", "de", "en", "es", "fa", "fil", "fr", "hi", "id", "it", "ja", "ko", "mk", "ms", "nl", "pl", "pt", "ro", "ru", "sv", "th", "tr", "vi",
+	)
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigXAIParam](
+		"transcription_engine", "xAI",
+	)
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigXAIParam](
+		"transcription_model", "xai/grok-stt",
+	)
+}
+
+type TranscriptionStartRequestTranscriptionEngineConfigAssemblyAIParam struct {
+	// Whether to send also interim results. If set to false, only final results will
+	// be sent.
+	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
+	// Engine identifier for AssemblyAI transcription service
+	//
+	// Any of "AssemblyAI".
+	TranscriptionEngine string `json:"transcription_engine,omitzero"`
+	// The model to use for transcription.
+	//
+	// Any of "assemblyai/universal-streaming".
+	TranscriptionModel string `json:"transcription_model,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionStartRequestTranscriptionEngineConfigAssemblyAIParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionStartRequestTranscriptionEngineConfigAssemblyAIParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionStartRequestTranscriptionEngineConfigAssemblyAIParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigAssemblyAIParam](
+		"transcription_engine", "AssemblyAI",
+	)
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigAssemblyAIParam](
+		"transcription_model", "assemblyai/universal-streaming",
 	)
 }
 
@@ -3909,13 +3871,13 @@ func init() {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CallActionGatherUsingAIParamsVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam      `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam          `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam             `json:",omitzero,inline"`
-	OfAzure      *shared.AzureVoiceSettingsParam    `json:",omitzero,inline"`
-	OfRime       *shared.RimeVoiceSettingsParam     `json:",omitzero,inline"`
-	OfResemble   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
-	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam                  `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam                      `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam                         `json:",omitzero,inline"`
+	OfAzure      *shared.AzureVoiceSettingsParam                `json:",omitzero,inline"`
+	OfRime       *shared.RimeVoiceSettingsParam                 `json:",omitzero,inline"`
+	OfResemble   *shared.ResembleVoiceSettingsParam             `json:",omitzero,inline"`
+	OfXai        *CallActionGatherUsingAIParamsVoiceSettingsXai `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -4064,8 +4026,27 @@ func init() {
 		apijson.Discriminator[shared.AzureVoiceSettingsParam]("azure"),
 		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
 		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
-		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
+		apijson.Discriminator[CallActionGatherUsingAIParamsVoiceSettingsXai]("xai"),
 	)
+}
+
+// The property Type is required.
+type CallActionGatherUsingAIParamsVoiceSettingsXai struct {
+	// Language code, or `auto` to detect automatically.
+	Language param.Opt[string] `json:"language,omitzero"`
+	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "xai".
+	Type constant.Xai `json:"type" default:"xai"`
+	paramObj
+}
+
+func (r CallActionGatherUsingAIParamsVoiceSettingsXai) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionGatherUsingAIParamsVoiceSettingsXai
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionGatherUsingAIParamsVoiceSettingsXai) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type CallActionGatherUsingAudioParams struct {
@@ -4296,7 +4277,7 @@ type CallActionGatherUsingSpeakParamsVoiceSettingsUnion struct {
 	OfRime       *shared.RimeVoiceSettingsParam                        `json:",omitzero,inline"`
 	OfResemble   *shared.ResembleVoiceSettingsParam                    `json:",omitzero,inline"`
 	OfInworld    *CallActionGatherUsingSpeakParamsVoiceSettingsInworld `json:",omitzero,inline"`
-	OfXai        *shared.XaiVoiceSettingsParam                         `json:",omitzero,inline"`
+	OfXai        *CallActionGatherUsingSpeakParamsVoiceSettingsXai     `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -4489,7 +4470,7 @@ func init() {
 		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
 		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
 		apijson.Discriminator[CallActionGatherUsingSpeakParamsVoiceSettingsInworld]("inworld"),
-		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
+		apijson.Discriminator[CallActionGatherUsingSpeakParamsVoiceSettingsXai]("xai"),
 	)
 }
 
@@ -4512,6 +4493,25 @@ func (r CallActionGatherUsingSpeakParamsVoiceSettingsInworld) MarshalJSON() (dat
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *CallActionGatherUsingSpeakParamsVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Type is required.
+type CallActionGatherUsingSpeakParamsVoiceSettingsXai struct {
+	// Language code, or `auto` to detect automatically.
+	Language param.Opt[string] `json:"language,omitzero"`
+	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "xai".
+	Type constant.Xai `json:"type" default:"xai"`
+	paramObj
+}
+
+func (r CallActionGatherUsingSpeakParamsVoiceSettingsXai) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionGatherUsingSpeakParamsVoiceSettingsXai
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionGatherUsingSpeakParamsVoiceSettingsXai) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -4927,7 +4927,7 @@ type CallActionSpeakParamsVoiceSettingsUnion struct {
 	OfRime       *shared.RimeVoiceSettingsParam             `json:",omitzero,inline"`
 	OfResemble   *shared.ResembleVoiceSettingsParam         `json:",omitzero,inline"`
 	OfInworld    *CallActionSpeakParamsVoiceSettingsInworld `json:",omitzero,inline"`
-	OfXai        *shared.XaiVoiceSettingsParam              `json:",omitzero,inline"`
+	OfXai        *CallActionSpeakParamsVoiceSettingsXai     `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -5120,7 +5120,7 @@ func init() {
 		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
 		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
 		apijson.Discriminator[CallActionSpeakParamsVoiceSettingsInworld]("inworld"),
-		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
+		apijson.Discriminator[CallActionSpeakParamsVoiceSettingsXai]("xai"),
 	)
 }
 
@@ -5143,6 +5143,25 @@ func (r CallActionSpeakParamsVoiceSettingsInworld) MarshalJSON() (data []byte, e
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *CallActionSpeakParamsVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Type is required.
+type CallActionSpeakParamsVoiceSettingsXai struct {
+	// Language code, or `auto` to detect automatically.
+	Language param.Opt[string] `json:"language,omitzero"`
+	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "xai".
+	Type constant.Xai `json:"type" default:"xai"`
+	paramObj
+}
+
+func (r CallActionSpeakParamsVoiceSettingsXai) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionSpeakParamsVoiceSettingsXai
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionSpeakParamsVoiceSettingsXai) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -5532,13 +5551,13 @@ func init() {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CallActionStartAIAssistantParamsVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam      `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam          `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam             `json:",omitzero,inline"`
-	OfAzure      *shared.AzureVoiceSettingsParam    `json:",omitzero,inline"`
-	OfRime       *shared.RimeVoiceSettingsParam     `json:",omitzero,inline"`
-	OfResemble   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
-	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam                     `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam                         `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam                            `json:",omitzero,inline"`
+	OfAzure      *shared.AzureVoiceSettingsParam                   `json:",omitzero,inline"`
+	OfRime       *shared.RimeVoiceSettingsParam                    `json:",omitzero,inline"`
+	OfResemble   *shared.ResembleVoiceSettingsParam                `json:",omitzero,inline"`
+	OfXai        *CallActionStartAIAssistantParamsVoiceSettingsXai `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -5687,8 +5706,27 @@ func init() {
 		apijson.Discriminator[shared.AzureVoiceSettingsParam]("azure"),
 		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
 		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
-		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
+		apijson.Discriminator[CallActionStartAIAssistantParamsVoiceSettingsXai]("xai"),
 	)
+}
+
+// The property Type is required.
+type CallActionStartAIAssistantParamsVoiceSettingsXai struct {
+	// Language code, or `auto` to detect automatically.
+	Language param.Opt[string] `json:"language,omitzero"`
+	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "xai".
+	Type constant.Xai `json:"type" default:"xai"`
+	paramObj
+}
+
+func (r CallActionStartAIAssistantParamsVoiceSettingsXai) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionStartAIAssistantParamsVoiceSettingsXai
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionStartAIAssistantParamsVoiceSettingsXai) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type CallActionStartConversationRelayParams struct {
@@ -5951,13 +5989,13 @@ func (r *CallActionStartConversationRelayParamsTranscription) UnmarshalJSON(data
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CallActionStartConversationRelayParamsVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam      `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam          `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam             `json:",omitzero,inline"`
-	OfAzure      *shared.AzureVoiceSettingsParam    `json:",omitzero,inline"`
-	OfRime       *shared.RimeVoiceSettingsParam     `json:",omitzero,inline"`
-	OfResemble   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
-	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam                           `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam                               `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam                                  `json:",omitzero,inline"`
+	OfAzure      *shared.AzureVoiceSettingsParam                         `json:",omitzero,inline"`
+	OfRime       *shared.RimeVoiceSettingsParam                          `json:",omitzero,inline"`
+	OfResemble   *shared.ResembleVoiceSettingsParam                      `json:",omitzero,inline"`
+	OfXai        *CallActionStartConversationRelayParamsVoiceSettingsXai `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -6106,8 +6144,27 @@ func init() {
 		apijson.Discriminator[shared.AzureVoiceSettingsParam]("azure"),
 		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
 		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
-		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
+		apijson.Discriminator[CallActionStartConversationRelayParamsVoiceSettingsXai]("xai"),
 	)
+}
+
+// The property Type is required.
+type CallActionStartConversationRelayParamsVoiceSettingsXai struct {
+	// Language code, or `auto` to detect automatically.
+	Language param.Opt[string] `json:"language,omitzero"`
+	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "xai".
+	Type constant.Xai `json:"type" default:"xai"`
+	paramObj
+}
+
+func (r CallActionStartConversationRelayParamsVoiceSettingsXai) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionStartConversationRelayParamsVoiceSettingsXai
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionStartConversationRelayParamsVoiceSettingsXai) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type CallActionStartForkingParams struct {

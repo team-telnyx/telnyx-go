@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestAINewResponseDeprecated(t *testing.T) {
+func TestVoiceSDKCallReportGet(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,12 +26,7 @@ func TestAINewResponseDeprecated(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.NewResponseDeprecated(context.TODO(), telnyx.AINewResponseDeprecatedParams{
-		Body: map[string]any{
-			"model": "bar",
-			"input": "bar",
-		},
-	})
+	_, err := client.VoiceSDKCallReports.Get(context.TODO(), "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -41,7 +36,7 @@ func TestAINewResponseDeprecated(t *testing.T) {
 	}
 }
 
-func TestAIGetModels(t *testing.T) {
+func TestVoiceSDKCallReportListWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -54,33 +49,10 @@ func TestAIGetModels(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.GetModels(context.TODO())
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestAISummarizeWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.AI.Summarize(context.TODO(), telnyx.AISummarizeParams{
-		Bucket:       "bucket",
-		Filename:     "filename",
-		SystemPrompt: telnyx.String("system_prompt"),
+	_, err := client.VoiceSDKCallReports.List(context.TODO(), telnyx.VoiceSDKCallReportListParams{
+		PageNumber: telnyx.Int(0),
+		PageSize:   telnyx.Int(0),
+		Sort:       telnyx.VoiceSDKCallReportListParamsSortCreatedAtDesc,
 	})
 	if err != nil {
 		var apierr *telnyx.Error
