@@ -7812,6 +7812,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	// [[]shared.InboundMessagePayloadMedia]
 	Media              UnsafeUnwrapWebhookEventUnionDataPayloadMedia `json:"media"`
 	MessagingProfileID string                                        `json:"messaging_profile_id"`
+	NumChars           int64                                         `json:"num_chars"`
 	OrganizationID     string                                        `json:"organization_id"`
 	Parts              int64                                         `json:"parts"`
 	ReceivedAt         time.Time                                     `json:"received_at"`
@@ -7951,6 +7952,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		Errors                   respjson.Field
 		Media                    respjson.Field
 		MessagingProfileID       respjson.Field
+		NumChars                 respjson.Field
 		OrganizationID           respjson.Field
 		Parts                    respjson.Field
 		ReceivedAt               respjson.Field
@@ -9001,6 +9003,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	// [[]shared.InboundMessagePayloadMedia]
 	Media              UnwrapWebhookEventUnionDataPayloadMedia `json:"media"`
 	MessagingProfileID string                                  `json:"messaging_profile_id"`
+	NumChars           int64                                   `json:"num_chars"`
 	OrganizationID     string                                  `json:"organization_id"`
 	Parts              int64                                   `json:"parts"`
 	ReceivedAt         time.Time                               `json:"received_at"`
@@ -9140,6 +9143,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		Errors                   respjson.Field
 		Media                    respjson.Field
 		MessagingProfileID       respjson.Field
+		NumChars                 respjson.Field
 		OrganizationID           respjson.Field
 		Parts                    respjson.Field
 		ReceivedAt               respjson.Field

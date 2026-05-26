@@ -149,9 +149,10 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 						Mode:             "advanced",
 					},
 					RecordingSettings: telnyx.TelephonySettingsRecordingSettingsParam{
-						Channels: "single",
-						Enabled:  telnyx.Bool(true),
-						Format:   "wav",
+						Channels:              "single",
+						Enabled:               telnyx.Bool(true),
+						Format:                "wav",
+						StopOnConversationEnd: telnyx.Bool(true),
 					},
 					SupportsUnauthenticatedWebCalls: telnyx.Bool(true),
 					TimeLimitSecs:                   telnyx.Int(30),
