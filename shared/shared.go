@@ -663,6 +663,8 @@ type InboundMessagePayload struct {
 	Media  []InboundMessagePayloadMedia `json:"media"`
 	// Unique identifier for a messaging profile.
 	MessagingProfileID string `json:"messaging_profile_id"`
+	// The number of characters in the message text
+	NumChars int64 `json:"num_chars"`
 	// Unique identifier for a messaging profile.
 	OrganizationID string `json:"organization_id"`
 	// Number of parts into which the message's body must be split.
@@ -714,6 +716,7 @@ type InboundMessagePayload struct {
 		From                  respjson.Field
 		Media                 respjson.Field
 		MessagingProfileID    respjson.Field
+		NumChars              respjson.Field
 		OrganizationID        respjson.Field
 		Parts                 respjson.Field
 		ReceivedAt            respjson.Field
