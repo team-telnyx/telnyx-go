@@ -333,6 +333,126 @@ func init() {
 	)
 }
 
+// Reference to a connected integration attached to an assistant. Discover
+// available integrations with `/ai/integrations` and connected integrations with
+// `/ai/integrations/connections`.
+type AssistantIntegration struct {
+	// Catalog integration ID to attach. This is the `id` from the integrations catalog
+	// at `/ai/integrations` (the same value also appears as `integration_id` on
+	// entries returned by `/ai/integrations/connections`). It is **not** the
+	// connection-level `id` from `/ai/integrations/connections`.
+	IntegrationID string `json:"integration_id" api:"required"`
+	// Optional per-assistant allowlist of integration tool names. When omitted or
+	// empty, all tools allowed by the connected integration are available to the
+	// assistant.
+	AllowedList []string `json:"allowed_list"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		IntegrationID respjson.Field
+		AllowedList   respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantIntegration) RawJSON() string { return r.JSON.raw }
+func (r *AssistantIntegration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this AssistantIntegration to a AssistantIntegrationParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// AssistantIntegrationParam.Overrides()
+func (r AssistantIntegration) ToParam() AssistantIntegrationParam {
+	return param.Override[AssistantIntegrationParam](json.RawMessage(r.RawJSON()))
+}
+
+// Reference to a connected integration attached to an assistant. Discover
+// available integrations with `/ai/integrations` and connected integrations with
+// `/ai/integrations/connections`.
+//
+// The property IntegrationID is required.
+type AssistantIntegrationParam struct {
+	// Catalog integration ID to attach. This is the `id` from the integrations catalog
+	// at `/ai/integrations` (the same value also appears as `integration_id` on
+	// entries returned by `/ai/integrations/connections`). It is **not** the
+	// connection-level `id` from `/ai/integrations/connections`.
+	IntegrationID string `json:"integration_id" api:"required"`
+	// Optional per-assistant allowlist of integration tool names. When omitted or
+	// empty, all tools allowed by the connected integration are available to the
+	// assistant.
+	AllowedList []string `json:"allowed_list,omitzero"`
+	paramObj
+}
+
+func (r AssistantIntegrationParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantIntegrationParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantIntegrationParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Reference to an MCP server attached to an assistant. Create and manage MCP
+// servers with the `/ai/mcp_servers` endpoints, then attach them to assistants by
+// ID.
+type AssistantMcpServer struct {
+	// ID of the MCP server to attach. This must be the `id` of an MCP server returned
+	// by the `/ai/mcp_servers` endpoints.
+	ID string `json:"id" api:"required"`
+	// Optional per-assistant allowlist of MCP tool names. When omitted, the assistant
+	// uses the MCP server's configured `allowed_tools`.
+	AllowedTools []string `json:"allowed_tools"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		AllowedTools respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantMcpServer) RawJSON() string { return r.JSON.raw }
+func (r *AssistantMcpServer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this AssistantMcpServer to a AssistantMcpServerParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// AssistantMcpServerParam.Overrides()
+func (r AssistantMcpServer) ToParam() AssistantMcpServerParam {
+	return param.Override[AssistantMcpServerParam](json.RawMessage(r.RawJSON()))
+}
+
+// Reference to an MCP server attached to an assistant. Create and manage MCP
+// servers with the `/ai/mcp_servers` endpoints, then attach them to assistants by
+// ID.
+//
+// The property ID is required.
+type AssistantMcpServerParam struct {
+	// ID of the MCP server to attach. This must be the `id` of an MCP server returned
+	// by the `/ai/mcp_servers` endpoints.
+	ID string `json:"id" api:"required"`
+	// Optional per-assistant allowlist of MCP tool names. When omitted, the assistant
+	// uses the MCP server's configured `allowed_tools`.
+	AllowedTools []string `json:"allowed_tools,omitzero"`
+	paramObj
+}
+
+func (r AssistantMcpServerParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantMcpServerParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantMcpServerParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // AssistantToolsItemsUnion contains all possible properties and values from
 // [InferenceEmbeddingWebhookToolParamsResp], [RetrievalTool],
 // [AssistantToolHandoff], [HangupTool], [AssistantToolTransfer],
@@ -635,26 +755,26 @@ func (r *AssistantToolTransferTransfer) UnmarshalJSON(data []byte) error {
 }
 
 // AssistantToolTransferTransferTargetsUnion contains all possible properties and
-// values from [[]AssistantToolTransferTransferTargetsArrayItem], [string].
+// values from [[]AssistantToolTransferTransferTargetsTargetsListItem], [string].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfAssistantToolTransferTransferTargetsArray OfString]
+// will be valid: OfTargetsList OfString]
 type AssistantToolTransferTransferTargetsUnion struct {
 	// This field will be present if the value is a
-	// [[]AssistantToolTransferTransferTargetsArrayItem] instead of an object.
-	OfAssistantToolTransferTransferTargetsArray []AssistantToolTransferTransferTargetsArrayItem `json:",inline"`
+	// [[]AssistantToolTransferTransferTargetsTargetsListItem] instead of an object.
+	OfTargetsList []AssistantToolTransferTransferTargetsTargetsListItem `json:",inline"`
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	JSON     struct {
-		OfAssistantToolTransferTransferTargetsArray respjson.Field
-		OfString                                    respjson.Field
-		raw                                         string
+		OfTargetsList respjson.Field
+		OfString      respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
-func (u AssistantToolTransferTransferTargetsUnion) AsAssistantToolTransferTransferTargetsArray() (v []AssistantToolTransferTransferTargetsArrayItem) {
+func (u AssistantToolTransferTransferTargetsUnion) AsTargetsList() (v []AssistantToolTransferTransferTargetsTargetsListItem) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -671,7 +791,7 @@ func (r *AssistantToolTransferTransferTargetsUnion) UnmarshalJSON(data []byte) e
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AssistantToolTransferTransferTargetsArrayItem struct {
+type AssistantToolTransferTransferTargetsTargetsListItem struct {
 	// The destination number or SIP URI of the call.
 	To string `json:"to" api:"required"`
 	// The name of the target.
@@ -686,8 +806,8 @@ type AssistantToolTransferTransferTargetsArrayItem struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AssistantToolTransferTransferTargetsArrayItem) RawJSON() string { return r.JSON.raw }
-func (r *AssistantToolTransferTransferTargetsArrayItem) UnmarshalJSON(data []byte) error {
+func (r AssistantToolTransferTransferTargetsTargetsListItem) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolTransferTransferTargetsTargetsListItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -923,26 +1043,26 @@ func (r *AssistantToolInviteInviteCustomHeader) UnmarshalJSON(data []byte) error
 }
 
 // AssistantToolInviteInviteTargetsUnion contains all possible properties and
-// values from [[]AssistantToolInviteInviteTargetsArrayItem], [string].
+// values from [[]AssistantToolInviteInviteTargetsTargetsListItem], [string].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfAssistantToolInviteInviteTargetsArray OfString]
+// will be valid: OfTargetsList OfString]
 type AssistantToolInviteInviteTargetsUnion struct {
 	// This field will be present if the value is a
-	// [[]AssistantToolInviteInviteTargetsArrayItem] instead of an object.
-	OfAssistantToolInviteInviteTargetsArray []AssistantToolInviteInviteTargetsArrayItem `json:",inline"`
+	// [[]AssistantToolInviteInviteTargetsTargetsListItem] instead of an object.
+	OfTargetsList []AssistantToolInviteInviteTargetsTargetsListItem `json:",inline"`
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	JSON     struct {
-		OfAssistantToolInviteInviteTargetsArray respjson.Field
-		OfString                                respjson.Field
-		raw                                     string
+		OfTargetsList respjson.Field
+		OfString      respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
-func (u AssistantToolInviteInviteTargetsUnion) AsAssistantToolInviteInviteTargetsArray() (v []AssistantToolInviteInviteTargetsArrayItem) {
+func (u AssistantToolInviteInviteTargetsUnion) AsTargetsList() (v []AssistantToolInviteInviteTargetsTargetsListItem) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -959,7 +1079,7 @@ func (r *AssistantToolInviteInviteTargetsUnion) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AssistantToolInviteInviteTargetsArrayItem struct {
+type AssistantToolInviteInviteTargetsTargetsListItem struct {
 	// The destination number or SIP URI of the call.
 	To string `json:"to" api:"required"`
 	// The name of the target.
@@ -974,8 +1094,8 @@ type AssistantToolInviteInviteTargetsArrayItem struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AssistantToolInviteInviteTargetsArrayItem) RawJSON() string { return r.JSON.raw }
-func (r *AssistantToolInviteInviteTargetsArrayItem) UnmarshalJSON(data []byte) error {
+func (r AssistantToolInviteInviteTargetsTargetsListItem) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolInviteInviteTargetsTargetsListItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1596,21 +1716,21 @@ func (r *AssistantToolTransferTransferParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type AssistantToolTransferTransferTargetsUnionParam struct {
-	OfAssistantToolTransferTransferTargetsArray []AssistantToolTransferTransferTargetsArrayItemParam `json:",omitzero,inline"`
-	OfString                                    param.Opt[string]                                    `json:",omitzero,inline"`
+	OfTargetsList []AssistantToolTransferTransferTargetsTargetsListItemParam `json:",omitzero,inline"`
+	OfString      param.Opt[string]                                          `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u AssistantToolTransferTransferTargetsUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfAssistantToolTransferTransferTargetsArray, u.OfString)
+	return param.MarshalUnion(u, u.OfTargetsList, u.OfString)
 }
 func (u *AssistantToolTransferTransferTargetsUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *AssistantToolTransferTransferTargetsUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfAssistantToolTransferTransferTargetsArray) {
-		return &u.OfAssistantToolTransferTransferTargetsArray
+	if !param.IsOmitted(u.OfTargetsList) {
+		return &u.OfTargetsList
 	} else if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
 	}
@@ -1618,7 +1738,7 @@ func (u *AssistantToolTransferTransferTargetsUnionParam) asAny() any {
 }
 
 // The property To is required.
-type AssistantToolTransferTransferTargetsArrayItemParam struct {
+type AssistantToolTransferTransferTargetsTargetsListItemParam struct {
 	// The destination number or SIP URI of the call.
 	To string `json:"to" api:"required"`
 	// The name of the target.
@@ -1626,11 +1746,11 @@ type AssistantToolTransferTransferTargetsArrayItemParam struct {
 	paramObj
 }
 
-func (r AssistantToolTransferTransferTargetsArrayItemParam) MarshalJSON() (data []byte, err error) {
-	type shadow AssistantToolTransferTransferTargetsArrayItemParam
+func (r AssistantToolTransferTransferTargetsTargetsListItemParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolTransferTransferTargetsTargetsListItemParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AssistantToolTransferTransferTargetsArrayItemParam) UnmarshalJSON(data []byte) error {
+func (r *AssistantToolTransferTransferTargetsTargetsListItemParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1840,21 +1960,21 @@ func (r *AssistantToolInviteInviteCustomHeaderParam) UnmarshalJSON(data []byte) 
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type AssistantToolInviteInviteTargetsUnionParam struct {
-	OfAssistantToolInviteInviteTargetsArray []AssistantToolInviteInviteTargetsArrayItemParam `json:",omitzero,inline"`
-	OfString                                param.Opt[string]                                `json:",omitzero,inline"`
+	OfTargetsList []AssistantToolInviteInviteTargetsTargetsListItemParam `json:",omitzero,inline"`
+	OfString      param.Opt[string]                                      `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u AssistantToolInviteInviteTargetsUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfAssistantToolInviteInviteTargetsArray, u.OfString)
+	return param.MarshalUnion(u, u.OfTargetsList, u.OfString)
 }
 func (u *AssistantToolInviteInviteTargetsUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *AssistantToolInviteInviteTargetsUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfAssistantToolInviteInviteTargetsArray) {
-		return &u.OfAssistantToolInviteInviteTargetsArray
+	if !param.IsOmitted(u.OfTargetsList) {
+		return &u.OfTargetsList
 	} else if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
 	}
@@ -1862,7 +1982,7 @@ func (u *AssistantToolInviteInviteTargetsUnionParam) asAny() any {
 }
 
 // The property To is required.
-type AssistantToolInviteInviteTargetsArrayItemParam struct {
+type AssistantToolInviteInviteTargetsTargetsListItemParam struct {
 	// The destination number or SIP URI of the call.
 	To string `json:"to" api:"required"`
 	// The name of the target.
@@ -1870,11 +1990,11 @@ type AssistantToolInviteInviteTargetsArrayItemParam struct {
 	paramObj
 }
 
-func (r AssistantToolInviteInviteTargetsArrayItemParam) MarshalJSON() (data []byte, err error) {
-	type shadow AssistantToolInviteInviteTargetsArrayItemParam
+func (r AssistantToolInviteInviteTargetsTargetsListItemParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolInviteInviteTargetsTargetsListItemParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AssistantToolInviteInviteTargetsArrayItemParam) UnmarshalJSON(data []byte) error {
+func (r *AssistantToolInviteInviteTargetsTargetsListItemParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2506,7 +2626,7 @@ type InferenceEmbedding struct {
 	// integrations is at `/ai/integrations`; the user's connected integrations are at
 	// `/ai/integrations/connections`. Each item references a catalog integration by
 	// `integration_id`.
-	Integrations []InferenceEmbeddingIntegration `json:"integrations"`
+	Integrations []AssistantIntegration `json:"integrations"`
 	// Settings for interruptions and how the assistant decides the user has finished
 	// speaking. These timings are most relevant when using non turn-taking
 	// transcription models. For turn-taking models like `deepgram/flux`, end-of-turn
@@ -2523,9 +2643,9 @@ type InferenceEmbedding struct {
 	LlmAPIKeyRef string `json:"llm_api_key_ref"`
 	// MCP servers attached to the assistant. Create MCP servers with
 	// `/ai/mcp_servers`, then reference them by `id` here.
-	McpServers            []InferenceEmbeddingMcpServer `json:"mcp_servers"`
-	MessagingSettings     MessagingSettings             `json:"messaging_settings"`
-	ObservabilitySettings Observability                 `json:"observability_settings"`
+	McpServers            []AssistantMcpServer `json:"mcp_servers"`
+	MessagingSettings     MessagingSettings    `json:"messaging_settings"`
+	ObservabilitySettings Observability        `json:"observability_settings"`
 	// Configuration for post-conversation processing. When enabled, the assistant
 	// receives one additional LLM turn after the conversation ends, allowing it to
 	// execute tool calls such as logging to a CRM or sending a summary. The assistant
@@ -2601,34 +2721,6 @@ func (r *InferenceEmbedding) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Reference to a connected integration attached to an assistant. Discover
-// available integrations with `/ai/integrations` and connected integrations with
-// `/ai/integrations/connections`.
-type InferenceEmbeddingIntegration struct {
-	// Catalog integration ID to attach. This is the `id` from the integrations catalog
-	// at `/ai/integrations` (the same value also appears as `integration_id` on
-	// entries returned by `/ai/integrations/connections`). It is **not** the
-	// connection-level `id` from `/ai/integrations/connections`.
-	IntegrationID string `json:"integration_id" api:"required"`
-	// Optional per-assistant allowlist of integration tool names. When omitted or
-	// empty, all tools allowed by the connected integration are available to the
-	// assistant.
-	AllowedList []string `json:"allowed_list"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		IntegrationID respjson.Field
-		AllowedList   respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InferenceEmbeddingIntegration) RawJSON() string { return r.JSON.raw }
-func (r *InferenceEmbeddingIntegration) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Settings for interruptions and how the assistant decides the user has finished
 // speaking. These timings are most relevant when using non turn-taking
 // transcription models. For turn-taking models like `deepgram/flux`, end-of-turn
@@ -2644,7 +2736,7 @@ type InferenceEmbeddingInterruptionSettings struct {
 	// thresholds primarily apply to non turn-taking transcription models. For
 	// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
 	// transcription end-of-turn settings under `transcription.settings` instead.
-	StartSpeakingPlan InferenceEmbeddingInterruptionSettingsStartSpeakingPlan `json:"start_speaking_plan"`
+	StartSpeakingPlan StartSpeakingPlan `json:"start_speaking_plan"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DisableGreetingInterruption respjson.Field
@@ -2661,84 +2753,40 @@ func (r *InferenceEmbeddingInterruptionSettings) UnmarshalJSON(data []byte) erro
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Controls when the assistant starts speaking after the user stops. These
-// thresholds primarily apply to non turn-taking transcription models. For
-// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
-// transcription end-of-turn settings under `transcription.settings` instead.
-type InferenceEmbeddingInterruptionSettingsStartSpeakingPlan struct {
-	// Endpointing thresholds used to decide when the user has finished speaking.
-	// Applies to non turn-taking transcription models. For `deepgram/flux`, use
-	// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
-	// `eager_eot_threshold`.
-	TranscriptionEndpointingPlan InferenceEmbeddingInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan `json:"transcription_endpointing_plan"`
-	// Minimum seconds to wait before the assistant starts speaking.
-	WaitSeconds float64 `json:"wait_seconds"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		TranscriptionEndpointingPlan respjson.Field
-		WaitSeconds                  respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
-	} `json:"-"`
+// ToParam converts this InferenceEmbeddingInterruptionSettings to a
+// InferenceEmbeddingInterruptionSettingsParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// InferenceEmbeddingInterruptionSettingsParam.Overrides()
+func (r InferenceEmbeddingInterruptionSettings) ToParam() InferenceEmbeddingInterruptionSettingsParam {
+	return param.Override[InferenceEmbeddingInterruptionSettingsParam](json.RawMessage(r.RawJSON()))
 }
 
-// Returns the unmodified JSON received from the API
-func (r InferenceEmbeddingInterruptionSettingsStartSpeakingPlan) RawJSON() string { return r.JSON.raw }
-func (r *InferenceEmbeddingInterruptionSettingsStartSpeakingPlan) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+// Settings for interruptions and how the assistant decides the user has finished
+// speaking. These timings are most relevant when using non turn-taking
+// transcription models. For turn-taking models like `deepgram/flux`, end-of-turn
+// behavior is controlled by the transcription end-of-turn settings under
+// `transcription.settings` (`eot_threshold`, `eot_timeout_ms`,
+// `eager_eot_threshold`).
+type InferenceEmbeddingInterruptionSettingsParam struct {
+	// When true, disables user interruptions while the assistant greeting is playing.
+	DisableGreetingInterruption param.Opt[bool] `json:"disable_greeting_interruption,omitzero"`
+	// Whether users can interrupt the assistant while it is speaking.
+	Enable param.Opt[bool] `json:"enable,omitzero"`
+	// Controls when the assistant starts speaking after the user stops. These
+	// thresholds primarily apply to non turn-taking transcription models. For
+	// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
+	// transcription end-of-turn settings under `transcription.settings` instead.
+	StartSpeakingPlan StartSpeakingPlanParam `json:"start_speaking_plan,omitzero"`
+	paramObj
 }
 
-// Endpointing thresholds used to decide when the user has finished speaking.
-// Applies to non turn-taking transcription models. For `deepgram/flux`, use
-// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
-// `eager_eot_threshold`.
-type InferenceEmbeddingInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan struct {
-	// Seconds to wait after the transcript ends without punctuation.
-	OnNoPunctuationSeconds float64 `json:"on_no_punctuation_seconds"`
-	// Seconds to wait after the transcript ends with a number.
-	OnNumberSeconds float64 `json:"on_number_seconds"`
-	// Seconds to wait after the transcript ends with punctuation.
-	OnPunctuationSeconds float64 `json:"on_punctuation_seconds"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		OnNoPunctuationSeconds respjson.Field
-		OnNumberSeconds        respjson.Field
-		OnPunctuationSeconds   respjson.Field
-		ExtraFields            map[string]respjson.Field
-		raw                    string
-	} `json:"-"`
+func (r InferenceEmbeddingInterruptionSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceEmbeddingInterruptionSettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-
-// Returns the unmodified JSON received from the API
-func (r InferenceEmbeddingInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *InferenceEmbeddingInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Reference to an MCP server attached to an assistant. Create and manage MCP
-// servers with the `/ai/mcp_servers` endpoints, then attach them to assistants by
-// ID.
-type InferenceEmbeddingMcpServer struct {
-	// ID of the MCP server to attach. This must be the `id` of an MCP server returned
-	// by the `/ai/mcp_servers` endpoints.
-	ID string `json:"id" api:"required"`
-	// Optional per-assistant allowlist of MCP tool names. When omitted, the assistant
-	// uses the MCP server's configured `allowed_tools`.
-	AllowedTools []string `json:"allowed_tools"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID           respjson.Field
-		AllowedTools respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InferenceEmbeddingMcpServer) RawJSON() string { return r.JSON.raw }
-func (r *InferenceEmbeddingMcpServer) UnmarshalJSON(data []byte) error {
+func (r *InferenceEmbeddingInterruptionSettingsParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3539,6 +3587,65 @@ func (r *RetrievalToolParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Controls when the assistant starts speaking after the user stops. These
+// thresholds primarily apply to non turn-taking transcription models. For
+// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
+// transcription end-of-turn settings under `transcription.settings` instead.
+type StartSpeakingPlan struct {
+	// Endpointing thresholds used to decide when the user has finished speaking.
+	// Applies to non turn-taking transcription models. For `deepgram/flux`, use
+	// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
+	// `eager_eot_threshold`.
+	TranscriptionEndpointingPlan TranscriptionEndpointingPlan `json:"transcription_endpointing_plan"`
+	// Minimum seconds to wait before the assistant starts speaking.
+	WaitSeconds float64 `json:"wait_seconds"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		TranscriptionEndpointingPlan respjson.Field
+		WaitSeconds                  respjson.Field
+		ExtraFields                  map[string]respjson.Field
+		raw                          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r StartSpeakingPlan) RawJSON() string { return r.JSON.raw }
+func (r *StartSpeakingPlan) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this StartSpeakingPlan to a StartSpeakingPlanParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// StartSpeakingPlanParam.Overrides()
+func (r StartSpeakingPlan) ToParam() StartSpeakingPlanParam {
+	return param.Override[StartSpeakingPlanParam](json.RawMessage(r.RawJSON()))
+}
+
+// Controls when the assistant starts speaking after the user stops. These
+// thresholds primarily apply to non turn-taking transcription models. For
+// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
+// transcription end-of-turn settings under `transcription.settings` instead.
+type StartSpeakingPlanParam struct {
+	// Minimum seconds to wait before the assistant starts speaking.
+	WaitSeconds param.Opt[float64] `json:"wait_seconds,omitzero"`
+	// Endpointing thresholds used to decide when the user has finished speaking.
+	// Applies to non turn-taking transcription models. For `deepgram/flux`, use
+	// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
+	// `eager_eot_threshold`.
+	TranscriptionEndpointingPlan TranscriptionEndpointingPlanParam `json:"transcription_endpointing_plan,omitzero"`
+	paramObj
+}
+
+func (r StartSpeakingPlanParam) MarshalJSON() (data []byte, err error) {
+	type shadow StartSpeakingPlanParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *StartSpeakingPlanParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type TelephonySettings struct {
 	// Default Texml App used for voice calls with your assistant. This will be created
 	// automatically on assistant creation.
@@ -3948,6 +4055,65 @@ func init() {
 	)
 }
 
+// Endpointing thresholds used to decide when the user has finished speaking.
+// Applies to non turn-taking transcription models. For `deepgram/flux`, use
+// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
+// `eager_eot_threshold`.
+type TranscriptionEndpointingPlan struct {
+	// Seconds to wait after the transcript ends without punctuation.
+	OnNoPunctuationSeconds float64 `json:"on_no_punctuation_seconds"`
+	// Seconds to wait after the transcript ends with a number.
+	OnNumberSeconds float64 `json:"on_number_seconds"`
+	// Seconds to wait after the transcript ends with punctuation.
+	OnPunctuationSeconds float64 `json:"on_punctuation_seconds"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		OnNoPunctuationSeconds respjson.Field
+		OnNumberSeconds        respjson.Field
+		OnPunctuationSeconds   respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TranscriptionEndpointingPlan) RawJSON() string { return r.JSON.raw }
+func (r *TranscriptionEndpointingPlan) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this TranscriptionEndpointingPlan to a
+// TranscriptionEndpointingPlanParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// TranscriptionEndpointingPlanParam.Overrides()
+func (r TranscriptionEndpointingPlan) ToParam() TranscriptionEndpointingPlanParam {
+	return param.Override[TranscriptionEndpointingPlanParam](json.RawMessage(r.RawJSON()))
+}
+
+// Endpointing thresholds used to decide when the user has finished speaking.
+// Applies to non turn-taking transcription models. For `deepgram/flux`, use
+// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
+// `eager_eot_threshold`.
+type TranscriptionEndpointingPlanParam struct {
+	// Seconds to wait after the transcript ends without punctuation.
+	OnNoPunctuationSeconds param.Opt[float64] `json:"on_no_punctuation_seconds,omitzero"`
+	// Seconds to wait after the transcript ends with a number.
+	OnNumberSeconds param.Opt[float64] `json:"on_number_seconds,omitzero"`
+	// Seconds to wait after the transcript ends with punctuation.
+	OnPunctuationSeconds param.Opt[float64] `json:"on_punctuation_seconds,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionEndpointingPlanParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionEndpointingPlanParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionEndpointingPlanParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type TranscriptionSettings struct {
 	// Integration secret identifier for the transcription provider API key. Currently
 	// used for Azure transcription regions that require a customer-provided API key.
@@ -4248,21 +4414,21 @@ func (r *TransferToolTransferParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type TransferToolTransferTargetsUnionParam struct {
-	OfTransferToolTransferTargetsArray []TransferToolTransferTargetsArrayItemParam `json:",omitzero,inline"`
-	OfString                           param.Opt[string]                           `json:",omitzero,inline"`
+	OfTargetsList []TransferToolTransferTargetsTargetsListItemParam `json:",omitzero,inline"`
+	OfString      param.Opt[string]                                 `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u TransferToolTransferTargetsUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfTransferToolTransferTargetsArray, u.OfString)
+	return param.MarshalUnion(u, u.OfTargetsList, u.OfString)
 }
 func (u *TransferToolTransferTargetsUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *TransferToolTransferTargetsUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfTransferToolTransferTargetsArray) {
-		return &u.OfTransferToolTransferTargetsArray
+	if !param.IsOmitted(u.OfTargetsList) {
+		return &u.OfTargetsList
 	} else if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
 	}
@@ -4270,7 +4436,7 @@ func (u *TransferToolTransferTargetsUnionParam) asAny() any {
 }
 
 // The property To is required.
-type TransferToolTransferTargetsArrayItemParam struct {
+type TransferToolTransferTargetsTargetsListItemParam struct {
 	// The destination number or SIP URI of the call.
 	To string `json:"to" api:"required"`
 	// The name of the target.
@@ -4278,11 +4444,11 @@ type TransferToolTransferTargetsArrayItemParam struct {
 	paramObj
 }
 
-func (r TransferToolTransferTargetsArrayItemParam) MarshalJSON() (data []byte, err error) {
-	type shadow TransferToolTransferTargetsArrayItemParam
+func (r TransferToolTransferTargetsTargetsListItemParam) MarshalJSON() (data []byte, err error) {
+	type shadow TransferToolTransferTargetsTargetsListItemParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *TransferToolTransferTargetsArrayItemParam) UnmarshalJSON(data []byte) error {
+func (r *TransferToolTransferTargetsTargetsListItemParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -5195,19 +5361,19 @@ type AIAssistantNewParams struct {
 	// integrations is at `/ai/integrations`; the user's connected integrations are at
 	// `/ai/integrations/connections`. Each item references a catalog integration by
 	// `integration_id`.
-	Integrations []AIAssistantNewParamsIntegration `json:"integrations,omitzero"`
+	Integrations []AssistantIntegrationParam `json:"integrations,omitzero"`
 	// Settings for interruptions and how the assistant decides the user has finished
 	// speaking. These timings are most relevant when using non turn-taking
 	// transcription models. For turn-taking models like `deepgram/flux`, end-of-turn
 	// behavior is controlled by the transcription end-of-turn settings under
 	// `transcription.settings` (`eot_threshold`, `eot_timeout_ms`,
 	// `eager_eot_threshold`).
-	InterruptionSettings AIAssistantNewParamsInterruptionSettings `json:"interruption_settings,omitzero"`
+	InterruptionSettings InferenceEmbeddingInterruptionSettingsParam `json:"interruption_settings,omitzero"`
 	// MCP servers attached to the assistant. Create MCP servers with
 	// `/ai/mcp_servers`, then reference them by `id` here.
-	McpServers            []AIAssistantNewParamsMcpServer `json:"mcp_servers,omitzero"`
-	MessagingSettings     MessagingSettingsParam          `json:"messaging_settings,omitzero"`
-	ObservabilitySettings ObservabilityReqParam           `json:"observability_settings,omitzero"`
+	McpServers            []AssistantMcpServerParam `json:"mcp_servers,omitzero"`
+	MessagingSettings     MessagingSettingsParam    `json:"messaging_settings,omitzero"`
+	ObservabilitySettings ObservabilityReqParam     `json:"observability_settings,omitzero"`
 	// Configuration for post-conversation processing. When enabled, the assistant
 	// receives one additional LLM turn after the conversation ends, allowing it to
 	// execute tool calls such as logging to a CRM or sending a summary. The assistant
@@ -5239,127 +5405,6 @@ func (r AIAssistantNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *AIAssistantNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Reference to a connected integration attached to an assistant. Discover
-// available integrations with `/ai/integrations` and connected integrations with
-// `/ai/integrations/connections`.
-//
-// The property IntegrationID is required.
-type AIAssistantNewParamsIntegration struct {
-	// Catalog integration ID to attach. This is the `id` from the integrations catalog
-	// at `/ai/integrations` (the same value also appears as `integration_id` on
-	// entries returned by `/ai/integrations/connections`). It is **not** the
-	// connection-level `id` from `/ai/integrations/connections`.
-	IntegrationID string `json:"integration_id" api:"required"`
-	// Optional per-assistant allowlist of integration tool names. When omitted or
-	// empty, all tools allowed by the connected integration are available to the
-	// assistant.
-	AllowedList []string `json:"allowed_list,omitzero"`
-	paramObj
-}
-
-func (r AIAssistantNewParamsIntegration) MarshalJSON() (data []byte, err error) {
-	type shadow AIAssistantNewParamsIntegration
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AIAssistantNewParamsIntegration) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Settings for interruptions and how the assistant decides the user has finished
-// speaking. These timings are most relevant when using non turn-taking
-// transcription models. For turn-taking models like `deepgram/flux`, end-of-turn
-// behavior is controlled by the transcription end-of-turn settings under
-// `transcription.settings` (`eot_threshold`, `eot_timeout_ms`,
-// `eager_eot_threshold`).
-type AIAssistantNewParamsInterruptionSettings struct {
-	// When true, disables user interruptions while the assistant greeting is playing.
-	DisableGreetingInterruption param.Opt[bool] `json:"disable_greeting_interruption,omitzero"`
-	// Whether users can interrupt the assistant while it is speaking.
-	Enable param.Opt[bool] `json:"enable,omitzero"`
-	// Controls when the assistant starts speaking after the user stops. These
-	// thresholds primarily apply to non turn-taking transcription models. For
-	// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
-	// transcription end-of-turn settings under `transcription.settings` instead.
-	StartSpeakingPlan AIAssistantNewParamsInterruptionSettingsStartSpeakingPlan `json:"start_speaking_plan,omitzero"`
-	paramObj
-}
-
-func (r AIAssistantNewParamsInterruptionSettings) MarshalJSON() (data []byte, err error) {
-	type shadow AIAssistantNewParamsInterruptionSettings
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AIAssistantNewParamsInterruptionSettings) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Controls when the assistant starts speaking after the user stops. These
-// thresholds primarily apply to non turn-taking transcription models. For
-// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
-// transcription end-of-turn settings under `transcription.settings` instead.
-type AIAssistantNewParamsInterruptionSettingsStartSpeakingPlan struct {
-	// Minimum seconds to wait before the assistant starts speaking.
-	WaitSeconds param.Opt[float64] `json:"wait_seconds,omitzero"`
-	// Endpointing thresholds used to decide when the user has finished speaking.
-	// Applies to non turn-taking transcription models. For `deepgram/flux`, use
-	// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
-	// `eager_eot_threshold`.
-	TranscriptionEndpointingPlan AIAssistantNewParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan `json:"transcription_endpointing_plan,omitzero"`
-	paramObj
-}
-
-func (r AIAssistantNewParamsInterruptionSettingsStartSpeakingPlan) MarshalJSON() (data []byte, err error) {
-	type shadow AIAssistantNewParamsInterruptionSettingsStartSpeakingPlan
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AIAssistantNewParamsInterruptionSettingsStartSpeakingPlan) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Endpointing thresholds used to decide when the user has finished speaking.
-// Applies to non turn-taking transcription models. For `deepgram/flux`, use
-// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
-// `eager_eot_threshold`.
-type AIAssistantNewParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan struct {
-	// Seconds to wait after the transcript ends without punctuation.
-	OnNoPunctuationSeconds param.Opt[float64] `json:"on_no_punctuation_seconds,omitzero"`
-	// Seconds to wait after the transcript ends with a number.
-	OnNumberSeconds param.Opt[float64] `json:"on_number_seconds,omitzero"`
-	// Seconds to wait after the transcript ends with punctuation.
-	OnPunctuationSeconds param.Opt[float64] `json:"on_punctuation_seconds,omitzero"`
-	paramObj
-}
-
-func (r AIAssistantNewParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan) MarshalJSON() (data []byte, err error) {
-	type shadow AIAssistantNewParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AIAssistantNewParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Reference to an MCP server attached to an assistant. Create and manage MCP
-// servers with the `/ai/mcp_servers` endpoints, then attach them to assistants by
-// ID.
-//
-// The property ID is required.
-type AIAssistantNewParamsMcpServer struct {
-	// ID of the MCP server to attach. This must be the `id` of an MCP server returned
-	// by the `/ai/mcp_servers` endpoints.
-	ID string `json:"id" api:"required"`
-	// Optional per-assistant allowlist of MCP tool names. When omitted, the assistant
-	// uses the MCP server's configured `allowed_tools`.
-	AllowedTools []string `json:"allowed_tools,omitzero"`
-	paramObj
-}
-
-func (r AIAssistantNewParamsMcpServer) MarshalJSON() (data []byte, err error) {
-	type shadow AIAssistantNewParamsMcpServer
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AIAssistantNewParamsMcpServer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -5434,19 +5479,19 @@ type AIAssistantUpdateParams struct {
 	// integrations is at `/ai/integrations`; the user's connected integrations are at
 	// `/ai/integrations/connections`. Each item references a catalog integration by
 	// `integration_id`.
-	Integrations []AIAssistantUpdateParamsIntegration `json:"integrations,omitzero"`
+	Integrations []AssistantIntegrationParam `json:"integrations,omitzero"`
 	// Settings for interruptions and how the assistant decides the user has finished
 	// speaking. These timings are most relevant when using non turn-taking
 	// transcription models. For turn-taking models like `deepgram/flux`, end-of-turn
 	// behavior is controlled by the transcription end-of-turn settings under
 	// `transcription.settings` (`eot_threshold`, `eot_timeout_ms`,
 	// `eager_eot_threshold`).
-	InterruptionSettings AIAssistantUpdateParamsInterruptionSettings `json:"interruption_settings,omitzero"`
+	InterruptionSettings InferenceEmbeddingInterruptionSettingsParam `json:"interruption_settings,omitzero"`
 	// MCP servers attached to the assistant. Create MCP servers with
 	// `/ai/mcp_servers`, then reference them by `id` here.
-	McpServers            []AIAssistantUpdateParamsMcpServer `json:"mcp_servers,omitzero"`
-	MessagingSettings     MessagingSettingsParam             `json:"messaging_settings,omitzero"`
-	ObservabilitySettings ObservabilityReqParam              `json:"observability_settings,omitzero"`
+	McpServers            []AssistantMcpServerParam `json:"mcp_servers,omitzero"`
+	MessagingSettings     MessagingSettingsParam    `json:"messaging_settings,omitzero"`
+	ObservabilitySettings ObservabilityReqParam     `json:"observability_settings,omitzero"`
 	// Configuration for post-conversation processing. When enabled, the assistant
 	// receives one additional LLM turn after the conversation ends, allowing it to
 	// execute tool calls such as logging to a CRM or sending a summary. The assistant
@@ -5478,127 +5523,6 @@ func (r AIAssistantUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *AIAssistantUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Reference to a connected integration attached to an assistant. Discover
-// available integrations with `/ai/integrations` and connected integrations with
-// `/ai/integrations/connections`.
-//
-// The property IntegrationID is required.
-type AIAssistantUpdateParamsIntegration struct {
-	// Catalog integration ID to attach. This is the `id` from the integrations catalog
-	// at `/ai/integrations` (the same value also appears as `integration_id` on
-	// entries returned by `/ai/integrations/connections`). It is **not** the
-	// connection-level `id` from `/ai/integrations/connections`.
-	IntegrationID string `json:"integration_id" api:"required"`
-	// Optional per-assistant allowlist of integration tool names. When omitted or
-	// empty, all tools allowed by the connected integration are available to the
-	// assistant.
-	AllowedList []string `json:"allowed_list,omitzero"`
-	paramObj
-}
-
-func (r AIAssistantUpdateParamsIntegration) MarshalJSON() (data []byte, err error) {
-	type shadow AIAssistantUpdateParamsIntegration
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AIAssistantUpdateParamsIntegration) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Settings for interruptions and how the assistant decides the user has finished
-// speaking. These timings are most relevant when using non turn-taking
-// transcription models. For turn-taking models like `deepgram/flux`, end-of-turn
-// behavior is controlled by the transcription end-of-turn settings under
-// `transcription.settings` (`eot_threshold`, `eot_timeout_ms`,
-// `eager_eot_threshold`).
-type AIAssistantUpdateParamsInterruptionSettings struct {
-	// When true, disables user interruptions while the assistant greeting is playing.
-	DisableGreetingInterruption param.Opt[bool] `json:"disable_greeting_interruption,omitzero"`
-	// Whether users can interrupt the assistant while it is speaking.
-	Enable param.Opt[bool] `json:"enable,omitzero"`
-	// Controls when the assistant starts speaking after the user stops. These
-	// thresholds primarily apply to non turn-taking transcription models. For
-	// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
-	// transcription end-of-turn settings under `transcription.settings` instead.
-	StartSpeakingPlan AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlan `json:"start_speaking_plan,omitzero"`
-	paramObj
-}
-
-func (r AIAssistantUpdateParamsInterruptionSettings) MarshalJSON() (data []byte, err error) {
-	type shadow AIAssistantUpdateParamsInterruptionSettings
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AIAssistantUpdateParamsInterruptionSettings) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Controls when the assistant starts speaking after the user stops. These
-// thresholds primarily apply to non turn-taking transcription models. For
-// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
-// transcription end-of-turn settings under `transcription.settings` instead.
-type AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlan struct {
-	// Minimum seconds to wait before the assistant starts speaking.
-	WaitSeconds param.Opt[float64] `json:"wait_seconds,omitzero"`
-	// Endpointing thresholds used to decide when the user has finished speaking.
-	// Applies to non turn-taking transcription models. For `deepgram/flux`, use
-	// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
-	// `eager_eot_threshold`.
-	TranscriptionEndpointingPlan AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan `json:"transcription_endpointing_plan,omitzero"`
-	paramObj
-}
-
-func (r AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlan) MarshalJSON() (data []byte, err error) {
-	type shadow AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlan
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlan) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Endpointing thresholds used to decide when the user has finished speaking.
-// Applies to non turn-taking transcription models. For `deepgram/flux`, use
-// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
-// `eager_eot_threshold`.
-type AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan struct {
-	// Seconds to wait after the transcript ends without punctuation.
-	OnNoPunctuationSeconds param.Opt[float64] `json:"on_no_punctuation_seconds,omitzero"`
-	// Seconds to wait after the transcript ends with a number.
-	OnNumberSeconds param.Opt[float64] `json:"on_number_seconds,omitzero"`
-	// Seconds to wait after the transcript ends with punctuation.
-	OnPunctuationSeconds param.Opt[float64] `json:"on_punctuation_seconds,omitzero"`
-	paramObj
-}
-
-func (r AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan) MarshalJSON() (data []byte, err error) {
-	type shadow AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Reference to an MCP server attached to an assistant. Create and manage MCP
-// servers with the `/ai/mcp_servers` endpoints, then attach them to assistants by
-// ID.
-//
-// The property ID is required.
-type AIAssistantUpdateParamsMcpServer struct {
-	// ID of the MCP server to attach. This must be the `id` of an MCP server returned
-	// by the `/ai/mcp_servers` endpoints.
-	ID string `json:"id" api:"required"`
-	// Optional per-assistant allowlist of MCP tool names. When omitted, the assistant
-	// uses the MCP server's configured `allowed_tools`.
-	AllowedTools []string `json:"allowed_tools,omitzero"`
-	paramObj
-}
-
-func (r AIAssistantUpdateParamsMcpServer) MarshalJSON() (data []byte, err error) {
-	type shadow AIAssistantUpdateParamsMcpServer
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AIAssistantUpdateParamsMcpServer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

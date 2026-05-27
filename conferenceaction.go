@@ -1200,8 +1200,8 @@ type ConferenceActionSpeakParams struct {
 	//     `speech-02-hd`, `speech-2.6-turbo`, `speech-2.8-turbo`. Use `voice_settings`
 	//     to configure speed, volume, pitch, and language_boost.
 	//   - **Rime:** Use `Rime.<model_id>.<voice_id>` (e.g., `Rime.Arcana.cove`).
-	//     Supported model_ids: `Arcana`, `Mist`. Use `voice_settings` to configure
-	//     voice_speed.
+	//     Supported model_ids: `Arcana`, `Mist`, `ArcanaV3`, `Coda`. Use
+	//     `voice_settings` to configure voice_speed.
 	//   - **Resemble:** Use `Resemble.Turbo.<voice_id>` (e.g.,
 	//     `Resemble.Turbo.my_voice`). Only `Turbo` model is supported. Use
 	//     `voice_settings` to configure precision, sample_rate, and format.
@@ -1319,7 +1319,7 @@ type ConferenceActionSpeakParamsVoiceSettingsUnion struct {
 	OfRime       *shared.RimeVoiceSettingsParam                   `json:",omitzero,inline"`
 	OfResemble   *shared.ResembleVoiceSettingsParam               `json:",omitzero,inline"`
 	OfInworld    *ConferenceActionSpeakParamsVoiceSettingsInworld `json:",omitzero,inline"`
-	OfXai        *ConferenceActionSpeakParamsVoiceSettingsXai     `json:",omitzero,inline"`
+	OfXai        *shared.XaiVoiceSettingsParam                    `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1512,7 +1512,7 @@ func init() {
 		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
 		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
 		apijson.Discriminator[ConferenceActionSpeakParamsVoiceSettingsInworld]("inworld"),
-		apijson.Discriminator[ConferenceActionSpeakParamsVoiceSettingsXai]("xai"),
+		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
 	)
 }
 
@@ -1535,25 +1535,6 @@ func (r ConferenceActionSpeakParamsVoiceSettingsInworld) MarshalJSON() (data []b
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *ConferenceActionSpeakParamsVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property Type is required.
-type ConferenceActionSpeakParamsVoiceSettingsXai struct {
-	// Language code, or `auto` to detect automatically.
-	Language param.Opt[string] `json:"language,omitzero"`
-	// Voice settings provider type
-	//
-	// This field can be elided, and will marshal its zero value as "xai".
-	Type constant.Xai `json:"type" default:"xai"`
-	paramObj
-}
-
-func (r ConferenceActionSpeakParamsVoiceSettingsXai) MarshalJSON() (data []byte, err error) {
-	type shadow ConferenceActionSpeakParamsVoiceSettingsXai
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ConferenceActionSpeakParamsVoiceSettingsXai) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

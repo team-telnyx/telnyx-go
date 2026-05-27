@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestAINewResponseDeprecated(t *testing.T) {
+func TestAINewResponse(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,7 @@ func TestAINewResponseDeprecated(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.NewResponseDeprecated(context.TODO(), telnyx.AINewResponseDeprecatedParams{
+	_, err := client.AI.NewResponse(context.TODO(), telnyx.AINewResponseParams{
 		Body: map[string]any{
 			"model": "bar",
 			"input": "bar",

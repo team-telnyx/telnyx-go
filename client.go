@@ -325,8 +325,7 @@ type Client struct {
 	// notation) that control how specific words are spoken.
 	PronunciationDicts PronunciationDictService
 	// UAC connection operations
-	UacConnections     UacConnectionService
-	VoiceSDKCallReport VoiceSDKCallReportService
+	UacConnections UacConnectionService
 	// Retrieve raw Voice SDK call report stats payloads for WebRTC call
 	// troubleshooting.
 	VoiceSDKCallReports VoiceSDKCallReportService
@@ -537,7 +536,6 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.TermsOfService = NewTermsOfServiceService(opts...)
 	r.PronunciationDicts = NewPronunciationDictService(opts...)
 	r.UacConnections = NewUacConnectionService(opts...)
-	r.VoiceSDKCallReport = NewVoiceSDKCallReportService(opts...)
 	r.VoiceSDKCallReports = NewVoiceSDKCallReportService(opts...)
 
 	return
