@@ -178,6 +178,8 @@ type OutboundMessagePayload struct {
 	Media  []OutboundMessagePayloadMedia `json:"media"`
 	// Unique identifier for a messaging profile.
 	MessagingProfileID string `json:"messaging_profile_id"`
+	// The number of characters in the message text
+	NumChars int64 `json:"num_chars"`
 	// The id of the organization the messaging profile belongs to.
 	OrganizationID string `json:"organization_id" format:"uuid"`
 	// Number of parts into which the message's body must be split.
@@ -240,6 +242,7 @@ type OutboundMessagePayload struct {
 		From                  respjson.Field
 		Media                 respjson.Field
 		MessagingProfileID    respjson.Field
+		NumChars              respjson.Field
 		OrganizationID        respjson.Field
 		Parts                 respjson.Field
 		ReceivedAt            respjson.Field
@@ -2675,6 +2678,7 @@ type MessageGetResponseDataUnion struct {
 	// [[]shared.InboundMessagePayloadMedia]
 	Media              MessageGetResponseDataUnionMedia `json:"media"`
 	MessagingProfileID string                           `json:"messaging_profile_id"`
+	NumChars           int64                            `json:"num_chars"`
 	OrganizationID     string                           `json:"organization_id"`
 	Parts              int64                            `json:"parts"`
 	ReceivedAt         time.Time                        `json:"received_at"`
@@ -2709,6 +2713,7 @@ type MessageGetResponseDataUnion struct {
 		From                  respjson.Field
 		Media                 respjson.Field
 		MessagingProfileID    respjson.Field
+		NumChars              respjson.Field
 		OrganizationID        respjson.Field
 		Parts                 respjson.Field
 		ReceivedAt            respjson.Field
@@ -2989,6 +2994,8 @@ type MessageCancelScheduledResponse struct {
 	Media  []MessageCancelScheduledResponseMedia `json:"media"`
 	// Unique identifier for a messaging profile.
 	MessagingProfileID string `json:"messaging_profile_id"`
+	// The number of characters in the message text
+	NumChars int64 `json:"num_chars"`
 	// The id of the organization the messaging profile belongs to.
 	OrganizationID string `json:"organization_id" format:"uuid"`
 	// Number of parts into which the message's body must be split.
@@ -3047,6 +3054,7 @@ type MessageCancelScheduledResponse struct {
 		From                  respjson.Field
 		Media                 respjson.Field
 		MessagingProfileID    respjson.Field
+		NumChars              respjson.Field
 		OrganizationID        respjson.Field
 		Parts                 respjson.Field
 		ReceivedAt            respjson.Field

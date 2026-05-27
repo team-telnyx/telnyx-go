@@ -3763,13 +3763,18 @@ type TelephonySettingsRecordingSettings struct {
 	//
 	// Any of "wav", "mp3".
 	Format string `json:"format"`
+	// When enabled, the call recording will stop when the conversation ends (for
+	// example, when the assistant hangs up or the call is transferred). When disabled,
+	// recording continues until the call itself ends.
+	StopOnConversationEnd bool `json:"stop_on_conversation_end"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Channels    respjson.Field
-		Enabled     respjson.Field
-		Format      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		Channels              respjson.Field
+		Enabled               respjson.Field
+		Format                respjson.Field
+		StopOnConversationEnd respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
 	} `json:"-"`
 }
 
@@ -3940,6 +3945,10 @@ type TelephonySettingsRecordingSettingsParam struct {
 	// Whether call recording is enabled. When set to false, calls will not be recorded
 	// regardless of other recording configuration.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// When enabled, the call recording will stop when the conversation ends (for
+	// example, when the assistant hangs up or the call is transferred). When disabled,
+	// recording continues until the call itself ends.
+	StopOnConversationEnd param.Opt[bool] `json:"stop_on_conversation_end,omitzero"`
 	// The number of channels for the recording. 'single' for mono, 'dual' for stereo.
 	//
 	// Any of "single", "dual".
