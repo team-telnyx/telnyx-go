@@ -62,7 +62,7 @@ func (r *WireguardInterfaceService) Get(ctx context.Context, id string, opts ...
 }
 
 // List all WireGuard Interfaces.
-func (r *WireguardInterfaceService) List(ctx context.Context, query WireguardInterfaceListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[WireguardInterfaceListResponse], err error) {
+func (r *WireguardInterfaceService) List(ctx context.Context, query WireguardInterfaceListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[WireguardInterfaceRead], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -80,7 +80,7 @@ func (r *WireguardInterfaceService) List(ctx context.Context, query WireguardInt
 }
 
 // List all WireGuard Interfaces.
-func (r *WireguardInterfaceService) ListAutoPaging(ctx context.Context, query WireguardInterfaceListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[WireguardInterfaceListResponse] {
+func (r *WireguardInterfaceService) ListAutoPaging(ctx context.Context, query WireguardInterfaceListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[WireguardInterfaceRead] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -96,8 +96,82 @@ func (r *WireguardInterfaceService) Delete(ctx context.Context, id string, opts 
 	return res, err
 }
 
+type WireguardInterfaceRead struct {
+	// Identifies the resource.
+	ID string `json:"id" format:"uuid"`
+	// ISO 8601 formatted date-time indicating when the resource was created.
+	CreatedAt string `json:"created_at"`
+	// Enable SIP traffic forwarding over VPN interface.
+	EnableSipTrunking bool `json:"enable_sip_trunking"`
+	// The Telnyx WireGuard peers `Peer.endpoint` value.
+	Endpoint string `json:"endpoint"`
+	// A user specified name for the interface.
+	Name string `json:"name"`
+	// The id of the network associated with the interface.
+	NetworkID string `json:"network_id" format:"uuid"`
+	// The Telnyx WireGuard peers `Peer.PublicKey`.
+	PublicKey string `json:"public_key"`
+	// Identifies the type of the resource.
+	RecordType string                       `json:"record_type"`
+	Region     WireguardInterfaceReadRegion `json:"region"`
+	// The region interface is deployed to.
+	RegionCode string `json:"region_code"`
+	// The current status of the interface deployment.
+	//
+	// Any of "created", "provisioning", "provisioned", "deleting".
+	Status InterfaceStatus `json:"status"`
+	// ISO 8601 formatted date-time indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                respjson.Field
+		CreatedAt         respjson.Field
+		EnableSipTrunking respjson.Field
+		Endpoint          respjson.Field
+		Name              respjson.Field
+		NetworkID         respjson.Field
+		PublicKey         respjson.Field
+		RecordType        respjson.Field
+		Region            respjson.Field
+		RegionCode        respjson.Field
+		Status            respjson.Field
+		UpdatedAt         respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WireguardInterfaceRead) RawJSON() string { return r.JSON.raw }
+func (r *WireguardInterfaceRead) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WireguardInterfaceReadRegion struct {
+	// Region code of the interface.
+	Code string `json:"code"`
+	// Region name of the interface.
+	Name string `json:"name"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Code        respjson.Field
+		Name        respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WireguardInterfaceReadRegion) RawJSON() string { return r.JSON.raw }
+func (r *WireguardInterfaceReadRegion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type WireguardInterfaceNewResponse struct {
-	Data WireguardInterfaceNewResponseData `json:"data"`
+	Data WireguardInterfaceRead `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -112,61 +186,8 @@ func (r *WireguardInterfaceNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WireguardInterfaceNewResponseData struct {
-	// Enable SIP traffic forwarding over VPN interface.
-	EnableSipTrunking bool `json:"enable_sip_trunking"`
-	// The Telnyx WireGuard peers `Peer.endpoint` value.
-	Endpoint string `json:"endpoint"`
-	// The Telnyx WireGuard peers `Peer.PublicKey`.
-	PublicKey string                                  `json:"public_key"`
-	Region    WireguardInterfaceNewResponseDataRegion `json:"region"`
-	// The region interface is deployed to.
-	RegionCode string `json:"region_code"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		EnableSipTrunking respjson.Field
-		Endpoint          respjson.Field
-		PublicKey         respjson.Field
-		Region            respjson.Field
-		RegionCode        respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-	Record
-	NetworkInterface
-}
-
-// Returns the unmodified JSON received from the API
-func (r WireguardInterfaceNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *WireguardInterfaceNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WireguardInterfaceNewResponseDataRegion struct {
-	// Region code of the interface.
-	Code string `json:"code"`
-	// Region name of the interface.
-	Name string `json:"name"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Name        respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WireguardInterfaceNewResponseDataRegion) RawJSON() string { return r.JSON.raw }
-func (r *WireguardInterfaceNewResponseDataRegion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type WireguardInterfaceGetResponse struct {
-	Data WireguardInterfaceGetResponseData `json:"data"`
+	Data WireguardInterfaceRead `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -181,114 +202,8 @@ func (r *WireguardInterfaceGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WireguardInterfaceGetResponseData struct {
-	// Enable SIP traffic forwarding over VPN interface.
-	EnableSipTrunking bool `json:"enable_sip_trunking"`
-	// The Telnyx WireGuard peers `Peer.endpoint` value.
-	Endpoint string `json:"endpoint"`
-	// The Telnyx WireGuard peers `Peer.PublicKey`.
-	PublicKey string                                  `json:"public_key"`
-	Region    WireguardInterfaceGetResponseDataRegion `json:"region"`
-	// The region interface is deployed to.
-	RegionCode string `json:"region_code"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		EnableSipTrunking respjson.Field
-		Endpoint          respjson.Field
-		PublicKey         respjson.Field
-		Region            respjson.Field
-		RegionCode        respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-	Record
-	NetworkInterface
-}
-
-// Returns the unmodified JSON received from the API
-func (r WireguardInterfaceGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *WireguardInterfaceGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WireguardInterfaceGetResponseDataRegion struct {
-	// Region code of the interface.
-	Code string `json:"code"`
-	// Region name of the interface.
-	Name string `json:"name"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Name        respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WireguardInterfaceGetResponseDataRegion) RawJSON() string { return r.JSON.raw }
-func (r *WireguardInterfaceGetResponseDataRegion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WireguardInterfaceListResponse struct {
-	// Enable SIP traffic forwarding over VPN interface.
-	EnableSipTrunking bool `json:"enable_sip_trunking"`
-	// The Telnyx WireGuard peers `Peer.endpoint` value.
-	Endpoint string `json:"endpoint"`
-	// The Telnyx WireGuard peers `Peer.PublicKey`.
-	PublicKey string                               `json:"public_key"`
-	Region    WireguardInterfaceListResponseRegion `json:"region"`
-	// The region interface is deployed to.
-	RegionCode string `json:"region_code"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		EnableSipTrunking respjson.Field
-		Endpoint          respjson.Field
-		PublicKey         respjson.Field
-		Region            respjson.Field
-		RegionCode        respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-	Record
-	NetworkInterface
-}
-
-// Returns the unmodified JSON received from the API
-func (r WireguardInterfaceListResponse) RawJSON() string { return r.JSON.raw }
-func (r *WireguardInterfaceListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WireguardInterfaceListResponseRegion struct {
-	// Region code of the interface.
-	Code string `json:"code"`
-	// Region name of the interface.
-	Name string `json:"name"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Name        respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WireguardInterfaceListResponseRegion) RawJSON() string { return r.JSON.raw }
-func (r *WireguardInterfaceListResponseRegion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type WireguardInterfaceDeleteResponse struct {
-	Data WireguardInterfaceDeleteResponseData `json:"data"`
+	Data WireguardInterfaceRead `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -300,59 +215,6 @@ type WireguardInterfaceDeleteResponse struct {
 // Returns the unmodified JSON received from the API
 func (r WireguardInterfaceDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *WireguardInterfaceDeleteResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WireguardInterfaceDeleteResponseData struct {
-	// Enable SIP traffic forwarding over VPN interface.
-	EnableSipTrunking bool `json:"enable_sip_trunking"`
-	// The Telnyx WireGuard peers `Peer.endpoint` value.
-	Endpoint string `json:"endpoint"`
-	// The Telnyx WireGuard peers `Peer.PublicKey`.
-	PublicKey string                                     `json:"public_key"`
-	Region    WireguardInterfaceDeleteResponseDataRegion `json:"region"`
-	// The region interface is deployed to.
-	RegionCode string `json:"region_code"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		EnableSipTrunking respjson.Field
-		Endpoint          respjson.Field
-		PublicKey         respjson.Field
-		Region            respjson.Field
-		RegionCode        respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-	Record
-	NetworkInterface
-}
-
-// Returns the unmodified JSON received from the API
-func (r WireguardInterfaceDeleteResponseData) RawJSON() string { return r.JSON.raw }
-func (r *WireguardInterfaceDeleteResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WireguardInterfaceDeleteResponseDataRegion struct {
-	// Region code of the interface.
-	Code string `json:"code"`
-	// Region name of the interface.
-	Name string `json:"name"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Name        respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WireguardInterfaceDeleteResponseDataRegion) RawJSON() string { return r.JSON.raw }
-func (r *WireguardInterfaceDeleteResponseDataRegion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
