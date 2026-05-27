@@ -1,5 +1,21 @@
 # Changelog
 
+## 4.72.0 (2026-05-27)
+
+Full Changelog: [v4.71.0...v4.72.0](https://github.com/team-telnyx/telnyx-go/compare/v4.71.0...v4.72.0)
+
+### Features
+
+* TELAPPS-406: document GET /speech-to-text/providers endpoint ([dc6b9cd](https://github.com/team-telnyx/telnyx-go/commit/dc6b9cdcbb655c15034aa0cba3d8929e19283ba8))
+* TELAPPS-523: document stop_on_conversation_end on assistant recording_settings ([670caf4](https://github.com/team-telnyx/telnyx-go/commit/670caf44ac439623033e32882720f46ad5deffb2))
+* TELAPPS-531: document Rime ArcanaV3 and Coda voice models ([477c9b3](https://github.com/team-telnyx/telnyx-go/commit/477c9b381150292bbbed4e348662548e7d582ee3))
+* TELAPPS-5698 document conversation relay API shape ([3cc6444](https://github.com/team-telnyx/telnyx-go/commit/3cc64448b072aa4c01132036f5d1f96b2fce4811))
+
+
+### Documentation
+
+* add voice sdk debug call report spec ([c85c2a0](https://github.com/team-telnyx/telnyx-go/commit/c85c2a0de65f56e9aa622564b34cc1702bd8747e))
+
 ## 4.71.0 (2026-05-22)
 
 Full Changelog: [v4.70.0...v4.71.0](https://github.com/team-telnyx/telnyx-go/compare/v4.70.0...v4.71.0)
