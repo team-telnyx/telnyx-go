@@ -124,6 +124,59 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 			SupervisorRole:          "whisper",
 			WhisperCallControlIDs:   []string{"v2:Sg1xxxQ_U3ixxxyXT_VDNI3xxxazZdg6Vxxxs4-GNYxxxVaJPOhFMRQ", "v2:qqpb0mmvd-ovhhBr0BUQQn0fld5jIboaaX3-De0DkqXHzbf8d75xkw"},
 		},
+		ConversationRelayConfig: telnyx.CallDialParamsConversationRelayConfig{
+			URL: "wss://example.com/conversation-relay",
+			CustomParameters: map[string]any{
+				"customer_id": "bar",
+			},
+			DtmfDetection:         telnyx.Bool(true),
+			Greeting:              telnyx.String("Hi! Ask me anything!"),
+			Interruptible:         "speech",
+			InterruptibleGreeting: "dtmf",
+			InterruptionSettings: telnyx.CallDialParamsConversationRelayConfigInterruptionSettings{
+				Enable:                       telnyx.Bool(true),
+				Interruptible:                "speech",
+				InterruptibleGreeting:        "speech",
+				WelcomeGreetingInterruptible: "speech",
+			},
+			Language: telnyx.String("en-US"),
+			Languages: []telnyx.CallDialParamsConversationRelayConfigLanguage{{
+				Language:            "en-US",
+				SpeechModel:         telnyx.String("nova-3"),
+				TranscriptionEngine: "Deepgram",
+				TranscriptionEngineConfig: map[string]any{
+					"transcription_model": "bar",
+				},
+				TranscriptionProvider: telnyx.String("Deepgram"),
+				TtsProvider:           telnyx.String("telnyx"),
+				Voice:                 telnyx.String("Telnyx.Ultra.alloy"),
+				VoiceSettings: telnyx.CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion{
+					OfElevenlabs: &telnyx.ElevenLabsVoiceSettingsParam{
+						Type:      telnyx.ElevenLabsVoiceSettingsTypeElevenlabs,
+						APIKeyRef: telnyx.String("my_elevenlabs_api_key"),
+					},
+				},
+			}},
+			Provider: telnyx.String("elevenlabs"),
+			StructuredProvider: map[string]any{
+				"voice_id": "bar",
+				"model_id": "bar",
+			},
+			TranscriptionEngine: "Google",
+			TranscriptionEngineConfig: map[string]any{
+				"transcription_model": "bar",
+				"interim_results":     "bar",
+				"keywords_boosting":   "bar",
+			},
+			TtsProvider: telnyx.String("telnyx"),
+			Voice:       telnyx.String("Telnyx.KokoroTTS.af"),
+			VoiceSettings: telnyx.CallDialParamsConversationRelayConfigVoiceSettingsUnion{
+				OfTelnyx: &telnyx.TelnyxVoiceSettingsParam{
+					Type:       telnyx.TelnyxVoiceSettingsTypeTelnyx,
+					VoiceSpeed: telnyx.Float(1),
+				},
+			},
+		},
 		CustomHeaders: []telnyx.CustomSipHeaderParam{{
 			Name:  "head_1",
 			Value: "val_1",
