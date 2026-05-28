@@ -218,6 +218,8 @@ type Client struct {
 	// Regulatory Requirements
 	RegulatoryRequirements RegulatoryRequirementService
 	Reports                ReportService
+	// Discover available speech-to-text providers, models, and supported languages.
+	SpeechToText SpeechToTextService
 	// Requirement Groups
 	RequirementGroups RequirementGroupService
 	// Types of requirements for international numbers and porting orders
@@ -326,8 +328,6 @@ type Client struct {
 	PronunciationDicts PronunciationDictService
 	// UAC connection operations
 	UacConnections UacConnectionService
-	// Discover available speech-to-text providers, models, and supported languages.
-	SpeechToText SpeechToTextService
 	// Retrieve raw Voice SDK call report stats payloads for WebRTC call
 	// troubleshooting.
 	VoiceSDKCallReports VoiceSDKCallReportService
@@ -482,6 +482,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Regions = NewRegionService(opts...)
 	r.RegulatoryRequirements = NewRegulatoryRequirementService(opts...)
 	r.Reports = NewReportService(opts...)
+	r.SpeechToText = NewSpeechToTextService(opts...)
 	r.RequirementGroups = NewRequirementGroupService(opts...)
 	r.RequirementTypes = NewRequirementTypeService(opts...)
 	r.Requirements = NewRequirementService(opts...)
@@ -538,7 +539,6 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.TermsOfService = NewTermsOfServiceService(opts...)
 	r.PronunciationDicts = NewPronunciationDictService(opts...)
 	r.UacConnections = NewUacConnectionService(opts...)
-	r.SpeechToText = NewSpeechToTextService(opts...)
 	r.VoiceSDKCallReports = NewVoiceSDKCallReportService(opts...)
 
 	return

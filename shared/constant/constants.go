@@ -25,6 +25,7 @@ type Buttons string         // Always "BUTTONS"
 type Carousel string        // Always "CAROUSEL"
 type Comparative string     // Always "comparative"
 type Developer string       // Always "developer"
+type Error string           // Always "error"
 type Footer string          // Always "FOOTER"
 type Function string        // Always "function"
 type Handoff string         // Always "handoff"
@@ -42,6 +43,7 @@ type Simple string          // Always "simple"
 type SkipTurn string        // Always "skip_turn"
 type System string          // Always "system"
 type Tool string            // Always "tool"
+type Transcript string      // Always "transcript"
 type Transfer string        // Always "transfer"
 type User string            // Always "user"
 
@@ -52,6 +54,7 @@ func (c Buttons) Default() Buttons                 { return "BUTTONS" }
 func (c Carousel) Default() Carousel               { return "CAROUSEL" }
 func (c Comparative) Default() Comparative         { return "comparative" }
 func (c Developer) Default() Developer             { return "developer" }
+func (c Error) Default() Error                     { return "error" }
 func (c Footer) Default() Footer                   { return "FOOTER" }
 func (c Function) Default() Function               { return "function" }
 func (c Handoff) Default() Handoff                 { return "handoff" }
@@ -69,6 +72,7 @@ func (c Simple) Default() Simple                   { return "simple" }
 func (c SkipTurn) Default() SkipTurn               { return "skip_turn" }
 func (c System) Default() System                   { return "system" }
 func (c Tool) Default() Tool                       { return "tool" }
+func (c Transcript) Default() Transcript           { return "transcript" }
 func (c Transfer) Default() Transfer               { return "transfer" }
 func (c User) Default() User                       { return "user" }
 
@@ -79,6 +83,7 @@ func (c Buttons) MarshalJSON() ([]byte, error)         { return marshalString(c)
 func (c Carousel) MarshalJSON() ([]byte, error)        { return marshalString(c) }
 func (c Comparative) MarshalJSON() ([]byte, error)     { return marshalString(c) }
 func (c Developer) MarshalJSON() ([]byte, error)       { return marshalString(c) }
+func (c Error) MarshalJSON() ([]byte, error)           { return marshalString(c) }
 func (c Footer) MarshalJSON() ([]byte, error)          { return marshalString(c) }
 func (c Function) MarshalJSON() ([]byte, error)        { return marshalString(c) }
 func (c Handoff) MarshalJSON() ([]byte, error)         { return marshalString(c) }
@@ -96,6 +101,7 @@ func (c Simple) MarshalJSON() ([]byte, error)          { return marshalString(c)
 func (c SkipTurn) MarshalJSON() ([]byte, error)        { return marshalString(c) }
 func (c System) MarshalJSON() ([]byte, error)          { return marshalString(c) }
 func (c Tool) MarshalJSON() ([]byte, error)            { return marshalString(c) }
+func (c Transcript) MarshalJSON() ([]byte, error)      { return marshalString(c) }
 func (c Transfer) MarshalJSON() ([]byte, error)        { return marshalString(c) }
 func (c User) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 

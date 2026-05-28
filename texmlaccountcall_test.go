@@ -98,16 +98,17 @@ func TestTexmlAccountCallCallsWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"account_sid",
 		telnyx.TexmlAccountCallCallsParams{
-			OfWithURL: &telnyx.TexmlAccountCallCallsParamsParamsWithURL{
-				URL:                              "https://www.example.com/texml.xml",
-				ApplicationSid:                   telnyx.String("example-app-sid"),
+			Params: telnyx.TexmlAccountCallCallsParamsParams{
+				ApplicationSid:                   "example-app-sid",
+				From:                             "+13120001234",
+				To:                               "+13121230000",
 				AsyncAmd:                         telnyx.Bool(true),
 				AsyncAmdStatusCallback:           telnyx.String("https://www.example.com/callback"),
 				AsyncAmdStatusCallbackMethod:     "GET",
 				CallerID:                         telnyx.String("Info"),
 				CancelPlaybackOnDetectMessageEnd: telnyx.Bool(false),
 				CancelPlaybackOnMachineDetection: telnyx.Bool(false),
-				CustomHeaders: []telnyx.TexmlAccountCallCallsParamsParamsWithURLCustomHeader{{
+				CustomHeaders: []telnyx.TexmlAccountCallCallsParamsParamsCustomHeader{{
 					Name:  "X-Custom-Header",
 					Value: "custom-value",
 				}},
@@ -116,7 +117,6 @@ func TestTexmlAccountCallCallsWithOptionalParams(t *testing.T) {
 				DeepfakeDetectionCallbackURL:       telnyx.String("https://www.example.com/deepfake-callback"),
 				DetectionMode:                      "Premium",
 				FallbackURL:                        telnyx.String("https://www.example.com/instructions-fallback.xml"),
-				From:                               telnyx.String("+13120001234"),
 				MachineDetection:                   "Enable",
 				MachineDetectionPromptEndTimeout:   telnyx.Int(5000),
 				MachineDetectionSilenceTimeout:     telnyx.Int(2000),
@@ -141,11 +141,11 @@ func TestTexmlAccountCallCallsWithOptionalParams(t *testing.T) {
 				StatusCallbackMethod:               "GET",
 				SuperviseCallSid:                   telnyx.String("v3:MdI91X4lWFEs7IgbBEOT9M4AigoY08M0WWZFISt1Yw2axZ_IiE4pqg"),
 				SupervisingRole:                    "monitor",
-				Texml:                              telnyx.String("Texml"),
+				Texml:                              telnyx.String(`<?xml version="1.0" encoding="UTF-8"?><Response><Say>Hello</Say></Response>`),
 				TimeLimit:                          telnyx.Int(3600),
 				Timeout:                            telnyx.Int(60),
-				To:                                 telnyx.String("+13121230000"),
 				Trim:                               "trim-silence",
+				URL:                                telnyx.String("https://www.example.com/texml.xml"),
 				URLMethod:                          "GET",
 			},
 		},
