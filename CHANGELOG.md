@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.73.0 (2026-05-28)
+
+Full Changelog: [v4.72.0...v4.73.0](https://github.com/team-telnyx/telnyx-go/compare/v4.72.0...v4.73.0)
+
+### Features
+
+* **api:** manual updates ([eabb99b](https://github.com/team-telnyx/telnyx-go/commit/eabb99b22358f931c8ae745995acb88a9655fbb7))
+* **api:** manual updates ([ce0f90b](https://github.com/team-telnyx/telnyx-go/commit/ce0f90b2f429bf42bebb1c482e52d774843e449a))
+* **api:** manual updates ([54e28ff](https://github.com/team-telnyx/telnyx-go/commit/54e28ff6a34c929366b6662d3365376665d0c602))
+
 ## 4.72.0 (2026-05-27)
 
 Full Changelog: [v4.71.0...v4.72.0](https://github.com/team-telnyx/telnyx-go/compare/v4.71.0...v4.72.0)
