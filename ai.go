@@ -282,12 +282,12 @@ func (r *AISummarizeResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type AINewResponseParams struct {
-	Body map[string]any
+	Input map[string]any
 	paramObj
 }
 
 func (r AINewResponseParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.Body)
+	return shimjson.Marshal(r.Input)
 }
 func (r *AINewResponseParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
