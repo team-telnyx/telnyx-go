@@ -134,24 +134,24 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 				Greeting:              telnyx.String("Hi! Ask me anything!"),
 				Interruptible:         "speech",
 				InterruptibleGreeting: "dtmf",
-				InterruptionSettings: telnyx.CallActionAnswerParamsConversationRelayConfigInterruptionSettings{
+				InterruptionSettings: telnyx.ConversationRelayInterruptionSettingsParam{
 					Enable:                       telnyx.Bool(true),
-					Interruptible:                "speech",
-					InterruptibleGreeting:        "speech",
-					WelcomeGreetingInterruptible: "speech",
+					Interruptible:                telnyx.ConversationRelayInterruptionSettingsInterruptibleSpeech,
+					InterruptibleGreeting:        telnyx.ConversationRelayInterruptionSettingsInterruptibleGreetingSpeech,
+					WelcomeGreetingInterruptible: telnyx.ConversationRelayInterruptionSettingsWelcomeGreetingInterruptibleSpeech,
 				},
 				Language: telnyx.String("en-US"),
-				Languages: []telnyx.CallActionAnswerParamsConversationRelayConfigLanguage{{
+				Languages: []telnyx.ConversationRelayLanguageParam{{
 					Language:            "en-US",
 					SpeechModel:         telnyx.String("nova-3"),
-					TranscriptionEngine: "Deepgram",
+					TranscriptionEngine: telnyx.ConversationRelayLanguageTranscriptionEngineDeepgram,
 					TranscriptionEngineConfig: map[string]any{
 						"transcription_model": "bar",
 					},
 					TranscriptionProvider: telnyx.String("Deepgram"),
 					TtsProvider:           telnyx.String("telnyx"),
 					Voice:                 telnyx.String("Telnyx.Ultra.alloy"),
-					VoiceSettings: telnyx.CallActionAnswerParamsConversationRelayConfigLanguageVoiceSettingsUnion{
+					VoiceSettings: telnyx.ConversationRelayLanguageVoiceSettingsUnionParam{
 						OfElevenlabs: &telnyx.ElevenLabsVoiceSettingsParam{
 							Type:      telnyx.ElevenLabsVoiceSettingsTypeElevenlabs,
 							APIKeyRef: telnyx.String("my_elevenlabs_api_key"),
@@ -1050,17 +1050,17 @@ func TestCallActionStartConversationRelayWithOptionalParams(t *testing.T) {
 				DtmfDetection:         telnyx.Bool(true),
 				Interruptible:         "speech",
 				InterruptibleGreeting: "dtmf",
-				Languages: []telnyx.CallActionStartConversationRelayParamsConversationRelaySettingsLanguage{{
+				Languages: []telnyx.ConversationRelayLanguageParam{{
 					Language:            "en-US",
 					SpeechModel:         telnyx.String("nova-3"),
-					TranscriptionEngine: "Deepgram",
+					TranscriptionEngine: telnyx.ConversationRelayLanguageTranscriptionEngineDeepgram,
 					TranscriptionEngineConfig: map[string]any{
 						"transcription_model": "bar",
 					},
 					TranscriptionProvider: telnyx.String("Deepgram"),
 					TtsProvider:           telnyx.String("telnyx"),
 					Voice:                 telnyx.String("Telnyx.KokoroTTS.af"),
-					VoiceSettings: telnyx.CallActionStartConversationRelayParamsConversationRelaySettingsLanguageVoiceSettingsUnion{
+					VoiceSettings: telnyx.ConversationRelayLanguageVoiceSettingsUnionParam{
 						OfElevenlabs: &telnyx.ElevenLabsVoiceSettingsParam{
 							Type:      telnyx.ElevenLabsVoiceSettingsTypeElevenlabs,
 							APIKeyRef: telnyx.String("my_elevenlabs_api_key"),
@@ -1076,24 +1076,24 @@ func TestCallActionStartConversationRelayWithOptionalParams(t *testing.T) {
 			Greeting:              telnyx.String("Hi! Ask me anything!"),
 			Interruptible:         telnyx.CallActionStartConversationRelayParamsInterruptibleSpeech,
 			InterruptibleGreeting: telnyx.CallActionStartConversationRelayParamsInterruptibleGreetingDtmf,
-			InterruptionSettings: telnyx.CallActionStartConversationRelayParamsInterruptionSettings{
+			InterruptionSettings: telnyx.ConversationRelayInterruptionSettingsParam{
 				Enable:                       telnyx.Bool(true),
-				Interruptible:                "speech",
-				InterruptibleGreeting:        "speech",
-				WelcomeGreetingInterruptible: "speech",
+				Interruptible:                telnyx.ConversationRelayInterruptionSettingsInterruptibleSpeech,
+				InterruptibleGreeting:        telnyx.ConversationRelayInterruptionSettingsInterruptibleGreetingSpeech,
+				WelcomeGreetingInterruptible: telnyx.ConversationRelayInterruptionSettingsWelcomeGreetingInterruptibleSpeech,
 			},
 			Language: telnyx.String("en-US"),
-			Languages: []telnyx.CallActionStartConversationRelayParamsLanguage{{
+			Languages: []telnyx.ConversationRelayLanguageParam{{
 				Language:            "en-US",
 				SpeechModel:         telnyx.String("nova-3"),
-				TranscriptionEngine: "Deepgram",
+				TranscriptionEngine: telnyx.ConversationRelayLanguageTranscriptionEngineDeepgram,
 				TranscriptionEngineConfig: map[string]any{
 					"transcription_model": "bar",
 				},
 				TranscriptionProvider: telnyx.String("Deepgram"),
 				TtsProvider:           telnyx.String("telnyx"),
 				Voice:                 telnyx.String("Telnyx.KokoroTTS.af"),
-				VoiceSettings: telnyx.CallActionStartConversationRelayParamsLanguageVoiceSettingsUnion{
+				VoiceSettings: telnyx.ConversationRelayLanguageVoiceSettingsUnionParam{
 					OfElevenlabs: &telnyx.ElevenLabsVoiceSettingsParam{
 						Type:      telnyx.ElevenLabsVoiceSettingsTypeElevenlabs,
 						APIKeyRef: telnyx.String("my_elevenlabs_api_key"),

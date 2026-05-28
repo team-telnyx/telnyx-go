@@ -27,7 +27,7 @@ func TestAINewResponse(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.NewResponse(context.TODO(), telnyx.AINewResponseParams{
-		Body: map[string]any{
+		Input: map[string]any{
 			"model": "bar",
 			"input": "bar",
 		},
