@@ -84,6 +84,46 @@ func (r *VoiceSDKCallReportService) ListAutoPaging(ctx context.Context, query Vo
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
+// A raw Voice SDK log entry. Additional SDK-specific fields may be present.
+type VoiceSDKCallReportLogEntry struct {
+	// Raw structured context attached to the log entry.
+	Context map[string]any `json:"context"`
+	// Log level emitted by the SDK.
+	//
+	// Any of "debug", "info", "warn", "error".
+	Level VoiceSDKCallReportLogEntryLevel `json:"level"`
+	// Log message.
+	Message string `json:"message"`
+	// Time when the log entry was emitted.
+	Timestamp   time.Time      `json:"timestamp" format:"date-time"`
+	ExtraFields map[string]any `json:"" api:"extrafields"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Context     respjson.Field
+		Level       respjson.Field
+		Message     respjson.Field
+		Timestamp   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VoiceSDKCallReportLogEntry) RawJSON() string { return r.JSON.raw }
+func (r *VoiceSDKCallReportLogEntry) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Log level emitted by the SDK.
+type VoiceSDKCallReportLogEntryLevel string
+
+const (
+	VoiceSDKCallReportLogEntryLevelDebug VoiceSDKCallReportLogEntryLevel = "debug"
+	VoiceSDKCallReportLogEntryLevelInfo  VoiceSDKCallReportLogEntryLevel = "info"
+	VoiceSDKCallReportLogEntryLevelWarn  VoiceSDKCallReportLogEntryLevel = "warn"
+	VoiceSDKCallReportLogEntryLevelError VoiceSDKCallReportLogEntryLevel = "error"
+)
+
 // A raw call report stats JSON payload. The schema is intentionally permissive
 // because Voice SDK clients can add fields over time.
 type VoiceSDKCallReportGetResponse struct {
@@ -171,27 +211,27 @@ func (r *VoiceSDKCallReportGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 // VoiceSDKCallReportGetResponseLogsUnion contains all possible properties and
-// values from [[]VoiceSDKCallReportGetResponseLogsArrayItem],
+// values from [[]VoiceSDKCallReportLogEntry],
 // [VoiceSDKCallReportGetResponseLogsEntries].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfVoiceSDKCallReportGetResponseLogsArray]
+// will be valid: OfVoiceSDKCallReportLogEntryArray]
 type VoiceSDKCallReportGetResponseLogsUnion struct {
-	// This field will be present if the value is a
-	// [[]VoiceSDKCallReportGetResponseLogsArrayItem] instead of an object.
-	OfVoiceSDKCallReportGetResponseLogsArray []VoiceSDKCallReportGetResponseLogsArrayItem `json:",inline"`
+	// This field will be present if the value is a [[]VoiceSDKCallReportLogEntry]
+	// instead of an object.
+	OfVoiceSDKCallReportLogEntryArray []VoiceSDKCallReportLogEntry `json:",inline"`
 	// This field is from variant [VoiceSDKCallReportGetResponseLogsEntries].
-	Entries []VoiceSDKCallReportGetResponseLogsEntriesEntry `json:"entries"`
+	Entries []VoiceSDKCallReportLogEntry `json:"entries"`
 	JSON    struct {
-		OfVoiceSDKCallReportGetResponseLogsArray respjson.Field
-		Entries                                  respjson.Field
-		raw                                      string
+		OfVoiceSDKCallReportLogEntryArray respjson.Field
+		Entries                           respjson.Field
+		raw                               string
 	} `json:"-"`
 }
 
-func (u VoiceSDKCallReportGetResponseLogsUnion) AsVoiceSDKCallReportGetResponseLogsArray() (v []VoiceSDKCallReportGetResponseLogsArrayItem) {
+func (u VoiceSDKCallReportGetResponseLogsUnion) AsVoiceSDKCallReportLogEntryArray() (v []VoiceSDKCallReportLogEntry) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -208,42 +248,12 @@ func (r *VoiceSDKCallReportGetResponseLogsUnion) UnmarshalJSON(data []byte) erro
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A raw Voice SDK log entry. Additional SDK-specific fields may be present.
-type VoiceSDKCallReportGetResponseLogsArrayItem struct {
-	// Raw structured context attached to the log entry.
-	Context map[string]any `json:"context"`
-	// Log level emitted by the SDK.
-	//
-	// Any of "debug", "info", "warn", "error".
-	Level string `json:"level"`
-	// Log message.
-	Message string `json:"message"`
-	// Time when the log entry was emitted.
-	Timestamp   time.Time      `json:"timestamp" format:"date-time"`
-	ExtraFields map[string]any `json:"" api:"extrafields"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Context     respjson.Field
-		Level       respjson.Field
-		Message     respjson.Field
-		Timestamp   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VoiceSDKCallReportGetResponseLogsArrayItem) RawJSON() string { return r.JSON.raw }
-func (r *VoiceSDKCallReportGetResponseLogsArrayItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Raw logs object emitted by the Voice SDK when logs are grouped under an entries
 // field.
 type VoiceSDKCallReportGetResponseLogsEntries struct {
 	// Raw log entries when the SDK groups logs under an entries field.
-	Entries     []VoiceSDKCallReportGetResponseLogsEntriesEntry `json:"entries"`
-	ExtraFields map[string]any                                  `json:"" api:"extrafields"`
+	Entries     []VoiceSDKCallReportLogEntry `json:"entries"`
+	ExtraFields map[string]any               `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Entries     respjson.Field
@@ -255,36 +265,6 @@ type VoiceSDKCallReportGetResponseLogsEntries struct {
 // Returns the unmodified JSON received from the API
 func (r VoiceSDKCallReportGetResponseLogsEntries) RawJSON() string { return r.JSON.raw }
 func (r *VoiceSDKCallReportGetResponseLogsEntries) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A raw Voice SDK log entry. Additional SDK-specific fields may be present.
-type VoiceSDKCallReportGetResponseLogsEntriesEntry struct {
-	// Raw structured context attached to the log entry.
-	Context map[string]any `json:"context"`
-	// Log level emitted by the SDK.
-	//
-	// Any of "debug", "info", "warn", "error".
-	Level string `json:"level"`
-	// Log message.
-	Message string `json:"message"`
-	// Time when the log entry was emitted.
-	Timestamp   time.Time      `json:"timestamp" format:"date-time"`
-	ExtraFields map[string]any `json:"" api:"extrafields"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Context     respjson.Field
-		Level       respjson.Field
-		Message     respjson.Field
-		Timestamp   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VoiceSDKCallReportGetResponseLogsEntriesEntry) RawJSON() string { return r.JSON.raw }
-func (r *VoiceSDKCallReportGetResponseLogsEntriesEntry) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -453,27 +433,27 @@ func (r *VoiceSDKCallReportListResponse) UnmarshalJSON(data []byte) error {
 }
 
 // VoiceSDKCallReportListResponseLogsUnion contains all possible properties and
-// values from [[]VoiceSDKCallReportListResponseLogsArrayItem],
+// values from [[]VoiceSDKCallReportLogEntry],
 // [VoiceSDKCallReportListResponseLogsEntries].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfVoiceSDKCallReportListResponseLogsArray]
+// will be valid: OfVoiceSDKCallReportLogEntryArray]
 type VoiceSDKCallReportListResponseLogsUnion struct {
-	// This field will be present if the value is a
-	// [[]VoiceSDKCallReportListResponseLogsArrayItem] instead of an object.
-	OfVoiceSDKCallReportListResponseLogsArray []VoiceSDKCallReportListResponseLogsArrayItem `json:",inline"`
+	// This field will be present if the value is a [[]VoiceSDKCallReportLogEntry]
+	// instead of an object.
+	OfVoiceSDKCallReportLogEntryArray []VoiceSDKCallReportLogEntry `json:",inline"`
 	// This field is from variant [VoiceSDKCallReportListResponseLogsEntries].
-	Entries []VoiceSDKCallReportListResponseLogsEntriesEntry `json:"entries"`
+	Entries []VoiceSDKCallReportLogEntry `json:"entries"`
 	JSON    struct {
-		OfVoiceSDKCallReportListResponseLogsArray respjson.Field
-		Entries                                   respjson.Field
-		raw                                       string
+		OfVoiceSDKCallReportLogEntryArray respjson.Field
+		Entries                           respjson.Field
+		raw                               string
 	} `json:"-"`
 }
 
-func (u VoiceSDKCallReportListResponseLogsUnion) AsVoiceSDKCallReportListResponseLogsArray() (v []VoiceSDKCallReportListResponseLogsArrayItem) {
+func (u VoiceSDKCallReportListResponseLogsUnion) AsVoiceSDKCallReportLogEntryArray() (v []VoiceSDKCallReportLogEntry) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -490,42 +470,12 @@ func (r *VoiceSDKCallReportListResponseLogsUnion) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A raw Voice SDK log entry. Additional SDK-specific fields may be present.
-type VoiceSDKCallReportListResponseLogsArrayItem struct {
-	// Raw structured context attached to the log entry.
-	Context map[string]any `json:"context"`
-	// Log level emitted by the SDK.
-	//
-	// Any of "debug", "info", "warn", "error".
-	Level string `json:"level"`
-	// Log message.
-	Message string `json:"message"`
-	// Time when the log entry was emitted.
-	Timestamp   time.Time      `json:"timestamp" format:"date-time"`
-	ExtraFields map[string]any `json:"" api:"extrafields"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Context     respjson.Field
-		Level       respjson.Field
-		Message     respjson.Field
-		Timestamp   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VoiceSDKCallReportListResponseLogsArrayItem) RawJSON() string { return r.JSON.raw }
-func (r *VoiceSDKCallReportListResponseLogsArrayItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Raw logs object emitted by the Voice SDK when logs are grouped under an entries
 // field.
 type VoiceSDKCallReportListResponseLogsEntries struct {
 	// Raw log entries when the SDK groups logs under an entries field.
-	Entries     []VoiceSDKCallReportListResponseLogsEntriesEntry `json:"entries"`
-	ExtraFields map[string]any                                   `json:"" api:"extrafields"`
+	Entries     []VoiceSDKCallReportLogEntry `json:"entries"`
+	ExtraFields map[string]any               `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Entries     respjson.Field
@@ -537,36 +487,6 @@ type VoiceSDKCallReportListResponseLogsEntries struct {
 // Returns the unmodified JSON received from the API
 func (r VoiceSDKCallReportListResponseLogsEntries) RawJSON() string { return r.JSON.raw }
 func (r *VoiceSDKCallReportListResponseLogsEntries) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A raw Voice SDK log entry. Additional SDK-specific fields may be present.
-type VoiceSDKCallReportListResponseLogsEntriesEntry struct {
-	// Raw structured context attached to the log entry.
-	Context map[string]any `json:"context"`
-	// Log level emitted by the SDK.
-	//
-	// Any of "debug", "info", "warn", "error".
-	Level string `json:"level"`
-	// Log message.
-	Message string `json:"message"`
-	// Time when the log entry was emitted.
-	Timestamp   time.Time      `json:"timestamp" format:"date-time"`
-	ExtraFields map[string]any `json:"" api:"extrafields"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Context     respjson.Field
-		Level       respjson.Field
-		Message     respjson.Field
-		Timestamp   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VoiceSDKCallReportListResponseLogsEntriesEntry) RawJSON() string { return r.JSON.raw }
-func (r *VoiceSDKCallReportListResponseLogsEntriesEntry) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -295,6 +295,17 @@ const InboundMessagePayloadTypeSMS = shared.InboundMessagePayloadTypeSMS
 // Equals "MMS"
 const InboundMessagePayloadTypeMms = shared.InboundMessagePayloadTypeMms
 
+// This is an alias to an internal type.
+type InworldVoiceSettingsParam = shared.InworldVoiceSettingsParam
+
+// Voice settings provider type
+//
+// This is an alias to an internal type.
+type InworldVoiceSettingsType = shared.InworldVoiceSettingsType
+
+// Equals "inworld"
+const InworldVoiceSettingsTypeInworld = shared.InworldVoiceSettingsTypeInworld
+
 // The set of features available for a specific messaging use case (SMS or MMS).
 // Features can vary depending on the characteristics the phone number, as well as
 // its current product configuration.
