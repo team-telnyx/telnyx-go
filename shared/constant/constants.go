@@ -40,7 +40,6 @@ type SendDtmf string        // Always "send_dtmf"
 type SendMessage string     // Always "send_message"
 type Simple string          // Always "simple"
 type SkipTurn string        // Always "skip_turn"
-type Soniox string          // Always "Soniox"
 type System string          // Always "system"
 type Tool string            // Always "tool"
 type Transfer string        // Always "transfer"
@@ -68,7 +67,6 @@ func (c SendDtmf) Default() SendDtmf               { return "send_dtmf" }
 func (c SendMessage) Default() SendMessage         { return "send_message" }
 func (c Simple) Default() Simple                   { return "simple" }
 func (c SkipTurn) Default() SkipTurn               { return "skip_turn" }
-func (c Soniox) Default() Soniox                   { return "Soniox" }
 func (c System) Default() System                   { return "system" }
 func (c Tool) Default() Tool                       { return "tool" }
 func (c Transfer) Default() Transfer               { return "transfer" }
@@ -96,7 +94,6 @@ func (c SendDtmf) MarshalJSON() ([]byte, error)        { return marshalString(c)
 func (c SendMessage) MarshalJSON() ([]byte, error)     { return marshalString(c) }
 func (c Simple) MarshalJSON() ([]byte, error)          { return marshalString(c) }
 func (c SkipTurn) MarshalJSON() ([]byte, error)        { return marshalString(c) }
-func (c Soniox) MarshalJSON() ([]byte, error)          { return marshalString(c) }
 func (c System) MarshalJSON() ([]byte, error)          { return marshalString(c) }
 func (c Tool) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c Transfer) MarshalJSON() ([]byte, error)        { return marshalString(c) }

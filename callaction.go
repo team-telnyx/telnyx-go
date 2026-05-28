@@ -1729,6 +1729,118 @@ const (
 	TranscriptionEngineGoogleConfigTranscriptionEngineGoogle TranscriptionEngineGoogleConfigTranscriptionEngine = "Google"
 )
 
+// The property TranscriptionEngine is required.
+type TranscriptionEngineSonioxConfigParam struct {
+	// Engine identifier for Soniox transcription service
+	//
+	// Any of "Soniox".
+	TranscriptionEngine TranscriptionEngineSonioxConfigTranscriptionEngine `json:"transcription_engine,omitzero" api:"required"`
+	// When true, Soniox emits end-of-utterance events at the cadence configured by
+	// `max_endpoint_delay_ms`.
+	EnableEndpointDetection param.Opt[bool] `json:"enable_endpoint_detection,omitzero"`
+	// Whether to send also interim results. If set to false, only final results will
+	// be sent.
+	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
+	// ISO 639-1 language hint (e.g. `en`, `es`), or `auto` to omit the hint and let
+	// Soniox auto-detect supported languages multilingually.
+	Language param.Opt[string] `json:"language,omitzero"`
+	// Maximum silence (in milliseconds) before Soniox emits an end-of-utterance event.
+	// Only honored when `enable_endpoint_detection` is true. Range: 500-3000 ms.
+	MaxEndpointDelayMs param.Opt[int64] `json:"max_endpoint_delay_ms,omitzero"`
+	// The model to use for transcription.
+	//
+	// Any of "soniox/stt-rt-v4".
+	TranscriptionModel TranscriptionEngineSonioxConfigTranscriptionModel `json:"transcription_model,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionEngineSonioxConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionEngineSonioxConfigParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionEngineSonioxConfigParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Engine identifier for Soniox transcription service
+type TranscriptionEngineSonioxConfigTranscriptionEngine string
+
+const (
+	TranscriptionEngineSonioxConfigTranscriptionEngineSoniox TranscriptionEngineSonioxConfigTranscriptionEngine = "Soniox"
+)
+
+// The model to use for transcription.
+type TranscriptionEngineSonioxConfigTranscriptionModel string
+
+const (
+	TranscriptionEngineSonioxConfigTranscriptionModelSonioxSttRtV4 TranscriptionEngineSonioxConfigTranscriptionModel = "soniox/stt-rt-v4"
+)
+
+type TranscriptionEngineSpeechmaticsConfigParam struct {
+	// Whether to send also interim results. If set to false, only final results will
+	// be sent.
+	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
+	// Language to use for speech recognition
+	//
+	// Any of "en", "ba", "eu", "gl", "ga", "mt", "mn", "sw", "ug", "cy", "ar_en",
+	// "cmn_en", "en_ms", "en_ta", "tl", "es-bilingual-en", "cmn_en_ms_ta".
+	Language TranscriptionEngineSpeechmaticsConfigLanguage `json:"language,omitzero"`
+	// Engine identifier for Speechmatics transcription service
+	//
+	// Any of "Speechmatics".
+	TranscriptionEngine TranscriptionEngineSpeechmaticsConfigTranscriptionEngine `json:"transcription_engine,omitzero"`
+	// The model to use for transcription.
+	//
+	// Any of "speechmatics/standard".
+	TranscriptionModel TranscriptionEngineSpeechmaticsConfigTranscriptionModel `json:"transcription_model,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionEngineSpeechmaticsConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionEngineSpeechmaticsConfigParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionEngineSpeechmaticsConfigParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Language to use for speech recognition
+type TranscriptionEngineSpeechmaticsConfigLanguage string
+
+const (
+	TranscriptionEngineSpeechmaticsConfigLanguageEn            TranscriptionEngineSpeechmaticsConfigLanguage = "en"
+	TranscriptionEngineSpeechmaticsConfigLanguageBa            TranscriptionEngineSpeechmaticsConfigLanguage = "ba"
+	TranscriptionEngineSpeechmaticsConfigLanguageEu            TranscriptionEngineSpeechmaticsConfigLanguage = "eu"
+	TranscriptionEngineSpeechmaticsConfigLanguageGl            TranscriptionEngineSpeechmaticsConfigLanguage = "gl"
+	TranscriptionEngineSpeechmaticsConfigLanguageGa            TranscriptionEngineSpeechmaticsConfigLanguage = "ga"
+	TranscriptionEngineSpeechmaticsConfigLanguageMt            TranscriptionEngineSpeechmaticsConfigLanguage = "mt"
+	TranscriptionEngineSpeechmaticsConfigLanguageMn            TranscriptionEngineSpeechmaticsConfigLanguage = "mn"
+	TranscriptionEngineSpeechmaticsConfigLanguageSw            TranscriptionEngineSpeechmaticsConfigLanguage = "sw"
+	TranscriptionEngineSpeechmaticsConfigLanguageUg            TranscriptionEngineSpeechmaticsConfigLanguage = "ug"
+	TranscriptionEngineSpeechmaticsConfigLanguageCy            TranscriptionEngineSpeechmaticsConfigLanguage = "cy"
+	TranscriptionEngineSpeechmaticsConfigLanguageArEn          TranscriptionEngineSpeechmaticsConfigLanguage = "ar_en"
+	TranscriptionEngineSpeechmaticsConfigLanguageCmnEn         TranscriptionEngineSpeechmaticsConfigLanguage = "cmn_en"
+	TranscriptionEngineSpeechmaticsConfigLanguageEnMs          TranscriptionEngineSpeechmaticsConfigLanguage = "en_ms"
+	TranscriptionEngineSpeechmaticsConfigLanguageEnTa          TranscriptionEngineSpeechmaticsConfigLanguage = "en_ta"
+	TranscriptionEngineSpeechmaticsConfigLanguageTl            TranscriptionEngineSpeechmaticsConfigLanguage = "tl"
+	TranscriptionEngineSpeechmaticsConfigLanguageEsBilingualEn TranscriptionEngineSpeechmaticsConfigLanguage = "es-bilingual-en"
+	TranscriptionEngineSpeechmaticsConfigLanguageCmnEnMsTa     TranscriptionEngineSpeechmaticsConfigLanguage = "cmn_en_ms_ta"
+)
+
+// Engine identifier for Speechmatics transcription service
+type TranscriptionEngineSpeechmaticsConfigTranscriptionEngine string
+
+const (
+	TranscriptionEngineSpeechmaticsConfigTranscriptionEngineSpeechmatics TranscriptionEngineSpeechmaticsConfigTranscriptionEngine = "Speechmatics"
+)
+
+// The model to use for transcription.
+type TranscriptionEngineSpeechmaticsConfigTranscriptionModel string
+
+const (
+	TranscriptionEngineSpeechmaticsConfigTranscriptionModelSpeechmaticsStandard TranscriptionEngineSpeechmaticsConfigTranscriptionModel = "speechmatics/standard"
+)
+
 type TranscriptionEngineTelnyxConfigParam struct {
 	// Language to use for speech recognition
 	//
@@ -1898,17 +2010,17 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type TranscriptionStartRequestTranscriptionEngineConfigUnionParam struct {
-	OfGoogle        *TranscriptionEngineGoogleConfigParam                                `json:",omitzero,inline"`
-	OfTelnyx        *TranscriptionEngineTelnyxConfigParam                                `json:",omitzero,inline"`
-	OfAzure         *TranscriptionEngineAzureConfigParam                                 `json:",omitzero,inline"`
-	OfXAI           *TranscriptionEngineXaiConfigParam                                   `json:",omitzero,inline"`
-	OfAssemblyAI    *TranscriptionEngineAssemblyaiConfigParam                            `json:",omitzero,inline"`
-	OfSpeechmatics  *TranscriptionStartRequestTranscriptionEngineConfigSpeechmaticsParam `json:",omitzero,inline"`
-	OfSoniox        *TranscriptionStartRequestTranscriptionEngineConfigSonioxParam       `json:",omitzero,inline"`
-	OfA             *TranscriptionEngineAConfigParam                                     `json:",omitzero,inline"`
-	OfB             *TranscriptionEngineBConfigParam                                     `json:",omitzero,inline"`
-	OfDeepgramNova2 *DeepgramNova2ConfigParam                                            `json:",omitzero,inline"`
-	OfDeepgramNova3 *DeepgramNova3ConfigParam                                            `json:",omitzero,inline"`
+	OfGoogle        *TranscriptionEngineGoogleConfigParam       `json:",omitzero,inline"`
+	OfTelnyx        *TranscriptionEngineTelnyxConfigParam       `json:",omitzero,inline"`
+	OfAzure         *TranscriptionEngineAzureConfigParam        `json:",omitzero,inline"`
+	OfXAI           *TranscriptionEngineXaiConfigParam          `json:",omitzero,inline"`
+	OfAssemblyAI    *TranscriptionEngineAssemblyaiConfigParam   `json:",omitzero,inline"`
+	OfSpeechmatics  *TranscriptionEngineSpeechmaticsConfigParam `json:",omitzero,inline"`
+	OfSoniox        *TranscriptionEngineSonioxConfigParam       `json:",omitzero,inline"`
+	OfA             *TranscriptionEngineAConfigParam            `json:",omitzero,inline"`
+	OfB             *TranscriptionEngineBConfigParam            `json:",omitzero,inline"`
+	OfDeepgramNova2 *DeepgramNova2ConfigParam                   `json:",omitzero,inline"`
+	OfDeepgramNova3 *DeepgramNova3ConfigParam                   `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -2214,91 +2326,12 @@ func init() {
 		apijson.Discriminator[TranscriptionEngineAzureConfigParam]("Azure"),
 		apijson.Discriminator[TranscriptionEngineXaiConfigParam]("xAI"),
 		apijson.Discriminator[TranscriptionEngineAssemblyaiConfigParam]("AssemblyAI"),
-		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigSpeechmaticsParam]("Speechmatics"),
-		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigSonioxParam]("Soniox"),
+		apijson.Discriminator[TranscriptionEngineSpeechmaticsConfigParam]("Speechmatics"),
+		apijson.Discriminator[TranscriptionEngineSonioxConfigParam]("Soniox"),
 		apijson.Discriminator[TranscriptionEngineAConfigParam]("A"),
 		apijson.Discriminator[TranscriptionEngineBConfigParam]("B"),
 		apijson.Discriminator[DeepgramNova2ConfigParam]("deepgram/nova-2"),
 		apijson.Discriminator[DeepgramNova3ConfigParam]("deepgram/nova-3"),
-	)
-}
-
-type TranscriptionStartRequestTranscriptionEngineConfigSpeechmaticsParam struct {
-	// Whether to send also interim results. If set to false, only final results will
-	// be sent.
-	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
-	// Language to use for speech recognition
-	//
-	// Any of "en", "ba", "eu", "gl", "ga", "mt", "mn", "sw", "ug", "cy", "ar_en",
-	// "cmn_en", "en_ms", "en_ta", "tl", "es-bilingual-en", "cmn_en_ms_ta".
-	Language string `json:"language,omitzero"`
-	// Engine identifier for Speechmatics transcription service
-	//
-	// Any of "Speechmatics".
-	TranscriptionEngine string `json:"transcription_engine,omitzero"`
-	// The model to use for transcription.
-	//
-	// Any of "speechmatics/standard".
-	TranscriptionModel string `json:"transcription_model,omitzero"`
-	paramObj
-}
-
-func (r TranscriptionStartRequestTranscriptionEngineConfigSpeechmaticsParam) MarshalJSON() (data []byte, err error) {
-	type shadow TranscriptionStartRequestTranscriptionEngineConfigSpeechmaticsParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscriptionStartRequestTranscriptionEngineConfigSpeechmaticsParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigSpeechmaticsParam](
-		"language", "en", "ba", "eu", "gl", "ga", "mt", "mn", "sw", "ug", "cy", "ar_en", "cmn_en", "en_ms", "en_ta", "tl", "es-bilingual-en", "cmn_en_ms_ta",
-	)
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigSpeechmaticsParam](
-		"transcription_engine", "Speechmatics",
-	)
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigSpeechmaticsParam](
-		"transcription_model", "speechmatics/standard",
-	)
-}
-
-// The property TranscriptionEngine is required.
-type TranscriptionStartRequestTranscriptionEngineConfigSonioxParam struct {
-	// When true, Soniox emits end-of-utterance events at the cadence configured by
-	// `max_endpoint_delay_ms`.
-	EnableEndpointDetection param.Opt[bool] `json:"enable_endpoint_detection,omitzero"`
-	// Whether to send also interim results. If set to false, only final results will
-	// be sent.
-	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
-	// ISO 639-1 language hint (e.g. `en`, `es`), or `auto` to omit the hint and let
-	// Soniox auto-detect supported languages multilingually.
-	Language param.Opt[string] `json:"language,omitzero"`
-	// Maximum silence (in milliseconds) before Soniox emits an end-of-utterance event.
-	// Only honored when `enable_endpoint_detection` is true. Range: 500-3000 ms.
-	MaxEndpointDelayMs param.Opt[int64] `json:"max_endpoint_delay_ms,omitzero"`
-	// The model to use for transcription.
-	//
-	// Any of "soniox/stt-rt-v4".
-	TranscriptionModel string `json:"transcription_model,omitzero"`
-	// Engine identifier for Soniox transcription service
-	//
-	// This field can be elided, and will marshal its zero value as "Soniox".
-	TranscriptionEngine constant.Soniox `json:"transcription_engine" default:"Soniox"`
-	paramObj
-}
-
-func (r TranscriptionStartRequestTranscriptionEngineConfigSonioxParam) MarshalJSON() (data []byte, err error) {
-	type shadow TranscriptionStartRequestTranscriptionEngineConfigSonioxParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscriptionStartRequestTranscriptionEngineConfigSonioxParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigSonioxParam](
-		"transcription_model", "soniox/stt-rt-v4",
 	)
 }
 
