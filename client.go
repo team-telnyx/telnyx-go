@@ -331,6 +331,8 @@ type Client struct {
 	// Retrieve raw Voice SDK call report stats payloads for WebRTC call
 	// troubleshooting.
 	VoiceSDKCallReports VoiceSDKCallReportService
+	// Look up SIP registration status across credential types
+	SipRegistrationStatus SipRegistrationStatusService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -540,6 +542,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.PronunciationDicts = NewPronunciationDictService(opts...)
 	r.UacConnections = NewUacConnectionService(opts...)
 	r.VoiceSDKCallReports = NewVoiceSDKCallReportService(opts...)
+	r.SipRegistrationStatus = NewSipRegistrationStatusService(opts...)
 
 	return
 }
