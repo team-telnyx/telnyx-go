@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.74.0 (2026-05-29)
+
+Full Changelog: [v4.73.0...v4.74.0](https://github.com/team-telnyx/telnyx-go/compare/v4.73.0...v4.74.0)
+
+### Features
+
+* **sip-registration-status:** add OpenAPI spec for /v2/sip_registration_status ([a8e8fd7](https://github.com/team-telnyx/telnyx-go/commit/a8e8fd7df889dfe307973856f40d9ff4ffb278f5))
+
 ## 4.73.0 (2026-05-28)
 
 Full Changelog: [v4.72.0...v4.73.0](https://github.com/team-telnyx/telnyx-go/compare/v4.72.0...v4.73.0)
