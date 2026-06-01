@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.74.1 (2026-06-01)
+
+Full Changelog: [v4.74.0...v4.74.1](https://github.com/team-telnyx/telnyx-go/compare/v4.74.0...v4.74.1)
+
+### Bug Fixes
+
+* **sip-registration-status:** scope to phase 1 uac_third-party_credential ([a555f00](https://github.com/team-telnyx/telnyx-go/commit/a555f0038ce55f72618674fd642a130986b5f316))
+
 ## 4.74.0 (2026-05-29)
 
 Full Changelog: [v4.73.0...v4.74.0](https://github.com/team-telnyx/telnyx-go/compare/v4.73.0...v4.74.0)
