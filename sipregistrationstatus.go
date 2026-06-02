@@ -166,8 +166,6 @@ type SipRegistrationStatusGetParams struct {
 	//
 	// Any of "uac_external_credential".
 	CredentialType SipRegistrationStatusGetParamsCredentialType `query:"credential_type,omitzero" api:"required" json:"-"`
-	// Owner of the connection. Used to authorize the lookup.
-	UserID string `query:"user_id" api:"required" json:"-"`
 	paramObj
 }
 

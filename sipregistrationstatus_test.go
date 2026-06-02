@@ -29,7 +29,6 @@ func TestSipRegistrationStatusGet(t *testing.T) {
 	_, err := client.SipRegistrationStatus.Get(context.TODO(), telnyx.SipRegistrationStatusGetParams{
 		ConnectionID:   "connection_id",
 		CredentialType: telnyx.SipRegistrationStatusGetParamsCredentialTypeUacExternalCredential,
-		UserID:         "user_id",
 	})
 	if err != nil {
 		var apierr *telnyx.Error
