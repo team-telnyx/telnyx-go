@@ -15,7 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
-// Look up SIP registration status across credential types
+// Look up the live SIP registration status of a UAC connection.
 //
 // SipRegistrationStatusService contains methods and other services that help with
 // interacting with the telnyx API.
@@ -36,9 +36,9 @@ func NewSipRegistrationStatusService(opts ...option.RequestOption) (r SipRegistr
 	return
 }
 
-// Returns the live SIP registration state of a connection or credential. Supports
-// UAC third-party credentials, telephony credentials, and SIP credential
-// connections.
+// Returns the live SIP registration state of a UAC connection: whether it is
+// currently registered, when it last registered, and the last response Telnyx
+// received from the registrar. Only `uac_external_credential` is supported today.
 func (r *SipRegistrationStatusService) Get(ctx context.Context, query SipRegistrationStatusGetParams, opts ...option.RequestOption) (res *SipRegistrationStatusGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "sip_registration_status"
@@ -47,10 +47,20 @@ func (r *SipRegistrationStatusService) Get(ctx context.Context, query SipRegistr
 }
 
 type SipRegistrationStatusGetResponse struct {
-	// Identifier of the resource.
+	// Raw external-side registration block reported by the registrar.
+	B2buaExternal map[string]any `json:"b2bua_external"`
+	// Raw internal-side block reported by the registrar.
+	B2buaInternal map[string]any `json:"b2bua_internal"`
+	// Identifier of the UAC connection.
 	ConnectionID string `json:"connection_id"`
 	// Human-readable connection name.
 	ConnectionName string `json:"connection_name"`
+	// The credential type that was looked up.
+	//
+	// Any of "uac_external_credential".
+	CredentialType SipRegistrationStatusGetResponseCredentialType `json:"credential_type"`
+	// Registration state on the external (UAC / PBX) side, e.g. REGED.
+	ExternalState string `json:"external_state"`
 	// Outward-facing SIP settings used for registration. Password is redacted.
 	ExternalUacSettings SipRegistrationStatusGetResponseExternalUacSettings `json:"external_uac_settings"`
 	// Internal routing target the connection delivers calls to.
@@ -61,14 +71,18 @@ type SipRegistrationStatusGetResponse struct {
 	PairState string `json:"pair_state"`
 	// True if the endpoint is currently registered.
 	Registered bool `json:"registered"`
-	// Owner of the resource.
+	// Owner of the connection.
 	UserID string `json:"user_id"`
 	// SIP username used for the registration.
 	Username string `json:"username"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		B2buaExternal            respjson.Field
+		B2buaInternal            respjson.Field
 		ConnectionID             respjson.Field
 		ConnectionName           respjson.Field
+		CredentialType           respjson.Field
+		ExternalState            respjson.Field
 		ExternalUacSettings      respjson.Field
 		InternalUacSettings      respjson.Field
 		LastRegistrationResponse respjson.Field
@@ -87,14 +101,22 @@ func (r *SipRegistrationStatusGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The credential type that was looked up.
+type SipRegistrationStatusGetResponseCredentialType string
+
+const (
+	SipRegistrationStatusGetResponseCredentialTypeUacExternalCredential SipRegistrationStatusGetResponseCredentialType = "uac_external_credential"
+)
+
 // Outward-facing SIP settings used for registration. Password is redacted.
 type SipRegistrationStatusGetResponseExternalUacSettings struct {
 	AuthUsername  string `json:"auth_username"`
 	ExpirationSec int64  `json:"expiration_sec"`
 	FromUser      string `json:"from_user"`
 	OutboundProxy string `json:"outbound_proxy"`
-	Password      string `json:"password"`
-	Proxy         string `json:"proxy"`
+	// Always redacted.
+	Password string `json:"password"`
+	Proxy    string `json:"proxy"`
 	// Any of "TCP", "UDP", "TLS".
 	Transport string `json:"transport"`
 	Username  string `json:"username"`
@@ -137,12 +159,12 @@ func (r *SipRegistrationStatusGetResponseInternalUacSettings) UnmarshalJSON(data
 }
 
 type SipRegistrationStatusGetParams struct {
-	// Identifier of the connection or credential to look up.
+	// Identifier of the UAC connection to look up.
 	ConnectionID string `query:"connection_id" api:"required" json:"-"`
-	// The kind of credential to look up.
+	// The kind of credential to look up. Only `uac_external_credential` is supported
+	// today.
 	//
-	// Any of "uac_external_credential", "telephony_credential",
-	// "sip_credential_connection".
+	// Any of "uac_external_credential".
 	CredentialType SipRegistrationStatusGetParamsCredentialType `query:"credential_type,omitzero" api:"required" json:"-"`
 	// Owner of the connection. Used to authorize the lookup.
 	UserID string `query:"user_id" api:"required" json:"-"`
@@ -158,11 +180,10 @@ func (r SipRegistrationStatusGetParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// The kind of credential to look up.
+// The kind of credential to look up. Only `uac_external_credential` is supported
+// today.
 type SipRegistrationStatusGetParamsCredentialType string
 
 const (
-	SipRegistrationStatusGetParamsCredentialTypeUacExternalCredential   SipRegistrationStatusGetParamsCredentialType = "uac_external_credential"
-	SipRegistrationStatusGetParamsCredentialTypeTelephonyCredential     SipRegistrationStatusGetParamsCredentialType = "telephony_credential"
-	SipRegistrationStatusGetParamsCredentialTypeSipCredentialConnection SipRegistrationStatusGetParamsCredentialType = "sip_credential_connection"
+	SipRegistrationStatusGetParamsCredentialTypeUacExternalCredential SipRegistrationStatusGetParamsCredentialType = "uac_external_credential"
 )
