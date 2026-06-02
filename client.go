@@ -331,7 +331,7 @@ type Client struct {
 	// Retrieve raw Voice SDK call report stats payloads for WebRTC call
 	// troubleshooting.
 	VoiceSDKCallReports VoiceSDKCallReportService
-	// Look up the live SIP registration status of a UAC connection.
+	// UAC connection operations
 	SipRegistrationStatus SipRegistrationStatusService
 }
 
