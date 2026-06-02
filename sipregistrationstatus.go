@@ -107,7 +107,7 @@ type SipRegistrationStatusGetResponseSipRegistrationDetails struct {
 	// Unix timestamp of the next scheduled registration action.
 	NextActionAt int64 `json:"next_action_at"`
 	// SIP URI user@host of the registered contact.
-	SipUriUserHost string `json:"sipUriUserHost"`
+	SipUriUserHost string `json:"sip_uri_user_host"`
 	// Registration uptime reported by the registrar.
 	Uptime int64 `json:"uptime"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
