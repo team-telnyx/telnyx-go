@@ -15,7 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
-// Look up the live SIP registration status of a UAC connection.
+// UAC connection operations
 //
 // SipRegistrationStatusService contains methods and other services that help with
 // interacting with the telnyx API.
