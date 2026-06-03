@@ -9,7 +9,6 @@
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#CheckAvailabilityToolParams">CheckAvailabilityToolParams</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#ConnectionJitterBufferParam">ConnectionJitterBufferParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#ConnectionNoiseSuppressionDetailsParam">ConnectionNoiseSuppressionDetailsParam</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#InworldVoiceSettingsParam">InworldVoiceSettingsParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#MinimaxVoiceSettingsParam">MinimaxVoiceSettingsParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#ResembleVoiceSettingsParam">ResembleVoiceSettingsParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#RimeVoiceSettingsParam">RimeVoiceSettingsParam</a>
@@ -521,13 +520,13 @@ Methods:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ModelMetadata">ModelMetadata</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AINewResponseResponse">AINewResponseResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AINewResponseDeprecatedResponse">AINewResponseDeprecatedResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIGetModelsResponse">AIGetModelsResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AISummarizeResponse">AISummarizeResponse</a>
 
 Methods:
 
-- <code title="post /ai/responses">client.AI.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIService.NewResponse">NewResponse</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AINewResponseParams">AINewResponseParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AINewResponseResponse">AINewResponseResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /ai/responses">client.AI.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIService.NewResponseDeprecated">NewResponseDeprecated</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AINewResponseDeprecatedParams">AINewResponseDeprecatedParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AINewResponseDeprecatedResponse">AINewResponseDeprecatedResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /ai/models">client.AI.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIService.GetModels">GetModels</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIGetModelsResponse">AIGetModelsResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /ai/summarize">client.AI.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIService.Summarize">Summarize</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AISummarizeParams">AISummarizeParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AISummarizeResponse">AISummarizeResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
@@ -1315,8 +1314,6 @@ Methods:
 Params Types:
 
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#CallAssistantRequestParam">CallAssistantRequestParam</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ConversationRelayInterruptionSettingsParam">ConversationRelayInterruptionSettingsParam</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ConversationRelayLanguageParam">ConversationRelayLanguageParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#CustomSipHeaderParam">CustomSipHeaderParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DialogflowConfigParam">DialogflowConfigParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SipHeaderParam">SipHeaderParam</a>
@@ -1359,8 +1356,6 @@ Params Types:
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TranscriptionEngineAzureConfigParam">TranscriptionEngineAzureConfigParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TranscriptionEngineBConfigParam">TranscriptionEngineBConfigParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TranscriptionEngineGoogleConfigParam">TranscriptionEngineGoogleConfigParam</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TranscriptionEngineSonioxConfigParam">TranscriptionEngineSonioxConfigParam</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TranscriptionEngineSpeechmaticsConfigParam">TranscriptionEngineSpeechmaticsConfigParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TranscriptionEngineTelnyxConfigParam">TranscriptionEngineTelnyxConfigParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TranscriptionEngineXaiConfigParam">TranscriptionEngineXaiConfigParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TranscriptionStartRequestParam">TranscriptionStartRequestParam</a>
@@ -3549,22 +3544,6 @@ Methods:
 - <code title="delete /reports/mdr_usage_reports/{id}">client.Reports.MdrUsageReports.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ReportMdrUsageReportService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ReportMdrUsageReportDeleteResponse">ReportMdrUsageReportDeleteResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /reports/mdr_usage_reports/sync">client.Reports.MdrUsageReports.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ReportMdrUsageReportService.FetchSync">FetchSync</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ReportMdrUsageReportFetchSyncParams">ReportMdrUsageReportFetchSyncParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ReportMdrUsageReportFetchSyncResponse">ReportMdrUsageReportFetchSyncResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
-# SpeechToText
-
-Params Types:
-
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TranscribeClientEvent">TranscribeClientEvent</a>
-
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SpeechToTextListProvidersResponse">SpeechToTextListProvidersResponse</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TranscribeClientEvent">TranscribeClientEvent</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TranscribeServerEventUnion">TranscribeServerEventUnion</a>
-
-Methods:
-
-- <code title="get /speech-to-text/providers">client.SpeechToText.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SpeechToTextService.ListProviders">ListProviders</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SpeechToTextListProvidersParams">SpeechToTextListProvidersParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SpeechToTextListProvidersResponse">SpeechToTextListProvidersResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-
 # RequirementGroups
 
 Response Types:
@@ -4240,15 +4219,14 @@ Params Types:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TextToSpeechNewSpeechResponse">TextToSpeechNewSpeechResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TextToSpeechGenerateResponse">TextToSpeechGenerateResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TextToSpeechListVoicesResponse">TextToSpeechListVoicesResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StreamClientEvent">StreamClientEvent</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StreamServerEventUnion">StreamServerEventUnion</a>
 
 Methods:
 
-- <code title="post /text-to-speech/speech">client.TextToSpeech.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TextToSpeechService.NewSpeech">NewSpeech</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TextToSpeechNewSpeechParams">TextToSpeechNewSpeechParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TextToSpeechNewSpeechResponse">TextToSpeechNewSpeechResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="get /text-to-speech/speech">client.TextToSpeech.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TextToSpeechService.GenerateSpeech">GenerateSpeech</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TextToSpeechGenerateSpeechParams">TextToSpeechGenerateSpeechParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+- <code title="post /text-to-speech/speech">client.TextToSpeech.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TextToSpeechService.Generate">Generate</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TextToSpeechGenerateParams">TextToSpeechGenerateParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TextToSpeechGenerateResponse">TextToSpeechGenerateResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /text-to-speech/voices">client.TextToSpeech.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TextToSpeechService.ListVoices">ListVoices</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TextToSpeechListVoicesParams">TextToSpeechListVoicesParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TextToSpeechListVoicesResponse">TextToSpeechListVoicesResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # UsageReports
@@ -4941,7 +4919,6 @@ Methods:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappUserData">WhatsappUserData</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappUserDataGetResponse">WhatsappUserDataGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappUserDataUpdateResponse">WhatsappUserDataUpdateResponse</a>
 
@@ -5177,19 +5154,6 @@ Methods:
 
 - <code title="post /uac_connections/{id}/actions/check_registration_status">client.UacConnections.Actions.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#UacConnectionActionService.CheckRegistrationStatus">CheckRegistrationStatus</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#UacConnectionActionCheckRegistrationStatusResponse">UacConnectionActionCheckRegistrationStatusResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
-# VoiceSDKCallReports
-
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#VoiceSDKCallReportLogEntry">VoiceSDKCallReportLogEntry</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#VoiceSDKCallReportGetResponse">VoiceSDKCallReportGetResponse</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#VoiceSDKCallReportListResponse">VoiceSDKCallReportListResponse</a>
-
-Methods:
-
-- <code title="get /voice_sdk_call_reports/{call_id}">client.VoiceSDKCallReports.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#VoiceSDKCallReportService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, callID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*[]<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#VoiceSDKCallReportGetResponse">VoiceSDKCallReportGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="get /voice_sdk_call_reports">client.VoiceSDKCallReports.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#VoiceSDKCallReportService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#VoiceSDKCallReportListParams">VoiceSDKCallReportListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#VoiceSDKCallReportListResponse">VoiceSDKCallReportListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-
 # SipRegistrationStatus
 
 Response Types:
@@ -5199,3 +5163,25 @@ Response Types:
 Methods:
 
 - <code title="get /sip_registration_status">client.SipRegistrationStatus.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SipRegistrationStatusService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SipRegistrationStatusGetParams">SipRegistrationStatusGetParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SipRegistrationStatusGetResponse">SipRegistrationStatusGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+# SpeechToText
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SpeechToTextListProvidersResponse">SpeechToTextListProvidersResponse</a>
+
+Methods:
+
+- <code title="get /speech-to-text/providers">client.SpeechToText.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SpeechToTextService.ListProviders">ListProviders</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SpeechToTextListProvidersParams">SpeechToTextListProvidersParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SpeechToTextListProvidersResponse">SpeechToTextListProvidersResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+# VoiceSDKCallReports
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#VoiceSDKCallReportGetResponse">VoiceSDKCallReportGetResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#VoiceSDKCallReportListResponse">VoiceSDKCallReportListResponse</a>
+
+Methods:
+
+- <code title="get /voice_sdk_call_reports/{call_id}">client.VoiceSDKCallReports.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#VoiceSDKCallReportService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, callID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*[]<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#VoiceSDKCallReportGetResponse">VoiceSDKCallReportGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /voice_sdk_call_reports">client.VoiceSDKCallReports.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#VoiceSDKCallReportService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#VoiceSDKCallReportListParams">VoiceSDKCallReportListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#VoiceSDKCallReportListResponse">VoiceSDKCallReportListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>

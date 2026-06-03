@@ -75,7 +75,7 @@ func NewAIService(opts ...option.RequestOption) (r AIService) {
 // Conversation ID to leverage persistent conversations.
 //
 // Deprecated: deprecated
-func (r *AIService) NewResponse(ctx context.Context, body AINewResponseParams, opts ...option.RequestOption) (res *AINewResponseResponse, err error) {
+func (r *AIService) NewResponseDeprecated(ctx context.Context, body AINewResponseDeprecatedParams, opts ...option.RequestOption) (res *AINewResponseDeprecatedResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/responses"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -229,7 +229,7 @@ const (
 	ModelMetadataTierUnlisted ModelMetadataTier = "unlisted"
 )
 
-type AINewResponseResponse map[string]any
+type AINewResponseDeprecatedResponse map[string]any
 
 type AIGetModelsResponse struct {
 	Data   []ModelMetadata `json:"data" api:"required"`
@@ -281,15 +281,15 @@ func (r *AISummarizeResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AINewResponseParams struct {
-	Input map[string]any
+type AINewResponseDeprecatedParams struct {
+	Body map[string]any
 	paramObj
 }
 
-func (r AINewResponseParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.Input)
+func (r AINewResponseDeprecatedParams) MarshalJSON() (data []byte, err error) {
+	return shimjson.Marshal(r.Body)
 }
-func (r *AINewResponseParams) UnmarshalJSON(data []byte) error {
+func (r *AINewResponseDeprecatedParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

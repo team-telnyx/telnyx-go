@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestTextToSpeechNewSpeechWithOptionalParams(t *testing.T) {
+func TestTextToSpeechGenerateWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,15 +26,15 @@ func TestTextToSpeechNewSpeechWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.TextToSpeech.NewSpeech(context.TODO(), telnyx.TextToSpeechNewSpeechParams{
-		Aws: telnyx.TextToSpeechNewSpeechParamsAws{
+	_, err := client.TextToSpeech.Generate(context.TODO(), telnyx.TextToSpeechGenerateParams{
+		Aws: telnyx.TextToSpeechGenerateParamsAws{
 			LanguageCode: telnyx.String("language_code"),
 			LexiconNames: []string{"string"},
 			OutputFormat: telnyx.String("output_format"),
 			SampleRate:   telnyx.String("sample_rate"),
 			TextType:     "text",
 		},
-		Azure: telnyx.TextToSpeechNewSpeechParamsAzure{
+		Azure: telnyx.TextToSpeechGenerateParamsAzure{
 			APIKey:       telnyx.String("api_key"),
 			DeploymentID: telnyx.String("deployment_id"),
 			Effect:       telnyx.String("effect"),
@@ -45,7 +45,7 @@ func TestTextToSpeechNewSpeechWithOptionalParams(t *testing.T) {
 			TextType:     "text",
 		},
 		DisableCache: telnyx.Bool(true),
-		Elevenlabs: telnyx.TextToSpeechNewSpeechParamsElevenlabs{
+		Elevenlabs: telnyx.TextToSpeechGenerateParamsElevenlabs{
 			APIKey:       telnyx.String("api_key"),
 			LanguageCode: telnyx.String("language_code"),
 			VoiceSettings: map[string]any{
@@ -53,27 +53,27 @@ func TestTextToSpeechNewSpeechWithOptionalParams(t *testing.T) {
 			},
 		},
 		Language: telnyx.String("language"),
-		Minimax: telnyx.TextToSpeechNewSpeechParamsMinimax{
+		Minimax: telnyx.TextToSpeechGenerateParamsMinimax{
 			LanguageBoost:  telnyx.String("language_boost"),
 			Pitch:          telnyx.Int(0),
 			ResponseFormat: telnyx.String("response_format"),
 			Speed:          telnyx.Float(0),
 			Vol:            telnyx.Float(0),
 		},
-		OutputType: telnyx.TextToSpeechNewSpeechParamsOutputTypeBinaryOutput,
-		Provider:   telnyx.TextToSpeechNewSpeechParamsProviderAws,
-		Resemble: telnyx.TextToSpeechNewSpeechParamsResemble{
+		OutputType: telnyx.TextToSpeechGenerateParamsOutputTypeBinaryOutput,
+		Provider:   telnyx.TextToSpeechGenerateParamsProviderAws,
+		Resemble: telnyx.TextToSpeechGenerateParamsResemble{
 			APIKey:     telnyx.String("api_key"),
 			Format:     telnyx.String("format"),
 			Precision:  telnyx.String("precision"),
 			SampleRate: telnyx.String("sample_rate"),
 		},
-		Rime: telnyx.TextToSpeechNewSpeechParamsRime{
+		Rime: telnyx.TextToSpeechGenerateParamsRime{
 			ResponseFormat: telnyx.String("response_format"),
 			SamplingRate:   telnyx.Int(0),
 			VoiceSpeed:     telnyx.Float(0),
 		},
-		Telnyx: telnyx.TextToSpeechNewSpeechParamsTelnyx{
+		Telnyx: telnyx.TextToSpeechGenerateParamsTelnyx{
 			Emotion:        "neutral",
 			ResponseFormat: telnyx.String("response_format"),
 			SamplingRate:   telnyx.Int(0),
@@ -82,48 +82,17 @@ func TestTextToSpeechNewSpeechWithOptionalParams(t *testing.T) {
 			Volume:         telnyx.Float(0),
 		},
 		Text:     telnyx.String("text"),
-		TextType: telnyx.TextToSpeechNewSpeechParamsTextTypeText,
+		TextType: telnyx.TextToSpeechGenerateParamsTextTypeText,
 		Voice:    telnyx.String("voice"),
 		VoiceSettings: map[string]any{
 			"foo": "bar",
 		},
-		Xai: telnyx.TextToSpeechNewSpeechParamsXai{
+		Xai: telnyx.TextToSpeechGenerateParamsXai{
 			VoiceID:      "eve",
 			Language:     telnyx.String("language"),
 			OutputFormat: "mp3",
 			SampleRate:   8000,
 		},
-	})
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestTextToSpeechGenerateSpeechWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	err := client.TextToSpeech.GenerateSpeech(context.TODO(), telnyx.TextToSpeechGenerateSpeechParams{
-		AudioFormat:  telnyx.TextToSpeechGenerateSpeechParamsAudioFormatPcm,
-		DisableCache: telnyx.Bool(true),
-		ModelID:      telnyx.String("model_id"),
-		Provider:     telnyx.TextToSpeechGenerateSpeechParamsProviderAws,
-		SocketID:     telnyx.String("socket_id"),
-		Voice:        telnyx.String("voice"),
-		VoiceID:      telnyx.String("voice_id"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
