@@ -53,7 +53,6 @@ type Soniox string          // Always "Soniox"
 type StringLiteral string   // Always "string_literal"
 type System string          // Always "system"
 type Tool string            // Always "tool"
-type ToolResult string      // Always "tool_result"
 type Transfer string        // Always "transfer"
 type User string            // Always "user"
 type Variable string        // Always "variable"
@@ -93,7 +92,6 @@ func (c Soniox) Default() Soniox                   { return "Soniox" }
 func (c StringLiteral) Default() StringLiteral     { return "string_literal" }
 func (c System) Default() System                   { return "system" }
 func (c Tool) Default() Tool                       { return "tool" }
-func (c ToolResult) Default() ToolResult           { return "tool_result" }
 func (c Transfer) Default() Transfer               { return "transfer" }
 func (c User) Default() User                       { return "user" }
 func (c Variable) Default() Variable               { return "variable" }
@@ -133,7 +131,6 @@ func (c Soniox) MarshalJSON() ([]byte, error)          { return marshalString(c)
 func (c StringLiteral) MarshalJSON() ([]byte, error)   { return marshalString(c) }
 func (c System) MarshalJSON() ([]byte, error)          { return marshalString(c) }
 func (c Tool) MarshalJSON() ([]byte, error)            { return marshalString(c) }
-func (c ToolResult) MarshalJSON() ([]byte, error)      { return marshalString(c) }
 func (c Transfer) MarshalJSON() ([]byte, error)        { return marshalString(c) }
 func (c User) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c Variable) MarshalJSON() ([]byte, error)        { return marshalString(c) }
