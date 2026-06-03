@@ -625,8 +625,7 @@ type UpdateAssistantConversationFlowEdgeParam struct {
 	// Caller-supplied unique identifier for this edge within the flow.
 	ID string `json:"id" api:"required"`
 	// Condition that gates the transition. Discriminated by `type`: `llm`,
-	// `expression`, or `tool_result`. A `tool_result` condition is only valid on an
-	// edge leaving a tool node.
+	// `expression`.
 	Condition UpdateAssistantConversationFlowEdgeConditionUnionParam `json:"condition,omitzero" api:"required"`
 	// ID of the node this edge transitions away from.
 	StartNodeID string `json:"start_node_id" api:"required"`
@@ -650,12 +649,11 @@ func (r *UpdateAssistantConversationFlowEdgeParam) UnmarshalJSON(data []byte) er
 type UpdateAssistantConversationFlowEdgeConditionUnionParam struct {
 	OfLlm        *UpdateAssistantConversationFlowEdgeConditionLlmParam        `json:",omitzero,inline"`
 	OfExpression *UpdateAssistantConversationFlowEdgeConditionExpressionParam `json:",omitzero,inline"`
-	OfToolResult *UpdateAssistantConversationFlowEdgeConditionToolResultParam `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u UpdateAssistantConversationFlowEdgeConditionUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfLlm, u.OfExpression, u.OfToolResult)
+	return param.MarshalUnion(u, u.OfLlm, u.OfExpression)
 }
 func (u *UpdateAssistantConversationFlowEdgeConditionUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -666,8 +664,6 @@ func (u *UpdateAssistantConversationFlowEdgeConditionUnionParam) asAny() any {
 		return u.OfLlm
 	} else if !param.IsOmitted(u.OfExpression) {
 		return u.OfExpression
-	} else if !param.IsOmitted(u.OfToolResult) {
-		return u.OfToolResult
 	}
 	return nil
 }
@@ -689,20 +685,10 @@ func (u UpdateAssistantConversationFlowEdgeConditionUnionParam) GetExpression() 
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u UpdateAssistantConversationFlowEdgeConditionUnionParam) GetOutcome() *string {
-	if vt := u.OfToolResult; vt != nil {
-		return &vt.Outcome
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
 func (u UpdateAssistantConversationFlowEdgeConditionUnionParam) GetType() *string {
 	if vt := u.OfLlm; vt != nil {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfExpression; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfToolResult; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -713,7 +699,6 @@ func init() {
 		"type",
 		apijson.Discriminator[UpdateAssistantConversationFlowEdgeConditionLlmParam]("llm"),
 		apijson.Discriminator[UpdateAssistantConversationFlowEdgeConditionExpressionParam]("expression"),
-		apijson.Discriminator[UpdateAssistantConversationFlowEdgeConditionToolResultParam]("tool_result"),
 	)
 }
 
@@ -2072,40 +2057,6 @@ func (r UpdateAssistantConversationFlowEdgeConditionExpressionExpressionBoolLite
 }
 func (r *UpdateAssistantConversationFlowEdgeConditionExpressionExpressionBoolLiteralParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// Edge condition that fires on the outcome of a tool node's execution.
-//
-// Only valid on edges leaving a tool node (`type == "tool"`). A tool node runs
-// exactly one tool as a deliberate flow step; this condition routes on whether
-// that tool reported `success` or `failure`. Use it to split the happy path from
-// the error path after a tool runs (e.g. payment succeeded vs. declined). There is
-// no `tool_id` field — the tool node has a single tool, so the outcome is
-// unambiguous.
-//
-// The properties Outcome, Type are required.
-type UpdateAssistantConversationFlowEdgeConditionToolResultParam struct {
-	// Match either the tool node's success or failure outcome.
-	//
-	// Any of "success", "failure".
-	Outcome string `json:"outcome,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as "tool_result".
-	Type constant.ToolResult `json:"type" default:"tool_result"`
-	paramObj
-}
-
-func (r UpdateAssistantConversationFlowEdgeConditionToolResultParam) MarshalJSON() (data []byte, err error) {
-	type shadow UpdateAssistantConversationFlowEdgeConditionToolResultParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *UpdateAssistantConversationFlowEdgeConditionToolResultParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[UpdateAssistantConversationFlowEdgeConditionToolResultParam](
-		"outcome", "success", "failure",
-	)
 }
 
 // Only one field can be non-zero.
