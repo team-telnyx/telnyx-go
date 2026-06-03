@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.76.0 (2026-06-03)
+
+Full Changelog: [v4.75.0...v4.76.0](https://github.com/team-telnyx/telnyx-go/compare/v4.75.0...v4.76.0)
+
+### Features
+
+* TELAPPS-406: nest service_types with per-service languages in STT spec ([8106ca2](https://github.com/team-telnyx/telnyx-go/commit/8106ca2aca07a2332dd8ead645eaefa6c8c895e4))
+* Update conversation flow ([d66ccfc](https://github.com/team-telnyx/telnyx-go/commit/d66ccfc0e2bb34c14bdbe1281fe9d249b83c2be6))
+
 ## 4.75.0 (2026-06-03)
 
 Full Changelog: [v4.74.1...v4.75.0](https://github.com/team-telnyx/telnyx-go/compare/v4.74.1...v4.75.0)
