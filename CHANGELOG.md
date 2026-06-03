@@ -1,5 +1,21 @@
 # Changelog
 
+## 4.75.0 (2026-06-03)
+
+Full Changelog: [v4.74.1...v4.75.0](https://github.com/team-telnyx/telnyx-go/compare/v4.74.1...v4.75.0)
+
+### Features
+
+* AI-assistants conversation flow ([dc97599](https://github.com/team-telnyx/telnyx-go/commit/dc9759985de07e1fe93c766a19e726f9a4e8ae8d))
+* **sip-registration-status:** finalize phase 1 response shape with status mapping ([29990cf](https://github.com/team-telnyx/telnyx-go/commit/29990cf3b876a39e78dcaeff978bb424ab323908))
+
+
+### Bug Fixes
+
+* **sip-registration-status:** drop user_id query param ([dc6acd9](https://github.com/team-telnyx/telnyx-go/commit/dc6acd9cf7a98fb27dc907723abaa0565e838500))
+* **sip-registration-status:** move operation under UAC Connections tag ([41a9aa0](https://github.com/team-telnyx/telnyx-go/commit/41a9aa0e84f6476114d74d63c793685d95b9307f))
+* **sip-registration-status:** rename detail field to sip_uri_user_host ([3c1bcd3](https://github.com/team-telnyx/telnyx-go/commit/3c1bcd3992265166e7d94f2337694a0ec84e497e))
+
 ## 4.74.1 (2026-06-01)
 
 Full Changelog: [v4.74.0...v4.74.1](https://github.com/team-telnyx/telnyx-go/compare/v4.74.0...v4.74.1)

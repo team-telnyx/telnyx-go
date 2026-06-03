@@ -62,6 +62,168 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 		telnyx.AIAssistantVersionUpdateParams{
 			AssistantID: "assistant_id",
 			UpdateAssistant: telnyx.UpdateAssistantParam{
+				ConversationFlow: telnyx.UpdateAssistantConversationFlowParam{
+					Nodes: []telnyx.UpdateAssistantConversationFlowNodeUnionParam{{
+						OfPrompt: &telnyx.UpdateAssistantConversationFlowNodePromptParam{
+							ID:           "n_intake",
+							Instructions: "Greet the caller and ask what they're calling about.",
+							ExternalLlm: telnyx.ExternalLlmReqParam{
+								BaseURL:              "base_url",
+								Model:                "model",
+								AuthenticationMethod: telnyx.ExternalLlmReqAuthenticationMethodToken,
+								CertificateRef:       telnyx.String("certificate_ref"),
+								ForwardMetadata:      telnyx.Bool(true),
+								LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
+								TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
+							},
+							InstructionsMode: "replace",
+							LlmAPIKeyRef:     telnyx.String("my-key-ref"),
+							Model:            telnyx.String("moonshotai/Kimi-K2.6"),
+							Name:             telnyx.String("Intake"),
+							Position: telnyx.UpdateAssistantConversationFlowNodePromptPositionParam{
+								X: 120,
+								Y: 80,
+							},
+							SharedToolIDs: []string{"tool-faq-kb"},
+							ToolsMode:     "replace",
+							Transcription: telnyx.TranscriptionSettingsParam{
+								APIKeyRef: telnyx.String("api_key_ref"),
+								Language:  telnyx.String("language"),
+								Model:     telnyx.TranscriptionSettingsModelDeepgramFlux,
+								Region:    telnyx.String("region"),
+								Settings: telnyx.TranscriptionSettingsConfigParam{
+									EagerEotThreshold:            telnyx.Float(0.3),
+									EnableEndpointDetection:      telnyx.Bool(true),
+									EndOfTurnConfidenceThreshold: telnyx.Float(0),
+									EotThreshold:                 telnyx.Float(0.5),
+									EotTimeoutMs:                 telnyx.Int(500),
+									InterimResults:               telnyx.Bool(true),
+									Keyterm:                      telnyx.String("keyterm"),
+									MaxEndpointDelayMs:           telnyx.Int(500),
+									MaxTurnSilence:               telnyx.Int(100),
+									MinTurnSilence:               telnyx.Int(100),
+									Numerals:                     telnyx.Bool(true),
+									SmartFormat:                  telnyx.Bool(true),
+								},
+							},
+							Type: "prompt",
+							VoiceSettings: telnyx.VoiceSettingsParam{
+								Voice:     "voice",
+								APIKeyRef: telnyx.String("api_key_ref"),
+								BackgroundAudio: telnyx.VoiceSettingsBackgroundAudioUnionParam{
+									OfPredefinedMedia: &telnyx.VoiceSettingsBackgroundAudioPredefinedMediaParam{
+										Value:  "silence",
+										Volume: telnyx.Float(0.1),
+									},
+								},
+								ExpressiveMode:  telnyx.Bool(true),
+								LanguageBoost:   telnyx.VoiceSettingsLanguageBoostAuto,
+								SimilarityBoost: telnyx.Float(0),
+								Speed:           telnyx.Float(0),
+								Style:           telnyx.Float(0),
+								Temperature:     telnyx.Float(0),
+								UseSpeakerBoost: telnyx.Bool(true),
+								VoiceSpeed:      telnyx.Float(0),
+							},
+						},
+					}, {
+						OfPrompt: &telnyx.UpdateAssistantConversationFlowNodePromptParam{
+							ID:           "n_billing",
+							Instructions: "Focus on billing questions. Look up the caller's latest invoice with the billing tool before answering.",
+							ExternalLlm: telnyx.ExternalLlmReqParam{
+								BaseURL:              "base_url",
+								Model:                "model",
+								AuthenticationMethod: telnyx.ExternalLlmReqAuthenticationMethodToken,
+								CertificateRef:       telnyx.String("certificate_ref"),
+								ForwardMetadata:      telnyx.Bool(true),
+								LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
+								TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
+							},
+							InstructionsMode: "append",
+							LlmAPIKeyRef:     telnyx.String("my-key-ref"),
+							Model:            telnyx.String("moonshotai/Kimi-K2.6"),
+							Name:             telnyx.String("Billing"),
+							Position: telnyx.UpdateAssistantConversationFlowNodePromptPositionParam{
+								X: 420,
+								Y: 80,
+							},
+							SharedToolIDs: []string{"tool-billing-lookup"},
+							ToolsMode:     "append",
+							Transcription: telnyx.TranscriptionSettingsParam{
+								APIKeyRef: telnyx.String("api_key_ref"),
+								Language:  telnyx.String("language"),
+								Model:     telnyx.TranscriptionSettingsModelDeepgramFlux,
+								Region:    telnyx.String("region"),
+								Settings: telnyx.TranscriptionSettingsConfigParam{
+									EagerEotThreshold:            telnyx.Float(0.3),
+									EnableEndpointDetection:      telnyx.Bool(true),
+									EndOfTurnConfidenceThreshold: telnyx.Float(0),
+									EotThreshold:                 telnyx.Float(0.5),
+									EotTimeoutMs:                 telnyx.Int(500),
+									InterimResults:               telnyx.Bool(true),
+									Keyterm:                      telnyx.String("keyterm"),
+									MaxEndpointDelayMs:           telnyx.Int(500),
+									MaxTurnSilence:               telnyx.Int(100),
+									MinTurnSilence:               telnyx.Int(100),
+									Numerals:                     telnyx.Bool(true),
+									SmartFormat:                  telnyx.Bool(true),
+								},
+							},
+							Type: "prompt",
+							VoiceSettings: telnyx.VoiceSettingsParam{
+								Voice:     "voice",
+								APIKeyRef: telnyx.String("api_key_ref"),
+								BackgroundAudio: telnyx.VoiceSettingsBackgroundAudioUnionParam{
+									OfPredefinedMedia: &telnyx.VoiceSettingsBackgroundAudioPredefinedMediaParam{
+										Value:  "silence",
+										Volume: telnyx.Float(0.1),
+									},
+								},
+								ExpressiveMode:  telnyx.Bool(true),
+								LanguageBoost:   telnyx.VoiceSettingsLanguageBoostAuto,
+								SimilarityBoost: telnyx.Float(0),
+								Speed:           telnyx.Float(0),
+								Style:           telnyx.Float(0),
+								Temperature:     telnyx.Float(0),
+								UseSpeakerBoost: telnyx.Bool(true),
+								VoiceSpeed:      telnyx.Float(0),
+							},
+						},
+					}},
+					StartNodeID: "n_intake",
+					Edges: []telnyx.UpdateAssistantConversationFlowEdgeParam{{
+						ID: "e_intake_to_billing",
+						Condition: telnyx.UpdateAssistantConversationFlowEdgeConditionUnionParam{
+							OfLlm: &telnyx.UpdateAssistantConversationFlowEdgeConditionLlmParam{
+								Prompt: "The caller is asking about a bill or charge.",
+							},
+						},
+						StartNodeID: "n_intake",
+						Target: telnyx.UpdateAssistantConversationFlowEdgeTargetUnionParam{
+							OfNode: &telnyx.UpdateAssistantConversationFlowEdgeTargetNodeParam{
+								NodeID: "n_billing",
+							},
+						},
+					}, {
+						ID: "e_intake_to_escalation_assistant",
+						Condition: telnyx.UpdateAssistantConversationFlowEdgeConditionUnionParam{
+							OfLlm: &telnyx.UpdateAssistantConversationFlowEdgeConditionLlmParam{
+								Prompt: "The caller has explicitly asked for a human.",
+							},
+						},
+						StartNodeID: "n_intake",
+						Target: telnyx.UpdateAssistantConversationFlowEdgeTargetUnionParam{
+							OfAssistant: &telnyx.UpdateAssistantConversationFlowEdgeTargetAssistantParam{
+								AssistantID: "assistant-human-handoff",
+								Position: telnyx.UpdateAssistantConversationFlowEdgeTargetAssistantPositionParam{
+									X: 600,
+									Y: 80,
+								},
+								VoiceMode: "distinct",
+							},
+						},
+					}},
+				},
 				Description: telnyx.String("description"),
 				DynamicVariables: map[string]any{
 					"foo": "bar",

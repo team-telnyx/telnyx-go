@@ -15,7 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
-// Look up the live SIP registration status of a UAC connection.
+// UAC connection operations
 //
 // SipRegistrationStatusService contains methods and other services that help with
 // interacting with the telnyx API.
@@ -47,10 +47,6 @@ func (r *SipRegistrationStatusService) Get(ctx context.Context, query SipRegistr
 }
 
 type SipRegistrationStatusGetResponse struct {
-	// Raw external-side registration block reported by the registrar.
-	B2buaExternal map[string]any `json:"b2bua_external"`
-	// Raw internal-side block reported by the registrar.
-	B2buaInternal map[string]any `json:"b2bua_internal"`
 	// Identifier of the UAC connection.
 	ConnectionID string `json:"connection_id"`
 	// Human-readable connection name.
@@ -59,37 +55,29 @@ type SipRegistrationStatusGetResponse struct {
 	//
 	// Any of "uac_external_credential".
 	CredentialType SipRegistrationStatusGetResponseCredentialType `json:"credential_type"`
-	// Registration state on the external (UAC / PBX) side, e.g. REGED.
-	ExternalState string `json:"external_state"`
-	// Outward-facing SIP settings used for registration. Password is redacted.
-	ExternalUacSettings SipRegistrationStatusGetResponseExternalUacSettings `json:"external_uac_settings"`
-	// Internal routing target the connection delivers calls to.
-	InternalUacSettings SipRegistrationStatusGetResponseInternalUacSettings `json:"internal_uac_settings"`
+	// SIP username used for the registration.
+	CredentialUsername string `json:"credential_username"`
 	// SIP response from the last registration attempt.
 	LastRegistrationResponse string `json:"last_registration_response"`
-	// Internal pairing state, e.g. ACTIVE or INACTIVE.
-	PairState string `json:"pair_state"`
 	// True if the endpoint is currently registered.
 	Registered bool `json:"registered"`
-	// Owner of the connection.
-	UserID string `json:"user_id"`
-	// SIP username used for the registration.
-	Username string `json:"username"`
+	// Detailed registration information reported by the registrar.
+	SipRegistrationDetails SipRegistrationStatusGetResponseSipRegistrationDetails `json:"sip_registration_details"`
+	// Human-readable registration status derived from the registrar state.
+	//
+	// Any of "unregistering", "connection_disabled", "standby", "failed", "trying",
+	// "registered", "unknown".
+	SipRegistrationStatus SipRegistrationStatusGetResponseSipRegistrationStatus `json:"sip_registration_status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		B2buaExternal            respjson.Field
-		B2buaInternal            respjson.Field
 		ConnectionID             respjson.Field
 		ConnectionName           respjson.Field
 		CredentialType           respjson.Field
-		ExternalState            respjson.Field
-		ExternalUacSettings      respjson.Field
-		InternalUacSettings      respjson.Field
+		CredentialUsername       respjson.Field
 		LastRegistrationResponse respjson.Field
-		PairState                respjson.Field
 		Registered               respjson.Field
-		UserID                   respjson.Field
-		Username                 respjson.Field
+		SipRegistrationDetails   respjson.Field
+		SipRegistrationStatus    respjson.Field
 		ExtraFields              map[string]respjson.Field
 		raw                      string
 	} `json:"-"`
@@ -108,55 +96,51 @@ const (
 	SipRegistrationStatusGetResponseCredentialTypeUacExternalCredential SipRegistrationStatusGetResponseCredentialType = "uac_external_credential"
 )
 
-// Outward-facing SIP settings used for registration. Password is redacted.
-type SipRegistrationStatusGetResponseExternalUacSettings struct {
-	AuthUsername  string `json:"auth_username"`
-	ExpirationSec int64  `json:"expiration_sec"`
-	FromUser      string `json:"from_user"`
-	OutboundProxy string `json:"outbound_proxy"`
-	// Always redacted.
-	Password string `json:"password"`
-	Proxy    string `json:"proxy"`
-	// Any of "TCP", "UDP", "TLS".
-	Transport string `json:"transport"`
-	Username  string `json:"username"`
+// Detailed registration information reported by the registrar.
+type SipRegistrationStatusGetResponseSipRegistrationDetails struct {
+	// Number of authentication retries on the last attempt.
+	AuthRetries int64 `json:"auth_retries"`
+	// Unix timestamp when the current registration expires.
+	Expires int64 `json:"expires"`
+	// Count of consecutive registration failures.
+	Failures int64 `json:"failures"`
+	// Unix timestamp of the next scheduled registration action.
+	NextActionAt int64 `json:"next_action_at"`
+	// SIP URI user@host of the registered contact.
+	SipUriUserHost string `json:"sip_uri_user_host"`
+	// Registration uptime reported by the registrar.
+	Uptime int64 `json:"uptime"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AuthUsername  respjson.Field
-		ExpirationSec respjson.Field
-		FromUser      respjson.Field
-		OutboundProxy respjson.Field
-		Password      respjson.Field
-		Proxy         respjson.Field
-		Transport     respjson.Field
-		Username      respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SipRegistrationStatusGetResponseExternalUacSettings) RawJSON() string { return r.JSON.raw }
-func (r *SipRegistrationStatusGetResponseExternalUacSettings) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Internal routing target the connection delivers calls to.
-type SipRegistrationStatusGetResponseInternalUacSettings struct {
-	DestinationUri string `json:"destination_uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		DestinationUri respjson.Field
+		AuthRetries    respjson.Field
+		Expires        respjson.Field
+		Failures       respjson.Field
+		NextActionAt   respjson.Field
+		SipUriUserHost respjson.Field
+		Uptime         respjson.Field
 		ExtraFields    map[string]respjson.Field
 		raw            string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r SipRegistrationStatusGetResponseInternalUacSettings) RawJSON() string { return r.JSON.raw }
-func (r *SipRegistrationStatusGetResponseInternalUacSettings) UnmarshalJSON(data []byte) error {
+func (r SipRegistrationStatusGetResponseSipRegistrationDetails) RawJSON() string { return r.JSON.raw }
+func (r *SipRegistrationStatusGetResponseSipRegistrationDetails) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Human-readable registration status derived from the registrar state.
+type SipRegistrationStatusGetResponseSipRegistrationStatus string
+
+const (
+	SipRegistrationStatusGetResponseSipRegistrationStatusUnregistering      SipRegistrationStatusGetResponseSipRegistrationStatus = "unregistering"
+	SipRegistrationStatusGetResponseSipRegistrationStatusConnectionDisabled SipRegistrationStatusGetResponseSipRegistrationStatus = "connection_disabled"
+	SipRegistrationStatusGetResponseSipRegistrationStatusStandby            SipRegistrationStatusGetResponseSipRegistrationStatus = "standby"
+	SipRegistrationStatusGetResponseSipRegistrationStatusFailed             SipRegistrationStatusGetResponseSipRegistrationStatus = "failed"
+	SipRegistrationStatusGetResponseSipRegistrationStatusTrying             SipRegistrationStatusGetResponseSipRegistrationStatus = "trying"
+	SipRegistrationStatusGetResponseSipRegistrationStatusRegistered         SipRegistrationStatusGetResponseSipRegistrationStatus = "registered"
+	SipRegistrationStatusGetResponseSipRegistrationStatusUnknown            SipRegistrationStatusGetResponseSipRegistrationStatus = "unknown"
+)
 
 type SipRegistrationStatusGetParams struct {
 	// Identifier of the UAC connection to look up.
@@ -166,8 +150,6 @@ type SipRegistrationStatusGetParams struct {
 	//
 	// Any of "uac_external_credential".
 	CredentialType SipRegistrationStatusGetParamsCredentialType `query:"credential_type,omitzero" api:"required" json:"-"`
-	// Owner of the connection. Used to authorize the lookup.
-	UserID string `query:"user_id" api:"required" json:"-"`
 	paramObj
 }
 
