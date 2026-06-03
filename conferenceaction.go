@@ -16,6 +16,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v4/shared"
+	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
 // Conference command operations
@@ -1310,15 +1311,15 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type ConferenceActionSpeakParamsVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam      `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam          `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam             `json:",omitzero,inline"`
-	OfMinimax    *shared.MinimaxVoiceSettingsParam  `json:",omitzero,inline"`
-	OfAzure      *shared.AzureVoiceSettingsParam    `json:",omitzero,inline"`
-	OfRime       *shared.RimeVoiceSettingsParam     `json:",omitzero,inline"`
-	OfResemble   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
-	OfInworld    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
-	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam                    `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam                        `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam                           `json:",omitzero,inline"`
+	OfMinimax    *shared.MinimaxVoiceSettingsParam                `json:",omitzero,inline"`
+	OfAzure      *shared.AzureVoiceSettingsParam                  `json:",omitzero,inline"`
+	OfRime       *shared.RimeVoiceSettingsParam                   `json:",omitzero,inline"`
+	OfResemble   *shared.ResembleVoiceSettingsParam               `json:",omitzero,inline"`
+	OfInworld    *ConferenceActionSpeakParamsVoiceSettingsInworld `json:",omitzero,inline"`
+	OfXai        *shared.XaiVoiceSettingsParam                    `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1510,9 +1511,31 @@ func init() {
 		apijson.Discriminator[shared.AzureVoiceSettingsParam]("azure"),
 		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
 		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
-		apijson.Discriminator[shared.InworldVoiceSettingsParam]("inworld"),
+		apijson.Discriminator[ConferenceActionSpeakParamsVoiceSettingsInworld]("inworld"),
 		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
 	)
+}
+
+func NewConferenceActionSpeakParamsVoiceSettingsInworld() ConferenceActionSpeakParamsVoiceSettingsInworld {
+	return ConferenceActionSpeakParamsVoiceSettingsInworld{
+		Type: "inworld",
+	}
+}
+
+// This struct has a constant value, construct it with
+// [NewConferenceActionSpeakParamsVoiceSettingsInworld].
+type ConferenceActionSpeakParamsVoiceSettingsInworld struct {
+	// Voice settings provider type
+	Type constant.Inworld `json:"type" default:"inworld"`
+	paramObj
+}
+
+func (r ConferenceActionSpeakParamsVoiceSettingsInworld) MarshalJSON() (data []byte, err error) {
+	type shadow ConferenceActionSpeakParamsVoiceSettingsInworld
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ConferenceActionSpeakParamsVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type ConferenceActionStopParams struct {

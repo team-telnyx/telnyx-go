@@ -2591,9 +2591,11 @@ type InferenceEmbedding struct {
 	// to see available models. If `external_llm` is provided, the assistant uses
 	// `external_llm` instead of this field. If neither `model` nor `external_llm` is
 	// provided, Telnyx applies the default model.
-	Model       string `json:"model" api:"required"`
-	Name        string `json:"name" api:"required"`
-	Description string `json:"description"`
+	Model string `json:"model" api:"required"`
+	Name  string `json:"name" api:"required"`
+	// Conversation flow as returned by the API.
+	ConversationFlow InferenceEmbeddingConversationFlow `json:"conversation_flow"`
+	Description      string                             `json:"description"`
 	// Map of dynamic variables and their values
 	DynamicVariables map[string]any `json:"dynamic_variables"`
 	// Timeout in milliseconds for the dynamic variables webhook. Must be between 1 and
@@ -2682,6 +2684,7 @@ type InferenceEmbedding struct {
 		Instructions                     respjson.Field
 		Model                            respjson.Field
 		Name                             respjson.Field
+		ConversationFlow                 respjson.Field
 		Description                      respjson.Field
 		DynamicVariables                 respjson.Field
 		DynamicVariablesWebhookTimeoutMs respjson.Field
@@ -2718,6 +2721,2047 @@ type InferenceEmbedding struct {
 // Returns the unmodified JSON received from the API
 func (r InferenceEmbedding) RawJSON() string { return r.JSON.raw }
 func (r *InferenceEmbedding) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Conversation flow as returned by the API.
+type InferenceEmbeddingConversationFlow struct {
+	// All nodes in the flow.
+	Nodes []InferenceEmbeddingConversationFlowNodeUnion `json:"nodes" api:"required"`
+	// ID of the node where the conversation begins.
+	StartNodeID string `json:"start_node_id" api:"required"`
+	// Directed transitions between nodes.
+	Edges []InferenceEmbeddingConversationFlowEdge `json:"edges"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Nodes       respjson.Field
+		StartNodeID respjson.Field
+		Edges       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlow) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingConversationFlow) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InferenceEmbeddingConversationFlowNodeUnion contains all possible properties and
+// values from [InferenceEmbeddingConversationFlowNodePrompt],
+// [InferenceEmbeddingConversationFlowNodeTool].
+//
+// Use the [InferenceEmbeddingConversationFlowNodeUnion.AsAny] method to switch on
+// the variant.
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type InferenceEmbeddingConversationFlowNodeUnion struct {
+	ID string `json:"id"`
+	// This field is from variant [InferenceEmbeddingConversationFlowNodePrompt].
+	Instructions string `json:"instructions"`
+	// This field is from variant [InferenceEmbeddingConversationFlowNodePrompt].
+	ExternalLlm ExternalLlm `json:"external_llm"`
+	// This field is from variant [InferenceEmbeddingConversationFlowNodePrompt].
+	InstructionsMode string `json:"instructions_mode"`
+	// This field is from variant [InferenceEmbeddingConversationFlowNodePrompt].
+	LlmAPIKeyRef string `json:"llm_api_key_ref"`
+	// This field is from variant [InferenceEmbeddingConversationFlowNodePrompt].
+	Model string `json:"model"`
+	Name  string `json:"name"`
+	// This field is a union of [InferenceEmbeddingConversationFlowNodePromptPosition],
+	// [InferenceEmbeddingConversationFlowNodeToolPosition]
+	Position InferenceEmbeddingConversationFlowNodeUnionPosition `json:"position"`
+	// This field is from variant [InferenceEmbeddingConversationFlowNodePrompt].
+	SharedToolIDs []string `json:"shared_tool_ids"`
+	// This field is from variant [InferenceEmbeddingConversationFlowNodePrompt].
+	Tools [][]AssistantToolsItemsUnion `json:"tools"`
+	// This field is from variant [InferenceEmbeddingConversationFlowNodePrompt].
+	ToolsMode string `json:"tools_mode"`
+	// This field is from variant [InferenceEmbeddingConversationFlowNodePrompt].
+	Transcription TranscriptionSettings `json:"transcription"`
+	// Any of "prompt", "tool".
+	Type string `json:"type"`
+	// This field is from variant [InferenceEmbeddingConversationFlowNodePrompt].
+	VoiceSettings VoiceSettings `json:"voice_settings"`
+	// This field is from variant [InferenceEmbeddingConversationFlowNodeTool].
+	SharedToolID string `json:"shared_tool_id"`
+	// This field is from variant [InferenceEmbeddingConversationFlowNodeTool].
+	Tool []AssistantToolsItemsUnion `json:"tool"`
+	JSON struct {
+		ID               respjson.Field
+		Instructions     respjson.Field
+		ExternalLlm      respjson.Field
+		InstructionsMode respjson.Field
+		LlmAPIKeyRef     respjson.Field
+		Model            respjson.Field
+		Name             respjson.Field
+		Position         respjson.Field
+		SharedToolIDs    respjson.Field
+		Tools            respjson.Field
+		ToolsMode        respjson.Field
+		Transcription    respjson.Field
+		Type             respjson.Field
+		VoiceSettings    respjson.Field
+		SharedToolID     respjson.Field
+		Tool             respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// anyInferenceEmbeddingConversationFlowNode is implemented by each variant of
+// [InferenceEmbeddingConversationFlowNodeUnion] to add type safety for the return
+// type of [InferenceEmbeddingConversationFlowNodeUnion.AsAny]
+type anyInferenceEmbeddingConversationFlowNode interface {
+	implInferenceEmbeddingConversationFlowNodeUnion()
+}
+
+func (InferenceEmbeddingConversationFlowNodePrompt) implInferenceEmbeddingConversationFlowNodeUnion() {
+}
+func (InferenceEmbeddingConversationFlowNodeTool) implInferenceEmbeddingConversationFlowNodeUnion() {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := InferenceEmbeddingConversationFlowNodeUnion.AsAny().(type) {
+//	case telnyx.InferenceEmbeddingConversationFlowNodePrompt:
+//	case telnyx.InferenceEmbeddingConversationFlowNodeTool:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u InferenceEmbeddingConversationFlowNodeUnion) AsAny() anyInferenceEmbeddingConversationFlowNode {
+	switch u.Type {
+	case "prompt":
+		return u.AsPrompt()
+	case "tool":
+		return u.AsTool()
+	}
+	return nil
+}
+
+func (u InferenceEmbeddingConversationFlowNodeUnion) AsPrompt() (v InferenceEmbeddingConversationFlowNodePrompt) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowNodeUnion) AsTool() (v InferenceEmbeddingConversationFlowNodeTool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u InferenceEmbeddingConversationFlowNodeUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *InferenceEmbeddingConversationFlowNodeUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InferenceEmbeddingConversationFlowNodeUnionPosition is an implicit subunion of
+// [InferenceEmbeddingConversationFlowNodeUnion].
+// InferenceEmbeddingConversationFlowNodeUnionPosition provides convenient access
+// to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [InferenceEmbeddingConversationFlowNodeUnion].
+type InferenceEmbeddingConversationFlowNodeUnionPosition struct {
+	X    float64 `json:"x"`
+	Y    float64 `json:"y"`
+	JSON struct {
+		X   respjson.Field
+		Y   respjson.Field
+		raw string
+	} `json:"-"`
+}
+
+func (r *InferenceEmbeddingConversationFlowNodeUnionPosition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// One step in a conversation flow, as returned by the API.
+type InferenceEmbeddingConversationFlowNodePrompt struct {
+	// Caller-supplied unique identifier for this node within the flow.
+	ID string `json:"id" api:"required"`
+	// Prompt that drives the LLM while this node is active. Required.
+	Instructions string `json:"instructions" api:"required"`
+	// Override for `Assistant.external_llm` while this node is active. Use this to
+	// route a node's turns to a different external LLM (different `model`, `base_url`,
+	// credentials). Part of the LLM bundle — see `model` for cascade semantics.
+	// Mutually exclusive with `model` on the node (a single LLM identity per node).
+	ExternalLlm ExternalLlm `json:"external_llm"`
+	// How `instructions` combine with the assistant-level instructions. `replace`
+	// (default): the node's instructions are used alone. `append`: the node's
+	// instructions are concatenated after the assistant's instructions.
+	//
+	// Any of "replace", "append".
+	InstructionsMode string `json:"instructions_mode"`
+	// Override for `Assistant.llm_api_key_ref` while this node is active. Part of the
+	// LLM bundle — see `model` for cascade semantics.
+	LlmAPIKeyRef string `json:"llm_api_key_ref"`
+	// Override for `Assistant.model` while this node is active. Part of the LLM bundle
+	// (`model` + `llm_api_key_ref` + `external_llm`): when any of the three is set on
+	// the node, all three are taken from the node and the assistant-level LLM identity
+	// is not consulted. When none of the three is set, the assistant's bundle cascades
+	// unchanged.
+	Model string `json:"model"`
+	// Optional human-readable label, displayed in authoring UIs.
+	Name string `json:"name"`
+	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+	// by the runtime; round-trips so frontends can persist graph layout across
+	// reloads.
+	Position InferenceEmbeddingConversationFlowNodePromptPosition `json:"position"`
+	// IDs of shared (org-level) tools available at this node. Knowledge bases are
+	// attached the same way — via a shared retrieval tool. Tools not listed here are
+	// not callable while this node is active.
+	SharedToolIDs []string `json:"shared_tool_ids"`
+	// Full tool definitions for this node, resolved from `shared_tool_ids`
+	// server-side. Populated on responses so clients can render the flow without a
+	// follow-up fetch per shared tool. Ignored on input — set `shared_tool_ids` to
+	// configure a node's tools.
+	Tools [][]AssistantToolsItemsUnion `json:"tools"`
+	// How `shared_tool_ids` combine with the assistant-level tool set. `replace`
+	// (default): only the node's tools are callable. `append`: the node's tools are
+	// added to the assistant's tools. Ignored when `shared_tool_ids` is null.
+	//
+	// Any of "replace", "append".
+	ToolsMode string `json:"tools_mode"`
+	// Per-node transcription override (response form).
+	Transcription TranscriptionSettings `json:"transcription"`
+	// Node kind discriminator. `prompt` is an LLM-driven step.
+	//
+	// Any of "prompt".
+	Type string `json:"type"`
+	// Per-node voice override (response form).
+	VoiceSettings VoiceSettings `json:"voice_settings"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		Instructions     respjson.Field
+		ExternalLlm      respjson.Field
+		InstructionsMode respjson.Field
+		LlmAPIKeyRef     respjson.Field
+		Model            respjson.Field
+		Name             respjson.Field
+		Position         respjson.Field
+		SharedToolIDs    respjson.Field
+		Tools            respjson.Field
+		ToolsMode        respjson.Field
+		Transcription    respjson.Field
+		Type             respjson.Field
+		VoiceSettings    respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowNodePrompt) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingConversationFlowNodePrompt) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+// by the runtime; round-trips so frontends can persist graph layout across
+// reloads.
+type InferenceEmbeddingConversationFlowNodePromptPosition struct {
+	// Horizontal coordinate in the authoring canvas.
+	X float64 `json:"x" api:"required"`
+	// Vertical coordinate in the authoring canvas.
+	Y float64 `json:"y" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		X           respjson.Field
+		Y           respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowNodePromptPosition) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingConversationFlowNodePromptPosition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A standalone tool step in a conversation flow, as returned by the API.
+type InferenceEmbeddingConversationFlowNodeTool struct {
+	// Caller-supplied unique identifier for this node within the flow.
+	ID string `json:"id" api:"required"`
+	// ID of the single shared (org-level) tool this node executes. When the flow
+	// reaches this node the tool runs as a deliberate step (no LLM turn); its outgoing
+	// `tool_result` edges then route on the outcome. Arguments are filled from the
+	// conversation's dynamic variables by name — a dynamic variable whose name matches
+	// one of the tool's parameters supplies that argument. Cross-validated against the
+	// org's shared tools on write.
+	SharedToolID string `json:"shared_tool_id" api:"required"`
+	// Optional human-readable label, displayed in authoring UIs.
+	Name string `json:"name"`
+	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+	// by the runtime; round-trips so frontends can persist graph layout across
+	// reloads.
+	Position InferenceEmbeddingConversationFlowNodeToolPosition `json:"position"`
+	// Full tool definition resolved from `shared_tool_id` server-side. Populated on
+	// responses so clients can render the node without a follow-up fetch. Ignored on
+	// input — set `shared_tool_id`.
+	Tool []AssistantToolsItemsUnion `json:"tool"`
+	// Node kind discriminator. Always `tool` for a tool node.
+	//
+	// Any of "tool".
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		SharedToolID respjson.Field
+		Name         respjson.Field
+		Position     respjson.Field
+		Tool         respjson.Field
+		Type         respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowNodeTool) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingConversationFlowNodeTool) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+// by the runtime; round-trips so frontends can persist graph layout across
+// reloads.
+type InferenceEmbeddingConversationFlowNodeToolPosition struct {
+	// Horizontal coordinate in the authoring canvas.
+	X float64 `json:"x" api:"required"`
+	// Vertical coordinate in the authoring canvas.
+	Y float64 `json:"y" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		X           respjson.Field
+		Y           respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowNodeToolPosition) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingConversationFlowNodeToolPosition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Directed transition from one node to a target, gated by a condition.
+//
+// The target is either another node in the same flow (`NodeTarget`) or a different
+// assistant (`AssistantTarget`). Multiple edges may share a `start_node_id`; the
+// runtime evaluates them in the order they're declared and takes the first whose
+// condition is true.
+type InferenceEmbeddingConversationFlowEdge struct {
+	// Caller-supplied unique identifier for this edge within the flow.
+	ID string `json:"id" api:"required"`
+	// Condition that gates the transition. Discriminated by `type`: `llm`,
+	// `expression`, or `tool_result`. A `tool_result` condition is only valid on an
+	// edge leaving a tool node.
+	Condition InferenceEmbeddingConversationFlowEdgeConditionUnion `json:"condition" api:"required"`
+	// ID of the node this edge transitions away from.
+	StartNodeID string `json:"start_node_id" api:"required"`
+	// Destination of the transition. Discriminated by `type`: `node` (jump to another
+	// node in this flow) or `assistant` (hand off to a different assistant).
+	Target InferenceEmbeddingConversationFlowEdgeTargetUnion `json:"target" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Condition   respjson.Field
+		StartNodeID respjson.Field
+		Target      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdge) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingConversationFlowEdge) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InferenceEmbeddingConversationFlowEdgeConditionUnion contains all possible
+// properties and values from [InferenceEmbeddingConversationFlowEdgeConditionLlm],
+// [InferenceEmbeddingConversationFlowEdgeConditionExpression],
+// [InferenceEmbeddingConversationFlowEdgeConditionToolResult].
+//
+// Use the [InferenceEmbeddingConversationFlowEdgeConditionUnion.AsAny] method to
+// switch on the variant.
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type InferenceEmbeddingConversationFlowEdgeConditionUnion struct {
+	// This field is from variant [InferenceEmbeddingConversationFlowEdgeConditionLlm].
+	Prompt string `json:"prompt"`
+	// Any of "llm", "expression", "tool_result".
+	Type string `json:"type"`
+	// This field is from variant
+	// [InferenceEmbeddingConversationFlowEdgeConditionExpression].
+	Expression InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion `json:"expression"`
+	// This field is from variant
+	// [InferenceEmbeddingConversationFlowEdgeConditionToolResult].
+	Outcome string `json:"outcome"`
+	JSON    struct {
+		Prompt     respjson.Field
+		Type       respjson.Field
+		Expression respjson.Field
+		Outcome    respjson.Field
+		raw        string
+	} `json:"-"`
+}
+
+// anyInferenceEmbeddingConversationFlowEdgeCondition is implemented by each
+// variant of [InferenceEmbeddingConversationFlowEdgeConditionUnion] to add type
+// safety for the return type of
+// [InferenceEmbeddingConversationFlowEdgeConditionUnion.AsAny]
+type anyInferenceEmbeddingConversationFlowEdgeCondition interface {
+	implInferenceEmbeddingConversationFlowEdgeConditionUnion()
+}
+
+func (InferenceEmbeddingConversationFlowEdgeConditionLlm) implInferenceEmbeddingConversationFlowEdgeConditionUnion() {
+}
+func (InferenceEmbeddingConversationFlowEdgeConditionExpression) implInferenceEmbeddingConversationFlowEdgeConditionUnion() {
+}
+func (InferenceEmbeddingConversationFlowEdgeConditionToolResult) implInferenceEmbeddingConversationFlowEdgeConditionUnion() {
+}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := InferenceEmbeddingConversationFlowEdgeConditionUnion.AsAny().(type) {
+//	case telnyx.InferenceEmbeddingConversationFlowEdgeConditionLlm:
+//	case telnyx.InferenceEmbeddingConversationFlowEdgeConditionExpression:
+//	case telnyx.InferenceEmbeddingConversationFlowEdgeConditionToolResult:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u InferenceEmbeddingConversationFlowEdgeConditionUnion) AsAny() anyInferenceEmbeddingConversationFlowEdgeCondition {
+	switch u.Type {
+	case "llm":
+		return u.AsLlm()
+	case "expression":
+		return u.AsExpression()
+	case "tool_result":
+		return u.AsToolResult()
+	}
+	return nil
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionUnion) AsLlm() (v InferenceEmbeddingConversationFlowEdgeConditionLlm) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionUnion) AsExpression() (v InferenceEmbeddingConversationFlowEdgeConditionExpression) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionUnion) AsToolResult() (v InferenceEmbeddingConversationFlowEdgeConditionToolResult) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u InferenceEmbeddingConversationFlowEdgeConditionUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *InferenceEmbeddingConversationFlowEdgeConditionUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Edge condition evaluated by the LLM from a natural-language prompt.
+//
+// The model is asked to judge the prompt against conversation context and returns
+// true/false. Use this for fuzzy intents that aren't expressible as a
+// deterministic expression (e.g. 'user wants to escalate to a human').
+type InferenceEmbeddingConversationFlowEdgeConditionLlm struct {
+	// Natural-language criterion the LLM judges as true/false.
+	Prompt string       `json:"prompt" api:"required"`
+	Type   constant.Llm `json:"type" default:"llm"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Prompt      respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionLlm) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingConversationFlowEdgeConditionLlm) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Edge condition evaluated as a deterministic expression AST.
+//
+// The expression is computed against runtime dynamic variables and must evaluate
+// to a boolean. Prefer this over `LLMCondition` when the rule is a clean function
+// of known variables — it's cheaper and predictable.
+type InferenceEmbeddingConversationFlowEdgeConditionExpression struct {
+	// Root of the expression AST. Must evaluate to a boolean.
+	Expression InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion `json:"expression" api:"required"`
+	Type       constant.Expression                                                      `json:"type" default:"expression"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Expression  respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpression) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion
+// contains all possible properties and values from
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparison],
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOp],
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmetic],
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionVariable],
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionStringLiteral],
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionNumberLiteral],
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolLiteral].
+//
+// Use the
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion.AsAny]
+// method to switch on the variant.
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion struct {
+	// This field is a union of
+	// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion],
+	// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion]
+	Left InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionLeft `json:"left"`
+	Op   string                                                                       `json:"op"`
+	// This field is a union of
+	// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion],
+	// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion]
+	Right InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionRight `json:"right"`
+	// Any of "comparison", "bool_op", "arithmetic", "variable", "string_literal",
+	// "number_literal", "bool_literal".
+	Type string `json:"type"`
+	// This field is from variant
+	// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOp].
+	Operands []InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion `json:"operands"`
+	// This field is from variant
+	// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionVariable].
+	Name string `json:"name"`
+	// This field is a union of [string], [float64], [bool]
+	Value InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionValue `json:"value"`
+	JSON  struct {
+		Left     respjson.Field
+		Op       respjson.Field
+		Right    respjson.Field
+		Type     respjson.Field
+		Operands respjson.Field
+		Name     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+// anyInferenceEmbeddingConversationFlowEdgeConditionExpressionExpression is
+// implemented by each variant of
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion] to
+// add type safety for the return type of
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion.AsAny]
+type anyInferenceEmbeddingConversationFlowEdgeConditionExpressionExpression interface {
+	implInferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion()
+}
+
+func (InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparison) implInferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion() {
+}
+func (InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOp) implInferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion() {
+}
+func (InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmetic) implInferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion() {
+}
+func (InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionVariable) implInferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion() {
+}
+func (InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionStringLiteral) implInferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion() {
+}
+func (InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionNumberLiteral) implInferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion() {
+}
+func (InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolLiteral) implInferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion() {
+}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion.AsAny().(type) {
+//	case telnyx.InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparison:
+//	case telnyx.InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOp:
+//	case telnyx.InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmetic:
+//	case telnyx.InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionVariable:
+//	case telnyx.InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionStringLiteral:
+//	case telnyx.InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionNumberLiteral:
+//	case telnyx.InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolLiteral:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion) AsAny() anyInferenceEmbeddingConversationFlowEdgeConditionExpressionExpression {
+	switch u.Type {
+	case "comparison":
+		return u.AsComparison()
+	case "bool_op":
+		return u.AsBoolOp()
+	case "arithmetic":
+		return u.AsArithmetic()
+	case "variable":
+		return u.AsVariable()
+	case "string_literal":
+		return u.AsStringLiteral()
+	case "number_literal":
+		return u.AsNumberLiteral()
+	case "bool_literal":
+		return u.AsBoolLiteral()
+	}
+	return nil
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion) AsComparison() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparison) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion) AsBoolOp() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOp) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion) AsArithmetic() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmetic) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion) AsVariable() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionVariable) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion) AsStringLiteral() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionStringLiteral) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion) AsNumberLiteral() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionNumberLiteral) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion) AsBoolLiteral() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolLiteral) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionLeft is
+// an implicit subunion of
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion].
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionLeft
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion].
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionLeft struct {
+	Name string `json:"name"`
+	Type string `json:"type"`
+	// This field is a union of [string], [float64], [bool], [string], [float64],
+	// [bool]
+	Value InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionLeftValue `json:"value"`
+	JSON  struct {
+		Name  respjson.Field
+		Type  respjson.Field
+		Value respjson.Field
+		raw   string
+	} `json:"-"`
+}
+
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionLeft) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionLeftValue
+// is an implicit subunion of
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion].
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionLeftValue
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionLeftValue struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionLeftValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionRight is
+// an implicit subunion of
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion].
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionRight
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion].
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionRight struct {
+	Name string `json:"name"`
+	Type string `json:"type"`
+	// This field is a union of [string], [float64], [bool], [string], [float64],
+	// [bool]
+	Value InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionRightValue `json:"value"`
+	JSON  struct {
+		Name  respjson.Field
+		Type  respjson.Field
+		Value respjson.Field
+		raw   string
+	} `json:"-"`
+}
+
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionRight) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionRightValue
+// is an implicit subunion of
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion].
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionRightValue
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionRightValue struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionRightValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionValue is
+// an implicit subunion of
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion].
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionValue
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionValue struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionUnionValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Compare two sub-expressions with a relational or membership operator.
+//
+// Evaluates to a boolean. Used in edge conditions to gate transitions on runtime
+// values, e.g. `user_age >= 18` or `tier == "gold"`.
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparison struct {
+	// Left-hand operand sub-expression.
+	Left InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion `json:"left" api:"required"`
+	// Relational/membership operator. `contains` / `not_contains` apply to strings
+	// (substring) and arrays (membership).
+	//
+	// Any of "==", "!=", "<", "<=", ">", ">=", "contains", "not_contains".
+	Op string `json:"op" api:"required"`
+	// Right-hand operand sub-expression.
+	Right InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion `json:"right" api:"required"`
+	Type  constant.Comparison                                                                     `json:"type" default:"comparison"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Left        respjson.Field
+		Op          respjson.Field
+		Right       respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparison) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparison) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion
+// contains all possible properties and values from
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftDynamicVariableExpression],
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftStringLiteralExpression],
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftNumberLiteralExpression],
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftBooleanLiteralExpression].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion struct {
+	// This field is from variant
+	// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftDynamicVariableExpression].
+	Name string `json:"name"`
+	Type string `json:"type"`
+	// This field is a union of [string], [float64], [bool]
+	Value InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnionValue `json:"value"`
+	JSON  struct {
+		Name  respjson.Field
+		Type  respjson.Field
+		Value respjson.Field
+		raw   string
+	} `json:"-"`
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion) AsDynamicVariableExpression() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftDynamicVariableExpression) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion) AsStringLiteralExpression() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftStringLiteralExpression) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion) AsNumberLiteralExpression() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftNumberLiteralExpression) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion) AsBooleanLiteralExpression() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftBooleanLiteralExpression) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnionValue
+// is an implicit subunion of
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion].
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnionValue
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnionValue struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnionValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Reference a dynamic variable by name.
+//
+// Resolved at runtime from the assistant's dynamic-variables context (see
+// `Assistant.dynamic_variables` and the dynamic-variables webhook).
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftDynamicVariableExpression struct {
+	// Variable name to look up in the runtime context.
+	Name string            `json:"name" api:"required"`
+	Type constant.Variable `json:"type" default:"variable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftDynamicVariableExpression) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftDynamicVariableExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant string value.
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftStringLiteralExpression struct {
+	Type constant.StringLiteral `json:"type" default:"string_literal"`
+	// Literal string value.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftStringLiteralExpression) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftStringLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant numeric value (float; integers are accepted and stored as float).
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftNumberLiteralExpression struct {
+	Type constant.NumberLiteral `json:"type" default:"number_literal"`
+	// Literal numeric value.
+	Value float64 `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftNumberLiteralExpression) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftNumberLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant boolean value. Useful for unconditional ('always') edges.
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftBooleanLiteralExpression struct {
+	Type constant.BoolLiteral `json:"type" default:"bool_literal"`
+	// Literal boolean value.
+	Value bool `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftBooleanLiteralExpression) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonLeftBooleanLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion
+// contains all possible properties and values from
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightDynamicVariableExpression],
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightStringLiteralExpression],
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightNumberLiteralExpression],
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightBooleanLiteralExpression].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion struct {
+	// This field is from variant
+	// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightDynamicVariableExpression].
+	Name string `json:"name"`
+	Type string `json:"type"`
+	// This field is a union of [string], [float64], [bool]
+	Value InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightUnionValue `json:"value"`
+	JSON  struct {
+		Name  respjson.Field
+		Type  respjson.Field
+		Value respjson.Field
+		raw   string
+	} `json:"-"`
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion) AsDynamicVariableExpression() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightDynamicVariableExpression) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion) AsStringLiteralExpression() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightStringLiteralExpression) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion) AsNumberLiteralExpression() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightNumberLiteralExpression) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion) AsBooleanLiteralExpression() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightBooleanLiteralExpression) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightUnionValue
+// is an implicit subunion of
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion].
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightUnionValue
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightUnionValue struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightUnionValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Reference a dynamic variable by name.
+//
+// Resolved at runtime from the assistant's dynamic-variables context (see
+// `Assistant.dynamic_variables` and the dynamic-variables webhook).
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightDynamicVariableExpression struct {
+	// Variable name to look up in the runtime context.
+	Name string            `json:"name" api:"required"`
+	Type constant.Variable `json:"type" default:"variable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightDynamicVariableExpression) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightDynamicVariableExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant string value.
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightStringLiteralExpression struct {
+	Type constant.StringLiteral `json:"type" default:"string_literal"`
+	// Literal string value.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightStringLiteralExpression) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightStringLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant numeric value (float; integers are accepted and stored as float).
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightNumberLiteralExpression struct {
+	Type constant.NumberLiteral `json:"type" default:"number_literal"`
+	// Literal numeric value.
+	Value float64 `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightNumberLiteralExpression) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightNumberLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant boolean value. Useful for unconditional ('always') edges.
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightBooleanLiteralExpression struct {
+	Type constant.BoolLiteral `json:"type" default:"bool_literal"`
+	// Literal boolean value.
+	Value bool `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightBooleanLiteralExpression) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionComparisonRightBooleanLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Combine sub-expressions with a logical operator (`and` / `or` / `not`).
+//
+// `and` and `or` accept two or more operands; `not` accepts exactly one.
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOp struct {
+	// Logical operator. `not` is unary; `and`/`or` are n-ary (>=2).
+	//
+	// Any of "and", "or", "not".
+	Op string `json:"op" api:"required"`
+	// Operand sub-expressions. Length must be exactly 1 for `not` and >= 2 for
+	// `and`/`or`.
+	Operands []InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion `json:"operands" api:"required"`
+	Type     constant.BoolOp                                                                         `json:"type" default:"bool_op"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Op          respjson.Field
+		Operands    respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOp) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion
+// contains all possible properties and values from
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandDynamicVariableExpression],
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandStringLiteralExpression],
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandNumberLiteralExpression],
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandBooleanLiteralExpression].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion struct {
+	// This field is from variant
+	// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandDynamicVariableExpression].
+	Name string `json:"name"`
+	Type string `json:"type"`
+	// This field is a union of [string], [float64], [bool]
+	Value InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnionValue `json:"value"`
+	JSON  struct {
+		Name  respjson.Field
+		Type  respjson.Field
+		Value respjson.Field
+		raw   string
+	} `json:"-"`
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion) AsDynamicVariableExpression() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandDynamicVariableExpression) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion) AsStringLiteralExpression() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandStringLiteralExpression) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion) AsNumberLiteralExpression() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandNumberLiteralExpression) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion) AsBooleanLiteralExpression() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandBooleanLiteralExpression) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnionValue
+// is an implicit subunion of
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion].
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnionValue
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnionValue struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnionValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Reference a dynamic variable by name.
+//
+// Resolved at runtime from the assistant's dynamic-variables context (see
+// `Assistant.dynamic_variables` and the dynamic-variables webhook).
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandDynamicVariableExpression struct {
+	// Variable name to look up in the runtime context.
+	Name string            `json:"name" api:"required"`
+	Type constant.Variable `json:"type" default:"variable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandDynamicVariableExpression) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandDynamicVariableExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant string value.
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandStringLiteralExpression struct {
+	Type constant.StringLiteral `json:"type" default:"string_literal"`
+	// Literal string value.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandStringLiteralExpression) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandStringLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant numeric value (float; integers are accepted and stored as float).
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandNumberLiteralExpression struct {
+	Type constant.NumberLiteral `json:"type" default:"number_literal"`
+	// Literal numeric value.
+	Value float64 `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandNumberLiteralExpression) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandNumberLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant boolean value. Useful for unconditional ('always') edges.
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandBooleanLiteralExpression struct {
+	Type constant.BoolLiteral `json:"type" default:"bool_literal"`
+	// Literal boolean value.
+	Value bool `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandBooleanLiteralExpression) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolOpOperandBooleanLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Numeric expression: applies an arithmetic operator to two sub-expressions.
+//
+// Useful for derived numeric checks, e.g. `cart_total + shipping > 50`. Both
+// operands should resolve to numbers at runtime.
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmetic struct {
+	// Left-hand operand sub-expression.
+	Left InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion `json:"left" api:"required"`
+	// Arithmetic operator applied to `left` and `right`.
+	//
+	// Any of "+", "-", "\*", "/", "%".
+	Op string `json:"op" api:"required"`
+	// Right-hand operand sub-expression.
+	Right InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion `json:"right" api:"required"`
+	Type  constant.Arithmetic                                                                     `json:"type" default:"arithmetic"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Left        respjson.Field
+		Op          respjson.Field
+		Right       respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmetic) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmetic) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion
+// contains all possible properties and values from
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftDynamicVariableExpression],
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftStringLiteralExpression],
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftNumberLiteralExpression],
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftBooleanLiteralExpression].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion struct {
+	// This field is from variant
+	// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftDynamicVariableExpression].
+	Name string `json:"name"`
+	Type string `json:"type"`
+	// This field is a union of [string], [float64], [bool]
+	Value InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnionValue `json:"value"`
+	JSON  struct {
+		Name  respjson.Field
+		Type  respjson.Field
+		Value respjson.Field
+		raw   string
+	} `json:"-"`
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion) AsDynamicVariableExpression() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftDynamicVariableExpression) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion) AsStringLiteralExpression() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftStringLiteralExpression) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion) AsNumberLiteralExpression() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftNumberLiteralExpression) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion) AsBooleanLiteralExpression() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftBooleanLiteralExpression) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnionValue
+// is an implicit subunion of
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion].
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnionValue
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnionValue struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnionValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Reference a dynamic variable by name.
+//
+// Resolved at runtime from the assistant's dynamic-variables context (see
+// `Assistant.dynamic_variables` and the dynamic-variables webhook).
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftDynamicVariableExpression struct {
+	// Variable name to look up in the runtime context.
+	Name string            `json:"name" api:"required"`
+	Type constant.Variable `json:"type" default:"variable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftDynamicVariableExpression) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftDynamicVariableExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant string value.
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftStringLiteralExpression struct {
+	Type constant.StringLiteral `json:"type" default:"string_literal"`
+	// Literal string value.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftStringLiteralExpression) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftStringLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant numeric value (float; integers are accepted and stored as float).
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftNumberLiteralExpression struct {
+	Type constant.NumberLiteral `json:"type" default:"number_literal"`
+	// Literal numeric value.
+	Value float64 `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftNumberLiteralExpression) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftNumberLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant boolean value. Useful for unconditional ('always') edges.
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftBooleanLiteralExpression struct {
+	Type constant.BoolLiteral `json:"type" default:"bool_literal"`
+	// Literal boolean value.
+	Value bool `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftBooleanLiteralExpression) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticLeftBooleanLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion
+// contains all possible properties and values from
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightDynamicVariableExpression],
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightStringLiteralExpression],
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightNumberLiteralExpression],
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightBooleanLiteralExpression].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion struct {
+	// This field is from variant
+	// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightDynamicVariableExpression].
+	Name string `json:"name"`
+	Type string `json:"type"`
+	// This field is a union of [string], [float64], [bool]
+	Value InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnionValue `json:"value"`
+	JSON  struct {
+		Name  respjson.Field
+		Type  respjson.Field
+		Value respjson.Field
+		raw   string
+	} `json:"-"`
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion) AsDynamicVariableExpression() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightDynamicVariableExpression) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion) AsStringLiteralExpression() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightStringLiteralExpression) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion) AsNumberLiteralExpression() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightNumberLiteralExpression) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion) AsBooleanLiteralExpression() (v InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightBooleanLiteralExpression) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnionValue
+// is an implicit subunion of
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion].
+// InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnionValue
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnionValue struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnionValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Reference a dynamic variable by name.
+//
+// Resolved at runtime from the assistant's dynamic-variables context (see
+// `Assistant.dynamic_variables` and the dynamic-variables webhook).
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightDynamicVariableExpression struct {
+	// Variable name to look up in the runtime context.
+	Name string            `json:"name" api:"required"`
+	Type constant.Variable `json:"type" default:"variable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightDynamicVariableExpression) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightDynamicVariableExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant string value.
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightStringLiteralExpression struct {
+	Type constant.StringLiteral `json:"type" default:"string_literal"`
+	// Literal string value.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightStringLiteralExpression) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightStringLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant numeric value (float; integers are accepted and stored as float).
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightNumberLiteralExpression struct {
+	Type constant.NumberLiteral `json:"type" default:"number_literal"`
+	// Literal numeric value.
+	Value float64 `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightNumberLiteralExpression) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightNumberLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant boolean value. Useful for unconditional ('always') edges.
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightBooleanLiteralExpression struct {
+	Type constant.BoolLiteral `json:"type" default:"bool_literal"`
+	// Literal boolean value.
+	Value bool `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightBooleanLiteralExpression) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionArithmeticRightBooleanLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Reference a dynamic variable by name.
+//
+// Resolved at runtime from the assistant's dynamic-variables context (see
+// `Assistant.dynamic_variables` and the dynamic-variables webhook).
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionVariable struct {
+	// Variable name to look up in the runtime context.
+	Name string            `json:"name" api:"required"`
+	Type constant.Variable `json:"type" default:"variable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionVariable) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionVariable) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant string value.
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionStringLiteral struct {
+	Type constant.StringLiteral `json:"type" default:"string_literal"`
+	// Literal string value.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionStringLiteral) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionStringLiteral) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant numeric value (float; integers are accepted and stored as float).
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionNumberLiteral struct {
+	Type constant.NumberLiteral `json:"type" default:"number_literal"`
+	// Literal numeric value.
+	Value float64 `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionNumberLiteral) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionNumberLiteral) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant boolean value. Useful for unconditional ('always') edges.
+type InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolLiteral struct {
+	Type constant.BoolLiteral `json:"type" default:"bool_literal"`
+	// Literal boolean value.
+	Value bool `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolLiteral) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionExpressionExpressionBoolLiteral) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Edge condition that fires on the outcome of a tool node's execution.
+//
+// Only valid on edges leaving a tool node (`type == "tool"`). A tool node runs
+// exactly one tool as a deliberate flow step; this condition routes on whether
+// that tool reported `success` or `failure`. Use it to split the happy path from
+// the error path after a tool runs (e.g. payment succeeded vs. declined). There is
+// no `tool_id` field — the tool node has a single tool, so the outcome is
+// unambiguous.
+type InferenceEmbeddingConversationFlowEdgeConditionToolResult struct {
+	// Match either the tool node's success or failure outcome.
+	//
+	// Any of "success", "failure".
+	Outcome string              `json:"outcome" api:"required"`
+	Type    constant.ToolResult `json:"type" default:"tool_result"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Outcome     respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeConditionToolResult) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeConditionToolResult) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InferenceEmbeddingConversationFlowEdgeTargetUnion contains all possible
+// properties and values from [InferenceEmbeddingConversationFlowEdgeTargetNode],
+// [InferenceEmbeddingConversationFlowEdgeTargetAssistant].
+//
+// Use the [InferenceEmbeddingConversationFlowEdgeTargetUnion.AsAny] method to
+// switch on the variant.
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type InferenceEmbeddingConversationFlowEdgeTargetUnion struct {
+	// This field is from variant [InferenceEmbeddingConversationFlowEdgeTargetNode].
+	NodeID string `json:"node_id"`
+	// Any of "node", "assistant".
+	Type string `json:"type"`
+	// This field is from variant
+	// [InferenceEmbeddingConversationFlowEdgeTargetAssistant].
+	AssistantID string `json:"assistant_id"`
+	// This field is from variant
+	// [InferenceEmbeddingConversationFlowEdgeTargetAssistant].
+	Position InferenceEmbeddingConversationFlowEdgeTargetAssistantPosition `json:"position"`
+	// This field is from variant
+	// [InferenceEmbeddingConversationFlowEdgeTargetAssistant].
+	VoiceMode string `json:"voice_mode"`
+	JSON      struct {
+		NodeID      respjson.Field
+		Type        respjson.Field
+		AssistantID respjson.Field
+		Position    respjson.Field
+		VoiceMode   respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// anyInferenceEmbeddingConversationFlowEdgeTarget is implemented by each variant
+// of [InferenceEmbeddingConversationFlowEdgeTargetUnion] to add type safety for
+// the return type of [InferenceEmbeddingConversationFlowEdgeTargetUnion.AsAny]
+type anyInferenceEmbeddingConversationFlowEdgeTarget interface {
+	implInferenceEmbeddingConversationFlowEdgeTargetUnion()
+}
+
+func (InferenceEmbeddingConversationFlowEdgeTargetNode) implInferenceEmbeddingConversationFlowEdgeTargetUnion() {
+}
+func (InferenceEmbeddingConversationFlowEdgeTargetAssistant) implInferenceEmbeddingConversationFlowEdgeTargetUnion() {
+}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := InferenceEmbeddingConversationFlowEdgeTargetUnion.AsAny().(type) {
+//	case telnyx.InferenceEmbeddingConversationFlowEdgeTargetNode:
+//	case telnyx.InferenceEmbeddingConversationFlowEdgeTargetAssistant:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u InferenceEmbeddingConversationFlowEdgeTargetUnion) AsAny() anyInferenceEmbeddingConversationFlowEdgeTarget {
+	switch u.Type {
+	case "node":
+		return u.AsNode()
+	case "assistant":
+		return u.AsAssistant()
+	}
+	return nil
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeTargetUnion) AsNode() (v InferenceEmbeddingConversationFlowEdgeTargetNode) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingConversationFlowEdgeTargetUnion) AsAssistant() (v InferenceEmbeddingConversationFlowEdgeTargetAssistant) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u InferenceEmbeddingConversationFlowEdgeTargetUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *InferenceEmbeddingConversationFlowEdgeTargetUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Edge target referencing another node within the same flow.
+//
+// The runtime transitions the active node to `node_id` and continues processing
+// within the current assistant's flow.
+type InferenceEmbeddingConversationFlowEdgeTargetNode struct {
+	// ID of the node this edge transitions into.
+	NodeID string        `json:"node_id" api:"required"`
+	Type   constant.Node `json:"type" default:"node"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		NodeID      respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeTargetNode) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingConversationFlowEdgeTargetNode) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Edge target referencing a different assistant.
+//
+// When the edge fires, the conversation hands off to `assistant_id`: the active
+// assistant on the conversation row is rewritten and the new assistant's flow
+// starts at its own `start_node_id`. The current turn's LLM response is delivered
+// to the user as-is; subsequent turns route to the new assistant.
+type InferenceEmbeddingConversationFlowEdgeTargetAssistant struct {
+	// ID of the assistant the conversation transitions to.
+	AssistantID string             `json:"assistant_id" api:"required"`
+	Type        constant.Assistant `json:"type" default:"assistant"`
+	// Optional canvas coordinates for rendering the target assistant as a node in
+	// authoring UIs. Pure presentation — the runtime ignores it; round-trips so
+	// frontends can persist graph layout across reloads. When multiple edges target
+	// the same assistant, each edge's `position` is independent (frontends typically
+	// use the first non-null one).
+	Position InferenceEmbeddingConversationFlowEdgeTargetAssistantPosition `json:"position"`
+	// Voice behavior when handing off to the target assistant, mirroring the handoff
+	// tool's `voice_mode`. `unified` (default) keeps the current voice across the
+	// handoff; `distinct` lets the target assistant speak with its own configured
+	// voice. Only applies to assistant targets — node targets override voice via the
+	// node's own `voice_settings`.
+	//
+	// Any of "unified", "distinct".
+	VoiceMode string `json:"voice_mode"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AssistantID respjson.Field
+		Type        respjson.Field
+		Position    respjson.Field
+		VoiceMode   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeTargetAssistant) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingConversationFlowEdgeTargetAssistant) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional canvas coordinates for rendering the target assistant as a node in
+// authoring UIs. Pure presentation — the runtime ignores it; round-trips so
+// frontends can persist graph layout across reloads. When multiple edges target
+// the same assistant, each edge's `position` is independent (frontends typically
+// use the first non-null one).
+type InferenceEmbeddingConversationFlowEdgeTargetAssistantPosition struct {
+	// Horizontal coordinate in the authoring canvas.
+	X float64 `json:"x" api:"required"`
+	// Vertical coordinate in the authoring canvas.
+	Y float64 `json:"y" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		X           respjson.Field
+		Y           respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowEdgeTargetAssistantPosition) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingConversationFlowEdgeTargetAssistantPosition) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -5351,6 +7395,12 @@ type AIAssistantNewParams struct {
 	// `external_llm` instead of this field. If neither `model` nor `external_llm` is
 	// provided, Telnyx applies the default model.
 	Model param.Opt[string] `json:"model,omitzero"`
+	// Conversation flow as supplied by API clients (create / update).
+	//
+	// A directed graph of `FlowNodeReq` connected by `FlowEdge`s. Validation enforces
+	// unique node/edge IDs, that `start_node_id` references a real node, and that
+	// every edge's endpoints reference real nodes.
+	ConversationFlow AIAssistantNewParamsConversationFlow `json:"conversation_flow,omitzero"`
 	// Map of dynamic variables and their default values
 	DynamicVariables map[string]any         `json:"dynamic_variables,omitzero"`
 	EnabledFeatures  []EnabledFeatures      `json:"enabled_features,omitzero"`
@@ -5405,6 +7455,2051 @@ func (r AIAssistantNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *AIAssistantNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Conversation flow as supplied by API clients (create / update).
+//
+// A directed graph of `FlowNodeReq` connected by `FlowEdge`s. Validation enforces
+// unique node/edge IDs, that `start_node_id` references a real node, and that
+// every edge's endpoints reference real nodes.
+//
+// The properties Nodes, StartNodeID are required.
+type AIAssistantNewParamsConversationFlow struct {
+	// All nodes in the flow. Must contain `start_node_id`. Each node is a prompt node
+	// (`type: prompt`) or a tool node (`type: tool`).
+	Nodes []AIAssistantNewParamsConversationFlowNodeUnion `json:"nodes,omitzero" api:"required"`
+	// ID of the node where the conversation begins.
+	StartNodeID string `json:"start_node_id" api:"required"`
+	// Directed transitions between nodes. May be empty for a single-node flow.
+	Edges []AIAssistantNewParamsConversationFlowEdge `json:"edges,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlow) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlow
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlow) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AIAssistantNewParamsConversationFlowNodeUnion struct {
+	OfPrompt *AIAssistantNewParamsConversationFlowNodePrompt `json:",omitzero,inline"`
+	OfTool   *AIAssistantNewParamsConversationFlowNodeTool   `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AIAssistantNewParamsConversationFlowNodeUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfPrompt, u.OfTool)
+}
+func (u *AIAssistantNewParamsConversationFlowNodeUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AIAssistantNewParamsConversationFlowNodeUnion) asAny() any {
+	if !param.IsOmitted(u.OfPrompt) {
+		return u.OfPrompt
+	} else if !param.IsOmitted(u.OfTool) {
+		return u.OfTool
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowNodeUnion) GetInstructions() *string {
+	if vt := u.OfPrompt; vt != nil {
+		return &vt.Instructions
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowNodeUnion) GetExternalLlm() *ExternalLlmReqParam {
+	if vt := u.OfPrompt; vt != nil {
+		return &vt.ExternalLlm
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowNodeUnion) GetInstructionsMode() *string {
+	if vt := u.OfPrompt; vt != nil {
+		return &vt.InstructionsMode
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowNodeUnion) GetLlmAPIKeyRef() *string {
+	if vt := u.OfPrompt; vt != nil && vt.LlmAPIKeyRef.Valid() {
+		return &vt.LlmAPIKeyRef.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowNodeUnion) GetModel() *string {
+	if vt := u.OfPrompt; vt != nil && vt.Model.Valid() {
+		return &vt.Model.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowNodeUnion) GetSharedToolIDs() []string {
+	if vt := u.OfPrompt; vt != nil {
+		return vt.SharedToolIDs
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowNodeUnion) GetToolsMode() *string {
+	if vt := u.OfPrompt; vt != nil {
+		return &vt.ToolsMode
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowNodeUnion) GetTranscription() *TranscriptionSettingsParam {
+	if vt := u.OfPrompt; vt != nil {
+		return &vt.Transcription
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowNodeUnion) GetVoiceSettings() *VoiceSettingsParam {
+	if vt := u.OfPrompt; vt != nil {
+		return &vt.VoiceSettings
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowNodeUnion) GetSharedToolID() *string {
+	if vt := u.OfTool; vt != nil {
+		return &vt.SharedToolID
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowNodeUnion) GetID() *string {
+	if vt := u.OfPrompt; vt != nil {
+		return (*string)(&vt.ID)
+	} else if vt := u.OfTool; vt != nil {
+		return (*string)(&vt.ID)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowNodeUnion) GetName() *string {
+	if vt := u.OfPrompt; vt != nil && vt.Name.Valid() {
+		return &vt.Name.Value
+	} else if vt := u.OfTool; vt != nil && vt.Name.Valid() {
+		return &vt.Name.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowNodeUnion) GetType() *string {
+	if vt := u.OfPrompt; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfTool; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u AIAssistantNewParamsConversationFlowNodeUnion) GetPosition() (res aiAssistantNewParamsConversationFlowNodeUnionPosition) {
+	if vt := u.OfPrompt; vt != nil {
+		res.any = &vt.Position
+	} else if vt := u.OfTool; vt != nil {
+		res.any = &vt.Position
+	}
+	return
+}
+
+// Can have the runtime types
+// [*AIAssistantNewParamsConversationFlowNodePromptPosition],
+// [*AIAssistantNewParamsConversationFlowNodeToolPosition]
+type aiAssistantNewParamsConversationFlowNodeUnionPosition struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *telnyx.AIAssistantNewParamsConversationFlowNodePromptPosition:
+//	case *telnyx.AIAssistantNewParamsConversationFlowNodeToolPosition:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u aiAssistantNewParamsConversationFlowNodeUnionPosition) AsAny() any { return u.any }
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u aiAssistantNewParamsConversationFlowNodeUnionPosition) GetX() *float64 {
+	switch vt := u.any.(type) {
+	case *AIAssistantNewParamsConversationFlowNodePromptPosition:
+		return (*float64)(&vt.X)
+	case *AIAssistantNewParamsConversationFlowNodeToolPosition:
+		return (*float64)(&vt.X)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u aiAssistantNewParamsConversationFlowNodeUnionPosition) GetY() *float64 {
+	switch vt := u.any.(type) {
+	case *AIAssistantNewParamsConversationFlowNodePromptPosition:
+		return (*float64)(&vt.Y)
+	case *AIAssistantNewParamsConversationFlowNodeToolPosition:
+		return (*float64)(&vt.Y)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[AIAssistantNewParamsConversationFlowNodeUnion](
+		"type",
+		apijson.Discriminator[AIAssistantNewParamsConversationFlowNodePrompt]("prompt"),
+		apijson.Discriminator[AIAssistantNewParamsConversationFlowNodeTool]("tool"),
+	)
+}
+
+// One step in a conversation flow, as supplied by API clients.
+//
+// Each node carries the prompt, tool scope, and optional overrides for
+// model/voice/transcription. Unset overrides cascade from the assistant.
+//
+// The properties ID, Instructions are required.
+type AIAssistantNewParamsConversationFlowNodePrompt struct {
+	// Caller-supplied unique identifier for this node within the flow.
+	ID string `json:"id" api:"required"`
+	// Prompt that drives the LLM while this node is active. Required.
+	Instructions string `json:"instructions" api:"required"`
+	// Override for `Assistant.llm_api_key_ref` while this node is active. Part of the
+	// LLM bundle — see `model` for cascade semantics.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// Override for `Assistant.model` while this node is active. Part of the LLM bundle
+	// (`model` + `llm_api_key_ref` + `external_llm`): when any of the three is set on
+	// the node, all three are taken from the node and the assistant-level LLM identity
+	// is not consulted. When none of the three is set, the assistant's bundle cascades
+	// unchanged.
+	Model param.Opt[string] `json:"model,omitzero"`
+	// Optional human-readable label, displayed in authoring UIs.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Override for `Assistant.external_llm` while this node is active. Use this to
+	// route a node's turns to a different external LLM (different `model`, `base_url`,
+	// credentials). Part of the LLM bundle — see `model` for cascade semantics.
+	// Mutually exclusive with `model` on the node (a single LLM identity per node).
+	ExternalLlm ExternalLlmReqParam `json:"external_llm,omitzero"`
+	// How `instructions` combine with the assistant-level instructions. `replace`
+	// (default): the node's instructions are used alone. `append`: the node's
+	// instructions are concatenated after the assistant's instructions.
+	//
+	// Any of "replace", "append".
+	InstructionsMode string `json:"instructions_mode,omitzero"`
+	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+	// by the runtime; round-trips so frontends can persist graph layout across
+	// reloads.
+	Position AIAssistantNewParamsConversationFlowNodePromptPosition `json:"position,omitzero"`
+	// IDs of shared (org-level) tools available at this node. Knowledge bases are
+	// attached the same way — via a shared retrieval tool. Tools not listed here are
+	// not callable while this node is active.
+	SharedToolIDs []string `json:"shared_tool_ids,omitzero"`
+	// How `shared_tool_ids` combine with the assistant-level tool set. `replace`
+	// (default): only the node's tools are callable. `append`: the node's tools are
+	// added to the assistant's tools. Ignored when `shared_tool_ids` is null.
+	//
+	// Any of "replace", "append".
+	ToolsMode string `json:"tools_mode,omitzero"`
+	// Per-node transcription override (model/language/region). Unset fields cascade
+	// from the assistant-level transcription.
+	Transcription TranscriptionSettingsParam `json:"transcription,omitzero"`
+	// Node kind discriminator. `prompt` (default) is an LLM-driven step; `tool` is a
+	// standalone tool execution (see `ToolNodeReq`).
+	//
+	// Any of "prompt".
+	Type string `json:"type,omitzero"`
+	// Per-node voice override. Only fields set here override the assistant-level voice
+	// settings; unset fields cascade.
+	VoiceSettings VoiceSettingsParam `json:"voice_settings,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowNodePrompt) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowNodePrompt
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowNodePrompt) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantNewParamsConversationFlowNodePrompt](
+		"instructions_mode", "replace", "append",
+	)
+	apijson.RegisterFieldValidator[AIAssistantNewParamsConversationFlowNodePrompt](
+		"tools_mode", "replace", "append",
+	)
+	apijson.RegisterFieldValidator[AIAssistantNewParamsConversationFlowNodePrompt](
+		"type", "prompt",
+	)
+}
+
+// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+// by the runtime; round-trips so frontends can persist graph layout across
+// reloads.
+//
+// The properties X, Y are required.
+type AIAssistantNewParamsConversationFlowNodePromptPosition struct {
+	// Horizontal coordinate in the authoring canvas.
+	X float64 `json:"x" api:"required"`
+	// Vertical coordinate in the authoring canvas.
+	Y float64 `json:"y" api:"required"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowNodePromptPosition) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowNodePromptPosition
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowNodePromptPosition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A standalone tool step in a conversation flow, as supplied by clients.
+//
+// Unlike a prompt node, a tool node has no instructions or model — it isn't an LLM
+// turn. Reaching it deterministically runs one shared tool (arguments filled from
+// matching dynamic variables by name), then routes on the result via outgoing
+// `tool_result` edges.
+//
+// The properties ID, SharedToolID are required.
+type AIAssistantNewParamsConversationFlowNodeTool struct {
+	// Caller-supplied unique identifier for this node within the flow.
+	ID string `json:"id" api:"required"`
+	// ID of the single shared (org-level) tool this node executes. When the flow
+	// reaches this node the tool runs as a deliberate step (no LLM turn); its outgoing
+	// `tool_result` edges then route on the outcome. Arguments are filled from the
+	// conversation's dynamic variables by name — a dynamic variable whose name matches
+	// one of the tool's parameters supplies that argument. Cross-validated against the
+	// org's shared tools on write.
+	SharedToolID string `json:"shared_tool_id" api:"required"`
+	// Optional human-readable label, displayed in authoring UIs.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+	// by the runtime; round-trips so frontends can persist graph layout across
+	// reloads.
+	Position AIAssistantNewParamsConversationFlowNodeToolPosition `json:"position,omitzero"`
+	// Node kind discriminator. Always `tool` for a tool node.
+	//
+	// Any of "tool".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowNodeTool) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowNodeTool
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowNodeTool) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantNewParamsConversationFlowNodeTool](
+		"type", "tool",
+	)
+}
+
+// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+// by the runtime; round-trips so frontends can persist graph layout across
+// reloads.
+//
+// The properties X, Y are required.
+type AIAssistantNewParamsConversationFlowNodeToolPosition struct {
+	// Horizontal coordinate in the authoring canvas.
+	X float64 `json:"x" api:"required"`
+	// Vertical coordinate in the authoring canvas.
+	Y float64 `json:"y" api:"required"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowNodeToolPosition) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowNodeToolPosition
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowNodeToolPosition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Directed transition from one node to a target, gated by a condition.
+//
+// The target is either another node in the same flow (`NodeTarget`) or a different
+// assistant (`AssistantTarget`). Multiple edges may share a `start_node_id`; the
+// runtime evaluates them in the order they're declared and takes the first whose
+// condition is true.
+//
+// The properties ID, Condition, StartNodeID, Target are required.
+type AIAssistantNewParamsConversationFlowEdge struct {
+	// Caller-supplied unique identifier for this edge within the flow.
+	ID string `json:"id" api:"required"`
+	// Condition that gates the transition. Discriminated by `type`: `llm`,
+	// `expression`, or `tool_result`. A `tool_result` condition is only valid on an
+	// edge leaving a tool node.
+	Condition AIAssistantNewParamsConversationFlowEdgeConditionUnion `json:"condition,omitzero" api:"required"`
+	// ID of the node this edge transitions away from.
+	StartNodeID string `json:"start_node_id" api:"required"`
+	// Destination of the transition. Discriminated by `type`: `node` (jump to another
+	// node in this flow) or `assistant` (hand off to a different assistant).
+	Target AIAssistantNewParamsConversationFlowEdgeTargetUnion `json:"target,omitzero" api:"required"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdge) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdge
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdge) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AIAssistantNewParamsConversationFlowEdgeConditionUnion struct {
+	OfLlm        *AIAssistantNewParamsConversationFlowEdgeConditionLlm        `json:",omitzero,inline"`
+	OfExpression *AIAssistantNewParamsConversationFlowEdgeConditionExpression `json:",omitzero,inline"`
+	OfToolResult *AIAssistantNewParamsConversationFlowEdgeConditionToolResult `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AIAssistantNewParamsConversationFlowEdgeConditionUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfLlm, u.OfExpression, u.OfToolResult)
+}
+func (u *AIAssistantNewParamsConversationFlowEdgeConditionUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AIAssistantNewParamsConversationFlowEdgeConditionUnion) asAny() any {
+	if !param.IsOmitted(u.OfLlm) {
+		return u.OfLlm
+	} else if !param.IsOmitted(u.OfExpression) {
+		return u.OfExpression
+	} else if !param.IsOmitted(u.OfToolResult) {
+		return u.OfToolResult
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeConditionUnion) GetPrompt() *string {
+	if vt := u.OfLlm; vt != nil {
+		return &vt.Prompt
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeConditionUnion) GetExpression() *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnion {
+	if vt := u.OfExpression; vt != nil {
+		return &vt.Expression
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeConditionUnion) GetOutcome() *string {
+	if vt := u.OfToolResult; vt != nil {
+		return &vt.Outcome
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeConditionUnion) GetType() *string {
+	if vt := u.OfLlm; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfToolResult; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[AIAssistantNewParamsConversationFlowEdgeConditionUnion](
+		"type",
+		apijson.Discriminator[AIAssistantNewParamsConversationFlowEdgeConditionLlm]("llm"),
+		apijson.Discriminator[AIAssistantNewParamsConversationFlowEdgeConditionExpression]("expression"),
+		apijson.Discriminator[AIAssistantNewParamsConversationFlowEdgeConditionToolResult]("tool_result"),
+	)
+}
+
+// Edge condition evaluated by the LLM from a natural-language prompt.
+//
+// The model is asked to judge the prompt against conversation context and returns
+// true/false. Use this for fuzzy intents that aren't expressible as a
+// deterministic expression (e.g. 'user wants to escalate to a human').
+//
+// The properties Prompt, Type are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionLlm struct {
+	// Natural-language criterion the LLM judges as true/false.
+	Prompt string `json:"prompt" api:"required"`
+	// This field can be elided, and will marshal its zero value as "llm".
+	Type constant.Llm `json:"type" default:"llm"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionLlm) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionLlm
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionLlm) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Edge condition evaluated as a deterministic expression AST.
+//
+// The expression is computed against runtime dynamic variables and must evaluate
+// to a boolean. Prefer this over `LLMCondition` when the rule is a clean function
+// of known variables — it's cheaper and predictable.
+//
+// The properties Expression, Type are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpression struct {
+	// Root of the expression AST. Must evaluate to a boolean.
+	Expression AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnion `json:"expression,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "expression".
+	Type constant.Expression `json:"type" default:"expression"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnion struct {
+	OfComparison    *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparison    `json:",omitzero,inline"`
+	OfBoolOp        *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOp        `json:",omitzero,inline"`
+	OfArithmetic    *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmetic    `json:",omitzero,inline"`
+	OfVariable      *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionVariable      `json:",omitzero,inline"`
+	OfStringLiteral *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionStringLiteral `json:",omitzero,inline"`
+	OfNumberLiteral *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionNumberLiteral `json:",omitzero,inline"`
+	OfBoolLiteral   *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolLiteral   `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfComparison,
+		u.OfBoolOp,
+		u.OfArithmetic,
+		u.OfVariable,
+		u.OfStringLiteral,
+		u.OfNumberLiteral,
+		u.OfBoolLiteral)
+}
+func (u *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnion) asAny() any {
+	if !param.IsOmitted(u.OfComparison) {
+		return u.OfComparison
+	} else if !param.IsOmitted(u.OfBoolOp) {
+		return u.OfBoolOp
+	} else if !param.IsOmitted(u.OfArithmetic) {
+		return u.OfArithmetic
+	} else if !param.IsOmitted(u.OfVariable) {
+		return u.OfVariable
+	} else if !param.IsOmitted(u.OfStringLiteral) {
+		return u.OfStringLiteral
+	} else if !param.IsOmitted(u.OfNumberLiteral) {
+		return u.OfNumberLiteral
+	} else if !param.IsOmitted(u.OfBoolLiteral) {
+		return u.OfBoolLiteral
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnion) GetOperands() []AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion {
+	if vt := u.OfBoolOp; vt != nil {
+		return vt.Operands
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnion) GetName() *string {
+	if vt := u.OfVariable; vt != nil {
+		return &vt.Name
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnion) GetOp() *string {
+	if vt := u.OfComparison; vt != nil {
+		return (*string)(&vt.Op)
+	} else if vt := u.OfBoolOp; vt != nil {
+		return (*string)(&vt.Op)
+	} else if vt := u.OfArithmetic; vt != nil {
+		return (*string)(&vt.Op)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnion) GetType() *string {
+	if vt := u.OfComparison; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfBoolOp; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfArithmetic; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfVariable; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfStringLiteral; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfNumberLiteral; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfBoolLiteral; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnion) GetLeft() (res aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnionLeft) {
+	if vt := u.OfComparison; vt != nil {
+		res.any = vt.Left.asAny()
+	} else if vt := u.OfArithmetic; vt != nil {
+		res.any = vt.Left.asAny()
+	}
+	return
+}
+
+// Can have the runtime types
+// [*AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftDynamicVariableExpression],
+// [*AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftStringLiteralExpression],
+// [*AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftNumberLiteralExpression],
+// [*AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftBooleanLiteralExpression],
+// [*AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftDynamicVariableExpression],
+// [*AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftStringLiteralExpression],
+// [*AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftNumberLiteralExpression],
+// [*AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftBooleanLiteralExpression]
+type aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnionLeft struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *telnyx.AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftDynamicVariableExpression:
+//	case *telnyx.AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftStringLiteralExpression:
+//	case *telnyx.AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftNumberLiteralExpression:
+//	case *telnyx.AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftBooleanLiteralExpression:
+//	case *telnyx.AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftDynamicVariableExpression:
+//	case *telnyx.AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftStringLiteralExpression:
+//	case *telnyx.AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftNumberLiteralExpression:
+//	case *telnyx.AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftBooleanLiteralExpression:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnionLeft) AsAny() any {
+	return u.any
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnionLeft) GetName() *string {
+	switch vt := u.any.(type) {
+	case *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion:
+		return vt.GetName()
+	case *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion:
+		return vt.GetName()
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnionLeft) GetType() *string {
+	switch vt := u.any.(type) {
+	case *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion:
+		return vt.GetType()
+	case *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion:
+		return vt.GetType()
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnionLeft) GetValue() (res aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnionLeftValue) {
+	switch vt := u.any.(type) {
+	case *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion:
+		res.any = vt.GetValue()
+	case *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion:
+		res.any = vt.GetValue()
+	}
+	return res
+}
+
+// Can have the runtime types [*string], [*float64], [*bool]
+type aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnionLeftValue struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *string:
+//	case *float64:
+//	case *bool:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnionLeftValue) AsAny() any {
+	return u.any
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnion) GetRight() (res aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnionRight) {
+	if vt := u.OfComparison; vt != nil {
+		res.any = vt.Right.asAny()
+	} else if vt := u.OfArithmetic; vt != nil {
+		res.any = vt.Right.asAny()
+	}
+	return
+}
+
+// Can have the runtime types
+// [*AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightDynamicVariableExpression],
+// [*AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightStringLiteralExpression],
+// [*AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightNumberLiteralExpression],
+// [*AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightBooleanLiteralExpression],
+// [*AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightDynamicVariableExpression],
+// [*AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightStringLiteralExpression],
+// [*AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightNumberLiteralExpression],
+// [*AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightBooleanLiteralExpression]
+type aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnionRight struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *telnyx.AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightDynamicVariableExpression:
+//	case *telnyx.AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightStringLiteralExpression:
+//	case *telnyx.AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightNumberLiteralExpression:
+//	case *telnyx.AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightBooleanLiteralExpression:
+//	case *telnyx.AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightDynamicVariableExpression:
+//	case *telnyx.AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightStringLiteralExpression:
+//	case *telnyx.AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightNumberLiteralExpression:
+//	case *telnyx.AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightBooleanLiteralExpression:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnionRight) AsAny() any {
+	return u.any
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnionRight) GetName() *string {
+	switch vt := u.any.(type) {
+	case *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion:
+		return vt.GetName()
+	case *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion:
+		return vt.GetName()
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnionRight) GetType() *string {
+	switch vt := u.any.(type) {
+	case *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion:
+		return vt.GetType()
+	case *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion:
+		return vt.GetType()
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnionRight) GetValue() (res aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnionRightValue) {
+	switch vt := u.any.(type) {
+	case *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion:
+		res.any = vt.GetValue()
+	case *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion:
+		res.any = vt.GetValue()
+	}
+	return res
+}
+
+// Can have the runtime types [*string], [*float64], [*bool]
+type aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnionRightValue struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *string:
+//	case *float64:
+//	case *bool:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnionRightValue) AsAny() any {
+	return u.any
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnion) GetValue() (res aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnionValue) {
+	if vt := u.OfStringLiteral; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfNumberLiteral; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfBoolLiteral; vt != nil {
+		res.any = &vt.Value
+	}
+	return
+}
+
+// Can have the runtime types [*string], [*float64], [*bool]
+type aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnionValue struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *string:
+//	case *float64:
+//	case *bool:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnionValue) AsAny() any {
+	return u.any
+}
+
+func init() {
+	apijson.RegisterUnion[AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionUnion](
+		"type",
+		apijson.Discriminator[AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparison]("comparison"),
+		apijson.Discriminator[AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOp]("bool_op"),
+		apijson.Discriminator[AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmetic]("arithmetic"),
+		apijson.Discriminator[AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionVariable]("variable"),
+		apijson.Discriminator[AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionStringLiteral]("string_literal"),
+		apijson.Discriminator[AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionNumberLiteral]("number_literal"),
+		apijson.Discriminator[AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolLiteral]("bool_literal"),
+	)
+}
+
+// Compare two sub-expressions with a relational or membership operator.
+//
+// Evaluates to a boolean. Used in edge conditions to gate transitions on runtime
+// values, e.g. `user_age >= 18` or `tier == "gold"`.
+//
+// The properties Left, Op, Right, Type are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparison struct {
+	// Left-hand operand sub-expression.
+	Left AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion `json:"left,omitzero" api:"required"`
+	// Relational/membership operator. `contains` / `not_contains` apply to strings
+	// (substring) and arrays (membership).
+	//
+	// Any of "==", "!=", "<", "<=", ">", ">=", "contains", "not_contains".
+	Op string `json:"op,omitzero" api:"required"`
+	// Right-hand operand sub-expression.
+	Right AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion `json:"right,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "comparison".
+	Type constant.Comparison `json:"type" default:"comparison"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparison) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparison
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparison) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparison](
+		"op", "==", "!=", "<", "<=", ">", ">=", "contains", "not_contains",
+	)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion struct {
+	OfDynamicVariableExpression *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftDynamicVariableExpression `json:",omitzero,inline"`
+	OfStringLiteralExpression   *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftStringLiteralExpression   `json:",omitzero,inline"`
+	OfNumberLiteralExpression   *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftNumberLiteralExpression   `json:",omitzero,inline"`
+	OfBooleanLiteralExpression  *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftBooleanLiteralExpression  `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfDynamicVariableExpression, u.OfStringLiteralExpression, u.OfNumberLiteralExpression, u.OfBooleanLiteralExpression)
+}
+func (u *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion) asAny() any {
+	if !param.IsOmitted(u.OfDynamicVariableExpression) {
+		return u.OfDynamicVariableExpression
+	} else if !param.IsOmitted(u.OfStringLiteralExpression) {
+		return u.OfStringLiteralExpression
+	} else if !param.IsOmitted(u.OfNumberLiteralExpression) {
+		return u.OfNumberLiteralExpression
+	} else if !param.IsOmitted(u.OfBooleanLiteralExpression) {
+		return u.OfBooleanLiteralExpression
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion) GetName() *string {
+	if vt := u.OfDynamicVariableExpression; vt != nil {
+		return &vt.Name
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion) GetType() *string {
+	if vt := u.OfDynamicVariableExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfStringLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfNumberLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfBooleanLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion) GetValue() (res aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnionValue) {
+	if vt := u.OfStringLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfNumberLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfBooleanLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	}
+	return
+}
+
+// Can have the runtime types [*string], [*float64], [*bool]
+type aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnionValue struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *string:
+//	case *float64:
+//	case *bool:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnionValue) AsAny() any {
+	return u.any
+}
+
+// Reference a dynamic variable by name.
+//
+// Resolved at runtime from the assistant's dynamic-variables context (see
+// `Assistant.dynamic_variables` and the dynamic-variables webhook).
+//
+// The properties Name, Type are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftDynamicVariableExpression struct {
+	// Variable name to look up in the runtime context.
+	Name string `json:"name" api:"required"`
+	// This field can be elided, and will marshal its zero value as "variable".
+	Type constant.Variable `json:"type" default:"variable"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftDynamicVariableExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftDynamicVariableExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftDynamicVariableExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant string value.
+//
+// The properties Type, Value are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftStringLiteralExpression struct {
+	// Literal string value.
+	Value string `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "string_literal".
+	Type constant.StringLiteral `json:"type" default:"string_literal"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftStringLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftStringLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftStringLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant numeric value (float; integers are accepted and stored as float).
+//
+// The properties Type, Value are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftNumberLiteralExpression struct {
+	// Literal numeric value.
+	Value float64 `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "number_literal".
+	Type constant.NumberLiteral `json:"type" default:"number_literal"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftNumberLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftNumberLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftNumberLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant boolean value. Useful for unconditional ('always') edges.
+//
+// The properties Type, Value are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftBooleanLiteralExpression struct {
+	// Literal boolean value.
+	Value bool `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "bool_literal".
+	Type constant.BoolLiteral `json:"type" default:"bool_literal"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftBooleanLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftBooleanLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftBooleanLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion struct {
+	OfDynamicVariableExpression *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightDynamicVariableExpression `json:",omitzero,inline"`
+	OfStringLiteralExpression   *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightStringLiteralExpression   `json:",omitzero,inline"`
+	OfNumberLiteralExpression   *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightNumberLiteralExpression   `json:",omitzero,inline"`
+	OfBooleanLiteralExpression  *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightBooleanLiteralExpression  `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfDynamicVariableExpression, u.OfStringLiteralExpression, u.OfNumberLiteralExpression, u.OfBooleanLiteralExpression)
+}
+func (u *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion) asAny() any {
+	if !param.IsOmitted(u.OfDynamicVariableExpression) {
+		return u.OfDynamicVariableExpression
+	} else if !param.IsOmitted(u.OfStringLiteralExpression) {
+		return u.OfStringLiteralExpression
+	} else if !param.IsOmitted(u.OfNumberLiteralExpression) {
+		return u.OfNumberLiteralExpression
+	} else if !param.IsOmitted(u.OfBooleanLiteralExpression) {
+		return u.OfBooleanLiteralExpression
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion) GetName() *string {
+	if vt := u.OfDynamicVariableExpression; vt != nil {
+		return &vt.Name
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion) GetType() *string {
+	if vt := u.OfDynamicVariableExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfStringLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfNumberLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfBooleanLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion) GetValue() (res aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnionValue) {
+	if vt := u.OfStringLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfNumberLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfBooleanLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	}
+	return
+}
+
+// Can have the runtime types [*string], [*float64], [*bool]
+type aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnionValue struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *string:
+//	case *float64:
+//	case *bool:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnionValue) AsAny() any {
+	return u.any
+}
+
+// Reference a dynamic variable by name.
+//
+// Resolved at runtime from the assistant's dynamic-variables context (see
+// `Assistant.dynamic_variables` and the dynamic-variables webhook).
+//
+// The properties Name, Type are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightDynamicVariableExpression struct {
+	// Variable name to look up in the runtime context.
+	Name string `json:"name" api:"required"`
+	// This field can be elided, and will marshal its zero value as "variable".
+	Type constant.Variable `json:"type" default:"variable"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightDynamicVariableExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightDynamicVariableExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightDynamicVariableExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant string value.
+//
+// The properties Type, Value are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightStringLiteralExpression struct {
+	// Literal string value.
+	Value string `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "string_literal".
+	Type constant.StringLiteral `json:"type" default:"string_literal"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightStringLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightStringLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightStringLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant numeric value (float; integers are accepted and stored as float).
+//
+// The properties Type, Value are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightNumberLiteralExpression struct {
+	// Literal numeric value.
+	Value float64 `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "number_literal".
+	Type constant.NumberLiteral `json:"type" default:"number_literal"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightNumberLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightNumberLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightNumberLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant boolean value. Useful for unconditional ('always') edges.
+//
+// The properties Type, Value are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightBooleanLiteralExpression struct {
+	// Literal boolean value.
+	Value bool `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "bool_literal".
+	Type constant.BoolLiteral `json:"type" default:"bool_literal"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightBooleanLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightBooleanLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightBooleanLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Combine sub-expressions with a logical operator (`and` / `or` / `not`).
+//
+// `and` and `or` accept two or more operands; `not` accepts exactly one.
+//
+// The properties Op, Operands, Type are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOp struct {
+	// Logical operator. `not` is unary; `and`/`or` are n-ary (>=2).
+	//
+	// Any of "and", "or", "not".
+	Op string `json:"op,omitzero" api:"required"`
+	// Operand sub-expressions. Length must be exactly 1 for `not` and >= 2 for
+	// `and`/`or`.
+	Operands []AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion `json:"operands,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "bool_op".
+	Type constant.BoolOp `json:"type" default:"bool_op"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOp) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOp
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOp](
+		"op", "and", "or", "not",
+	)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion struct {
+	OfDynamicVariableExpression *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandDynamicVariableExpression `json:",omitzero,inline"`
+	OfStringLiteralExpression   *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandStringLiteralExpression   `json:",omitzero,inline"`
+	OfNumberLiteralExpression   *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandNumberLiteralExpression   `json:",omitzero,inline"`
+	OfBooleanLiteralExpression  *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandBooleanLiteralExpression  `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfDynamicVariableExpression, u.OfStringLiteralExpression, u.OfNumberLiteralExpression, u.OfBooleanLiteralExpression)
+}
+func (u *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion) asAny() any {
+	if !param.IsOmitted(u.OfDynamicVariableExpression) {
+		return u.OfDynamicVariableExpression
+	} else if !param.IsOmitted(u.OfStringLiteralExpression) {
+		return u.OfStringLiteralExpression
+	} else if !param.IsOmitted(u.OfNumberLiteralExpression) {
+		return u.OfNumberLiteralExpression
+	} else if !param.IsOmitted(u.OfBooleanLiteralExpression) {
+		return u.OfBooleanLiteralExpression
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion) GetName() *string {
+	if vt := u.OfDynamicVariableExpression; vt != nil {
+		return &vt.Name
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion) GetType() *string {
+	if vt := u.OfDynamicVariableExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfStringLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfNumberLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfBooleanLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion) GetValue() (res aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnionValue) {
+	if vt := u.OfStringLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfNumberLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfBooleanLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	}
+	return
+}
+
+// Can have the runtime types [*string], [*float64], [*bool]
+type aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnionValue struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *string:
+//	case *float64:
+//	case *bool:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnionValue) AsAny() any {
+	return u.any
+}
+
+// Reference a dynamic variable by name.
+//
+// Resolved at runtime from the assistant's dynamic-variables context (see
+// `Assistant.dynamic_variables` and the dynamic-variables webhook).
+//
+// The properties Name, Type are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandDynamicVariableExpression struct {
+	// Variable name to look up in the runtime context.
+	Name string `json:"name" api:"required"`
+	// This field can be elided, and will marshal its zero value as "variable".
+	Type constant.Variable `json:"type" default:"variable"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandDynamicVariableExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandDynamicVariableExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandDynamicVariableExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant string value.
+//
+// The properties Type, Value are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandStringLiteralExpression struct {
+	// Literal string value.
+	Value string `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "string_literal".
+	Type constant.StringLiteral `json:"type" default:"string_literal"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandStringLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandStringLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandStringLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant numeric value (float; integers are accepted and stored as float).
+//
+// The properties Type, Value are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandNumberLiteralExpression struct {
+	// Literal numeric value.
+	Value float64 `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "number_literal".
+	Type constant.NumberLiteral `json:"type" default:"number_literal"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandNumberLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandNumberLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandNumberLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant boolean value. Useful for unconditional ('always') edges.
+//
+// The properties Type, Value are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandBooleanLiteralExpression struct {
+	// Literal boolean value.
+	Value bool `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "bool_literal".
+	Type constant.BoolLiteral `json:"type" default:"bool_literal"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandBooleanLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandBooleanLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandBooleanLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Numeric expression: applies an arithmetic operator to two sub-expressions.
+//
+// Useful for derived numeric checks, e.g. `cart_total + shipping > 50`. Both
+// operands should resolve to numbers at runtime.
+//
+// The properties Left, Op, Right, Type are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmetic struct {
+	// Left-hand operand sub-expression.
+	Left AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion `json:"left,omitzero" api:"required"`
+	// Arithmetic operator applied to `left` and `right`.
+	//
+	// Any of "+", "-", "\*", "/", "%".
+	Op string `json:"op,omitzero" api:"required"`
+	// Right-hand operand sub-expression.
+	Right AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion `json:"right,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "arithmetic".
+	Type constant.Arithmetic `json:"type" default:"arithmetic"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmetic) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmetic
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmetic) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmetic](
+		"op", "+", "-", "*", "/", "%",
+	)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion struct {
+	OfDynamicVariableExpression *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftDynamicVariableExpression `json:",omitzero,inline"`
+	OfStringLiteralExpression   *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftStringLiteralExpression   `json:",omitzero,inline"`
+	OfNumberLiteralExpression   *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftNumberLiteralExpression   `json:",omitzero,inline"`
+	OfBooleanLiteralExpression  *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftBooleanLiteralExpression  `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfDynamicVariableExpression, u.OfStringLiteralExpression, u.OfNumberLiteralExpression, u.OfBooleanLiteralExpression)
+}
+func (u *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion) asAny() any {
+	if !param.IsOmitted(u.OfDynamicVariableExpression) {
+		return u.OfDynamicVariableExpression
+	} else if !param.IsOmitted(u.OfStringLiteralExpression) {
+		return u.OfStringLiteralExpression
+	} else if !param.IsOmitted(u.OfNumberLiteralExpression) {
+		return u.OfNumberLiteralExpression
+	} else if !param.IsOmitted(u.OfBooleanLiteralExpression) {
+		return u.OfBooleanLiteralExpression
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion) GetName() *string {
+	if vt := u.OfDynamicVariableExpression; vt != nil {
+		return &vt.Name
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion) GetType() *string {
+	if vt := u.OfDynamicVariableExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfStringLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfNumberLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfBooleanLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion) GetValue() (res aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnionValue) {
+	if vt := u.OfStringLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfNumberLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfBooleanLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	}
+	return
+}
+
+// Can have the runtime types [*string], [*float64], [*bool]
+type aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnionValue struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *string:
+//	case *float64:
+//	case *bool:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnionValue) AsAny() any {
+	return u.any
+}
+
+// Reference a dynamic variable by name.
+//
+// Resolved at runtime from the assistant's dynamic-variables context (see
+// `Assistant.dynamic_variables` and the dynamic-variables webhook).
+//
+// The properties Name, Type are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftDynamicVariableExpression struct {
+	// Variable name to look up in the runtime context.
+	Name string `json:"name" api:"required"`
+	// This field can be elided, and will marshal its zero value as "variable".
+	Type constant.Variable `json:"type" default:"variable"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftDynamicVariableExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftDynamicVariableExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftDynamicVariableExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant string value.
+//
+// The properties Type, Value are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftStringLiteralExpression struct {
+	// Literal string value.
+	Value string `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "string_literal".
+	Type constant.StringLiteral `json:"type" default:"string_literal"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftStringLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftStringLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftStringLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant numeric value (float; integers are accepted and stored as float).
+//
+// The properties Type, Value are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftNumberLiteralExpression struct {
+	// Literal numeric value.
+	Value float64 `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "number_literal".
+	Type constant.NumberLiteral `json:"type" default:"number_literal"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftNumberLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftNumberLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftNumberLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant boolean value. Useful for unconditional ('always') edges.
+//
+// The properties Type, Value are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftBooleanLiteralExpression struct {
+	// Literal boolean value.
+	Value bool `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "bool_literal".
+	Type constant.BoolLiteral `json:"type" default:"bool_literal"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftBooleanLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftBooleanLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftBooleanLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion struct {
+	OfDynamicVariableExpression *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightDynamicVariableExpression `json:",omitzero,inline"`
+	OfStringLiteralExpression   *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightStringLiteralExpression   `json:",omitzero,inline"`
+	OfNumberLiteralExpression   *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightNumberLiteralExpression   `json:",omitzero,inline"`
+	OfBooleanLiteralExpression  *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightBooleanLiteralExpression  `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfDynamicVariableExpression, u.OfStringLiteralExpression, u.OfNumberLiteralExpression, u.OfBooleanLiteralExpression)
+}
+func (u *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion) asAny() any {
+	if !param.IsOmitted(u.OfDynamicVariableExpression) {
+		return u.OfDynamicVariableExpression
+	} else if !param.IsOmitted(u.OfStringLiteralExpression) {
+		return u.OfStringLiteralExpression
+	} else if !param.IsOmitted(u.OfNumberLiteralExpression) {
+		return u.OfNumberLiteralExpression
+	} else if !param.IsOmitted(u.OfBooleanLiteralExpression) {
+		return u.OfBooleanLiteralExpression
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion) GetName() *string {
+	if vt := u.OfDynamicVariableExpression; vt != nil {
+		return &vt.Name
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion) GetType() *string {
+	if vt := u.OfDynamicVariableExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfStringLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfNumberLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfBooleanLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion) GetValue() (res aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnionValue) {
+	if vt := u.OfStringLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfNumberLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfBooleanLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	}
+	return
+}
+
+// Can have the runtime types [*string], [*float64], [*bool]
+type aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnionValue struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *string:
+//	case *float64:
+//	case *bool:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u aiAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnionValue) AsAny() any {
+	return u.any
+}
+
+// Reference a dynamic variable by name.
+//
+// Resolved at runtime from the assistant's dynamic-variables context (see
+// `Assistant.dynamic_variables` and the dynamic-variables webhook).
+//
+// The properties Name, Type are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightDynamicVariableExpression struct {
+	// Variable name to look up in the runtime context.
+	Name string `json:"name" api:"required"`
+	// This field can be elided, and will marshal its zero value as "variable".
+	Type constant.Variable `json:"type" default:"variable"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightDynamicVariableExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightDynamicVariableExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightDynamicVariableExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant string value.
+//
+// The properties Type, Value are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightStringLiteralExpression struct {
+	// Literal string value.
+	Value string `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "string_literal".
+	Type constant.StringLiteral `json:"type" default:"string_literal"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightStringLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightStringLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightStringLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant numeric value (float; integers are accepted and stored as float).
+//
+// The properties Type, Value are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightNumberLiteralExpression struct {
+	// Literal numeric value.
+	Value float64 `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "number_literal".
+	Type constant.NumberLiteral `json:"type" default:"number_literal"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightNumberLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightNumberLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightNumberLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant boolean value. Useful for unconditional ('always') edges.
+//
+// The properties Type, Value are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightBooleanLiteralExpression struct {
+	// Literal boolean value.
+	Value bool `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "bool_literal".
+	Type constant.BoolLiteral `json:"type" default:"bool_literal"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightBooleanLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightBooleanLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightBooleanLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Reference a dynamic variable by name.
+//
+// Resolved at runtime from the assistant's dynamic-variables context (see
+// `Assistant.dynamic_variables` and the dynamic-variables webhook).
+//
+// The properties Name, Type are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionVariable struct {
+	// Variable name to look up in the runtime context.
+	Name string `json:"name" api:"required"`
+	// This field can be elided, and will marshal its zero value as "variable".
+	Type constant.Variable `json:"type" default:"variable"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionVariable) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionVariable
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionVariable) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant string value.
+//
+// The properties Type, Value are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionStringLiteral struct {
+	// Literal string value.
+	Value string `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "string_literal".
+	Type constant.StringLiteral `json:"type" default:"string_literal"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionStringLiteral) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionStringLiteral
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionStringLiteral) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant numeric value (float; integers are accepted and stored as float).
+//
+// The properties Type, Value are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionNumberLiteral struct {
+	// Literal numeric value.
+	Value float64 `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "number_literal".
+	Type constant.NumberLiteral `json:"type" default:"number_literal"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionNumberLiteral) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionNumberLiteral
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionNumberLiteral) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant boolean value. Useful for unconditional ('always') edges.
+//
+// The properties Type, Value are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolLiteral struct {
+	// Literal boolean value.
+	Value bool `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "bool_literal".
+	Type constant.BoolLiteral `json:"type" default:"bool_literal"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolLiteral) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolLiteral
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionExpressionExpressionBoolLiteral) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Edge condition that fires on the outcome of a tool node's execution.
+//
+// Only valid on edges leaving a tool node (`type == "tool"`). A tool node runs
+// exactly one tool as a deliberate flow step; this condition routes on whether
+// that tool reported `success` or `failure`. Use it to split the happy path from
+// the error path after a tool runs (e.g. payment succeeded vs. declined). There is
+// no `tool_id` field — the tool node has a single tool, so the outcome is
+// unambiguous.
+//
+// The properties Outcome, Type are required.
+type AIAssistantNewParamsConversationFlowEdgeConditionToolResult struct {
+	// Match either the tool node's success or failure outcome.
+	//
+	// Any of "success", "failure".
+	Outcome string `json:"outcome,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "tool_result".
+	Type constant.ToolResult `json:"type" default:"tool_result"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeConditionToolResult) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeConditionToolResult
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeConditionToolResult) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantNewParamsConversationFlowEdgeConditionToolResult](
+		"outcome", "success", "failure",
+	)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AIAssistantNewParamsConversationFlowEdgeTargetUnion struct {
+	OfNode      *AIAssistantNewParamsConversationFlowEdgeTargetNode      `json:",omitzero,inline"`
+	OfAssistant *AIAssistantNewParamsConversationFlowEdgeTargetAssistant `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AIAssistantNewParamsConversationFlowEdgeTargetUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfNode, u.OfAssistant)
+}
+func (u *AIAssistantNewParamsConversationFlowEdgeTargetUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AIAssistantNewParamsConversationFlowEdgeTargetUnion) asAny() any {
+	if !param.IsOmitted(u.OfNode) {
+		return u.OfNode
+	} else if !param.IsOmitted(u.OfAssistant) {
+		return u.OfAssistant
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeTargetUnion) GetNodeID() *string {
+	if vt := u.OfNode; vt != nil {
+		return &vt.NodeID
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeTargetUnion) GetAssistantID() *string {
+	if vt := u.OfAssistant; vt != nil {
+		return &vt.AssistantID
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeTargetUnion) GetPosition() *AIAssistantNewParamsConversationFlowEdgeTargetAssistantPosition {
+	if vt := u.OfAssistant; vt != nil {
+		return &vt.Position
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeTargetUnion) GetVoiceMode() *string {
+	if vt := u.OfAssistant; vt != nil {
+		return &vt.VoiceMode
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantNewParamsConversationFlowEdgeTargetUnion) GetType() *string {
+	if vt := u.OfNode; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfAssistant; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[AIAssistantNewParamsConversationFlowEdgeTargetUnion](
+		"type",
+		apijson.Discriminator[AIAssistantNewParamsConversationFlowEdgeTargetNode]("node"),
+		apijson.Discriminator[AIAssistantNewParamsConversationFlowEdgeTargetAssistant]("assistant"),
+	)
+}
+
+// Edge target referencing another node within the same flow.
+//
+// The runtime transitions the active node to `node_id` and continues processing
+// within the current assistant's flow.
+//
+// The properties NodeID, Type are required.
+type AIAssistantNewParamsConversationFlowEdgeTargetNode struct {
+	// ID of the node this edge transitions into.
+	NodeID string `json:"node_id" api:"required"`
+	// This field can be elided, and will marshal its zero value as "node".
+	Type constant.Node `json:"type" default:"node"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeTargetNode) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeTargetNode
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeTargetNode) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Edge target referencing a different assistant.
+//
+// When the edge fires, the conversation hands off to `assistant_id`: the active
+// assistant on the conversation row is rewritten and the new assistant's flow
+// starts at its own `start_node_id`. The current turn's LLM response is delivered
+// to the user as-is; subsequent turns route to the new assistant.
+//
+// The properties AssistantID, Type are required.
+type AIAssistantNewParamsConversationFlowEdgeTargetAssistant struct {
+	// ID of the assistant the conversation transitions to.
+	AssistantID string `json:"assistant_id" api:"required"`
+	// Optional canvas coordinates for rendering the target assistant as a node in
+	// authoring UIs. Pure presentation — the runtime ignores it; round-trips so
+	// frontends can persist graph layout across reloads. When multiple edges target
+	// the same assistant, each edge's `position` is independent (frontends typically
+	// use the first non-null one).
+	Position AIAssistantNewParamsConversationFlowEdgeTargetAssistantPosition `json:"position,omitzero"`
+	// Voice behavior when handing off to the target assistant, mirroring the handoff
+	// tool's `voice_mode`. `unified` (default) keeps the current voice across the
+	// handoff; `distinct` lets the target assistant speak with its own configured
+	// voice. Only applies to assistant targets — node targets override voice via the
+	// node's own `voice_settings`.
+	//
+	// Any of "unified", "distinct".
+	VoiceMode string `json:"voice_mode,omitzero"`
+	// This field can be elided, and will marshal its zero value as "assistant".
+	Type constant.Assistant `json:"type" default:"assistant"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeTargetAssistant) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeTargetAssistant
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeTargetAssistant) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantNewParamsConversationFlowEdgeTargetAssistant](
+		"voice_mode", "unified", "distinct",
+	)
+}
+
+// Optional canvas coordinates for rendering the target assistant as a node in
+// authoring UIs. Pure presentation — the runtime ignores it; round-trips so
+// frontends can persist graph layout across reloads. When multiple edges target
+// the same assistant, each edge's `position` is independent (frontends typically
+// use the first non-null one).
+//
+// The properties X, Y are required.
+type AIAssistantNewParamsConversationFlowEdgeTargetAssistantPosition struct {
+	// Horizontal coordinate in the authoring canvas.
+	X float64 `json:"x" api:"required"`
+	// Vertical coordinate in the authoring canvas.
+	Y float64 `json:"y" api:"required"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowEdgeTargetAssistantPosition) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowEdgeTargetAssistantPosition
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowEdgeTargetAssistantPosition) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -5469,6 +9564,12 @@ type AIAssistantUpdateParams struct {
 	PromoteToMain param.Opt[bool] `json:"promote_to_main,omitzero"`
 	// Human-readable name for the assistant version.
 	VersionName param.Opt[string] `json:"version_name,omitzero"`
+	// Conversation flow as supplied by API clients (create / update).
+	//
+	// A directed graph of `FlowNodeReq` connected by `FlowEdge`s. Validation enforces
+	// unique node/edge IDs, that `start_node_id` references a real node, and that
+	// every edge's endpoints reference real nodes.
+	ConversationFlow AIAssistantUpdateParamsConversationFlow `json:"conversation_flow,omitzero"`
 	// Map of dynamic variables and their default values
 	DynamicVariables map[string]any         `json:"dynamic_variables,omitzero"`
 	EnabledFeatures  []EnabledFeatures      `json:"enabled_features,omitzero"`
@@ -5523,6 +9624,2051 @@ func (r AIAssistantUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *AIAssistantUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Conversation flow as supplied by API clients (create / update).
+//
+// A directed graph of `FlowNodeReq` connected by `FlowEdge`s. Validation enforces
+// unique node/edge IDs, that `start_node_id` references a real node, and that
+// every edge's endpoints reference real nodes.
+//
+// The properties Nodes, StartNodeID are required.
+type AIAssistantUpdateParamsConversationFlow struct {
+	// All nodes in the flow. Must contain `start_node_id`. Each node is a prompt node
+	// (`type: prompt`) or a tool node (`type: tool`).
+	Nodes []AIAssistantUpdateParamsConversationFlowNodeUnion `json:"nodes,omitzero" api:"required"`
+	// ID of the node where the conversation begins.
+	StartNodeID string `json:"start_node_id" api:"required"`
+	// Directed transitions between nodes. May be empty for a single-node flow.
+	Edges []AIAssistantUpdateParamsConversationFlowEdge `json:"edges,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlow) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlow
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlow) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AIAssistantUpdateParamsConversationFlowNodeUnion struct {
+	OfPrompt *AIAssistantUpdateParamsConversationFlowNodePrompt `json:",omitzero,inline"`
+	OfTool   *AIAssistantUpdateParamsConversationFlowNodeTool   `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AIAssistantUpdateParamsConversationFlowNodeUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfPrompt, u.OfTool)
+}
+func (u *AIAssistantUpdateParamsConversationFlowNodeUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AIAssistantUpdateParamsConversationFlowNodeUnion) asAny() any {
+	if !param.IsOmitted(u.OfPrompt) {
+		return u.OfPrompt
+	} else if !param.IsOmitted(u.OfTool) {
+		return u.OfTool
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowNodeUnion) GetInstructions() *string {
+	if vt := u.OfPrompt; vt != nil {
+		return &vt.Instructions
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowNodeUnion) GetExternalLlm() *ExternalLlmReqParam {
+	if vt := u.OfPrompt; vt != nil {
+		return &vt.ExternalLlm
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowNodeUnion) GetInstructionsMode() *string {
+	if vt := u.OfPrompt; vt != nil {
+		return &vt.InstructionsMode
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowNodeUnion) GetLlmAPIKeyRef() *string {
+	if vt := u.OfPrompt; vt != nil && vt.LlmAPIKeyRef.Valid() {
+		return &vt.LlmAPIKeyRef.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowNodeUnion) GetModel() *string {
+	if vt := u.OfPrompt; vt != nil && vt.Model.Valid() {
+		return &vt.Model.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowNodeUnion) GetSharedToolIDs() []string {
+	if vt := u.OfPrompt; vt != nil {
+		return vt.SharedToolIDs
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowNodeUnion) GetToolsMode() *string {
+	if vt := u.OfPrompt; vt != nil {
+		return &vt.ToolsMode
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowNodeUnion) GetTranscription() *TranscriptionSettingsParam {
+	if vt := u.OfPrompt; vt != nil {
+		return &vt.Transcription
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowNodeUnion) GetVoiceSettings() *VoiceSettingsParam {
+	if vt := u.OfPrompt; vt != nil {
+		return &vt.VoiceSettings
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowNodeUnion) GetSharedToolID() *string {
+	if vt := u.OfTool; vt != nil {
+		return &vt.SharedToolID
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowNodeUnion) GetID() *string {
+	if vt := u.OfPrompt; vt != nil {
+		return (*string)(&vt.ID)
+	} else if vt := u.OfTool; vt != nil {
+		return (*string)(&vt.ID)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowNodeUnion) GetName() *string {
+	if vt := u.OfPrompt; vt != nil && vt.Name.Valid() {
+		return &vt.Name.Value
+	} else if vt := u.OfTool; vt != nil && vt.Name.Valid() {
+		return &vt.Name.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowNodeUnion) GetType() *string {
+	if vt := u.OfPrompt; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfTool; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u AIAssistantUpdateParamsConversationFlowNodeUnion) GetPosition() (res aiAssistantUpdateParamsConversationFlowNodeUnionPosition) {
+	if vt := u.OfPrompt; vt != nil {
+		res.any = &vt.Position
+	} else if vt := u.OfTool; vt != nil {
+		res.any = &vt.Position
+	}
+	return
+}
+
+// Can have the runtime types
+// [*AIAssistantUpdateParamsConversationFlowNodePromptPosition],
+// [*AIAssistantUpdateParamsConversationFlowNodeToolPosition]
+type aiAssistantUpdateParamsConversationFlowNodeUnionPosition struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *telnyx.AIAssistantUpdateParamsConversationFlowNodePromptPosition:
+//	case *telnyx.AIAssistantUpdateParamsConversationFlowNodeToolPosition:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u aiAssistantUpdateParamsConversationFlowNodeUnionPosition) AsAny() any { return u.any }
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u aiAssistantUpdateParamsConversationFlowNodeUnionPosition) GetX() *float64 {
+	switch vt := u.any.(type) {
+	case *AIAssistantUpdateParamsConversationFlowNodePromptPosition:
+		return (*float64)(&vt.X)
+	case *AIAssistantUpdateParamsConversationFlowNodeToolPosition:
+		return (*float64)(&vt.X)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u aiAssistantUpdateParamsConversationFlowNodeUnionPosition) GetY() *float64 {
+	switch vt := u.any.(type) {
+	case *AIAssistantUpdateParamsConversationFlowNodePromptPosition:
+		return (*float64)(&vt.Y)
+	case *AIAssistantUpdateParamsConversationFlowNodeToolPosition:
+		return (*float64)(&vt.Y)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[AIAssistantUpdateParamsConversationFlowNodeUnion](
+		"type",
+		apijson.Discriminator[AIAssistantUpdateParamsConversationFlowNodePrompt]("prompt"),
+		apijson.Discriminator[AIAssistantUpdateParamsConversationFlowNodeTool]("tool"),
+	)
+}
+
+// One step in a conversation flow, as supplied by API clients.
+//
+// Each node carries the prompt, tool scope, and optional overrides for
+// model/voice/transcription. Unset overrides cascade from the assistant.
+//
+// The properties ID, Instructions are required.
+type AIAssistantUpdateParamsConversationFlowNodePrompt struct {
+	// Caller-supplied unique identifier for this node within the flow.
+	ID string `json:"id" api:"required"`
+	// Prompt that drives the LLM while this node is active. Required.
+	Instructions string `json:"instructions" api:"required"`
+	// Override for `Assistant.llm_api_key_ref` while this node is active. Part of the
+	// LLM bundle — see `model` for cascade semantics.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// Override for `Assistant.model` while this node is active. Part of the LLM bundle
+	// (`model` + `llm_api_key_ref` + `external_llm`): when any of the three is set on
+	// the node, all three are taken from the node and the assistant-level LLM identity
+	// is not consulted. When none of the three is set, the assistant's bundle cascades
+	// unchanged.
+	Model param.Opt[string] `json:"model,omitzero"`
+	// Optional human-readable label, displayed in authoring UIs.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Override for `Assistant.external_llm` while this node is active. Use this to
+	// route a node's turns to a different external LLM (different `model`, `base_url`,
+	// credentials). Part of the LLM bundle — see `model` for cascade semantics.
+	// Mutually exclusive with `model` on the node (a single LLM identity per node).
+	ExternalLlm ExternalLlmReqParam `json:"external_llm,omitzero"`
+	// How `instructions` combine with the assistant-level instructions. `replace`
+	// (default): the node's instructions are used alone. `append`: the node's
+	// instructions are concatenated after the assistant's instructions.
+	//
+	// Any of "replace", "append".
+	InstructionsMode string `json:"instructions_mode,omitzero"`
+	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+	// by the runtime; round-trips so frontends can persist graph layout across
+	// reloads.
+	Position AIAssistantUpdateParamsConversationFlowNodePromptPosition `json:"position,omitzero"`
+	// IDs of shared (org-level) tools available at this node. Knowledge bases are
+	// attached the same way — via a shared retrieval tool. Tools not listed here are
+	// not callable while this node is active.
+	SharedToolIDs []string `json:"shared_tool_ids,omitzero"`
+	// How `shared_tool_ids` combine with the assistant-level tool set. `replace`
+	// (default): only the node's tools are callable. `append`: the node's tools are
+	// added to the assistant's tools. Ignored when `shared_tool_ids` is null.
+	//
+	// Any of "replace", "append".
+	ToolsMode string `json:"tools_mode,omitzero"`
+	// Per-node transcription override (model/language/region). Unset fields cascade
+	// from the assistant-level transcription.
+	Transcription TranscriptionSettingsParam `json:"transcription,omitzero"`
+	// Node kind discriminator. `prompt` (default) is an LLM-driven step; `tool` is a
+	// standalone tool execution (see `ToolNodeReq`).
+	//
+	// Any of "prompt".
+	Type string `json:"type,omitzero"`
+	// Per-node voice override. Only fields set here override the assistant-level voice
+	// settings; unset fields cascade.
+	VoiceSettings VoiceSettingsParam `json:"voice_settings,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowNodePrompt) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowNodePrompt
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowNodePrompt) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantUpdateParamsConversationFlowNodePrompt](
+		"instructions_mode", "replace", "append",
+	)
+	apijson.RegisterFieldValidator[AIAssistantUpdateParamsConversationFlowNodePrompt](
+		"tools_mode", "replace", "append",
+	)
+	apijson.RegisterFieldValidator[AIAssistantUpdateParamsConversationFlowNodePrompt](
+		"type", "prompt",
+	)
+}
+
+// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+// by the runtime; round-trips so frontends can persist graph layout across
+// reloads.
+//
+// The properties X, Y are required.
+type AIAssistantUpdateParamsConversationFlowNodePromptPosition struct {
+	// Horizontal coordinate in the authoring canvas.
+	X float64 `json:"x" api:"required"`
+	// Vertical coordinate in the authoring canvas.
+	Y float64 `json:"y" api:"required"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowNodePromptPosition) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowNodePromptPosition
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowNodePromptPosition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A standalone tool step in a conversation flow, as supplied by clients.
+//
+// Unlike a prompt node, a tool node has no instructions or model — it isn't an LLM
+// turn. Reaching it deterministically runs one shared tool (arguments filled from
+// matching dynamic variables by name), then routes on the result via outgoing
+// `tool_result` edges.
+//
+// The properties ID, SharedToolID are required.
+type AIAssistantUpdateParamsConversationFlowNodeTool struct {
+	// Caller-supplied unique identifier for this node within the flow.
+	ID string `json:"id" api:"required"`
+	// ID of the single shared (org-level) tool this node executes. When the flow
+	// reaches this node the tool runs as a deliberate step (no LLM turn); its outgoing
+	// `tool_result` edges then route on the outcome. Arguments are filled from the
+	// conversation's dynamic variables by name — a dynamic variable whose name matches
+	// one of the tool's parameters supplies that argument. Cross-validated against the
+	// org's shared tools on write.
+	SharedToolID string `json:"shared_tool_id" api:"required"`
+	// Optional human-readable label, displayed in authoring UIs.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+	// by the runtime; round-trips so frontends can persist graph layout across
+	// reloads.
+	Position AIAssistantUpdateParamsConversationFlowNodeToolPosition `json:"position,omitzero"`
+	// Node kind discriminator. Always `tool` for a tool node.
+	//
+	// Any of "tool".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowNodeTool) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowNodeTool
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowNodeTool) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantUpdateParamsConversationFlowNodeTool](
+		"type", "tool",
+	)
+}
+
+// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+// by the runtime; round-trips so frontends can persist graph layout across
+// reloads.
+//
+// The properties X, Y are required.
+type AIAssistantUpdateParamsConversationFlowNodeToolPosition struct {
+	// Horizontal coordinate in the authoring canvas.
+	X float64 `json:"x" api:"required"`
+	// Vertical coordinate in the authoring canvas.
+	Y float64 `json:"y" api:"required"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowNodeToolPosition) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowNodeToolPosition
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowNodeToolPosition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Directed transition from one node to a target, gated by a condition.
+//
+// The target is either another node in the same flow (`NodeTarget`) or a different
+// assistant (`AssistantTarget`). Multiple edges may share a `start_node_id`; the
+// runtime evaluates them in the order they're declared and takes the first whose
+// condition is true.
+//
+// The properties ID, Condition, StartNodeID, Target are required.
+type AIAssistantUpdateParamsConversationFlowEdge struct {
+	// Caller-supplied unique identifier for this edge within the flow.
+	ID string `json:"id" api:"required"`
+	// Condition that gates the transition. Discriminated by `type`: `llm`,
+	// `expression`, or `tool_result`. A `tool_result` condition is only valid on an
+	// edge leaving a tool node.
+	Condition AIAssistantUpdateParamsConversationFlowEdgeConditionUnion `json:"condition,omitzero" api:"required"`
+	// ID of the node this edge transitions away from.
+	StartNodeID string `json:"start_node_id" api:"required"`
+	// Destination of the transition. Discriminated by `type`: `node` (jump to another
+	// node in this flow) or `assistant` (hand off to a different assistant).
+	Target AIAssistantUpdateParamsConversationFlowEdgeTargetUnion `json:"target,omitzero" api:"required"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdge) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdge
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdge) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionUnion struct {
+	OfLlm        *AIAssistantUpdateParamsConversationFlowEdgeConditionLlm        `json:",omitzero,inline"`
+	OfExpression *AIAssistantUpdateParamsConversationFlowEdgeConditionExpression `json:",omitzero,inline"`
+	OfToolResult *AIAssistantUpdateParamsConversationFlowEdgeConditionToolResult `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfLlm, u.OfExpression, u.OfToolResult)
+}
+func (u *AIAssistantUpdateParamsConversationFlowEdgeConditionUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AIAssistantUpdateParamsConversationFlowEdgeConditionUnion) asAny() any {
+	if !param.IsOmitted(u.OfLlm) {
+		return u.OfLlm
+	} else if !param.IsOmitted(u.OfExpression) {
+		return u.OfExpression
+	} else if !param.IsOmitted(u.OfToolResult) {
+		return u.OfToolResult
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionUnion) GetPrompt() *string {
+	if vt := u.OfLlm; vt != nil {
+		return &vt.Prompt
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionUnion) GetExpression() *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnion {
+	if vt := u.OfExpression; vt != nil {
+		return &vt.Expression
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionUnion) GetOutcome() *string {
+	if vt := u.OfToolResult; vt != nil {
+		return &vt.Outcome
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionUnion) GetType() *string {
+	if vt := u.OfLlm; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfToolResult; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[AIAssistantUpdateParamsConversationFlowEdgeConditionUnion](
+		"type",
+		apijson.Discriminator[AIAssistantUpdateParamsConversationFlowEdgeConditionLlm]("llm"),
+		apijson.Discriminator[AIAssistantUpdateParamsConversationFlowEdgeConditionExpression]("expression"),
+		apijson.Discriminator[AIAssistantUpdateParamsConversationFlowEdgeConditionToolResult]("tool_result"),
+	)
+}
+
+// Edge condition evaluated by the LLM from a natural-language prompt.
+//
+// The model is asked to judge the prompt against conversation context and returns
+// true/false. Use this for fuzzy intents that aren't expressible as a
+// deterministic expression (e.g. 'user wants to escalate to a human').
+//
+// The properties Prompt, Type are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionLlm struct {
+	// Natural-language criterion the LLM judges as true/false.
+	Prompt string `json:"prompt" api:"required"`
+	// This field can be elided, and will marshal its zero value as "llm".
+	Type constant.Llm `json:"type" default:"llm"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionLlm) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionLlm
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionLlm) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Edge condition evaluated as a deterministic expression AST.
+//
+// The expression is computed against runtime dynamic variables and must evaluate
+// to a boolean. Prefer this over `LLMCondition` when the rule is a clean function
+// of known variables — it's cheaper and predictable.
+//
+// The properties Expression, Type are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpression struct {
+	// Root of the expression AST. Must evaluate to a boolean.
+	Expression AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnion `json:"expression,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "expression".
+	Type constant.Expression `json:"type" default:"expression"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnion struct {
+	OfComparison    *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparison    `json:",omitzero,inline"`
+	OfBoolOp        *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOp        `json:",omitzero,inline"`
+	OfArithmetic    *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmetic    `json:",omitzero,inline"`
+	OfVariable      *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionVariable      `json:",omitzero,inline"`
+	OfStringLiteral *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionStringLiteral `json:",omitzero,inline"`
+	OfNumberLiteral *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionNumberLiteral `json:",omitzero,inline"`
+	OfBoolLiteral   *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolLiteral   `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfComparison,
+		u.OfBoolOp,
+		u.OfArithmetic,
+		u.OfVariable,
+		u.OfStringLiteral,
+		u.OfNumberLiteral,
+		u.OfBoolLiteral)
+}
+func (u *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnion) asAny() any {
+	if !param.IsOmitted(u.OfComparison) {
+		return u.OfComparison
+	} else if !param.IsOmitted(u.OfBoolOp) {
+		return u.OfBoolOp
+	} else if !param.IsOmitted(u.OfArithmetic) {
+		return u.OfArithmetic
+	} else if !param.IsOmitted(u.OfVariable) {
+		return u.OfVariable
+	} else if !param.IsOmitted(u.OfStringLiteral) {
+		return u.OfStringLiteral
+	} else if !param.IsOmitted(u.OfNumberLiteral) {
+		return u.OfNumberLiteral
+	} else if !param.IsOmitted(u.OfBoolLiteral) {
+		return u.OfBoolLiteral
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnion) GetOperands() []AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion {
+	if vt := u.OfBoolOp; vt != nil {
+		return vt.Operands
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnion) GetName() *string {
+	if vt := u.OfVariable; vt != nil {
+		return &vt.Name
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnion) GetOp() *string {
+	if vt := u.OfComparison; vt != nil {
+		return (*string)(&vt.Op)
+	} else if vt := u.OfBoolOp; vt != nil {
+		return (*string)(&vt.Op)
+	} else if vt := u.OfArithmetic; vt != nil {
+		return (*string)(&vt.Op)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnion) GetType() *string {
+	if vt := u.OfComparison; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfBoolOp; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfArithmetic; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfVariable; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfStringLiteral; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfNumberLiteral; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfBoolLiteral; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnion) GetLeft() (res aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnionLeft) {
+	if vt := u.OfComparison; vt != nil {
+		res.any = vt.Left.asAny()
+	} else if vt := u.OfArithmetic; vt != nil {
+		res.any = vt.Left.asAny()
+	}
+	return
+}
+
+// Can have the runtime types
+// [*AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftDynamicVariableExpression],
+// [*AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftStringLiteralExpression],
+// [*AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftNumberLiteralExpression],
+// [*AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftBooleanLiteralExpression],
+// [*AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftDynamicVariableExpression],
+// [*AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftStringLiteralExpression],
+// [*AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftNumberLiteralExpression],
+// [*AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftBooleanLiteralExpression]
+type aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnionLeft struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *telnyx.AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftDynamicVariableExpression:
+//	case *telnyx.AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftStringLiteralExpression:
+//	case *telnyx.AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftNumberLiteralExpression:
+//	case *telnyx.AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftBooleanLiteralExpression:
+//	case *telnyx.AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftDynamicVariableExpression:
+//	case *telnyx.AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftStringLiteralExpression:
+//	case *telnyx.AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftNumberLiteralExpression:
+//	case *telnyx.AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftBooleanLiteralExpression:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnionLeft) AsAny() any {
+	return u.any
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnionLeft) GetName() *string {
+	switch vt := u.any.(type) {
+	case *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion:
+		return vt.GetName()
+	case *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion:
+		return vt.GetName()
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnionLeft) GetType() *string {
+	switch vt := u.any.(type) {
+	case *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion:
+		return vt.GetType()
+	case *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion:
+		return vt.GetType()
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnionLeft) GetValue() (res aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnionLeftValue) {
+	switch vt := u.any.(type) {
+	case *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion:
+		res.any = vt.GetValue()
+	case *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion:
+		res.any = vt.GetValue()
+	}
+	return res
+}
+
+// Can have the runtime types [*string], [*float64], [*bool]
+type aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnionLeftValue struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *string:
+//	case *float64:
+//	case *bool:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnionLeftValue) AsAny() any {
+	return u.any
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnion) GetRight() (res aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnionRight) {
+	if vt := u.OfComparison; vt != nil {
+		res.any = vt.Right.asAny()
+	} else if vt := u.OfArithmetic; vt != nil {
+		res.any = vt.Right.asAny()
+	}
+	return
+}
+
+// Can have the runtime types
+// [*AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightDynamicVariableExpression],
+// [*AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightStringLiteralExpression],
+// [*AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightNumberLiteralExpression],
+// [*AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightBooleanLiteralExpression],
+// [*AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightDynamicVariableExpression],
+// [*AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightStringLiteralExpression],
+// [*AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightNumberLiteralExpression],
+// [*AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightBooleanLiteralExpression]
+type aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnionRight struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *telnyx.AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightDynamicVariableExpression:
+//	case *telnyx.AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightStringLiteralExpression:
+//	case *telnyx.AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightNumberLiteralExpression:
+//	case *telnyx.AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightBooleanLiteralExpression:
+//	case *telnyx.AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightDynamicVariableExpression:
+//	case *telnyx.AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightStringLiteralExpression:
+//	case *telnyx.AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightNumberLiteralExpression:
+//	case *telnyx.AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightBooleanLiteralExpression:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnionRight) AsAny() any {
+	return u.any
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnionRight) GetName() *string {
+	switch vt := u.any.(type) {
+	case *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion:
+		return vt.GetName()
+	case *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion:
+		return vt.GetName()
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnionRight) GetType() *string {
+	switch vt := u.any.(type) {
+	case *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion:
+		return vt.GetType()
+	case *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion:
+		return vt.GetType()
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnionRight) GetValue() (res aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnionRightValue) {
+	switch vt := u.any.(type) {
+	case *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion:
+		res.any = vt.GetValue()
+	case *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion:
+		res.any = vt.GetValue()
+	}
+	return res
+}
+
+// Can have the runtime types [*string], [*float64], [*bool]
+type aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnionRightValue struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *string:
+//	case *float64:
+//	case *bool:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnionRightValue) AsAny() any {
+	return u.any
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnion) GetValue() (res aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnionValue) {
+	if vt := u.OfStringLiteral; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfNumberLiteral; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfBoolLiteral; vt != nil {
+		res.any = &vt.Value
+	}
+	return
+}
+
+// Can have the runtime types [*string], [*float64], [*bool]
+type aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnionValue struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *string:
+//	case *float64:
+//	case *bool:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnionValue) AsAny() any {
+	return u.any
+}
+
+func init() {
+	apijson.RegisterUnion[AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionUnion](
+		"type",
+		apijson.Discriminator[AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparison]("comparison"),
+		apijson.Discriminator[AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOp]("bool_op"),
+		apijson.Discriminator[AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmetic]("arithmetic"),
+		apijson.Discriminator[AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionVariable]("variable"),
+		apijson.Discriminator[AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionStringLiteral]("string_literal"),
+		apijson.Discriminator[AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionNumberLiteral]("number_literal"),
+		apijson.Discriminator[AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolLiteral]("bool_literal"),
+	)
+}
+
+// Compare two sub-expressions with a relational or membership operator.
+//
+// Evaluates to a boolean. Used in edge conditions to gate transitions on runtime
+// values, e.g. `user_age >= 18` or `tier == "gold"`.
+//
+// The properties Left, Op, Right, Type are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparison struct {
+	// Left-hand operand sub-expression.
+	Left AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion `json:"left,omitzero" api:"required"`
+	// Relational/membership operator. `contains` / `not_contains` apply to strings
+	// (substring) and arrays (membership).
+	//
+	// Any of "==", "!=", "<", "<=", ">", ">=", "contains", "not_contains".
+	Op string `json:"op,omitzero" api:"required"`
+	// Right-hand operand sub-expression.
+	Right AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion `json:"right,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "comparison".
+	Type constant.Comparison `json:"type" default:"comparison"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparison) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparison
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparison) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparison](
+		"op", "==", "!=", "<", "<=", ">", ">=", "contains", "not_contains",
+	)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion struct {
+	OfDynamicVariableExpression *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftDynamicVariableExpression `json:",omitzero,inline"`
+	OfStringLiteralExpression   *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftStringLiteralExpression   `json:",omitzero,inline"`
+	OfNumberLiteralExpression   *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftNumberLiteralExpression   `json:",omitzero,inline"`
+	OfBooleanLiteralExpression  *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftBooleanLiteralExpression  `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfDynamicVariableExpression, u.OfStringLiteralExpression, u.OfNumberLiteralExpression, u.OfBooleanLiteralExpression)
+}
+func (u *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion) asAny() any {
+	if !param.IsOmitted(u.OfDynamicVariableExpression) {
+		return u.OfDynamicVariableExpression
+	} else if !param.IsOmitted(u.OfStringLiteralExpression) {
+		return u.OfStringLiteralExpression
+	} else if !param.IsOmitted(u.OfNumberLiteralExpression) {
+		return u.OfNumberLiteralExpression
+	} else if !param.IsOmitted(u.OfBooleanLiteralExpression) {
+		return u.OfBooleanLiteralExpression
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion) GetName() *string {
+	if vt := u.OfDynamicVariableExpression; vt != nil {
+		return &vt.Name
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion) GetType() *string {
+	if vt := u.OfDynamicVariableExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfStringLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfNumberLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfBooleanLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnion) GetValue() (res aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnionValue) {
+	if vt := u.OfStringLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfNumberLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfBooleanLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	}
+	return
+}
+
+// Can have the runtime types [*string], [*float64], [*bool]
+type aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnionValue struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *string:
+//	case *float64:
+//	case *bool:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftUnionValue) AsAny() any {
+	return u.any
+}
+
+// Reference a dynamic variable by name.
+//
+// Resolved at runtime from the assistant's dynamic-variables context (see
+// `Assistant.dynamic_variables` and the dynamic-variables webhook).
+//
+// The properties Name, Type are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftDynamicVariableExpression struct {
+	// Variable name to look up in the runtime context.
+	Name string `json:"name" api:"required"`
+	// This field can be elided, and will marshal its zero value as "variable".
+	Type constant.Variable `json:"type" default:"variable"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftDynamicVariableExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftDynamicVariableExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftDynamicVariableExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant string value.
+//
+// The properties Type, Value are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftStringLiteralExpression struct {
+	// Literal string value.
+	Value string `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "string_literal".
+	Type constant.StringLiteral `json:"type" default:"string_literal"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftStringLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftStringLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftStringLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant numeric value (float; integers are accepted and stored as float).
+//
+// The properties Type, Value are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftNumberLiteralExpression struct {
+	// Literal numeric value.
+	Value float64 `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "number_literal".
+	Type constant.NumberLiteral `json:"type" default:"number_literal"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftNumberLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftNumberLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftNumberLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant boolean value. Useful for unconditional ('always') edges.
+//
+// The properties Type, Value are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftBooleanLiteralExpression struct {
+	// Literal boolean value.
+	Value bool `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "bool_literal".
+	Type constant.BoolLiteral `json:"type" default:"bool_literal"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftBooleanLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftBooleanLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonLeftBooleanLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion struct {
+	OfDynamicVariableExpression *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightDynamicVariableExpression `json:",omitzero,inline"`
+	OfStringLiteralExpression   *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightStringLiteralExpression   `json:",omitzero,inline"`
+	OfNumberLiteralExpression   *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightNumberLiteralExpression   `json:",omitzero,inline"`
+	OfBooleanLiteralExpression  *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightBooleanLiteralExpression  `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfDynamicVariableExpression, u.OfStringLiteralExpression, u.OfNumberLiteralExpression, u.OfBooleanLiteralExpression)
+}
+func (u *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion) asAny() any {
+	if !param.IsOmitted(u.OfDynamicVariableExpression) {
+		return u.OfDynamicVariableExpression
+	} else if !param.IsOmitted(u.OfStringLiteralExpression) {
+		return u.OfStringLiteralExpression
+	} else if !param.IsOmitted(u.OfNumberLiteralExpression) {
+		return u.OfNumberLiteralExpression
+	} else if !param.IsOmitted(u.OfBooleanLiteralExpression) {
+		return u.OfBooleanLiteralExpression
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion) GetName() *string {
+	if vt := u.OfDynamicVariableExpression; vt != nil {
+		return &vt.Name
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion) GetType() *string {
+	if vt := u.OfDynamicVariableExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfStringLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfNumberLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfBooleanLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnion) GetValue() (res aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnionValue) {
+	if vt := u.OfStringLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfNumberLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfBooleanLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	}
+	return
+}
+
+// Can have the runtime types [*string], [*float64], [*bool]
+type aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnionValue struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *string:
+//	case *float64:
+//	case *bool:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightUnionValue) AsAny() any {
+	return u.any
+}
+
+// Reference a dynamic variable by name.
+//
+// Resolved at runtime from the assistant's dynamic-variables context (see
+// `Assistant.dynamic_variables` and the dynamic-variables webhook).
+//
+// The properties Name, Type are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightDynamicVariableExpression struct {
+	// Variable name to look up in the runtime context.
+	Name string `json:"name" api:"required"`
+	// This field can be elided, and will marshal its zero value as "variable".
+	Type constant.Variable `json:"type" default:"variable"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightDynamicVariableExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightDynamicVariableExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightDynamicVariableExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant string value.
+//
+// The properties Type, Value are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightStringLiteralExpression struct {
+	// Literal string value.
+	Value string `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "string_literal".
+	Type constant.StringLiteral `json:"type" default:"string_literal"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightStringLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightStringLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightStringLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant numeric value (float; integers are accepted and stored as float).
+//
+// The properties Type, Value are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightNumberLiteralExpression struct {
+	// Literal numeric value.
+	Value float64 `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "number_literal".
+	Type constant.NumberLiteral `json:"type" default:"number_literal"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightNumberLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightNumberLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightNumberLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant boolean value. Useful for unconditional ('always') edges.
+//
+// The properties Type, Value are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightBooleanLiteralExpression struct {
+	// Literal boolean value.
+	Value bool `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "bool_literal".
+	Type constant.BoolLiteral `json:"type" default:"bool_literal"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightBooleanLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightBooleanLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionComparisonRightBooleanLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Combine sub-expressions with a logical operator (`and` / `or` / `not`).
+//
+// `and` and `or` accept two or more operands; `not` accepts exactly one.
+//
+// The properties Op, Operands, Type are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOp struct {
+	// Logical operator. `not` is unary; `and`/`or` are n-ary (>=2).
+	//
+	// Any of "and", "or", "not".
+	Op string `json:"op,omitzero" api:"required"`
+	// Operand sub-expressions. Length must be exactly 1 for `not` and >= 2 for
+	// `and`/`or`.
+	Operands []AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion `json:"operands,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "bool_op".
+	Type constant.BoolOp `json:"type" default:"bool_op"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOp) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOp
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOp](
+		"op", "and", "or", "not",
+	)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion struct {
+	OfDynamicVariableExpression *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandDynamicVariableExpression `json:",omitzero,inline"`
+	OfStringLiteralExpression   *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandStringLiteralExpression   `json:",omitzero,inline"`
+	OfNumberLiteralExpression   *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandNumberLiteralExpression   `json:",omitzero,inline"`
+	OfBooleanLiteralExpression  *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandBooleanLiteralExpression  `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfDynamicVariableExpression, u.OfStringLiteralExpression, u.OfNumberLiteralExpression, u.OfBooleanLiteralExpression)
+}
+func (u *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion) asAny() any {
+	if !param.IsOmitted(u.OfDynamicVariableExpression) {
+		return u.OfDynamicVariableExpression
+	} else if !param.IsOmitted(u.OfStringLiteralExpression) {
+		return u.OfStringLiteralExpression
+	} else if !param.IsOmitted(u.OfNumberLiteralExpression) {
+		return u.OfNumberLiteralExpression
+	} else if !param.IsOmitted(u.OfBooleanLiteralExpression) {
+		return u.OfBooleanLiteralExpression
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion) GetName() *string {
+	if vt := u.OfDynamicVariableExpression; vt != nil {
+		return &vt.Name
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion) GetType() *string {
+	if vt := u.OfDynamicVariableExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfStringLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfNumberLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfBooleanLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnion) GetValue() (res aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnionValue) {
+	if vt := u.OfStringLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfNumberLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfBooleanLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	}
+	return
+}
+
+// Can have the runtime types [*string], [*float64], [*bool]
+type aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnionValue struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *string:
+//	case *float64:
+//	case *bool:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandUnionValue) AsAny() any {
+	return u.any
+}
+
+// Reference a dynamic variable by name.
+//
+// Resolved at runtime from the assistant's dynamic-variables context (see
+// `Assistant.dynamic_variables` and the dynamic-variables webhook).
+//
+// The properties Name, Type are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandDynamicVariableExpression struct {
+	// Variable name to look up in the runtime context.
+	Name string `json:"name" api:"required"`
+	// This field can be elided, and will marshal its zero value as "variable".
+	Type constant.Variable `json:"type" default:"variable"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandDynamicVariableExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandDynamicVariableExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandDynamicVariableExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant string value.
+//
+// The properties Type, Value are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandStringLiteralExpression struct {
+	// Literal string value.
+	Value string `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "string_literal".
+	Type constant.StringLiteral `json:"type" default:"string_literal"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandStringLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandStringLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandStringLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant numeric value (float; integers are accepted and stored as float).
+//
+// The properties Type, Value are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandNumberLiteralExpression struct {
+	// Literal numeric value.
+	Value float64 `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "number_literal".
+	Type constant.NumberLiteral `json:"type" default:"number_literal"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandNumberLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandNumberLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandNumberLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant boolean value. Useful for unconditional ('always') edges.
+//
+// The properties Type, Value are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandBooleanLiteralExpression struct {
+	// Literal boolean value.
+	Value bool `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "bool_literal".
+	Type constant.BoolLiteral `json:"type" default:"bool_literal"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandBooleanLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandBooleanLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolOpOperandBooleanLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Numeric expression: applies an arithmetic operator to two sub-expressions.
+//
+// Useful for derived numeric checks, e.g. `cart_total + shipping > 50`. Both
+// operands should resolve to numbers at runtime.
+//
+// The properties Left, Op, Right, Type are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmetic struct {
+	// Left-hand operand sub-expression.
+	Left AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion `json:"left,omitzero" api:"required"`
+	// Arithmetic operator applied to `left` and `right`.
+	//
+	// Any of "+", "-", "\*", "/", "%".
+	Op string `json:"op,omitzero" api:"required"`
+	// Right-hand operand sub-expression.
+	Right AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion `json:"right,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "arithmetic".
+	Type constant.Arithmetic `json:"type" default:"arithmetic"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmetic) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmetic
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmetic) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmetic](
+		"op", "+", "-", "*", "/", "%",
+	)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion struct {
+	OfDynamicVariableExpression *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftDynamicVariableExpression `json:",omitzero,inline"`
+	OfStringLiteralExpression   *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftStringLiteralExpression   `json:",omitzero,inline"`
+	OfNumberLiteralExpression   *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftNumberLiteralExpression   `json:",omitzero,inline"`
+	OfBooleanLiteralExpression  *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftBooleanLiteralExpression  `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfDynamicVariableExpression, u.OfStringLiteralExpression, u.OfNumberLiteralExpression, u.OfBooleanLiteralExpression)
+}
+func (u *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion) asAny() any {
+	if !param.IsOmitted(u.OfDynamicVariableExpression) {
+		return u.OfDynamicVariableExpression
+	} else if !param.IsOmitted(u.OfStringLiteralExpression) {
+		return u.OfStringLiteralExpression
+	} else if !param.IsOmitted(u.OfNumberLiteralExpression) {
+		return u.OfNumberLiteralExpression
+	} else if !param.IsOmitted(u.OfBooleanLiteralExpression) {
+		return u.OfBooleanLiteralExpression
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion) GetName() *string {
+	if vt := u.OfDynamicVariableExpression; vt != nil {
+		return &vt.Name
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion) GetType() *string {
+	if vt := u.OfDynamicVariableExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfStringLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfNumberLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfBooleanLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnion) GetValue() (res aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnionValue) {
+	if vt := u.OfStringLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfNumberLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfBooleanLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	}
+	return
+}
+
+// Can have the runtime types [*string], [*float64], [*bool]
+type aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnionValue struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *string:
+//	case *float64:
+//	case *bool:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftUnionValue) AsAny() any {
+	return u.any
+}
+
+// Reference a dynamic variable by name.
+//
+// Resolved at runtime from the assistant's dynamic-variables context (see
+// `Assistant.dynamic_variables` and the dynamic-variables webhook).
+//
+// The properties Name, Type are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftDynamicVariableExpression struct {
+	// Variable name to look up in the runtime context.
+	Name string `json:"name" api:"required"`
+	// This field can be elided, and will marshal its zero value as "variable".
+	Type constant.Variable `json:"type" default:"variable"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftDynamicVariableExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftDynamicVariableExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftDynamicVariableExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant string value.
+//
+// The properties Type, Value are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftStringLiteralExpression struct {
+	// Literal string value.
+	Value string `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "string_literal".
+	Type constant.StringLiteral `json:"type" default:"string_literal"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftStringLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftStringLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftStringLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant numeric value (float; integers are accepted and stored as float).
+//
+// The properties Type, Value are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftNumberLiteralExpression struct {
+	// Literal numeric value.
+	Value float64 `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "number_literal".
+	Type constant.NumberLiteral `json:"type" default:"number_literal"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftNumberLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftNumberLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftNumberLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant boolean value. Useful for unconditional ('always') edges.
+//
+// The properties Type, Value are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftBooleanLiteralExpression struct {
+	// Literal boolean value.
+	Value bool `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "bool_literal".
+	Type constant.BoolLiteral `json:"type" default:"bool_literal"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftBooleanLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftBooleanLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticLeftBooleanLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion struct {
+	OfDynamicVariableExpression *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightDynamicVariableExpression `json:",omitzero,inline"`
+	OfStringLiteralExpression   *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightStringLiteralExpression   `json:",omitzero,inline"`
+	OfNumberLiteralExpression   *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightNumberLiteralExpression   `json:",omitzero,inline"`
+	OfBooleanLiteralExpression  *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightBooleanLiteralExpression  `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfDynamicVariableExpression, u.OfStringLiteralExpression, u.OfNumberLiteralExpression, u.OfBooleanLiteralExpression)
+}
+func (u *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion) asAny() any {
+	if !param.IsOmitted(u.OfDynamicVariableExpression) {
+		return u.OfDynamicVariableExpression
+	} else if !param.IsOmitted(u.OfStringLiteralExpression) {
+		return u.OfStringLiteralExpression
+	} else if !param.IsOmitted(u.OfNumberLiteralExpression) {
+		return u.OfNumberLiteralExpression
+	} else if !param.IsOmitted(u.OfBooleanLiteralExpression) {
+		return u.OfBooleanLiteralExpression
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion) GetName() *string {
+	if vt := u.OfDynamicVariableExpression; vt != nil {
+		return &vt.Name
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion) GetType() *string {
+	if vt := u.OfDynamicVariableExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfStringLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfNumberLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfBooleanLiteralExpression; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnion) GetValue() (res aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnionValue) {
+	if vt := u.OfStringLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfNumberLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	} else if vt := u.OfBooleanLiteralExpression; vt != nil {
+		res.any = &vt.Value
+	}
+	return
+}
+
+// Can have the runtime types [*string], [*float64], [*bool]
+type aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnionValue struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *string:
+//	case *float64:
+//	case *bool:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u aiAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightUnionValue) AsAny() any {
+	return u.any
+}
+
+// Reference a dynamic variable by name.
+//
+// Resolved at runtime from the assistant's dynamic-variables context (see
+// `Assistant.dynamic_variables` and the dynamic-variables webhook).
+//
+// The properties Name, Type are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightDynamicVariableExpression struct {
+	// Variable name to look up in the runtime context.
+	Name string `json:"name" api:"required"`
+	// This field can be elided, and will marshal its zero value as "variable".
+	Type constant.Variable `json:"type" default:"variable"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightDynamicVariableExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightDynamicVariableExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightDynamicVariableExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant string value.
+//
+// The properties Type, Value are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightStringLiteralExpression struct {
+	// Literal string value.
+	Value string `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "string_literal".
+	Type constant.StringLiteral `json:"type" default:"string_literal"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightStringLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightStringLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightStringLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant numeric value (float; integers are accepted and stored as float).
+//
+// The properties Type, Value are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightNumberLiteralExpression struct {
+	// Literal numeric value.
+	Value float64 `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "number_literal".
+	Type constant.NumberLiteral `json:"type" default:"number_literal"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightNumberLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightNumberLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightNumberLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant boolean value. Useful for unconditional ('always') edges.
+//
+// The properties Type, Value are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightBooleanLiteralExpression struct {
+	// Literal boolean value.
+	Value bool `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "bool_literal".
+	Type constant.BoolLiteral `json:"type" default:"bool_literal"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightBooleanLiteralExpression) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightBooleanLiteralExpression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionArithmeticRightBooleanLiteralExpression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Reference a dynamic variable by name.
+//
+// Resolved at runtime from the assistant's dynamic-variables context (see
+// `Assistant.dynamic_variables` and the dynamic-variables webhook).
+//
+// The properties Name, Type are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionVariable struct {
+	// Variable name to look up in the runtime context.
+	Name string `json:"name" api:"required"`
+	// This field can be elided, and will marshal its zero value as "variable".
+	Type constant.Variable `json:"type" default:"variable"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionVariable) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionVariable
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionVariable) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant string value.
+//
+// The properties Type, Value are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionStringLiteral struct {
+	// Literal string value.
+	Value string `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "string_literal".
+	Type constant.StringLiteral `json:"type" default:"string_literal"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionStringLiteral) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionStringLiteral
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionStringLiteral) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant numeric value (float; integers are accepted and stored as float).
+//
+// The properties Type, Value are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionNumberLiteral struct {
+	// Literal numeric value.
+	Value float64 `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "number_literal".
+	Type constant.NumberLiteral `json:"type" default:"number_literal"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionNumberLiteral) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionNumberLiteral
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionNumberLiteral) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Constant boolean value. Useful for unconditional ('always') edges.
+//
+// The properties Type, Value are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolLiteral struct {
+	// Literal boolean value.
+	Value bool `json:"value" api:"required"`
+	// This field can be elided, and will marshal its zero value as "bool_literal".
+	Type constant.BoolLiteral `json:"type" default:"bool_literal"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolLiteral) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolLiteral
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionExpressionExpressionBoolLiteral) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Edge condition that fires on the outcome of a tool node's execution.
+//
+// Only valid on edges leaving a tool node (`type == "tool"`). A tool node runs
+// exactly one tool as a deliberate flow step; this condition routes on whether
+// that tool reported `success` or `failure`. Use it to split the happy path from
+// the error path after a tool runs (e.g. payment succeeded vs. declined). There is
+// no `tool_id` field — the tool node has a single tool, so the outcome is
+// unambiguous.
+//
+// The properties Outcome, Type are required.
+type AIAssistantUpdateParamsConversationFlowEdgeConditionToolResult struct {
+	// Match either the tool node's success or failure outcome.
+	//
+	// Any of "success", "failure".
+	Outcome string `json:"outcome,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "tool_result".
+	Type constant.ToolResult `json:"type" default:"tool_result"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeConditionToolResult) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeConditionToolResult
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeConditionToolResult) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantUpdateParamsConversationFlowEdgeConditionToolResult](
+		"outcome", "success", "failure",
+	)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AIAssistantUpdateParamsConversationFlowEdgeTargetUnion struct {
+	OfNode      *AIAssistantUpdateParamsConversationFlowEdgeTargetNode      `json:",omitzero,inline"`
+	OfAssistant *AIAssistantUpdateParamsConversationFlowEdgeTargetAssistant `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AIAssistantUpdateParamsConversationFlowEdgeTargetUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfNode, u.OfAssistant)
+}
+func (u *AIAssistantUpdateParamsConversationFlowEdgeTargetUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AIAssistantUpdateParamsConversationFlowEdgeTargetUnion) asAny() any {
+	if !param.IsOmitted(u.OfNode) {
+		return u.OfNode
+	} else if !param.IsOmitted(u.OfAssistant) {
+		return u.OfAssistant
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeTargetUnion) GetNodeID() *string {
+	if vt := u.OfNode; vt != nil {
+		return &vt.NodeID
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeTargetUnion) GetAssistantID() *string {
+	if vt := u.OfAssistant; vt != nil {
+		return &vt.AssistantID
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeTargetUnion) GetPosition() *AIAssistantUpdateParamsConversationFlowEdgeTargetAssistantPosition {
+	if vt := u.OfAssistant; vt != nil {
+		return &vt.Position
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeTargetUnion) GetVoiceMode() *string {
+	if vt := u.OfAssistant; vt != nil {
+		return &vt.VoiceMode
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AIAssistantUpdateParamsConversationFlowEdgeTargetUnion) GetType() *string {
+	if vt := u.OfNode; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfAssistant; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[AIAssistantUpdateParamsConversationFlowEdgeTargetUnion](
+		"type",
+		apijson.Discriminator[AIAssistantUpdateParamsConversationFlowEdgeTargetNode]("node"),
+		apijson.Discriminator[AIAssistantUpdateParamsConversationFlowEdgeTargetAssistant]("assistant"),
+	)
+}
+
+// Edge target referencing another node within the same flow.
+//
+// The runtime transitions the active node to `node_id` and continues processing
+// within the current assistant's flow.
+//
+// The properties NodeID, Type are required.
+type AIAssistantUpdateParamsConversationFlowEdgeTargetNode struct {
+	// ID of the node this edge transitions into.
+	NodeID string `json:"node_id" api:"required"`
+	// This field can be elided, and will marshal its zero value as "node".
+	Type constant.Node `json:"type" default:"node"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeTargetNode) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeTargetNode
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeTargetNode) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Edge target referencing a different assistant.
+//
+// When the edge fires, the conversation hands off to `assistant_id`: the active
+// assistant on the conversation row is rewritten and the new assistant's flow
+// starts at its own `start_node_id`. The current turn's LLM response is delivered
+// to the user as-is; subsequent turns route to the new assistant.
+//
+// The properties AssistantID, Type are required.
+type AIAssistantUpdateParamsConversationFlowEdgeTargetAssistant struct {
+	// ID of the assistant the conversation transitions to.
+	AssistantID string `json:"assistant_id" api:"required"`
+	// Optional canvas coordinates for rendering the target assistant as a node in
+	// authoring UIs. Pure presentation — the runtime ignores it; round-trips so
+	// frontends can persist graph layout across reloads. When multiple edges target
+	// the same assistant, each edge's `position` is independent (frontends typically
+	// use the first non-null one).
+	Position AIAssistantUpdateParamsConversationFlowEdgeTargetAssistantPosition `json:"position,omitzero"`
+	// Voice behavior when handing off to the target assistant, mirroring the handoff
+	// tool's `voice_mode`. `unified` (default) keeps the current voice across the
+	// handoff; `distinct` lets the target assistant speak with its own configured
+	// voice. Only applies to assistant targets — node targets override voice via the
+	// node's own `voice_settings`.
+	//
+	// Any of "unified", "distinct".
+	VoiceMode string `json:"voice_mode,omitzero"`
+	// This field can be elided, and will marshal its zero value as "assistant".
+	Type constant.Assistant `json:"type" default:"assistant"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeTargetAssistant) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeTargetAssistant
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeTargetAssistant) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantUpdateParamsConversationFlowEdgeTargetAssistant](
+		"voice_mode", "unified", "distinct",
+	)
+}
+
+// Optional canvas coordinates for rendering the target assistant as a node in
+// authoring UIs. Pure presentation — the runtime ignores it; round-trips so
+// frontends can persist graph layout across reloads. When multiple edges target
+// the same assistant, each edge's `position` is independent (frontends typically
+// use the first non-null one).
+//
+// The properties X, Y are required.
+type AIAssistantUpdateParamsConversationFlowEdgeTargetAssistantPosition struct {
+	// Horizontal coordinate in the authoring canvas.
+	X float64 `json:"x" api:"required"`
+	// Vertical coordinate in the authoring canvas.
+	Y float64 `json:"y" api:"required"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowEdgeTargetAssistantPosition) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowEdgeTargetAssistantPosition
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowEdgeTargetAssistantPosition) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

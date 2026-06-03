@@ -961,30 +961,6 @@ const (
 	InboundMessagePayloadTypeMms InboundMessagePayloadType = "MMS"
 )
 
-// The property Type is required.
-type InworldVoiceSettingsParam struct {
-	// Voice settings provider type
-	//
-	// Any of "inworld".
-	Type InworldVoiceSettingsType `json:"type,omitzero" api:"required"`
-	paramObj
-}
-
-func (r InworldVoiceSettingsParam) MarshalJSON() (data []byte, err error) {
-	type shadow InworldVoiceSettingsParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InworldVoiceSettingsParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Voice settings provider type
-type InworldVoiceSettingsType string
-
-const (
-	InworldVoiceSettingsTypeInworld InworldVoiceSettingsType = "inworld"
-)
-
 // The set of features available for a specific messaging use case (SMS or MMS).
 // Features can vary depending on the characteristics the phone number, as well as
 // its current product configuration.
