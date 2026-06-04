@@ -106,6 +106,7 @@ func TestMessagingProfileUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.MessagingProfileUpdateParams{
+			AIAssistantID:          telnyx.String("ai_assistant-a80a9d4a-728c-4593-852c-2e93ad890000"),
 			AlphaSender:            telnyx.String("sqF"),
 			DailySpendLimit:        telnyx.String("269125115713"),
 			DailySpendLimitEnabled: telnyx.Bool(true),
