@@ -682,6 +682,8 @@ const (
 )
 
 type MessagingProfileUpdateParams struct {
+	// The ID of the AI assistant associated with this messaging profile.
+	AIAssistantID param.Opt[string] `json:"ai_assistant_id,omitzero"`
 	// The alphanumeric sender ID to use when sending to destinations that require an
 	// alphanumeric sender ID.
 	AlphaSender param.Opt[string] `json:"alpha_sender,omitzero"`
