@@ -43,10 +43,11 @@ func NewSpeechToTextService(opts ...option.RequestOption) (r SpeechToTextService
 //
 //   - `streaming` — standalone WebSocket transcription via
 //     `/speech-to-text/transcription`.
-//   - `file_transcription` — file-based transcription via
-//     `/ai/audio/transcriptions`.
-//   - `in_call_transcription` — live call transcription via Call Control
-//     `transcription_start`.
+//   - `file_based` — file-based transcription via `/ai/audio/transcriptions`.
+//   - `in_call` — live call transcription via Call Control `transcription_start`.
+//   - `ai_assistant` — STT configured on a Call Control AI Assistant via
+//     voice-assistant `TranscriptionConfig` (covers both live-streaming and
+//     non-streaming/batch models).
 //
 // Use this endpoint to discover which (provider, model) combinations are available
 // for the surface you need, and which language codes each accepts. `auto` in a
@@ -78,22 +79,19 @@ func (r *SpeechToTextListProvidersResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A (provider, model) tuple along with its supported service types and languages.
+// A (provider, model) tuple along with the service surfaces it supports. Each
+// entry in `service_types` describes one surface and the languages accepted on it.
 type SpeechToTextListProvidersResponseData struct {
-	// Languages this (provider, model) accepts, in the provider's native code format.
-	// `auto` indicates the provider performs language detection.
-	Languages []string `json:"languages" api:"required"`
 	// Provider-scoped model name.
 	Model string `json:"model" api:"required"`
 	// STT provider name.
 	Provider string `json:"provider" api:"required"`
-	// Service surfaces this (provider, model) supports.
-	//
-	// Any of "streaming", "file_transcription", "in_call_transcription".
-	ServiceTypes []string `json:"service_types" api:"required"`
+	// Service surfaces this (provider, model) supports. When the request filters by
+	// `service_type`, only the matching nested entry is returned for each matching
+	// model.
+	ServiceTypes []SpeechToTextListProvidersResponseDataServiceType `json:"service_types" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Languages    respjson.Field
 		Model        respjson.Field
 		Provider     respjson.Field
 		ServiceTypes respjson.Field
@@ -105,6 +103,36 @@ type SpeechToTextListProvidersResponseData struct {
 // Returns the unmodified JSON received from the API
 func (r SpeechToTextListProvidersResponseData) RawJSON() string { return r.JSON.raw }
 func (r *SpeechToTextListProvidersResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A supported service surface for a given (provider, model), along with the
+// language codes accepted on that surface. Language support can differ per surface
+// — for example, a model may accept a narrower language set for streaming than for
+// file transcription.
+type SpeechToTextListProvidersResponseDataServiceType struct {
+	// Languages accepted on this service surface, in the provider's native code
+	// format. `auto` indicates the provider performs language detection.
+	Languages []string `json:"languages" api:"required"`
+	// Service surface a model is available on. `ai_assistant` is the STT surface
+	// configured via Call Control voice-assistant transcription; it covers both
+	// live-streaming and non-streaming/batch models (matching the
+	// `TranscriptionConfig.model` enum on `call-control` voice assistants).
+	//
+	// Any of "streaming", "file_based", "in_call", "ai_assistant".
+	Type string `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Languages   respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SpeechToTextListProvidersResponseDataServiceType) RawJSON() string { return r.JSON.raw }
+func (r *SpeechToTextListProvidersResponseDataServiceType) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -135,9 +163,14 @@ type SpeechToTextListProvidersParams struct {
 	// Any of "deepgram", "speechmatics", "assemblyai", "xai", "soniox", "azure",
 	// "openai", "google", "telnyx".
 	Provider SpeechToTextListProvidersParamsProvider `query:"provider,omitzero" json:"-"`
-	// Filter to entries that support the given service type.
+	// Filter to entries that support the given service type. For backward
+	// compatibility with the values that briefly shipped before the product-aligned
+	// rename, the legacy aliases `file_transcription`, `in_call_transcription`, and
+	// `ai_assistant_transcription` are silently accepted and normalized to
+	// `file_based`, `in_call`, and `ai_assistant` respectively. The response always
+	// emits the canonical (post-rename) values.
 	//
-	// Any of "streaming", "file_transcription", "in_call_transcription".
+	// Any of "streaming", "file_based", "in_call", "ai_assistant".
 	ServiceType SpeechToTextListProvidersParamsServiceType `query:"service_type,omitzero" json:"-"`
 	paramObj
 }
@@ -170,11 +203,17 @@ const (
 	SpeechToTextListProvidersParamsProviderTelnyx       SpeechToTextListProvidersParamsProvider = "telnyx"
 )
 
-// Filter to entries that support the given service type.
+// Filter to entries that support the given service type. For backward
+// compatibility with the values that briefly shipped before the product-aligned
+// rename, the legacy aliases `file_transcription`, `in_call_transcription`, and
+// `ai_assistant_transcription` are silently accepted and normalized to
+// `file_based`, `in_call`, and `ai_assistant` respectively. The response always
+// emits the canonical (post-rename) values.
 type SpeechToTextListProvidersParamsServiceType string
 
 const (
-	SpeechToTextListProvidersParamsServiceTypeStreaming           SpeechToTextListProvidersParamsServiceType = "streaming"
-	SpeechToTextListProvidersParamsServiceTypeFileTranscription   SpeechToTextListProvidersParamsServiceType = "file_transcription"
-	SpeechToTextListProvidersParamsServiceTypeInCallTranscription SpeechToTextListProvidersParamsServiceType = "in_call_transcription"
+	SpeechToTextListProvidersParamsServiceTypeStreaming   SpeechToTextListProvidersParamsServiceType = "streaming"
+	SpeechToTextListProvidersParamsServiceTypeFileBased   SpeechToTextListProvidersParamsServiceType = "file_based"
+	SpeechToTextListProvidersParamsServiceTypeInCall      SpeechToTextListProvidersParamsServiceType = "in_call"
+	SpeechToTextListProvidersParamsServiceTypeAIAssistant SpeechToTextListProvidersParamsServiceType = "ai_assistant"
 )
