@@ -723,6 +723,12 @@ type AssistantToolTransferTransfer struct {
 	Targets AssistantToolTransferTransferTargetsUnion `json:"targets" api:"required"`
 	// Custom headers to be added to the SIP INVITE for the transfer command.
 	CustomHeaders []AssistantToolTransferTransferCustomHeader `json:"custom_headers"`
+	// A description of the transfer tool. By default, Telnyx generates this
+	// automatically based on the configured targets. Typically only set when importing
+	// an assistant from another provider that allowed a custom description; in that
+	// case the provided value is preserved. Most users should leave this empty and let
+	// Telnyx manage it.
+	Description string `json:"description"`
 	// Configuration for voicemail detection (AMD - Answering Machine Detection) on the
 	// transferred call. Allows the assistant to detect when a voicemail system answers
 	// the transferred call and take appropriate action.
@@ -740,6 +746,7 @@ type AssistantToolTransferTransfer struct {
 		From                     respjson.Field
 		Targets                  respjson.Field
 		CustomHeaders            respjson.Field
+		Description              respjson.Field
 		VoicemailDetection       respjson.Field
 		WarmMessageDelayMs       respjson.Field
 		WarmTransferInstructions respjson.Field
@@ -1692,6 +1699,12 @@ type AssistantToolTransferTransferParam struct {
 	// dial command; instead, playback starts after the specified delay. When not set,
 	// existing behavior (audio_url in dial) is preserved.
 	WarmMessageDelayMs param.Opt[int64] `json:"warm_message_delay_ms,omitzero"`
+	// A description of the transfer tool. By default, Telnyx generates this
+	// automatically based on the configured targets. Typically only set when importing
+	// an assistant from another provider that allowed a custom description; in that
+	// case the provided value is preserved. Most users should leave this empty and let
+	// Telnyx manage it.
+	Description param.Opt[string] `json:"description,omitzero"`
 	// Natural language instructions for your agent for how to provide context for the
 	// transfer recipient.
 	WarmTransferInstructions param.Opt[string] `json:"warm_transfer_instructions,omitzero"`
