@@ -19,15 +19,12 @@ func ValueOf[T Constant[T]]() T {
 }
 
 type Android string         // Always "android"
-type Arithmetic string      // Always "arithmetic"
 type Assistant string       // Always "assistant"
 type Body string            // Always "BODY"
 type BoolLiteral string     // Always "bool_literal"
-type BoolOp string          // Always "bool_op"
 type Buttons string         // Always "BUTTONS"
 type Carousel string        // Always "CAROUSEL"
 type Comparative string     // Always "comparative"
-type Comparison string      // Always "comparison"
 type Developer string       // Always "developer"
 type Expression string      // Always "expression"
 type Footer string          // Always "FOOTER"
@@ -58,15 +55,12 @@ type User string            // Always "user"
 type Variable string        // Always "variable"
 
 func (c Android) Default() Android                 { return "android" }
-func (c Arithmetic) Default() Arithmetic           { return "arithmetic" }
 func (c Assistant) Default() Assistant             { return "assistant" }
 func (c Body) Default() Body                       { return "BODY" }
 func (c BoolLiteral) Default() BoolLiteral         { return "bool_literal" }
-func (c BoolOp) Default() BoolOp                   { return "bool_op" }
 func (c Buttons) Default() Buttons                 { return "BUTTONS" }
 func (c Carousel) Default() Carousel               { return "CAROUSEL" }
 func (c Comparative) Default() Comparative         { return "comparative" }
-func (c Comparison) Default() Comparison           { return "comparison" }
 func (c Developer) Default() Developer             { return "developer" }
 func (c Expression) Default() Expression           { return "expression" }
 func (c Footer) Default() Footer                   { return "FOOTER" }
@@ -97,15 +91,12 @@ func (c User) Default() User                       { return "user" }
 func (c Variable) Default() Variable               { return "variable" }
 
 func (c Android) MarshalJSON() ([]byte, error)         { return marshalString(c) }
-func (c Arithmetic) MarshalJSON() ([]byte, error)      { return marshalString(c) }
 func (c Assistant) MarshalJSON() ([]byte, error)       { return marshalString(c) }
 func (c Body) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c BoolLiteral) MarshalJSON() ([]byte, error)     { return marshalString(c) }
-func (c BoolOp) MarshalJSON() ([]byte, error)          { return marshalString(c) }
 func (c Buttons) MarshalJSON() ([]byte, error)         { return marshalString(c) }
 func (c Carousel) MarshalJSON() ([]byte, error)        { return marshalString(c) }
 func (c Comparative) MarshalJSON() ([]byte, error)     { return marshalString(c) }
-func (c Comparison) MarshalJSON() ([]byte, error)      { return marshalString(c) }
 func (c Developer) MarshalJSON() ([]byte, error)       { return marshalString(c) }
 func (c Expression) MarshalJSON() ([]byte, error)      { return marshalString(c) }
 func (c Footer) MarshalJSON() ([]byte, error)          { return marshalString(c) }
