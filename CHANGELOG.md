@@ -1,5 +1,20 @@
 # Changelog
 
+## 4.77.0 (2026-06-05)
+
+Full Changelog: [v4.76.0...v4.77.0](https://github.com/team-telnyx/telnyx-go/compare/v4.76.0...v4.77.0)
+
+### Features
+
+* add assistant_id to MessagingProfile and request schemas ([1e874da](https://github.com/team-telnyx/telnyx-go/commit/1e874da554844fe1e333984f588a51768e66c0a6))
+* Conversation flow update ([76079ee](https://github.com/team-telnyx/telnyx-go/commit/76079eedf494db961524551002813fffe1e36485))
+* **inference:** expose description on transfer tool params ([9c70968](https://github.com/team-telnyx/telnyx-go/commit/9c7096889a8169013606cdf70858e77a0f7f37a9))
+
+
+### Bug Fixes
+
+* **inference:** extract recursive expression AST into named Expression schema ([a21d20b](https://github.com/team-telnyx/telnyx-go/commit/a21d20b32fc1e13644117edd8111aba21103dfbb))
+
 ## 4.76.0 (2026-06-03)
 
 Full Changelog: [v4.75.0...v4.76.0](https://github.com/team-telnyx/telnyx-go/compare/v4.75.0...v4.76.0)
