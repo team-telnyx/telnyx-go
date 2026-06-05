@@ -259,11 +259,12 @@ func (r *UpdateAssistantConversationFlowParam) UnmarshalJSON(data []byte) error 
 type UpdateAssistantConversationFlowNodeUnionParam struct {
 	OfPrompt *UpdateAssistantConversationFlowNodePromptParam `json:",omitzero,inline"`
 	OfTool   *UpdateAssistantConversationFlowNodeToolParam   `json:",omitzero,inline"`
+	OfSpeak  *UpdateAssistantConversationFlowNodeSpeakParam  `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u UpdateAssistantConversationFlowNodeUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfPrompt, u.OfTool)
+	return param.MarshalUnion(u, u.OfPrompt, u.OfTool, u.OfSpeak)
 }
 func (u *UpdateAssistantConversationFlowNodeUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -274,6 +275,8 @@ func (u *UpdateAssistantConversationFlowNodeUnionParam) asAny() any {
 		return u.OfPrompt
 	} else if !param.IsOmitted(u.OfTool) {
 		return u.OfTool
+	} else if !param.IsOmitted(u.OfSpeak) {
+		return u.OfSpeak
 	}
 	return nil
 }
@@ -359,10 +362,20 @@ func (u UpdateAssistantConversationFlowNodeUnionParam) GetSharedToolID() *string
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u UpdateAssistantConversationFlowNodeUnionParam) GetMessage() *string {
+	if vt := u.OfSpeak; vt != nil {
+		return &vt.Message
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u UpdateAssistantConversationFlowNodeUnionParam) GetID() *string {
 	if vt := u.OfPrompt; vt != nil {
 		return (*string)(&vt.ID)
 	} else if vt := u.OfTool; vt != nil {
+		return (*string)(&vt.ID)
+	} else if vt := u.OfSpeak; vt != nil {
 		return (*string)(&vt.ID)
 	}
 	return nil
@@ -374,6 +387,8 @@ func (u UpdateAssistantConversationFlowNodeUnionParam) GetName() *string {
 		return &vt.Name.Value
 	} else if vt := u.OfTool; vt != nil && vt.Name.Valid() {
 		return &vt.Name.Value
+	} else if vt := u.OfSpeak; vt != nil && vt.Name.Valid() {
+		return &vt.Name.Value
 	}
 	return nil
 }
@@ -383,6 +398,8 @@ func (u UpdateAssistantConversationFlowNodeUnionParam) GetType() *string {
 	if vt := u.OfPrompt; vt != nil {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfTool; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfSpeak; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -396,13 +413,16 @@ func (u UpdateAssistantConversationFlowNodeUnionParam) GetPosition() (res update
 		res.any = &vt.Position
 	} else if vt := u.OfTool; vt != nil {
 		res.any = &vt.Position
+	} else if vt := u.OfSpeak; vt != nil {
+		res.any = &vt.Position
 	}
 	return
 }
 
 // Can have the runtime types
 // [*UpdateAssistantConversationFlowNodePromptPositionParam],
-// [*UpdateAssistantConversationFlowNodeToolPositionParam]
+// [*UpdateAssistantConversationFlowNodeToolPositionParam],
+// [*UpdateAssistantConversationFlowNodeSpeakPositionParam]
 type updateAssistantConversationFlowNodeUnionParamPosition struct{ any }
 
 // Use the following switch statement to get the type of the union:
@@ -410,6 +430,7 @@ type updateAssistantConversationFlowNodeUnionParamPosition struct{ any }
 //	switch u.AsAny().(type) {
 //	case *telnyx.UpdateAssistantConversationFlowNodePromptPositionParam:
 //	case *telnyx.UpdateAssistantConversationFlowNodeToolPositionParam:
+//	case *telnyx.UpdateAssistantConversationFlowNodeSpeakPositionParam:
 //	default:
 //	    fmt.Errorf("not present")
 //	}
@@ -422,6 +443,8 @@ func (u updateAssistantConversationFlowNodeUnionParamPosition) GetX() *float64 {
 		return (*float64)(&vt.X)
 	case *UpdateAssistantConversationFlowNodeToolPositionParam:
 		return (*float64)(&vt.X)
+	case *UpdateAssistantConversationFlowNodeSpeakPositionParam:
+		return (*float64)(&vt.X)
 	}
 	return nil
 }
@@ -433,6 +456,8 @@ func (u updateAssistantConversationFlowNodeUnionParamPosition) GetY() *float64 {
 		return (*float64)(&vt.Y)
 	case *UpdateAssistantConversationFlowNodeToolPositionParam:
 		return (*float64)(&vt.Y)
+	case *UpdateAssistantConversationFlowNodeSpeakPositionParam:
+		return (*float64)(&vt.Y)
 	}
 	return nil
 }
@@ -442,6 +467,7 @@ func init() {
 		"type",
 		apijson.Discriminator[UpdateAssistantConversationFlowNodePromptParam]("prompt"),
 		apijson.Discriminator[UpdateAssistantConversationFlowNodeToolParam]("tool"),
+		apijson.Discriminator[UpdateAssistantConversationFlowNodeSpeakParam]("speak"),
 	)
 }
 
@@ -613,6 +639,72 @@ func (r *UpdateAssistantConversationFlowNodeToolPositionParam) UnmarshalJSON(dat
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// A standalone scripted-message step in a flow, as supplied by clients.
+//
+// Unlike a prompt node, a speak node has no instructions or model — it isn't an
+// LLM turn. Reaching it delivers `message` to the user verbatim (with
+// `{{variable}}` interpolation), then routes via outgoing `llm` / `expression`
+// edges.
+//
+// The properties ID, Message are required.
+type UpdateAssistantConversationFlowNodeSpeakParam struct {
+	// Caller-supplied unique identifier for this node within the flow.
+	ID string `json:"id" api:"required"`
+	// Message delivered to the user verbatim when the flow reaches this node. No LLM
+	// turn — the text is spoken/sent exactly as written. `{{variable}}` placeholders
+	// are interpolated from the conversation's dynamic variables; an unresolved
+	// placeholder renders as an empty string. After delivering, the flow routes via
+	// the node's outgoing `llm` / `expression` edges (commonly a single unconditional
+	// edge).
+	Message string `json:"message" api:"required"`
+	// Optional human-readable label, displayed in authoring UIs.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+	// by the runtime; round-trips so frontends can persist graph layout across
+	// reloads.
+	Position UpdateAssistantConversationFlowNodeSpeakPositionParam `json:"position,omitzero"`
+	// Node kind discriminator. Always `speak` for a speak node.
+	//
+	// Any of "speak".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r UpdateAssistantConversationFlowNodeSpeakParam) MarshalJSON() (data []byte, err error) {
+	type shadow UpdateAssistantConversationFlowNodeSpeakParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UpdateAssistantConversationFlowNodeSpeakParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[UpdateAssistantConversationFlowNodeSpeakParam](
+		"type", "speak",
+	)
+}
+
+// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+// by the runtime; round-trips so frontends can persist graph layout across
+// reloads.
+//
+// The properties X, Y are required.
+type UpdateAssistantConversationFlowNodeSpeakPositionParam struct {
+	// Horizontal coordinate in the authoring canvas.
+	X float64 `json:"x" api:"required"`
+	// Vertical coordinate in the authoring canvas.
+	Y float64 `json:"y" api:"required"`
+	paramObj
+}
+
+func (r UpdateAssistantConversationFlowNodeSpeakPositionParam) MarshalJSON() (data []byte, err error) {
+	type shadow UpdateAssistantConversationFlowNodeSpeakPositionParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UpdateAssistantConversationFlowNodeSpeakPositionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Directed transition from one node to a target, gated by a condition.
 //
 // The target is either another node in the same flow (`NodeTarget`) or a different
@@ -649,11 +741,12 @@ func (r *UpdateAssistantConversationFlowEdgeParam) UnmarshalJSON(data []byte) er
 type UpdateAssistantConversationFlowEdgeConditionUnionParam struct {
 	OfLlm        *UpdateAssistantConversationFlowEdgeConditionLlmParam        `json:",omitzero,inline"`
 	OfExpression *UpdateAssistantConversationFlowEdgeConditionExpressionParam `json:",omitzero,inline"`
+	OfDefault    *UpdateAssistantConversationFlowEdgeConditionDefaultParam    `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u UpdateAssistantConversationFlowEdgeConditionUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfLlm, u.OfExpression)
+	return param.MarshalUnion(u, u.OfLlm, u.OfExpression, u.OfDefault)
 }
 func (u *UpdateAssistantConversationFlowEdgeConditionUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -664,6 +757,8 @@ func (u *UpdateAssistantConversationFlowEdgeConditionUnionParam) asAny() any {
 		return u.OfLlm
 	} else if !param.IsOmitted(u.OfExpression) {
 		return u.OfExpression
+	} else if !param.IsOmitted(u.OfDefault) {
+		return u.OfDefault
 	}
 	return nil
 }
@@ -690,6 +785,8 @@ func (u UpdateAssistantConversationFlowEdgeConditionUnionParam) GetType() *strin
 		return (*string)(&vt.Type)
 	} else if vt := u.OfExpression; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfDefault; vt != nil {
+		return (*string)(&vt.Type)
 	}
 	return nil
 }
@@ -699,6 +796,7 @@ func init() {
 		"type",
 		apijson.Discriminator[UpdateAssistantConversationFlowEdgeConditionLlmParam]("llm"),
 		apijson.Discriminator[UpdateAssistantConversationFlowEdgeConditionExpressionParam]("expression"),
+		apijson.Discriminator[UpdateAssistantConversationFlowEdgeConditionDefaultParam]("default"),
 	)
 }
 
@@ -913,6 +1011,37 @@ func (r UpdateAssistantConversationFlowEdgeConditionExpressionExpressionBooleanL
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *UpdateAssistantConversationFlowEdgeConditionExpressionExpressionBooleanLiteralExpressionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func NewUpdateAssistantConversationFlowEdgeConditionDefaultParam() UpdateAssistantConversationFlowEdgeConditionDefaultParam {
+	return UpdateAssistantConversationFlowEdgeConditionDefaultParam{
+		Type: "default",
+	}
+}
+
+// Fallback edge condition: fires only when no other edge's condition is true.
+//
+// Evaluated after every conditioned (`llm` / `expression`) edge regardless of
+// declaration order, so it routes the flow whenever none of the node's other
+// outgoing edges match. Valid **only** on edges leaving a `tool` or `speak` node,
+// where the deterministic step auto-advances and must always have somewhere to go.
+// A tool/speak node with any outgoing edge is required to carry exactly one
+// `default` edge so it never dead-ends; a tool/speak node with no outgoing edges
+// is a valid terminal step. Carries no parameters.
+//
+// This struct has a constant value, construct it with
+// [NewUpdateAssistantConversationFlowEdgeConditionDefaultParam].
+type UpdateAssistantConversationFlowEdgeConditionDefaultParam struct {
+	Type constant.Default `json:"type" default:"default"`
+	paramObj
+}
+
+func (r UpdateAssistantConversationFlowEdgeConditionDefaultParam) MarshalJSON() (data []byte, err error) {
+	type shadow UpdateAssistantConversationFlowEdgeConditionDefaultParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UpdateAssistantConversationFlowEdgeConditionDefaultParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
