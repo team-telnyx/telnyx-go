@@ -171,36 +171,36 @@ type UpdateAssistantParam struct {
 	// every edge's endpoints reference real nodes.
 	ConversationFlow UpdateAssistantConversationFlowParam `json:"conversation_flow,omitzero"`
 	// Map of dynamic variables and their default values
-	DynamicVariables map[string]any         `json:"dynamic_variables,omitzero"`
-	EnabledFeatures  []EnabledFeatures      `json:"enabled_features,omitzero"`
-	ExternalLlm      ExternalLlmReqParam    `json:"external_llm,omitzero"`
-	FallbackConfig   FallbackConfigReqParam `json:"fallback_config,omitzero"`
-	InsightSettings  InsightSettingsParam   `json:"insight_settings,omitzero"`
+	DynamicVariables map[string]any                     `json:"dynamic_variables,omitzero"`
+	EnabledFeatures  []EnabledFeatures                  `json:"enabled_features,omitzero"`
+	ExternalLlm      UpdateAssistantExternalLlmParam    `json:"external_llm,omitzero"`
+	FallbackConfig   UpdateAssistantFallbackConfigParam `json:"fallback_config,omitzero"`
+	InsightSettings  InsightSettingsParam               `json:"insight_settings,omitzero"`
 	// Connected integrations attached to the assistant. The catalog of available
 	// integrations is at `/ai/integrations`; the user's connected integrations are at
 	// `/ai/integrations/connections`. Each item references a catalog integration by
 	// `integration_id`.
-	Integrations []AssistantIntegrationParam `json:"integrations,omitzero"`
+	Integrations []UpdateAssistantIntegrationParam `json:"integrations,omitzero"`
 	// Settings for interruptions and how the assistant decides the user has finished
 	// speaking. These timings are most relevant when using non turn-taking
 	// transcription models. For turn-taking models like `deepgram/flux`, end-of-turn
 	// behavior is controlled by the transcription end-of-turn settings under
 	// `transcription.settings` (`eot_threshold`, `eot_timeout_ms`,
 	// `eager_eot_threshold`).
-	InterruptionSettings InferenceEmbeddingInterruptionSettingsParam `json:"interruption_settings,omitzero"`
+	InterruptionSettings UpdateAssistantInterruptionSettingsParam `json:"interruption_settings,omitzero"`
 	// MCP servers attached to the assistant. Create MCP servers with
 	// `/ai/mcp_servers`, then reference them by `id` here.
-	McpServers            []AssistantMcpServerParam `json:"mcp_servers,omitzero"`
-	MessagingSettings     MessagingSettingsParam    `json:"messaging_settings,omitzero"`
-	ObservabilitySettings ObservabilityReqParam     `json:"observability_settings,omitzero"`
+	McpServers            []UpdateAssistantMcpServerParam `json:"mcp_servers,omitzero"`
+	MessagingSettings     MessagingSettingsParam          `json:"messaging_settings,omitzero"`
+	ObservabilitySettings ObservabilityReqParam           `json:"observability_settings,omitzero"`
 	// Configuration for post-conversation processing. When enabled, the assistant
 	// receives one additional LLM turn after the conversation ends, allowing it to
 	// execute tool calls such as logging to a CRM or sending a summary. The assistant
 	// can execute multiple parallel or sequential tools during this phase.
 	// Telephony-control tools (e.g. hangup, transfer) are unavailable
 	// post-conversation. Beta feature.
-	PostConversationSettings PostConversationSettingsReqParam `json:"post_conversation_settings,omitzero"`
-	PrivacySettings          PrivacySettingsParam             `json:"privacy_settings,omitzero"`
+	PostConversationSettings UpdateAssistantPostConversationSettingsParam `json:"post_conversation_settings,omitzero"`
+	PrivacySettings          PrivacySettingsParam                         `json:"privacy_settings,omitzero"`
 	// Tags associated with the assistant. Tags can also be managed with the assistant
 	// tag endpoints.
 	Tags              []string               `json:"tags,omitzero"`
@@ -290,7 +290,7 @@ func (u UpdateAssistantConversationFlowNodeUnionParam) GetInstructions() *string
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u UpdateAssistantConversationFlowNodeUnionParam) GetExternalLlm() *ExternalLlmReqParam {
+func (u UpdateAssistantConversationFlowNodeUnionParam) GetExternalLlm() *UpdateAssistantConversationFlowNodePromptExternalLlmParam {
 	if vt := u.OfPrompt; vt != nil {
 		return &vt.ExternalLlm
 	}
@@ -497,7 +497,7 @@ type UpdateAssistantConversationFlowNodePromptParam struct {
 	// route a node's turns to a different external LLM (different `model`, `base_url`,
 	// credentials). Part of the LLM bundle — see `model` for cascade semantics.
 	// Mutually exclusive with `model` on the node (a single LLM identity per node).
-	ExternalLlm ExternalLlmReqParam `json:"external_llm,omitzero"`
+	ExternalLlm UpdateAssistantConversationFlowNodePromptExternalLlmParam `json:"external_llm,omitzero"`
 	// How `instructions` combine with the assistant-level instructions. `replace`
 	// (default): the node's instructions are used alone. `append`: the node's
 	// instructions are concatenated after the assistant's instructions.
@@ -549,6 +549,53 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[UpdateAssistantConversationFlowNodePromptParam](
 		"type", "prompt",
+	)
+}
+
+// Override for `Assistant.external_llm` while this node is active. Use this to
+// route a node's turns to a different external LLM (different `model`, `base_url`,
+// credentials). Part of the LLM bundle — see `model` for cascade semantics.
+// Mutually exclusive with `model` on the node (a single LLM identity per node).
+//
+// The properties BaseURL, Model are required.
+type UpdateAssistantConversationFlowNodePromptExternalLlmParam struct {
+	// Base URL for the external LLM endpoint.
+	BaseURL string `json:"base_url" api:"required"`
+	// Model identifier to use with the external LLM endpoint.
+	Model string `json:"model" api:"required"`
+	// Integration secret identifier for the client certificate used with certificate
+	// authentication.
+	CertificateRef param.Opt[string] `json:"certificate_ref,omitzero"`
+	// When `true`, Telnyx forwards the assistant's dynamic variables to the external
+	// LLM endpoint as a top-level `extra_metadata` object on the chat completion
+	// request body. Defaults to `false`. Example payload sent to the external
+	// endpoint:
+	// `{"extra_metadata": {"customer_name": "Jane", "account_id": "acct_789", "telnyx_agent_target": "+13125550100", "telnyx_end_user_target": "+13125550123"}}`.
+	// Distinct from OpenAI's native `metadata` field, which has its own size and type
+	// limits.
+	ForwardMetadata param.Opt[bool] `json:"forward_metadata,omitzero"`
+	// Integration secret identifier for the external LLM API key.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// URL used to retrieve an access token when certificate authentication is enabled.
+	TokenRetrievalURL param.Opt[string] `json:"token_retrieval_url,omitzero"`
+	// Authentication method used when connecting to the external LLM endpoint.
+	//
+	// Any of "token", "certificate".
+	AuthenticationMethod string `json:"authentication_method,omitzero"`
+	paramObj
+}
+
+func (r UpdateAssistantConversationFlowNodePromptExternalLlmParam) MarshalJSON() (data []byte, err error) {
+	type shadow UpdateAssistantConversationFlowNodePromptExternalLlmParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UpdateAssistantConversationFlowNodePromptExternalLlmParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[UpdateAssistantConversationFlowNodePromptExternalLlmParam](
+		"authentication_method", "token", "certificate",
 	)
 }
 
@@ -1206,6 +1253,251 @@ func (r UpdateAssistantConversationFlowEdgeTargetAssistantPositionParam) Marshal
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *UpdateAssistantConversationFlowEdgeTargetAssistantPositionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties BaseURL, Model are required.
+type UpdateAssistantExternalLlmParam struct {
+	// Base URL for the external LLM endpoint.
+	BaseURL string `json:"base_url" api:"required"`
+	// Model identifier to use with the external LLM endpoint.
+	Model string `json:"model" api:"required"`
+	// Integration secret identifier for the client certificate used with certificate
+	// authentication.
+	CertificateRef param.Opt[string] `json:"certificate_ref,omitzero"`
+	// When `true`, Telnyx forwards the assistant's dynamic variables to the external
+	// LLM endpoint as a top-level `extra_metadata` object on the chat completion
+	// request body. Defaults to `false`. Example payload sent to the external
+	// endpoint:
+	// `{"extra_metadata": {"customer_name": "Jane", "account_id": "acct_789", "telnyx_agent_target": "+13125550100", "telnyx_end_user_target": "+13125550123"}}`.
+	// Distinct from OpenAI's native `metadata` field, which has its own size and type
+	// limits.
+	ForwardMetadata param.Opt[bool] `json:"forward_metadata,omitzero"`
+	// Integration secret identifier for the external LLM API key.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// URL used to retrieve an access token when certificate authentication is enabled.
+	TokenRetrievalURL param.Opt[string] `json:"token_retrieval_url,omitzero"`
+	// Authentication method used when connecting to the external LLM endpoint.
+	//
+	// Any of "token", "certificate".
+	AuthenticationMethod string `json:"authentication_method,omitzero"`
+	paramObj
+}
+
+func (r UpdateAssistantExternalLlmParam) MarshalJSON() (data []byte, err error) {
+	type shadow UpdateAssistantExternalLlmParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UpdateAssistantExternalLlmParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[UpdateAssistantExternalLlmParam](
+		"authentication_method", "token", "certificate",
+	)
+}
+
+type UpdateAssistantFallbackConfigParam struct {
+	// Integration secret identifier for the fallback model API key.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// Fallback Telnyx-hosted model to use when the primary LLM provider is
+	// unavailable.
+	Model       param.Opt[string]                             `json:"model,omitzero"`
+	ExternalLlm UpdateAssistantFallbackConfigExternalLlmParam `json:"external_llm,omitzero"`
+	paramObj
+}
+
+func (r UpdateAssistantFallbackConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow UpdateAssistantFallbackConfigParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UpdateAssistantFallbackConfigParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties BaseURL, Model are required.
+type UpdateAssistantFallbackConfigExternalLlmParam struct {
+	// Base URL for the external LLM endpoint.
+	BaseURL string `json:"base_url" api:"required"`
+	// Model identifier to use with the external LLM endpoint.
+	Model string `json:"model" api:"required"`
+	// Integration secret identifier for the client certificate used with certificate
+	// authentication.
+	CertificateRef param.Opt[string] `json:"certificate_ref,omitzero"`
+	// When `true`, Telnyx forwards the assistant's dynamic variables to the external
+	// LLM endpoint as a top-level `extra_metadata` object on the chat completion
+	// request body. Defaults to `false`. Example payload sent to the external
+	// endpoint:
+	// `{"extra_metadata": {"customer_name": "Jane", "account_id": "acct_789", "telnyx_agent_target": "+13125550100", "telnyx_end_user_target": "+13125550123"}}`.
+	// Distinct from OpenAI's native `metadata` field, which has its own size and type
+	// limits.
+	ForwardMetadata param.Opt[bool] `json:"forward_metadata,omitzero"`
+	// Integration secret identifier for the external LLM API key.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// URL used to retrieve an access token when certificate authentication is enabled.
+	TokenRetrievalURL param.Opt[string] `json:"token_retrieval_url,omitzero"`
+	// Authentication method used when connecting to the external LLM endpoint.
+	//
+	// Any of "token", "certificate".
+	AuthenticationMethod string `json:"authentication_method,omitzero"`
+	paramObj
+}
+
+func (r UpdateAssistantFallbackConfigExternalLlmParam) MarshalJSON() (data []byte, err error) {
+	type shadow UpdateAssistantFallbackConfigExternalLlmParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UpdateAssistantFallbackConfigExternalLlmParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[UpdateAssistantFallbackConfigExternalLlmParam](
+		"authentication_method", "token", "certificate",
+	)
+}
+
+// Reference to a connected integration attached to an assistant. Discover
+// available integrations with `/ai/integrations` and connected integrations with
+// `/ai/integrations/connections`.
+//
+// The property IntegrationID is required.
+type UpdateAssistantIntegrationParam struct {
+	// Catalog integration ID to attach. This is the `id` from the integrations catalog
+	// at `/ai/integrations` (the same value also appears as `integration_id` on
+	// entries returned by `/ai/integrations/connections`). It is **not** the
+	// connection-level `id` from `/ai/integrations/connections`.
+	IntegrationID string `json:"integration_id" api:"required"`
+	// Optional per-assistant allowlist of integration tool names. When omitted or
+	// empty, all tools allowed by the connected integration are available to the
+	// assistant.
+	AllowedList []string `json:"allowed_list,omitzero"`
+	paramObj
+}
+
+func (r UpdateAssistantIntegrationParam) MarshalJSON() (data []byte, err error) {
+	type shadow UpdateAssistantIntegrationParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UpdateAssistantIntegrationParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Settings for interruptions and how the assistant decides the user has finished
+// speaking. These timings are most relevant when using non turn-taking
+// transcription models. For turn-taking models like `deepgram/flux`, end-of-turn
+// behavior is controlled by the transcription end-of-turn settings under
+// `transcription.settings` (`eot_threshold`, `eot_timeout_ms`,
+// `eager_eot_threshold`).
+type UpdateAssistantInterruptionSettingsParam struct {
+	// When true, disables user interruptions while the assistant greeting is playing.
+	DisableGreetingInterruption param.Opt[bool] `json:"disable_greeting_interruption,omitzero"`
+	// Whether users can interrupt the assistant while it is speaking.
+	Enable param.Opt[bool] `json:"enable,omitzero"`
+	// Controls when the assistant starts speaking after the user stops. These
+	// thresholds primarily apply to non turn-taking transcription models. For
+	// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
+	// transcription end-of-turn settings under `transcription.settings` instead.
+	StartSpeakingPlan UpdateAssistantInterruptionSettingsStartSpeakingPlanParam `json:"start_speaking_plan,omitzero"`
+	paramObj
+}
+
+func (r UpdateAssistantInterruptionSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow UpdateAssistantInterruptionSettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UpdateAssistantInterruptionSettingsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Controls when the assistant starts speaking after the user stops. These
+// thresholds primarily apply to non turn-taking transcription models. For
+// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
+// transcription end-of-turn settings under `transcription.settings` instead.
+type UpdateAssistantInterruptionSettingsStartSpeakingPlanParam struct {
+	// Minimum seconds to wait before the assistant starts speaking.
+	WaitSeconds param.Opt[float64] `json:"wait_seconds,omitzero"`
+	// Endpointing thresholds used to decide when the user has finished speaking.
+	// Applies to non turn-taking transcription models. For `deepgram/flux`, use
+	// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
+	// `eager_eot_threshold`.
+	TranscriptionEndpointingPlan UpdateAssistantInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlanParam `json:"transcription_endpointing_plan,omitzero"`
+	paramObj
+}
+
+func (r UpdateAssistantInterruptionSettingsStartSpeakingPlanParam) MarshalJSON() (data []byte, err error) {
+	type shadow UpdateAssistantInterruptionSettingsStartSpeakingPlanParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UpdateAssistantInterruptionSettingsStartSpeakingPlanParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Endpointing thresholds used to decide when the user has finished speaking.
+// Applies to non turn-taking transcription models. For `deepgram/flux`, use
+// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
+// `eager_eot_threshold`.
+type UpdateAssistantInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlanParam struct {
+	// Seconds to wait after the transcript ends without punctuation.
+	OnNoPunctuationSeconds param.Opt[float64] `json:"on_no_punctuation_seconds,omitzero"`
+	// Seconds to wait after the transcript ends with a number.
+	OnNumberSeconds param.Opt[float64] `json:"on_number_seconds,omitzero"`
+	// Seconds to wait after the transcript ends with punctuation.
+	OnPunctuationSeconds param.Opt[float64] `json:"on_punctuation_seconds,omitzero"`
+	paramObj
+}
+
+func (r UpdateAssistantInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlanParam) MarshalJSON() (data []byte, err error) {
+	type shadow UpdateAssistantInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlanParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UpdateAssistantInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlanParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Reference to an MCP server attached to an assistant. Create and manage MCP
+// servers with the `/ai/mcp_servers` endpoints, then attach them to assistants by
+// ID.
+//
+// The property ID is required.
+type UpdateAssistantMcpServerParam struct {
+	// ID of the MCP server to attach. This must be the `id` of an MCP server returned
+	// by the `/ai/mcp_servers` endpoints.
+	ID string `json:"id" api:"required"`
+	// Optional per-assistant allowlist of MCP tool names. When omitted, the assistant
+	// uses the MCP server's configured `allowed_tools`.
+	AllowedTools []string `json:"allowed_tools,omitzero"`
+	paramObj
+}
+
+func (r UpdateAssistantMcpServerParam) MarshalJSON() (data []byte, err error) {
+	type shadow UpdateAssistantMcpServerParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UpdateAssistantMcpServerParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration for post-conversation processing. When enabled, the assistant
+// receives one additional LLM turn after the conversation ends, allowing it to
+// execute tool calls such as logging to a CRM or sending a summary. The assistant
+// can execute multiple parallel or sequential tools during this phase.
+// Telephony-control tools (e.g. hangup, transfer) are unavailable
+// post-conversation. Beta feature.
+type UpdateAssistantPostConversationSettingsParam struct {
+	// Whether post-conversation processing is enabled. When true, the assistant will
+	// be invoked after the conversation ends to perform any final tool calls. Defaults
+	// to false.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	paramObj
+}
+
+func (r UpdateAssistantPostConversationSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow UpdateAssistantPostConversationSettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UpdateAssistantPostConversationSettingsParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestReputationNumberGetWithOptionalParams(t *testing.T) {
+func TestTermsOfServiceAgreementGet(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,13 +26,7 @@ func TestReputationNumberGetWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Reputation.Numbers.Get(
-		context.TODO(),
-		"+19493253498",
-		telnyx.ReputationNumberGetParams{
-			Fresh: telnyx.Bool(true),
-		},
-	)
+	_, err := client.TermsOfService.Agreements.Get(context.TODO(), "550e8400-e29b-41d4-a716-446655440000")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -42,7 +36,7 @@ func TestReputationNumberGetWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestReputationNumberListWithOptionalParams(t *testing.T) {
+func TestTermsOfServiceAgreementListWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -55,34 +49,11 @@ func TestReputationNumberListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Reputation.Numbers.List(context.TODO(), telnyx.ReputationNumberListParams{
+	_, err := client.TermsOfService.Agreements.List(context.TODO(), telnyx.TermsOfServiceAgreementListParams{
 		PageNumber:  telnyx.Int(1),
 		PageSize:    telnyx.Int(20),
-		PhoneNumber: telnyx.String("+16035551234"),
+		ProductType: telnyx.TermsOfServiceAgreementListParamsProductTypeBrandedCalling,
 	})
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestReputationNumberDelete(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	err := client.Reputation.Numbers.Delete(context.TODO(), "+19493253498")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

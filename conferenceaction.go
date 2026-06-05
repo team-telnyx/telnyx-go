@@ -1319,7 +1319,7 @@ type ConferenceActionSpeakParamsVoiceSettingsUnion struct {
 	OfRime       *shared.RimeVoiceSettingsParam                   `json:",omitzero,inline"`
 	OfResemble   *shared.ResembleVoiceSettingsParam               `json:",omitzero,inline"`
 	OfInworld    *ConferenceActionSpeakParamsVoiceSettingsInworld `json:",omitzero,inline"`
-	OfXai        *shared.XaiVoiceSettingsParam                    `json:",omitzero,inline"`
+	OfXai        *ConferenceActionSpeakParamsVoiceSettingsXai     `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1512,7 +1512,7 @@ func init() {
 		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
 		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
 		apijson.Discriminator[ConferenceActionSpeakParamsVoiceSettingsInworld]("inworld"),
-		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
+		apijson.Discriminator[ConferenceActionSpeakParamsVoiceSettingsXai]("xai"),
 	)
 }
 
@@ -1535,6 +1535,25 @@ func (r ConferenceActionSpeakParamsVoiceSettingsInworld) MarshalJSON() (data []b
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *ConferenceActionSpeakParamsVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Type is required.
+type ConferenceActionSpeakParamsVoiceSettingsXai struct {
+	// Language code, or `auto` to detect automatically.
+	Language param.Opt[string] `json:"language,omitzero"`
+	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "xai".
+	Type constant.Xai `json:"type" default:"xai"`
+	paramObj
+}
+
+func (r ConferenceActionSpeakParamsVoiceSettingsXai) MarshalJSON() (data []byte, err error) {
+	type shadow ConferenceActionSpeakParamsVoiceSettingsXai
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ConferenceActionSpeakParamsVoiceSettingsXai) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

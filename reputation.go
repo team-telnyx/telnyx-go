@@ -14,8 +14,7 @@ import (
 // the [NewReputationService] method instead.
 type ReputationService struct {
 	Options []option.RequestOption
-	// Associate phone numbers with an enterprise for reputation monitoring and
-	// retrieve reputation scores
+	// Phone-number reputation monitoring (spam-score lookup and tracking).
 	Numbers ReputationNumberService
 }
 

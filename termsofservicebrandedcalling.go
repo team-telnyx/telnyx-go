@@ -17,41 +17,44 @@ import (
 // Accept and review the Branded Calling and Phone Number Reputation terms of
 // service.
 //
-// TermsOfServiceNumberReputationService contains methods and other services that
+// TermsOfServiceBrandedCallingService contains methods and other services that
 // help with interacting with the telnyx API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewTermsOfServiceNumberReputationService] method instead.
-type TermsOfServiceNumberReputationService struct {
+// the [NewTermsOfServiceBrandedCallingService] method instead.
+type TermsOfServiceBrandedCallingService struct {
 	Options []option.RequestOption
 }
 
-// NewTermsOfServiceNumberReputationService generates a new service that applies
-// the given options to each request. These options are applied after the parent
+// NewTermsOfServiceBrandedCallingService generates a new service that applies the
+// given options to each request. These options are applied after the parent
 // client's options (if there is one), and before any request-specific options.
-func NewTermsOfServiceNumberReputationService(opts ...option.RequestOption) (r TermsOfServiceNumberReputationService) {
-	r = TermsOfServiceNumberReputationService{}
+func NewTermsOfServiceBrandedCallingService(opts ...option.RequestOption) (r TermsOfServiceBrandedCallingService) {
+	r = TermsOfServiceBrandedCallingService{}
 	r.Options = opts
 	return
 }
 
-// Records the authenticated user's agreement to the current Phone Number
-// Reputation ToS. No body required. Idempotent.
+// Records the authenticated user's agreement to the current Branded Calling ToS.
+// No body required. Idempotent — re-calling after agreement is a no-op and returns
+// the existing agreement.
 //
-// Prerequisite for using any of the `/v2/.../reputation/*` endpoints.
-func (r *TermsOfServiceNumberReputationService) Agree(ctx context.Context, opts ...option.RequestOption) (res *TermsOfServiceNumberReputationAgreeResponse, err error) {
+// This is a prerequisite for activating Branded Calling on any enterprise
+// (`POST /enterprises/{id}/branded_calling`); without an agreement, activation
+// returns `403`.
+func (r *TermsOfServiceBrandedCallingService) Agree(ctx context.Context, opts ...option.RequestOption) (res *TermsOfServiceBrandedCallingAgreeResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "terms_of_service/number_reputation/agree"
+	path := "terms_of_service/branded_calling/agree"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }
 
-type TermsOfServiceNumberReputationAgreeResponse struct {
+type TermsOfServiceBrandedCallingAgreeResponse struct {
 	// A recorded user agreement to a product's Terms of Service. The `user_id` is
 	// intentionally NOT echoed back on this public surface — the caller already knows
 	// their own identity.
-	Data TermsOfServiceNumberReputationAgreeResponseData `json:"data" api:"required"`
+	Data TermsOfServiceBrandedCallingAgreeResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -61,15 +64,15 @@ type TermsOfServiceNumberReputationAgreeResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r TermsOfServiceNumberReputationAgreeResponse) RawJSON() string { return r.JSON.raw }
-func (r *TermsOfServiceNumberReputationAgreeResponse) UnmarshalJSON(data []byte) error {
+func (r TermsOfServiceBrandedCallingAgreeResponse) RawJSON() string { return r.JSON.raw }
+func (r *TermsOfServiceBrandedCallingAgreeResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // A recorded user agreement to a product's Terms of Service. The `user_id` is
 // intentionally NOT echoed back on this public surface — the caller already knows
 // their own identity.
-type TermsOfServiceNumberReputationAgreeResponseData struct {
+type TermsOfServiceBrandedCallingAgreeResponseData struct {
 	ID        string    `json:"id" format:"uuid"`
 	AgreedAt  time.Time `json:"agreed_at" format:"date-time"`
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
@@ -94,7 +97,7 @@ type TermsOfServiceNumberReputationAgreeResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r TermsOfServiceNumberReputationAgreeResponseData) RawJSON() string { return r.JSON.raw }
-func (r *TermsOfServiceNumberReputationAgreeResponseData) UnmarshalJSON(data []byte) error {
+func (r TermsOfServiceBrandedCallingAgreeResponseData) RawJSON() string { return r.JSON.raw }
+func (r *TermsOfServiceBrandedCallingAgreeResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
