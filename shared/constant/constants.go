@@ -25,6 +25,7 @@ type BoolLiteral string     // Always "bool_literal"
 type Buttons string         // Always "BUTTONS"
 type Carousel string        // Always "CAROUSEL"
 type Comparative string     // Always "comparative"
+type Default string         // Always "default"
 type Developer string       // Always "developer"
 type Expression string      // Always "expression"
 type Footer string          // Always "FOOTER"
@@ -61,6 +62,7 @@ func (c BoolLiteral) Default() BoolLiteral         { return "bool_literal" }
 func (c Buttons) Default() Buttons                 { return "BUTTONS" }
 func (c Carousel) Default() Carousel               { return "CAROUSEL" }
 func (c Comparative) Default() Comparative         { return "comparative" }
+func (c Default) Default() Default                 { return "default" }
 func (c Developer) Default() Developer             { return "developer" }
 func (c Expression) Default() Expression           { return "expression" }
 func (c Footer) Default() Footer                   { return "FOOTER" }
@@ -97,6 +99,7 @@ func (c BoolLiteral) MarshalJSON() ([]byte, error)     { return marshalString(c)
 func (c Buttons) MarshalJSON() ([]byte, error)         { return marshalString(c) }
 func (c Carousel) MarshalJSON() ([]byte, error)        { return marshalString(c) }
 func (c Comparative) MarshalJSON() ([]byte, error)     { return marshalString(c) }
+func (c Default) MarshalJSON() ([]byte, error)         { return marshalString(c) }
 func (c Developer) MarshalJSON() ([]byte, error)       { return marshalString(c) }
 func (c Expression) MarshalJSON() ([]byte, error)      { return marshalString(c) }
 func (c Footer) MarshalJSON() ([]byte, error)          { return marshalString(c) }
