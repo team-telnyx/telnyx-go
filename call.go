@@ -1391,7 +1391,7 @@ type CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion struct {
 	OfRime       *shared.RimeVoiceSettingsParam                                     `json:",omitzero,inline"`
 	OfResemble   *shared.ResembleVoiceSettingsParam                                 `json:",omitzero,inline"`
 	OfInworld    *CallDialParamsConversationRelayConfigLanguageVoiceSettingsInworld `json:",omitzero,inline"`
-	OfXai        *shared.XaiVoiceSettingsParam                                      `json:",omitzero,inline"`
+	OfXai        *CallDialParamsConversationRelayConfigLanguageVoiceSettingsXai     `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1584,7 +1584,7 @@ func init() {
 		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
 		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
 		apijson.Discriminator[CallDialParamsConversationRelayConfigLanguageVoiceSettingsInworld]("inworld"),
-		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
+		apijson.Discriminator[CallDialParamsConversationRelayConfigLanguageVoiceSettingsXai]("xai"),
 	)
 }
 
@@ -1610,6 +1610,25 @@ func (r *CallDialParamsConversationRelayConfigLanguageVoiceSettingsInworld) Unma
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property Type is required.
+type CallDialParamsConversationRelayConfigLanguageVoiceSettingsXai struct {
+	// Language code, or `auto` to detect automatically.
+	Language param.Opt[string] `json:"language,omitzero"`
+	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "xai".
+	Type constant.Xai `json:"type" default:"xai"`
+	paramObj
+}
+
+func (r CallDialParamsConversationRelayConfigLanguageVoiceSettingsXai) MarshalJSON() (data []byte, err error) {
+	type shadow CallDialParamsConversationRelayConfigLanguageVoiceSettingsXai
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallDialParamsConversationRelayConfigLanguageVoiceSettingsXai) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
@@ -1622,7 +1641,7 @@ type CallDialParamsConversationRelayConfigVoiceSettingsUnion struct {
 	OfRime       *shared.RimeVoiceSettingsParam                             `json:",omitzero,inline"`
 	OfResemble   *shared.ResembleVoiceSettingsParam                         `json:",omitzero,inline"`
 	OfInworld    *CallDialParamsConversationRelayConfigVoiceSettingsInworld `json:",omitzero,inline"`
-	OfXai        *shared.XaiVoiceSettingsParam                              `json:",omitzero,inline"`
+	OfXai        *CallDialParamsConversationRelayConfigVoiceSettingsXai     `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1815,7 +1834,7 @@ func init() {
 		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
 		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
 		apijson.Discriminator[CallDialParamsConversationRelayConfigVoiceSettingsInworld]("inworld"),
-		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
+		apijson.Discriminator[CallDialParamsConversationRelayConfigVoiceSettingsXai]("xai"),
 	)
 }
 
@@ -1838,6 +1857,25 @@ func (r CallDialParamsConversationRelayConfigVoiceSettingsInworld) MarshalJSON()
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *CallDialParamsConversationRelayConfigVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Type is required.
+type CallDialParamsConversationRelayConfigVoiceSettingsXai struct {
+	// Language code, or `auto` to detect automatically.
+	Language param.Opt[string] `json:"language,omitzero"`
+	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "xai".
+	Type constant.Xai `json:"type" default:"xai"`
+	paramObj
+}
+
+func (r CallDialParamsConversationRelayConfigVoiceSettingsXai) MarshalJSON() (data []byte, err error) {
+	type shadow CallDialParamsConversationRelayConfigVoiceSettingsXai
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallDialParamsConversationRelayConfigVoiceSettingsXai) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestReputationNumberGetWithOptionalParams(t *testing.T) {
+func TestCallReasonListWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,39 +26,9 @@ func TestReputationNumberGetWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Reputation.Numbers.Get(
-		context.TODO(),
-		"+19493253498",
-		telnyx.ReputationNumberGetParams{
-			Fresh: telnyx.Bool(true),
-		},
-	)
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestReputationNumberListWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Reputation.Numbers.List(context.TODO(), telnyx.ReputationNumberListParams{
-		PageNumber:  telnyx.Int(1),
-		PageSize:    telnyx.Int(20),
-		PhoneNumber: telnyx.String("+16035551234"),
+	_, err := client.CallReasons.List(context.TODO(), telnyx.CallReasonListParams{
+		PageNumber: telnyx.Int(1),
+		PageSize:   telnyx.Int(100),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -69,7 +39,7 @@ func TestReputationNumberListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestReputationNumberDelete(t *testing.T) {
+func TestCallReasonValidate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -82,7 +52,9 @@ func TestReputationNumberDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Reputation.Numbers.Delete(context.TODO(), "+19493253498")
+	_, err := client.CallReasons.Validate(context.TODO(), telnyx.CallReasonValidateParams{
+		Body: []string{"Appointment reminders", "Billing inquiries"},
+	})
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

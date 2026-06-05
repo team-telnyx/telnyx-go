@@ -17,8 +17,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
-// Manage Number Reputation enrollment and check frequency settings for an
-// enterprise
+// Phone-number reputation monitoring (spam-score lookup and tracking).
 //
 // EnterpriseReputationService contains methods and other services that help with
 // interacting with the telnyx API.
@@ -28,9 +27,10 @@ import (
 // the [NewEnterpriseReputationService] method instead.
 type EnterpriseReputationService struct {
 	Options []option.RequestOption
-	// Associate phone numbers with an enterprise for reputation monitoring and
-	// retrieve reputation scores
+	// Phone-number reputation monitoring (spam-score lookup and tracking).
 	Numbers EnterpriseReputationNumberService
+	// Phone-number reputation monitoring (spam-score lookup and tracking).
+	Loa EnterpriseReputationLoaService
 }
 
 // NewEnterpriseReputationService generates a new service that applies the given
@@ -40,15 +40,16 @@ func NewEnterpriseReputationService(opts ...option.RequestOption) (r EnterpriseR
 	r = EnterpriseReputationService{}
 	r.Options = opts
 	r.Numbers = NewEnterpriseReputationNumberService(opts...)
+	r.Loa = NewEnterpriseReputationLoaService(opts...)
 	return
 }
 
-// Retrieve the current Number Reputation settings for an enterprise.
+// Phone Number Reputation tracks how your outbound caller-IDs are perceived (spam
+// risk, engagement, etc.) across the call-screening ecosystem. This endpoint reads
+// the enterprise-level settings: whether the product is enabled, the refresh
+// cadence, and the stored Letter of Authorization document id.
 //
-// Returns the enrollment status (`pending`, `approved`, `rejected`, `deleted`),
-// check frequency, and any rejection reasons.
-//
-// Returns `404` if reputation has not been enabled for this enterprise.
+// Returns `404` if reputation has never been enabled for this enterprise.
 func (r *EnterpriseReputationService) Get(ctx context.Context, enterpriseID string, opts ...option.RequestOption) (res *EnterpriseReputationGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if enterpriseID == "" {
@@ -60,15 +61,9 @@ func (r *EnterpriseReputationService) Get(ctx context.Context, enterpriseID stri
 	return res, err
 }
 
-// Disable Number Reputation for an enterprise.
-//
-// This will:
-//
-// - Delete the reputation settings record
-// - Log the deletion for audit purposes
-// - Stop all future automated reputation checks
-//
-// **Note:** Can only be performed on `approved` reputation settings.
+// Disable Phone Number Reputation. All registered numbers are de-registered as a
+// cascade. The enterprise itself is unaffected. Returns `204` on success, `404` if
+// reputation is not enabled for this enterprise.
 func (r *EnterpriseReputationService) Disable(ctx context.Context, enterpriseID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -81,31 +76,23 @@ func (r *EnterpriseReputationService) Disable(ctx context.Context, enterpriseID 
 	return err
 }
 
-// Enable Number Reputation service for an enterprise.
+// Activate Phone Number Reputation for the given enterprise. Requires an uploaded
+// Letter of Authorization document (the `loa_document_id` references the Telnyx
+// Documents API) and a refresh-frequency selection. After activation, individual
+// phone numbers can be registered via `POST .../reputation/numbers`.
 //
-// **Requirements:**
+// **Prerequisite**: the calling user must have agreed to the Phone Number
+// Reputation Terms of Service (`POST /terms_of_service/number_reputation/agree`).
 //
-// - Signed LOA (Letter of Authorization) document ID
-// - Reputation check frequency (defaults to `business_daily`)
-// - Number Reputation Terms of Service must be accepted
+// Failure modes:
 //
-// **Flow:**
+// - `403` — Phone Number Reputation Terms of Service not accepted.
+// - `404` — enterprise does not exist or does not belong to your account.
+// - `400` — reputation already enabled for this enterprise.
+// - `422` — `loa_document_id` missing or `check_frequency` invalid.
 //
-// 1. Registers the enterprise for reputation monitoring
-// 2. Creates reputation settings with `pending` status
-// 3. Awaits admin approval before monitoring begins
-//
-// **Resubmission After Rejection:** If a previously rejected record exists, this
-// endpoint will delete it and create a new `pending` record.
-//
-// **Available Frequencies:**
-//
-// - `business_daily` — Monday–Friday
-// - `daily` — Every day
-// - `weekly` — Once per week
-// - `biweekly` — Once every two weeks
-// - `monthly` — Once per month
-// - `never` — Manual refresh only
+// **Pricing:** This is a billable action. See https://telnyx.com/pricing/numbers
+// for current pricing.
 func (r *EnterpriseReputationService) Enable(ctx context.Context, enterpriseID string, body EnterpriseReputationEnableParams, opts ...option.RequestOption) (res *EnterpriseReputationEnableResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if enterpriseID == "" {
@@ -117,19 +104,12 @@ func (r *EnterpriseReputationService) Enable(ctx context.Context, enterpriseID s
 	return res, err
 }
 
-// Update how often reputation data is automatically refreshed.
+// Update how often Telnyx refreshes the reputation data for this enterprise's
+// registered numbers. The new frequency takes effect on the next scheduled
+// refresh.
 //
-// **Note:** The enterprise must have `approved` reputation settings. Updating
-// frequency on `pending` or `rejected` settings will return an error.
-//
-// **Available Frequencies:**
-//
-// - `business_daily` — Monday–Friday
-// - `daily` — Every day including weekends
-// - `weekly` — Once per week
-// - `biweekly` — Once every two weeks
-// - `monthly` — Once per month
-// - `never` — Manual refresh only (no automatic checks)
+// The enterprise's reputation must be in `approved` status. A request made while
+// the status is `pending` is rejected with `400 Bad Request`.
 func (r *EnterpriseReputationService) UpdateFrequency(ctx context.Context, enterpriseID string, body EnterpriseReputationUpdateFrequencyParams, opts ...option.RequestOption) (res *EnterpriseReputationUpdateFrequencyResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if enterpriseID == "" {
@@ -142,30 +122,34 @@ func (r *EnterpriseReputationService) UpdateFrequency(ctx context.Context, enter
 }
 
 type EnterpriseReputationPublic struct {
-	// Frequency for refreshing reputation data
+	// How often Telnyx refreshes the stored reputation data for this enterprise's
+	// registered numbers.
 	//
 	// Any of "business_daily", "daily", "weekly", "biweekly", "monthly", "never".
 	CheckFrequency EnterpriseReputationPublicCheckFrequency `json:"check_frequency"`
-	// When the reputation settings were created
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// ID of the associated enterprise
-	EnterpriseID string `json:"enterprise_id" format:"uuid"`
-	// ID of the signed LOA document
+	CreatedAt      time.Time                                `json:"created_at" format:"date-time"`
+	EnterpriseID   string                                   `json:"enterprise_id" format:"uuid"`
+	// Id of the signed LOA document.
 	LoaDocumentID string `json:"loa_document_id" api:"nullable"`
-	// Reasons for rejection (present when status is rejected)
-	RejectionReasons []string `json:"rejection_reasons" api:"nullable"`
-	// Current enrollment status
+	// Customer-facing Letter-of-Authorization verification state. `approved` is
+	// required (alongside reputation status) before phone numbers can be added.
 	//
-	// Any of "pending", "approved", "rejected", "deleted".
-	Status EnterpriseReputationPublicStatus `json:"status"`
-	// When the reputation settings were last updated
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// Any of "pending", "approved", "rejected".
+	LoaStatus EnterpriseReputationPublicLoaStatus `json:"loa_status"`
+	// Populated when `status` is `rejected`.
+	RejectionReasons []string `json:"rejection_reasons" api:"nullable"`
+	// Lifecycle status of the enterprise's Phone Number Reputation activation.
+	//
+	// Any of "pending", "approved", "deleted", "rejected".
+	Status    EnterpriseReputationPublicStatus `json:"status"`
+	UpdatedAt time.Time                        `json:"updated_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CheckFrequency   respjson.Field
 		CreatedAt        respjson.Field
 		EnterpriseID     respjson.Field
 		LoaDocumentID    respjson.Field
+		LoaStatus        respjson.Field
 		RejectionReasons respjson.Field
 		Status           respjson.Field
 		UpdatedAt        respjson.Field
@@ -180,7 +164,8 @@ func (r *EnterpriseReputationPublic) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Frequency for refreshing reputation data
+// How often Telnyx refreshes the stored reputation data for this enterprise's
+// registered numbers.
 type EnterpriseReputationPublicCheckFrequency string
 
 const (
@@ -192,18 +177,28 @@ const (
 	EnterpriseReputationPublicCheckFrequencyNever         EnterpriseReputationPublicCheckFrequency = "never"
 )
 
-// Current enrollment status
+// Customer-facing Letter-of-Authorization verification state. `approved` is
+// required (alongside reputation status) before phone numbers can be added.
+type EnterpriseReputationPublicLoaStatus string
+
+const (
+	EnterpriseReputationPublicLoaStatusPending  EnterpriseReputationPublicLoaStatus = "pending"
+	EnterpriseReputationPublicLoaStatusApproved EnterpriseReputationPublicLoaStatus = "approved"
+	EnterpriseReputationPublicLoaStatusRejected EnterpriseReputationPublicLoaStatus = "rejected"
+)
+
+// Lifecycle status of the enterprise's Phone Number Reputation activation.
 type EnterpriseReputationPublicStatus string
 
 const (
 	EnterpriseReputationPublicStatusPending  EnterpriseReputationPublicStatus = "pending"
 	EnterpriseReputationPublicStatusApproved EnterpriseReputationPublicStatus = "approved"
-	EnterpriseReputationPublicStatusRejected EnterpriseReputationPublicStatus = "rejected"
 	EnterpriseReputationPublicStatusDeleted  EnterpriseReputationPublicStatus = "deleted"
+	EnterpriseReputationPublicStatusRejected EnterpriseReputationPublicStatus = "rejected"
 )
 
 type EnterpriseReputationGetResponse struct {
-	Data EnterpriseReputationPublic `json:"data"`
+	Data EnterpriseReputationPublic `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -219,7 +214,7 @@ func (r *EnterpriseReputationGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type EnterpriseReputationEnableResponse struct {
-	Data EnterpriseReputationPublic `json:"data"`
+	Data EnterpriseReputationPublic `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -235,7 +230,7 @@ func (r *EnterpriseReputationEnableResponse) UnmarshalJSON(data []byte) error {
 }
 
 type EnterpriseReputationUpdateFrequencyResponse struct {
-	Data EnterpriseReputationPublic `json:"data"`
+	Data EnterpriseReputationPublic `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -251,10 +246,12 @@ func (r *EnterpriseReputationUpdateFrequencyResponse) UnmarshalJSON(data []byte)
 }
 
 type EnterpriseReputationEnableParams struct {
-	// ID of the signed Letter of Authorization (LOA) document uploaded to the document
-	// service
+	// Id of the signed Letter of Authorization document, returned by the Telnyx
+	// Documents API after upload (upload via `POST /v2/documents`; see
+	// https://developers.telnyx.com/api/documents).
 	LoaDocumentID string `json:"loa_document_id" api:"required"`
-	// Frequency for automatically refreshing reputation data
+	// How often Telnyx refreshes the stored reputation data for this enterprise's
+	// registered numbers.
 	//
 	// Any of "business_daily", "daily", "weekly", "biweekly", "monthly", "never".
 	CheckFrequency EnterpriseReputationEnableParamsCheckFrequency `json:"check_frequency,omitzero"`
@@ -269,7 +266,8 @@ func (r *EnterpriseReputationEnableParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Frequency for automatically refreshing reputation data
+// How often Telnyx refreshes the stored reputation data for this enterprise's
+// registered numbers.
 type EnterpriseReputationEnableParamsCheckFrequency string
 
 const (
@@ -282,7 +280,8 @@ const (
 )
 
 type EnterpriseReputationUpdateFrequencyParams struct {
-	// New frequency for refreshing reputation data
+	// How often Telnyx refreshes the stored reputation data for this enterprise's
+	// registered numbers.
 	//
 	// Any of "business_daily", "daily", "weekly", "biweekly", "monthly", "never".
 	CheckFrequency EnterpriseReputationUpdateFrequencyParamsCheckFrequency `json:"check_frequency,omitzero" api:"required"`
@@ -297,7 +296,8 @@ func (r *EnterpriseReputationUpdateFrequencyParams) UnmarshalJSON(data []byte) e
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// New frequency for refreshing reputation data
+// How often Telnyx refreshes the stored reputation data for this enterprise's
+// registered numbers.
 type EnterpriseReputationUpdateFrequencyParamsCheckFrequency string
 
 const (

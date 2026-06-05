@@ -316,14 +316,23 @@ type Client struct {
 	VoiceDesigns VoiceDesignService
 	// Traffic Policy Profiles operations
 	TrafficPolicyProfiles TrafficPolicyProfileService
-	// Enterprise management for Branded Calling and Number Reputation services
-	Enterprises    EnterpriseService
-	Reputation     ReputationService
+	// Manage the legal-entity record that owns your DIRs and phone numbers.
+	Enterprises EnterpriseService
+	Reputation  ReputationService
+	// Accept and review the Branded Calling and Phone Number Reputation terms of
+	// service.
 	TermsOfService TermsOfServiceService
 	// Manage pronunciation dictionaries for text-to-speech synthesis. Dictionaries
 	// contain alias items (text replacement) and phoneme items (IPA pronunciation
 	// notation) that control how specific words are spoken.
 	PronunciationDicts PronunciationDictService
+	// Static reference values the API accepts: call reasons, document types, rejection
+	// types.
+	CallReasons CallReasonService
+	Dir         DirService
+	// Trademark or impersonation claims filed against your DIR. Customers may contest
+	// a claim with supporting evidence.
+	InfringementClaims InfringementClaimService
 	// UAC connection operations
 	UacConnections UacConnectionService
 	// UAC connection operations
@@ -539,6 +548,9 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Reputation = NewReputationService(opts...)
 	r.TermsOfService = NewTermsOfServiceService(opts...)
 	r.PronunciationDicts = NewPronunciationDictService(opts...)
+	r.CallReasons = NewCallReasonService(opts...)
+	r.Dir = NewDirService(opts...)
+	r.InfringementClaims = NewInfringementClaimService(opts...)
 	r.UacConnections = NewUacConnectionService(opts...)
 	r.SipRegistrationStatus = NewSipRegistrationStatusService(opts...)
 	r.SpeechToText = NewSpeechToTextService(opts...)

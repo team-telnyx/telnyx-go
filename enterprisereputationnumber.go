@@ -21,8 +21,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
-// Associate phone numbers with an enterprise for reputation monitoring and
-// retrieve reputation scores
+// Phone-number reputation monitoring (spam-score lookup and tracking).
 //
 // EnterpriseReputationNumberService contains methods and other services that help
 // with interacting with the telnyx API.
@@ -43,24 +42,9 @@ func NewEnterpriseReputationNumberService(opts ...option.RequestOption) (r Enter
 	return
 }
 
-// Get detailed reputation data for a specific phone number associated with an
-// enterprise.
-//
-// **Query Parameters:**
-//
-//   - `fresh` (default: `false`): When `true`, fetches fresh reputation data (incurs
-//     API cost). When `false`, returns cached data. If no cached data exists, fresh
-//     data is automatically fetched.
-//
-// **Returns:**
-//
-// - `spam_risk`: Overall spam risk level (`low`, `medium`, `high`)
-// - `spam_category`: Spam category classification
-// - `maturity_score`: Maturity metric (0–100)
-// - `connection_score`: Connection quality metric (0–100)
-// - `engagement_score`: Engagement metric (0–100)
-// - `sentiment_score`: Sentiment metric (0–100)
-// - `last_refreshed_at`: Timestamp of last data refresh
+// Retrieve one registered number with its latest reputation snapshot. The
+// `phone_number` path parameter is in E.164 format and must be URL-encoded (e.g.
+// `%2B19493253498`).
 func (r *EnterpriseReputationNumberService) Get(ctx context.Context, phoneNumber string, params EnterpriseReputationNumberGetParams, opts ...option.RequestOption) (res *EnterpriseReputationNumberGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.EnterpriseID == "" {
@@ -76,12 +60,10 @@ func (r *EnterpriseReputationNumberService) Get(ctx context.Context, phoneNumber
 	return res, err
 }
 
-// List all phone numbers associated with an enterprise for Number Reputation
-// monitoring.
-//
-// Returns phone numbers with their cached reputation data (if available). Supports
-// pagination and filtering by phone number.
-func (r *EnterpriseReputationNumberService) List(ctx context.Context, enterpriseID string, query EnterpriseReputationNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[shared.ReputationPhoneNumberWithReputationData], err error) {
+// Paginated list of phone numbers registered for reputation monitoring under this
+// enterprise. The response includes the latest reputation snapshot per number
+// where one has been collected.
+func (r *EnterpriseReputationNumberService) List(ctx context.Context, enterpriseID string, query EnterpriseReputationNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[EnterpriseReputationNumberListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -102,30 +84,22 @@ func (r *EnterpriseReputationNumberService) List(ctx context.Context, enterprise
 	return res, nil
 }
 
-// List all phone numbers associated with an enterprise for Number Reputation
-// monitoring.
-//
-// Returns phone numbers with their cached reputation data (if available). Supports
-// pagination and filtering by phone number.
-func (r *EnterpriseReputationNumberService) ListAutoPaging(ctx context.Context, enterpriseID string, query EnterpriseReputationNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[shared.ReputationPhoneNumberWithReputationData] {
+// Paginated list of phone numbers registered for reputation monitoring under this
+// enterprise. The response includes the latest reputation snapshot per number
+// where one has been collected.
+func (r *EnterpriseReputationNumberService) ListAutoPaging(ctx context.Context, enterpriseID string, query EnterpriseReputationNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[EnterpriseReputationNumberListResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, enterpriseID, query, opts...))
 }
 
-// Associate one or more phone numbers with an enterprise for Number Reputation
-// monitoring.
+// Add up to 100 phone numbers to reputation monitoring on this enterprise. Each
+// must be in E.164 format (`+1NPANXXXXXX` for US/CA) and belong to your Telnyx
+// phone-number inventory.
 //
-// **Validations:**
+// **Prerequisite**: reputation must already be enabled on this enterprise (see
+// `POST .../reputation`).
 //
-//   - Phone numbers must be in E.164 format (e.g., `+16035551234`)
-//   - Phone numbers must be in-service and belong to your account (verified via
-//     Warehouse)
-//   - Phone numbers must be US local numbers
-//   - Phone numbers cannot already be associated with any enterprise
-//
-// **Note:** This operation is atomic — if any number fails validation, the entire
-// request fails.
-//
-// **Maximum:** 100 phone numbers per request.
+// **Pricing:** This is a billable action. See https://telnyx.com/pricing/numbers
+// for current pricing.
 func (r *EnterpriseReputationNumberService) Associate(ctx context.Context, enterpriseID string, body EnterpriseReputationNumberAssociateParams, opts ...option.RequestOption) (res *EnterpriseReputationNumberAssociateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if enterpriseID == "" {
@@ -137,10 +111,8 @@ func (r *EnterpriseReputationNumberService) Associate(ctx context.Context, enter
 	return res, err
 }
 
-// Remove a phone number from Number Reputation monitoring for an enterprise.
-//
-// The number will no longer be tracked and reputation data will no longer be
-// refreshed.
+// Stop tracking the reputation of this phone number. The number itself remains in
+// your inventory; only the reputation registration is removed.
 func (r *EnterpriseReputationNumberService) Disassociate(ctx context.Context, phoneNumber string, body EnterpriseReputationNumberDisassociateParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -157,8 +129,26 @@ func (r *EnterpriseReputationNumberService) Disassociate(ctx context.Context, ph
 	return err
 }
 
+// Immediately refresh the stored reputation data for the listed numbers. This is
+// in addition to the periodic refresh determined by `check_frequency`. Up to 100
+// numbers per call. The response carries the kicked-off jobs; the actual refresh
+// runs asynchronously.
+//
+// **Pricing:** Forcing a refresh performs live reputation lookups, which are
+// billable. See https://telnyx.com/pricing/numbers for current pricing.
+func (r *EnterpriseReputationNumberService) Refresh(ctx context.Context, enterpriseID string, body EnterpriseReputationNumberRefreshParams, opts ...option.RequestOption) (res *EnterpriseReputationNumberRefreshResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if enterpriseID == "" {
+		err = errors.New("missing required enterprise_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("enterprises/%s/reputation/numbers/refresh", enterpriseID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
 type EnterpriseReputationNumberGetResponse struct {
-	Data shared.ReputationPhoneNumberWithReputationData `json:"data"`
+	Data EnterpriseReputationNumberGetResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -173,9 +163,69 @@ func (r *EnterpriseReputationNumberGetResponse) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type EnterpriseReputationNumberGetResponseData struct {
+	ID           string    `json:"id" format:"uuid"`
+	CreatedAt    time.Time `json:"created_at" format:"date-time"`
+	EnterpriseID string    `json:"enterprise_id" format:"uuid"`
+	// E.164 with leading `+`.
+	PhoneNumber string `json:"phone_number"`
+	// `null` until the first refresh has been collected for this number.
+	ReputationData shared.ReputationData `json:"reputation_data" api:"nullable"`
+	UpdatedAt      time.Time             `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID             respjson.Field
+		CreatedAt      respjson.Field
+		EnterpriseID   respjson.Field
+		PhoneNumber    respjson.Field
+		ReputationData respjson.Field
+		UpdatedAt      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseReputationNumberGetResponseData) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseReputationNumberGetResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EnterpriseReputationNumberListResponse struct {
+	ID           string    `json:"id" format:"uuid"`
+	CreatedAt    time.Time `json:"created_at" format:"date-time"`
+	EnterpriseID string    `json:"enterprise_id" format:"uuid"`
+	// E.164 with leading `+`.
+	PhoneNumber string `json:"phone_number"`
+	// `null` until the first refresh has been collected for this number.
+	ReputationData shared.ReputationData `json:"reputation_data" api:"nullable"`
+	UpdatedAt      time.Time             `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID             respjson.Field
+		CreatedAt      respjson.Field
+		EnterpriseID   respjson.Field
+		PhoneNumber    respjson.Field
+		ReputationData respjson.Field
+		UpdatedAt      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseReputationNumberListResponse) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseReputationNumberListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type EnterpriseReputationNumberAssociateResponse struct {
-	Data []EnterpriseReputationNumberAssociateResponseData `json:"data"`
-	Meta shared.MetaInfo                                   `json:"meta"`
+	Data []EnterpriseReputationNumberAssociateResponseData `json:"data" api:"required"`
+	// JSON:API pagination metadata returned with every paginated list response. Page
+	// numbering is 1-based. `page_size` reports the number of items actually returned
+	// in `data` for this page; the requested size is taken from the `page[size]` query
+	// parameter.
+	Meta EnterpriseReputationNumberAssociateResponseMeta `json:"meta" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -192,25 +242,24 @@ func (r *EnterpriseReputationNumberAssociateResponse) UnmarshalJSON(data []byte)
 }
 
 type EnterpriseReputationNumberAssociateResponseData struct {
-	// Unique identifier
-	ID string `json:"id" format:"uuid"`
-	// When the number was associated
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// ID of the associated enterprise
-	EnterpriseID string `json:"enterprise_id" format:"uuid"`
-	// Phone number in E.164 format
+	ID           string    `json:"id" format:"uuid"`
+	CreatedAt    time.Time `json:"created_at" format:"date-time"`
+	EnterpriseID string    `json:"enterprise_id" format:"uuid"`
+	// E.164 with leading `+`.
 	PhoneNumber string `json:"phone_number"`
-	// When the record was last updated
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// `null` until the first refresh has been collected for this number.
+	ReputationData shared.ReputationData `json:"reputation_data" api:"nullable"`
+	UpdatedAt      time.Time             `json:"updated_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		CreatedAt    respjson.Field
-		EnterpriseID respjson.Field
-		PhoneNumber  respjson.Field
-		UpdatedAt    respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID             respjson.Field
+		CreatedAt      respjson.Field
+		EnterpriseID   respjson.Field
+		PhoneNumber    respjson.Field
+		ReputationData respjson.Field
+		UpdatedAt      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -220,10 +269,101 @@ func (r *EnterpriseReputationNumberAssociateResponseData) UnmarshalJSON(data []b
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// JSON:API pagination metadata returned with every paginated list response. Page
+// numbering is 1-based. `page_size` reports the number of items actually returned
+// in `data` for this page; the requested size is taken from the `page[size]` query
+// parameter.
+type EnterpriseReputationNumberAssociateResponseMeta struct {
+	// 1-based index of this page. Echoes the `page[number]` query parameter (default
+	// `1`).
+	PageNumber int64 `json:"page_number" api:"required"`
+	// Number of items returned in this page's `data` array. Capped at 250.
+	PageSize int64 `json:"page_size" api:"required"`
+	// Total number of pages available given the current `page_size`.
+	TotalPages int64 `json:"total_pages" api:"required"`
+	// Total number of items across all pages (excludes soft-deleted rows).
+	TotalResults int64 `json:"total_results" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseReputationNumberAssociateResponseMeta) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseReputationNumberAssociateResponseMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EnterpriseReputationNumberRefreshResponse struct {
+	Data EnterpriseReputationNumberRefreshResponseData `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseReputationNumberRefreshResponse) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseReputationNumberRefreshResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EnterpriseReputationNumberRefreshResponseData struct {
+	// Per-number outcome of the refresh.
+	Results         []EnterpriseReputationNumberRefreshResponseDataResult `json:"results" api:"required"`
+	TotalFailed     int64                                                 `json:"total_failed" api:"required"`
+	TotalRequested  int64                                                 `json:"total_requested" api:"required"`
+	TotalSuccessful int64                                                 `json:"total_successful" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Results         respjson.Field
+		TotalFailed     respjson.Field
+		TotalRequested  respjson.Field
+		TotalSuccessful respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseReputationNumberRefreshResponseData) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseReputationNumberRefreshResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EnterpriseReputationNumberRefreshResponseDataResult struct {
+	PhoneNumber string `json:"phone_number" api:"required"`
+	Success     bool   `json:"success" api:"required"`
+	// `null` when `success` is `true`; carries an error message otherwise.
+	Error string `json:"error" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PhoneNumber respjson.Field
+		Success     respjson.Field
+		Error       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseReputationNumberRefreshResponseDataResult) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseReputationNumberRefreshResponseDataResult) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type EnterpriseReputationNumberGetParams struct {
 	EnterpriseID string `path:"enterprise_id" api:"required" format:"uuid" json:"-"`
-	// When true, fetches fresh reputation data (incurs API cost). When false, returns
-	// cached data.
+	// When true, fetches fresh reputation data (incurs API cost). When false
+	// (default), returns cached data.
 	Fresh param.Opt[bool] `query:"fresh,omitzero" json:"-"`
 	paramObj
 }
@@ -238,11 +378,11 @@ func (r EnterpriseReputationNumberGetParams) URLQuery() (v url.Values, err error
 }
 
 type EnterpriseReputationNumberListParams struct {
-	// Page number (1-indexed)
+	// 1-based page number. Out-of-range values return an empty page with correct meta.
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	// Number of items per page
+	// Items per page. Default 10. Maximum 250; values above are clamped to 250.
 	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
-	// Filter by specific phone number (E.164 format)
+	// Filter by specific phone number (E.164 format).
 	PhoneNumber param.Opt[string] `query:"phone_number,omitzero" json:"-"`
 	paramObj
 }
@@ -257,7 +397,7 @@ func (r EnterpriseReputationNumberListParams) URLQuery() (v url.Values, err erro
 }
 
 type EnterpriseReputationNumberAssociateParams struct {
-	// List of phone numbers to associate for reputation monitoring (max 100)
+	// 1–100 phone numbers in E.164 format with a leading `+`.
 	PhoneNumbers []string `json:"phone_numbers,omitzero" api:"required"`
 	paramObj
 }
@@ -273,4 +413,19 @@ func (r *EnterpriseReputationNumberAssociateParams) UnmarshalJSON(data []byte) e
 type EnterpriseReputationNumberDisassociateParams struct {
 	EnterpriseID string `path:"enterprise_id" api:"required" format:"uuid" json:"-"`
 	paramObj
+}
+
+type EnterpriseReputationNumberRefreshParams struct {
+	// Phone numbers to refresh reputation data for. 1–100 numbers per request, each in
+	// E.164 format. Reputation refreshes are subject to per-enterprise rate limits.
+	PhoneNumbers []string `json:"phone_numbers,omitzero" api:"required"`
+	paramObj
+}
+
+func (r EnterpriseReputationNumberRefreshParams) MarshalJSON() (data []byte, err error) {
+	type shadow EnterpriseReputationNumberRefreshParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *EnterpriseReputationNumberRefreshParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

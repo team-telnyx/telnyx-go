@@ -28,9 +28,9 @@ func TestEnterpriseReputationNumberGetWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Enterprises.Reputation.Numbers.Get(
 		context.TODO(),
-		"+16035551234",
+		"+19493253498",
 		telnyx.EnterpriseReputationNumberGetParams{
-			EnterpriseID: "6a09cdc3-8948-47f0-aa62-74ac943d6c58",
+			EnterpriseID: "4a6192a4-573d-446d-b3ce-aff9117272a6",
 			Fresh:        telnyx.Bool(true),
 		},
 	)
@@ -58,10 +58,10 @@ func TestEnterpriseReputationNumberListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Enterprises.Reputation.Numbers.List(
 		context.TODO(),
-		"6a09cdc3-8948-47f0-aa62-74ac943d6c58",
+		"4a6192a4-573d-446d-b3ce-aff9117272a6",
 		telnyx.EnterpriseReputationNumberListParams{
 			PageNumber:  telnyx.Int(1),
-			PageSize:    telnyx.Int(1),
+			PageSize:    telnyx.Int(10),
 			PhoneNumber: telnyx.String("+16035551234"),
 		},
 	)
@@ -89,9 +89,9 @@ func TestEnterpriseReputationNumberAssociate(t *testing.T) {
 	)
 	_, err := client.Enterprises.Reputation.Numbers.Associate(
 		context.TODO(),
-		"6a09cdc3-8948-47f0-aa62-74ac943d6c58",
+		"4a6192a4-573d-446d-b3ce-aff9117272a6",
 		telnyx.EnterpriseReputationNumberAssociateParams{
-			PhoneNumbers: []string{"+16035551234"},
+			PhoneNumbers: []string{"+19493253498", "+12134445566"},
 		},
 	)
 	if err != nil {
@@ -118,9 +118,38 @@ func TestEnterpriseReputationNumberDisassociate(t *testing.T) {
 	)
 	err := client.Enterprises.Reputation.Numbers.Disassociate(
 		context.TODO(),
-		"+16035551234",
+		"+19493253498",
 		telnyx.EnterpriseReputationNumberDisassociateParams{
-			EnterpriseID: "6a09cdc3-8948-47f0-aa62-74ac943d6c58",
+			EnterpriseID: "4a6192a4-573d-446d-b3ce-aff9117272a6",
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestEnterpriseReputationNumberRefresh(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Enterprises.Reputation.Numbers.Refresh(
+		context.TODO(),
+		"4a6192a4-573d-446d-b3ce-aff9117272a6",
+		telnyx.EnterpriseReputationNumberRefreshParams{
+			PhoneNumbers: []string{"+19493253498"},
 		},
 	)
 	if err != nil {

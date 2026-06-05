@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
+	"time"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
@@ -20,8 +21,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
-// Associate phone numbers with an enterprise for reputation monitoring and
-// retrieve reputation scores
+// Phone-number reputation monitoring (spam-score lookup and tracking).
 //
 // ReputationNumberService contains methods and other services that help with
 // interacting with the telnyx API.
@@ -42,10 +42,8 @@ func NewReputationNumberService(opts ...option.RequestOption) (r ReputationNumbe
 	return
 }
 
-// Get reputation data for a specific phone number without requiring an
-// `enterprise_id`.
-//
-// Same response as the enterprise-scoped endpoint. Uses cached data by default.
+// Convenience alias for
+// `GET /v2/enterprises/{enterprise_id}/reputation/numbers/{phone_number}`.
 func (r *ReputationNumberService) Get(ctx context.Context, phoneNumber string, query ReputationNumberGetParams, opts ...option.RequestOption) (res *ReputationNumberGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
@@ -57,12 +55,10 @@ func (r *ReputationNumberService) Get(ctx context.Context, phoneNumber string, q
 	return res, err
 }
 
-// List all phone numbers enrolled in Number Reputation monitoring for your
-// account. This is a simplified endpoint that does not require an `enterprise_id`
-// — it returns numbers across all your enterprises.
-//
-// Supports pagination and filtering by phone number.
-func (r *ReputationNumberService) List(ctx context.Context, query ReputationNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[shared.ReputationPhoneNumberWithReputationData], err error) {
+// Convenience alias for `GET /v2/enterprises/{enterprise_id}/reputation/numbers`
+// that returns numbers across every enterprise you own. Useful when you don't want
+// to look up the enterprise id first.
+func (r *ReputationNumberService) List(ctx context.Context, query ReputationNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[ReputationNumberListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -79,17 +75,15 @@ func (r *ReputationNumberService) List(ctx context.Context, query ReputationNumb
 	return res, nil
 }
 
-// List all phone numbers enrolled in Number Reputation monitoring for your
-// account. This is a simplified endpoint that does not require an `enterprise_id`
-// — it returns numbers across all your enterprises.
-//
-// Supports pagination and filtering by phone number.
-func (r *ReputationNumberService) ListAutoPaging(ctx context.Context, query ReputationNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[shared.ReputationPhoneNumberWithReputationData] {
+// Convenience alias for `GET /v2/enterprises/{enterprise_id}/reputation/numbers`
+// that returns numbers across every enterprise you own. Useful when you don't want
+// to look up the enterprise id first.
+func (r *ReputationNumberService) ListAutoPaging(ctx context.Context, query ReputationNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[ReputationNumberListResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Remove a phone number from Number Reputation monitoring without requiring an
-// `enterprise_id`.
+// Convenience alias for
+// `DELETE /v2/enterprises/{enterprise_id}/reputation/numbers/{phone_number}`.
 func (r *ReputationNumberService) Delete(ctx context.Context, phoneNumber string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -103,7 +97,7 @@ func (r *ReputationNumberService) Delete(ctx context.Context, phoneNumber string
 }
 
 type ReputationNumberGetResponse struct {
-	Data shared.ReputationPhoneNumberWithReputationData `json:"data"`
+	Data ReputationNumberGetResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -118,9 +112,65 @@ func (r *ReputationNumberGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type ReputationNumberGetResponseData struct {
+	ID           string    `json:"id" format:"uuid"`
+	CreatedAt    time.Time `json:"created_at" format:"date-time"`
+	EnterpriseID string    `json:"enterprise_id" format:"uuid"`
+	// E.164 with leading `+`.
+	PhoneNumber string `json:"phone_number"`
+	// `null` until the first refresh has been collected for this number.
+	ReputationData shared.ReputationData `json:"reputation_data" api:"nullable"`
+	UpdatedAt      time.Time             `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID             respjson.Field
+		CreatedAt      respjson.Field
+		EnterpriseID   respjson.Field
+		PhoneNumber    respjson.Field
+		ReputationData respjson.Field
+		UpdatedAt      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ReputationNumberGetResponseData) RawJSON() string { return r.JSON.raw }
+func (r *ReputationNumberGetResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ReputationNumberListResponse struct {
+	ID           string    `json:"id" format:"uuid"`
+	CreatedAt    time.Time `json:"created_at" format:"date-time"`
+	EnterpriseID string    `json:"enterprise_id" format:"uuid"`
+	// E.164 with leading `+`.
+	PhoneNumber string `json:"phone_number"`
+	// `null` until the first refresh has been collected for this number.
+	ReputationData shared.ReputationData `json:"reputation_data" api:"nullable"`
+	UpdatedAt      time.Time             `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID             respjson.Field
+		CreatedAt      respjson.Field
+		EnterpriseID   respjson.Field
+		PhoneNumber    respjson.Field
+		ReputationData respjson.Field
+		UpdatedAt      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ReputationNumberListResponse) RawJSON() string { return r.JSON.raw }
+func (r *ReputationNumberListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ReputationNumberGetParams struct {
-	// When true, fetches fresh reputation data (incurs API cost). When false, returns
-	// cached data.
+	// When true, fetches fresh reputation data (incurs API cost). When false
+	// (default), returns cached data.
 	Fresh param.Opt[bool] `query:"fresh,omitzero" json:"-"`
 	paramObj
 }
@@ -135,11 +185,11 @@ func (r ReputationNumberGetParams) URLQuery() (v url.Values, err error) {
 }
 
 type ReputationNumberListParams struct {
-	// Page number (1-indexed)
+	// 1-based page number. Out-of-range values return an empty page with correct meta.
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	// Number of items per page
+	// Items per page. Maximum 250; values above are clamped to 250.
 	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
-	// Filter by specific phone number (E.164 format)
+	// Filter by specific phone number (E.164 format).
 	PhoneNumber param.Opt[string] `query:"phone_number,omitzero" json:"-"`
 	paramObj
 }
