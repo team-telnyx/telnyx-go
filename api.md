@@ -5096,10 +5096,12 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TermsOfServiceGetInfoResponse">TermsOfServiceGetInfoResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TermsOfServiceStatusResponse">TermsOfServiceStatusResponse</a>
 
 Methods:
 
+- <code title="get /terms_of_service/info">client.TermsOfService.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TermsOfServiceService.GetInfo">GetInfo</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TermsOfServiceGetInfoParams">TermsOfServiceGetInfoParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TermsOfServiceGetInfoResponse">TermsOfServiceGetInfoResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /terms_of_service/status">client.TermsOfService.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TermsOfServiceService.Status">Status</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TermsOfServiceStatusParams">TermsOfServiceStatusParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TermsOfServiceStatusResponse">TermsOfServiceStatusResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## NumberReputation
