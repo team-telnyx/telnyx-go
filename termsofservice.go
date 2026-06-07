@@ -60,14 +60,12 @@ func (r *TermsOfServiceService) GetInfo(ctx context.Context, query TermsOfServic
 	return res, err
 }
 
-// Returns whether the authenticated user has agreed to the current Number
-// Reputation Terms of Service. Used during onboarding to decide whether to prompt
-// the user with the ToS dialog before continuing.
+// Returns whether the authenticated user has agreed to the current Terms of
+// Service for the product given by `product_type`. Used during onboarding to
+// decide whether to prompt the user with the ToS dialog before continuing.
 //
-// The `agreement_required: true` value means the user has not yet agreed (or has
-// agreed to an outdated version) and must call
-// `POST /terms_of_service/number_reputation/agree` before they can use the Number
-// Reputation endpoints on an enterprise.
+// `agreement_required: true` means the user has not yet agreed (or has agreed to
+// an outdated version) and must agree before using that product's endpoints.
 func (r *TermsOfServiceService) Status(ctx context.Context, query TermsOfServiceStatusParams, opts ...option.RequestOption) (res *TermsOfServiceStatusResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "terms_of_service/status"
@@ -199,8 +197,7 @@ const (
 )
 
 type TermsOfServiceStatusParams struct {
-	// Which product's ToS to check. Defaults to `branded_calling`; pass
-	// `number_reputation` to check the Number Reputation Terms of Service.
+	// Which product's ToS to check. Defaults to `branded_calling`.
 	//
 	// Any of "branded_calling", "number_reputation".
 	ProductType TermsOfServiceStatusParamsProductType `query:"product_type,omitzero" json:"-"`
@@ -216,8 +213,7 @@ func (r TermsOfServiceStatusParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Which product's ToS to check. Defaults to `branded_calling`; pass
-// `number_reputation` to check the Number Reputation Terms of Service.
+// Which product's ToS to check. Defaults to `branded_calling`.
 type TermsOfServiceStatusParamsProductType string
 
 const (
