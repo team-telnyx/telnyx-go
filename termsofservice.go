@@ -50,6 +50,16 @@ func NewTermsOfServiceService(opts ...option.RequestOption) (r TermsOfServiceSer
 	return
 }
 
+// Returns the available Terms of Service agreements (product, current version,
+// terms URL, effective date). Omit `product_type` to return all products; pass it
+// to scope to one.
+func (r *TermsOfServiceService) GetInfo(ctx context.Context, query TermsOfServiceGetInfoParams, opts ...option.RequestOption) (res *TermsOfServiceGetInfoResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "terms_of_service/info"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
 // Returns whether the authenticated user has agreed to the current Number
 // Reputation Terms of Service. Used during onboarding to decide whether to prompt
 // the user with the ToS dialog before continuing.
@@ -63,6 +73,49 @@ func (r *TermsOfServiceService) Status(ctx context.Context, query TermsOfService
 	path := "terms_of_service/status"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
+}
+
+type TermsOfServiceGetInfoResponse struct {
+	Agreements []TermsOfServiceGetInfoResponseAgreement `json:"agreements"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Agreements  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TermsOfServiceGetInfoResponse) RawJSON() string { return r.JSON.raw }
+func (r *TermsOfServiceGetInfoResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TermsOfServiceGetInfoResponseAgreement struct {
+	CurrentVersion string    `json:"current_version"`
+	Description    string    `json:"description"`
+	EffectiveDate  time.Time `json:"effective_date" format:"date"`
+	// Telnyx product the Terms of Service apply to.
+	//
+	// Any of "branded_calling", "number_reputation".
+	ProductType string `json:"product_type"`
+	TermsURL    string `json:"terms_url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CurrentVersion respjson.Field
+		Description    respjson.Field
+		EffectiveDate  respjson.Field
+		ProductType    respjson.Field
+		TermsURL       respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TermsOfServiceGetInfoResponseAgreement) RawJSON() string { return r.JSON.raw }
+func (r *TermsOfServiceGetInfoResponseAgreement) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type TermsOfServiceStatusResponse struct {
@@ -119,6 +172,31 @@ func (r TermsOfServiceStatusResponseData) RawJSON() string { return r.JSON.raw }
 func (r *TermsOfServiceStatusResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type TermsOfServiceGetInfoParams struct {
+	// Optional product filter. Omit to return info for all products.
+	//
+	// Any of "branded_calling", "number_reputation".
+	ProductType TermsOfServiceGetInfoParamsProductType `query:"product_type,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [TermsOfServiceGetInfoParams]'s query parameters as
+// `url.Values`.
+func (r TermsOfServiceGetInfoParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Optional product filter. Omit to return info for all products.
+type TermsOfServiceGetInfoParamsProductType string
+
+const (
+	TermsOfServiceGetInfoParamsProductTypeBrandedCalling   TermsOfServiceGetInfoParamsProductType = "branded_calling"
+	TermsOfServiceGetInfoParamsProductTypeNumberReputation TermsOfServiceGetInfoParamsProductType = "number_reputation"
+)
 
 type TermsOfServiceStatusParams struct {
 	// Which product's ToS to check. Defaults to `branded_calling`; pass
