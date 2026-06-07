@@ -185,6 +185,12 @@ func (r ReputationNumberGetParams) URLQuery() (v url.Values, err error) {
 }
 
 type ReputationNumberListParams struct {
+	// Filter by enterprise ID.
+	FilterEnterpriseID param.Opt[string] `query:"filter[enterprise_id],omitzero" format:"uuid" json:"-"`
+	// Partial match on phone number. Must contain at least 5 digits.
+	FilterPhoneNumberContains param.Opt[string] `query:"filter[phone_number][contains],omitzero" json:"-"`
+	// Exact phone-number match (E.164).
+	FilterPhoneNumberEq param.Opt[string] `query:"filter[phone_number][eq],omitzero" json:"-"`
 	// 1-based page number. Out-of-range values return an empty page with correct meta.
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	// Items per page. Maximum 250; values above are clamped to 250.

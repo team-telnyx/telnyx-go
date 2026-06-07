@@ -189,9 +189,10 @@ func TestEnterpriseListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Enterprises.List(context.TODO(), telnyx.EnterpriseListParams{
-		LegalName:  telnyx.String("Acme"),
-		PageNumber: telnyx.Int(1),
-		PageSize:   telnyx.Int(10),
+		FilterLegalNameContains: telnyx.String("Acme"),
+		LegalName:               telnyx.String("Acme"),
+		PageNumber:              telnyx.Int(1),
+		PageSize:                telnyx.Int(10),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

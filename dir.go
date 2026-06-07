@@ -78,10 +78,14 @@ func (r *DirService) Update(ctx context.Context, dirID string, body DirUpdatePar
 	return res, err
 }
 
-// Convenience endpoint that returns every DIR you own without scoping to a
-// specific enterprise. Equivalent to calling
-// `GET /v2/enterprises/{enterprise_id}/dir` for each enterprise and concatenating
-// the results, but server-side and paginated as a single list.
+// Returns every DIR (Display Identity Record) you own, across all of your
+// enterprises, as a single list. Pagination is JSON:API style (`page[number]`,
+// `page[size]`, max 250). Supports `filter[]` query params:
+// `filter[enterprise_id]`, `filter[status]`, `filter[display_name][contains]`,
+// `filter[call_reason][contains]`, plus the renewal-window filters
+// `filter[expiring_at][gte]` / `filter[expiring_at][lte]`. Sortable by
+// `created_at`, `updated_at`, `display_name`, `status` (prefix `-` for descending;
+// default `-created_at`).
 func (r *DirService) List(ctx context.Context, query DirListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[DirListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -99,10 +103,14 @@ func (r *DirService) List(ctx context.Context, query DirListParams, opts ...opti
 	return res, nil
 }
 
-// Convenience endpoint that returns every DIR you own without scoping to a
-// specific enterprise. Equivalent to calling
-// `GET /v2/enterprises/{enterprise_id}/dir` for each enterprise and concatenating
-// the results, but server-side and paginated as a single list.
+// Returns every DIR (Display Identity Record) you own, across all of your
+// enterprises, as a single list. Pagination is JSON:API style (`page[number]`,
+// `page[size]`, max 250). Supports `filter[]` query params:
+// `filter[enterprise_id]`, `filter[status]`, `filter[display_name][contains]`,
+// `filter[call_reason][contains]`, plus the renewal-window filters
+// `filter[expiring_at][gte]` / `filter[expiring_at][lte]`. Sortable by
+// `created_at`, `updated_at`, `display_name`, `status` (prefix `-` for descending;
+// default `-created_at`).
 func (r *DirService) ListAutoPaging(ctx context.Context, query DirListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[DirListResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
@@ -1326,6 +1334,12 @@ func (r *DirUpdateParams) UnmarshalJSON(data []byte) error {
 type DirListParams struct {
 	// Restrict results to a single enterprise.
 	EnterpriseID param.Opt[string] `query:"enterprise_id,omitzero" format:"uuid" json:"-"`
+	// Case-insensitive partial match on call reason.
+	FilterCallReasonContains param.Opt[string] `query:"filter[call_reason][contains],omitzero" json:"-"`
+	// Case-insensitive partial match on display name.
+	FilterDisplayNameContains param.Opt[string] `query:"filter[display_name][contains],omitzero" json:"-"`
+	// Filter by enterprise ID.
+	FilterEnterpriseID param.Opt[string] `query:"filter[enterprise_id],omitzero" format:"uuid" json:"-"`
 	// Return only DIRs whose `expiring_at` is at or after this ISO-8601 timestamp.
 	// Pairs with the `[lte]` variant to build renewal-window dashboards.
 	FilterExpiringAtGte param.Opt[time.Time] `query:"filter[expiring_at][gte],omitzero" format:"date-time" json:"-"`
@@ -1337,6 +1351,12 @@ type DirListParams struct {
 	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Case-insensitive partial match on `display_name` or call reason.
 	Search param.Opt[string] `query:"search,omitzero" json:"-"`
+	// Filter by DIR status.
+	//
+	// Any of "draft", "submitted", "in_review", "verified", "rejected",
+	// "unsuccessful", "suspended", "expired", "infringement_claimed",
+	// "permanently_rejected".
+	FilterStatus DirListParamsFilterStatus `query:"filter[status],omitzero" json:"-"`
 	// Sort field. Allowed values: `created_at`, `updated_at`, `display_name`,
 	// `status`. Prefix with `-` for descending. Default `-created_at`.
 	//
@@ -1359,6 +1379,22 @@ func (r DirListParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// Filter by DIR status.
+type DirListParamsFilterStatus string
+
+const (
+	DirListParamsFilterStatusDraft               DirListParamsFilterStatus = "draft"
+	DirListParamsFilterStatusSubmitted           DirListParamsFilterStatus = "submitted"
+	DirListParamsFilterStatusInReview            DirListParamsFilterStatus = "in_review"
+	DirListParamsFilterStatusVerified            DirListParamsFilterStatus = "verified"
+	DirListParamsFilterStatusRejected            DirListParamsFilterStatus = "rejected"
+	DirListParamsFilterStatusUnsuccessful        DirListParamsFilterStatus = "unsuccessful"
+	DirListParamsFilterStatusSuspended           DirListParamsFilterStatus = "suspended"
+	DirListParamsFilterStatusExpired             DirListParamsFilterStatus = "expired"
+	DirListParamsFilterStatusInfringementClaimed DirListParamsFilterStatus = "infringement_claimed"
+	DirListParamsFilterStatusPermanentlyRejected DirListParamsFilterStatus = "permanently_rejected"
+)
 
 // Sort field. Allowed values: `created_at`, `updated_at`, `display_name`,
 // `status`. Prefix with `-` for descending. Default `-created_at`.

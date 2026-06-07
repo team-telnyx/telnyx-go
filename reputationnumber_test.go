@@ -56,9 +56,12 @@ func TestReputationNumberListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Reputation.Numbers.List(context.TODO(), telnyx.ReputationNumberListParams{
-		PageNumber:  telnyx.Int(1),
-		PageSize:    telnyx.Int(20),
-		PhoneNumber: telnyx.String("+16035551234"),
+		FilterEnterpriseID:        telnyx.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		FilterPhoneNumberContains: telnyx.String("+16035551234"),
+		FilterPhoneNumberEq:       telnyx.String("+16035551234"),
+		PageNumber:                telnyx.Int(1),
+		PageSize:                  telnyx.Int(20),
+		PhoneNumber:               telnyx.String("+16035551234"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

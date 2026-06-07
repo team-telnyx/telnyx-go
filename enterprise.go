@@ -808,6 +808,8 @@ const (
 )
 
 type EnterpriseListParams struct {
+	// Case-insensitive partial match on legal name.
+	FilterLegalNameContains param.Opt[string] `query:"filter[legal_name][contains],omitzero" json:"-"`
 	// Filter by legal name (partial match).
 	LegalName param.Opt[string] `query:"legal_name,omitzero" json:"-"`
 	// 1-based page number. Out-of-range values return an empty page with correct meta.
