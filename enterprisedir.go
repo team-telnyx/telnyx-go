@@ -560,8 +560,6 @@ type EnterpriseDirListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	// Items per page. Maximum 250; values above are clamped to 250.
 	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
-	// Case-insensitive partial match on `display_name`.
-	Search param.Opt[string] `query:"search,omitzero" json:"-"`
 	// Filter by DIR status.
 	//
 	// Any of "draft", "submitted", "in_review", "verified", "rejected",
@@ -576,12 +574,6 @@ type EnterpriseDirListParams struct {
 	// "-display_name", "status", "-status", "submitted_at", "-submitted_at",
 	// "verified_at", "-verified_at", "expiring_at", "-expiring_at".
 	Sort EnterpriseDirListParamsSort `query:"sort,omitzero" json:"-"`
-	// Filter by DIR status.
-	//
-	// Any of "draft", "submitted", "in_review", "verified", "rejected",
-	// "unsuccessful", "suspended", "expired", "infringement_claimed",
-	// "permanently_rejected".
-	Status EnterpriseDirListParamsStatus `query:"status,omitzero" json:"-"`
 	paramObj
 }
 
@@ -630,20 +622,4 @@ const (
 	EnterpriseDirListParamsSortMinusVerifiedAt  EnterpriseDirListParamsSort = "-verified_at"
 	EnterpriseDirListParamsSortExpiringAt       EnterpriseDirListParamsSort = "expiring_at"
 	EnterpriseDirListParamsSortMinusExpiringAt  EnterpriseDirListParamsSort = "-expiring_at"
-)
-
-// Filter by DIR status.
-type EnterpriseDirListParamsStatus string
-
-const (
-	EnterpriseDirListParamsStatusDraft               EnterpriseDirListParamsStatus = "draft"
-	EnterpriseDirListParamsStatusSubmitted           EnterpriseDirListParamsStatus = "submitted"
-	EnterpriseDirListParamsStatusInReview            EnterpriseDirListParamsStatus = "in_review"
-	EnterpriseDirListParamsStatusVerified            EnterpriseDirListParamsStatus = "verified"
-	EnterpriseDirListParamsStatusRejected            EnterpriseDirListParamsStatus = "rejected"
-	EnterpriseDirListParamsStatusUnsuccessful        EnterpriseDirListParamsStatus = "unsuccessful"
-	EnterpriseDirListParamsStatusSuspended           EnterpriseDirListParamsStatus = "suspended"
-	EnterpriseDirListParamsStatusExpired             EnterpriseDirListParamsStatus = "expired"
-	EnterpriseDirListParamsStatusInfringementClaimed EnterpriseDirListParamsStatus = "infringement_claimed"
-	EnterpriseDirListParamsStatusPermanentlyRejected EnterpriseDirListParamsStatus = "permanently_rejected"
 )

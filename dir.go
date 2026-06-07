@@ -1332,8 +1332,6 @@ func (r *DirUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type DirListParams struct {
-	// Restrict results to a single enterprise.
-	EnterpriseID param.Opt[string] `query:"enterprise_id,omitzero" format:"uuid" json:"-"`
 	// Case-insensitive partial match on call reason.
 	FilterCallReasonContains param.Opt[string] `query:"filter[call_reason][contains],omitzero" json:"-"`
 	// Case-insensitive partial match on display name.
@@ -1349,8 +1347,6 @@ type DirListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	// Items per page. Maximum 250; values above are clamped to 250.
 	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
-	// Case-insensitive partial match on `display_name` or call reason.
-	Search param.Opt[string] `query:"search,omitzero" json:"-"`
 	// Filter by DIR status.
 	//
 	// Any of "draft", "submitted", "in_review", "verified", "rejected",
@@ -1363,12 +1359,6 @@ type DirListParams struct {
 	// Any of "created_at", "-created_at", "updated_at", "-updated_at", "display_name",
 	// "-display_name", "status", "-status".
 	Sort DirListParamsSort `query:"sort,omitzero" json:"-"`
-	// Filter by DIR status.
-	//
-	// Any of "draft", "submitted", "in_review", "verified", "rejected",
-	// "unsuccessful", "suspended", "expired", "infringement_claimed",
-	// "permanently_rejected".
-	Status DirListParamsStatus `query:"status,omitzero" json:"-"`
 	paramObj
 }
 
@@ -1409,22 +1399,6 @@ const (
 	DirListParamsSortMinusDisplayName DirListParamsSort = "-display_name"
 	DirListParamsSortStatus           DirListParamsSort = "status"
 	DirListParamsSortStatusDesc       DirListParamsSort = "-status"
-)
-
-// Filter by DIR status.
-type DirListParamsStatus string
-
-const (
-	DirListParamsStatusDraft               DirListParamsStatus = "draft"
-	DirListParamsStatusSubmitted           DirListParamsStatus = "submitted"
-	DirListParamsStatusInReview            DirListParamsStatus = "in_review"
-	DirListParamsStatusVerified            DirListParamsStatus = "verified"
-	DirListParamsStatusRejected            DirListParamsStatus = "rejected"
-	DirListParamsStatusUnsuccessful        DirListParamsStatus = "unsuccessful"
-	DirListParamsStatusSuspended           DirListParamsStatus = "suspended"
-	DirListParamsStatusExpired             DirListParamsStatus = "expired"
-	DirListParamsStatusInfringementClaimed DirListParamsStatus = "infringement_claimed"
-	DirListParamsStatusPermanentlyRejected DirListParamsStatus = "permanently_rejected"
 )
 
 type DirListInfringementClaimsParams struct {

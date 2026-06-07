@@ -81,9 +81,7 @@ func TestEnterpriseDirListWithOptionalParams(t *testing.T) {
 			FilterStatus:              telnyx.EnterpriseDirListParamsFilterStatusDraft,
 			PageNumber:                telnyx.Int(1),
 			PageSize:                  telnyx.Int(20),
-			Search:                    telnyx.String("search"),
 			Sort:                      telnyx.EnterpriseDirListParamsSortCreatedAt,
-			Status:                    telnyx.EnterpriseDirListParamsStatusDraft,
 		},
 	)
 	if err != nil {

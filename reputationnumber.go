@@ -195,8 +195,6 @@ type ReputationNumberListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	// Items per page. Maximum 250; values above are clamped to 250.
 	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
-	// Filter by specific phone number (E.164 format).
-	PhoneNumber param.Opt[string] `query:"phone_number,omitzero" json:"-"`
 	paramObj
 }
 
