@@ -63,9 +63,8 @@ func (r *TermsOfServiceAgreementService) Get(ctx context.Context, agreementID st
 // Results are paginated with the standard `page[number]` / `page[size]`
 // parameters; the response uses the standard `{data, meta}` JSON:API envelope.
 //
-// By default this returns agreements for **all** products the user has agreed to
-// (including Branded Calling). Pass the `product_type` query parameter to scope
-// the result to a single product.
+// By default this returns agreements for **all** products the user has agreed to.
+// Pass the `product_type` query parameter to scope the result to a single product.
 func (r *TermsOfServiceAgreementService) List(ctx context.Context, query TermsOfServiceAgreementListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[TermsOfServiceAgreementListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -91,9 +90,8 @@ func (r *TermsOfServiceAgreementService) List(ctx context.Context, query TermsOf
 // Results are paginated with the standard `page[number]` / `page[size]`
 // parameters; the response uses the standard `{data, meta}` JSON:API envelope.
 //
-// By default this returns agreements for **all** products the user has agreed to
-// (including Branded Calling). Pass the `product_type` query parameter to scope
-// the result to a single product.
+// By default this returns agreements for **all** products the user has agreed to.
+// Pass the `product_type` query parameter to scope the result to a single product.
 func (r *TermsOfServiceAgreementService) ListAutoPaging(ctx context.Context, query TermsOfServiceAgreementListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[TermsOfServiceAgreementListResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
