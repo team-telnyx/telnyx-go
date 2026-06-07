@@ -61,7 +61,6 @@ func TestReputationNumberListWithOptionalParams(t *testing.T) {
 		FilterPhoneNumberEq:       telnyx.String("+16035551234"),
 		PageNumber:                telnyx.Int(1),
 		PageSize:                  telnyx.Int(20),
-		PhoneNumber:               telnyx.String("+16035551234"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

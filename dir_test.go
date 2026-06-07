@@ -85,7 +85,6 @@ func TestDirListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Dir.List(context.TODO(), telnyx.DirListParams{
-		EnterpriseID:              telnyx.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		FilterCallReasonContains:  telnyx.String("filter[call_reason][contains]"),
 		FilterDisplayNameContains: telnyx.String("filter[display_name][contains]"),
 		FilterEnterpriseID:        telnyx.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
@@ -94,9 +93,7 @@ func TestDirListWithOptionalParams(t *testing.T) {
 		FilterStatus:              telnyx.DirListParamsFilterStatusDraft,
 		PageNumber:                telnyx.Int(1),
 		PageSize:                  telnyx.Int(20),
-		Search:                    telnyx.String("search"),
 		Sort:                      telnyx.DirListParamsSortCreatedAt,
-		Status:                    telnyx.DirListParamsStatusDraft,
 	})
 	if err != nil {
 		var apierr *telnyx.Error
