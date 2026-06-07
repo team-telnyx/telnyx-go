@@ -60,9 +60,11 @@ func TestEnterpriseReputationNumberListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"4a6192a4-573d-446d-b3ce-aff9117272a6",
 		telnyx.EnterpriseReputationNumberListParams{
-			PageNumber:  telnyx.Int(1),
-			PageSize:    telnyx.Int(10),
-			PhoneNumber: telnyx.String("+16035551234"),
+			FilterPhoneNumberContains: telnyx.String("+16035551234"),
+			FilterPhoneNumberEq:       telnyx.String("+16035551234"),
+			PageNumber:                telnyx.Int(1),
+			PageSize:                  telnyx.Int(10),
+			PhoneNumber:               telnyx.String("+16035551234"),
 		},
 	)
 	if err != nil {
