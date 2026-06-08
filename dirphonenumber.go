@@ -116,16 +116,16 @@ type DirPhoneNumberListResponse struct {
 	RejectionReason DirPhoneNumberListResponseRejectionReason `json:"rejection_reason" api:"nullable"`
 	// Phone-number lifecycle status.
 	//
-	//   - `submitted` / `in_review` — Telnyx is reviewing the batch this number belongs
+	//   - `submitted` / `in_review` - Telnyx is reviewing the batch this number belongs
 	//     to.
-	//   - `verified` — approved; the DIR's display identity will be shown on outbound
+	//   - `verified` - approved; the DIR's display identity will be shown on outbound
 	//     calls from this number.
-	//   - `unsuccessful` — Telnyx rejected this submission; the customer may re-add to
+	//   - `unsuccessful` - Telnyx rejected this submission; the customer may re-add to
 	//     retry.
-	//   - `suspended` — temporarily disabled (e.g. by an active infringement claim on
+	//   - `suspended` - temporarily disabled (e.g. by an active infringement claim on
 	//     the DIR).
-	//   - `expired` — verification expired; re-add to renew.
-	//   - `permanently_rejected` — terminal; cannot be re-added on this or any other DIR
+	//   - `expired` - verification expired; re-add to renew.
+	//   - `permanently_rejected` - terminal; cannot be re-added on this or any other DIR
 	//     you own.
 	//
 	// Any of "submitted", "in_review", "verified", "unsuccessful", "suspended",
@@ -184,16 +184,16 @@ func (r *DirPhoneNumberListResponseRejectionReason) UnmarshalJSON(data []byte) e
 
 // Phone-number lifecycle status.
 //
-//   - `submitted` / `in_review` — Telnyx is reviewing the batch this number belongs
+//   - `submitted` / `in_review` - Telnyx is reviewing the batch this number belongs
 //     to.
-//   - `verified` — approved; the DIR's display identity will be shown on outbound
+//   - `verified` - approved; the DIR's display identity will be shown on outbound
 //     calls from this number.
-//   - `unsuccessful` — Telnyx rejected this submission; the customer may re-add to
+//   - `unsuccessful` - Telnyx rejected this submission; the customer may re-add to
 //     retry.
-//   - `suspended` — temporarily disabled (e.g. by an active infringement claim on
+//   - `suspended` - temporarily disabled (e.g. by an active infringement claim on
 //     the DIR).
-//   - `expired` — verification expired; re-add to renew.
-//   - `permanently_rejected` — terminal; cannot be re-added on this or any other DIR
+//   - `expired` - verification expired; re-add to renew.
+//   - `permanently_rejected` - terminal; cannot be re-added on this or any other DIR
 //     you own.
 type DirPhoneNumberListResponseStatus string
 
@@ -208,7 +208,7 @@ const (
 )
 
 // Bulk-add success response (HTTP 201). All numbers in the request were accepted
-// into a single new batch. Every entry in `data` shares the same `batch_id` — read
+// into a single new batch. Every entry in `data` shares the same `batch_id` - read
 // it from any element to obtain the batch id for subsequent
 // `GET .../phone_number_batches/{batch_id}` calls. If any number in the request
 // fails (schema-invalid, not in inventory, already attached to another DIR, etc.)
@@ -248,16 +248,16 @@ type DirPhoneNumberAddResponseData struct {
 	RejectionReason DirPhoneNumberAddResponseDataRejectionReason `json:"rejection_reason" api:"nullable"`
 	// Phone-number lifecycle status.
 	//
-	//   - `submitted` / `in_review` — Telnyx is reviewing the batch this number belongs
+	//   - `submitted` / `in_review` - Telnyx is reviewing the batch this number belongs
 	//     to.
-	//   - `verified` — approved; the DIR's display identity will be shown on outbound
+	//   - `verified` - approved; the DIR's display identity will be shown on outbound
 	//     calls from this number.
-	//   - `unsuccessful` — Telnyx rejected this submission; the customer may re-add to
+	//   - `unsuccessful` - Telnyx rejected this submission; the customer may re-add to
 	//     retry.
-	//   - `suspended` — temporarily disabled (e.g. by an active infringement claim on
+	//   - `suspended` - temporarily disabled (e.g. by an active infringement claim on
 	//     the DIR).
-	//   - `expired` — verification expired; re-add to renew.
-	//   - `permanently_rejected` — terminal; cannot be re-added on this or any other DIR
+	//   - `expired` - verification expired; re-add to renew.
+	//   - `permanently_rejected` - terminal; cannot be re-added on this or any other DIR
 	//     you own.
 	//
 	// Any of "submitted", "in_review", "verified", "unsuccessful", "suspended",
@@ -357,7 +357,7 @@ func (r *DirPhoneNumberRemoveResponseMeta) UnmarshalJSON(data []byte) error {
 }
 
 // Per-number error returned by the bulk-delete endpoint. Bulk-add does not use
-// this shape — it returns a 400 with the canonical envelope grouping numbers by
+// this shape - it returns a 400 with the canonical envelope grouping numbers by
 // failure category.
 type DirPhoneNumberRemoveResponseMetaError struct {
 	// Stable per-number error code. Currently only `not_associated` is emitted, when
@@ -422,7 +422,7 @@ const (
 
 type DirPhoneNumberAddParams struct {
 	// Supporting documents covering this batch. At least one entry with
-	// `document_type: letter_of_authorization` is required — the LOA authorises Telnyx
+	// `document_type: letter_of_authorization` is required - the LOA authorises Telnyx
 	// to register these numbers under the DIR. Each `document_id` must come from the
 	// Telnyx Documents API. Additional document types (e.g. business registration) may
 	// be included alongside the LOA.

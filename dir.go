@@ -65,7 +65,7 @@ func (r *DirService) Get(ctx context.Context, dirID string, opts ...option.Reque
 }
 
 // Edit a DIR. Only DIRs in `draft`, `rejected`, `unsuccessful`, or `suspended` are
-// editable. PATCH is a pure edit — `status` is never changed by this endpoint. To
+// editable. PATCH is a pure edit - `status` is never changed by this endpoint. To
 // re-vet after editing, call `POST /v2/dir/{dir_id}/submit` explicitly.
 func (r *DirService) Update(ctx context.Context, dirID string, body DirUpdateParams, opts ...option.RequestOption) (res *DirUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -128,6 +128,28 @@ func (r *DirService) Delete(ctx context.Context, dirID string, opts ...option.Re
 	path := fmt.Sprintf("dir/%s", dirID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
+}
+
+// Generate a pre-filled Letter of Authorization (LOA) PDF for a DIR. Enterprise
+// identity (legal name, DBA, address, contact, website, tax id) and the DIR
+// display name are read server-side; the caller supplies the telephone numbers to
+// authorize, an optional Authorized Agent block, and an optional drawn signature.
+//
+// When `signature` is omitted the PDF is returned unsigned so the customer can
+// sign it externally and upload it via the Documents API. When `signature` is
+// present the PDF embeds the supplied image, printed name, and signed-at date.
+//
+// Returns `application/pdf`.
+func (r *DirService) NewLoa(ctx context.Context, dirID string, body DirNewLoaParams, opts ...option.RequestOption) (res *http.Response, err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/pdf")}, opts...)
+	if dirID == "" {
+		err = errors.New("missing required dir_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("dir/%s/loa", dirID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 // Reference list of `document_type` values accepted by
@@ -251,18 +273,18 @@ type DirGetResponseData struct {
 	Reselling        bool                                `json:"reselling"`
 	// DIR lifecycle status.
 	//
-	//   - `draft` — newly created; editable; not yet submitted.
-	//   - `submitted` / `in_review` — Telnyx is reviewing.
-	//   - `verified` — approved; phone numbers may be attached.
-	//   - `rejected` — Telnyx rejected this submission; `rejection_reasons` is
+	//   - `draft` - newly created; editable; not yet submitted.
+	//   - `submitted` / `in_review` - Telnyx is reviewing.
+	//   - `verified` - approved; phone numbers may be attached.
+	//   - `rejected` - Telnyx rejected this submission; `rejection_reasons` is
 	//     populated; customer can edit and resubmit.
-	//   - `unsuccessful` — system-side error during processing; customer can edit and
+	//   - `unsuccessful` - system-side error during processing; customer can edit and
 	//     resubmit.
-	//   - `suspended` — temporarily disabled (e.g. by an active infringement claim).
-	//   - `expired` — verification expired; customer must resubmit.
-	//   - `infringement_claimed` — a trademark/impersonation claim is open against this
+	//   - `suspended` - temporarily disabled (e.g. by an active infringement claim).
+	//   - `expired` - verification expired; customer must resubmit.
+	//   - `infringement_claimed` - a trademark/impersonation claim is open against this
 	//     DIR.
-	//   - `permanently_rejected` — terminal; cannot be resubmitted.
+	//   - `permanently_rejected` - terminal; cannot be resubmitted.
 	//
 	// Any of "draft", "submitted", "in_review", "verified", "rejected",
 	// "unsuccessful", "suspended", "expired", "infringement_claimed",
@@ -414,18 +436,18 @@ type DirUpdateResponseData struct {
 	Reselling        bool                                   `json:"reselling"`
 	// DIR lifecycle status.
 	//
-	//   - `draft` — newly created; editable; not yet submitted.
-	//   - `submitted` / `in_review` — Telnyx is reviewing.
-	//   - `verified` — approved; phone numbers may be attached.
-	//   - `rejected` — Telnyx rejected this submission; `rejection_reasons` is
+	//   - `draft` - newly created; editable; not yet submitted.
+	//   - `submitted` / `in_review` - Telnyx is reviewing.
+	//   - `verified` - approved; phone numbers may be attached.
+	//   - `rejected` - Telnyx rejected this submission; `rejection_reasons` is
 	//     populated; customer can edit and resubmit.
-	//   - `unsuccessful` — system-side error during processing; customer can edit and
+	//   - `unsuccessful` - system-side error during processing; customer can edit and
 	//     resubmit.
-	//   - `suspended` — temporarily disabled (e.g. by an active infringement claim).
-	//   - `expired` — verification expired; customer must resubmit.
-	//   - `infringement_claimed` — a trademark/impersonation claim is open against this
+	//   - `suspended` - temporarily disabled (e.g. by an active infringement claim).
+	//   - `expired` - verification expired; customer must resubmit.
+	//   - `infringement_claimed` - a trademark/impersonation claim is open against this
 	//     DIR.
-	//   - `permanently_rejected` — terminal; cannot be resubmitted.
+	//   - `permanently_rejected` - terminal; cannot be resubmitted.
 	//
 	// Any of "draft", "submitted", "in_review", "verified", "rejected",
 	// "unsuccessful", "suspended", "expired", "infringement_claimed",
@@ -561,18 +583,18 @@ type DirListResponse struct {
 	Reselling        bool                             `json:"reselling"`
 	// DIR lifecycle status.
 	//
-	//   - `draft` — newly created; editable; not yet submitted.
-	//   - `submitted` / `in_review` — Telnyx is reviewing.
-	//   - `verified` — approved; phone numbers may be attached.
-	//   - `rejected` — Telnyx rejected this submission; `rejection_reasons` is
+	//   - `draft` - newly created; editable; not yet submitted.
+	//   - `submitted` / `in_review` - Telnyx is reviewing.
+	//   - `verified` - approved; phone numbers may be attached.
+	//   - `rejected` - Telnyx rejected this submission; `rejection_reasons` is
 	//     populated; customer can edit and resubmit.
-	//   - `unsuccessful` — system-side error during processing; customer can edit and
+	//   - `unsuccessful` - system-side error during processing; customer can edit and
 	//     resubmit.
-	//   - `suspended` — temporarily disabled (e.g. by an active infringement claim).
-	//   - `expired` — verification expired; customer must resubmit.
-	//   - `infringement_claimed` — a trademark/impersonation claim is open against this
+	//   - `suspended` - temporarily disabled (e.g. by an active infringement claim).
+	//   - `expired` - verification expired; customer must resubmit.
+	//   - `infringement_claimed` - a trademark/impersonation claim is open against this
 	//     DIR.
-	//   - `permanently_rejected` — terminal; cannot be resubmitted.
+	//   - `permanently_rejected` - terminal; cannot be resubmitted.
 	//
 	// Any of "draft", "submitted", "in_review", "verified", "rejected",
 	// "unsuccessful", "suspended", "expired", "infringement_claimed",
@@ -689,18 +711,18 @@ func (r *DirListResponseRejectionReason) UnmarshalJSON(data []byte) error {
 
 // DIR lifecycle status.
 //
-//   - `draft` — newly created; editable; not yet submitted.
-//   - `submitted` / `in_review` — Telnyx is reviewing.
-//   - `verified` — approved; phone numbers may be attached.
-//   - `rejected` — Telnyx rejected this submission; `rejection_reasons` is
+//   - `draft` - newly created; editable; not yet submitted.
+//   - `submitted` / `in_review` - Telnyx is reviewing.
+//   - `verified` - approved; phone numbers may be attached.
+//   - `rejected` - Telnyx rejected this submission; `rejection_reasons` is
 //     populated; customer can edit and resubmit.
-//   - `unsuccessful` — system-side error during processing; customer can edit and
+//   - `unsuccessful` - system-side error during processing; customer can edit and
 //     resubmit.
-//   - `suspended` — temporarily disabled (e.g. by an active infringement claim).
-//   - `expired` — verification expired; customer must resubmit.
-//   - `infringement_claimed` — a trademark/impersonation claim is open against this
+//   - `suspended` - temporarily disabled (e.g. by an active infringement claim).
+//   - `expired` - verification expired; customer must resubmit.
+//   - `infringement_claimed` - a trademark/impersonation claim is open against this
 //     DIR.
-//   - `permanently_rejected` — terminal; cannot be resubmitted.
+//   - `permanently_rejected` - terminal; cannot be resubmitted.
 type DirListResponseStatus string
 
 const (
@@ -817,9 +839,9 @@ type DirListInfringementClaimsResponse struct {
 	Resolution      DirListInfringementClaimsResponseResolution `json:"resolution" api:"nullable"`
 	ResolutionDate  time.Time                                   `json:"resolution_date" api:"nullable" format:"date-time"`
 	ResolutionNotes string                                      `json:"resolution_notes" api:"nullable"`
-	// Lifecycle status. `pending` — newly filed; the DIR is auto-suspended.
-	// `contested` — you have submitted contest evidence; awaiting Telnyx review.
-	// `resolved` — final.
+	// Lifecycle status. `pending` - newly filed; the DIR is auto-suspended.
+	// `contested` - you have submitted contest evidence; awaiting Telnyx review.
+	// `resolved` - final.
 	//
 	// Any of "pending", "contested", "resolved".
 	Status    DirListInfringementClaimsResponseStatus `json:"status"`
@@ -923,18 +945,18 @@ type DirListInfringementClaimsResponseDir struct {
 	EnterpriseID string `json:"enterprise_id" format:"uuid"`
 	// DIR lifecycle status.
 	//
-	//   - `draft` — newly created; editable; not yet submitted.
-	//   - `submitted` / `in_review` — Telnyx is reviewing.
-	//   - `verified` — approved; phone numbers may be attached.
-	//   - `rejected` — Telnyx rejected this submission; `rejection_reasons` is
+	//   - `draft` - newly created; editable; not yet submitted.
+	//   - `submitted` / `in_review` - Telnyx is reviewing.
+	//   - `verified` - approved; phone numbers may be attached.
+	//   - `rejected` - Telnyx rejected this submission; `rejection_reasons` is
 	//     populated; customer can edit and resubmit.
-	//   - `unsuccessful` — system-side error during processing; customer can edit and
+	//   - `unsuccessful` - system-side error during processing; customer can edit and
 	//     resubmit.
-	//   - `suspended` — temporarily disabled (e.g. by an active infringement claim).
-	//   - `expired` — verification expired; customer must resubmit.
-	//   - `infringement_claimed` — a trademark/impersonation claim is open against this
+	//   - `suspended` - temporarily disabled (e.g. by an active infringement claim).
+	//   - `expired` - verification expired; customer must resubmit.
+	//   - `infringement_claimed` - a trademark/impersonation claim is open against this
 	//     DIR.
-	//   - `permanently_rejected` — terminal; cannot be resubmitted.
+	//   - `permanently_rejected` - terminal; cannot be resubmitted.
 	//
 	// Any of "draft", "submitted", "in_review", "verified", "rejected",
 	// "unsuccessful", "suspended", "expired", "infringement_claimed",
@@ -966,9 +988,9 @@ const (
 	DirListInfringementClaimsResponseResolutionModified DirListInfringementClaimsResponseResolution = "modified"
 )
 
-// Lifecycle status. `pending` — newly filed; the DIR is auto-suspended.
-// `contested` — you have submitted contest evidence; awaiting Telnyx review.
-// `resolved` — final.
+// Lifecycle status. `pending` - newly filed; the DIR is auto-suspended.
+// `contested` - you have submitted contest evidence; awaiting Telnyx review.
+// `resolved` - final.
 type DirListInfringementClaimsResponseStatus string
 
 const (
@@ -1014,18 +1036,18 @@ type DirSubmitResponseData struct {
 	Reselling        bool                                   `json:"reselling"`
 	// DIR lifecycle status.
 	//
-	//   - `draft` — newly created; editable; not yet submitted.
-	//   - `submitted` / `in_review` — Telnyx is reviewing.
-	//   - `verified` — approved; phone numbers may be attached.
-	//   - `rejected` — Telnyx rejected this submission; `rejection_reasons` is
+	//   - `draft` - newly created; editable; not yet submitted.
+	//   - `submitted` / `in_review` - Telnyx is reviewing.
+	//   - `verified` - approved; phone numbers may be attached.
+	//   - `rejected` - Telnyx rejected this submission; `rejection_reasons` is
 	//     populated; customer can edit and resubmit.
-	//   - `unsuccessful` — system-side error during processing; customer can edit and
+	//   - `unsuccessful` - system-side error during processing; customer can edit and
 	//     resubmit.
-	//   - `suspended` — temporarily disabled (e.g. by an active infringement claim).
-	//   - `expired` — verification expired; customer must resubmit.
-	//   - `infringement_claimed` — a trademark/impersonation claim is open against this
+	//   - `suspended` - temporarily disabled (e.g. by an active infringement claim).
+	//   - `expired` - verification expired; customer must resubmit.
+	//   - `infringement_claimed` - a trademark/impersonation claim is open against this
 	//     DIR.
-	//   - `permanently_rejected` — terminal; cannot be resubmitted.
+	//   - `permanently_rejected` - terminal; cannot be resubmitted.
 	//
 	// Any of "draft", "submitted", "in_review", "verified", "rejected",
 	// "unsuccessful", "suspended", "expired", "infringement_claimed",
@@ -1177,18 +1199,18 @@ type DirUpdateInfringementResponseData struct {
 	Reselling        bool                                               `json:"reselling"`
 	// DIR lifecycle status.
 	//
-	//   - `draft` — newly created; editable; not yet submitted.
-	//   - `submitted` / `in_review` — Telnyx is reviewing.
-	//   - `verified` — approved; phone numbers may be attached.
-	//   - `rejected` — Telnyx rejected this submission; `rejection_reasons` is
+	//   - `draft` - newly created; editable; not yet submitted.
+	//   - `submitted` / `in_review` - Telnyx is reviewing.
+	//   - `verified` - approved; phone numbers may be attached.
+	//   - `rejected` - Telnyx rejected this submission; `rejection_reasons` is
 	//     populated; customer can edit and resubmit.
-	//   - `unsuccessful` — system-side error during processing; customer can edit and
+	//   - `unsuccessful` - system-side error during processing; customer can edit and
 	//     resubmit.
-	//   - `suspended` — temporarily disabled (e.g. by an active infringement claim).
-	//   - `expired` — verification expired; customer must resubmit.
-	//   - `infringement_claimed` — a trademark/impersonation claim is open against this
+	//   - `suspended` - temporarily disabled (e.g. by an active infringement claim).
+	//   - `expired` - verification expired; customer must resubmit.
+	//   - `infringement_claimed` - a trademark/impersonation claim is open against this
 	//     DIR.
-	//   - `permanently_rejected` — terminal; cannot be resubmitted.
+	//   - `permanently_rejected` - terminal; cannot be resubmitted.
 	//
 	// Any of "draft", "submitted", "in_review", "verified", "rejected",
 	// "unsuccessful", "suspended", "expired", "infringement_claimed",
@@ -1400,6 +1422,80 @@ const (
 	DirListParamsSortStatus           DirListParamsSort = "status"
 	DirListParamsSortStatusDesc       DirListParamsSort = "-status"
 )
+
+type DirNewLoaParams struct {
+	// Telephone numbers to authorize on the DIR, in `+E164` format (`+` followed by
+	// 10-15 digits). Max 15 per request.
+	PhoneNumbers []string `json:"phone_numbers,omitzero" api:"required"`
+	// Third-party reseller / partner managing the enterprise's phone numbers. Omit
+	// when the enterprise works directly with Telnyx.
+	Agent DirNewLoaParamsAgent `json:"agent,omitzero"`
+	// Optional. When provided the rendered PDF embeds the signature image, printed
+	// name, and signed-at date. When absent the PDF is returned unsigned so the
+	// customer can sign externally and upload it via the Documents API.
+	Signature DirNewLoaParamsSignature `json:"signature,omitzero"`
+	paramObj
+}
+
+func (r DirNewLoaParams) MarshalJSON() (data []byte, err error) {
+	type shadow DirNewLoaParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DirNewLoaParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Third-party reseller / partner managing the enterprise's phone numbers. Omit
+// when the enterprise works directly with Telnyx.
+//
+// The properties AdministrativeArea, City, ContactEmail, ContactName,
+// ContactPhone, ContactTitle, Country, LegalName, PostalCode, StreetAddress are
+// required.
+type DirNewLoaParamsAgent struct {
+	AdministrativeArea string            `json:"administrative_area" api:"required"`
+	City               string            `json:"city" api:"required"`
+	ContactEmail       string            `json:"contact_email" api:"required" format:"email"`
+	ContactName        string            `json:"contact_name" api:"required"`
+	ContactPhone       string            `json:"contact_phone" api:"required"`
+	ContactTitle       string            `json:"contact_title" api:"required"`
+	Country            string            `json:"country" api:"required"`
+	LegalName          string            `json:"legal_name" api:"required"`
+	PostalCode         string            `json:"postal_code" api:"required"`
+	StreetAddress      string            `json:"street_address" api:"required"`
+	Dba                param.Opt[string] `json:"dba,omitzero"`
+	ExtendedAddress    param.Opt[string] `json:"extended_address,omitzero"`
+	paramObj
+}
+
+func (r DirNewLoaParamsAgent) MarshalJSON() (data []byte, err error) {
+	type shadow DirNewLoaParamsAgent
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DirNewLoaParamsAgent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional. When provided the rendered PDF embeds the signature image, printed
+// name, and signed-at date. When absent the PDF is returned unsigned so the
+// customer can sign externally and upload it via the Documents API.
+//
+// The property ImageBase64 is required.
+type DirNewLoaParamsSignature struct {
+	// PNG image, base64-encoded.
+	ImageBase64 string `json:"image_base64" api:"required"`
+	// Optional. When absent the rendered PDF falls back to the enterprise contact's
+	// legal name.
+	SignerName param.Opt[string] `json:"signer_name,omitzero"`
+	paramObj
+}
+
+func (r DirNewLoaParamsSignature) MarshalJSON() (data []byte, err error) {
+	type shadow DirNewLoaParamsSignature
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DirNewLoaParamsSignature) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type DirListInfringementClaimsParams struct {
 	// 1-based page number. Out-of-range values return an empty page with correct meta.

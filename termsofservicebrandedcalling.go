@@ -37,7 +37,7 @@ func NewTermsOfServiceBrandedCallingService(opts ...option.RequestOption) (r Ter
 }
 
 // Records the authenticated user's agreement to the current Branded Calling ToS.
-// No body required. Idempotent — re-calling after agreement is a no-op and returns
+// No body required. Idempotent - re-calling after agreement is a no-op and returns
 // the existing agreement.
 //
 // This is a prerequisite for activating Branded Calling on any enterprise
@@ -52,7 +52,7 @@ func (r *TermsOfServiceBrandedCallingService) Agree(ctx context.Context, opts ..
 
 type TermsOfServiceBrandedCallingAgreeResponse struct {
 	// A recorded user agreement to a product's Terms of Service. The `user_id` is
-	// intentionally NOT echoed back on this public surface — the caller already knows
+	// intentionally NOT echoed back on this public surface - the caller already knows
 	// their own identity.
 	Data TermsOfServiceBrandedCallingAgreeResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -70,7 +70,7 @@ func (r *TermsOfServiceBrandedCallingAgreeResponse) UnmarshalJSON(data []byte) e
 }
 
 // A recorded user agreement to a product's Terms of Service. The `user_id` is
-// intentionally NOT echoed back on this public surface — the caller already knows
+// intentionally NOT echoed back on this public surface - the caller already knows
 // their own identity.
 type TermsOfServiceBrandedCallingAgreeResponseData struct {
 	ID        string    `json:"id" format:"uuid"`

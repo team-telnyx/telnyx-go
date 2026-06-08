@@ -202,16 +202,16 @@ type DirPhoneNumberBatchGetResponseDataPhoneNumber struct {
 	RejectionReason DirPhoneNumberBatchGetResponseDataPhoneNumberRejectionReason `json:"rejection_reason" api:"nullable"`
 	// Phone-number lifecycle status.
 	//
-	//   - `submitted` / `in_review` — Telnyx is reviewing the batch this number belongs
+	//   - `submitted` / `in_review` - Telnyx is reviewing the batch this number belongs
 	//     to.
-	//   - `verified` — approved; the DIR's display identity will be shown on outbound
+	//   - `verified` - approved; the DIR's display identity will be shown on outbound
 	//     calls from this number.
-	//   - `unsuccessful` — Telnyx rejected this submission; the customer may re-add to
+	//   - `unsuccessful` - Telnyx rejected this submission; the customer may re-add to
 	//     retry.
-	//   - `suspended` — temporarily disabled (e.g. by an active infringement claim on
+	//   - `suspended` - temporarily disabled (e.g. by an active infringement claim on
 	//     the DIR).
-	//   - `expired` — verification expired; re-add to renew.
-	//   - `permanently_rejected` — terminal; cannot be re-added on this or any other DIR
+	//   - `expired` - verification expired; re-add to renew.
+	//   - `permanently_rejected` - terminal; cannot be re-added on this or any other DIR
 	//     you own.
 	//
 	// Any of "submitted", "in_review", "verified", "unsuccessful", "suspended",
@@ -364,16 +364,16 @@ type DirPhoneNumberBatchListResponsePhoneNumber struct {
 	RejectionReason DirPhoneNumberBatchListResponsePhoneNumberRejectionReason `json:"rejection_reason" api:"nullable"`
 	// Phone-number lifecycle status.
 	//
-	//   - `submitted` / `in_review` — Telnyx is reviewing the batch this number belongs
+	//   - `submitted` / `in_review` - Telnyx is reviewing the batch this number belongs
 	//     to.
-	//   - `verified` — approved; the DIR's display identity will be shown on outbound
+	//   - `verified` - approved; the DIR's display identity will be shown on outbound
 	//     calls from this number.
-	//   - `unsuccessful` — Telnyx rejected this submission; the customer may re-add to
+	//   - `unsuccessful` - Telnyx rejected this submission; the customer may re-add to
 	//     retry.
-	//   - `suspended` — temporarily disabled (e.g. by an active infringement claim on
+	//   - `suspended` - temporarily disabled (e.g. by an active infringement claim on
 	//     the DIR).
-	//   - `expired` — verification expired; re-add to renew.
-	//   - `permanently_rejected` — terminal; cannot be re-added on this or any other DIR
+	//   - `expired` - verification expired; re-add to renew.
+	//   - `permanently_rejected` - terminal; cannot be re-added on this or any other DIR
 	//     you own.
 	//
 	// Any of "submitted", "in_review", "verified", "unsuccessful", "suspended",

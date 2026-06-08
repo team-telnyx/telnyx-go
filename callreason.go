@@ -125,7 +125,7 @@ type CallReasonValidateResponseData struct {
 	// vetting.
 	AllPreApproved bool `json:"all_pre_approved" api:"required"`
 	// Subset of the input that does NOT match the pre-vetted library. The DIR can
-	// still be submitted with these — they will go through manual review.
+	// still be submitted with these - they will go through manual review.
 	NonApprovedReasons []string `json:"non_approved_reasons" api:"required"`
 	// `true` when at least one supplied reason is in `non_approved_reasons`.
 	// Equivalent to `non_approved_reasons.length > 0` and the inverse of
@@ -166,7 +166,7 @@ func (r CallReasonListParams) URLQuery() (v url.Values, err error) {
 }
 
 type CallReasonValidateParams struct {
-	// **Bare JSON array** of candidate call-reason strings (NOT an object — there is
+	// **Bare JSON array** of candidate call-reason strings (NOT an object - there is
 	// no top-level `call_reasons` key on this endpoint). 1–10 strings, each ≤64
 	// characters.
 	Body []string

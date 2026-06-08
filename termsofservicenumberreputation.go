@@ -49,7 +49,7 @@ func (r *TermsOfServiceNumberReputationService) Agree(ctx context.Context, opts 
 
 type TermsOfServiceNumberReputationAgreeResponse struct {
 	// A recorded user agreement to a product's Terms of Service. The `user_id` is
-	// intentionally NOT echoed back on this public surface — the caller already knows
+	// intentionally NOT echoed back on this public surface - the caller already knows
 	// their own identity.
 	Data TermsOfServiceNumberReputationAgreeResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -67,7 +67,7 @@ func (r *TermsOfServiceNumberReputationAgreeResponse) UnmarshalJSON(data []byte)
 }
 
 // A recorded user agreement to a product's Terms of Service. The `user_id` is
-// intentionally NOT echoed back on this public surface — the caller already knows
+// intentionally NOT echoed back on this public surface - the caller already knows
 // their own identity.
 type TermsOfServiceNumberReputationAgreeResponseData struct {
 	ID        string    `json:"id" format:"uuid"`

@@ -62,9 +62,9 @@ func (r *InfringementClaimService) Get(ctx context.Context, claimID string, opts
 //
 // Failure modes:
 //
-//   - `400` — the claim is `resolved` (terminal); cannot be contested further.
-//   - `404` — the claim does not exist or is not against a DIR you own.
-//   - `422` — `contest_notes` is too short (< 10 chars), too long (> 2000 chars),
+//   - `400` - the claim is `resolved` (terminal); cannot be contested further.
+//   - `404` - the claim does not exist or is not against a DIR you own.
+//   - `422` - `contest_notes` is too short (< 10 chars), too long (> 2000 chars),
 //     `documents` is > 20 entries, or a `document_id` is duplicated within the same
 //     submission.
 func (r *InfringementClaimService) Contest(ctx context.Context, claimID string, body InfringementClaimContestParams, opts ...option.RequestOption) (res *InfringementClaimContestResponse, err error) {
@@ -122,9 +122,9 @@ type InfringementClaimGetResponseData struct {
 	Resolution      string    `json:"resolution" api:"nullable"`
 	ResolutionDate  time.Time `json:"resolution_date" api:"nullable" format:"date-time"`
 	ResolutionNotes string    `json:"resolution_notes" api:"nullable"`
-	// Lifecycle status. `pending` — newly filed; the DIR is auto-suspended.
-	// `contested` — you have submitted contest evidence; awaiting Telnyx review.
-	// `resolved` — final.
+	// Lifecycle status. `pending` - newly filed; the DIR is auto-suspended.
+	// `contested` - you have submitted contest evidence; awaiting Telnyx review.
+	// `resolved` - final.
 	//
 	// Any of "pending", "contested", "resolved".
 	Status    string    `json:"status"`
@@ -220,18 +220,18 @@ type InfringementClaimGetResponseDataDir struct {
 	EnterpriseID string `json:"enterprise_id" format:"uuid"`
 	// DIR lifecycle status.
 	//
-	//   - `draft` — newly created; editable; not yet submitted.
-	//   - `submitted` / `in_review` — Telnyx is reviewing.
-	//   - `verified` — approved; phone numbers may be attached.
-	//   - `rejected` — Telnyx rejected this submission; `rejection_reasons` is
+	//   - `draft` - newly created; editable; not yet submitted.
+	//   - `submitted` / `in_review` - Telnyx is reviewing.
+	//   - `verified` - approved; phone numbers may be attached.
+	//   - `rejected` - Telnyx rejected this submission; `rejection_reasons` is
 	//     populated; customer can edit and resubmit.
-	//   - `unsuccessful` — system-side error during processing; customer can edit and
+	//   - `unsuccessful` - system-side error during processing; customer can edit and
 	//     resubmit.
-	//   - `suspended` — temporarily disabled (e.g. by an active infringement claim).
-	//   - `expired` — verification expired; customer must resubmit.
-	//   - `infringement_claimed` — a trademark/impersonation claim is open against this
+	//   - `suspended` - temporarily disabled (e.g. by an active infringement claim).
+	//   - `expired` - verification expired; customer must resubmit.
+	//   - `infringement_claimed` - a trademark/impersonation claim is open against this
 	//     DIR.
-	//   - `permanently_rejected` — terminal; cannot be resubmitted.
+	//   - `permanently_rejected` - terminal; cannot be resubmitted.
 	//
 	// Any of "draft", "submitted", "in_review", "verified", "rejected",
 	// "unsuccessful", "suspended", "expired", "infringement_claimed",
@@ -298,9 +298,9 @@ type InfringementClaimContestResponseData struct {
 	Resolution      string    `json:"resolution" api:"nullable"`
 	ResolutionDate  time.Time `json:"resolution_date" api:"nullable" format:"date-time"`
 	ResolutionNotes string    `json:"resolution_notes" api:"nullable"`
-	// Lifecycle status. `pending` — newly filed; the DIR is auto-suspended.
-	// `contested` — you have submitted contest evidence; awaiting Telnyx review.
-	// `resolved` — final.
+	// Lifecycle status. `pending` - newly filed; the DIR is auto-suspended.
+	// `contested` - you have submitted contest evidence; awaiting Telnyx review.
+	// `resolved` - final.
 	//
 	// Any of "pending", "contested", "resolved".
 	Status    string    `json:"status"`
@@ -396,18 +396,18 @@ type InfringementClaimContestResponseDataDir struct {
 	EnterpriseID string `json:"enterprise_id" format:"uuid"`
 	// DIR lifecycle status.
 	//
-	//   - `draft` — newly created; editable; not yet submitted.
-	//   - `submitted` / `in_review` — Telnyx is reviewing.
-	//   - `verified` — approved; phone numbers may be attached.
-	//   - `rejected` — Telnyx rejected this submission; `rejection_reasons` is
+	//   - `draft` - newly created; editable; not yet submitted.
+	//   - `submitted` / `in_review` - Telnyx is reviewing.
+	//   - `verified` - approved; phone numbers may be attached.
+	//   - `rejected` - Telnyx rejected this submission; `rejection_reasons` is
 	//     populated; customer can edit and resubmit.
-	//   - `unsuccessful` — system-side error during processing; customer can edit and
+	//   - `unsuccessful` - system-side error during processing; customer can edit and
 	//     resubmit.
-	//   - `suspended` — temporarily disabled (e.g. by an active infringement claim).
-	//   - `expired` — verification expired; customer must resubmit.
-	//   - `infringement_claimed` — a trademark/impersonation claim is open against this
+	//   - `suspended` - temporarily disabled (e.g. by an active infringement claim).
+	//   - `expired` - verification expired; customer must resubmit.
+	//   - `infringement_claimed` - a trademark/impersonation claim is open against this
 	//     DIR.
-	//   - `permanently_rejected` — terminal; cannot be resubmitted.
+	//   - `permanently_rejected` - terminal; cannot be resubmitted.
 	//
 	// Any of "draft", "submitted", "in_review", "verified", "rejected",
 	// "unsuccessful", "suspended", "expired", "infringement_claimed",
