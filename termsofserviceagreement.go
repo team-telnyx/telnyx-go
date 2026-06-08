@@ -98,7 +98,7 @@ func (r *TermsOfServiceAgreementService) ListAutoPaging(ctx context.Context, que
 
 type TermsOfServiceAgreementGetResponse struct {
 	// A recorded user agreement to a product's Terms of Service. The `user_id` is
-	// intentionally NOT echoed back on this public surface — the caller already knows
+	// intentionally NOT echoed back on this public surface - the caller already knows
 	// their own identity.
 	Data TermsOfServiceAgreementGetResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -116,7 +116,7 @@ func (r *TermsOfServiceAgreementGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 // A recorded user agreement to a product's Terms of Service. The `user_id` is
-// intentionally NOT echoed back on this public surface — the caller already knows
+// intentionally NOT echoed back on this public surface - the caller already knows
 // their own identity.
 type TermsOfServiceAgreementGetResponseData struct {
 	ID        string    `json:"id" format:"uuid"`
@@ -149,7 +149,7 @@ func (r *TermsOfServiceAgreementGetResponseData) UnmarshalJSON(data []byte) erro
 }
 
 // A recorded user agreement to a product's Terms of Service. The `user_id` is
-// intentionally NOT echoed back on this public surface — the caller already knows
+// intentionally NOT echoed back on this public surface - the caller already knows
 // their own identity.
 type TermsOfServiceAgreementListResponse struct {
 	ID        string    `json:"id" format:"uuid"`

@@ -60,9 +60,9 @@ func NewEnterpriseService(opts ...option.RequestOption) (r EnterpriseService) {
 //
 // Common failure modes:
 //
-//   - `422` — a required field is missing or malformed (the response
+//   - `422` - a required field is missing or malformed (the response
 //     `errors[].source.pointer` names the field).
-//   - `409` — an enterprise with the same identifying details already exists under
+//   - `409` - an enterprise with the same identifying details already exists under
 //     your account.
 func (r *EnterpriseService) New(ctx context.Context, body EnterpriseNewParams, opts ...option.RequestOption) (res *EnterpriseNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -129,12 +129,12 @@ func (r *EnterpriseService) ListAutoPaging(ctx context.Context, query Enterprise
 //
 // Failure modes:
 //
-//   - `400` — the enterprise still has dependent resources in a non-deletable state.
+//   - `400` - the enterprise still has dependent resources in a non-deletable state.
 //     Remove those first; the response `detail` identifies what is blocking the
 //     delete.
-//   - `409` — the enterprise has a dependent resource with an unresolved claim.
+//   - `409` - the enterprise has a dependent resource with an unresolved claim.
 //     Resolve it before deleting.
-//   - `404` — the enterprise does not exist or does not belong to your account.
+//   - `404` - the enterprise does not exist or does not belong to your account.
 func (r *EnterpriseService) Delete(ctx context.Context, enterpriseID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -162,8 +162,8 @@ func (r *EnterpriseService) Delete(ctx context.Context, enterpriseID string, opt
 //
 // Failure modes:
 //
-// - `403` — Branded Calling Terms of Service not accepted.
-// - `404` — enterprise does not exist or does not belong to your account.
+// - `403` - Branded Calling Terms of Service not accepted.
+// - `404` - enterprise does not exist or does not belong to your account.
 //
 // **Pricing:** This is a billable action. See https://telnyx.com/pricing/numbers
 // for current pricing.
@@ -565,12 +565,12 @@ type EnterpriseNewParams struct {
 	OrganizationContact OrganizationContactParam             `json:"organization_contact,omitzero" api:"required"`
 	// Legal-entity form. Pick the form that matches your incorporation documents:
 	//
-	//   - `corporation` — C-corp or S-corp.
-	//   - `llc` — limited liability company.
-	//   - `partnership` — general/limited partnership.
-	//   - `nonprofit` — non-profit corporation, charitable trust, or
+	//   - `corporation` - C-corp or S-corp.
+	//   - `llc` - limited liability company.
+	//   - `partnership` - general/limited partnership.
+	//   - `nonprofit` - non-profit corporation, charitable trust, or
 	//     501(c)(3)/equivalent.
-	//   - `other` — anything else (sole proprietorships, government bodies, DBAs, etc.).
+	//   - `other` - anything else (sole proprietorships, government bodies, DBAs, etc.).
 	//     You may be asked for additional documents during vetting.
 	//
 	// Any of "corporation", "llc", "partnership", "nonprofit", "other".
@@ -578,10 +578,10 @@ type EnterpriseNewParams struct {
 	OrganizationPhysicalAddress PhysicalAddressParam                     `json:"organization_physical_address,omitzero" api:"required"`
 	// Organization category for vetting purposes:
 	//
-	//   - `commercial` — for-profit business entities (LLC, corp, partnership, sole
+	//   - `commercial` - for-profit business entities (LLC, corp, partnership, sole
 	//     proprietorship). Most callers fall here.
-	//   - `government` — federal/state/local government bodies.
-	//   - `non_profit` — registered 501(c)(3)/equivalent (incl. educational
+	//   - `government` - federal/state/local government bodies.
+	//   - `non_profit` - registered 501(c)(3)/equivalent (incl. educational
 	//     institutions, charities, religious organisations).
 	//
 	// Any of "commercial", "government", "non_profit".
@@ -679,12 +679,12 @@ const (
 
 // Legal-entity form. Pick the form that matches your incorporation documents:
 //
-//   - `corporation` — C-corp or S-corp.
-//   - `llc` — limited liability company.
-//   - `partnership` — general/limited partnership.
-//   - `nonprofit` — non-profit corporation, charitable trust, or
+//   - `corporation` - C-corp or S-corp.
+//   - `llc` - limited liability company.
+//   - `partnership` - general/limited partnership.
+//   - `nonprofit` - non-profit corporation, charitable trust, or
 //     501(c)(3)/equivalent.
-//   - `other` — anything else (sole proprietorships, government bodies, DBAs, etc.).
+//   - `other` - anything else (sole proprietorships, government bodies, DBAs, etc.).
 //     You may be asked for additional documents during vetting.
 type EnterpriseNewParamsOrganizationLegalType string
 
@@ -698,10 +698,10 @@ const (
 
 // Organization category for vetting purposes:
 //
-//   - `commercial` — for-profit business entities (LLC, corp, partnership, sole
+//   - `commercial` - for-profit business entities (LLC, corp, partnership, sole
 //     proprietorship). Most callers fall here.
-//   - `government` — federal/state/local government bodies.
-//   - `non_profit` — registered 501(c)(3)/equivalent (incl. educational
+//   - `government` - federal/state/local government bodies.
+//   - `non_profit` - registered 501(c)(3)/equivalent (incl. educational
 //     institutions, charities, religious organisations).
 type EnterpriseNewParamsOrganizationType string
 

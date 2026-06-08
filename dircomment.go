@@ -123,7 +123,7 @@ type DirCommentNewResponseData struct {
 	//
 	// Any of "dir".
 	EntityType string `json:"entity_type"`
-	// Always `customer` on this endpoint — internal-only comments are filtered out.
+	// Always `customer` on this endpoint - internal-only comments are filtered out.
 	//
 	// Any of "customer".
 	Visibility string `json:"visibility"`
@@ -169,7 +169,7 @@ type DirCommentListResponse struct {
 	//
 	// Any of "dir".
 	EntityType DirCommentListResponseEntityType `json:"entity_type"`
-	// Always `customer` on this endpoint — internal-only comments are filtered out.
+	// Always `customer` on this endpoint - internal-only comments are filtered out.
 	//
 	// Any of "customer".
 	Visibility DirCommentListResponseVisibility `json:"visibility"`
@@ -224,7 +224,7 @@ const (
 	DirCommentListResponseEntityTypeDir DirCommentListResponseEntityType = "dir"
 )
 
-// Always `customer` on this endpoint — internal-only comments are filtered out.
+// Always `customer` on this endpoint - internal-only comments are filtered out.
 type DirCommentListResponseVisibility string
 
 const (

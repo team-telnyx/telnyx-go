@@ -69,10 +69,10 @@ func NewEnterpriseDirService(opts ...option.RequestOption) (r EnterpriseDirServi
 //
 // **Failure modes**
 //
-//   - `422` — validation error; `errors[].source.pointer` names the offending field.
-//   - `403` — Branded Calling not activated on this enterprise (see
+//   - `422` - validation error; `errors[].source.pointer` names the offending field.
+//   - `403` - Branded Calling not activated on this enterprise (see
 //     `POST /enterprises/{id}/branded_calling`).
-//   - `404` — enterprise does not exist or does not belong to your account.
+//   - `404` - enterprise does not exist or does not belong to your account.
 func (r *EnterpriseDirService) New(ctx context.Context, enterpriseID string, body EnterpriseDirNewParams, opts ...option.RequestOption) (res *EnterpriseDirNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if enterpriseID == "" {
@@ -164,18 +164,18 @@ type EnterpriseDirNewResponseData struct {
 	Reselling        bool                                          `json:"reselling"`
 	// DIR lifecycle status.
 	//
-	//   - `draft` — newly created; editable; not yet submitted.
-	//   - `submitted` / `in_review` — Telnyx is reviewing.
-	//   - `verified` — approved; phone numbers may be attached.
-	//   - `rejected` — Telnyx rejected this submission; `rejection_reasons` is
+	//   - `draft` - newly created; editable; not yet submitted.
+	//   - `submitted` / `in_review` - Telnyx is reviewing.
+	//   - `verified` - approved; phone numbers may be attached.
+	//   - `rejected` - Telnyx rejected this submission; `rejection_reasons` is
 	//     populated; customer can edit and resubmit.
-	//   - `unsuccessful` — system-side error during processing; customer can edit and
+	//   - `unsuccessful` - system-side error during processing; customer can edit and
 	//     resubmit.
-	//   - `suspended` — temporarily disabled (e.g. by an active infringement claim).
-	//   - `expired` — verification expired; customer must resubmit.
-	//   - `infringement_claimed` — a trademark/impersonation claim is open against this
+	//   - `suspended` - temporarily disabled (e.g. by an active infringement claim).
+	//   - `expired` - verification expired; customer must resubmit.
+	//   - `infringement_claimed` - a trademark/impersonation claim is open against this
 	//     DIR.
-	//   - `permanently_rejected` — terminal; cannot be resubmitted.
+	//   - `permanently_rejected` - terminal; cannot be resubmitted.
 	//
 	// Any of "draft", "submitted", "in_review", "verified", "rejected",
 	// "unsuccessful", "suspended", "expired", "infringement_claimed",
@@ -311,18 +311,18 @@ type EnterpriseDirListResponse struct {
 	Reselling        bool                                       `json:"reselling"`
 	// DIR lifecycle status.
 	//
-	//   - `draft` — newly created; editable; not yet submitted.
-	//   - `submitted` / `in_review` — Telnyx is reviewing.
-	//   - `verified` — approved; phone numbers may be attached.
-	//   - `rejected` — Telnyx rejected this submission; `rejection_reasons` is
+	//   - `draft` - newly created; editable; not yet submitted.
+	//   - `submitted` / `in_review` - Telnyx is reviewing.
+	//   - `verified` - approved; phone numbers may be attached.
+	//   - `rejected` - Telnyx rejected this submission; `rejection_reasons` is
 	//     populated; customer can edit and resubmit.
-	//   - `unsuccessful` — system-side error during processing; customer can edit and
+	//   - `unsuccessful` - system-side error during processing; customer can edit and
 	//     resubmit.
-	//   - `suspended` — temporarily disabled (e.g. by an active infringement claim).
-	//   - `expired` — verification expired; customer must resubmit.
-	//   - `infringement_claimed` — a trademark/impersonation claim is open against this
+	//   - `suspended` - temporarily disabled (e.g. by an active infringement claim).
+	//   - `expired` - verification expired; customer must resubmit.
+	//   - `infringement_claimed` - a trademark/impersonation claim is open against this
 	//     DIR.
-	//   - `permanently_rejected` — terminal; cannot be resubmitted.
+	//   - `permanently_rejected` - terminal; cannot be resubmitted.
 	//
 	// Any of "draft", "submitted", "in_review", "verified", "rejected",
 	// "unsuccessful", "suspended", "expired", "infringement_claimed",
@@ -439,18 +439,18 @@ func (r *EnterpriseDirListResponseRejectionReason) UnmarshalJSON(data []byte) er
 
 // DIR lifecycle status.
 //
-//   - `draft` — newly created; editable; not yet submitted.
-//   - `submitted` / `in_review` — Telnyx is reviewing.
-//   - `verified` — approved; phone numbers may be attached.
-//   - `rejected` — Telnyx rejected this submission; `rejection_reasons` is
+//   - `draft` - newly created; editable; not yet submitted.
+//   - `submitted` / `in_review` - Telnyx is reviewing.
+//   - `verified` - approved; phone numbers may be attached.
+//   - `rejected` - Telnyx rejected this submission; `rejection_reasons` is
 //     populated; customer can edit and resubmit.
-//   - `unsuccessful` — system-side error during processing; customer can edit and
+//   - `unsuccessful` - system-side error during processing; customer can edit and
 //     resubmit.
-//   - `suspended` — temporarily disabled (e.g. by an active infringement claim).
-//   - `expired` — verification expired; customer must resubmit.
-//   - `infringement_claimed` — a trademark/impersonation claim is open against this
+//   - `suspended` - temporarily disabled (e.g. by an active infringement claim).
+//   - `expired` - verification expired; customer must resubmit.
+//   - `infringement_claimed` - a trademark/impersonation claim is open against this
 //     DIR.
-//   - `permanently_rejected` — terminal; cannot be resubmitted.
+//   - `permanently_rejected` - terminal; cannot be resubmitted.
 type EnterpriseDirListResponseStatus string
 
 const (
@@ -554,7 +554,7 @@ type EnterpriseDirListParams struct {
 	// Convenience: returns DIRs whose `expiring_at` falls within the next N days
 	// (1–365). Equivalent to setting `filter[expiring_at][gte]=<now>` +
 	// `filter[expiring_at][lte]=<now+N>`. Mutually exclusive with the explicit
-	// `[gte]`/`[lte]` filters — combining returns 400.
+	// `[gte]`/`[lte]` filters - combining returns 400.
 	FilterExpiringWithinDays param.Opt[int64] `query:"filter[expiring_within_days],omitzero" json:"-"`
 	// 1-based page number. Out-of-range values return an empty page with correct meta.
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
