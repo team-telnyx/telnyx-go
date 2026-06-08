@@ -384,8 +384,9 @@ type AIMissionRunListParams struct {
 	// Page number (1-based)
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	// Number of items per page
-	PageSize param.Opt[int64]  `query:"page[size],omitzero" json:"-"`
-	Status   param.Opt[string] `query:"status,omitzero" json:"-"`
+	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Filter results by status.
+	Status param.Opt[string] `query:"status,omitzero" json:"-"`
 	paramObj
 }
 
@@ -406,8 +407,9 @@ type AIMissionRunListRunsParams struct {
 	// Page number (1-based)
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	// Number of items per page
-	PageSize param.Opt[int64]  `query:"page[size],omitzero" json:"-"`
-	Status   param.Opt[string] `query:"status,omitzero" json:"-"`
+	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Filter results by status.
+	Status param.Opt[string] `query:"status,omitzero" json:"-"`
 	paramObj
 }
 

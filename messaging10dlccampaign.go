@@ -770,6 +770,7 @@ func (r *Messaging10dlcCampaignUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type Messaging10dlcCampaignListParams struct {
+	// Filter results by brand id.
 	BrandID string `query:"brandId" api:"required" json:"-"`
 	// The 1-indexed page number to get. The default value is `1`.
 	Page param.Opt[int64] `query:"page,omitzero" json:"-"`

@@ -108,14 +108,21 @@ func (r *ReportCdrUsageReportFetchSyncResponseData) UnmarshalJSON(data []byte) e
 }
 
 type ReportCdrUsageReportFetchSyncParams struct {
+	// Type of aggregation to apply to the results.
+	//
 	// Any of "NO_AGGREGATION", "CONNECTION", "TAG", "BILLING_GROUP".
 	AggregationType ReportCdrUsageReportFetchSyncParamsAggregationType `query:"aggregation_type,omitzero" api:"required" json:"-"`
+	// Filter results by product breakdown.
+	//
 	// Any of "NO_BREAKDOWN", "DID_VS_TOLL_FREE", "COUNTRY",
 	// "DID_VS_TOLL_FREE_PER_COUNTRY".
 	ProductBreakdown ReportCdrUsageReportFetchSyncParamsProductBreakdown `query:"product_breakdown,omitzero" api:"required" json:"-"`
-	EndDate          param.Opt[time.Time]                                `query:"end_date,omitzero" format:"date-time" json:"-"`
-	StartDate        param.Opt[time.Time]                                `query:"start_date,omitzero" format:"date-time" json:"-"`
-	Connections      []float64                                           `query:"connections,omitzero" json:"-"`
+	// End of the date range filter (inclusive, ISO 8601).
+	EndDate param.Opt[time.Time] `query:"end_date,omitzero" format:"date-time" json:"-"`
+	// Start of the date range filter (inclusive, ISO 8601).
+	StartDate param.Opt[time.Time] `query:"start_date,omitzero" format:"date-time" json:"-"`
+	// Filter results by connection.
+	Connections []float64 `query:"connections,omitzero" json:"-"`
 	paramObj
 }
 
@@ -128,6 +135,7 @@ func (r ReportCdrUsageReportFetchSyncParams) URLQuery() (v url.Values, err error
 	})
 }
 
+// Type of aggregation to apply to the results.
 type ReportCdrUsageReportFetchSyncParamsAggregationType string
 
 const (
@@ -137,6 +145,7 @@ const (
 	ReportCdrUsageReportFetchSyncParamsAggregationTypeBillingGroup  ReportCdrUsageReportFetchSyncParamsAggregationType = "BILLING_GROUP"
 )
 
+// Filter results by product breakdown.
 type ReportCdrUsageReportFetchSyncParamsProductBreakdown string
 
 const (

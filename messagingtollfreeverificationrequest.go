@@ -733,17 +733,21 @@ func (r *MessagingTollfreeVerificationRequestUpdateParams) UnmarshalJSON(data []
 }
 
 type MessagingTollfreeVerificationRequestListParams struct {
+	// Page number to retrieve (1-based).
 	Page int64 `query:"page" api:"required" json:"-"`
 	// Request this many records per page
 	//
 	//	This value is automatically clamped if the provided value is too large.
 	PageSize int64 `query:"page_size" api:"required" json:"-"`
 	// Filter verification requests by business name
-	BusinessName param.Opt[string]    `query:"business_name,omitzero" json:"-"`
-	DateEnd      param.Opt[time.Time] `query:"date_end,omitzero" format:"date-time" json:"-"`
-	DateStart    param.Opt[time.Time] `query:"date_start,omitzero" format:"date-time" json:"-"`
-	PhoneNumber  param.Opt[string]    `query:"phone_number,omitzero" json:"-"`
-	// Tollfree verification status
+	BusinessName param.Opt[string] `query:"business_name,omitzero" json:"-"`
+	// End of the date range filter (inclusive, ISO 8601).
+	DateEnd param.Opt[time.Time] `query:"date_end,omitzero" format:"date-time" json:"-"`
+	// Start of the date range filter (inclusive, ISO 8601).
+	DateStart param.Opt[time.Time] `query:"date_start,omitzero" format:"date-time" json:"-"`
+	// Filter results by phone number.
+	PhoneNumber param.Opt[string] `query:"phone_number,omitzero" json:"-"`
+	// Filter results by status.
 	//
 	// Any of "Verified", "Rejected", "Waiting For Vendor", "Waiting For Customer",
 	// "Waiting For Telnyx", "In Progress".
@@ -761,9 +765,9 @@ func (r MessagingTollfreeVerificationRequestListParams) URLQuery() (v url.Values
 }
 
 type MessagingTollfreeVerificationRequestGetStatusHistoryParams struct {
+	// Page number to retrieve (1-based).
 	PageNumber int64 `query:"page[number]" api:"required" json:"-"`
-	// Request this many records per page. This value is automatically clamped if the
-	// provided value is too large.
+	// Number of items to return per page.
 	PageSize int64 `query:"page[size]" api:"required" json:"-"`
 	paramObj
 }

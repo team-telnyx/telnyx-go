@@ -187,14 +187,17 @@ func (r *AIMissionRunEventLogResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AIMissionRunEventListParams struct {
-	MissionID string            `path:"mission_id" api:"required" format:"uuid" json:"-"`
-	AgentID   param.Opt[string] `query:"agent_id,omitzero" json:"-"`
+	MissionID string `path:"mission_id" api:"required" format:"uuid" json:"-"`
+	// Filter results by agent id.
+	AgentID param.Opt[string] `query:"agent_id,omitzero" json:"-"`
 	// Page number (1-based)
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	// Number of items per page
-	PageSize param.Opt[int64]  `query:"page[size],omitzero" json:"-"`
-	StepID   param.Opt[string] `query:"step_id,omitzero" json:"-"`
-	Type     param.Opt[string] `query:"type,omitzero" json:"-"`
+	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Filter results by step id.
+	StepID param.Opt[string] `query:"step_id,omitzero" json:"-"`
+	// Filter results by type.
+	Type param.Opt[string] `query:"type,omitzero" json:"-"`
 	paramObj
 }
 

@@ -67,6 +67,7 @@ func (r *Messaging10dlcCampaignUsecaseGetCostResponse) UnmarshalJSON(data []byte
 }
 
 type Messaging10dlcCampaignUsecaseGetCostParams struct {
+	// Filter results by usecase.
 	Usecase string `query:"usecase" api:"required" json:"-"`
 	paramObj
 }

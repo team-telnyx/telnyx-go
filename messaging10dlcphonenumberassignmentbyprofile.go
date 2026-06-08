@@ -253,7 +253,9 @@ func (r *Messaging10dlcPhoneNumberAssignmentByProfileAssignParams) UnmarshalJSON
 }
 
 type Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusParams struct {
-	Page           param.Opt[int64] `query:"page,omitzero" json:"-"`
+	// Page number to retrieve (1-based).
+	Page param.Opt[int64] `query:"page,omitzero" json:"-"`
+	// Number of records to return per page.
 	RecordsPerPage param.Opt[int64] `query:"recordsPerPage,omitzero" json:"-"`
 	paramObj
 }
@@ -269,7 +271,9 @@ func (r Messaging10dlcPhoneNumberAssignmentByProfileListPhoneNumberStatusParams)
 }
 
 type Messaging10dlcPhoneNumberAssignmentByProfileGetPhoneNumberStatusParams struct {
-	Page           param.Opt[int64] `query:"page,omitzero" json:"-"`
+	// Page number to retrieve (1-based).
+	Page param.Opt[int64] `query:"page,omitzero" json:"-"`
+	// Number of records to return per page.
 	RecordsPerPage param.Opt[int64] `query:"recordsPerPage,omitzero" json:"-"`
 	paramObj
 }

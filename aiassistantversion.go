@@ -1502,7 +1502,8 @@ func (r *UpdateAssistantPostConversationSettingsParam) UnmarshalJSON(data []byte
 }
 
 type AIAssistantVersionGetParams struct {
-	AssistantID       string          `path:"assistant_id" api:"required" json:"-"`
+	AssistantID string `path:"assistant_id" api:"required" json:"-"`
+	// Whether to include MCP servers in the response.
 	IncludeMcpServers param.Opt[bool] `query:"include_mcp_servers,omitzero" json:"-"`
 	paramObj
 }

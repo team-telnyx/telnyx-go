@@ -797,8 +797,10 @@ func (r MessagingProfileListParamsFilter) URLQuery() (v url.Values, err error) {
 }
 
 type MessagingProfileListAlphanumericSenderIDsParams struct {
+	// Page number to retrieve (1-based).
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Number of items to return per page.
+	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	paramObj
 }
 

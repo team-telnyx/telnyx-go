@@ -647,10 +647,14 @@ type AIAssistantScheduledEventGetParams struct {
 }
 
 type AIAssistantScheduledEventListParams struct {
+	// Start of the date range filter (inclusive, ISO 8601).
 	FromDate   param.Opt[time.Time] `query:"from_date,omitzero" format:"date-time" json:"-"`
 	PageNumber param.Opt[int64]     `query:"page[number],omitzero" json:"-"`
 	PageSize   param.Opt[int64]     `query:"page[size],omitzero" json:"-"`
-	ToDate     param.Opt[time.Time] `query:"to_date,omitzero" format:"date-time" json:"-"`
+	// End of the date range filter (inclusive, ISO 8601).
+	ToDate param.Opt[time.Time] `query:"to_date,omitzero" format:"date-time" json:"-"`
+	// Filter results by conversation channel.
+	//
 	// Any of "phone_call", "sms_chat".
 	ConversationChannel ConversationChannelType `query:"conversation_channel,omitzero" json:"-"`
 	paramObj
