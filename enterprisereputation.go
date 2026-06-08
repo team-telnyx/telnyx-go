@@ -31,6 +31,8 @@ type EnterpriseReputationService struct {
 	Numbers EnterpriseReputationNumberService
 	// Phone-number reputation monitoring (spam-score lookup and tracking).
 	Loa EnterpriseReputationLoaService
+	// Phone-number reputation monitoring (spam-score lookup and tracking).
+	Remediation EnterpriseReputationRemediationService
 }
 
 // NewEnterpriseReputationService generates a new service that applies the given
@@ -41,6 +43,7 @@ func NewEnterpriseReputationService(opts ...option.RequestOption) (r EnterpriseR
 	r.Options = opts
 	r.Numbers = NewEnterpriseReputationNumberService(opts...)
 	r.Loa = NewEnterpriseReputationLoaService(opts...)
+	r.Remediation = NewEnterpriseReputationRemediationService(opts...)
 	return
 }
 
