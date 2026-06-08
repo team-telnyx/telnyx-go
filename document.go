@@ -107,7 +107,7 @@ func (r *DocumentService) Delete(ctx context.Context, id string, opts ...option.
 // Download a document.
 func (r *DocumentService) Download(ctx context.Context, id string, opts ...option.RequestOption) (res *http.Response, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
