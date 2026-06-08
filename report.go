@@ -296,27 +296,27 @@ func (r *ReportListWdrsResponseUplinkData) UnmarshalJSON(data []byte) error {
 }
 
 type ReportListMdrsParams struct {
-	// Message uuid
+	// Filter results by identifier.
 	ID param.Opt[string] `query:"id,omitzero" json:"-"`
-	// Destination number
+	// Filter results by cld.
 	Cld param.Opt[string] `query:"cld,omitzero" json:"-"`
-	// Origination number
+	// Filter results by cli.
 	Cli param.Opt[string] `query:"cli,omitzero" json:"-"`
 	// Pagination end date
 	EndDate param.Opt[string] `query:"end_date,omitzero" json:"-"`
-	// Name of the profile
+	// Filter results by profile.
 	Profile param.Opt[string] `query:"profile,omitzero" json:"-"`
 	// Pagination start date
 	StartDate param.Opt[string] `query:"start_date,omitzero" json:"-"`
-	// Direction (inbound or outbound)
+	// Filter results by direction.
 	//
 	// Any of "INBOUND", "OUTBOUND".
 	Direction ReportListMdrsParamsDirection `query:"direction,omitzero" json:"-"`
-	// Type of message
+	// Filter results by message type.
 	//
 	// Any of "SMS", "MMS".
 	MessageType ReportListMdrsParamsMessageType `query:"message_type,omitzero" json:"-"`
-	// Message status
+	// Filter results by status.
 	//
 	// Any of "GW_TIMEOUT", "DELIVERED", "DLR_UNCONFIRMED", "DLR_TIMEOUT", "RECEIVED",
 	// "GW_REJECT", "FAILED".
@@ -332,7 +332,7 @@ func (r ReportListMdrsParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Direction (inbound or outbound)
+// Filter results by direction.
 type ReportListMdrsParamsDirection string
 
 const (
@@ -340,7 +340,7 @@ const (
 	ReportListMdrsParamsDirectionOutbound ReportListMdrsParamsDirection = "OUTBOUND"
 )
 
-// Type of message
+// Filter results by message type.
 type ReportListMdrsParamsMessageType string
 
 const (
@@ -348,7 +348,7 @@ const (
 	ReportListMdrsParamsMessageTypeMms ReportListMdrsParamsMessageType = "MMS"
 )
 
-// Message status
+// Filter results by status.
 type ReportListMdrsParamsStatus string
 
 const (
@@ -362,30 +362,29 @@ const (
 )
 
 type ReportListWdrsParams struct {
-	// WDR uuid
+	// Filter results by identifier.
 	ID param.Opt[string] `query:"id,omitzero" json:"-"`
 	// End date
 	EndDate param.Opt[string] `query:"end_date,omitzero" json:"-"`
-	// International mobile subscriber identity
+	// Filter results by imsi.
 	Imsi param.Opt[string] `query:"imsi,omitzero" json:"-"`
-	// Mobile country code
+	// Filter results by mcc.
 	Mcc param.Opt[string] `query:"mcc,omitzero" json:"-"`
-	// Mobile network code
+	// Filter results by mnc.
 	Mnc        param.Opt[string] `query:"mnc,omitzero" json:"-"`
 	PageNumber param.Opt[int64]  `query:"page[number],omitzero" json:"-"`
 	PageSize   param.Opt[int64]  `query:"page[size],omitzero" json:"-"`
-	// Phone number
+	// Filter results by phone number.
 	PhoneNumber param.Opt[string] `query:"phone_number,omitzero" json:"-"`
-	// Sim card unique identifier
+	// Filter results by sim card id.
 	SimCardID param.Opt[string] `query:"sim_card_id,omitzero" json:"-"`
-	// Sim group unique identifier
+	// Filter results by sim group id.
 	SimGroupID param.Opt[string] `query:"sim_group_id,omitzero" json:"-"`
-	// Sim group name
+	// Filter results by sim group name.
 	SimGroupName param.Opt[string] `query:"sim_group_name,omitzero" json:"-"`
 	// Start date
 	StartDate param.Opt[string] `query:"start_date,omitzero" json:"-"`
-	// Field used to order the data. If no field is specified, default value is
-	// 'created_at'
+	// Field and direction to sort the results by.
 	Sort []string `query:"sort,omitzero" json:"-"`
 	paramObj
 }

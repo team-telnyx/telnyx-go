@@ -243,6 +243,7 @@ func (r *MessagingProfileAutorespConfigUpdateParams) UnmarshalJSON(data []byte) 
 }
 
 type MessagingProfileAutorespConfigListParams struct {
+	// Filter results by country code.
 	CountryCode param.Opt[string] `query:"country_code,omitzero" json:"-"`
 	// Consolidated created_at parameter (deepObject style). Originally:
 	// created_at[gte], created_at[lte]

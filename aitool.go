@@ -254,10 +254,14 @@ func (r *AIToolUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type AIToolListParams struct {
+	// Filter results by filter name.
 	FilterName param.Opt[string] `query:"filter[name],omitzero" json:"-"`
+	// Filter results by filter type.
 	FilterType param.Opt[string] `query:"filter[type],omitzero" json:"-"`
-	PageNumber param.Opt[int64]  `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64]  `query:"page[size],omitzero" json:"-"`
+	// Page number to retrieve (1-based).
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	// Number of items to return per page.
+	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	paramObj
 }
 

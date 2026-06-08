@@ -943,14 +943,19 @@ func (r *Messaging10dlcBrandUpdateParams) UnmarshalJSON(data []byte) error {
 
 type Messaging10dlcBrandListParams struct {
 	// Filter results by the Telnyx Brand id
-	BrandID     param.Opt[string] `query:"brandId,omitzero" json:"-"`
-	Country     param.Opt[string] `query:"country,omitzero" json:"-"`
+	BrandID param.Opt[string] `query:"brandId,omitzero" json:"-"`
+	// Filter results by country.
+	Country param.Opt[string] `query:"country,omitzero" json:"-"`
+	// Filter results by display name.
 	DisplayName param.Opt[string] `query:"displayName,omitzero" json:"-"`
-	EntityType  param.Opt[string] `query:"entityType,omitzero" json:"-"`
-	Page        param.Opt[int64]  `query:"page,omitzero" json:"-"`
+	// Filter results by entity type.
+	EntityType param.Opt[string] `query:"entityType,omitzero" json:"-"`
+	// Page number to retrieve (1-based).
+	Page param.Opt[int64] `query:"page,omitzero" json:"-"`
 	// number of records per page. maximum of 500
-	RecordsPerPage param.Opt[int64]  `query:"recordsPerPage,omitzero" json:"-"`
-	State          param.Opt[string] `query:"state,omitzero" json:"-"`
+	RecordsPerPage param.Opt[int64] `query:"recordsPerPage,omitzero" json:"-"`
+	// Filter results by state.
+	State param.Opt[string] `query:"state,omitzero" json:"-"`
 	// Filter results by the TCR Brand id
 	TcrBrandID param.Opt[string] `query:"tcrBrandId,omitzero" json:"-"`
 	// Specifies the sort order for results. If not given, results are sorted by

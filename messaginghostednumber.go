@@ -179,8 +179,10 @@ type MessagingHostedNumberListParams struct {
 	FilterPhoneNumber param.Opt[string] `query:"filter[phone_number],omitzero" json:"-"`
 	// Filter by phone number substring.
 	FilterPhoneNumberContains param.Opt[string] `query:"filter[phone_number][contains],omitzero" json:"-"`
-	PageNumber                param.Opt[int64]  `query:"page[number],omitzero" json:"-"`
-	PageSize                  param.Opt[int64]  `query:"page[size],omitzero" json:"-"`
+	// Page number to retrieve (1-based).
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	// Number of items to return per page.
+	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Sort by phone number.
 	//
 	// Any of "asc", "desc".

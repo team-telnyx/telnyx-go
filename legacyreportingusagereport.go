@@ -73,7 +73,9 @@ func (r *LegacyReportingUsageReportGetSpeechToTextResponse) UnmarshalJSON(data [
 }
 
 type LegacyReportingUsageReportGetSpeechToTextParams struct {
-	EndDate   param.Opt[time.Time] `query:"end_date,omitzero" format:"date-time" json:"-"`
+	// End of the date range filter (inclusive, ISO 8601).
+	EndDate param.Opt[time.Time] `query:"end_date,omitzero" format:"date-time" json:"-"`
+	// Start of the date range filter (inclusive, ISO 8601).
 	StartDate param.Opt[time.Time] `query:"start_date,omitzero" format:"date-time" json:"-"`
 	paramObj
 }

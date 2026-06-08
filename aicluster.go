@@ -315,6 +315,7 @@ func (r *AIClusterComputeParams) UnmarshalJSON(data []byte) error {
 }
 
 type AIClusterFetchGraphParams struct {
+	// Filter results by cluster id.
 	ClusterID param.Opt[int64] `query:"cluster_id,omitzero" json:"-"`
 	paramObj
 }

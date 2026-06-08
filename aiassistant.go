@@ -7481,10 +7481,14 @@ func (r *AIAssistantNewParamsPostConversationSettings) UnmarshalJSON(data []byte
 }
 
 type AIAssistantGetParams struct {
-	CallControlID                    param.Opt[string] `query:"call_control_id,omitzero" json:"-"`
-	FetchDynamicVariablesFromWebhook param.Opt[bool]   `query:"fetch_dynamic_variables_from_webhook,omitzero" json:"-"`
-	From                             param.Opt[string] `query:"from,omitzero" json:"-"`
-	To                               param.Opt[string] `query:"to,omitzero" json:"-"`
+	// Filter results by call control id.
+	CallControlID param.Opt[string] `query:"call_control_id,omitzero" json:"-"`
+	// Whether to fetch dynamic variables from the configured webhook.
+	FetchDynamicVariablesFromWebhook param.Opt[bool] `query:"fetch_dynamic_variables_from_webhook,omitzero" json:"-"`
+	// Start of the filter range.
+	From param.Opt[string] `query:"from,omitzero" json:"-"`
+	// End of the filter range.
+	To param.Opt[string] `query:"to,omitzero" json:"-"`
 	paramObj
 }
 
