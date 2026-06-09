@@ -32,8 +32,8 @@ func TestEnterpriseReputationRemediationNewWithOptionalParams(t *testing.T) {
 		"4a6192a4-573d-446d-b3ce-aff9117272a6",
 		telnyx.EnterpriseReputationRemediationNewParams{
 			CallPurpose:  "Appointment reminders for our dental clinic.",
-			ContactEmail: "ops@example.com",
 			PhoneNumbers: []string{"+19493253498", "+12134445566"},
+			ContactEmail: telnyx.String("ops@example.com"),
 			WebhookURL:   telnyx.String("https://example.com/webhooks/remediation"),
 		},
 	)

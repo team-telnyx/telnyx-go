@@ -129,10 +129,9 @@ func (r *EnterpriseReputationRemediationNewResponse) UnmarshalJSON(data []byte) 
 
 // Full detail of a remediation request, returned on submit and GET by id.
 type EnterpriseReputationRemediationNewResponseData struct {
-	ID           string    `json:"id" api:"required" format:"uuid"`
-	CallPurpose  string    `json:"call_purpose" api:"required"`
-	ContactEmail string    `json:"contact_email" api:"required" format:"email"`
-	CreatedAt    time.Time `json:"created_at" api:"required" format:"date-time"`
+	ID          string    `json:"id" api:"required" format:"uuid"`
+	CallPurpose string    `json:"call_purpose" api:"required"`
+	CreatedAt   time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Total phone numbers in this batch, including any later cancelled. May exceed the
 	// sum of the per-category result buckets, which omit cancelled numbers.
 	PhoneNumbersCount int64 `json:"phone_numbers_count" api:"required"`
@@ -144,8 +143,9 @@ type EnterpriseReputationRemediationNewResponseData struct {
 	// Customer-facing status of a remediation request.
 	//
 	// Any of "pending", "in_progress", "completed", "failed", "cancelled".
-	Status    string    `json:"status" api:"required"`
-	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
+	Status       string    `json:"status" api:"required"`
+	UpdatedAt    time.Time `json:"updated_at" api:"required" format:"date-time"`
+	ContactEmail string    `json:"contact_email" api:"nullable" format:"email"`
 	// Per-category buckets. Populated once results are available. Null while the
 	// request is still pending.
 	Results          EnterpriseReputationRemediationNewResponseDataResults `json:"results" api:"nullable"`
@@ -156,13 +156,13 @@ type EnterpriseReputationRemediationNewResponseData struct {
 	JSON struct {
 		ID                     respjson.Field
 		CallPurpose            respjson.Field
-		ContactEmail           respjson.Field
 		CreatedAt              respjson.Field
 		PhoneNumbersCount      respjson.Field
 		PhoneNumbersIneligible respjson.Field
 		PhoneNumbersSubmitted  respjson.Field
 		Status                 respjson.Field
 		UpdatedAt              respjson.Field
+		ContactEmail           respjson.Field
 		Results                respjson.Field
 		Tier1CompletedAt       respjson.Field
 		Tier2CompletedAt       respjson.Field
@@ -223,10 +223,9 @@ func (r *EnterpriseReputationRemediationGetResponse) UnmarshalJSON(data []byte) 
 
 // Full detail of a remediation request, returned on submit and GET by id.
 type EnterpriseReputationRemediationGetResponseData struct {
-	ID           string    `json:"id" api:"required" format:"uuid"`
-	CallPurpose  string    `json:"call_purpose" api:"required"`
-	ContactEmail string    `json:"contact_email" api:"required" format:"email"`
-	CreatedAt    time.Time `json:"created_at" api:"required" format:"date-time"`
+	ID          string    `json:"id" api:"required" format:"uuid"`
+	CallPurpose string    `json:"call_purpose" api:"required"`
+	CreatedAt   time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Total phone numbers in this batch, including any later cancelled. May exceed the
 	// sum of the per-category result buckets, which omit cancelled numbers.
 	PhoneNumbersCount int64 `json:"phone_numbers_count" api:"required"`
@@ -238,8 +237,9 @@ type EnterpriseReputationRemediationGetResponseData struct {
 	// Customer-facing status of a remediation request.
 	//
 	// Any of "pending", "in_progress", "completed", "failed", "cancelled".
-	Status    string    `json:"status" api:"required"`
-	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
+	Status       string    `json:"status" api:"required"`
+	UpdatedAt    time.Time `json:"updated_at" api:"required" format:"date-time"`
+	ContactEmail string    `json:"contact_email" api:"nullable" format:"email"`
 	// Per-category buckets. Populated once results are available. Null while the
 	// request is still pending.
 	Results          EnterpriseReputationRemediationGetResponseDataResults `json:"results" api:"nullable"`
@@ -250,13 +250,13 @@ type EnterpriseReputationRemediationGetResponseData struct {
 	JSON struct {
 		ID                     respjson.Field
 		CallPurpose            respjson.Field
-		ContactEmail           respjson.Field
 		CreatedAt              respjson.Field
 		PhoneNumbersCount      respjson.Field
 		PhoneNumbersIneligible respjson.Field
 		PhoneNumbersSubmitted  respjson.Field
 		Status                 respjson.Field
 		UpdatedAt              respjson.Field
+		ContactEmail           respjson.Field
 		Results                respjson.Field
 		Tier1CompletedAt       respjson.Field
 		Tier2CompletedAt       respjson.Field
@@ -347,11 +347,11 @@ const (
 type EnterpriseReputationRemediationNewParams struct {
 	// How the numbers are used (free text).
 	CallPurpose string `json:"call_purpose" api:"required"`
-	// Contact email for tracking this request.
-	ContactEmail string `json:"contact_email" api:"required" format:"email"`
 	// Phone numbers in E.164 format. Each must belong to this enterprise. Maximum
 	// 2,000 per request.
 	PhoneNumbers []string `json:"phone_numbers,omitzero" api:"required"`
+	// Optional contact email for this remediation request.
+	ContactEmail param.Opt[string] `json:"contact_email,omitzero" format:"email"`
 	// Optional https:// URL for status notifications.
 	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"uri"`
 	paramObj
