@@ -1,5 +1,28 @@
 # Changelog
 
+## 4.78.0 (2026-06-10)
+
+Full Changelog: [v4.77.0...v4.78.0](https://github.com/team-telnyx/telnyx-go/compare/v4.77.0...v4.78.0)
+
+### Features
+
+* Add sip region to scheduled events ([378bd38](https://github.com/team-telnyx/telnyx-go/commit/378bd38498ce7968a667af8d0be417b127224a6a))
+* branded-calling: drop 'simplified'/'no enterprise_id' framing from DIR endpoints ([c98098e](https://github.com/team-telnyx/telnyx-go/commit/c98098e09211027634f79ec49b0142dda80ed877))
+* branded-calling: sync PATCH /dir/{dir_id} spec with deployed service behavior ([1ee6a54](https://github.com/team-telnyx/telnyx-go/commit/1ee6a542a8a979bd70a5c4397e26b8b2ca907a48))
+* **branded-calling:** document LOA (DIR) + reputation remediation endpoints ([f9247d2](https://github.com/team-telnyx/telnyx-go/commit/f9247d20a6d2ea1085f01cb61bb5aaea7a59e46f))
+* Fix cross-product leakage: de-dup shared enterprise/ToS endpoints + neutralize descriptions ([6533b74](https://github.com/team-telnyx/telnyx-go/commit/6533b74617711b012000744f773ad759d2abc9b8))
+* NUM-6470: Add branded-calling-v2 OpenAPI specs (external + internal) ([0c8bc4d](https://github.com/team-telnyx/telnyx-go/commit/0c8bc4dc3c5ce8f49bc84c36549a87a08f60cb42))
+* **spec:** backfill parameter descriptions to 100% coverage ([72d2aad](https://github.com/team-telnyx/telnyx-go/commit/72d2aad20ae358206dcfed116fe5e6be2b0966c0))
+* **spec:** inline 2xx response schemas — REST response coverage 41% → 91% (sync of openapi[#199](https://github.com/team-telnyx/telnyx-go/issues/199)) ([27df323](https://github.com/team-telnyx/telnyx-go/commit/27df323b172616cefa75092ee816a6e12cdc579c))
+* specs: add GET /terms_of_service/info (branded-calling + number-reputation) ([7ca1698](https://github.com/team-telnyx/telnyx-go/commit/7ca16983af965c7e2ac2754547493ec85f5503ca))
+* specs: drop legacy plain filter params (keep filter[] canonical) on list endpoints ([b126f69](https://github.com/team-telnyx/telnyx-go/commit/b126f695a548c48e51e537db75a3598f56c0e235))
+* specs: remove em dashes from branded-calling + number-reputation descriptions ([1750fef](https://github.com/team-telnyx/telnyx-go/commit/1750fefaf29ecaa9503f0f9e2e122bcdaf0bfa1d))
+
+
+### Bug Fixes
+
+* **number-reputation:** remediation contact_email is optional ([2eb1fb4](https://github.com/team-telnyx/telnyx-go/commit/2eb1fb4c4a438448c58375b5dab0e4ef10814e6f))
+
 ## 4.77.0 (2026-06-05)
 
 Full Changelog: [v4.76.0...v4.77.0](https://github.com/team-telnyx/telnyx-go/compare/v4.76.0...v4.77.0)
