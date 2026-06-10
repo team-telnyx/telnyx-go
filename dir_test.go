@@ -58,12 +58,20 @@ func TestDirUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"16635d38-75a6-4481-82e8-69af60e05011",
 		telnyx.DirUpdateParams{
-			AuthorizerEmail: telnyx.String("dev@stainless.com"),
-			AuthorizerName:  telnyx.String("authorizer_name"),
-			CallReasons:     []string{"Appointment reminders", "Billing inquiries", "Lab results"},
-			DisplayName:     telnyx.String("Acme Plumbing & Wellness"),
-			LogoURL:         telnyx.String("https://acmeplumbing.example.com/logo-v2-256.bmp"),
-			Reselling:       telnyx.Bool(true),
+			AuthorizerEmail:        telnyx.String("dev@stainless.com"),
+			AuthorizerName:         telnyx.String("authorizer_name"),
+			CallReasons:            []string{"Appointment reminders", "Billing inquiries", "Lab results"},
+			CertifyBrandIsAccurate: telnyx.Bool(true),
+			CertifyIPOwnership:     telnyx.Bool(true),
+			CertifyNoShaftContent:  telnyx.Bool(true),
+			DisplayName:            telnyx.String("Acme Plumbing & Wellness"),
+			Documents: []telnyx.DirUpdateParamsDocument{{
+				DocumentID:   "2a7e8337-e803-4057-a4ae-26c40eb0bc6c",
+				DocumentType: "business_registration",
+				Description:  telnyx.String("Certificate of incorporation."),
+			}},
+			LogoURL:   telnyx.String("https://acmeplumbing.example.com/logo-v2-256.bmp"),
+			Reselling: telnyx.Bool(true),
 		},
 	)
 	if err != nil {
