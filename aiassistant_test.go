@@ -34,10 +34,10 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 				OfPrompt: &telnyx.AIAssistantNewParamsConversationFlowNodePrompt{
 					ID:           "n_intake",
 					Instructions: "Greet the caller and ask what they're calling about.",
-					ExternalLlm: telnyx.ExternalLlmReqParam{
+					ExternalLlm: telnyx.AIAssistantNewParamsConversationFlowNodePromptExternalLlm{
 						BaseURL:              "base_url",
 						Model:                "model",
-						AuthenticationMethod: telnyx.ExternalLlmReqAuthenticationMethodToken,
+						AuthenticationMethod: "token",
 						CertificateRef:       telnyx.String("certificate_ref"),
 						ForwardMetadata:      telnyx.Bool(true),
 						LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
@@ -97,10 +97,10 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 				OfPrompt: &telnyx.AIAssistantNewParamsConversationFlowNodePrompt{
 					ID:           "n_billing",
 					Instructions: "Focus on billing questions. Look up the caller's latest invoice with the billing tool before answering.",
-					ExternalLlm: telnyx.ExternalLlmReqParam{
+					ExternalLlm: telnyx.AIAssistantNewParamsConversationFlowNodePromptExternalLlm{
 						BaseURL:              "base_url",
 						Model:                "model",
-						AuthenticationMethod: telnyx.ExternalLlmReqAuthenticationMethodToken,
+						AuthenticationMethod: "token",
 						CertificateRef:       telnyx.String("certificate_ref"),
 						ForwardMetadata:      telnyx.Bool(true),
 						LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
@@ -198,20 +198,20 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 		DynamicVariablesWebhookTimeoutMs: telnyx.Int(1),
 		DynamicVariablesWebhookURL:       telnyx.String("dynamic_variables_webhook_url"),
 		EnabledFeatures:                  []telnyx.EnabledFeatures{telnyx.EnabledFeaturesTelephony},
-		ExternalLlm: telnyx.ExternalLlmReqParam{
+		ExternalLlm: telnyx.AIAssistantNewParamsExternalLlm{
 			BaseURL:              "base_url",
 			Model:                "model",
-			AuthenticationMethod: telnyx.ExternalLlmReqAuthenticationMethodToken,
+			AuthenticationMethod: "token",
 			CertificateRef:       telnyx.String("certificate_ref"),
 			ForwardMetadata:      telnyx.Bool(true),
 			LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
 			TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
 		},
-		FallbackConfig: telnyx.FallbackConfigReqParam{
-			ExternalLlm: telnyx.ExternalLlmReqParam{
+		FallbackConfig: telnyx.AIAssistantNewParamsFallbackConfig{
+			ExternalLlm: telnyx.AIAssistantNewParamsFallbackConfigExternalLlm{
 				BaseURL:              "base_url",
 				Model:                "model",
-				AuthenticationMethod: telnyx.ExternalLlmReqAuthenticationMethodToken,
+				AuthenticationMethod: "token",
 				CertificateRef:       telnyx.String("certificate_ref"),
 				ForwardMetadata:      telnyx.Bool(true),
 				LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
@@ -224,15 +224,15 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 		InsightSettings: telnyx.InsightSettingsParam{
 			InsightGroupID: telnyx.String("insight_group_id"),
 		},
-		Integrations: []telnyx.AssistantIntegrationParam{{
+		Integrations: []telnyx.AIAssistantNewParamsIntegration{{
 			IntegrationID: "integration_id",
 			AllowedList:   []string{"string"},
 		}},
-		InterruptionSettings: telnyx.InferenceEmbeddingInterruptionSettingsParam{
+		InterruptionSettings: telnyx.AIAssistantNewParamsInterruptionSettings{
 			DisableGreetingInterruption: telnyx.Bool(true),
 			Enable:                      telnyx.Bool(true),
-			StartSpeakingPlan: telnyx.StartSpeakingPlanParam{
-				TranscriptionEndpointingPlan: telnyx.TranscriptionEndpointingPlanParam{
+			StartSpeakingPlan: telnyx.AIAssistantNewParamsInterruptionSettingsStartSpeakingPlan{
+				TranscriptionEndpointingPlan: telnyx.AIAssistantNewParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan{
 					OnNoPunctuationSeconds: telnyx.Float(0),
 					OnNumberSeconds:        telnyx.Float(0),
 					OnPunctuationSeconds:   telnyx.Float(0),
@@ -241,7 +241,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			},
 		},
 		LlmAPIKeyRef: telnyx.String("llm_api_key_ref"),
-		McpServers: []telnyx.AssistantMcpServerParam{{
+		McpServers: []telnyx.AIAssistantNewParamsMcpServer{{
 			ID:           "id",
 			AllowedTools: []string{"string"},
 		}},
@@ -261,7 +261,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			SecretKeyRef:  telnyx.String("secret_key_ref"),
 			Status:        telnyx.ObservabilityReqStatusEnabled,
 		},
-		PostConversationSettings: telnyx.PostConversationSettingsReqParam{
+		PostConversationSettings: telnyx.AIAssistantNewParamsPostConversationSettings{
 			Enabled: telnyx.Bool(true),
 		},
 		PrivacySettings: telnyx.PrivacySettingsParam{
@@ -459,10 +459,10 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 					OfPrompt: &telnyx.AIAssistantUpdateParamsConversationFlowNodePrompt{
 						ID:           "n_intake",
 						Instructions: "Greet the caller and ask what they're calling about.",
-						ExternalLlm: telnyx.ExternalLlmReqParam{
+						ExternalLlm: telnyx.AIAssistantUpdateParamsConversationFlowNodePromptExternalLlm{
 							BaseURL:              "base_url",
 							Model:                "model",
-							AuthenticationMethod: telnyx.ExternalLlmReqAuthenticationMethodToken,
+							AuthenticationMethod: "token",
 							CertificateRef:       telnyx.String("certificate_ref"),
 							ForwardMetadata:      telnyx.Bool(true),
 							LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
@@ -522,10 +522,10 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 					OfPrompt: &telnyx.AIAssistantUpdateParamsConversationFlowNodePrompt{
 						ID:           "n_billing",
 						Instructions: "Focus on billing questions. Look up the caller's latest invoice with the billing tool before answering.",
-						ExternalLlm: telnyx.ExternalLlmReqParam{
+						ExternalLlm: telnyx.AIAssistantUpdateParamsConversationFlowNodePromptExternalLlm{
 							BaseURL:              "base_url",
 							Model:                "model",
-							AuthenticationMethod: telnyx.ExternalLlmReqAuthenticationMethodToken,
+							AuthenticationMethod: "token",
 							CertificateRef:       telnyx.String("certificate_ref"),
 							ForwardMetadata:      telnyx.Bool(true),
 							LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
@@ -623,20 +623,20 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 			DynamicVariablesWebhookTimeoutMs: telnyx.Int(1),
 			DynamicVariablesWebhookURL:       telnyx.String("dynamic_variables_webhook_url"),
 			EnabledFeatures:                  []telnyx.EnabledFeatures{telnyx.EnabledFeaturesTelephony},
-			ExternalLlm: telnyx.ExternalLlmReqParam{
+			ExternalLlm: telnyx.AIAssistantUpdateParamsExternalLlm{
 				BaseURL:              "base_url",
 				Model:                "model",
-				AuthenticationMethod: telnyx.ExternalLlmReqAuthenticationMethodToken,
+				AuthenticationMethod: "token",
 				CertificateRef:       telnyx.String("certificate_ref"),
 				ForwardMetadata:      telnyx.Bool(true),
 				LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
 				TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
 			},
-			FallbackConfig: telnyx.FallbackConfigReqParam{
-				ExternalLlm: telnyx.ExternalLlmReqParam{
+			FallbackConfig: telnyx.AIAssistantUpdateParamsFallbackConfig{
+				ExternalLlm: telnyx.AIAssistantUpdateParamsFallbackConfigExternalLlm{
 					BaseURL:              "base_url",
 					Model:                "model",
-					AuthenticationMethod: telnyx.ExternalLlmReqAuthenticationMethodToken,
+					AuthenticationMethod: "token",
 					CertificateRef:       telnyx.String("certificate_ref"),
 					ForwardMetadata:      telnyx.Bool(true),
 					LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
@@ -650,15 +650,15 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				InsightGroupID: telnyx.String("insight_group_id"),
 			},
 			Instructions: telnyx.String("instructions"),
-			Integrations: []telnyx.AssistantIntegrationParam{{
+			Integrations: []telnyx.AIAssistantUpdateParamsIntegration{{
 				IntegrationID: "integration_id",
 				AllowedList:   []string{"string"},
 			}},
-			InterruptionSettings: telnyx.InferenceEmbeddingInterruptionSettingsParam{
+			InterruptionSettings: telnyx.AIAssistantUpdateParamsInterruptionSettings{
 				DisableGreetingInterruption: telnyx.Bool(true),
 				Enable:                      telnyx.Bool(true),
-				StartSpeakingPlan: telnyx.StartSpeakingPlanParam{
-					TranscriptionEndpointingPlan: telnyx.TranscriptionEndpointingPlanParam{
+				StartSpeakingPlan: telnyx.AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlan{
+					TranscriptionEndpointingPlan: telnyx.AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan{
 						OnNoPunctuationSeconds: telnyx.Float(0),
 						OnNumberSeconds:        telnyx.Float(0),
 						OnPunctuationSeconds:   telnyx.Float(0),
@@ -667,7 +667,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				},
 			},
 			LlmAPIKeyRef: telnyx.String("llm_api_key_ref"),
-			McpServers: []telnyx.AssistantMcpServerParam{{
+			McpServers: []telnyx.AIAssistantUpdateParamsMcpServer{{
 				ID:           "id",
 				AllowedTools: []string{"string"},
 			}},
@@ -688,7 +688,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				SecretKeyRef:  telnyx.String("secret_key_ref"),
 				Status:        telnyx.ObservabilityReqStatusEnabled,
 			},
-			PostConversationSettings: telnyx.PostConversationSettingsReqParam{
+			PostConversationSettings: telnyx.AIAssistantUpdateParamsPostConversationSettings{
 				Enabled: telnyx.Bool(true),
 			},
 			PrivacySettings: telnyx.PrivacySettingsParam{

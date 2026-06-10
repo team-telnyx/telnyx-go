@@ -28,7 +28,7 @@ func TestReputationNumberGetWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Reputation.Numbers.Get(
 		context.TODO(),
-		"+16035551234",
+		"+19493253498",
 		telnyx.ReputationNumberGetParams{
 			Fresh: telnyx.Bool(true),
 		},
@@ -56,9 +56,11 @@ func TestReputationNumberListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Reputation.Numbers.List(context.TODO(), telnyx.ReputationNumberListParams{
-		PageNumber:  telnyx.Int(1),
-		PageSize:    telnyx.Int(1),
-		PhoneNumber: telnyx.String("+16035551234"),
+		FilterEnterpriseID:        telnyx.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		FilterPhoneNumberContains: telnyx.String("+16035551234"),
+		FilterPhoneNumberEq:       telnyx.String("+16035551234"),
+		PageNumber:                telnyx.Int(1),
+		PageSize:                  telnyx.Int(20),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -82,7 +84,7 @@ func TestReputationNumberDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Reputation.Numbers.Delete(context.TODO(), "+16035551234")
+	err := client.Reputation.Numbers.Delete(context.TODO(), "+19493253498")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

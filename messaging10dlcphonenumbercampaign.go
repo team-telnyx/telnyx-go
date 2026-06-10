@@ -208,7 +208,9 @@ func (r *Messaging10dlcPhoneNumberCampaignUpdateParams) UnmarshalJSON(data []byt
 }
 
 type Messaging10dlcPhoneNumberCampaignListParams struct {
-	Page           param.Opt[int64] `query:"page,omitzero" json:"-"`
+	// Page number to retrieve (1-based).
+	Page param.Opt[int64] `query:"page,omitzero" json:"-"`
+	// Number of records to return per page.
 	RecordsPerPage param.Opt[int64] `query:"recordsPerPage,omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[telnyx_campaign_id], filter[telnyx_brand_id], filter[tcr_campaign_id],

@@ -336,11 +336,16 @@ func (r ReportMdrUsageReportListParams) URLQuery() (v url.Values, err error) {
 }
 
 type ReportMdrUsageReportFetchSyncParams struct {
+	// Type of aggregation to apply to the results.
+	//
 	// Any of "NO_AGGREGATION", "PROFILE", "TAGS".
 	AggregationType ReportMdrUsageReportFetchSyncParamsAggregationType `query:"aggregation_type,omitzero" api:"required" json:"-"`
-	EndDate         param.Opt[time.Time]                               `query:"end_date,omitzero" format:"date-time" json:"-"`
-	StartDate       param.Opt[time.Time]                               `query:"start_date,omitzero" format:"date-time" json:"-"`
-	Profiles        []string                                           `query:"profiles,omitzero" json:"-"`
+	// End of the date range filter (inclusive, ISO 8601).
+	EndDate param.Opt[time.Time] `query:"end_date,omitzero" format:"date-time" json:"-"`
+	// Start of the date range filter (inclusive, ISO 8601).
+	StartDate param.Opt[time.Time] `query:"start_date,omitzero" format:"date-time" json:"-"`
+	// Filter results by profile.
+	Profiles []string `query:"profiles,omitzero" json:"-"`
 	paramObj
 }
 
@@ -353,6 +358,7 @@ func (r ReportMdrUsageReportFetchSyncParams) URLQuery() (v url.Values, err error
 	})
 }
 
+// Type of aggregation to apply to the results.
 type ReportMdrUsageReportFetchSyncParamsAggregationType string
 
 const (

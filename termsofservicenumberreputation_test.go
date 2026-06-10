@@ -26,7 +26,7 @@ func TestTermsOfServiceNumberReputationAgree(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.TermsOfService.NumberReputation.Agree(context.TODO())
+	_, err := client.TermsOfService.NumberReputation.Agree(context.TODO())
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

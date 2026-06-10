@@ -26,7 +26,7 @@ func TestEnterpriseReputationGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Enterprises.Reputation.Get(context.TODO(), "6a09cdc3-8948-47f0-aa62-74ac943d6c58")
+	_, err := client.Enterprises.Reputation.Get(context.TODO(), "4a6192a4-573d-446d-b3ce-aff9117272a6")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -49,7 +49,7 @@ func TestEnterpriseReputationDisable(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Enterprises.Reputation.Disable(context.TODO(), "6a09cdc3-8948-47f0-aa62-74ac943d6c58")
+	err := client.Enterprises.Reputation.Disable(context.TODO(), "4a6192a4-573d-446d-b3ce-aff9117272a6")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -74,9 +74,9 @@ func TestEnterpriseReputationEnableWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Enterprises.Reputation.Enable(
 		context.TODO(),
-		"6a09cdc3-8948-47f0-aa62-74ac943d6c58",
+		"4a6192a4-573d-446d-b3ce-aff9117272a6",
 		telnyx.EnterpriseReputationEnableParams{
-			LoaDocumentID:  "doc_01HXYZ1234ABCDEF",
+			LoaDocumentID:  "2a7e8337-e803-4057-a4ae-26c40eb0bc6c",
 			CheckFrequency: telnyx.EnterpriseReputationEnableParamsCheckFrequencyBusinessDaily,
 		},
 	)
@@ -104,9 +104,9 @@ func TestEnterpriseReputationUpdateFrequency(t *testing.T) {
 	)
 	_, err := client.Enterprises.Reputation.UpdateFrequency(
 		context.TODO(),
-		"6a09cdc3-8948-47f0-aa62-74ac943d6c58",
+		"4a6192a4-573d-446d-b3ce-aff9117272a6",
 		telnyx.EnterpriseReputationUpdateFrequencyParams{
-			CheckFrequency: telnyx.EnterpriseReputationUpdateFrequencyParamsCheckFrequencyBusinessDaily,
+			CheckFrequency: telnyx.EnterpriseReputationUpdateFrequencyParamsCheckFrequencyWeekly,
 		},
 	)
 	if err != nil {

@@ -348,9 +348,6 @@ const MessagingHostedNumberOrderStatusSuccessful = shared.MessagingHostedNumberO
 type MessagingPaginationMeta = shared.MessagingPaginationMeta
 
 // This is an alias to an internal type.
-type MetaInfo = shared.MetaInfo
-
-// This is an alias to an internal type.
 type Metadata = shared.Metadata
 
 // This is an alias to an internal type.
@@ -668,12 +665,13 @@ const RegionInformationRegionTypeState = shared.RegionInformationRegionTypeState
 // Equals "location"
 const RegionInformationRegionTypeLocation = shared.RegionInformationRegionTypeLocation
 
-// Reputation metrics
+// Reputation snapshot for a phone number. Each metric is a 0–100 score;
+// `spam_risk` is a coarse bucket. Field set may grow over time - read by key.
 //
 // This is an alias to an internal type.
 type ReputationData = shared.ReputationData
 
-// Overall spam risk level
+// Overall spam-risk classification.
 //
 // This is an alias to an internal type.
 type ReputationDataSpamRisk = shared.ReputationDataSpamRisk
@@ -686,9 +684,6 @@ const ReputationDataSpamRiskMedium = shared.ReputationDataSpamRiskMedium
 
 // Equals "high"
 const ReputationDataSpamRiskHigh = shared.ReputationDataSpamRiskHigh
-
-// This is an alias to an internal type.
-type ReputationPhoneNumberWithReputationData = shared.ReputationPhoneNumberWithReputationData
 
 // This is an alias to an internal type.
 type ResembleVoiceSettingsParam = shared.ResembleVoiceSettingsParam
@@ -896,14 +891,3 @@ const WhatsappTemplateDataCategoryAuthentication = shared.WhatsappTemplateDataCa
 
 // This is an alias to an internal type.
 type WhatsappTemplateDataWhatsappBusinessAccount = shared.WhatsappTemplateDataWhatsappBusinessAccount
-
-// This is an alias to an internal type.
-type XaiVoiceSettingsParam = shared.XaiVoiceSettingsParam
-
-// Voice settings provider type
-//
-// This is an alias to an internal type.
-type XaiVoiceSettingsType = shared.XaiVoiceSettingsType
-
-// Equals "xai"
-const XaiVoiceSettingsTypeXai = shared.XaiVoiceSettingsTypeXai

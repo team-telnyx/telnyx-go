@@ -67,10 +67,10 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 						OfPrompt: &telnyx.UpdateAssistantConversationFlowNodePromptParam{
 							ID:           "n_intake",
 							Instructions: "Greet the caller and ask what they're calling about.",
-							ExternalLlm: telnyx.ExternalLlmReqParam{
+							ExternalLlm: telnyx.UpdateAssistantConversationFlowNodePromptExternalLlmParam{
 								BaseURL:              "base_url",
 								Model:                "model",
-								AuthenticationMethod: telnyx.ExternalLlmReqAuthenticationMethodToken,
+								AuthenticationMethod: "token",
 								CertificateRef:       telnyx.String("certificate_ref"),
 								ForwardMetadata:      telnyx.Bool(true),
 								LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
@@ -130,10 +130,10 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 						OfPrompt: &telnyx.UpdateAssistantConversationFlowNodePromptParam{
 							ID:           "n_billing",
 							Instructions: "Focus on billing questions. Look up the caller's latest invoice with the billing tool before answering.",
-							ExternalLlm: telnyx.ExternalLlmReqParam{
+							ExternalLlm: telnyx.UpdateAssistantConversationFlowNodePromptExternalLlmParam{
 								BaseURL:              "base_url",
 								Model:                "model",
-								AuthenticationMethod: telnyx.ExternalLlmReqAuthenticationMethodToken,
+								AuthenticationMethod: "token",
 								CertificateRef:       telnyx.String("certificate_ref"),
 								ForwardMetadata:      telnyx.Bool(true),
 								LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
@@ -231,20 +231,20 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 				DynamicVariablesWebhookTimeoutMs: telnyx.Int(1),
 				DynamicVariablesWebhookURL:       telnyx.String("dynamic_variables_webhook_url"),
 				EnabledFeatures:                  []telnyx.EnabledFeatures{telnyx.EnabledFeaturesTelephony},
-				ExternalLlm: telnyx.ExternalLlmReqParam{
+				ExternalLlm: telnyx.UpdateAssistantExternalLlmParam{
 					BaseURL:              "base_url",
 					Model:                "model",
-					AuthenticationMethod: telnyx.ExternalLlmReqAuthenticationMethodToken,
+					AuthenticationMethod: "token",
 					CertificateRef:       telnyx.String("certificate_ref"),
 					ForwardMetadata:      telnyx.Bool(true),
 					LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
 					TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
 				},
-				FallbackConfig: telnyx.FallbackConfigReqParam{
-					ExternalLlm: telnyx.ExternalLlmReqParam{
+				FallbackConfig: telnyx.UpdateAssistantFallbackConfigParam{
+					ExternalLlm: telnyx.UpdateAssistantFallbackConfigExternalLlmParam{
 						BaseURL:              "base_url",
 						Model:                "model",
-						AuthenticationMethod: telnyx.ExternalLlmReqAuthenticationMethodToken,
+						AuthenticationMethod: "token",
 						CertificateRef:       telnyx.String("certificate_ref"),
 						ForwardMetadata:      telnyx.Bool(true),
 						LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
@@ -258,15 +258,15 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					InsightGroupID: telnyx.String("insight_group_id"),
 				},
 				Instructions: telnyx.String("instructions"),
-				Integrations: []telnyx.AssistantIntegrationParam{{
+				Integrations: []telnyx.UpdateAssistantIntegrationParam{{
 					IntegrationID: "integration_id",
 					AllowedList:   []string{"string"},
 				}},
-				InterruptionSettings: telnyx.InferenceEmbeddingInterruptionSettingsParam{
+				InterruptionSettings: telnyx.UpdateAssistantInterruptionSettingsParam{
 					DisableGreetingInterruption: telnyx.Bool(true),
 					Enable:                      telnyx.Bool(true),
-					StartSpeakingPlan: telnyx.StartSpeakingPlanParam{
-						TranscriptionEndpointingPlan: telnyx.TranscriptionEndpointingPlanParam{
+					StartSpeakingPlan: telnyx.UpdateAssistantInterruptionSettingsStartSpeakingPlanParam{
+						TranscriptionEndpointingPlan: telnyx.UpdateAssistantInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlanParam{
 							OnNoPunctuationSeconds: telnyx.Float(0),
 							OnNumberSeconds:        telnyx.Float(0),
 							OnPunctuationSeconds:   telnyx.Float(0),
@@ -275,7 +275,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					},
 				},
 				LlmAPIKeyRef: telnyx.String("llm_api_key_ref"),
-				McpServers: []telnyx.AssistantMcpServerParam{{
+				McpServers: []telnyx.UpdateAssistantMcpServerParam{{
 					ID:           "id",
 					AllowedTools: []string{"string"},
 				}},
@@ -296,7 +296,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					SecretKeyRef:  telnyx.String("secret_key_ref"),
 					Status:        telnyx.ObservabilityReqStatusEnabled,
 				},
-				PostConversationSettings: telnyx.PostConversationSettingsReqParam{
+				PostConversationSettings: telnyx.UpdateAssistantPostConversationSettingsParam{
 					Enabled: telnyx.Bool(true),
 				},
 				PrivacySettings: telnyx.PrivacySettingsParam{

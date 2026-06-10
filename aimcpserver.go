@@ -256,10 +256,14 @@ func (r *AIMcpServerUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type AIMcpServerListParams struct {
-	PageNumber param.Opt[int64]  `query:"page[number],omitzero" json:"-"`
-	PageSize   param.Opt[int64]  `query:"page[size],omitzero" json:"-"`
-	Type       param.Opt[string] `query:"type,omitzero" json:"-"`
-	URL        param.Opt[string] `query:"url,omitzero" json:"-"`
+	// Page number to retrieve (1-based).
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	// Number of items to return per page.
+	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Filter results by type.
+	Type param.Opt[string] `query:"type,omitzero" json:"-"`
+	// Filter results by url.
+	URL param.Opt[string] `query:"url,omitzero" json:"-"`
 	paramObj
 }
 

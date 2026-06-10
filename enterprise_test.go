@@ -28,47 +28,48 @@ func TestEnterpriseNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Enterprises.New(context.TODO(), telnyx.EnterpriseNewParams{
 		BillingAddress: telnyx.BillingAddressParam{
-			AdministrativeArea: "Illinois",
+			AdministrativeArea: "IL",
 			City:               "Chicago",
-			Country:            "United States",
+			Country:            "US",
 			PostalCode:         "60601",
-			StreetAddress:      "123 Main St",
-			ExtendedAddress:    telnyx.String("Suite 400"),
+			StreetAddress:      "100 Main St",
+			ExtendedAddress:    telnyx.String("Suite 504"),
 		},
 		BillingContact: telnyx.BillingContactParam{
-			Email:       "billing@acme.com",
-			FirstName:   "John",
-			LastName:    "Doe",
-			PhoneNumber: "15551234568",
+			Email:       "billing@run065.example.com",
+			FirstName:   "Alex",
+			LastName:    "Bill",
+			PhoneNumber: "+13125550001",
 		},
-		CountryCode:       "US",
-		DoingBusinessAs:   "Acme",
-		Fein:              "12-3456789",
-		Industry:          "technology",
-		LegalName:         "Acme Corp Inc.",
-		NumberOfEmployees: telnyx.EnterpriseNewParamsNumberOfEmployeesNumberOfEmployees51_200,
+		CountryCode:                 "US",
+		DoingBusinessAs:             "Run 065 Debug",
+		Fein:                        "12-3456789",
+		Industry:                    telnyx.EnterpriseNewParamsIndustryTechnology,
+		JurisdictionOfIncorporation: "Delaware",
+		LegalName:                   "Run 065 Debug Co",
+		NumberOfEmployees:           telnyx.EnterpriseNewParamsNumberOfEmployeesNumberOfEmployees51_200,
 		OrganizationContact: telnyx.OrganizationContactParam{
-			Email:     "jane.smith@acme.com",
-			FirstName: "Jane",
-			JobTitle:  "VP of Engineering",
-			LastName:  "Smith",
-			Phone:     "+16035551234",
+			Email:       "org@run065.example.com",
+			FirstName:   "Sam",
+			JobTitle:    "Compliance Lead",
+			LastName:    "Org",
+			PhoneNumber: "+13125550000",
 		},
-		OrganizationLegalType: telnyx.EnterpriseNewParamsOrganizationLegalTypeCorporation,
+		OrganizationLegalType: telnyx.EnterpriseNewParamsOrganizationLegalTypeLlc,
 		OrganizationPhysicalAddress: telnyx.PhysicalAddressParam{
-			AdministrativeArea: "Illinois",
+			AdministrativeArea: "IL",
 			City:               "Chicago",
-			Country:            "United States",
+			Country:            "US",
 			PostalCode:         "60601",
-			StreetAddress:      "123 Main St",
-			ExtendedAddress:    telnyx.String("Suite 400"),
+			StreetAddress:      "100 Main St",
+			ExtendedAddress:    telnyx.String("Suite 504"),
 		},
 		OrganizationType:             telnyx.EnterpriseNewParamsOrganizationTypeCommercial,
-		Website:                      "https://acme.com",
+		Website:                      "https://run065.example.com",
 		CorporateRegistrationNumber:  telnyx.String("corporate_registration_number"),
-		CustomerReference:            telnyx.String("customer_reference"),
+		CustomerReference:            telnyx.String("internal-id-12345"),
 		DunBradstreetNumber:          telnyx.String("dun_bradstreet_number"),
-		PrimaryBusinessDomainSicCode: telnyx.String("7372"),
+		PrimaryBusinessDomainSicCode: telnyx.String("primary_business_domain_sic_code"),
 		ProfessionalLicenseNumber:    telnyx.String("professional_license_number"),
 		RoleType:                     telnyx.EnterpriseNewParamsRoleTypeEnterprise,
 	})
@@ -94,7 +95,7 @@ func TestEnterpriseGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Enterprises.Get(context.TODO(), "6a09cdc3-8948-47f0-aa62-74ac943d6c58")
+	_, err := client.Enterprises.Get(context.TODO(), "4a6192a4-573d-446d-b3ce-aff9117272a6")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -119,49 +120,50 @@ func TestEnterpriseUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Enterprises.Update(
 		context.TODO(),
-		"6a09cdc3-8948-47f0-aa62-74ac943d6c58",
+		"4a6192a4-573d-446d-b3ce-aff9117272a6",
 		telnyx.EnterpriseUpdateParams{
 			BillingAddress: telnyx.BillingAddressParam{
-				AdministrativeArea: "Illinois",
+				AdministrativeArea: "IL",
 				City:               "Chicago",
-				Country:            "United States",
+				Country:            "US",
 				PostalCode:         "60601",
-				StreetAddress:      "123 Main St",
-				ExtendedAddress:    telnyx.String("Suite 400"),
+				StreetAddress:      "100 Main St",
+				ExtendedAddress:    telnyx.String("Suite 504"),
 			},
 			BillingContact: telnyx.BillingContactParam{
-				Email:       "billing@acme.com",
-				FirstName:   "John",
-				LastName:    "Doe",
-				PhoneNumber: "15551234568",
+				Email:       "billing@acmeplumbing.example.com",
+				FirstName:   "Alex",
+				LastName:    "Bill",
+				PhoneNumber: "+13125550001",
 			},
 			CorporateRegistrationNumber: telnyx.String("corporate_registration_number"),
-			CustomerReference:           telnyx.String("customer_reference"),
-			DoingBusinessAs:             telnyx.String("doing_business_as"),
+			CustomerReference:           telnyx.String("internal-ref-2026Q2"),
+			DoingBusinessAs:             telnyx.String("Acme Plumbing"),
 			DunBradstreetNumber:         telnyx.String("dun_bradstreet_number"),
-			Fein:                        telnyx.String("fein"),
-			Industry:                    telnyx.String("industry"),
-			LegalName:                   telnyx.String("xxx"),
-			NumberOfEmployees:           telnyx.EnterpriseUpdateParamsNumberOfEmployeesNumberOfEmployees1_10,
+			Fein:                        telnyx.String("12-3456789"),
+			Industry:                    telnyx.EnterpriseUpdateParamsIndustryBusiness,
+			JurisdictionOfIncorporation: telnyx.String("Delaware"),
+			LegalName:                   telnyx.String("Acme Plumbing LLC"),
+			NumberOfEmployees:           telnyx.String("51-200"),
 			OrganizationContact: telnyx.OrganizationContactParam{
-				Email:     "jane.smith@acme.com",
-				FirstName: "Jane",
-				JobTitle:  "VP of Engineering",
-				LastName:  "Smith",
-				Phone:     "+16035551234",
+				Email:       "sam@acmeplumbing.example.com",
+				FirstName:   "Sam",
+				JobTitle:    "Compliance Lead",
+				LastName:    "Owner",
+				PhoneNumber: "+13125550000",
 			},
-			OrganizationLegalType: telnyx.EnterpriseUpdateParamsOrganizationLegalTypeCorporation,
+			OrganizationLegalType: telnyx.String("llc"),
 			OrganizationPhysicalAddress: telnyx.PhysicalAddressParam{
-				AdministrativeArea: "Illinois",
+				AdministrativeArea: "IL",
 				City:               "Chicago",
-				Country:            "United States",
+				Country:            "US",
 				PostalCode:         "60601",
-				StreetAddress:      "123 Main St",
-				ExtendedAddress:    telnyx.String("Suite 400"),
+				StreetAddress:      "100 Main St",
+				ExtendedAddress:    telnyx.String("Suite 504"),
 			},
 			PrimaryBusinessDomainSicCode: telnyx.String("primary_business_domain_sic_code"),
 			ProfessionalLicenseNumber:    telnyx.String("professional_license_number"),
-			Website:                      telnyx.String("website"),
+			Website:                      telnyx.String("https://acmeplumbing.example.com"),
 		},
 	)
 	if err != nil {
@@ -187,9 +189,10 @@ func TestEnterpriseListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Enterprises.List(context.TODO(), telnyx.EnterpriseListParams{
-		LegalName:  telnyx.String("Acme"),
-		PageNumber: telnyx.Int(1),
-		PageSize:   telnyx.Int(1),
+		FilterLegalNameContains: telnyx.String("Acme"),
+		LegalName:               telnyx.String("Acme"),
+		PageNumber:              telnyx.Int(1),
+		PageSize:                telnyx.Int(10),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -213,7 +216,30 @@ func TestEnterpriseDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Enterprises.Delete(context.TODO(), "6a09cdc3-8948-47f0-aa62-74ac943d6c58")
+	err := client.Enterprises.Delete(context.TODO(), "4a6192a4-573d-446d-b3ce-aff9117272a6")
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestEnterpriseActivateBrandedCalling(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Enterprises.ActivateBrandedCalling(context.TODO(), "4a6192a4-573d-446d-b3ce-aff9117272a6")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
