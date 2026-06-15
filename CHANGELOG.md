@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.79.0 (2026-06-15)
+
+Full Changelog: [v4.78.0...v4.79.0](https://github.com/team-telnyx/telnyx-go/compare/v4.78.0...v4.79.0)
+
+### Features
+
+* Document POST /ai/assistants/{assistant_id}/instructions/enhance ([5f2a44f](https://github.com/team-telnyx/telnyx-go/commit/5f2a44f134b8a4cfce131b20fec2f624a7fda8ec))
+
 ## 4.78.0 (2026-06-10)
 
 Full Changelog: [v4.77.0...v4.78.0](https://github.com/team-telnyx/telnyx-go/compare/v4.77.0...v4.78.0)
