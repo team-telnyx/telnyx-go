@@ -724,6 +724,12 @@ Methods:
 - <code title="post /ai/assistants/{assistant_id}/tags">client.AI.Assistants.Tags.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIAssistantTagService.Add">Add</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, assistantID <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIAssistantTagAddParams">AIAssistantTagAddParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIAssistantTagAddResponse">AIAssistantTagAddResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /ai/assistants/{assistant_id}/tags/{tag}">client.AI.Assistants.Tags.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIAssistantTagService.Remove">Remove</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, tag <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIAssistantTagRemoveParams">AIAssistantTagRemoveParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIAssistantTagRemoveResponse">AIAssistantTagRemoveResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+### Instructions
+
+Methods:
+
+- <code title="post /ai/assistants/{assistant_id}/instructions/enhance">client.AI.Assistants.Instructions.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIAssistantInstructionService.Enhance">Enhance</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, assistantID <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIAssistantInstructionEnhanceParams">AIAssistantInstructionEnhanceParams</a>) (\*<a href="https://pkg.go.dev/builtin#string">string</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 ## Audio
 
 Response Types:
