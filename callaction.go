@@ -7733,7 +7733,9 @@ type CallActionStartNoiseSuppressionParams struct {
 	// B, C, and D are also supported, but are deprecated: A - Denoiser B -
 	// DeepFilterNet C - Krisp D - AiCoustics
 	//
-	// Any of "Denoiser", "DeepFilterNet", "Krisp", "AiCoustics".
+	// Any of "Denoiser", "DeepFilterNet", "Krisp", "AiCoustics", "aic_l_quail",
+	// "aic_l_rook", "aic_s_quail", "aic_s_rook", "quail_voice_focus_s",
+	// "quail_voice_focus_xs".
 	NoiseSuppressionEngine CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine `json:"noise_suppression_engine,omitzero"`
 	// Configuration parameters for noise suppression engines. Different engines
 	// support different parameters.
@@ -7764,10 +7766,16 @@ const (
 type CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine string
 
 const (
-	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineDenoiser      CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "Denoiser"
-	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineDeepFilterNet CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "DeepFilterNet"
-	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineKrisp         CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "Krisp"
-	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineAICoustics    CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "AiCoustics"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineDenoiser          CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "Denoiser"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineDeepFilterNet     CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "DeepFilterNet"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineKrisp             CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "Krisp"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineAICoustics        CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "AiCoustics"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineAicLQuail         CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "aic_l_quail"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineAicLRook          CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "aic_l_rook"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineAicSQuail         CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "aic_s_quail"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineAicSRook          CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "aic_s_rook"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineQuailVoiceFocusS  CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "quail_voice_focus_s"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineQuailVoiceFocusXs CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "quail_voice_focus_xs"
 )
 
 // Configuration parameters for noise suppression engines. Different engines

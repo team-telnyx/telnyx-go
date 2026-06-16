@@ -53,7 +53,7 @@ func NewTermsOfServiceService(opts ...option.RequestOption) (r TermsOfServiceSer
 // Returns the available Terms of Service agreements (product, current version,
 // terms URL, effective date). Omit `product_type` to return all products; pass it
 // to scope to one.
-func (r *TermsOfServiceService) GetInfo(ctx context.Context, query TermsOfServiceGetInfoParams, opts ...option.RequestOption) (res *TermsOfServiceGetInfoResponse, err error) {
+func (r *TermsOfServiceService) Info(ctx context.Context, query TermsOfServiceInfoParams, opts ...option.RequestOption) (res *TermsOfServiceInfoResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "terms_of_service/info"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -73,8 +73,8 @@ func (r *TermsOfServiceService) Status(ctx context.Context, query TermsOfService
 	return res, err
 }
 
-type TermsOfServiceGetInfoResponse struct {
-	Agreements []TermsOfServiceGetInfoResponseAgreement `json:"agreements"`
+type TermsOfServiceInfoResponse struct {
+	Agreements []TermsOfServiceInfoResponseAgreement `json:"agreements"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Agreements  respjson.Field
@@ -84,12 +84,12 @@ type TermsOfServiceGetInfoResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r TermsOfServiceGetInfoResponse) RawJSON() string { return r.JSON.raw }
-func (r *TermsOfServiceGetInfoResponse) UnmarshalJSON(data []byte) error {
+func (r TermsOfServiceInfoResponse) RawJSON() string { return r.JSON.raw }
+func (r *TermsOfServiceInfoResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type TermsOfServiceGetInfoResponseAgreement struct {
+type TermsOfServiceInfoResponseAgreement struct {
 	CurrentVersion string    `json:"current_version"`
 	Description    string    `json:"description"`
 	EffectiveDate  time.Time `json:"effective_date" format:"date"`
@@ -111,8 +111,8 @@ type TermsOfServiceGetInfoResponseAgreement struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r TermsOfServiceGetInfoResponseAgreement) RawJSON() string { return r.JSON.raw }
-func (r *TermsOfServiceGetInfoResponseAgreement) UnmarshalJSON(data []byte) error {
+func (r TermsOfServiceInfoResponseAgreement) RawJSON() string { return r.JSON.raw }
+func (r *TermsOfServiceInfoResponseAgreement) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -171,17 +171,17 @@ func (r *TermsOfServiceStatusResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type TermsOfServiceGetInfoParams struct {
+type TermsOfServiceInfoParams struct {
 	// Optional product filter. Omit to return info for all products.
 	//
 	// Any of "branded_calling", "number_reputation".
-	ProductType TermsOfServiceGetInfoParamsProductType `query:"product_type,omitzero" json:"-"`
+	ProductType TermsOfServiceInfoParamsProductType `query:"product_type,omitzero" json:"-"`
 	paramObj
 }
 
-// URLQuery serializes [TermsOfServiceGetInfoParams]'s query parameters as
+// URLQuery serializes [TermsOfServiceInfoParams]'s query parameters as
 // `url.Values`.
-func (r TermsOfServiceGetInfoParams) URLQuery() (v url.Values, err error) {
+func (r TermsOfServiceInfoParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
@@ -189,11 +189,11 @@ func (r TermsOfServiceGetInfoParams) URLQuery() (v url.Values, err error) {
 }
 
 // Optional product filter. Omit to return info for all products.
-type TermsOfServiceGetInfoParamsProductType string
+type TermsOfServiceInfoParamsProductType string
 
 const (
-	TermsOfServiceGetInfoParamsProductTypeBrandedCalling   TermsOfServiceGetInfoParamsProductType = "branded_calling"
-	TermsOfServiceGetInfoParamsProductTypeNumberReputation TermsOfServiceGetInfoParamsProductType = "number_reputation"
+	TermsOfServiceInfoParamsProductTypeBrandedCalling   TermsOfServiceInfoParamsProductType = "branded_calling"
+	TermsOfServiceInfoParamsProductTypeNumberReputation TermsOfServiceInfoParamsProductType = "number_reputation"
 )
 
 type TermsOfServiceStatusParams struct {

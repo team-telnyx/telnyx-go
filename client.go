@@ -334,11 +334,11 @@ type Client struct {
 	// a claim with supporting evidence.
 	InfringementClaims InfringementClaimService
 	// UAC connection operations
-	UacConnections UacConnectionService
-	// UAC connection operations
 	SipRegistrationStatus SipRegistrationStatusService
 	// Discover available speech-to-text providers, models, and supported languages.
 	SpeechToText SpeechToTextService
+	// UAC connection operations
+	UacConnections UacConnectionService
 	// Retrieve raw Voice SDK call report stats payloads for WebRTC call
 	// troubleshooting.
 	VoiceSDKCallReports VoiceSDKCallReportService
@@ -551,9 +551,9 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.CallReasons = NewCallReasonService(opts...)
 	r.Dir = NewDirService(opts...)
 	r.InfringementClaims = NewInfringementClaimService(opts...)
-	r.UacConnections = NewUacConnectionService(opts...)
 	r.SipRegistrationStatus = NewSipRegistrationStatusService(opts...)
 	r.SpeechToText = NewSpeechToTextService(opts...)
+	r.UacConnections = NewUacConnectionService(opts...)
 	r.VoiceSDKCallReports = NewVoiceSDKCallReportService(opts...)
 
 	return
