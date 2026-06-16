@@ -1218,7 +1218,8 @@ type CallDialParamsConversationRelayConfig struct {
 	//     [available voices](https://elevenlabs.io/docs/api-reference/get-voices).
 	//   - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>`
 	//   - **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`,
-	//     `Inworld.Max.Oliver`). Supported models: `Mini`, `Max`.
+	//     `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`,
+	//     `Max`, `TTS2`.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
 	Voice param.Opt[string] `json:"voice,omitzero"`
@@ -1522,6 +1523,14 @@ func (u CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion) GetSamp
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion) GetDeliveryMode() *string {
+	if vt := u.OfInworld; vt != nil {
+		return &vt.DeliveryMode
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion) GetLanguage() *string {
 	if vt := u.OfXai; vt != nil && vt.Language.Valid() {
 		return &vt.Language.Value
@@ -1588,16 +1597,18 @@ func init() {
 	)
 }
 
-func NewCallDialParamsConversationRelayConfigLanguageVoiceSettingsInworld() CallDialParamsConversationRelayConfigLanguageVoiceSettingsInworld {
-	return CallDialParamsConversationRelayConfigLanguageVoiceSettingsInworld{
-		Type: "inworld",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewCallDialParamsConversationRelayConfigLanguageVoiceSettingsInworld].
+// The property Type is required.
 type CallDialParamsConversationRelayConfigLanguageVoiceSettingsInworld struct {
+	// Controls the expressiveness and consistency of the Inworld `TTS2` model's speech
+	// synthesis. `STABLE` favors consistent, predictable output, `CREATIVE` allows
+	// more expressive variation, and `BALANCED` sits in between. Optional and only
+	// supported by `TTS2`; when omitted, the provider default applies.
+	//
+	// Any of "STABLE", "BALANCED", "CREATIVE".
+	DeliveryMode string `json:"delivery_mode,omitzero"`
 	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "inworld".
 	Type constant.Inworld `json:"type" default:"inworld"`
 	paramObj
 }
@@ -1608,6 +1619,12 @@ func (r CallDialParamsConversationRelayConfigLanguageVoiceSettingsInworld) Marsh
 }
 func (r *CallDialParamsConversationRelayConfigLanguageVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallDialParamsConversationRelayConfigLanguageVoiceSettingsInworld](
+		"delivery_mode", "STABLE", "BALANCED", "CREATIVE",
+	)
 }
 
 // The property Type is required.
@@ -1772,6 +1789,14 @@ func (u CallDialParamsConversationRelayConfigVoiceSettingsUnion) GetSampleRate()
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u CallDialParamsConversationRelayConfigVoiceSettingsUnion) GetDeliveryMode() *string {
+	if vt := u.OfInworld; vt != nil {
+		return &vt.DeliveryMode
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u CallDialParamsConversationRelayConfigVoiceSettingsUnion) GetLanguage() *string {
 	if vt := u.OfXai; vt != nil && vt.Language.Valid() {
 		return &vt.Language.Value
@@ -1838,16 +1863,18 @@ func init() {
 	)
 }
 
-func NewCallDialParamsConversationRelayConfigVoiceSettingsInworld() CallDialParamsConversationRelayConfigVoiceSettingsInworld {
-	return CallDialParamsConversationRelayConfigVoiceSettingsInworld{
-		Type: "inworld",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewCallDialParamsConversationRelayConfigVoiceSettingsInworld].
+// The property Type is required.
 type CallDialParamsConversationRelayConfigVoiceSettingsInworld struct {
+	// Controls the expressiveness and consistency of the Inworld `TTS2` model's speech
+	// synthesis. `STABLE` favors consistent, predictable output, `CREATIVE` allows
+	// more expressive variation, and `BALANCED` sits in between. Optional and only
+	// supported by `TTS2`; when omitted, the provider default applies.
+	//
+	// Any of "STABLE", "BALANCED", "CREATIVE".
+	DeliveryMode string `json:"delivery_mode,omitzero"`
 	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "inworld".
 	Type constant.Inworld `json:"type" default:"inworld"`
 	paramObj
 }
@@ -1858,6 +1885,12 @@ func (r CallDialParamsConversationRelayConfigVoiceSettingsInworld) MarshalJSON()
 }
 func (r *CallDialParamsConversationRelayConfigVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallDialParamsConversationRelayConfigVoiceSettingsInworld](
+		"delivery_mode", "STABLE", "BALANCED", "CREATIVE",
+	)
 }
 
 // The property Type is required.
