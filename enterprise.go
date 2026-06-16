@@ -35,8 +35,7 @@ type EnterpriseService struct {
 	Reputation EnterpriseReputationService
 	// A Display Identity Record (DIR) is the verified calling identity (display name,
 	// logo, call reasons) shown to recipients on outbound calls.
-	Dir   EnterpriseDirService
-	Usage EnterpriseUsageService
+	Dir EnterpriseDirService
 }
 
 // NewEnterpriseService generates a new service that applies the given options to
@@ -47,7 +46,6 @@ func NewEnterpriseService(opts ...option.RequestOption) (r EnterpriseService) {
 	r.Options = opts
 	r.Reputation = NewEnterpriseReputationService(opts...)
 	r.Dir = NewEnterpriseDirService(opts...)
-	r.Usage = NewEnterpriseUsageService(opts...)
 	return
 }
 

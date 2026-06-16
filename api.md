@@ -5067,15 +5067,15 @@ Methods:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseReputationRemediationNewResponse">EnterpriseReputationRemediationNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseReputationRemediationGetResponse">EnterpriseReputationRemediationGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseReputationRemediationListResponse">EnterpriseReputationRemediationListResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseReputationRemediationSubmitResponse">EnterpriseReputationRemediationSubmitResponse</a>
 
 Methods:
 
-- <code title="post /enterprises/{enterprise_id}/reputation/remediation">client.Enterprises.Reputation.Remediation.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseReputationRemediationService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, enterpriseID <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseReputationRemediationNewParams">EnterpriseReputationRemediationNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseReputationRemediationNewResponse">EnterpriseReputationRemediationNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /enterprises/{enterprise_id}/reputation/remediation/{remediation_id}">client.Enterprises.Reputation.Remediation.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseReputationRemediationService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, remediationID <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseReputationRemediationGetParams">EnterpriseReputationRemediationGetParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseReputationRemediationGetResponse">EnterpriseReputationRemediationGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /enterprises/{enterprise_id}/reputation/remediation">client.Enterprises.Reputation.Remediation.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseReputationRemediationService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, enterpriseID <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseReputationRemediationListParams">EnterpriseReputationRemediationListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseReputationRemediationListResponse">EnterpriseReputationRemediationListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /enterprises/{enterprise_id}/reputation/remediation">client.Enterprises.Reputation.Remediation.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseReputationRemediationService.Submit">Submit</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, enterpriseID <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseReputationRemediationSubmitParams">EnterpriseReputationRemediationSubmitParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseReputationRemediationSubmitResponse">EnterpriseReputationRemediationSubmitResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## Dir
 
@@ -5088,14 +5088,6 @@ Methods:
 
 - <code title="post /enterprises/{enterprise_id}/dir">client.Enterprises.Dir.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseDirService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, enterpriseID <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseDirNewParams">EnterpriseDirNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseDirNewResponse">EnterpriseDirNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /enterprises/{enterprise_id}/dir">client.Enterprises.Dir.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseDirService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, enterpriseID <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseDirListParams">EnterpriseDirListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseDirListResponse">EnterpriseDirListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-
-### Comments
-
-### PhoneNumberBatches
-
-### PhoneNumbers
-
-## Usage
 
 # Reputation
 
@@ -5116,12 +5108,12 @@ Methods:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TermsOfServiceGetInfoResponse">TermsOfServiceGetInfoResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TermsOfServiceInfoResponse">TermsOfServiceInfoResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TermsOfServiceStatusResponse">TermsOfServiceStatusResponse</a>
 
 Methods:
 
-- <code title="get /terms_of_service/info">client.TermsOfService.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TermsOfServiceService.GetInfo">GetInfo</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TermsOfServiceGetInfoParams">TermsOfServiceGetInfoParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TermsOfServiceGetInfoResponse">TermsOfServiceGetInfoResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /terms_of_service/info">client.TermsOfService.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TermsOfServiceService.Info">Info</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TermsOfServiceInfoParams">TermsOfServiceInfoParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TermsOfServiceInfoResponse">TermsOfServiceInfoResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /terms_of_service/status">client.TermsOfService.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TermsOfServiceService.Status">Status</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TermsOfServiceStatusParams">TermsOfServiceStatusParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TermsOfServiceStatusResponse">TermsOfServiceStatusResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## NumberReputation
@@ -5266,6 +5258,26 @@ Methods:
 - <code title="get /infringement_claims/{claim_id}">client.InfringementClaims.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#InfringementClaimService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, claimID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#InfringementClaimGetResponse">InfringementClaimGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /infringement_claims/{claim_id}/contest">client.InfringementClaims.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#InfringementClaimService.Contest">Contest</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, claimID <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#InfringementClaimContestParams">InfringementClaimContestParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#InfringementClaimContestResponse">InfringementClaimContestResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+# SipRegistrationStatus
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SipRegistrationStatusGetResponse">SipRegistrationStatusGetResponse</a>
+
+Methods:
+
+- <code title="get /sip_registration_status">client.SipRegistrationStatus.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SipRegistrationStatusService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SipRegistrationStatusGetParams">SipRegistrationStatusGetParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SipRegistrationStatusGetResponse">SipRegistrationStatusGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+# SpeechToText
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SpeechToTextListProvidersResponse">SpeechToTextListProvidersResponse</a>
+
+Methods:
+
+- <code title="get /speech-to-text/providers">client.SpeechToText.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SpeechToTextService.ListProviders">ListProviders</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SpeechToTextListProvidersParams">SpeechToTextListProvidersParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SpeechToTextListProvidersResponse">SpeechToTextListProvidersResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # UacConnections
 
 Response Types:
@@ -5293,26 +5305,6 @@ Response Types:
 Methods:
 
 - <code title="post /uac_connections/{id}/actions/check_registration_status">client.UacConnections.Actions.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#UacConnectionActionService.CheckRegistrationStatus">CheckRegistrationStatus</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#UacConnectionActionCheckRegistrationStatusResponse">UacConnectionActionCheckRegistrationStatusResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-
-# SipRegistrationStatus
-
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SipRegistrationStatusGetResponse">SipRegistrationStatusGetResponse</a>
-
-Methods:
-
-- <code title="get /sip_registration_status">client.SipRegistrationStatus.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SipRegistrationStatusService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SipRegistrationStatusGetParams">SipRegistrationStatusGetParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SipRegistrationStatusGetResponse">SipRegistrationStatusGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-
-# SpeechToText
-
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SpeechToTextListProvidersResponse">SpeechToTextListProvidersResponse</a>
-
-Methods:
-
-- <code title="get /speech-to-text/providers">client.SpeechToText.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SpeechToTextService.ListProviders">ListProviders</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SpeechToTextListProvidersParams">SpeechToTextListProvidersParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SpeechToTextListProvidersResponse">SpeechToTextListProvidersResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # VoiceSDKCallReports
 
