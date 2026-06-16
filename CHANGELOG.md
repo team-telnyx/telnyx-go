@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.80.0 (2026-06-16)
+
+Full Changelog: [v4.79.0...v4.80.0](https://github.com/team-telnyx/telnyx-go/compare/v4.79.0...v4.80.0)
+
+### Features
+
+* ENGDESK-51290: Add Aicoustic NS engines to portal backend ([3071888](https://github.com/team-telnyx/telnyx-go/commit/3071888f62e2e5ebff1c1ecc3a844494a52d2122))
+* TELAPPS-719: add Inworld inworld-tts-2 model + delivery_mode to call-control voice settings ([cc2c7c1](https://github.com/team-telnyx/telnyx-go/commit/cc2c7c12178782ecf5099f035a9af14f4d13ef79))
+
 ## 4.79.0 (2026-06-15)
 
 Full Changelog: [v4.78.0...v4.79.0](https://github.com/team-telnyx/telnyx-go/compare/v4.78.0...v4.79.0)
