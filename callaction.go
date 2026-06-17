@@ -3421,7 +3421,8 @@ type CallActionAnswerParamsConversationRelayConfig struct {
 	//     [available voices](https://elevenlabs.io/docs/api-reference/get-voices).
 	//   - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>`
 	//   - **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`,
-	//     `Inworld.Max.Oliver`). Supported models: `Mini`, `Max`.
+	//     `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`,
+	//     `Max`, `TTS2`.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
 	Voice param.Opt[string] `json:"voice,omitzero"`
@@ -3725,6 +3726,14 @@ func (u CallActionAnswerParamsConversationRelayConfigLanguageVoiceSettingsUnion)
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u CallActionAnswerParamsConversationRelayConfigLanguageVoiceSettingsUnion) GetDeliveryMode() *string {
+	if vt := u.OfInworld; vt != nil {
+		return &vt.DeliveryMode
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u CallActionAnswerParamsConversationRelayConfigLanguageVoiceSettingsUnion) GetLanguage() *string {
 	if vt := u.OfXai; vt != nil && vt.Language.Valid() {
 		return &vt.Language.Value
@@ -3791,16 +3800,18 @@ func init() {
 	)
 }
 
-func NewCallActionAnswerParamsConversationRelayConfigLanguageVoiceSettingsInworld() CallActionAnswerParamsConversationRelayConfigLanguageVoiceSettingsInworld {
-	return CallActionAnswerParamsConversationRelayConfigLanguageVoiceSettingsInworld{
-		Type: "inworld",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewCallActionAnswerParamsConversationRelayConfigLanguageVoiceSettingsInworld].
+// The property Type is required.
 type CallActionAnswerParamsConversationRelayConfigLanguageVoiceSettingsInworld struct {
+	// Controls the expressiveness and consistency of the Inworld `TTS2` model's speech
+	// synthesis. `STABLE` favors consistent, predictable output, `CREATIVE` allows
+	// more expressive variation, and `BALANCED` sits in between. Optional and only
+	// supported by `TTS2`; when omitted, the provider default applies.
+	//
+	// Any of "STABLE", "BALANCED", "CREATIVE".
+	DeliveryMode string `json:"delivery_mode,omitzero"`
 	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "inworld".
 	Type constant.Inworld `json:"type" default:"inworld"`
 	paramObj
 }
@@ -3811,6 +3822,12 @@ func (r CallActionAnswerParamsConversationRelayConfigLanguageVoiceSettingsInworl
 }
 func (r *CallActionAnswerParamsConversationRelayConfigLanguageVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallActionAnswerParamsConversationRelayConfigLanguageVoiceSettingsInworld](
+		"delivery_mode", "STABLE", "BALANCED", "CREATIVE",
+	)
 }
 
 // The property Type is required.
@@ -3975,6 +3992,14 @@ func (u CallActionAnswerParamsConversationRelayConfigVoiceSettingsUnion) GetSamp
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u CallActionAnswerParamsConversationRelayConfigVoiceSettingsUnion) GetDeliveryMode() *string {
+	if vt := u.OfInworld; vt != nil {
+		return &vt.DeliveryMode
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u CallActionAnswerParamsConversationRelayConfigVoiceSettingsUnion) GetLanguage() *string {
 	if vt := u.OfXai; vt != nil && vt.Language.Valid() {
 		return &vt.Language.Value
@@ -4041,16 +4066,18 @@ func init() {
 	)
 }
 
-func NewCallActionAnswerParamsConversationRelayConfigVoiceSettingsInworld() CallActionAnswerParamsConversationRelayConfigVoiceSettingsInworld {
-	return CallActionAnswerParamsConversationRelayConfigVoiceSettingsInworld{
-		Type: "inworld",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewCallActionAnswerParamsConversationRelayConfigVoiceSettingsInworld].
+// The property Type is required.
 type CallActionAnswerParamsConversationRelayConfigVoiceSettingsInworld struct {
+	// Controls the expressiveness and consistency of the Inworld `TTS2` model's speech
+	// synthesis. `STABLE` favors consistent, predictable output, `CREATIVE` allows
+	// more expressive variation, and `BALANCED` sits in between. Optional and only
+	// supported by `TTS2`; when omitted, the provider default applies.
+	//
+	// Any of "STABLE", "BALANCED", "CREATIVE".
+	DeliveryMode string `json:"delivery_mode,omitzero"`
 	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "inworld".
 	Type constant.Inworld `json:"type" default:"inworld"`
 	paramObj
 }
@@ -4061,6 +4088,12 @@ func (r CallActionAnswerParamsConversationRelayConfigVoiceSettingsInworld) Marsh
 }
 func (r *CallActionAnswerParamsConversationRelayConfigVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallActionAnswerParamsConversationRelayConfigVoiceSettingsInworld](
+		"delivery_mode", "STABLE", "BALANCED", "CREATIVE",
+	)
 }
 
 // The property Type is required.
@@ -4517,7 +4550,8 @@ type CallActionGatherUsingAIParams struct {
 	//     [available voices](https://elevenlabs.io/docs/api-reference/get-voices).
 	//   - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>`
 	//   - **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`,
-	//     `Inworld.Max.Oliver`). Supported models: `Mini`, `Max`.
+	//     `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`,
+	//     `Max`, `TTS2`.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
 	Voice param.Opt[string] `json:"voice,omitzero"`
@@ -4859,7 +4893,9 @@ type CallActionGatherUsingSpeakParams struct {
 	//     `Resemble.Turbo.my_voice`). Only `Turbo` model is supported. Use
 	//     `voice_settings` to configure precision, sample_rate, and format.
 	//   - **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`,
-	//     `Inworld.Max.Oliver`). Supported models: `Mini`, `Max`.
+	//     `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`,
+	//     `Max`, `TTS2`. Use `voice_settings` to configure `delivery_mode` (`STABLE`,
+	//     `BALANCED`, `CREATIVE`), supported by `TTS2` only.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
 	//
@@ -5122,6 +5158,14 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetSampleRate() *str
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetDeliveryMode() *string {
+	if vt := u.OfInworld; vt != nil {
+		return &vt.DeliveryMode
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetLanguage() *string {
 	if vt := u.OfXai; vt != nil && vt.Language.Valid() {
 		return &vt.Language.Value
@@ -5188,16 +5232,18 @@ func init() {
 	)
 }
 
-func NewCallActionGatherUsingSpeakParamsVoiceSettingsInworld() CallActionGatherUsingSpeakParamsVoiceSettingsInworld {
-	return CallActionGatherUsingSpeakParamsVoiceSettingsInworld{
-		Type: "inworld",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewCallActionGatherUsingSpeakParamsVoiceSettingsInworld].
+// The property Type is required.
 type CallActionGatherUsingSpeakParamsVoiceSettingsInworld struct {
+	// Controls the expressiveness and consistency of the Inworld `TTS2` model's speech
+	// synthesis. `STABLE` favors consistent, predictable output, `CREATIVE` allows
+	// more expressive variation, and `BALANCED` sits in between. Optional and only
+	// supported by `TTS2`; when omitted, the provider default applies.
+	//
+	// Any of "STABLE", "BALANCED", "CREATIVE".
+	DeliveryMode string `json:"delivery_mode,omitzero"`
 	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "inworld".
 	Type constant.Inworld `json:"type" default:"inworld"`
 	paramObj
 }
@@ -5208,6 +5254,12 @@ func (r CallActionGatherUsingSpeakParamsVoiceSettingsInworld) MarshalJSON() (dat
 }
 func (r *CallActionGatherUsingSpeakParamsVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallActionGatherUsingSpeakParamsVoiceSettingsInworld](
+		"delivery_mode", "STABLE", "BALANCED", "CREATIVE",
+	)
 }
 
 // The property Type is required.
@@ -5510,7 +5562,9 @@ type CallActionSpeakParams struct {
 	//     `Resemble.Turbo.my_voice`). Only `Turbo` model is supported. Use
 	//     `voice_settings` to configure precision, sample_rate, and format.
 	//   - **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`,
-	//     `Inworld.Max.Oliver`). Supported models: `Mini`, `Max`.
+	//     `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`,
+	//     `Max`, `TTS2`. Use `voice_settings` to configure `delivery_mode` (`STABLE`,
+	//     `BALANCED`, `CREATIVE`), supported by `TTS2` only.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
 	//
@@ -5772,6 +5826,14 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetSampleRate() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u CallActionSpeakParamsVoiceSettingsUnion) GetDeliveryMode() *string {
+	if vt := u.OfInworld; vt != nil {
+		return &vt.DeliveryMode
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u CallActionSpeakParamsVoiceSettingsUnion) GetLanguage() *string {
 	if vt := u.OfXai; vt != nil && vt.Language.Valid() {
 		return &vt.Language.Value
@@ -5838,16 +5900,18 @@ func init() {
 	)
 }
 
-func NewCallActionSpeakParamsVoiceSettingsInworld() CallActionSpeakParamsVoiceSettingsInworld {
-	return CallActionSpeakParamsVoiceSettingsInworld{
-		Type: "inworld",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewCallActionSpeakParamsVoiceSettingsInworld].
+// The property Type is required.
 type CallActionSpeakParamsVoiceSettingsInworld struct {
+	// Controls the expressiveness and consistency of the Inworld `TTS2` model's speech
+	// synthesis. `STABLE` favors consistent, predictable output, `CREATIVE` allows
+	// more expressive variation, and `BALANCED` sits in between. Optional and only
+	// supported by `TTS2`; when omitted, the provider default applies.
+	//
+	// Any of "STABLE", "BALANCED", "CREATIVE".
+	DeliveryMode string `json:"delivery_mode,omitzero"`
 	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "inworld".
 	Type constant.Inworld `json:"type" default:"inworld"`
 	paramObj
 }
@@ -5858,6 +5922,12 @@ func (r CallActionSpeakParamsVoiceSettingsInworld) MarshalJSON() (data []byte, e
 }
 func (r *CallActionSpeakParamsVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallActionSpeakParamsVoiceSettingsInworld](
+		"delivery_mode", "STABLE", "BALANCED", "CREATIVE",
+	)
 }
 
 // The property Type is required.
@@ -5916,7 +5986,8 @@ type CallActionStartAIAssistantParams struct {
 	//     [available voices](https://elevenlabs.io/docs/api-reference/get-voices).
 	//   - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>`
 	//   - **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`,
-	//     `Inworld.Max.Oliver`). Supported models: `Mini`, `Max`.
+	//     `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`,
+	//     `Max`, `TTS2`.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
 	Voice param.Opt[string] `json:"voice,omitzero"`
@@ -6494,7 +6565,8 @@ type CallActionStartConversationRelayParams struct {
 	//     [available voices](https://elevenlabs.io/docs/api-reference/get-voices).
 	//   - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>`
 	//   - **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`,
-	//     `Inworld.Max.Oliver`). Supported models: `Mini`, `Max`.
+	//     `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`,
+	//     `Max`, `TTS2`.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
 	Voice param.Opt[string] `json:"voice,omitzero"`
@@ -6813,6 +6885,14 @@ func (u CallActionStartConversationRelayParamsConversationRelaySettingsLanguageV
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartConversationRelayParamsConversationRelaySettingsLanguageVoiceSettingsUnion) GetDeliveryMode() *string {
+	if vt := u.OfInworld; vt != nil {
+		return &vt.DeliveryMode
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u CallActionStartConversationRelayParamsConversationRelaySettingsLanguageVoiceSettingsUnion) GetLanguage() *string {
 	if vt := u.OfXai; vt != nil && vt.Language.Valid() {
 		return &vt.Language.Value
@@ -6879,16 +6959,18 @@ func init() {
 	)
 }
 
-func NewCallActionStartConversationRelayParamsConversationRelaySettingsLanguageVoiceSettingsInworld() CallActionStartConversationRelayParamsConversationRelaySettingsLanguageVoiceSettingsInworld {
-	return CallActionStartConversationRelayParamsConversationRelaySettingsLanguageVoiceSettingsInworld{
-		Type: "inworld",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewCallActionStartConversationRelayParamsConversationRelaySettingsLanguageVoiceSettingsInworld].
+// The property Type is required.
 type CallActionStartConversationRelayParamsConversationRelaySettingsLanguageVoiceSettingsInworld struct {
+	// Controls the expressiveness and consistency of the Inworld `TTS2` model's speech
+	// synthesis. `STABLE` favors consistent, predictable output, `CREATIVE` allows
+	// more expressive variation, and `BALANCED` sits in between. Optional and only
+	// supported by `TTS2`; when omitted, the provider default applies.
+	//
+	// Any of "STABLE", "BALANCED", "CREATIVE".
+	DeliveryMode string `json:"delivery_mode,omitzero"`
 	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "inworld".
 	Type constant.Inworld `json:"type" default:"inworld"`
 	paramObj
 }
@@ -6899,6 +6981,12 @@ func (r CallActionStartConversationRelayParamsConversationRelaySettingsLanguageV
 }
 func (r *CallActionStartConversationRelayParamsConversationRelaySettingsLanguageVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallActionStartConversationRelayParamsConversationRelaySettingsLanguageVoiceSettingsInworld](
+		"delivery_mode", "STABLE", "BALANCED", "CREATIVE",
+	)
 }
 
 // The property Type is required.
@@ -7183,6 +7271,14 @@ func (u CallActionStartConversationRelayParamsLanguageVoiceSettingsUnion) GetSam
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartConversationRelayParamsLanguageVoiceSettingsUnion) GetDeliveryMode() *string {
+	if vt := u.OfInworld; vt != nil {
+		return &vt.DeliveryMode
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u CallActionStartConversationRelayParamsLanguageVoiceSettingsUnion) GetLanguage() *string {
 	if vt := u.OfXai; vt != nil && vt.Language.Valid() {
 		return &vt.Language.Value
@@ -7249,16 +7345,18 @@ func init() {
 	)
 }
 
-func NewCallActionStartConversationRelayParamsLanguageVoiceSettingsInworld() CallActionStartConversationRelayParamsLanguageVoiceSettingsInworld {
-	return CallActionStartConversationRelayParamsLanguageVoiceSettingsInworld{
-		Type: "inworld",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewCallActionStartConversationRelayParamsLanguageVoiceSettingsInworld].
+// The property Type is required.
 type CallActionStartConversationRelayParamsLanguageVoiceSettingsInworld struct {
+	// Controls the expressiveness and consistency of the Inworld `TTS2` model's speech
+	// synthesis. `STABLE` favors consistent, predictable output, `CREATIVE` allows
+	// more expressive variation, and `BALANCED` sits in between. Optional and only
+	// supported by `TTS2`; when omitted, the provider default applies.
+	//
+	// Any of "STABLE", "BALANCED", "CREATIVE".
+	DeliveryMode string `json:"delivery_mode,omitzero"`
 	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "inworld".
 	Type constant.Inworld `json:"type" default:"inworld"`
 	paramObj
 }
@@ -7269,6 +7367,12 @@ func (r CallActionStartConversationRelayParamsLanguageVoiceSettingsInworld) Mars
 }
 func (r *CallActionStartConversationRelayParamsLanguageVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallActionStartConversationRelayParamsLanguageVoiceSettingsInworld](
+		"delivery_mode", "STABLE", "BALANCED", "CREATIVE",
+	)
 }
 
 // The property Type is required.
@@ -7452,6 +7556,14 @@ func (u CallActionStartConversationRelayParamsVoiceSettingsUnion) GetSampleRate(
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartConversationRelayParamsVoiceSettingsUnion) GetDeliveryMode() *string {
+	if vt := u.OfInworld; vt != nil {
+		return &vt.DeliveryMode
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u CallActionStartConversationRelayParamsVoiceSettingsUnion) GetLanguage() *string {
 	if vt := u.OfXai; vt != nil && vt.Language.Valid() {
 		return &vt.Language.Value
@@ -7518,16 +7630,18 @@ func init() {
 	)
 }
 
-func NewCallActionStartConversationRelayParamsVoiceSettingsInworld() CallActionStartConversationRelayParamsVoiceSettingsInworld {
-	return CallActionStartConversationRelayParamsVoiceSettingsInworld{
-		Type: "inworld",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewCallActionStartConversationRelayParamsVoiceSettingsInworld].
+// The property Type is required.
 type CallActionStartConversationRelayParamsVoiceSettingsInworld struct {
+	// Controls the expressiveness and consistency of the Inworld `TTS2` model's speech
+	// synthesis. `STABLE` favors consistent, predictable output, `CREATIVE` allows
+	// more expressive variation, and `BALANCED` sits in between. Optional and only
+	// supported by `TTS2`; when omitted, the provider default applies.
+	//
+	// Any of "STABLE", "BALANCED", "CREATIVE".
+	DeliveryMode string `json:"delivery_mode,omitzero"`
 	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "inworld".
 	Type constant.Inworld `json:"type" default:"inworld"`
 	paramObj
 }
@@ -7538,6 +7652,12 @@ func (r CallActionStartConversationRelayParamsVoiceSettingsInworld) MarshalJSON(
 }
 func (r *CallActionStartConversationRelayParamsVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallActionStartConversationRelayParamsVoiceSettingsInworld](
+		"delivery_mode", "STABLE", "BALANCED", "CREATIVE",
+	)
 }
 
 // The property Type is required.
@@ -7613,7 +7733,9 @@ type CallActionStartNoiseSuppressionParams struct {
 	// B, C, and D are also supported, but are deprecated: A - Denoiser B -
 	// DeepFilterNet C - Krisp D - AiCoustics
 	//
-	// Any of "Denoiser", "DeepFilterNet", "Krisp", "AiCoustics".
+	// Any of "Denoiser", "DeepFilterNet", "Krisp", "AiCoustics", "aic_l_quail",
+	// "aic_l_rook", "aic_s_quail", "aic_s_rook", "quail_voice_focus_s",
+	// "quail_voice_focus_xs".
 	NoiseSuppressionEngine CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine `json:"noise_suppression_engine,omitzero"`
 	// Configuration parameters for noise suppression engines. Different engines
 	// support different parameters.
@@ -7644,10 +7766,16 @@ const (
 type CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine string
 
 const (
-	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineDenoiser      CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "Denoiser"
-	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineDeepFilterNet CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "DeepFilterNet"
-	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineKrisp         CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "Krisp"
-	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineAICoustics    CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "AiCoustics"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineDenoiser          CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "Denoiser"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineDeepFilterNet     CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "DeepFilterNet"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineKrisp             CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "Krisp"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineAICoustics        CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "AiCoustics"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineAicLQuail         CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "aic_l_quail"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineAicLRook          CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "aic_l_rook"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineAicSQuail         CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "aic_s_quail"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineAicSRook          CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "aic_s_rook"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineQuailVoiceFocusS  CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "quail_voice_focus_s"
+	CallActionStartNoiseSuppressionParamsNoiseSuppressionEngineQuailVoiceFocusXs CallActionStartNoiseSuppressionParamsNoiseSuppressionEngine = "quail_voice_focus_xs"
 )
 
 // Configuration parameters for noise suppression engines. Different engines

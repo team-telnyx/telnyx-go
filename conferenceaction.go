@@ -1206,7 +1206,9 @@ type ConferenceActionSpeakParams struct {
 	//     `Resemble.Turbo.my_voice`). Only `Turbo` model is supported. Use
 	//     `voice_settings` to configure precision, sample_rate, and format.
 	//   - **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`,
-	//     `Inworld.Max.Oliver`). Supported models: `Mini`, `Max`.
+	//     `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`,
+	//     `Max`, `TTS2`. Use `voice_settings` to configure `delivery_mode` (`STABLE`,
+	//     `BALANCED`, `CREATIVE`), supported by `TTS2` only.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
 	//
@@ -1450,6 +1452,14 @@ func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetSampleRate() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetDeliveryMode() *string {
+	if vt := u.OfInworld; vt != nil {
+		return &vt.DeliveryMode
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetLanguage() *string {
 	if vt := u.OfXai; vt != nil && vt.Language.Valid() {
 		return &vt.Language.Value
@@ -1516,16 +1526,18 @@ func init() {
 	)
 }
 
-func NewConferenceActionSpeakParamsVoiceSettingsInworld() ConferenceActionSpeakParamsVoiceSettingsInworld {
-	return ConferenceActionSpeakParamsVoiceSettingsInworld{
-		Type: "inworld",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewConferenceActionSpeakParamsVoiceSettingsInworld].
+// The property Type is required.
 type ConferenceActionSpeakParamsVoiceSettingsInworld struct {
+	// Controls the expressiveness and consistency of the Inworld `TTS2` model's speech
+	// synthesis. `STABLE` favors consistent, predictable output, `CREATIVE` allows
+	// more expressive variation, and `BALANCED` sits in between. Optional and only
+	// supported by `TTS2`; when omitted, the provider default applies.
+	//
+	// Any of "STABLE", "BALANCED", "CREATIVE".
+	DeliveryMode string `json:"delivery_mode,omitzero"`
 	// Voice settings provider type
+	//
+	// This field can be elided, and will marshal its zero value as "inworld".
 	Type constant.Inworld `json:"type" default:"inworld"`
 	paramObj
 }
@@ -1536,6 +1548,12 @@ func (r ConferenceActionSpeakParamsVoiceSettingsInworld) MarshalJSON() (data []b
 }
 func (r *ConferenceActionSpeakParamsVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[ConferenceActionSpeakParamsVoiceSettingsInworld](
+		"delivery_mode", "STABLE", "BALANCED", "CREATIVE",
+	)
 }
 
 // The property Type is required.

@@ -30,10 +30,7 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewEnterpriseDirService] method instead.
 type EnterpriseDirService struct {
-	Options            []option.RequestOption
-	Comments           EnterpriseDirCommentService
-	PhoneNumberBatches EnterpriseDirPhoneNumberBatchService
-	PhoneNumbers       EnterpriseDirPhoneNumberService
+	Options []option.RequestOption
 }
 
 // NewEnterpriseDirService generates a new service that applies the given options
@@ -42,9 +39,6 @@ type EnterpriseDirService struct {
 func NewEnterpriseDirService(opts ...option.RequestOption) (r EnterpriseDirService) {
 	r = EnterpriseDirService{}
 	r.Options = opts
-	r.Comments = NewEnterpriseDirCommentService(opts...)
-	r.PhoneNumberBatches = NewEnterpriseDirPhoneNumberBatchService(opts...)
-	r.PhoneNumbers = NewEnterpriseDirPhoneNumberService(opts...)
 	return
 }
 
