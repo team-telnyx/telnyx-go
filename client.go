@@ -41,8 +41,7 @@ type Client struct {
 	// an address, a new record must be created with the differing address.
 	Addresses      AddressService
 	AdvancedOrders AdvancedOrderService
-	// Generate text with LLMs
-	AI AIService
+	AI             AIService
 	// Audit log operations.
 	AuditEvents             AuditEventService
 	AuthenticationProviders AuthenticationProviderService
