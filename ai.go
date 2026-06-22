@@ -5,10 +5,12 @@ package telnyx
 import (
 	"context"
 	"net/http"
+	"net/url"
 	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
 	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
@@ -16,8 +18,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
-// Generate text with LLMs
-//
 // AIService contains methods and other services that help with interacting with
 // the telnyx API.
 //
@@ -97,6 +97,64 @@ func (r *AIService) GetModels(ctx context.Context, opts ...option.RequestOption)
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/models"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
+// Performs semantic vector search across conversation history records.
+//
+// **How it works:**
+//
+//  1. The query text is embedded into a 1024-dimensional vector using the
+//     multilingual-e5-large model.
+//  2. The vector is sent to regional OpenSearch clusters for kNN search using HNSW
+//     cosine similarity.
+//  3. When no region is specified, all regions are queried in parallel (fan-out)
+//     and results are merged by score.
+//  4. Results are ranked by cosine similarity score (descending) and truncated to
+//     `top_k`.
+//
+// **Authentication:** Requires a Telnyx API key via `Authorization: Bearer <key>`.
+// Results are automatically scoped to the caller's organization —
+// `organization_id` is injected from the auth token and cannot be overridden.
+//
+// **Chunking:** Records are split into chunks of up to 480 tokens with 64-token
+// overlap at ingestion time. Each search result represents a single chunk, with
+// `chunk_index` and `chunk_total` indicating its position within the original
+// record.
+//
+// **Filtering:** Use `filter[field][operator]=value` query parameters to narrow
+// results before vector search.
+//
+// Top-level filterable fields: `user_id`, `record_type`, `region`, `document_id`,
+// `record_id`, `record_created_at`, `ingested_at`, `retention`
+//
+// Note: `retention` is filter-only — it can be used to narrow results but is not
+// returned in the response body.
+//
+// Metadata fields: any field not in the list above is resolved to
+// `data.metadata.<field>` in OpenSearch (e.g., `filter[language]=en` →
+// `data.metadata.language`).
+//
+// Supported filter operators:
+//
+// - `eq` — exact match (default when no operator specified)
+// - `in` — match any of comma-separated values
+// - `gte`, `gt`, `lte`, `lt` — range comparisons (useful for date filtering)
+// - `contains` — wildcard substring match
+//
+// **Examples:**
+//
+// ```
+// GET /v2/ai/conversation_histories?q=billing+issue&record_type=voice&top_k=10
+// GET /v2/ai/conversation_histories?q=setup+guide&record_type=knowledge_base&region=USA&min_score=0.5
+// GET /v2/ai/conversation_histories?q=refund&record_type=voice&filter[record_created_at][gte]=2026-01-01T00:00:00Z
+// GET /v2/ai/conversation_histories?q=outage&record_type=voice&filter[region][in]=USA,DEU
+// GET /v2/ai/conversation_histories?q=hold+time&record_type=voice&filter[language]=en
+// ```
+func (r *AIService) SearchConversationHistories(ctx context.Context, query AISearchConversationHistoriesParams, opts ...option.RequestOption) (res *AISearchConversationHistoriesResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "ai/conversation_histories"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
 
@@ -238,6 +296,125 @@ func (r *AIGetModelsResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Search response following the standard Telnyx V2 API format.
+type AISearchConversationHistoriesResponse struct {
+	// Ranked list of matching text chunks, sorted by cosine similarity score
+	// descending.
+	Data []AISearchConversationHistoriesResponseData `json:"data" api:"required"`
+	// Pagination metadata following the standard Telnyx V2 API format.
+	Meta AISearchConversationHistoriesResponseMeta `json:"meta" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AISearchConversationHistoriesResponse) RawJSON() string { return r.JSON.raw }
+func (r *AISearchConversationHistoriesResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single search result representing one chunk of a conversation history record.
+// Records are split into chunks of up to 480 tokens with 64-token overlap at
+// ingestion time.
+type AISearchConversationHistoriesResponseData struct {
+	// Unique chunk identifier.
+	ID string `json:"id" api:"required"`
+	// Zero-based index of this chunk within the parent record.
+	ChunkIndex int64 `json:"chunk_index" api:"required"`
+	// Total number of chunks the parent record was split into.
+	ChunkTotal int64 `json:"chunk_total" api:"required"`
+	// Document identifier. Present only for knowledge_base records; null for all other
+	// record types.
+	DocumentID string `json:"document_id" api:"required"`
+	// When the record was chunked, embedded, and indexed (ISO 8601).
+	IngestedAt time.Time `json:"ingested_at" api:"required" format:"date-time"`
+	// Identifier of the organization that owns this record.
+	OrganizationID string `json:"organization_id" api:"required"`
+	// When the original record was created (ISO 8601).
+	RecordCreatedAt time.Time `json:"record_created_at" api:"required" format:"date-time"`
+	// Identifier of the parent record. Multiple chunks from the same record share this
+	// ID.
+	RecordID string `json:"record_id" api:"required"`
+	// Type of the record.
+	//
+	// Any of "voice", "message", "ai_pipeline_storage", "knowledge_base".
+	RecordType string `json:"record_type" api:"required"`
+	// The region where this record is stored.
+	//
+	// Any of "USA", "DEU", "AUS", "UAE".
+	Region string `json:"region" api:"required"`
+	// Cosine similarity score between the query vector and this chunk's vector. Higher
+	// values indicate greater semantic relevance.
+	Score float64 `json:"score" api:"required"`
+	// The text content of this chunk (up to 480 tokens).
+	Text string `json:"text" api:"required"`
+	// Identifier of the user who owns this record.
+	UserID string `json:"user_id" api:"required"`
+	// Arbitrary metadata attached to the record at ingestion time. Stored as a
+	// flat_object in OpenSearch and filterable via filter[field]=value query
+	// parameters.
+	Metadata map[string]any `json:"metadata"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID              respjson.Field
+		ChunkIndex      respjson.Field
+		ChunkTotal      respjson.Field
+		DocumentID      respjson.Field
+		IngestedAt      respjson.Field
+		OrganizationID  respjson.Field
+		RecordCreatedAt respjson.Field
+		RecordID        respjson.Field
+		RecordType      respjson.Field
+		Region          respjson.Field
+		Score           respjson.Field
+		Text            respjson.Field
+		UserID          respjson.Field
+		Metadata        respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AISearchConversationHistoriesResponseData) RawJSON() string { return r.JSON.raw }
+func (r *AISearchConversationHistoriesResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Pagination metadata following the standard Telnyx V2 API format.
+type AISearchConversationHistoriesResponseMeta struct {
+	// Current page number (always 1 — this API does not support pagination, use top_k
+	// instead).
+	PageNumber int64 `json:"page_number" api:"required"`
+	// Number of results per page (equals the effective top_k value).
+	PageSize int64 `json:"page_size" api:"required"`
+	// Total number of pages.
+	TotalPages int64 `json:"total_pages" api:"required"`
+	// Total number of matching results across all queried regions (before top_k
+	// truncation).
+	TotalResults int64 `json:"total_results" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AISearchConversationHistoriesResponseMeta) RawJSON() string { return r.JSON.raw }
+func (r *AISearchConversationHistoriesResponseMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AISummarizeResponse struct {
 	Data AISummarizeResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -281,6 +458,87 @@ func (r AINewResponseDeprecatedParams) MarshalJSON() (data []byte, err error) {
 func (r *AINewResponseDeprecatedParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type AISearchConversationHistoriesParams struct {
+	// Natural language search query. The text is embedded into a 1024-dimensional
+	// vector and compared against indexed record chunks using kNN cosine similarity.
+	Q string `query:"q" api:"required" json:"-"`
+	// The type of records to search. Each record type is stored in a separate vector
+	// index.
+	//
+	// Any of "voice", "message", "ai_pipeline_storage", "knowledge_base".
+	RecordType AISearchConversationHistoriesParamsRecordType `query:"record_type,omitzero" api:"required" json:"-"`
+	// Filter by document identifier (exact match). Populated for knowledge_base
+	// records.
+	FilterDocumentID param.Opt[string] `query:"filter[document_id],omitzero" json:"-"`
+	// Only include records ingested (chunked, embedded, and indexed) on or after this
+	// ISO 8601 timestamp.
+	FilterIngestedAtGte param.Opt[time.Time] `query:"filter[ingested_at][gte],omitzero" format:"date-time" json:"-"`
+	// Only include records ingested (chunked, embedded, and indexed) on or before this
+	// ISO 8601 timestamp.
+	FilterIngestedAtLte param.Opt[time.Time] `query:"filter[ingested_at][lte],omitzero" format:"date-time" json:"-"`
+	// Only include records whose original creation time is on or after this ISO 8601
+	// timestamp.
+	FilterRecordCreatedAtGte param.Opt[time.Time] `query:"filter[record_created_at][gte],omitzero" format:"date-time" json:"-"`
+	// Only include records whose original creation time is on or before this ISO 8601
+	// timestamp.
+	FilterRecordCreatedAtLte param.Opt[time.Time] `query:"filter[record_created_at][lte],omitzero" format:"date-time" json:"-"`
+	// Filter to chunks belonging to a specific parent record (exact match).
+	FilterRecordID param.Opt[string] `query:"filter[record_id],omitzero" json:"-"`
+	// Filter by the region stored on the record. Comma-separated to match multiple
+	// regions (USA, DEU, AUS, UAE). Distinct from the `region` parameter, which
+	// selects which cluster(s) are queried.
+	FilterRegionIn param.Opt[string] `query:"filter[region][in],omitzero" json:"-"`
+	// Filter by retention policy (exact match). Filter-only: not returned in the
+	// response body.
+	FilterRetention param.Opt[string] `query:"filter[retention],omitzero" json:"-"`
+	// Filter to records owned by a specific user (exact match).
+	FilterUserID param.Opt[string] `query:"filter[user_id],omitzero" json:"-"`
+	// Minimum cosine similarity score threshold (0.0 to 1.0). Results below this
+	// threshold are excluded.
+	MinScore param.Opt[float64] `query:"min_score,omitzero" json:"-"`
+	// Maximum number of results to return. Defaults to 20, maximum 100.
+	TopK param.Opt[int64] `query:"top_k,omitzero" json:"-"`
+	// Restrict search to a specific region's OpenSearch cluster. When omitted, all
+	// regions are queried in parallel (fan-out) and results are merged by cosine
+	// similarity score.
+	//
+	// Any of "USA", "DEU", "AUS", "UAE".
+	Region AISearchConversationHistoriesParamsRegion `query:"region,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [AISearchConversationHistoriesParams]'s query parameters as
+// `url.Values`.
+func (r AISearchConversationHistoriesParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// The type of records to search. Each record type is stored in a separate vector
+// index.
+type AISearchConversationHistoriesParamsRecordType string
+
+const (
+	AISearchConversationHistoriesParamsRecordTypeVoice             AISearchConversationHistoriesParamsRecordType = "voice"
+	AISearchConversationHistoriesParamsRecordTypeMessage           AISearchConversationHistoriesParamsRecordType = "message"
+	AISearchConversationHistoriesParamsRecordTypeAIPipelineStorage AISearchConversationHistoriesParamsRecordType = "ai_pipeline_storage"
+	AISearchConversationHistoriesParamsRecordTypeKnowledgeBase     AISearchConversationHistoriesParamsRecordType = "knowledge_base"
+)
+
+// Restrict search to a specific region's OpenSearch cluster. When omitted, all
+// regions are queried in parallel (fan-out) and results are merged by cosine
+// similarity score.
+type AISearchConversationHistoriesParamsRegion string
+
+const (
+	AISearchConversationHistoriesParamsRegionUsa AISearchConversationHistoriesParamsRegion = "USA"
+	AISearchConversationHistoriesParamsRegionDeu AISearchConversationHistoriesParamsRegion = "DEU"
+	AISearchConversationHistoriesParamsRegionAus AISearchConversationHistoriesParamsRegion = "AUS"
+	AISearchConversationHistoriesParamsRegionUae AISearchConversationHistoriesParamsRegion = "UAE"
+)
 
 type AISummarizeParams struct {
 	// The name of the bucket that contains the file to be summarized.
