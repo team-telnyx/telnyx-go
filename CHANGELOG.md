@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.81.0 (2026-06-22)
+
+Full Changelog: [v4.80.0...v4.81.0](https://github.com/team-telnyx/telnyx-go/compare/v4.80.0...v4.81.0)
+
+### Features
+
+* add transcriptions-search API spec (dev/external) ([5cbece3](https://github.com/team-telnyx/telnyx-go/commit/5cbece39bcbe5e8c76694b592a3970973a77b566))
+
 ## 4.80.0 (2026-06-16)
 
 Full Changelog: [v4.79.0...v4.80.0](https://github.com/team-telnyx/telnyx-go/compare/v4.79.0...v4.80.0)
