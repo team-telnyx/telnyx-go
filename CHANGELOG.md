@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.81.1 (2026-06-23)
+
+Full Changelog: [v4.81.0...v4.81.1](https://github.com/team-telnyx/telnyx-go/compare/v4.81.0...v4.81.1)
+
+### Bug Fixes
+
+* restore stainless.yml — only remove production_repo for Python ([d95d7e3](https://github.com/team-telnyx/telnyx-go/commit/d95d7e3fdff09c563eec8df429b5c55143eb9ce7))
+
+
+### Chores
+
+* update example date in audit-logs for SaaS rebuild ([781a7eb](https://github.com/team-telnyx/telnyx-go/commit/781a7ebde86b442b26d68984ae6271689d854d50))
+
 ## 4.81.0 (2026-06-22)
 
 Full Changelog: [v4.80.0...v4.81.0](https://github.com/team-telnyx/telnyx-go/compare/v4.80.0...v4.81.0)
