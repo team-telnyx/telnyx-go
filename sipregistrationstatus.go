@@ -12,6 +12,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
@@ -47,13 +48,13 @@ func (r *SipRegistrationStatusService) Get(ctx context.Context, query SipRegistr
 }
 
 type SipRegistrationStatusGetResponse struct {
-	// Identifier of the UAC connection.
+	// Identifier of the connection associated with the credential.
 	ConnectionID string `json:"connection_id"`
 	// Human-readable connection name.
 	ConnectionName string `json:"connection_name"`
 	// The credential type that was looked up.
 	//
-	// Any of "uac_external_credential".
+	// Any of "uac_external_credential", "telephony_credential".
 	CredentialType SipRegistrationStatusGetResponseCredentialType `json:"credential_type"`
 	// SIP username used for the registration.
 	CredentialUsername string `json:"credential_username"`
@@ -61,7 +62,8 @@ type SipRegistrationStatusGetResponse struct {
 	LastRegistrationResponse string `json:"last_registration_response"`
 	// True if the endpoint is currently registered.
 	Registered bool `json:"registered"`
-	// Detailed registration information reported by the registrar.
+	// Detailed registration information reported by the registrar. The populated
+	// fields depend on `credential_type`.
 	SipRegistrationDetails SipRegistrationStatusGetResponseSipRegistrationDetails `json:"sip_registration_details"`
 	// Human-readable registration status derived from the registrar state.
 	//
@@ -94,9 +96,11 @@ type SipRegistrationStatusGetResponseCredentialType string
 
 const (
 	SipRegistrationStatusGetResponseCredentialTypeUacExternalCredential SipRegistrationStatusGetResponseCredentialType = "uac_external_credential"
+	SipRegistrationStatusGetResponseCredentialTypeTelephonyCredential   SipRegistrationStatusGetResponseCredentialType = "telephony_credential"
 )
 
-// Detailed registration information reported by the registrar.
+// Detailed registration information reported by the registrar. The populated
+// fields depend on `credential_type`.
 type SipRegistrationStatusGetResponseSipRegistrationDetails struct {
 	// Number of authentication retries on the last attempt.
 	AuthRetries int64 `json:"auth_retries"`
@@ -104,10 +108,20 @@ type SipRegistrationStatusGetResponseSipRegistrationDetails struct {
 	Expires int64 `json:"expires"`
 	// Count of consecutive registration failures.
 	Failures int64 `json:"failures"`
+	// Timestamp when the registration row was last modified (telephony_credential).
+	LastModified string `json:"last_modified"`
 	// Unix timestamp of the next scheduled registration action.
 	NextActionAt int64 `json:"next_action_at"`
+	// Registrar node handling the registration (telephony_credential).
+	Node string `json:"node"`
 	// SIP URI user@host of the registered contact.
 	SipUriUserHost string `json:"sip_uri_user_host"`
+	// Transport used for the registration, e.g. UDP/TCP/TLS (telephony_credential).
+	Transport string `json:"transport"`
+	// IP address of the registered user agent (telephony_credential).
+	UaIP string `json:"ua_ip"`
+	// Port of the registered user agent (telephony_credential).
+	UaPort int64 `json:"ua_port"`
 	// Registration uptime reported by the registrar.
 	Uptime int64 `json:"uptime"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -115,8 +129,13 @@ type SipRegistrationStatusGetResponseSipRegistrationDetails struct {
 		AuthRetries    respjson.Field
 		Expires        respjson.Field
 		Failures       respjson.Field
+		LastModified   respjson.Field
 		NextActionAt   respjson.Field
+		Node           respjson.Field
 		SipUriUserHost respjson.Field
+		Transport      respjson.Field
+		UaIP           respjson.Field
+		UaPort         respjson.Field
 		Uptime         respjson.Field
 		ExtraFields    map[string]respjson.Field
 		raw            string
@@ -143,13 +162,17 @@ const (
 )
 
 type SipRegistrationStatusGetParams struct {
-	// Identifier of the UAC connection to look up.
-	ConnectionID string `query:"connection_id" api:"required" json:"-"`
-	// The kind of credential to look up. Only `uac_external_credential` is supported
-	// today.
+	// The kind of credential to look up. `uac_external_credential` is keyed by
+	// `connection_id`; `telephony_credential` is keyed by `username`.
 	//
-	// Any of "uac_external_credential".
+	// Any of "uac_external_credential", "telephony_credential".
 	CredentialType SipRegistrationStatusGetParamsCredentialType `query:"credential_type,omitzero" api:"required" json:"-"`
+	// Identifier of the UAC connection to look up. Required when `credential_type` is
+	// `uac_external_credential`.
+	ConnectionID param.Opt[string] `query:"connection_id,omitzero" json:"-"`
+	// SIP username of the telephony credential to look up. Required when
+	// `credential_type` is `telephony_credential`.
+	Username param.Opt[string] `query:"username,omitzero" json:"-"`
 	paramObj
 }
 
@@ -162,10 +185,11 @@ func (r SipRegistrationStatusGetParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// The kind of credential to look up. Only `uac_external_credential` is supported
-// today.
+// The kind of credential to look up. `uac_external_credential` is keyed by
+// `connection_id`; `telephony_credential` is keyed by `username`.
 type SipRegistrationStatusGetParamsCredentialType string
 
 const (
 	SipRegistrationStatusGetParamsCredentialTypeUacExternalCredential SipRegistrationStatusGetParamsCredentialType = "uac_external_credential"
+	SipRegistrationStatusGetParamsCredentialTypeTelephonyCredential   SipRegistrationStatusGetParamsCredentialType = "telephony_credential"
 )
