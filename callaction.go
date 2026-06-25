@@ -1753,7 +1753,7 @@ type TranscriptionStartRequestParam struct {
 	// `Telnyx` are supported for backward compatibility.
 	//
 	// Any of "Google", "Telnyx", "Deepgram", "Azure", "xAI", "AssemblyAI",
-	// "Speechmatics", "Soniox", "A", "B".
+	// "Speechmatics", "Soniox", "Parakeet", "A", "B".
 	TranscriptionEngine       TranscriptionStartRequestTranscriptionEngine                 `json:"transcription_engine,omitzero"`
 	TranscriptionEngineConfig TranscriptionStartRequestTranscriptionEngineConfigUnionParam `json:"transcription_engine_config,omitzero"`
 	paramObj
@@ -1780,6 +1780,7 @@ const (
 	TranscriptionStartRequestTranscriptionEngineAssemblyAI   TranscriptionStartRequestTranscriptionEngine = "AssemblyAI"
 	TranscriptionStartRequestTranscriptionEngineSpeechmatics TranscriptionStartRequestTranscriptionEngine = "Speechmatics"
 	TranscriptionStartRequestTranscriptionEngineSoniox       TranscriptionStartRequestTranscriptionEngine = "Soniox"
+	TranscriptionStartRequestTranscriptionEngineParakeet     TranscriptionStartRequestTranscriptionEngine = "Parakeet"
 	TranscriptionStartRequestTranscriptionEngineA            TranscriptionStartRequestTranscriptionEngine = "A"
 	TranscriptionStartRequestTranscriptionEngineB            TranscriptionStartRequestTranscriptionEngine = "B"
 )
@@ -1795,6 +1796,7 @@ type TranscriptionStartRequestTranscriptionEngineConfigUnionParam struct {
 	OfAssemblyAI    *TranscriptionStartRequestTranscriptionEngineConfigAssemblyAIParam   `json:",omitzero,inline"`
 	OfSpeechmatics  *TranscriptionStartRequestTranscriptionEngineConfigSpeechmaticsParam `json:",omitzero,inline"`
 	OfSoniox        *TranscriptionStartRequestTranscriptionEngineConfigSonioxParam       `json:",omitzero,inline"`
+	OfParakeet      *TranscriptionStartRequestTranscriptionEngineConfigParakeetParam     `json:",omitzero,inline"`
 	OfA             *TranscriptionEngineAConfigParam                                     `json:",omitzero,inline"`
 	OfB             *TranscriptionEngineBConfigParam                                     `json:",omitzero,inline"`
 	OfDeepgramNova2 *DeepgramNova2ConfigParam                                            `json:",omitzero,inline"`
@@ -1810,6 +1812,7 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) MarshalJSO
 		u.OfAssemblyAI,
 		u.OfSpeechmatics,
 		u.OfSoniox,
+		u.OfParakeet,
 		u.OfA,
 		u.OfB,
 		u.OfDeepgramNova2,
@@ -1834,6 +1837,8 @@ func (u *TranscriptionStartRequestTranscriptionEngineConfigUnionParam) asAny() a
 		return u.OfSpeechmatics
 	} else if !param.IsOmitted(u.OfSoniox) {
 		return u.OfSoniox
+	} else if !param.IsOmitted(u.OfParakeet) {
+		return u.OfParakeet
 	} else if !param.IsOmitted(u.OfA) {
 		return u.OfA
 	} else if !param.IsOmitted(u.OfB) {
@@ -1899,6 +1904,8 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetInterim
 	} else if vt := u.OfSpeechmatics; vt != nil && vt.InterimResults.Valid() {
 		return &vt.InterimResults.Value
 	} else if vt := u.OfSoniox; vt != nil && vt.InterimResults.Valid() {
+		return &vt.InterimResults.Value
+	} else if vt := u.OfParakeet; vt != nil && vt.InterimResults.Valid() {
 		return &vt.InterimResults.Value
 	} else if vt := u.OfA; vt != nil && vt.InterimResults.Valid() {
 		return &vt.InterimResults.Value
@@ -1992,6 +1999,8 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscr
 		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfSoniox; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
+	} else if vt := u.OfParakeet; vt != nil {
+		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfA; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfB; vt != nil {
@@ -2025,6 +2034,8 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscr
 	} else if vt := u.OfSpeechmatics; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
 	} else if vt := u.OfSoniox; vt != nil {
+		return (*string)(&vt.TranscriptionModel)
+	} else if vt := u.OfParakeet; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
 	} else if vt := u.OfB; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
@@ -2106,6 +2117,7 @@ func init() {
 		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigAssemblyAIParam]("AssemblyAI"),
 		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigSpeechmaticsParam]("Speechmatics"),
 		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigSonioxParam]("Soniox"),
+		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigParakeetParam]("Parakeet"),
 		apijson.Discriminator[TranscriptionEngineAConfigParam]("A"),
 		apijson.Discriminator[TranscriptionEngineBConfigParam]("B"),
 		apijson.Discriminator[DeepgramNova2ConfigParam]("deepgram/nova-2"),
@@ -2261,6 +2273,38 @@ func (r *TranscriptionStartRequestTranscriptionEngineConfigSonioxParam) Unmarsha
 func init() {
 	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigSonioxParam](
 		"transcription_model", "soniox/stt-rt-v4",
+	)
+}
+
+type TranscriptionStartRequestTranscriptionEngineConfigParakeetParam struct {
+	// Whether to send also interim results. If set to false, only final results will
+	// be sent.
+	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
+	// Engine identifier for Parakeet transcription service
+	//
+	// Any of "Parakeet".
+	TranscriptionEngine string `json:"transcription_engine,omitzero"`
+	// The model to use for transcription.
+	//
+	// Any of "parakeet/tdt-0.6b-v3".
+	TranscriptionModel string `json:"transcription_model,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionStartRequestTranscriptionEngineConfigParakeetParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionStartRequestTranscriptionEngineConfigParakeetParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionStartRequestTranscriptionEngineConfigParakeetParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigParakeetParam](
+		"transcription_engine", "Parakeet",
+	)
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigParakeetParam](
+		"transcription_model", "parakeet/tdt-0.6b-v3",
 	)
 }
 

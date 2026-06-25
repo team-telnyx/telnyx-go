@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestSipRegistrationStatusGet(t *testing.T) {
+func TestSipRegistrationStatusGetWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -27,8 +27,9 @@ func TestSipRegistrationStatusGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.SipRegistrationStatus.Get(context.TODO(), telnyx.SipRegistrationStatusGetParams{
-		ConnectionID:   "connection_id",
 		CredentialType: telnyx.SipRegistrationStatusGetParamsCredentialTypeUacExternalCredential,
+		ConnectionID:   telnyx.String("connection_id"),
+		Username:       telnyx.String("username"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
