@@ -106,10 +106,12 @@ func TestVerificationTriggerSMSWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Verifications.TriggerSMS(context.TODO(), telnyx.VerificationTriggerSMSParams{
-		PhoneNumber:     "+13035551234",
-		VerifyProfileID: "12ade33a-21c0-473b-b055-b3c836e1c292",
-		CustomCode:      telnyx.String("43612"),
-		TimeoutSecs:     telnyx.Int(300),
+		CreateVerificationRequestSMS: telnyx.CreateVerificationRequestSMSParam{
+			PhoneNumber:     "+13035551234",
+			VerifyProfileID: "12ade33a-21c0-473b-b055-b3c836e1c292",
+			CustomCode:      telnyx.String("43612"),
+			TimeoutSecs:     telnyx.Int(300),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

@@ -56,7 +56,7 @@ func (r *PortingEventService) Get(ctx context.Context, id string, opts ...option
 }
 
 // Returns a list of all porting events.
-func (r *PortingEventService) List(ctx context.Context, query PortingEventListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingEventListResponseUnion], err error) {
+func (r *PortingEventService) List(ctx context.Context, query PortingEventListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingEventUnion], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -74,7 +74,7 @@ func (r *PortingEventService) List(ctx context.Context, query PortingEventListPa
 }
 
 // Returns a list of all porting events.
-func (r *PortingEventService) ListAutoPaging(ctx context.Context, query PortingEventListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingEventListResponseUnion] {
+func (r *PortingEventService) ListAutoPaging(ctx context.Context, query PortingEventListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingEventUnion] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -89,6 +89,145 @@ func (r *PortingEventService) Republish(ctx context.Context, id string, opts ...
 	path := fmt.Sprintf("porting/events/%s/republish", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
 	return err
+}
+
+// PortingEventUnion contains all possible properties and values from
+// [PortingEventDeletedPayload], [PortingEventMessagingChangedPayload],
+// [PortingEventStatusChangedEvent], [PortingEventNewCommentEvent],
+// [PortingEventSplitEvent], [PortingEventWithoutWebhook].
+//
+// Use the [PortingEventUnion.AsAny] method to switch on the variant.
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type PortingEventUnion struct {
+	ID                           string   `json:"id"`
+	AvailableNotificationMethods []string `json:"available_notification_methods"`
+	// Any of "porting_order.deleted", "porting_order.messaging_changed",
+	// "porting_order.status_changed", "porting_order.new_comment",
+	// "porting_order.split", nil.
+	EventType string `json:"event_type"`
+	// This field is a union of [PortingEventDeletedPayloadPayload],
+	// [PortingEventMessagingChangedPayloadPayload],
+	// [PortingEventStatusChangedEventPayload], [PortingEventNewCommentEventPayload],
+	// [PortingEventSplitEventPayload], [any]
+	Payload        PortingEventUnionPayload `json:"payload"`
+	PayloadStatus  string                   `json:"payload_status"`
+	PortingOrderID string                   `json:"porting_order_id"`
+	CreatedAt      time.Time                `json:"created_at"`
+	RecordType     string                   `json:"record_type"`
+	UpdatedAt      time.Time                `json:"updated_at"`
+	JSON           struct {
+		ID                           respjson.Field
+		AvailableNotificationMethods respjson.Field
+		EventType                    respjson.Field
+		Payload                      respjson.Field
+		PayloadStatus                respjson.Field
+		PortingOrderID               respjson.Field
+		CreatedAt                    respjson.Field
+		RecordType                   respjson.Field
+		UpdatedAt                    respjson.Field
+		raw                          string
+	} `json:"-"`
+}
+
+func (u PortingEventUnion) AsPortingOrderDeleted() (v PortingEventDeletedPayload) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u PortingEventUnion) AsPortingOrderMessagingChanged() (v PortingEventMessagingChangedPayload) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u PortingEventUnion) AsPortingOrderStatusChanged() (v PortingEventStatusChangedEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u PortingEventUnion) AsPortingOrderNewComment() (v PortingEventNewCommentEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u PortingEventUnion) AsPortingOrderSplit() (v PortingEventSplitEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u PortingEventUnion) AsPortingEventWithoutWebhook() (v PortingEventWithoutWebhook) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u PortingEventUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *PortingEventUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// PortingEventUnionPayload is an implicit subunion of [PortingEventUnion].
+// PortingEventUnionPayload provides convenient access to the sub-properties of the
+// union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [PortingEventUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfPortingEventWithoutWebhookPayload]
+type PortingEventUnionPayload struct {
+	// This field will be present if the value is a [any] instead of an object.
+	OfPortingEventWithoutWebhookPayload any    `json:",inline"`
+	ID                                  string `json:"id"`
+	// This field is from variant [PortingEventDeletedPayloadPayload].
+	CreatedAt         time.Time `json:"created_at"`
+	CustomerReference string    `json:"customer_reference"`
+	// This field is from variant [PortingEventDeletedPayloadPayload].
+	DeletedAt time.Time `json:"deleted_at"`
+	// This field is from variant [PortingEventDeletedPayloadPayload].
+	RecordType string    `json:"record_type"`
+	UpdatedAt  time.Time `json:"updated_at"`
+	// This field is from variant [PortingEventMessagingChangedPayloadPayload].
+	Messaging  PortingEventMessagingChangedPayloadPayloadMessaging `json:"messaging"`
+	SupportKey string                                              `json:"support_key"`
+	// This field is from variant [PortingEventStatusChangedEventPayload].
+	Status shared.PortingOrderStatus `json:"status"`
+	// This field is from variant [PortingEventStatusChangedEventPayload].
+	WebhookURL string `json:"webhook_url"`
+	// This field is from variant [PortingEventNewCommentEventPayload].
+	Comment PortingEventNewCommentEventPayloadComment `json:"comment"`
+	// This field is from variant [PortingEventNewCommentEventPayload].
+	PortingOrderID string `json:"porting_order_id"`
+	// This field is from variant [PortingEventSplitEventPayload].
+	From PortingEventSplitEventPayloadFrom `json:"from"`
+	// This field is from variant [PortingEventSplitEventPayload].
+	PortingPhoneNumbers []PortingEventSplitEventPayloadPortingPhoneNumber `json:"porting_phone_numbers"`
+	// This field is from variant [PortingEventSplitEventPayload].
+	To   PortingEventSplitEventPayloadTo `json:"to"`
+	JSON struct {
+		OfPortingEventWithoutWebhookPayload respjson.Field
+		ID                                  respjson.Field
+		CreatedAt                           respjson.Field
+		CustomerReference                   respjson.Field
+		DeletedAt                           respjson.Field
+		RecordType                          respjson.Field
+		UpdatedAt                           respjson.Field
+		Messaging                           respjson.Field
+		SupportKey                          respjson.Field
+		Status                              respjson.Field
+		WebhookURL                          respjson.Field
+		Comment                             respjson.Field
+		PortingOrderID                      respjson.Field
+		From                                respjson.Field
+		PortingPhoneNumbers                 respjson.Field
+		To                                  respjson.Field
+		raw                                 string
+	} `json:"-"`
+}
+
+func (r *PortingEventUnionPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type PortingEventDeletedPayload struct {
@@ -711,7 +850,7 @@ const (
 )
 
 type PortingEventGetResponse struct {
-	Data PortingEventGetResponseDataUnion `json:"data"`
+	Data PortingEventUnion `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -723,285 +862,6 @@ type PortingEventGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r PortingEventGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *PortingEventGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// PortingEventGetResponseDataUnion contains all possible properties and values
-// from [PortingEventDeletedPayload], [PortingEventMessagingChangedPayload],
-// [PortingEventStatusChangedEvent], [PortingEventNewCommentEvent],
-// [PortingEventSplitEvent], [PortingEventWithoutWebhook].
-//
-// Use the [PortingEventGetResponseDataUnion.AsAny] method to switch on the
-// variant.
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type PortingEventGetResponseDataUnion struct {
-	ID                           string   `json:"id"`
-	AvailableNotificationMethods []string `json:"available_notification_methods"`
-	// Any of "porting_order.deleted", "porting_order.messaging_changed",
-	// "porting_order.status_changed", "porting_order.new_comment",
-	// "porting_order.split", nil.
-	EventType string `json:"event_type"`
-	// This field is a union of [PortingEventDeletedPayloadPayload],
-	// [PortingEventMessagingChangedPayloadPayload],
-	// [PortingEventStatusChangedEventPayload], [PortingEventNewCommentEventPayload],
-	// [PortingEventSplitEventPayload], [any]
-	Payload        PortingEventGetResponseDataUnionPayload `json:"payload"`
-	PayloadStatus  string                                  `json:"payload_status"`
-	PortingOrderID string                                  `json:"porting_order_id"`
-	CreatedAt      time.Time                               `json:"created_at"`
-	RecordType     string                                  `json:"record_type"`
-	UpdatedAt      time.Time                               `json:"updated_at"`
-	JSON           struct {
-		ID                           respjson.Field
-		AvailableNotificationMethods respjson.Field
-		EventType                    respjson.Field
-		Payload                      respjson.Field
-		PayloadStatus                respjson.Field
-		PortingOrderID               respjson.Field
-		CreatedAt                    respjson.Field
-		RecordType                   respjson.Field
-		UpdatedAt                    respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-func (u PortingEventGetResponseDataUnion) AsPortingOrderDeleted() (v PortingEventDeletedPayload) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u PortingEventGetResponseDataUnion) AsPortingOrderMessagingChanged() (v PortingEventMessagingChangedPayload) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u PortingEventGetResponseDataUnion) AsPortingOrderStatusChanged() (v PortingEventStatusChangedEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u PortingEventGetResponseDataUnion) AsPortingOrderNewComment() (v PortingEventNewCommentEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u PortingEventGetResponseDataUnion) AsPortingOrderSplit() (v PortingEventSplitEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u PortingEventGetResponseDataUnion) AsPortingEventWithoutWebhook() (v PortingEventWithoutWebhook) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u PortingEventGetResponseDataUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *PortingEventGetResponseDataUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// PortingEventGetResponseDataUnionPayload is an implicit subunion of
-// [PortingEventGetResponseDataUnion]. PortingEventGetResponseDataUnionPayload
-// provides convenient access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [PortingEventGetResponseDataUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfPortingEventWithoutWebhookPayload]
-type PortingEventGetResponseDataUnionPayload struct {
-	// This field will be present if the value is a [any] instead of an object.
-	OfPortingEventWithoutWebhookPayload any    `json:",inline"`
-	ID                                  string `json:"id"`
-	// This field is from variant [PortingEventDeletedPayloadPayload].
-	CreatedAt         time.Time `json:"created_at"`
-	CustomerReference string    `json:"customer_reference"`
-	// This field is from variant [PortingEventDeletedPayloadPayload].
-	DeletedAt time.Time `json:"deleted_at"`
-	// This field is from variant [PortingEventDeletedPayloadPayload].
-	RecordType string    `json:"record_type"`
-	UpdatedAt  time.Time `json:"updated_at"`
-	// This field is from variant [PortingEventMessagingChangedPayloadPayload].
-	Messaging  PortingEventMessagingChangedPayloadPayloadMessaging `json:"messaging"`
-	SupportKey string                                              `json:"support_key"`
-	// This field is from variant [PortingEventStatusChangedEventPayload].
-	Status shared.PortingOrderStatus `json:"status"`
-	// This field is from variant [PortingEventStatusChangedEventPayload].
-	WebhookURL string `json:"webhook_url"`
-	// This field is from variant [PortingEventNewCommentEventPayload].
-	Comment PortingEventNewCommentEventPayloadComment `json:"comment"`
-	// This field is from variant [PortingEventNewCommentEventPayload].
-	PortingOrderID string `json:"porting_order_id"`
-	// This field is from variant [PortingEventSplitEventPayload].
-	From PortingEventSplitEventPayloadFrom `json:"from"`
-	// This field is from variant [PortingEventSplitEventPayload].
-	PortingPhoneNumbers []PortingEventSplitEventPayloadPortingPhoneNumber `json:"porting_phone_numbers"`
-	// This field is from variant [PortingEventSplitEventPayload].
-	To   PortingEventSplitEventPayloadTo `json:"to"`
-	JSON struct {
-		OfPortingEventWithoutWebhookPayload respjson.Field
-		ID                                  respjson.Field
-		CreatedAt                           respjson.Field
-		CustomerReference                   respjson.Field
-		DeletedAt                           respjson.Field
-		RecordType                          respjson.Field
-		UpdatedAt                           respjson.Field
-		Messaging                           respjson.Field
-		SupportKey                          respjson.Field
-		Status                              respjson.Field
-		WebhookURL                          respjson.Field
-		Comment                             respjson.Field
-		PortingOrderID                      respjson.Field
-		From                                respjson.Field
-		PortingPhoneNumbers                 respjson.Field
-		To                                  respjson.Field
-		raw                                 string
-	} `json:"-"`
-}
-
-func (r *PortingEventGetResponseDataUnionPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// PortingEventListResponseUnion contains all possible properties and values from
-// [PortingEventDeletedPayload], [PortingEventMessagingChangedPayload],
-// [PortingEventStatusChangedEvent], [PortingEventNewCommentEvent],
-// [PortingEventSplitEvent], [PortingEventWithoutWebhook].
-//
-// Use the [PortingEventListResponseUnion.AsAny] method to switch on the variant.
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type PortingEventListResponseUnion struct {
-	ID                           string   `json:"id"`
-	AvailableNotificationMethods []string `json:"available_notification_methods"`
-	// Any of "porting_order.deleted", "porting_order.messaging_changed",
-	// "porting_order.status_changed", "porting_order.new_comment",
-	// "porting_order.split", nil.
-	EventType string `json:"event_type"`
-	// This field is a union of [PortingEventDeletedPayloadPayload],
-	// [PortingEventMessagingChangedPayloadPayload],
-	// [PortingEventStatusChangedEventPayload], [PortingEventNewCommentEventPayload],
-	// [PortingEventSplitEventPayload], [any]
-	Payload        PortingEventListResponseUnionPayload `json:"payload"`
-	PayloadStatus  string                               `json:"payload_status"`
-	PortingOrderID string                               `json:"porting_order_id"`
-	CreatedAt      time.Time                            `json:"created_at"`
-	RecordType     string                               `json:"record_type"`
-	UpdatedAt      time.Time                            `json:"updated_at"`
-	JSON           struct {
-		ID                           respjson.Field
-		AvailableNotificationMethods respjson.Field
-		EventType                    respjson.Field
-		Payload                      respjson.Field
-		PayloadStatus                respjson.Field
-		PortingOrderID               respjson.Field
-		CreatedAt                    respjson.Field
-		RecordType                   respjson.Field
-		UpdatedAt                    respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-func (u PortingEventListResponseUnion) AsPortingOrderDeleted() (v PortingEventDeletedPayload) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u PortingEventListResponseUnion) AsPortingOrderMessagingChanged() (v PortingEventMessagingChangedPayload) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u PortingEventListResponseUnion) AsPortingOrderStatusChanged() (v PortingEventStatusChangedEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u PortingEventListResponseUnion) AsPortingOrderNewComment() (v PortingEventNewCommentEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u PortingEventListResponseUnion) AsPortingOrderSplit() (v PortingEventSplitEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u PortingEventListResponseUnion) AsPortingEventWithoutWebhook() (v PortingEventWithoutWebhook) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u PortingEventListResponseUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *PortingEventListResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// PortingEventListResponseUnionPayload is an implicit subunion of
-// [PortingEventListResponseUnion]. PortingEventListResponseUnionPayload provides
-// convenient access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [PortingEventListResponseUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfPortingEventWithoutWebhookPayload]
-type PortingEventListResponseUnionPayload struct {
-	// This field will be present if the value is a [any] instead of an object.
-	OfPortingEventWithoutWebhookPayload any    `json:",inline"`
-	ID                                  string `json:"id"`
-	// This field is from variant [PortingEventDeletedPayloadPayload].
-	CreatedAt         time.Time `json:"created_at"`
-	CustomerReference string    `json:"customer_reference"`
-	// This field is from variant [PortingEventDeletedPayloadPayload].
-	DeletedAt time.Time `json:"deleted_at"`
-	// This field is from variant [PortingEventDeletedPayloadPayload].
-	RecordType string    `json:"record_type"`
-	UpdatedAt  time.Time `json:"updated_at"`
-	// This field is from variant [PortingEventMessagingChangedPayloadPayload].
-	Messaging  PortingEventMessagingChangedPayloadPayloadMessaging `json:"messaging"`
-	SupportKey string                                              `json:"support_key"`
-	// This field is from variant [PortingEventStatusChangedEventPayload].
-	Status shared.PortingOrderStatus `json:"status"`
-	// This field is from variant [PortingEventStatusChangedEventPayload].
-	WebhookURL string `json:"webhook_url"`
-	// This field is from variant [PortingEventNewCommentEventPayload].
-	Comment PortingEventNewCommentEventPayloadComment `json:"comment"`
-	// This field is from variant [PortingEventNewCommentEventPayload].
-	PortingOrderID string `json:"porting_order_id"`
-	// This field is from variant [PortingEventSplitEventPayload].
-	From PortingEventSplitEventPayloadFrom `json:"from"`
-	// This field is from variant [PortingEventSplitEventPayload].
-	PortingPhoneNumbers []PortingEventSplitEventPayloadPortingPhoneNumber `json:"porting_phone_numbers"`
-	// This field is from variant [PortingEventSplitEventPayload].
-	To   PortingEventSplitEventPayloadTo `json:"to"`
-	JSON struct {
-		OfPortingEventWithoutWebhookPayload respjson.Field
-		ID                                  respjson.Field
-		CreatedAt                           respjson.Field
-		CustomerReference                   respjson.Field
-		DeletedAt                           respjson.Field
-		RecordType                          respjson.Field
-		UpdatedAt                           respjson.Field
-		Messaging                           respjson.Field
-		SupportKey                          respjson.Field
-		Status                              respjson.Field
-		WebhookURL                          respjson.Field
-		Comment                             respjson.Field
-		PortingOrderID                      respjson.Field
-		From                                respjson.Field
-		PortingPhoneNumbers                 respjson.Field
-		To                                  respjson.Field
-		raw                                 string
-	} `json:"-"`
-}
-
-func (r *PortingEventListResponseUnionPayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

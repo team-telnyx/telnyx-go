@@ -9,16 +9,12 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
-	"time"
 
-	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
-	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // Phone-number reputation monitoring (spam-score lookup and tracking).
@@ -44,7 +40,7 @@ func NewReputationNumberService(opts ...option.RequestOption) (r ReputationNumbe
 
 // Convenience alias for
 // `GET /v2/enterprises/{enterprise_id}/reputation/numbers/{phone_number}`.
-func (r *ReputationNumberService) Get(ctx context.Context, phoneNumber string, query ReputationNumberGetParams, opts ...option.RequestOption) (res *ReputationNumberGetResponse, err error) {
+func (r *ReputationNumberService) Get(ctx context.Context, phoneNumber string, query ReputationNumberGetParams, opts ...option.RequestOption) (res *ReputationPhoneNumberWithReputation, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
 		err = errors.New("missing required phone_number parameter")
@@ -58,7 +54,7 @@ func (r *ReputationNumberService) Get(ctx context.Context, phoneNumber string, q
 // Convenience alias for `GET /v2/enterprises/{enterprise_id}/reputation/numbers`
 // that returns numbers across every enterprise you own. Useful when you don't want
 // to look up the enterprise id first.
-func (r *ReputationNumberService) List(ctx context.Context, query ReputationNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[ReputationNumberListResponse], err error) {
+func (r *ReputationNumberService) List(ctx context.Context, query ReputationNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[ReputationPhoneNumber], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -78,7 +74,7 @@ func (r *ReputationNumberService) List(ctx context.Context, query ReputationNumb
 // Convenience alias for `GET /v2/enterprises/{enterprise_id}/reputation/numbers`
 // that returns numbers across every enterprise you own. Useful when you don't want
 // to look up the enterprise id first.
-func (r *ReputationNumberService) ListAutoPaging(ctx context.Context, query ReputationNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[ReputationNumberListResponse] {
+func (r *ReputationNumberService) ListAutoPaging(ctx context.Context, query ReputationNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[ReputationPhoneNumber] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -94,78 +90,6 @@ func (r *ReputationNumberService) Delete(ctx context.Context, phoneNumber string
 	path := fmt.Sprintf("reputation/numbers/%s", phoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
-}
-
-type ReputationNumberGetResponse struct {
-	Data ReputationNumberGetResponseData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ReputationNumberGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *ReputationNumberGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ReputationNumberGetResponseData struct {
-	ID           string    `json:"id" format:"uuid"`
-	CreatedAt    time.Time `json:"created_at" format:"date-time"`
-	EnterpriseID string    `json:"enterprise_id" format:"uuid"`
-	// E.164 with leading `+`.
-	PhoneNumber string `json:"phone_number"`
-	// `null` until the first refresh has been collected for this number.
-	ReputationData shared.ReputationData `json:"reputation_data" api:"nullable"`
-	UpdatedAt      time.Time             `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		CreatedAt      respjson.Field
-		EnterpriseID   respjson.Field
-		PhoneNumber    respjson.Field
-		ReputationData respjson.Field
-		UpdatedAt      respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ReputationNumberGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *ReputationNumberGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ReputationNumberListResponse struct {
-	ID           string    `json:"id" format:"uuid"`
-	CreatedAt    time.Time `json:"created_at" format:"date-time"`
-	EnterpriseID string    `json:"enterprise_id" format:"uuid"`
-	// E.164 with leading `+`.
-	PhoneNumber string `json:"phone_number"`
-	// `null` until the first refresh has been collected for this number.
-	ReputationData shared.ReputationData `json:"reputation_data" api:"nullable"`
-	UpdatedAt      time.Time             `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		CreatedAt      respjson.Field
-		EnterpriseID   respjson.Field
-		PhoneNumber    respjson.Field
-		ReputationData respjson.Field
-		UpdatedAt      respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ReputationNumberListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ReputationNumberListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type ReputationNumberGetParams struct {

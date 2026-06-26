@@ -108,13 +108,13 @@ func (r *PhoneNumbersRegulatoryRequirementGetResponseDataRegionInformation) Unma
 }
 
 type PhoneNumbersRegulatoryRequirementGetResponseDataRegulatoryRequirement struct {
-	ID                 string                                                                                  `json:"id" format:"uuid"`
-	AcceptanceCriteria PhoneNumbersRegulatoryRequirementGetResponseDataRegulatoryRequirementAcceptanceCriteria `json:"acceptance_criteria"`
-	Description        string                                                                                  `json:"description"`
-	Example            string                                                                                  `json:"example"`
-	FieldType          string                                                                                  `json:"field_type"`
-	Label              string                                                                                  `json:"label"`
-	RecordType         string                                                                                  `json:"record_type"`
+	ID                 string                                                                                   `json:"id" format:"uuid"`
+	AcceptanceCriteria PhoneNumbersRegulatoryRequirementGetResponseDataRegulatoryRequirementsAcceptanceCriteria `json:"acceptance_criteria"`
+	Description        string                                                                                   `json:"description"`
+	Example            string                                                                                   `json:"example"`
+	FieldType          string                                                                                   `json:"field_type"`
+	Label              string                                                                                   `json:"label"`
+	RecordType         string                                                                                   `json:"record_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -137,7 +137,7 @@ func (r *PhoneNumbersRegulatoryRequirementGetResponseDataRegulatoryRequirement) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PhoneNumbersRegulatoryRequirementGetResponseDataRegulatoryRequirementAcceptanceCriteria struct {
+type PhoneNumbersRegulatoryRequirementGetResponseDataRegulatoryRequirementsAcceptanceCriteria struct {
 	FieldType     string `json:"field_type"`
 	FieldValue    string `json:"field_value"`
 	LocalityLimit string `json:"locality_limit"`
@@ -152,10 +152,10 @@ type PhoneNumbersRegulatoryRequirementGetResponseDataRegulatoryRequirementAccept
 }
 
 // Returns the unmodified JSON received from the API
-func (r PhoneNumbersRegulatoryRequirementGetResponseDataRegulatoryRequirementAcceptanceCriteria) RawJSON() string {
+func (r PhoneNumbersRegulatoryRequirementGetResponseDataRegulatoryRequirementsAcceptanceCriteria) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *PhoneNumbersRegulatoryRequirementGetResponseDataRegulatoryRequirementAcceptanceCriteria) UnmarshalJSON(data []byte) error {
+func (r *PhoneNumbersRegulatoryRequirementGetResponseDataRegulatoryRequirementsAcceptanceCriteria) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

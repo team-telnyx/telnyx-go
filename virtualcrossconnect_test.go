@@ -27,21 +27,26 @@ func TestVirtualCrossConnectNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.VirtualCrossConnects.New(context.TODO(), telnyx.VirtualCrossConnectNewParams{
-		RegionCode:              "ashburn-va",
-		BandwidthMbps:           telnyx.Float(50),
-		BgpAsn:                  telnyx.Float(1234),
-		CloudProvider:           telnyx.VirtualCrossConnectNewParamsCloudProviderAws,
-		CloudProviderRegion:     telnyx.String("us-east-1"),
-		Name:                    telnyx.String("test interface"),
-		NetworkID:               telnyx.String("6a09cdc3-8948-47f0-aa62-74ac943d6c58"),
-		PrimaryBgpKey:           telnyx.String("yFV4wEPtPVPfDUGLWiyQzwga"),
-		PrimaryCloudAccountID:   telnyx.String("123456789012"),
-		PrimaryCloudIP:          telnyx.String("169.254.0.2"),
-		PrimaryTelnyxIP:         telnyx.String("169.254.0.1"),
-		SecondaryBgpKey:         telnyx.String("ge1lONeK9RcA83uuWaw9DvZy"),
-		SecondaryCloudAccountID: telnyx.String(""),
-		SecondaryCloudIP:        telnyx.String("169.254.0.4"),
-		SecondaryTelnyxIP:       telnyx.String("169.254.0.3"),
+		VirtualCrossConnectCreate: telnyx.VirtualCrossConnectCreateParam{
+			RecordParam: telnyx.RecordParam{},
+			NetworkInterfaceParam: telnyx.NetworkInterfaceParam{
+				Name:      telnyx.String("test interface"),
+				NetworkID: telnyx.String("6a09cdc3-8948-47f0-aa62-74ac943d6c58"),
+			},
+			RegionCode:              "ashburn-va",
+			BandwidthMbps:           telnyx.Float(50),
+			BgpAsn:                  telnyx.Float(1234),
+			CloudProvider:           "aws",
+			CloudProviderRegion:     telnyx.String("us-east-1"),
+			PrimaryBgpKey:           telnyx.String("yFV4wEPtPVPfDUGLWiyQzwga"),
+			PrimaryCloudAccountID:   telnyx.String("123456789012"),
+			PrimaryCloudIP:          telnyx.String("169.254.0.2"),
+			PrimaryTelnyxIP:         telnyx.String("169.254.0.1"),
+			SecondaryBgpKey:         telnyx.String("ge1lONeK9RcA83uuWaw9DvZy"),
+			SecondaryCloudAccountID: telnyx.String(""),
+			SecondaryCloudIP:        telnyx.String("169.254.0.4"),
+			SecondaryTelnyxIP:       telnyx.String("169.254.0.3"),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -92,12 +97,14 @@ func TestVirtualCrossConnectUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"6a09cdc3-8948-47f0-aa62-74ac943d6c58",
 		telnyx.VirtualCrossConnectUpdateParams{
-			PrimaryCloudIP:               telnyx.String("169.254.0.2"),
-			PrimaryEnabled:               telnyx.Bool(true),
-			PrimaryRoutingAnnouncement:   telnyx.Bool(false),
-			SecondaryCloudIP:             telnyx.String("169.254.0.4"),
-			SecondaryEnabled:             telnyx.Bool(true),
-			SecondaryRoutingAnnouncement: telnyx.Bool(false),
+			VirtualCrossConnectPatch: telnyx.VirtualCrossConnectPatchParam{
+				PrimaryCloudIP:               telnyx.String("169.254.0.2"),
+				PrimaryEnabled:               telnyx.Bool(true),
+				PrimaryRoutingAnnouncement:   telnyx.Bool(false),
+				SecondaryCloudIP:             telnyx.String("169.254.0.4"),
+				SecondaryEnabled:             telnyx.Bool(true),
+				SecondaryRoutingAnnouncement: telnyx.Bool(false),
+			},
 		},
 	)
 	if err != nil {

@@ -82,6 +82,37 @@ func (r *CallReasonService) Validate(ctx context.Context, body CallReasonValidat
 	return res, err
 }
 
+// JSON:API pagination metadata returned with every paginated list response. Page
+// numbering is 1-based. `page_size` reports the number of items actually returned
+// in `data` for this page; the requested size is taken from the `page[size]` query
+// parameter.
+type BrandedCallingPaginationMeta struct {
+	// 1-based index of this page. Echoes the `page[number]` query parameter (default
+	// `1`).
+	PageNumber int64 `json:"page_number" api:"required"`
+	// Number of items returned in this page's `data` array. Capped at 250.
+	PageSize int64 `json:"page_size" api:"required"`
+	// Total number of pages available given the current `page_size`.
+	TotalPages int64 `json:"total_pages" api:"required"`
+	// Total number of items across all pages (excludes soft-deleted rows).
+	TotalResults int64 `json:"total_results" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BrandedCallingPaginationMeta) RawJSON() string { return r.JSON.raw }
+func (r *BrandedCallingPaginationMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Pre-vetted call-reason library entry.
 type CallReasonListResponse struct {
 	ID          string `json:"id" format:"uuid"`

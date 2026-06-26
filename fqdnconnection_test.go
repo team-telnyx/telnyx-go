@@ -64,7 +64,7 @@ func TestFqdnConnectionNewWithOptionalParams(t *testing.T) {
 			JitterbufferMsecMin: telnyx.Int(60),
 		},
 		MicrosoftTeamsSbc: telnyx.Bool(true),
-		NoiseSuppression:  telnyx.FqdnConnectionNewParamsNoiseSuppressionBoth,
+		NoiseSuppression:  telnyx.ConnectionNoiseSuppressionBoth,
 		NoiseSuppressionDetails: shared.ConnectionNoiseSuppressionDetailsParam{
 			AttenuationLimit: telnyx.Int(80),
 			Engine:           shared.ConnectionNoiseSuppressionDetailsEngineDeepFilterNet,
@@ -183,7 +183,7 @@ func TestFqdnConnectionUpdateWithOptionalParams(t *testing.T) {
 				JitterbufferMsecMax: telnyx.Int(200),
 				JitterbufferMsecMin: telnyx.Int(60),
 			},
-			NoiseSuppression: telnyx.FqdnConnectionUpdateParamsNoiseSuppressionBoth,
+			NoiseSuppression: telnyx.ConnectionNoiseSuppressionBoth,
 			NoiseSuppressionDetails: shared.ConnectionNoiseSuppressionDetailsParam{
 				AttenuationLimit: telnyx.Int(80),
 				Engine:           shared.ConnectionNoiseSuppressionDetailsEngineDeepFilterNet,

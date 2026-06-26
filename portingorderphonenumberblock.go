@@ -311,7 +311,7 @@ type PortingOrderPhoneNumberBlockListParamsFilter struct {
 	// Any of "New", "Pending", "Conflict", "Cancel Pending", "Failed", "Concurred",
 	// "Activate RDY", "Disconnect Pending", "Concurrence Sent", "Old", "Sending",
 	// "Active", "Cancelled".
-	ActivationStatus string `query:"activation_status,omitzero" json:"-"`
+	ActivationStatus PortingOrderActivationStatus `query:"activation_status,omitzero" json:"-"`
 	// Filter results by a list of phone numbers
 	PhoneNumber []string `query:"phone_number,omitzero" json:"-"`
 	// Filter results by portability status

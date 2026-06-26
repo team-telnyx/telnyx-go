@@ -4,6 +4,7 @@ package telnyx
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -75,7 +76,7 @@ func (r *WireguardPeerService) Update(ctx context.Context, id string, body Wireg
 }
 
 // List all WireGuard peers.
-func (r *WireguardPeerService) List(ctx context.Context, query WireguardPeerListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[WireguardPeerListResponse], err error) {
+func (r *WireguardPeerService) List(ctx context.Context, query WireguardPeerListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[WireguardPeer], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -93,7 +94,7 @@ func (r *WireguardPeerService) List(ctx context.Context, query WireguardPeerList
 }
 
 // List all WireGuard peers.
-func (r *WireguardPeerService) ListAutoPaging(ctx context.Context, query WireguardPeerListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[WireguardPeerListResponse] {
+func (r *WireguardPeerService) ListAutoPaging(ctx context.Context, query WireguardPeerListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[WireguardPeer] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -122,6 +123,57 @@ func (r *WireguardPeerService) GetConfig(ctx context.Context, id string, opts ..
 	return res, err
 }
 
+type WireguardPeer struct {
+	// ISO 8601 formatted date-time indicating when peer sent traffic last time.
+	LastSeen string `json:"last_seen"`
+	// Your WireGuard `Interface.PrivateKey`.<br /><br />This attribute is only ever
+	// utlised if, on POST, you do NOT provide your own `public_key`. In which case, a
+	// new Public and Private key pair will be generated for you. When your
+	// `private_key` is returned, you must save this immediately as we do not save it
+	// within Telnyx. If you lose your Private Key, it can not be recovered.
+	PrivateKey string `json:"private_key"`
+	// The id of the wireguard interface associated with the peer.
+	WireguardInterfaceID string `json:"wireguard_interface_id" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		LastSeen             respjson.Field
+		PrivateKey           respjson.Field
+		WireguardInterfaceID respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+	Record
+}
+
+// Returns the unmodified JSON received from the API
+func (r WireguardPeer) RawJSON() string { return r.JSON.raw }
+func (r *WireguardPeer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this WireguardPeer to a WireguardPeerParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// WireguardPeerParam.Overrides()
+func (r WireguardPeer) ToParam() WireguardPeerParam {
+	return param.Override[WireguardPeerParam](json.RawMessage(r.RawJSON()))
+}
+
+type WireguardPeerParam struct {
+	// The id of the wireguard interface associated with the peer.
+	WireguardInterfaceID param.Opt[string] `json:"wireguard_interface_id,omitzero" format:"uuid"`
+	RecordParam
+}
+
+func (r WireguardPeerParam) MarshalJSON() (data []byte, err error) {
+	type shadow struct {
+		*WireguardPeerParam
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
+}
+
 type WireguardPeerPatchParam struct {
 	// The WireGuard `PublicKey`.<br /><br />If you do not provide a Public Key, a new
 	// Public and Private key pair will be generated for you.
@@ -138,7 +190,7 @@ func (r *WireguardPeerPatchParam) UnmarshalJSON(data []byte) error {
 }
 
 type WireguardPeerNewResponse struct {
-	Data WireguardPeerNewResponseData `json:"data"`
+	Data WireguardPeer `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -153,36 +205,8 @@ func (r *WireguardPeerNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WireguardPeerNewResponseData struct {
-	// ISO 8601 formatted date-time indicating when peer sent traffic last time.
-	LastSeen string `json:"last_seen"`
-	// Your WireGuard `Interface.PrivateKey`.<br /><br />This attribute is only ever
-	// utlised if, on POST, you do NOT provide your own `public_key`. In which case, a
-	// new Public and Private key pair will be generated for you. When your
-	// `private_key` is returned, you must save this immediately as we do not save it
-	// within Telnyx. If you lose your Private Key, it can not be recovered.
-	PrivateKey string `json:"private_key"`
-	// The id of the wireguard interface associated with the peer.
-	WireguardInterfaceID string `json:"wireguard_interface_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		LastSeen             respjson.Field
-		PrivateKey           respjson.Field
-		WireguardInterfaceID respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-	Record
-}
-
-// Returns the unmodified JSON received from the API
-func (r WireguardPeerNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *WireguardPeerNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type WireguardPeerGetResponse struct {
-	Data WireguardPeerGetResponseData `json:"data"`
+	Data WireguardPeer `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -197,36 +221,8 @@ func (r *WireguardPeerGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WireguardPeerGetResponseData struct {
-	// ISO 8601 formatted date-time indicating when peer sent traffic last time.
-	LastSeen string `json:"last_seen"`
-	// Your WireGuard `Interface.PrivateKey`.<br /><br />This attribute is only ever
-	// utlised if, on POST, you do NOT provide your own `public_key`. In which case, a
-	// new Public and Private key pair will be generated for you. When your
-	// `private_key` is returned, you must save this immediately as we do not save it
-	// within Telnyx. If you lose your Private Key, it can not be recovered.
-	PrivateKey string `json:"private_key"`
-	// The id of the wireguard interface associated with the peer.
-	WireguardInterfaceID string `json:"wireguard_interface_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		LastSeen             respjson.Field
-		PrivateKey           respjson.Field
-		WireguardInterfaceID respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-	Record
-}
-
-// Returns the unmodified JSON received from the API
-func (r WireguardPeerGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *WireguardPeerGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type WireguardPeerUpdateResponse struct {
-	Data WireguardPeerUpdateResponseData `json:"data"`
+	Data WireguardPeer `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -241,64 +237,8 @@ func (r *WireguardPeerUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WireguardPeerUpdateResponseData struct {
-	// ISO 8601 formatted date-time indicating when peer sent traffic last time.
-	LastSeen string `json:"last_seen"`
-	// Your WireGuard `Interface.PrivateKey`.<br /><br />This attribute is only ever
-	// utlised if, on POST, you do NOT provide your own `public_key`. In which case, a
-	// new Public and Private key pair will be generated for you. When your
-	// `private_key` is returned, you must save this immediately as we do not save it
-	// within Telnyx. If you lose your Private Key, it can not be recovered.
-	PrivateKey string `json:"private_key"`
-	// The id of the wireguard interface associated with the peer.
-	WireguardInterfaceID string `json:"wireguard_interface_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		LastSeen             respjson.Field
-		PrivateKey           respjson.Field
-		WireguardInterfaceID respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-	Record
-}
-
-// Returns the unmodified JSON received from the API
-func (r WireguardPeerUpdateResponseData) RawJSON() string { return r.JSON.raw }
-func (r *WireguardPeerUpdateResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WireguardPeerListResponse struct {
-	// ISO 8601 formatted date-time indicating when peer sent traffic last time.
-	LastSeen string `json:"last_seen"`
-	// Your WireGuard `Interface.PrivateKey`.<br /><br />This attribute is only ever
-	// utlised if, on POST, you do NOT provide your own `public_key`. In which case, a
-	// new Public and Private key pair will be generated for you. When your
-	// `private_key` is returned, you must save this immediately as we do not save it
-	// within Telnyx. If you lose your Private Key, it can not be recovered.
-	PrivateKey string `json:"private_key"`
-	// The id of the wireguard interface associated with the peer.
-	WireguardInterfaceID string `json:"wireguard_interface_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		LastSeen             respjson.Field
-		PrivateKey           respjson.Field
-		WireguardInterfaceID respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-	Record
-}
-
-// Returns the unmodified JSON received from the API
-func (r WireguardPeerListResponse) RawJSON() string { return r.JSON.raw }
-func (r *WireguardPeerListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type WireguardPeerDeleteResponse struct {
-	Data WireguardPeerDeleteResponseData `json:"data"`
+	Data WireguardPeer `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -313,46 +253,28 @@ func (r *WireguardPeerDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WireguardPeerDeleteResponseData struct {
-	// ISO 8601 formatted date-time indicating when peer sent traffic last time.
-	LastSeen string `json:"last_seen"`
-	// Your WireGuard `Interface.PrivateKey`.<br /><br />This attribute is only ever
-	// utlised if, on POST, you do NOT provide your own `public_key`. In which case, a
-	// new Public and Private key pair will be generated for you. When your
-	// `private_key` is returned, you must save this immediately as we do not save it
-	// within Telnyx. If you lose your Private Key, it can not be recovered.
-	PrivateKey string `json:"private_key"`
-	// The id of the wireguard interface associated with the peer.
-	WireguardInterfaceID string `json:"wireguard_interface_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		LastSeen             respjson.Field
-		PrivateKey           respjson.Field
-		WireguardInterfaceID respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-	Record
-}
-
-// Returns the unmodified JSON received from the API
-func (r WireguardPeerDeleteResponseData) RawJSON() string { return r.JSON.raw }
-func (r *WireguardPeerDeleteResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type WireguardPeerNewParams struct {
-	// The id of the wireguard interface associated with the peer.
-	WireguardInterfaceID string `json:"wireguard_interface_id" api:"required" format:"uuid"`
+	Body WireguardPeerNewParamsBody
 	paramObj
 }
 
 func (r WireguardPeerNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow WireguardPeerNewParams
-	return param.MarshalObject(r, (*shadow)(&r))
+	return shimjson.Marshal(r.Body)
 }
 func (r *WireguardPeerNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type WireguardPeerNewParamsBody struct {
+	WireguardPeerParam
+}
+
+func (r WireguardPeerNewParamsBody) MarshalJSON() (data []byte, err error) {
+	type shadow struct {
+		*WireguardPeerNewParamsBody
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
 
 type WireguardPeerUpdateParams struct {

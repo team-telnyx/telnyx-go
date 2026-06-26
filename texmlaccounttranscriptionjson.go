@@ -55,7 +55,7 @@ func (r *TexmlAccountTranscriptionJsonService) DeleteRecordingTranscriptionSidJs
 }
 
 // Returns the recording transcription resource identified by its ID.
-func (r *TexmlAccountTranscriptionJsonService) GetRecordingTranscriptionSidJson(ctx context.Context, recordingTranscriptionSid string, query TexmlAccountTranscriptionJsonGetRecordingTranscriptionSidJsonParams, opts ...option.RequestOption) (res *TexmlAccountTranscriptionJsonGetRecordingTranscriptionSidJsonResponse, err error) {
+func (r *TexmlAccountTranscriptionJsonService) GetRecordingTranscriptionSidJson(ctx context.Context, recordingTranscriptionSid string, query TexmlAccountTranscriptionJsonGetRecordingTranscriptionSidJsonParams, opts ...option.RequestOption) (res *TexmlRecordingTranscription, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
@@ -70,7 +70,7 @@ func (r *TexmlAccountTranscriptionJsonService) GetRecordingTranscriptionSidJson(
 	return res, err
 }
 
-type TexmlAccountTranscriptionJsonGetRecordingTranscriptionSidJsonResponse struct {
+type TexmlRecordingTranscription struct {
 	AccountSid string `json:"account_sid"`
 	// The version of the API that was used to make the request.
 	APIVersion  string    `json:"api_version"`
@@ -87,7 +87,7 @@ type TexmlAccountTranscriptionJsonGetRecordingTranscriptionSidJsonResponse struc
 	// available only when the status is completed.
 	//
 	// Any of "in-progress", "completed".
-	Status TexmlAccountTranscriptionJsonGetRecordingTranscriptionSidJsonResponseStatus `json:"status"`
+	Status TexmlRecordingTranscriptionStatus `json:"status"`
 	// The recording's transcribed text
 	TranscriptionText string `json:"transcription_text"`
 	// The relative URI for the recording transcription resource.
@@ -111,20 +111,18 @@ type TexmlAccountTranscriptionJsonGetRecordingTranscriptionSidJsonResponse struc
 }
 
 // Returns the unmodified JSON received from the API
-func (r TexmlAccountTranscriptionJsonGetRecordingTranscriptionSidJsonResponse) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *TexmlAccountTranscriptionJsonGetRecordingTranscriptionSidJsonResponse) UnmarshalJSON(data []byte) error {
+func (r TexmlRecordingTranscription) RawJSON() string { return r.JSON.raw }
+func (r *TexmlRecordingTranscription) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The status of the recording transcriptions. The transcription text will be
 // available only when the status is completed.
-type TexmlAccountTranscriptionJsonGetRecordingTranscriptionSidJsonResponseStatus string
+type TexmlRecordingTranscriptionStatus string
 
 const (
-	TexmlAccountTranscriptionJsonGetRecordingTranscriptionSidJsonResponseStatusInProgress TexmlAccountTranscriptionJsonGetRecordingTranscriptionSidJsonResponseStatus = "in-progress"
-	TexmlAccountTranscriptionJsonGetRecordingTranscriptionSidJsonResponseStatusCompleted  TexmlAccountTranscriptionJsonGetRecordingTranscriptionSidJsonResponseStatus = "completed"
+	TexmlRecordingTranscriptionStatusInProgress TexmlRecordingTranscriptionStatus = "in-progress"
+	TexmlRecordingTranscriptionStatusCompleted  TexmlRecordingTranscriptionStatus = "completed"
 )
 
 type TexmlAccountTranscriptionJsonDeleteRecordingTranscriptionSidJsonParams struct {

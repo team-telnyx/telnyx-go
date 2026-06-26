@@ -17,7 +17,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
-	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // A Display Identity Record (DIR) is the verified calling identity (display name,
@@ -67,7 +66,7 @@ func NewEnterpriseDirService(opts ...option.RequestOption) (r EnterpriseDirServi
 //   - `403` - Branded Calling not activated on this enterprise (see
 //     `POST /enterprises/{id}/branded_calling`).
 //   - `404` - enterprise does not exist or does not belong to your account.
-func (r *EnterpriseDirService) New(ctx context.Context, enterpriseID string, body EnterpriseDirNewParams, opts ...option.RequestOption) (res *EnterpriseDirNewResponse, err error) {
+func (r *EnterpriseDirService) New(ctx context.Context, enterpriseID string, body EnterpriseDirNewParams, opts ...option.RequestOption) (res *DirWrapped, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if enterpriseID == "" {
 		err = errors.New("missing required enterprise_id parameter")
@@ -87,7 +86,7 @@ func (r *EnterpriseDirService) New(ctx context.Context, enterpriseID string, bod
 // form). Sortable by `created_at`, `updated_at`, `display_name`, `status`,
 // `submitted_at`, `verified_at`, `expiring_at` (prefix `-` for descending; default
 // `-created_at`).
-func (r *EnterpriseDirService) List(ctx context.Context, enterpriseID string, query EnterpriseDirListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[EnterpriseDirListResponse], err error) {
+func (r *EnterpriseDirService) List(ctx context.Context, enterpriseID string, query EnterpriseDirListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[Dir], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -117,348 +116,9 @@ func (r *EnterpriseDirService) List(ctx context.Context, enterpriseID string, qu
 // form). Sortable by `created_at`, `updated_at`, `display_name`, `status`,
 // `submitted_at`, `verified_at`, `expiring_at` (prefix `-` for descending; default
 // `-created_at`).
-func (r *EnterpriseDirService) ListAutoPaging(ctx context.Context, enterpriseID string, query EnterpriseDirListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[EnterpriseDirListResponse] {
+func (r *EnterpriseDirService) ListAutoPaging(ctx context.Context, enterpriseID string, query EnterpriseDirListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[Dir] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, enterpriseID, query, opts...))
 }
-
-type EnterpriseDirNewResponse struct {
-	Data EnterpriseDirNewResponseData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EnterpriseDirNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseDirNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EnterpriseDirNewResponseData struct {
-	ID                     string                                   `json:"id" format:"uuid"`
-	AuthorizerEmail        string                                   `json:"authorizer_email" api:"nullable" format:"email"`
-	AuthorizerName         string                                   `json:"authorizer_name" api:"nullable"`
-	CallReasons            []EnterpriseDirNewResponseDataCallReason `json:"call_reasons"`
-	CertifyBrandIsAccurate bool                                     `json:"certify_brand_is_accurate"`
-	CertifyIPOwnership     bool                                     `json:"certify_ip_ownership"`
-	CertifyNoShaftContent  bool                                     `json:"certify_no_shaft_content"`
-	CreatedAt              time.Time                                `json:"created_at" format:"date-time"`
-	DisplayName            string                                   `json:"display_name"`
-	Documents              []EnterpriseDirNewResponseDataDocument   `json:"documents" api:"nullable"`
-	EnterpriseID           string                                   `json:"enterprise_id" format:"uuid"`
-	ExpiringAt             time.Time                                `json:"expiring_at" api:"nullable" format:"date-time"`
-	LogoURL                string                                   `json:"logo_url" api:"nullable" format:"uri"`
-	RejectedAt             time.Time                                `json:"rejected_at" api:"nullable" format:"date-time"`
-	// Populated when `status` is `rejected`; cleared on `/submit` or successful
-	// approval.
-	RejectionReasons []EnterpriseDirNewResponseDataRejectionReason `json:"rejection_reasons" api:"nullable"`
-	Reselling        bool                                          `json:"reselling"`
-	// DIR lifecycle status.
-	//
-	//   - `draft` - newly created; editable; not yet submitted.
-	//   - `submitted` / `in_review` - Telnyx is reviewing.
-	//   - `verified` - approved; phone numbers may be attached.
-	//   - `rejected` - Telnyx rejected this submission; `rejection_reasons` is
-	//     populated; customer can edit and resubmit.
-	//   - `unsuccessful` - system-side error during processing; customer can edit and
-	//     resubmit.
-	//   - `suspended` - temporarily disabled (e.g. by an active infringement claim).
-	//   - `expired` - verification expired; customer must resubmit.
-	//   - `infringement_claimed` - a trademark/impersonation claim is open against this
-	//     DIR.
-	//   - `permanently_rejected` - terminal; cannot be resubmitted.
-	//
-	// Any of "draft", "submitted", "in_review", "verified", "rejected",
-	// "unsuccessful", "suspended", "expired", "infringement_claimed",
-	// "permanently_rejected".
-	Status      string    `json:"status"`
-	SubmittedAt time.Time `json:"submitted_at" api:"nullable" format:"date-time"`
-	UpdatedAt   time.Time `json:"updated_at" format:"date-time"`
-	VerifiedAt  time.Time `json:"verified_at" api:"nullable" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                     respjson.Field
-		AuthorizerEmail        respjson.Field
-		AuthorizerName         respjson.Field
-		CallReasons            respjson.Field
-		CertifyBrandIsAccurate respjson.Field
-		CertifyIPOwnership     respjson.Field
-		CertifyNoShaftContent  respjson.Field
-		CreatedAt              respjson.Field
-		DisplayName            respjson.Field
-		Documents              respjson.Field
-		EnterpriseID           respjson.Field
-		ExpiringAt             respjson.Field
-		LogoURL                respjson.Field
-		RejectedAt             respjson.Field
-		RejectionReasons       respjson.Field
-		Reselling              respjson.Field
-		Status                 respjson.Field
-		SubmittedAt            respjson.Field
-		UpdatedAt              respjson.Field
-		VerifiedAt             respjson.Field
-		ExtraFields            map[string]respjson.Field
-		raw                    string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EnterpriseDirNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseDirNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EnterpriseDirNewResponseDataCallReason struct {
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	Reason    string    `json:"reason"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CreatedAt   respjson.Field
-		Reason      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EnterpriseDirNewResponseDataCallReason) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseDirNewResponseDataCallReason) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EnterpriseDirNewResponseDataDocument struct {
-	// Id returned by the Telnyx Documents API after you upload the file (upload via
-	// `POST /v2/documents`; see https://developers.telnyx.com/api/documents).
-	DocumentID string `json:"document_id" api:"required" format:"uuid"`
-	// Type of supporting document. Pick the closest match to what the file actually
-	// contains; `other` triggers manual vetting and may slow approval. The matching
-	// short_name reference list is at `GET /v2/dir/document_types`.
-	//
-	// Any of "letter_of_authorization", "business_registration",
-	// "articles_of_incorporation", "tax_document", "ein_letter",
-	// "trademark_registration", "website_ownership", "business_license",
-	// "professional_license", "government_id", "utility_bill", "bank_statement",
-	// "other".
-	DocumentType string `json:"document_type" api:"required"`
-	Description  string `json:"description"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		DocumentID   respjson.Field
-		DocumentType respjson.Field
-		Description  respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EnterpriseDirNewResponseDataDocument) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseDirNewResponseDataDocument) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EnterpriseDirNewResponseDataRejectionReason struct {
-	Code   string `json:"code"`
-	Detail string `json:"detail"`
-	// Customer-visible free-text comment from the Telnyx vetting team. Only the first
-	// entry of `rejection_reasons` carries this; the rest are `null`.
-	Message string `json:"message" api:"nullable"`
-	Title   string `json:"title"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Detail      respjson.Field
-		Message     respjson.Field
-		Title       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EnterpriseDirNewResponseDataRejectionReason) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseDirNewResponseDataRejectionReason) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EnterpriseDirListResponse struct {
-	ID                     string                                `json:"id" format:"uuid"`
-	AuthorizerEmail        string                                `json:"authorizer_email" api:"nullable" format:"email"`
-	AuthorizerName         string                                `json:"authorizer_name" api:"nullable"`
-	CallReasons            []EnterpriseDirListResponseCallReason `json:"call_reasons"`
-	CertifyBrandIsAccurate bool                                  `json:"certify_brand_is_accurate"`
-	CertifyIPOwnership     bool                                  `json:"certify_ip_ownership"`
-	CertifyNoShaftContent  bool                                  `json:"certify_no_shaft_content"`
-	CreatedAt              time.Time                             `json:"created_at" format:"date-time"`
-	DisplayName            string                                `json:"display_name"`
-	Documents              []EnterpriseDirListResponseDocument   `json:"documents" api:"nullable"`
-	EnterpriseID           string                                `json:"enterprise_id" format:"uuid"`
-	ExpiringAt             time.Time                             `json:"expiring_at" api:"nullable" format:"date-time"`
-	LogoURL                string                                `json:"logo_url" api:"nullable" format:"uri"`
-	RejectedAt             time.Time                             `json:"rejected_at" api:"nullable" format:"date-time"`
-	// Populated when `status` is `rejected`; cleared on `/submit` or successful
-	// approval.
-	RejectionReasons []EnterpriseDirListResponseRejectionReason `json:"rejection_reasons" api:"nullable"`
-	Reselling        bool                                       `json:"reselling"`
-	// DIR lifecycle status.
-	//
-	//   - `draft` - newly created; editable; not yet submitted.
-	//   - `submitted` / `in_review` - Telnyx is reviewing.
-	//   - `verified` - approved; phone numbers may be attached.
-	//   - `rejected` - Telnyx rejected this submission; `rejection_reasons` is
-	//     populated; customer can edit and resubmit.
-	//   - `unsuccessful` - system-side error during processing; customer can edit and
-	//     resubmit.
-	//   - `suspended` - temporarily disabled (e.g. by an active infringement claim).
-	//   - `expired` - verification expired; customer must resubmit.
-	//   - `infringement_claimed` - a trademark/impersonation claim is open against this
-	//     DIR.
-	//   - `permanently_rejected` - terminal; cannot be resubmitted.
-	//
-	// Any of "draft", "submitted", "in_review", "verified", "rejected",
-	// "unsuccessful", "suspended", "expired", "infringement_claimed",
-	// "permanently_rejected".
-	Status      EnterpriseDirListResponseStatus `json:"status"`
-	SubmittedAt time.Time                       `json:"submitted_at" api:"nullable" format:"date-time"`
-	UpdatedAt   time.Time                       `json:"updated_at" format:"date-time"`
-	VerifiedAt  time.Time                       `json:"verified_at" api:"nullable" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                     respjson.Field
-		AuthorizerEmail        respjson.Field
-		AuthorizerName         respjson.Field
-		CallReasons            respjson.Field
-		CertifyBrandIsAccurate respjson.Field
-		CertifyIPOwnership     respjson.Field
-		CertifyNoShaftContent  respjson.Field
-		CreatedAt              respjson.Field
-		DisplayName            respjson.Field
-		Documents              respjson.Field
-		EnterpriseID           respjson.Field
-		ExpiringAt             respjson.Field
-		LogoURL                respjson.Field
-		RejectedAt             respjson.Field
-		RejectionReasons       respjson.Field
-		Reselling              respjson.Field
-		Status                 respjson.Field
-		SubmittedAt            respjson.Field
-		UpdatedAt              respjson.Field
-		VerifiedAt             respjson.Field
-		ExtraFields            map[string]respjson.Field
-		raw                    string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EnterpriseDirListResponse) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseDirListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EnterpriseDirListResponseCallReason struct {
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	Reason    string    `json:"reason"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CreatedAt   respjson.Field
-		Reason      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EnterpriseDirListResponseCallReason) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseDirListResponseCallReason) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EnterpriseDirListResponseDocument struct {
-	// Id returned by the Telnyx Documents API after you upload the file (upload via
-	// `POST /v2/documents`; see https://developers.telnyx.com/api/documents).
-	DocumentID string `json:"document_id" api:"required" format:"uuid"`
-	// Type of supporting document. Pick the closest match to what the file actually
-	// contains; `other` triggers manual vetting and may slow approval. The matching
-	// short_name reference list is at `GET /v2/dir/document_types`.
-	//
-	// Any of "letter_of_authorization", "business_registration",
-	// "articles_of_incorporation", "tax_document", "ein_letter",
-	// "trademark_registration", "website_ownership", "business_license",
-	// "professional_license", "government_id", "utility_bill", "bank_statement",
-	// "other".
-	DocumentType string `json:"document_type" api:"required"`
-	Description  string `json:"description"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		DocumentID   respjson.Field
-		DocumentType respjson.Field
-		Description  respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EnterpriseDirListResponseDocument) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseDirListResponseDocument) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EnterpriseDirListResponseRejectionReason struct {
-	Code   string `json:"code"`
-	Detail string `json:"detail"`
-	// Customer-visible free-text comment from the Telnyx vetting team. Only the first
-	// entry of `rejection_reasons` carries this; the rest are `null`.
-	Message string `json:"message" api:"nullable"`
-	Title   string `json:"title"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Detail      respjson.Field
-		Message     respjson.Field
-		Title       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EnterpriseDirListResponseRejectionReason) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseDirListResponseRejectionReason) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// DIR lifecycle status.
-//
-//   - `draft` - newly created; editable; not yet submitted.
-//   - `submitted` / `in_review` - Telnyx is reviewing.
-//   - `verified` - approved; phone numbers may be attached.
-//   - `rejected` - Telnyx rejected this submission; `rejection_reasons` is
-//     populated; customer can edit and resubmit.
-//   - `unsuccessful` - system-side error during processing; customer can edit and
-//     resubmit.
-//   - `suspended` - temporarily disabled (e.g. by an active infringement claim).
-//   - `expired` - verification expired; customer must resubmit.
-//   - `infringement_claimed` - a trademark/impersonation claim is open against this
-//     DIR.
-//   - `permanently_rejected` - terminal; cannot be resubmitted.
-type EnterpriseDirListResponseStatus string
-
-const (
-	EnterpriseDirListResponseStatusDraft               EnterpriseDirListResponseStatus = "draft"
-	EnterpriseDirListResponseStatusSubmitted           EnterpriseDirListResponseStatus = "submitted"
-	EnterpriseDirListResponseStatusInReview            EnterpriseDirListResponseStatus = "in_review"
-	EnterpriseDirListResponseStatusVerified            EnterpriseDirListResponseStatus = "verified"
-	EnterpriseDirListResponseStatusRejected            EnterpriseDirListResponseStatus = "rejected"
-	EnterpriseDirListResponseStatusUnsuccessful        EnterpriseDirListResponseStatus = "unsuccessful"
-	EnterpriseDirListResponseStatusSuspended           EnterpriseDirListResponseStatus = "suspended"
-	EnterpriseDirListResponseStatusExpired             EnterpriseDirListResponseStatus = "expired"
-	EnterpriseDirListResponseStatusInfringementClaimed EnterpriseDirListResponseStatus = "infringement_claimed"
-	EnterpriseDirListResponseStatusPermanentlyRejected EnterpriseDirListResponseStatus = "permanently_rejected"
-)
 
 type EnterpriseDirNewParams struct {
 	// Contact email of the authorizer. Telnyx may send verification or
@@ -491,7 +151,7 @@ type EnterpriseDirNewParams struct {
 	// `POST /call_reasons/validate`.
 	CallReasons []string `json:"call_reasons,omitzero"`
 	// Supporting documents. Each `document_id` may appear at most once on a DIR.
-	Documents []EnterpriseDirNewParamsDocument `json:"documents,omitzero"`
+	Documents []DocumentParam `json:"documents,omitzero"`
 	paramObj
 }
 
@@ -501,39 +161,6 @@ func (r EnterpriseDirNewParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *EnterpriseDirNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties DocumentID, DocumentType are required.
-type EnterpriseDirNewParamsDocument struct {
-	// Id returned by the Telnyx Documents API after you upload the file (upload via
-	// `POST /v2/documents`; see https://developers.telnyx.com/api/documents).
-	DocumentID string `json:"document_id" api:"required" format:"uuid"`
-	// Type of supporting document. Pick the closest match to what the file actually
-	// contains; `other` triggers manual vetting and may slow approval. The matching
-	// short_name reference list is at `GET /v2/dir/document_types`.
-	//
-	// Any of "letter_of_authorization", "business_registration",
-	// "articles_of_incorporation", "tax_document", "ein_letter",
-	// "trademark_registration", "website_ownership", "business_license",
-	// "professional_license", "government_id", "utility_bill", "bank_statement",
-	// "other".
-	DocumentType string            `json:"document_type,omitzero" api:"required"`
-	Description  param.Opt[string] `json:"description,omitzero"`
-	paramObj
-}
-
-func (r EnterpriseDirNewParamsDocument) MarshalJSON() (data []byte, err error) {
-	type shadow EnterpriseDirNewParamsDocument
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *EnterpriseDirNewParamsDocument) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[EnterpriseDirNewParamsDocument](
-		"document_type", "letter_of_authorization", "business_registration", "articles_of_incorporation", "tax_document", "ein_letter", "trademark_registration", "website_ownership", "business_license", "professional_license", "government_id", "utility_bill", "bank_statement", "other",
-	)
 }
 
 type EnterpriseDirListParams struct {
@@ -559,7 +186,7 @@ type EnterpriseDirListParams struct {
 	// Any of "draft", "submitted", "in_review", "verified", "rejected",
 	// "unsuccessful", "suspended", "expired", "infringement_claimed",
 	// "permanently_rejected".
-	FilterStatus EnterpriseDirListParamsFilterStatus `query:"filter[status],omitzero" json:"-"`
+	FilterStatus DirStatus `query:"filter[status],omitzero" json:"-"`
 	// Sort field. Allowed: `created_at`, `updated_at`, `display_name`, `status`,
 	// `submitted_at`, `verified_at`, `expiring_at`. Prefix with `-` for descending.
 	// Default `-created_at`.
@@ -579,22 +206,6 @@ func (r EnterpriseDirListParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
-
-// Filter by DIR status.
-type EnterpriseDirListParamsFilterStatus string
-
-const (
-	EnterpriseDirListParamsFilterStatusDraft               EnterpriseDirListParamsFilterStatus = "draft"
-	EnterpriseDirListParamsFilterStatusSubmitted           EnterpriseDirListParamsFilterStatus = "submitted"
-	EnterpriseDirListParamsFilterStatusInReview            EnterpriseDirListParamsFilterStatus = "in_review"
-	EnterpriseDirListParamsFilterStatusVerified            EnterpriseDirListParamsFilterStatus = "verified"
-	EnterpriseDirListParamsFilterStatusRejected            EnterpriseDirListParamsFilterStatus = "rejected"
-	EnterpriseDirListParamsFilterStatusUnsuccessful        EnterpriseDirListParamsFilterStatus = "unsuccessful"
-	EnterpriseDirListParamsFilterStatusSuspended           EnterpriseDirListParamsFilterStatus = "suspended"
-	EnterpriseDirListParamsFilterStatusExpired             EnterpriseDirListParamsFilterStatus = "expired"
-	EnterpriseDirListParamsFilterStatusInfringementClaimed EnterpriseDirListParamsFilterStatus = "infringement_claimed"
-	EnterpriseDirListParamsFilterStatusPermanentlyRejected EnterpriseDirListParamsFilterStatus = "permanently_rejected"
-)
 
 // Sort field. Allowed: `created_at`, `updated_at`, `display_name`, `status`,
 // `submitted_at`, `verified_at`, `expiring_at`. Prefix with `-` for descending.

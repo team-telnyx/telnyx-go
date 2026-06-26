@@ -55,7 +55,7 @@ func (r *WebhookDeliveryService) Get(ctx context.Context, id string, opts ...opt
 }
 
 // Lists webhook_deliveries for the authenticated user
-func (r *WebhookDeliveryService) List(ctx context.Context, query WebhookDeliveryListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[WebhookDeliveryListResponse], err error) {
+func (r *WebhookDeliveryService) List(ctx context.Context, query WebhookDeliveryListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[WebhookDelivery], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -73,7 +73,7 @@ func (r *WebhookDeliveryService) List(ctx context.Context, query WebhookDelivery
 }
 
 // Lists webhook_deliveries for the authenticated user
-func (r *WebhookDeliveryService) ListAutoPaging(ctx context.Context, query WebhookDeliveryListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[WebhookDeliveryListResponse] {
+func (r *WebhookDeliveryService) ListAutoPaging(ctx context.Context, query WebhookDeliveryListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[WebhookDelivery] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -178,9 +178,91 @@ func (r *HTTPResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Record of all attempts to deliver a webhook.
+type WebhookDelivery struct {
+	// Uniquely identifies the webhook_delivery record.
+	ID string `json:"id" format:"uuid"`
+	// Detailed delivery attempts, ordered by most recent.
+	Attempts []Attempt `json:"attempts"`
+	// ISO 8601 timestamp indicating when the last webhook response has been received.
+	FinishedAt time.Time `json:"finished_at" format:"date-time"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
+	// ISO 8601 timestamp indicating when the first request attempt was initiated.
+	StartedAt time.Time `json:"started_at" format:"date-time"`
+	// Delivery status: 'delivered' when successfuly delivered or 'failed' if all
+	// attempts have failed.
+	//
+	// Any of "delivered", "failed".
+	Status WebhookDeliveryStatus `json:"status"`
+	// Uniquely identifies the user that owns the webhook_delivery record.
+	UserID string `json:"user_id" format:"uuid"`
+	// Original webhook JSON data. Payload fields vary according to event type.
+	Webhook WebhookDeliveryWebhook `json:"webhook"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Attempts    respjson.Field
+		FinishedAt  respjson.Field
+		RecordType  respjson.Field
+		StartedAt   respjson.Field
+		Status      respjson.Field
+		UserID      respjson.Field
+		Webhook     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookDelivery) RawJSON() string { return r.JSON.raw }
+func (r *WebhookDelivery) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Delivery status: 'delivered' when successfuly delivered or 'failed' if all
+// attempts have failed.
+type WebhookDeliveryStatus string
+
+const (
+	WebhookDeliveryStatusDelivered WebhookDeliveryStatus = "delivered"
+	WebhookDeliveryStatusFailed    WebhookDeliveryStatus = "failed"
+)
+
+// Original webhook JSON data. Payload fields vary according to event type.
+type WebhookDeliveryWebhook struct {
+	// Identifies the type of resource.
+	ID string `json:"id" format:"uuid"`
+	// The type of event being delivered.
+	EventType string `json:"event_type"`
+	// ISO 8601 datetime of when the event occurred.
+	OccurredAt time.Time      `json:"occurred_at" format:"date-time"`
+	Payload    map[string]any `json:"payload"`
+	// Identifies the type of the resource.
+	//
+	// Any of "event".
+	RecordType string `json:"record_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookDeliveryWebhook) RawJSON() string { return r.JSON.raw }
+func (r *WebhookDeliveryWebhook) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type WebhookDeliveryGetResponse struct {
 	// Record of all attempts to deliver a webhook.
-	Data WebhookDeliveryGetResponseData `json:"data"`
+	Data WebhookDelivery `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -192,161 +274,6 @@ type WebhookDeliveryGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r WebhookDeliveryGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *WebhookDeliveryGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Record of all attempts to deliver a webhook.
-type WebhookDeliveryGetResponseData struct {
-	// Uniquely identifies the webhook_delivery record.
-	ID string `json:"id" format:"uuid"`
-	// Detailed delivery attempts, ordered by most recent.
-	Attempts []Attempt `json:"attempts"`
-	// ISO 8601 timestamp indicating when the last webhook response has been received.
-	FinishedAt time.Time `json:"finished_at" format:"date-time"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 timestamp indicating when the first request attempt was initiated.
-	StartedAt time.Time `json:"started_at" format:"date-time"`
-	// Delivery status: 'delivered' when successfuly delivered or 'failed' if all
-	// attempts have failed.
-	//
-	// Any of "delivered", "failed".
-	Status string `json:"status"`
-	// Uniquely identifies the user that owns the webhook_delivery record.
-	UserID string `json:"user_id" format:"uuid"`
-	// Original webhook JSON data. Payload fields vary according to event type.
-	Webhook WebhookDeliveryGetResponseDataWebhook `json:"webhook"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Attempts    respjson.Field
-		FinishedAt  respjson.Field
-		RecordType  respjson.Field
-		StartedAt   respjson.Field
-		Status      respjson.Field
-		UserID      respjson.Field
-		Webhook     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WebhookDeliveryGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *WebhookDeliveryGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Original webhook JSON data. Payload fields vary according to event type.
-type WebhookDeliveryGetResponseDataWebhook struct {
-	// Identifies the type of resource.
-	ID string `json:"id" format:"uuid"`
-	// The type of event being delivered.
-	EventType string `json:"event_type"`
-	// ISO 8601 datetime of when the event occurred.
-	OccurredAt time.Time      `json:"occurred_at" format:"date-time"`
-	Payload    map[string]any `json:"payload"`
-	// Identifies the type of the resource.
-	//
-	// Any of "event".
-	RecordType string `json:"record_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		EventType   respjson.Field
-		OccurredAt  respjson.Field
-		Payload     respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WebhookDeliveryGetResponseDataWebhook) RawJSON() string { return r.JSON.raw }
-func (r *WebhookDeliveryGetResponseDataWebhook) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Record of all attempts to deliver a webhook.
-type WebhookDeliveryListResponse struct {
-	// Uniquely identifies the webhook_delivery record.
-	ID string `json:"id" format:"uuid"`
-	// Detailed delivery attempts, ordered by most recent.
-	Attempts []Attempt `json:"attempts"`
-	// ISO 8601 timestamp indicating when the last webhook response has been received.
-	FinishedAt time.Time `json:"finished_at" format:"date-time"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 timestamp indicating when the first request attempt was initiated.
-	StartedAt time.Time `json:"started_at" format:"date-time"`
-	// Delivery status: 'delivered' when successfuly delivered or 'failed' if all
-	// attempts have failed.
-	//
-	// Any of "delivered", "failed".
-	Status WebhookDeliveryListResponseStatus `json:"status"`
-	// Uniquely identifies the user that owns the webhook_delivery record.
-	UserID string `json:"user_id" format:"uuid"`
-	// Original webhook JSON data. Payload fields vary according to event type.
-	Webhook WebhookDeliveryListResponseWebhook `json:"webhook"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Attempts    respjson.Field
-		FinishedAt  respjson.Field
-		RecordType  respjson.Field
-		StartedAt   respjson.Field
-		Status      respjson.Field
-		UserID      respjson.Field
-		Webhook     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WebhookDeliveryListResponse) RawJSON() string { return r.JSON.raw }
-func (r *WebhookDeliveryListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Delivery status: 'delivered' when successfuly delivered or 'failed' if all
-// attempts have failed.
-type WebhookDeliveryListResponseStatus string
-
-const (
-	WebhookDeliveryListResponseStatusDelivered WebhookDeliveryListResponseStatus = "delivered"
-	WebhookDeliveryListResponseStatusFailed    WebhookDeliveryListResponseStatus = "failed"
-)
-
-// Original webhook JSON data. Payload fields vary according to event type.
-type WebhookDeliveryListResponseWebhook struct {
-	// Identifies the type of resource.
-	ID string `json:"id" format:"uuid"`
-	// The type of event being delivered.
-	EventType string `json:"event_type"`
-	// ISO 8601 datetime of when the event occurred.
-	OccurredAt time.Time      `json:"occurred_at" format:"date-time"`
-	Payload    map[string]any `json:"payload"`
-	// Identifies the type of the resource.
-	//
-	// Any of "event".
-	RecordType string `json:"record_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		EventType   respjson.Field
-		OccurredAt  respjson.Field
-		Payload     respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WebhookDeliveryListResponseWebhook) RawJSON() string { return r.JSON.raw }
-func (r *WebhookDeliveryListResponseWebhook) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -43,7 +43,7 @@ func NewTexmlAccountConferenceService(opts ...option.RequestOption) (r TexmlAcco
 }
 
 // Returns a conference resource.
-func (r *TexmlAccountConferenceService) Get(ctx context.Context, conferenceSid string, query TexmlAccountConferenceGetParams, opts ...option.RequestOption) (res *TexmlAccountConferenceGetResponse, err error) {
+func (r *TexmlAccountConferenceService) Get(ctx context.Context, conferenceSid string, query TexmlAccountConferenceGetParams, opts ...option.RequestOption) (res *ConferenceResource, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
@@ -59,7 +59,7 @@ func (r *TexmlAccountConferenceService) Get(ctx context.Context, conferenceSid s
 }
 
 // Updates a conference resource.
-func (r *TexmlAccountConferenceService) Update(ctx context.Context, conferenceSid string, params TexmlAccountConferenceUpdateParams, opts ...option.RequestOption) (res *TexmlAccountConferenceUpdateResponse, err error) {
+func (r *TexmlAccountConferenceService) Update(ctx context.Context, conferenceSid string, params TexmlAccountConferenceUpdateParams, opts ...option.RequestOption) (res *ConferenceResource, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
@@ -103,7 +103,7 @@ func (r *TexmlAccountConferenceService) GetRecordings(ctx context.Context, confe
 }
 
 // Returns recordings for a conference identified by conference_sid.
-func (r *TexmlAccountConferenceService) GetRecordingsJson(ctx context.Context, conferenceSid string, query TexmlAccountConferenceGetRecordingsJsonParams, opts ...option.RequestOption) (res *TexmlAccountConferenceGetRecordingsJsonResponse, err error) {
+func (r *TexmlAccountConferenceService) GetRecordingsJson(ctx context.Context, conferenceSid string, query TexmlAccountConferenceGetRecordingsJsonParams, opts ...option.RequestOption) (res *TexmlGetCallRecordingsResponseBody, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
@@ -118,7 +118,7 @@ func (r *TexmlAccountConferenceService) GetRecordingsJson(ctx context.Context, c
 	return res, err
 }
 
-type TexmlAccountConferenceGetResponse struct {
+type ConferenceResource struct {
 	// The id of the account the resource belongs to.
 	AccountSid string `json:"account_sid"`
 	// The version of the API that was used to make the request.
@@ -136,7 +136,7 @@ type TexmlAccountConferenceGetResponse struct {
 	//
 	// Any of "participant-with-end-conference-on-exit-left", "last-participant-left",
 	// "conference-ended-via-api", "time-exceeded".
-	ReasonConferenceEnded TexmlAccountConferenceGetResponseReasonConferenceEnded `json:"reason_conference_ended"`
+	ReasonConferenceEnded ConferenceResourceReasonConferenceEnded `json:"reason_conference_ended"`
 	// A string representing the region where the conference is hosted.
 	Region string `json:"region"`
 	// The unique identifier of the conference.
@@ -144,7 +144,7 @@ type TexmlAccountConferenceGetResponse struct {
 	// The status of this conference.
 	//
 	// Any of "init", "in-progress", "completed".
-	Status TexmlAccountConferenceGetResponseStatus `json:"status"`
+	Status ConferenceResourceStatus `json:"status"`
 	// A list of related resources identified by their relative URIs.
 	SubresourceUris map[string]any `json:"subresource_uris"`
 	// The relative URI for this conference.
@@ -169,109 +169,33 @@ type TexmlAccountConferenceGetResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r TexmlAccountConferenceGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *TexmlAccountConferenceGetResponse) UnmarshalJSON(data []byte) error {
+func (r ConferenceResource) RawJSON() string { return r.JSON.raw }
+func (r *ConferenceResource) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The reason why a conference ended. When a conference is in progress, will be
 // null.
-type TexmlAccountConferenceGetResponseReasonConferenceEnded string
+type ConferenceResourceReasonConferenceEnded string
 
 const (
-	TexmlAccountConferenceGetResponseReasonConferenceEndedParticipantWithEndConferenceOnExitLeft TexmlAccountConferenceGetResponseReasonConferenceEnded = "participant-with-end-conference-on-exit-left"
-	TexmlAccountConferenceGetResponseReasonConferenceEndedLastParticipantLeft                    TexmlAccountConferenceGetResponseReasonConferenceEnded = "last-participant-left"
-	TexmlAccountConferenceGetResponseReasonConferenceEndedConferenceEndedViaAPI                  TexmlAccountConferenceGetResponseReasonConferenceEnded = "conference-ended-via-api"
-	TexmlAccountConferenceGetResponseReasonConferenceEndedTimeExceeded                           TexmlAccountConferenceGetResponseReasonConferenceEnded = "time-exceeded"
+	ConferenceResourceReasonConferenceEndedParticipantWithEndConferenceOnExitLeft ConferenceResourceReasonConferenceEnded = "participant-with-end-conference-on-exit-left"
+	ConferenceResourceReasonConferenceEndedLastParticipantLeft                    ConferenceResourceReasonConferenceEnded = "last-participant-left"
+	ConferenceResourceReasonConferenceEndedConferenceEndedViaAPI                  ConferenceResourceReasonConferenceEnded = "conference-ended-via-api"
+	ConferenceResourceReasonConferenceEndedTimeExceeded                           ConferenceResourceReasonConferenceEnded = "time-exceeded"
 )
 
 // The status of this conference.
-type TexmlAccountConferenceGetResponseStatus string
+type ConferenceResourceStatus string
 
 const (
-	TexmlAccountConferenceGetResponseStatusInit       TexmlAccountConferenceGetResponseStatus = "init"
-	TexmlAccountConferenceGetResponseStatusInProgress TexmlAccountConferenceGetResponseStatus = "in-progress"
-	TexmlAccountConferenceGetResponseStatusCompleted  TexmlAccountConferenceGetResponseStatus = "completed"
-)
-
-type TexmlAccountConferenceUpdateResponse struct {
-	// The id of the account the resource belongs to.
-	AccountSid string `json:"account_sid"`
-	// The version of the API that was used to make the request.
-	APIVersion string `json:"api_version"`
-	// Caller ID, if present.
-	CallSidEndingConference string `json:"call_sid_ending_conference"`
-	// The timestamp of when the resource was created.
-	DateCreated string `json:"date_created"`
-	// The timestamp of when the resource was last updated.
-	DateUpdated string `json:"date_updated"`
-	// A string that you assigned to describe this conference room.
-	FriendlyName string `json:"friendly_name"`
-	// The reason why a conference ended. When a conference is in progress, will be
-	// null.
-	//
-	// Any of "participant-with-end-conference-on-exit-left", "last-participant-left",
-	// "conference-ended-via-api", "time-exceeded".
-	ReasonConferenceEnded TexmlAccountConferenceUpdateResponseReasonConferenceEnded `json:"reason_conference_ended"`
-	// A string representing the region where the conference is hosted.
-	Region string `json:"region"`
-	// The unique identifier of the conference.
-	Sid string `json:"sid"`
-	// The status of this conference.
-	//
-	// Any of "init", "in-progress", "completed".
-	Status TexmlAccountConferenceUpdateResponseStatus `json:"status"`
-	// A list of related resources identified by their relative URIs.
-	SubresourceUris map[string]any `json:"subresource_uris"`
-	// The relative URI for this conference.
-	Uri string `json:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AccountSid              respjson.Field
-		APIVersion              respjson.Field
-		CallSidEndingConference respjson.Field
-		DateCreated             respjson.Field
-		DateUpdated             respjson.Field
-		FriendlyName            respjson.Field
-		ReasonConferenceEnded   respjson.Field
-		Region                  respjson.Field
-		Sid                     respjson.Field
-		Status                  respjson.Field
-		SubresourceUris         respjson.Field
-		Uri                     respjson.Field
-		ExtraFields             map[string]respjson.Field
-		raw                     string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TexmlAccountConferenceUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *TexmlAccountConferenceUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The reason why a conference ended. When a conference is in progress, will be
-// null.
-type TexmlAccountConferenceUpdateResponseReasonConferenceEnded string
-
-const (
-	TexmlAccountConferenceUpdateResponseReasonConferenceEndedParticipantWithEndConferenceOnExitLeft TexmlAccountConferenceUpdateResponseReasonConferenceEnded = "participant-with-end-conference-on-exit-left"
-	TexmlAccountConferenceUpdateResponseReasonConferenceEndedLastParticipantLeft                    TexmlAccountConferenceUpdateResponseReasonConferenceEnded = "last-participant-left"
-	TexmlAccountConferenceUpdateResponseReasonConferenceEndedConferenceEndedViaAPI                  TexmlAccountConferenceUpdateResponseReasonConferenceEnded = "conference-ended-via-api"
-	TexmlAccountConferenceUpdateResponseReasonConferenceEndedTimeExceeded                           TexmlAccountConferenceUpdateResponseReasonConferenceEnded = "time-exceeded"
-)
-
-// The status of this conference.
-type TexmlAccountConferenceUpdateResponseStatus string
-
-const (
-	TexmlAccountConferenceUpdateResponseStatusInit       TexmlAccountConferenceUpdateResponseStatus = "init"
-	TexmlAccountConferenceUpdateResponseStatusInProgress TexmlAccountConferenceUpdateResponseStatus = "in-progress"
-	TexmlAccountConferenceUpdateResponseStatusCompleted  TexmlAccountConferenceUpdateResponseStatus = "completed"
+	ConferenceResourceStatusInit       ConferenceResourceStatus = "init"
+	ConferenceResourceStatusInProgress ConferenceResourceStatus = "in-progress"
+	ConferenceResourceStatusCompleted  ConferenceResourceStatus = "completed"
 )
 
 type TexmlAccountConferenceGetConferencesResponse struct {
-	Conferences []TexmlAccountConferenceGetConferencesResponseConference `json:"conferences"`
+	Conferences []ConferenceResource `json:"conferences"`
 	// The number of the last element on the page, zero-indexed.
 	End int64 `json:"end"`
 	// /v2/texml/Accounts/61bf923e-5e4d-4595-a110-56190ea18a1b/Conferences.json?Page=0&PageSize=1
@@ -304,62 +228,6 @@ type TexmlAccountConferenceGetConferencesResponse struct {
 // Returns the unmodified JSON received from the API
 func (r TexmlAccountConferenceGetConferencesResponse) RawJSON() string { return r.JSON.raw }
 func (r *TexmlAccountConferenceGetConferencesResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TexmlAccountConferenceGetConferencesResponseConference struct {
-	// The id of the account the resource belongs to.
-	AccountSid string `json:"account_sid"`
-	// The version of the API that was used to make the request.
-	APIVersion string `json:"api_version"`
-	// Caller ID, if present.
-	CallSidEndingConference string `json:"call_sid_ending_conference"`
-	// The timestamp of when the resource was created.
-	DateCreated string `json:"date_created"`
-	// The timestamp of when the resource was last updated.
-	DateUpdated string `json:"date_updated"`
-	// A string that you assigned to describe this conference room.
-	FriendlyName string `json:"friendly_name"`
-	// The reason why a conference ended. When a conference is in progress, will be
-	// null.
-	//
-	// Any of "participant-with-end-conference-on-exit-left", "last-participant-left",
-	// "conference-ended-via-api", "time-exceeded".
-	ReasonConferenceEnded string `json:"reason_conference_ended"`
-	// A string representing the region where the conference is hosted.
-	Region string `json:"region"`
-	// The unique identifier of the conference.
-	Sid string `json:"sid"`
-	// The status of this conference.
-	//
-	// Any of "init", "in-progress", "completed".
-	Status string `json:"status"`
-	// A list of related resources identified by their relative URIs.
-	SubresourceUris map[string]any `json:"subresource_uris"`
-	// The relative URI for this conference.
-	Uri string `json:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AccountSid              respjson.Field
-		APIVersion              respjson.Field
-		CallSidEndingConference respjson.Field
-		DateCreated             respjson.Field
-		DateUpdated             respjson.Field
-		FriendlyName            respjson.Field
-		ReasonConferenceEnded   respjson.Field
-		Region                  respjson.Field
-		Sid                     respjson.Field
-		Status                  respjson.Field
-		SubresourceUris         respjson.Field
-		Uri                     respjson.Field
-		ExtraFields             map[string]respjson.Field
-		raw                     string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TexmlAccountConferenceGetConferencesResponseConference) RawJSON() string { return r.JSON.raw }
-func (r *TexmlAccountConferenceGetConferencesResponseConference) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -464,46 +332,6 @@ type TexmlAccountConferenceGetRecordingsResponseRecording struct {
 // Returns the unmodified JSON received from the API
 func (r TexmlAccountConferenceGetRecordingsResponseRecording) RawJSON() string { return r.JSON.raw }
 func (r *TexmlAccountConferenceGetRecordingsResponseRecording) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TexmlAccountConferenceGetRecordingsJsonResponse struct {
-	// The number of the last element on the page, zero-indexed.
-	End int64 `json:"end"`
-	// Relative uri to the first page of the query results
-	FirstPageUri string `json:"first_page_uri" format:"uri"`
-	// Relative uri to the next page of the query results
-	NextPageUri string `json:"next_page_uri"`
-	// Current page number, zero-indexed.
-	Page int64 `json:"page"`
-	// The number of items on the page
-	PageSize int64 `json:"page_size"`
-	// Relative uri to the previous page of the query results
-	PreviousPageUri string                              `json:"previous_page_uri" format:"uri"`
-	Recordings      []TexmlGetCallRecordingResponseBody `json:"recordings"`
-	// The number of the first element on the page, zero-indexed.
-	Start int64 `json:"start"`
-	// The URI of the current page.
-	Uri string `json:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		End             respjson.Field
-		FirstPageUri    respjson.Field
-		NextPageUri     respjson.Field
-		Page            respjson.Field
-		PageSize        respjson.Field
-		PreviousPageUri respjson.Field
-		Recordings      respjson.Field
-		Start           respjson.Field
-		Uri             respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TexmlAccountConferenceGetRecordingsJsonResponse) RawJSON() string { return r.JSON.raw }
-func (r *TexmlAccountConferenceGetRecordingsJsonResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

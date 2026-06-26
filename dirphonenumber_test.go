@@ -32,7 +32,7 @@ func TestDirPhoneNumberListWithOptionalParams(t *testing.T) {
 		telnyx.DirPhoneNumberListParams{
 			PageNumber: telnyx.Int(1),
 			PageSize:   telnyx.Int(20),
-			Status:     telnyx.DirPhoneNumberListParamsStatusSubmitted,
+			Status:     telnyx.DirPhoneNumberStatusSubmitted,
 		},
 	)
 	if err != nil {
@@ -61,9 +61,9 @@ func TestDirPhoneNumberAdd(t *testing.T) {
 		context.TODO(),
 		"16635d38-75a6-4481-82e8-69af60e05011",
 		telnyx.DirPhoneNumberAddParams{
-			Documents: []telnyx.DirPhoneNumberAddParamsDocument{{
+			Documents: []telnyx.DocumentParam{{
 				DocumentID:   "2a7e8337-e803-4057-a4ae-26c40eb0bc6c",
-				DocumentType: "letter_of_authorization",
+				DocumentType: telnyx.DocumentDocumentTypeLetterOfAuthorization,
 				Description:  telnyx.String("LOA authorising Telnyx to register these numbers under the DIR."),
 			}},
 			PhoneNumbers: []string{"+19493253498", "+12134445566"},

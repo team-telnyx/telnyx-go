@@ -1,9 +1,4 @@
-// Telnyx webhook event types and unwrapping.
-//
-// This file contains generated webhook event types and the WebhookService
-// struct definition. Custom methods (NewWebhookService, Unwrap, Verify, etc.)
-// are in webhook_custom.go to avoid merge conflicts when Stainless regenerates
-// event types.
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 package telnyx
 
@@ -25,6 +20,15 @@ import (
 // the [NewWebhookService] method instead.
 type WebhookService struct {
 	Options []option.RequestOption
+}
+
+// NewWebhookService generates a new service that applies the given options to each
+// request. These options are applied after the parent client's options (if there
+// is one), and before any request-specific options.
+func NewWebhookService(opts ...option.RequestOption) (r WebhookService) {
+	r = WebhookService{}
+	r.Options = opts
+	return
 }
 
 type CallAIGatherEnded struct {
@@ -749,7 +753,7 @@ type CallConversationInsightsGeneratedPayloadResult struct {
 	// ID that is unique to the insight result being generated for the call.
 	InsightID string `json:"insight_id"`
 	// The result of the insight.
-	Result CallConversationInsightsGeneratedPayloadResultResultUnion `json:"result"`
+	Result CallConversationInsightsGeneratedPayloadResultsResultUnion `json:"result"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		InsightID   respjson.Field
@@ -765,43 +769,43 @@ func (r *CallConversationInsightsGeneratedPayloadResult) UnmarshalJSON(data []by
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// CallConversationInsightsGeneratedPayloadResultResultUnion contains all possible
+// CallConversationInsightsGeneratedPayloadResultsResultUnion contains all possible
 // properties and values from [map[string]any], [string].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid:
-// OfCallConversationInsightsGeneratedPayloadResultResultInsightObjectResultItem
+// OfCallConversationInsightsGeneratedPayloadResultsResultInsightObjectResult
 // OfString]
-type CallConversationInsightsGeneratedPayloadResultResultUnion struct {
+type CallConversationInsightsGeneratedPayloadResultsResultUnion struct {
 	// This field will be present if the value is a [any] instead of an object.
-	OfCallConversationInsightsGeneratedPayloadResultResultInsightObjectResultItem any `json:",inline"`
+	OfCallConversationInsightsGeneratedPayloadResultsResultInsightObjectResult any `json:",inline"`
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	JSON     struct {
-		OfCallConversationInsightsGeneratedPayloadResultResultInsightObjectResultItem respjson.Field
-		OfString                                                                      respjson.Field
-		raw                                                                           string
+		OfCallConversationInsightsGeneratedPayloadResultsResultInsightObjectResult respjson.Field
+		OfString                                                                   respjson.Field
+		raw                                                                        string
 	} `json:"-"`
 }
 
-func (u CallConversationInsightsGeneratedPayloadResultResultUnion) AsInsightObjectResult() (v map[string]any) {
+func (u CallConversationInsightsGeneratedPayloadResultsResultUnion) AsInsightObjectResult() (v map[string]any) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u CallConversationInsightsGeneratedPayloadResultResultUnion) AsString() (v string) {
+func (u CallConversationInsightsGeneratedPayloadResultsResultUnion) AsString() (v string) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u CallConversationInsightsGeneratedPayloadResultResultUnion) RawJSON() string {
+func (u CallConversationInsightsGeneratedPayloadResultsResultUnion) RawJSON() string {
 	return u.JSON.raw
 }
 
-func (r *CallConversationInsightsGeneratedPayloadResultResultUnion) UnmarshalJSON(data []byte) error {
+func (r *CallConversationInsightsGeneratedPayloadResultsResultUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

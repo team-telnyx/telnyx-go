@@ -27,13 +27,13 @@ func TestAdvancedOrderNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AdvancedOrders.New(context.TODO(), telnyx.AdvancedOrderNewParams{
-		AdvancedOrder: telnyx.AdvancedOrderParam{
+		AdvancedOrderRequest: telnyx.AdvancedOrderRequestParam{
 			AreaCode:           telnyx.String("xxx"),
 			Comments:           telnyx.String("comments"),
 			CountryCode:        telnyx.String("xx"),
 			CustomerReference:  telnyx.String("customer_reference"),
 			Features:           []string{"sms"},
-			PhoneNumberType:    telnyx.AdvancedOrderPhoneNumberTypeLocal,
+			PhoneNumberType:    telnyx.AdvancedOrderRequestPhoneNumberTypeLocal,
 			Quantity:           telnyx.Int(1),
 			RequirementGroupID: telnyx.String("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
 		},
@@ -110,13 +110,13 @@ func TestAdvancedOrderUpdateRequirementGroupWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.AdvancedOrderUpdateRequirementGroupParams{
-			AdvancedOrder: telnyx.AdvancedOrderParam{
+			AdvancedOrderRequest: telnyx.AdvancedOrderRequestParam{
 				AreaCode:           telnyx.String("xxx"),
 				Comments:           telnyx.String("comments"),
 				CountryCode:        telnyx.String("xx"),
 				CustomerReference:  telnyx.String("customer_reference"),
 				Features:           []string{"sms"},
-				PhoneNumberType:    telnyx.AdvancedOrderPhoneNumberTypeLocal,
+				PhoneNumberType:    telnyx.AdvancedOrderRequestPhoneNumberTypeLocal,
 				Quantity:           telnyx.Int(1),
 				RequirementGroupID: telnyx.String("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
 			},

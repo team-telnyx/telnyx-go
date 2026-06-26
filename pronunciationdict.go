@@ -62,7 +62,7 @@ func NewPronunciationDictService(opts ...option.RequestOption) (r PronunciationD
 // - Text: max 200 characters
 // - Alias/phoneme value: max 500 characters
 // - File upload: max 1MB (1,048,576 bytes)
-func (r *PronunciationDictService) New(ctx context.Context, body PronunciationDictNewParams, opts ...option.RequestOption) (res *PronunciationDictNewResponse, err error) {
+func (r *PronunciationDictService) New(ctx context.Context, body PronunciationDictNewParams, opts ...option.RequestOption) (res *PronunciationDictResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "pronunciation_dicts"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -70,7 +70,7 @@ func (r *PronunciationDictService) New(ctx context.Context, body PronunciationDi
 }
 
 // Retrieve a single pronunciation dictionary by ID.
-func (r *PronunciationDictService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PronunciationDictGetResponse, err error) {
+func (r *PronunciationDictService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PronunciationDictResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -84,7 +84,7 @@ func (r *PronunciationDictService) Get(ctx context.Context, id string, opts ...o
 // Update the name and/or items of an existing pronunciation dictionary. Uses
 // optimistic locking — if the dictionary was modified concurrently, the request
 // returns 409 Conflict.
-func (r *PronunciationDictService) Update(ctx context.Context, id string, body PronunciationDictUpdateParams, opts ...option.RequestOption) (res *PronunciationDictUpdateResponse, err error) {
+func (r *PronunciationDictService) Update(ctx context.Context, id string, body PronunciationDictUpdateParams, opts ...option.RequestOption) (res *PronunciationDictResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -210,7 +210,7 @@ type PronunciationDictData struct {
 	// ISO 8601 timestamp with millisecond precision.
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// List of pronunciation items (alias or phoneme type).
-	Items []PronunciationDictDataItemUnion `json:"items"`
+	Items []PronunciationDictItemUnion `json:"items"`
 	// Human-readable name for the dictionary. Must be unique within the organization.
 	Name string `json:"name"`
 	// Identifies the resource type.
@@ -242,13 +242,20 @@ func (r *PronunciationDictData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// PronunciationDictDataItemUnion contains all possible properties and values from
+// Identifies the resource type.
+type PronunciationDictDataRecordType string
+
+const (
+	PronunciationDictDataRecordTypePronunciationDict PronunciationDictDataRecordType = "pronunciation_dict"
+)
+
+// PronunciationDictItemUnion contains all possible properties and values from
 // [PronunciationDictAliasItem], [PronunciationDictPhonemeItem].
 //
-// Use the [PronunciationDictDataItemUnion.AsAny] method to switch on the variant.
+// Use the [PronunciationDictItemUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
-type PronunciationDictDataItemUnion struct {
+type PronunciationDictItemUnion struct {
 	// This field is from variant [PronunciationDictAliasItem].
 	Alias string `json:"alias"`
 	Text  string `json:"text"`
@@ -268,25 +275,25 @@ type PronunciationDictDataItemUnion struct {
 	} `json:"-"`
 }
 
-// anyPronunciationDictDataItem is implemented by each variant of
-// [PronunciationDictDataItemUnion] to add type safety for the return type of
-// [PronunciationDictDataItemUnion.AsAny]
-type anyPronunciationDictDataItem interface {
-	implPronunciationDictDataItemUnion()
+// anyPronunciationDictItem is implemented by each variant of
+// [PronunciationDictItemUnion] to add type safety for the return type of
+// [PronunciationDictItemUnion.AsAny]
+type anyPronunciationDictItem interface {
+	implPronunciationDictItemUnion()
 }
 
-func (PronunciationDictAliasItem) implPronunciationDictDataItemUnion()   {}
-func (PronunciationDictPhonemeItem) implPronunciationDictDataItemUnion() {}
+func (PronunciationDictAliasItem) implPronunciationDictItemUnion()   {}
+func (PronunciationDictPhonemeItem) implPronunciationDictItemUnion() {}
 
 // Use the following switch statement to find the correct variant
 //
-//	switch variant := PronunciationDictDataItemUnion.AsAny().(type) {
+//	switch variant := PronunciationDictItemUnion.AsAny().(type) {
 //	case telnyx.PronunciationDictAliasItem:
 //	case telnyx.PronunciationDictPhonemeItem:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
-func (u PronunciationDictDataItemUnion) AsAny() anyPronunciationDictDataItem {
+func (u PronunciationDictItemUnion) AsAny() anyPronunciationDictItem {
 	switch u.Type {
 	case "alias":
 		return u.AsAlias()
@@ -296,29 +303,117 @@ func (u PronunciationDictDataItemUnion) AsAny() anyPronunciationDictDataItem {
 	return nil
 }
 
-func (u PronunciationDictDataItemUnion) AsAlias() (v PronunciationDictAliasItem) {
+func (u PronunciationDictItemUnion) AsAlias() (v PronunciationDictAliasItem) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PronunciationDictDataItemUnion) AsPhoneme() (v PronunciationDictPhonemeItem) {
+func (u PronunciationDictItemUnion) AsPhoneme() (v PronunciationDictPhonemeItem) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u PronunciationDictDataItemUnion) RawJSON() string { return u.JSON.raw }
+func (u PronunciationDictItemUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *PronunciationDictDataItemUnion) UnmarshalJSON(data []byte) error {
+func (r *PronunciationDictItemUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Identifies the resource type.
-type PronunciationDictDataRecordType string
+// ToParam converts this PronunciationDictItemUnion to a
+// PronunciationDictItemUnionParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// PronunciationDictItemUnionParam.Overrides()
+func (r PronunciationDictItemUnion) ToParam() PronunciationDictItemUnionParam {
+	return param.Override[PronunciationDictItemUnionParam](json.RawMessage(r.RawJSON()))
+}
 
-const (
-	PronunciationDictDataRecordTypePronunciationDict PronunciationDictDataRecordType = "pronunciation_dict"
-)
+func PronunciationDictItemParamOfAlias(alias string, text string, type_ PronunciationDictAliasItemType) PronunciationDictItemUnionParam {
+	var variant PronunciationDictAliasItemParam
+	variant.Alias = alias
+	variant.Text = text
+	variant.Type = type_
+	return PronunciationDictItemUnionParam{OfAlias: &variant}
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type PronunciationDictItemUnionParam struct {
+	OfAlias   *PronunciationDictAliasItemParam   `json:",omitzero,inline"`
+	OfPhoneme *PronunciationDictPhonemeItemParam `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u PronunciationDictItemUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfAlias, u.OfPhoneme)
+}
+func (u *PronunciationDictItemUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *PronunciationDictItemUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfAlias) {
+		return u.OfAlias
+	} else if !param.IsOmitted(u.OfPhoneme) {
+		return u.OfPhoneme
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u PronunciationDictItemUnionParam) GetAlias() *string {
+	if vt := u.OfAlias; vt != nil {
+		return &vt.Alias
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u PronunciationDictItemUnionParam) GetAlphabet() *string {
+	if vt := u.OfPhoneme; vt != nil {
+		return (*string)(&vt.Alphabet)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u PronunciationDictItemUnionParam) GetPhoneme() *string {
+	if vt := u.OfPhoneme; vt != nil {
+		return &vt.Phoneme
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u PronunciationDictItemUnionParam) GetText() *string {
+	if vt := u.OfAlias; vt != nil {
+		return (*string)(&vt.Text)
+	} else if vt := u.OfPhoneme; vt != nil {
+		return (*string)(&vt.Text)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u PronunciationDictItemUnionParam) GetType() *string {
+	if vt := u.OfAlias; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfPhoneme; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[PronunciationDictItemUnionParam](
+		"type",
+		apijson.Discriminator[PronunciationDictAliasItemParam]("alias"),
+		apijson.Discriminator[PronunciationDictPhonemeItemParam]("phoneme"),
+	)
+}
 
 // A phoneme pronunciation item. When the `text` value is found in input, it is
 // pronounced using the specified IPA phoneme notation.
@@ -407,7 +502,7 @@ func (r *PronunciationDictPhonemeItemParam) UnmarshalJSON(data []byte) error {
 }
 
 // Response containing a single pronunciation dictionary.
-type PronunciationDictNewResponse struct {
+type PronunciationDictResponse struct {
 	// A pronunciation dictionary record.
 	Data PronunciationDictData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -419,51 +514,15 @@ type PronunciationDictNewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PronunciationDictNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *PronunciationDictNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Response containing a single pronunciation dictionary.
-type PronunciationDictGetResponse struct {
-	// A pronunciation dictionary record.
-	Data PronunciationDictData `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PronunciationDictGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *PronunciationDictGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Response containing a single pronunciation dictionary.
-type PronunciationDictUpdateResponse struct {
-	// A pronunciation dictionary record.
-	Data PronunciationDictData `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PronunciationDictUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *PronunciationDictUpdateResponse) UnmarshalJSON(data []byte) error {
+func (r PronunciationDictResponse) RawJSON() string { return r.JSON.raw }
+func (r *PronunciationDictResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type PronunciationDictNewParams struct {
 	// List of pronunciation items (alias or phoneme type). At least one item is
 	// required.
-	Items []PronunciationDictNewParamsItemUnion `json:"items,omitzero" api:"required"`
+	Items []PronunciationDictItemUnionParam `json:"items,omitzero" api:"required"`
 	// Human-readable name. Must be unique within the organization.
 	Name string `json:"name" api:"required"`
 	paramObj
@@ -477,88 +536,11 @@ func (r *PronunciationDictNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type PronunciationDictNewParamsItemUnion struct {
-	OfAlias   *PronunciationDictAliasItemParam   `json:",omitzero,inline"`
-	OfPhoneme *PronunciationDictPhonemeItemParam `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u PronunciationDictNewParamsItemUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfAlias, u.OfPhoneme)
-}
-func (u *PronunciationDictNewParamsItemUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *PronunciationDictNewParamsItemUnion) asAny() any {
-	if !param.IsOmitted(u.OfAlias) {
-		return u.OfAlias
-	} else if !param.IsOmitted(u.OfPhoneme) {
-		return u.OfPhoneme
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u PronunciationDictNewParamsItemUnion) GetAlias() *string {
-	if vt := u.OfAlias; vt != nil {
-		return &vt.Alias
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u PronunciationDictNewParamsItemUnion) GetAlphabet() *string {
-	if vt := u.OfPhoneme; vt != nil {
-		return (*string)(&vt.Alphabet)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u PronunciationDictNewParamsItemUnion) GetPhoneme() *string {
-	if vt := u.OfPhoneme; vt != nil {
-		return &vt.Phoneme
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u PronunciationDictNewParamsItemUnion) GetText() *string {
-	if vt := u.OfAlias; vt != nil {
-		return (*string)(&vt.Text)
-	} else if vt := u.OfPhoneme; vt != nil {
-		return (*string)(&vt.Text)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u PronunciationDictNewParamsItemUnion) GetType() *string {
-	if vt := u.OfAlias; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfPhoneme; vt != nil {
-		return (*string)(&vt.Type)
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[PronunciationDictNewParamsItemUnion](
-		"type",
-		apijson.Discriminator[PronunciationDictAliasItemParam]("alias"),
-		apijson.Discriminator[PronunciationDictPhonemeItemParam]("phoneme"),
-	)
-}
-
 type PronunciationDictUpdateParams struct {
 	// Updated dictionary name.
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Updated list of pronunciation items (alias or phoneme type).
-	Items []PronunciationDictUpdateParamsItemUnion `json:"items,omitzero"`
+	Items []PronunciationDictItemUnionParam `json:"items,omitzero"`
 	paramObj
 }
 
@@ -568,83 +550,6 @@ func (r PronunciationDictUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *PronunciationDictUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type PronunciationDictUpdateParamsItemUnion struct {
-	OfAlias   *PronunciationDictAliasItemParam   `json:",omitzero,inline"`
-	OfPhoneme *PronunciationDictPhonemeItemParam `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u PronunciationDictUpdateParamsItemUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfAlias, u.OfPhoneme)
-}
-func (u *PronunciationDictUpdateParamsItemUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *PronunciationDictUpdateParamsItemUnion) asAny() any {
-	if !param.IsOmitted(u.OfAlias) {
-		return u.OfAlias
-	} else if !param.IsOmitted(u.OfPhoneme) {
-		return u.OfPhoneme
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u PronunciationDictUpdateParamsItemUnion) GetAlias() *string {
-	if vt := u.OfAlias; vt != nil {
-		return &vt.Alias
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u PronunciationDictUpdateParamsItemUnion) GetAlphabet() *string {
-	if vt := u.OfPhoneme; vt != nil {
-		return (*string)(&vt.Alphabet)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u PronunciationDictUpdateParamsItemUnion) GetPhoneme() *string {
-	if vt := u.OfPhoneme; vt != nil {
-		return &vt.Phoneme
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u PronunciationDictUpdateParamsItemUnion) GetText() *string {
-	if vt := u.OfAlias; vt != nil {
-		return (*string)(&vt.Text)
-	} else if vt := u.OfPhoneme; vt != nil {
-		return (*string)(&vt.Text)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u PronunciationDictUpdateParamsItemUnion) GetType() *string {
-	if vt := u.OfAlias; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfPhoneme; vt != nil {
-		return (*string)(&vt.Type)
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[PronunciationDictUpdateParamsItemUnion](
-		"type",
-		apijson.Discriminator[PronunciationDictAliasItemParam]("alias"),
-		apijson.Discriminator[PronunciationDictPhonemeItemParam]("phoneme"),
-	)
 }
 
 type PronunciationDictListParams struct {

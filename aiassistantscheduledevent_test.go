@@ -35,8 +35,8 @@ func TestAIAssistantScheduledEventNewWithOptionalParams(t *testing.T) {
 			TelnyxAgentTarget:         "telnyx_agent_target",
 			TelnyxConversationChannel: telnyx.ConversationChannelTypePhoneCall,
 			TelnyxEndUserTarget:       "telnyx_end_user_target",
-			CallSettings: telnyx.AIAssistantScheduledEventNewParamsCallSettings{
-				SipRegion: "US",
+			CallSettings: telnyx.ScheduledCallSettingsParam{
+				SipRegion: telnyx.ScheduledCallSettingsSipRegionUs,
 			},
 			ConversationMetadata: map[string]telnyx.AIAssistantScheduledEventNewParamsConversationMetadataUnion{
 				"foo": {

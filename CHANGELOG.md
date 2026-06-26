@@ -18,1383 +18,452 @@ Full Changelog: [v4.81.0...v4.81.1](https://github.com/team-telnyx/telnyx-go/com
 
 ### Chores
 
-* update example date in audit-logs for SaaS rebuild ([781a7eb](https://github.com/team-telnyx/telnyx-go/commit/781a7ebde86b442b26d68984ae6271689d854d50))
+* preserve repo-owned files not part of SDK generation ([d8a2fb0](https://github.com/team-telnyx/telnyx-go-staging/commit/d8a2fb03ab7b0588ba9f5546dbaf7333cd3f64f0))
+* release go 4.107.0 ([b59882b](https://github.com/team-telnyx/telnyx-go-staging/commit/b59882bd25e457a1b0490db3d5cf0d8981815f4d))
+* sync OpenAPI spec from 9b36eb0 ([dd93a58](https://github.com/team-telnyx/telnyx-go-staging/commit/dd93a58cec7ea5b5ca32d1572e3d862665531dec))
+* sync OpenAPI spec from 9b36eb0 ([78b6f40](https://github.com/team-telnyx/telnyx-go-staging/commit/78b6f40c295f8ee9aed43f873846739ca8a0b77f))
 
-## 4.81.0 (2026-06-22)
-
-Full Changelog: [v4.80.0...v4.81.0](https://github.com/team-telnyx/telnyx-go/compare/v4.80.0...v4.81.0)
-
-### Features
-
-* add transcriptions-search API spec (dev/external) ([5cbece3](https://github.com/team-telnyx/telnyx-go/commit/5cbece39bcbe5e8c76694b592a3970973a77b566))
-
-## 4.80.0 (2026-06-16)
-
-Full Changelog: [v4.79.0...v4.80.0](https://github.com/team-telnyx/telnyx-go/compare/v4.79.0...v4.80.0)
-
-### Features
-
-* ENGDESK-51290: Add Aicoustic NS engines to portal backend ([3071888](https://github.com/team-telnyx/telnyx-go/commit/3071888f62e2e5ebff1c1ecc3a844494a52d2122))
-* TELAPPS-719: add Inworld inworld-tts-2 model + delivery_mode to call-control voice settings ([cc2c7c1](https://github.com/team-telnyx/telnyx-go/commit/cc2c7c12178782ecf5099f035a9af14f4d13ef79))
-
-## 4.79.0 (2026-06-15)
-
-Full Changelog: [v4.78.0...v4.79.0](https://github.com/team-telnyx/telnyx-go/compare/v4.78.0...v4.79.0)
-
-### Features
-
-* Document POST /ai/assistants/{assistant_id}/instructions/enhance ([5f2a44f](https://github.com/team-telnyx/telnyx-go/commit/5f2a44f134b8a4cfce131b20fec2f624a7fda8ec))
-
-## 4.78.0 (2026-06-10)
-
-Full Changelog: [v4.77.0...v4.78.0](https://github.com/team-telnyx/telnyx-go/compare/v4.77.0...v4.78.0)
-
-### Features
-
-* Add sip region to scheduled events ([378bd38](https://github.com/team-telnyx/telnyx-go/commit/378bd38498ce7968a667af8d0be417b127224a6a))
-* branded-calling: drop 'simplified'/'no enterprise_id' framing from DIR endpoints ([c98098e](https://github.com/team-telnyx/telnyx-go/commit/c98098e09211027634f79ec49b0142dda80ed877))
-* branded-calling: sync PATCH /dir/{dir_id} spec with deployed service behavior ([1ee6a54](https://github.com/team-telnyx/telnyx-go/commit/1ee6a542a8a979bd70a5c4397e26b8b2ca907a48))
-* **branded-calling:** document LOA (DIR) + reputation remediation endpoints ([f9247d2](https://github.com/team-telnyx/telnyx-go/commit/f9247d20a6d2ea1085f01cb61bb5aaea7a59e46f))
-* Fix cross-product leakage: de-dup shared enterprise/ToS endpoints + neutralize descriptions ([6533b74](https://github.com/team-telnyx/telnyx-go/commit/6533b74617711b012000744f773ad759d2abc9b8))
-* NUM-6470: Add branded-calling-v2 OpenAPI specs (external + internal) ([0c8bc4d](https://github.com/team-telnyx/telnyx-go/commit/0c8bc4dc3c5ce8f49bc84c36549a87a08f60cb42))
-* **spec:** backfill parameter descriptions to 100% coverage ([72d2aad](https://github.com/team-telnyx/telnyx-go/commit/72d2aad20ae358206dcfed116fe5e6be2b0966c0))
-* **spec:** inline 2xx response schemas — REST response coverage 41% → 91% (sync of openapi[#199](https://github.com/team-telnyx/telnyx-go/issues/199)) ([27df323](https://github.com/team-telnyx/telnyx-go/commit/27df323b172616cefa75092ee816a6e12cdc579c))
-* specs: add GET /terms_of_service/info (branded-calling + number-reputation) ([7ca1698](https://github.com/team-telnyx/telnyx-go/commit/7ca16983af965c7e2ac2754547493ec85f5503ca))
-* specs: drop legacy plain filter params (keep filter[] canonical) on list endpoints ([b126f69](https://github.com/team-telnyx/telnyx-go/commit/b126f695a548c48e51e537db75a3598f56c0e235))
-* specs: remove em dashes from branded-calling + number-reputation descriptions ([1750fef](https://github.com/team-telnyx/telnyx-go/commit/1750fefaf29ecaa9503f0f9e2e122bcdaf0bfa1d))
+## [4.106.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.105.0...v4.106.0) (2026-06-26)
 
 
 ### Bug Fixes
 
-* **number-reputation:** remediation contact_email is optional ([2eb1fb4](https://github.com/team-telnyx/telnyx-go/commit/2eb1fb4c4a438448c58375b5dab0e4ef10814e6f))
-
-## 4.77.0 (2026-06-05)
-
-Full Changelog: [v4.76.0...v4.77.0](https://github.com/team-telnyx/telnyx-go/compare/v4.76.0...v4.77.0)
-
-### Features
-
-* add assistant_id to MessagingProfile and request schemas ([1e874da](https://github.com/team-telnyx/telnyx-go/commit/1e874da554844fe1e333984f588a51768e66c0a6))
-* Conversation flow update ([76079ee](https://github.com/team-telnyx/telnyx-go/commit/76079eedf494db961524551002813fffe1e36485))
-* **inference:** expose description on transfer tool params ([9c70968](https://github.com/team-telnyx/telnyx-go/commit/9c7096889a8169013606cdf70858e77a0f7f37a9))
-
-
-### Bug Fixes
-
-* **inference:** extract recursive expression AST into named Expression schema ([a21d20b](https://github.com/team-telnyx/telnyx-go/commit/a21d20b32fc1e13644117edd8111aba21103dfbb))
-
-## 4.76.0 (2026-06-03)
-
-Full Changelog: [v4.75.0...v4.76.0](https://github.com/team-telnyx/telnyx-go/compare/v4.75.0...v4.76.0)
-
-### Features
-
-* TELAPPS-406: nest service_types with per-service languages in STT spec ([8106ca2](https://github.com/team-telnyx/telnyx-go/commit/8106ca2aca07a2332dd8ead645eaefa6c8c895e4))
-* Update conversation flow ([d66ccfc](https://github.com/team-telnyx/telnyx-go/commit/d66ccfc0e2bb34c14bdbe1281fe9d249b83c2be6))
-
-## 4.75.0 (2026-06-03)
-
-Full Changelog: [v4.74.1...v4.75.0](https://github.com/team-telnyx/telnyx-go/compare/v4.74.1...v4.75.0)
-
-### Features
-
-* AI-assistants conversation flow ([dc97599](https://github.com/team-telnyx/telnyx-go/commit/dc9759985de07e1fe93c766a19e726f9a4e8ae8d))
-* **sip-registration-status:** finalize phase 1 response shape with status mapping ([29990cf](https://github.com/team-telnyx/telnyx-go/commit/29990cf3b876a39e78dcaeff978bb424ab323908))
-
-
-### Bug Fixes
-
-* **sip-registration-status:** drop user_id query param ([dc6acd9](https://github.com/team-telnyx/telnyx-go/commit/dc6acd9cf7a98fb27dc907723abaa0565e838500))
-* **sip-registration-status:** move operation under UAC Connections tag ([41a9aa0](https://github.com/team-telnyx/telnyx-go/commit/41a9aa0e84f6476114d74d63c793685d95b9307f))
-* **sip-registration-status:** rename detail field to sip_uri_user_host ([3c1bcd3](https://github.com/team-telnyx/telnyx-go/commit/3c1bcd3992265166e7d94f2337694a0ec84e497e))
-
-## 4.74.1 (2026-06-01)
-
-Full Changelog: [v4.74.0...v4.74.1](https://github.com/team-telnyx/telnyx-go/compare/v4.74.0...v4.74.1)
-
-### Bug Fixes
-
-* **sip-registration-status:** scope to phase 1 uac_third-party_credential ([a555f00](https://github.com/team-telnyx/telnyx-go/commit/a555f0038ce55f72618674fd642a130986b5f316))
-
-## 4.74.0 (2026-05-29)
-
-Full Changelog: [v4.73.0...v4.74.0](https://github.com/team-telnyx/telnyx-go/compare/v4.73.0...v4.74.0)
-
-### Features
-
-* **sip-registration-status:** add OpenAPI spec for /v2/sip_registration_status ([a8e8fd7](https://github.com/team-telnyx/telnyx-go/commit/a8e8fd7df889dfe307973856f40d9ff4ffb278f5))
-
-## 4.73.0 (2026-05-28)
-
-Full Changelog: [v4.72.0...v4.73.0](https://github.com/team-telnyx/telnyx-go/compare/v4.72.0...v4.73.0)
-
-### Features
-
-* **api:** manual updates ([eabb99b](https://github.com/team-telnyx/telnyx-go/commit/eabb99b22358f931c8ae745995acb88a9655fbb7))
-* **api:** manual updates ([ce0f90b](https://github.com/team-telnyx/telnyx-go/commit/ce0f90b2f429bf42bebb1c482e52d774843e449a))
-* **api:** manual updates ([54e28ff](https://github.com/team-telnyx/telnyx-go/commit/54e28ff6a34c929366b6662d3365376665d0c602))
-
-## 4.72.0 (2026-05-27)
-
-Full Changelog: [v4.71.0...v4.72.0](https://github.com/team-telnyx/telnyx-go/compare/v4.71.0...v4.72.0)
-
-### Features
-
-* TELAPPS-406: document GET /speech-to-text/providers endpoint ([dc6b9cd](https://github.com/team-telnyx/telnyx-go/commit/dc6b9cdcbb655c15034aa0cba3d8929e19283ba8))
-* TELAPPS-523: document stop_on_conversation_end on assistant recording_settings ([670caf4](https://github.com/team-telnyx/telnyx-go/commit/670caf44ac439623033e32882720f46ad5deffb2))
-* TELAPPS-531: document Rime ArcanaV3 and Coda voice models ([477c9b3](https://github.com/team-telnyx/telnyx-go/commit/477c9b381150292bbbed4e348662548e7d582ee3))
-* TELAPPS-5698 document conversation relay API shape ([3cc6444](https://github.com/team-telnyx/telnyx-go/commit/3cc64448b072aa4c01132036f5d1f96b2fce4811))
-
-
-### Documentation
-
-* add voice sdk debug call report spec ([c85c2a0](https://github.com/team-telnyx/telnyx-go/commit/c85c2a0de65f56e9aa622564b34cc1702bd8747e))
-
-## 4.71.0 (2026-05-22)
-
-Full Changelog: [v4.70.0...v4.71.0](https://github.com/team-telnyx/telnyx-go/compare/v4.70.0...v4.71.0)
-
-### Features
-
-* MSG-919: documentation for Whatsapp user data ([1c13759](https://github.com/team-telnyx/telnyx-go/commit/1c137591127bb474d440deddeac34aa5195e016e))
-* TELAPPS-72: document send_digits_on_answer on Dial + Transfer ([6d5c4b0](https://github.com/team-telnyx/telnyx-go/commit/6d5c4b006a3ceeac4e74414c9f8694693cec437f))
-
-## 4.70.0 (2026-05-20)
-
-Full Changelog: [v4.69.0...v4.70.0](https://github.com/team-telnyx/telnyx-go/compare/v4.69.0...v4.70.0)
-
-### Features
-
-* TELAPPS-483: Add async webhook timeout to OpenAPI ([e9a8e5c](https://github.com/team-telnyx/telnyx-go/commit/e9a8e5c85f8e459c269378a5a1b9ad5eccf08458))
-
-## 4.69.0 (2026-05-18)
-
-Full Changelog: [v4.68.0...v4.69.0](https://github.com/team-telnyx/telnyx-go/compare/v4.68.0...v4.69.0)
-
-### Features
-
-* Add assistant background audio volume to OpenAPI spec ([73b3712](https://github.com/team-telnyx/telnyx-go/commit/73b3712ffb80ce088537777c591c081436da74b3))
-* Telapps 101 soniox spec ([d1b2646](https://github.com/team-telnyx/telnyx-go/commit/d1b2646dbed063352325b63898a485b3186a42a6))
-
-## 4.68.0 (2026-05-15)
-
-Full Changelog: [v4.67.0...v4.68.0](https://github.com/team-telnyx/telnyx-go/compare/v4.67.0...v4.68.0)
-
-### Features
-
-* **api:** manual updates ([d33e023](https://github.com/team-telnyx/telnyx-go/commit/d33e0231900ca2de98435d1515ac69b57a28cd0a))
-
-## 4.67.0 (2026-05-15)
-
-Full Changelog: [v4.66.0...v4.67.0](https://github.com/team-telnyx/telnyx-go/compare/v4.66.0...v4.67.0)
-
-### Features
-
-* Add Speechmatics transcription engine to Call Control API ([c51898b](https://github.com/team-telnyx/telnyx-go/commit/c51898ba07fadcd96e40e1a5c40a35c2ad26da7c))
-* **client:** optimize json encoder for internal types ([3806e47](https://github.com/team-telnyx/telnyx-go/commit/3806e47923921e7fce28a743eb3f8c99babd18c6))
-* Document AI call status callback overrides ([44a9d61](https://github.com/team-telnyx/telnyx-go/commit/44a9d611b7ce9c8a329336ea88ccd2dcb84f43ca))
-* Document Conversation Relay ([6f6f848](https://github.com/team-telnyx/telnyx-go/commit/6f6f848d63b5865e8ba44462e38800bcaa5e3be0))
-* Document PremiumCallScreening detection mode ([ee78e18](https://github.com/team-telnyx/telnyx-go/commit/ee78e18b283481b52d4c7f42290c48c9f8efc004))
-* Fix Conversation Relay expected webhook ([7b23a0d](https://github.com/team-telnyx/telnyx-go/commit/7b23a0d37cf38a11ad002fbe063d866fcdbb62ea))
-* Update Conversation Relay start parameters ([879fe5b](https://github.com/team-telnyx/telnyx-go/commit/879fe5bbd6254fca72abd60b63673893eb1153c5))
-
-
-### Documentation
-
-* add supported file formats to Send Fax endpoint ([bb859a7](https://github.com/team-telnyx/telnyx-go/commit/bb859a70c2bacfc25302d2897ab5455a010c5f03))
-
-## 4.66.0 (2026-05-13)
-
-Full Changelog: [v4.65.0...v4.66.0](https://github.com/team-telnyx/telnyx-go/compare/v4.65.0...v4.66.0)
-
-### Features
-
-* **client:** add compatibility aliases for old type names ([d4795ae](https://github.com/team-telnyx/telnyx-go/commit/d4795aed4589e3a2899033befb412fbbb253e9dc))
-* Document OpenAI responses conversation flow ([2df63fa](https://github.com/team-telnyx/telnyx-go/commit/2df63fa82c3a1e413ebca0f541c3b43c6d75e508))
-
-## 4.65.0 (2026-05-11)
-
-Full Changelog: [v4.64.0...v4.65.0](https://github.com/team-telnyx/telnyx-go/compare/v4.64.0...v4.65.0)
-
-### Features
-
-* AI-2312: document currency and unit in /models pricing schema ([eb32992](https://github.com/team-telnyx/telnyx-go/commit/eb32992fd739a609f5d4452cc1eaab270f331d9a))
-* Clean up OpenAI responses API docs ([f642ad9](https://github.com/team-telnyx/telnyx-go/commit/f642ad9b43275b7257713cb471c569280ce625ea))
-* Fix OpenAI chat API reference links ([7f713b7](https://github.com/team-telnyx/telnyx-go/commit/7f713b79fca38ceca4ce7e0cc3d55f1372a500e3))
-
-## 4.64.0 (2026-05-11)
-
-Full Changelog: [v4.63.0...v4.64.0](https://github.com/team-telnyx/telnyx-go/compare/v4.63.0...v4.64.0)
-
-### Features
-
-* AI-2294: document /ai/openai/models response and refresh LLM examples ([b55d6bc](https://github.com/team-telnyx/telnyx-go/commit/b55d6bc3da0ad7b416cec9bd747a6879678dbf72))
-* Document per-endpoint media encryption for call control ([207da37](https://github.com/team-telnyx/telnyx-go/commit/207da379aa5ba3a0ae9d7924b1edbf1df4195c08))
-* Responses endpoint ([0714266](https://github.com/team-telnyx/telnyx-go/commit/071426677da22c5ae37fd6d733f4808799b8e3c7))
+* **go:** enable V1 back-compat naming to eliminate 732 breaking type renames ([d52e43e](https://github.com/team-telnyx/telnyx-go-staging/commit/d52e43edd8089acf336be575e9149ec06eb4cbd3))
+* **go:** enable V1 back-compat naming to eliminate 732 breaking type renames ([b9ea432](https://github.com/team-telnyx/telnyx-go-staging/commit/b9ea432c373fb116cd564112d0e83a681c32de1f))
 
 
 ### Chores
 
-* **internal:** codegen related update ([8359d71](https://github.com/team-telnyx/telnyx-go/commit/8359d71cd3de40690aabe4186eae5d927bc34f02))
+* preserve repo-owned files not part of SDK generation ([8756b81](https://github.com/team-telnyx/telnyx-go-staging/commit/8756b81f581a6e19457dd99b76d553faefe3bdfe))
+* release go 4.106.0 ([ef3952b](https://github.com/team-telnyx/telnyx-go-staging/commit/ef3952b02f3b87de731d8f27916d1f6f5ec3141c))
 
-## 4.63.0 (2026-05-08)
-
-Full Changelog: [v4.62.0...v4.63.0](https://github.com/team-telnyx/telnyx-go/compare/v4.62.0...v4.63.0)
-
-### Features
-
-* Add Speechmatics provider to standalone STT spec ([6c9ead5](https://github.com/team-telnyx/telnyx-go/commit/6c9ead518d58bd243f350fb9b1a14bfd732f4038))
-* AI-2289 add disable greeting interruption OpenAPI fields ([b29d99f](https://github.com/team-telnyx/telnyx-go/commit/b29d99f193736b0819503e0b7648604aeb0906d3))
-* Ai-assistant: update scheduled events api ([0ccf846](https://github.com/team-telnyx/telnyx-go/commit/0ccf84697580bb5135b1c159c54f5243b0cff867))
-* Ai-assistants: support pattern in canary deploy ([52548e8](https://github.com/team-telnyx/telnyx-go/commit/52548e89e69aea65a851801acd351a9b72aa50f4))
-* **api:** manual updates ([0e31295](https://github.com/team-telnyx/telnyx-go/commit/0e31295f1f1a5a777b967aca6a212f5b33edca13))
-* **api:** manual updates ([7727acb](https://github.com/team-telnyx/telnyx-go/commit/7727acbe77e39ae271b7a3be808bc3a7f4fd5428))
-* inference: expose chat completions and models under /ai/openai ([df23f48](https://github.com/team-telnyx/telnyx-go/commit/df23f48579525b545752170fb844855858fd7ad9))
-* MSG-9000: document duplicate-vetting rejection on order brand external vetting ([5c8e04b](https://github.com/team-telnyx/telnyx-go/commit/5c8e04b2c801ca23d47e36a989d902aa06823ade))
-
-
-### Bug Fixes
-
-* **go:** avoid panic when http.DefaultTransport is wrapped ([b002ada](https://github.com/team-telnyx/telnyx-go/commit/b002ada2e6013a05e3cc6bfcfb36707b8a23572f))
-* revert stainless.yml changes from ad4f13c ([9a8d0c9](https://github.com/team-telnyx/telnyx-go/commit/9a8d0c9d9aaaaa0ad3479f86808ac61170e89b51))
-* update UAC internal settings URI examples ([9b3c153](https://github.com/team-telnyx/telnyx-go/commit/9b3c15361edc519b027fe50ce5603d0282cb37d7))
-
-
-### Reverts
-
-* restore stainless.yml from before 964956c ([28a372f](https://github.com/team-telnyx/telnyx-go/commit/28a372fa50d069185b1158c33b73ad0c64960a4a))
-* restore stainless.yml from before 9853597 ([e681b06](https://github.com/team-telnyx/telnyx-go/commit/e681b065a1e7ec402355febf1418e3e4eb61815b))
+## [4.105.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.104.0...v4.105.0) (2026-06-24)
 
 
 ### Chores
 
-* **internal:** codegen related update ([1a887ee](https://github.com/team-telnyx/telnyx-go/commit/1a887ee377d004b18f2269ba469db92616e2423f))
-* redact api-key headers in debug logs ([4900d53](https://github.com/team-telnyx/telnyx-go/commit/4900d53afa07bafe51923fee1a2523fa679a13ec))
+* preserve repo-owned files not part of SDK generation ([6fd1b3f](https://github.com/team-telnyx/telnyx-go-staging/commit/6fd1b3ffbabc426fa27daf5fec81f4cbf191578a))
+* release go 4.105.0 ([3f05ee3](https://github.com/team-telnyx/telnyx-go-staging/commit/3f05ee347389bcfbba3262d8f95ad6c1e21826ea))
+
+## [4.104.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.103.0...v4.104.0) (2026-06-24)
 
 
-### Documentation
+### Bug Fixes
 
-* add UAC connection OpenAPI docs ([6f4ad4c](https://github.com/team-telnyx/telnyx-go/commit/6f4ad4c36099118fcc1eb730dc10671d3131f803))
-* update gather_using_ai transcription models ([f782b82](https://github.com/team-telnyx/telnyx-go/commit/f782b825ae9a41562e3a0fdf439a5c533c490b9e))
-
-## 4.62.0 (2026-05-05)
-
-Full Changelog: [v4.61.0...v4.62.0](https://github.com/team-telnyx/telnyx-go/compare/v4.61.0...v4.62.0)
-
-### Features
-
-* Add assistant external LLM forward metadata to OpenAPI ([f22f67f](https://github.com/team-telnyx/telnyx-go/commit/f22f67f175360f264c71664ad3e8a468973ca9ad))
-* Add xAI and AssemblyAI transcription engines to call-control API docs ([2fbdc0f](https://github.com/team-telnyx/telnyx-go/commit/2fbdc0ff8a32eb2d4c7095a88ec3e4e2009d9d84))
-* Add xAI and missing voice providers to Call Control API ([8f2c634](https://github.com/team-telnyx/telnyx-go/commit/8f2c634650ba171734569ae1707d98204365ce15))
-* AI-2183: Document dynamic variable support for transcription keyterm ([179bc1b](https://github.com/team-telnyx/telnyx-go/commit/179bc1b5f07286751c8a5fffdc1785e1bc75308b))
-* **api:** manual updates ([e123bab](https://github.com/team-telnyx/telnyx-go/commit/e123bab03d2e3ac4933d94336b28bfc2e05c11ba))
-* Assistant tool targets master ([599ffad](https://github.com/team-telnyx/telnyx-go/commit/599ffad5df8e2bf3feb6f9795ffc9ee3bdbf4350))
-* Correct external LLM forwarded metadata docs ([e927652](https://github.com/team-telnyx/telnyx-go/commit/e927652fbeecfd1d926124d7fd934d60c6c5f27f))
-* Document assistant CRUD fields ([398e2dd](https://github.com/team-telnyx/telnyx-go/commit/398e2dd176379715cac25aa2ac4ce20f41a9cef8))
-* Document Flux transcription language hints ([12b1ab2](https://github.com/team-telnyx/telnyx-go/commit/12b1ab2efb752156c7d7ab58288a63252a484c91))
-* ENGDESK-51445: added profile ID fields to Whatsapp messages ([d1c2acf](https://github.com/team-telnyx/telnyx-go/commit/d1c2acf7f1f65346281b60535c1797097704cb69))
-* Fix CreateVerifyProfileRequest to match messaging-2fa schema ([c5012e7](https://github.com/team-telnyx/telnyx-go/commit/c5012e785f40a64d58b41a2482e0603a0112f2ca))
-* **go:** add default http client with timeout ([2c7beb9](https://github.com/team-telnyx/telnyx-go/commit/2c7beb9aa8bdb75627a662b0f3d607a8f2723a9e))
-* Mark 'from' as required on InviteToolConfig ([715f324](https://github.com/team-telnyx/telnyx-go/commit/715f32406c888f1b23f39fb159996acc2b378239))
-* Revert "fix: stainless ([#2371](https://github.com/team-telnyx/telnyx-go/issues/2371))" ([7dc0607](https://github.com/team-telnyx/telnyx-go/commit/7dc0607243963e4f1ab1ff24fe079e593fa4c505))
-* support setting headers via env ([f553ae4](https://github.com/team-telnyx/telnyx-go/commit/f553ae4785575617dcdae95712d0ea3607d614a7))
-* TELAPPS-5725: Add deepfake detection params to call-scripting API docs ([f6c96a2](https://github.com/team-telnyx/telnyx-go/commit/f6c96a2f714e8a565a5c733349732f434a447728))
-* Update assistant transcription settings spec ([b029340](https://github.com/team-telnyx/telnyx-go/commit/b0293404ee41a1a621c2d0c095d0df5799786210))
-* Update observability ([2bc22b1](https://github.com/team-telnyx/telnyx-go/commit/2bc22b1167fba0cc669ee52b0bb8d28a621ce5e9))
+* type additionalProperties for 10dlc oneOf variants to fix Java deserialization ([32bba28](https://github.com/team-telnyx/telnyx-go-staging/commit/32bba28f3d4efcff0d804578608f1388de69918d))
+* type additionalProperties for 10dlc oneOf variants to fix Java deserialization ([c33d6b0](https://github.com/team-telnyx/telnyx-go-staging/commit/c33d6b0cea4085bd721a078f01a6af33ab7eb565))
 
 
 ### Chores
 
-* avoid embedding reflect.Type for dead code elimination ([61b9565](https://github.com/team-telnyx/telnyx-go/commit/61b9565662bc0809cc3de3cfbf5b356e82fa34a4))
-* **internal:** codegen related update ([4202ea2](https://github.com/team-telnyx/telnyx-go/commit/4202ea2e968b07bd63fd0e48b027e63c9374ba62))
-* **internal:** codegen related update ([e024fe5](https://github.com/team-telnyx/telnyx-go/commit/e024fe5bbcee5e21282a4aa5425ac5a83fbac97f))
-* update example date in inference-embedding ([a0af590](https://github.com/team-telnyx/telnyx-go/commit/a0af590506ddaa3025f8300805288b1c4cbf5628))
+* preserve repo-owned files not part of SDK generation ([4ea6d8b](https://github.com/team-telnyx/telnyx-go-staging/commit/4ea6d8bcb1a1607de901a980f6cee35977614bba))
+* release go 4.104.0 ([c3f5056](https://github.com/team-telnyx/telnyx-go-staging/commit/c3f505650c2a57f8c8a6ace46c38e5d1f8c02c20))
 
-## 4.61.0 (2026-04-24)
-
-Full Changelog: [v4.60.0...v4.61.0](https://github.com/team-telnyx/telnyx-go/compare/v4.60.0...v4.61.0)
-
-### Features
-
-* Add call.hold and call.unhold webhook event documentation ([b6a463c](https://github.com/team-telnyx/telnyx-go/commit/b6a463cf0ff263ab1bfa74aa67cc97dea2621909))
-* Add post_conversation_settings to AI Assistants API spec ([b71d0de](https://github.com/team-telnyx/telnyx-go/commit/b71d0deab84139cb78db973bdc68920f589d6cc6))
-* Add xAI provider to standalone STT and TTS specs ([70291a7](https://github.com/team-telnyx/telnyx-go/commit/70291a79a0c97eb76bf6a681a11e6cc31cc944c1))
-* MSG-6841: add missing whatsapp api docs ([b8ef6b8](https://github.com/team-telnyx/telnyx-go/commit/b8ef6b8c5ecffd65bb7d7f0b533954d2588452c5))
-* MSG-6857: ([1682cd6](https://github.com/team-telnyx/telnyx-go/commit/1682cd66609f19522603532695561d035efaff80))
+## [4.103.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.102.0...v4.103.0) (2026-06-23)
 
 
 ### Chores
 
-* **internal:** more robust bootstrap script ([139d6bf](https://github.com/team-telnyx/telnyx-go/commit/139d6bfb30ac1f915974c68fa36eeddf0376059b))
+* preserve repo-owned files not part of SDK generation ([4cda026](https://github.com/team-telnyx/telnyx-go-staging/commit/4cda0260ec9be9b5f6c4521f31216ef26a7336cc))
+* release go 4.103.0 ([c65f052](https://github.com/team-telnyx/telnyx-go-staging/commit/c65f0522518fd2697cd3dfb7c677a23e67ad6d38))
 
-
-### Documentation
-
-* document dynamic variable support for voice_settings.voice ([96872af](https://github.com/team-telnyx/telnyx-go/commit/96872af390fa44014fa982c36771d6162d2a29f1))
-
-## 4.60.0 (2026-04-20)
-
-Full Changelog: [v4.59.0...v4.60.0](https://github.com/team-telnyx/telnyx-go/compare/v4.59.0...v4.60.0)
-
-### Features
-
-* Add keyterm field to TranscriptionSettingsConfig ([f0f24fe](https://github.com/team-telnyx/telnyx-go/commit/f0f24fe17b8ed971b1f79cfaffea35e3d61a198e))
-
-## 4.59.0 (2026-04-17)
-
-Full Changelog: [v4.58.0...v4.59.0](https://github.com/team-telnyx/telnyx-go/compare/v4.58.0...v4.59.0)
-
-### Features
-
-* Add user_idle_reply_secs to TelephonySettings spec ([0d8ed6f](https://github.com/team-telnyx/telnyx-go/commit/0d8ed6f8b456ab3c7e9c9c3715c966fa072d75a9))
-* **client:** update apidata interface ([13dc2fb](https://github.com/team-telnyx/telnyx-go/commit/13dc2fbca4fb88b5d4dfab517119c5787ddccb6f))
-* Lower user_idle_timeout_secs minimum from 30s to 10s ([8b822f8](https://github.com/team-telnyx/telnyx-go/commit/8b822f82c794aafb7085c04b78aa4b825b475ca8))
-* TELAPPS Provide description what params can be used for premium amd ([12b7550](https://github.com/team-telnyx/telnyx-go/commit/12b755046ce6dd1c372731937a9e9824a1d55dcb))
-
-## 4.58.0 (2026-04-16)
-
-Full Changelog: [v4.57.1...v4.58.0](https://github.com/team-telnyx/telnyx-go/compare/v4.57.1...v4.58.0)
-
-### Features
-
-* [TDA-6425] Fix session analysis API spec: relaxed date_time, remove status & completed_at ([cff36ab](https://github.com/team-telnyx/telnyx-go/commit/cff36abea565824e25ed18bbf77ea1b953a1d632))
-* Add webhook_urls, webhook_urls_method, webhook_retries_policies to Dial endpoint ([cd9077d](https://github.com/team-telnyx/telnyx-go/commit/cd9077db39767a3c8eb92b06649d3d7f4fa39f65))
-* MSG-6868: document whitelisted_destinations as conditionally required ([8519e0b](https://github.com/team-telnyx/telnyx-go/commit/8519e0b3fc86324ec901be234c333c024bc15aa0))
-* TELAPPS-5712: Add deepfake detection to call-control API spec ([d48d0d1](https://github.com/team-telnyx/telnyx-go/commit/d48d0d192ab3b046985c494ce066790eaeac2ee8))
+## [4.102.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.101.0...v4.102.0) (2026-06-23)
 
 
 ### Bug Fixes
 
-* correct VoiceCloneNewFromUploadParams field reference in MarshalMultipart ([d70642b](https://github.com/team-telnyx/telnyx-go/commit/d70642b6e269519926c9255ada0fc1da9ad6e931))
-
-
-### Documentation
-
-* add pagination params to conversation messages endpoint ([e32fae9](https://github.com/team-telnyx/telnyx-go/commit/e32fae95eb64378b3e92a59fd170fb0dd7908c55))
-
-## 4.57.1 (2026-04-12)
-
-Full Changelog: [v4.57.0...v4.57.1](https://github.com/team-telnyx/telnyx-go/compare/v4.57.0...v4.57.1)
-
-### Bug Fixes
-
-* set additionalProperties=false on VoiceCloneUploadRequest to prevent codegen errors ([ba0aa93](https://github.com/team-telnyx/telnyx-go/commit/ba0aa9333684a82de760e2decf8cfaeb15095f39))
-
-
-### Refactors
-
-* separate custom webhook methods from generated code ([e0895e5](https://github.com/team-telnyx/telnyx-go/commit/e0895e52cecaebde3a67ad6f9a3af608f40cca47))
-
-## 4.57.0 (2026-04-11)
-
-Full Changelog: [v4.56.0...v4.57.0](https://github.com/team-telnyx/telnyx-go/compare/v4.56.0...v4.57.0)
-
-### Features
-
-* add shared CallAssistantRequest schema for call-control assistant object ([d7f4420](https://github.com/team-telnyx/telnyx-go/commit/d7f4420c6537c4c779512deb0f380729e1d3b655))
-* **api:** manual updates ([719d033](https://github.com/team-telnyx/telnyx-go/commit/719d033cda6244cde115f9497747e415ef34d9d2))
-* **api:** Merge pull request [#46](https://github.com/team-telnyx/telnyx-go/issues/46) from stainless-sdks/FixModelRecommendation ([35f93a3](https://github.com/team-telnyx/telnyx-go/commit/35f93a31250aab1b11b5073108e2a4557883b96f))
-* CW-3815 fix PATCH /wirelss_blocklists/{id} endpoint ([a4c0b0d](https://github.com/team-telnyx/telnyx-go/commit/a4c0b0d4b9ab4171ed66fcd6e0f7c44c96762c66))
-* MSG-6846: add GET /profile/photo docs for whatsapp API ([f19fac6](https://github.com/team-telnyx/telnyx-go/commit/f19fac6442ba4b8830ced2211c024436e1962f4e))
-* TELAPPS-5689: Pronunciation dictionaries API docs ([1f643ea](https://github.com/team-telnyx/telnyx-go/commit/1f643ea419110596d56aa028a0a357492d60a1a3))
-* TELAPPS-5707: Add privacy parameter to Call Control dial and transfer ([769f3aa](https://github.com/team-telnyx/telnyx-go/commit/769f3aaf33d9fb90ab8ad8a4a20e14a170fb7600))
-
-
-### Reverts
-
-* restore stainless.yml to pre-6a6df5b state ([891f9f4](https://github.com/team-telnyx/telnyx-go/commit/891f9f44e0fb44045ab51954e11b31f3deeff0b7))
-* revert stainless.yml changes from 9c5e8d8 ([4b0926f](https://github.com/team-telnyx/telnyx-go/commit/4b0926f13c015154da5eace34746c0ddcd8f59a1))
-* revert stainless.yml changes from pronunciation dictionaries commit ([d4b2d27](https://github.com/team-telnyx/telnyx-go/commit/d4b2d27977d4fedc5d45e65e6b7e3b5072cce75a))
+* register TranscriptionEngineParakeetConfig as shared model in calls resource ([23efc8d](https://github.com/team-telnyx/telnyx-go-staging/commit/23efc8d9f3f6e72507e18619bd2a1cbe4f0f6b08))
+* register TranscriptionEngineParakeetConfig as shared model in calls resource ([ee4ba39](https://github.com/team-telnyx/telnyx-go-staging/commit/ee4ba3976ddac67aea381ebd79e2af7cd078949b))
 
 
 ### Chores
 
-* **internal:** version bump ([676c7c4](https://github.com/team-telnyx/telnyx-go/commit/676c7c40d79a813eeb3337f88776bc28e2b5f8dc))
+* preserve repo-owned files not part of SDK generation ([6a7a4ef](https://github.com/team-telnyx/telnyx-go-staging/commit/6a7a4ef4146ee11610c1906088055e979249fef9))
+* release go 4.102.0 ([0f82795](https://github.com/team-telnyx/telnyx-go-staging/commit/0f82795bc00e95129613d3512d1d5a8f08f0f994))
 
-
-### Documentation
-
-* improve examples ([a6c09d6](https://github.com/team-telnyx/telnyx-go/commit/a6c09d60e63b3d209f8b53e8c6b265f9b956efb9))
-* update voice clone schemas to match Ultra/model_id implementation ([2118703](https://github.com/team-telnyx/telnyx-go/commit/2118703868d58f253b1b86db54b4314065fd9162))
-
-## 4.57.0 (2026-04-09)
-
-Full Changelog: [v4.56.0...v4.57.0](https://github.com/team-telnyx/telnyx-go/compare/v4.56.0...v4.57.0)
-
-### Features
-
-* Add oneOf constraint for Url/Texml mutual exclusivity in InitiateCallRequest ([190ec78](https://github.com/team-telnyx/telnyx-go/commit/190ec780c665897724a757bc2bbb7510bf61ae22))
-
-## 4.56.0 (2026-04-08)
-
-Full Changelog: [v4.55.2...v4.56.0](https://github.com/team-telnyx/telnyx-go/compare/v4.55.2...v4.56.0)
-
-### Features
-
-* Add ai_calls endpoint documentation to OpenAPI spec ([fda8750](https://github.com/team-telnyx/telnyx-go/commit/fda875063c485f442f6558e2ae5d89f121570621))
-* add enabled boolean to recording_settings [AI-2178] ([5492e73](https://github.com/team-telnyx/telnyx-go/commit/5492e735ab2d9120b337308cdb8465c5bb895999))
-* Add oneOf constraint for Url/Texml mutual exclusivity in InitiateCallRequest ([8bebb65](https://github.com/team-telnyx/telnyx-go/commit/8bebb65ea7e4d9e31e1d8bc2e0a4c94d5c6d4adc))
-* AI-2180: Add message_template to SendMessageTool schema ([5ac41fa](https://github.com/team-telnyx/telnyx-go/commit/5ac41faeddad4d27a86a20772ad2b73c9e52c52f))
-* **api:** manual updates ([c8d37fe](https://github.com/team-telnyx/telnyx-go/commit/c8d37fe5b28455d1d5872d693b1aa37387fb58e6))
-* **api:** Merge pull request [#39](https://github.com/team-telnyx/telnyx-go/issues/39) from stainless-sdks/revert-a988c49-stainless-changes ([f2c0f4f](https://github.com/team-telnyx/telnyx-go/commit/f2c0f4f1ba523ce5038caeec99d66ca330f91a75))
-* Assistants: add observability ([5318f99](https://github.com/team-telnyx/telnyx-go/commit/5318f99fe333cd662db7eefe4fcc23e99c670134))
-* MSG-6666: Add template and text properties to WhatsApp send message schema ([5c7b934](https://github.com/team-telnyx/telnyx-go/commit/5c7b9345be30ead7fa1619bad70c74ff77cdb868))
-* MSG-6673: Add WhatsApp verification endpoint and profile settings ([cbb9984](https://github.com/team-telnyx/telnyx-go/commit/cbb9984951767dba886f028ff5460daf1e01da1c))
-
-
-### Reverts
-
-* restore stainless.yml SDK generation fixes ([f2c0f4f](https://github.com/team-telnyx/telnyx-go/commit/f2c0f4f1ba523ce5038caeec99d66ca330f91a75))
-
-## 4.55.2 (2026-04-02)
-
-Full Changelog: [v4.55.1...v4.55.2](https://github.com/team-telnyx/telnyx-go/compare/v4.55.1...v4.55.2)
-
-### Bug Fixes
-
-* fixes for pagination and iteration, plus iter.Seq support ([22c5ffc](https://github.com/team-telnyx/telnyx-go/commit/22c5ffcbf9b032f12fe4770abc7b69018cfa9942))
-
-## 4.55.1 (2026-03-31)
-
-Full Changelog: [v4.55.0...v4.55.1](https://github.com/team-telnyx/telnyx-go/compare/v4.55.0...v4.55.1)
-
-### Bug Fixes
-
-* fix issue with unmarshaling in some cases ([0d4afda](https://github.com/team-telnyx/telnyx-go/commit/0d4afda8991038c2b9676360eeff676dcc7d6978))
+## [4.101.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.100.0...v4.101.0) (2026-06-23)
 
 
 ### Chores
 
-* **ci:** support opting out of skipping builds on metadata-only commits ([3406f7d](https://github.com/team-telnyx/telnyx-go/commit/3406f7d7b1a732ab692ca939c0bab332ed7533d7))
-* update docs for api:"required" ([49e614c](https://github.com/team-telnyx/telnyx-go/commit/49e614cd13c55041760c8993e2c95b05073db954))
+* preserve repo-owned files not part of SDK generation ([e62e7bf](https://github.com/team-telnyx/telnyx-go-staging/commit/e62e7bfde078653a55684f917e20989a89f6eb8c))
+* release go 4.101.0 ([2cdcf6a](https://github.com/team-telnyx/telnyx-go-staging/commit/2cdcf6aaeb2d7940f83f68385ae8a7b8c0bf5aee))
 
-
-### Documentation
-
-* fix voice settings available voices link ([c4d6bfa](https://github.com/team-telnyx/telnyx-go/commit/c4d6bfa48f6b898fbc8f8ca0bf0cff4d40c12e3d))
-
-## 4.55.0 (2026-03-26)
-
-Full Changelog: [v4.54.0...v4.55.0](https://github.com/team-telnyx/telnyx-go/compare/v4.54.0...v4.55.0)
-
-### Features
-
-* **internal:** support comma format in multipart form encoding ([df166a3](https://github.com/team-telnyx/telnyx-go/commit/df166a35358164b24e810ce12ea13b1b0bd832e2))
-
-
-### Bug Fixes
-
-* prevent duplicate ? in query params ([89e80d1](https://github.com/team-telnyx/telnyx-go/commit/89e80d12547e98b2ed8ccbadd5e3ae40e88072fa))
+## [4.100.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.99.0...v4.100.0) (2026-06-22)
 
 
 ### Chores
 
-* remove unnecessary error check for url parsing ([56a5052](https://github.com/team-telnyx/telnyx-go/commit/56a505257d97beea70839c2f1c842535e4b95c58))
+* preserve repo-owned files not part of SDK generation ([325f06c](https://github.com/team-telnyx/telnyx-go-staging/commit/325f06cf0d762b6b7b1da3646fb0ab8f2aac1d2e))
+* release go 4.100.0 ([daed440](https://github.com/team-telnyx/telnyx-go-staging/commit/daed440b3663fce8f1b3933fad7bde61c56f5a5e))
 
-## 4.54.0 (2026-03-25)
-
-Full Changelog: [v4.53.0...v4.54.0](https://github.com/team-telnyx/telnyx-go/compare/v4.53.0...v4.54.0)
-
-### Features
-
-* **websocket:** add STT/TTS WebSocket streaming support ([4f59511](https://github.com/team-telnyx/telnyx-go/commit/4f595110ac958c275c84fa9dd16a272ba34b11b5))
-
-
-### Bug Fixes
-
-* rename number-reputation ToS route to use underscores ([694fb77](https://github.com/team-telnyx/telnyx-go/commit/694fb7792a1822affd01bf51b11bbab3236eb345))
+## [4.99.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.98.0...v4.99.0) (2026-06-22)
 
 
 ### Chores
 
-* **client:** fix multipart serialisation of Default() fields ([9e422c9](https://github.com/team-telnyx/telnyx-go/commit/9e422c9c2c833e3dd3f22247aeb9e5a3defe00d0))
-* **internal:** support default value struct tag ([3649c34](https://github.com/team-telnyx/telnyx-go/commit/3649c343caf487301d1984e00e1e72190905316f))
+* preserve repo-owned files not part of SDK generation ([28471bb](https://github.com/team-telnyx/telnyx-go-staging/commit/28471bbe2785d03cf1f42ab6a19a32c6035a775c))
+* release go 4.99.0 ([afad10a](https://github.com/team-telnyx/telnyx-go-staging/commit/afad10aa21410f183bf9f5d0c632511c6317af0a))
 
-
-### Documentation
-
-* **branded-calling:** add Number Reputation API specs ([70e90a3](https://github.com/team-telnyx/telnyx-go/commit/70e90a30b8a0bb27bde20ba3969de0f21ae8788c))
-
-## 4.53.0 (2026-03-25)
-
-Full Changelog: [v4.52.0...v4.53.0](https://github.com/team-telnyx/telnyx-go/compare/v4.52.0...v4.53.0)
-
-### Features
-
-* **api:** manual updates ([39ed85c](https://github.com/team-telnyx/telnyx-go/commit/39ed85cbb4cbc79057d65184ff85903101639e02))
-* **api:** manual updates ([e7d17ab](https://github.com/team-telnyx/telnyx-go/commit/e7d17ab7851961c43b2a22133c2bbc91f44a0b9b))
-* **api:** Merge pull request [#30](https://github.com/team-telnyx/telnyx-go/issues/30) from stainless-sdks/fix-schemaUnionDiscriminatorMissing ([c0c650e](https://github.com/team-telnyx/telnyx-go/commit/c0c650ec463a2087d393072df14d57bc78853abf))
-* New tools api ([fa8d724](https://github.com/team-telnyx/telnyx-go/commit/fa8d724e524641f80e8845aeb9cdf6224c870451))
-* TELAPPS-5685: Add store_fields_as_variables to WebhookToolParams ([3c0f71a](https://github.com/team-telnyx/telnyx-go/commit/3c0f71acaea7e95dfd0c527743ff476bf9b99d30))
+## [4.98.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.97.0...v4.98.0) (2026-06-22)
 
 
 ### Chores
 
-* **ci:** skip lint on metadata-only changes ([54db857](https://github.com/team-telnyx/telnyx-go/commit/54db857938ef8514d66199e06a720322f4d06a5c))
+* preserve repo-owned files not part of SDK generation ([6b45b48](https://github.com/team-telnyx/telnyx-go-staging/commit/6b45b484123a83cc53e19dd4194def1259597d7f))
+* release go 4.98.0 ([d23b37c](https://github.com/team-telnyx/telnyx-go-staging/commit/d23b37cc92ee212f217610de80cadda173a199da))
 
-## 4.52.0 (2026-03-23)
-
-Full Changelog: [v4.51.0...v4.52.0](https://github.com/team-telnyx/telnyx-go/compare/v4.51.0...v4.52.0)
-
-### Features
-
-* **api:** manual updates ([5dae930](https://github.com/team-telnyx/telnyx-go/commit/5dae930d20a986f528379d475b97255b7e0aceda))
+## [4.97.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.96.0...v4.97.0) (2026-06-22)
 
 
 ### Chores
 
-* **internal:** update gitignore ([4c9fe9f](https://github.com/team-telnyx/telnyx-go/commit/4c9fe9f642f92f4e91a72fd479c86ea8498fe797))
+* preserve repo-owned files not part of SDK generation ([1d75f8f](https://github.com/team-telnyx/telnyx-go-staging/commit/1d75f8f6bbf34a5616df8079dee673cca7633337))
+* release go 4.97.0 ([a120669](https://github.com/team-telnyx/telnyx-go-staging/commit/a1206699883dc2d45d38624ccd80cde79770cee5))
 
-## 4.51.0 (2026-03-20)
-
-Full Changelog: [v4.50.0...v4.51.0](https://github.com/team-telnyx/telnyx-go/compare/v4.50.0...v4.51.0)
-
-### Features
-
-* Add Minimax provider support to Voice Designs and Voice Clones API spec ([bec9d43](https://github.com/team-telnyx/telnyx-go/commit/bec9d43284fa65f425598be10bfa375f252efee7))
-* **api:** manual updates ([43d12db](https://github.com/team-telnyx/telnyx-go/commit/43d12db0a5b1f4861de113a682cdbc72c0731a4c))
-* **api:** manual updates ([ece1771](https://github.com/team-telnyx/telnyx-go/commit/ece177187db12ed07b9d11c29876fb7087447239))
-* **api:** manual updates ([3e9dd03](https://github.com/team-telnyx/telnyx-go/commit/3e9dd039e2c9ca0039783dc53321fa26e5c241cc))
-* **api:** manual updates ([76696ea](https://github.com/team-telnyx/telnyx-go/commit/76696ea5fc52ce63e1f26b8d176ea9a05099eece))
-* **wireless:** add traffic policy profiles endpoints to OpenAPI spec ([87f32c2](https://github.com/team-telnyx/telnyx-go/commit/87f32c2d4ab04e80585f420f3363f5d54156fd0d))
-
-
-### Documentation
-
-* WhatsApp template components schema ([25dfdda](https://github.com/team-telnyx/telnyx-go/commit/25dfddac0f5175bdd1eb687b4eb6cde364ffe43f))
-
-
-### Refactors
-
-* move webhook verification to lib package to avoid merge conflicts ([c238d65](https://github.com/team-telnyx/telnyx-go/commit/c238d655ed20417cbb88e9dad6bd1b3b2db725ad))
-
-## 4.44.0 (2026-03-10)
-
-Full Changelog: [v4.43.0...v4.44.0](https://github.com/team-telnyx/telnyx-go/compare/v4.43.0...v4.44.0)
-
-### Features
-
-* **api:** manual updates ([156c285](https://github.com/team-telnyx/telnyx-go/commit/156c2855302082ce14bf76a1b4f3197c26ed6ab5))
-* Assistant tags ([3c74d33](https://github.com/team-telnyx/telnyx-go/commit/3c74d33e99c36c8215bca6ce25ccf988bdaa47a2))
-* CW-2881 publish wireless VoLTE docs to prod ([9c16512](https://github.com/team-telnyx/telnyx-go/commit/9c1651289e816252a022ca6c24b80f06531a7dd8))
-* MSG-6418: remove flashcall from hosted number verification codes endpoint ([64284b4](https://github.com/team-telnyx/telnyx-go/commit/64284b46640ade8533493156897542dd3a17a0cf))
-* TELAPPS-ENGDESK-49737 Add prevent_double_bridge param to dial ([a455f5c](https://github.com/team-telnyx/telnyx-go/commit/a455f5ca425a3ece6f476bc25eb3df87f8f0a396))
+## [4.96.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.95.0...v4.96.0) (2026-06-22)
 
 
 ### Chores
 
-* **ci:** skip uploading artifacts on stainless-internal branches ([626f387](https://github.com/team-telnyx/telnyx-go/commit/626f387fe9fde8b69874f219251f5f79af2c897e))
-* **internal:** minor cleanup ([5424a9f](https://github.com/team-telnyx/telnyx-go/commit/5424a9ff200b05c8816f46327ecaff7f9f1ff49c))
-* **internal:** use explicit returns ([ae07632](https://github.com/team-telnyx/telnyx-go/commit/ae0763212ccbe13761dd7b653f053f8caa461cc5))
-* update placeholder string ([0175443](https://github.com/team-telnyx/telnyx-go/commit/01754435c64ece5a3011fe9aa25feac8c6e7cca7))
+* preserve repo-owned files not part of SDK generation ([72830d6](https://github.com/team-telnyx/telnyx-go-staging/commit/72830d685e1e64a7a377432402094c0f7eb1da10))
+* release go 4.96.0 ([00ef7db](https://github.com/team-telnyx/telnyx-go-staging/commit/00ef7db16823096e9f472c19f073a9af42d12cce))
 
-## 4.43.0 (2026-03-05)
-
-Full Changelog: [v4.42.0...v4.43.0](https://github.com/team-telnyx/telnyx-go/compare/v4.42.0...v4.43.0)
-
-### Features
-
-* Changing a tag for filebased STT endpoint ([ba25f80](https://github.com/team-telnyx/telnyx-go/commit/ba25f8051f3c296c15d23ec7c4ab204d3e589d49))
-
-
-### Documentation
-
-* **messaging:** Add wait_seconds to message response schemas ([0145fd3](https://github.com/team-telnyx/telnyx-go/commit/0145fd32934dddd7df16360b7cd61042fa5a1d72))
-
-## 4.42.0 (2026-03-05)
-
-Full Changelog: [v4.41.0...v4.42.0](https://github.com/team-telnyx/telnyx-go/compare/v4.41.0...v4.42.0)
-
-### Features
-
-* **api:** manual updates ([55dd97a](https://github.com/team-telnyx/telnyx-go/commit/55dd97aeaaf1a2cf266b2214d983dcce6e30d0e7))
-* **api:** manual updates ([7f276c7](https://github.com/team-telnyx/telnyx-go/commit/7f276c75ab6c935ef331006edc90e179d7c56ba2))
-* **api:** manual updates ([50f631d](https://github.com/team-telnyx/telnyx-go/commit/50f631ddce3328ed5ae963f929d87dc03576b65d))
-* **api:** manual updates ([46a26ed](https://github.com/team-telnyx/telnyx-go/commit/46a26ed340f5cb1a50ef75bd3c0880fff1bd1b2b))
-* **api:** manual updates ([090607f](https://github.com/team-telnyx/telnyx-go/commit/090607fe5a6f4b9de15c377ae09e56425fba157f))
-* **api:** manual updates ([6953d48](https://github.com/team-telnyx/telnyx-go/commit/6953d48daf8d0f062578bdc69167040a3ef55d56))
-* **stt:** add WebSocket event schemas for Stainless SDK generation ([30858ac](https://github.com/team-telnyx/telnyx-go/commit/30858ac548922104708e0e6f4ac2c7f5311e6610))
-
-
-### Bug Fixes
-
-* fix request delays for retrying to be more respectful of high requested delays ([07c4cec](https://github.com/team-telnyx/telnyx-go/commit/07c4cecfd18d885b47a8ce44d4dd0af2d0fc37a0))
-
-## 4.41.0 (2026-03-04)
-
-Full Changelog: [v4.40.0...v4.41.0](https://github.com/team-telnyx/telnyx-go/compare/v4.40.0...v4.41.0)
-
-### Features
-
-* **api:** manual updates ([5c36d94](https://github.com/team-telnyx/telnyx-go/commit/5c36d94b80b018ff8fb5cd2e551254508ab8c374))
-* **api:** manual updates ([45aec2d](https://github.com/team-telnyx/telnyx-go/commit/45aec2d45dd58e0f36b92e5916b59df4017019e8))
-* **api:** manual updates ([4a2a2a1](https://github.com/team-telnyx/telnyx-go/commit/4a2a2a1ffd0ce15f020a05276479e8e8d087a7ff))
-* **api:** manual updates ([c30b2d3](https://github.com/team-telnyx/telnyx-go/commit/c30b2d3cad4a4470cbdc3fb4141d9d399694bf8f))
-
-## 4.40.0 (2026-03-04)
-
-Full Changelog: [v4.39.0...v4.40.0](https://github.com/team-telnyx/telnyx-go/compare/v4.39.0...v4.40.0)
-
-### Features
-
-* **api:** manual updates ([24bbede](https://github.com/team-telnyx/telnyx-go/commit/24bbede1f44d1ddf01de4cd728cfd5bc94aff156))
-
-
-### Bug Fixes
-
-* add discriminator to TtsServerEvent for Stainless SDK generation ([cb741ee](https://github.com/team-telnyx/telnyx-go/commit/cb741ee3032ca1aa6753eb32777d731c6bfb90ab))
-
-## 4.39.0 (2026-03-03)
-
-Full Changelog: [v4.38.0...v4.39.0](https://github.com/team-telnyx/telnyx-go/compare/v4.38.0...v4.39.0)
-
-### Features
-
-* [TDA-6425] Add Session Analysis API spec to public docs ([19c208e](https://github.com/team-telnyx/telnyx-go/commit/19c208ec8a07642c4536c21927d7cfd872027389))
-* **api:** manual updates ([ba56cae](https://github.com/team-telnyx/telnyx-go/commit/ba56cae11a527d4a47af1e3a988177f3808c7ef2))
-* **api:** manual updates ([f039a3b](https://github.com/team-telnyx/telnyx-go/commit/f039a3b2e64b14e9a6358de81ebe983c6af0a5a6))
-
-## 4.38.0 (2026-03-03)
-
-Full Changelog: [v4.37.0...v4.38.0](https://github.com/team-telnyx/telnyx-go/compare/v4.37.0...v4.38.0)
-
-### Features
-
-* AI-2106: Add invite tool schema to inference OpenAPI spec ([dc022c5](https://github.com/team-telnyx/telnyx-go/commit/dc022c5b9b84e25f82fed040fd42eb7636474548))
-* **api:** manual updates ([a276b8c](https://github.com/team-telnyx/telnyx-go/commit/a276b8ce08732afcd75db68fdde6c6ba5319e5ad))
-* **api:** manual updates ([d80b22f](https://github.com/team-telnyx/telnyx-go/commit/d80b22f320dd8bd64f1493dd09be9020aaa21e9a))
-* Changing the tag for TTS endpoint ([2696d43](https://github.com/team-telnyx/telnyx-go/commit/2696d43be1a53528713a5bb3267852e06f0259ce))
+## [4.95.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.94.0...v4.95.0) (2026-06-22)
 
 
 ### Chores
 
-* **tests:** update webhook tests ([df6882c](https://github.com/team-telnyx/telnyx-go/commit/df6882c2f53d85bbee9789241b36180dd7d6f023))
+* preserve repo-owned files not part of SDK generation ([35dd8fb](https://github.com/team-telnyx/telnyx-go-staging/commit/35dd8fbb0fb59e75db297f4bfb160a67f4dc1f0a))
+* release go 4.95.0 ([f8b3dc5](https://github.com/team-telnyx/telnyx-go-staging/commit/f8b3dc55b04c7f75ce25051b04fec732eb93068e))
 
-## 4.37.0 (2026-03-02)
-
-Full Changelog: [v4.36.1...v4.37.0](https://github.com/team-telnyx/telnyx-go/compare/v4.36.1...v4.37.0)
-
-### Features
-
-* Merge TTS file-based spec into text-to-speech.json ([8368964](https://github.com/team-telnyx/telnyx-go/commit/8368964be47f11fb5121fd980735617eee12d8f4))
-
-
-### Bug Fixes
-
-* narrow porting event_type enums for SDK discriminator support ([64c4319](https://github.com/team-telnyx/telnyx-go/commit/64c431986412ab6bbfd3f9fa34071507fc4bf0d4))
-
-## 4.36.1 (2026-03-02)
-
-Full Changelog: [v4.36.0...v4.36.1](https://github.com/team-telnyx/telnyx-go/compare/v4.36.0...v4.36.1)
-
-### Bug Fixes
-
-* fix test cases where required client options were not set ([d1d383a](https://github.com/team-telnyx/telnyx-go/commit/d1d383acc14162f74079e26563501efde22ea91a))
-
-## 4.36.0 (2026-02-28)
-
-Full Changelog: [v4.35.0...v4.36.0](https://github.com/team-telnyx/telnyx-go/compare/v4.35.0...v4.36.0)
-
-### Features
-
-* **api:** manual updates ([ed0509f](https://github.com/team-telnyx/telnyx-go/commit/ed0509f68bbe1fe076567213c52930b6b713dac2))
+## [4.94.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.93.0...v4.94.0) (2026-06-22)
 
 
 ### Chores
 
-* **ci:** add build step ([b4a183e](https://github.com/team-telnyx/telnyx-go/commit/b4a183e894e06cf09b77dfce05b083acc6f33eaf))
-* **docs:** add missing descriptions ([fc30b09](https://github.com/team-telnyx/telnyx-go/commit/fc30b09a9b599aac96c923a9f24a35b981da8bc6))
+* preserve repo-owned files not part of SDK generation ([5e9ec83](https://github.com/team-telnyx/telnyx-go-staging/commit/5e9ec83176f342d9a74f15c04a81ab3c2b24da09))
+* release go 4.94.0 ([01f8780](https://github.com/team-telnyx/telnyx-go-staging/commit/01f8780e16b924345faeb1ed44038b82ea55a564))
 
-## 4.35.0 (2026-02-27)
-
-Full Changelog: [v4.34.0...v4.35.0](https://github.com/team-telnyx/telnyx-go/compare/v4.34.0...v4.35.0)
-
-### Features
-
-* Add TTS file-based endpoint spec ([26587e5](https://github.com/team-telnyx/telnyx-go/commit/26587e5b35c6edf2bf325a80e019a257e9f9c45b))
-* **api:** manual updates ([bb9f4ad](https://github.com/team-telnyx/telnyx-go/commit/bb9f4ad3954d0ecb0327add86d27890e7b2236c3))
-* **api:** manual updates ([b6ceabe](https://github.com/team-telnyx/telnyx-go/commit/b6ceabe43f90fdff66dc3e93988dd21b504b53b6))
-* **api:** manual updates ([69d8bcf](https://github.com/team-telnyx/telnyx-go/commit/69d8bcf92c50627f562bb89ab19661c45d42a139))
-
-## 4.34.0 (2026-02-26)
-
-Full Changelog: [v4.33.0...v4.34.0](https://github.com/team-telnyx/telnyx-go/compare/v4.33.0...v4.34.0)
-
-### Features
-
-* **api:** manual updates ([9bd40c8](https://github.com/team-telnyx/telnyx-go/commit/9bd40c855433d80a96e498f5461857537fbd05a5))
-* **api:** manual updates ([9b02b25](https://github.com/team-telnyx/telnyx-go/commit/9b02b25475d882df4dacb901e52d6dda3cb88b88))
+## [4.93.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.92.0...v4.93.0) (2026-06-22)
 
 
 ### Chores
 
-* bring back other changes ([3d5b673](https://github.com/team-telnyx/telnyx-go/commit/3d5b673b6a2a3b84fda81d3810ed1d22edad7ddc))
+* preserve repo-owned files not part of SDK generation ([8317b5d](https://github.com/team-telnyx/telnyx-go-staging/commit/8317b5d38b324806458ca774adecebfd5e886746))
+* release go 4.93.0 ([2299d1c](https://github.com/team-telnyx/telnyx-go-staging/commit/2299d1ced3fe566537b974e023e5bee3a297548b))
 
-## 4.33.0 (2026-02-26)
-
-Full Changelog: [v4.32.0...v4.33.0](https://github.com/team-telnyx/telnyx-go/compare/v4.32.0...v4.33.0)
-
-### Features
-
-* Add text-to-speech WebSocket streaming OpenAPI spec ([843b234](https://github.com/team-telnyx/telnyx-go/commit/843b23495b47df199ccdfadaf2899904016ca0c9))
-* **api:** manual updates ([23b6c36](https://github.com/team-telnyx/telnyx-go/commit/23b6c36458390ffd251b33c3e4fc987ba2a1c0f6))
-* **api:** manual updates ([f84640f](https://github.com/team-telnyx/telnyx-go/commit/f84640f161d7b2ceb397c4f8feb09adabce290f8))
-* TELAPPS-ENGDESK-48951 add channels to conf record start ([20421a4](https://github.com/team-telnyx/telnyx-go/commit/20421a4cd8cc8396ce18c2efabc7584512859669))
-
-## 4.32.0 (2026-02-25)
-
-Full Changelog: [v4.31.0...v4.32.0](https://github.com/team-telnyx/telnyx-go/compare/v4.31.0...v4.32.0)
-
-### Features
-
-* PORTAL-5923: Add stored_payment_transactions endpoint to OpenAPI docs ([5c565eb](https://github.com/team-telnyx/telnyx-go/commit/5c565eb70d4b7ed940f2aff53cff624e69b74f7c))
-
-
-### Documentation
-
-* **call-control:** Add missing params to hangup, bridge, answer ([c3a6ea4](https://github.com/team-telnyx/telnyx-go/commit/c3a6ea4093368e8fb7c17882fa55f2f29d11a866))
-* **call-control:** Add queue CRUD endpoints ([1497f4a](https://github.com/team-telnyx/telnyx-go/commit/1497f4a3d382aef18ecfb1a4cacdc5699e25a715))
-
-## 4.31.0 (2026-02-25)
-
-Full Changelog: [v4.30.1...v4.31.0](https://github.com/team-telnyx/telnyx-go/compare/v4.30.1...v4.31.0)
-
-### Features
-
-* Add missing TTS voice settings schemas and update voice descriptions ([5764583](https://github.com/team-telnyx/telnyx-go/commit/576458359f9b3c27c18df38fcb9ed4f0c282ec01))
-* **api:** manual updates ([caa6b17](https://github.com/team-telnyx/telnyx-go/commit/caa6b173688e5e87466eb9f0125cb87fd7e5b832))
-* TELAPPS Add prevent_double_bridge to bridge command ([41f35ab](https://github.com/team-telnyx/telnyx-go/commit/41f35abf9e7794c8355f45fef386a926cc9e48b1))
-
-## 4.30.1 (2026-02-24)
-
-Full Changelog: [v4.30.0...v4.30.1](https://github.com/team-telnyx/telnyx-go/compare/v4.30.0...v4.30.1)
-
-### Chores
-
-* **internal:** move custom custom `json` tags to `api` ([26fdddf](https://github.com/team-telnyx/telnyx-go/commit/26fdddf04417aa259dfd56758bc429692e5818e2))
-
-## 4.30.0 (2026-02-24)
-
-Full Changelog: [v4.29.0...v4.30.0](https://github.com/team-telnyx/telnyx-go/compare/v4.29.0...v4.30.0)
-
-### Features
-
-* AI-2093: Add language_boost to MiniMax voice settings ([fcfef69](https://github.com/team-telnyx/telnyx-go/commit/fcfef6932be3d64e98e925d524709a035bdefaec))
-* **api:** manual updates ([d58966b](https://github.com/team-telnyx/telnyx-go/commit/d58966b0d04598527d91f9058beea61cf8985bb0))
-* **api:** manual updates ([fb6e833](https://github.com/team-telnyx/telnyx-go/commit/fb6e833f89d05086625deafff87a8f1b9a2b2458))
-* **api:** manual updates ([bba09e9](https://github.com/team-telnyx/telnyx-go/commit/bba09e9b73ab11a3a6d8df095d8502a85c23f806))
-* **api:** manual updates ([61d85b1](https://github.com/team-telnyx/telnyx-go/commit/61d85b11fee99df526fc8c734ad782d88690ab16))
-* **api:** manual updates ([4240e9e](https://github.com/team-telnyx/telnyx-go/commit/4240e9e081050f68b30af2bbeb48be285fa31f82))
-* **api:** manual updates ([afc7ce6](https://github.com/team-telnyx/telnyx-go/commit/afc7ce6631df7d7d43a7e8dd4685141b2f0ef507))
-* **api:** manual updates ([b9d5ab6](https://github.com/team-telnyx/telnyx-go/commit/b9d5ab611f171528ba5b8609aea45e37fbcc5932))
-* **api:** manual updates ([8b25a82](https://github.com/team-telnyx/telnyx-go/commit/8b25a82353a61633ebe84d5ee27334feb74a7961))
-* **api:** manual updates ([fefd67b](https://github.com/team-telnyx/telnyx-go/commit/fefd67b109d2c5c012d8a47216b36759460bfdc6))
-* **api:** manual updates ([1f95500](https://github.com/team-telnyx/telnyx-go/commit/1f9550001206d12ca2c9c5b4ca58bb0e3b6e5753))
-* **api:** manual updates ([e625099](https://github.com/team-telnyx/telnyx-go/commit/e625099f707f14967c2bea84ed6d282c26e0fea4))
-* **api:** manual updates ([e0b0f1b](https://github.com/team-telnyx/telnyx-go/commit/e0b0f1b8e4ec762ae1bcb350979af96b5568650a))
-* **api:** manual updates ([cd3b9e3](https://github.com/team-telnyx/telnyx-go/commit/cd3b9e39868c81a76e902f1364b9823f9e9e4c34))
-* **api:** manual updates ([c79e174](https://github.com/team-telnyx/telnyx-go/commit/c79e1748f6ae09c7bc187221b32b320ff2357aaa))
-* fix-stainless-sdk-timeout ([0539121](https://github.com/team-telnyx/telnyx-go/commit/0539121c5bd1607d05452571688d31b20fe01c0a))
-* TELAPPS Add ApplicationSid param ([102472f](https://github.com/team-telnyx/telnyx-go/commit/102472f5311ae02006965c37019b54fb25928908))
-* TELAPPS Add interim_results to deepgram config ([56a7d7d](https://github.com/team-telnyx/telnyx-go/commit/56a7d7dda5b1e1e8eafabd57f1ed9032f9757e6d))
-
-
-### Bug Fixes
-
-* allow canceling a request while it is waiting to retry ([09da6eb](https://github.com/team-telnyx/telnyx-go/commit/09da6eb09775e6ae1ddf9f581a2ee808b673cda1))
-* **client:** use correct format specifier for header serialization ([49fed3a](https://github.com/team-telnyx/telnyx-go/commit/49fed3abfb9918d7bf3dd3ec7e23d6690cd57196))
-* **internal:** skip tests that depend on mock server ([23c9bec](https://github.com/team-telnyx/telnyx-go/commit/23c9bec1d47e3950698904c6abd53d5010a57c46))
-* move unsupported string formats to x-format ([e013fcc](https://github.com/team-telnyx/telnyx-go/commit/e013fccb33d3a96e6e489aa700d5228df172ced3))
-* OAS drift — 10dlc.json (messaging-campaign-registry) ([fc6998b](https://github.com/team-telnyx/telnyx-go/commit/fc6998b7869607d134cf91903d60018528b2c3a1))
-* OAS drift — messaging.json (messaging-settings + messaging-outbound) ([1fc474c](https://github.com/team-telnyx/telnyx-go/commit/1fc474cae78973892d96ec6e81b832b712391e0f))
-* OAS drift — toll-free-verification.json (messaging-tf-verify) ([7b9e913](https://github.com/team-telnyx/telnyx-go/commit/7b9e91365cd6210db6c39f9ecedb56b3613cc67b))
-* OAS drift — verify.json (messaging-2fa) ([bcbc092](https://github.com/team-telnyx/telnyx-go/commit/bcbc09281e2d908ce311b8ff200a46c1d9d216f2))
-* StringFormatNotSupported ([35ad893](https://github.com/team-telnyx/telnyx-go/commit/35ad893f7e8865c595a3bde6f402894dde410fc9))
+## [4.92.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.91.0...v4.92.0) (2026-06-21)
 
 
 ### Chores
 
-* **internal:** codegen related update ([01b9ca6](https://github.com/team-telnyx/telnyx-go/commit/01b9ca615baa27063a1c245c087a5fe4c8615228))
-* **internal:** codegen related update ([3c657ff](https://github.com/team-telnyx/telnyx-go/commit/3c657ff23a59786d0ee198da41726bf2ac48334d))
-* **internal:** remove mock server code ([a087122](https://github.com/team-telnyx/telnyx-go/commit/a087122515a694d6480bcac23842ba6d67629f70))
-* update mock server docs ([d036d12](https://github.com/team-telnyx/telnyx-go/commit/d036d1256c436129c404cf9b260a603daafb84b5))
+* preserve repo-owned files not part of SDK generation ([ddd5efe](https://github.com/team-telnyx/telnyx-go-staging/commit/ddd5efee7de78bae5e0ffe27f82c30d443c4a87d))
+* release go 4.92.0 ([3518968](https://github.com/team-telnyx/telnyx-go-staging/commit/3518968f7e8601d7c25896881d8935c5c61a279f))
 
-
-### Documentation
-
-* add service_provider_login_url to authentication provider settings ([3886cab](https://github.com/team-telnyx/telnyx-go/commit/3886cabb888880a690f4d43be249b3637d231787))
-* **call-control:** Add missing conference endpoints ([d3f4cbb](https://github.com/team-telnyx/telnyx-go/commit/d3f4cbb0d5ae20b79d7f724fd0e257eb2ee339e4))
-* **call-control:** Add missing parameters to call control endpoints ([622b420](https://github.com/team-telnyx/telnyx-go/commit/622b4209934b5903e5964f3353dd0189c4bb65d5))
-* **call-scripting:** add Timeout and TimeLimit to InitiateTexmlCall ([293b294](https://github.com/team-telnyx/telnyx-go/commit/293b29447e7b9d9384132777ab9938f56b9428c3))
-
-## 4.29.0 (2026-02-18)
-
-Full Changelog: [v4.28.0...v4.29.0](https://github.com/team-telnyx/telnyx-go/compare/v4.28.0...v4.29.0)
-
-### Features
-
-* Add smart encoding fields to messaging API spec ([109b506](https://github.com/team-telnyx/telnyx-go/commit/109b5064f3d793b13daa1a0c321c44078f5342d9))
-* **api:** manual updates ([3a79955](https://github.com/team-telnyx/telnyx-go/commit/3a799553c1d33bb3f7e426d29ffc8b81b13735b7))
-* **api:** manual updates ([a5a42ff](https://github.com/team-telnyx/telnyx-go/commit/a5a42ffc85a8e41462ff83f005ae22c890310aa1))
-* **api:** manual updates ([2893c31](https://github.com/team-telnyx/telnyx-go/commit/2893c3117ead11141e37121ff7eea8425718a6b9))
-* **api:** manual updates ([99ede75](https://github.com/team-telnyx/telnyx-go/commit/99ede75268ac63f6a956fff647823b402ee23299))
-
-
-### Bug Fixes
-
-* add discriminator to TranscriptionEngineDeepgramConfig for Stainless SDK ([ec0f1c5](https://github.com/team-telnyx/telnyx-go/commit/ec0f1c5e632fe44478f75f795025980c10fd40d7))
-
-## 4.28.0 (2026-02-18)
-
-Full Changelog: [v4.27.0...v4.28.0](https://github.com/team-telnyx/telnyx-go/compare/v4.27.0...v4.28.0)
-
-### Features
-
-* Align transfer tool AMD spec with portal: premium mode, drop continue actions ([a5ed96c](https://github.com/team-telnyx/telnyx-go/commit/a5ed96c6e91a004b31ef5774a3d6b795bebc5c23))
-* **api:** manual updates ([a1daef1](https://github.com/team-telnyx/telnyx-go/commit/a1daef1cb2675105a83e102963caa4fe71de993e))
-* **api:** manual updates ([6f07e90](https://github.com/team-telnyx/telnyx-go/commit/6f07e907c4f6320f00a5077a1b1128518fd721cc))
-* **api:** manual updates ([474b100](https://github.com/team-telnyx/telnyx-go/commit/474b10095b0e1dd9d7f0e56b31dbd728d4cb4945))
-
-## 4.27.0 (2026-02-17)
-
-Full Changelog: [v4.26.0...v4.27.0](https://github.com/team-telnyx/telnyx-go/compare/v4.26.0...v4.27.0)
-
-### Features
-
-* Add Minimax and Resemble voice providers for speak commands ([0a2e598](https://github.com/team-telnyx/telnyx-go/commit/0a2e59879fe735297a882308a9d4bc1a0aac02c5))
-
-## 4.26.0 (2026-02-13)
-
-Full Changelog: [v4.25.0...v4.26.0](https://github.com/team-telnyx/telnyx-go/compare/v4.25.0...v4.26.0)
-
-### Features
-
-* Add Label parameter to Dial Conference Participant endpoint ([dbb5e1a](https://github.com/team-telnyx/telnyx-go/commit/dbb5e1ad4955b4fe9b9843eb5806fa4330da166e))
-* AI-2090: Add skip_turn tool type to assistant config schema ([466e3d6](https://github.com/team-telnyx/telnyx-go/commit/466e3d68b14f56d4370d6dbe8c1f00907ff752f1))
-
-## 4.25.0 (2026-02-13)
-
-Full Changelog: [v4.24.0...v4.25.0](https://github.com/team-telnyx/telnyx-go/compare/v4.24.0...v4.25.0)
-
-### Features
-
-* Add dynamic_variables field to scheduled event schemas ([d79464a](https://github.com/team-telnyx/telnyx-go/commit/d79464ae36cdcca5eaf0686b7d36d81f91b06db9))
-* Add OpenAI-compatible embeddings API spec ([77b88e4](https://github.com/team-telnyx/telnyx-go/commit/77b88e4b8e1550086aafd8c66e2ce6933f57f49a))
-* AI-2086: Add AI Missions endpoints to inference spec ([103af31](https://github.com/team-telnyx/telnyx-go/commit/103af3120228b9e43d04be8c82e3f33b4f92fa03))
-* **api:** manual updates ([2f8fb9c](https://github.com/team-telnyx/telnyx-go/commit/2f8fb9c8a445c6f45d7a8bb22c15b7621008ce3e))
-* **api:** manual updates ([fdb4a04](https://github.com/team-telnyx/telnyx-go/commit/fdb4a047e638f8bd45a9aee7769b64230a2ec4e3))
-* **api:** manual updates to include models ([64e8daa](https://github.com/team-telnyx/telnyx-go/commit/64e8daa4702121946129b908fceb0b04bb3180e8))
-* ENGDESK-49554: Add quail_voice_focus to noise suppression engine enums ([fb1136a](https://github.com/team-telnyx/telnyx-go/commit/fb1136a6691b498129c57dae06d7c27a9cdd735d))
-
-
-### Bug Fixes
-
-* **client:** revert change to certain pagination metadata types ([2512453](https://github.com/team-telnyx/telnyx-go/commit/25124530e6c4e05e01c9e77e4d2483e4d67cf6d6))
-
-## 4.24.0 (2026-02-11)
-
-Full Changelog: [v4.23.0...v4.24.0](https://github.com/team-telnyx/telnyx-go/compare/v4.23.0...v4.24.0)
-
-### Features
-
-* fix schema in emergency address schema ([ef38477](https://github.com/team-telnyx/telnyx-go/commit/ef384775f54c1fc95189928cc1da3406aecd9d26))
-
-
-### Bug Fixes
-
-* remove invalid discriminators from string enum schemas ([6810353](https://github.com/team-telnyx/telnyx-go/commit/6810353e6ca06386d7424531bf81c42e58755088))
-
-## 4.23.0 (2026-02-11)
-
-Full Changelog: [v4.22.0...v4.23.0](https://github.com/team-telnyx/telnyx-go/compare/v4.22.0...v4.23.0)
-
-### Features
-
-* Limit detection_mode enum to disabled and detect only ([0909bc5](https://github.com/team-telnyx/telnyx-go/commit/0909bc56e56aa2b71201c987db4cf31da15aee47))
-
-
-### Bug Fixes
-
-* **encoder:** correctly serialize NullStruct ([d4748ab](https://github.com/team-telnyx/telnyx-go/commit/d4748ab07f4d7fca78d3ab75319e774cc108b8dd))
-
-## 4.22.0 (2026-02-09)
-
-Full Changelog: [v4.21.0...v4.22.0](https://github.com/team-telnyx/telnyx-go/compare/v4.21.0...v4.22.0)
-
-### Features
-
-* AI-2078 Feature: API endpoint to disable AI assistant mid-conversation ([472ce6b](https://github.com/team-telnyx/telnyx-go/commit/472ce6b0d45a47dcc39398ef7337d5bda65151d5))
-
-## 4.21.0 (2026-02-09)
-
-Full Changelog: [v4.20.0...v4.21.0](https://github.com/team-telnyx/telnyx-go/compare/v4.20.0...v4.21.0)
-
-### Features
-
-* add Telnyx webhook verification with ED25519 signatures ([f634059](https://github.com/team-telnyx/telnyx-go/commit/f6340596c3a0867f4537fa3737671fa48cdce281))
-
-## 4.20.0 (2026-02-06)
-
-Full Changelog: [v4.19.0...v4.20.0](https://github.com/team-telnyx/telnyx-go/compare/v4.19.0...v4.20.0)
-
-### Features
-
-* Revert "fix emergency settings -schema" ([d9e25f2](https://github.com/team-telnyx/telnyx-go/commit/d9e25f298581f5462b1a2b2979eba98c1c5b2ca2))
-
-## 4.19.0 (2026-02-05)
-
-Full Changelog: [v4.18.0...v4.19.0](https://github.com/team-telnyx/telnyx-go/compare/v4.18.0...v4.19.0)
-
-### Features
-
-* **api:** manual updates ([f1dd32d](https://github.com/team-telnyx/telnyx-go/commit/f1dd32dd6f7048ceeaca99f3682a4b12416f0be2))
-* **api:** Merge pull request [#23](https://github.com/team-telnyx/telnyx-go/issues/23) from stainless-sdks/fix/deepgram-nova3-enum-duplicates ([57c96d0](https://github.com/team-telnyx/telnyx-go/commit/57c96d0f6177157f78d51d987b456742721b7ffe))
-
-## 4.18.0 (2026-02-05)
-
-Full Changelog: [v4.17.0...v4.18.0](https://github.com/team-telnyx/telnyx-go/compare/v4.17.0...v4.18.0)
-
-### Features
-
-* **api:** Merge pull request [#22](https://github.com/team-telnyx/telnyx-go/issues/22) from stainless-sdks/add-all-webhook-models ([1bf76af](https://github.com/team-telnyx/telnyx-go/commit/1bf76af3b74184ac3f074272f790aecaa1f9cf93))
-
-## 4.17.0 (2026-02-04)
-
-Full Changelog: [v4.16.1...v4.17.0](https://github.com/team-telnyx/telnyx-go/compare/v4.16.1...v4.17.0)
-
-### Features
-
-* Add Texml parameter to create call endpoint [ENGDESK-49187] ([f987ad8](https://github.com/team-telnyx/telnyx-go/commit/f987ad87fe9b6dde8dbdf3d39d8022d7ce733fcf))
-
-## 4.16.1 (2026-02-02)
-
-Full Changelog: [v4.16.0...v4.16.1](https://github.com/team-telnyx/telnyx-go/compare/v4.16.0...v4.16.1)
-
-### Bug Fixes
-
-* **client/oauth:** send grant_type in the right location ([59c366b](https://github.com/team-telnyx/telnyx-go/commit/59c366b03572001cece12ea751af3a90bc72fede))
-
-## 4.16.0 (2026-01-30)
-
-Full Changelog: [v4.15.1...v4.16.0](https://github.com/team-telnyx/telnyx-go/compare/v4.15.1...v4.16.0)
-
-### Features
-
-* **api:** manual updates ([5479ea0](https://github.com/team-telnyx/telnyx-go/commit/5479ea06526da84eaef99f9e6944664963894409))
-
-## 4.15.1 (2026-01-30)
-
-Full Changelog: [v4.15.0...v4.15.1](https://github.com/team-telnyx/telnyx-go/compare/v4.15.0...v4.15.1)
-
-### Bug Fixes
-
-* remove deprecated TeXML API endpoints from OpenAPI spec ([91ddee4](https://github.com/team-telnyx/telnyx-go/commit/91ddee4fbccdd9fefa6eba550ac6d306e91ac416))
-* use PaginationMeta schema for ListFaxesResponse.meta ([3651a7e](https://github.com/team-telnyx/telnyx-go/commit/3651a7e578ef69d772c1d5952528df33e275dcb8))
-
-## 4.15.0 (2026-01-29)
-
-Full Changelog: [v4.14.0...v4.15.0](https://github.com/team-telnyx/telnyx-go/compare/v4.14.0...v4.15.0)
-
-### Features
-
-* **api:** revert bad update to spec ([5155d01](https://github.com/team-telnyx/telnyx-go/commit/5155d01033d71ff661aa25dadc3a66fc79d40780))
-
-## 4.14.0 (2026-01-29)
-
-Full Changelog: [v4.13.0...v4.14.0](https://github.com/team-telnyx/telnyx-go/compare/v4.13.0...v4.14.0)
-
-### Features
-
-* Add deepgram/nova-3 transcription engine option to record_start ([51916b7](https://github.com/team-telnyx/telnyx-go/commit/51916b7248951efa08b945ff171c3558b2434467))
-
-## 4.13.0 (2026-01-28)
-
-Full Changelog: [v4.12.1...v4.13.0](https://github.com/team-telnyx/telnyx-go/compare/v4.12.1...v4.13.0)
-
-### Features
-
-* Fix broken documentation links ([d16d7ec](https://github.com/team-telnyx/telnyx-go/commit/d16d7ec304175ae29dc7c78b4ad40ad941612c38))
-
-## 4.12.1 (2026-01-28)
-
-Full Changelog: [v4.12.0...v4.12.1](https://github.com/team-telnyx/telnyx-go/compare/v4.12.0...v4.12.1)
-
-### Bug Fixes
-
-* **docs:** fix mcp installation instructions for remote servers ([38cf582](https://github.com/team-telnyx/telnyx-go/commit/38cf5826fdc9360343f8d85c7c8b2f7d6ec2224d))
-
-## 4.12.0 (2026-01-27)
-
-Full Changelog: [v4.11.0...v4.12.0](https://github.com/team-telnyx/telnyx-go/compare/v4.11.0...v4.12.0)
-
-### Features
-
-* Deploy dev/mc vady wip ([a10129d](https://github.com/team-telnyx/telnyx-go/commit/a10129db5b9e7f7a67d4399fa57e59fdef49d2c2))
-* jira-engdesk-49089 add new connection jitter buffer related fields ([8601fcf](https://github.com/team-telnyx/telnyx-go/commit/8601fcf8da3f19a99061f9ba791a1917a62ba6c3))
-
-## 4.11.0 (2026-01-23)
-
-Full Changelog: [v4.10.0...v4.11.0](https://github.com/team-telnyx/telnyx-go/compare/v4.10.0...v4.11.0)
-
-### Features
-
-* **api:** manual updates ([18d292c](https://github.com/team-telnyx/telnyx-go/commit/18d292c4e30d72a7f1e15ee048821cef135f8b46))
-* **client:** add a convenient param.SetJSON helper ([72ee0e5](https://github.com/team-telnyx/telnyx-go/commit/72ee0e5698455866f70ef66fa84fccd99f70d990))
-
-## 4.10.0 (2026-01-22)
-
-Full Changelog: [v4.9.0...v4.10.0](https://github.com/team-telnyx/telnyx-go/compare/v4.9.0...v4.10.0)
-
-### Features
-
-* Deploy dev/mc vady wip ([3f2d6a3](https://github.com/team-telnyx/telnyx-go/commit/3f2d6a3df9a4d09693b47eff0ec5da0e6ee1bcee))
-
-## 4.9.0 (2026-01-21)
-
-Full Changelog: [v4.8.0...v4.9.0](https://github.com/team-telnyx/telnyx-go/compare/v4.8.0...v4.9.0)
-
-### Features
-
-* fix-redocly-lint-issues ([45d63d8](https://github.com/team-telnyx/telnyx-go/commit/45d63d8ac47fd3830ae09e2e7f32747d1e38e0a1))
-
-## 4.8.0 (2026-01-20)
-
-Full Changelog: [v4.7.0...v4.8.0](https://github.com/team-telnyx/telnyx-go/compare/v4.7.0...v4.8.0)
-
-### Features
-
-* Add Post /v2/calls/:call_control_id/actions/ai_assistant_add_messages ([2f0be16](https://github.com/team-telnyx/telnyx-go/commit/2f0be16ab18549b188b2a4698dc2aad0ccefd7fc))
-
-## 4.7.0 (2026-01-20)
-
-Full Changelog: [v4.6.0...v4.7.0](https://github.com/team-telnyx/telnyx-go/compare/v4.6.0...v4.7.0)
-
-### Features
-
-* Update voicemail_detection description with AMD enablement info ([b68557b](https://github.com/team-telnyx/telnyx-go/commit/b68557bc78d56a7fb6b4057c74eac4bf62d374f6))
-
-
-### Bug Fixes
-
-* correct broken link to List SIM Card Actions endpoint in SIM car… ([6927bbd](https://github.com/team-telnyx/telnyx-go/commit/6927bbd57669a6e1d13a987baa3acbf39fd77a5f))
-
-## 4.6.0 (2026-01-19)
-
-Full Changelog: [v4.5.1...v4.6.0](https://github.com/team-telnyx/telnyx-go/compare/v4.5.1...v4.6.0)
-
-### Features
-
-* Add AI Assistant spec updates for FE tickets ([956d588](https://github.com/team-telnyx/telnyx-go/commit/956d588e576efdf85e5769f45c18d7c88ae16f1c))
-* fix-external-connection-link ([7d5af93](https://github.com/team-telnyx/telnyx-go/commit/7d5af9395216e821bdcc325218c2f61d7ac6f5fc))
-
-## 4.5.1 (2026-01-16)
-
-Full Changelog: [v4.5.0...v4.5.1](https://github.com/team-telnyx/telnyx-go/compare/v4.5.0...v4.5.1)
-
-### Bug Fixes
-
-* **docs:** add missing pointer prefix to api.md return types ([13fd1fc](https://github.com/team-telnyx/telnyx-go/commit/13fd1fc13f04b602c427a2415753d21a3b2d9cb5))
-
-## 4.5.0 (2026-01-16)
-
-Full Changelog: [v4.4.0...v4.5.0](https://github.com/team-telnyx/telnyx-go/compare/v4.4.0...v4.5.0)
-
-### Features
-
-* TELAPPS-5507: Add Krisp engine description for noise suppression ([bfe119a](https://github.com/team-telnyx/telnyx-go/commit/bfe119abb2ee2d660666ddd5659cd6122161f247))
-
-
-### Bug Fixes
-
-* update broken MDR report link in GetMessage endpoint ([94302bd](https://github.com/team-telnyx/telnyx-go/commit/94302bd7a7bb1e1a2a694e01b19e693aa4f68422))
-
-## 4.4.0 (2026-01-16)
-
-Full Changelog: [v4.3.0...v4.4.0](https://github.com/team-telnyx/telnyx-go/compare/v4.3.0...v4.4.0)
-
-### Features
-
-* fix links ([1895c7d](https://github.com/team-telnyx/telnyx-go/commit/1895c7dd27347dea734cc9e310698a99f4afdd72))
+## [4.91.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.90.0...v4.91.0) (2026-06-21)
 
 
 ### Chores
 
-* **internal:** update `actions/checkout` version ([45e94d7](https://github.com/team-telnyx/telnyx-go/commit/45e94d7f80a619535edd62d379281fc46dfa5689))
+* preserve repo-owned files not part of SDK generation ([1882842](https://github.com/team-telnyx/telnyx-go-staging/commit/18828428509305c27cfe8569e36b2fe1e1e5faaa))
+* release go 4.91.0 ([d4e6b81](https://github.com/team-telnyx/telnyx-go-staging/commit/d4e6b8120cadaee291349103f88e62fcc3e763b2))
 
-## 4.3.0 (2026-01-15)
-
-Full Changelog: [v4.2.1...v4.3.0](https://github.com/team-telnyx/telnyx-go/compare/v4.2.1...v4.3.0)
-
-### Features
-
-* jira-engdesk-48800 add organizations-related docs to the external api… ([87dd437](https://github.com/team-telnyx/telnyx-go/commit/87dd437c7df7d63e6a13028793edf3069da2e576))
-* MSG-6148: adding the new campaignVerifyAuthorizationToken field and missing GET OTP endpoint ([ff821b7](https://github.com/team-telnyx/telnyx-go/commit/ff821b75c902a9cfab7a80d9e4a6165cb70a3730))
-* MSG-6228: MSG-6228: Add smart_encoding option for SMS character encoding optimization ([796ab2b](https://github.com/team-telnyx/telnyx-go/commit/796ab2b4d643f934336ebb9489b798659ae52e57))
-* TELAPPS-ENGDESK-48790 Remove duplicated webhooks ([d3615f5](https://github.com/team-telnyx/telnyx-go/commit/d3615f5e2dcecbf959ccaa428968e0fa595c05ca))
-
-## 4.2.1 (2026-01-14)
-
-Full Changelog: [v4.2.0...v4.2.1](https://github.com/team-telnyx/telnyx-go/compare/v4.2.0...v4.2.1)
-
-### Bug Fixes
-
-* **client:** invalid URL ([4895700](https://github.com/team-telnyx/telnyx-go/commit/48957003021a0cb61f582c90630d7c16c46fd1ef))
-
-## 4.2.0 (2026-01-14)
-
-Full Changelog: [v4.1.0...v4.2.0](https://github.com/team-telnyx/telnyx-go/compare/v4.1.0...v4.2.0)
-
-### Features
-
-* Add widget_settings to AI Assistant and import_ids to ImportAssistant… ([1540c3b](https://github.com/team-telnyx/telnyx-go/commit/1540c3b35a65ac050a6c8b6c1c2e10a4b02344df))
-* **api:** fix default pagination by correctly using nested params ([bf475c0](https://github.com/team-telnyx/telnyx-go/commit/bf475c02def137869f3226f845fa2c03b1fff9b2))
-
-## 4.1.0 (2026-01-13)
-
-Full Changelog: [v4.0.0...v4.1.0](https://github.com/team-telnyx/telnyx-go/compare/v4.0.0...v4.1.0)
-
-### Features
-
-* **api:** manual updates ([04a604f](https://github.com/team-telnyx/telnyx-go/commit/04a604f6eb9db097d3e7c19621817e81aa278f69))
-* TELAPPS Add GET /texml/Accounts/{account_sid}/Queues endpoint ([30157cd](https://github.com/team-telnyx/telnyx-go/commit/30157cdc59e45769a71fb672a88bfdf1211b6def))
-* TELAPPS-ENGDESK-47967 Add black_threshold parameter to send_fax request ([e975cbb](https://github.com/team-telnyx/telnyx-go/commit/e975cbb078ebde59775c24319f2751da16fdadd4))
-
-## 4.0.0 (2026-01-09)
-
-Full Changelog: [v3.7.0...v4.0.0](https://github.com/team-telnyx/telnyx-go/compare/v3.7.0...v4.0.0)
-
-### ⚠ BREAKING CHANGES
-
-* Resolved all codegen errors
-
-### Features
-
-* (draft/don't review) ENGDESK-38070-c: add deepgram keyword documentation ([8811cea](https://github.com/team-telnyx/telnyx-go/commit/8811cead0b05702304355e21cd68f72d5a12ed2d))
-* [PORT-4538] Fix ambiguous oneOf instances on porting service and documents ([087050e](https://github.com/team-telnyx/telnyx-go/commit/087050ee14af17a68273c4de587fb8b80405ba0f))
-* Add AI assistant voice settings, telephony config, and tools updates ([a8a10ac](https://github.com/team-telnyx/telnyx-go/commit/a8a10acbff7d54788d21bdd5f103e2157cbaca75))
-* Add response schemas for telco data usage report endpoints ([7892672](https://github.com/team-telnyx/telnyx-go/commit/78926727f02fa66f2eb6c829e59898a52627c522))
-* alright, shut up redocly ([5bbf314](https://github.com/team-telnyx/telnyx-go/commit/5bbf3144a502222199a8d94c8f4247c05a84dbf6))
-* **api:** join all 10dlc operations into messaging_10dlc group ([91deaaf](https://github.com/team-telnyx/telnyx-go/commit/91deaaf0f9889b4d0a1abe1a5c4c1d128f0d1cc3))
-* **api:** manual updates ([f9162bc](https://github.com/team-telnyx/telnyx-go/commit/f9162bc4f08c7277e9726da32032ecf6a1d2c274))
-* **api:** manual updates ([3d42616](https://github.com/team-telnyx/telnyx-go/commit/3d426165e11afe5f2f1a8a9279f4c8143738b187))
-* **api:** manual updates ([62492df](https://github.com/team-telnyx/telnyx-go/commit/62492df56c80ead1b6ebbcc512ad37b4cf4419fb))
-* **api:** manual updates ([88e5593](https://github.com/team-telnyx/telnyx-go/commit/88e559375c32de01ddf57e7cc0a3ab014acfd2c8))
-* **api:** manual updates ([38fcd33](https://github.com/team-telnyx/telnyx-go/commit/38fcd33cfea8f999ccbadcbfc32331b22cc07cfd))
-* **api:** manual updates ([abcf0cb](https://github.com/team-telnyx/telnyx-go/commit/abcf0cbbdf4c205b998c1bc1dd4d0bf2e36ef512))
-* **api:** manual updates ([8f2014a](https://github.com/team-telnyx/telnyx-go/commit/8f2014a8606f6f3b3c12aa75ad2991c9af1a7ea2))
-* **api:** messaging_10dlc group with all their endpoints ([c6ab42a](https://github.com/team-telnyx/telnyx-go/commit/c6ab42a9392f41fe385a897fd02fc66aed461098))
-* **api:** PHP codegen error fixes ([3926262](https://github.com/team-telnyx/telnyx-go/commit/392626257db3a853bf4b3feacef9e1361f10010b))
-* **api:** reverted previous commit ([538f71b](https://github.com/team-telnyx/telnyx-go/commit/538f71b270f7d6b3df41963272fc5c057652a8d4))
-* Chat completions response schema update ([6a3357a](https://github.com/team-telnyx/telnyx-go/commit/6a3357a9e1b6d8505fb1a0966bf70aac7d5cac0d))
-* **client:** add separate models for 2 events ([5138e49](https://github.com/team-telnyx/telnyx-go/commit/5138e49cd0ce938ab3b16c9c93aca6a636ff98ed))
-* Document supervising leg of call ([2b82677](https://github.com/team-telnyx/telnyx-go/commit/2b82677e5b583130102c9026765b6790cb49ac7a))
-* DOTCOM-5145. Update redocly lint to block new lint errors or warning being introduced ([aee1f3d](https://github.com/team-telnyx/telnyx-go/commit/aee1f3d0c62426229b5a22f5d23cd34ec83ca14d))
-* DOTCOM-5179. Fix Redocly errors in outbound-voice-profiles.json ([0d30374](https://github.com/team-telnyx/telnyx-go/commit/0d303740a5f6abd4a007bdc56dbc8152e519ea80))
-* Draft. DOTCOM-5184. Fix 44 errors in the spec as reported by Redocly on video ([50d0826](https://github.com/team-telnyx/telnyx-go/commit/50d082614d78c58a1dd1f40b75d98e29ee7cb1a0))
-* **encoder:** support bracket encoding form-data object members ([1162825](https://github.com/team-telnyx/telnyx-go/commit/1162825e37115d6db6a229df55909495f810a558))
-* Engdesk 47920/wireless cleanup ([b4fc4eb](https://github.com/team-telnyx/telnyx-go/commit/b4fc4eb90976339daa46bc5702cb90fdab6131d7))
-* ENGDESK-47580: Add quickship and exclude_held_numbers filters to inexplicit number order API ([21059b3](https://github.com/team-telnyx/telnyx-go/commit/21059b3fa97055d4e091ef6246faa5e0d9a40ac8))
-* ENGDESK-47580: Add quickship and exclude_held_numbers to InexplicitNumberOrderResponse ([296dba9](https://github.com/team-telnyx/telnyx-go/commit/296dba9550d001d9bcc2a89e28991d5ae2e3100d))
-* ENGDESK-47706: Update TranscriptionEngineDeepgramConfig Schema ([197e351](https://github.com/team-telnyx/telnyx-go/commit/197e351e687400a06c1dd96553631c1e9704bcd5))
-* ENGDESK-47736: added discriminator fields to oneOffs that were missing them ([04d2142](https://github.com/team-telnyx/telnyx-go/commit/04d21427ce30eaaf62145d8921e7f478575875e8))
-* ENGDESK-47759 - fix missing meta definition in authorized ips spec ([dab1e10](https://github.com/team-telnyx/telnyx-go/commit/dab1e10405fa3540f4209760191591ff13954c01))
-* ENGDESK-47883: Fix all lint errors in telapps owned APIs ([e6947ed](https://github.com/team-telnyx/telnyx-go/commit/e6947ed75631aa8f0dfa8e2b356537ca99930a9e))
-* ENGDESK-47886: Fix API spec for emergency.json ([97ab941](https://github.com/team-telnyx/telnyx-go/commit/97ab941d3b98516bb7554737e95e8817f7466bb8))
-* ENGDESK-47914 - fix warnings in numbers.json file ([2b6c3ae](https://github.com/team-telnyx/telnyx-go/commit/2b6c3aeb9f47f2ee1b4b3cf673d4e3cae68f12b6))
-* ENGDESK-47947 - fix wrong type on user-addresses request object ([0ea9e53](https://github.com/team-telnyx/telnyx-go/commit/0ea9e53e7d8b9797087405d93b5d8ca950aa28d4))
-* ENGDESK-48016 - document simultaneous ringing for CredentialConnections ([565870e](https://github.com/team-telnyx/telnyx-go/commit/565870e939212e535c08317e1de38f4af66f034c))
-* ENGDESK-48254: Release noise suppression details docs to prod ([cd230f8](https://github.com/team-telnyx/telnyx-go/commit/cd230f8c70ebb2e2932aab2526fbb5bb79656309))
-* FILE-1066: presigned url doc strings ([b6ac211](https://github.com/team-telnyx/telnyx-go/commit/b6ac2118b5286e6a929618de2ad50012bf6ecabd))
-* Fix campaign usecase endpoint: /registry/enum/usecase → /10dlc/enum/usecase ([badbde6](https://github.com/team-telnyx/telnyx-go/commit/badbde6a27385994d22574f1934dc14b022af9f0))
-* hotfix: restore 10dlc prefixes ([f92c64e](https://github.com/team-telnyx/telnyx-go/commit/f92c64e73eec6f3c4d42a0a4636702a2e701c92d))
-* Improve messaging API naming and navigation ([715899f](https://github.com/team-telnyx/telnyx-go/commit/715899f33506bc25ee5e0b8980f3989086230fd4))
-* messaging meta object with required fields ([f774d2a](https://github.com/team-telnyx/telnyx-go/commit/f774d2a5397f995c7ee78f894c827429e65d4d3c))
-* Msg 6152 ([86fa49b](https://github.com/team-telnyx/telnyx-go/commit/86fa49bc3bb0188ecb8c7170eba3dce5b076674b))
-* MSG-6140: Add SMS OTP endpoints for Sole Prop brands ([3cb35a2](https://github.com/team-telnyx/telnyx-go/commit/3cb35a2a627ba73c41710cdd41e54394834b2b33))
-* MSG-6160 fix messaging lint issues ([28d72ee](https://github.com/team-telnyx/telnyx-go/commit/28d72ee5659feb1245b9188049f329ae478e0284))
-* MSG-6166 fix empty schema responses ([02b984d](https://github.com/team-telnyx/telnyx-go/commit/02b984da6a55e1b9f0d6d4d3e1663818a06ac0ac))
-* MSG-6179: Add discriminator fields to Messaging API schemas for improved SDK performance ([d86ef3e](https://github.com/team-telnyx/telnyx-go/commit/d86ef3eff863923af804013c028b8f7593c1a7b8))
-* MSG-6181: Reorganize mobile phone number messaging endpoints and fix … ([9d625d9](https://github.com/team-telnyx/telnyx-go/commit/9d625d9750dca87d871d6001c53bc947e8726000))
-* NETAPPS_687: Fixed IGW spec to match current API. ([2513c87](https://github.com/team-telnyx/telnyx-go/commit/2513c875c1151c0494c6dc191168358f1f2497b2))
-* NUM-6334/NUM-6335 - fix redocly lint errors ([48963c0](https://github.com/team-telnyx/telnyx-go/commit/48963c0008852ea0b23301adf192763c248602fb))
-* PORT-4528: Fix lint errors for porting ([f69db21](https://github.com/team-telnyx/telnyx-go/commit/f69db2187926939cb9a50150cba664aa8352cb29))
-* port-4551: remove CustomerServiceRecordStatusChanged webhook doc ([c8033c4](https://github.com/team-telnyx/telnyx-go/commit/c8033c44969f00dcc1722db506afee1d8a20f4d1))
-* PORT-4553: Add a discriminator to portout webhook ([96656a6](https://github.com/team-telnyx/telnyx-go/commit/96656a6bb9be80badcc51448d82e896be1131d3f))
-* PORTAL-5787 - document query parameter to handle messaging service error ([aed95f1](https://github.com/team-telnyx/telnyx-go/commit/aed95f1ac03fea86e0b11566af148ac3478f6916))
-* TBS-3422: Fix redocly errors ([b97a5f5](https://github.com/team-telnyx/telnyx-go/commit/b97a5f562ebec99566e436c0823df1b17c893f95))
-* TBS-3422: Fix TBS redocly errors ([8192708](https://github.com/team-telnyx/telnyx-go/commit/8192708076140bdcdd2aed7032c7bf78be2fd61c))
-* TELAPPS-47889 Add texml queue endpoint ([70c4c05](https://github.com/team-telnyx/telnyx-go/commit/70c4c05292f293aa7ba0bbcbe9513c6cd5133d69))
-* TELAPPS-5428 Add speech-to-text WS endpoint ([04d19c3](https://github.com/team-telnyx/telnyx-go/commit/04d19c37320be4ee0f174b8b68ef643baa852873))
-* Update default GATHER_USING_AI_MODEL ([6312938](https://github.com/team-telnyx/telnyx-go/commit/6312938cba6bdb19636cbe88150705dc3028b952))
-
-
-### Bug Fixes
-
-* **api:** 10dlc prefixes ([6a9ee58](https://github.com/team-telnyx/telnyx-go/commit/6a9ee584ac02c332fce6ed0059ce707198009bed))
-* **client:** move MessagingError to shared and fix time in tests ([4776336](https://github.com/team-telnyx/telnyx-go/commit/47763367212c1bf51d271cb2897cde15dbf1a418))
-* **client:** properly marshal embedded structs ([1dd2a57](https://github.com/team-telnyx/telnyx-go/commit/1dd2a57c40dc4cc209d56e4a9a19a72ea02e52b8))
-* correct broken hyperlinks in Submit Campaign endpoint description ([075df52](https://github.com/team-telnyx/telnyx-go/commit/075df526d83d524362d14e88ed8f4c9f2de5c70a))
-* make text field optional in AssistantSmsChatReq schema ([7bf540e](https://github.com/team-telnyx/telnyx-go/commit/7bf540eb8901f1eea2609640e641096d10298d64))
-* **mcp:** correct code tool API endpoint ([3b1e98a](https://github.com/team-telnyx/telnyx-go/commit/3b1e98a040eab4a2c0ef2149e43703d8be39334f))
-* rename param to avoid collision ([63d16d5](https://github.com/team-telnyx/telnyx-go/commit/63d16d5a5f678333a700071f24814088dfa4e51a))
-* skip usage tests that don't work with Prism ([d2804fa](https://github.com/team-telnyx/telnyx-go/commit/d2804fa27b7151b0df0bb6eb89fdf65b2a570a1b))
-* **stainless:** fixes the messsages typo ([a3d46f1](https://github.com/team-telnyx/telnyx-go/commit/a3d46f1b4ec076df7b515f3772abd4837ec49383))
+## [4.90.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.89.0...v4.90.0) (2026-06-20)
 
 
 ### Chores
 
-* add float64 to valid types for RegisterFieldValidator ([f3e3820](https://github.com/team-telnyx/telnyx-go/commit/f3e3820291f0d792fb7f1fad975e3fd1d3e10f3f))
-* elide duplicate aliases ([46adbee](https://github.com/team-telnyx/telnyx-go/commit/46adbeed464fd18d126ce490a5eabea5ef8fb5e7))
-* **internal:** codegen related update ([88cd4e6](https://github.com/team-telnyx/telnyx-go/commit/88cd4e6a0a0a78e85c8a4b5d83a3f995578a8459))
-* **internal:** codegen related update ([598345a](https://github.com/team-telnyx/telnyx-go/commit/598345a2e934d4fc4018b7ea3f0a25235cac7c39))
-* Resolved all codegen errors ([606037d](https://github.com/team-telnyx/telnyx-go/commit/606037dcfb8ec180eb02bccfc56caaf1e6d25498))
+* preserve repo-owned files not part of SDK generation ([14ba749](https://github.com/team-telnyx/telnyx-go-staging/commit/14ba7497dc52c448a049db530ddd88900e59f850))
+* release go 4.90.0 ([9f265b6](https://github.com/team-telnyx/telnyx-go-staging/commit/9f265b6736114348b7315786997d08beaa479762))
 
-
-### Documentation
-
-* prominently feature MCP server setup in root SDK readmes ([96db56a](https://github.com/team-telnyx/telnyx-go/commit/96db56a36dcb30b26722a9821854fe2c774f3eab))
-
-## 3.7.0 (2025-12-01)
-
-Full Changelog: [v3.6.0...v3.7.0](https://github.com/team-telnyx/telnyx-go/compare/v3.6.0...v3.7.0)
-
-### Features
-
-* Ai 1967 ([75b3cd8](https://github.com/team-telnyx/telnyx-go/commit/75b3cd8c3fb25120c46a13b94285ba71e5b32487))
-* Ai 1967 part 2 ([778ec4f](https://github.com/team-telnyx/telnyx-go/commit/778ec4f83f6ae0a3cb4216f446801af3efc5979b))
-* ENGDESK-47508 - part 2 shared schema fixes ([f93c6b9](https://github.com/team-telnyx/telnyx-go/commit/f93c6b95d4dfd1e500521e86a32dc25ae59bb538))
-* ENGDESK-47518 document mobile number and mobile voice connection endpoints ([638701b](https://github.com/team-telnyx/telnyx-go/commit/638701b1a11ba8d7f0664740f96d0c5b5b06b22f))
-* Fix invalid responses ([ca7c8c5](https://github.com/team-telnyx/telnyx-go/commit/ca7c8c55c0e1ce1e07785cd6a35785f100453da1))
-* Fix Redocly linting errors and warnings in TDA reporting specs ([97d2790](https://github.com/team-telnyx/telnyx-go/commit/97d2790b41bcd4e1ed1c8bc66ea1ba249871cd0a))
-* Fix Redocly linting warnings in Number Lookup spec ([14a0460](https://github.com/team-telnyx/telnyx-go/commit/14a0460b6d09328cab63167546d4d49f99b415f5))
-* Fix Redocly linting warnings in OAuth and Integration Secrets specs ([32bfec3](https://github.com/team-telnyx/telnyx-go/commit/32bfec30fe2554d884c9bbc8177202b5f7109bfa))
-* Fixing lint errors ([5ff41bb](https://github.com/team-telnyx/telnyx-go/commit/5ff41bbe5e9af1a1f9d9e133465b9d61596253e4))
-* MSG-6076: webhook event for 10DLC campaign suspended status ([eabeebe](https://github.com/team-telnyx/telnyx-go/commit/eabeebedf20be16941a3fe981927252e5550f680))
-* Refactored README to only contain useful information and reflect accu… ([ca69114](https://github.com/team-telnyx/telnyx-go/commit/ca6911479dfea4cf8e40ebd5dd31732c8cd44ede))
-* TELAPPS-5459: Add Azure to transcription start ([b12b8e4](https://github.com/team-telnyx/telnyx-go/commit/b12b8e43a45cf3490706bceb2eb8e6ceb40e837b))
-* Updated README to include the step for make buildcontainer bundle to … ([8c6c1df](https://github.com/team-telnyx/telnyx-go/commit/8c6c1df6ffef43ec19916139f5b0cee0f3bd624e))
-
-
-### Bug Fixes
-
-* **client:** correctly specify Accept header with */* instead of empty ([938766d](https://github.com/team-telnyx/telnyx-go/commit/938766d6634cb58bb4f8dd49b9e531195c0dd4d6))
-* remove readonly parameters from request params ([882538a](https://github.com/team-telnyx/telnyx-go/commit/882538a8830065cea3be9a19dfee2fef8fda2f5c))
+## [4.89.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.88.0...v4.89.0) (2026-06-20)
 
 
 ### Chores
 
-* bump gjson version ([b2d481b](https://github.com/team-telnyx/telnyx-go/commit/b2d481b629d03ea2b16952aa3f3f4748e8c4e6bf))
-* fix empty interfaces ([9bd32a7](https://github.com/team-telnyx/telnyx-go/commit/9bd32a73a620e729412095dbc96bb8e54356067d))
+* preserve repo-owned files not part of SDK generation ([00f7a66](https://github.com/team-telnyx/telnyx-go-staging/commit/00f7a66dcf3335236ad292daec0367d2ebfa9d4d))
+* release go 4.89.0 ([06b5e10](https://github.com/team-telnyx/telnyx-go-staging/commit/06b5e10f7ab8d90c787fc5cb77fe5ba6468893c6))
 
-## 3.6.0 (2025-11-03)
-
-Full Changelog: [v3.5.0...v3.6.0](https://github.com/team-telnyx/telnyx-go/compare/v3.5.0...v3.6.0)
-
-### Features
-
-* AI-1842: Add MCP Servers and Integrations sections ([9b90090](https://github.com/team-telnyx/telnyx-go/commit/9b90090aefad621c428224dab71bb84774ea57ae))
-* ENGDESK-44767 - Document force remove calls from queue ([7bafd94](https://github.com/team-telnyx/telnyx-go/commit/7bafd940693e16995a976696e548d9570dbe53c4))
-* ENGDESK-45429 - Add sip_region documentation for dial and transfer command ([676e3e6](https://github.com/team-telnyx/telnyx-go/commit/676e3e6a179adecd3b1112ea5777af5a49433578))
-* ENGDESK-46399 - Add sip_call_id filter for retreiving recordings ([b7fa58d](https://github.com/team-telnyx/telnyx-go/commit/b7fa58da7364610ae1dd79598c59431296c0e7a5))
-* TELAPPS-5399 Add region to conference commands ([f81c9c7](https://github.com/team-telnyx/telnyx-go/commit/f81c9c7705fd1805ec6f15121d75f5df857a75b9))
-* TELAPPS-ENGDESK-46395 Add keep_after_hangup to enqueue command ([1105462](https://github.com/team-telnyx/telnyx-go/commit/1105462342509db20c0d50f6480f966234e92bbb))
-* TELAPPS-ENGDESK-46395 Add PATCH /queues/{queue_name}/calls/{call_control_id} endpoint ([11a6b03](https://github.com/team-telnyx/telnyx-go/commit/11a6b03e6d95857c1ec882b1944ccd9c73c98fd2))
-
-
-### Bug Fixes
-
-* **client:** fix issue with example webhook payload ([e5a9631](https://github.com/team-telnyx/telnyx-go/commit/e5a9631ed59080df3fa2edb14de6b0f8169633fc))
+## [4.88.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.87.0...v4.88.0) (2026-06-18)
 
 
 ### Chores
 
-* **internal:** grammar fix (it's -&gt; its) ([64a41b0](https://github.com/team-telnyx/telnyx-go/commit/64a41b02454d68e38f48a65170e672d592e2d605))
+* preserve repo-owned files not part of SDK generation ([94d4187](https://github.com/team-telnyx/telnyx-go-staging/commit/94d4187ec2f279fc5bc9ed56ec1bf1a48f454eb5))
+* release go 4.88.0 ([f78c833](https://github.com/team-telnyx/telnyx-go-staging/commit/f78c833d0fb54dc0f3102d26e376142e76c43f26))
+* sync OpenAPI spec from cde0bc4 ([a694f05](https://github.com/team-telnyx/telnyx-go-staging/commit/a694f05bbf0359ade1e31e504b8c5188cba6ee65))
+* sync OpenAPI spec from cde0bc4 ([be891bc](https://github.com/team-telnyx/telnyx-go-staging/commit/be891bca7dc20ca48fbd8d6b2b200b43324c0d85))
 
-## 3.5.0 (2025-10-27)
-
-Full Changelog: [v3.4.0...v3.5.0](https://github.com/team-telnyx/telnyx-go/compare/v3.4.0...v3.5.0)
-
-### Features
-
-* **api:** add method to upload JSON documents ([615048c](https://github.com/team-telnyx/telnyx-go/commit/615048c0379fc70ec04590b6bf5a46cc340c1829))
-* **api:** added webhook public key ([cd05c9d](https://github.com/team-telnyx/telnyx-go/commit/cd05c9d02c81da3b9d0453ec26cd58f472b203ab))
-* **api:** manual updates ([840698d](https://github.com/team-telnyx/telnyx-go/commit/840698db717d114e98e6a6f475721429ea259b54))
-* **api:** manual updates ([f719b16](https://github.com/team-telnyx/telnyx-go/commit/f719b168ca5bf37cd9854eb2366d3832f2f19528))
-* **api:** manual updates ([15fba7a](https://github.com/team-telnyx/telnyx-go/commit/15fba7a16dabaefa71fe2f9feafab3649bee9b9d))
-* define more models ([7bfb5c4](https://github.com/team-telnyx/telnyx-go/commit/7bfb5c4c22caa21403f7d42123c069c5c5af3561))
-
-
-### Documentation
-
-* update README description with comprehensive SDK overview ([#3](https://github.com/team-telnyx/telnyx-go/issues/3)) ([636b60c](https://github.com/team-telnyx/telnyx-go/commit/636b60c80e542d309de4dc65416c125d4e79e613))
-
-## 3.4.0 (2025-10-16)
-
-Full Changelog: [v3.3.0...v3.4.0](https://github.com/team-telnyx/telnyx-go/compare/v3.3.0...v3.4.0)
-
-### Features
-
-* ENGDESK-45836: Document private endpoint for republishing account events ([67d8410](https://github.com/team-telnyx/telnyx-go/commit/67d84108da524ae639a03ba1129fd3e3ab695d20))
-* Fix broken link to List SIM card action ([3900660](https://github.com/team-telnyx/telnyx-go/commit/390066093def39560747c4fa07f4e26fd6cac499))
-* MSG-5978: Add BRN fields to toll-free verification OpenAPI specs ([8608b0e](https://github.com/team-telnyx/telnyx-go/commit/8608b0ec46429e8e4583c23eb051d94c0084e414))
-
-## 3.3.0 (2025-10-09)
-
-Full Changelog: [v3.2.0...v3.3.0](https://github.com/team-telnyx/telnyx-go/compare/v3.2.0...v3.3.0)
-
-### Features
-
-* Retell assistants import ([f44fb16](https://github.com/team-telnyx/telnyx-go/commit/f44fb16c42564811398675d81458d7ad9c3fd5d3))
-
-
-### Bug Fixes
-
-* reference models more accurately ([1a21833](https://github.com/team-telnyx/telnyx-go/commit/1a2183324599d907964e597f528bd760c16eb28f))
-
-## 3.2.0 (2025-10-06)
-
-Full Changelog: [v3.1.0...v3.2.0](https://github.com/team-telnyx/telnyx-go/compare/v3.1.0...v3.2.0)
-
-### Features
-
-* ENGDESK-45343: Add CustomHeaders documentation to TeXML Dial endpoints ([d88d857](https://github.com/team-telnyx/telnyx-go/commit/d88d8571a2e88f4616bd984278b647703115bd5c))
-* MSG-5944: added mobile_only field to messaging profiles ([ff50db2](https://github.com/team-telnyx/telnyx-go/commit/ff50db27726cec5faacda9df532d9fa103ca8260))
-
-## 3.1.0 (2025-10-02)
-
-Full Changelog: [v3.0.0...v3.1.0](https://github.com/team-telnyx/telnyx-go/compare/v3.0.0...v3.1.0)
-
-### Features
-
-* **api:** manual updates ([4b1795c](https://github.com/team-telnyx/telnyx-go/commit/4b1795c55b366192a56adcace1040571ee52c050))
-* Engdesk 44932 ([1f598f1](https://github.com/team-telnyx/telnyx-go/commit/1f598f1d138ea06138e6864082796c093919010c))
-* Fix listing deepgram languages for transcription start ([26297d6](https://github.com/team-telnyx/telnyx-go/commit/26297d6da9ea37e8acd38f8b3f668169eb37d2c8))
-* TELAPPS-5367: Update transcription start docs ([ed74c02](https://github.com/team-telnyx/telnyx-go/commit/ed74c02d5df98f587ea8ca51fcb60d9050beb007))
+## [4.87.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.86.0...v4.87.0) (2026-06-18)
 
 
 ### Chores
 
-* configure new SDK language ([621692e](https://github.com/team-telnyx/telnyx-go/commit/621692e2c21b74541d6167a5748729bab2f58832))
-* sync repo ([301e6e0](https://github.com/team-telnyx/telnyx-go/commit/301e6e0f3028bbdd6bbefc0edac334af09a677aa))
+* preserve repo-owned files not part of SDK generation ([bce95aa](https://github.com/team-telnyx/telnyx-go-staging/commit/bce95aacee0b6ea56d7158d8fe30de3d4b90fc96))
+* release go 4.87.0 ([74312c6](https://github.com/team-telnyx/telnyx-go-staging/commit/74312c6fe48a80b88cb70c29146fcc5a39501414))
+* sync OpenAPI spec from 18f622e ([2ec3879](https://github.com/team-telnyx/telnyx-go-staging/commit/2ec3879aef13a95e96e0e4d09ee534951dc2ca4d))
+* sync OpenAPI spec from 18f622e ([d6e9846](https://github.com/team-telnyx/telnyx-go-staging/commit/d6e9846007858ae48bb67c606589685523dc0c2e))
 
-## 3.0.0 (2025-09-24)
-
-Full Changelog: [v0.0.1...v3.0.0](https://github.com/team-telnyx/telnyx-go/compare/v0.0.1...v3.0.0)
-
-### ⚠ BREAKING CHANGES
-
-* **api:** extract APIError to shared models
-
-### Features
-
-* **api:** extract APIError to shared models ([047df10](https://github.com/team-telnyx/telnyx-go/commit/047df107a0e129a71db1a41f4edbd556acf1219a))
+## [4.86.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.85.0...v4.86.0) (2026-06-18)
 
 
 ### Bug Fixes
 
-* **client:** elide enum validators for non-json structs ([1fe6844](https://github.com/team-telnyx/telnyx-go/commit/1fe6844f47a0cdc99db123a31cf3ee04dcfe06a9))
+* update transforms for inlined response schemas ([badf91e](https://github.com/team-telnyx/telnyx-go-staging/commit/badf91ef38fb52ac5e64092fff94be8edfaafa00))
+* update transforms for inlined response schemas ([2a50c55](https://github.com/team-telnyx/telnyx-go-staging/commit/2a50c5556c175df70282d25ea431289e00a5e41c))
 
 
 ### Chores
 
-* sync repo ([47c65ce](https://github.com/team-telnyx/telnyx-go/commit/47c65ce66fb46253601d34ebebf57848270a82a3))
+* preserve repo-owned files not part of SDK generation ([4e832a2](https://github.com/team-telnyx/telnyx-go-staging/commit/4e832a29fb1105d8c03f90676fcde349f26202b5))
+* release go 4.86.0 ([9b0f431](https://github.com/team-telnyx/telnyx-go-staging/commit/9b0f431e3cd688c4a7ea9e34e6f768f0c95b4bda))
+
+## [4.85.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.84.0...v4.85.0) (2026-06-16)
+
+
+### Chores
+
+* preserve repo-owned files not part of SDK generation ([87613ad](https://github.com/team-telnyx/telnyx-go-staging/commit/87613ad7a327ad4fb1f66de5a4d5a2b41640c6f6))
+* release go 4.85.0 ([c9cbebd](https://github.com/team-telnyx/telnyx-go-staging/commit/c9cbebda9a60a1b2541718d5977367de4ff37cdc))
+
+## [4.84.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.83.0...v4.84.0) (2026-06-16)
+
+
+### Chores
+
+* preserve repo-owned files not part of SDK generation ([1ea7a69](https://github.com/team-telnyx/telnyx-go-staging/commit/1ea7a69fcbfdea47cc8493df41409de9985a6876))
+* release go 4.84.0 ([b813d18](https://github.com/team-telnyx/telnyx-go-staging/commit/b813d18fd38caf47ef3b03e57866432ff8c9d9a7))
+
+## [4.83.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.82.0...v4.83.0) (2026-06-16)
+
+
+### Chores
+
+* preserve repo-owned files not part of SDK generation ([09e0fdb](https://github.com/team-telnyx/telnyx-go-staging/commit/09e0fdbc0e4f25d93c84d9998fc9204cfef8a2ed))
+* release go 4.83.0 ([aa9e507](https://github.com/team-telnyx/telnyx-go-staging/commit/aa9e50704a553d3723b2fb8e7ccb502fd1cdf820))
+* sync OpenAPI spec from e44bbbc ([e4705b9](https://github.com/team-telnyx/telnyx-go-staging/commit/e4705b9639db3691828238aa87eaf10ca78f1916))
+* sync OpenAPI spec from e44bbbc ([27ab863](https://github.com/team-telnyx/telnyx-go-staging/commit/27ab8638535c9e1ccf820a41a8ec910cbf4924d9))
+
+## [4.82.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.81.0...v4.82.0) (2026-06-15)
+
+
+### Bug Fixes
+
+* rename DIR method names to match published SDKs ([20bb17c](https://github.com/team-telnyx/telnyx-go-staging/commit/20bb17cff0323a25489c09dcd761ca357227cf14))
+* rename DIR method names to match published SDKs ([b1a8632](https://github.com/team-telnyx/telnyx-go-staging/commit/b1a8632d2a06302a34907c40be85b1baa091db48))
+
+
+### Chores
+
+* preserve repo-owned files not part of SDK generation ([51416c4](https://github.com/team-telnyx/telnyx-go-staging/commit/51416c41f4f4819ec8be3913772408e83750693e))
+* release go 4.82.0 ([c1fc0b4](https://github.com/team-telnyx/telnyx-go-staging/commit/c1fc0b49c8f51b36ff06262a2fa91a44e410a90e))
+
+## [4.81.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.80.0...v4.81.0) (2026-06-15)
+
+
+### Chores
+
+* preserve repo-owned files not part of SDK generation ([2e1553d](https://github.com/team-telnyx/telnyx-go-staging/commit/2e1553d8edd34ca4530f258691cefadee2770bb4))
+* release go 4.81.0 ([b8bfa6f](https://github.com/team-telnyx/telnyx-go-staging/commit/b8bfa6f507923c2723fa0906217124ad2f21e664))
+* sync OpenAPI spec from 3b5c722 ([ca6d1ba](https://github.com/team-telnyx/telnyx-go-staging/commit/ca6d1ba5471b0fc33b7feb6330300c24d2de7dc8))
+* sync OpenAPI spec from 3b5c722 ([5479942](https://github.com/team-telnyx/telnyx-go-staging/commit/5479942e8229fa4d031d204e8f8751e47ef43c71))
+
+## [4.80.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.79.0...v4.80.0) (2026-06-10)
+
+
+### Bug Fixes
+
+* add missing shimjson import to advancedorder.go ([a1e6d2d](https://github.com/team-telnyx/telnyx-go-staging/commit/a1e6d2d5d9162381ebebe1adf0a27541c6442e31))
+
+
+### Chores
+
+* preserve repo-owned files not part of SDK generation ([ebc9214](https://github.com/team-telnyx/telnyx-go-staging/commit/ebc921427b140a6b11141eaade5c4ad5cbe38811))
+* release go 4.80.0 ([f8df6df](https://github.com/team-telnyx/telnyx-go-staging/commit/f8df6df276454f3fb472e747a86f7bd881f4408a))
+* sync OpenAPI spec from b9f127e ([350fb05](https://github.com/team-telnyx/telnyx-go-staging/commit/350fb056a11b7a036349a4666bd3ab3d771b55ba))
+* sync OpenAPI spec from c319cee ([5136e51](https://github.com/team-telnyx/telnyx-go-staging/commit/5136e517f31d902475aa921f06b0ed1d9e832767))
+
+## [4.79.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.78.0...v4.79.0) (2026-06-08)
+
+
+### Chores
+
+* preserve repo-owned files not part of SDK generation ([63bbefe](https://github.com/team-telnyx/telnyx-go-staging/commit/63bbefef0979fa3e8440169fe87467d83c4e8781))
+* release go 4.79.0 ([e9154fc](https://github.com/team-telnyx/telnyx-go-staging/commit/e9154fcdd1d0908d7c9c5453a2ccc7541486d47d))
+* sync OpenAPI spec from aae7c19 ([9995b4f](https://github.com/team-telnyx/telnyx-go-staging/commit/9995b4fcc01d521427f00bb83c7f6a2bcb9560c1))
+* sync OpenAPI spec from aae7c19 ([4cae21d](https://github.com/team-telnyx/telnyx-go-staging/commit/4cae21d803ef82ea37130df76a7ce9ae5b5534b1))
+
+## [4.78.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.77.0...v4.78.0) (2026-06-08)
+
+
+### Chores
+
+* preserve repo-owned files not part of SDK generation ([9a20f45](https://github.com/team-telnyx/telnyx-go-staging/commit/9a20f45b2aa9a24662e92d46656e2fabb584661c))
+* release go 4.78.0 ([95fff8b](https://github.com/team-telnyx/telnyx-go-staging/commit/95fff8bb863f011d4b5f82daaa6283efa3d13c14))
+* sync OpenAPI spec from a13d4b1 ([ab962b4](https://github.com/team-telnyx/telnyx-go-staging/commit/ab962b49e1404bf68549bdbb3521a6c35a183130))
+* sync OpenAPI spec from a13d4b1 ([bc16c15](https://github.com/team-telnyx/telnyx-go-staging/commit/bc16c154082e091c536551ca068d82326cf56251))
+
+## [4.77.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.76.0...v4.77.0) (2026-06-08)
+
+
+### Bug Fixes
+
+* restore go.mod with gorilla/websocket dependency from main ([1a8bfe8](https://github.com/team-telnyx/telnyx-go-staging/commit/1a8bfe8713865d1f40de89d50b489926861eba5c))
+* restore go.sum with gorilla/websocket from main ([7a42c26](https://github.com/team-telnyx/telnyx-go-staging/commit/7a42c26fbc450ae601d860e67910791ea0b572bb))
+
+
+### Chores
+
+* preserve repo-owned files not part of SDK generation ([3d5ee59](https://github.com/team-telnyx/telnyx-go-staging/commit/3d5ee5966e5a7aff0ff81e5c47f236f622132efe))
+* release go 4.77.0 ([e84350f](https://github.com/team-telnyx/telnyx-go-staging/commit/e84350f39cda10888c13a1e0102e227b81b942e7))
+* sync OpenAPI spec from 9f5f345 ([4edc2e1](https://github.com/team-telnyx/telnyx-go-staging/commit/4edc2e1fd51b9b88b0902b5b73fe9acd85ea9618))
+
+## [4.76.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.75.1...v4.76.0) (2026-06-08)
+
+
+### Features
+
+* add examples/speech-to-text-websocket/main.go ([685b2b5](https://github.com/team-telnyx/telnyx-go-staging/commit/685b2b5395d949e5e720dc772db412de9d8420d6))
+* add examples/text-to-speech-websocket/main.go ([e5bf0a8](https://github.com/team-telnyx/telnyx-go-staging/commit/e5bf0a8c9ba42758418f2f7654ff24d27d8f5f0d))
+* add gorilla/websocket dependency for custom lib/ code ([30bd3f5](https://github.com/team-telnyx/telnyx-go-staging/commit/30bd3f5334de019bc69d0f3af875da9f7e966725))
+* add lib/speech_to_text_ws_test.go ([6f7df4d](https://github.com/team-telnyx/telnyx-go-staging/commit/6f7df4d647973b2924d7feb0d0e26a7635c1fe22))
+* add lib/speech_to_text_ws.go ([746dd9c](https://github.com/team-telnyx/telnyx-go-staging/commit/746dd9c24cfaaab660b696d845628a8eacd615b3))
+* add lib/text_to_speech_ws_test.go ([1264e75](https://github.com/team-telnyx/telnyx-go-staging/commit/1264e75e261dbc6771d213bbf7330612ae2123ed))
+* add lib/text_to_speech_ws.go ([d3316fa](https://github.com/team-telnyx/telnyx-go-staging/commit/d3316fac984369cf941c172a2408d497008be28a))
+* add lib/webhook_verification_test.go ([25ca8fc](https://github.com/team-telnyx/telnyx-go-staging/commit/25ca8fc50cc10cbf6661995e04972c05587c05e5))
+* add lib/webhook_verification.go ([c40a9e1](https://github.com/team-telnyx/telnyx-go-staging/commit/c40a9e1ed1c1bfec43afddda9185f4a9a9d7ad09))
+* add lib/websocket.go ([04b0925](https://github.com/team-telnyx/telnyx-go-staging/commit/04b09252c8f281e2bede25cb62a7c208a6d128f2))
+* add webhook_custom.go for signature verification ([a56c74d](https://github.com/team-telnyx/telnyx-go-staging/commit/a56c74dd8ccd84a9177eff5fe6e3b26d67c01b5f))
+* add webhook_custom.go for signature verification ([0c46445](https://github.com/team-telnyx/telnyx-go-staging/commit/0c464458b2877e178e4ac5af01a1142eb8dc53a5))
+* update go.sum with gorilla/websocket checksums ([0fd3328](https://github.com/team-telnyx/telnyx-go-staging/commit/0fd3328db75fe7a4561cf3c8263db69e55200bef))
+
+
+### Bug Fixes
+
+* **ci:** pass release-please pr output via env to avoid shell injection ([a0d9ea0](https://github.com/team-telnyx/telnyx-go-staging/commit/a0d9ea02e5c2533e923134abcafd5722368d3d6c))
+* **ci:** pass release-please pr output via env to avoid shell injection ([643db92](https://github.com/team-telnyx/telnyx-go-staging/commit/643db92418836146b864869e4846df499ca918b7))
+* remove duplicate NewWebhookService from webhook_custom.go ([e6dde46](https://github.com/team-telnyx/telnyx-go-staging/commit/e6dde46ba1e748d7c7e11b6c8a4a6490315010d4))
+
+
+### Chores
+
+* preserve repo-owned files not part of SDK generation ([f20ed66](https://github.com/team-telnyx/telnyx-go-staging/commit/f20ed6619430d61061e759fb7df4bb9148da427d))
+* release go 4.76.0 ([aef2bb3](https://github.com/team-telnyx/telnyx-go-staging/commit/aef2bb3229b6b256750b1bece7a52c831fe7e49c))
+* sync OpenAPI spec from 6eae6a5 ([0a108cc](https://github.com/team-telnyx/telnyx-go-staging/commit/0a108cc9b745d6092d6ddd1367c1b3705efa5c63))
+* sync OpenAPI spec from 6eae6a5 ([0c73d6c](https://github.com/team-telnyx/telnyx-go-staging/commit/0c73d6c3ace5e6d515abe116c3619ba78834abf6))
+
+## [4.75.1](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.75.0...v4.75.1) (2026-06-07)
+
+
+### Bug Fixes
+
+* extract PR number from JSON output for auto-merge ([ac07fa4](https://github.com/team-telnyx/telnyx-go-staging/commit/ac07fa43af0b1939fd3bce93fddda8da01f3c9b2))
+* extract PR number from JSON output for auto-merge ([4755930](https://github.com/team-telnyx/telnyx-go-staging/commit/4755930fd1fd31fec28ee654f3c57448a6e2d588))
+* use release-please output directly for auto-merge (avoid race condition) ([6366967](https://github.com/team-telnyx/telnyx-go-staging/commit/6366967824f463d183837278a3bde76791e72ad5))
+* use release-please output directly for auto-merge (avoid race condition) ([5b34b8b](https://github.com/team-telnyx/telnyx-go-staging/commit/5b34b8b8105da1ee28daba9d4f6f5d5674789f54))
+
+## [4.75.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.74.0...v4.75.0) (2026-06-07)
+
+
+### Chores
+
+* preserve repo-owned files not part of SDK generation ([e4149d0](https://github.com/team-telnyx/telnyx-go-staging/commit/e4149d06d20d4100cc0068a49ee6f2d58aafd9f9))
+* preserve repo-owned files not part of SDK generation ([bf735ed](https://github.com/team-telnyx/telnyx-go-staging/commit/bf735ede574a9035eaf8e0fe398c34101fa80ec2))
+* release go 4.75.0 ([22a14b5](https://github.com/team-telnyx/telnyx-go-staging/commit/22a14b558704b12e2157289abb3a796c286ca7fe))
+* release go 4.75.0 ([c8ceb40](https://github.com/team-telnyx/telnyx-go-staging/commit/c8ceb4094423cc03144d2e967cb089adf78cc8e1))
+* sync OpenAPI spec from 0193002 ([8d6fb63](https://github.com/team-telnyx/telnyx-go-staging/commit/8d6fb637015c9e2377e7e259fe20040758ff5827))
+* sync OpenAPI spec from 0193002 ([ac30f37](https://github.com/team-telnyx/telnyx-go-staging/commit/ac30f37ff1ef81a72bbe0e12af079a68402ac888))
+* sync OpenAPI spec from 8faa4be ([ccb540e](https://github.com/team-telnyx/telnyx-go-staging/commit/ccb540ec9937709fe4bb9db0bb5ffeaf3ef37614))
+* sync OpenAPI spec from 8faa4be ([8376ab3](https://github.com/team-telnyx/telnyx-go-staging/commit/8376ab3c23a8c99b1949faacdec691533d4a0afa))
+
+## [4.74.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.73.0...v4.74.0) (2026-06-07)
+
+
+### Features
+
+* enable GitHub auto-merge on release PRs ([216ef15](https://github.com/team-telnyx/telnyx-go-staging/commit/216ef15d1d0cd888e7c0570ac719154ae5f0072e))
+* enable GitHub auto-merge on release PRs ([898b901](https://github.com/team-telnyx/telnyx-go-staging/commit/898b901eed0d0d07b669b7e8989fb52352682cfc))
+
+
+### Bug Fixes
+
+* correct auto-merge output name and PR search pattern ([f5fc9f4](https://github.com/team-telnyx/telnyx-go-staging/commit/f5fc9f43081700de8464a0d4c38b2503075c6c22))
+* correct auto-merge output name and PR search pattern ([d9daa5c](https://github.com/team-telnyx/telnyx-go-staging/commit/d9daa5c355189b1e555af27f7db4401fba25ce44))
+* restore ${{ }} expressions in release-please workflow ([b575dfc](https://github.com/team-telnyx/telnyx-go-staging/commit/b575dfc9618f1006ba64434b78a583604698bad2))
+* restore ${{ }} expressions in release-please workflow ([eddb732](https://github.com/team-telnyx/telnyx-go-staging/commit/eddb7323f819dbf06dc2305c872763b4263a85cb))
+
+## [4.73.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.72.0...v4.73.0) (2026-06-07)
+
+
+### Features
+
+* enable automerge for release PRs ([9292127](https://github.com/team-telnyx/telnyx-go-staging/commit/92921271d8bbd1f5f22206a63a259fbd701fc4d0))
+* enable automerge for release PRs ([70e8a7c](https://github.com/team-telnyx/telnyx-go-staging/commit/70e8a7cb53d41f7b1457737f18cf33369a33af38))
+
+## [4.72.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.71.0...v4.72.0) (2026-06-07)
+
+
+### Bug Fixes
+
+* remove text_to_speech retrieve_speech mapping ([b047f24](https://github.com/team-telnyx/telnyx-go-staging/commit/b047f24b2ff1727f19bba78f26cee5b2d5ffda0c))
+* use PAT for release-please to trigger CI ([f0a4ae6](https://github.com/team-telnyx/telnyx-go-staging/commit/f0a4ae61714bca8ef9b4d2483d6791176c203f8a))
+* use PAT for release-please to trigger CI ([6adc265](https://github.com/team-telnyx/telnyx-go-staging/commit/6adc2652f2d4e5a10e22948dcc1cfe27c335cb4a))
+
+
+### Chores
+
+* preserve repo-owned files not part of SDK generation ([9b4f223](https://github.com/team-telnyx/telnyx-go-staging/commit/9b4f22363bc8cc505aa6e3fc16b91a4ece80f6cc))
+* preserve repo-owned files not part of SDK generation ([0d8eaee](https://github.com/team-telnyx/telnyx-go-staging/commit/0d8eaee22cb8c503dab223a2460745588f9c7cff))
+* release go 4.72.0 ([26ea458](https://github.com/team-telnyx/telnyx-go-staging/commit/26ea45820c5c8b5368e48101a3dbfcaa544e1b09))
+* release go 4.72.0 ([24339d1](https://github.com/team-telnyx/telnyx-go-staging/commit/24339d12372f0b299432e2596a9dda22d95f3cba))
+* sync OpenAPI spec from c46b2c0 ([df29451](https://github.com/team-telnyx/telnyx-go-staging/commit/df29451b1c1b7301e740fa32aba20f296fdbb162))
+
+## [4.71.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.70.1...v4.71.0) (2026-06-06)
+
+
+### Bug Fixes
+
+* correct YAML quoting in CI if condition ([f926ab4](https://github.com/team-telnyx/telnyx-go-staging/commit/f926ab47a621704dff74c834482eca5e5c024986))
+* **go:** use model mapping for DirPhoneNumberStatus dedup ([4fb7464](https://github.com/team-telnyx/telnyx-go-staging/commit/4fb7464f4bb17046f13086506cd38b0b8ed26ffc))
+* **go:** use model mapping for DirPhoneNumberStatus dedup ([a496e11](https://github.com/team-telnyx/telnyx-go-staging/commit/a496e11c44fa690c0eeb3b008b3bf0dbe1b60854))
+
+
+### Chores
+
+* preserve repo-owned files not part of SDK generation ([f8a2c88](https://github.com/team-telnyx/telnyx-go-staging/commit/f8a2c88e33260cdfa806b9b4fcaf61395534cdc1))
+* release go 4.71.0 ([eee9583](https://github.com/team-telnyx/telnyx-go-staging/commit/eee95834717fe65217e2398247b141599ad5e4d3))
+
+## [4.70.1](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.70.0...v4.70.1) (2026-06-05)
+
+
+### Bug Fixes
+
+* run CI build/lint on internal PRs not just forks ([f601f82](https://github.com/team-telnyx/telnyx-go-staging/commit/f601f8274af9ce59d136e11f453a80a5ddf8c3c9))
+
+## [4.70.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.69.0...v4.70.0) (2026-06-04)
+
+
+### Bug Fixes
+
+* **ai:** name expression op enum members (CannotInferEnumMemberName) ([efd8f3f](https://github.com/team-telnyx/telnyx-go-staging/commit/efd8f3f019e80d1f1a2e830f623a8c9677f3e4c2))
+
+
+### Chores
+
+* preserve repo-owned files (release-please runner, CHANGELOG) ([c7bcc01](https://github.com/team-telnyx/telnyx-go-staging/commit/c7bcc0172fc2db6fde01b200099104e84fbd885f))
+* preserve repo-owned files not part of SDK generation ([b72a74b](https://github.com/team-telnyx/telnyx-go-staging/commit/b72a74b9aec40984ee5c4a03afc7bc0376909bd1))
+* preserve repo-owned files not part of SDK generation ([0ac9d09](https://github.com/team-telnyx/telnyx-go-staging/commit/0ac9d096f31c7eb9eb594f3773169a9e3bfda068))
+* preserve repo-owned files not part of SDK generation ([29601b1](https://github.com/team-telnyx/telnyx-go-staging/commit/29601b1a7242f6b42fc911b234901763e297d202))
+* release go 4.70.0 ([3643748](https://github.com/team-telnyx/telnyx-go-staging/commit/36437488f2ebc2a667a2ea2a589b755ca2a359bc))
+* release go 4.70.0 ([c85f1bb](https://github.com/team-telnyx/telnyx-go-staging/commit/c85f1bb3df720e428138f07e479a2658e9fcf09c))
+* release go 4.70.0 ([b9877ab](https://github.com/team-telnyx/telnyx-go-staging/commit/b9877ab137ae160eab194b2d3fb12edbaa5bb179))
+* sync OpenAPI spec from 2c28e93 ([3045e81](https://github.com/team-telnyx/telnyx-go-staging/commit/3045e81f783161258b25353119c917ab5d4368cf))
+* sync OpenAPI spec from 404ef48 ([e6b21fe](https://github.com/team-telnyx/telnyx-go-staging/commit/e6b21fe7252108a5bcd17642616a81df4e252ad7))
+
+## [4.69.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.68.0...v4.69.0) (2026-06-03)
+
+
+### Chores
+
+* release go 4.69.0 ([4ba2b75](https://github.com/team-telnyx/telnyx-go-staging/commit/4ba2b757bd5447dd6045cbe247169b2328379d82))

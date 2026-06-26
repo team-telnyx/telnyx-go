@@ -55,7 +55,7 @@ func NewTexmlAccountCallService(opts ...option.RequestOption) (r TexmlAccountCal
 
 // Returns an individual call identified by its CallSid. This endpoint is
 // eventually consistent.
-func (r *TexmlAccountCallService) Get(ctx context.Context, callSid string, query TexmlAccountCallGetParams, opts ...option.RequestOption) (res *TexmlAccountCallGetResponse, err error) {
+func (r *TexmlAccountCallService) Get(ctx context.Context, callSid string, query TexmlAccountCallGetParams, opts ...option.RequestOption) (res *CallResource, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
@@ -72,7 +72,7 @@ func (r *TexmlAccountCallService) Get(ctx context.Context, callSid string, query
 
 // Update TeXML call. Please note that the keys present in the payload MUST BE
 // formatted in CamelCase as specified in the example.
-func (r *TexmlAccountCallService) Update(ctx context.Context, callSid string, params TexmlAccountCallUpdateParams, opts ...option.RequestOption) (res *TexmlAccountCallUpdateResponse, err error) {
+func (r *TexmlAccountCallService) Update(ctx context.Context, callSid string, params TexmlAccountCallUpdateParams, opts ...option.RequestOption) (res *CallResource, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
@@ -146,6 +146,114 @@ func (r *TexmlAccountCallService) StreamsJson(ctx context.Context, callSid strin
 	return res, err
 }
 
+type CallResource struct {
+	// The id of the account the resource belongs to.
+	AccountSid string `json:"account_sid"`
+	// The value of the answering machine detection result, if this feature was enabled
+	// for the call.
+	//
+	// Any of "human", "machine", "not_sure".
+	AnsweredBy CallResourceAnsweredBy `json:"answered_by"`
+	// Caller ID, if present.
+	CallerName string `json:"caller_name"`
+	// The timestamp of when the resource was created.
+	DateCreated string `json:"date_created"`
+	// The timestamp of when the resource was last updated.
+	DateUpdated string `json:"date_updated"`
+	// The direction of this call.
+	//
+	// Any of "inbound", "outbound".
+	Direction CallResourceDirection `json:"direction"`
+	// The duration of this call, given in seconds.
+	Duration string `json:"duration"`
+	// The end time of this call.
+	EndTime string `json:"end_time"`
+	// The phone number or SIP address that made this call.
+	From string `json:"from"`
+	// The from number formatted for display.
+	FromFormatted string `json:"from_formatted"`
+	// The price of this call, the currency is specified in the price_unit field. Only
+	// populated when the call cost feature is enabled for the account.
+	Price string `json:"price"`
+	// The unit in which the price is given.
+	PriceUnit string `json:"price_unit"`
+	// The identifier of this call.
+	Sid string `json:"sid"`
+	// The start time of this call.
+	StartTime string `json:"start_time"`
+	// The status of this call.
+	//
+	// Any of "ringing", "in-progress", "canceled", "completed", "failed", "busy",
+	// "no-answer".
+	Status CallResourceStatus `json:"status"`
+	// The phone number or SIP address that received this call.
+	To string `json:"to"`
+	// The to number formatted for display.
+	ToFormatted string `json:"to_formatted"`
+	// The relative URI for this call.
+	Uri string `json:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AccountSid    respjson.Field
+		AnsweredBy    respjson.Field
+		CallerName    respjson.Field
+		DateCreated   respjson.Field
+		DateUpdated   respjson.Field
+		Direction     respjson.Field
+		Duration      respjson.Field
+		EndTime       respjson.Field
+		From          respjson.Field
+		FromFormatted respjson.Field
+		Price         respjson.Field
+		PriceUnit     respjson.Field
+		Sid           respjson.Field
+		StartTime     respjson.Field
+		Status        respjson.Field
+		To            respjson.Field
+		ToFormatted   respjson.Field
+		Uri           respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallResource) RawJSON() string { return r.JSON.raw }
+func (r *CallResource) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The value of the answering machine detection result, if this feature was enabled
+// for the call.
+type CallResourceAnsweredBy string
+
+const (
+	CallResourceAnsweredByHuman   CallResourceAnsweredBy = "human"
+	CallResourceAnsweredByMachine CallResourceAnsweredBy = "machine"
+	CallResourceAnsweredByNotSure CallResourceAnsweredBy = "not_sure"
+)
+
+// The direction of this call.
+type CallResourceDirection string
+
+const (
+	CallResourceDirectionInbound  CallResourceDirection = "inbound"
+	CallResourceDirectionOutbound CallResourceDirection = "outbound"
+)
+
+// The status of this call.
+type CallResourceStatus string
+
+const (
+	CallResourceStatusRinging    CallResourceStatus = "ringing"
+	CallResourceStatusInProgress CallResourceStatus = "in-progress"
+	CallResourceStatusCanceled   CallResourceStatus = "canceled"
+	CallResourceStatusCompleted  CallResourceStatus = "completed"
+	CallResourceStatusFailed     CallResourceStatus = "failed"
+	CallResourceStatusBusy       CallResourceStatus = "busy"
+	CallResourceStatusNoAnswer   CallResourceStatus = "no-answer"
+)
+
 type UpdateCallParam struct {
 	// A failover URL for which Telnyx will retrieve the TeXML call instructions if the
 	// Url is not responding.
@@ -207,222 +315,6 @@ const (
 	UpdateCallStatusCallbackMethodPost UpdateCallStatusCallbackMethod = "POST"
 )
 
-type TexmlAccountCallGetResponse struct {
-	// The id of the account the resource belongs to.
-	AccountSid string `json:"account_sid"`
-	// The value of the answering machine detection result, if this feature was enabled
-	// for the call.
-	//
-	// Any of "human", "machine", "not_sure".
-	AnsweredBy TexmlAccountCallGetResponseAnsweredBy `json:"answered_by"`
-	// Caller ID, if present.
-	CallerName string `json:"caller_name"`
-	// The timestamp of when the resource was created.
-	DateCreated string `json:"date_created"`
-	// The timestamp of when the resource was last updated.
-	DateUpdated string `json:"date_updated"`
-	// The direction of this call.
-	//
-	// Any of "inbound", "outbound".
-	Direction TexmlAccountCallGetResponseDirection `json:"direction"`
-	// The duration of this call, given in seconds.
-	Duration string `json:"duration"`
-	// The end time of this call.
-	EndTime string `json:"end_time"`
-	// The phone number or SIP address that made this call.
-	From string `json:"from"`
-	// The from number formatted for display.
-	FromFormatted string `json:"from_formatted"`
-	// The price of this call, the currency is specified in the price_unit field. Only
-	// populated when the call cost feature is enabled for the account.
-	Price string `json:"price"`
-	// The unit in which the price is given.
-	PriceUnit string `json:"price_unit"`
-	// The identifier of this call.
-	Sid string `json:"sid"`
-	// The start time of this call.
-	StartTime string `json:"start_time"`
-	// The status of this call.
-	//
-	// Any of "ringing", "in-progress", "canceled", "completed", "failed", "busy",
-	// "no-answer".
-	Status TexmlAccountCallGetResponseStatus `json:"status"`
-	// The phone number or SIP address that received this call.
-	To string `json:"to"`
-	// The to number formatted for display.
-	ToFormatted string `json:"to_formatted"`
-	// The relative URI for this call.
-	Uri string `json:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AccountSid    respjson.Field
-		AnsweredBy    respjson.Field
-		CallerName    respjson.Field
-		DateCreated   respjson.Field
-		DateUpdated   respjson.Field
-		Direction     respjson.Field
-		Duration      respjson.Field
-		EndTime       respjson.Field
-		From          respjson.Field
-		FromFormatted respjson.Field
-		Price         respjson.Field
-		PriceUnit     respjson.Field
-		Sid           respjson.Field
-		StartTime     respjson.Field
-		Status        respjson.Field
-		To            respjson.Field
-		ToFormatted   respjson.Field
-		Uri           respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TexmlAccountCallGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *TexmlAccountCallGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The value of the answering machine detection result, if this feature was enabled
-// for the call.
-type TexmlAccountCallGetResponseAnsweredBy string
-
-const (
-	TexmlAccountCallGetResponseAnsweredByHuman   TexmlAccountCallGetResponseAnsweredBy = "human"
-	TexmlAccountCallGetResponseAnsweredByMachine TexmlAccountCallGetResponseAnsweredBy = "machine"
-	TexmlAccountCallGetResponseAnsweredByNotSure TexmlAccountCallGetResponseAnsweredBy = "not_sure"
-)
-
-// The direction of this call.
-type TexmlAccountCallGetResponseDirection string
-
-const (
-	TexmlAccountCallGetResponseDirectionInbound  TexmlAccountCallGetResponseDirection = "inbound"
-	TexmlAccountCallGetResponseDirectionOutbound TexmlAccountCallGetResponseDirection = "outbound"
-)
-
-// The status of this call.
-type TexmlAccountCallGetResponseStatus string
-
-const (
-	TexmlAccountCallGetResponseStatusRinging    TexmlAccountCallGetResponseStatus = "ringing"
-	TexmlAccountCallGetResponseStatusInProgress TexmlAccountCallGetResponseStatus = "in-progress"
-	TexmlAccountCallGetResponseStatusCanceled   TexmlAccountCallGetResponseStatus = "canceled"
-	TexmlAccountCallGetResponseStatusCompleted  TexmlAccountCallGetResponseStatus = "completed"
-	TexmlAccountCallGetResponseStatusFailed     TexmlAccountCallGetResponseStatus = "failed"
-	TexmlAccountCallGetResponseStatusBusy       TexmlAccountCallGetResponseStatus = "busy"
-	TexmlAccountCallGetResponseStatusNoAnswer   TexmlAccountCallGetResponseStatus = "no-answer"
-)
-
-type TexmlAccountCallUpdateResponse struct {
-	// The id of the account the resource belongs to.
-	AccountSid string `json:"account_sid"`
-	// The value of the answering machine detection result, if this feature was enabled
-	// for the call.
-	//
-	// Any of "human", "machine", "not_sure".
-	AnsweredBy TexmlAccountCallUpdateResponseAnsweredBy `json:"answered_by"`
-	// Caller ID, if present.
-	CallerName string `json:"caller_name"`
-	// The timestamp of when the resource was created.
-	DateCreated string `json:"date_created"`
-	// The timestamp of when the resource was last updated.
-	DateUpdated string `json:"date_updated"`
-	// The direction of this call.
-	//
-	// Any of "inbound", "outbound".
-	Direction TexmlAccountCallUpdateResponseDirection `json:"direction"`
-	// The duration of this call, given in seconds.
-	Duration string `json:"duration"`
-	// The end time of this call.
-	EndTime string `json:"end_time"`
-	// The phone number or SIP address that made this call.
-	From string `json:"from"`
-	// The from number formatted for display.
-	FromFormatted string `json:"from_formatted"`
-	// The price of this call, the currency is specified in the price_unit field. Only
-	// populated when the call cost feature is enabled for the account.
-	Price string `json:"price"`
-	// The unit in which the price is given.
-	PriceUnit string `json:"price_unit"`
-	// The identifier of this call.
-	Sid string `json:"sid"`
-	// The start time of this call.
-	StartTime string `json:"start_time"`
-	// The status of this call.
-	//
-	// Any of "ringing", "in-progress", "canceled", "completed", "failed", "busy",
-	// "no-answer".
-	Status TexmlAccountCallUpdateResponseStatus `json:"status"`
-	// The phone number or SIP address that received this call.
-	To string `json:"to"`
-	// The to number formatted for display.
-	ToFormatted string `json:"to_formatted"`
-	// The relative URI for this call.
-	Uri string `json:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AccountSid    respjson.Field
-		AnsweredBy    respjson.Field
-		CallerName    respjson.Field
-		DateCreated   respjson.Field
-		DateUpdated   respjson.Field
-		Direction     respjson.Field
-		Duration      respjson.Field
-		EndTime       respjson.Field
-		From          respjson.Field
-		FromFormatted respjson.Field
-		Price         respjson.Field
-		PriceUnit     respjson.Field
-		Sid           respjson.Field
-		StartTime     respjson.Field
-		Status        respjson.Field
-		To            respjson.Field
-		ToFormatted   respjson.Field
-		Uri           respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TexmlAccountCallUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *TexmlAccountCallUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The value of the answering machine detection result, if this feature was enabled
-// for the call.
-type TexmlAccountCallUpdateResponseAnsweredBy string
-
-const (
-	TexmlAccountCallUpdateResponseAnsweredByHuman   TexmlAccountCallUpdateResponseAnsweredBy = "human"
-	TexmlAccountCallUpdateResponseAnsweredByMachine TexmlAccountCallUpdateResponseAnsweredBy = "machine"
-	TexmlAccountCallUpdateResponseAnsweredByNotSure TexmlAccountCallUpdateResponseAnsweredBy = "not_sure"
-)
-
-// The direction of this call.
-type TexmlAccountCallUpdateResponseDirection string
-
-const (
-	TexmlAccountCallUpdateResponseDirectionInbound  TexmlAccountCallUpdateResponseDirection = "inbound"
-	TexmlAccountCallUpdateResponseDirectionOutbound TexmlAccountCallUpdateResponseDirection = "outbound"
-)
-
-// The status of this call.
-type TexmlAccountCallUpdateResponseStatus string
-
-const (
-	TexmlAccountCallUpdateResponseStatusRinging    TexmlAccountCallUpdateResponseStatus = "ringing"
-	TexmlAccountCallUpdateResponseStatusInProgress TexmlAccountCallUpdateResponseStatus = "in-progress"
-	TexmlAccountCallUpdateResponseStatusCanceled   TexmlAccountCallUpdateResponseStatus = "canceled"
-	TexmlAccountCallUpdateResponseStatusCompleted  TexmlAccountCallUpdateResponseStatus = "completed"
-	TexmlAccountCallUpdateResponseStatusFailed     TexmlAccountCallUpdateResponseStatus = "failed"
-	TexmlAccountCallUpdateResponseStatusBusy       TexmlAccountCallUpdateResponseStatus = "busy"
-	TexmlAccountCallUpdateResponseStatusNoAnswer   TexmlAccountCallUpdateResponseStatus = "no-answer"
-)
-
 type TexmlAccountCallCallsResponse struct {
 	From   string `json:"from"`
 	Status string `json:"status"`
@@ -444,7 +336,7 @@ func (r *TexmlAccountCallCallsResponse) UnmarshalJSON(data []byte) error {
 }
 
 type TexmlAccountCallGetCallsResponse struct {
-	Calls []TexmlAccountCallGetCallsResponseCall `json:"calls"`
+	Calls []CallResource `json:"calls"`
 	// The number of the last element on the page, zero-indexed.
 	End int64 `json:"end"`
 	// /v2/texml/Accounts/61bf923e-5e4d-4595-a110-56190ea18a1b/Calls.json?Page=0&PageSize=1
@@ -477,83 +369,6 @@ type TexmlAccountCallGetCallsResponse struct {
 // Returns the unmodified JSON received from the API
 func (r TexmlAccountCallGetCallsResponse) RawJSON() string { return r.JSON.raw }
 func (r *TexmlAccountCallGetCallsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TexmlAccountCallGetCallsResponseCall struct {
-	// The id of the account the resource belongs to.
-	AccountSid string `json:"account_sid"`
-	// The value of the answering machine detection result, if this feature was enabled
-	// for the call.
-	//
-	// Any of "human", "machine", "not_sure".
-	AnsweredBy string `json:"answered_by"`
-	// Caller ID, if present.
-	CallerName string `json:"caller_name"`
-	// The timestamp of when the resource was created.
-	DateCreated string `json:"date_created"`
-	// The timestamp of when the resource was last updated.
-	DateUpdated string `json:"date_updated"`
-	// The direction of this call.
-	//
-	// Any of "inbound", "outbound".
-	Direction string `json:"direction"`
-	// The duration of this call, given in seconds.
-	Duration string `json:"duration"`
-	// The end time of this call.
-	EndTime string `json:"end_time"`
-	// The phone number or SIP address that made this call.
-	From string `json:"from"`
-	// The from number formatted for display.
-	FromFormatted string `json:"from_formatted"`
-	// The price of this call, the currency is specified in the price_unit field. Only
-	// populated when the call cost feature is enabled for the account.
-	Price string `json:"price"`
-	// The unit in which the price is given.
-	PriceUnit string `json:"price_unit"`
-	// The identifier of this call.
-	Sid string `json:"sid"`
-	// The start time of this call.
-	StartTime string `json:"start_time"`
-	// The status of this call.
-	//
-	// Any of "ringing", "in-progress", "canceled", "completed", "failed", "busy",
-	// "no-answer".
-	Status string `json:"status"`
-	// The phone number or SIP address that received this call.
-	To string `json:"to"`
-	// The to number formatted for display.
-	ToFormatted string `json:"to_formatted"`
-	// The relative URI for this call.
-	Uri string `json:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AccountSid    respjson.Field
-		AnsweredBy    respjson.Field
-		CallerName    respjson.Field
-		DateCreated   respjson.Field
-		DateUpdated   respjson.Field
-		Direction     respjson.Field
-		Duration      respjson.Field
-		EndTime       respjson.Field
-		From          respjson.Field
-		FromFormatted respjson.Field
-		Price         respjson.Field
-		PriceUnit     respjson.Field
-		Sid           respjson.Field
-		StartTime     respjson.Field
-		Status        respjson.Field
-		To            respjson.Field
-		ToFormatted   respjson.Field
-		Uri           respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TexmlAccountCallGetCallsResponseCall) RawJSON() string { return r.JSON.raw }
-func (r *TexmlAccountCallGetCallsResponseCall) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -688,11 +503,11 @@ type TexmlAccountCallCallsParams struct {
 	//
 
 	// This field is a request body variant, only one variant field can be set.
-	OfWithURL *TexmlAccountCallCallsParamsParamsWithURL `json:",inline"`
+	OfWithURL *TexmlAccountCallCallsParamsBodyWithURL `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	OfWithTeXml *TexmlAccountCallCallsParamsParamsWithTeXml `json:",inline"`
+	OfWithTeXml *TexmlAccountCallCallsParamsBodyWithTeXml `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	OfApplicationDefault *TexmlAccountCallCallsParamsParamsApplicationDefault `json:",inline"`
+	OfApplicationDefault *TexmlAccountCallCallsParamsBodyApplicationDefault `json:",inline"`
 
 	paramObj
 }
@@ -705,7 +520,7 @@ func (r *TexmlAccountCallCallsParams) UnmarshalJSON(data []byte) error {
 }
 
 // The property URL is required.
-type TexmlAccountCallCallsParamsParamsWithURL struct {
+type TexmlAccountCallCallsParamsBodyWithURL struct {
 	// The URL from which Telnyx will retrieve the TeXML call instructions.
 	URL   string            `json:"Url" api:"required"`
 	Texml param.Opt[string] `json:"Texml,omitzero"`
@@ -793,7 +608,7 @@ type TexmlAccountCallCallsParamsParamsWithURL struct {
 	AsyncAmdStatusCallbackMethod string `json:"AsyncAmdStatusCallbackMethod,omitzero"`
 	// Custom HTTP headers to be sent with the call. Each header should be an object
 	// with 'name' and 'value' properties.
-	CustomHeaders []TexmlAccountCallCallsParamsParamsWithURLCustomHeader `json:"CustomHeaders,omitzero"`
+	CustomHeaders []TexmlAccountCallCallsParamsBodyWithURLCustomHeader `json:"CustomHeaders,omitzero"`
 	// Enables Deepfake Detection on the dialed call. When enabled, audio from the
 	// remote party is analyzed to determine whether the voice is AI-generated. Results
 	// are delivered asynchronously via a callback.
@@ -865,64 +680,64 @@ type TexmlAccountCallCallsParamsParamsWithURL struct {
 	paramObj
 }
 
-func (r TexmlAccountCallCallsParamsParamsWithURL) MarshalJSON() (data []byte, err error) {
-	type shadow TexmlAccountCallCallsParamsParamsWithURL
+func (r TexmlAccountCallCallsParamsBodyWithURL) MarshalJSON() (data []byte, err error) {
+	type shadow TexmlAccountCallCallsParamsBodyWithURL
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *TexmlAccountCallCallsParamsParamsWithURL) UnmarshalJSON(data []byte) error {
+func (r *TexmlAccountCallCallsParamsBodyWithURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
 		"AsyncAmdStatusCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
 		"DeepfakeDetection", "Enable",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
 		"DeepfakeDetectionCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
 		"DetectionMode", "Premium", "Regular", "PremiumCallScreening",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
 		"MachineDetection", "Enable", "Disable", "DetectMessageEnd",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
 		"MediaEncryption", "disabled", "SRTP", "DTLS",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
 		"RecordingChannels", "mono", "dual",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
 		"RecordingStatusCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
 		"RecordingTrack", "inbound", "outbound", "both",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
 		"SipRegion", "US", "Europe", "Canada", "Australia", "Middle East",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
 		"StatusCallbackEvent", "initiated", "ringing", "answered", "completed",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
 		"StatusCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
 		"SupervisingRole", "barge", "whisper", "monitor",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
 		"Trim", "trim-silence", "do-not-trim",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
 		"UrlMethod", "GET", "POST",
 	)
 }
 
 // The properties Name, Value are required.
-type TexmlAccountCallCallsParamsParamsWithURLCustomHeader struct {
+type TexmlAccountCallCallsParamsBodyWithURLCustomHeader struct {
 	// The name of the custom header
 	Name string `json:"name" api:"required"`
 	// The value of the custom header
@@ -930,16 +745,16 @@ type TexmlAccountCallCallsParamsParamsWithURLCustomHeader struct {
 	paramObj
 }
 
-func (r TexmlAccountCallCallsParamsParamsWithURLCustomHeader) MarshalJSON() (data []byte, err error) {
-	type shadow TexmlAccountCallCallsParamsParamsWithURLCustomHeader
+func (r TexmlAccountCallCallsParamsBodyWithURLCustomHeader) MarshalJSON() (data []byte, err error) {
+	type shadow TexmlAccountCallCallsParamsBodyWithURLCustomHeader
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *TexmlAccountCallCallsParamsParamsWithURLCustomHeader) UnmarshalJSON(data []byte) error {
+func (r *TexmlAccountCallCallsParamsBodyWithURLCustomHeader) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property Texml is required.
-type TexmlAccountCallCallsParamsParamsWithTeXml struct {
+type TexmlAccountCallCallsParamsBodyWithTeXml struct {
 	// TeXML to be used as instructions for the call. If provided, the call will
 	// execute these instructions instead of fetching from the Url.
 	Texml string            `json:"Texml" api:"required"`
@@ -1028,7 +843,7 @@ type TexmlAccountCallCallsParamsParamsWithTeXml struct {
 	AsyncAmdStatusCallbackMethod string `json:"AsyncAmdStatusCallbackMethod,omitzero"`
 	// Custom HTTP headers to be sent with the call. Each header should be an object
 	// with 'name' and 'value' properties.
-	CustomHeaders []TexmlAccountCallCallsParamsParamsWithTeXmlCustomHeader `json:"CustomHeaders,omitzero"`
+	CustomHeaders []TexmlAccountCallCallsParamsBodyWithTeXmlCustomHeader `json:"CustomHeaders,omitzero"`
 	// Enables Deepfake Detection on the dialed call. When enabled, audio from the
 	// remote party is analyzed to determine whether the voice is AI-generated. Results
 	// are delivered asynchronously via a callback.
@@ -1100,64 +915,64 @@ type TexmlAccountCallCallsParamsParamsWithTeXml struct {
 	paramObj
 }
 
-func (r TexmlAccountCallCallsParamsParamsWithTeXml) MarshalJSON() (data []byte, err error) {
-	type shadow TexmlAccountCallCallsParamsParamsWithTeXml
+func (r TexmlAccountCallCallsParamsBodyWithTeXml) MarshalJSON() (data []byte, err error) {
+	type shadow TexmlAccountCallCallsParamsBodyWithTeXml
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *TexmlAccountCallCallsParamsParamsWithTeXml) UnmarshalJSON(data []byte) error {
+func (r *TexmlAccountCallCallsParamsBodyWithTeXml) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
 		"AsyncAmdStatusCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
 		"DeepfakeDetection", "Enable",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
 		"DeepfakeDetectionCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
 		"DetectionMode", "Premium", "Regular", "PremiumCallScreening",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
 		"MachineDetection", "Enable", "Disable", "DetectMessageEnd",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
 		"MediaEncryption", "disabled", "SRTP", "DTLS",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
 		"RecordingChannels", "mono", "dual",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
 		"RecordingStatusCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
 		"RecordingTrack", "inbound", "outbound", "both",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
 		"SipRegion", "US", "Europe", "Canada", "Australia", "Middle East",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
 		"StatusCallbackEvent", "initiated", "ringing", "answered", "completed",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
 		"StatusCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
 		"SupervisingRole", "barge", "whisper", "monitor",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
 		"Trim", "trim-silence", "do-not-trim",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
 		"UrlMethod", "GET", "POST",
 	)
 }
 
 // The properties Name, Value are required.
-type TexmlAccountCallCallsParamsParamsWithTeXmlCustomHeader struct {
+type TexmlAccountCallCallsParamsBodyWithTeXmlCustomHeader struct {
 	// The name of the custom header
 	Name string `json:"name" api:"required"`
 	// The value of the custom header
@@ -1165,15 +980,15 @@ type TexmlAccountCallCallsParamsParamsWithTeXmlCustomHeader struct {
 	paramObj
 }
 
-func (r TexmlAccountCallCallsParamsParamsWithTeXmlCustomHeader) MarshalJSON() (data []byte, err error) {
-	type shadow TexmlAccountCallCallsParamsParamsWithTeXmlCustomHeader
+func (r TexmlAccountCallCallsParamsBodyWithTeXmlCustomHeader) MarshalJSON() (data []byte, err error) {
+	type shadow TexmlAccountCallCallsParamsBodyWithTeXmlCustomHeader
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *TexmlAccountCallCallsParamsParamsWithTeXmlCustomHeader) UnmarshalJSON(data []byte) error {
+func (r *TexmlAccountCallCallsParamsBodyWithTeXmlCustomHeader) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type TexmlAccountCallCallsParamsParamsApplicationDefault struct {
+type TexmlAccountCallCallsParamsBodyApplicationDefault struct {
 	Texml param.Opt[string] `json:"Texml,omitzero"`
 	URL   param.Opt[string] `json:"Url,omitzero"`
 	// The ID of the TeXML Application.
@@ -1260,7 +1075,7 @@ type TexmlAccountCallCallsParamsParamsApplicationDefault struct {
 	AsyncAmdStatusCallbackMethod string `json:"AsyncAmdStatusCallbackMethod,omitzero"`
 	// Custom HTTP headers to be sent with the call. Each header should be an object
 	// with 'name' and 'value' properties.
-	CustomHeaders []TexmlAccountCallCallsParamsParamsApplicationDefaultCustomHeader `json:"CustomHeaders,omitzero"`
+	CustomHeaders []TexmlAccountCallCallsParamsBodyApplicationDefaultCustomHeader `json:"CustomHeaders,omitzero"`
 	// Enables Deepfake Detection on the dialed call. When enabled, audio from the
 	// remote party is analyzed to determine whether the voice is AI-generated. Results
 	// are delivered asynchronously via a callback.
@@ -1332,64 +1147,64 @@ type TexmlAccountCallCallsParamsParamsApplicationDefault struct {
 	paramObj
 }
 
-func (r TexmlAccountCallCallsParamsParamsApplicationDefault) MarshalJSON() (data []byte, err error) {
-	type shadow TexmlAccountCallCallsParamsParamsApplicationDefault
+func (r TexmlAccountCallCallsParamsBodyApplicationDefault) MarshalJSON() (data []byte, err error) {
+	type shadow TexmlAccountCallCallsParamsBodyApplicationDefault
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *TexmlAccountCallCallsParamsParamsApplicationDefault) UnmarshalJSON(data []byte) error {
+func (r *TexmlAccountCallCallsParamsBodyApplicationDefault) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
 		"AsyncAmdStatusCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
 		"DeepfakeDetection", "Enable",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
 		"DeepfakeDetectionCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
 		"DetectionMode", "Premium", "Regular", "PremiumCallScreening",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
 		"MachineDetection", "Enable", "Disable", "DetectMessageEnd",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
 		"MediaEncryption", "disabled", "SRTP", "DTLS",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
 		"RecordingChannels", "mono", "dual",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
 		"RecordingStatusCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
 		"RecordingTrack", "inbound", "outbound", "both",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
 		"SipRegion", "US", "Europe", "Canada", "Australia", "Middle East",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
 		"StatusCallbackEvent", "initiated", "ringing", "answered", "completed",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
 		"StatusCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
 		"SupervisingRole", "barge", "whisper", "monitor",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
 		"Trim", "trim-silence", "do-not-trim",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
 		"UrlMethod", "GET", "POST",
 	)
 }
 
 // The properties Name, Value are required.
-type TexmlAccountCallCallsParamsParamsApplicationDefaultCustomHeader struct {
+type TexmlAccountCallCallsParamsBodyApplicationDefaultCustomHeader struct {
 	// The name of the custom header
 	Name string `json:"name" api:"required"`
 	// The value of the custom header
@@ -1397,11 +1212,11 @@ type TexmlAccountCallCallsParamsParamsApplicationDefaultCustomHeader struct {
 	paramObj
 }
 
-func (r TexmlAccountCallCallsParamsParamsApplicationDefaultCustomHeader) MarshalJSON() (data []byte, err error) {
-	type shadow TexmlAccountCallCallsParamsParamsApplicationDefaultCustomHeader
+func (r TexmlAccountCallCallsParamsBodyApplicationDefaultCustomHeader) MarshalJSON() (data []byte, err error) {
+	type shadow TexmlAccountCallCallsParamsBodyApplicationDefaultCustomHeader
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *TexmlAccountCallCallsParamsParamsApplicationDefaultCustomHeader) UnmarshalJSON(data []byte) error {
+func (r *TexmlAccountCallCallsParamsBodyApplicationDefaultCustomHeader) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -27,7 +27,11 @@ func TestWireguardPeerNew(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.WireguardPeers.New(context.TODO(), telnyx.WireguardPeerNewParams{
-		WireguardInterfaceID: "6a09cdc3-8948-47f0-aa62-74ac943d6c58",
+		Body: telnyx.WireguardPeerNewParamsBody{
+			WireguardPeerParam: telnyx.WireguardPeerParam{
+				RecordParam: telnyx.RecordParam{},
+			},
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

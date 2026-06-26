@@ -153,7 +153,7 @@ func (r *Messaging10dlcBrandService) GetFeedback(ctx context.Context, brandID st
 //
 // The response includes delivery status, verification dates, and detailed delivery
 // information.
-func (r *Messaging10dlcBrandService) GetSMSOtpByReference(ctx context.Context, referenceID string, query Messaging10dlcBrandGetSMSOtpByReferenceParams, opts ...option.RequestOption) (res *Messaging10dlcBrandGetSMSOtpByReferenceResponse, err error) {
+func (r *Messaging10dlcBrandService) GetSMSOtpByReference(ctx context.Context, referenceID string, query Messaging10dlcBrandGetSMSOtpByReferenceParams, opts ...option.RequestOption) (res *BrandSMSOtpStatus, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if referenceID == "" {
 		err = errors.New("missing required referenceId parameter")
@@ -189,7 +189,7 @@ func (r *Messaging10dlcBrandService) Resend2faEmail(ctx context.Context, brandID
 //
 // **Note:** This is an alternative to the `/10dlc/brand/smsOtp/{referenceId}`
 // endpoint when you have the Brand ID but not the reference ID.
-func (r *Messaging10dlcBrandService) GetSMSOtpStatus(ctx context.Context, brandID string, opts ...option.RequestOption) (res *Messaging10dlcBrandGetSMSOtpStatusResponse, err error) {
+func (r *Messaging10dlcBrandService) GetSMSOtpStatus(ctx context.Context, brandID string, opts ...option.RequestOption) (res *BrandSMSOtpStatus, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
@@ -307,6 +307,46 @@ type BrandOptionalAttributes struct {
 // Returns the unmodified JSON received from the API
 func (r BrandOptionalAttributes) RawJSON() string { return r.JSON.raw }
 func (r *BrandOptionalAttributes) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Status information for an SMS OTP sent during Sole Proprietor brand verification
+type BrandSMSOtpStatus struct {
+	// The Brand ID associated with this OTP request
+	BrandID string `json:"brandId" api:"required"`
+	// The current delivery status of the OTP SMS message. Common values include:
+	// `DELIVERED_HANDSET`, `PENDING`, `FAILED`, `EXPIRED`
+	DeliveryStatus string `json:"deliveryStatus" api:"required"`
+	// The mobile phone number where the OTP was sent, in E.164 format
+	MobilePhone string `json:"mobilePhone" api:"required"`
+	// The reference ID for this OTP request, used for status queries
+	ReferenceID string `json:"referenceId" api:"required"`
+	// The timestamp when the OTP request was initiated
+	RequestDate time.Time `json:"requestDate" api:"required" format:"date-time"`
+	// The timestamp when the delivery status was last updated
+	DeliveryStatusDate time.Time `json:"deliveryStatusDate" format:"date-time"`
+	// Additional details about the delivery status
+	DeliveryStatusDetails string `json:"deliveryStatusDetails"`
+	// The timestamp when the OTP was successfully verified (if applicable)
+	VerifyDate time.Time `json:"verifyDate" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BrandID               respjson.Field
+		DeliveryStatus        respjson.Field
+		MobilePhone           respjson.Field
+		ReferenceID           respjson.Field
+		RequestDate           respjson.Field
+		DeliveryStatusDate    respjson.Field
+		DeliveryStatusDetails respjson.Field
+		VerifyDate            respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BrandSMSOtpStatus) RawJSON() string { return r.JSON.raw }
+func (r *BrandSMSOtpStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -679,86 +719,6 @@ type Messaging10dlcBrandGetFeedbackResponseCategory struct {
 // Returns the unmodified JSON received from the API
 func (r Messaging10dlcBrandGetFeedbackResponseCategory) RawJSON() string { return r.JSON.raw }
 func (r *Messaging10dlcBrandGetFeedbackResponseCategory) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Status information for an SMS OTP sent during Sole Proprietor brand verification
-type Messaging10dlcBrandGetSMSOtpByReferenceResponse struct {
-	// The Brand ID associated with this OTP request
-	BrandID string `json:"brandId" api:"required"`
-	// The current delivery status of the OTP SMS message. Common values include:
-	// `DELIVERED_HANDSET`, `PENDING`, `FAILED`, `EXPIRED`
-	DeliveryStatus string `json:"deliveryStatus" api:"required"`
-	// The mobile phone number where the OTP was sent, in E.164 format
-	MobilePhone string `json:"mobilePhone" api:"required"`
-	// The reference ID for this OTP request, used for status queries
-	ReferenceID string `json:"referenceId" api:"required"`
-	// The timestamp when the OTP request was initiated
-	RequestDate time.Time `json:"requestDate" api:"required" format:"date-time"`
-	// The timestamp when the delivery status was last updated
-	DeliveryStatusDate time.Time `json:"deliveryStatusDate" format:"date-time"`
-	// Additional details about the delivery status
-	DeliveryStatusDetails string `json:"deliveryStatusDetails"`
-	// The timestamp when the OTP was successfully verified (if applicable)
-	VerifyDate time.Time `json:"verifyDate" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		BrandID               respjson.Field
-		DeliveryStatus        respjson.Field
-		MobilePhone           respjson.Field
-		ReferenceID           respjson.Field
-		RequestDate           respjson.Field
-		DeliveryStatusDate    respjson.Field
-		DeliveryStatusDetails respjson.Field
-		VerifyDate            respjson.Field
-		ExtraFields           map[string]respjson.Field
-		raw                   string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r Messaging10dlcBrandGetSMSOtpByReferenceResponse) RawJSON() string { return r.JSON.raw }
-func (r *Messaging10dlcBrandGetSMSOtpByReferenceResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Status information for an SMS OTP sent during Sole Proprietor brand verification
-type Messaging10dlcBrandGetSMSOtpStatusResponse struct {
-	// The Brand ID associated with this OTP request
-	BrandID string `json:"brandId" api:"required"`
-	// The current delivery status of the OTP SMS message. Common values include:
-	// `DELIVERED_HANDSET`, `PENDING`, `FAILED`, `EXPIRED`
-	DeliveryStatus string `json:"deliveryStatus" api:"required"`
-	// The mobile phone number where the OTP was sent, in E.164 format
-	MobilePhone string `json:"mobilePhone" api:"required"`
-	// The reference ID for this OTP request, used for status queries
-	ReferenceID string `json:"referenceId" api:"required"`
-	// The timestamp when the OTP request was initiated
-	RequestDate time.Time `json:"requestDate" api:"required" format:"date-time"`
-	// The timestamp when the delivery status was last updated
-	DeliveryStatusDate time.Time `json:"deliveryStatusDate" format:"date-time"`
-	// Additional details about the delivery status
-	DeliveryStatusDetails string `json:"deliveryStatusDetails"`
-	// The timestamp when the OTP was successfully verified (if applicable)
-	VerifyDate time.Time `json:"verifyDate" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		BrandID               respjson.Field
-		DeliveryStatus        respjson.Field
-		MobilePhone           respjson.Field
-		ReferenceID           respjson.Field
-		RequestDate           respjson.Field
-		DeliveryStatusDate    respjson.Field
-		DeliveryStatusDetails respjson.Field
-		VerifyDate            respjson.Field
-		ExtraFields           map[string]respjson.Field
-		raw                   string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r Messaging10dlcBrandGetSMSOtpStatusResponse) RawJSON() string { return r.JSON.raw }
-func (r *Messaging10dlcBrandGetSMSOtpStatusResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

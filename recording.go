@@ -44,7 +44,7 @@ func NewRecordingService(opts ...option.RequestOption) (r RecordingService) {
 }
 
 // Retrieves the details of an existing call recording.
-func (r *RecordingService) Get(ctx context.Context, recordingID string, opts ...option.RequestOption) (res *RecordingGetResponse, err error) {
+func (r *RecordingService) Get(ctx context.Context, recordingID string, opts ...option.RequestOption) (res *RecordingResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if recordingID == "" {
 		err = errors.New("missing required recording_id parameter")
@@ -79,7 +79,7 @@ func (r *RecordingService) ListAutoPaging(ctx context.Context, query RecordingLi
 }
 
 // Permanently deletes a call recording.
-func (r *RecordingService) Delete(ctx context.Context, recordingID string, opts ...option.RequestOption) (res *RecordingDeleteResponse, err error) {
+func (r *RecordingService) Delete(ctx context.Context, recordingID string, opts ...option.RequestOption) (res *RecordingResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if recordingID == "" {
 		err = errors.New("missing required recording_id parameter")
@@ -88,6 +88,22 @@ func (r *RecordingService) Delete(ctx context.Context, recordingID string, opts 
 	path := fmt.Sprintf("recordings/%s", recordingID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
+}
+
+type RecordingResponse struct {
+	Data RecordingResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RecordingResponse) RawJSON() string { return r.JSON.raw }
+func (r *RecordingResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type RecordingResponseData struct {
@@ -225,38 +241,6 @@ type RecordingResponseDataStatus string
 const (
 	RecordingResponseDataStatusCompleted RecordingResponseDataStatus = "completed"
 )
-
-type RecordingGetResponse struct {
-	Data RecordingResponseData `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RecordingGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *RecordingGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type RecordingDeleteResponse struct {
-	Data RecordingResponseData `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RecordingDeleteResponse) RawJSON() string { return r.JSON.raw }
-func (r *RecordingDeleteResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 type RecordingListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`

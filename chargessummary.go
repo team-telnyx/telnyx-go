@@ -122,7 +122,7 @@ type ChargesSummaryGetResponseDataSummary struct {
 	// List of billing adjustments
 	Adjustments []ChargesSummaryGetResponseDataSummaryAdjustment `json:"adjustments" api:"required"`
 	// List of charge summary lines
-	Lines []ChargesSummaryGetResponseDataSummaryLineUnion `json:"lines" api:"required"`
+	Lines []ChargesSummaryGetResponseDataSummaryLinesUnion `json:"lines" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Adjustments respjson.Field
@@ -161,28 +161,28 @@ func (r *ChargesSummaryGetResponseDataSummaryAdjustment) UnmarshalJSON(data []by
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// ChargesSummaryGetResponseDataSummaryLineUnion contains all possible properties
-// and values from [ChargesSummaryGetResponseDataSummaryLineComparative],
-// [ChargesSummaryGetResponseDataSummaryLineSimple].
+// ChargesSummaryGetResponseDataSummaryLinesUnion contains all possible properties
+// and values from [ChargesSummaryGetResponseDataSummaryLinesComparative],
+// [ChargesSummaryGetResponseDataSummaryLinesSimple].
 //
-// Use the [ChargesSummaryGetResponseDataSummaryLineUnion.AsAny] method to switch
+// Use the [ChargesSummaryGetResponseDataSummaryLinesUnion.AsAny] method to switch
 // on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
-type ChargesSummaryGetResponseDataSummaryLineUnion struct {
+type ChargesSummaryGetResponseDataSummaryLinesUnion struct {
 	Alias string `json:"alias"`
 	// This field is from variant
-	// [ChargesSummaryGetResponseDataSummaryLineComparative].
+	// [ChargesSummaryGetResponseDataSummaryLinesComparative].
 	ExistingThisMonth MonthDetail `json:"existing_this_month"`
 	Name              string      `json:"name"`
 	// This field is from variant
-	// [ChargesSummaryGetResponseDataSummaryLineComparative].
+	// [ChargesSummaryGetResponseDataSummaryLinesComparative].
 	NewThisMonth MonthDetail `json:"new_this_month"`
 	// Any of "comparative", "simple".
 	Type string `json:"type"`
-	// This field is from variant [ChargesSummaryGetResponseDataSummaryLineSimple].
+	// This field is from variant [ChargesSummaryGetResponseDataSummaryLinesSimple].
 	Amount string `json:"amount"`
-	// This field is from variant [ChargesSummaryGetResponseDataSummaryLineSimple].
+	// This field is from variant [ChargesSummaryGetResponseDataSummaryLinesSimple].
 	Quantity int64 `json:"quantity"`
 	JSON     struct {
 		Alias             respjson.Field
@@ -197,26 +197,26 @@ type ChargesSummaryGetResponseDataSummaryLineUnion struct {
 }
 
 // anyChargesSummaryGetResponseDataSummaryLine is implemented by each variant of
-// [ChargesSummaryGetResponseDataSummaryLineUnion] to add type safety for the
-// return type of [ChargesSummaryGetResponseDataSummaryLineUnion.AsAny]
+// [ChargesSummaryGetResponseDataSummaryLinesUnion] to add type safety for the
+// return type of [ChargesSummaryGetResponseDataSummaryLinesUnion.AsAny]
 type anyChargesSummaryGetResponseDataSummaryLine interface {
-	implChargesSummaryGetResponseDataSummaryLineUnion()
+	implChargesSummaryGetResponseDataSummaryLinesUnion()
 }
 
-func (ChargesSummaryGetResponseDataSummaryLineComparative) implChargesSummaryGetResponseDataSummaryLineUnion() {
+func (ChargesSummaryGetResponseDataSummaryLinesComparative) implChargesSummaryGetResponseDataSummaryLinesUnion() {
 }
-func (ChargesSummaryGetResponseDataSummaryLineSimple) implChargesSummaryGetResponseDataSummaryLineUnion() {
+func (ChargesSummaryGetResponseDataSummaryLinesSimple) implChargesSummaryGetResponseDataSummaryLinesUnion() {
 }
 
 // Use the following switch statement to find the correct variant
 //
-//	switch variant := ChargesSummaryGetResponseDataSummaryLineUnion.AsAny().(type) {
-//	case telnyx.ChargesSummaryGetResponseDataSummaryLineComparative:
-//	case telnyx.ChargesSummaryGetResponseDataSummaryLineSimple:
+//	switch variant := ChargesSummaryGetResponseDataSummaryLinesUnion.AsAny().(type) {
+//	case telnyx.ChargesSummaryGetResponseDataSummaryLinesComparative:
+//	case telnyx.ChargesSummaryGetResponseDataSummaryLinesSimple:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
-func (u ChargesSummaryGetResponseDataSummaryLineUnion) AsAny() anyChargesSummaryGetResponseDataSummaryLine {
+func (u ChargesSummaryGetResponseDataSummaryLinesUnion) AsAny() anyChargesSummaryGetResponseDataSummaryLine {
 	switch u.Type {
 	case "comparative":
 		return u.AsComparative()
@@ -226,24 +226,24 @@ func (u ChargesSummaryGetResponseDataSummaryLineUnion) AsAny() anyChargesSummary
 	return nil
 }
 
-func (u ChargesSummaryGetResponseDataSummaryLineUnion) AsComparative() (v ChargesSummaryGetResponseDataSummaryLineComparative) {
+func (u ChargesSummaryGetResponseDataSummaryLinesUnion) AsComparative() (v ChargesSummaryGetResponseDataSummaryLinesComparative) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u ChargesSummaryGetResponseDataSummaryLineUnion) AsSimple() (v ChargesSummaryGetResponseDataSummaryLineSimple) {
+func (u ChargesSummaryGetResponseDataSummaryLinesUnion) AsSimple() (v ChargesSummaryGetResponseDataSummaryLinesSimple) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u ChargesSummaryGetResponseDataSummaryLineUnion) RawJSON() string { return u.JSON.raw }
+func (u ChargesSummaryGetResponseDataSummaryLinesUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *ChargesSummaryGetResponseDataSummaryLineUnion) UnmarshalJSON(data []byte) error {
+func (r *ChargesSummaryGetResponseDataSummaryLinesUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ChargesSummaryGetResponseDataSummaryLineComparative struct {
+type ChargesSummaryGetResponseDataSummaryLinesComparative struct {
 	// Service alias
 	Alias             string      `json:"alias" api:"required"`
 	ExistingThisMonth MonthDetail `json:"existing_this_month" api:"required"`
@@ -264,12 +264,12 @@ type ChargesSummaryGetResponseDataSummaryLineComparative struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChargesSummaryGetResponseDataSummaryLineComparative) RawJSON() string { return r.JSON.raw }
-func (r *ChargesSummaryGetResponseDataSummaryLineComparative) UnmarshalJSON(data []byte) error {
+func (r ChargesSummaryGetResponseDataSummaryLinesComparative) RawJSON() string { return r.JSON.raw }
+func (r *ChargesSummaryGetResponseDataSummaryLinesComparative) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ChargesSummaryGetResponseDataSummaryLineSimple struct {
+type ChargesSummaryGetResponseDataSummaryLinesSimple struct {
 	// Service alias
 	Alias string `json:"alias" api:"required"`
 	// Total amount as decimal string
@@ -292,8 +292,8 @@ type ChargesSummaryGetResponseDataSummaryLineSimple struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChargesSummaryGetResponseDataSummaryLineSimple) RawJSON() string { return r.JSON.raw }
-func (r *ChargesSummaryGetResponseDataSummaryLineSimple) UnmarshalJSON(data []byte) error {
+func (r ChargesSummaryGetResponseDataSummaryLinesSimple) RawJSON() string { return r.JSON.raw }
+func (r *ChargesSummaryGetResponseDataSummaryLinesSimple) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

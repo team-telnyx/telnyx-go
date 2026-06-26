@@ -44,7 +44,7 @@ func NewDirPhoneNumberService(opts ...option.RequestOption) (r DirPhoneNumberSer
 
 // List the phone numbers registered under a DIR. The enterprise is resolved
 // server-side from the DIR id.
-func (r *DirPhoneNumberService) List(ctx context.Context, dirID string, query DirPhoneNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[DirPhoneNumberListResponse], err error) {
+func (r *DirPhoneNumberService) List(ctx context.Context, dirID string, query DirPhoneNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[DirPhoneNumber], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -67,7 +67,7 @@ func (r *DirPhoneNumberService) List(ctx context.Context, dirID string, query Di
 
 // List the phone numbers registered under a DIR. The enterprise is resolved
 // server-side from the DIR id.
-func (r *DirPhoneNumberService) ListAutoPaging(ctx context.Context, dirID string, query DirPhoneNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[DirPhoneNumberListResponse] {
+func (r *DirPhoneNumberService) ListAutoPaging(ctx context.Context, dirID string, query DirPhoneNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[DirPhoneNumber] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, dirID, query, opts...))
 }
 
@@ -101,7 +101,7 @@ func (r *DirPhoneNumberService) Remove(ctx context.Context, dirID string, body D
 	return res, err
 }
 
-type DirPhoneNumberListResponse struct {
+type DirPhoneNumber struct {
 	ID string `json:"id" format:"uuid"`
 	// Id of the batch this number was vetted as part of.
 	BatchID      string    `json:"batch_id" api:"nullable" format:"uuid"`
@@ -113,7 +113,7 @@ type DirPhoneNumberListResponse struct {
 	// E.164 with leading `+`.
 	PhoneNumber string `json:"phone_number"`
 	// Populated when `status` is `unsuccessful` or `permanently_rejected`.
-	RejectionReason DirPhoneNumberListResponseRejectionReason `json:"rejection_reason" api:"nullable"`
+	RejectionReason RejectionReason `json:"rejection_reason" api:"nullable"`
 	// Phone-number lifecycle status.
 	//
 	//   - `submitted` / `in_review` - Telnyx is reviewing the batch this number belongs
@@ -130,9 +130,9 @@ type DirPhoneNumberListResponse struct {
 	//
 	// Any of "submitted", "in_review", "verified", "unsuccessful", "suspended",
 	// "expired", "permanently_rejected".
-	Status     DirPhoneNumberListResponseStatus `json:"status"`
-	UpdatedAt  time.Time                        `json:"updated_at" format:"date-time"`
-	VerifiedAt time.Time                        `json:"verified_at" api:"nullable" format:"date-time"`
+	Status     DirPhoneNumberStatus `json:"status"`
+	UpdatedAt  time.Time            `json:"updated_at" format:"date-time"`
+	VerifiedAt time.Time            `json:"verified_at" api:"nullable" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -152,13 +152,12 @@ type DirPhoneNumberListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DirPhoneNumberListResponse) RawJSON() string { return r.JSON.raw }
-func (r *DirPhoneNumberListResponse) UnmarshalJSON(data []byte) error {
+func (r DirPhoneNumber) RawJSON() string { return r.JSON.raw }
+func (r *DirPhoneNumber) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Populated when `status` is `unsuccessful` or `permanently_rejected`.
-type DirPhoneNumberListResponseRejectionReason struct {
+type RejectionReason struct {
 	Code   string `json:"code"`
 	Detail string `json:"detail"`
 	// Customer-visible free-text comment from the Telnyx vetting team. Only the first
@@ -177,35 +176,10 @@ type DirPhoneNumberListResponseRejectionReason struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DirPhoneNumberListResponseRejectionReason) RawJSON() string { return r.JSON.raw }
-func (r *DirPhoneNumberListResponseRejectionReason) UnmarshalJSON(data []byte) error {
+func (r RejectionReason) RawJSON() string { return r.JSON.raw }
+func (r *RejectionReason) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Phone-number lifecycle status.
-//
-//   - `submitted` / `in_review` - Telnyx is reviewing the batch this number belongs
-//     to.
-//   - `verified` - approved; the DIR's display identity will be shown on outbound
-//     calls from this number.
-//   - `unsuccessful` - Telnyx rejected this submission; the customer may re-add to
-//     retry.
-//   - `suspended` - temporarily disabled (e.g. by an active infringement claim on
-//     the DIR).
-//   - `expired` - verification expired; re-add to renew.
-//   - `permanently_rejected` - terminal; cannot be re-added on this or any other DIR
-//     you own.
-type DirPhoneNumberListResponseStatus string
-
-const (
-	DirPhoneNumberListResponseStatusSubmitted           DirPhoneNumberListResponseStatus = "submitted"
-	DirPhoneNumberListResponseStatusInReview            DirPhoneNumberListResponseStatus = "in_review"
-	DirPhoneNumberListResponseStatusVerified            DirPhoneNumberListResponseStatus = "verified"
-	DirPhoneNumberListResponseStatusUnsuccessful        DirPhoneNumberListResponseStatus = "unsuccessful"
-	DirPhoneNumberListResponseStatusSuspended           DirPhoneNumberListResponseStatus = "suspended"
-	DirPhoneNumberListResponseStatusExpired             DirPhoneNumberListResponseStatus = "expired"
-	DirPhoneNumberListResponseStatusPermanentlyRejected DirPhoneNumberListResponseStatus = "permanently_rejected"
-)
 
 // Bulk-add success response (HTTP 201). All numbers in the request were accepted
 // into a single new batch. Every entry in `data` shares the same `batch_id` - read
@@ -218,7 +192,7 @@ const (
 type DirPhoneNumberAddResponse struct {
 	// Phone numbers accepted into the new batch. List order mirrors the request order.
 	// Each element shares the same `batch_id`.
-	Data []DirPhoneNumberAddResponseData `json:"data" api:"required"`
+	Data []DirPhoneNumber `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -230,87 +204,6 @@ type DirPhoneNumberAddResponse struct {
 // Returns the unmodified JSON received from the API
 func (r DirPhoneNumberAddResponse) RawJSON() string { return r.JSON.raw }
 func (r *DirPhoneNumberAddResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DirPhoneNumberAddResponseData struct {
-	ID string `json:"id" format:"uuid"`
-	// Id of the batch this number was vetted as part of.
-	BatchID      string    `json:"batch_id" api:"nullable" format:"uuid"`
-	CreatedAt    time.Time `json:"created_at" format:"date-time"`
-	DirID        string    `json:"dir_id" format:"uuid"`
-	EnterpriseID string    `json:"enterprise_id" format:"uuid"`
-	// Id of the Letter of Authorization document attached to this number's batch.
-	LoaDocumentID string `json:"loa_document_id" api:"nullable" format:"uuid"`
-	// E.164 with leading `+`.
-	PhoneNumber string `json:"phone_number"`
-	// Populated when `status` is `unsuccessful` or `permanently_rejected`.
-	RejectionReason DirPhoneNumberAddResponseDataRejectionReason `json:"rejection_reason" api:"nullable"`
-	// Phone-number lifecycle status.
-	//
-	//   - `submitted` / `in_review` - Telnyx is reviewing the batch this number belongs
-	//     to.
-	//   - `verified` - approved; the DIR's display identity will be shown on outbound
-	//     calls from this number.
-	//   - `unsuccessful` - Telnyx rejected this submission; the customer may re-add to
-	//     retry.
-	//   - `suspended` - temporarily disabled (e.g. by an active infringement claim on
-	//     the DIR).
-	//   - `expired` - verification expired; re-add to renew.
-	//   - `permanently_rejected` - terminal; cannot be re-added on this or any other DIR
-	//     you own.
-	//
-	// Any of "submitted", "in_review", "verified", "unsuccessful", "suspended",
-	// "expired", "permanently_rejected".
-	Status     string    `json:"status"`
-	UpdatedAt  time.Time `json:"updated_at" format:"date-time"`
-	VerifiedAt time.Time `json:"verified_at" api:"nullable" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID              respjson.Field
-		BatchID         respjson.Field
-		CreatedAt       respjson.Field
-		DirID           respjson.Field
-		EnterpriseID    respjson.Field
-		LoaDocumentID   respjson.Field
-		PhoneNumber     respjson.Field
-		RejectionReason respjson.Field
-		Status          respjson.Field
-		UpdatedAt       respjson.Field
-		VerifiedAt      respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DirPhoneNumberAddResponseData) RawJSON() string { return r.JSON.raw }
-func (r *DirPhoneNumberAddResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Populated when `status` is `unsuccessful` or `permanently_rejected`.
-type DirPhoneNumberAddResponseDataRejectionReason struct {
-	Code   string `json:"code"`
-	Detail string `json:"detail"`
-	// Customer-visible free-text comment from the Telnyx vetting team. Only the first
-	// entry of `rejection_reasons` carries this; the rest are `null`.
-	Message string `json:"message" api:"nullable"`
-	Title   string `json:"title"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Detail      respjson.Field
-		Message     respjson.Field
-		Title       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DirPhoneNumberAddResponseDataRejectionReason) RawJSON() string { return r.JSON.raw }
-func (r *DirPhoneNumberAddResponseDataRejectionReason) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -394,7 +287,7 @@ type DirPhoneNumberListParams struct {
 	//
 	// Any of "submitted", "in_review", "verified", "unsuccessful", "suspended",
 	// "expired", "permanently_rejected".
-	Status DirPhoneNumberListParamsStatus `query:"status,omitzero" json:"-"`
+	Status DirPhoneNumberStatus `query:"status,omitzero" json:"-"`
 	paramObj
 }
 
@@ -407,26 +300,13 @@ func (r DirPhoneNumberListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Filter by phone-number status.
-type DirPhoneNumberListParamsStatus string
-
-const (
-	DirPhoneNumberListParamsStatusSubmitted           DirPhoneNumberListParamsStatus = "submitted"
-	DirPhoneNumberListParamsStatusInReview            DirPhoneNumberListParamsStatus = "in_review"
-	DirPhoneNumberListParamsStatusVerified            DirPhoneNumberListParamsStatus = "verified"
-	DirPhoneNumberListParamsStatusUnsuccessful        DirPhoneNumberListParamsStatus = "unsuccessful"
-	DirPhoneNumberListParamsStatusSuspended           DirPhoneNumberListParamsStatus = "suspended"
-	DirPhoneNumberListParamsStatusExpired             DirPhoneNumberListParamsStatus = "expired"
-	DirPhoneNumberListParamsStatusPermanentlyRejected DirPhoneNumberListParamsStatus = "permanently_rejected"
-)
-
 type DirPhoneNumberAddParams struct {
 	// Supporting documents covering this batch. At least one entry with
 	// `document_type: letter_of_authorization` is required - the LOA authorises Telnyx
 	// to register these numbers under the DIR. Each `document_id` must come from the
 	// Telnyx Documents API. Additional document types (e.g. business registration) may
 	// be included alongside the LOA.
-	Documents []DirPhoneNumberAddParamsDocument `json:"documents,omitzero" api:"required"`
+	Documents []DocumentParam `json:"documents,omitzero" api:"required"`
 	// 1–15 phone numbers in E.164 format. 10-digit US numbers are auto-prefixed with
 	// `1`.
 	PhoneNumbers []string `json:"phone_numbers,omitzero" api:"required"`
@@ -439,39 +319,6 @@ func (r DirPhoneNumberAddParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *DirPhoneNumberAddParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties DocumentID, DocumentType are required.
-type DirPhoneNumberAddParamsDocument struct {
-	// Id returned by the Telnyx Documents API after you upload the file (upload via
-	// `POST /v2/documents`; see https://developers.telnyx.com/api/documents).
-	DocumentID string `json:"document_id" api:"required" format:"uuid"`
-	// Type of supporting document. Pick the closest match to what the file actually
-	// contains; `other` triggers manual vetting and may slow approval. The matching
-	// short_name reference list is at `GET /v2/dir/document_types`.
-	//
-	// Any of "letter_of_authorization", "business_registration",
-	// "articles_of_incorporation", "tax_document", "ein_letter",
-	// "trademark_registration", "website_ownership", "business_license",
-	// "professional_license", "government_id", "utility_bill", "bank_statement",
-	// "other".
-	DocumentType string            `json:"document_type,omitzero" api:"required"`
-	Description  param.Opt[string] `json:"description,omitzero"`
-	paramObj
-}
-
-func (r DirPhoneNumberAddParamsDocument) MarshalJSON() (data []byte, err error) {
-	type shadow DirPhoneNumberAddParamsDocument
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *DirPhoneNumberAddParamsDocument) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[DirPhoneNumberAddParamsDocument](
-		"document_type", "letter_of_authorization", "business_registration", "articles_of_incorporation", "tax_document", "ein_letter", "trademark_registration", "website_ownership", "business_license", "professional_license", "government_id", "utility_bill", "bank_statement", "other",
-	)
 }
 
 type DirPhoneNumberRemoveParams struct {

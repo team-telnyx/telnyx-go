@@ -53,7 +53,7 @@ func (r *MobilePhoneNumberMessagingService) Get(ctx context.Context, id string, 
 }
 
 // List mobile phone numbers with messaging settings
-func (r *MobilePhoneNumberMessagingService) List(ctx context.Context, query MobilePhoneNumberMessagingListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MobilePhoneNumberMessagingListResponse], err error) {
+func (r *MobilePhoneNumberMessagingService) List(ctx context.Context, query MobilePhoneNumberMessagingListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MobilePhoneNumberWithMessagingSettings], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -71,12 +71,102 @@ func (r *MobilePhoneNumberMessagingService) List(ctx context.Context, query Mobi
 }
 
 // List mobile phone numbers with messaging settings
-func (r *MobilePhoneNumberMessagingService) ListAutoPaging(ctx context.Context, query MobilePhoneNumberMessagingListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MobilePhoneNumberMessagingListResponse] {
+func (r *MobilePhoneNumberMessagingService) ListAutoPaging(ctx context.Context, query MobilePhoneNumberMessagingListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MobilePhoneNumberWithMessagingSettings] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
+type MobilePhoneNumberWithMessagingSettings struct {
+	// Identifies the type of resource.
+	ID string `json:"id"`
+	// ISO 3166-1 alpha-2 country code.
+	CountryCode string `json:"country_code"`
+	// ISO 8601 formatted date indicating when the resource was created.
+	CreatedAt time.Time                                      `json:"created_at" format:"date-time"`
+	Features  MobilePhoneNumberWithMessagingSettingsFeatures `json:"features"`
+	// The messaging product that the number is registered to use
+	MessagingProduct string `json:"messaging_product"`
+	// Unique identifier for a messaging profile.
+	MessagingProfileID string `json:"messaging_profile_id" api:"nullable"`
+	// The organization that owns this phone number.
+	OrganizationID string `json:"organization_id"`
+	// +E.164 formatted phone number.
+	PhoneNumber string `json:"phone_number"`
+	// Identifies the type of the resource.
+	//
+	// Any of "messaging_phone_number", "messaging_settings".
+	RecordType MobilePhoneNumberWithMessagingSettingsRecordType `json:"record_type"`
+	// Tags associated with this phone number.
+	Tags []string `json:"tags"`
+	// The messaging traffic or use case for which the number is currently configured.
+	TrafficType string `json:"traffic_type"`
+	// The type of the phone number
+	//
+	// Any of "longcode".
+	Type MobilePhoneNumberWithMessagingSettingsType `json:"type"`
+	// ISO 8601 formatted date indicating when the resource was updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                 respjson.Field
+		CountryCode        respjson.Field
+		CreatedAt          respjson.Field
+		Features           respjson.Field
+		MessagingProduct   respjson.Field
+		MessagingProfileID respjson.Field
+		OrganizationID     respjson.Field
+		PhoneNumber        respjson.Field
+		RecordType         respjson.Field
+		Tags               respjson.Field
+		TrafficType        respjson.Field
+		Type               respjson.Field
+		UpdatedAt          respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MobilePhoneNumberWithMessagingSettings) RawJSON() string { return r.JSON.raw }
+func (r *MobilePhoneNumberWithMessagingSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MobilePhoneNumberWithMessagingSettingsFeatures struct {
+	// The set of features available for a specific messaging use case (SMS or MMS).
+	// Features can vary depending on the characteristics the phone number, as well as
+	// its current product configuration.
+	SMS shared.MessagingFeatureSet `json:"sms" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		SMS         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MobilePhoneNumberWithMessagingSettingsFeatures) RawJSON() string { return r.JSON.raw }
+func (r *MobilePhoneNumberWithMessagingSettingsFeatures) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies the type of the resource.
+type MobilePhoneNumberWithMessagingSettingsRecordType string
+
+const (
+	MobilePhoneNumberWithMessagingSettingsRecordTypeMessagingPhoneNumber MobilePhoneNumberWithMessagingSettingsRecordType = "messaging_phone_number"
+	MobilePhoneNumberWithMessagingSettingsRecordTypeMessagingSettings    MobilePhoneNumberWithMessagingSettingsRecordType = "messaging_settings"
+)
+
+// The type of the phone number
+type MobilePhoneNumberWithMessagingSettingsType string
+
+const (
+	MobilePhoneNumberWithMessagingSettingsTypeLongcode MobilePhoneNumberWithMessagingSettingsType = "longcode"
+)
+
 type MobilePhoneNumberMessagingGetResponse struct {
-	Data MobilePhoneNumberMessagingGetResponseData `json:"data"`
+	Data MobilePhoneNumberWithMessagingSettings `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -90,171 +180,6 @@ func (r MobilePhoneNumberMessagingGetResponse) RawJSON() string { return r.JSON.
 func (r *MobilePhoneNumberMessagingGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type MobilePhoneNumberMessagingGetResponseData struct {
-	// Identifies the type of resource.
-	ID string `json:"id"`
-	// ISO 3166-1 alpha-2 country code.
-	CountryCode string `json:"country_code"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time                                         `json:"created_at" format:"date-time"`
-	Features  MobilePhoneNumberMessagingGetResponseDataFeatures `json:"features"`
-	// The messaging product that the number is registered to use
-	MessagingProduct string `json:"messaging_product"`
-	// Unique identifier for a messaging profile.
-	MessagingProfileID string `json:"messaging_profile_id" api:"nullable"`
-	// The organization that owns this phone number.
-	OrganizationID string `json:"organization_id"`
-	// +E.164 formatted phone number.
-	PhoneNumber string `json:"phone_number"`
-	// Identifies the type of the resource.
-	//
-	// Any of "messaging_phone_number", "messaging_settings".
-	RecordType string `json:"record_type"`
-	// Tags associated with this phone number.
-	Tags []string `json:"tags"`
-	// The messaging traffic or use case for which the number is currently configured.
-	TrafficType string `json:"traffic_type"`
-	// The type of the phone number
-	//
-	// Any of "longcode".
-	Type string `json:"type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                 respjson.Field
-		CountryCode        respjson.Field
-		CreatedAt          respjson.Field
-		Features           respjson.Field
-		MessagingProduct   respjson.Field
-		MessagingProfileID respjson.Field
-		OrganizationID     respjson.Field
-		PhoneNumber        respjson.Field
-		RecordType         respjson.Field
-		Tags               respjson.Field
-		TrafficType        respjson.Field
-		Type               respjson.Field
-		UpdatedAt          respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MobilePhoneNumberMessagingGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *MobilePhoneNumberMessagingGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MobilePhoneNumberMessagingGetResponseDataFeatures struct {
-	// The set of features available for a specific messaging use case (SMS or MMS).
-	// Features can vary depending on the characteristics the phone number, as well as
-	// its current product configuration.
-	SMS shared.MessagingFeatureSet `json:"sms" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		SMS         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MobilePhoneNumberMessagingGetResponseDataFeatures) RawJSON() string { return r.JSON.raw }
-func (r *MobilePhoneNumberMessagingGetResponseDataFeatures) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MobilePhoneNumberMessagingListResponse struct {
-	// Identifies the type of resource.
-	ID string `json:"id"`
-	// ISO 3166-1 alpha-2 country code.
-	CountryCode string `json:"country_code"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time                                      `json:"created_at" format:"date-time"`
-	Features  MobilePhoneNumberMessagingListResponseFeatures `json:"features"`
-	// The messaging product that the number is registered to use
-	MessagingProduct string `json:"messaging_product"`
-	// Unique identifier for a messaging profile.
-	MessagingProfileID string `json:"messaging_profile_id" api:"nullable"`
-	// The organization that owns this phone number.
-	OrganizationID string `json:"organization_id"`
-	// +E.164 formatted phone number.
-	PhoneNumber string `json:"phone_number"`
-	// Identifies the type of the resource.
-	//
-	// Any of "messaging_phone_number", "messaging_settings".
-	RecordType MobilePhoneNumberMessagingListResponseRecordType `json:"record_type"`
-	// Tags associated with this phone number.
-	Tags []string `json:"tags"`
-	// The messaging traffic or use case for which the number is currently configured.
-	TrafficType string `json:"traffic_type"`
-	// The type of the phone number
-	//
-	// Any of "longcode".
-	Type MobilePhoneNumberMessagingListResponseType `json:"type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                 respjson.Field
-		CountryCode        respjson.Field
-		CreatedAt          respjson.Field
-		Features           respjson.Field
-		MessagingProduct   respjson.Field
-		MessagingProfileID respjson.Field
-		OrganizationID     respjson.Field
-		PhoneNumber        respjson.Field
-		RecordType         respjson.Field
-		Tags               respjson.Field
-		TrafficType        respjson.Field
-		Type               respjson.Field
-		UpdatedAt          respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MobilePhoneNumberMessagingListResponse) RawJSON() string { return r.JSON.raw }
-func (r *MobilePhoneNumberMessagingListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MobilePhoneNumberMessagingListResponseFeatures struct {
-	// The set of features available for a specific messaging use case (SMS or MMS).
-	// Features can vary depending on the characteristics the phone number, as well as
-	// its current product configuration.
-	SMS shared.MessagingFeatureSet `json:"sms" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		SMS         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MobilePhoneNumberMessagingListResponseFeatures) RawJSON() string { return r.JSON.raw }
-func (r *MobilePhoneNumberMessagingListResponseFeatures) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Identifies the type of the resource.
-type MobilePhoneNumberMessagingListResponseRecordType string
-
-const (
-	MobilePhoneNumberMessagingListResponseRecordTypeMessagingPhoneNumber MobilePhoneNumberMessagingListResponseRecordType = "messaging_phone_number"
-	MobilePhoneNumberMessagingListResponseRecordTypeMessagingSettings    MobilePhoneNumberMessagingListResponseRecordType = "messaging_settings"
-)
-
-// The type of the phone number
-type MobilePhoneNumberMessagingListResponseType string
-
-const (
-	MobilePhoneNumberMessagingListResponseTypeLongcode MobilePhoneNumberMessagingListResponseType = "longcode"
-)
 
 type MobilePhoneNumberMessagingListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`

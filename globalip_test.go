@@ -27,11 +27,14 @@ func TestGlobalIPNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.GlobalIPs.New(context.TODO(), telnyx.GlobalIPNewParams{
-		Description: telnyx.String("test interface"),
-		Name:        telnyx.String("test interface"),
-		Ports: map[string]any{
-			"tcp": "bar",
-			"udp": "bar",
+		GlobalIP: telnyx.GlobalIPParam{
+			RecordParam: telnyx.RecordParam{},
+			Description: telnyx.String("test interface"),
+			Name:        telnyx.String("test interface"),
+			Ports: map[string]any{
+				"tcp": "bar",
+				"udp": "bar",
+			},
 		},
 	})
 	if err != nil {

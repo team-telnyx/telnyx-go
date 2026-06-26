@@ -27,10 +27,15 @@ func TestWireguardInterfaceNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.WireguardInterfaces.New(context.TODO(), telnyx.WireguardInterfaceNewParams{
-		RegionCode:        "ashburn-va",
-		EnableSipTrunking: telnyx.Bool(false),
-		Name:              telnyx.String("test interface"),
-		NetworkID:         telnyx.String("6a09cdc3-8948-47f0-aa62-74ac943d6c58"),
+		Body: telnyx.WireguardInterfaceNewParamsBody{
+			WireguardInterfaceParam: telnyx.WireguardInterfaceParam{
+				RecordParam:           telnyx.RecordParam{},
+				NetworkInterfaceParam: telnyx.NetworkInterfaceParam{},
+			},
+			NetworkInterfaceRegionParam: telnyx.NetworkInterfaceRegionParam{
+				RegionCode: telnyx.String("ashburn-va"),
+			},
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

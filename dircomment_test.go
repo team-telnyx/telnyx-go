@@ -60,7 +60,7 @@ func TestDirCommentListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"16635d38-75a6-4481-82e8-69af60e05011",
 		telnyx.DirCommentListParams{
-			CommentType: telnyx.DirCommentListParamsCommentTypeVettingComment,
+			CommentType: telnyx.CommentTypeVettingComment,
 			PageNumber:  telnyx.Int(1),
 			PageSize:    telnyx.Int(20),
 		},

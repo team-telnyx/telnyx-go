@@ -1632,7 +1632,7 @@ func (r *WhatsappInteractiveAction) UnmarshalJSON(data []byte) error {
 }
 
 type WhatsappInteractiveActionButton struct {
-	Reply WhatsappInteractiveActionButtonReply `json:"reply"`
+	Reply WhatsappInteractiveActionButtonsReply `json:"reply"`
 	// Any of "reply".
 	Type string `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1650,7 +1650,7 @@ func (r *WhatsappInteractiveActionButton) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WhatsappInteractiveActionButtonReply struct {
+type WhatsappInteractiveActionButtonsReply struct {
 	// unique identifier for each button, 256 character maximum
 	ID string `json:"id"`
 	// button label, 20 character maximum
@@ -1665,17 +1665,17 @@ type WhatsappInteractiveActionButtonReply struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WhatsappInteractiveActionButtonReply) RawJSON() string { return r.JSON.raw }
-func (r *WhatsappInteractiveActionButtonReply) UnmarshalJSON(data []byte) error {
+func (r WhatsappInteractiveActionButtonsReply) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappInteractiveActionButtonsReply) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type WhatsappInteractiveActionCard struct {
-	Action WhatsappInteractiveActionCardAction `json:"action"`
-	Body   WhatsappInteractiveActionCardBody   `json:"body"`
+	Action WhatsappInteractiveActionCardsAction `json:"action"`
+	Body   WhatsappInteractiveActionCardsBody   `json:"body"`
 	// unique index for each card (0-9)
-	CardIndex int64                               `json:"card_index"`
-	Header    WhatsappInteractiveActionCardHeader `json:"header"`
+	CardIndex int64                                `json:"card_index"`
+	Header    WhatsappInteractiveActionCardsHeader `json:"header"`
 	// Any of "cta_url".
 	Type string `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1696,7 +1696,7 @@ func (r *WhatsappInteractiveActionCard) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WhatsappInteractiveActionCardAction struct {
+type WhatsappInteractiveActionCardsAction struct {
 	// the unique ID of the catalog
 	CatalogID string `json:"catalog_id"`
 	// the unique retailer ID of the product
@@ -1711,12 +1711,12 @@ type WhatsappInteractiveActionCardAction struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WhatsappInteractiveActionCardAction) RawJSON() string { return r.JSON.raw }
-func (r *WhatsappInteractiveActionCardAction) UnmarshalJSON(data []byte) error {
+func (r WhatsappInteractiveActionCardsAction) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappInteractiveActionCardsAction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WhatsappInteractiveActionCardBody struct {
+type WhatsappInteractiveActionCardsBody struct {
 	// 160 character maximum, up to 2 line breaks
 	Text string `json:"text"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1728,12 +1728,12 @@ type WhatsappInteractiveActionCardBody struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WhatsappInteractiveActionCardBody) RawJSON() string { return r.JSON.raw }
-func (r *WhatsappInteractiveActionCardBody) UnmarshalJSON(data []byte) error {
+func (r WhatsappInteractiveActionCardsBody) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappInteractiveActionCardsBody) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WhatsappInteractiveActionCardHeader struct {
+type WhatsappInteractiveActionCardsHeader struct {
 	Image WhatsappMedia `json:"image"`
 	// Any of "image", "video".
 	Type  string        `json:"type"`
@@ -1749,8 +1749,8 @@ type WhatsappInteractiveActionCardHeader struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WhatsappInteractiveActionCardHeader) RawJSON() string { return r.JSON.raw }
-func (r *WhatsappInteractiveActionCardHeader) UnmarshalJSON(data []byte) error {
+func (r WhatsappInteractiveActionCardsHeader) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappInteractiveActionCardsHeader) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1775,8 +1775,8 @@ func (r *WhatsappInteractiveActionParameters) UnmarshalJSON(data []byte) error {
 }
 
 type WhatsappInteractiveActionSection struct {
-	ProductItems []WhatsappInteractiveActionSectionProductItem `json:"product_items"`
-	Rows         []WhatsappInteractiveActionSectionRow         `json:"rows"`
+	ProductItems []WhatsappInteractiveActionSectionsProductItem `json:"product_items"`
+	Rows         []WhatsappInteractiveActionSectionsRow         `json:"rows"`
 	// section title, 24 character maximum
 	Title string `json:"title"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1795,7 +1795,7 @@ func (r *WhatsappInteractiveActionSection) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WhatsappInteractiveActionSectionProductItem struct {
+type WhatsappInteractiveActionSectionsProductItem struct {
 	ProductRetailerID string `json:"product_retailer_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1806,12 +1806,12 @@ type WhatsappInteractiveActionSectionProductItem struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WhatsappInteractiveActionSectionProductItem) RawJSON() string { return r.JSON.raw }
-func (r *WhatsappInteractiveActionSectionProductItem) UnmarshalJSON(data []byte) error {
+func (r WhatsappInteractiveActionSectionsProductItem) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappInteractiveActionSectionsProductItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WhatsappInteractiveActionSectionRow struct {
+type WhatsappInteractiveActionSectionsRow struct {
 	// arbitrary string identifying the row, 200 character maximum
 	ID string `json:"id"`
 	// row description, 72 character maximum
@@ -1829,8 +1829,8 @@ type WhatsappInteractiveActionSectionRow struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WhatsappInteractiveActionSectionRow) RawJSON() string { return r.JSON.raw }
-func (r *WhatsappInteractiveActionSectionRow) UnmarshalJSON(data []byte) error {
+func (r WhatsappInteractiveActionSectionsRow) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappInteractiveActionSectionsRow) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1943,7 +1943,7 @@ func (r *WhatsappInteractiveActionParam) UnmarshalJSON(data []byte) error {
 }
 
 type WhatsappInteractiveActionButtonParam struct {
-	Reply WhatsappInteractiveActionButtonReplyParam `json:"reply,omitzero"`
+	Reply WhatsappInteractiveActionButtonsReplyParam `json:"reply,omitzero"`
 	// Any of "reply".
 	Type string `json:"type,omitzero"`
 	paramObj
@@ -1963,7 +1963,7 @@ func init() {
 	)
 }
 
-type WhatsappInteractiveActionButtonReplyParam struct {
+type WhatsappInteractiveActionButtonsReplyParam struct {
 	// unique identifier for each button, 256 character maximum
 	ID param.Opt[string] `json:"id,omitzero"`
 	// button label, 20 character maximum
@@ -1971,20 +1971,20 @@ type WhatsappInteractiveActionButtonReplyParam struct {
 	paramObj
 }
 
-func (r WhatsappInteractiveActionButtonReplyParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappInteractiveActionButtonReplyParam
+func (r WhatsappInteractiveActionButtonsReplyParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappInteractiveActionButtonsReplyParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *WhatsappInteractiveActionButtonReplyParam) UnmarshalJSON(data []byte) error {
+func (r *WhatsappInteractiveActionButtonsReplyParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type WhatsappInteractiveActionCardParam struct {
 	// unique index for each card (0-9)
-	CardIndex param.Opt[int64]                         `json:"card_index,omitzero"`
-	Action    WhatsappInteractiveActionCardActionParam `json:"action,omitzero"`
-	Body      WhatsappInteractiveActionCardBodyParam   `json:"body,omitzero"`
-	Header    WhatsappInteractiveActionCardHeaderParam `json:"header,omitzero"`
+	CardIndex param.Opt[int64]                          `json:"card_index,omitzero"`
+	Action    WhatsappInteractiveActionCardsActionParam `json:"action,omitzero"`
+	Body      WhatsappInteractiveActionCardsBodyParam   `json:"body,omitzero"`
+	Header    WhatsappInteractiveActionCardsHeaderParam `json:"header,omitzero"`
 	// Any of "cta_url".
 	Type string `json:"type,omitzero"`
 	paramObj
@@ -2004,7 +2004,7 @@ func init() {
 	)
 }
 
-type WhatsappInteractiveActionCardActionParam struct {
+type WhatsappInteractiveActionCardsActionParam struct {
 	// the unique ID of the catalog
 	CatalogID param.Opt[string] `json:"catalog_id,omitzero"`
 	// the unique retailer ID of the product
@@ -2012,29 +2012,29 @@ type WhatsappInteractiveActionCardActionParam struct {
 	paramObj
 }
 
-func (r WhatsappInteractiveActionCardActionParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappInteractiveActionCardActionParam
+func (r WhatsappInteractiveActionCardsActionParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappInteractiveActionCardsActionParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *WhatsappInteractiveActionCardActionParam) UnmarshalJSON(data []byte) error {
+func (r *WhatsappInteractiveActionCardsActionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WhatsappInteractiveActionCardBodyParam struct {
+type WhatsappInteractiveActionCardsBodyParam struct {
 	// 160 character maximum, up to 2 line breaks
 	Text param.Opt[string] `json:"text,omitzero"`
 	paramObj
 }
 
-func (r WhatsappInteractiveActionCardBodyParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappInteractiveActionCardBodyParam
+func (r WhatsappInteractiveActionCardsBodyParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappInteractiveActionCardsBodyParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *WhatsappInteractiveActionCardBodyParam) UnmarshalJSON(data []byte) error {
+func (r *WhatsappInteractiveActionCardsBodyParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WhatsappInteractiveActionCardHeaderParam struct {
+type WhatsappInteractiveActionCardsHeaderParam struct {
 	Image WhatsappMediaParam `json:"image,omitzero"`
 	// Any of "image", "video".
 	Type  string             `json:"type,omitzero"`
@@ -2042,16 +2042,16 @@ type WhatsappInteractiveActionCardHeaderParam struct {
 	paramObj
 }
 
-func (r WhatsappInteractiveActionCardHeaderParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappInteractiveActionCardHeaderParam
+func (r WhatsappInteractiveActionCardsHeaderParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappInteractiveActionCardsHeaderParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *WhatsappInteractiveActionCardHeaderParam) UnmarshalJSON(data []byte) error {
+func (r *WhatsappInteractiveActionCardsHeaderParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[WhatsappInteractiveActionCardHeaderParam](
+	apijson.RegisterFieldValidator[WhatsappInteractiveActionCardsHeaderParam](
 		"type", "image", "video",
 	)
 }
@@ -2074,9 +2074,9 @@ func (r *WhatsappInteractiveActionParametersParam) UnmarshalJSON(data []byte) er
 
 type WhatsappInteractiveActionSectionParam struct {
 	// section title, 24 character maximum
-	Title        param.Opt[string]                                  `json:"title,omitzero"`
-	ProductItems []WhatsappInteractiveActionSectionProductItemParam `json:"product_items,omitzero"`
-	Rows         []WhatsappInteractiveActionSectionRowParam         `json:"rows,omitzero"`
+	Title        param.Opt[string]                                   `json:"title,omitzero"`
+	ProductItems []WhatsappInteractiveActionSectionsProductItemParam `json:"product_items,omitzero"`
+	Rows         []WhatsappInteractiveActionSectionsRowParam         `json:"rows,omitzero"`
 	paramObj
 }
 
@@ -2088,20 +2088,20 @@ func (r *WhatsappInteractiveActionSectionParam) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WhatsappInteractiveActionSectionProductItemParam struct {
+type WhatsappInteractiveActionSectionsProductItemParam struct {
 	ProductRetailerID param.Opt[string] `json:"product_retailer_id,omitzero"`
 	paramObj
 }
 
-func (r WhatsappInteractiveActionSectionProductItemParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappInteractiveActionSectionProductItemParam
+func (r WhatsappInteractiveActionSectionsProductItemParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappInteractiveActionSectionsProductItemParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *WhatsappInteractiveActionSectionProductItemParam) UnmarshalJSON(data []byte) error {
+func (r *WhatsappInteractiveActionSectionsProductItemParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WhatsappInteractiveActionSectionRowParam struct {
+type WhatsappInteractiveActionSectionsRowParam struct {
 	// arbitrary string identifying the row, 200 character maximum
 	ID param.Opt[string] `json:"id,omitzero"`
 	// row description, 72 character maximum
@@ -2111,11 +2111,11 @@ type WhatsappInteractiveActionSectionRowParam struct {
 	paramObj
 }
 
-func (r WhatsappInteractiveActionSectionRowParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappInteractiveActionSectionRowParam
+func (r WhatsappInteractiveActionSectionsRowParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappInteractiveActionSectionsRowParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *WhatsappInteractiveActionSectionRowParam) UnmarshalJSON(data []byte) error {
+func (r *WhatsappInteractiveActionSectionsRowParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2353,8 +2353,8 @@ func (r *WhatsappMessageContentTemplate) UnmarshalJSON(data []byte) error {
 
 type WhatsappMessageContentTemplateComponent struct {
 	// Button index (required for button components)
-	Index      int64                                              `json:"index"`
-	Parameters []WhatsappMessageContentTemplateComponentParameter `json:"parameters"`
+	Index      int64                                               `json:"index"`
+	Parameters []WhatsappMessageContentTemplateComponentsParameter `json:"parameters"`
 	// Any of "quick_reply", "url".
 	SubType string `json:"sub_type"`
 	// Any of "header", "body", "button".
@@ -2376,7 +2376,7 @@ func (r *WhatsappMessageContentTemplateComponent) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WhatsappMessageContentTemplateComponentParameter struct {
+type WhatsappMessageContentTemplateComponentsParameter struct {
 	Text string `json:"text"`
 	// Any of "text", "image", "video", "document", "currency", "date_time".
 	Type string `json:"type"`
@@ -2390,8 +2390,8 @@ type WhatsappMessageContentTemplateComponentParameter struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WhatsappMessageContentTemplateComponentParameter) RawJSON() string { return r.JSON.raw }
-func (r *WhatsappMessageContentTemplateComponentParameter) UnmarshalJSON(data []byte) error {
+func (r WhatsappMessageContentTemplateComponentsParameter) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappMessageContentTemplateComponentsParameter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2508,8 +2508,8 @@ func (r *WhatsappMessageContentTemplateParam) UnmarshalJSON(data []byte) error {
 
 type WhatsappMessageContentTemplateComponentParam struct {
 	// Button index (required for button components)
-	Index      param.Opt[int64]                                        `json:"index,omitzero"`
-	Parameters []WhatsappMessageContentTemplateComponentParameterParam `json:"parameters,omitzero"`
+	Index      param.Opt[int64]                                         `json:"index,omitzero"`
+	Parameters []WhatsappMessageContentTemplateComponentsParameterParam `json:"parameters,omitzero"`
 	// Any of "quick_reply", "url".
 	SubType string `json:"sub_type,omitzero"`
 	// Any of "header", "body", "button".
@@ -2534,23 +2534,23 @@ func init() {
 	)
 }
 
-type WhatsappMessageContentTemplateComponentParameterParam struct {
+type WhatsappMessageContentTemplateComponentsParameterParam struct {
 	Text param.Opt[string] `json:"text,omitzero"`
 	// Any of "text", "image", "video", "document", "currency", "date_time".
 	Type string `json:"type,omitzero"`
 	paramObj
 }
 
-func (r WhatsappMessageContentTemplateComponentParameterParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappMessageContentTemplateComponentParameterParam
+func (r WhatsappMessageContentTemplateComponentsParameterParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappMessageContentTemplateComponentsParameterParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *WhatsappMessageContentTemplateComponentParameterParam) UnmarshalJSON(data []byte) error {
+func (r *WhatsappMessageContentTemplateComponentsParameterParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[WhatsappMessageContentTemplateComponentParameterParam](
+	apijson.RegisterFieldValidator[WhatsappMessageContentTemplateComponentsParameterParam](
 		"type", "text", "image", "video", "document", "currency", "date_time",
 	)
 }

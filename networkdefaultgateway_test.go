@@ -30,7 +30,10 @@ func TestNetworkDefaultGatewayNewWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"6a09cdc3-8948-47f0-aa62-74ac943d6c58",
 		telnyx.NetworkDefaultGatewayNewParams{
-			WireguardPeerID: telnyx.String("e66c496d-4a85-423b-8b2a-8e63fac20320"),
+			DefaultGateway: telnyx.DefaultGatewayParam{
+				RecordParam:     telnyx.RecordParam{},
+				WireguardPeerID: telnyx.String("e66c496d-4a85-423b-8b2a-8e63fac20320"),
+			},
 		},
 	)
 	if err != nil {

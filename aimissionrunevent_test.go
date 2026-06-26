@@ -96,7 +96,7 @@ func TestAIMissionRunEventLogWithOptionalParams(t *testing.T) {
 		telnyx.AIMissionRunEventLogParams{
 			MissionID:      "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			Summary:        "summary",
-			Type:           telnyx.AIMissionRunEventLogParamsTypeStatusChange,
+			Type:           telnyx.EventTypeStatusChange,
 			AgentID:        telnyx.String("agent_id"),
 			IdempotencyKey: telnyx.String("idempotency_key"),
 			Payload: map[string]any{

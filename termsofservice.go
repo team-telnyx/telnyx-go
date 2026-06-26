@@ -53,7 +53,7 @@ func NewTermsOfServiceService(opts ...option.RequestOption) (r TermsOfServiceSer
 // Returns the available Terms of Service agreements (product, current version,
 // terms URL, effective date). Omit `product_type` to return all products; pass it
 // to scope to one.
-func (r *TermsOfServiceService) Info(ctx context.Context, query TermsOfServiceInfoParams, opts ...option.RequestOption) (res *TermsOfServiceInfoResponse, err error) {
+func (r *TermsOfServiceService) GetInfo(ctx context.Context, query TermsOfServiceGetInfoParams, opts ...option.RequestOption) (res *TermsOfServiceGetInfoResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "terms_of_service/info"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -66,15 +66,15 @@ func (r *TermsOfServiceService) Info(ctx context.Context, query TermsOfServiceIn
 //
 // `agreement_required: true` means the user has not yet agreed (or has agreed to
 // an outdated version) and must agree before using that product's endpoints.
-func (r *TermsOfServiceService) Status(ctx context.Context, query TermsOfServiceStatusParams, opts ...option.RequestOption) (res *TermsOfServiceStatusResponse, err error) {
+func (r *TermsOfServiceService) GetStatus(ctx context.Context, query TermsOfServiceGetStatusParams, opts ...option.RequestOption) (res *TermsOfServiceGetStatusResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "terms_of_service/status"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
 
-type TermsOfServiceInfoResponse struct {
-	Agreements []TermsOfServiceInfoResponseAgreement `json:"agreements"`
+type TermsOfServiceGetInfoResponse struct {
+	Agreements []TermsOfServiceGetInfoResponseAgreement `json:"agreements"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Agreements  respjson.Field
@@ -84,20 +84,20 @@ type TermsOfServiceInfoResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r TermsOfServiceInfoResponse) RawJSON() string { return r.JSON.raw }
-func (r *TermsOfServiceInfoResponse) UnmarshalJSON(data []byte) error {
+func (r TermsOfServiceGetInfoResponse) RawJSON() string { return r.JSON.raw }
+func (r *TermsOfServiceGetInfoResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type TermsOfServiceInfoResponseAgreement struct {
+type TermsOfServiceGetInfoResponseAgreement struct {
 	CurrentVersion string    `json:"current_version"`
 	Description    string    `json:"description"`
 	EffectiveDate  time.Time `json:"effective_date" format:"date"`
 	// Telnyx product the Terms of Service apply to.
 	//
 	// Any of "branded_calling", "number_reputation".
-	ProductType string `json:"product_type"`
-	TermsURL    string `json:"terms_url"`
+	ProductType TosProductType `json:"product_type"`
+	TermsURL    string         `json:"terms_url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CurrentVersion respjson.Field
@@ -111,15 +111,15 @@ type TermsOfServiceInfoResponseAgreement struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r TermsOfServiceInfoResponseAgreement) RawJSON() string { return r.JSON.raw }
-func (r *TermsOfServiceInfoResponseAgreement) UnmarshalJSON(data []byte) error {
+func (r TermsOfServiceGetInfoResponseAgreement) RawJSON() string { return r.JSON.raw }
+func (r *TermsOfServiceGetInfoResponseAgreement) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type TermsOfServiceStatusResponse struct {
+type TermsOfServiceGetStatusResponse struct {
 	// Whether the calling user has agreed to a product's current Terms of Service. The
 	// `user_id` is intentionally omitted on this public surface.
-	Data TermsOfServiceStatusResponseData `json:"data" api:"required"`
+	Data TermsOfServiceGetStatusResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -129,14 +129,14 @@ type TermsOfServiceStatusResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r TermsOfServiceStatusResponse) RawJSON() string { return r.JSON.raw }
-func (r *TermsOfServiceStatusResponse) UnmarshalJSON(data []byte) error {
+func (r TermsOfServiceGetStatusResponse) RawJSON() string { return r.JSON.raw }
+func (r *TermsOfServiceGetStatusResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Whether the calling user has agreed to a product's current Terms of Service. The
 // `user_id` is intentionally omitted on this public surface.
-type TermsOfServiceStatusResponseData struct {
+type TermsOfServiceGetStatusResponseData struct {
 	// `true` when the user must agree to the latest version before using the product.
 	// Equivalent to `!has_agreed`.
 	AgreementRequired bool `json:"agreement_required" api:"required"`
@@ -147,8 +147,8 @@ type TermsOfServiceStatusResponseData struct {
 	// Telnyx product the Terms of Service apply to.
 	//
 	// Any of "branded_calling", "number_reputation".
-	ProductType string    `json:"product_type" api:"required"`
-	AgreedAt    time.Time `json:"agreed_at" api:"nullable" format:"date-time"`
+	ProductType TosProductType `json:"product_type" api:"required"`
+	AgreedAt    time.Time      `json:"agreed_at" api:"nullable" format:"date-time"`
 	// Version the user previously agreed to (may be older than
 	// `current_terms_version`). `null` if the user has never agreed.
 	AgreedVersion string `json:"agreed_version" api:"nullable"`
@@ -166,57 +166,41 @@ type TermsOfServiceStatusResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r TermsOfServiceStatusResponseData) RawJSON() string { return r.JSON.raw }
-func (r *TermsOfServiceStatusResponseData) UnmarshalJSON(data []byte) error {
+func (r TermsOfServiceGetStatusResponseData) RawJSON() string { return r.JSON.raw }
+func (r *TermsOfServiceGetStatusResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type TermsOfServiceInfoParams struct {
+type TermsOfServiceGetInfoParams struct {
 	// Optional product filter. Omit to return info for all products.
 	//
 	// Any of "branded_calling", "number_reputation".
-	ProductType TermsOfServiceInfoParamsProductType `query:"product_type,omitzero" json:"-"`
+	ProductType TosProductType `query:"product_type,omitzero" json:"-"`
 	paramObj
 }
 
-// URLQuery serializes [TermsOfServiceInfoParams]'s query parameters as
+// URLQuery serializes [TermsOfServiceGetInfoParams]'s query parameters as
 // `url.Values`.
-func (r TermsOfServiceInfoParams) URLQuery() (v url.Values, err error) {
+func (r TermsOfServiceGetInfoParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 
-// Optional product filter. Omit to return info for all products.
-type TermsOfServiceInfoParamsProductType string
-
-const (
-	TermsOfServiceInfoParamsProductTypeBrandedCalling   TermsOfServiceInfoParamsProductType = "branded_calling"
-	TermsOfServiceInfoParamsProductTypeNumberReputation TermsOfServiceInfoParamsProductType = "number_reputation"
-)
-
-type TermsOfServiceStatusParams struct {
+type TermsOfServiceGetStatusParams struct {
 	// Which product's ToS to check. Defaults to `branded_calling`.
 	//
 	// Any of "branded_calling", "number_reputation".
-	ProductType TermsOfServiceStatusParamsProductType `query:"product_type,omitzero" json:"-"`
+	ProductType TosProductType `query:"product_type,omitzero" json:"-"`
 	paramObj
 }
 
-// URLQuery serializes [TermsOfServiceStatusParams]'s query parameters as
+// URLQuery serializes [TermsOfServiceGetStatusParams]'s query parameters as
 // `url.Values`.
-func (r TermsOfServiceStatusParams) URLQuery() (v url.Values, err error) {
+func (r TermsOfServiceGetStatusParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
-
-// Which product's ToS to check. Defaults to `branded_calling`.
-type TermsOfServiceStatusParamsProductType string
-
-const (
-	TermsOfServiceStatusParamsProductTypeBrandedCalling   TermsOfServiceStatusParamsProductType = "branded_calling"
-	TermsOfServiceStatusParamsProductTypeNumberReputation TermsOfServiceStatusParamsProductType = "number_reputation"
-)

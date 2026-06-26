@@ -62,10 +62,6 @@ func (r *DocumentLinkService) ListAutoPaging(ctx context.Context, query Document
 }
 
 type DocumentLinkListResponse struct {
-	// Identifies the resource.
-	ID string `json:"id" format:"uuid"`
-	// ISO 8601 formatted date-time indicating when the resource was created.
-	CreatedAt string `json:"created_at"`
 	// Identifies the associated document.
 	DocumentID string `json:"document_id" format:"uuid"`
 	// The linked resource's record type.
@@ -74,20 +70,16 @@ type DocumentLinkListResponse struct {
 	LinkedResourceID string `json:"linked_resource_id"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date-time indicating when the resource was updated.
-	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID               respjson.Field
-		CreatedAt        respjson.Field
 		DocumentID       respjson.Field
 		LinkedRecordType respjson.Field
 		LinkedResourceID respjson.Field
 		RecordType       respjson.Field
-		UpdatedAt        respjson.Field
 		ExtraFields      map[string]respjson.Field
 		raw              string
 	} `json:"-"`
+	DocServiceRecord
 }
 
 // Returns the unmodified JSON received from the API

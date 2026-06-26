@@ -40,7 +40,7 @@ func NewCustomStorageCredentialService(opts ...option.RequestOption) (r CustomSt
 }
 
 // Creates a custom storage credentials configuration.
-func (r *CustomStorageCredentialService) New(ctx context.Context, connectionID string, body CustomStorageCredentialNewParams, opts ...option.RequestOption) (res *CustomStorageCredentialNewResponse, err error) {
+func (r *CustomStorageCredentialService) New(ctx context.Context, connectionID string, body CustomStorageCredentialNewParams, opts ...option.RequestOption) (res *CredentialsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
@@ -52,7 +52,7 @@ func (r *CustomStorageCredentialService) New(ctx context.Context, connectionID s
 }
 
 // Returns the information about custom storage credentials.
-func (r *CustomStorageCredentialService) Get(ctx context.Context, connectionID string, opts ...option.RequestOption) (res *CustomStorageCredentialGetResponse, err error) {
+func (r *CustomStorageCredentialService) Get(ctx context.Context, connectionID string, opts ...option.RequestOption) (res *CredentialsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
@@ -64,7 +64,7 @@ func (r *CustomStorageCredentialService) Get(ctx context.Context, connectionID s
 }
 
 // Updates a stored custom credentials configuration.
-func (r *CustomStorageCredentialService) Update(ctx context.Context, connectionID string, body CustomStorageCredentialUpdateParams, opts ...option.RequestOption) (res *CustomStorageCredentialUpdateResponse, err error) {
+func (r *CustomStorageCredentialService) Update(ctx context.Context, connectionID string, body CustomStorageCredentialUpdateParams, opts ...option.RequestOption) (res *CredentialsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
@@ -154,6 +154,38 @@ func (r AzureConfigurationDataParam) MarshalJSON() (data []byte, err error) {
 func (r *AzureConfigurationDataParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type CredentialsResponse struct {
+	// Uniquely identifies a Telnyx application (Call Control, TeXML) or Sip connection
+	// resource.
+	ConnectionID string                     `json:"connection_id" api:"required"`
+	Data         CustomStorageConfiguration `json:"data" api:"required"`
+	// Identifies record type.
+	//
+	// Any of "custom_storage_credentials".
+	RecordType CredentialsResponseRecordType `json:"record_type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ConnectionID respjson.Field
+		Data         respjson.Field
+		RecordType   respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CredentialsResponse) RawJSON() string { return r.JSON.raw }
+func (r *CredentialsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies record type.
+type CredentialsResponseRecordType string
+
+const (
+	CredentialsResponseRecordTypeCustomStorageCredentials CredentialsResponseRecordType = "custom_storage_credentials"
+)
 
 type CustomStorageConfiguration struct {
 	// Any of "gcs", "s3", "azure".
@@ -543,102 +575,6 @@ func (r S3ConfigurationDataParam) MarshalJSON() (data []byte, err error) {
 func (r *S3ConfigurationDataParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type CustomStorageCredentialNewResponse struct {
-	// Uniquely identifies a Telnyx application (Call Control, TeXML) or Sip connection
-	// resource.
-	ConnectionID string                     `json:"connection_id" api:"required"`
-	Data         CustomStorageConfiguration `json:"data" api:"required"`
-	// Identifies record type.
-	//
-	// Any of "custom_storage_credentials".
-	RecordType CustomStorageCredentialNewResponseRecordType `json:"record_type" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ConnectionID respjson.Field
-		Data         respjson.Field
-		RecordType   respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CustomStorageCredentialNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *CustomStorageCredentialNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Identifies record type.
-type CustomStorageCredentialNewResponseRecordType string
-
-const (
-	CustomStorageCredentialNewResponseRecordTypeCustomStorageCredentials CustomStorageCredentialNewResponseRecordType = "custom_storage_credentials"
-)
-
-type CustomStorageCredentialGetResponse struct {
-	// Uniquely identifies a Telnyx application (Call Control, TeXML) or Sip connection
-	// resource.
-	ConnectionID string                     `json:"connection_id" api:"required"`
-	Data         CustomStorageConfiguration `json:"data" api:"required"`
-	// Identifies record type.
-	//
-	// Any of "custom_storage_credentials".
-	RecordType CustomStorageCredentialGetResponseRecordType `json:"record_type" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ConnectionID respjson.Field
-		Data         respjson.Field
-		RecordType   respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CustomStorageCredentialGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *CustomStorageCredentialGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Identifies record type.
-type CustomStorageCredentialGetResponseRecordType string
-
-const (
-	CustomStorageCredentialGetResponseRecordTypeCustomStorageCredentials CustomStorageCredentialGetResponseRecordType = "custom_storage_credentials"
-)
-
-type CustomStorageCredentialUpdateResponse struct {
-	// Uniquely identifies a Telnyx application (Call Control, TeXML) or Sip connection
-	// resource.
-	ConnectionID string                     `json:"connection_id" api:"required"`
-	Data         CustomStorageConfiguration `json:"data" api:"required"`
-	// Identifies record type.
-	//
-	// Any of "custom_storage_credentials".
-	RecordType CustomStorageCredentialUpdateResponseRecordType `json:"record_type" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ConnectionID respjson.Field
-		Data         respjson.Field
-		RecordType   respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CustomStorageCredentialUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *CustomStorageCredentialUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Identifies record type.
-type CustomStorageCredentialUpdateResponseRecordType string
-
-const (
-	CustomStorageCredentialUpdateResponseRecordTypeCustomStorageCredentials CustomStorageCredentialUpdateResponseRecordType = "custom_storage_credentials"
-)
 
 type CustomStorageCredentialNewParams struct {
 	CustomStorageConfiguration CustomStorageConfigurationParam

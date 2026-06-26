@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestPublicInternetGatewayNewWithOptionalParams(t *testing.T) {
+func TestPublicInternetGatewayNew(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -27,9 +27,12 @@ func TestPublicInternetGatewayNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.PublicInternetGateways.New(context.TODO(), telnyx.PublicInternetGatewayNewParams{
-		Name:       telnyx.String("test interface"),
-		NetworkID:  telnyx.String("6a09cdc3-8948-47f0-aa62-74ac943d6c58"),
-		RegionCode: telnyx.String("ashburn-va"),
+		Body: telnyx.PublicInternetGatewayNewParamsBody{
+			PublicInternetGatewayParam: telnyx.PublicInternetGatewayParam{
+				RecordParam:           telnyx.RecordParam{},
+				NetworkInterfaceParam: telnyx.NetworkInterfaceParam{},
+			},
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

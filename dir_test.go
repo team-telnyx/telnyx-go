@@ -65,9 +65,9 @@ func TestDirUpdateWithOptionalParams(t *testing.T) {
 			CertifyIPOwnership:     telnyx.Bool(true),
 			CertifyNoShaftContent:  telnyx.Bool(true),
 			DisplayName:            telnyx.String("Acme Plumbing & Wellness"),
-			Documents: []telnyx.DirUpdateParamsDocument{{
+			Documents: []telnyx.DocumentParam{{
 				DocumentID:   "2a7e8337-e803-4057-a4ae-26c40eb0bc6c",
-				DocumentType: "business_registration",
+				DocumentType: telnyx.DocumentDocumentTypeBusinessRegistration,
 				Description:  telnyx.String("Certificate of incorporation."),
 			}},
 			LogoURL:   telnyx.String("https://acmeplumbing.example.com/logo-v2-256.bmp"),
@@ -102,7 +102,7 @@ func TestDirListWithOptionalParams(t *testing.T) {
 		FilterEnterpriseID:        telnyx.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		FilterExpiringAtGte:       telnyx.Time(time.Now()),
 		FilterExpiringAtLte:       telnyx.Time(time.Now()),
-		FilterStatus:              telnyx.DirListParamsFilterStatusDraft,
+		FilterStatus:              telnyx.DirStatusDraft,
 		PageNumber:                telnyx.Int(1),
 		PageSize:                  telnyx.Int(20),
 		Sort:                      telnyx.DirListParamsSortCreatedAt,
@@ -136,64 +136,6 @@ func TestDirDelete(t *testing.T) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
 		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestDirNewLoaWithOptionalParams(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(200)
-		w.Write([]byte("abc"))
-	}))
-	defer server.Close()
-	baseURL := server.URL
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	resp, err := client.Dir.NewLoa(
-		context.TODO(),
-		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-		telnyx.DirNewLoaParams{
-			PhoneNumbers: []string{"+13125550000"},
-			Agent: telnyx.DirNewLoaParamsAgent{
-				AdministrativeArea: "administrative_area",
-				City:               "city",
-				ContactEmail:       "dev@stainless.com",
-				ContactName:        "contact_name",
-				ContactPhone:       "+13125550000",
-				ContactTitle:       "contact_title",
-				Country:            "US",
-				LegalName:          "legal_name",
-				PostalCode:         "postal_code",
-				StreetAddress:      "street_address",
-				Dba:                telnyx.String("dba"),
-				ExtendedAddress:    telnyx.String("extended_address"),
-			},
-			Signature: telnyx.DirNewLoaParamsSignature{
-				ImageBase64: "x",
-				SignerName:  telnyx.String("signer_name"),
-			},
-		},
-	)
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-	defer resp.Body.Close()
-
-	b, err := io.ReadAll(resp.Body)
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-	if !bytes.Equal(b, []byte("abc")) {
-		t.Fatalf("return value not %s: %s", "abc", b)
 	}
 }
 
@@ -250,6 +192,64 @@ func TestDirListInfringementClaimsWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestDirNewLoaWithOptionalParams(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		w.Write([]byte("abc"))
+	}))
+	defer server.Close()
+	baseURL := server.URL
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	resp, err := client.Dir.NewLoa(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		telnyx.DirNewLoaParams{
+			PhoneNumbers: []string{"+13125550000"},
+			Agent: telnyx.AgentInputParam{
+				AdministrativeArea: "administrative_area",
+				City:               "city",
+				ContactEmail:       "dev@stainless.com",
+				ContactName:        "contact_name",
+				ContactPhone:       "+13125550000",
+				ContactTitle:       "contact_title",
+				Country:            "US",
+				LegalName:          "legal_name",
+				PostalCode:         "postal_code",
+				StreetAddress:      "street_address",
+				Dba:                telnyx.String("dba"),
+				ExtendedAddress:    telnyx.String("extended_address"),
+			},
+			Signature: telnyx.DirNewLoaParamsSignature{
+				ImageBase64: "x",
+				SignerName:  telnyx.String("signer_name"),
+			},
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+	defer resp.Body.Close()
+
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+	if !bytes.Equal(b, []byte("abc")) {
+		t.Fatalf("return value not %s: %s", "abc", b)
+	}
+}
+
 func TestDirSubmit(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
@@ -297,9 +297,9 @@ func TestDirUpdateInfringementWithOptionalParams(t *testing.T) {
 			InfringementResolutionNotes: "Updated the display name to remove the disputed mark and re-uploaded the authorization.",
 			CallReasons:                 []string{"string"},
 			DisplayName:                 telnyx.String("x"),
-			Documents: []telnyx.DirUpdateInfringementParamsDocument{{
+			Documents: []telnyx.DocumentParam{{
 				DocumentID:   "2a7e8337-e803-4057-a4ae-26c40eb0bc6c",
-				DocumentType: "business_registration",
+				DocumentType: telnyx.DocumentDocumentTypeBusinessRegistration,
 				Description:  telnyx.String("Certificate of incorporation."),
 			}},
 			LogoURL: telnyx.String("logo_url"),

@@ -12,6 +12,7 @@ import (
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
@@ -98,6 +99,32 @@ func (r *MessagingHostedNumberService) Delete(ctx context.Context, id string, op
 	return res, err
 }
 
+type UpdatePhoneNumberMessagingSettingsRequestParam struct {
+	// Configure the messaging product for this number:
+	//
+	// - Omit this field or set its value to `null` to keep the current value.
+	// - Set this field to a quoted product ID to set this phone number to that product
+	MessagingProduct param.Opt[string] `json:"messaging_product,omitzero"`
+	// Configure the messaging profile this phone number is assigned to:
+	//
+	//   - Omit this field or set its value to `null` to keep the current value.
+	//   - Set this field to `""` to unassign the number from its messaging profile
+	//   - Set this field to a quoted UUID of a messaging profile to assign this number
+	//     to that messaging profile
+	MessagingProfileID param.Opt[string] `json:"messaging_profile_id,omitzero"`
+	// Tags to set on this phone number.
+	Tags []string `json:"tags,omitzero"`
+	paramObj
+}
+
+func (r UpdatePhoneNumberMessagingSettingsRequestParam) MarshalJSON() (data []byte, err error) {
+	type shadow UpdatePhoneNumberMessagingSettingsRequestParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UpdatePhoneNumberMessagingSettingsRequestParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type MessagingHostedNumberGetResponse struct {
 	Data shared.PhoneNumberWithMessagingSettings `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -147,26 +174,12 @@ func (r *MessagingHostedNumberDeleteResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MessagingHostedNumberUpdateParams struct {
-	// Configure the messaging product for this number:
-	//
-	// - Omit this field or set its value to `null` to keep the current value.
-	// - Set this field to a quoted product ID to set this phone number to that product
-	MessagingProduct param.Opt[string] `json:"messaging_product,omitzero"`
-	// Configure the messaging profile this phone number is assigned to:
-	//
-	//   - Omit this field or set its value to `null` to keep the current value.
-	//   - Set this field to `""` to unassign the number from its messaging profile
-	//   - Set this field to a quoted UUID of a messaging profile to assign this number
-	//     to that messaging profile
-	MessagingProfileID param.Opt[string] `json:"messaging_profile_id,omitzero"`
-	// Tags to set on this phone number.
-	Tags []string `json:"tags,omitzero"`
+	UpdatePhoneNumberMessagingSettingsRequest UpdatePhoneNumberMessagingSettingsRequestParam
 	paramObj
 }
 
 func (r MessagingHostedNumberUpdateParams) MarshalJSON() (data []byte, err error) {
-	type shadow MessagingHostedNumberUpdateParams
-	return param.MarshalObject(r, (*shadow)(&r))
+	return shimjson.Marshal(r.UpdatePhoneNumberMessagingSettingsRequest)
 }
 func (r *MessagingHostedNumberUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)

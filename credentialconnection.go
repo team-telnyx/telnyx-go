@@ -130,6 +130,19 @@ const (
 	AnchorsiteOverrideFrankfurtGermany     AnchorsiteOverride = "Frankfurt, Germany"
 )
 
+// Controls when noise suppression is applied to calls. When set to 'inbound',
+// noise suppression is applied to incoming audio. When set to 'outbound', it's
+// applied to outgoing audio. When set to 'both', it's applied in both directions.
+// When set to 'disabled', noise suppression is turned off.
+type ConnectionNoiseSuppression string
+
+const (
+	ConnectionNoiseSuppressionInbound  ConnectionNoiseSuppression = "inbound"
+	ConnectionNoiseSuppressionOutbound ConnectionNoiseSuppression = "outbound"
+	ConnectionNoiseSuppressionBoth     ConnectionNoiseSuppression = "both"
+	ConnectionNoiseSuppressionDisabled ConnectionNoiseSuppression = "disabled"
+)
+
 type ConnectionRtcpSettings struct {
 	// BETA - Enable the capture and storage of RTCP messages to create QoS reports on
 	// the Telnyx Mission Control Portal.
@@ -248,7 +261,7 @@ type CredentialConnection struct {
 	// When set to 'disabled', noise suppression is turned off.
 	//
 	// Any of "inbound", "outbound", "both", "disabled".
-	NoiseSuppression CredentialConnectionNoiseSuppression `json:"noise_suppression"`
+	NoiseSuppression ConnectionNoiseSuppression `json:"noise_suppression"`
 	// Configuration options for noise suppression. These settings are stored
 	// regardless of the noise_suppression value, but only take effect when
 	// noise_suppression is not 'disabled'. If you disable noise suppression and later
@@ -334,19 +347,6 @@ func (r CredentialConnection) RawJSON() string { return r.JSON.raw }
 func (r *CredentialConnection) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Controls when noise suppression is applied to calls. When set to 'inbound',
-// noise suppression is applied to incoming audio. When set to 'outbound', it's
-// applied to outgoing audio. When set to 'both', it's applied in both directions.
-// When set to 'disabled', noise suppression is turned off.
-type CredentialConnectionNoiseSuppression string
-
-const (
-	CredentialConnectionNoiseSuppressionInbound  CredentialConnectionNoiseSuppression = "inbound"
-	CredentialConnectionNoiseSuppressionOutbound CredentialConnectionNoiseSuppression = "outbound"
-	CredentialConnectionNoiseSuppressionBoth     CredentialConnectionNoiseSuppression = "both"
-	CredentialConnectionNoiseSuppressionDisabled CredentialConnectionNoiseSuppression = "disabled"
-)
 
 // This feature enables inbound SIP URI calls to your Credential Auth Connection.
 // If enabled for all (unrestricted) then anyone who calls the SIP URI
@@ -829,7 +829,7 @@ type CredentialConnectionNewParams struct {
 	// When set to 'disabled', noise suppression is turned off.
 	//
 	// Any of "inbound", "outbound", "both", "disabled".
-	NoiseSuppression CredentialConnectionNewParamsNoiseSuppression `json:"noise_suppression,omitzero"`
+	NoiseSuppression ConnectionNoiseSuppression `json:"noise_suppression,omitzero"`
 	// Configuration options for noise suppression. These settings are stored
 	// regardless of the noise_suppression value, but only take effect when
 	// noise_suppression is not 'disabled'. If you disable noise suppression and later
@@ -863,19 +863,6 @@ func (r CredentialConnectionNewParams) MarshalJSON() (data []byte, err error) {
 func (r *CredentialConnectionNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Controls when noise suppression is applied to calls. When set to 'inbound',
-// noise suppression is applied to incoming audio. When set to 'outbound', it's
-// applied to outgoing audio. When set to 'both', it's applied in both directions.
-// When set to 'disabled', noise suppression is turned off.
-type CredentialConnectionNewParamsNoiseSuppression string
-
-const (
-	CredentialConnectionNewParamsNoiseSuppressionInbound  CredentialConnectionNewParamsNoiseSuppression = "inbound"
-	CredentialConnectionNewParamsNoiseSuppressionOutbound CredentialConnectionNewParamsNoiseSuppression = "outbound"
-	CredentialConnectionNewParamsNoiseSuppressionBoth     CredentialConnectionNewParamsNoiseSuppression = "both"
-	CredentialConnectionNewParamsNoiseSuppressionDisabled CredentialConnectionNewParamsNoiseSuppression = "disabled"
-)
 
 // This feature enables inbound SIP URI calls to your Credential Auth Connection.
 // If enabled for all (unrestricted) then anyone who calls the SIP URI
@@ -968,7 +955,7 @@ type CredentialConnectionUpdateParams struct {
 	// When set to 'disabled', noise suppression is turned off.
 	//
 	// Any of "inbound", "outbound", "both", "disabled".
-	NoiseSuppression CredentialConnectionUpdateParamsNoiseSuppression `json:"noise_suppression,omitzero"`
+	NoiseSuppression ConnectionNoiseSuppression `json:"noise_suppression,omitzero"`
 	// Configuration options for noise suppression. These settings are stored
 	// regardless of the noise_suppression value, but only take effect when
 	// noise_suppression is not 'disabled'. If you disable noise suppression and later
@@ -1000,19 +987,6 @@ func (r CredentialConnectionUpdateParams) MarshalJSON() (data []byte, err error)
 func (r *CredentialConnectionUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Controls when noise suppression is applied to calls. When set to 'inbound',
-// noise suppression is applied to incoming audio. When set to 'outbound', it's
-// applied to outgoing audio. When set to 'both', it's applied in both directions.
-// When set to 'disabled', noise suppression is turned off.
-type CredentialConnectionUpdateParamsNoiseSuppression string
-
-const (
-	CredentialConnectionUpdateParamsNoiseSuppressionInbound  CredentialConnectionUpdateParamsNoiseSuppression = "inbound"
-	CredentialConnectionUpdateParamsNoiseSuppressionOutbound CredentialConnectionUpdateParamsNoiseSuppression = "outbound"
-	CredentialConnectionUpdateParamsNoiseSuppressionBoth     CredentialConnectionUpdateParamsNoiseSuppression = "both"
-	CredentialConnectionUpdateParamsNoiseSuppressionDisabled CredentialConnectionUpdateParamsNoiseSuppression = "disabled"
-)
 
 // This feature enables inbound SIP URI calls to your Credential Auth Connection.
 // If enabled for all (unrestricted) then anyone who calls the SIP URI

@@ -101,7 +101,7 @@ type ChargesBreakdownGetResponseDataResult struct {
 	// User ID of the service owner
 	ServiceOwnerUserID string `json:"service_owner_user_id" api:"required"`
 	// List of services associated with this number
-	Services []ChargesBreakdownGetResponseDataResultService `json:"services" api:"required"`
+	Services []ChargesBreakdownGetResponseDataResultsService `json:"services" api:"required"`
 	// Phone number
 	Tn string `json:"tn" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -122,7 +122,7 @@ func (r *ChargesBreakdownGetResponseDataResult) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ChargesBreakdownGetResponseDataResultService struct {
+type ChargesBreakdownGetResponseDataResultsService struct {
 	// Cost per unit as decimal string
 	Cost string `json:"cost" api:"required"`
 	// Type of cost (MRC or OTC)
@@ -140,8 +140,8 @@ type ChargesBreakdownGetResponseDataResultService struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChargesBreakdownGetResponseDataResultService) RawJSON() string { return r.JSON.raw }
-func (r *ChargesBreakdownGetResponseDataResultService) UnmarshalJSON(data []byte) error {
+func (r ChargesBreakdownGetResponseDataResultsService) RawJSON() string { return r.JSON.raw }
+func (r *ChargesBreakdownGetResponseDataResultsService) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
