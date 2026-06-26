@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.83.0 (2026-06-26)
+
+Full Changelog: [v4.82.0...v4.83.0](https://github.com/team-telnyx/telnyx-go/compare/v4.82.0...v4.83.0)
+
+### Chores
+
+* promote from staging 7756f99 ([5c230ec](https://github.com/team-telnyx/telnyx-go/commit/5c230eca5df0fec72aa1df56d150910dc1e8e9c8))
+* remove leaked staging-only promote-to-prod.yml from prod ([#115](https://github.com/team-telnyx/telnyx-go/issues/115)) ([b387bb0](https://github.com/team-telnyx/telnyx-go/commit/b387bb0022da6c5d2460f92feda6ec7bd046c8cf))
+
 ## [4.107.1](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.107.0...v4.107.1) (2026-06-26)
 
 
