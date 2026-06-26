@@ -39,7 +39,7 @@ func NewTexmlAccountCallRecordingsJsonService(opts ...option.RequestOption) (r T
 }
 
 // Starts recording with specified parameters for call idientified by call_sid.
-func (r *TexmlAccountCallRecordingsJsonService) RecordingsJson(ctx context.Context, callSid string, params TexmlAccountCallRecordingsJsonRecordingsJsonParams, opts ...option.RequestOption) (res *TexmlAccountCallRecordingsJsonRecordingsJsonResponse, err error) {
+func (r *TexmlAccountCallRecordingsJsonService) RecordingsJson(ctx context.Context, callSid string, params TexmlAccountCallRecordingsJsonRecordingsJsonParams, opts ...option.RequestOption) (res *TexmlCreateCallRecordingResponseBody, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
@@ -55,7 +55,7 @@ func (r *TexmlAccountCallRecordingsJsonService) RecordingsJson(ctx context.Conte
 }
 
 // Returns recordings for a call identified by call_sid.
-func (r *TexmlAccountCallRecordingsJsonService) GetRecordingsJson(ctx context.Context, callSid string, query TexmlAccountCallRecordingsJsonGetRecordingsJsonParams, opts ...option.RequestOption) (res *TexmlAccountCallRecordingsJsonGetRecordingsJsonResponse, err error) {
+func (r *TexmlAccountCallRecordingsJsonService) GetRecordingsJson(ctx context.Context, callSid string, query TexmlAccountCallRecordingsJsonGetRecordingsJsonParams, opts ...option.RequestOption) (res *TexmlGetCallRecordingsResponseBody, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
@@ -70,7 +70,20 @@ func (r *TexmlAccountCallRecordingsJsonService) GetRecordingsJson(ctx context.Co
 	return res, err
 }
 
-type TexmlAccountCallRecordingsJsonRecordingsJsonResponse struct {
+// Defines how the recording was created.
+type RecordingSource string
+
+const (
+	RecordingSourceStartCallRecordingAPI       RecordingSource = "StartCallRecordingAPI"
+	RecordingSourceStartConferenceRecordingAPI RecordingSource = "StartConferenceRecordingAPI"
+	RecordingSourceOutboundAPI                 RecordingSource = "OutboundAPI"
+	RecordingSourceDialVerb                    RecordingSource = "DialVerb"
+	RecordingSourceConference                  RecordingSource = "Conference"
+	RecordingSourceRecordVerb                  RecordingSource = "RecordVerb"
+	RecordingSourceTrunking                    RecordingSource = "Trunking"
+)
+
+type TexmlCreateCallRecordingResponseBody struct {
 	AccountSid string `json:"account_sid"`
 	CallSid    string `json:"call_sid"`
 	// Any of 1, 2.
@@ -91,12 +104,12 @@ type TexmlAccountCallRecordingsJsonRecordingsJsonResponse struct {
 	//
 	// Any of "StartCallRecordingAPI", "StartConferenceRecordingAPI", "OutboundAPI",
 	// "DialVerb", "Conference", "RecordVerb", "Trunking".
-	Source    TexmlAccountCallRecordingsJsonRecordingsJsonResponseSource `json:"source"`
-	StartTime time.Time                                                  `json:"start_time" format:"date-time"`
+	Source    RecordingSource `json:"source"`
+	StartTime time.Time       `json:"start_time" format:"date-time"`
 	// The audio track to record for the call. The default is `both`.
 	//
 	// Any of "inbound", "outbound", "both".
-	Track TexmlAccountCallRecordingsJsonRecordingsJsonResponseTrack `json:"track"`
+	Track TexmlCreateCallRecordingResponseBodyTrack `json:"track"`
 	// The relative URI for this recording resource.
 	Uri string `json:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -122,34 +135,21 @@ type TexmlAccountCallRecordingsJsonRecordingsJsonResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r TexmlAccountCallRecordingsJsonRecordingsJsonResponse) RawJSON() string { return r.JSON.raw }
-func (r *TexmlAccountCallRecordingsJsonRecordingsJsonResponse) UnmarshalJSON(data []byte) error {
+func (r TexmlCreateCallRecordingResponseBody) RawJSON() string { return r.JSON.raw }
+func (r *TexmlCreateCallRecordingResponseBody) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Defines how the recording was created.
-type TexmlAccountCallRecordingsJsonRecordingsJsonResponseSource string
-
-const (
-	TexmlAccountCallRecordingsJsonRecordingsJsonResponseSourceStartCallRecordingAPI       TexmlAccountCallRecordingsJsonRecordingsJsonResponseSource = "StartCallRecordingAPI"
-	TexmlAccountCallRecordingsJsonRecordingsJsonResponseSourceStartConferenceRecordingAPI TexmlAccountCallRecordingsJsonRecordingsJsonResponseSource = "StartConferenceRecordingAPI"
-	TexmlAccountCallRecordingsJsonRecordingsJsonResponseSourceOutboundAPI                 TexmlAccountCallRecordingsJsonRecordingsJsonResponseSource = "OutboundAPI"
-	TexmlAccountCallRecordingsJsonRecordingsJsonResponseSourceDialVerb                    TexmlAccountCallRecordingsJsonRecordingsJsonResponseSource = "DialVerb"
-	TexmlAccountCallRecordingsJsonRecordingsJsonResponseSourceConference                  TexmlAccountCallRecordingsJsonRecordingsJsonResponseSource = "Conference"
-	TexmlAccountCallRecordingsJsonRecordingsJsonResponseSourceRecordVerb                  TexmlAccountCallRecordingsJsonRecordingsJsonResponseSource = "RecordVerb"
-	TexmlAccountCallRecordingsJsonRecordingsJsonResponseSourceTrunking                    TexmlAccountCallRecordingsJsonRecordingsJsonResponseSource = "Trunking"
-)
-
 // The audio track to record for the call. The default is `both`.
-type TexmlAccountCallRecordingsJsonRecordingsJsonResponseTrack string
+type TexmlCreateCallRecordingResponseBodyTrack string
 
 const (
-	TexmlAccountCallRecordingsJsonRecordingsJsonResponseTrackInbound  TexmlAccountCallRecordingsJsonRecordingsJsonResponseTrack = "inbound"
-	TexmlAccountCallRecordingsJsonRecordingsJsonResponseTrackOutbound TexmlAccountCallRecordingsJsonRecordingsJsonResponseTrack = "outbound"
-	TexmlAccountCallRecordingsJsonRecordingsJsonResponseTrackBoth     TexmlAccountCallRecordingsJsonRecordingsJsonResponseTrack = "both"
+	TexmlCreateCallRecordingResponseBodyTrackInbound  TexmlCreateCallRecordingResponseBodyTrack = "inbound"
+	TexmlCreateCallRecordingResponseBodyTrackOutbound TexmlCreateCallRecordingResponseBodyTrack = "outbound"
+	TexmlCreateCallRecordingResponseBodyTrackBoth     TexmlCreateCallRecordingResponseBodyTrack = "both"
 )
 
-type TexmlAccountCallRecordingsJsonGetRecordingsJsonResponse struct {
+type TexmlGetCallRecordingsResponseBody struct {
 	// The number of the last element on the page, zero-indexed.
 	End int64 `json:"end"`
 	// Relative uri to the first page of the query results
@@ -184,10 +184,17 @@ type TexmlAccountCallRecordingsJsonGetRecordingsJsonResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r TexmlAccountCallRecordingsJsonGetRecordingsJsonResponse) RawJSON() string { return r.JSON.raw }
-func (r *TexmlAccountCallRecordingsJsonGetRecordingsJsonResponse) UnmarshalJSON(data []byte) error {
+func (r TexmlGetCallRecordingsResponseBody) RawJSON() string { return r.JSON.raw }
+func (r *TexmlGetCallRecordingsResponseBody) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type TwimlRecordingChannels int64
+
+const (
+	TwimlRecordingChannelsChannel1 TwimlRecordingChannels = 1
+	TwimlRecordingChannelsChannel2 TwimlRecordingChannels = 2
+)
 
 type TexmlAccountCallRecordingsJsonRecordingsJsonParams struct {
 	AccountSid string `path:"account_sid" api:"required" json:"-"`

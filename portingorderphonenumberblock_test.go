@@ -67,7 +67,7 @@ func TestPortingOrderPhoneNumberBlockListWithOptionalParams(t *testing.T) {
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.PortingOrderPhoneNumberBlockListParams{
 			Filter: telnyx.PortingOrderPhoneNumberBlockListParamsFilter{
-				ActivationStatus:  "Active",
+				ActivationStatus:  telnyx.PortingOrderActivationStatusActive,
 				PhoneNumber:       []string{"+12003151212"},
 				PortabilityStatus: "confirmed",
 				PortingOrderID:    []string{"f3575e15-32ce-400e-a4c0-dd78800c20b0"},

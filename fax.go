@@ -157,7 +157,7 @@ type Fax struct {
 	// suited for images, wihle `ultra_dark` is best suited for text.
 	//
 	// Any of "normal", "high", "very_high", "ultra_light", "ultra_dark".
-	Quality FaxQuality `json:"quality"`
+	Quality Quality `json:"quality"`
 	// Identifies the type of the resource.
 	//
 	// Any of "fax".
@@ -221,19 +221,6 @@ const (
 	FaxDirectionOutbound FaxDirection = "outbound"
 )
 
-// The quality of the fax. The `ultra` settings provides the highest quality
-// available, but also present longer fax processing times. `ultra_light` is best
-// suited for images, wihle `ultra_dark` is best suited for text.
-type FaxQuality string
-
-const (
-	FaxQualityNormal     FaxQuality = "normal"
-	FaxQualityHigh       FaxQuality = "high"
-	FaxQualityVeryHigh   FaxQuality = "very_high"
-	FaxQualityUltraLight FaxQuality = "ultra_light"
-	FaxQualityUltraDark  FaxQuality = "ultra_dark"
-)
-
 // Identifies the type of the resource.
 type FaxRecordType string
 
@@ -255,6 +242,19 @@ const (
 	FaxStatusReceiving       FaxStatus = "receiving"
 	FaxStatusMediaProcessing FaxStatus = "media.processing"
 	FaxStatusReceived        FaxStatus = "received"
+)
+
+// The quality of the fax. The `ultra` settings provides the highest quality
+// available, but also present longer fax processing times. `ultra_light` is best
+// suited for images, wihle `ultra_dark` is best suited for text.
+type Quality string
+
+const (
+	QualityNormal     Quality = "normal"
+	QualityHigh       Quality = "high"
+	QualityVeryHigh   Quality = "very_high"
+	QualityUltraLight Quality = "ultra_light"
+	QualityUltraDark  Quality = "ultra_dark"
 )
 
 type FaxNewResponse struct {
@@ -338,7 +338,7 @@ type FaxNewParams struct {
 	// suited for images, wihle `ultra_dark` is best suited for text.
 	//
 	// Any of "normal", "high", "very_high", "ultra_light", "ultra_dark".
-	Quality FaxNewParamsQuality `json:"quality,omitzero"`
+	Quality Quality `json:"quality,omitzero"`
 	paramObj
 }
 
@@ -356,19 +356,6 @@ type FaxNewParamsPreviewFormat string
 const (
 	FaxNewParamsPreviewFormatPdf  FaxNewParamsPreviewFormat = "pdf"
 	FaxNewParamsPreviewFormatTiff FaxNewParamsPreviewFormat = "tiff"
-)
-
-// The quality of the fax. The `ultra` settings provides the highest quality
-// available, but also present longer fax processing times. `ultra_light` is best
-// suited for images, wihle `ultra_dark` is best suited for text.
-type FaxNewParamsQuality string
-
-const (
-	FaxNewParamsQualityNormal     FaxNewParamsQuality = "normal"
-	FaxNewParamsQualityHigh       FaxNewParamsQuality = "high"
-	FaxNewParamsQualityVeryHigh   FaxNewParamsQuality = "very_high"
-	FaxNewParamsQualityUltraLight FaxNewParamsQuality = "ultra_light"
-	FaxNewParamsQualityUltraDark  FaxNewParamsQuality = "ultra_dark"
 )
 
 type FaxListParams struct {

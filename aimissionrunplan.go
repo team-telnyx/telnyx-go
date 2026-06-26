@@ -37,7 +37,7 @@ func NewAIMissionRunPlanService(opts ...option.RequestOption) (r AIMissionRunPla
 }
 
 // Create the initial plan for a run
-func (r *AIMissionRunPlanService) New(ctx context.Context, runID string, params AIMissionRunPlanNewParams, opts ...option.RequestOption) (res *AIMissionRunPlanNewResponse, err error) {
+func (r *AIMissionRunPlanService) New(ctx context.Context, runID string, params AIMissionRunPlanNewParams, opts ...option.RequestOption) (res *PlanStepsCreatedResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
@@ -69,7 +69,7 @@ func (r *AIMissionRunPlanService) Get(ctx context.Context, runID string, query A
 }
 
 // Add one or more steps to an existing plan
-func (r *AIMissionRunPlanService) AddStepsToPlan(ctx context.Context, runID string, params AIMissionRunPlanAddStepsToPlanParams, opts ...option.RequestOption) (res *AIMissionRunPlanAddStepsToPlanResponse, err error) {
+func (r *AIMissionRunPlanService) AddStepsToPlan(ctx context.Context, runID string, params AIMissionRunPlanAddStepsToPlanParams, opts ...option.RequestOption) (res *PlanStepsCreatedResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
@@ -85,7 +85,7 @@ func (r *AIMissionRunPlanService) AddStepsToPlan(ctx context.Context, runID stri
 }
 
 // Get details of a specific plan step
-func (r *AIMissionRunPlanService) GetStepDetails(ctx context.Context, stepID string, query AIMissionRunPlanGetStepDetailsParams, opts ...option.RequestOption) (res *AIMissionRunPlanGetStepDetailsResponse, err error) {
+func (r *AIMissionRunPlanService) GetStepDetails(ctx context.Context, stepID string, query AIMissionRunPlanGetStepDetailsParams, opts ...option.RequestOption) (res *PlanStepResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
@@ -105,7 +105,7 @@ func (r *AIMissionRunPlanService) GetStepDetails(ctx context.Context, stepID str
 }
 
 // Update the status of a plan step
-func (r *AIMissionRunPlanService) UpdateStep(ctx context.Context, stepID string, params AIMissionRunPlanUpdateStepParams, opts ...option.RequestOption) (res *AIMissionRunPlanUpdateStepResponse, err error) {
+func (r *AIMissionRunPlanService) UpdateStep(ctx context.Context, stepID string, params AIMissionRunPlanUpdateStepParams, opts ...option.RequestOption) (res *PlanStepResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
@@ -124,17 +124,35 @@ func (r *AIMissionRunPlanService) UpdateStep(ctx context.Context, stepID string,
 	return res, err
 }
 
+// The properties Description, Sequence, StepID are required.
+type CreatePlanStepRequestParam struct {
+	Description  string            `json:"description" api:"required"`
+	Sequence     int64             `json:"sequence" api:"required"`
+	StepID       string            `json:"step_id" api:"required"`
+	ParentStepID param.Opt[string] `json:"parent_step_id,omitzero"`
+	Metadata     map[string]any    `json:"metadata,omitzero"`
+	paramObj
+}
+
+func (r CreatePlanStepRequestParam) MarshalJSON() (data []byte, err error) {
+	type shadow CreatePlanStepRequestParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CreatePlanStepRequestParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type PlanStepData struct {
 	Description string `json:"description" api:"required"`
 	RunID       string `json:"run_id" api:"required" format:"uuid"`
 	Sequence    int64  `json:"sequence" api:"required"`
 	// Any of "pending", "in_progress", "completed", "skipped", "failed".
-	Status       PlanStepDataStatus `json:"status" api:"required"`
-	StepID       string             `json:"step_id" api:"required"`
-	CompletedAt  time.Time          `json:"completed_at" format:"date-time"`
-	Metadata     map[string]any     `json:"metadata"`
-	ParentStepID string             `json:"parent_step_id"`
-	StartedAt    time.Time          `json:"started_at" format:"date-time"`
+	Status       StepStatus     `json:"status" api:"required"`
+	StepID       string         `json:"step_id" api:"required"`
+	CompletedAt  time.Time      `json:"completed_at" format:"date-time"`
+	Metadata     map[string]any `json:"metadata"`
+	ParentStepID string         `json:"parent_step_id"`
+	StartedAt    time.Time      `json:"started_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Description  respjson.Field
@@ -157,17 +175,23 @@ func (r *PlanStepData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PlanStepDataStatus string
+type PlanStepResponse struct {
+	Data PlanStepData `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
 
-const (
-	PlanStepDataStatusPending    PlanStepDataStatus = "pending"
-	PlanStepDataStatusInProgress PlanStepDataStatus = "in_progress"
-	PlanStepDataStatusCompleted  PlanStepDataStatus = "completed"
-	PlanStepDataStatusSkipped    PlanStepDataStatus = "skipped"
-	PlanStepDataStatusFailed     PlanStepDataStatus = "failed"
-)
+// Returns the unmodified JSON received from the API
+func (r PlanStepResponse) RawJSON() string { return r.JSON.raw }
+func (r *PlanStepResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
-type AIMissionRunPlanNewResponse struct {
+type PlanStepsCreatedResponse struct {
 	Data []PlanStepData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -178,10 +202,20 @@ type AIMissionRunPlanNewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AIMissionRunPlanNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunPlanNewResponse) UnmarshalJSON(data []byte) error {
+func (r PlanStepsCreatedResponse) RawJSON() string { return r.JSON.raw }
+func (r *PlanStepsCreatedResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type StepStatus string
+
+const (
+	StepStatusPending    StepStatus = "pending"
+	StepStatusInProgress StepStatus = "in_progress"
+	StepStatusCompleted  StepStatus = "completed"
+	StepStatusSkipped    StepStatus = "skipped"
+	StepStatusFailed     StepStatus = "failed"
+)
 
 type AIMissionRunPlanGetResponse struct {
 	Data []PlanStepData `json:"data" api:"required"`
@@ -199,57 +233,9 @@ func (r *AIMissionRunPlanGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIMissionRunPlanAddStepsToPlanResponse struct {
-	Data []PlanStepData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunPlanAddStepsToPlanResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunPlanAddStepsToPlanResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIMissionRunPlanGetStepDetailsResponse struct {
-	Data PlanStepData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunPlanGetStepDetailsResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunPlanGetStepDetailsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIMissionRunPlanUpdateStepResponse struct {
-	Data PlanStepData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunPlanUpdateStepResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunPlanUpdateStepResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type AIMissionRunPlanNewParams struct {
-	MissionID string                          `path:"mission_id" api:"required" format:"uuid" json:"-"`
-	Steps     []AIMissionRunPlanNewParamsStep `json:"steps,omitzero" api:"required"`
+	MissionID string                       `path:"mission_id" api:"required" format:"uuid" json:"-"`
+	Steps     []CreatePlanStepRequestParam `json:"steps,omitzero" api:"required"`
 	paramObj
 }
 
@@ -261,32 +247,14 @@ func (r *AIMissionRunPlanNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The properties Description, Sequence, StepID are required.
-type AIMissionRunPlanNewParamsStep struct {
-	Description  string            `json:"description" api:"required"`
-	Sequence     int64             `json:"sequence" api:"required"`
-	StepID       string            `json:"step_id" api:"required"`
-	ParentStepID param.Opt[string] `json:"parent_step_id,omitzero"`
-	Metadata     map[string]any    `json:"metadata,omitzero"`
-	paramObj
-}
-
-func (r AIMissionRunPlanNewParamsStep) MarshalJSON() (data []byte, err error) {
-	type shadow AIMissionRunPlanNewParamsStep
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AIMissionRunPlanNewParamsStep) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type AIMissionRunPlanGetParams struct {
 	MissionID string `path:"mission_id" api:"required" format:"uuid" json:"-"`
 	paramObj
 }
 
 type AIMissionRunPlanAddStepsToPlanParams struct {
-	MissionID string                                     `path:"mission_id" api:"required" format:"uuid" json:"-"`
-	Steps     []AIMissionRunPlanAddStepsToPlanParamsStep `json:"steps,omitzero" api:"required"`
+	MissionID string                       `path:"mission_id" api:"required" format:"uuid" json:"-"`
+	Steps     []CreatePlanStepRequestParam `json:"steps,omitzero" api:"required"`
 	paramObj
 }
 
@@ -295,24 +263,6 @@ func (r AIMissionRunPlanAddStepsToPlanParams) MarshalJSON() (data []byte, err er
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *AIMissionRunPlanAddStepsToPlanParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties Description, Sequence, StepID are required.
-type AIMissionRunPlanAddStepsToPlanParamsStep struct {
-	Description  string            `json:"description" api:"required"`
-	Sequence     int64             `json:"sequence" api:"required"`
-	StepID       string            `json:"step_id" api:"required"`
-	ParentStepID param.Opt[string] `json:"parent_step_id,omitzero"`
-	Metadata     map[string]any    `json:"metadata,omitzero"`
-	paramObj
-}
-
-func (r AIMissionRunPlanAddStepsToPlanParamsStep) MarshalJSON() (data []byte, err error) {
-	type shadow AIMissionRunPlanAddStepsToPlanParamsStep
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AIMissionRunPlanAddStepsToPlanParamsStep) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -327,7 +277,7 @@ type AIMissionRunPlanUpdateStepParams struct {
 	RunID     string         `path:"run_id" api:"required" format:"uuid" json:"-"`
 	Metadata  map[string]any `json:"metadata,omitzero"`
 	// Any of "pending", "in_progress", "completed", "skipped", "failed".
-	Status AIMissionRunPlanUpdateStepParamsStatus `json:"status,omitzero"`
+	Status StepStatus `json:"status,omitzero"`
 	paramObj
 }
 
@@ -338,13 +288,3 @@ func (r AIMissionRunPlanUpdateStepParams) MarshalJSON() (data []byte, err error)
 func (r *AIMissionRunPlanUpdateStepParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type AIMissionRunPlanUpdateStepParamsStatus string
-
-const (
-	AIMissionRunPlanUpdateStepParamsStatusPending    AIMissionRunPlanUpdateStepParamsStatus = "pending"
-	AIMissionRunPlanUpdateStepParamsStatusInProgress AIMissionRunPlanUpdateStepParamsStatus = "in_progress"
-	AIMissionRunPlanUpdateStepParamsStatusCompleted  AIMissionRunPlanUpdateStepParamsStatus = "completed"
-	AIMissionRunPlanUpdateStepParamsStatusSkipped    AIMissionRunPlanUpdateStepParamsStatus = "skipped"
-	AIMissionRunPlanUpdateStepParamsStatusFailed     AIMissionRunPlanUpdateStepParamsStatus = "failed"
-)

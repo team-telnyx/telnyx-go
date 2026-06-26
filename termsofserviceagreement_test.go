@@ -52,7 +52,7 @@ func TestTermsOfServiceAgreementListWithOptionalParams(t *testing.T) {
 	_, err := client.TermsOfService.Agreements.List(context.TODO(), telnyx.TermsOfServiceAgreementListParams{
 		PageNumber:  telnyx.Int(1),
 		PageSize:    telnyx.Int(20),
-		ProductType: telnyx.TermsOfServiceAgreementListParamsProductTypeBrandedCalling,
+		ProductType: telnyx.TosProductTypeBrandedCalling,
 	})
 	if err != nil {
 		var apierr *telnyx.Error

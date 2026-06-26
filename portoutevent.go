@@ -55,7 +55,7 @@ func (r *PortoutEventService) Get(ctx context.Context, id string, opts ...option
 }
 
 // Returns a list of all port-out events.
-func (r *PortoutEventService) List(ctx context.Context, query PortoutEventListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortoutEventListResponseUnion], err error) {
+func (r *PortoutEventService) List(ctx context.Context, query PortoutEventListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortoutEventUnion], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -73,7 +73,7 @@ func (r *PortoutEventService) List(ctx context.Context, query PortoutEventListPa
 }
 
 // Returns a list of all port-out events.
-func (r *PortoutEventService) ListAutoPaging(ctx context.Context, query PortoutEventListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortoutEventListResponseUnion] {
+func (r *PortoutEventService) ListAutoPaging(ctx context.Context, query PortoutEventListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortoutEventUnion] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -88,6 +88,112 @@ func (r *PortoutEventService) Republish(ctx context.Context, id string, opts ...
 	path := fmt.Sprintf("portouts/events/%s/republish", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
 	return err
+}
+
+// PortoutEventUnion contains all possible properties and values from
+// [WebhookPortoutStatusChanged], [WebhookPortoutNewComment],
+// [WebhookPortoutFocDateChanged].
+//
+// Use the [PortoutEventUnion.AsAny] method to switch on the variant.
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type PortoutEventUnion struct {
+	ID                           string    `json:"id"`
+	AvailableNotificationMethods []string  `json:"available_notification_methods"`
+	CreatedAt                    time.Time `json:"created_at"`
+	// Any of nil, nil, nil.
+	EventType string `json:"event_type"`
+	// This field is a union of [WebhookPortoutStatusChangedPayload],
+	// [WebhookPortoutNewCommentPayload], [WebhookPortoutFocDateChangedPayload]
+	Payload       PortoutEventUnionPayload `json:"payload"`
+	PayloadStatus string                   `json:"payload_status"`
+	PortoutID     string                   `json:"portout_id"`
+	RecordType    string                   `json:"record_type"`
+	UpdatedAt     time.Time                `json:"updated_at"`
+	JSON          struct {
+		ID                           respjson.Field
+		AvailableNotificationMethods respjson.Field
+		CreatedAt                    respjson.Field
+		EventType                    respjson.Field
+		Payload                      respjson.Field
+		PayloadStatus                respjson.Field
+		PortoutID                    respjson.Field
+		RecordType                   respjson.Field
+		UpdatedAt                    respjson.Field
+		raw                          string
+	} `json:"-"`
+}
+
+func (u PortoutEventUnion) AsWebhookPortoutStatusChanged() (v WebhookPortoutStatusChanged) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u PortoutEventUnion) AsWebhookPortoutNewComment() (v WebhookPortoutNewComment) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u PortoutEventUnion) AsWebhookPortoutFocDateChanged() (v WebhookPortoutFocDateChanged) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u PortoutEventUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *PortoutEventUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// PortoutEventUnionPayload is an implicit subunion of [PortoutEventUnion].
+// PortoutEventUnionPayload provides convenient access to the sub-properties of the
+// union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [PortoutEventUnion].
+type PortoutEventUnionPayload struct {
+	ID string `json:"id"`
+	// This field is from variant [WebhookPortoutStatusChangedPayload].
+	AttemptedPin string `json:"attempted_pin"`
+	// This field is from variant [WebhookPortoutStatusChangedPayload].
+	CarrierName string `json:"carrier_name"`
+	// This field is from variant [WebhookPortoutStatusChangedPayload].
+	PhoneNumbers []string `json:"phone_numbers"`
+	// This field is from variant [WebhookPortoutStatusChangedPayload].
+	RejectionReason string `json:"rejection_reason"`
+	// This field is from variant [WebhookPortoutStatusChangedPayload].
+	Spid string `json:"spid"`
+	// This field is from variant [WebhookPortoutStatusChangedPayload].
+	Status string `json:"status"`
+	// This field is from variant [WebhookPortoutStatusChangedPayload].
+	SubscriberName string `json:"subscriber_name"`
+	UserID         string `json:"user_id"`
+	// This field is from variant [WebhookPortoutNewCommentPayload].
+	Comment string `json:"comment"`
+	// This field is from variant [WebhookPortoutNewCommentPayload].
+	PortoutID string `json:"portout_id"`
+	// This field is from variant [WebhookPortoutFocDateChangedPayload].
+	FocDate time.Time `json:"foc_date"`
+	JSON    struct {
+		ID              respjson.Field
+		AttemptedPin    respjson.Field
+		CarrierName     respjson.Field
+		PhoneNumbers    respjson.Field
+		RejectionReason respjson.Field
+		Spid            respjson.Field
+		Status          respjson.Field
+		SubscriberName  respjson.Field
+		UserID          respjson.Field
+		Comment         respjson.Field
+		PortoutID       respjson.Field
+		FocDate         respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+func (r *PortoutEventUnionPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type WebhookPortoutFocDateChanged struct {
@@ -383,7 +489,7 @@ const (
 )
 
 type PortoutEventGetResponse struct {
-	Data PortoutEventGetResponseDataUnion `json:"data"`
+	Data PortoutEventUnion `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -395,219 +501,6 @@ type PortoutEventGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r PortoutEventGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *PortoutEventGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// PortoutEventGetResponseDataUnion contains all possible properties and values
-// from [WebhookPortoutStatusChanged], [WebhookPortoutNewComment],
-// [WebhookPortoutFocDateChanged].
-//
-// Use the [PortoutEventGetResponseDataUnion.AsAny] method to switch on the
-// variant.
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type PortoutEventGetResponseDataUnion struct {
-	ID                           string    `json:"id"`
-	AvailableNotificationMethods []string  `json:"available_notification_methods"`
-	CreatedAt                    time.Time `json:"created_at"`
-	// Any of nil, nil, nil.
-	EventType string `json:"event_type"`
-	// This field is a union of [WebhookPortoutStatusChangedPayload],
-	// [WebhookPortoutNewCommentPayload], [WebhookPortoutFocDateChangedPayload]
-	Payload       PortoutEventGetResponseDataUnionPayload `json:"payload"`
-	PayloadStatus string                                  `json:"payload_status"`
-	PortoutID     string                                  `json:"portout_id"`
-	RecordType    string                                  `json:"record_type"`
-	UpdatedAt     time.Time                               `json:"updated_at"`
-	JSON          struct {
-		ID                           respjson.Field
-		AvailableNotificationMethods respjson.Field
-		CreatedAt                    respjson.Field
-		EventType                    respjson.Field
-		Payload                      respjson.Field
-		PayloadStatus                respjson.Field
-		PortoutID                    respjson.Field
-		RecordType                   respjson.Field
-		UpdatedAt                    respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-func (u PortoutEventGetResponseDataUnion) AsWebhookPortoutStatusChanged() (v WebhookPortoutStatusChanged) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u PortoutEventGetResponseDataUnion) AsWebhookPortoutNewComment() (v WebhookPortoutNewComment) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u PortoutEventGetResponseDataUnion) AsWebhookPortoutFocDateChanged() (v WebhookPortoutFocDateChanged) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u PortoutEventGetResponseDataUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *PortoutEventGetResponseDataUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// PortoutEventGetResponseDataUnionPayload is an implicit subunion of
-// [PortoutEventGetResponseDataUnion]. PortoutEventGetResponseDataUnionPayload
-// provides convenient access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [PortoutEventGetResponseDataUnion].
-type PortoutEventGetResponseDataUnionPayload struct {
-	ID string `json:"id"`
-	// This field is from variant [WebhookPortoutStatusChangedPayload].
-	AttemptedPin string `json:"attempted_pin"`
-	// This field is from variant [WebhookPortoutStatusChangedPayload].
-	CarrierName string `json:"carrier_name"`
-	// This field is from variant [WebhookPortoutStatusChangedPayload].
-	PhoneNumbers []string `json:"phone_numbers"`
-	// This field is from variant [WebhookPortoutStatusChangedPayload].
-	RejectionReason string `json:"rejection_reason"`
-	// This field is from variant [WebhookPortoutStatusChangedPayload].
-	Spid string `json:"spid"`
-	// This field is from variant [WebhookPortoutStatusChangedPayload].
-	Status string `json:"status"`
-	// This field is from variant [WebhookPortoutStatusChangedPayload].
-	SubscriberName string `json:"subscriber_name"`
-	UserID         string `json:"user_id"`
-	// This field is from variant [WebhookPortoutNewCommentPayload].
-	Comment string `json:"comment"`
-	// This field is from variant [WebhookPortoutNewCommentPayload].
-	PortoutID string `json:"portout_id"`
-	// This field is from variant [WebhookPortoutFocDateChangedPayload].
-	FocDate time.Time `json:"foc_date"`
-	JSON    struct {
-		ID              respjson.Field
-		AttemptedPin    respjson.Field
-		CarrierName     respjson.Field
-		PhoneNumbers    respjson.Field
-		RejectionReason respjson.Field
-		Spid            respjson.Field
-		Status          respjson.Field
-		SubscriberName  respjson.Field
-		UserID          respjson.Field
-		Comment         respjson.Field
-		PortoutID       respjson.Field
-		FocDate         respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-func (r *PortoutEventGetResponseDataUnionPayload) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// PortoutEventListResponseUnion contains all possible properties and values from
-// [WebhookPortoutStatusChanged], [WebhookPortoutNewComment],
-// [WebhookPortoutFocDateChanged].
-//
-// Use the [PortoutEventListResponseUnion.AsAny] method to switch on the variant.
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type PortoutEventListResponseUnion struct {
-	ID                           string    `json:"id"`
-	AvailableNotificationMethods []string  `json:"available_notification_methods"`
-	CreatedAt                    time.Time `json:"created_at"`
-	// Any of nil, nil, nil.
-	EventType string `json:"event_type"`
-	// This field is a union of [WebhookPortoutStatusChangedPayload],
-	// [WebhookPortoutNewCommentPayload], [WebhookPortoutFocDateChangedPayload]
-	Payload       PortoutEventListResponseUnionPayload `json:"payload"`
-	PayloadStatus string                               `json:"payload_status"`
-	PortoutID     string                               `json:"portout_id"`
-	RecordType    string                               `json:"record_type"`
-	UpdatedAt     time.Time                            `json:"updated_at"`
-	JSON          struct {
-		ID                           respjson.Field
-		AvailableNotificationMethods respjson.Field
-		CreatedAt                    respjson.Field
-		EventType                    respjson.Field
-		Payload                      respjson.Field
-		PayloadStatus                respjson.Field
-		PortoutID                    respjson.Field
-		RecordType                   respjson.Field
-		UpdatedAt                    respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-func (u PortoutEventListResponseUnion) AsWebhookPortoutStatusChanged() (v WebhookPortoutStatusChanged) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u PortoutEventListResponseUnion) AsWebhookPortoutNewComment() (v WebhookPortoutNewComment) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u PortoutEventListResponseUnion) AsWebhookPortoutFocDateChanged() (v WebhookPortoutFocDateChanged) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u PortoutEventListResponseUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *PortoutEventListResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// PortoutEventListResponseUnionPayload is an implicit subunion of
-// [PortoutEventListResponseUnion]. PortoutEventListResponseUnionPayload provides
-// convenient access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [PortoutEventListResponseUnion].
-type PortoutEventListResponseUnionPayload struct {
-	ID string `json:"id"`
-	// This field is from variant [WebhookPortoutStatusChangedPayload].
-	AttemptedPin string `json:"attempted_pin"`
-	// This field is from variant [WebhookPortoutStatusChangedPayload].
-	CarrierName string `json:"carrier_name"`
-	// This field is from variant [WebhookPortoutStatusChangedPayload].
-	PhoneNumbers []string `json:"phone_numbers"`
-	// This field is from variant [WebhookPortoutStatusChangedPayload].
-	RejectionReason string `json:"rejection_reason"`
-	// This field is from variant [WebhookPortoutStatusChangedPayload].
-	Spid string `json:"spid"`
-	// This field is from variant [WebhookPortoutStatusChangedPayload].
-	Status string `json:"status"`
-	// This field is from variant [WebhookPortoutStatusChangedPayload].
-	SubscriberName string `json:"subscriber_name"`
-	UserID         string `json:"user_id"`
-	// This field is from variant [WebhookPortoutNewCommentPayload].
-	Comment string `json:"comment"`
-	// This field is from variant [WebhookPortoutNewCommentPayload].
-	PortoutID string `json:"portout_id"`
-	// This field is from variant [WebhookPortoutFocDateChangedPayload].
-	FocDate time.Time `json:"foc_date"`
-	JSON    struct {
-		ID              respjson.Field
-		AttemptedPin    respjson.Field
-		CarrierName     respjson.Field
-		PhoneNumbers    respjson.Field
-		RejectionReason respjson.Field
-		Spid            respjson.Field
-		Status          respjson.Field
-		SubscriberName  respjson.Field
-		UserID          respjson.Field
-		Comment         respjson.Field
-		PortoutID       respjson.Field
-		FocDate         respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-func (r *PortoutEventListResponseUnionPayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

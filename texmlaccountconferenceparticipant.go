@@ -38,7 +38,7 @@ func NewTexmlAccountConferenceParticipantService(opts ...option.RequestOption) (
 }
 
 // Gets conference participant resource
-func (r *TexmlAccountConferenceParticipantService) Get(ctx context.Context, callSidOrParticipantLabel string, query TexmlAccountConferenceParticipantGetParams, opts ...option.RequestOption) (res *TexmlAccountConferenceParticipantGetResponse, err error) {
+func (r *TexmlAccountConferenceParticipantService) Get(ctx context.Context, callSidOrParticipantLabel string, query TexmlAccountConferenceParticipantGetParams, opts ...option.RequestOption) (res *ParticipantResource, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
@@ -58,7 +58,7 @@ func (r *TexmlAccountConferenceParticipantService) Get(ctx context.Context, call
 }
 
 // Updates a conference participant
-func (r *TexmlAccountConferenceParticipantService) Update(ctx context.Context, callSidOrParticipantLabel string, params TexmlAccountConferenceParticipantUpdateParams, opts ...option.RequestOption) (res *TexmlAccountConferenceParticipantUpdateResponse, err error) {
+func (r *TexmlAccountConferenceParticipantService) Update(ctx context.Context, callSidOrParticipantLabel string, params TexmlAccountConferenceParticipantUpdateParams, opts ...option.RequestOption) (res *ParticipantResource, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
@@ -130,7 +130,7 @@ func (r *TexmlAccountConferenceParticipantService) GetParticipants(ctx context.C
 	return res, err
 }
 
-type TexmlAccountConferenceParticipantGetResponse struct {
+type ParticipantResource struct {
 	// The id of the account the resource belongs to.
 	AccountSid string `json:"account_sid"`
 	// The version of the API that was used to make the request.
@@ -160,7 +160,7 @@ type TexmlAccountConferenceParticipantGetResponse struct {
 	// The status of the participant's call in the conference.
 	//
 	// Any of "connecting", "connected", "completed".
-	Status TexmlAccountConferenceParticipantGetResponseStatus `json:"status"`
+	Status ParticipantResourceStatus `json:"status"`
 	// The relative URI for this participant.
 	Uri string `json:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -186,88 +186,18 @@ type TexmlAccountConferenceParticipantGetResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r TexmlAccountConferenceParticipantGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *TexmlAccountConferenceParticipantGetResponse) UnmarshalJSON(data []byte) error {
+func (r ParticipantResource) RawJSON() string { return r.JSON.raw }
+func (r *ParticipantResource) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The status of the participant's call in the conference.
-type TexmlAccountConferenceParticipantGetResponseStatus string
+type ParticipantResourceStatus string
 
 const (
-	TexmlAccountConferenceParticipantGetResponseStatusConnecting TexmlAccountConferenceParticipantGetResponseStatus = "connecting"
-	TexmlAccountConferenceParticipantGetResponseStatusConnected  TexmlAccountConferenceParticipantGetResponseStatus = "connected"
-	TexmlAccountConferenceParticipantGetResponseStatusCompleted  TexmlAccountConferenceParticipantGetResponseStatus = "completed"
-)
-
-type TexmlAccountConferenceParticipantUpdateResponse struct {
-	// The id of the account the resource belongs to.
-	AccountSid string `json:"account_sid"`
-	// The version of the API that was used to make the request.
-	APIVersion string `json:"api_version"`
-	// The identifier of this participant's call.
-	CallSid string `json:"call_sid"`
-	// The identifier of this participant's call.
-	CallSidLegacy string `json:"call_sid_legacy"`
-	// Whether the participant is coaching another call.
-	Coaching bool `json:"coaching"`
-	// The identifier of the coached participant's call.
-	CoachingCallSid string `json:"coaching_call_sid"`
-	// The identifier of the coached participant's call.
-	CoachingCallSidLegacy string `json:"coaching_call_sid_legacy"`
-	// The unique identifier for the conference.
-	ConferenceSid string `json:"conference_sid" format:"uuid"`
-	// The timestamp of when the resource was created.
-	DateCreated string `json:"date_created"`
-	// The timestamp of when the resource was last updated.
-	DateUpdated string `json:"date_updated"`
-	// Whether the conference ends when the participant leaves.
-	EndConferenceOnExit bool `json:"end_conference_on_exit"`
-	// Whether the participant is on hold.
-	Hold bool `json:"hold"`
-	// Whether the participant is muted.
-	Muted bool `json:"muted"`
-	// The status of the participant's call in the conference.
-	//
-	// Any of "connecting", "connected", "completed".
-	Status TexmlAccountConferenceParticipantUpdateResponseStatus `json:"status"`
-	// The relative URI for this participant.
-	Uri string `json:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AccountSid            respjson.Field
-		APIVersion            respjson.Field
-		CallSid               respjson.Field
-		CallSidLegacy         respjson.Field
-		Coaching              respjson.Field
-		CoachingCallSid       respjson.Field
-		CoachingCallSidLegacy respjson.Field
-		ConferenceSid         respjson.Field
-		DateCreated           respjson.Field
-		DateUpdated           respjson.Field
-		EndConferenceOnExit   respjson.Field
-		Hold                  respjson.Field
-		Muted                 respjson.Field
-		Status                respjson.Field
-		Uri                   respjson.Field
-		ExtraFields           map[string]respjson.Field
-		raw                   string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TexmlAccountConferenceParticipantUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *TexmlAccountConferenceParticipantUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The status of the participant's call in the conference.
-type TexmlAccountConferenceParticipantUpdateResponseStatus string
-
-const (
-	TexmlAccountConferenceParticipantUpdateResponseStatusConnecting TexmlAccountConferenceParticipantUpdateResponseStatus = "connecting"
-	TexmlAccountConferenceParticipantUpdateResponseStatusConnected  TexmlAccountConferenceParticipantUpdateResponseStatus = "connected"
-	TexmlAccountConferenceParticipantUpdateResponseStatusCompleted  TexmlAccountConferenceParticipantUpdateResponseStatus = "completed"
+	ParticipantResourceStatusConnecting ParticipantResourceStatus = "connecting"
+	ParticipantResourceStatusConnected  ParticipantResourceStatus = "connected"
+	ParticipantResourceStatusCompleted  ParticipantResourceStatus = "completed"
 )
 
 type TexmlAccountConferenceParticipantParticipantsResponse struct {
@@ -335,8 +265,8 @@ type TexmlAccountConferenceParticipantGetParticipantsResponse struct {
 	// Current page number, zero-indexed.
 	Page int64 `json:"page"`
 	// The number of items on the page
-	PageSize     int64                                                                 `json:"page_size"`
-	Participants []TexmlAccountConferenceParticipantGetParticipantsResponseParticipant `json:"participants"`
+	PageSize     int64                 `json:"page_size"`
+	Participants []ParticipantResource `json:"participants"`
 	// The number of the first element on the page, zero-indexed.
 	Start int64 `json:"start"`
 	// The URI of the current page.
@@ -359,69 +289,6 @@ type TexmlAccountConferenceParticipantGetParticipantsResponse struct {
 // Returns the unmodified JSON received from the API
 func (r TexmlAccountConferenceParticipantGetParticipantsResponse) RawJSON() string { return r.JSON.raw }
 func (r *TexmlAccountConferenceParticipantGetParticipantsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TexmlAccountConferenceParticipantGetParticipantsResponseParticipant struct {
-	// The id of the account the resource belongs to.
-	AccountSid string `json:"account_sid"`
-	// The version of the API that was used to make the request.
-	APIVersion string `json:"api_version"`
-	// The identifier of this participant's call.
-	CallSid string `json:"call_sid"`
-	// The identifier of this participant's call.
-	CallSidLegacy string `json:"call_sid_legacy"`
-	// Whether the participant is coaching another call.
-	Coaching bool `json:"coaching"`
-	// The identifier of the coached participant's call.
-	CoachingCallSid string `json:"coaching_call_sid"`
-	// The identifier of the coached participant's call.
-	CoachingCallSidLegacy string `json:"coaching_call_sid_legacy"`
-	// The unique identifier for the conference.
-	ConferenceSid string `json:"conference_sid" format:"uuid"`
-	// The timestamp of when the resource was created.
-	DateCreated string `json:"date_created"`
-	// The timestamp of when the resource was last updated.
-	DateUpdated string `json:"date_updated"`
-	// Whether the conference ends when the participant leaves.
-	EndConferenceOnExit bool `json:"end_conference_on_exit"`
-	// Whether the participant is on hold.
-	Hold bool `json:"hold"`
-	// Whether the participant is muted.
-	Muted bool `json:"muted"`
-	// The status of the participant's call in the conference.
-	//
-	// Any of "connecting", "connected", "completed".
-	Status string `json:"status"`
-	// The relative URI for this participant.
-	Uri string `json:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AccountSid            respjson.Field
-		APIVersion            respjson.Field
-		CallSid               respjson.Field
-		CallSidLegacy         respjson.Field
-		Coaching              respjson.Field
-		CoachingCallSid       respjson.Field
-		CoachingCallSidLegacy respjson.Field
-		ConferenceSid         respjson.Field
-		DateCreated           respjson.Field
-		DateUpdated           respjson.Field
-		EndConferenceOnExit   respjson.Field
-		Hold                  respjson.Field
-		Muted                 respjson.Field
-		Status                respjson.Field
-		Uri                   respjson.Field
-		ExtraFields           map[string]respjson.Field
-		raw                   string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TexmlAccountConferenceParticipantGetParticipantsResponseParticipant) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *TexmlAccountConferenceParticipantGetParticipantsResponseParticipant) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

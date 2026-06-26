@@ -364,22 +364,22 @@ func TestMessageSendWhatsappWithOptionalParams(t *testing.T) {
 				Action: telnyx.WhatsappInteractiveActionParam{
 					Button: telnyx.String("button"),
 					Buttons: []telnyx.WhatsappInteractiveActionButtonParam{{
-						Reply: telnyx.WhatsappInteractiveActionButtonReplyParam{
+						Reply: telnyx.WhatsappInteractiveActionButtonsReplyParam{
 							ID:    telnyx.String("id"),
 							Title: telnyx.String("title"),
 						},
 						Type: "reply",
 					}},
 					Cards: []telnyx.WhatsappInteractiveActionCardParam{{
-						Action: telnyx.WhatsappInteractiveActionCardActionParam{
+						Action: telnyx.WhatsappInteractiveActionCardsActionParam{
 							CatalogID:         telnyx.String("catalog_id"),
 							ProductRetailerID: telnyx.String("product_retailer_id"),
 						},
-						Body: telnyx.WhatsappInteractiveActionCardBodyParam{
+						Body: telnyx.WhatsappInteractiveActionCardsBodyParam{
 							Text: telnyx.String("text"),
 						},
 						CardIndex: telnyx.Int(0),
-						Header: telnyx.WhatsappInteractiveActionCardHeaderParam{
+						Header: telnyx.WhatsappInteractiveActionCardsHeaderParam{
 							Image: telnyx.WhatsappMediaParam{
 								Caption:  telnyx.String("caption"),
 								Filename: telnyx.String("filename"),
@@ -405,10 +405,10 @@ func TestMessageSendWhatsappWithOptionalParams(t *testing.T) {
 					},
 					ProductRetailerID: telnyx.String("product_retailer_id"),
 					Sections: []telnyx.WhatsappInteractiveActionSectionParam{{
-						ProductItems: []telnyx.WhatsappInteractiveActionSectionProductItemParam{{
+						ProductItems: []telnyx.WhatsappInteractiveActionSectionsProductItemParam{{
 							ProductRetailerID: telnyx.String("product_retailer_id"),
 						}},
-						Rows: []telnyx.WhatsappInteractiveActionSectionRowParam{{
+						Rows: []telnyx.WhatsappInteractiveActionSectionsRowParam{{
 							ID:          telnyx.String("id"),
 							Description: telnyx.String("description"),
 							Title:       telnyx.String("title"),
@@ -465,7 +465,7 @@ func TestMessageSendWhatsappWithOptionalParams(t *testing.T) {
 			Template: telnyx.WhatsappMessageContentTemplateParam{
 				Components: []telnyx.WhatsappMessageContentTemplateComponentParam{{
 					Index: telnyx.Int(0),
-					Parameters: []telnyx.WhatsappMessageContentTemplateComponentParameterParam{{
+					Parameters: []telnyx.WhatsappMessageContentTemplateComponentsParameterParam{{
 						Text: telnyx.String("text"),
 						Type: "text",
 					}},

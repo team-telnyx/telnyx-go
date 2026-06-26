@@ -16,7 +16,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v4/shared"
-	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
 // Conference command operations
@@ -282,6 +281,17 @@ func (r *ConferenceCommandResult) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Region where the conference data is located. Defaults to the region defined in
+// user's data locality settings (Europe or US).
+type ConferenceRegion string
+
+const (
+	ConferenceRegionAustralia  ConferenceRegion = "Australia"
+	ConferenceRegionEurope     ConferenceRegion = "Europe"
+	ConferenceRegionMiddleEast ConferenceRegion = "Middle East"
+	ConferenceRegionUs         ConferenceRegion = "US"
+)
+
 // The properties CallControlID, SupervisorRole are required.
 type UpdateConferenceParam struct {
 	// Unique identifier and token for controlling the call
@@ -302,7 +312,7 @@ type UpdateConferenceParam struct {
 	// user's data locality settings (Europe or US).
 	//
 	// Any of "Australia", "Europe", "Middle East", "US".
-	Region UpdateConferenceRegion `json:"region,omitzero"`
+	Region ConferenceRegion `json:"region,omitzero"`
 	// Array of unique call_control_ids the supervisor can whisper to. If none
 	// provided, the supervisor will join the conference as a monitoring participant
 	// only.
@@ -330,17 +340,6 @@ const (
 	UpdateConferenceSupervisorRoleMonitor UpdateConferenceSupervisorRole = "monitor"
 	UpdateConferenceSupervisorRoleNone    UpdateConferenceSupervisorRole = "none"
 	UpdateConferenceSupervisorRoleWhisper UpdateConferenceSupervisorRole = "whisper"
-)
-
-// Region where the conference data is located. Defaults to the region defined in
-// user's data locality settings (Europe or US).
-type UpdateConferenceRegion string
-
-const (
-	UpdateConferenceRegionAustralia  UpdateConferenceRegion = "Australia"
-	UpdateConferenceRegionEurope     UpdateConferenceRegion = "Europe"
-	UpdateConferenceRegionMiddleEast UpdateConferenceRegion = "Middle East"
-	UpdateConferenceRegionUs         UpdateConferenceRegion = "US"
 )
 
 type ConferenceActionUpdateResponse struct {
@@ -707,7 +706,7 @@ type ConferenceActionHoldParams struct {
 	// user's data locality settings (Europe or US).
 	//
 	// Any of "Australia", "Europe", "Middle East", "US".
-	Region ConferenceActionHoldParamsRegion `json:"region,omitzero"`
+	Region ConferenceRegion `json:"region,omitzero"`
 	paramObj
 }
 
@@ -718,17 +717,6 @@ func (r ConferenceActionHoldParams) MarshalJSON() (data []byte, err error) {
 func (r *ConferenceActionHoldParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Region where the conference data is located. Defaults to the region defined in
-// user's data locality settings (Europe or US).
-type ConferenceActionHoldParamsRegion string
-
-const (
-	ConferenceActionHoldParamsRegionAustralia  ConferenceActionHoldParamsRegion = "Australia"
-	ConferenceActionHoldParamsRegionEurope     ConferenceActionHoldParamsRegion = "Europe"
-	ConferenceActionHoldParamsRegionMiddleEast ConferenceActionHoldParamsRegion = "Middle East"
-	ConferenceActionHoldParamsRegionUs         ConferenceActionHoldParamsRegion = "US"
-)
 
 type ConferenceActionJoinParams struct {
 	// Unique identifier and token for controlling the call
@@ -778,7 +766,7 @@ type ConferenceActionJoinParams struct {
 	// user's data locality settings (Europe or US).
 	//
 	// Any of "Australia", "Europe", "Middle East", "US".
-	Region ConferenceActionJoinParamsRegion `json:"region,omitzero"`
+	Region ConferenceRegion `json:"region,omitzero"`
 	// Sets the joining participant as a supervisor for the conference. A conference
 	// can have multiple supervisors. "barge" means the supervisor enters the
 	// conference as a normal participant. This is the same as "none". "monitor" means
@@ -814,17 +802,6 @@ const (
 	ConferenceActionJoinParamsBeepEnabledOnExit  ConferenceActionJoinParamsBeepEnabled = "on_exit"
 )
 
-// Region where the conference data is located. Defaults to the region defined in
-// user's data locality settings (Europe or US).
-type ConferenceActionJoinParamsRegion string
-
-const (
-	ConferenceActionJoinParamsRegionAustralia  ConferenceActionJoinParamsRegion = "Australia"
-	ConferenceActionJoinParamsRegionEurope     ConferenceActionJoinParamsRegion = "Europe"
-	ConferenceActionJoinParamsRegionMiddleEast ConferenceActionJoinParamsRegion = "Middle East"
-	ConferenceActionJoinParamsRegionUs         ConferenceActionJoinParamsRegion = "US"
-)
-
 // Sets the joining participant as a supervisor for the conference. A conference
 // can have multiple supervisors. "barge" means the supervisor enters the
 // conference as a normal participant. This is the same as "none". "monitor" means
@@ -856,7 +833,7 @@ type ConferenceActionLeaveParams struct {
 	// user's data locality settings (Europe or US).
 	//
 	// Any of "Australia", "Europe", "Middle East", "US".
-	Region ConferenceActionLeaveParamsRegion `json:"region,omitzero"`
+	Region ConferenceRegion `json:"region,omitzero"`
 	paramObj
 }
 
@@ -879,17 +856,6 @@ const (
 	ConferenceActionLeaveParamsBeepEnabledOnExit  ConferenceActionLeaveParamsBeepEnabled = "on_exit"
 )
 
-// Region where the conference data is located. Defaults to the region defined in
-// user's data locality settings (Europe or US).
-type ConferenceActionLeaveParamsRegion string
-
-const (
-	ConferenceActionLeaveParamsRegionAustralia  ConferenceActionLeaveParamsRegion = "Australia"
-	ConferenceActionLeaveParamsRegionEurope     ConferenceActionLeaveParamsRegion = "Europe"
-	ConferenceActionLeaveParamsRegionMiddleEast ConferenceActionLeaveParamsRegion = "Middle East"
-	ConferenceActionLeaveParamsRegionUs         ConferenceActionLeaveParamsRegion = "US"
-)
-
 type ConferenceActionMuteParams struct {
 	// Array of unique identifiers and tokens for controlling the call. When empty all
 	// participants will be muted.
@@ -898,7 +864,7 @@ type ConferenceActionMuteParams struct {
 	// user's data locality settings (Europe or US).
 	//
 	// Any of "Australia", "Europe", "Middle East", "US".
-	Region ConferenceActionMuteParamsRegion `json:"region,omitzero"`
+	Region ConferenceRegion `json:"region,omitzero"`
 	paramObj
 }
 
@@ -909,17 +875,6 @@ func (r ConferenceActionMuteParams) MarshalJSON() (data []byte, err error) {
 func (r *ConferenceActionMuteParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Region where the conference data is located. Defaults to the region defined in
-// user's data locality settings (Europe or US).
-type ConferenceActionMuteParamsRegion string
-
-const (
-	ConferenceActionMuteParamsRegionAustralia  ConferenceActionMuteParamsRegion = "Australia"
-	ConferenceActionMuteParamsRegionEurope     ConferenceActionMuteParamsRegion = "Europe"
-	ConferenceActionMuteParamsRegionMiddleEast ConferenceActionMuteParamsRegion = "Middle East"
-	ConferenceActionMuteParamsRegionUs         ConferenceActionMuteParamsRegion = "US"
-)
 
 type ConferenceActionPlayParams struct {
 	// The URL of a file to be played back in the conference. media_name and audio_url
@@ -940,7 +895,7 @@ type ConferenceActionPlayParams struct {
 	// user's data locality settings (Europe or US).
 	//
 	// Any of "Australia", "Europe", "Middle East", "US".
-	Region ConferenceActionPlayParamsRegion `json:"region,omitzero"`
+	Region ConferenceRegion `json:"region,omitzero"`
 	paramObj
 }
 
@@ -952,17 +907,6 @@ func (r *ConferenceActionPlayParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Region where the conference data is located. Defaults to the region defined in
-// user's data locality settings (Europe or US).
-type ConferenceActionPlayParamsRegion string
-
-const (
-	ConferenceActionPlayParamsRegionAustralia  ConferenceActionPlayParamsRegion = "Australia"
-	ConferenceActionPlayParamsRegionEurope     ConferenceActionPlayParamsRegion = "Europe"
-	ConferenceActionPlayParamsRegionMiddleEast ConferenceActionPlayParamsRegion = "Middle East"
-	ConferenceActionPlayParamsRegionUs         ConferenceActionPlayParamsRegion = "US"
-)
-
 type ConferenceActionRecordPauseParams struct {
 	// Use this field to avoid duplicate commands. Telnyx will ignore any command with
 	// the same `command_id` for the same `call_control_id`.
@@ -973,7 +917,7 @@ type ConferenceActionRecordPauseParams struct {
 	// user's data locality settings (Europe or US).
 	//
 	// Any of "Australia", "Europe", "Middle East", "US".
-	Region ConferenceActionRecordPauseParamsRegion `json:"region,omitzero"`
+	Region ConferenceRegion `json:"region,omitzero"`
 	paramObj
 }
 
@@ -985,17 +929,6 @@ func (r *ConferenceActionRecordPauseParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Region where the conference data is located. Defaults to the region defined in
-// user's data locality settings (Europe or US).
-type ConferenceActionRecordPauseParamsRegion string
-
-const (
-	ConferenceActionRecordPauseParamsRegionAustralia  ConferenceActionRecordPauseParamsRegion = "Australia"
-	ConferenceActionRecordPauseParamsRegionEurope     ConferenceActionRecordPauseParamsRegion = "Europe"
-	ConferenceActionRecordPauseParamsRegionMiddleEast ConferenceActionRecordPauseParamsRegion = "Middle East"
-	ConferenceActionRecordPauseParamsRegionUs         ConferenceActionRecordPauseParamsRegion = "US"
-)
-
 type ConferenceActionRecordResumeParams struct {
 	// Use this field to avoid duplicate commands. Telnyx will ignore any command with
 	// the same `command_id` for the same `call_control_id`.
@@ -1006,7 +939,7 @@ type ConferenceActionRecordResumeParams struct {
 	// user's data locality settings (Europe or US).
 	//
 	// Any of "Australia", "Europe", "Middle East", "US".
-	Region ConferenceActionRecordResumeParamsRegion `json:"region,omitzero"`
+	Region ConferenceRegion `json:"region,omitzero"`
 	paramObj
 }
 
@@ -1017,17 +950,6 @@ func (r ConferenceActionRecordResumeParams) MarshalJSON() (data []byte, err erro
 func (r *ConferenceActionRecordResumeParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Region where the conference data is located. Defaults to the region defined in
-// user's data locality settings (Europe or US).
-type ConferenceActionRecordResumeParamsRegion string
-
-const (
-	ConferenceActionRecordResumeParamsRegionAustralia  ConferenceActionRecordResumeParamsRegion = "Australia"
-	ConferenceActionRecordResumeParamsRegionEurope     ConferenceActionRecordResumeParamsRegion = "Europe"
-	ConferenceActionRecordResumeParamsRegionMiddleEast ConferenceActionRecordResumeParamsRegion = "Middle East"
-	ConferenceActionRecordResumeParamsRegionUs         ConferenceActionRecordResumeParamsRegion = "US"
-)
 
 type ConferenceActionRecordStartParams struct {
 	// The audio file format used when storing the conference recording. Can be either
@@ -1052,7 +974,7 @@ type ConferenceActionRecordStartParams struct {
 	// user's data locality settings (Europe or US).
 	//
 	// Any of "Australia", "Europe", "Middle East", "US".
-	Region ConferenceActionRecordStartParamsRegion `json:"region,omitzero"`
+	Region ConferenceRegion `json:"region,omitzero"`
 	// When set to `trim-silence`, silence will be removed from the beginning and end
 	// of the recording.
 	//
@@ -1087,17 +1009,6 @@ const (
 	ConferenceActionRecordStartParamsChannelsDual   ConferenceActionRecordStartParamsChannels = "dual"
 )
 
-// Region where the conference data is located. Defaults to the region defined in
-// user's data locality settings (Europe or US).
-type ConferenceActionRecordStartParamsRegion string
-
-const (
-	ConferenceActionRecordStartParamsRegionAustralia  ConferenceActionRecordStartParamsRegion = "Australia"
-	ConferenceActionRecordStartParamsRegionEurope     ConferenceActionRecordStartParamsRegion = "Europe"
-	ConferenceActionRecordStartParamsRegionMiddleEast ConferenceActionRecordStartParamsRegion = "Middle East"
-	ConferenceActionRecordStartParamsRegionUs         ConferenceActionRecordStartParamsRegion = "US"
-)
-
 // When set to `trim-silence`, silence will be removed from the beginning and end
 // of the recording.
 type ConferenceActionRecordStartParamsTrim string
@@ -1119,7 +1030,7 @@ type ConferenceActionRecordStopParams struct {
 	// user's data locality settings (Europe or US).
 	//
 	// Any of "Australia", "Europe", "Middle East", "US".
-	Region ConferenceActionRecordStopParamsRegion `json:"region,omitzero"`
+	Region ConferenceRegion `json:"region,omitzero"`
 	paramObj
 }
 
@@ -1130,17 +1041,6 @@ func (r ConferenceActionRecordStopParams) MarshalJSON() (data []byte, err error)
 func (r *ConferenceActionRecordStopParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Region where the conference data is located. Defaults to the region defined in
-// user's data locality settings (Europe or US).
-type ConferenceActionRecordStopParamsRegion string
-
-const (
-	ConferenceActionRecordStopParamsRegionAustralia  ConferenceActionRecordStopParamsRegion = "Australia"
-	ConferenceActionRecordStopParamsRegionEurope     ConferenceActionRecordStopParamsRegion = "Europe"
-	ConferenceActionRecordStopParamsRegionMiddleEast ConferenceActionRecordStopParamsRegion = "Middle East"
-	ConferenceActionRecordStopParamsRegionUs         ConferenceActionRecordStopParamsRegion = "US"
-)
 
 type ConferenceActionSendDtmfParams struct {
 	// DTMF digits to send. Valid characters: 0-9, A-D, \*, #, w (0.5s pause), W (1s
@@ -1239,7 +1139,7 @@ type ConferenceActionSpeakParams struct {
 	// user's data locality settings (Europe or US).
 	//
 	// Any of "Australia", "Europe", "Middle East", "US".
-	Region ConferenceActionSpeakParamsRegion `json:"region,omitzero"`
+	Region ConferenceRegion `json:"region,omitzero"`
 	// The settings associated with the voice selected
 	VoiceSettings ConferenceActionSpeakParamsVoiceSettingsUnion `json:"voice_settings,omitzero"`
 	paramObj
@@ -1298,30 +1198,19 @@ const (
 	ConferenceActionSpeakParamsPayloadTypeSsml ConferenceActionSpeakParamsPayloadType = "ssml"
 )
 
-// Region where the conference data is located. Defaults to the region defined in
-// user's data locality settings (Europe or US).
-type ConferenceActionSpeakParamsRegion string
-
-const (
-	ConferenceActionSpeakParamsRegionAustralia  ConferenceActionSpeakParamsRegion = "Australia"
-	ConferenceActionSpeakParamsRegionEurope     ConferenceActionSpeakParamsRegion = "Europe"
-	ConferenceActionSpeakParamsRegionMiddleEast ConferenceActionSpeakParamsRegion = "Middle East"
-	ConferenceActionSpeakParamsRegionUs         ConferenceActionSpeakParamsRegion = "US"
-)
-
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type ConferenceActionSpeakParamsVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam                    `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam                        `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam                           `json:",omitzero,inline"`
-	OfMinimax    *shared.MinimaxVoiceSettingsParam                `json:",omitzero,inline"`
-	OfAzure      *shared.AzureVoiceSettingsParam                  `json:",omitzero,inline"`
-	OfRime       *shared.RimeVoiceSettingsParam                   `json:",omitzero,inline"`
-	OfResemble   *shared.ResembleVoiceSettingsParam               `json:",omitzero,inline"`
-	OfInworld    *ConferenceActionSpeakParamsVoiceSettingsInworld `json:",omitzero,inline"`
-	OfXai        *ConferenceActionSpeakParamsVoiceSettingsXai     `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam      `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam          `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam             `json:",omitzero,inline"`
+	OfMinimax    *shared.MinimaxVoiceSettingsParam  `json:",omitzero,inline"`
+	OfAzure      *shared.AzureVoiceSettingsParam    `json:",omitzero,inline"`
+	OfRime       *shared.RimeVoiceSettingsParam     `json:",omitzero,inline"`
+	OfResemble   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
+	OfInworld    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
+	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1454,7 +1343,7 @@ func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetSampleRate() *string {
 // Returns a pointer to the underlying variant's property, if present.
 func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetDeliveryMode() *string {
 	if vt := u.OfInworld; vt != nil {
-		return &vt.DeliveryMode
+		return (*string)(&vt.DeliveryMode)
 	}
 	return nil
 }
@@ -1521,58 +1410,9 @@ func init() {
 		apijson.Discriminator[shared.AzureVoiceSettingsParam]("azure"),
 		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
 		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
-		apijson.Discriminator[ConferenceActionSpeakParamsVoiceSettingsInworld]("inworld"),
-		apijson.Discriminator[ConferenceActionSpeakParamsVoiceSettingsXai]("xai"),
+		apijson.Discriminator[shared.InworldVoiceSettingsParam]("inworld"),
+		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
 	)
-}
-
-// The property Type is required.
-type ConferenceActionSpeakParamsVoiceSettingsInworld struct {
-	// Controls the expressiveness and consistency of the Inworld `TTS2` model's speech
-	// synthesis. `STABLE` favors consistent, predictable output, `CREATIVE` allows
-	// more expressive variation, and `BALANCED` sits in between. Optional and only
-	// supported by `TTS2`; when omitted, the provider default applies.
-	//
-	// Any of "STABLE", "BALANCED", "CREATIVE".
-	DeliveryMode string `json:"delivery_mode,omitzero"`
-	// Voice settings provider type
-	//
-	// This field can be elided, and will marshal its zero value as "inworld".
-	Type constant.Inworld `json:"type" default:"inworld"`
-	paramObj
-}
-
-func (r ConferenceActionSpeakParamsVoiceSettingsInworld) MarshalJSON() (data []byte, err error) {
-	type shadow ConferenceActionSpeakParamsVoiceSettingsInworld
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ConferenceActionSpeakParamsVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ConferenceActionSpeakParamsVoiceSettingsInworld](
-		"delivery_mode", "STABLE", "BALANCED", "CREATIVE",
-	)
-}
-
-// The property Type is required.
-type ConferenceActionSpeakParamsVoiceSettingsXai struct {
-	// Language code, or `auto` to detect automatically.
-	Language param.Opt[string] `json:"language,omitzero"`
-	// Voice settings provider type
-	//
-	// This field can be elided, and will marshal its zero value as "xai".
-	Type constant.Xai `json:"type" default:"xai"`
-	paramObj
-}
-
-func (r ConferenceActionSpeakParamsVoiceSettingsXai) MarshalJSON() (data []byte, err error) {
-	type shadow ConferenceActionSpeakParamsVoiceSettingsXai
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ConferenceActionSpeakParamsVoiceSettingsXai) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type ConferenceActionStopParams struct {
@@ -1583,7 +1423,7 @@ type ConferenceActionStopParams struct {
 	// user's data locality settings (Europe or US).
 	//
 	// Any of "Australia", "Europe", "Middle East", "US".
-	Region ConferenceActionStopParamsRegion `json:"region,omitzero"`
+	Region ConferenceRegion `json:"region,omitzero"`
 	paramObj
 }
 
@@ -1595,17 +1435,6 @@ func (r *ConferenceActionStopParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Region where the conference data is located. Defaults to the region defined in
-// user's data locality settings (Europe or US).
-type ConferenceActionStopParamsRegion string
-
-const (
-	ConferenceActionStopParamsRegionAustralia  ConferenceActionStopParamsRegion = "Australia"
-	ConferenceActionStopParamsRegionEurope     ConferenceActionStopParamsRegion = "Europe"
-	ConferenceActionStopParamsRegionMiddleEast ConferenceActionStopParamsRegion = "Middle East"
-	ConferenceActionStopParamsRegionUs         ConferenceActionStopParamsRegion = "US"
-)
-
 type ConferenceActionUnholdParams struct {
 	// List of unique identifiers and tokens for controlling the call. Enter each call
 	// control ID to be unheld.
@@ -1614,7 +1443,7 @@ type ConferenceActionUnholdParams struct {
 	// user's data locality settings (Europe or US).
 	//
 	// Any of "Australia", "Europe", "Middle East", "US".
-	Region ConferenceActionUnholdParamsRegion `json:"region,omitzero"`
+	Region ConferenceRegion `json:"region,omitzero"`
 	paramObj
 }
 
@@ -1626,17 +1455,6 @@ func (r *ConferenceActionUnholdParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Region where the conference data is located. Defaults to the region defined in
-// user's data locality settings (Europe or US).
-type ConferenceActionUnholdParamsRegion string
-
-const (
-	ConferenceActionUnholdParamsRegionAustralia  ConferenceActionUnholdParamsRegion = "Australia"
-	ConferenceActionUnholdParamsRegionEurope     ConferenceActionUnholdParamsRegion = "Europe"
-	ConferenceActionUnholdParamsRegionMiddleEast ConferenceActionUnholdParamsRegion = "Middle East"
-	ConferenceActionUnholdParamsRegionUs         ConferenceActionUnholdParamsRegion = "US"
-)
-
 type ConferenceActionUnmuteParams struct {
 	// List of unique identifiers and tokens for controlling the call. Enter each call
 	// control ID to be unmuted. When empty all participants will be unmuted.
@@ -1645,7 +1463,7 @@ type ConferenceActionUnmuteParams struct {
 	// user's data locality settings (Europe or US).
 	//
 	// Any of "Australia", "Europe", "Middle East", "US".
-	Region ConferenceActionUnmuteParamsRegion `json:"region,omitzero"`
+	Region ConferenceRegion `json:"region,omitzero"`
 	paramObj
 }
 
@@ -1656,14 +1474,3 @@ func (r ConferenceActionUnmuteParams) MarshalJSON() (data []byte, err error) {
 func (r *ConferenceActionUnmuteParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Region where the conference data is located. Defaults to the region defined in
-// user's data locality settings (Europe or US).
-type ConferenceActionUnmuteParamsRegion string
-
-const (
-	ConferenceActionUnmuteParamsRegionAustralia  ConferenceActionUnmuteParamsRegion = "Australia"
-	ConferenceActionUnmuteParamsRegionEurope     ConferenceActionUnmuteParamsRegion = "Europe"
-	ConferenceActionUnmuteParamsRegionMiddleEast ConferenceActionUnmuteParamsRegion = "Middle East"
-	ConferenceActionUnmuteParamsRegionUs         ConferenceActionUnmuteParamsRegion = "US"
-)

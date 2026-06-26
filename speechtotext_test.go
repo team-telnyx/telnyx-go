@@ -28,7 +28,40 @@ func TestSpeechToTextListProvidersWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.SpeechToText.ListProviders(context.TODO(), telnyx.SpeechToTextListProvidersParams{
 		Provider:    telnyx.SpeechToTextListProvidersParamsProviderDeepgram,
-		ServiceType: telnyx.SpeechToTextListProvidersParamsServiceTypeStreaming,
+		ServiceType: telnyx.SttServiceTypeStreaming,
+	})
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestSpeechToTextGetTranscriptionWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	err := client.SpeechToText.GetTranscription(context.TODO(), telnyx.SpeechToTextGetTranscriptionParams{
+		InputFormat:         telnyx.SpeechToTextGetTranscriptionParamsInputFormatMP3,
+		TranscriptionEngine: telnyx.SpeechToTextGetTranscriptionParamsTranscriptionEngineAzure,
+		Endpointing:         telnyx.Int(0),
+		InterimResults:      telnyx.Bool(true),
+		Keyterm:             telnyx.String("keyterm"),
+		Keywords:            telnyx.String("keywords"),
+		Language:            telnyx.String("language"),
+		Model:               telnyx.SpeechToTextGetTranscriptionParamsModelFast,
+		Redact:              telnyx.String("redact"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

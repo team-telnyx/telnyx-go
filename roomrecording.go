@@ -54,7 +54,7 @@ func (r *RoomRecordingService) Get(ctx context.Context, roomRecordingID string, 
 }
 
 // View a list of room recordings.
-func (r *RoomRecordingService) List(ctx context.Context, query RoomRecordingListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[RoomRecordingListResponse], err error) {
+func (r *RoomRecordingService) List(ctx context.Context, query RoomRecordingListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[RoomRecording], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -72,7 +72,7 @@ func (r *RoomRecordingService) List(ctx context.Context, query RoomRecordingList
 }
 
 // View a list of room recordings.
-func (r *RoomRecordingService) ListAutoPaging(ctx context.Context, query RoomRecordingListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[RoomRecordingListResponse] {
+func (r *RoomRecordingService) ListAutoPaging(ctx context.Context, query RoomRecordingListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[RoomRecording] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -97,8 +97,89 @@ func (r *RoomRecordingService) DeleteBulk(ctx context.Context, body RoomRecordin
 	return res, err
 }
 
+type RoomRecording struct {
+	// A unique identifier for the room recording.
+	ID string `json:"id" format:"uuid"`
+	// Shows the codec used for the room recording.
+	Codec string `json:"codec"`
+	// ISO 8601 timestamp when the room recording has completed.
+	CompletedAt time.Time `json:"completed_at" format:"date-time"`
+	// ISO 8601 timestamp when the room recording was created.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Url to download the recording.
+	DownloadURL string `json:"download_url"`
+	// Shows the room recording duration in seconds.
+	DurationSecs int64 `json:"duration_secs"`
+	// ISO 8601 timestamp when the room recording has ended.
+	EndedAt time.Time `json:"ended_at" format:"date-time"`
+	// Identify the room participant associated with the room recording.
+	ParticipantID string `json:"participant_id" format:"uuid"`
+	RecordType    string `json:"record_type"`
+	// Identify the room associated with the room recording.
+	RoomID string `json:"room_id" format:"uuid"`
+	// Identify the room session associated with the room recording.
+	SessionID string `json:"session_id" format:"uuid"`
+	// Shows the room recording size in MB.
+	SizeMB float64 `json:"size_mb"`
+	// ISO 8601 timestamp when the room recording has stated.
+	StartedAt time.Time `json:"started_at" format:"date-time"`
+	// Shows the room recording status.
+	//
+	// Any of "completed", "processing".
+	Status RoomRecordingStatus `json:"status"`
+	// Shows the room recording type.
+	//
+	// Any of "audio", "video".
+	Type RoomRecordingType `json:"type"`
+	// ISO 8601 timestamp when the room recording was updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		Codec         respjson.Field
+		CompletedAt   respjson.Field
+		CreatedAt     respjson.Field
+		DownloadURL   respjson.Field
+		DurationSecs  respjson.Field
+		EndedAt       respjson.Field
+		ParticipantID respjson.Field
+		RecordType    respjson.Field
+		RoomID        respjson.Field
+		SessionID     respjson.Field
+		SizeMB        respjson.Field
+		StartedAt     respjson.Field
+		Status        respjson.Field
+		Type          respjson.Field
+		UpdatedAt     respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RoomRecording) RawJSON() string { return r.JSON.raw }
+func (r *RoomRecording) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Shows the room recording status.
+type RoomRecordingStatus string
+
+const (
+	RoomRecordingStatusCompleted  RoomRecordingStatus = "completed"
+	RoomRecordingStatusProcessing RoomRecordingStatus = "processing"
+)
+
+// Shows the room recording type.
+type RoomRecordingType string
+
+const (
+	RoomRecordingTypeAudio RoomRecordingType = "audio"
+	RoomRecordingTypeVideo RoomRecordingType = "video"
+)
+
 type RoomRecordingGetResponse struct {
-	Data RoomRecordingGetResponseData `json:"data"`
+	Data RoomRecording `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -112,152 +193,6 @@ func (r RoomRecordingGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *RoomRecordingGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type RoomRecordingGetResponseData struct {
-	// A unique identifier for the room recording.
-	ID string `json:"id" format:"uuid"`
-	// Shows the codec used for the room recording.
-	Codec string `json:"codec"`
-	// ISO 8601 timestamp when the room recording has completed.
-	CompletedAt time.Time `json:"completed_at" format:"date-time"`
-	// ISO 8601 timestamp when the room recording was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Url to download the recording.
-	DownloadURL string `json:"download_url"`
-	// Shows the room recording duration in seconds.
-	DurationSecs int64 `json:"duration_secs"`
-	// ISO 8601 timestamp when the room recording has ended.
-	EndedAt time.Time `json:"ended_at" format:"date-time"`
-	// Identify the room participant associated with the room recording.
-	ParticipantID string `json:"participant_id" format:"uuid"`
-	RecordType    string `json:"record_type"`
-	// Identify the room associated with the room recording.
-	RoomID string `json:"room_id" format:"uuid"`
-	// Identify the room session associated with the room recording.
-	SessionID string `json:"session_id" format:"uuid"`
-	// Shows the room recording size in MB.
-	SizeMB float64 `json:"size_mb"`
-	// ISO 8601 timestamp when the room recording has stated.
-	StartedAt time.Time `json:"started_at" format:"date-time"`
-	// Shows the room recording status.
-	//
-	// Any of "completed", "processing".
-	Status string `json:"status"`
-	// Shows the room recording type.
-	//
-	// Any of "audio", "video".
-	Type string `json:"type"`
-	// ISO 8601 timestamp when the room recording was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID            respjson.Field
-		Codec         respjson.Field
-		CompletedAt   respjson.Field
-		CreatedAt     respjson.Field
-		DownloadURL   respjson.Field
-		DurationSecs  respjson.Field
-		EndedAt       respjson.Field
-		ParticipantID respjson.Field
-		RecordType    respjson.Field
-		RoomID        respjson.Field
-		SessionID     respjson.Field
-		SizeMB        respjson.Field
-		StartedAt     respjson.Field
-		Status        respjson.Field
-		Type          respjson.Field
-		UpdatedAt     respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RoomRecordingGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *RoomRecordingGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type RoomRecordingListResponse struct {
-	// A unique identifier for the room recording.
-	ID string `json:"id" format:"uuid"`
-	// Shows the codec used for the room recording.
-	Codec string `json:"codec"`
-	// ISO 8601 timestamp when the room recording has completed.
-	CompletedAt time.Time `json:"completed_at" format:"date-time"`
-	// ISO 8601 timestamp when the room recording was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Url to download the recording.
-	DownloadURL string `json:"download_url"`
-	// Shows the room recording duration in seconds.
-	DurationSecs int64 `json:"duration_secs"`
-	// ISO 8601 timestamp when the room recording has ended.
-	EndedAt time.Time `json:"ended_at" format:"date-time"`
-	// Identify the room participant associated with the room recording.
-	ParticipantID string `json:"participant_id" format:"uuid"`
-	RecordType    string `json:"record_type"`
-	// Identify the room associated with the room recording.
-	RoomID string `json:"room_id" format:"uuid"`
-	// Identify the room session associated with the room recording.
-	SessionID string `json:"session_id" format:"uuid"`
-	// Shows the room recording size in MB.
-	SizeMB float64 `json:"size_mb"`
-	// ISO 8601 timestamp when the room recording has stated.
-	StartedAt time.Time `json:"started_at" format:"date-time"`
-	// Shows the room recording status.
-	//
-	// Any of "completed", "processing".
-	Status RoomRecordingListResponseStatus `json:"status"`
-	// Shows the room recording type.
-	//
-	// Any of "audio", "video".
-	Type RoomRecordingListResponseType `json:"type"`
-	// ISO 8601 timestamp when the room recording was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID            respjson.Field
-		Codec         respjson.Field
-		CompletedAt   respjson.Field
-		CreatedAt     respjson.Field
-		DownloadURL   respjson.Field
-		DurationSecs  respjson.Field
-		EndedAt       respjson.Field
-		ParticipantID respjson.Field
-		RecordType    respjson.Field
-		RoomID        respjson.Field
-		SessionID     respjson.Field
-		SizeMB        respjson.Field
-		StartedAt     respjson.Field
-		Status        respjson.Field
-		Type          respjson.Field
-		UpdatedAt     respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RoomRecordingListResponse) RawJSON() string { return r.JSON.raw }
-func (r *RoomRecordingListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Shows the room recording status.
-type RoomRecordingListResponseStatus string
-
-const (
-	RoomRecordingListResponseStatusCompleted  RoomRecordingListResponseStatus = "completed"
-	RoomRecordingListResponseStatusProcessing RoomRecordingListResponseStatus = "processing"
-)
-
-// Shows the room recording type.
-type RoomRecordingListResponseType string
-
-const (
-	RoomRecordingListResponseTypeAudio RoomRecordingListResponseType = "audio"
-	RoomRecordingListResponseTypeVideo RoomRecordingListResponseType = "video"
-)
 
 type RoomRecordingDeleteBulkResponse struct {
 	Data RoomRecordingDeleteBulkResponseData `json:"data"`

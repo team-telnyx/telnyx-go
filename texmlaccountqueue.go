@@ -41,7 +41,7 @@ func NewTexmlAccountQueueService(opts ...option.RequestOption) (r TexmlAccountQu
 }
 
 // Creates a new queue resource.
-func (r *TexmlAccountQueueService) New(ctx context.Context, accountSid string, body TexmlAccountQueueNewParams, opts ...option.RequestOption) (res *TexmlAccountQueueNewResponse, err error) {
+func (r *TexmlAccountQueueService) New(ctx context.Context, accountSid string, body TexmlAccountQueueNewParams, opts ...option.RequestOption) (res *QueueResource, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if accountSid == "" {
 		err = errors.New("missing required account_sid parameter")
@@ -53,7 +53,7 @@ func (r *TexmlAccountQueueService) New(ctx context.Context, accountSid string, b
 }
 
 // Returns a queue resource.
-func (r *TexmlAccountQueueService) Get(ctx context.Context, queueSid string, query TexmlAccountQueueGetParams, opts ...option.RequestOption) (res *TexmlAccountQueueGetResponse, err error) {
+func (r *TexmlAccountQueueService) Get(ctx context.Context, queueSid string, query TexmlAccountQueueGetParams, opts ...option.RequestOption) (res *QueueResource, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
@@ -69,7 +69,7 @@ func (r *TexmlAccountQueueService) Get(ctx context.Context, queueSid string, que
 }
 
 // Updates a queue resource.
-func (r *TexmlAccountQueueService) Update(ctx context.Context, queueSid string, params TexmlAccountQueueUpdateParams, opts ...option.RequestOption) (res *TexmlAccountQueueUpdateResponse, err error) {
+func (r *TexmlAccountQueueService) Update(ctx context.Context, queueSid string, params TexmlAccountQueueUpdateParams, opts ...option.RequestOption) (res *QueueResource, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
@@ -85,7 +85,7 @@ func (r *TexmlAccountQueueService) Update(ctx context.Context, queueSid string, 
 }
 
 // Lists queue resources.
-func (r *TexmlAccountQueueService) List(ctx context.Context, accountSid string, query TexmlAccountQueueListParams, opts ...option.RequestOption) (res *pagination.DefaultPaginationForQueues[TexmlAccountQueueListResponse], err error) {
+func (r *TexmlAccountQueueService) List(ctx context.Context, accountSid string, query TexmlAccountQueueListParams, opts ...option.RequestOption) (res *pagination.DefaultPaginationForQueues[QueueResource], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -107,7 +107,7 @@ func (r *TexmlAccountQueueService) List(ctx context.Context, accountSid string, 
 }
 
 // Lists queue resources.
-func (r *TexmlAccountQueueService) ListAutoPaging(ctx context.Context, accountSid string, query TexmlAccountQueueListParams, opts ...option.RequestOption) *pagination.DefaultPaginationForQueuesAutoPager[TexmlAccountQueueListResponse] {
+func (r *TexmlAccountQueueService) ListAutoPaging(ctx context.Context, accountSid string, query TexmlAccountQueueListParams, opts ...option.RequestOption) *pagination.DefaultPaginationForQueuesAutoPager[QueueResource] {
 	return pagination.NewDefaultPaginationForQueuesAutoPager(r.List(ctx, accountSid, query, opts...))
 }
 
@@ -128,7 +128,7 @@ func (r *TexmlAccountQueueService) Delete(ctx context.Context, queueSid string, 
 	return err
 }
 
-type TexmlAccountQueueNewResponse struct {
+type QueueResource struct {
 	// The id of the account the resource belongs to.
 	AccountSid string `json:"account_sid"`
 	// The average wait time in seconds for members in the queue.
@@ -164,131 +164,8 @@ type TexmlAccountQueueNewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r TexmlAccountQueueNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *TexmlAccountQueueNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TexmlAccountQueueGetResponse struct {
-	// The id of the account the resource belongs to.
-	AccountSid string `json:"account_sid"`
-	// The average wait time in seconds for members in the queue.
-	AverageWaitTime int64 `json:"average_wait_time"`
-	// The current number of members in the queue.
-	CurrentSize int64 `json:"current_size"`
-	// The timestamp of when the resource was created.
-	DateCreated string `json:"date_created"`
-	// The timestamp of when the resource was last updated.
-	DateUpdated string `json:"date_updated"`
-	// The maximum size of the queue.
-	MaxSize int64 `json:"max_size"`
-	// The unique identifier of the queue.
-	Sid string `json:"sid"`
-	// A list of related resources identified by their relative URIs.
-	SubresourceUris map[string]any `json:"subresource_uris"`
-	// The relative URI for this queue.
-	Uri string `json:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AccountSid      respjson.Field
-		AverageWaitTime respjson.Field
-		CurrentSize     respjson.Field
-		DateCreated     respjson.Field
-		DateUpdated     respjson.Field
-		MaxSize         respjson.Field
-		Sid             respjson.Field
-		SubresourceUris respjson.Field
-		Uri             respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TexmlAccountQueueGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *TexmlAccountQueueGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TexmlAccountQueueUpdateResponse struct {
-	// The id of the account the resource belongs to.
-	AccountSid string `json:"account_sid"`
-	// The average wait time in seconds for members in the queue.
-	AverageWaitTime int64 `json:"average_wait_time"`
-	// The current number of members in the queue.
-	CurrentSize int64 `json:"current_size"`
-	// The timestamp of when the resource was created.
-	DateCreated string `json:"date_created"`
-	// The timestamp of when the resource was last updated.
-	DateUpdated string `json:"date_updated"`
-	// The maximum size of the queue.
-	MaxSize int64 `json:"max_size"`
-	// The unique identifier of the queue.
-	Sid string `json:"sid"`
-	// A list of related resources identified by their relative URIs.
-	SubresourceUris map[string]any `json:"subresource_uris"`
-	// The relative URI for this queue.
-	Uri string `json:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AccountSid      respjson.Field
-		AverageWaitTime respjson.Field
-		CurrentSize     respjson.Field
-		DateCreated     respjson.Field
-		DateUpdated     respjson.Field
-		MaxSize         respjson.Field
-		Sid             respjson.Field
-		SubresourceUris respjson.Field
-		Uri             respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TexmlAccountQueueUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *TexmlAccountQueueUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TexmlAccountQueueListResponse struct {
-	// The id of the account the resource belongs to.
-	AccountSid string `json:"account_sid"`
-	// The average wait time in seconds for members in the queue.
-	AverageWaitTime int64 `json:"average_wait_time"`
-	// The current number of members in the queue.
-	CurrentSize int64 `json:"current_size"`
-	// The timestamp of when the resource was created.
-	DateCreated string `json:"date_created"`
-	// The timestamp of when the resource was last updated.
-	DateUpdated string `json:"date_updated"`
-	// The maximum size of the queue.
-	MaxSize int64 `json:"max_size"`
-	// The unique identifier of the queue.
-	Sid string `json:"sid"`
-	// A list of related resources identified by their relative URIs.
-	SubresourceUris map[string]any `json:"subresource_uris"`
-	// The relative URI for this queue.
-	Uri string `json:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AccountSid      respjson.Field
-		AverageWaitTime respjson.Field
-		CurrentSize     respjson.Field
-		DateCreated     respjson.Field
-		DateUpdated     respjson.Field
-		MaxSize         respjson.Field
-		Sid             respjson.Field
-		SubresourceUris respjson.Field
-		Uri             respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TexmlAccountQueueListResponse) RawJSON() string { return r.JSON.raw }
-func (r *TexmlAccountQueueListResponse) UnmarshalJSON(data []byte) error {
+func (r QueueResource) RawJSON() string { return r.JSON.raw }
+func (r *QueueResource) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

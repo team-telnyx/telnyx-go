@@ -39,7 +39,7 @@ func NewMessaging10dlcBrandExternalVettingService(opts ...option.RequestOption) 
 }
 
 // Get list of valid external vetting record for a given brand
-func (r *Messaging10dlcBrandExternalVettingService) List(ctx context.Context, brandID string, opts ...option.RequestOption) (res *[]Messaging10dlcBrandExternalVettingListResponse, err error) {
+func (r *Messaging10dlcBrandExternalVettingService) List(ctx context.Context, brandID string, opts ...option.RequestOption) (res *[]ExternalVetting, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
@@ -54,7 +54,7 @@ func (r *Messaging10dlcBrandExternalVettingService) List(ctx context.Context, br
 // TCR-approved vetting provider. If the vetting provider confirms validity of the
 // record, it will be saved with the brand and will be considered for future
 // campaign qualification.
-func (r *Messaging10dlcBrandExternalVettingService) Imports(ctx context.Context, brandID string, body Messaging10dlcBrandExternalVettingImportsParams, opts ...option.RequestOption) (res *Messaging10dlcBrandExternalVettingImportsResponse, err error) {
+func (r *Messaging10dlcBrandExternalVettingService) Imports(ctx context.Context, brandID string, body Messaging10dlcBrandExternalVettingImportsParams, opts ...option.RequestOption) (res *ExternalVetting, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
@@ -70,7 +70,7 @@ func (r *Messaging10dlcBrandExternalVettingService) Imports(ctx context.Context,
 // Duplicate orders for the same `evpId` and `vettingClass` return `400` with code
 // `10012` if a successful vetting exists within the last 180 days, or one is
 // currently being processed. Failed vettings can be retried immediately.
-func (r *Messaging10dlcBrandExternalVettingService) Order(ctx context.Context, brandID string, body Messaging10dlcBrandExternalVettingOrderParams, opts ...option.RequestOption) (res *Messaging10dlcBrandExternalVettingOrderResponse, err error) {
+func (r *Messaging10dlcBrandExternalVettingService) Order(ctx context.Context, brandID string, body Messaging10dlcBrandExternalVettingOrderParams, opts ...option.RequestOption) (res *ExternalVetting, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {
 		err = errors.New("missing required brandId parameter")
@@ -81,7 +81,7 @@ func (r *Messaging10dlcBrandExternalVettingService) Order(ctx context.Context, b
 	return res, err
 }
 
-type Messaging10dlcBrandExternalVettingListResponse struct {
+type ExternalVetting struct {
 	// Vetting submission date. This is the date when the vetting request is generated
 	// in ISO 8601 format.
 	CreateDate string `json:"createDate"`
@@ -115,86 +115,8 @@ type Messaging10dlcBrandExternalVettingListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r Messaging10dlcBrandExternalVettingListResponse) RawJSON() string { return r.JSON.raw }
-func (r *Messaging10dlcBrandExternalVettingListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type Messaging10dlcBrandExternalVettingImportsResponse struct {
-	// Vetting submission date. This is the date when the vetting request is generated
-	// in ISO 8601 format.
-	CreateDate string `json:"createDate"`
-	// External vetting provider ID for the brand.
-	EvpID string `json:"evpId"`
-	// Vetting effective date. This is the date when vetting was completed, or the
-	// starting effective date in ISO 8601 format. If this date is missing, then the
-	// vetting was not complete or not valid.
-	VettedDate string `json:"vettedDate"`
-	// Identifies the vetting classification.
-	VettingClass string `json:"vettingClass"`
-	// Unique ID that identifies a vetting transaction performed by a vetting provider.
-	// This ID is provided by the vetting provider at time of vetting.
-	VettingID string `json:"vettingId"`
-	// Vetting score ranging from 0-100.
-	VettingScore int64 `json:"vettingScore"`
-	// Required by some providers for vetting record confirmation.
-	VettingToken string `json:"vettingToken"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CreateDate   respjson.Field
-		EvpID        respjson.Field
-		VettedDate   respjson.Field
-		VettingClass respjson.Field
-		VettingID    respjson.Field
-		VettingScore respjson.Field
-		VettingToken respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r Messaging10dlcBrandExternalVettingImportsResponse) RawJSON() string { return r.JSON.raw }
-func (r *Messaging10dlcBrandExternalVettingImportsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type Messaging10dlcBrandExternalVettingOrderResponse struct {
-	// Vetting submission date. This is the date when the vetting request is generated
-	// in ISO 8601 format.
-	CreateDate string `json:"createDate"`
-	// External vetting provider ID for the brand.
-	EvpID string `json:"evpId"`
-	// Vetting effective date. This is the date when vetting was completed, or the
-	// starting effective date in ISO 8601 format. If this date is missing, then the
-	// vetting was not complete or not valid.
-	VettedDate string `json:"vettedDate"`
-	// Identifies the vetting classification.
-	VettingClass string `json:"vettingClass"`
-	// Unique ID that identifies a vetting transaction performed by a vetting provider.
-	// This ID is provided by the vetting provider at time of vetting.
-	VettingID string `json:"vettingId"`
-	// Vetting score ranging from 0-100.
-	VettingScore int64 `json:"vettingScore"`
-	// Required by some providers for vetting record confirmation.
-	VettingToken string `json:"vettingToken"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CreateDate   respjson.Field
-		EvpID        respjson.Field
-		VettedDate   respjson.Field
-		VettingClass respjson.Field
-		VettingID    respjson.Field
-		VettingScore respjson.Field
-		VettingToken respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r Messaging10dlcBrandExternalVettingOrderResponse) RawJSON() string { return r.JSON.raw }
-func (r *Messaging10dlcBrandExternalVettingOrderResponse) UnmarshalJSON(data []byte) error {
+func (r ExternalVetting) RawJSON() string { return r.JSON.raw }
+func (r *ExternalVetting) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

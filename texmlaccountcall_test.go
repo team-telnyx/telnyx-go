@@ -98,7 +98,7 @@ func TestTexmlAccountCallCallsWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"account_sid",
 		telnyx.TexmlAccountCallCallsParams{
-			OfWithURL: &telnyx.TexmlAccountCallCallsParamsParamsWithURL{
+			OfWithURL: &telnyx.TexmlAccountCallCallsParamsBodyWithURL{
 				URL:                              "https://www.example.com/texml.xml",
 				ApplicationSid:                   telnyx.String("example-app-sid"),
 				AsyncAmd:                         telnyx.Bool(true),
@@ -107,7 +107,7 @@ func TestTexmlAccountCallCallsWithOptionalParams(t *testing.T) {
 				CallerID:                         telnyx.String("Info"),
 				CancelPlaybackOnDetectMessageEnd: telnyx.Bool(false),
 				CancelPlaybackOnMachineDetection: telnyx.Bool(false),
-				CustomHeaders: []telnyx.TexmlAccountCallCallsParamsParamsWithURLCustomHeader{{
+				CustomHeaders: []telnyx.TexmlAccountCallCallsParamsBodyWithURLCustomHeader{{
 					Name:  "X-Custom-Header",
 					Value: "custom-value",
 				}},

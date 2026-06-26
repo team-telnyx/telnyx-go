@@ -15,15 +15,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-// NewWebhookService generates a new service that applies the given options to each
-// request. These options are applied after the parent client's options (if there
-// is one), and before any request-specific options.
-func NewWebhookService(opts ...option.RequestOption) (r WebhookService) {
-	r = WebhookService{}
-	r.Options = opts
-	return
-}
-
 // UnsafeUnwrap parses a webhook payload without verifying the signature.
 // Use this only if you have already verified the signature separately.
 func (r *WebhookService) UnsafeUnwrap(payload []byte, opts ...option.RequestOption) (*UnsafeUnwrapWebhookEventUnion, error) {

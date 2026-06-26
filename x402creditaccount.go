@@ -150,7 +150,7 @@ type X402CreditAccountNewQuoteResponseDataPaymentRequirementsAccept struct {
 	Asset string `json:"asset"`
 	// Additional scheme-specific parameters including EIP-712 domain info and the
 	// facilitator URL.
-	Extra X402CreditAccountNewQuoteResponseDataPaymentRequirementsAcceptExtra `json:"extra"`
+	Extra X402CreditAccountNewQuoteResponseDataPaymentRequirementsAcceptsExtra `json:"extra"`
 	// Maximum time in seconds before the payment authorization expires.
 	MaxTimeoutSeconds int64 `json:"maxTimeoutSeconds"`
 	// Blockchain network identifier in CAIP-2 format (e.g. "eip155:8453" for Base).
@@ -183,7 +183,7 @@ func (r *X402CreditAccountNewQuoteResponseDataPaymentRequirementsAccept) Unmarsh
 
 // Additional scheme-specific parameters including EIP-712 domain info and the
 // facilitator URL.
-type X402CreditAccountNewQuoteResponseDataPaymentRequirementsAcceptExtra struct {
+type X402CreditAccountNewQuoteResponseDataPaymentRequirementsAcceptsExtra struct {
 	FacilitatorURL string `json:"facilitatorUrl"`
 	// EIP-712 domain name (e.g. "USD Coin").
 	Name    string `json:"name"`
@@ -202,10 +202,10 @@ type X402CreditAccountNewQuoteResponseDataPaymentRequirementsAcceptExtra struct 
 }
 
 // Returns the unmodified JSON received from the API
-func (r X402CreditAccountNewQuoteResponseDataPaymentRequirementsAcceptExtra) RawJSON() string {
+func (r X402CreditAccountNewQuoteResponseDataPaymentRequirementsAcceptsExtra) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *X402CreditAccountNewQuoteResponseDataPaymentRequirementsAcceptExtra) UnmarshalJSON(data []byte) error {
+func (r *X402CreditAccountNewQuoteResponseDataPaymentRequirementsAcceptsExtra) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

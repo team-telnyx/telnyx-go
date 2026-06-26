@@ -27,7 +27,7 @@ func TestPronunciationDictNew(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.PronunciationDicts.New(context.TODO(), telnyx.PronunciationDictNewParams{
-		Items: []telnyx.PronunciationDictNewParamsItemUnion{{
+		Items: []telnyx.PronunciationDictItemUnionParam{{
 			OfAlias: &telnyx.PronunciationDictAliasItemParam{
 				Alias: "tel-nicks",
 				Text:  "Telnyx",
@@ -85,7 +85,7 @@ func TestPronunciationDictUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"c215a3e1-be41-4701-97e8-1d3c22f9a5b7",
 		telnyx.PronunciationDictUpdateParams{
-			Items: []telnyx.PronunciationDictUpdateParamsItemUnion{{
+			Items: []telnyx.PronunciationDictItemUnionParam{{
 				OfAlias: &telnyx.PronunciationDictAliasItemParam{
 					Alias: "tel-nicks",
 					Text:  "Telnyx",

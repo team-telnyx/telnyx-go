@@ -54,7 +54,7 @@ func (r *PortingOrderAdditionalDocumentService) New(ctx context.Context, id stri
 }
 
 // Returns a list of additional documents for a porting order.
-func (r *PortingOrderAdditionalDocumentService) List(ctx context.Context, id string, query PortingOrderAdditionalDocumentListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingOrderAdditionalDocumentListResponse], err error) {
+func (r *PortingOrderAdditionalDocumentService) List(ctx context.Context, id string, query PortingOrderAdditionalDocumentListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingAdditionalDocument], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -76,7 +76,7 @@ func (r *PortingOrderAdditionalDocumentService) List(ctx context.Context, id str
 }
 
 // Returns a list of additional documents for a porting order.
-func (r *PortingOrderAdditionalDocumentService) ListAutoPaging(ctx context.Context, id string, query PortingOrderAdditionalDocumentListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingOrderAdditionalDocumentListResponse] {
+func (r *PortingOrderAdditionalDocumentService) ListAutoPaging(ctx context.Context, id string, query PortingOrderAdditionalDocumentListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingAdditionalDocument] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, id, query, opts...))
 }
 
@@ -97,8 +97,61 @@ func (r *PortingOrderAdditionalDocumentService) Delete(ctx context.Context, addi
 	return err
 }
 
+type PortingAdditionalDocument struct {
+	// Uniquely identifies this additional document
+	ID string `json:"id" format:"uuid"`
+	// The content type of the related document.
+	ContentType string `json:"content_type"`
+	// ISO 8601 formatted date indicating when the resource was created.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Identifies the associated document
+	DocumentID string `json:"document_id" format:"uuid"`
+	// Identifies the type of additional document
+	//
+	// Any of "loa", "invoice", "csr", "other".
+	DocumentType PortingAdditionalDocumentDocumentType `json:"document_type"`
+	// The filename of the related document.
+	Filename string `json:"filename"`
+	// Identifies the associated porting order
+	PortingOrderID string `json:"porting_order_id" format:"uuid"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
+	// ISO 8601 formatted date indicating when the resource was updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID             respjson.Field
+		ContentType    respjson.Field
+		CreatedAt      respjson.Field
+		DocumentID     respjson.Field
+		DocumentType   respjson.Field
+		Filename       respjson.Field
+		PortingOrderID respjson.Field
+		RecordType     respjson.Field
+		UpdatedAt      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingAdditionalDocument) RawJSON() string { return r.JSON.raw }
+func (r *PortingAdditionalDocument) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies the type of additional document
+type PortingAdditionalDocumentDocumentType string
+
+const (
+	PortingAdditionalDocumentDocumentTypeLoa     PortingAdditionalDocumentDocumentType = "loa"
+	PortingAdditionalDocumentDocumentTypeInvoice PortingAdditionalDocumentDocumentType = "invoice"
+	PortingAdditionalDocumentDocumentTypeCsr     PortingAdditionalDocumentDocumentType = "csr"
+	PortingAdditionalDocumentDocumentTypeOther   PortingAdditionalDocumentDocumentType = "other"
+)
+
 type PortingOrderAdditionalDocumentNewResponse struct {
-	Data []PortingOrderAdditionalDocumentNewResponseData `json:"data"`
+	Data []PortingAdditionalDocument `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -112,102 +165,6 @@ func (r PortingOrderAdditionalDocumentNewResponse) RawJSON() string { return r.J
 func (r *PortingOrderAdditionalDocumentNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type PortingOrderAdditionalDocumentNewResponseData struct {
-	// Uniquely identifies this additional document
-	ID string `json:"id" format:"uuid"`
-	// The content type of the related document.
-	ContentType string `json:"content_type"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Identifies the associated document
-	DocumentID string `json:"document_id" format:"uuid"`
-	// Identifies the type of additional document
-	//
-	// Any of "loa", "invoice", "csr", "other".
-	DocumentType string `json:"document_type"`
-	// The filename of the related document.
-	Filename string `json:"filename"`
-	// Identifies the associated porting order
-	PortingOrderID string `json:"porting_order_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		ContentType    respjson.Field
-		CreatedAt      respjson.Field
-		DocumentID     respjson.Field
-		DocumentType   respjson.Field
-		Filename       respjson.Field
-		PortingOrderID respjson.Field
-		RecordType     respjson.Field
-		UpdatedAt      respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingOrderAdditionalDocumentNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *PortingOrderAdditionalDocumentNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingOrderAdditionalDocumentListResponse struct {
-	// Uniquely identifies this additional document
-	ID string `json:"id" format:"uuid"`
-	// The content type of the related document.
-	ContentType string `json:"content_type"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Identifies the associated document
-	DocumentID string `json:"document_id" format:"uuid"`
-	// Identifies the type of additional document
-	//
-	// Any of "loa", "invoice", "csr", "other".
-	DocumentType PortingOrderAdditionalDocumentListResponseDocumentType `json:"document_type"`
-	// The filename of the related document.
-	Filename string `json:"filename"`
-	// Identifies the associated porting order
-	PortingOrderID string `json:"porting_order_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		ContentType    respjson.Field
-		CreatedAt      respjson.Field
-		DocumentID     respjson.Field
-		DocumentType   respjson.Field
-		Filename       respjson.Field
-		PortingOrderID respjson.Field
-		RecordType     respjson.Field
-		UpdatedAt      respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingOrderAdditionalDocumentListResponse) RawJSON() string { return r.JSON.raw }
-func (r *PortingOrderAdditionalDocumentListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Identifies the type of additional document
-type PortingOrderAdditionalDocumentListResponseDocumentType string
-
-const (
-	PortingOrderAdditionalDocumentListResponseDocumentTypeLoa     PortingOrderAdditionalDocumentListResponseDocumentType = "loa"
-	PortingOrderAdditionalDocumentListResponseDocumentTypeInvoice PortingOrderAdditionalDocumentListResponseDocumentType = "invoice"
-	PortingOrderAdditionalDocumentListResponseDocumentTypeCsr     PortingOrderAdditionalDocumentListResponseDocumentType = "csr"
-	PortingOrderAdditionalDocumentListResponseDocumentTypeOther   PortingOrderAdditionalDocumentListResponseDocumentType = "other"
-)
 
 type PortingOrderAdditionalDocumentNewParams struct {
 	AdditionalDocuments []PortingOrderAdditionalDocumentNewParamsAdditionalDocument `json:"additional_documents,omitzero"`

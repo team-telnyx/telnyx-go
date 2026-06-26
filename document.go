@@ -149,16 +149,12 @@ func (r *DocumentService) UploadJson(ctx context.Context, body DocumentUploadJso
 }
 
 type DocServiceDocument struct {
-	// Identifies the resource.
-	ID string `json:"id" format:"uuid"`
 	// The antivirus scan status of the document.
 	//
 	// Any of "scanned", "infected", "pending_scan", "not_scanned".
-	AvScanStatus DocServiceDocumentAvScanStatus `json:"av_scan_status"`
+	AvScanStatus string `json:"av_scan_status"`
 	// The document's content_type.
 	ContentType string `json:"content_type"`
-	// ISO 8601 formatted date-time indicating when the resource was created.
-	CreatedAt string `json:"created_at"`
 	// Optional reference string for customer tracking.
 	CustomerReference string `json:"customer_reference"`
 	// The filename of the document.
@@ -172,25 +168,21 @@ type DocServiceDocument struct {
 	// Indicates the current document reviewing status
 	//
 	// Any of "pending", "verified", "denied".
-	Status DocServiceDocumentStatus `json:"status"`
-	// ISO 8601 formatted date-time indicating when the resource was updated.
-	UpdatedAt string `json:"updated_at"`
+	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                respjson.Field
 		AvScanStatus      respjson.Field
 		ContentType       respjson.Field
-		CreatedAt         respjson.Field
 		CustomerReference respjson.Field
 		Filename          respjson.Field
 		RecordType        respjson.Field
 		Sha256            respjson.Field
 		Size              respjson.Field
 		Status            respjson.Field
-		UpdatedAt         respjson.Field
 		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`
+	DocServiceRecord
 }
 
 // Returns the unmodified JSON received from the API
@@ -207,16 +199,6 @@ func (r *DocServiceDocument) UnmarshalJSON(data []byte) error {
 func (r DocServiceDocument) ToParam() DocServiceDocumentParam {
 	return param.Override[DocServiceDocumentParam](json.RawMessage(r.RawJSON()))
 }
-
-// The antivirus scan status of the document.
-type DocServiceDocumentAvScanStatus string
-
-const (
-	DocServiceDocumentAvScanStatusScanned     DocServiceDocumentAvScanStatus = "scanned"
-	DocServiceDocumentAvScanStatusInfected    DocServiceDocumentAvScanStatus = "infected"
-	DocServiceDocumentAvScanStatusPendingScan DocServiceDocumentAvScanStatus = "pending_scan"
-	DocServiceDocumentAvScanStatusNotScanned  DocServiceDocumentAvScanStatus = "not_scanned"
-)
 
 // Indicates the document's filesize
 type DocServiceDocumentSize struct {
@@ -239,29 +221,20 @@ func (r *DocServiceDocumentSize) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Indicates the current document reviewing status
-type DocServiceDocumentStatus string
-
-const (
-	DocServiceDocumentStatusPending  DocServiceDocumentStatus = "pending"
-	DocServiceDocumentStatusVerified DocServiceDocumentStatus = "verified"
-	DocServiceDocumentStatusDenied   DocServiceDocumentStatus = "denied"
-)
-
 type DocServiceDocumentParam struct {
 	// Optional reference string for customer tracking.
 	CustomerReference param.Opt[string] `json:"customer_reference,omitzero"`
 	// The filename of the document.
 	Filename param.Opt[string] `json:"filename,omitzero"`
-	paramObj
+	DocServiceRecordParam
 }
 
 func (r DocServiceDocumentParam) MarshalJSON() (data []byte, err error) {
-	type shadow DocServiceDocumentParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *DocServiceDocumentParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	type shadow struct {
+		*DocServiceDocumentParam
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
 
 // Indicates the document's filesize
@@ -274,6 +247,53 @@ func (r DocServiceDocumentSizeParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *DocServiceDocumentSizeParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DocServiceRecord struct {
+	// Identifies the resource.
+	ID string `json:"id" format:"uuid"`
+	// ISO 8601 formatted date-time indicating when the resource was created.
+	CreatedAt string `json:"created_at"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
+	// ISO 8601 formatted date-time indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		RecordType  respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DocServiceRecord) RawJSON() string { return r.JSON.raw }
+func (r *DocServiceRecord) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this DocServiceRecord to a DocServiceRecordParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// DocServiceRecordParam.Overrides()
+func (r DocServiceRecord) ToParam() DocServiceRecordParam {
+	return param.Override[DocServiceRecordParam](json.RawMessage(r.RawJSON()))
+}
+
+type DocServiceRecordParam struct {
+	paramObj
+}
+
+func (r DocServiceRecordParam) MarshalJSON() (data []byte, err error) {
+	type shadow DocServiceRecordParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DocServiceRecordParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -40,7 +40,7 @@ func NewAIMcpServerService(opts ...option.RequestOption) (r AIMcpServerService) 
 }
 
 // Create a new MCP server.
-func (r *AIMcpServerService) New(ctx context.Context, body AIMcpServerNewParams, opts ...option.RequestOption) (res *AIMcpServerNewResponse, err error) {
+func (r *AIMcpServerService) New(ctx context.Context, body AIMcpServerNewParams, opts ...option.RequestOption) (res *McpServer, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/mcp_servers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -48,7 +48,7 @@ func (r *AIMcpServerService) New(ctx context.Context, body AIMcpServerNewParams,
 }
 
 // Retrieve details for a specific MCP server.
-func (r *AIMcpServerService) Get(ctx context.Context, mcpServerID string, opts ...option.RequestOption) (res *AIMcpServerGetResponse, err error) {
+func (r *AIMcpServerService) Get(ctx context.Context, mcpServerID string, opts ...option.RequestOption) (res *McpServer, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if mcpServerID == "" {
 		err = errors.New("missing required mcp_server_id parameter")
@@ -60,7 +60,7 @@ func (r *AIMcpServerService) Get(ctx context.Context, mcpServerID string, opts .
 }
 
 // Update an existing MCP server.
-func (r *AIMcpServerService) Update(ctx context.Context, mcpServerID string, body AIMcpServerUpdateParams, opts ...option.RequestOption) (res *AIMcpServerUpdateResponse, err error) {
+func (r *AIMcpServerService) Update(ctx context.Context, mcpServerID string, body AIMcpServerUpdateParams, opts ...option.RequestOption) (res *McpServer, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if mcpServerID == "" {
 		err = errors.New("missing required mcp_server_id parameter")
@@ -72,7 +72,7 @@ func (r *AIMcpServerService) Update(ctx context.Context, mcpServerID string, bod
 }
 
 // Retrieve a list of MCP servers.
-func (r *AIMcpServerService) List(ctx context.Context, query AIMcpServerListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPaginationTopLevelArray[AIMcpServerListResponse], err error) {
+func (r *AIMcpServerService) List(ctx context.Context, query AIMcpServerListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPaginationTopLevelArray[McpServer], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -90,7 +90,7 @@ func (r *AIMcpServerService) List(ctx context.Context, query AIMcpServerListPara
 }
 
 // Retrieve a list of MCP servers.
-func (r *AIMcpServerService) ListAutoPaging(ctx context.Context, query AIMcpServerListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationTopLevelArrayAutoPager[AIMcpServerListResponse] {
+func (r *AIMcpServerService) ListAutoPaging(ctx context.Context, query AIMcpServerListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationTopLevelArrayAutoPager[McpServer] {
 	return pagination.NewDefaultFlatPaginationTopLevelArrayAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -107,7 +107,7 @@ func (r *AIMcpServerService) Delete(ctx context.Context, mcpServerID string, opt
 	return err
 }
 
-type AIMcpServerNewResponse struct {
+type McpServer struct {
 	ID           string    `json:"id" api:"required"`
 	CreatedAt    time.Time `json:"created_at" api:"required" format:"date-time"`
 	Name         string    `json:"name" api:"required"`
@@ -130,92 +130,8 @@ type AIMcpServerNewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AIMcpServerNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMcpServerNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIMcpServerGetResponse struct {
-	ID           string    `json:"id" api:"required"`
-	CreatedAt    time.Time `json:"created_at" api:"required" format:"date-time"`
-	Name         string    `json:"name" api:"required"`
-	Type         string    `json:"type" api:"required"`
-	URL          string    `json:"url" api:"required"`
-	AllowedTools []string  `json:"allowed_tools" api:"nullable"`
-	APIKeyRef    string    `json:"api_key_ref" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID           respjson.Field
-		CreatedAt    respjson.Field
-		Name         respjson.Field
-		Type         respjson.Field
-		URL          respjson.Field
-		AllowedTools respjson.Field
-		APIKeyRef    respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMcpServerGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMcpServerGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIMcpServerUpdateResponse struct {
-	ID           string    `json:"id" api:"required"`
-	CreatedAt    time.Time `json:"created_at" api:"required" format:"date-time"`
-	Name         string    `json:"name" api:"required"`
-	Type         string    `json:"type" api:"required"`
-	URL          string    `json:"url" api:"required"`
-	AllowedTools []string  `json:"allowed_tools" api:"nullable"`
-	APIKeyRef    string    `json:"api_key_ref" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID           respjson.Field
-		CreatedAt    respjson.Field
-		Name         respjson.Field
-		Type         respjson.Field
-		URL          respjson.Field
-		AllowedTools respjson.Field
-		APIKeyRef    respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMcpServerUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMcpServerUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIMcpServerListResponse struct {
-	ID           string    `json:"id" api:"required"`
-	CreatedAt    time.Time `json:"created_at" api:"required" format:"date-time"`
-	Name         string    `json:"name" api:"required"`
-	Type         string    `json:"type" api:"required"`
-	URL          string    `json:"url" api:"required"`
-	AllowedTools []string  `json:"allowed_tools" api:"nullable"`
-	APIKeyRef    string    `json:"api_key_ref" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID           respjson.Field
-		CreatedAt    respjson.Field
-		Name         respjson.Field
-		Type         respjson.Field
-		URL          respjson.Field
-		AllowedTools respjson.Field
-		APIKeyRef    respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMcpServerListResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMcpServerListResponse) UnmarshalJSON(data []byte) error {
+func (r McpServer) RawJSON() string { return r.JSON.raw }
+func (r *McpServer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -37,7 +37,7 @@ func NewAIIntegrationService(opts ...option.RequestOption) (r AIIntegrationServi
 }
 
 // Retrieve integration details
-func (r *AIIntegrationService) Get(ctx context.Context, integrationID string, opts ...option.RequestOption) (res *AIIntegrationGetResponse, err error) {
+func (r *AIIntegrationService) Get(ctx context.Context, integrationID string, opts ...option.RequestOption) (res *Integration, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if integrationID == "" {
 		err = errors.New("missing required integration_id parameter")
@@ -56,7 +56,7 @@ func (r *AIIntegrationService) List(ctx context.Context, opts ...option.RequestO
 	return res, err
 }
 
-type AIIntegrationGetResponse struct {
+type Integration struct {
 	ID             string   `json:"id" api:"required"`
 	AvailableTools []string `json:"available_tools" api:"required"`
 	Description    string   `json:"description" api:"required"`
@@ -64,7 +64,7 @@ type AIIntegrationGetResponse struct {
 	LogoURL        string   `json:"logo_url" api:"required"`
 	Name           string   `json:"name" api:"required"`
 	// Any of "disconnected", "connected".
-	Status AIIntegrationGetResponseStatus `json:"status" api:"required"`
+	Status IntegrationStatus `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -80,20 +80,20 @@ type AIIntegrationGetResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AIIntegrationGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIIntegrationGetResponse) UnmarshalJSON(data []byte) error {
+func (r Integration) RawJSON() string { return r.JSON.raw }
+func (r *Integration) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIIntegrationGetResponseStatus string
+type IntegrationStatus string
 
 const (
-	AIIntegrationGetResponseStatusDisconnected AIIntegrationGetResponseStatus = "disconnected"
-	AIIntegrationGetResponseStatusConnected    AIIntegrationGetResponseStatus = "connected"
+	IntegrationStatusDisconnected IntegrationStatus = "disconnected"
+	IntegrationStatusConnected    IntegrationStatus = "connected"
 )
 
 type AIIntegrationListResponse struct {
-	Data []AIIntegrationListResponseData `json:"data" api:"required"`
+	Data []Integration `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -105,34 +105,5 @@ type AIIntegrationListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r AIIntegrationListResponse) RawJSON() string { return r.JSON.raw }
 func (r *AIIntegrationListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIIntegrationListResponseData struct {
-	ID             string   `json:"id" api:"required"`
-	AvailableTools []string `json:"available_tools" api:"required"`
-	Description    string   `json:"description" api:"required"`
-	DisplayName    string   `json:"display_name" api:"required"`
-	LogoURL        string   `json:"logo_url" api:"required"`
-	Name           string   `json:"name" api:"required"`
-	// Any of "disconnected", "connected".
-	Status string `json:"status" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		AvailableTools respjson.Field
-		Description    respjson.Field
-		DisplayName    respjson.Field
-		LogoURL        respjson.Field
-		Name           respjson.Field
-		Status         respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIIntegrationListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIIntegrationListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

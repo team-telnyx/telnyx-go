@@ -134,9 +134,9 @@ type AuditEventListResponseChange struct {
 	// nested fields.
 	Field string `json:"field"`
 	// The previous value of the field. Can be any JSON type.
-	From AuditEventListResponseChangeFromUnion `json:"from" api:"nullable"`
+	From AuditEventListResponseChangesFromUnion `json:"from" api:"nullable"`
 	// The new value of the field. Can be any JSON type.
-	To AuditEventListResponseChangeToUnion `json:"to" api:"nullable"`
+	To AuditEventListResponseChangesToUnion `json:"to" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Field       respjson.Field
@@ -153,15 +153,15 @@ func (r *AuditEventListResponseChange) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// AuditEventListResponseChangeFromUnion contains all possible properties and
+// AuditEventListResponseChangesFromUnion contains all possible properties and
 // values from [string], [float64], [bool], [map[string]any], [[]map[string]any].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfString OfFloat OfBool
-// OfAuditEventListResponseChangeFromChangesObjectItem OfMapOfAnyMap]
-type AuditEventListResponseChangeFromUnion struct {
+// OfAuditEventListResponseChangesFromChangesObject OfMapOfAnyMap]
+type AuditEventListResponseChangesFromUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a [float64] instead of an object.
@@ -169,61 +169,61 @@ type AuditEventListResponseChangeFromUnion struct {
 	// This field will be present if the value is a [bool] instead of an object.
 	OfBool bool `json:",inline"`
 	// This field will be present if the value is a [any] instead of an object.
-	OfAuditEventListResponseChangeFromChangesObjectItem any `json:",inline"`
+	OfAuditEventListResponseChangesFromChangesObject any `json:",inline"`
 	// This field will be present if the value is a [[]map[string]any] instead of an
 	// object.
 	OfMapOfAnyMap []map[string]any `json:",inline"`
 	JSON          struct {
-		OfString                                            respjson.Field
-		OfFloat                                             respjson.Field
-		OfBool                                              respjson.Field
-		OfAuditEventListResponseChangeFromChangesObjectItem respjson.Field
-		OfMapOfAnyMap                                       respjson.Field
-		raw                                                 string
+		OfString                                         respjson.Field
+		OfFloat                                          respjson.Field
+		OfBool                                           respjson.Field
+		OfAuditEventListResponseChangesFromChangesObject respjson.Field
+		OfMapOfAnyMap                                    respjson.Field
+		raw                                              string
 	} `json:"-"`
 }
 
-func (u AuditEventListResponseChangeFromUnion) AsString() (v string) {
+func (u AuditEventListResponseChangesFromUnion) AsString() (v string) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AuditEventListResponseChangeFromUnion) AsFloat() (v float64) {
+func (u AuditEventListResponseChangesFromUnion) AsFloat() (v float64) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AuditEventListResponseChangeFromUnion) AsBool() (v bool) {
+func (u AuditEventListResponseChangesFromUnion) AsBool() (v bool) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AuditEventListResponseChangeFromUnion) AsChangesObject() (v map[string]any) {
+func (u AuditEventListResponseChangesFromUnion) AsChangesObject() (v map[string]any) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AuditEventListResponseChangeFromUnion) AsMapOfAnyMap() (v []map[string]any) {
+func (u AuditEventListResponseChangesFromUnion) AsMapOfAnyMap() (v []map[string]any) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u AuditEventListResponseChangeFromUnion) RawJSON() string { return u.JSON.raw }
+func (u AuditEventListResponseChangesFromUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *AuditEventListResponseChangeFromUnion) UnmarshalJSON(data []byte) error {
+func (r *AuditEventListResponseChangesFromUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// AuditEventListResponseChangeToUnion contains all possible properties and values
+// AuditEventListResponseChangesToUnion contains all possible properties and values
 // from [string], [float64], [bool], [map[string]any], [[]map[string]any].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfString OfFloat OfBool
-// OfAuditEventListResponseChangeToChangesObjectItem OfMapOfAnyMap]
-type AuditEventListResponseChangeToUnion struct {
+// OfAuditEventListResponseChangesToChangesObject OfMapOfAnyMap]
+type AuditEventListResponseChangesToUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a [float64] instead of an object.
@@ -231,49 +231,49 @@ type AuditEventListResponseChangeToUnion struct {
 	// This field will be present if the value is a [bool] instead of an object.
 	OfBool bool `json:",inline"`
 	// This field will be present if the value is a [any] instead of an object.
-	OfAuditEventListResponseChangeToChangesObjectItem any `json:",inline"`
+	OfAuditEventListResponseChangesToChangesObject any `json:",inline"`
 	// This field will be present if the value is a [[]map[string]any] instead of an
 	// object.
 	OfMapOfAnyMap []map[string]any `json:",inline"`
 	JSON          struct {
-		OfString                                          respjson.Field
-		OfFloat                                           respjson.Field
-		OfBool                                            respjson.Field
-		OfAuditEventListResponseChangeToChangesObjectItem respjson.Field
-		OfMapOfAnyMap                                     respjson.Field
-		raw                                               string
+		OfString                                       respjson.Field
+		OfFloat                                        respjson.Field
+		OfBool                                         respjson.Field
+		OfAuditEventListResponseChangesToChangesObject respjson.Field
+		OfMapOfAnyMap                                  respjson.Field
+		raw                                            string
 	} `json:"-"`
 }
 
-func (u AuditEventListResponseChangeToUnion) AsString() (v string) {
+func (u AuditEventListResponseChangesToUnion) AsString() (v string) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AuditEventListResponseChangeToUnion) AsFloat() (v float64) {
+func (u AuditEventListResponseChangesToUnion) AsFloat() (v float64) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AuditEventListResponseChangeToUnion) AsBool() (v bool) {
+func (u AuditEventListResponseChangesToUnion) AsBool() (v bool) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AuditEventListResponseChangeToUnion) AsChangesObject() (v map[string]any) {
+func (u AuditEventListResponseChangesToUnion) AsChangesObject() (v map[string]any) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AuditEventListResponseChangeToUnion) AsMapOfAnyMap() (v []map[string]any) {
+func (u AuditEventListResponseChangesToUnion) AsMapOfAnyMap() (v []map[string]any) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u AuditEventListResponseChangeToUnion) RawJSON() string { return u.JSON.raw }
+func (u AuditEventListResponseChangesToUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *AuditEventListResponseChangeToUnion) UnmarshalJSON(data []byte) error {
+func (r *AuditEventListResponseChangesToUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

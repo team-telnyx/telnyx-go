@@ -49,7 +49,7 @@ func (r *PortingOrderPhoneNumberConfigurationService) New(ctx context.Context, b
 }
 
 // Returns a list of phone number configurations paginated.
-func (r *PortingOrderPhoneNumberConfigurationService) List(ctx context.Context, query PortingOrderPhoneNumberConfigurationListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingOrderPhoneNumberConfigurationListResponse], err error) {
+func (r *PortingOrderPhoneNumberConfigurationService) List(ctx context.Context, query PortingOrderPhoneNumberConfigurationListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingPhoneNumberConfiguration], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -67,12 +67,44 @@ func (r *PortingOrderPhoneNumberConfigurationService) List(ctx context.Context, 
 }
 
 // Returns a list of phone number configurations paginated.
-func (r *PortingOrderPhoneNumberConfigurationService) ListAutoPaging(ctx context.Context, query PortingOrderPhoneNumberConfigurationListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingOrderPhoneNumberConfigurationListResponse] {
+func (r *PortingOrderPhoneNumberConfigurationService) ListAutoPaging(ctx context.Context, query PortingOrderPhoneNumberConfigurationListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingPhoneNumberConfiguration] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
+type PortingPhoneNumberConfiguration struct {
+	// Uniquely identifies this phone number configuration
+	ID string `json:"id" format:"uuid"`
+	// ISO 8601 formatted date indicating when the resource was created.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Identifies the associated porting phone number
+	PortingPhoneNumberID string `json:"porting_phone_number_id" format:"uuid"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
+	// ISO 8601 formatted date indicating when the resource was updated.
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// Identifies the associated user bundle
+	UserBundleID string `json:"user_bundle_id" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                   respjson.Field
+		CreatedAt            respjson.Field
+		PortingPhoneNumberID respjson.Field
+		RecordType           respjson.Field
+		UpdatedAt            respjson.Field
+		UserBundleID         respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingPhoneNumberConfiguration) RawJSON() string { return r.JSON.raw }
+func (r *PortingPhoneNumberConfiguration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type PortingOrderPhoneNumberConfigurationNewResponse struct {
-	Data []PortingOrderPhoneNumberConfigurationNewResponseData `json:"data"`
+	Data []PortingPhoneNumberConfiguration `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -84,70 +116,6 @@ type PortingOrderPhoneNumberConfigurationNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r PortingOrderPhoneNumberConfigurationNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *PortingOrderPhoneNumberConfigurationNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingOrderPhoneNumberConfigurationNewResponseData struct {
-	// Uniquely identifies this phone number configuration
-	ID string `json:"id" format:"uuid"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Identifies the associated porting phone number
-	PortingPhoneNumberID string `json:"porting_phone_number_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// Identifies the associated user bundle
-	UserBundleID string `json:"user_bundle_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                   respjson.Field
-		CreatedAt            respjson.Field
-		PortingPhoneNumberID respjson.Field
-		RecordType           respjson.Field
-		UpdatedAt            respjson.Field
-		UserBundleID         respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingOrderPhoneNumberConfigurationNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *PortingOrderPhoneNumberConfigurationNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingOrderPhoneNumberConfigurationListResponse struct {
-	// Uniquely identifies this phone number configuration
-	ID string `json:"id" format:"uuid"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Identifies the associated porting phone number
-	PortingPhoneNumberID string `json:"porting_phone_number_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// Identifies the associated user bundle
-	UserBundleID string `json:"user_bundle_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                   respjson.Field
-		CreatedAt            respjson.Field
-		PortingPhoneNumberID respjson.Field
-		RecordType           respjson.Field
-		UpdatedAt            respjson.Field
-		UserBundleID         respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingOrderPhoneNumberConfigurationListResponse) RawJSON() string { return r.JSON.raw }
-func (r *PortingOrderPhoneNumberConfigurationListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

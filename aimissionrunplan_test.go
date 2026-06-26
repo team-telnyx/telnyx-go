@@ -31,7 +31,7 @@ func TestAIMissionRunPlanNew(t *testing.T) {
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.AIMissionRunPlanNewParams{
 			MissionID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-			Steps: []telnyx.AIMissionRunPlanNewParamsStep{{
+			Steps: []telnyx.CreatePlanStepRequestParam{{
 				Description: "description",
 				Sequence:    0,
 				StepID:      "step_id",
@@ -98,7 +98,7 @@ func TestAIMissionRunPlanAddStepsToPlan(t *testing.T) {
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.AIMissionRunPlanAddStepsToPlanParams{
 			MissionID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-			Steps: []telnyx.AIMissionRunPlanAddStepsToPlanParamsStep{{
+			Steps: []telnyx.CreatePlanStepRequestParam{{
 				Description: "description",
 				Sequence:    0,
 				StepID:      "step_id",
@@ -170,7 +170,7 @@ func TestAIMissionRunPlanUpdateStepWithOptionalParams(t *testing.T) {
 			Metadata: map[string]any{
 				"foo": "bar",
 			},
-			Status: telnyx.AIMissionRunPlanUpdateStepParamsStatusPending,
+			Status: telnyx.StepStatusPending,
 		},
 	)
 	if err != nil {

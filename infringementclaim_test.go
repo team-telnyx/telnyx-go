@@ -54,9 +54,9 @@ func TestInfringementClaimContestWithOptionalParams(t *testing.T) {
 		"e379fbc8-cd83-4bef-a280-a0ac9d00dcf8",
 		telnyx.InfringementClaimContestParams{
 			ContestNotes: "We own the trademark outright; our registration precedes the claimant by three years. See attached certificate.",
-			Documents: []telnyx.InfringementClaimContestParamsDocument{{
+			Documents: []telnyx.DocumentParam{{
 				DocumentID:   "2a7e8337-e803-4057-a4ae-26c40eb0bc6c",
-				DocumentType: "trademark_registration",
+				DocumentType: telnyx.DocumentDocumentTypeTrademarkRegistration,
 				Description:  telnyx.String("USPTO trademark certificate."),
 			}},
 		},

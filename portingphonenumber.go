@@ -39,7 +39,7 @@ func NewPortingPhoneNumberService(opts ...option.RequestOption) (r PortingPhoneN
 }
 
 // Returns a list of your porting phone numbers.
-func (r *PortingPhoneNumberService) List(ctx context.Context, query PortingPhoneNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingPhoneNumberListResponse], err error) {
+func (r *PortingPhoneNumberService) List(ctx context.Context, query PortingPhoneNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingPhoneNumber], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -57,42 +57,61 @@ func (r *PortingPhoneNumberService) List(ctx context.Context, query PortingPhone
 }
 
 // Returns a list of your porting phone numbers.
-func (r *PortingPhoneNumberService) ListAutoPaging(ctx context.Context, query PortingPhoneNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingPhoneNumberListResponse] {
+func (r *PortingPhoneNumberService) ListAutoPaging(ctx context.Context, query PortingPhoneNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingPhoneNumber] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-type PortingPhoneNumberListResponse struct {
+// Activation status
+type PortingOrderActivationStatus string
+
+const (
+	PortingOrderActivationStatusNew               PortingOrderActivationStatus = "New"
+	PortingOrderActivationStatusPending           PortingOrderActivationStatus = "Pending"
+	PortingOrderActivationStatusConflict          PortingOrderActivationStatus = "Conflict"
+	PortingOrderActivationStatusCancelPending     PortingOrderActivationStatus = "Cancel Pending"
+	PortingOrderActivationStatusFailed            PortingOrderActivationStatus = "Failed"
+	PortingOrderActivationStatusConcurred         PortingOrderActivationStatus = "Concurred"
+	PortingOrderActivationStatusActivateRdy       PortingOrderActivationStatus = "Activate RDY"
+	PortingOrderActivationStatusDisconnectPending PortingOrderActivationStatus = "Disconnect Pending"
+	PortingOrderActivationStatusConcurrenceSent   PortingOrderActivationStatus = "Concurrence Sent"
+	PortingOrderActivationStatusOld               PortingOrderActivationStatus = "Old"
+	PortingOrderActivationStatusSending           PortingOrderActivationStatus = "Sending"
+	PortingOrderActivationStatusActive            PortingOrderActivationStatus = "Active"
+	PortingOrderActivationStatusCancelled         PortingOrderActivationStatus = "Cancelled"
+)
+
+type PortingPhoneNumber struct {
 	// Activation status
 	//
 	// Any of "New", "Pending", "Conflict", "Cancel Pending", "Failed", "Concurred",
 	// "Activate RDY", "Disconnect Pending", "Concurrence Sent", "Old", "Sending",
 	// "Active", "Cancelled".
-	ActivationStatus PortingPhoneNumberListResponseActivationStatus `json:"activation_status"`
+	ActivationStatus PortingOrderActivationStatus `json:"activation_status"`
 	// E164 formatted phone number
 	PhoneNumber string `json:"phone_number"`
 	// The type of the phone number
 	//
 	// Any of "landline", "local", "mobile", "national", "shared_cost", "toll_free".
-	PhoneNumberType PortingPhoneNumberListResponsePhoneNumberType `json:"phone_number_type"`
+	PhoneNumberType PortingPhoneNumberPhoneNumberType `json:"phone_number_type"`
 	// Specifies whether Telnyx is able to confirm portability this number in the
 	// United States & Canada. International phone numbers are provisional by default.
 	//
 	// Any of "pending", "confirmed", "provisional".
-	PortabilityStatus PortingPhoneNumberListResponsePortabilityStatus `json:"portability_status"`
+	PortabilityStatus PortingPhoneNumberPortabilityStatus `json:"portability_status"`
 	// Identifies the associated port request
 	PortingOrderID string `json:"porting_order_id" format:"uuid"`
 	// The current status of the porting order
 	//
 	// Any of "draft", "in-process", "submitted", "exception", "foc-date-confirmed",
 	// "cancel-pending", "ported", "cancelled".
-	PortingOrderStatus PortingPhoneNumberListResponsePortingOrderStatus `json:"porting_order_status"`
+	PortingOrderStatus PortingPhoneNumberPortingOrderStatus `json:"porting_order_status"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
 	// The current status of the requirements in a INTL porting order
 	//
 	// Any of "requirement-info-pending", "requirement-info-under-review",
 	// "requirement-info-exception", "approved".
-	RequirementsStatus PortingPhoneNumberListResponseRequirementsStatus `json:"requirements_status"`
+	RequirementsStatus PortingPhoneNumberRequirementsStatus `json:"requirements_status"`
 	// A key to reference this porting order when contacting Telnyx customer support
 	SupportKey string `json:"support_key"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -112,74 +131,55 @@ type PortingPhoneNumberListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PortingPhoneNumberListResponse) RawJSON() string { return r.JSON.raw }
-func (r *PortingPhoneNumberListResponse) UnmarshalJSON(data []byte) error {
+func (r PortingPhoneNumber) RawJSON() string { return r.JSON.raw }
+func (r *PortingPhoneNumber) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Activation status
-type PortingPhoneNumberListResponseActivationStatus string
-
-const (
-	PortingPhoneNumberListResponseActivationStatusNew               PortingPhoneNumberListResponseActivationStatus = "New"
-	PortingPhoneNumberListResponseActivationStatusPending           PortingPhoneNumberListResponseActivationStatus = "Pending"
-	PortingPhoneNumberListResponseActivationStatusConflict          PortingPhoneNumberListResponseActivationStatus = "Conflict"
-	PortingPhoneNumberListResponseActivationStatusCancelPending     PortingPhoneNumberListResponseActivationStatus = "Cancel Pending"
-	PortingPhoneNumberListResponseActivationStatusFailed            PortingPhoneNumberListResponseActivationStatus = "Failed"
-	PortingPhoneNumberListResponseActivationStatusConcurred         PortingPhoneNumberListResponseActivationStatus = "Concurred"
-	PortingPhoneNumberListResponseActivationStatusActivateRdy       PortingPhoneNumberListResponseActivationStatus = "Activate RDY"
-	PortingPhoneNumberListResponseActivationStatusDisconnectPending PortingPhoneNumberListResponseActivationStatus = "Disconnect Pending"
-	PortingPhoneNumberListResponseActivationStatusConcurrenceSent   PortingPhoneNumberListResponseActivationStatus = "Concurrence Sent"
-	PortingPhoneNumberListResponseActivationStatusOld               PortingPhoneNumberListResponseActivationStatus = "Old"
-	PortingPhoneNumberListResponseActivationStatusSending           PortingPhoneNumberListResponseActivationStatus = "Sending"
-	PortingPhoneNumberListResponseActivationStatusActive            PortingPhoneNumberListResponseActivationStatus = "Active"
-	PortingPhoneNumberListResponseActivationStatusCancelled         PortingPhoneNumberListResponseActivationStatus = "Cancelled"
-)
-
 // The type of the phone number
-type PortingPhoneNumberListResponsePhoneNumberType string
+type PortingPhoneNumberPhoneNumberType string
 
 const (
-	PortingPhoneNumberListResponsePhoneNumberTypeLandline   PortingPhoneNumberListResponsePhoneNumberType = "landline"
-	PortingPhoneNumberListResponsePhoneNumberTypeLocal      PortingPhoneNumberListResponsePhoneNumberType = "local"
-	PortingPhoneNumberListResponsePhoneNumberTypeMobile     PortingPhoneNumberListResponsePhoneNumberType = "mobile"
-	PortingPhoneNumberListResponsePhoneNumberTypeNational   PortingPhoneNumberListResponsePhoneNumberType = "national"
-	PortingPhoneNumberListResponsePhoneNumberTypeSharedCost PortingPhoneNumberListResponsePhoneNumberType = "shared_cost"
-	PortingPhoneNumberListResponsePhoneNumberTypeTollFree   PortingPhoneNumberListResponsePhoneNumberType = "toll_free"
+	PortingPhoneNumberPhoneNumberTypeLandline   PortingPhoneNumberPhoneNumberType = "landline"
+	PortingPhoneNumberPhoneNumberTypeLocal      PortingPhoneNumberPhoneNumberType = "local"
+	PortingPhoneNumberPhoneNumberTypeMobile     PortingPhoneNumberPhoneNumberType = "mobile"
+	PortingPhoneNumberPhoneNumberTypeNational   PortingPhoneNumberPhoneNumberType = "national"
+	PortingPhoneNumberPhoneNumberTypeSharedCost PortingPhoneNumberPhoneNumberType = "shared_cost"
+	PortingPhoneNumberPhoneNumberTypeTollFree   PortingPhoneNumberPhoneNumberType = "toll_free"
 )
 
 // Specifies whether Telnyx is able to confirm portability this number in the
 // United States & Canada. International phone numbers are provisional by default.
-type PortingPhoneNumberListResponsePortabilityStatus string
+type PortingPhoneNumberPortabilityStatus string
 
 const (
-	PortingPhoneNumberListResponsePortabilityStatusPending     PortingPhoneNumberListResponsePortabilityStatus = "pending"
-	PortingPhoneNumberListResponsePortabilityStatusConfirmed   PortingPhoneNumberListResponsePortabilityStatus = "confirmed"
-	PortingPhoneNumberListResponsePortabilityStatusProvisional PortingPhoneNumberListResponsePortabilityStatus = "provisional"
+	PortingPhoneNumberPortabilityStatusPending     PortingPhoneNumberPortabilityStatus = "pending"
+	PortingPhoneNumberPortabilityStatusConfirmed   PortingPhoneNumberPortabilityStatus = "confirmed"
+	PortingPhoneNumberPortabilityStatusProvisional PortingPhoneNumberPortabilityStatus = "provisional"
 )
 
 // The current status of the porting order
-type PortingPhoneNumberListResponsePortingOrderStatus string
+type PortingPhoneNumberPortingOrderStatus string
 
 const (
-	PortingPhoneNumberListResponsePortingOrderStatusDraft            PortingPhoneNumberListResponsePortingOrderStatus = "draft"
-	PortingPhoneNumberListResponsePortingOrderStatusInProcess        PortingPhoneNumberListResponsePortingOrderStatus = "in-process"
-	PortingPhoneNumberListResponsePortingOrderStatusSubmitted        PortingPhoneNumberListResponsePortingOrderStatus = "submitted"
-	PortingPhoneNumberListResponsePortingOrderStatusException        PortingPhoneNumberListResponsePortingOrderStatus = "exception"
-	PortingPhoneNumberListResponsePortingOrderStatusFocDateConfirmed PortingPhoneNumberListResponsePortingOrderStatus = "foc-date-confirmed"
-	PortingPhoneNumberListResponsePortingOrderStatusCancelPending    PortingPhoneNumberListResponsePortingOrderStatus = "cancel-pending"
-	PortingPhoneNumberListResponsePortingOrderStatusPorted           PortingPhoneNumberListResponsePortingOrderStatus = "ported"
-	PortingPhoneNumberListResponsePortingOrderStatusCancelled        PortingPhoneNumberListResponsePortingOrderStatus = "cancelled"
+	PortingPhoneNumberPortingOrderStatusDraft            PortingPhoneNumberPortingOrderStatus = "draft"
+	PortingPhoneNumberPortingOrderStatusInProcess        PortingPhoneNumberPortingOrderStatus = "in-process"
+	PortingPhoneNumberPortingOrderStatusSubmitted        PortingPhoneNumberPortingOrderStatus = "submitted"
+	PortingPhoneNumberPortingOrderStatusException        PortingPhoneNumberPortingOrderStatus = "exception"
+	PortingPhoneNumberPortingOrderStatusFocDateConfirmed PortingPhoneNumberPortingOrderStatus = "foc-date-confirmed"
+	PortingPhoneNumberPortingOrderStatusCancelPending    PortingPhoneNumberPortingOrderStatus = "cancel-pending"
+	PortingPhoneNumberPortingOrderStatusPorted           PortingPhoneNumberPortingOrderStatus = "ported"
+	PortingPhoneNumberPortingOrderStatusCancelled        PortingPhoneNumberPortingOrderStatus = "cancelled"
 )
 
 // The current status of the requirements in a INTL porting order
-type PortingPhoneNumberListResponseRequirementsStatus string
+type PortingPhoneNumberRequirementsStatus string
 
 const (
-	PortingPhoneNumberListResponseRequirementsStatusRequirementInfoPending     PortingPhoneNumberListResponseRequirementsStatus = "requirement-info-pending"
-	PortingPhoneNumberListResponseRequirementsStatusRequirementInfoUnderReview PortingPhoneNumberListResponseRequirementsStatus = "requirement-info-under-review"
-	PortingPhoneNumberListResponseRequirementsStatusRequirementInfoException   PortingPhoneNumberListResponseRequirementsStatus = "requirement-info-exception"
-	PortingPhoneNumberListResponseRequirementsStatusApproved                   PortingPhoneNumberListResponseRequirementsStatus = "approved"
+	PortingPhoneNumberRequirementsStatusRequirementInfoPending     PortingPhoneNumberRequirementsStatus = "requirement-info-pending"
+	PortingPhoneNumberRequirementsStatusRequirementInfoUnderReview PortingPhoneNumberRequirementsStatus = "requirement-info-under-review"
+	PortingPhoneNumberRequirementsStatusRequirementInfoException   PortingPhoneNumberRequirementsStatus = "requirement-info-exception"
+	PortingPhoneNumberRequirementsStatusApproved                   PortingPhoneNumberRequirementsStatus = "approved"
 )
 
 type PortingPhoneNumberListParams struct {

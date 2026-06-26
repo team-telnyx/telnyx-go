@@ -34,8 +34,9 @@ func TestCallActionAddAIAssistantMessagesWithOptionalParams(t *testing.T) {
 			ClientState: telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
 			CommandID:   telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
 			Messages: []telnyx.CallActionAddAIAssistantMessagesParamsMessageUnion{{
-				OfSystem: &telnyx.CallActionAddAIAssistantMessagesParamsMessageSystem{
+				OfSystem: &telnyx.SystemMessageParam{
 					Content: "Get the user's favorite color",
+					Role:    telnyx.SystemMessageRoleSystem,
 					Metadata: map[string]any{
 						"foo": "bar",
 					},
@@ -71,7 +72,7 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 		telnyx.CallActionAnswerParams{
 			Assistant: telnyx.CallAssistantRequestParam{
 				ID: "asst_123",
-				DynamicVariables: map[string]telnyx.CallAssistantRequestDynamicVariableUnionParam{
+				DynamicVariables: map[string]telnyx.CallAssistantRequestDynamicVariablesUnionParam{
 					"customer_name": {
 						OfString: telnyx.String("John"),
 					},
@@ -113,7 +114,7 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 					"foo": "bar",
 				},
 				OpenAIAPIKeyRef: telnyx.String("my_openai_api_key"),
-				Tools: []telnyx.CallAssistantRequestToolUnionParam{{
+				Tools: []telnyx.CallAssistantRequestToolsUnionParam{{
 					OfHangup: &telnyx.HangupToolParam{
 						Hangup: telnyx.HangupToolParams{
 							Description: telnyx.String("description"),
@@ -125,33 +126,33 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 			BillingGroupID: telnyx.String("f5586561-8ff0-4291-a0ac-84fe544797bd"),
 			ClientState:    telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
 			CommandID:      telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
-			ConversationRelayConfig: telnyx.CallActionAnswerParamsConversationRelayConfig{
+			ConversationRelayConfig: telnyx.ConversationRelayEmbeddedConfigParam{
 				URL: "wss://example.com/conversation-relay",
 				CustomParameters: map[string]any{
 					"customer_id": "bar",
 				},
 				DtmfDetection:         telnyx.Bool(true),
 				Greeting:              telnyx.String("Hi! Ask me anything!"),
-				Interruptible:         "speech",
-				InterruptibleGreeting: "dtmf",
-				InterruptionSettings: telnyx.CallActionAnswerParamsConversationRelayConfigInterruptionSettings{
+				Interruptible:         telnyx.ConversationRelayInterruptibleSpeech,
+				InterruptibleGreeting: telnyx.ConversationRelayInterruptibleDtmf,
+				InterruptionSettings: telnyx.ConversationRelayInterruptionSettingsParam{
 					Enable:                       telnyx.Bool(true),
-					Interruptible:                "speech",
-					InterruptibleGreeting:        "speech",
-					WelcomeGreetingInterruptible: "speech",
+					Interruptible:                telnyx.ConversationRelayInterruptibleSpeech,
+					InterruptibleGreeting:        telnyx.ConversationRelayInterruptibleSpeech,
+					WelcomeGreetingInterruptible: telnyx.ConversationRelayInterruptibleSpeech,
 				},
 				Language: telnyx.String("en-US"),
-				Languages: []telnyx.CallActionAnswerParamsConversationRelayConfigLanguage{{
+				Languages: []telnyx.ConversationRelayLanguageParam{{
 					Language:            "en-US",
 					SpeechModel:         telnyx.String("nova-3"),
-					TranscriptionEngine: "Deepgram",
+					TranscriptionEngine: telnyx.ConversationRelayLanguageTranscriptionEngineDeepgram,
 					TranscriptionEngineConfig: map[string]any{
 						"transcription_model": "bar",
 					},
 					TranscriptionProvider: telnyx.String("Deepgram"),
 					TtsProvider:           telnyx.String("telnyx"),
 					Voice:                 telnyx.String("Telnyx.Ultra.alloy"),
-					VoiceSettings: telnyx.CallActionAnswerParamsConversationRelayConfigLanguageVoiceSettingsUnion{
+					VoiceSettings: telnyx.ConversationRelayLanguageVoiceSettingsUnionParam{
 						OfElevenlabs: &telnyx.ElevenLabsVoiceSettingsParam{
 							Type:      telnyx.ElevenLabsVoiceSettingsTypeElevenlabs,
 							APIKeyRef: telnyx.String("my_elevenlabs_api_key"),
@@ -163,7 +164,7 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 					"voice_id": "bar",
 					"model_id": "bar",
 				},
-				TranscriptionEngine: "Google",
+				TranscriptionEngine: telnyx.ConversationRelayEmbeddedConfigTranscriptionEngineGoogle,
 				TranscriptionEngineConfig: map[string]any{
 					"transcription_model": "bar",
 					"interim_results":     "bar",
@@ -171,7 +172,7 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 				},
 				TtsProvider: telnyx.String("telnyx"),
 				Voice:       telnyx.String("Telnyx.KokoroTTS.af"),
-				VoiceSettings: telnyx.CallActionAnswerParamsConversationRelayConfigVoiceSettingsUnion{
+				VoiceSettings: telnyx.ConversationRelayEmbeddedConfigVoiceSettingsUnionParam{
 					OfTelnyx: &telnyx.TelnyxVoiceSettingsParam{
 						Type:       telnyx.TelnyxVoiceSettingsTypeTelnyx,
 						VoiceSpeed: telnyx.Float(1),
@@ -241,7 +242,7 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 				},
 				TranscriptionTracks: telnyx.String("both"),
 			},
-			WebhookRetriesPolicies: map[string]telnyx.CallActionAnswerParamsWebhookRetriesPolicy{
+			WebhookRetriesPolicies: map[string]telnyx.CallActionAnswerParamsWebhookRetriesPolicies{
 				"call.hangup": {
 					RetriesMs: []int64{1000, 2000, 5000},
 				},
@@ -410,7 +411,7 @@ func TestCallActionGatherUsingAIWithOptionalParams(t *testing.T) {
 				Instructions:    telnyx.String("You are a friendly voice assistant."),
 				Model:           telnyx.String("Qwen/Qwen3-235B-A22B"),
 				OpenAIAPIKeyRef: telnyx.String("my_openai_api_key"),
-				Tools: []telnyx.AssistantToolUnionParam{{
+				Tools: []telnyx.AssistantToolsUnionParam{{
 					OfBookAppointment: &shared.BookAppointmentToolParam{
 						BookAppointment: shared.BookAppointmentToolParams{
 							APIKeyRef:        "my_calcom_api_key",
@@ -607,11 +608,11 @@ func TestCallActionJoinAIAssistantWithOptionalParams(t *testing.T) {
 		"call_control_id",
 		telnyx.CallActionJoinAIAssistantParams{
 			ConversationID: "v3:abc123",
-			Participant: telnyx.CallActionJoinAIAssistantParamsParticipant{
+			Participant: telnyx.AIAssistantJoinParticipantParam{
 				ID:       "v3:abc123def456",
-				Role:     "user",
+				Role:     telnyx.AIAssistantJoinParticipantRoleUser,
 				Name:     telnyx.String("John Doe"),
-				OnHangup: "continue_conversation",
+				OnHangup: telnyx.AIAssistantJoinParticipantOnHangupContinueConversation,
 			},
 			ClientState: telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
 			CommandID:   telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
@@ -922,7 +923,7 @@ func TestCallActionStartAIAssistantWithOptionalParams(t *testing.T) {
 		telnyx.CallActionStartAIAssistantParams{
 			Assistant: telnyx.CallAssistantRequestParam{
 				ID: "id",
-				DynamicVariables: map[string]telnyx.CallAssistantRequestDynamicVariableUnionParam{
+				DynamicVariables: map[string]telnyx.CallAssistantRequestDynamicVariablesUnionParam{
 					"customer_name": {
 						OfString: telnyx.String("John"),
 					},
@@ -964,7 +965,7 @@ func TestCallActionStartAIAssistantWithOptionalParams(t *testing.T) {
 					"foo": "bar",
 				},
 				OpenAIAPIKeyRef: telnyx.String("my_openai_api_key"),
-				Tools: []telnyx.CallAssistantRequestToolUnionParam{{
+				Tools: []telnyx.CallAssistantRequestToolsUnionParam{{
 					OfBookAppointment: &shared.BookAppointmentToolParam{
 						BookAppointment: shared.BookAppointmentToolParams{
 							APIKeyRef:        "my_calcom_api_key",
@@ -983,18 +984,19 @@ func TestCallActionStartAIAssistantWithOptionalParams(t *testing.T) {
 				Enable: telnyx.Bool(true),
 			},
 			MessageHistory: []telnyx.CallActionStartAIAssistantParamsMessageHistoryUnion{{
-				OfUser: &telnyx.CallActionStartAIAssistantParamsMessageHistoryUser{
+				OfUser: &telnyx.UserMessageParam{
 					Content: "Hello, I would like some help.",
+					Role:    telnyx.UserMessageRoleUser,
 					Metadata: map[string]any{
 						"foo": "bar",
 					},
 				},
 			}},
-			Participants: []telnyx.CallActionStartAIAssistantParamsParticipant{{
+			Participants: []telnyx.AIAssistantJoinParticipantParam{{
 				ID:       "v3:abc123def456",
-				Role:     "user",
+				Role:     telnyx.AIAssistantJoinParticipantRoleUser,
 				Name:     telnyx.String("John Doe"),
-				OnHangup: "continue_conversation",
+				OnHangup: telnyx.AIAssistantJoinParticipantOnHangupContinueConversation,
 			}},
 			SendMessageHistoryUpdates: telnyx.Bool(true),
 			Transcription: telnyx.TranscriptionConfigParam{
@@ -1048,19 +1050,19 @@ func TestCallActionStartConversationRelayWithOptionalParams(t *testing.T) {
 			ConversationRelaySettings: telnyx.CallActionStartConversationRelayParamsConversationRelaySettings{
 				URL:                   "wss://example.com/conversation-relay",
 				DtmfDetection:         telnyx.Bool(true),
-				Interruptible:         "speech",
-				InterruptibleGreeting: "dtmf",
-				Languages: []telnyx.CallActionStartConversationRelayParamsConversationRelaySettingsLanguage{{
+				Interruptible:         telnyx.ConversationRelayInterruptibleSpeech,
+				InterruptibleGreeting: telnyx.ConversationRelayInterruptibleDtmf,
+				Languages: []telnyx.ConversationRelayLanguageParam{{
 					Language:            "en-US",
 					SpeechModel:         telnyx.String("nova-3"),
-					TranscriptionEngine: "Deepgram",
+					TranscriptionEngine: telnyx.ConversationRelayLanguageTranscriptionEngineDeepgram,
 					TranscriptionEngineConfig: map[string]any{
 						"transcription_model": "bar",
 					},
 					TranscriptionProvider: telnyx.String("Deepgram"),
 					TtsProvider:           telnyx.String("telnyx"),
 					Voice:                 telnyx.String("Telnyx.KokoroTTS.af"),
-					VoiceSettings: telnyx.CallActionStartConversationRelayParamsConversationRelaySettingsLanguageVoiceSettingsUnion{
+					VoiceSettings: telnyx.ConversationRelayLanguageVoiceSettingsUnionParam{
 						OfElevenlabs: &telnyx.ElevenLabsVoiceSettingsParam{
 							Type:      telnyx.ElevenLabsVoiceSettingsTypeElevenlabs,
 							APIKeyRef: telnyx.String("my_elevenlabs_api_key"),
@@ -1074,26 +1076,26 @@ func TestCallActionStartConversationRelayWithOptionalParams(t *testing.T) {
 			},
 			DtmfDetection:         telnyx.Bool(true),
 			Greeting:              telnyx.String("Hi! Ask me anything!"),
-			Interruptible:         telnyx.CallActionStartConversationRelayParamsInterruptibleSpeech,
-			InterruptibleGreeting: telnyx.CallActionStartConversationRelayParamsInterruptibleGreetingDtmf,
-			InterruptionSettings: telnyx.CallActionStartConversationRelayParamsInterruptionSettings{
+			Interruptible:         telnyx.ConversationRelayInterruptibleSpeech,
+			InterruptibleGreeting: telnyx.ConversationRelayInterruptibleDtmf,
+			InterruptionSettings: telnyx.ConversationRelayInterruptionSettingsParam{
 				Enable:                       telnyx.Bool(true),
-				Interruptible:                "speech",
-				InterruptibleGreeting:        "speech",
-				WelcomeGreetingInterruptible: "speech",
+				Interruptible:                telnyx.ConversationRelayInterruptibleSpeech,
+				InterruptibleGreeting:        telnyx.ConversationRelayInterruptibleSpeech,
+				WelcomeGreetingInterruptible: telnyx.ConversationRelayInterruptibleSpeech,
 			},
 			Language: telnyx.String("en-US"),
-			Languages: []telnyx.CallActionStartConversationRelayParamsLanguage{{
+			Languages: []telnyx.ConversationRelayLanguageParam{{
 				Language:            "en-US",
 				SpeechModel:         telnyx.String("nova-3"),
-				TranscriptionEngine: "Deepgram",
+				TranscriptionEngine: telnyx.ConversationRelayLanguageTranscriptionEngineDeepgram,
 				TranscriptionEngineConfig: map[string]any{
 					"transcription_model": "bar",
 				},
 				TranscriptionProvider: telnyx.String("Deepgram"),
 				TtsProvider:           telnyx.String("telnyx"),
 				Voice:                 telnyx.String("Telnyx.KokoroTTS.af"),
-				VoiceSettings: telnyx.CallActionStartConversationRelayParamsLanguageVoiceSettingsUnion{
+				VoiceSettings: telnyx.ConversationRelayLanguageVoiceSettingsUnionParam{
 					OfElevenlabs: &telnyx.ElevenLabsVoiceSettingsParam{
 						Type:      telnyx.ElevenLabsVoiceSettingsTypeElevenlabs,
 						APIKeyRef: telnyx.String("my_elevenlabs_api_key"),
@@ -1844,7 +1846,7 @@ func TestCallActionTransferWithOptionalParams(t *testing.T) {
 			TargetLegClientState: telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
 			TimeLimitSecs:        telnyx.Int(60),
 			TimeoutSecs:          telnyx.Int(60),
-			WebhookRetriesPolicies: map[string]telnyx.CallActionTransferParamsWebhookRetriesPolicy{
+			WebhookRetriesPolicies: map[string]telnyx.CallActionTransferParamsWebhookRetriesPolicies{
 				"call.answered": {
 					RetriesMs: []int64{1000, 2000, 5000},
 				},

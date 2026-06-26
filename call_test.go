@@ -48,7 +48,7 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 		},
 		Assistant: telnyx.CallAssistantRequestParam{
 			ID: "id",
-			DynamicVariables: map[string]telnyx.CallAssistantRequestDynamicVariableUnionParam{
+			DynamicVariables: map[string]telnyx.CallAssistantRequestDynamicVariablesUnionParam{
 				"customer_name": {
 					OfString: telnyx.String("John"),
 				},
@@ -90,7 +90,7 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 				"foo": "bar",
 			},
 			OpenAIAPIKeyRef: telnyx.String("my_openai_api_key"),
-			Tools: []telnyx.CallAssistantRequestToolUnionParam{{
+			Tools: []telnyx.CallAssistantRequestToolsUnionParam{{
 				OfBookAppointment: &shared.BookAppointmentToolParam{
 					BookAppointment: shared.BookAppointmentToolParams{
 						APIKeyRef:        "my_calcom_api_key",
@@ -124,33 +124,33 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 			SupervisorRole:          "whisper",
 			WhisperCallControlIDs:   []string{"v2:Sg1xxxQ_U3ixxxyXT_VDNI3xxxazZdg6Vxxxs4-GNYxxxVaJPOhFMRQ", "v2:qqpb0mmvd-ovhhBr0BUQQn0fld5jIboaaX3-De0DkqXHzbf8d75xkw"},
 		},
-		ConversationRelayConfig: telnyx.CallDialParamsConversationRelayConfig{
+		ConversationRelayConfig: telnyx.ConversationRelayEmbeddedConfigParam{
 			URL: "wss://example.com/conversation-relay",
 			CustomParameters: map[string]any{
 				"customer_id": "bar",
 			},
 			DtmfDetection:         telnyx.Bool(true),
 			Greeting:              telnyx.String("Hi! Ask me anything!"),
-			Interruptible:         "speech",
-			InterruptibleGreeting: "dtmf",
-			InterruptionSettings: telnyx.CallDialParamsConversationRelayConfigInterruptionSettings{
+			Interruptible:         telnyx.ConversationRelayInterruptibleSpeech,
+			InterruptibleGreeting: telnyx.ConversationRelayInterruptibleDtmf,
+			InterruptionSettings: telnyx.ConversationRelayInterruptionSettingsParam{
 				Enable:                       telnyx.Bool(true),
-				Interruptible:                "speech",
-				InterruptibleGreeting:        "speech",
-				WelcomeGreetingInterruptible: "speech",
+				Interruptible:                telnyx.ConversationRelayInterruptibleSpeech,
+				InterruptibleGreeting:        telnyx.ConversationRelayInterruptibleSpeech,
+				WelcomeGreetingInterruptible: telnyx.ConversationRelayInterruptibleSpeech,
 			},
 			Language: telnyx.String("en-US"),
-			Languages: []telnyx.CallDialParamsConversationRelayConfigLanguage{{
+			Languages: []telnyx.ConversationRelayLanguageParam{{
 				Language:            "en-US",
 				SpeechModel:         telnyx.String("nova-3"),
-				TranscriptionEngine: "Deepgram",
+				TranscriptionEngine: telnyx.ConversationRelayLanguageTranscriptionEngineDeepgram,
 				TranscriptionEngineConfig: map[string]any{
 					"transcription_model": "bar",
 				},
 				TranscriptionProvider: telnyx.String("Deepgram"),
 				TtsProvider:           telnyx.String("telnyx"),
 				Voice:                 telnyx.String("Telnyx.Ultra.alloy"),
-				VoiceSettings: telnyx.CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion{
+				VoiceSettings: telnyx.ConversationRelayLanguageVoiceSettingsUnionParam{
 					OfElevenlabs: &telnyx.ElevenLabsVoiceSettingsParam{
 						Type:      telnyx.ElevenLabsVoiceSettingsTypeElevenlabs,
 						APIKeyRef: telnyx.String("my_elevenlabs_api_key"),
@@ -162,7 +162,7 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 				"voice_id": "bar",
 				"model_id": "bar",
 			},
-			TranscriptionEngine: "Google",
+			TranscriptionEngine: telnyx.ConversationRelayEmbeddedConfigTranscriptionEngineGoogle,
 			TranscriptionEngineConfig: map[string]any{
 				"transcription_model": "bar",
 				"interim_results":     "bar",
@@ -170,7 +170,7 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 			},
 			TtsProvider: telnyx.String("telnyx"),
 			Voice:       telnyx.String("Telnyx.KokoroTTS.af"),
-			VoiceSettings: telnyx.CallDialParamsConversationRelayConfigVoiceSettingsUnion{
+			VoiceSettings: telnyx.ConversationRelayEmbeddedConfigVoiceSettingsUnionParam{
 				OfTelnyx: &telnyx.TelnyxVoiceSettingsParam{
 					Type:       telnyx.TelnyxVoiceSettingsTypeTelnyx,
 					VoiceSpeed: telnyx.Float(1),
@@ -264,7 +264,7 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 			},
 			TranscriptionTracks: telnyx.String("both"),
 		},
-		WebhookRetriesPolicies: map[string]telnyx.CallDialParamsWebhookRetriesPolicy{
+		WebhookRetriesPolicies: map[string]telnyx.CallDialParamsWebhookRetriesPolicies{
 			"call.hangup": {
 				RetriesMs: []int64{1000, 2000, 5000},
 			},

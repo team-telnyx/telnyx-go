@@ -54,7 +54,7 @@ func (r *RequirementService) Get(ctx context.Context, id string, opts ...option.
 }
 
 // List all requirements with filtering, sorting, and pagination
-func (r *RequirementService) List(ctx context.Context, query RequirementListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[RequirementListResponse], err error) {
+func (r *RequirementService) List(ctx context.Context, query RequirementListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[DocReqsRequirement], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -72,12 +72,80 @@ func (r *RequirementService) List(ctx context.Context, query RequirementListPara
 }
 
 // List all requirements with filtering, sorting, and pagination
-func (r *RequirementService) ListAutoPaging(ctx context.Context, query RequirementListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[RequirementListResponse] {
+func (r *RequirementService) ListAutoPaging(ctx context.Context, query RequirementListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[DocReqsRequirement] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
+type DocReqsRequirement struct {
+	// Identifies the associated document
+	ID string `json:"id" format:"uuid"`
+	// Indicates whether this requirement applies to branded_calling, ordering,
+	// porting, or both ordering and porting
+	//
+	// Any of "both", "branded_calling", "ordering", "porting".
+	Action DocReqsRequirementAction `json:"action"`
+	// The 2-character (ISO 3166-1 alpha-2) country code where this requirement applies
+	CountryCode string `json:"country_code"`
+	// ISO 8601 formatted date-time indicating when the resource was created.
+	CreatedAt string `json:"created_at"`
+	// The locality where this requirement applies
+	Locality string `json:"locality"`
+	// Indicates the phone_number_type this requirement applies to. Leave blank if this
+	// requirement applies to all number_types.
+	//
+	// Any of "local", "national", "toll_free".
+	PhoneNumberType DocReqsRequirementPhoneNumberType `json:"phone_number_type"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
+	// Lists the requirement types necessary to fulfill this requirement
+	RequirementsTypes []shared.DocReqsRequirementType `json:"requirements_types"`
+	// ISO 8601 formatted date-time indicating when the resource was last updated.
+	UpdatedAt string `json:"updated_at"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                respjson.Field
+		Action            respjson.Field
+		CountryCode       respjson.Field
+		CreatedAt         respjson.Field
+		Locality          respjson.Field
+		PhoneNumberType   respjson.Field
+		RecordType        respjson.Field
+		RequirementsTypes respjson.Field
+		UpdatedAt         respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DocReqsRequirement) RawJSON() string { return r.JSON.raw }
+func (r *DocReqsRequirement) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Indicates whether this requirement applies to branded_calling, ordering,
+// porting, or both ordering and porting
+type DocReqsRequirementAction string
+
+const (
+	DocReqsRequirementActionBoth           DocReqsRequirementAction = "both"
+	DocReqsRequirementActionBrandedCalling DocReqsRequirementAction = "branded_calling"
+	DocReqsRequirementActionOrdering       DocReqsRequirementAction = "ordering"
+	DocReqsRequirementActionPorting        DocReqsRequirementAction = "porting"
+)
+
+// Indicates the phone_number_type this requirement applies to. Leave blank if this
+// requirement applies to all number_types.
+type DocReqsRequirementPhoneNumberType string
+
+const (
+	DocReqsRequirementPhoneNumberTypeLocal    DocReqsRequirementPhoneNumberType = "local"
+	DocReqsRequirementPhoneNumberTypeNational DocReqsRequirementPhoneNumberType = "national"
+	DocReqsRequirementPhoneNumberTypeTollFree DocReqsRequirementPhoneNumberType = "toll_free"
+)
+
 type RequirementGetResponse struct {
-	Data RequirementGetResponseData `json:"data"`
+	Data DocReqsRequirement `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -91,121 +159,6 @@ func (r RequirementGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *RequirementGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type RequirementGetResponseData struct {
-	// Identifies the associated document
-	ID string `json:"id" format:"uuid"`
-	// Indicates whether this requirement applies to branded_calling, ordering,
-	// porting, or both ordering and porting
-	//
-	// Any of "both", "branded_calling", "ordering", "porting".
-	Action string `json:"action"`
-	// The 2-character (ISO 3166-1 alpha-2) country code where this requirement applies
-	CountryCode string `json:"country_code"`
-	// ISO 8601 formatted date-time indicating when the resource was created.
-	CreatedAt string `json:"created_at"`
-	// The locality where this requirement applies
-	Locality string `json:"locality"`
-	// Indicates the phone_number_type this requirement applies to. Leave blank if this
-	// requirement applies to all number_types.
-	//
-	// Any of "local", "national", "toll_free".
-	PhoneNumberType string `json:"phone_number_type"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// Lists the requirement types necessary to fulfill this requirement
-	RequirementsTypes []shared.DocReqsRequirementType `json:"requirements_types"`
-	// ISO 8601 formatted date-time indicating when the resource was last updated.
-	UpdatedAt string `json:"updated_at"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                respjson.Field
-		Action            respjson.Field
-		CountryCode       respjson.Field
-		CreatedAt         respjson.Field
-		Locality          respjson.Field
-		PhoneNumberType   respjson.Field
-		RecordType        respjson.Field
-		RequirementsTypes respjson.Field
-		UpdatedAt         respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RequirementGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *RequirementGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type RequirementListResponse struct {
-	// Identifies the associated document
-	ID string `json:"id" format:"uuid"`
-	// Indicates whether this requirement applies to branded_calling, ordering,
-	// porting, or both ordering and porting
-	//
-	// Any of "both", "branded_calling", "ordering", "porting".
-	Action RequirementListResponseAction `json:"action"`
-	// The 2-character (ISO 3166-1 alpha-2) country code where this requirement applies
-	CountryCode string `json:"country_code"`
-	// ISO 8601 formatted date-time indicating when the resource was created.
-	CreatedAt string `json:"created_at"`
-	// The locality where this requirement applies
-	Locality string `json:"locality"`
-	// Indicates the phone_number_type this requirement applies to. Leave blank if this
-	// requirement applies to all number_types.
-	//
-	// Any of "local", "national", "toll_free".
-	PhoneNumberType RequirementListResponsePhoneNumberType `json:"phone_number_type"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// Lists the requirement types necessary to fulfill this requirement
-	RequirementsTypes []shared.DocReqsRequirementType `json:"requirements_types"`
-	// ISO 8601 formatted date-time indicating when the resource was last updated.
-	UpdatedAt string `json:"updated_at"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                respjson.Field
-		Action            respjson.Field
-		CountryCode       respjson.Field
-		CreatedAt         respjson.Field
-		Locality          respjson.Field
-		PhoneNumberType   respjson.Field
-		RecordType        respjson.Field
-		RequirementsTypes respjson.Field
-		UpdatedAt         respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RequirementListResponse) RawJSON() string { return r.JSON.raw }
-func (r *RequirementListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Indicates whether this requirement applies to branded_calling, ordering,
-// porting, or both ordering and porting
-type RequirementListResponseAction string
-
-const (
-	RequirementListResponseActionBoth           RequirementListResponseAction = "both"
-	RequirementListResponseActionBrandedCalling RequirementListResponseAction = "branded_calling"
-	RequirementListResponseActionOrdering       RequirementListResponseAction = "ordering"
-	RequirementListResponseActionPorting        RequirementListResponseAction = "porting"
-)
-
-// Indicates the phone_number_type this requirement applies to. Leave blank if this
-// requirement applies to all number_types.
-type RequirementListResponsePhoneNumberType string
-
-const (
-	RequirementListResponsePhoneNumberTypeLocal    RequirementListResponsePhoneNumberType = "local"
-	RequirementListResponsePhoneNumberTypeNational RequirementListResponsePhoneNumberType = "national"
-	RequirementListResponsePhoneNumberTypeTollFree RequirementListResponsePhoneNumberType = "toll_free"
-)
 
 type RequirementListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`

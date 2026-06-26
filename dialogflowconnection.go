@@ -39,7 +39,7 @@ func NewDialogflowConnectionService(opts ...option.RequestOption) (r DialogflowC
 
 // Save Dialogflow Credentiails to Telnyx, so it can be used with other Telnyx
 // services.
-func (r *DialogflowConnectionService) New(ctx context.Context, connectionID string, body DialogflowConnectionNewParams, opts ...option.RequestOption) (res *DialogflowConnectionNewResponse, err error) {
+func (r *DialogflowConnectionService) New(ctx context.Context, connectionID string, body DialogflowConnectionNewParams, opts ...option.RequestOption) (res *DialogflowConnectionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
@@ -52,7 +52,7 @@ func (r *DialogflowConnectionService) New(ctx context.Context, connectionID stri
 
 // Return details of the Dialogflow connection associated with the given
 // CallControl connection.
-func (r *DialogflowConnectionService) Get(ctx context.Context, connectionID string, opts ...option.RequestOption) (res *DialogflowConnectionGetResponse, err error) {
+func (r *DialogflowConnectionService) Get(ctx context.Context, connectionID string, opts ...option.RequestOption) (res *DialogflowConnectionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
@@ -64,7 +64,7 @@ func (r *DialogflowConnectionService) Get(ctx context.Context, connectionID stri
 }
 
 // Updates a stored Dialogflow Connection.
-func (r *DialogflowConnectionService) Update(ctx context.Context, connectionID string, body DialogflowConnectionUpdateParams, opts ...option.RequestOption) (res *DialogflowConnectionUpdateResponse, err error) {
+func (r *DialogflowConnectionService) Update(ctx context.Context, connectionID string, body DialogflowConnectionUpdateParams, opts ...option.RequestOption) (res *DialogflowConnectionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
@@ -88,8 +88,8 @@ func (r *DialogflowConnectionService) Delete(ctx context.Context, connectionID s
 	return err
 }
 
-type DialogflowConnectionNewResponse struct {
-	Data DialogflowConnectionNewResponseData `json:"data" api:"required"`
+type DialogflowConnectionResponse struct {
+	Data DialogflowConnectionResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -99,12 +99,12 @@ type DialogflowConnectionNewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DialogflowConnectionNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *DialogflowConnectionNewResponse) UnmarshalJSON(data []byte) error {
+func (r DialogflowConnectionResponse) RawJSON() string { return r.JSON.raw }
+func (r *DialogflowConnectionResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type DialogflowConnectionNewResponseData struct {
+type DialogflowConnectionResponseData struct {
 	// Uniquely identifies a Telnyx application (Call Control).
 	ConnectionID string `json:"connection_id"`
 	// The id of a configured conversation profile on your Dialogflow account. (If you
@@ -128,98 +128,8 @@ type DialogflowConnectionNewResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DialogflowConnectionNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *DialogflowConnectionNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DialogflowConnectionGetResponse struct {
-	Data DialogflowConnectionGetResponseData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DialogflowConnectionGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *DialogflowConnectionGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DialogflowConnectionGetResponseData struct {
-	// Uniquely identifies a Telnyx application (Call Control).
-	ConnectionID string `json:"connection_id"`
-	// The id of a configured conversation profile on your Dialogflow account. (If you
-	// use Dialogflow CX, this param is required)
-	ConversationProfileID string `json:"conversation_profile_id"`
-	// Which Dialogflow environment will be used.
-	Environment string `json:"environment"`
-	RecordType  string `json:"record_type"`
-	// The JSON map to connect your Dialoglow account.
-	ServiceAccount string `json:"service_account"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ConnectionID          respjson.Field
-		ConversationProfileID respjson.Field
-		Environment           respjson.Field
-		RecordType            respjson.Field
-		ServiceAccount        respjson.Field
-		ExtraFields           map[string]respjson.Field
-		raw                   string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DialogflowConnectionGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *DialogflowConnectionGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DialogflowConnectionUpdateResponse struct {
-	Data DialogflowConnectionUpdateResponseData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DialogflowConnectionUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *DialogflowConnectionUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DialogflowConnectionUpdateResponseData struct {
-	// Uniquely identifies a Telnyx application (Call Control).
-	ConnectionID string `json:"connection_id"`
-	// The id of a configured conversation profile on your Dialogflow account. (If you
-	// use Dialogflow CX, this param is required)
-	ConversationProfileID string `json:"conversation_profile_id"`
-	// Which Dialogflow environment will be used.
-	Environment string `json:"environment"`
-	RecordType  string `json:"record_type"`
-	// The JSON map to connect your Dialoglow account.
-	ServiceAccount string `json:"service_account"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ConnectionID          respjson.Field
-		ConversationProfileID respjson.Field
-		Environment           respjson.Field
-		RecordType            respjson.Field
-		ServiceAccount        respjson.Field
-		ExtraFields           map[string]respjson.Field
-		raw                   string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DialogflowConnectionUpdateResponseData) RawJSON() string { return r.JSON.raw }
-func (r *DialogflowConnectionUpdateResponseData) UnmarshalJSON(data []byte) error {
+func (r DialogflowConnectionResponseData) RawJSON() string { return r.JSON.raw }
+func (r *DialogflowConnectionResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

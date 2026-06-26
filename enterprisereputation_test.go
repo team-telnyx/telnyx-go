@@ -77,7 +77,7 @@ func TestEnterpriseReputationEnableWithOptionalParams(t *testing.T) {
 		"4a6192a4-573d-446d-b3ce-aff9117272a6",
 		telnyx.EnterpriseReputationEnableParams{
 			LoaDocumentID:  "2a7e8337-e803-4057-a4ae-26c40eb0bc6c",
-			CheckFrequency: telnyx.EnterpriseReputationEnableParamsCheckFrequencyBusinessDaily,
+			CheckFrequency: telnyx.ReputationCheckFrequencyBusinessDaily,
 		},
 	)
 	if err != nil {
@@ -106,7 +106,7 @@ func TestEnterpriseReputationUpdateFrequency(t *testing.T) {
 		context.TODO(),
 		"4a6192a4-573d-446d-b3ce-aff9117272a6",
 		telnyx.EnterpriseReputationUpdateFrequencyParams{
-			CheckFrequency: telnyx.EnterpriseReputationUpdateFrequencyParamsCheckFrequencyWeekly,
+			CheckFrequency: telnyx.ReputationCheckFrequencyWeekly,
 		},
 	)
 	if err != nil {

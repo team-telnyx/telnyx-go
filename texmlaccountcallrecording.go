@@ -8,13 +8,11 @@ import (
 	"fmt"
 	"net/http"
 	"slices"
-	"time"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
-	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // TeXML REST Commands
@@ -39,7 +37,7 @@ func NewTexmlAccountCallRecordingService(opts ...option.RequestOption) (r TexmlA
 }
 
 // Updates recording resource for particular call.
-func (r *TexmlAccountCallRecordingService) RecordingSidJson(ctx context.Context, recordingSid string, params TexmlAccountCallRecordingRecordingSidJsonParams, opts ...option.RequestOption) (res *TexmlAccountCallRecordingRecordingSidJsonResponse, err error) {
+func (r *TexmlAccountCallRecordingService) RecordingSidJson(ctx context.Context, recordingSid string, params TexmlAccountCallRecordingRecordingSidJsonParams, opts ...option.RequestOption) (res *TexmlCreateCallRecordingResponseBody, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
 		err = errors.New("missing required account_sid parameter")
@@ -57,85 +55,6 @@ func (r *TexmlAccountCallRecordingService) RecordingSidJson(ctx context.Context,
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
-
-type TexmlAccountCallRecordingRecordingSidJsonResponse struct {
-	AccountSid string `json:"account_sid"`
-	CallSid    string `json:"call_sid"`
-	// Any of 1, 2.
-	Channels      int64     `json:"channels"`
-	ConferenceSid string    `json:"conference_sid" api:"nullable" format:"uuid"`
-	DateCreated   time.Time `json:"date_created" format:"date-time"`
-	DateUpdated   time.Time `json:"date_updated" format:"date-time"`
-	// The duration of this recording, given in seconds.
-	Duration  string `json:"duration" api:"nullable"`
-	ErrorCode string `json:"error_code" api:"nullable"`
-	// The price of this recording, the currency is specified in the price_unit field.
-	Price string `json:"price" api:"nullable"`
-	// The unit in which the price is given.
-	PriceUnit string `json:"price_unit" api:"nullable"`
-	// Identifier of a resource.
-	Sid string `json:"sid"`
-	// Defines how the recording was created.
-	//
-	// Any of "StartCallRecordingAPI", "StartConferenceRecordingAPI", "OutboundAPI",
-	// "DialVerb", "Conference", "RecordVerb", "Trunking".
-	Source    TexmlAccountCallRecordingRecordingSidJsonResponseSource `json:"source"`
-	StartTime time.Time                                               `json:"start_time" format:"date-time"`
-	// The audio track to record for the call. The default is `both`.
-	//
-	// Any of "inbound", "outbound", "both".
-	Track TexmlAccountCallRecordingRecordingSidJsonResponseTrack `json:"track"`
-	// The relative URI for this recording resource.
-	Uri string `json:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AccountSid    respjson.Field
-		CallSid       respjson.Field
-		Channels      respjson.Field
-		ConferenceSid respjson.Field
-		DateCreated   respjson.Field
-		DateUpdated   respjson.Field
-		Duration      respjson.Field
-		ErrorCode     respjson.Field
-		Price         respjson.Field
-		PriceUnit     respjson.Field
-		Sid           respjson.Field
-		Source        respjson.Field
-		StartTime     respjson.Field
-		Track         respjson.Field
-		Uri           respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TexmlAccountCallRecordingRecordingSidJsonResponse) RawJSON() string { return r.JSON.raw }
-func (r *TexmlAccountCallRecordingRecordingSidJsonResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Defines how the recording was created.
-type TexmlAccountCallRecordingRecordingSidJsonResponseSource string
-
-const (
-	TexmlAccountCallRecordingRecordingSidJsonResponseSourceStartCallRecordingAPI       TexmlAccountCallRecordingRecordingSidJsonResponseSource = "StartCallRecordingAPI"
-	TexmlAccountCallRecordingRecordingSidJsonResponseSourceStartConferenceRecordingAPI TexmlAccountCallRecordingRecordingSidJsonResponseSource = "StartConferenceRecordingAPI"
-	TexmlAccountCallRecordingRecordingSidJsonResponseSourceOutboundAPI                 TexmlAccountCallRecordingRecordingSidJsonResponseSource = "OutboundAPI"
-	TexmlAccountCallRecordingRecordingSidJsonResponseSourceDialVerb                    TexmlAccountCallRecordingRecordingSidJsonResponseSource = "DialVerb"
-	TexmlAccountCallRecordingRecordingSidJsonResponseSourceConference                  TexmlAccountCallRecordingRecordingSidJsonResponseSource = "Conference"
-	TexmlAccountCallRecordingRecordingSidJsonResponseSourceRecordVerb                  TexmlAccountCallRecordingRecordingSidJsonResponseSource = "RecordVerb"
-	TexmlAccountCallRecordingRecordingSidJsonResponseSourceTrunking                    TexmlAccountCallRecordingRecordingSidJsonResponseSource = "Trunking"
-)
-
-// The audio track to record for the call. The default is `both`.
-type TexmlAccountCallRecordingRecordingSidJsonResponseTrack string
-
-const (
-	TexmlAccountCallRecordingRecordingSidJsonResponseTrackInbound  TexmlAccountCallRecordingRecordingSidJsonResponseTrack = "inbound"
-	TexmlAccountCallRecordingRecordingSidJsonResponseTrackOutbound TexmlAccountCallRecordingRecordingSidJsonResponseTrack = "outbound"
-	TexmlAccountCallRecordingRecordingSidJsonResponseTrackBoth     TexmlAccountCallRecordingRecordingSidJsonResponseTrack = "both"
-)
 
 type TexmlAccountCallRecordingRecordingSidJsonParams struct {
 	AccountSid string `path:"account_sid" api:"required" json:"-"`

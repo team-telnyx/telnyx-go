@@ -27,12 +27,15 @@ func TestGlobalIPHealthCheckNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.GlobalIPHealthChecks.New(context.TODO(), telnyx.GlobalIPHealthCheckNewParams{
-		GlobalIPID: telnyx.String("a836125b-20b6-452e-9c03-2653f09c7ed7"),
-		HealthCheckParams: map[string]any{
-			"path": "bar",
-			"port": "bar",
+		GlobalIPHealthCheck: telnyx.GlobalIPHealthCheckParam{
+			RecordParam: telnyx.RecordParam{},
+			GlobalIPID:  telnyx.String("a836125b-20b6-452e-9c03-2653f09c7ed7"),
+			HealthCheckParams: map[string]any{
+				"path": "bar",
+				"port": "bar",
+			},
+			HealthCheckType: telnyx.String("http_status_2xx"),
 		},
-		HealthCheckType: telnyx.String("http_status_2xx"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

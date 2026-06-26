@@ -12,6 +12,7 @@ import (
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
@@ -121,26 +122,12 @@ func (r *PhoneNumberMessagingUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type PhoneNumberMessagingUpdateParams struct {
-	// Configure the messaging product for this number:
-	//
-	// - Omit this field or set its value to `null` to keep the current value.
-	// - Set this field to a quoted product ID to set this phone number to that product
-	MessagingProduct param.Opt[string] `json:"messaging_product,omitzero"`
-	// Configure the messaging profile this phone number is assigned to:
-	//
-	//   - Omit this field or set its value to `null` to keep the current value.
-	//   - Set this field to `""` to unassign the number from its messaging profile
-	//   - Set this field to a quoted UUID of a messaging profile to assign this number
-	//     to that messaging profile
-	MessagingProfileID param.Opt[string] `json:"messaging_profile_id,omitzero"`
-	// Tags to set on this phone number.
-	Tags []string `json:"tags,omitzero"`
+	UpdatePhoneNumberMessagingSettingsRequest UpdatePhoneNumberMessagingSettingsRequestParam
 	paramObj
 }
 
 func (r PhoneNumberMessagingUpdateParams) MarshalJSON() (data []byte, err error) {
-	type shadow PhoneNumberMessagingUpdateParams
-	return param.MarshalObject(r, (*shadow)(&r))
+	return shimjson.Marshal(r.UpdatePhoneNumberMessagingSettingsRequest)
 }
 func (r *PhoneNumberMessagingUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)

@@ -82,24 +82,6 @@ func (r *AIService) NewResponseDeprecated(ctx context.Context, body AINewRespons
 	return res, err
 }
 
-// **Deprecated**: Use `GET /v2/ai/openai/models` instead.
-//
-// Returns the same `ModelsResponse` payload as the OpenAI-compatible endpoint —
-// open-source LLMs hosted on Telnyx (e.g. `moonshotai/Kimi-K2.6`,
-// `zai-org/GLM-5.1-FP8`, `MiniMaxAI/MiniMax-M2.7`), embedding models, and
-// fine-tuned models — kept around for backwards compatibility. New integrations
-// should use `/v2/ai/openai/models`.
-//
-// Model ids follow the `{organization}/{model_name}` convention from Hugging Face.
-//
-// Deprecated: deprecated
-func (r *AIService) GetModels(ctx context.Context, opts ...option.RequestOption) (res *AIGetModelsResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "ai/models"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
-}
-
 // Performs semantic vector search across conversation history records.
 //
 // **How it works:**
@@ -151,10 +133,28 @@ func (r *AIService) GetModels(ctx context.Context, opts ...option.RequestOption)
 // GET /v2/ai/conversation_histories?q=outage&filter[region][in]=USA,DEU
 // GET /v2/ai/conversation_histories?q=hold+time&filter[language]=en
 // ```
-func (r *AIService) SearchConversationHistories(ctx context.Context, query AISearchConversationHistoriesParams, opts ...option.RequestOption) (res *AISearchConversationHistoriesResponse, err error) {
+func (r *AIService) GetConversationHistories(ctx context.Context, query AIGetConversationHistoriesParams, opts ...option.RequestOption) (res *AIGetConversationHistoriesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/conversation_histories"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// **Deprecated**: Use `GET /v2/ai/openai/models` instead.
+//
+// Returns the same `ModelsResponse` payload as the OpenAI-compatible endpoint —
+// open-source LLMs hosted on Telnyx (e.g. `moonshotai/Kimi-K2.6`,
+// `zai-org/GLM-5.1-FP8`, `MiniMaxAI/MiniMax-M2.7`), embedding models, and
+// fine-tuned models — kept around for backwards compatibility. New integrations
+// should use `/v2/ai/openai/models`.
+//
+// Model ids follow the `{organization}/{model_name}` convention from Hugging Face.
+//
+// Deprecated: deprecated
+func (r *AIService) GetModels(ctx context.Context, opts ...option.RequestOption) (res *ModelsResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "ai/models"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
 
@@ -176,32 +176,12 @@ func (r *AIService) Summarize(ctx context.Context, body AISummarizeParams, opts 
 	return res, err
 }
 
-type AINewResponseDeprecatedResponse map[string]any
-
-type AIGetModelsResponse struct {
-	Data   []AIGetModelsResponseData `json:"data" api:"required"`
-	Object string                    `json:"object"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Object      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIGetModelsResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIGetModelsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Metadata for a model available on Telnyx Inference. Returned by
 // `GET /v2/ai/openai/models` (and the deprecated `GET /v2/ai/models`). Open-source
 // models live under their Hugging Face organization (e.g. `moonshotai/Kimi-K2.6`,
 // `zai-org/GLM-5.1-FP8`, `MiniMaxAI/MiniMax-M2.7`); fine-tuned models are owned by
 // the Telnyx organization that trained them.
-type AIGetModelsResponseData struct {
+type ModelMetadata struct {
 	// Model identifier. For open-source models, follows the
 	// `{organization}/{model_name}` convention from Hugging Face (e.g.
 	// `moonshotai/Kimi-K2.6`).
@@ -229,7 +209,7 @@ type AIGetModelsResponseData struct {
 	// cost per 1M tokens.
 	//
 	// Any of "small", "medium", "large", "unlisted".
-	Tier string `json:"tier" api:"required"`
+	Tier ModelMetadataTier `json:"tier" api:"required"`
 	// Base model the fine-tuned model was trained from. Only set for fine-tuned
 	// models.
 	BaseModel string `json:"base_model" api:"nullable"`
@@ -291,18 +271,49 @@ type AIGetModelsResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AIGetModelsResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIGetModelsResponseData) UnmarshalJSON(data []byte) error {
+func (r ModelMetadata) RawJSON() string { return r.JSON.raw }
+func (r *ModelMetadata) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Billing tier the model belongs to. Used together with `pricing` to determine
+// cost per 1M tokens.
+type ModelMetadataTier string
+
+const (
+	ModelMetadataTierSmall    ModelMetadataTier = "small"
+	ModelMetadataTierMedium   ModelMetadataTier = "medium"
+	ModelMetadataTierLarge    ModelMetadataTier = "large"
+	ModelMetadataTierUnlisted ModelMetadataTier = "unlisted"
+)
+
+type ModelsResponse struct {
+	Data   []ModelMetadata `json:"data" api:"required"`
+	Object string          `json:"object"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Object      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ModelsResponse) RawJSON() string { return r.JSON.raw }
+func (r *ModelsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AINewResponseDeprecatedResponse map[string]any
+
 // Search response following the standard Telnyx V2 API format.
-type AISearchConversationHistoriesResponse struct {
+type AIGetConversationHistoriesResponse struct {
 	// Ranked list of matching text chunks, sorted by cosine similarity score
 	// descending.
-	Data []AISearchConversationHistoriesResponseData `json:"data" api:"required"`
+	Data []AIGetConversationHistoriesResponseData `json:"data" api:"required"`
 	// Pagination metadata following the standard Telnyx V2 API format.
-	Meta AISearchConversationHistoriesResponseMeta `json:"meta" api:"required"`
+	Meta AIGetConversationHistoriesResponseMeta `json:"meta" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -313,15 +324,15 @@ type AISearchConversationHistoriesResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AISearchConversationHistoriesResponse) RawJSON() string { return r.JSON.raw }
-func (r *AISearchConversationHistoriesResponse) UnmarshalJSON(data []byte) error {
+func (r AIGetConversationHistoriesResponse) RawJSON() string { return r.JSON.raw }
+func (r *AIGetConversationHistoriesResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // A single search result representing one chunk of a conversation history record.
 // Records are split into chunks of up to 480 tokens with 64-token overlap at
 // ingestion time.
-type AISearchConversationHistoriesResponseData struct {
+type AIGetConversationHistoriesResponseData struct {
 	// Unique chunk identifier.
 	ID string `json:"id" api:"required"`
 	// Zero-based index of this chunk within the parent record.
@@ -371,13 +382,13 @@ type AISearchConversationHistoriesResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AISearchConversationHistoriesResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AISearchConversationHistoriesResponseData) UnmarshalJSON(data []byte) error {
+func (r AIGetConversationHistoriesResponseData) RawJSON() string { return r.JSON.raw }
+func (r *AIGetConversationHistoriesResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Pagination metadata following the standard Telnyx V2 API format.
-type AISearchConversationHistoriesResponseMeta struct {
+type AIGetConversationHistoriesResponseMeta struct {
 	// Current page number (1-based), matching the requested page[number].
 	PageNumber int64 `json:"page_number" api:"required"`
 	// Number of results per page, matching the requested page[size].
@@ -398,8 +409,8 @@ type AISearchConversationHistoriesResponseMeta struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AISearchConversationHistoriesResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *AISearchConversationHistoriesResponseMeta) UnmarshalJSON(data []byte) error {
+func (r AIGetConversationHistoriesResponseMeta) RawJSON() string { return r.JSON.raw }
+func (r *AIGetConversationHistoriesResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -436,18 +447,18 @@ func (r *AISummarizeResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type AINewResponseDeprecatedParams struct {
-	Body map[string]any
+	ResponseRequest map[string]any
 	paramObj
 }
 
 func (r AINewResponseDeprecatedParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.Body)
+	return shimjson.Marshal(r.ResponseRequest)
 }
 func (r *AINewResponseDeprecatedParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AISearchConversationHistoriesParams struct {
+type AIGetConversationHistoriesParams struct {
 	// Natural language search query. The text is embedded into a 1024-dimensional
 	// vector and compared against indexed record chunks using semantic similarity.
 	Q string `query:"q" api:"required" json:"-"`
@@ -485,13 +496,13 @@ type AISearchConversationHistoriesParams struct {
 	// parallel (fan-out) and results are merged by similarity score.
 	//
 	// Any of "USA", "DEU", "AUS", "UAE".
-	Region AISearchConversationHistoriesParamsRegion `query:"region,omitzero" json:"-"`
+	Region AIGetConversationHistoriesParamsRegion `query:"region,omitzero" json:"-"`
 	paramObj
 }
 
-// URLQuery serializes [AISearchConversationHistoriesParams]'s query parameters as
+// URLQuery serializes [AIGetConversationHistoriesParams]'s query parameters as
 // `url.Values`.
-func (r AISearchConversationHistoriesParams) URLQuery() (v url.Values, err error) {
+func (r AIGetConversationHistoriesParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
@@ -500,13 +511,13 @@ func (r AISearchConversationHistoriesParams) URLQuery() (v url.Values, err error
 
 // Restrict search to a specific region. When omitted, all regions are queried in
 // parallel (fan-out) and results are merged by similarity score.
-type AISearchConversationHistoriesParamsRegion string
+type AIGetConversationHistoriesParamsRegion string
 
 const (
-	AISearchConversationHistoriesParamsRegionUsa AISearchConversationHistoriesParamsRegion = "USA"
-	AISearchConversationHistoriesParamsRegionDeu AISearchConversationHistoriesParamsRegion = "DEU"
-	AISearchConversationHistoriesParamsRegionAus AISearchConversationHistoriesParamsRegion = "AUS"
-	AISearchConversationHistoriesParamsRegionUae AISearchConversationHistoriesParamsRegion = "UAE"
+	AIGetConversationHistoriesParamsRegionUsa AIGetConversationHistoriesParamsRegion = "USA"
+	AIGetConversationHistoriesParamsRegionDeu AIGetConversationHistoriesParamsRegion = "DEU"
+	AIGetConversationHistoriesParamsRegionAus AIGetConversationHistoriesParamsRegion = "AUS"
+	AIGetConversationHistoriesParamsRegionUae AIGetConversationHistoriesParamsRegion = "UAE"
 )
 
 type AISummarizeParams struct {

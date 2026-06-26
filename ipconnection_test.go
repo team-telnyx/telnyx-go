@@ -60,7 +60,7 @@ func TestIPConnectionNewWithOptionalParams(t *testing.T) {
 			JitterbufferMsecMax: telnyx.Int(200),
 			JitterbufferMsecMin: telnyx.Int(60),
 		},
-		NoiseSuppression: telnyx.IPConnectionNewParamsNoiseSuppressionBoth,
+		NoiseSuppression: telnyx.ConnectionNoiseSuppressionBoth,
 		NoiseSuppressionDetails: shared.ConnectionNoiseSuppressionDetailsParam{
 			AttenuationLimit: telnyx.Int(80),
 			Engine:           shared.ConnectionNoiseSuppressionDetailsEngineDeepFilterNet,
@@ -176,7 +176,7 @@ func TestIPConnectionUpdateWithOptionalParams(t *testing.T) {
 				JitterbufferMsecMax: telnyx.Int(200),
 				JitterbufferMsecMin: telnyx.Int(60),
 			},
-			NoiseSuppression: telnyx.IPConnectionUpdateParamsNoiseSuppressionBoth,
+			NoiseSuppression: telnyx.ConnectionNoiseSuppressionBoth,
 			NoiseSuppressionDetails: shared.ConnectionNoiseSuppressionDetailsParam{
 				AttenuationLimit: telnyx.Int(80),
 				Engine:           shared.ConnectionNoiseSuppressionDetailsEngineDeepFilterNet,

@@ -27,58 +27,60 @@ func TestAIOpenAIChatNewCompletionWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.OpenAI.Chat.NewCompletion(context.TODO(), telnyx.AIOpenAIChatNewCompletionParams{
-		Messages: []telnyx.AIOpenAIChatNewCompletionParamsMessage{{
-			Content: telnyx.AIOpenAIChatNewCompletionParamsMessageContentUnion{
-				OfString: telnyx.String("You are a friendly chatbot."),
+		ChatCompletionRequest: telnyx.ChatCompletionRequestParam{
+			Messages: []telnyx.ChatCompletionRequestMessageParam{{
+				Content: telnyx.ChatCompletionRequestMessagesContentUnionParam{
+					OfString: telnyx.String("You are a friendly chatbot."),
+				},
+				Role: "system",
+			}, {
+				Content: telnyx.ChatCompletionRequestMessagesContentUnionParam{
+					OfString: telnyx.String("Hello, world!"),
+				},
+				Role: "user",
+			}},
+			APIKeyRef:        telnyx.String("api_key_ref"),
+			BestOf:           telnyx.Int(0),
+			EarlyStopping:    telnyx.Bool(true),
+			EnableThinking:   telnyx.Bool(true),
+			FrequencyPenalty: telnyx.Float(0),
+			GuidedChoice:     []string{"string"},
+			GuidedJson: map[string]any{
+				"foo": "bar",
 			},
-			Role: "system",
-		}, {
-			Content: telnyx.AIOpenAIChatNewCompletionParamsMessageContentUnion{
-				OfString: telnyx.String("Hello, world!"),
+			GuidedRegex:     telnyx.String("guided_regex"),
+			LengthPenalty:   telnyx.Float(0),
+			Logprobs:        telnyx.Bool(true),
+			MaxTokens:       telnyx.Int(0),
+			MinP:            telnyx.Float(0),
+			Model:           telnyx.String("model"),
+			N:               telnyx.Float(0),
+			PresencePenalty: telnyx.Float(0),
+			ResponseFormat: telnyx.ChatCompletionRequestResponseFormatParam{
+				Type: "text",
 			},
-			Role: "user",
-		}},
-		APIKeyRef:        telnyx.String("api_key_ref"),
-		BestOf:           telnyx.Int(0),
-		EarlyStopping:    telnyx.Bool(true),
-		EnableThinking:   telnyx.Bool(true),
-		FrequencyPenalty: telnyx.Float(0),
-		GuidedChoice:     []string{"string"},
-		GuidedJson: map[string]any{
-			"foo": "bar",
-		},
-		GuidedRegex:     telnyx.String("guided_regex"),
-		LengthPenalty:   telnyx.Float(0),
-		Logprobs:        telnyx.Bool(true),
-		MaxTokens:       telnyx.Int(0),
-		MinP:            telnyx.Float(0),
-		Model:           telnyx.String("model"),
-		N:               telnyx.Float(0),
-		PresencePenalty: telnyx.Float(0),
-		ResponseFormat: telnyx.AIOpenAIChatNewCompletionParamsResponseFormat{
-			Type: "text",
-		},
-		Seed: telnyx.Int(0),
-		Stop: telnyx.AIOpenAIChatNewCompletionParamsStopUnion{
-			OfString: telnyx.String("string"),
-		},
-		Stream:      telnyx.Bool(true),
-		Temperature: telnyx.Float(0),
-		ToolChoice:  telnyx.AIOpenAIChatNewCompletionParamsToolChoiceNone,
-		Tools: []telnyx.AIOpenAIChatNewCompletionParamsToolUnion{{
-			OfFunction: &telnyx.AIOpenAIChatNewCompletionParamsToolFunction{
-				Function: telnyx.AIOpenAIChatNewCompletionParamsToolFunctionFunction{
-					Name:        "name",
-					Description: telnyx.String("description"),
-					Parameters: map[string]any{
-						"foo": "bar",
+			Seed: telnyx.Int(0),
+			Stop: telnyx.ChatCompletionRequestStopUnionParam{
+				OfString: telnyx.String("string"),
+			},
+			Stream:      telnyx.Bool(true),
+			Temperature: telnyx.Float(0),
+			ToolChoice:  telnyx.ChatCompletionRequestToolChoiceNone,
+			Tools: []telnyx.ChatCompletionRequestToolsUnionParam{{
+				OfFunction: &telnyx.ChatCompletionRequestToolsFunctionParam{
+					Function: telnyx.ChatCompletionRequestToolsFunctionFunctionParam{
+						Name:        "name",
+						Description: telnyx.String("description"),
+						Parameters: map[string]any{
+							"foo": "bar",
+						},
 					},
 				},
-			},
-		}},
-		TopLogprobs:   telnyx.Int(0),
-		TopP:          telnyx.Float(0),
-		UseBeamSearch: telnyx.Bool(true),
+			}},
+			TopLogprobs:   telnyx.Int(0),
+			TopP:          telnyx.Float(0),
+			UseBeamSearch: telnyx.Bool(true),
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

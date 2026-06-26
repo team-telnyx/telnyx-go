@@ -4,12 +4,14 @@ package telnyx
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
@@ -73,9 +75,58 @@ func (r *NetworkDefaultGatewayService) Delete(ctx context.Context, id string, op
 	return res, err
 }
 
+type DefaultGateway struct {
+	// Network ID.
+	NetworkID string `json:"network_id" format:"uuid"`
+	// The current status of the interface deployment.
+	//
+	// Any of "created", "provisioning", "provisioned", "deleting".
+	Status InterfaceStatus `json:"status"`
+	// Wireguard peer ID.
+	WireguardPeerID string `json:"wireguard_peer_id" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		NetworkID       respjson.Field
+		Status          respjson.Field
+		WireguardPeerID respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+	Record
+}
+
+// Returns the unmodified JSON received from the API
+func (r DefaultGateway) RawJSON() string { return r.JSON.raw }
+func (r *DefaultGateway) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this DefaultGateway to a DefaultGatewayParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// DefaultGatewayParam.Overrides()
+func (r DefaultGateway) ToParam() DefaultGatewayParam {
+	return param.Override[DefaultGatewayParam](json.RawMessage(r.RawJSON()))
+}
+
+type DefaultGatewayParam struct {
+	// Wireguard peer ID.
+	WireguardPeerID param.Opt[string] `json:"wireguard_peer_id,omitzero" format:"uuid"`
+	RecordParam
+}
+
+func (r DefaultGatewayParam) MarshalJSON() (data []byte, err error) {
+	type shadow struct {
+		*DefaultGatewayParam
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
+}
+
 type NetworkDefaultGatewayNewResponse struct {
-	Data []NetworkDefaultGatewayNewResponseData `json:"data"`
-	Meta PaginationMeta                         `json:"meta"`
+	Data []DefaultGateway `json:"data"`
+	Meta PaginationMeta   `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -91,35 +142,9 @@ func (r *NetworkDefaultGatewayNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type NetworkDefaultGatewayNewResponseData struct {
-	// Network ID.
-	NetworkID string `json:"network_id" format:"uuid"`
-	// The current status of the interface deployment.
-	//
-	// Any of "created", "provisioning", "provisioned", "deleting".
-	Status InterfaceStatus `json:"status"`
-	// Wireguard peer ID.
-	WireguardPeerID string `json:"wireguard_peer_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		NetworkID       respjson.Field
-		Status          respjson.Field
-		WireguardPeerID respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-	Record
-}
-
-// Returns the unmodified JSON received from the API
-func (r NetworkDefaultGatewayNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *NetworkDefaultGatewayNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type NetworkDefaultGatewayGetResponse struct {
-	Data []NetworkDefaultGatewayGetResponseData `json:"data"`
-	Meta PaginationMeta                         `json:"meta"`
+	Data []DefaultGateway `json:"data"`
+	Meta PaginationMeta   `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -135,35 +160,9 @@ func (r *NetworkDefaultGatewayGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type NetworkDefaultGatewayGetResponseData struct {
-	// Network ID.
-	NetworkID string `json:"network_id" format:"uuid"`
-	// The current status of the interface deployment.
-	//
-	// Any of "created", "provisioning", "provisioned", "deleting".
-	Status InterfaceStatus `json:"status"`
-	// Wireguard peer ID.
-	WireguardPeerID string `json:"wireguard_peer_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		NetworkID       respjson.Field
-		Status          respjson.Field
-		WireguardPeerID respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-	Record
-}
-
-// Returns the unmodified JSON received from the API
-func (r NetworkDefaultGatewayGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *NetworkDefaultGatewayGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type NetworkDefaultGatewayDeleteResponse struct {
-	Data []NetworkDefaultGatewayDeleteResponseData `json:"data"`
-	Meta PaginationMeta                            `json:"meta"`
+	Data []DefaultGateway `json:"data"`
+	Meta PaginationMeta   `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -179,41 +178,13 @@ func (r *NetworkDefaultGatewayDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type NetworkDefaultGatewayDeleteResponseData struct {
-	// Network ID.
-	NetworkID string `json:"network_id" format:"uuid"`
-	// The current status of the interface deployment.
-	//
-	// Any of "created", "provisioning", "provisioned", "deleting".
-	Status InterfaceStatus `json:"status"`
-	// Wireguard peer ID.
-	WireguardPeerID string `json:"wireguard_peer_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		NetworkID       respjson.Field
-		Status          respjson.Field
-		WireguardPeerID respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-	Record
-}
-
-// Returns the unmodified JSON received from the API
-func (r NetworkDefaultGatewayDeleteResponseData) RawJSON() string { return r.JSON.raw }
-func (r *NetworkDefaultGatewayDeleteResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type NetworkDefaultGatewayNewParams struct {
-	// Wireguard peer ID.
-	WireguardPeerID param.Opt[string] `json:"wireguard_peer_id,omitzero" format:"uuid"`
+	DefaultGateway DefaultGatewayParam
 	paramObj
 }
 
 func (r NetworkDefaultGatewayNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow NetworkDefaultGatewayNewParams
-	return param.MarshalObject(r, (*shadow)(&r))
+	return shimjson.Marshal(r.DefaultGateway)
 }
 func (r *NetworkDefaultGatewayNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)

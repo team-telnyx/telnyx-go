@@ -44,6 +44,18 @@ func (r *MessagingProfileMetricService) List(ctx context.Context, query Messagin
 	return res, err
 }
 
+// The time frame for metrics aggregation.
+type MessagingMetricsTimeFrame string
+
+const (
+	MessagingMetricsTimeFrameTimeFrame1H  MessagingMetricsTimeFrame = "1h"
+	MessagingMetricsTimeFrameTimeFrame3H  MessagingMetricsTimeFrame = "3h"
+	MessagingMetricsTimeFrameTimeFrame24H MessagingMetricsTimeFrame = "24h"
+	MessagingMetricsTimeFrameTimeFrame3D  MessagingMetricsTimeFrame = "3d"
+	MessagingMetricsTimeFrameTimeFrame7D  MessagingMetricsTimeFrame = "7d"
+	MessagingMetricsTimeFrameTimeFrame30D MessagingMetricsTimeFrame = "30d"
+)
+
 type MessagingProfileMetricListResponse struct {
 	Data []map[string]any               `json:"data"`
 	Meta shared.MessagingPaginationMeta `json:"meta"`
@@ -66,7 +78,7 @@ type MessagingProfileMetricListParams struct {
 	// The time frame for metrics.
 	//
 	// Any of "1h", "3h", "24h", "3d", "7d", "30d".
-	TimeFrame MessagingProfileMetricListParamsTimeFrame `query:"time_frame,omitzero" json:"-"`
+	TimeFrame MessagingMetricsTimeFrame `query:"time_frame,omitzero" json:"-"`
 	paramObj
 }
 
@@ -78,15 +90,3 @@ func (r MessagingProfileMetricListParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
-
-// The time frame for metrics.
-type MessagingProfileMetricListParamsTimeFrame string
-
-const (
-	MessagingProfileMetricListParamsTimeFrameTimeFrame1H  MessagingProfileMetricListParamsTimeFrame = "1h"
-	MessagingProfileMetricListParamsTimeFrameTimeFrame3H  MessagingProfileMetricListParamsTimeFrame = "3h"
-	MessagingProfileMetricListParamsTimeFrameTimeFrame24H MessagingProfileMetricListParamsTimeFrame = "24h"
-	MessagingProfileMetricListParamsTimeFrameTimeFrame3D  MessagingProfileMetricListParamsTimeFrame = "3d"
-	MessagingProfileMetricListParamsTimeFrameTimeFrame7D  MessagingProfileMetricListParamsTimeFrame = "7d"
-	MessagingProfileMetricListParamsTimeFrameTimeFrame30D MessagingProfileMetricListParamsTimeFrame = "30d"
-)

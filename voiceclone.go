@@ -48,7 +48,7 @@ func NewVoiceCloneService(opts ...option.RequestOption) (r VoiceCloneService) {
 
 // Creates a new voice clone by capturing the voice identity of an existing voice
 // design. The clone can then be used for text-to-speech synthesis.
-func (r *VoiceCloneService) New(ctx context.Context, body VoiceCloneNewParams, opts ...option.RequestOption) (res *VoiceCloneNewResponse, err error) {
+func (r *VoiceCloneService) New(ctx context.Context, body VoiceCloneNewParams, opts ...option.RequestOption) (res *VoiceCloneResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "voice_clones"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -56,7 +56,7 @@ func (r *VoiceCloneService) New(ctx context.Context, body VoiceCloneNewParams, o
 }
 
 // Updates the name, language, or gender of a voice clone.
-func (r *VoiceCloneService) Update(ctx context.Context, id string, body VoiceCloneUpdateParams, opts ...option.RequestOption) (res *VoiceCloneUpdateResponse, err error) {
+func (r *VoiceCloneService) Update(ctx context.Context, id string, body VoiceCloneUpdateParams, opts ...option.RequestOption) (res *VoiceCloneResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -106,7 +106,7 @@ func (r *VoiceCloneService) Delete(ctx context.Context, id string, opts ...optio
 // Creates a new voice clone by uploading an audio file directly. Supported
 // formats: WAV, MP3, FLAC, OGG, M4A. For best results, provide 5–10 seconds of
 // clear speech. Maximum file size: 5MB for Telnyx, 20MB for Minimax.
-func (r *VoiceCloneService) NewFromUpload(ctx context.Context, body VoiceCloneNewFromUploadParams, opts ...option.RequestOption) (res *VoiceCloneNewFromUploadResponse, err error) {
+func (r *VoiceCloneService) NewFromUpload(ctx context.Context, body VoiceCloneNewFromUploadParams, opts ...option.RequestOption) (res *VoiceCloneResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "voice_clones/from_upload"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -244,7 +244,7 @@ const (
 )
 
 // Response envelope for a single voice clone.
-type VoiceCloneNewResponse struct {
+type VoiceCloneResponse struct {
 	// A voice clone object.
 	Data VoiceCloneData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -256,44 +256,35 @@ type VoiceCloneNewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VoiceCloneNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *VoiceCloneNewResponse) UnmarshalJSON(data []byte) error {
+func (r VoiceCloneResponse) RawJSON() string { return r.JSON.raw }
+func (r *VoiceCloneResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Response envelope for a single voice clone.
-type VoiceCloneUpdateResponse struct {
-	// A voice clone object.
-	Data VoiceCloneData `json:"data"`
+// Pagination metadata returned with list responses.
+type VoiceDesignsPaginationMeta struct {
+	// Current page number (1-based).
+	PageNumber int64 `json:"page_number"`
+	// Number of results per page.
+	PageSize int64 `json:"page_size"`
+	// Total number of pages.
+	TotalPages int64 `json:"total_pages"`
+	// Total number of results across all pages.
+	TotalResults int64 `json:"total_results"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r VoiceCloneUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *VoiceCloneUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Response envelope for a single voice clone.
-type VoiceCloneNewFromUploadResponse struct {
-	// A voice clone object.
-	Data VoiceCloneData `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VoiceCloneNewFromUploadResponse) RawJSON() string { return r.JSON.raw }
-func (r *VoiceCloneNewFromUploadResponse) UnmarshalJSON(data []byte) error {
+func (r VoiceDesignsPaginationMeta) RawJSON() string { return r.JSON.raw }
+func (r *VoiceDesignsPaginationMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -305,10 +296,10 @@ type VoiceCloneNewParams struct {
 
 	// This field is a request body variant, only one variant field can be set. Create
 	// a voice clone from a voice design using the Telnyx provider.
-	OfTelnyxDesignClone *VoiceCloneNewParamsParamsTelnyxDesignClone `json:",inline"`
+	OfTelnyxDesignClone *VoiceCloneNewParamsVoiceCloneRequestTelnyxDesignClone `json:",inline"`
 	// This field is a request body variant, only one variant field can be set. Create
 	// a voice clone from a voice design using the Minimax provider.
-	OfMinimaxDesignClone *VoiceCloneNewParamsParamsMinimaxDesignClone `json:",inline"`
+	OfMinimaxDesignClone *VoiceCloneNewParamsVoiceCloneRequestMinimaxDesignClone `json:",inline"`
 
 	paramObj
 }
@@ -323,7 +314,7 @@ func (r *VoiceCloneNewParams) UnmarshalJSON(data []byte) error {
 // Create a voice clone from a voice design using the Telnyx provider.
 //
 // The properties Gender, Language, Name, VoiceDesignID are required.
-type VoiceCloneNewParamsParamsTelnyxDesignClone struct {
+type VoiceCloneNewParamsVoiceCloneRequestTelnyxDesignClone struct {
 	// Gender of the voice clone.
 	//
 	// Any of "male", "female", "neutral".
@@ -342,19 +333,19 @@ type VoiceCloneNewParamsParamsTelnyxDesignClone struct {
 	paramObj
 }
 
-func (r VoiceCloneNewParamsParamsTelnyxDesignClone) MarshalJSON() (data []byte, err error) {
-	type shadow VoiceCloneNewParamsParamsTelnyxDesignClone
+func (r VoiceCloneNewParamsVoiceCloneRequestTelnyxDesignClone) MarshalJSON() (data []byte, err error) {
+	type shadow VoiceCloneNewParamsVoiceCloneRequestTelnyxDesignClone
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *VoiceCloneNewParamsParamsTelnyxDesignClone) UnmarshalJSON(data []byte) error {
+func (r *VoiceCloneNewParamsVoiceCloneRequestTelnyxDesignClone) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[VoiceCloneNewParamsParamsTelnyxDesignClone](
+	apijson.RegisterFieldValidator[VoiceCloneNewParamsVoiceCloneRequestTelnyxDesignClone](
 		"gender", "male", "female", "neutral",
 	)
-	apijson.RegisterFieldValidator[VoiceCloneNewParamsParamsTelnyxDesignClone](
+	apijson.RegisterFieldValidator[VoiceCloneNewParamsVoiceCloneRequestTelnyxDesignClone](
 		"provider", "telnyx", "minimax",
 	)
 }
@@ -362,7 +353,7 @@ func init() {
 // Create a voice clone from a voice design using the Minimax provider.
 //
 // The properties Gender, Language, Name, Provider, VoiceDesignID are required.
-type VoiceCloneNewParamsParamsMinimaxDesignClone struct {
+type VoiceCloneNewParamsVoiceCloneRequestMinimaxDesignClone struct {
 	// Gender of the voice clone.
 	//
 	// Any of "male", "female", "neutral".
@@ -380,19 +371,19 @@ type VoiceCloneNewParamsParamsMinimaxDesignClone struct {
 	paramObj
 }
 
-func (r VoiceCloneNewParamsParamsMinimaxDesignClone) MarshalJSON() (data []byte, err error) {
-	type shadow VoiceCloneNewParamsParamsMinimaxDesignClone
+func (r VoiceCloneNewParamsVoiceCloneRequestMinimaxDesignClone) MarshalJSON() (data []byte, err error) {
+	type shadow VoiceCloneNewParamsVoiceCloneRequestMinimaxDesignClone
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *VoiceCloneNewParamsParamsMinimaxDesignClone) UnmarshalJSON(data []byte) error {
+func (r *VoiceCloneNewParamsVoiceCloneRequestMinimaxDesignClone) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[VoiceCloneNewParamsParamsMinimaxDesignClone](
+	apijson.RegisterFieldValidator[VoiceCloneNewParamsVoiceCloneRequestMinimaxDesignClone](
 		"gender", "male", "female", "neutral",
 	)
-	apijson.RegisterFieldValidator[VoiceCloneNewParamsParamsMinimaxDesignClone](
+	apijson.RegisterFieldValidator[VoiceCloneNewParamsVoiceCloneRequestMinimaxDesignClone](
 		"provider", "telnyx", "minimax",
 	)
 }
@@ -478,13 +469,13 @@ type VoiceCloneNewFromUploadParams struct {
 
 	// This field is a request body variant, only one variant field can be set.
 	// Upload-based voice clone using the Telnyx Qwen3TTS model (default).
-	OfTelnyxQwen3TtsClone *VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone `json:",inline"`
+	OfTelnyxQwen3TtsClone *VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestTelnyxQwen3TtsClone `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
 	// Upload-based voice clone using the Telnyx Ultra model.
-	OfTelnyxUltraClone *VoiceCloneNewFromUploadParamsParamsTelnyxUltraClone `json:",inline"`
+	OfTelnyxUltraClone *VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestTelnyxUltraClone `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
 	// Upload-based voice clone using the Minimax provider.
-	OfMinimaxClone *VoiceCloneNewFromUploadParamsParamsMinimaxClone `json:",inline"`
+	OfMinimaxClone *VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestMinimaxClone `json:",inline"`
 
 	paramObj
 }
@@ -510,7 +501,7 @@ func (r VoiceCloneNewFromUploadParams) MarshalMultipart() (data []byte, contentT
 // Upload-based voice clone using the Telnyx Qwen3TTS model (default).
 //
 // The properties AudioFile, Gender, Language, Name, Provider are required.
-type VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone struct {
+type VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestTelnyxQwen3TtsClone struct {
 	// Audio file to clone the voice from. Supported formats: WAV, MP3, FLAC, OGG, M4A.
 	// For best quality, provide 5–10 seconds of clear, uninterrupted speech. Maximum
 	// size: 5MB.
@@ -538,22 +529,22 @@ type VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone struct {
 	paramObj
 }
 
-func (r VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone) MarshalJSON() (data []byte, err error) {
-	type shadow VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone
+func (r VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestTelnyxQwen3TtsClone) MarshalJSON() (data []byte, err error) {
+	type shadow VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestTelnyxQwen3TtsClone
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone) UnmarshalJSON(data []byte) error {
+func (r *VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestTelnyxQwen3TtsClone) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone](
+	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestTelnyxQwen3TtsClone](
 		"gender", "male", "female", "neutral",
 	)
-	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone](
+	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestTelnyxQwen3TtsClone](
 		"provider", "telnyx", "minimax",
 	)
-	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsTelnyxQwen3TtsClone](
+	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestTelnyxQwen3TtsClone](
 		"model_id", "Qwen3TTS",
 	)
 }
@@ -562,7 +553,7 @@ func init() {
 //
 // The properties AudioFile, Gender, Language, ModelID, Name, Provider are
 // required.
-type VoiceCloneNewFromUploadParamsParamsTelnyxUltraClone struct {
+type VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestTelnyxUltraClone struct {
 	// Audio file to clone the voice from. Supported formats: WAV, MP3, FLAC, OGG, M4A.
 	// For best quality, provide 5–10 seconds of clear, uninterrupted speech. Maximum
 	// size: 5MB.
@@ -590,22 +581,22 @@ type VoiceCloneNewFromUploadParamsParamsTelnyxUltraClone struct {
 	paramObj
 }
 
-func (r VoiceCloneNewFromUploadParamsParamsTelnyxUltraClone) MarshalJSON() (data []byte, err error) {
-	type shadow VoiceCloneNewFromUploadParamsParamsTelnyxUltraClone
+func (r VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestTelnyxUltraClone) MarshalJSON() (data []byte, err error) {
+	type shadow VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestTelnyxUltraClone
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *VoiceCloneNewFromUploadParamsParamsTelnyxUltraClone) UnmarshalJSON(data []byte) error {
+func (r *VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestTelnyxUltraClone) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsTelnyxUltraClone](
+	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestTelnyxUltraClone](
 		"gender", "male", "female", "neutral",
 	)
-	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsTelnyxUltraClone](
+	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestTelnyxUltraClone](
 		"model_id", "Ultra",
 	)
-	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsTelnyxUltraClone](
+	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestTelnyxUltraClone](
 		"provider", "telnyx", "minimax",
 	)
 }
@@ -613,7 +604,7 @@ func init() {
 // Upload-based voice clone using the Minimax provider.
 //
 // The properties AudioFile, Gender, Language, Name, Provider are required.
-type VoiceCloneNewFromUploadParamsParamsMinimaxClone struct {
+type VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestMinimaxClone struct {
 	// Audio file to clone the voice from. Supported formats: WAV, MP3, FLAC, OGG, M4A.
 	// For best quality, provide 5–10 seconds of clear, uninterrupted speech. Maximum
 	// size: 20MB.
@@ -641,22 +632,22 @@ type VoiceCloneNewFromUploadParamsParamsMinimaxClone struct {
 	paramObj
 }
 
-func (r VoiceCloneNewFromUploadParamsParamsMinimaxClone) MarshalJSON() (data []byte, err error) {
-	type shadow VoiceCloneNewFromUploadParamsParamsMinimaxClone
+func (r VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestMinimaxClone) MarshalJSON() (data []byte, err error) {
+	type shadow VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestMinimaxClone
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *VoiceCloneNewFromUploadParamsParamsMinimaxClone) UnmarshalJSON(data []byte) error {
+func (r *VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestMinimaxClone) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsMinimaxClone](
+	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestMinimaxClone](
 		"gender", "male", "female", "neutral",
 	)
-	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsMinimaxClone](
+	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestMinimaxClone](
 		"provider", "telnyx", "minimax",
 	)
-	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsParamsMinimaxClone](
+	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestMinimaxClone](
 		"model_id", "speech-2.8-turbo",
 	)
 }

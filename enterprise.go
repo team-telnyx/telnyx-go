@@ -62,7 +62,7 @@ func NewEnterpriseService(opts ...option.RequestOption) (r EnterpriseService) {
 //     `errors[].source.pointer` names the field).
 //   - `409` - an enterprise with the same identifying details already exists under
 //     your account.
-func (r *EnterpriseService) New(ctx context.Context, body EnterpriseNewParams, opts ...option.RequestOption) (res *EnterpriseNewResponse, err error) {
+func (r *EnterpriseService) New(ctx context.Context, body EnterpriseNewParams, opts ...option.RequestOption) (res *EnterprisePublicWrapped, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "enterprises"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -71,7 +71,7 @@ func (r *EnterpriseService) New(ctx context.Context, body EnterpriseNewParams, o
 
 // Retrieve a single enterprise by id. Returns `404` if the id does not exist or
 // does not belong to your account.
-func (r *EnterpriseService) Get(ctx context.Context, enterpriseID string, opts ...option.RequestOption) (res *EnterpriseGetResponse, err error) {
+func (r *EnterpriseService) Get(ctx context.Context, enterpriseID string, opts ...option.RequestOption) (res *EnterprisePublicWrapped, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if enterpriseID == "" {
 		err = errors.New("missing required enterprise_id parameter")
@@ -87,7 +87,7 @@ func (r *EnterpriseService) Get(ctx context.Context, enterpriseID string, opts .
 // `updated_at`, status fields, `organization_type`, `country_code`, `role_type`)
 // cannot be changed: including any of them in the body is rejected with
 // `400 Bad Request` (`Field 'X' is not allowed in this request`).
-func (r *EnterpriseService) Update(ctx context.Context, enterpriseID string, body EnterpriseUpdateParams, opts ...option.RequestOption) (res *EnterpriseUpdateResponse, err error) {
+func (r *EnterpriseService) Update(ctx context.Context, enterpriseID string, body EnterpriseUpdateParams, opts ...option.RequestOption) (res *EnterprisePublicWrapped, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if enterpriseID == "" {
 		err = errors.New("missing required enterprise_id parameter")
@@ -165,7 +165,7 @@ func (r *EnterpriseService) Delete(ctx context.Context, enterpriseID string, opt
 //
 // **Pricing:** This is a billable action. See https://telnyx.com/pricing/numbers
 // for current pricing.
-func (r *EnterpriseService) ActivateBrandedCalling(ctx context.Context, enterpriseID string, opts ...option.RequestOption) (res *EnterpriseActivateBrandedCallingResponse, err error) {
+func (r *EnterpriseService) BrandedCalling(ctx context.Context, enterpriseID string, opts ...option.RequestOption) (res *EnterprisePublicWrapped, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if enterpriseID == "" {
 		err = errors.New("missing required enterprise_id parameter")
@@ -357,6 +357,53 @@ func (r *EnterprisePublic) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type EnterprisePublicWrapped struct {
+	Data EnterprisePublic `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterprisePublicWrapped) RawJSON() string { return r.JSON.raw }
+func (r *EnterprisePublicWrapped) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JSON:API pagination metadata returned with every paginated list response. Page
+// numbering is 1-based. `page_size` reports the number of items actually returned
+// in `data` for this page; the requested size is taken from the `page[size]` query
+// parameter.
+type NumberReputationPaginationMeta struct {
+	// 1-based index of this page. Echoes the `page[number]` query parameter (default
+	// `1`).
+	PageNumber int64 `json:"page_number" api:"required"`
+	// Number of items returned in this page's `data` array. Capped at 250.
+	PageSize int64 `json:"page_size" api:"required"`
+	// Total number of pages available given the current `page_size`.
+	TotalPages int64 `json:"total_pages" api:"required"`
+	// Total number of items across all pages (excludes soft-deleted rows).
+	TotalResults int64 `json:"total_results" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumberReputationPaginationMeta) RawJSON() string { return r.JSON.raw }
+func (r *NumberReputationPaginationMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type OrganizationContact struct {
 	Email     string `json:"email" api:"required" format:"email"`
 	FirstName string `json:"first_name" api:"required"`
@@ -466,70 +513,6 @@ func (r PhysicalAddressParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *PhysicalAddressParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EnterpriseNewResponse struct {
-	Data EnterprisePublic `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EnterpriseNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EnterpriseGetResponse struct {
-	Data EnterprisePublic `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EnterpriseGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EnterpriseUpdateResponse struct {
-	Data EnterprisePublic `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EnterpriseUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EnterpriseActivateBrandedCallingResponse struct {
-	Data EnterprisePublic `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EnterpriseActivateBrandedCallingResponse) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseActivateBrandedCallingResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
