@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.82.0](https://github.com/team-telnyx/telnyx-go/compare/v4.81.1...v4.82.0) (2026-06-26)
+
+
+### Chores
+
+* add release-please workflow + fix config for STLC cutover ([#111](https://github.com/team-telnyx/telnyx-go/issues/111)) ([ef499b8](https://github.com/team-telnyx/telnyx-go/commit/ef499b868d7b8bb8e56f2b4018f4a3190f2b769b))
+
 ## 4.81.1 (2026-06-23)
 
 Full Changelog: [v4.81.0...v4.81.1](https://github.com/team-telnyx/telnyx-go/compare/v4.81.0...v4.81.1)
