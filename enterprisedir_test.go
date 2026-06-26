@@ -38,9 +38,9 @@ func TestEnterpriseDirNewWithOptionalParams(t *testing.T) {
 			CertifyNoShaftContent:  true,
 			DisplayName:            "Acme Plumbing",
 			CallReasons:            []string{"Appointment reminders", "Billing inquiries"},
-			Documents: []telnyx.EnterpriseDirNewParamsDocument{{
+			Documents: []telnyx.DocumentParam{{
 				DocumentID:   "2a7e8337-e803-4057-a4ae-26c40eb0bc6c",
-				DocumentType: "business_registration",
+				DocumentType: telnyx.DocumentDocumentTypeBusinessRegistration,
 				Description:  telnyx.String("Certificate of incorporation."),
 			}},
 			LogoURL:   telnyx.String("https://acmeplumbing.example.com/logo-256.bmp"),
@@ -78,7 +78,7 @@ func TestEnterpriseDirListWithOptionalParams(t *testing.T) {
 			FilterExpiringAtGte:       telnyx.Time(time.Now()),
 			FilterExpiringAtLte:       telnyx.Time(time.Now()),
 			FilterExpiringWithinDays:  telnyx.Int(1),
-			FilterStatus:              telnyx.EnterpriseDirListParamsFilterStatusDraft,
+			FilterStatus:              telnyx.DirStatusDraft,
 			PageNumber:                telnyx.Int(1),
 			PageSize:                  telnyx.Int(20),
 			Sort:                      telnyx.EnterpriseDirListParamsSortCreatedAt,

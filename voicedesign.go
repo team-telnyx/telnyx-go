@@ -44,7 +44,7 @@ func NewVoiceDesignService(opts ...option.RequestOption) (r VoiceDesignService) 
 // Creates a new voice design (version 1) when `voice_design_id` is omitted. When
 // `voice_design_id` is provided, adds a new version to the existing design
 // instead. A design can have at most 50 versions.
-func (r *VoiceDesignService) New(ctx context.Context, body VoiceDesignNewParams, opts ...option.RequestOption) (res *VoiceDesignNewResponse, err error) {
+func (r *VoiceDesignService) New(ctx context.Context, body VoiceDesignNewParams, opts ...option.RequestOption) (res *VoiceDesignResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "voice_designs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -54,7 +54,7 @@ func (r *VoiceDesignService) New(ctx context.Context, body VoiceDesignNewParams,
 // Returns the latest version of a voice design, or a specific version when
 // `?version=N` is provided. The `id` parameter accepts either a UUID or the design
 // name.
-func (r *VoiceDesignService) Get(ctx context.Context, id string, query VoiceDesignGetParams, opts ...option.RequestOption) (res *VoiceDesignGetResponse, err error) {
+func (r *VoiceDesignService) Get(ctx context.Context, id string, query VoiceDesignGetParams, opts ...option.RequestOption) (res *VoiceDesignResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -67,7 +67,7 @@ func (r *VoiceDesignService) Get(ctx context.Context, id string, query VoiceDesi
 
 // Returns a paginated list of voice designs belonging to the authenticated
 // account.
-func (r *VoiceDesignService) List(ctx context.Context, query VoiceDesignListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[VoiceDesignListResponse], err error) {
+func (r *VoiceDesignService) List(ctx context.Context, query VoiceDesignListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[VoiceDesignSummaryData], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -86,7 +86,7 @@ func (r *VoiceDesignService) List(ctx context.Context, query VoiceDesignListPara
 
 // Returns a paginated list of voice designs belonging to the authenticated
 // account.
-func (r *VoiceDesignService) ListAutoPaging(ctx context.Context, query VoiceDesignListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[VoiceDesignListResponse] {
+func (r *VoiceDesignService) ListAutoPaging(ctx context.Context, query VoiceDesignListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[VoiceDesignSummaryData] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -221,7 +221,7 @@ const (
 )
 
 // Response envelope for a single voice design with full version detail.
-type VoiceDesignNewResponse struct {
+type VoiceDesignResponse struct {
 	// A voice design object with full version detail.
 	Data VoiceDesignData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -233,31 +233,13 @@ type VoiceDesignNewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VoiceDesignNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *VoiceDesignNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Response envelope for a single voice design with full version detail.
-type VoiceDesignGetResponse struct {
-	// A voice design object with full version detail.
-	Data VoiceDesignData `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VoiceDesignGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *VoiceDesignGetResponse) UnmarshalJSON(data []byte) error {
+func (r VoiceDesignResponse) RawJSON() string { return r.JSON.raw }
+func (r *VoiceDesignResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // A summarized voice design object (without version-specific fields).
-type VoiceDesignListResponse struct {
+type VoiceDesignSummaryData struct {
 	// Unique identifier for the voice design.
 	ID string `json:"id" format:"uuid"`
 	// Timestamp when the voice design was first created.
@@ -267,13 +249,13 @@ type VoiceDesignListResponse struct {
 	// Voice synthesis provider used for this design.
 	//
 	// Any of "telnyx", "minimax".
-	Provider VoiceDesignListResponseProvider `json:"provider" api:"nullable"`
+	Provider VoiceDesignSummaryDataProvider `json:"provider" api:"nullable"`
 	// List of TTS model identifiers supported by this design's provider.
 	ProviderSupportedModels []string `json:"provider_supported_models"`
 	// Identifies the resource type.
 	//
 	// Any of "voice_design".
-	RecordType VoiceDesignListResponseRecordType `json:"record_type"`
+	RecordType VoiceDesignSummaryDataRecordType `json:"record_type"`
 	// Timestamp when the voice design was last updated.
 	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -291,31 +273,31 @@ type VoiceDesignListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VoiceDesignListResponse) RawJSON() string { return r.JSON.raw }
-func (r *VoiceDesignListResponse) UnmarshalJSON(data []byte) error {
+func (r VoiceDesignSummaryData) RawJSON() string { return r.JSON.raw }
+func (r *VoiceDesignSummaryData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Voice synthesis provider used for this design.
-type VoiceDesignListResponseProvider string
+type VoiceDesignSummaryDataProvider string
 
 const (
-	VoiceDesignListResponseProviderTelnyx  VoiceDesignListResponseProvider = "telnyx"
-	VoiceDesignListResponseProviderMinimax VoiceDesignListResponseProvider = "minimax"
+	VoiceDesignSummaryDataProviderTelnyx  VoiceDesignSummaryDataProvider = "telnyx"
+	VoiceDesignSummaryDataProviderMinimax VoiceDesignSummaryDataProvider = "minimax"
 )
 
 // Identifies the resource type.
-type VoiceDesignListResponseRecordType string
+type VoiceDesignSummaryDataRecordType string
 
 const (
-	VoiceDesignListResponseRecordTypeVoiceDesign VoiceDesignListResponseRecordType = "voice_design"
+	VoiceDesignSummaryDataRecordTypeVoiceDesign VoiceDesignSummaryDataRecordType = "voice_design"
 )
 
 // Response envelope for a voice design after a rename operation (no
 // version-specific fields).
 type VoiceDesignRenameResponse struct {
 	// A summarized voice design object (without version-specific fields).
-	Data VoiceDesignRenameResponseData `json:"data"`
+	Data VoiceDesignSummaryData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -327,46 +309,6 @@ type VoiceDesignRenameResponse struct {
 // Returns the unmodified JSON received from the API
 func (r VoiceDesignRenameResponse) RawJSON() string { return r.JSON.raw }
 func (r *VoiceDesignRenameResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A summarized voice design object (without version-specific fields).
-type VoiceDesignRenameResponseData struct {
-	// Unique identifier for the voice design.
-	ID string `json:"id" format:"uuid"`
-	// Timestamp when the voice design was first created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Name of the voice design.
-	Name string `json:"name"`
-	// Voice synthesis provider used for this design.
-	//
-	// Any of "telnyx", "minimax".
-	Provider string `json:"provider" api:"nullable"`
-	// List of TTS model identifiers supported by this design's provider.
-	ProviderSupportedModels []string `json:"provider_supported_models"`
-	// Identifies the resource type.
-	//
-	// Any of "voice_design".
-	RecordType string `json:"record_type"`
-	// Timestamp when the voice design was last updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                      respjson.Field
-		CreatedAt               respjson.Field
-		Name                    respjson.Field
-		Provider                respjson.Field
-		ProviderSupportedModels respjson.Field
-		RecordType              respjson.Field
-		UpdatedAt               respjson.Field
-		ExtraFields             map[string]respjson.Field
-		raw                     string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VoiceDesignRenameResponseData) RawJSON() string { return r.JSON.raw }
-func (r *VoiceDesignRenameResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

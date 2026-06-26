@@ -141,7 +141,7 @@ type InexplicitNumberOrderResponseOrderingGroup struct {
 	// Filter by area code
 	NationalDestinationCode string `json:"national_destination_code"`
 	// Array of orders created to fulfill the inexplicit order
-	Orders []InexplicitNumberOrderResponseOrderingGroupOrder `json:"orders"`
+	Orders []InexplicitNumberOrderResponseOrderingGroupsOrder `json:"orders"`
 	// Number type
 	PhoneNumberType string `json:"phone_number_type"`
 	// Filter for phone numbers that contain the digits specified
@@ -193,7 +193,7 @@ func (r *InexplicitNumberOrderResponseOrderingGroup) UnmarshalJSON(data []byte) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type InexplicitNumberOrderResponseOrderingGroupOrder struct {
+type InexplicitNumberOrderResponseOrderingGroupsOrder struct {
 	// ID of the main number order
 	NumberOrderID string `json:"number_order_id" api:"required" format:"uuid"`
 	// Array of sub number order IDs
@@ -208,8 +208,8 @@ type InexplicitNumberOrderResponseOrderingGroupOrder struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InexplicitNumberOrderResponseOrderingGroupOrder) RawJSON() string { return r.JSON.raw }
-func (r *InexplicitNumberOrderResponseOrderingGroupOrder) UnmarshalJSON(data []byte) error {
+func (r InexplicitNumberOrderResponseOrderingGroupsOrder) RawJSON() string { return r.JSON.raw }
+func (r *InexplicitNumberOrderResponseOrderingGroupsOrder) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -294,7 +294,7 @@ type InexplicitNumberOrderNewParamsOrderingGroup struct {
 	// ["voice"])
 	Features []string `json:"features,omitzero"`
 	// Phone number search criteria
-	PhoneNumber InexplicitNumberOrderNewParamsOrderingGroupPhoneNumber `json:"phone_number,omitzero"`
+	PhoneNumber InexplicitNumberOrderNewParamsOrderingGroupsPhoneNumber `json:"phone_number,omitzero"`
 	// Ordering strategy. Define what action should be taken if we don't have enough
 	// phone numbers to fulfill your request. Allowable values are: always = proceed
 	// with ordering phone numbers, regardless of current inventory levels; never = do
@@ -324,7 +324,7 @@ func init() {
 }
 
 // Phone number search criteria
-type InexplicitNumberOrderNewParamsOrderingGroupPhoneNumber struct {
+type InexplicitNumberOrderNewParamsOrderingGroupsPhoneNumber struct {
 	// Filter for phone numbers that contain the digits specified
 	Contains param.Opt[string] `json:"contains,omitzero"`
 	// Filter by the ending digits of the phone number
@@ -334,11 +334,11 @@ type InexplicitNumberOrderNewParamsOrderingGroupPhoneNumber struct {
 	paramObj
 }
 
-func (r InexplicitNumberOrderNewParamsOrderingGroupPhoneNumber) MarshalJSON() (data []byte, err error) {
-	type shadow InexplicitNumberOrderNewParamsOrderingGroupPhoneNumber
+func (r InexplicitNumberOrderNewParamsOrderingGroupsPhoneNumber) MarshalJSON() (data []byte, err error) {
+	type shadow InexplicitNumberOrderNewParamsOrderingGroupsPhoneNumber
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *InexplicitNumberOrderNewParamsOrderingGroupPhoneNumber) UnmarshalJSON(data []byte) error {
+func (r *InexplicitNumberOrderNewParamsOrderingGroupsPhoneNumber) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

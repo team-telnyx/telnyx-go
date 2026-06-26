@@ -74,7 +74,7 @@ func (r *QueueCallService) Update(ctx context.Context, callControlID string, par
 }
 
 // Retrieve the list of calls in an existing queue
-func (r *QueueCallService) List(ctx context.Context, queueName string, query QueueCallListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[QueueCallListResponse], err error) {
+func (r *QueueCallService) List(ctx context.Context, queueName string, query QueueCallListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[QueueCall], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -96,7 +96,7 @@ func (r *QueueCallService) List(ctx context.Context, queueName string, query Que
 }
 
 // Retrieve the list of calls in an existing queue
-func (r *QueueCallService) ListAutoPaging(ctx context.Context, queueName string, query QueueCallListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[QueueCallListResponse] {
+func (r *QueueCallService) ListAutoPaging(ctx context.Context, queueName string, query QueueCallListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[QueueCall] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, queueName, query, opts...))
 }
 
@@ -118,8 +118,66 @@ func (r *QueueCallService) Remove(ctx context.Context, callControlID string, bod
 	return err
 }
 
+type QueueCall struct {
+	// Unique identifier and token for controlling the call.
+	CallControlID string `json:"call_control_id" api:"required"`
+	// ID that is unique to the call and can be used to correlate webhook events
+	CallLegID string `json:"call_leg_id" api:"required"`
+	// ID that is unique to the call session and can be used to correlate webhook
+	// events. Call session is a group of related call legs that logically belong to
+	// the same phone call, e.g. an inbound and outbound leg of a transferred call
+	CallSessionID string `json:"call_session_id" api:"required"`
+	// Call Control App ID (formerly Telnyx connection ID) used in the call.
+	ConnectionID string `json:"connection_id" api:"required"`
+	// ISO 8601 formatted date of when the call was put in the queue
+	EnqueuedAt string `json:"enqueued_at" api:"required"`
+	// Number or SIP URI placing the call.
+	From string `json:"from" api:"required"`
+	// Unique identifier of the queue the call is in.
+	QueueID string `json:"queue_id" api:"required"`
+	// Current position of the call in the queue
+	QueuePosition int64 `json:"queue_position" api:"required"`
+	// Any of "queue_call".
+	RecordType QueueCallRecordType `json:"record_type" api:"required"`
+	// Destination number or SIP URI of the call.
+	To string `json:"to" api:"required"`
+	// The time the call has been waiting in the queue, given in seconds
+	WaitTimeSecs int64 `json:"wait_time_secs" api:"required"`
+	// Indicates whether the call is still active in the queue.
+	IsAlive bool `json:"is_alive"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CallControlID respjson.Field
+		CallLegID     respjson.Field
+		CallSessionID respjson.Field
+		ConnectionID  respjson.Field
+		EnqueuedAt    respjson.Field
+		From          respjson.Field
+		QueueID       respjson.Field
+		QueuePosition respjson.Field
+		RecordType    respjson.Field
+		To            respjson.Field
+		WaitTimeSecs  respjson.Field
+		IsAlive       respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r QueueCall) RawJSON() string { return r.JSON.raw }
+func (r *QueueCall) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type QueueCallRecordType string
+
+const (
+	QueueCallRecordTypeQueueCall QueueCallRecordType = "queue_call"
+)
+
 type QueueCallGetResponse struct {
-	Data QueueCallGetResponseData `json:"data"`
+	Data QueueCall `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -133,116 +191,6 @@ func (r QueueCallGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *QueueCallGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type QueueCallGetResponseData struct {
-	// Unique identifier and token for controlling the call.
-	CallControlID string `json:"call_control_id" api:"required"`
-	// ID that is unique to the call and can be used to correlate webhook events
-	CallLegID string `json:"call_leg_id" api:"required"`
-	// ID that is unique to the call session and can be used to correlate webhook
-	// events. Call session is a group of related call legs that logically belong to
-	// the same phone call, e.g. an inbound and outbound leg of a transferred call
-	CallSessionID string `json:"call_session_id" api:"required"`
-	// Call Control App ID (formerly Telnyx connection ID) used in the call.
-	ConnectionID string `json:"connection_id" api:"required"`
-	// ISO 8601 formatted date of when the call was put in the queue
-	EnqueuedAt string `json:"enqueued_at" api:"required"`
-	// Number or SIP URI placing the call.
-	From string `json:"from" api:"required"`
-	// Unique identifier of the queue the call is in.
-	QueueID string `json:"queue_id" api:"required"`
-	// Current position of the call in the queue
-	QueuePosition int64 `json:"queue_position" api:"required"`
-	// Any of "queue_call".
-	RecordType string `json:"record_type" api:"required"`
-	// Destination number or SIP URI of the call.
-	To string `json:"to" api:"required"`
-	// The time the call has been waiting in the queue, given in seconds
-	WaitTimeSecs int64 `json:"wait_time_secs" api:"required"`
-	// Indicates whether the call is still active in the queue.
-	IsAlive bool `json:"is_alive"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CallControlID respjson.Field
-		CallLegID     respjson.Field
-		CallSessionID respjson.Field
-		ConnectionID  respjson.Field
-		EnqueuedAt    respjson.Field
-		From          respjson.Field
-		QueueID       respjson.Field
-		QueuePosition respjson.Field
-		RecordType    respjson.Field
-		To            respjson.Field
-		WaitTimeSecs  respjson.Field
-		IsAlive       respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r QueueCallGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *QueueCallGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type QueueCallListResponse struct {
-	// Unique identifier and token for controlling the call.
-	CallControlID string `json:"call_control_id" api:"required"`
-	// ID that is unique to the call and can be used to correlate webhook events
-	CallLegID string `json:"call_leg_id" api:"required"`
-	// ID that is unique to the call session and can be used to correlate webhook
-	// events. Call session is a group of related call legs that logically belong to
-	// the same phone call, e.g. an inbound and outbound leg of a transferred call
-	CallSessionID string `json:"call_session_id" api:"required"`
-	// Call Control App ID (formerly Telnyx connection ID) used in the call.
-	ConnectionID string `json:"connection_id" api:"required"`
-	// ISO 8601 formatted date of when the call was put in the queue
-	EnqueuedAt string `json:"enqueued_at" api:"required"`
-	// Number or SIP URI placing the call.
-	From string `json:"from" api:"required"`
-	// Unique identifier of the queue the call is in.
-	QueueID string `json:"queue_id" api:"required"`
-	// Current position of the call in the queue
-	QueuePosition int64 `json:"queue_position" api:"required"`
-	// Any of "queue_call".
-	RecordType QueueCallListResponseRecordType `json:"record_type" api:"required"`
-	// Destination number or SIP URI of the call.
-	To string `json:"to" api:"required"`
-	// The time the call has been waiting in the queue, given in seconds
-	WaitTimeSecs int64 `json:"wait_time_secs" api:"required"`
-	// Indicates whether the call is still active in the queue.
-	IsAlive bool `json:"is_alive"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CallControlID respjson.Field
-		CallLegID     respjson.Field
-		CallSessionID respjson.Field
-		ConnectionID  respjson.Field
-		EnqueuedAt    respjson.Field
-		From          respjson.Field
-		QueueID       respjson.Field
-		QueuePosition respjson.Field
-		RecordType    respjson.Field
-		To            respjson.Field
-		WaitTimeSecs  respjson.Field
-		IsAlive       respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r QueueCallListResponse) RawJSON() string { return r.JSON.raw }
-func (r *QueueCallListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type QueueCallListResponseRecordType string
-
-const (
-	QueueCallListResponseRecordTypeQueueCall QueueCallListResponseRecordType = "queue_call"
-)
 
 type QueueCallGetParams struct {
 	QueueName string `path:"queue_name" api:"required" json:"-"`

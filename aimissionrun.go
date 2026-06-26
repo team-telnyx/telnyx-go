@@ -46,7 +46,7 @@ func NewAIMissionRunService(opts ...option.RequestOption) (r AIMissionRunService
 }
 
 // Start a new run for a mission
-func (r *AIMissionRunService) New(ctx context.Context, missionID string, body AIMissionRunNewParams, opts ...option.RequestOption) (res *AIMissionRunNewResponse, err error) {
+func (r *AIMissionRunService) New(ctx context.Context, missionID string, body AIMissionRunNewParams, opts ...option.RequestOption) (res *MissionRunResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if missionID == "" {
 		err = errors.New("missing required mission_id parameter")
@@ -58,7 +58,7 @@ func (r *AIMissionRunService) New(ctx context.Context, missionID string, body AI
 }
 
 // Get details of a specific run
-func (r *AIMissionRunService) Get(ctx context.Context, runID string, query AIMissionRunGetParams, opts ...option.RequestOption) (res *AIMissionRunGetResponse, err error) {
+func (r *AIMissionRunService) Get(ctx context.Context, runID string, query AIMissionRunGetParams, opts ...option.RequestOption) (res *MissionRunResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
@@ -74,7 +74,7 @@ func (r *AIMissionRunService) Get(ctx context.Context, runID string, query AIMis
 }
 
 // Update run status and/or result
-func (r *AIMissionRunService) Update(ctx context.Context, runID string, params AIMissionRunUpdateParams, opts ...option.RequestOption) (res *AIMissionRunUpdateResponse, err error) {
+func (r *AIMissionRunService) Update(ctx context.Context, runID string, params AIMissionRunUpdateParams, opts ...option.RequestOption) (res *MissionRunResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
@@ -117,7 +117,7 @@ func (r *AIMissionRunService) ListAutoPaging(ctx context.Context, missionID stri
 }
 
 // Cancel a running or paused run
-func (r *AIMissionRunService) CancelRun(ctx context.Context, runID string, body AIMissionRunCancelRunParams, opts ...option.RequestOption) (res *AIMissionRunCancelRunResponse, err error) {
+func (r *AIMissionRunService) CancelRun(ctx context.Context, runID string, body AIMissionRunCancelRunParams, opts ...option.RequestOption) (res *MissionRunResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if body.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
@@ -156,7 +156,7 @@ func (r *AIMissionRunService) ListRunsAutoPaging(ctx context.Context, query AIMi
 }
 
 // Pause a running run
-func (r *AIMissionRunService) PauseRun(ctx context.Context, runID string, body AIMissionRunPauseRunParams, opts ...option.RequestOption) (res *AIMissionRunPauseRunResponse, err error) {
+func (r *AIMissionRunService) PauseRun(ctx context.Context, runID string, body AIMissionRunPauseRunParams, opts ...option.RequestOption) (res *MissionRunResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if body.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
@@ -172,7 +172,7 @@ func (r *AIMissionRunService) PauseRun(ctx context.Context, runID string, body A
 }
 
 // Resume a paused run
-func (r *AIMissionRunService) ResumeRun(ctx context.Context, runID string, body AIMissionRunResumeRunParams, opts ...option.RequestOption) (res *AIMissionRunResumeRunResponse, err error) {
+func (r *AIMissionRunService) ResumeRun(ctx context.Context, runID string, body AIMissionRunResumeRunParams, opts ...option.RequestOption) (res *MissionRunResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if body.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
@@ -192,14 +192,14 @@ type MissionRunData struct {
 	RunID     string    `json:"run_id" api:"required" format:"uuid"`
 	StartedAt time.Time `json:"started_at" api:"required" format:"date-time"`
 	// Any of "pending", "running", "paused", "succeeded", "failed", "cancelled".
-	Status        MissionRunDataStatus `json:"status" api:"required"`
-	UpdatedAt     time.Time            `json:"updated_at" api:"required" format:"date-time"`
-	Error         string               `json:"error"`
-	FinishedAt    time.Time            `json:"finished_at" format:"date-time"`
-	Input         map[string]any       `json:"input"`
-	Metadata      map[string]any       `json:"metadata"`
-	ResultPayload map[string]any       `json:"result_payload"`
-	ResultSummary string               `json:"result_summary"`
+	Status        RunStatus      `json:"status" api:"required"`
+	UpdatedAt     time.Time      `json:"updated_at" api:"required" format:"date-time"`
+	Error         string         `json:"error"`
+	FinishedAt    time.Time      `json:"finished_at" format:"date-time"`
+	Input         map[string]any `json:"input"`
+	Metadata      map[string]any `json:"metadata"`
+	ResultPayload map[string]any `json:"result_payload"`
+	ResultSummary string         `json:"result_summary"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		MissionID     respjson.Field
@@ -224,112 +224,50 @@ func (r *MissionRunData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type MissionRunDataStatus string
+type MissionRunResponse struct {
+	Data MissionRunData `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MissionRunResponse) RawJSON() string { return r.JSON.raw }
+func (r *MissionRunResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MissionRunsListResponse struct {
+	Data []MissionRunData `json:"data" api:"required"`
+	Meta Meta             `json:"meta" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MissionRunsListResponse) RawJSON() string { return r.JSON.raw }
+func (r *MissionRunsListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type RunStatus string
 
 const (
-	MissionRunDataStatusPending   MissionRunDataStatus = "pending"
-	MissionRunDataStatusRunning   MissionRunDataStatus = "running"
-	MissionRunDataStatusPaused    MissionRunDataStatus = "paused"
-	MissionRunDataStatusSucceeded MissionRunDataStatus = "succeeded"
-	MissionRunDataStatusFailed    MissionRunDataStatus = "failed"
-	MissionRunDataStatusCancelled MissionRunDataStatus = "cancelled"
+	RunStatusPending   RunStatus = "pending"
+	RunStatusRunning   RunStatus = "running"
+	RunStatusPaused    RunStatus = "paused"
+	RunStatusSucceeded RunStatus = "succeeded"
+	RunStatusFailed    RunStatus = "failed"
+	RunStatusCancelled RunStatus = "cancelled"
 )
-
-type AIMissionRunNewResponse struct {
-	Data MissionRunData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIMissionRunGetResponse struct {
-	Data MissionRunData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIMissionRunUpdateResponse struct {
-	Data MissionRunData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIMissionRunCancelRunResponse struct {
-	Data MissionRunData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunCancelRunResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunCancelRunResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIMissionRunPauseRunResponse struct {
-	Data MissionRunData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunPauseRunResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunPauseRunResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIMissionRunResumeRunResponse struct {
-	Data MissionRunData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunResumeRunResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunResumeRunResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 type AIMissionRunNewParams struct {
 	Input    map[string]any `json:"input,omitzero"`
@@ -357,7 +295,7 @@ type AIMissionRunUpdateParams struct {
 	Metadata      map[string]any    `json:"metadata,omitzero"`
 	ResultPayload map[string]any    `json:"result_payload,omitzero"`
 	// Any of "pending", "running", "paused", "succeeded", "failed", "cancelled".
-	Status AIMissionRunUpdateParamsStatus `json:"status,omitzero"`
+	Status RunStatus `json:"status,omitzero"`
 	paramObj
 }
 
@@ -368,17 +306,6 @@ func (r AIMissionRunUpdateParams) MarshalJSON() (data []byte, err error) {
 func (r *AIMissionRunUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type AIMissionRunUpdateParamsStatus string
-
-const (
-	AIMissionRunUpdateParamsStatusPending   AIMissionRunUpdateParamsStatus = "pending"
-	AIMissionRunUpdateParamsStatusRunning   AIMissionRunUpdateParamsStatus = "running"
-	AIMissionRunUpdateParamsStatusPaused    AIMissionRunUpdateParamsStatus = "paused"
-	AIMissionRunUpdateParamsStatusSucceeded AIMissionRunUpdateParamsStatus = "succeeded"
-	AIMissionRunUpdateParamsStatusFailed    AIMissionRunUpdateParamsStatus = "failed"
-	AIMissionRunUpdateParamsStatusCancelled AIMissionRunUpdateParamsStatus = "cancelled"
-)
 
 type AIMissionRunListParams struct {
 	// Page number (1-based)

@@ -102,7 +102,7 @@ func TestAIMissionRunUpdateWithOptionalParams(t *testing.T) {
 				"foo": "bar",
 			},
 			ResultSummary: telnyx.String("result_summary"),
-			Status:        telnyx.AIMissionRunUpdateParamsStatusPending,
+			Status:        telnyx.RunStatusPending,
 		},
 	)
 	if err != nil {

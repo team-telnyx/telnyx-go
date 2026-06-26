@@ -54,7 +54,7 @@ func (r *PortingOrderCommentService) New(ctx context.Context, id string, body Po
 }
 
 // Returns a list of all comments of a porting order.
-func (r *PortingOrderCommentService) List(ctx context.Context, id string, query PortingOrderCommentListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingOrderCommentListResponse], err error) {
+func (r *PortingOrderCommentService) List(ctx context.Context, id string, query PortingOrderCommentListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingOrdersComment], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -76,12 +76,53 @@ func (r *PortingOrderCommentService) List(ctx context.Context, id string, query 
 }
 
 // Returns a list of all comments of a porting order.
-func (r *PortingOrderCommentService) ListAutoPaging(ctx context.Context, id string, query PortingOrderCommentListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingOrderCommentListResponse] {
+func (r *PortingOrderCommentService) ListAutoPaging(ctx context.Context, id string, query PortingOrderCommentListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingOrdersComment] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, id, query, opts...))
 }
 
+type PortingOrdersComment struct {
+	ID string `json:"id" format:"uuid"`
+	// Body of comment
+	Body string `json:"body"`
+	// ISO 8601 formatted date indicating when the resource was created.
+	CreatedAt      time.Time `json:"created_at" format:"date-time"`
+	PortingOrderID string    `json:"porting_order_id" format:"uuid"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
+	// Indicates whether this comment was created by a Telnyx Admin, user, or system
+	//
+	// Any of "admin", "user", "system".
+	UserType PortingOrdersCommentUserType `json:"user_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID             respjson.Field
+		Body           respjson.Field
+		CreatedAt      respjson.Field
+		PortingOrderID respjson.Field
+		RecordType     respjson.Field
+		UserType       respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingOrdersComment) RawJSON() string { return r.JSON.raw }
+func (r *PortingOrdersComment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Indicates whether this comment was created by a Telnyx Admin, user, or system
+type PortingOrdersCommentUserType string
+
+const (
+	PortingOrdersCommentUserTypeAdmin  PortingOrdersCommentUserType = "admin"
+	PortingOrdersCommentUserTypeUser   PortingOrdersCommentUserType = "user"
+	PortingOrdersCommentUserTypeSystem PortingOrdersCommentUserType = "system"
+)
+
 type PortingOrderCommentNewResponse struct {
-	Data PortingOrderCommentNewResponseData `json:"data"`
+	Data PortingOrdersComment `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -95,79 +136,6 @@ func (r PortingOrderCommentNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *PortingOrderCommentNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type PortingOrderCommentNewResponseData struct {
-	ID string `json:"id" format:"uuid"`
-	// Body of comment
-	Body string `json:"body"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt      time.Time `json:"created_at" format:"date-time"`
-	PortingOrderID string    `json:"porting_order_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// Indicates whether this comment was created by a Telnyx Admin, user, or system
-	//
-	// Any of "admin", "user", "system".
-	UserType string `json:"user_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		Body           respjson.Field
-		CreatedAt      respjson.Field
-		PortingOrderID respjson.Field
-		RecordType     respjson.Field
-		UserType       respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingOrderCommentNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *PortingOrderCommentNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingOrderCommentListResponse struct {
-	ID string `json:"id" format:"uuid"`
-	// Body of comment
-	Body string `json:"body"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt      time.Time `json:"created_at" format:"date-time"`
-	PortingOrderID string    `json:"porting_order_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// Indicates whether this comment was created by a Telnyx Admin, user, or system
-	//
-	// Any of "admin", "user", "system".
-	UserType PortingOrderCommentListResponseUserType `json:"user_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		Body           respjson.Field
-		CreatedAt      respjson.Field
-		PortingOrderID respjson.Field
-		RecordType     respjson.Field
-		UserType       respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingOrderCommentListResponse) RawJSON() string { return r.JSON.raw }
-func (r *PortingOrderCommentListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Indicates whether this comment was created by a Telnyx Admin, user, or system
-type PortingOrderCommentListResponseUserType string
-
-const (
-	PortingOrderCommentListResponseUserTypeAdmin  PortingOrderCommentListResponseUserType = "admin"
-	PortingOrderCommentListResponseUserTypeUser   PortingOrderCommentListResponseUserType = "user"
-	PortingOrderCommentListResponseUserTypeSystem PortingOrderCommentListResponseUserType = "system"
-)
 
 type PortingOrderCommentNewParams struct {
 	Body param.Opt[string] `json:"body,omitzero"`

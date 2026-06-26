@@ -52,7 +52,7 @@ func (r *ConnectionService) Get(ctx context.Context, id string, opts ...option.R
 }
 
 // Returns a list of your connections irrespective of type.
-func (r *ConnectionService) List(ctx context.Context, query ConnectionListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[ConnectionListResponse], err error) {
+func (r *ConnectionService) List(ctx context.Context, query ConnectionListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[Connection], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -70,7 +70,7 @@ func (r *ConnectionService) List(ctx context.Context, query ConnectionListParams
 }
 
 // Returns a list of your connections irrespective of type.
-func (r *ConnectionService) ListAutoPaging(ctx context.Context, query ConnectionListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[ConnectionListResponse] {
+func (r *ConnectionService) ListAutoPaging(ctx context.Context, query ConnectionListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[Connection] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -105,8 +105,74 @@ func (r *ConnectionService) ListActiveCallsAutoPaging(ctx context.Context, conne
 	return pagination.NewDefaultFlatPaginationAutoPager(r.ListActiveCalls(ctx, connectionID, query, opts...))
 }
 
+type Connection struct {
+	// Identifies the specific resource.
+	ID string `json:"id"`
+	// Defaults to true
+	Active bool `json:"active"`
+	// `Latency` directs Telnyx to route media through the site with the lowest
+	// round-trip time to the user's connection. Telnyx calculates this time using ICMP
+	// ping messages. This can be disabled by specifying a site to handle all media.
+	//
+	// Any of "Latency", "Chicago, IL", "Ashburn, VA", "San Jose, CA", "Sydney,
+	// Australia", "Amsterdam, Netherlands", "London, UK", "Toronto, Canada",
+	// "Vancouver, Canada", "Frankfurt, Germany".
+	AnchorsiteOverride AnchorsiteOverride `json:"anchorsite_override"`
+	ConnectionName     string             `json:"connection_name"`
+	// ISO 8601 formatted date indicating when the resource was created.
+	CreatedAt string `json:"created_at"`
+	// Identifies the associated outbound voice profile.
+	OutboundVoiceProfileID string `json:"outbound_voice_profile_id"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type"`
+	// Tags associated with the connection.
+	Tags []string `json:"tags"`
+	// ISO 8601 formatted date indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
+	// Determines which webhook format will be used, Telnyx API v1 or v2.
+	//
+	// Any of "1", "2".
+	WebhookAPIVersion ConnectionWebhookAPIVersion `json:"webhook_api_version"`
+	// The failover URL where webhooks related to this connection will be sent if
+	// sending to the primary URL fails.
+	WebhookEventFailoverURL string `json:"webhook_event_failover_url" api:"nullable" format:"uri"`
+	// The URL where webhooks related to this connection will be sent.
+	WebhookEventURL string `json:"webhook_event_url" api:"nullable" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                      respjson.Field
+		Active                  respjson.Field
+		AnchorsiteOverride      respjson.Field
+		ConnectionName          respjson.Field
+		CreatedAt               respjson.Field
+		OutboundVoiceProfileID  respjson.Field
+		RecordType              respjson.Field
+		Tags                    respjson.Field
+		UpdatedAt               respjson.Field
+		WebhookAPIVersion       respjson.Field
+		WebhookEventFailoverURL respjson.Field
+		WebhookEventURL         respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Connection) RawJSON() string { return r.JSON.raw }
+func (r *Connection) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Determines which webhook format will be used, Telnyx API v1 or v2.
+type ConnectionWebhookAPIVersion string
+
+const (
+	ConnectionWebhookAPIVersionV1 ConnectionWebhookAPIVersion = "1"
+	ConnectionWebhookAPIVersionV2 ConnectionWebhookAPIVersion = "2"
+)
+
 type ConnectionGetResponse struct {
-	Data ConnectionGetResponseData `json:"data"`
+	Data Connection `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -120,130 +186,6 @@ func (r ConnectionGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *ConnectionGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type ConnectionGetResponseData struct {
-	// Identifies the specific resource.
-	ID string `json:"id"`
-	// Defaults to true
-	Active bool `json:"active"`
-	// `Latency` directs Telnyx to route media through the site with the lowest
-	// round-trip time to the user's connection. Telnyx calculates this time using ICMP
-	// ping messages. This can be disabled by specifying a site to handle all media.
-	//
-	// Any of "Latency", "Chicago, IL", "Ashburn, VA", "San Jose, CA", "Sydney,
-	// Australia", "Amsterdam, Netherlands", "London, UK", "Toronto, Canada",
-	// "Vancouver, Canada", "Frankfurt, Germany".
-	AnchorsiteOverride AnchorsiteOverride `json:"anchorsite_override"`
-	ConnectionName     string             `json:"connection_name"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt string `json:"created_at"`
-	// Identifies the associated outbound voice profile.
-	OutboundVoiceProfileID string `json:"outbound_voice_profile_id"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// Tags associated with the connection.
-	Tags []string `json:"tags"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt string `json:"updated_at"`
-	// Determines which webhook format will be used, Telnyx API v1 or v2.
-	//
-	// Any of "1", "2".
-	WebhookAPIVersion string `json:"webhook_api_version"`
-	// The failover URL where webhooks related to this connection will be sent if
-	// sending to the primary URL fails.
-	WebhookEventFailoverURL string `json:"webhook_event_failover_url" api:"nullable" format:"uri"`
-	// The URL where webhooks related to this connection will be sent.
-	WebhookEventURL string `json:"webhook_event_url" api:"nullable" format:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                      respjson.Field
-		Active                  respjson.Field
-		AnchorsiteOverride      respjson.Field
-		ConnectionName          respjson.Field
-		CreatedAt               respjson.Field
-		OutboundVoiceProfileID  respjson.Field
-		RecordType              respjson.Field
-		Tags                    respjson.Field
-		UpdatedAt               respjson.Field
-		WebhookAPIVersion       respjson.Field
-		WebhookEventFailoverURL respjson.Field
-		WebhookEventURL         respjson.Field
-		ExtraFields             map[string]respjson.Field
-		raw                     string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ConnectionGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *ConnectionGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ConnectionListResponse struct {
-	// Identifies the specific resource.
-	ID string `json:"id"`
-	// Defaults to true
-	Active bool `json:"active"`
-	// `Latency` directs Telnyx to route media through the site with the lowest
-	// round-trip time to the user's connection. Telnyx calculates this time using ICMP
-	// ping messages. This can be disabled by specifying a site to handle all media.
-	//
-	// Any of "Latency", "Chicago, IL", "Ashburn, VA", "San Jose, CA", "Sydney,
-	// Australia", "Amsterdam, Netherlands", "London, UK", "Toronto, Canada",
-	// "Vancouver, Canada", "Frankfurt, Germany".
-	AnchorsiteOverride AnchorsiteOverride `json:"anchorsite_override"`
-	ConnectionName     string             `json:"connection_name"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt string `json:"created_at"`
-	// Identifies the associated outbound voice profile.
-	OutboundVoiceProfileID string `json:"outbound_voice_profile_id"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// Tags associated with the connection.
-	Tags []string `json:"tags"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt string `json:"updated_at"`
-	// Determines which webhook format will be used, Telnyx API v1 or v2.
-	//
-	// Any of "1", "2".
-	WebhookAPIVersion ConnectionListResponseWebhookAPIVersion `json:"webhook_api_version"`
-	// The failover URL where webhooks related to this connection will be sent if
-	// sending to the primary URL fails.
-	WebhookEventFailoverURL string `json:"webhook_event_failover_url" api:"nullable" format:"uri"`
-	// The URL where webhooks related to this connection will be sent.
-	WebhookEventURL string `json:"webhook_event_url" api:"nullable" format:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                      respjson.Field
-		Active                  respjson.Field
-		AnchorsiteOverride      respjson.Field
-		ConnectionName          respjson.Field
-		CreatedAt               respjson.Field
-		OutboundVoiceProfileID  respjson.Field
-		RecordType              respjson.Field
-		Tags                    respjson.Field
-		UpdatedAt               respjson.Field
-		WebhookAPIVersion       respjson.Field
-		WebhookEventFailoverURL respjson.Field
-		WebhookEventURL         respjson.Field
-		ExtraFields             map[string]respjson.Field
-		raw                     string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ConnectionListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ConnectionListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Determines which webhook format will be used, Telnyx API v1 or v2.
-type ConnectionListResponseWebhookAPIVersion string
-
-const (
-	ConnectionListResponseWebhookAPIVersionV1 ConnectionListResponseWebhookAPIVersion = "1"
-	ConnectionListResponseWebhookAPIVersionV2 ConnectionListResponseWebhookAPIVersion = "2"
-)
 
 type ConnectionListActiveCallsResponse struct {
 	// Unique identifier and token for controlling the call.

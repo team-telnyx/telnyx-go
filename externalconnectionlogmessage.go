@@ -54,7 +54,7 @@ func (r *ExternalConnectionLogMessageService) Get(ctx context.Context, id string
 
 // Retrieve a list of log messages for all external connections associated with
 // your account.
-func (r *ExternalConnectionLogMessageService) List(ctx context.Context, query ExternalConnectionLogMessageListParams, opts ...option.RequestOption) (res *pagination.DefaultPaginationForLogMessages[ExternalConnectionLogMessageListResponse], err error) {
+func (r *ExternalConnectionLogMessageService) List(ctx context.Context, query ExternalConnectionLogMessageListParams, opts ...option.RequestOption) (res *pagination.DefaultPaginationForLogMessages[LogMessage], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -73,7 +73,7 @@ func (r *ExternalConnectionLogMessageService) List(ctx context.Context, query Ex
 
 // Retrieve a list of log messages for all external connections associated with
 // your account.
-func (r *ExternalConnectionLogMessageService) ListAutoPaging(ctx context.Context, query ExternalConnectionLogMessageListParams, opts ...option.RequestOption) *pagination.DefaultPaginationForLogMessagesAutoPager[ExternalConnectionLogMessageListResponse] {
+func (r *ExternalConnectionLogMessageService) ListAutoPaging(ctx context.Context, query ExternalConnectionLogMessageListParams, opts ...option.RequestOption) *pagination.DefaultPaginationForLogMessagesAutoPager[LogMessage] {
 	return pagination.NewDefaultPaginationForLogMessagesAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -89,8 +89,72 @@ func (r *ExternalConnectionLogMessageService) Dismiss(ctx context.Context, id st
 	return res, err
 }
 
+type LogMessage struct {
+	Code   string           `json:"code" api:"required"`
+	Title  string           `json:"title" api:"required"`
+	Detail string           `json:"detail"`
+	Meta   LogMessageMeta   `json:"meta"`
+	Source LogMessageSource `json:"source"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Code        respjson.Field
+		Title       respjson.Field
+		Detail      respjson.Field
+		Meta        respjson.Field
+		Source      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LogMessage) RawJSON() string { return r.JSON.raw }
+func (r *LogMessage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LogMessageMeta struct {
+	// The external connection the log message is associated with, if any.
+	ExternalConnectionID string `json:"external_connection_id"`
+	// The telephone number the log message is associated with, if any.
+	TelephoneNumber string `json:"telephone_number"`
+	// The ticket ID for an operation that generated the log message, if any.
+	TicketID string `json:"ticket_id" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExternalConnectionID respjson.Field
+		TelephoneNumber      respjson.Field
+		TicketID             respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LogMessageMeta) RawJSON() string { return r.JSON.raw }
+func (r *LogMessageMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LogMessageSource struct {
+	// JSON pointer (RFC6901) to the offending entity.
+	Pointer string `json:"pointer" format:"json-pointer"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Pointer     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LogMessageSource) RawJSON() string { return r.JSON.raw }
+func (r *LogMessageSource) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ExternalConnectionLogMessageGetResponse struct {
-	LogMessages []ExternalConnectionLogMessageGetResponseLogMessage `json:"log_messages"`
+	LogMessages []LogMessage `json:"log_messages"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		LogMessages respjson.Field
@@ -102,134 +166,6 @@ type ExternalConnectionLogMessageGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ExternalConnectionLogMessageGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *ExternalConnectionLogMessageGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ExternalConnectionLogMessageGetResponseLogMessage struct {
-	Code   string                                                  `json:"code" api:"required"`
-	Title  string                                                  `json:"title" api:"required"`
-	Detail string                                                  `json:"detail"`
-	Meta   ExternalConnectionLogMessageGetResponseLogMessageMeta   `json:"meta"`
-	Source ExternalConnectionLogMessageGetResponseLogMessageSource `json:"source"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Title       respjson.Field
-		Detail      respjson.Field
-		Meta        respjson.Field
-		Source      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExternalConnectionLogMessageGetResponseLogMessage) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionLogMessageGetResponseLogMessage) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ExternalConnectionLogMessageGetResponseLogMessageMeta struct {
-	// The external connection the log message is associated with, if any.
-	ExternalConnectionID string `json:"external_connection_id"`
-	// The telephone number the log message is associated with, if any.
-	TelephoneNumber string `json:"telephone_number"`
-	// The ticket ID for an operation that generated the log message, if any.
-	TicketID string `json:"ticket_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ExternalConnectionID respjson.Field
-		TelephoneNumber      respjson.Field
-		TicketID             respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExternalConnectionLogMessageGetResponseLogMessageMeta) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionLogMessageGetResponseLogMessageMeta) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ExternalConnectionLogMessageGetResponseLogMessageSource struct {
-	// JSON pointer (RFC6901) to the offending entity.
-	Pointer string `json:"pointer" format:"json-pointer"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Pointer     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExternalConnectionLogMessageGetResponseLogMessageSource) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionLogMessageGetResponseLogMessageSource) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ExternalConnectionLogMessageListResponse struct {
-	Code   string                                         `json:"code" api:"required"`
-	Title  string                                         `json:"title" api:"required"`
-	Detail string                                         `json:"detail"`
-	Meta   ExternalConnectionLogMessageListResponseMeta   `json:"meta"`
-	Source ExternalConnectionLogMessageListResponseSource `json:"source"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Title       respjson.Field
-		Detail      respjson.Field
-		Meta        respjson.Field
-		Source      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExternalConnectionLogMessageListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionLogMessageListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ExternalConnectionLogMessageListResponseMeta struct {
-	// The external connection the log message is associated with, if any.
-	ExternalConnectionID string `json:"external_connection_id"`
-	// The telephone number the log message is associated with, if any.
-	TelephoneNumber string `json:"telephone_number"`
-	// The ticket ID for an operation that generated the log message, if any.
-	TicketID string `json:"ticket_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ExternalConnectionID respjson.Field
-		TelephoneNumber      respjson.Field
-		TicketID             respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExternalConnectionLogMessageListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionLogMessageListResponseMeta) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ExternalConnectionLogMessageListResponseSource struct {
-	// JSON pointer (RFC6901) to the offending entity.
-	Pointer string `json:"pointer" format:"json-pointer"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Pointer     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExternalConnectionLogMessageListResponseSource) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionLogMessageListResponseSource) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -44,7 +44,7 @@ func NewTermsOfServiceAgreementService(opts ...option.RequestOption) (r TermsOfS
 
 // Retrieve a single ToS agreement record. Returns `404` if the agreement does not
 // exist or does not belong to the authenticated user.
-func (r *TermsOfServiceAgreementService) Get(ctx context.Context, agreementID string, opts ...option.RequestOption) (res *TermsOfServiceAgreementGetResponse, err error) {
+func (r *TermsOfServiceAgreementService) Get(ctx context.Context, agreementID string, opts ...option.RequestOption) (res *TosAgreementWrapped, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if agreementID == "" {
 		err = errors.New("missing required agreement_id parameter")
@@ -65,7 +65,7 @@ func (r *TermsOfServiceAgreementService) Get(ctx context.Context, agreementID st
 //
 // By default this returns agreements for **all** products the user has agreed to.
 // Pass the `product_type` query parameter to scope the result to a single product.
-func (r *TermsOfServiceAgreementService) List(ctx context.Context, query TermsOfServiceAgreementListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[TermsOfServiceAgreementListResponse], err error) {
+func (r *TermsOfServiceAgreementService) List(ctx context.Context, query TermsOfServiceAgreementListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[TosAgreement], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -92,15 +92,48 @@ func (r *TermsOfServiceAgreementService) List(ctx context.Context, query TermsOf
 //
 // By default this returns agreements for **all** products the user has agreed to.
 // Pass the `product_type` query parameter to scope the result to a single product.
-func (r *TermsOfServiceAgreementService) ListAutoPaging(ctx context.Context, query TermsOfServiceAgreementListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[TermsOfServiceAgreementListResponse] {
+func (r *TermsOfServiceAgreementService) ListAutoPaging(ctx context.Context, query TermsOfServiceAgreementListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[TosAgreement] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-type TermsOfServiceAgreementGetResponse struct {
+// A recorded user agreement to a product's Terms of Service. The `user_id` is
+// intentionally NOT echoed back on this public surface - the caller already knows
+// their own identity.
+type TosAgreement struct {
+	ID        string    `json:"id" format:"uuid"`
+	AgreedAt  time.Time `json:"agreed_at" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Telnyx product the Terms of Service apply to.
+	//
+	// Any of "branded_calling", "number_reputation".
+	ProductType  TosProductType `json:"product_type"`
+	TermsVersion string         `json:"terms_version"`
+	// Convenience alias of `terms_version`. Both keys are present on every response.
+	Version string `json:"version"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		AgreedAt     respjson.Field
+		CreatedAt    respjson.Field
+		ProductType  respjson.Field
+		TermsVersion respjson.Field
+		Version      respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TosAgreement) RawJSON() string { return r.JSON.raw }
+func (r *TosAgreement) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TosAgreementWrapped struct {
 	// A recorded user agreement to a product's Terms of Service. The `user_id` is
 	// intentionally NOT echoed back on this public surface - the caller already knows
 	// their own identity.
-	Data TermsOfServiceAgreementGetResponseData `json:"data" api:"required"`
+	Data TosAgreement `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -110,83 +143,17 @@ type TermsOfServiceAgreementGetResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r TermsOfServiceAgreementGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *TermsOfServiceAgreementGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A recorded user agreement to a product's Terms of Service. The `user_id` is
-// intentionally NOT echoed back on this public surface - the caller already knows
-// their own identity.
-type TermsOfServiceAgreementGetResponseData struct {
-	ID        string    `json:"id" format:"uuid"`
-	AgreedAt  time.Time `json:"agreed_at" format:"date-time"`
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Telnyx product the Terms of Service apply to.
-	//
-	// Any of "branded_calling", "number_reputation".
-	ProductType  string `json:"product_type"`
-	TermsVersion string `json:"terms_version"`
-	// Convenience alias of `terms_version`. Both keys are present on every response.
-	Version string `json:"version"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID           respjson.Field
-		AgreedAt     respjson.Field
-		CreatedAt    respjson.Field
-		ProductType  respjson.Field
-		TermsVersion respjson.Field
-		Version      respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TermsOfServiceAgreementGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *TermsOfServiceAgreementGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A recorded user agreement to a product's Terms of Service. The `user_id` is
-// intentionally NOT echoed back on this public surface - the caller already knows
-// their own identity.
-type TermsOfServiceAgreementListResponse struct {
-	ID        string    `json:"id" format:"uuid"`
-	AgreedAt  time.Time `json:"agreed_at" format:"date-time"`
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Telnyx product the Terms of Service apply to.
-	//
-	// Any of "branded_calling", "number_reputation".
-	ProductType  TermsOfServiceAgreementListResponseProductType `json:"product_type"`
-	TermsVersion string                                         `json:"terms_version"`
-	// Convenience alias of `terms_version`. Both keys are present on every response.
-	Version string `json:"version"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID           respjson.Field
-		AgreedAt     respjson.Field
-		CreatedAt    respjson.Field
-		ProductType  respjson.Field
-		TermsVersion respjson.Field
-		Version      respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TermsOfServiceAgreementListResponse) RawJSON() string { return r.JSON.raw }
-func (r *TermsOfServiceAgreementListResponse) UnmarshalJSON(data []byte) error {
+func (r TosAgreementWrapped) RawJSON() string { return r.JSON.raw }
+func (r *TosAgreementWrapped) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Telnyx product the Terms of Service apply to.
-type TermsOfServiceAgreementListResponseProductType string
+type TosProductType string
 
 const (
-	TermsOfServiceAgreementListResponseProductTypeBrandedCalling   TermsOfServiceAgreementListResponseProductType = "branded_calling"
-	TermsOfServiceAgreementListResponseProductTypeNumberReputation TermsOfServiceAgreementListResponseProductType = "number_reputation"
+	TosProductTypeBrandedCalling   TosProductType = "branded_calling"
+	TosProductTypeNumberReputation TosProductType = "number_reputation"
 )
 
 type TermsOfServiceAgreementListParams struct {
@@ -199,7 +166,7 @@ type TermsOfServiceAgreementListParams struct {
 	// product's agreements.
 	//
 	// Any of "branded_calling", "number_reputation".
-	ProductType TermsOfServiceAgreementListParamsProductType `query:"product_type,omitzero" json:"-"`
+	ProductType TosProductType `query:"product_type,omitzero" json:"-"`
 	paramObj
 }
 
@@ -211,13 +178,3 @@ func (r TermsOfServiceAgreementListParams) URLQuery() (v url.Values, err error) 
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
-
-// Optional filter. Omit to list the user's agreements for **every** product
-// (branded_calling and number_reputation); pass a value to return only that
-// product's agreements.
-type TermsOfServiceAgreementListParamsProductType string
-
-const (
-	TermsOfServiceAgreementListParamsProductTypeBrandedCalling   TermsOfServiceAgreementListParamsProductType = "branded_calling"
-	TermsOfServiceAgreementListParamsProductTypeNumberReputation TermsOfServiceAgreementListParamsProductType = "number_reputation"
-)

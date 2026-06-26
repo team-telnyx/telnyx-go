@@ -13,7 +13,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
-	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // Phone-number reputation monitoring (spam-score lookup and tracking).
@@ -40,7 +39,7 @@ func NewEnterpriseReputationLoaService(opts ...option.RequestOption) (r Enterpri
 // Point the enterprise's reputation settings at a new signed LOA document. This
 // resets LOA approval to `pending`; the new document must be approved before
 // additional phone numbers can be added.
-func (r *EnterpriseReputationLoaService) Update(ctx context.Context, enterpriseID string, body EnterpriseReputationLoaUpdateParams, opts ...option.RequestOption) (res *EnterpriseReputationLoaUpdateResponse, err error) {
+func (r *EnterpriseReputationLoaService) Update(ctx context.Context, enterpriseID string, body EnterpriseReputationLoaUpdateParams, opts ...option.RequestOption) (res *EnterpriseReputationPublicWrapped, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if enterpriseID == "" {
 		err = errors.New("missing required enterprise_id parameter")
@@ -70,19 +69,33 @@ func (r *EnterpriseReputationLoaService) Render(ctx context.Context, enterpriseI
 	return res, err
 }
 
-type EnterpriseReputationLoaUpdateResponse struct {
-	Data EnterpriseReputationPublic `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+// Third-party reseller / partner managing the enterprise's phone numbers. Omit
+// when the enterprise works directly with Telnyx.
+//
+// The properties AdministrativeArea, City, ContactEmail, ContactName,
+// ContactPhone, ContactTitle, Country, LegalName, PostalCode, StreetAddress are
+// required.
+type AgentInputParam struct {
+	AdministrativeArea string            `json:"administrative_area" api:"required"`
+	City               string            `json:"city" api:"required"`
+	ContactEmail       string            `json:"contact_email" api:"required" format:"email"`
+	ContactName        string            `json:"contact_name" api:"required"`
+	ContactPhone       string            `json:"contact_phone" api:"required"`
+	ContactTitle       string            `json:"contact_title" api:"required"`
+	Country            string            `json:"country" api:"required"`
+	LegalName          string            `json:"legal_name" api:"required"`
+	PostalCode         string            `json:"postal_code" api:"required"`
+	StreetAddress      string            `json:"street_address" api:"required"`
+	Dba                param.Opt[string] `json:"dba,omitzero"`
+	ExtendedAddress    param.Opt[string] `json:"extended_address,omitzero"`
+	paramObj
 }
 
-// Returns the unmodified JSON received from the API
-func (r EnterpriseReputationLoaUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseReputationLoaUpdateResponse) UnmarshalJSON(data []byte) error {
+func (r AgentInputParam) MarshalJSON() (data []byte, err error) {
+	type shadow AgentInputParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AgentInputParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -105,7 +118,7 @@ func (r *EnterpriseReputationLoaUpdateParams) UnmarshalJSON(data []byte) error {
 type EnterpriseReputationLoaRenderParams struct {
 	// Third-party reseller / partner managing the enterprise's phone numbers. Omit
 	// when the enterprise works directly with Telnyx.
-	Agent EnterpriseReputationLoaRenderParamsAgent `json:"agent,omitzero"`
+	Agent AgentInputParam `json:"agent,omitzero"`
 	// Optional signature embedded in the rendered PDF. When omitted the PDF is
 	// returned unsigned for the customer to sign and upload.
 	Signature EnterpriseReputationLoaRenderParamsSignature `json:"signature,omitzero"`
@@ -117,36 +130,6 @@ func (r EnterpriseReputationLoaRenderParams) MarshalJSON() (data []byte, err err
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *EnterpriseReputationLoaRenderParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Third-party reseller / partner managing the enterprise's phone numbers. Omit
-// when the enterprise works directly with Telnyx.
-//
-// The properties AdministrativeArea, City, ContactEmail, ContactName,
-// ContactPhone, ContactTitle, Country, LegalName, PostalCode, StreetAddress are
-// required.
-type EnterpriseReputationLoaRenderParamsAgent struct {
-	AdministrativeArea string            `json:"administrative_area" api:"required"`
-	City               string            `json:"city" api:"required"`
-	ContactEmail       string            `json:"contact_email" api:"required" format:"email"`
-	ContactName        string            `json:"contact_name" api:"required"`
-	ContactPhone       string            `json:"contact_phone" api:"required"`
-	ContactTitle       string            `json:"contact_title" api:"required"`
-	Country            string            `json:"country" api:"required"`
-	LegalName          string            `json:"legal_name" api:"required"`
-	PostalCode         string            `json:"postal_code" api:"required"`
-	StreetAddress      string            `json:"street_address" api:"required"`
-	Dba                param.Opt[string] `json:"dba,omitzero"`
-	ExtendedAddress    param.Opt[string] `json:"extended_address,omitzero"`
-	paramObj
-}
-
-func (r EnterpriseReputationLoaRenderParamsAgent) MarshalJSON() (data []byte, err error) {
-	type shadow EnterpriseReputationLoaRenderParamsAgent
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *EnterpriseReputationLoaRenderParamsAgent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

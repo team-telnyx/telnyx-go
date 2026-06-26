@@ -226,7 +226,7 @@ func TestEnterpriseDelete(t *testing.T) {
 	}
 }
 
-func TestEnterpriseActivateBrandedCalling(t *testing.T) {
+func TestEnterpriseBrandedCalling(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -239,7 +239,7 @@ func TestEnterpriseActivateBrandedCalling(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Enterprises.ActivateBrandedCalling(context.TODO(), "4a6192a4-573d-446d-b3ce-aff9117272a6")
+	_, err := client.Enterprises.BrandedCalling(context.TODO(), "4a6192a4-573d-446d-b3ce-aff9117272a6")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

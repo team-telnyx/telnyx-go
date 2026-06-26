@@ -29,7 +29,7 @@ func TestAIMissionNewWithOptionalParams(t *testing.T) {
 	_, err := client.AI.Missions.New(context.TODO(), telnyx.AIMissionNewParams{
 		Name:          "name",
 		Description:   telnyx.String("description"),
-		ExecutionMode: telnyx.AIMissionNewParamsExecutionModeExternal,
+		ExecutionMode: telnyx.ExecutionModeExternal,
 		Instructions:  telnyx.String("instructions"),
 		Metadata: map[string]any{
 			"foo": "bar",
@@ -185,7 +185,7 @@ func TestAIMissionUpdateMissionWithOptionalParams(t *testing.T) {
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.AIMissionUpdateMissionParams{
 			Description:   telnyx.String("description"),
-			ExecutionMode: telnyx.AIMissionUpdateMissionParamsExecutionModeExternal,
+			ExecutionMode: telnyx.ExecutionModeExternal,
 			Instructions:  telnyx.String("instructions"),
 			Metadata: map[string]any{
 				"foo": "bar",

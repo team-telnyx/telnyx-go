@@ -16,7 +16,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v4/shared"
-	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
 // CallService contains methods and other services that help with interacting with
@@ -123,7 +122,7 @@ type CallAssistantRequestParam struct {
 	// `telnyx_call_*` variables (telnyx_call_to, telnyx_call_from,
 	// telnyx_conversation_channel, telnyx_agent_target, telnyx_end_user_target,
 	// telnyx_call_caller_id_name) and custom header variables.
-	DynamicVariables map[string]CallAssistantRequestDynamicVariableUnionParam `json:"dynamic_variables,omitzero"`
+	DynamicVariables map[string]CallAssistantRequestDynamicVariablesUnionParam `json:"dynamic_variables,omitzero"`
 	// External LLM configuration for bringing your own LLM endpoint.
 	ExternalLlm CallAssistantRequestExternalLlmParam `json:"external_llm,omitzero"`
 	// Fallback LLM configuration used when the primary LLM provider is unavailable.
@@ -136,7 +135,7 @@ type CallAssistantRequestParam struct {
 	ObservabilitySettings map[string]any `json:"observability_settings,omitzero"`
 	// Inline tool definitions available to the assistant (webhook, retrieval,
 	// transfer, hangup, etc.). Overrides the assistant's stored tools if provided.
-	Tools []CallAssistantRequestToolUnionParam `json:"tools,omitzero"`
+	Tools []CallAssistantRequestToolsUnionParam `json:"tools,omitzero"`
 	paramObj
 }
 
@@ -151,21 +150,21 @@ func (r *CallAssistantRequestParam) UnmarshalJSON(data []byte) error {
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type CallAssistantRequestDynamicVariableUnionParam struct {
+type CallAssistantRequestDynamicVariablesUnionParam struct {
 	OfString param.Opt[string]  `json:",omitzero,inline"`
 	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
 	OfBool   param.Opt[bool]    `json:",omitzero,inline"`
 	paramUnion
 }
 
-func (u CallAssistantRequestDynamicVariableUnionParam) MarshalJSON() ([]byte, error) {
+func (u CallAssistantRequestDynamicVariablesUnionParam) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool)
 }
-func (u *CallAssistantRequestDynamicVariableUnionParam) UnmarshalJSON(data []byte) error {
+func (u *CallAssistantRequestDynamicVariablesUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
-func (u *CallAssistantRequestDynamicVariableUnionParam) asAny() any {
+func (u *CallAssistantRequestDynamicVariablesUnionParam) asAny() any {
 	if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
 	} else if !param.IsOmitted(u.OfFloat) {
@@ -281,7 +280,7 @@ func init() {
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type CallAssistantRequestToolUnionParam struct {
+type CallAssistantRequestToolsUnionParam struct {
 	OfBookAppointment   *shared.BookAppointmentToolParam      `json:",omitzero,inline"`
 	OfCheckAvailability *shared.CheckAvailabilityToolParam    `json:",omitzero,inline"`
 	OfWebhook           *WebhookToolParam                     `json:",omitzero,inline"`
@@ -291,7 +290,7 @@ type CallAssistantRequestToolUnionParam struct {
 	paramUnion
 }
 
-func (u CallAssistantRequestToolUnionParam) MarshalJSON() ([]byte, error) {
+func (u CallAssistantRequestToolsUnionParam) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfBookAppointment,
 		u.OfCheckAvailability,
 		u.OfWebhook,
@@ -299,11 +298,11 @@ func (u CallAssistantRequestToolUnionParam) MarshalJSON() ([]byte, error) {
 		u.OfTransfer,
 		u.OfRetrieval)
 }
-func (u *CallAssistantRequestToolUnionParam) UnmarshalJSON(data []byte) error {
+func (u *CallAssistantRequestToolsUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
-func (u *CallAssistantRequestToolUnionParam) asAny() any {
+func (u *CallAssistantRequestToolsUnionParam) asAny() any {
 	if !param.IsOmitted(u.OfBookAppointment) {
 		return u.OfBookAppointment
 	} else if !param.IsOmitted(u.OfCheckAvailability) {
@@ -321,7 +320,7 @@ func (u *CallAssistantRequestToolUnionParam) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u CallAssistantRequestToolUnionParam) GetBookAppointment() *shared.BookAppointmentToolParams {
+func (u CallAssistantRequestToolsUnionParam) GetBookAppointment() *shared.BookAppointmentToolParams {
 	if vt := u.OfBookAppointment; vt != nil {
 		return &vt.BookAppointment
 	}
@@ -329,7 +328,7 @@ func (u CallAssistantRequestToolUnionParam) GetBookAppointment() *shared.BookApp
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u CallAssistantRequestToolUnionParam) GetCheckAvailability() *shared.CheckAvailabilityToolParams {
+func (u CallAssistantRequestToolsUnionParam) GetCheckAvailability() *shared.CheckAvailabilityToolParams {
 	if vt := u.OfCheckAvailability; vt != nil {
 		return &vt.CheckAvailability
 	}
@@ -337,7 +336,7 @@ func (u CallAssistantRequestToolUnionParam) GetCheckAvailability() *shared.Check
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u CallAssistantRequestToolUnionParam) GetWebhook() *WebhookToolWebhookParam {
+func (u CallAssistantRequestToolsUnionParam) GetWebhook() *WebhookToolWebhookParam {
 	if vt := u.OfWebhook; vt != nil {
 		return &vt.Webhook
 	}
@@ -345,7 +344,7 @@ func (u CallAssistantRequestToolUnionParam) GetWebhook() *WebhookToolWebhookPara
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u CallAssistantRequestToolUnionParam) GetHangup() *HangupToolParams {
+func (u CallAssistantRequestToolsUnionParam) GetHangup() *HangupToolParams {
 	if vt := u.OfHangup; vt != nil {
 		return &vt.Hangup
 	}
@@ -353,7 +352,7 @@ func (u CallAssistantRequestToolUnionParam) GetHangup() *HangupToolParams {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u CallAssistantRequestToolUnionParam) GetTransfer() *TransferToolTransferParam {
+func (u CallAssistantRequestToolsUnionParam) GetTransfer() *TransferToolTransferParam {
 	if vt := u.OfTransfer; vt != nil {
 		return &vt.Transfer
 	}
@@ -361,7 +360,7 @@ func (u CallAssistantRequestToolUnionParam) GetTransfer() *TransferToolTransferP
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u CallAssistantRequestToolUnionParam) GetRetrieval() *shared.CallControlBucketIDsParam {
+func (u CallAssistantRequestToolsUnionParam) GetRetrieval() *shared.CallControlBucketIDsParam {
 	if vt := u.OfRetrieval; vt != nil {
 		return &vt.Retrieval
 	}
@@ -369,7 +368,7 @@ func (u CallAssistantRequestToolUnionParam) GetRetrieval() *shared.CallControlBu
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u CallAssistantRequestToolUnionParam) GetType() *string {
+func (u CallAssistantRequestToolsUnionParam) GetType() *string {
 	if vt := u.OfBookAppointment; vt != nil {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfCheckAvailability; vt != nil {
@@ -387,7 +386,7 @@ func (u CallAssistantRequestToolUnionParam) GetType() *string {
 }
 
 func init() {
-	apijson.RegisterUnion[CallAssistantRequestToolUnionParam](
+	apijson.RegisterUnion[CallAssistantRequestToolsUnionParam](
 		"type",
 		apijson.Discriminator[shared.BookAppointmentToolParam]("book_appointment"),
 		apijson.Discriminator[shared.CheckAvailabilityToolParam]("check_availability"),
@@ -395,6 +394,656 @@ func init() {
 		apijson.Discriminator[HangupToolParam]("hangup"),
 		apijson.Discriminator[TransferToolParam]("transfer"),
 		apijson.Discriminator[shared.CallControlRetrievalToolParam]("retrieval"),
+	)
+}
+
+// Starts a Conversation Relay session automatically when the answered/dialed call
+// is answered. This embedded shape is supported on `answer` and `dial`. It uses
+// public field names (`url`, `dtmf_detection`, `greeting`, `voice`, `language`,
+// etc.) and maps them to the underlying Conversation Relay action. `client_state`,
+// `tts_language`, and `transcription_language` inside this object are ignored; use
+// the parent command's `client_state` and `command_id` fields instead.
+//
+// The property URL is required.
+type ConversationRelayEmbeddedConfigParam struct {
+	// WebSocket URL for your Conversation Relay server. Must start with `ws://` or
+	// `wss://`.
+	URL string `json:"url" api:"required"`
+	// Enable DTMF detection for the relay session.
+	DtmfDetection param.Opt[bool] `json:"dtmf_detection,omitzero"`
+	// Text played when the relay session starts.
+	Greeting param.Opt[string] `json:"greeting,omitzero"`
+	// Default language for both text-to-speech and speech recognition.
+	Language param.Opt[string] `json:"language,omitzero"`
+	// Structured voice provider. Must be supplied together with `structured_provider`.
+	Provider param.Opt[string] `json:"provider,omitzero"`
+	// Text-to-speech provider. If omitted, Telnyx derives it from `voice` or
+	// `provider`.
+	TtsProvider param.Opt[string] `json:"tts_provider,omitzero"`
+	// The voice to be used by the voice assistant. Currently we support ElevenLabs,
+	// Telnyx and AWS voices.
+	//
+	// **Supported Providers:**
+	//
+	//   - **AWS:** Use `AWS.Polly.<VoiceId>` (e.g., `AWS.Polly.Joanna`). For neural
+	//     voices, which provide more realistic, human-like speech, append `-Neural` to
+	//     the `VoiceId` (e.g., `AWS.Polly.Joanna-Neural`). Check the
+	//     [available voices](https://docs.aws.amazon.com/polly/latest/dg/available-voices.html)
+	//     for compatibility.
+	//   - **Azure:** Use `Azure.<VoiceId>. (e.g. Azure.en-CA-ClaraNeural,
+	//     Azure.en-CA-LiamNeural, Azure.en-US-BrianMultilingualNeural,
+	//     Azure.en-US-Ava:DragonHDLatestNeural. For a complete list of voices, go to
+	//     [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery).)
+	//   - **ElevenLabs:** Use `ElevenLabs.<ModelId>.<VoiceId>` (e.g.,
+	//     `ElevenLabs.BaseModel.John`). The `ModelId` part is optional. To use
+	//     ElevenLabs, you must provide your ElevenLabs API key as an integration secret
+	//     under `"voice_settings": {"api_key_ref": "<secret_id>"}`. See
+	//     [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
+	//     for details. Check
+	//     [available voices](https://elevenlabs.io/docs/api-reference/get-voices).
+	//   - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>`
+	//   - **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`,
+	//     `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`,
+	//     `Max`, `TTS2`.
+	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
+	//     `ara`, `rex`, `sal`, `leo`.
+	Voice param.Opt[string] `json:"voice,omitzero"`
+	// Custom key-value parameters forwarded to the relay session as assistant dynamic
+	// variables.
+	CustomParameters map[string]any `json:"custom_parameters,omitzero"`
+	// Controls when caller input can interrupt assistant speech. `any` allows speech
+	// or DTMF interruptions; `none` disables interruptions; `speech` allows speech
+	// only; `dtmf` allows DTMF only.
+	//
+	// Any of "none", "any", "speech", "dtmf".
+	Interruptible ConversationRelayInterruptible `json:"interruptible,omitzero"`
+	// Controls when caller input can interrupt assistant speech. `any` allows speech
+	// or DTMF interruptions; `none` disables interruptions; `speech` allows speech
+	// only; `dtmf` allows DTMF only.
+	//
+	// Any of "none", "any", "speech", "dtmf".
+	InterruptibleGreeting ConversationRelayInterruptible `json:"interruptible_greeting,omitzero"`
+	// Settings for handling caller interruptions during Conversation Relay speech.
+	InterruptionSettings ConversationRelayInterruptionSettingsParam `json:"interruption_settings,omitzero"`
+	// Per-language TTS and transcription settings.
+	Languages []ConversationRelayLanguageParam `json:"languages,omitzero"`
+	// Provider-specific structured voice settings. Must be supplied together with
+	// `provider`; Telnyx sends the value as the nested provider configuration for
+	// Conversation Relay.
+	StructuredProvider map[string]any `json:"structured_provider,omitzero"`
+	// Engine to use for speech recognition. Legacy values `A` - `Google`, `B` -
+	// `Telnyx` are supported for backward compatibility. For Conversation Relay, use
+	// this field with `transcription_engine_config`; the `transcription` object is not
+	// supported.
+	//
+	// Any of "Google", "Telnyx", "Deepgram", "Azure", "xAI", "AssemblyAI",
+	// "Speechmatics", "Soniox", "A", "B".
+	TranscriptionEngine ConversationRelayEmbeddedConfigTranscriptionEngine `json:"transcription_engine,omitzero"`
+	// Engine-specific transcription settings for Conversation Relay. This accepts the
+	// same provider-specific options used by the Call Transcription Start command,
+	// such as `transcription_model`, without requiring the engine discriminator to be
+	// repeated inside this object.
+	TranscriptionEngineConfig map[string]any `json:"transcription_engine_config,omitzero"`
+	// The settings associated with the voice selected
+	VoiceSettings ConversationRelayEmbeddedConfigVoiceSettingsUnionParam `json:"voice_settings,omitzero"`
+	paramObj
+}
+
+func (r ConversationRelayEmbeddedConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow ConversationRelayEmbeddedConfigParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ConversationRelayEmbeddedConfigParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Engine to use for speech recognition. Legacy values `A` - `Google`, `B` -
+// `Telnyx` are supported for backward compatibility. For Conversation Relay, use
+// this field with `transcription_engine_config`; the `transcription` object is not
+// supported.
+type ConversationRelayEmbeddedConfigTranscriptionEngine string
+
+const (
+	ConversationRelayEmbeddedConfigTranscriptionEngineGoogle       ConversationRelayEmbeddedConfigTranscriptionEngine = "Google"
+	ConversationRelayEmbeddedConfigTranscriptionEngineTelnyx       ConversationRelayEmbeddedConfigTranscriptionEngine = "Telnyx"
+	ConversationRelayEmbeddedConfigTranscriptionEngineDeepgram     ConversationRelayEmbeddedConfigTranscriptionEngine = "Deepgram"
+	ConversationRelayEmbeddedConfigTranscriptionEngineAzure        ConversationRelayEmbeddedConfigTranscriptionEngine = "Azure"
+	ConversationRelayEmbeddedConfigTranscriptionEngineXAI          ConversationRelayEmbeddedConfigTranscriptionEngine = "xAI"
+	ConversationRelayEmbeddedConfigTranscriptionEngineAssemblyAI   ConversationRelayEmbeddedConfigTranscriptionEngine = "AssemblyAI"
+	ConversationRelayEmbeddedConfigTranscriptionEngineSpeechmatics ConversationRelayEmbeddedConfigTranscriptionEngine = "Speechmatics"
+	ConversationRelayEmbeddedConfigTranscriptionEngineSoniox       ConversationRelayEmbeddedConfigTranscriptionEngine = "Soniox"
+	ConversationRelayEmbeddedConfigTranscriptionEngineA            ConversationRelayEmbeddedConfigTranscriptionEngine = "A"
+	ConversationRelayEmbeddedConfigTranscriptionEngineB            ConversationRelayEmbeddedConfigTranscriptionEngine = "B"
+)
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type ConversationRelayEmbeddedConfigVoiceSettingsUnionParam struct {
+	OfElevenlabs *ElevenLabsVoiceSettingsParam      `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam          `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam             `json:",omitzero,inline"`
+	OfMinimax    *shared.MinimaxVoiceSettingsParam  `json:",omitzero,inline"`
+	OfAzure      *shared.AzureVoiceSettingsParam    `json:",omitzero,inline"`
+	OfRime       *shared.RimeVoiceSettingsParam     `json:",omitzero,inline"`
+	OfResemble   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
+	OfInworld    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
+	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfElevenlabs,
+		u.OfTelnyx,
+		u.OfAws,
+		u.OfMinimax,
+		u.OfAzure,
+		u.OfRime,
+		u.OfResemble,
+		u.OfInworld,
+		u.OfXai)
+}
+func (u *ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfElevenlabs) {
+		return u.OfElevenlabs
+	} else if !param.IsOmitted(u.OfTelnyx) {
+		return u.OfTelnyx
+	} else if !param.IsOmitted(u.OfAws) {
+		return u.OfAws
+	} else if !param.IsOmitted(u.OfMinimax) {
+		return u.OfMinimax
+	} else if !param.IsOmitted(u.OfAzure) {
+		return u.OfAzure
+	} else if !param.IsOmitted(u.OfRime) {
+		return u.OfRime
+	} else if !param.IsOmitted(u.OfResemble) {
+		return u.OfResemble
+	} else if !param.IsOmitted(u.OfInworld) {
+		return u.OfInworld
+	} else if !param.IsOmitted(u.OfXai) {
+		return u.OfXai
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetLanguageBoost() *string {
+	if vt := u.OfMinimax; vt != nil {
+		return (*string)(&vt.LanguageBoost)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetPitch() *int64 {
+	if vt := u.OfMinimax; vt != nil && vt.Pitch.Valid() {
+		return &vt.Pitch.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetSpeed() *float64 {
+	if vt := u.OfMinimax; vt != nil && vt.Speed.Valid() {
+		return &vt.Speed.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetVol() *float64 {
+	if vt := u.OfMinimax; vt != nil && vt.Vol.Valid() {
+		return &vt.Vol.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetDeploymentID() *string {
+	if vt := u.OfAzure; vt != nil && vt.DeploymentID.Valid() {
+		return &vt.DeploymentID.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetEffect() *string {
+	if vt := u.OfAzure; vt != nil {
+		return (*string)(&vt.Effect)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetGender() *string {
+	if vt := u.OfAzure; vt != nil {
+		return (*string)(&vt.Gender)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetRegion() *string {
+	if vt := u.OfAzure; vt != nil && vt.Region.Valid() {
+		return &vt.Region.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetFormat() *string {
+	if vt := u.OfResemble; vt != nil {
+		return (*string)(&vt.Format)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetPrecision() *string {
+	if vt := u.OfResemble; vt != nil {
+		return (*string)(&vt.Precision)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetSampleRate() *string {
+	if vt := u.OfResemble; vt != nil {
+		return (*string)(&vt.SampleRate)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetDeliveryMode() *string {
+	if vt := u.OfInworld; vt != nil {
+		return (*string)(&vt.DeliveryMode)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetLanguage() *string {
+	if vt := u.OfXai; vt != nil && vt.Language.Valid() {
+		return &vt.Language.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetType() *string {
+	if vt := u.OfElevenlabs; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfTelnyx; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfAws; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfMinimax; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfAzure; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfRime; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfResemble; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfInworld; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfXai; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetAPIKeyRef() *string {
+	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	} else if vt := u.OfAzure; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetVoiceSpeed() *float64 {
+	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
+		return &vt.VoiceSpeed.Value
+	} else if vt := u.OfRime; vt != nil && vt.VoiceSpeed.Valid() {
+		return &vt.VoiceSpeed.Value
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[ConversationRelayEmbeddedConfigVoiceSettingsUnionParam](
+		"type",
+		apijson.Discriminator[ElevenLabsVoiceSettingsParam]("elevenlabs"),
+		apijson.Discriminator[TelnyxVoiceSettingsParam]("telnyx"),
+		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
+		apijson.Discriminator[shared.MinimaxVoiceSettingsParam]("minimax"),
+		apijson.Discriminator[shared.AzureVoiceSettingsParam]("azure"),
+		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
+		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
+		apijson.Discriminator[shared.InworldVoiceSettingsParam]("inworld"),
+		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
+	)
+}
+
+// Settings for handling caller interruptions during Conversation Relay speech.
+type ConversationRelayInterruptionSettingsParam struct {
+	// Legacy boolean form. `true` is equivalent to `interruptible=any`; `false` is
+	// equivalent to `interruptible=none`.
+	Enable param.Opt[bool] `json:"enable,omitzero"`
+	// Controls when caller input can interrupt assistant speech. `any` allows speech
+	// or DTMF interruptions; `none` disables interruptions; `speech` allows speech
+	// only; `dtmf` allows DTMF only.
+	//
+	// Any of "none", "any", "speech", "dtmf".
+	Interruptible ConversationRelayInterruptible `json:"interruptible,omitzero"`
+	// Controls when caller input can interrupt assistant speech. `any` allows speech
+	// or DTMF interruptions; `none` disables interruptions; `speech` allows speech
+	// only; `dtmf` allows DTMF only.
+	//
+	// Any of "none", "any", "speech", "dtmf".
+	InterruptibleGreeting ConversationRelayInterruptible `json:"interruptible_greeting,omitzero"`
+	// Controls when caller input can interrupt assistant speech. `any` allows speech
+	// or DTMF interruptions; `none` disables interruptions; `speech` allows speech
+	// only; `dtmf` allows DTMF only.
+	//
+	// Any of "none", "any", "speech", "dtmf".
+	WelcomeGreetingInterruptible ConversationRelayInterruptible `json:"welcome_greeting_interruptible,omitzero"`
+	paramObj
+}
+
+func (r ConversationRelayInterruptionSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow ConversationRelayInterruptionSettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ConversationRelayInterruptionSettingsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Language-specific TTS and transcription settings for Conversation Relay.
+//
+// The property Language is required.
+type ConversationRelayLanguageParam struct {
+	// BCP 47 language tag for this language configuration.
+	Language string `json:"language" api:"required"`
+	// Conversation Relay speech model. Prefer
+	// `transcription_engine_config.transcription_model` when configuring
+	// speech-to-text.
+	SpeechModel param.Opt[string] `json:"speech_model,omitzero"`
+	// Conversation Relay transcription provider name. Prefer `transcription_engine`
+	// when configuring speech-to-text.
+	TranscriptionProvider param.Opt[string] `json:"transcription_provider,omitzero"`
+	// Text-to-speech provider for this language. If omitted and `voice` is provided,
+	// Telnyx derives the provider from the voice identifier.
+	TtsProvider param.Opt[string] `json:"tts_provider,omitzero"`
+	// Voice identifier for this language.
+	Voice param.Opt[string] `json:"voice,omitzero"`
+	// Engine to use for speech recognition. Legacy values `A` - `Google`, `B` -
+	// `Telnyx` are supported for backward compatibility. When provided in a
+	// Conversation Relay language entry, Telnyx derives `transcription_provider` and
+	// `speech_model` for that language.
+	//
+	// Any of "Google", "Telnyx", "Deepgram", "Azure", "xAI", "AssemblyAI",
+	// "Speechmatics", "Soniox", "A", "B".
+	TranscriptionEngine ConversationRelayLanguageTranscriptionEngine `json:"transcription_engine,omitzero"`
+	// Engine-specific transcription settings for Conversation Relay. This accepts the
+	// same provider-specific options used by the Call Transcription Start command,
+	// such as `transcription_model`, without requiring the engine discriminator to be
+	// repeated inside this object.
+	TranscriptionEngineConfig map[string]any `json:"transcription_engine_config,omitzero"`
+	// The settings associated with the voice selected
+	VoiceSettings ConversationRelayLanguageVoiceSettingsUnionParam `json:"voice_settings,omitzero"`
+	paramObj
+}
+
+func (r ConversationRelayLanguageParam) MarshalJSON() (data []byte, err error) {
+	type shadow ConversationRelayLanguageParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ConversationRelayLanguageParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Engine to use for speech recognition. Legacy values `A` - `Google`, `B` -
+// `Telnyx` are supported for backward compatibility. When provided in a
+// Conversation Relay language entry, Telnyx derives `transcription_provider` and
+// `speech_model` for that language.
+type ConversationRelayLanguageTranscriptionEngine string
+
+const (
+	ConversationRelayLanguageTranscriptionEngineGoogle       ConversationRelayLanguageTranscriptionEngine = "Google"
+	ConversationRelayLanguageTranscriptionEngineTelnyx       ConversationRelayLanguageTranscriptionEngine = "Telnyx"
+	ConversationRelayLanguageTranscriptionEngineDeepgram     ConversationRelayLanguageTranscriptionEngine = "Deepgram"
+	ConversationRelayLanguageTranscriptionEngineAzure        ConversationRelayLanguageTranscriptionEngine = "Azure"
+	ConversationRelayLanguageTranscriptionEngineXAI          ConversationRelayLanguageTranscriptionEngine = "xAI"
+	ConversationRelayLanguageTranscriptionEngineAssemblyAI   ConversationRelayLanguageTranscriptionEngine = "AssemblyAI"
+	ConversationRelayLanguageTranscriptionEngineSpeechmatics ConversationRelayLanguageTranscriptionEngine = "Speechmatics"
+	ConversationRelayLanguageTranscriptionEngineSoniox       ConversationRelayLanguageTranscriptionEngine = "Soniox"
+	ConversationRelayLanguageTranscriptionEngineA            ConversationRelayLanguageTranscriptionEngine = "A"
+	ConversationRelayLanguageTranscriptionEngineB            ConversationRelayLanguageTranscriptionEngine = "B"
+)
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type ConversationRelayLanguageVoiceSettingsUnionParam struct {
+	OfElevenlabs *ElevenLabsVoiceSettingsParam      `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam          `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam             `json:",omitzero,inline"`
+	OfMinimax    *shared.MinimaxVoiceSettingsParam  `json:",omitzero,inline"`
+	OfAzure      *shared.AzureVoiceSettingsParam    `json:",omitzero,inline"`
+	OfRime       *shared.RimeVoiceSettingsParam     `json:",omitzero,inline"`
+	OfResemble   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
+	OfInworld    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
+	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u ConversationRelayLanguageVoiceSettingsUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfElevenlabs,
+		u.OfTelnyx,
+		u.OfAws,
+		u.OfMinimax,
+		u.OfAzure,
+		u.OfRime,
+		u.OfResemble,
+		u.OfInworld,
+		u.OfXai)
+}
+func (u *ConversationRelayLanguageVoiceSettingsUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *ConversationRelayLanguageVoiceSettingsUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfElevenlabs) {
+		return u.OfElevenlabs
+	} else if !param.IsOmitted(u.OfTelnyx) {
+		return u.OfTelnyx
+	} else if !param.IsOmitted(u.OfAws) {
+		return u.OfAws
+	} else if !param.IsOmitted(u.OfMinimax) {
+		return u.OfMinimax
+	} else if !param.IsOmitted(u.OfAzure) {
+		return u.OfAzure
+	} else if !param.IsOmitted(u.OfRime) {
+		return u.OfRime
+	} else if !param.IsOmitted(u.OfResemble) {
+		return u.OfResemble
+	} else if !param.IsOmitted(u.OfInworld) {
+		return u.OfInworld
+	} else if !param.IsOmitted(u.OfXai) {
+		return u.OfXai
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetLanguageBoost() *string {
+	if vt := u.OfMinimax; vt != nil {
+		return (*string)(&vt.LanguageBoost)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetPitch() *int64 {
+	if vt := u.OfMinimax; vt != nil && vt.Pitch.Valid() {
+		return &vt.Pitch.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetSpeed() *float64 {
+	if vt := u.OfMinimax; vt != nil && vt.Speed.Valid() {
+		return &vt.Speed.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetVol() *float64 {
+	if vt := u.OfMinimax; vt != nil && vt.Vol.Valid() {
+		return &vt.Vol.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetDeploymentID() *string {
+	if vt := u.OfAzure; vt != nil && vt.DeploymentID.Valid() {
+		return &vt.DeploymentID.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetEffect() *string {
+	if vt := u.OfAzure; vt != nil {
+		return (*string)(&vt.Effect)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetGender() *string {
+	if vt := u.OfAzure; vt != nil {
+		return (*string)(&vt.Gender)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetRegion() *string {
+	if vt := u.OfAzure; vt != nil && vt.Region.Valid() {
+		return &vt.Region.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetFormat() *string {
+	if vt := u.OfResemble; vt != nil {
+		return (*string)(&vt.Format)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetPrecision() *string {
+	if vt := u.OfResemble; vt != nil {
+		return (*string)(&vt.Precision)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetSampleRate() *string {
+	if vt := u.OfResemble; vt != nil {
+		return (*string)(&vt.SampleRate)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetDeliveryMode() *string {
+	if vt := u.OfInworld; vt != nil {
+		return (*string)(&vt.DeliveryMode)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetLanguage() *string {
+	if vt := u.OfXai; vt != nil && vt.Language.Valid() {
+		return &vt.Language.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetType() *string {
+	if vt := u.OfElevenlabs; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfTelnyx; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfAws; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfMinimax; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfAzure; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfRime; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfResemble; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfInworld; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfXai; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetAPIKeyRef() *string {
+	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	} else if vt := u.OfAzure; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetVoiceSpeed() *float64 {
+	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
+		return &vt.VoiceSpeed.Value
+	} else if vt := u.OfRime; vt != nil && vt.VoiceSpeed.Valid() {
+		return &vt.VoiceSpeed.Value
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[ConversationRelayLanguageVoiceSettingsUnionParam](
+		"type",
+		apijson.Discriminator[ElevenLabsVoiceSettingsParam]("elevenlabs"),
+		apijson.Discriminator[TelnyxVoiceSettingsParam]("telnyx"),
+		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
+		apijson.Discriminator[shared.MinimaxVoiceSettingsParam]("minimax"),
+		apijson.Discriminator[shared.AzureVoiceSettingsParam]("azure"),
+		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
+		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
+		apijson.Discriminator[shared.InworldVoiceSettingsParam]("inworld"),
+		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
 	)
 }
 
@@ -877,7 +1526,7 @@ type CallDialParams struct {
 	// etc.) and maps them to the underlying Conversation Relay action. `client_state`,
 	// `tts_language`, and `transcription_language` inside this object are ignored; use
 	// the parent command's `client_state` and `command_id` fields instead.
-	ConversationRelayConfig CallDialParamsConversationRelayConfig `json:"conversation_relay_config,omitzero"`
+	ConversationRelayConfig ConversationRelayEmbeddedConfigParam `json:"conversation_relay_config,omitzero"`
 	// Custom headers to be added to the SIP INVITE.
 	CustomHeaders []CustomSipHeaderParam `json:"custom_headers,omitzero"`
 	// Enables deepfake detection on the call. When enabled, audio from the remote
@@ -975,7 +1624,7 @@ type CallDialParams struct {
 	// A map of event types to retry policies. Each retry policy contains an array of
 	// `retries_ms` specifying the delays between retry attempts in milliseconds.
 	// Maximum 5 retries, total delay cannot exceed 60 seconds.
-	WebhookRetriesPolicies map[string]CallDialParamsWebhookRetriesPolicy `json:"webhook_retries_policies,omitzero"`
+	WebhookRetriesPolicies map[string]CallDialParamsWebhookRetriesPolicies `json:"webhook_retries_policies,omitzero"`
 	// HTTP request type used for `webhook_url`.
 	//
 	// Any of "POST", "GET".
@@ -1172,746 +1821,6 @@ func init() {
 	)
 }
 
-// Starts a Conversation Relay session automatically when the answered/dialed call
-// is answered. This embedded shape is supported on `answer` and `dial`. It uses
-// public field names (`url`, `dtmf_detection`, `greeting`, `voice`, `language`,
-// etc.) and maps them to the underlying Conversation Relay action. `client_state`,
-// `tts_language`, and `transcription_language` inside this object are ignored; use
-// the parent command's `client_state` and `command_id` fields instead.
-//
-// The property URL is required.
-type CallDialParamsConversationRelayConfig struct {
-	// WebSocket URL for your Conversation Relay server. Must start with `ws://` or
-	// `wss://`.
-	URL string `json:"url" api:"required"`
-	// Enable DTMF detection for the relay session.
-	DtmfDetection param.Opt[bool] `json:"dtmf_detection,omitzero"`
-	// Text played when the relay session starts.
-	Greeting param.Opt[string] `json:"greeting,omitzero"`
-	// Default language for both text-to-speech and speech recognition.
-	Language param.Opt[string] `json:"language,omitzero"`
-	// Structured voice provider. Must be supplied together with `structured_provider`.
-	Provider param.Opt[string] `json:"provider,omitzero"`
-	// Text-to-speech provider. If omitted, Telnyx derives it from `voice` or
-	// `provider`.
-	TtsProvider param.Opt[string] `json:"tts_provider,omitzero"`
-	// The voice to be used by the voice assistant. Currently we support ElevenLabs,
-	// Telnyx and AWS voices.
-	//
-	// **Supported Providers:**
-	//
-	//   - **AWS:** Use `AWS.Polly.<VoiceId>` (e.g., `AWS.Polly.Joanna`). For neural
-	//     voices, which provide more realistic, human-like speech, append `-Neural` to
-	//     the `VoiceId` (e.g., `AWS.Polly.Joanna-Neural`). Check the
-	//     [available voices](https://docs.aws.amazon.com/polly/latest/dg/available-voices.html)
-	//     for compatibility.
-	//   - **Azure:** Use `Azure.<VoiceId>. (e.g. Azure.en-CA-ClaraNeural,
-	//     Azure.en-CA-LiamNeural, Azure.en-US-BrianMultilingualNeural,
-	//     Azure.en-US-Ava:DragonHDLatestNeural. For a complete list of voices, go to
-	//     [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery).)
-	//   - **ElevenLabs:** Use `ElevenLabs.<ModelId>.<VoiceId>` (e.g.,
-	//     `ElevenLabs.BaseModel.John`). The `ModelId` part is optional. To use
-	//     ElevenLabs, you must provide your ElevenLabs API key as an integration secret
-	//     under `"voice_settings": {"api_key_ref": "<secret_id>"}`. See
-	//     [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
-	//     for details. Check
-	//     [available voices](https://elevenlabs.io/docs/api-reference/get-voices).
-	//   - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>`
-	//   - **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`,
-	//     `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`,
-	//     `Max`, `TTS2`.
-	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
-	//     `ara`, `rex`, `sal`, `leo`.
-	Voice param.Opt[string] `json:"voice,omitzero"`
-	// Custom key-value parameters forwarded to the relay session as assistant dynamic
-	// variables.
-	CustomParameters map[string]any `json:"custom_parameters,omitzero"`
-	// Controls when caller input can interrupt assistant speech. `any` allows speech
-	// or DTMF interruptions; `none` disables interruptions; `speech` allows speech
-	// only; `dtmf` allows DTMF only.
-	//
-	// Any of "none", "any", "speech", "dtmf".
-	Interruptible string `json:"interruptible,omitzero"`
-	// Controls when caller input can interrupt assistant speech. `any` allows speech
-	// or DTMF interruptions; `none` disables interruptions; `speech` allows speech
-	// only; `dtmf` allows DTMF only.
-	//
-	// Any of "none", "any", "speech", "dtmf".
-	InterruptibleGreeting string `json:"interruptible_greeting,omitzero"`
-	// Settings for handling caller interruptions during Conversation Relay speech.
-	InterruptionSettings CallDialParamsConversationRelayConfigInterruptionSettings `json:"interruption_settings,omitzero"`
-	// Per-language TTS and transcription settings.
-	Languages []CallDialParamsConversationRelayConfigLanguage `json:"languages,omitzero"`
-	// Provider-specific structured voice settings. Must be supplied together with
-	// `provider`; Telnyx sends the value as the nested provider configuration for
-	// Conversation Relay.
-	StructuredProvider map[string]any `json:"structured_provider,omitzero"`
-	// Engine to use for speech recognition. Legacy values `A` - `Google`, `B` -
-	// `Telnyx` are supported for backward compatibility. For Conversation Relay, use
-	// this field with `transcription_engine_config`; the `transcription` object is not
-	// supported.
-	//
-	// Any of "Google", "Telnyx", "Deepgram", "Azure", "xAI", "AssemblyAI",
-	// "Speechmatics", "Soniox", "A", "B".
-	TranscriptionEngine string `json:"transcription_engine,omitzero"`
-	// Engine-specific transcription settings for Conversation Relay. This accepts the
-	// same provider-specific options used by the Call Transcription Start command,
-	// such as `transcription_model`, without requiring the engine discriminator to be
-	// repeated inside this object.
-	TranscriptionEngineConfig map[string]any `json:"transcription_engine_config,omitzero"`
-	// The settings associated with the voice selected
-	VoiceSettings CallDialParamsConversationRelayConfigVoiceSettingsUnion `json:"voice_settings,omitzero"`
-	paramObj
-}
-
-func (r CallDialParamsConversationRelayConfig) MarshalJSON() (data []byte, err error) {
-	type shadow CallDialParamsConversationRelayConfig
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CallDialParamsConversationRelayConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[CallDialParamsConversationRelayConfig](
-		"interruptible", "none", "any", "speech", "dtmf",
-	)
-	apijson.RegisterFieldValidator[CallDialParamsConversationRelayConfig](
-		"interruptible_greeting", "none", "any", "speech", "dtmf",
-	)
-	apijson.RegisterFieldValidator[CallDialParamsConversationRelayConfig](
-		"transcription_engine", "Google", "Telnyx", "Deepgram", "Azure", "xAI", "AssemblyAI", "Speechmatics", "Soniox", "A", "B",
-	)
-}
-
-// Settings for handling caller interruptions during Conversation Relay speech.
-type CallDialParamsConversationRelayConfigInterruptionSettings struct {
-	// Legacy boolean form. `true` is equivalent to `interruptible=any`; `false` is
-	// equivalent to `interruptible=none`.
-	Enable param.Opt[bool] `json:"enable,omitzero"`
-	// Controls when caller input can interrupt assistant speech. `any` allows speech
-	// or DTMF interruptions; `none` disables interruptions; `speech` allows speech
-	// only; `dtmf` allows DTMF only.
-	//
-	// Any of "none", "any", "speech", "dtmf".
-	Interruptible string `json:"interruptible,omitzero"`
-	// Controls when caller input can interrupt assistant speech. `any` allows speech
-	// or DTMF interruptions; `none` disables interruptions; `speech` allows speech
-	// only; `dtmf` allows DTMF only.
-	//
-	// Any of "none", "any", "speech", "dtmf".
-	InterruptibleGreeting string `json:"interruptible_greeting,omitzero"`
-	// Controls when caller input can interrupt assistant speech. `any` allows speech
-	// or DTMF interruptions; `none` disables interruptions; `speech` allows speech
-	// only; `dtmf` allows DTMF only.
-	//
-	// Any of "none", "any", "speech", "dtmf".
-	WelcomeGreetingInterruptible string `json:"welcome_greeting_interruptible,omitzero"`
-	paramObj
-}
-
-func (r CallDialParamsConversationRelayConfigInterruptionSettings) MarshalJSON() (data []byte, err error) {
-	type shadow CallDialParamsConversationRelayConfigInterruptionSettings
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CallDialParamsConversationRelayConfigInterruptionSettings) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[CallDialParamsConversationRelayConfigInterruptionSettings](
-		"interruptible", "none", "any", "speech", "dtmf",
-	)
-	apijson.RegisterFieldValidator[CallDialParamsConversationRelayConfigInterruptionSettings](
-		"interruptible_greeting", "none", "any", "speech", "dtmf",
-	)
-	apijson.RegisterFieldValidator[CallDialParamsConversationRelayConfigInterruptionSettings](
-		"welcome_greeting_interruptible", "none", "any", "speech", "dtmf",
-	)
-}
-
-// Language-specific TTS and transcription settings for Conversation Relay.
-//
-// The property Language is required.
-type CallDialParamsConversationRelayConfigLanguage struct {
-	// BCP 47 language tag for this language configuration.
-	Language string `json:"language" api:"required"`
-	// Conversation Relay speech model. Prefer
-	// `transcription_engine_config.transcription_model` when configuring
-	// speech-to-text.
-	SpeechModel param.Opt[string] `json:"speech_model,omitzero"`
-	// Conversation Relay transcription provider name. Prefer `transcription_engine`
-	// when configuring speech-to-text.
-	TranscriptionProvider param.Opt[string] `json:"transcription_provider,omitzero"`
-	// Text-to-speech provider for this language. If omitted and `voice` is provided,
-	// Telnyx derives the provider from the voice identifier.
-	TtsProvider param.Opt[string] `json:"tts_provider,omitzero"`
-	// Voice identifier for this language.
-	Voice param.Opt[string] `json:"voice,omitzero"`
-	// Engine to use for speech recognition. Legacy values `A` - `Google`, `B` -
-	// `Telnyx` are supported for backward compatibility. When provided in a
-	// Conversation Relay language entry, Telnyx derives `transcription_provider` and
-	// `speech_model` for that language.
-	//
-	// Any of "Google", "Telnyx", "Deepgram", "Azure", "xAI", "AssemblyAI",
-	// "Speechmatics", "Soniox", "A", "B".
-	TranscriptionEngine string `json:"transcription_engine,omitzero"`
-	// Engine-specific transcription settings for Conversation Relay. This accepts the
-	// same provider-specific options used by the Call Transcription Start command,
-	// such as `transcription_model`, without requiring the engine discriminator to be
-	// repeated inside this object.
-	TranscriptionEngineConfig map[string]any `json:"transcription_engine_config,omitzero"`
-	// The settings associated with the voice selected
-	VoiceSettings CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion `json:"voice_settings,omitzero"`
-	paramObj
-}
-
-func (r CallDialParamsConversationRelayConfigLanguage) MarshalJSON() (data []byte, err error) {
-	type shadow CallDialParamsConversationRelayConfigLanguage
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CallDialParamsConversationRelayConfigLanguage) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[CallDialParamsConversationRelayConfigLanguage](
-		"transcription_engine", "Google", "Telnyx", "Deepgram", "Azure", "xAI", "AssemblyAI", "Speechmatics", "Soniox", "A", "B",
-	)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam                                      `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam                                          `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam                                             `json:",omitzero,inline"`
-	OfMinimax    *shared.MinimaxVoiceSettingsParam                                  `json:",omitzero,inline"`
-	OfAzure      *shared.AzureVoiceSettingsParam                                    `json:",omitzero,inline"`
-	OfRime       *shared.RimeVoiceSettingsParam                                     `json:",omitzero,inline"`
-	OfResemble   *shared.ResembleVoiceSettingsParam                                 `json:",omitzero,inline"`
-	OfInworld    *CallDialParamsConversationRelayConfigLanguageVoiceSettingsInworld `json:",omitzero,inline"`
-	OfXai        *CallDialParamsConversationRelayConfigLanguageVoiceSettingsXai     `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfElevenlabs,
-		u.OfTelnyx,
-		u.OfAws,
-		u.OfMinimax,
-		u.OfAzure,
-		u.OfRime,
-		u.OfResemble,
-		u.OfInworld,
-		u.OfXai)
-}
-func (u *CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion) asAny() any {
-	if !param.IsOmitted(u.OfElevenlabs) {
-		return u.OfElevenlabs
-	} else if !param.IsOmitted(u.OfTelnyx) {
-		return u.OfTelnyx
-	} else if !param.IsOmitted(u.OfAws) {
-		return u.OfAws
-	} else if !param.IsOmitted(u.OfMinimax) {
-		return u.OfMinimax
-	} else if !param.IsOmitted(u.OfAzure) {
-		return u.OfAzure
-	} else if !param.IsOmitted(u.OfRime) {
-		return u.OfRime
-	} else if !param.IsOmitted(u.OfResemble) {
-		return u.OfResemble
-	} else if !param.IsOmitted(u.OfInworld) {
-		return u.OfInworld
-	} else if !param.IsOmitted(u.OfXai) {
-		return u.OfXai
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion) GetLanguageBoost() *string {
-	if vt := u.OfMinimax; vt != nil {
-		return (*string)(&vt.LanguageBoost)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion) GetPitch() *int64 {
-	if vt := u.OfMinimax; vt != nil && vt.Pitch.Valid() {
-		return &vt.Pitch.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion) GetSpeed() *float64 {
-	if vt := u.OfMinimax; vt != nil && vt.Speed.Valid() {
-		return &vt.Speed.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion) GetVol() *float64 {
-	if vt := u.OfMinimax; vt != nil && vt.Vol.Valid() {
-		return &vt.Vol.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion) GetDeploymentID() *string {
-	if vt := u.OfAzure; vt != nil && vt.DeploymentID.Valid() {
-		return &vt.DeploymentID.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion) GetEffect() *string {
-	if vt := u.OfAzure; vt != nil {
-		return (*string)(&vt.Effect)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion) GetGender() *string {
-	if vt := u.OfAzure; vt != nil {
-		return (*string)(&vt.Gender)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion) GetRegion() *string {
-	if vt := u.OfAzure; vt != nil && vt.Region.Valid() {
-		return &vt.Region.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion) GetFormat() *string {
-	if vt := u.OfResemble; vt != nil {
-		return (*string)(&vt.Format)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion) GetPrecision() *string {
-	if vt := u.OfResemble; vt != nil {
-		return (*string)(&vt.Precision)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion) GetSampleRate() *string {
-	if vt := u.OfResemble; vt != nil {
-		return (*string)(&vt.SampleRate)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion) GetDeliveryMode() *string {
-	if vt := u.OfInworld; vt != nil {
-		return &vt.DeliveryMode
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion) GetLanguage() *string {
-	if vt := u.OfXai; vt != nil && vt.Language.Valid() {
-		return &vt.Language.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion) GetType() *string {
-	if vt := u.OfElevenlabs; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfTelnyx; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfAws; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfMinimax; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfAzure; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfRime; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfResemble; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfInworld; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfXai; vt != nil {
-		return (*string)(&vt.Type)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion) GetAPIKeyRef() *string {
-	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
-		return &vt.APIKeyRef.Value
-	} else if vt := u.OfAzure; vt != nil && vt.APIKeyRef.Valid() {
-		return &vt.APIKeyRef.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion) GetVoiceSpeed() *float64 {
-	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
-		return &vt.VoiceSpeed.Value
-	} else if vt := u.OfRime; vt != nil && vt.VoiceSpeed.Valid() {
-		return &vt.VoiceSpeed.Value
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[CallDialParamsConversationRelayConfigLanguageVoiceSettingsUnion](
-		"type",
-		apijson.Discriminator[ElevenLabsVoiceSettingsParam]("elevenlabs"),
-		apijson.Discriminator[TelnyxVoiceSettingsParam]("telnyx"),
-		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
-		apijson.Discriminator[shared.MinimaxVoiceSettingsParam]("minimax"),
-		apijson.Discriminator[shared.AzureVoiceSettingsParam]("azure"),
-		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
-		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
-		apijson.Discriminator[CallDialParamsConversationRelayConfigLanguageVoiceSettingsInworld]("inworld"),
-		apijson.Discriminator[CallDialParamsConversationRelayConfigLanguageVoiceSettingsXai]("xai"),
-	)
-}
-
-// The property Type is required.
-type CallDialParamsConversationRelayConfigLanguageVoiceSettingsInworld struct {
-	// Controls the expressiveness and consistency of the Inworld `TTS2` model's speech
-	// synthesis. `STABLE` favors consistent, predictable output, `CREATIVE` allows
-	// more expressive variation, and `BALANCED` sits in between. Optional and only
-	// supported by `TTS2`; when omitted, the provider default applies.
-	//
-	// Any of "STABLE", "BALANCED", "CREATIVE".
-	DeliveryMode string `json:"delivery_mode,omitzero"`
-	// Voice settings provider type
-	//
-	// This field can be elided, and will marshal its zero value as "inworld".
-	Type constant.Inworld `json:"type" default:"inworld"`
-	paramObj
-}
-
-func (r CallDialParamsConversationRelayConfigLanguageVoiceSettingsInworld) MarshalJSON() (data []byte, err error) {
-	type shadow CallDialParamsConversationRelayConfigLanguageVoiceSettingsInworld
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CallDialParamsConversationRelayConfigLanguageVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[CallDialParamsConversationRelayConfigLanguageVoiceSettingsInworld](
-		"delivery_mode", "STABLE", "BALANCED", "CREATIVE",
-	)
-}
-
-// The property Type is required.
-type CallDialParamsConversationRelayConfigLanguageVoiceSettingsXai struct {
-	// Language code, or `auto` to detect automatically.
-	Language param.Opt[string] `json:"language,omitzero"`
-	// Voice settings provider type
-	//
-	// This field can be elided, and will marshal its zero value as "xai".
-	Type constant.Xai `json:"type" default:"xai"`
-	paramObj
-}
-
-func (r CallDialParamsConversationRelayConfigLanguageVoiceSettingsXai) MarshalJSON() (data []byte, err error) {
-	type shadow CallDialParamsConversationRelayConfigLanguageVoiceSettingsXai
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CallDialParamsConversationRelayConfigLanguageVoiceSettingsXai) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type CallDialParamsConversationRelayConfigVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam                              `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam                                  `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam                                     `json:",omitzero,inline"`
-	OfMinimax    *shared.MinimaxVoiceSettingsParam                          `json:",omitzero,inline"`
-	OfAzure      *shared.AzureVoiceSettingsParam                            `json:",omitzero,inline"`
-	OfRime       *shared.RimeVoiceSettingsParam                             `json:",omitzero,inline"`
-	OfResemble   *shared.ResembleVoiceSettingsParam                         `json:",omitzero,inline"`
-	OfInworld    *CallDialParamsConversationRelayConfigVoiceSettingsInworld `json:",omitzero,inline"`
-	OfXai        *CallDialParamsConversationRelayConfigVoiceSettingsXai     `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u CallDialParamsConversationRelayConfigVoiceSettingsUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfElevenlabs,
-		u.OfTelnyx,
-		u.OfAws,
-		u.OfMinimax,
-		u.OfAzure,
-		u.OfRime,
-		u.OfResemble,
-		u.OfInworld,
-		u.OfXai)
-}
-func (u *CallDialParamsConversationRelayConfigVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *CallDialParamsConversationRelayConfigVoiceSettingsUnion) asAny() any {
-	if !param.IsOmitted(u.OfElevenlabs) {
-		return u.OfElevenlabs
-	} else if !param.IsOmitted(u.OfTelnyx) {
-		return u.OfTelnyx
-	} else if !param.IsOmitted(u.OfAws) {
-		return u.OfAws
-	} else if !param.IsOmitted(u.OfMinimax) {
-		return u.OfMinimax
-	} else if !param.IsOmitted(u.OfAzure) {
-		return u.OfAzure
-	} else if !param.IsOmitted(u.OfRime) {
-		return u.OfRime
-	} else if !param.IsOmitted(u.OfResemble) {
-		return u.OfResemble
-	} else if !param.IsOmitted(u.OfInworld) {
-		return u.OfInworld
-	} else if !param.IsOmitted(u.OfXai) {
-		return u.OfXai
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigVoiceSettingsUnion) GetLanguageBoost() *string {
-	if vt := u.OfMinimax; vt != nil {
-		return (*string)(&vt.LanguageBoost)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigVoiceSettingsUnion) GetPitch() *int64 {
-	if vt := u.OfMinimax; vt != nil && vt.Pitch.Valid() {
-		return &vt.Pitch.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigVoiceSettingsUnion) GetSpeed() *float64 {
-	if vt := u.OfMinimax; vt != nil && vt.Speed.Valid() {
-		return &vt.Speed.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigVoiceSettingsUnion) GetVol() *float64 {
-	if vt := u.OfMinimax; vt != nil && vt.Vol.Valid() {
-		return &vt.Vol.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigVoiceSettingsUnion) GetDeploymentID() *string {
-	if vt := u.OfAzure; vt != nil && vt.DeploymentID.Valid() {
-		return &vt.DeploymentID.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigVoiceSettingsUnion) GetEffect() *string {
-	if vt := u.OfAzure; vt != nil {
-		return (*string)(&vt.Effect)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigVoiceSettingsUnion) GetGender() *string {
-	if vt := u.OfAzure; vt != nil {
-		return (*string)(&vt.Gender)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigVoiceSettingsUnion) GetRegion() *string {
-	if vt := u.OfAzure; vt != nil && vt.Region.Valid() {
-		return &vt.Region.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigVoiceSettingsUnion) GetFormat() *string {
-	if vt := u.OfResemble; vt != nil {
-		return (*string)(&vt.Format)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigVoiceSettingsUnion) GetPrecision() *string {
-	if vt := u.OfResemble; vt != nil {
-		return (*string)(&vt.Precision)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigVoiceSettingsUnion) GetSampleRate() *string {
-	if vt := u.OfResemble; vt != nil {
-		return (*string)(&vt.SampleRate)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigVoiceSettingsUnion) GetDeliveryMode() *string {
-	if vt := u.OfInworld; vt != nil {
-		return &vt.DeliveryMode
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigVoiceSettingsUnion) GetLanguage() *string {
-	if vt := u.OfXai; vt != nil && vt.Language.Valid() {
-		return &vt.Language.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigVoiceSettingsUnion) GetType() *string {
-	if vt := u.OfElevenlabs; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfTelnyx; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfAws; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfMinimax; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfAzure; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfRime; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfResemble; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfInworld; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfXai; vt != nil {
-		return (*string)(&vt.Type)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigVoiceSettingsUnion) GetAPIKeyRef() *string {
-	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
-		return &vt.APIKeyRef.Value
-	} else if vt := u.OfAzure; vt != nil && vt.APIKeyRef.Valid() {
-		return &vt.APIKeyRef.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u CallDialParamsConversationRelayConfigVoiceSettingsUnion) GetVoiceSpeed() *float64 {
-	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
-		return &vt.VoiceSpeed.Value
-	} else if vt := u.OfRime; vt != nil && vt.VoiceSpeed.Valid() {
-		return &vt.VoiceSpeed.Value
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[CallDialParamsConversationRelayConfigVoiceSettingsUnion](
-		"type",
-		apijson.Discriminator[ElevenLabsVoiceSettingsParam]("elevenlabs"),
-		apijson.Discriminator[TelnyxVoiceSettingsParam]("telnyx"),
-		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
-		apijson.Discriminator[shared.MinimaxVoiceSettingsParam]("minimax"),
-		apijson.Discriminator[shared.AzureVoiceSettingsParam]("azure"),
-		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
-		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
-		apijson.Discriminator[CallDialParamsConversationRelayConfigVoiceSettingsInworld]("inworld"),
-		apijson.Discriminator[CallDialParamsConversationRelayConfigVoiceSettingsXai]("xai"),
-	)
-}
-
-// The property Type is required.
-type CallDialParamsConversationRelayConfigVoiceSettingsInworld struct {
-	// Controls the expressiveness and consistency of the Inworld `TTS2` model's speech
-	// synthesis. `STABLE` favors consistent, predictable output, `CREATIVE` allows
-	// more expressive variation, and `BALANCED` sits in between. Optional and only
-	// supported by `TTS2`; when omitted, the provider default applies.
-	//
-	// Any of "STABLE", "BALANCED", "CREATIVE".
-	DeliveryMode string `json:"delivery_mode,omitzero"`
-	// Voice settings provider type
-	//
-	// This field can be elided, and will marshal its zero value as "inworld".
-	Type constant.Inworld `json:"type" default:"inworld"`
-	paramObj
-}
-
-func (r CallDialParamsConversationRelayConfigVoiceSettingsInworld) MarshalJSON() (data []byte, err error) {
-	type shadow CallDialParamsConversationRelayConfigVoiceSettingsInworld
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CallDialParamsConversationRelayConfigVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[CallDialParamsConversationRelayConfigVoiceSettingsInworld](
-		"delivery_mode", "STABLE", "BALANCED", "CREATIVE",
-	)
-}
-
-// The property Type is required.
-type CallDialParamsConversationRelayConfigVoiceSettingsXai struct {
-	// Language code, or `auto` to detect automatically.
-	Language param.Opt[string] `json:"language,omitzero"`
-	// Voice settings provider type
-	//
-	// This field can be elided, and will marshal its zero value as "xai".
-	Type constant.Xai `json:"type" default:"xai"`
-	paramObj
-}
-
-func (r CallDialParamsConversationRelayConfigVoiceSettingsXai) MarshalJSON() (data []byte, err error) {
-	type shadow CallDialParamsConversationRelayConfigVoiceSettingsXai
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CallDialParamsConversationRelayConfigVoiceSettingsXai) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Enables deepfake detection on the call. When enabled, audio from the remote
 // party is streamed to a detection service that analyzes whether the voice is
 // AI-generated. Results are delivered via the `call.deepfake_detection.result`
@@ -2045,18 +1954,18 @@ const (
 	CallDialParamsSupervisorRoleMonitor CallDialParamsSupervisorRole = "monitor"
 )
 
-type CallDialParamsWebhookRetriesPolicy struct {
+type CallDialParamsWebhookRetriesPolicies struct {
 	// Array of delays in milliseconds between retry attempts. Total sum cannot exceed
 	// 60000ms.
 	RetriesMs []int64 `json:"retries_ms,omitzero"`
 	paramObj
 }
 
-func (r CallDialParamsWebhookRetriesPolicy) MarshalJSON() (data []byte, err error) {
-	type shadow CallDialParamsWebhookRetriesPolicy
+func (r CallDialParamsWebhookRetriesPolicies) MarshalJSON() (data []byte, err error) {
+	type shadow CallDialParamsWebhookRetriesPolicies
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *CallDialParamsWebhookRetriesPolicy) UnmarshalJSON(data []byte) error {
+func (r *CallDialParamsWebhookRetriesPolicies) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

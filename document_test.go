@@ -59,8 +59,9 @@ func TestDocumentUpdateWithOptionalParams(t *testing.T) {
 		"6a09cdc3-8948-47f0-aa62-74ac943d6c58",
 		telnyx.DocumentUpdateParams{
 			DocServiceDocument: telnyx.DocServiceDocumentParam{
-				CustomerReference: telnyx.String("MY REF 001"),
-				Filename:          telnyx.String("test-document.pdf"),
+				DocServiceRecordParam: telnyx.DocServiceRecordParam{},
+				CustomerReference:     telnyx.String("MY REF 001"),
+				Filename:              telnyx.String("test-document.pdf"),
 			},
 		},
 	)

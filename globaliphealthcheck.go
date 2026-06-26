@@ -4,6 +4,7 @@ package telnyx
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -12,6 +13,7 @@ import (
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
@@ -61,7 +63,7 @@ func (r *GlobalIPHealthCheckService) Get(ctx context.Context, id string, opts ..
 }
 
 // List all Global IP health checks.
-func (r *GlobalIPHealthCheckService) List(ctx context.Context, query GlobalIPHealthCheckListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[GlobalIPHealthCheckListResponse], err error) {
+func (r *GlobalIPHealthCheckService) List(ctx context.Context, query GlobalIPHealthCheckListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[GlobalIPHealthCheck], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -79,7 +81,7 @@ func (r *GlobalIPHealthCheckService) List(ctx context.Context, query GlobalIPHea
 }
 
 // List all Global IP health checks.
-func (r *GlobalIPHealthCheckService) ListAutoPaging(ctx context.Context, query GlobalIPHealthCheckListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[GlobalIPHealthCheckListResponse] {
+func (r *GlobalIPHealthCheckService) ListAutoPaging(ctx context.Context, query GlobalIPHealthCheckListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[GlobalIPHealthCheck] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -95,8 +97,59 @@ func (r *GlobalIPHealthCheckService) Delete(ctx context.Context, id string, opts
 	return res, err
 }
 
+type GlobalIPHealthCheck struct {
+	// Global IP ID.
+	GlobalIPID string `json:"global_ip_id" format:"uuid"`
+	// A Global IP health check params.
+	HealthCheckParams map[string]any `json:"health_check_params"`
+	// The Global IP health check type.
+	HealthCheckType string `json:"health_check_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		GlobalIPID        respjson.Field
+		HealthCheckParams respjson.Field
+		HealthCheckType   respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+	Record
+}
+
+// Returns the unmodified JSON received from the API
+func (r GlobalIPHealthCheck) RawJSON() string { return r.JSON.raw }
+func (r *GlobalIPHealthCheck) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this GlobalIPHealthCheck to a GlobalIPHealthCheckParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// GlobalIPHealthCheckParam.Overrides()
+func (r GlobalIPHealthCheck) ToParam() GlobalIPHealthCheckParam {
+	return param.Override[GlobalIPHealthCheckParam](json.RawMessage(r.RawJSON()))
+}
+
+type GlobalIPHealthCheckParam struct {
+	// Global IP ID.
+	GlobalIPID param.Opt[string] `json:"global_ip_id,omitzero" format:"uuid"`
+	// A Global IP health check params.
+	HealthCheckParams map[string]any `json:"health_check_params,omitzero"`
+	// The Global IP health check type.
+	HealthCheckType param.Opt[string] `json:"health_check_type,omitzero"`
+	RecordParam
+}
+
+func (r GlobalIPHealthCheckParam) MarshalJSON() (data []byte, err error) {
+	type shadow struct {
+		*GlobalIPHealthCheckParam
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
+}
+
 type GlobalIPHealthCheckNewResponse struct {
-	Data GlobalIPHealthCheckNewResponseData `json:"data"`
+	Data GlobalIPHealthCheck `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -111,32 +164,8 @@ func (r *GlobalIPHealthCheckNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type GlobalIPHealthCheckNewResponseData struct {
-	// Global IP ID.
-	GlobalIPID string `json:"global_ip_id" format:"uuid"`
-	// A Global IP health check params.
-	HealthCheckParams map[string]any `json:"health_check_params"`
-	// The Global IP health check type.
-	HealthCheckType string `json:"health_check_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		GlobalIPID        respjson.Field
-		HealthCheckParams respjson.Field
-		HealthCheckType   respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-	Record
-}
-
-// Returns the unmodified JSON received from the API
-func (r GlobalIPHealthCheckNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *GlobalIPHealthCheckNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type GlobalIPHealthCheckGetResponse struct {
-	Data GlobalIPHealthCheckGetResponseData `json:"data"`
+	Data GlobalIPHealthCheck `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -151,56 +180,8 @@ func (r *GlobalIPHealthCheckGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type GlobalIPHealthCheckGetResponseData struct {
-	// Global IP ID.
-	GlobalIPID string `json:"global_ip_id" format:"uuid"`
-	// A Global IP health check params.
-	HealthCheckParams map[string]any `json:"health_check_params"`
-	// The Global IP health check type.
-	HealthCheckType string `json:"health_check_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		GlobalIPID        respjson.Field
-		HealthCheckParams respjson.Field
-		HealthCheckType   respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-	Record
-}
-
-// Returns the unmodified JSON received from the API
-func (r GlobalIPHealthCheckGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *GlobalIPHealthCheckGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type GlobalIPHealthCheckListResponse struct {
-	// Global IP ID.
-	GlobalIPID string `json:"global_ip_id" format:"uuid"`
-	// A Global IP health check params.
-	HealthCheckParams map[string]any `json:"health_check_params"`
-	// The Global IP health check type.
-	HealthCheckType string `json:"health_check_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		GlobalIPID        respjson.Field
-		HealthCheckParams respjson.Field
-		HealthCheckType   respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-	Record
-}
-
-// Returns the unmodified JSON received from the API
-func (r GlobalIPHealthCheckListResponse) RawJSON() string { return r.JSON.raw }
-func (r *GlobalIPHealthCheckListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type GlobalIPHealthCheckDeleteResponse struct {
-	Data GlobalIPHealthCheckDeleteResponseData `json:"data"`
+	Data GlobalIPHealthCheck `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -215,43 +196,13 @@ func (r *GlobalIPHealthCheckDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type GlobalIPHealthCheckDeleteResponseData struct {
-	// Global IP ID.
-	GlobalIPID string `json:"global_ip_id" format:"uuid"`
-	// A Global IP health check params.
-	HealthCheckParams map[string]any `json:"health_check_params"`
-	// The Global IP health check type.
-	HealthCheckType string `json:"health_check_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		GlobalIPID        respjson.Field
-		HealthCheckParams respjson.Field
-		HealthCheckType   respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-	Record
-}
-
-// Returns the unmodified JSON received from the API
-func (r GlobalIPHealthCheckDeleteResponseData) RawJSON() string { return r.JSON.raw }
-func (r *GlobalIPHealthCheckDeleteResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type GlobalIPHealthCheckNewParams struct {
-	// Global IP ID.
-	GlobalIPID param.Opt[string] `json:"global_ip_id,omitzero" format:"uuid"`
-	// The Global IP health check type.
-	HealthCheckType param.Opt[string] `json:"health_check_type,omitzero"`
-	// A Global IP health check params.
-	HealthCheckParams map[string]any `json:"health_check_params,omitzero"`
+	GlobalIPHealthCheck GlobalIPHealthCheckParam
 	paramObj
 }
 
 func (r GlobalIPHealthCheckNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow GlobalIPHealthCheckNewParams
-	return param.MarshalObject(r, (*shadow)(&r))
+	return shimjson.Marshal(r.GlobalIPHealthCheck)
 }
 func (r *GlobalIPHealthCheckNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)

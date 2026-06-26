@@ -36,7 +36,7 @@ func TestInexplicitNumberOrderNewWithOptionalParams(t *testing.T) {
 			Features:                []string{"string"},
 			Locality:                telnyx.String("locality"),
 			NationalDestinationCode: telnyx.String("national_destination_code"),
-			PhoneNumber: telnyx.InexplicitNumberOrderNewParamsOrderingGroupPhoneNumber{
+			PhoneNumber: telnyx.InexplicitNumberOrderNewParamsOrderingGroupsPhoneNumber{
 				Contains:   telnyx.String("contains"),
 				EndsWith:   telnyx.String("ends_with"),
 				StartsWith: telnyx.String("starts_with"),

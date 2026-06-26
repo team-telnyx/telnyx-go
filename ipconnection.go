@@ -400,7 +400,7 @@ type IPConnection struct {
 	// When set to 'disabled', noise suppression is turned off.
 	//
 	// Any of "inbound", "outbound", "both", "disabled".
-	NoiseSuppression IPConnectionNoiseSuppression `json:"noise_suppression"`
+	NoiseSuppression ConnectionNoiseSuppression `json:"noise_suppression"`
 	// Configuration options for noise suppression. These settings are stored
 	// regardless of the noise_suppression value, but only take effect when
 	// noise_suppression is not 'disabled'. If you disable noise suppression and later
@@ -474,19 +474,6 @@ func (r IPConnection) RawJSON() string { return r.JSON.raw }
 func (r *IPConnection) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Controls when noise suppression is applied to calls. When set to 'inbound',
-// noise suppression is applied to incoming audio. When set to 'outbound', it's
-// applied to outgoing audio. When set to 'both', it's applied in both directions.
-// When set to 'disabled', noise suppression is turned off.
-type IPConnectionNoiseSuppression string
-
-const (
-	IPConnectionNoiseSuppressionInbound  IPConnectionNoiseSuppression = "inbound"
-	IPConnectionNoiseSuppressionOutbound IPConnectionNoiseSuppression = "outbound"
-	IPConnectionNoiseSuppressionBoth     IPConnectionNoiseSuppression = "both"
-	IPConnectionNoiseSuppressionDisabled IPConnectionNoiseSuppression = "disabled"
-)
 
 // One of UDP, TLS, or TCP. Applies only to connections with IP authentication or
 // FQDN authentication.
@@ -791,7 +778,7 @@ type IPConnectionNewParams struct {
 	// When set to 'disabled', noise suppression is turned off.
 	//
 	// Any of "inbound", "outbound", "both", "disabled".
-	NoiseSuppression IPConnectionNewParamsNoiseSuppression `json:"noise_suppression,omitzero"`
+	NoiseSuppression ConnectionNoiseSuppression `json:"noise_suppression,omitzero"`
 	// Configuration options for noise suppression. These settings are stored
 	// regardless of the noise_suppression value, but only take effect when
 	// noise_suppression is not 'disabled'. If you disable noise suppression and later
@@ -907,19 +894,6 @@ func init() {
 	)
 }
 
-// Controls when noise suppression is applied to calls. When set to 'inbound',
-// noise suppression is applied to incoming audio. When set to 'outbound', it's
-// applied to outgoing audio. When set to 'both', it's applied in both directions.
-// When set to 'disabled', noise suppression is turned off.
-type IPConnectionNewParamsNoiseSuppression string
-
-const (
-	IPConnectionNewParamsNoiseSuppressionInbound  IPConnectionNewParamsNoiseSuppression = "inbound"
-	IPConnectionNewParamsNoiseSuppressionOutbound IPConnectionNewParamsNoiseSuppression = "outbound"
-	IPConnectionNewParamsNoiseSuppressionBoth     IPConnectionNewParamsNoiseSuppression = "both"
-	IPConnectionNewParamsNoiseSuppressionDisabled IPConnectionNewParamsNoiseSuppression = "disabled"
-)
-
 // One of UDP, TLS, or TCP. Applies only to connections with IP authentication or
 // FQDN authentication.
 type IPConnectionNewParamsTransportProtocol string
@@ -998,7 +972,7 @@ type IPConnectionUpdateParams struct {
 	// When set to 'disabled', noise suppression is turned off.
 	//
 	// Any of "inbound", "outbound", "both", "disabled".
-	NoiseSuppression IPConnectionUpdateParamsNoiseSuppression `json:"noise_suppression,omitzero"`
+	NoiseSuppression ConnectionNoiseSuppression `json:"noise_suppression,omitzero"`
 	// Configuration options for noise suppression. These settings are stored
 	// regardless of the noise_suppression value, but only take effect when
 	// noise_suppression is not 'disabled'. If you disable noise suppression and later
@@ -1027,19 +1001,6 @@ func (r IPConnectionUpdateParams) MarshalJSON() (data []byte, err error) {
 func (r *IPConnectionUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Controls when noise suppression is applied to calls. When set to 'inbound',
-// noise suppression is applied to incoming audio. When set to 'outbound', it's
-// applied to outgoing audio. When set to 'both', it's applied in both directions.
-// When set to 'disabled', noise suppression is turned off.
-type IPConnectionUpdateParamsNoiseSuppression string
-
-const (
-	IPConnectionUpdateParamsNoiseSuppressionInbound  IPConnectionUpdateParamsNoiseSuppression = "inbound"
-	IPConnectionUpdateParamsNoiseSuppressionOutbound IPConnectionUpdateParamsNoiseSuppression = "outbound"
-	IPConnectionUpdateParamsNoiseSuppressionBoth     IPConnectionUpdateParamsNoiseSuppression = "both"
-	IPConnectionUpdateParamsNoiseSuppressionDisabled IPConnectionUpdateParamsNoiseSuppression = "disabled"
-)
 
 // One of UDP, TLS, or TCP. Applies only to connections with IP authentication or
 // FQDN authentication.

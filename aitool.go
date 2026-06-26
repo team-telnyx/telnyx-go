@@ -41,7 +41,7 @@ func NewAIToolService(opts ...option.RequestOption) (r AIToolService) {
 }
 
 // Create Tool
-func (r *AIToolService) New(ctx context.Context, body AIToolNewParams, opts ...option.RequestOption) (res *AIToolNewResponse, err error) {
+func (r *AIToolService) New(ctx context.Context, body AIToolNewParams, opts ...option.RequestOption) (res *SharedToolResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/tools"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -49,7 +49,7 @@ func (r *AIToolService) New(ctx context.Context, body AIToolNewParams, opts ...o
 }
 
 // Get Tool
-func (r *AIToolService) Get(ctx context.Context, toolID string, opts ...option.RequestOption) (res *AIToolGetResponse, err error) {
+func (r *AIToolService) Get(ctx context.Context, toolID string, opts ...option.RequestOption) (res *SharedToolResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if toolID == "" {
 		err = errors.New("missing required tool_id parameter")
@@ -61,7 +61,7 @@ func (r *AIToolService) Get(ctx context.Context, toolID string, opts ...option.R
 }
 
 // Update Tool
-func (r *AIToolService) Update(ctx context.Context, toolID string, body AIToolUpdateParams, opts ...option.RequestOption) (res *AIToolUpdateResponse, err error) {
+func (r *AIToolService) Update(ctx context.Context, toolID string, body AIToolUpdateParams, opts ...option.RequestOption) (res *SharedToolResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if toolID == "" {
 		err = errors.New("missing required tool_id parameter")
@@ -73,7 +73,7 @@ func (r *AIToolService) Update(ctx context.Context, toolID string, body AIToolUp
 }
 
 // List Tools
-func (r *AIToolService) List(ctx context.Context, query AIToolListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[AIToolListResponse], err error) {
+func (r *AIToolService) List(ctx context.Context, query AIToolListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[SharedToolResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -91,7 +91,7 @@ func (r *AIToolService) List(ctx context.Context, query AIToolListParams, opts .
 }
 
 // List Tools
-func (r *AIToolService) ListAutoPaging(ctx context.Context, query AIToolListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[AIToolListResponse] {
+func (r *AIToolService) ListAutoPaging(ctx context.Context, query AIToolListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[SharedToolResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -107,7 +107,7 @@ func (r *AIToolService) Delete(ctx context.Context, toolID string, opts ...optio
 	return res, err
 }
 
-type AIToolNewResponse struct {
+type SharedToolResponse struct {
 	ID             string         `json:"id" api:"required"`
 	ToolDefinition map[string]any `json:"tool_definition" api:"required"`
 	Type           string         `json:"type" api:"required"`
@@ -128,86 +128,8 @@ type AIToolNewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AIToolNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIToolNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIToolGetResponse struct {
-	ID             string         `json:"id" api:"required"`
-	ToolDefinition map[string]any `json:"tool_definition" api:"required"`
-	Type           string         `json:"type" api:"required"`
-	CreatedAt      string         `json:"created_at"`
-	DisplayName    string         `json:"display_name"`
-	TimeoutMs      int64          `json:"timeout_ms"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		ToolDefinition respjson.Field
-		Type           respjson.Field
-		CreatedAt      respjson.Field
-		DisplayName    respjson.Field
-		TimeoutMs      respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIToolGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIToolGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIToolUpdateResponse struct {
-	ID             string         `json:"id" api:"required"`
-	ToolDefinition map[string]any `json:"tool_definition" api:"required"`
-	Type           string         `json:"type" api:"required"`
-	CreatedAt      string         `json:"created_at"`
-	DisplayName    string         `json:"display_name"`
-	TimeoutMs      int64          `json:"timeout_ms"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		ToolDefinition respjson.Field
-		Type           respjson.Field
-		CreatedAt      respjson.Field
-		DisplayName    respjson.Field
-		TimeoutMs      respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIToolUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIToolUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIToolListResponse struct {
-	ID             string         `json:"id" api:"required"`
-	ToolDefinition map[string]any `json:"tool_definition" api:"required"`
-	Type           string         `json:"type" api:"required"`
-	CreatedAt      string         `json:"created_at"`
-	DisplayName    string         `json:"display_name"`
-	TimeoutMs      int64          `json:"timeout_ms"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		ToolDefinition respjson.Field
-		Type           respjson.Field
-		CreatedAt      respjson.Field
-		DisplayName    respjson.Field
-		TimeoutMs      respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIToolListResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIToolListResponse) UnmarshalJSON(data []byte) error {
+func (r SharedToolResponse) RawJSON() string { return r.JSON.raw }
+func (r *SharedToolResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

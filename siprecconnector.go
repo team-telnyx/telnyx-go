@@ -38,7 +38,7 @@ func NewSiprecConnectorService(opts ...option.RequestOption) (r SiprecConnectorS
 }
 
 // Creates a new SIPREC connector configuration.
-func (r *SiprecConnectorService) New(ctx context.Context, body SiprecConnectorNewParams, opts ...option.RequestOption) (res *SiprecConnectorNewResponse, err error) {
+func (r *SiprecConnectorService) New(ctx context.Context, body SiprecConnectorNewParams, opts ...option.RequestOption) (res *SiprecConnectorResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "siprec_connectors"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -46,7 +46,7 @@ func (r *SiprecConnectorService) New(ctx context.Context, body SiprecConnectorNe
 }
 
 // Returns details of a stored SIPREC connector.
-func (r *SiprecConnectorService) Get(ctx context.Context, connectorName string, opts ...option.RequestOption) (res *SiprecConnectorGetResponse, err error) {
+func (r *SiprecConnectorService) Get(ctx context.Context, connectorName string, opts ...option.RequestOption) (res *SiprecConnectorResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if connectorName == "" {
 		err = errors.New("missing required connector_name parameter")
@@ -58,7 +58,7 @@ func (r *SiprecConnectorService) Get(ctx context.Context, connectorName string, 
 }
 
 // Updates a stored SIPREC connector configuration.
-func (r *SiprecConnectorService) Update(ctx context.Context, connectorName string, body SiprecConnectorUpdateParams, opts ...option.RequestOption) (res *SiprecConnectorUpdateResponse, err error) {
+func (r *SiprecConnectorService) Update(ctx context.Context, connectorName string, body SiprecConnectorUpdateParams, opts ...option.RequestOption) (res *SiprecConnectorResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if connectorName == "" {
 		err = errors.New("missing required connector_name parameter")
@@ -82,8 +82,8 @@ func (r *SiprecConnectorService) Delete(ctx context.Context, connectorName strin
 	return err
 }
 
-type SiprecConnectorNewResponse struct {
-	Data SiprecConnectorNewResponseData `json:"data" api:"required"`
+type SiprecConnectorResponse struct {
+	Data SiprecConnectorResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -93,12 +93,12 @@ type SiprecConnectorNewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r SiprecConnectorNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *SiprecConnectorNewResponse) UnmarshalJSON(data []byte) error {
+func (r SiprecConnectorResponse) RawJSON() string { return r.JSON.raw }
+func (r *SiprecConnectorResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type SiprecConnectorNewResponseData struct {
+type SiprecConnectorResponseData struct {
 	// Subdomain to route calls when using Telnyx SRS (optional).
 	AppSubdomain string `json:"app_subdomain"`
 	// ISO 8601 formatted date/time of creation.
@@ -127,108 +127,8 @@ type SiprecConnectorNewResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r SiprecConnectorNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *SiprecConnectorNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SiprecConnectorGetResponse struct {
-	Data SiprecConnectorGetResponseData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SiprecConnectorGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *SiprecConnectorGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SiprecConnectorGetResponseData struct {
-	// Subdomain to route calls when using Telnyx SRS (optional).
-	AppSubdomain string `json:"app_subdomain"`
-	// ISO 8601 formatted date/time of creation.
-	CreatedAt string `json:"created_at"`
-	// Hostname/IPv4 address of the SIPREC SRS.
-	Host string `json:"host"`
-	// Name for the SIPREC connector resource.
-	Name string `json:"name"`
-	// Port for the SIPREC SRS.
-	Port       int64  `json:"port"`
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date/time of last update.
-	UpdatedAt string `json:"updated_at"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AppSubdomain respjson.Field
-		CreatedAt    respjson.Field
-		Host         respjson.Field
-		Name         respjson.Field
-		Port         respjson.Field
-		RecordType   respjson.Field
-		UpdatedAt    respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SiprecConnectorGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *SiprecConnectorGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SiprecConnectorUpdateResponse struct {
-	Data SiprecConnectorUpdateResponseData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SiprecConnectorUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *SiprecConnectorUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SiprecConnectorUpdateResponseData struct {
-	// Subdomain to route calls when using Telnyx SRS (optional).
-	AppSubdomain string `json:"app_subdomain"`
-	// ISO 8601 formatted date/time of creation.
-	CreatedAt string `json:"created_at"`
-	// Hostname/IPv4 address of the SIPREC SRS.
-	Host string `json:"host"`
-	// Name for the SIPREC connector resource.
-	Name string `json:"name"`
-	// Port for the SIPREC SRS.
-	Port       int64  `json:"port"`
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date/time of last update.
-	UpdatedAt string `json:"updated_at"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AppSubdomain respjson.Field
-		CreatedAt    respjson.Field
-		Host         respjson.Field
-		Name         respjson.Field
-		Port         respjson.Field
-		RecordType   respjson.Field
-		UpdatedAt    respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SiprecConnectorUpdateResponseData) RawJSON() string { return r.JSON.raw }
-func (r *SiprecConnectorUpdateResponseData) UnmarshalJSON(data []byte) error {
+func (r SiprecConnectorResponseData) RawJSON() string { return r.JSON.raw }
+func (r *SiprecConnectorResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

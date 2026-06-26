@@ -172,7 +172,7 @@ type FqdnConnection struct {
 	// When set to 'disabled', noise suppression is turned off.
 	//
 	// Any of "inbound", "outbound", "both", "disabled".
-	NoiseSuppression FqdnConnectionNoiseSuppression `json:"noise_suppression"`
+	NoiseSuppression ConnectionNoiseSuppression `json:"noise_suppression"`
 	// Configuration options for noise suppression. These settings are stored
 	// regardless of the noise_suppression value, but only take effect when
 	// noise_suppression is not 'disabled'. If you disable noise suppression and later
@@ -275,19 +275,6 @@ func (r FqdnConnection) RawJSON() string { return r.JSON.raw }
 func (r *FqdnConnection) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Controls when noise suppression is applied to calls. When set to 'inbound',
-// noise suppression is applied to incoming audio. When set to 'outbound', it's
-// applied to outgoing audio. When set to 'both', it's applied in both directions.
-// When set to 'disabled', noise suppression is turned off.
-type FqdnConnectionNoiseSuppression string
-
-const (
-	FqdnConnectionNoiseSuppressionInbound  FqdnConnectionNoiseSuppression = "inbound"
-	FqdnConnectionNoiseSuppressionOutbound FqdnConnectionNoiseSuppression = "outbound"
-	FqdnConnectionNoiseSuppressionBoth     FqdnConnectionNoiseSuppression = "both"
-	FqdnConnectionNoiseSuppressionDisabled FqdnConnectionNoiseSuppression = "disabled"
-)
 
 type InboundFqdn struct {
 	// This setting allows you to set the format with which the caller's number (ANI)
@@ -852,7 +839,7 @@ type FqdnConnectionNewParams struct {
 	// When set to 'disabled', noise suppression is turned off.
 	//
 	// Any of "inbound", "outbound", "both", "disabled".
-	NoiseSuppression FqdnConnectionNewParamsNoiseSuppression `json:"noise_suppression,omitzero"`
+	NoiseSuppression ConnectionNoiseSuppression `json:"noise_suppression,omitzero"`
 	// Configuration options for noise suppression. These settings are stored
 	// regardless of the noise_suppression value, but only take effect when
 	// noise_suppression is not 'disabled'. If you disable noise suppression and later
@@ -881,19 +868,6 @@ func (r FqdnConnectionNewParams) MarshalJSON() (data []byte, err error) {
 func (r *FqdnConnectionNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Controls when noise suppression is applied to calls. When set to 'inbound',
-// noise suppression is applied to incoming audio. When set to 'outbound', it's
-// applied to outgoing audio. When set to 'both', it's applied in both directions.
-// When set to 'disabled', noise suppression is turned off.
-type FqdnConnectionNewParamsNoiseSuppression string
-
-const (
-	FqdnConnectionNewParamsNoiseSuppressionInbound  FqdnConnectionNewParamsNoiseSuppression = "inbound"
-	FqdnConnectionNewParamsNoiseSuppressionOutbound FqdnConnectionNewParamsNoiseSuppression = "outbound"
-	FqdnConnectionNewParamsNoiseSuppressionBoth     FqdnConnectionNewParamsNoiseSuppression = "both"
-	FqdnConnectionNewParamsNoiseSuppressionDisabled FqdnConnectionNewParamsNoiseSuppression = "disabled"
-)
 
 type FqdnConnectionUpdateParams struct {
 	// The uuid of the push credential for Android
@@ -956,7 +930,7 @@ type FqdnConnectionUpdateParams struct {
 	// When set to 'disabled', noise suppression is turned off.
 	//
 	// Any of "inbound", "outbound", "both", "disabled".
-	NoiseSuppression FqdnConnectionUpdateParamsNoiseSuppression `json:"noise_suppression,omitzero"`
+	NoiseSuppression ConnectionNoiseSuppression `json:"noise_suppression,omitzero"`
 	// Configuration options for noise suppression. These settings are stored
 	// regardless of the noise_suppression value, but only take effect when
 	// noise_suppression is not 'disabled'. If you disable noise suppression and later
@@ -985,19 +959,6 @@ func (r FqdnConnectionUpdateParams) MarshalJSON() (data []byte, err error) {
 func (r *FqdnConnectionUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Controls when noise suppression is applied to calls. When set to 'inbound',
-// noise suppression is applied to incoming audio. When set to 'outbound', it's
-// applied to outgoing audio. When set to 'both', it's applied in both directions.
-// When set to 'disabled', noise suppression is turned off.
-type FqdnConnectionUpdateParamsNoiseSuppression string
-
-const (
-	FqdnConnectionUpdateParamsNoiseSuppressionInbound  FqdnConnectionUpdateParamsNoiseSuppression = "inbound"
-	FqdnConnectionUpdateParamsNoiseSuppressionOutbound FqdnConnectionUpdateParamsNoiseSuppression = "outbound"
-	FqdnConnectionUpdateParamsNoiseSuppressionBoth     FqdnConnectionUpdateParamsNoiseSuppression = "both"
-	FqdnConnectionUpdateParamsNoiseSuppressionDisabled FqdnConnectionUpdateParamsNoiseSuppression = "disabled"
-)
 
 type FqdnConnectionListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`

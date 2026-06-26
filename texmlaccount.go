@@ -54,7 +54,7 @@ func NewTexmlAccountService(opts ...option.RequestOption) (r TexmlAccountService
 }
 
 // Returns multiple recording resources for an account.
-func (r *TexmlAccountService) GetRecordingsJson(ctx context.Context, accountSid string, query TexmlAccountGetRecordingsJsonParams, opts ...option.RequestOption) (res *TexmlAccountGetRecordingsJsonResponse, err error) {
+func (r *TexmlAccountService) GetRecordingsJson(ctx context.Context, accountSid string, query TexmlAccountGetRecordingsJsonParams, opts ...option.RequestOption) (res *TexmlGetCallRecordingsResponseBody, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if accountSid == "" {
 		err = errors.New("missing required account_sid parameter")
@@ -95,8 +95,8 @@ type TexmlGetCallRecordingResponseBody struct {
 	//
 	// Any of "StartCallRecordingAPI", "StartConferenceRecordingAPI", "OutboundAPI",
 	// "DialVerb", "Conference", "RecordVerb", "Trunking".
-	Source    TexmlGetCallRecordingResponseBodySource `json:"source"`
-	StartTime time.Time                               `json:"start_time" format:"date-time"`
+	Source    RecordingSource `json:"source"`
+	StartTime time.Time       `json:"start_time" format:"date-time"`
 	// Any of "in-progress", "completed", "paused", "stopped".
 	Status TexmlGetCallRecordingResponseBodyStatus `json:"status"`
 	// Subresources details for a recording if available.
@@ -131,19 +131,6 @@ func (r *TexmlGetCallRecordingResponseBody) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Defines how the recording was created.
-type TexmlGetCallRecordingResponseBodySource string
-
-const (
-	TexmlGetCallRecordingResponseBodySourceStartCallRecordingAPI       TexmlGetCallRecordingResponseBodySource = "StartCallRecordingAPI"
-	TexmlGetCallRecordingResponseBodySourceStartConferenceRecordingAPI TexmlGetCallRecordingResponseBodySource = "StartConferenceRecordingAPI"
-	TexmlGetCallRecordingResponseBodySourceOutboundAPI                 TexmlGetCallRecordingResponseBodySource = "OutboundAPI"
-	TexmlGetCallRecordingResponseBodySourceDialVerb                    TexmlGetCallRecordingResponseBodySource = "DialVerb"
-	TexmlGetCallRecordingResponseBodySourceConference                  TexmlGetCallRecordingResponseBodySource = "Conference"
-	TexmlGetCallRecordingResponseBodySourceRecordVerb                  TexmlGetCallRecordingResponseBodySource = "RecordVerb"
-	TexmlGetCallRecordingResponseBodySourceTrunking                    TexmlGetCallRecordingResponseBodySource = "Trunking"
-)
-
 type TexmlGetCallRecordingResponseBodyStatus string
 
 const (
@@ -170,46 +157,6 @@ func (r *TexmlRecordingSubresourcesUris) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type TexmlAccountGetRecordingsJsonResponse struct {
-	// The number of the last element on the page, zero-indexed.
-	End int64 `json:"end"`
-	// Relative uri to the first page of the query results
-	FirstPageUri string `json:"first_page_uri" format:"uri"`
-	// Relative uri to the next page of the query results
-	NextPageUri string `json:"next_page_uri"`
-	// Current page number, zero-indexed.
-	Page int64 `json:"page"`
-	// The number of items on the page
-	PageSize int64 `json:"page_size"`
-	// Relative uri to the previous page of the query results
-	PreviousPageUri string                              `json:"previous_page_uri" format:"uri"`
-	Recordings      []TexmlGetCallRecordingResponseBody `json:"recordings"`
-	// The number of the first element on the page, zero-indexed.
-	Start int64 `json:"start"`
-	// The URI of the current page.
-	Uri string `json:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		End             respjson.Field
-		FirstPageUri    respjson.Field
-		NextPageUri     respjson.Field
-		Page            respjson.Field
-		PageSize        respjson.Field
-		PreviousPageUri respjson.Field
-		Recordings      respjson.Field
-		Start           respjson.Field
-		Uri             respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TexmlAccountGetRecordingsJsonResponse) RawJSON() string { return r.JSON.raw }
-func (r *TexmlAccountGetRecordingsJsonResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type TexmlAccountGetTranscriptionsJsonResponse struct {
 	// The number of the last element on the page, zero-indexed
 	End int64 `json:"end"`
@@ -224,8 +171,8 @@ type TexmlAccountGetTranscriptionsJsonResponse struct {
 	// Relative uri to the previous page of the query results
 	PreviousPageUri string `json:"previous_page_uri" format:"uri"`
 	// The number of the first element on the page, zero-indexed.
-	Start          int64                                                    `json:"start"`
-	Transcriptions []TexmlAccountGetTranscriptionsJsonResponseTranscription `json:"transcriptions"`
+	Start          int64                         `json:"start"`
+	Transcriptions []TexmlRecordingTranscription `json:"transcriptions"`
 	// The URI of the current page.
 	Uri string `json:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -247,52 +194,6 @@ type TexmlAccountGetTranscriptionsJsonResponse struct {
 // Returns the unmodified JSON received from the API
 func (r TexmlAccountGetTranscriptionsJsonResponse) RawJSON() string { return r.JSON.raw }
 func (r *TexmlAccountGetTranscriptionsJsonResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TexmlAccountGetTranscriptionsJsonResponseTranscription struct {
-	AccountSid string `json:"account_sid"`
-	// The version of the API that was used to make the request.
-	APIVersion  string    `json:"api_version"`
-	CallSid     string    `json:"call_sid"`
-	DateCreated time.Time `json:"date_created" format:"date-time"`
-	DateUpdated time.Time `json:"date_updated" format:"date-time"`
-	// The duration of this recording, given in seconds.
-	Duration string `json:"duration" api:"nullable"`
-	// Identifier of a resource.
-	RecordingSid string `json:"recording_sid"`
-	// Identifier of a resource.
-	Sid string `json:"sid"`
-	// The status of the recording transcriptions. The transcription text will be
-	// available only when the status is completed.
-	//
-	// Any of "in-progress", "completed".
-	Status string `json:"status"`
-	// The recording's transcribed text
-	TranscriptionText string `json:"transcription_text"`
-	// The relative URI for the recording transcription resource.
-	Uri string `json:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AccountSid        respjson.Field
-		APIVersion        respjson.Field
-		CallSid           respjson.Field
-		DateCreated       respjson.Field
-		DateUpdated       respjson.Field
-		Duration          respjson.Field
-		RecordingSid      respjson.Field
-		Sid               respjson.Field
-		Status            respjson.Field
-		TranscriptionText respjson.Field
-		Uri               respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TexmlAccountGetTranscriptionsJsonResponseTranscription) RawJSON() string { return r.JSON.raw }
-func (r *TexmlAccountGetTranscriptionsJsonResponseTranscription) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

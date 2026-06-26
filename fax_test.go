@@ -38,7 +38,7 @@ func TestFaxNewWithOptionalParams(t *testing.T) {
 		MediaURL:        telnyx.String("https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"),
 		Monochrome:      telnyx.Bool(true),
 		PreviewFormat:   telnyx.FaxNewParamsPreviewFormatPdf,
-		Quality:         telnyx.FaxNewParamsQualityHigh,
+		Quality:         telnyx.QualityHigh,
 		StoreMedia:      telnyx.Bool(true),
 		StorePreview:    telnyx.Bool(true),
 		T38Enabled:      telnyx.Bool(true),

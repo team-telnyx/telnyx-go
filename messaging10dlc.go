@@ -60,22 +60,24 @@ func (r *Messaging10dlcService) GetEnum(ctx context.Context, endpoint Messaging1
 }
 
 // Messaging10dlcGetEnumResponseUnion contains all possible properties and values
-// from [[]string], [[]map[string]any], [map[string]any], [map[string]any],
+// from [[]string], [[]map[string]any], [map[string]string], [map[string]any],
 // [Messaging10dlcGetEnumResponseEnumPaginatedResponse].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfEnumStringListResponse OfEnumObjectListResponse
-// OfMessaging10dlcGetEnumResponseEnumObjecToObjecttResponseItem]
+// will be valid: OfEnumStringListResponse OfEnumObjectListResponse OfString
+// OfMessaging10dlcGetEnumResponseEnumObjecToObjecttResponse]
 type Messaging10dlcGetEnumResponseUnion struct {
 	// This field will be present if the value is a [[]string] instead of an object.
 	OfEnumStringListResponse []string `json:",inline"`
 	// This field will be present if the value is a [[]map[string]any] instead of an
 	// object.
 	OfEnumObjectListResponse []map[string]any `json:",inline"`
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
 	// This field will be present if the value is a [any] instead of an object.
-	OfMessaging10dlcGetEnumResponseEnumObjecToObjecttResponseItem any `json:",inline"`
+	OfMessaging10dlcGetEnumResponseEnumObjecToObjecttResponse any `json:",inline"`
 	// This field is from variant [Messaging10dlcGetEnumResponseEnumPaginatedResponse].
 	Page int64 `json:"page"`
 	// This field is from variant [Messaging10dlcGetEnumResponseEnumPaginatedResponse].
@@ -83,13 +85,14 @@ type Messaging10dlcGetEnumResponseUnion struct {
 	// This field is from variant [Messaging10dlcGetEnumResponseEnumPaginatedResponse].
 	TotalRecords int64 `json:"totalRecords"`
 	JSON         struct {
-		OfEnumStringListResponse                                      respjson.Field
-		OfEnumObjectListResponse                                      respjson.Field
-		OfMessaging10dlcGetEnumResponseEnumObjecToObjecttResponseItem respjson.Field
-		Page                                                          respjson.Field
-		Records                                                       respjson.Field
-		TotalRecords                                                  respjson.Field
-		raw                                                           string
+		OfEnumStringListResponse                                  respjson.Field
+		OfEnumObjectListResponse                                  respjson.Field
+		OfString                                                  respjson.Field
+		OfMessaging10dlcGetEnumResponseEnumObjecToObjecttResponse respjson.Field
+		Page                                                      respjson.Field
+		Records                                                   respjson.Field
+		TotalRecords                                              respjson.Field
+		raw                                                       string
 	} `json:"-"`
 }
 
@@ -103,7 +106,7 @@ func (u Messaging10dlcGetEnumResponseUnion) AsEnumObjectListResponse() (v []map[
 	return
 }
 
-func (u Messaging10dlcGetEnumResponseUnion) AsEnumObjectToStringResponse() (v map[string]any) {
+func (u Messaging10dlcGetEnumResponseUnion) AsEnumObjectToStringResponse() (v map[string]string) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }

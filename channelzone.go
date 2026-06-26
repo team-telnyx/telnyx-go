@@ -44,7 +44,7 @@ func NewChannelZoneService(opts ...option.RequestOption) (r ChannelZoneService) 
 // account to handle multiple simultaneous inbound calls to Non-US numbers. Use
 // this endpoint to increase or decrease your capacity based on expected call
 // volume.
-func (r *ChannelZoneService) Update(ctx context.Context, channelZoneID string, body ChannelZoneUpdateParams, opts ...option.RequestOption) (res *ChannelZoneUpdateResponse, err error) {
+func (r *ChannelZoneService) Update(ctx context.Context, channelZoneID string, body ChannelZoneUpdateParams, opts ...option.RequestOption) (res *GcbChannelZone, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if channelZoneID == "" {
 		err = errors.New("missing required channel_zone_id parameter")
@@ -60,7 +60,7 @@ func (r *ChannelZoneService) Update(ctx context.Context, channelZoneID string, b
 // <a href="https://support.telnyx.com/en/articles/8428806-global-channel-billing">Telnyx
 // Support Articles</a> section for full information and examples of how to utilize
 // Channel Billing.
-func (r *ChannelZoneService) List(ctx context.Context, query ChannelZoneListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[ChannelZoneListResponse], err error) {
+func (r *ChannelZoneService) List(ctx context.Context, query ChannelZoneListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[GcbChannelZone], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -82,11 +82,11 @@ func (r *ChannelZoneService) List(ctx context.Context, query ChannelZoneListPara
 // <a href="https://support.telnyx.com/en/articles/8428806-global-channel-billing">Telnyx
 // Support Articles</a> section for full information and examples of how to utilize
 // Channel Billing.
-func (r *ChannelZoneService) ListAutoPaging(ctx context.Context, query ChannelZoneListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[ChannelZoneListResponse] {
+func (r *ChannelZoneService) ListAutoPaging(ctx context.Context, query ChannelZoneListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[GcbChannelZone] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-type ChannelZoneUpdateResponse struct {
+type GcbChannelZone struct {
 	ID       string `json:"id" api:"required"`
 	Channels int64  `json:"channels" api:"required"`
 	// List of countries (in ISO 3166-2, capitalized) members of the billing channel
@@ -94,7 +94,7 @@ type ChannelZoneUpdateResponse struct {
 	Countries []string `json:"countries" api:"required"`
 	Name      string   `json:"name" api:"required"`
 	// Any of "channel_zone".
-	RecordType ChannelZoneUpdateResponseRecordType `json:"record_type" api:"required"`
+	RecordType GcbChannelZoneRecordType `json:"record_type" api:"required"`
 	// ISO 8601 formatted date of when the channel zone was created
 	CreatedAt string `json:"created_at"`
 	// ISO 8601 formatted date of when the channel zone was updated
@@ -114,54 +114,15 @@ type ChannelZoneUpdateResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChannelZoneUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *ChannelZoneUpdateResponse) UnmarshalJSON(data []byte) error {
+func (r GcbChannelZone) RawJSON() string { return r.JSON.raw }
+func (r *GcbChannelZone) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ChannelZoneUpdateResponseRecordType string
+type GcbChannelZoneRecordType string
 
 const (
-	ChannelZoneUpdateResponseRecordTypeChannelZone ChannelZoneUpdateResponseRecordType = "channel_zone"
-)
-
-type ChannelZoneListResponse struct {
-	ID       string `json:"id" api:"required"`
-	Channels int64  `json:"channels" api:"required"`
-	// List of countries (in ISO 3166-2, capitalized) members of the billing channel
-	// zone
-	Countries []string `json:"countries" api:"required"`
-	Name      string   `json:"name" api:"required"`
-	// Any of "channel_zone".
-	RecordType ChannelZoneListResponseRecordType `json:"record_type" api:"required"`
-	// ISO 8601 formatted date of when the channel zone was created
-	CreatedAt string `json:"created_at"`
-	// ISO 8601 formatted date of when the channel zone was updated
-	UpdatedAt string `json:"updated_at"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Channels    respjson.Field
-		Countries   respjson.Field
-		Name        respjson.Field
-		RecordType  respjson.Field
-		CreatedAt   respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ChannelZoneListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ChannelZoneListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ChannelZoneListResponseRecordType string
-
-const (
-	ChannelZoneListResponseRecordTypeChannelZone ChannelZoneListResponseRecordType = "channel_zone"
+	GcbChannelZoneRecordTypeChannelZone GcbChannelZoneRecordType = "channel_zone"
 )
 
 type ChannelZoneUpdateParams struct {

@@ -53,7 +53,7 @@ func NewEnterpriseReputationService(opts ...option.RequestOption) (r EnterpriseR
 // cadence, and the stored Letter of Authorization document id.
 //
 // Returns `404` if reputation has never been enabled for this enterprise.
-func (r *EnterpriseReputationService) Get(ctx context.Context, enterpriseID string, opts ...option.RequestOption) (res *EnterpriseReputationGetResponse, err error) {
+func (r *EnterpriseReputationService) Get(ctx context.Context, enterpriseID string, opts ...option.RequestOption) (res *EnterpriseReputationPublicWrapped, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if enterpriseID == "" {
 		err = errors.New("missing required enterprise_id parameter")
@@ -96,7 +96,7 @@ func (r *EnterpriseReputationService) Disable(ctx context.Context, enterpriseID 
 //
 // **Pricing:** This is a billable action. See https://telnyx.com/pricing/numbers
 // for current pricing.
-func (r *EnterpriseReputationService) Enable(ctx context.Context, enterpriseID string, body EnterpriseReputationEnableParams, opts ...option.RequestOption) (res *EnterpriseReputationEnableResponse, err error) {
+func (r *EnterpriseReputationService) Enable(ctx context.Context, enterpriseID string, body EnterpriseReputationEnableParams, opts ...option.RequestOption) (res *EnterpriseReputationPublicWrapped, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if enterpriseID == "" {
 		err = errors.New("missing required enterprise_id parameter")
@@ -113,7 +113,7 @@ func (r *EnterpriseReputationService) Enable(ctx context.Context, enterpriseID s
 //
 // The enterprise's reputation must be in `approved` status. A request made while
 // the status is `pending` is rejected with `400 Bad Request`.
-func (r *EnterpriseReputationService) UpdateFrequency(ctx context.Context, enterpriseID string, body EnterpriseReputationUpdateFrequencyParams, opts ...option.RequestOption) (res *EnterpriseReputationUpdateFrequencyResponse, err error) {
+func (r *EnterpriseReputationService) UpdateFrequency(ctx context.Context, enterpriseID string, body EnterpriseReputationUpdateFrequencyParams, opts ...option.RequestOption) (res *EnterpriseReputationPublicWrapped, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if enterpriseID == "" {
 		err = errors.New("missing required enterprise_id parameter")
@@ -129,9 +129,9 @@ type EnterpriseReputationPublic struct {
 	// registered numbers.
 	//
 	// Any of "business_daily", "daily", "weekly", "biweekly", "monthly", "never".
-	CheckFrequency EnterpriseReputationPublicCheckFrequency `json:"check_frequency"`
-	CreatedAt      time.Time                                `json:"created_at" format:"date-time"`
-	EnterpriseID   string                                   `json:"enterprise_id" format:"uuid"`
+	CheckFrequency ReputationCheckFrequency `json:"check_frequency"`
+	CreatedAt      time.Time                `json:"created_at" format:"date-time"`
+	EnterpriseID   string                   `json:"enterprise_id" format:"uuid"`
 	// Id of the signed LOA document.
 	LoaDocumentID string `json:"loa_document_id" api:"nullable"`
 	// Customer-facing Letter-of-Authorization verification state. `approved` is
@@ -167,19 +167,6 @@ func (r *EnterpriseReputationPublic) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// How often Telnyx refreshes the stored reputation data for this enterprise's
-// registered numbers.
-type EnterpriseReputationPublicCheckFrequency string
-
-const (
-	EnterpriseReputationPublicCheckFrequencyBusinessDaily EnterpriseReputationPublicCheckFrequency = "business_daily"
-	EnterpriseReputationPublicCheckFrequencyDaily         EnterpriseReputationPublicCheckFrequency = "daily"
-	EnterpriseReputationPublicCheckFrequencyWeekly        EnterpriseReputationPublicCheckFrequency = "weekly"
-	EnterpriseReputationPublicCheckFrequencyBiweekly      EnterpriseReputationPublicCheckFrequency = "biweekly"
-	EnterpriseReputationPublicCheckFrequencyMonthly       EnterpriseReputationPublicCheckFrequency = "monthly"
-	EnterpriseReputationPublicCheckFrequencyNever         EnterpriseReputationPublicCheckFrequency = "never"
-)
-
 // Customer-facing Letter-of-Authorization verification state. `approved` is
 // required (alongside reputation status) before phone numbers can be added.
 type EnterpriseReputationPublicLoaStatus string
@@ -200,7 +187,7 @@ const (
 	EnterpriseReputationPublicStatusRejected EnterpriseReputationPublicStatus = "rejected"
 )
 
-type EnterpriseReputationGetResponse struct {
+type EnterpriseReputationPublicWrapped struct {
 	Data EnterpriseReputationPublic `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -211,42 +198,23 @@ type EnterpriseReputationGetResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r EnterpriseReputationGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseReputationGetResponse) UnmarshalJSON(data []byte) error {
+func (r EnterpriseReputationPublicWrapped) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseReputationPublicWrapped) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type EnterpriseReputationEnableResponse struct {
-	Data EnterpriseReputationPublic `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
+// How often Telnyx refreshes the stored reputation data for this enterprise's
+// registered numbers.
+type ReputationCheckFrequency string
 
-// Returns the unmodified JSON received from the API
-func (r EnterpriseReputationEnableResponse) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseReputationEnableResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EnterpriseReputationUpdateFrequencyResponse struct {
-	Data EnterpriseReputationPublic `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EnterpriseReputationUpdateFrequencyResponse) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseReputationUpdateFrequencyResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+const (
+	ReputationCheckFrequencyBusinessDaily ReputationCheckFrequency = "business_daily"
+	ReputationCheckFrequencyDaily         ReputationCheckFrequency = "daily"
+	ReputationCheckFrequencyWeekly        ReputationCheckFrequency = "weekly"
+	ReputationCheckFrequencyBiweekly      ReputationCheckFrequency = "biweekly"
+	ReputationCheckFrequencyMonthly       ReputationCheckFrequency = "monthly"
+	ReputationCheckFrequencyNever         ReputationCheckFrequency = "never"
+)
 
 type EnterpriseReputationEnableParams struct {
 	// Id of the signed Letter of Authorization document, returned by the Telnyx
@@ -257,7 +225,7 @@ type EnterpriseReputationEnableParams struct {
 	// registered numbers.
 	//
 	// Any of "business_daily", "daily", "weekly", "biweekly", "monthly", "never".
-	CheckFrequency EnterpriseReputationEnableParamsCheckFrequency `json:"check_frequency,omitzero"`
+	CheckFrequency ReputationCheckFrequency `json:"check_frequency,omitzero"`
 	paramObj
 }
 
@@ -269,25 +237,12 @@ func (r *EnterpriseReputationEnableParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// How often Telnyx refreshes the stored reputation data for this enterprise's
-// registered numbers.
-type EnterpriseReputationEnableParamsCheckFrequency string
-
-const (
-	EnterpriseReputationEnableParamsCheckFrequencyBusinessDaily EnterpriseReputationEnableParamsCheckFrequency = "business_daily"
-	EnterpriseReputationEnableParamsCheckFrequencyDaily         EnterpriseReputationEnableParamsCheckFrequency = "daily"
-	EnterpriseReputationEnableParamsCheckFrequencyWeekly        EnterpriseReputationEnableParamsCheckFrequency = "weekly"
-	EnterpriseReputationEnableParamsCheckFrequencyBiweekly      EnterpriseReputationEnableParamsCheckFrequency = "biweekly"
-	EnterpriseReputationEnableParamsCheckFrequencyMonthly       EnterpriseReputationEnableParamsCheckFrequency = "monthly"
-	EnterpriseReputationEnableParamsCheckFrequencyNever         EnterpriseReputationEnableParamsCheckFrequency = "never"
-)
-
 type EnterpriseReputationUpdateFrequencyParams struct {
 	// How often Telnyx refreshes the stored reputation data for this enterprise's
 	// registered numbers.
 	//
 	// Any of "business_daily", "daily", "weekly", "biweekly", "monthly", "never".
-	CheckFrequency EnterpriseReputationUpdateFrequencyParamsCheckFrequency `json:"check_frequency,omitzero" api:"required"`
+	CheckFrequency ReputationCheckFrequency `json:"check_frequency,omitzero" api:"required"`
 	paramObj
 }
 
@@ -298,16 +253,3 @@ func (r EnterpriseReputationUpdateFrequencyParams) MarshalJSON() (data []byte, e
 func (r *EnterpriseReputationUpdateFrequencyParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// How often Telnyx refreshes the stored reputation data for this enterprise's
-// registered numbers.
-type EnterpriseReputationUpdateFrequencyParamsCheckFrequency string
-
-const (
-	EnterpriseReputationUpdateFrequencyParamsCheckFrequencyBusinessDaily EnterpriseReputationUpdateFrequencyParamsCheckFrequency = "business_daily"
-	EnterpriseReputationUpdateFrequencyParamsCheckFrequencyDaily         EnterpriseReputationUpdateFrequencyParamsCheckFrequency = "daily"
-	EnterpriseReputationUpdateFrequencyParamsCheckFrequencyWeekly        EnterpriseReputationUpdateFrequencyParamsCheckFrequency = "weekly"
-	EnterpriseReputationUpdateFrequencyParamsCheckFrequencyBiweekly      EnterpriseReputationUpdateFrequencyParamsCheckFrequency = "biweekly"
-	EnterpriseReputationUpdateFrequencyParamsCheckFrequencyMonthly       EnterpriseReputationUpdateFrequencyParamsCheckFrequency = "monthly"
-	EnterpriseReputationUpdateFrequencyParamsCheckFrequencyNever         EnterpriseReputationUpdateFrequencyParamsCheckFrequency = "never"
-)

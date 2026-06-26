@@ -42,7 +42,7 @@ func NewPortingOrderVerificationCodeService(opts ...option.RequestOption) (r Por
 }
 
 // Returns a list of verification codes for a porting order.
-func (r *PortingOrderVerificationCodeService) List(ctx context.Context, id string, query PortingOrderVerificationCodeListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingOrderVerificationCodeListResponse], err error) {
+func (r *PortingOrderVerificationCodeService) List(ctx context.Context, id string, query PortingOrderVerificationCodeListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingVerificationCode], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -64,7 +64,7 @@ func (r *PortingOrderVerificationCodeService) List(ctx context.Context, id strin
 }
 
 // Returns a list of verification codes for a porting order.
-func (r *PortingOrderVerificationCodeService) ListAutoPaging(ctx context.Context, id string, query PortingOrderVerificationCodeListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingOrderVerificationCodeListResponse] {
+func (r *PortingOrderVerificationCodeService) ListAutoPaging(ctx context.Context, id string, query PortingOrderVerificationCodeListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingVerificationCode] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, id, query, opts...))
 }
 
@@ -93,7 +93,7 @@ func (r *PortingOrderVerificationCodeService) Verify(ctx context.Context, id str
 	return res, err
 }
 
-type PortingOrderVerificationCodeListResponse struct {
+type PortingVerificationCode struct {
 	// Uniquely identifies this porting verification code
 	ID string `json:"id" format:"uuid"`
 	// ISO 8601 formatted date indicating when the resource was created.
@@ -123,13 +123,13 @@ type PortingOrderVerificationCodeListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PortingOrderVerificationCodeListResponse) RawJSON() string { return r.JSON.raw }
-func (r *PortingOrderVerificationCodeListResponse) UnmarshalJSON(data []byte) error {
+func (r PortingVerificationCode) RawJSON() string { return r.JSON.raw }
+func (r *PortingVerificationCode) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type PortingOrderVerificationCodeVerifyResponse struct {
-	Data []PortingOrderVerificationCodeVerifyResponseData `json:"data"`
+	Data []PortingVerificationCode `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -141,41 +141,6 @@ type PortingOrderVerificationCodeVerifyResponse struct {
 // Returns the unmodified JSON received from the API
 func (r PortingOrderVerificationCodeVerifyResponse) RawJSON() string { return r.JSON.raw }
 func (r *PortingOrderVerificationCodeVerifyResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PortingOrderVerificationCodeVerifyResponseData struct {
-	// Uniquely identifies this porting verification code
-	ID string `json:"id" format:"uuid"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// E164 formatted phone number
-	PhoneNumber string `json:"phone_number"`
-	// Identifies the associated porting order
-	PortingOrderID string `json:"porting_order_id" format:"uuid"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
-	// ISO 8601 formatted date indicating when the resource was updated.
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
-	// Indicates whether the verification code has been verified
-	Verified bool `json:"verified"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		CreatedAt      respjson.Field
-		PhoneNumber    respjson.Field
-		PortingOrderID respjson.Field
-		RecordType     respjson.Field
-		UpdatedAt      respjson.Field
-		Verified       respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PortingOrderVerificationCodeVerifyResponseData) RawJSON() string { return r.JSON.raw }
-func (r *PortingOrderVerificationCodeVerifyResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

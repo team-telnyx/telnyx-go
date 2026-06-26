@@ -847,7 +847,7 @@ type MessagingProfileGetMetricsParams struct {
 	// The time frame for metrics.
 	//
 	// Any of "1h", "3h", "24h", "3d", "7d", "30d".
-	TimeFrame MessagingProfileGetMetricsParamsTimeFrame `query:"time_frame,omitzero" json:"-"`
+	TimeFrame MessagingMetricsTimeFrame `query:"time_frame,omitzero" json:"-"`
 	paramObj
 }
 
@@ -859,15 +859,3 @@ func (r MessagingProfileGetMetricsParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
-
-// The time frame for metrics.
-type MessagingProfileGetMetricsParamsTimeFrame string
-
-const (
-	MessagingProfileGetMetricsParamsTimeFrameTimeFrame1H  MessagingProfileGetMetricsParamsTimeFrame = "1h"
-	MessagingProfileGetMetricsParamsTimeFrameTimeFrame3H  MessagingProfileGetMetricsParamsTimeFrame = "3h"
-	MessagingProfileGetMetricsParamsTimeFrameTimeFrame24H MessagingProfileGetMetricsParamsTimeFrame = "24h"
-	MessagingProfileGetMetricsParamsTimeFrameTimeFrame3D  MessagingProfileGetMetricsParamsTimeFrame = "3d"
-	MessagingProfileGetMetricsParamsTimeFrameTimeFrame7D  MessagingProfileGetMetricsParamsTimeFrame = "7d"
-	MessagingProfileGetMetricsParamsTimeFrameTimeFrame30D MessagingProfileGetMetricsParamsTimeFrame = "30d"
-)

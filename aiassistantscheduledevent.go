@@ -131,6 +131,73 @@ const (
 	EventStatusFailed     EventStatus = "failed"
 )
 
+// Per-call telephony overrides applied when a scheduled phone-call event
+// dispatches. Phone-call events only. New per-call dispatch options should be
+// added here rather than as top-level event fields.
+type ScheduledCallSettings struct {
+	// SIP region passed to Telnyx when initiating an outbound call. Values match the
+	// Telnyx TeXML `SipRegion` parameter exactly. Telnyx defaults to `US` when
+	// omitted.
+	//
+	// Any of "US", "Europe", "Canada", "Australia", "Middle East".
+	SipRegion ScheduledCallSettingsSipRegion `json:"sip_region"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		SipRegion   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ScheduledCallSettings) RawJSON() string { return r.JSON.raw }
+func (r *ScheduledCallSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this ScheduledCallSettings to a ScheduledCallSettingsParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// ScheduledCallSettingsParam.Overrides()
+func (r ScheduledCallSettings) ToParam() ScheduledCallSettingsParam {
+	return param.Override[ScheduledCallSettingsParam](json.RawMessage(r.RawJSON()))
+}
+
+// SIP region passed to Telnyx when initiating an outbound call. Values match the
+// Telnyx TeXML `SipRegion` parameter exactly. Telnyx defaults to `US` when
+// omitted.
+type ScheduledCallSettingsSipRegion string
+
+const (
+	ScheduledCallSettingsSipRegionUs         ScheduledCallSettingsSipRegion = "US"
+	ScheduledCallSettingsSipRegionEurope     ScheduledCallSettingsSipRegion = "Europe"
+	ScheduledCallSettingsSipRegionCanada     ScheduledCallSettingsSipRegion = "Canada"
+	ScheduledCallSettingsSipRegionAustralia  ScheduledCallSettingsSipRegion = "Australia"
+	ScheduledCallSettingsSipRegionMiddleEast ScheduledCallSettingsSipRegion = "Middle East"
+)
+
+// Per-call telephony overrides applied when a scheduled phone-call event
+// dispatches. Phone-call events only. New per-call dispatch options should be
+// added here rather than as top-level event fields.
+type ScheduledCallSettingsParam struct {
+	// SIP region passed to Telnyx when initiating an outbound call. Values match the
+	// Telnyx TeXML `SipRegion` parameter exactly. Telnyx defaults to `US` when
+	// omitted.
+	//
+	// Any of "US", "Europe", "Canada", "Australia", "Middle East".
+	SipRegion ScheduledCallSettingsSipRegion `json:"sip_region,omitzero"`
+	paramObj
+}
+
+func (r ScheduledCallSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow ScheduledCallSettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ScheduledCallSettingsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // ScheduledEventResponseUnion contains all possible properties and values from
 // [ScheduledPhoneCallEventResponse], [ScheduledSMSEventResponse].
 //
@@ -149,7 +216,7 @@ type ScheduledEventResponseUnion struct {
 	// This field is from variant [ScheduledPhoneCallEventResponse].
 	CallDuration int64 `json:"call_duration"`
 	// This field is from variant [ScheduledPhoneCallEventResponse].
-	CallSettings ScheduledPhoneCallEventResponseCallSettings `json:"call_settings"`
+	CallSettings ScheduledCallSettings `json:"call_settings"`
 	// This field is from variant [ScheduledPhoneCallEventResponse].
 	CallStatus     string `json:"call_status"`
 	ConversationID string `json:"conversation_id"`
@@ -259,7 +326,7 @@ type ScheduledPhoneCallEventResponse struct {
 	// Per-call telephony overrides applied when a scheduled phone-call event
 	// dispatches. Phone-call events only. New per-call dispatch options should be
 	// added here rather than as top-level event fields.
-	CallSettings ScheduledPhoneCallEventResponseCallSettings `json:"call_settings"`
+	CallSettings ScheduledCallSettings `json:"call_settings"`
 	// Values: busy, canceled, no-answer, ringing, completed, failed, in-progress
 	CallStatus           string                                                              `json:"call_status"`
 	ConversationID       string                                                              `json:"conversation_id"`
@@ -338,30 +405,6 @@ type ScheduledPhoneCallEventResponseCallAttempt struct {
 // Returns the unmodified JSON received from the API
 func (r ScheduledPhoneCallEventResponseCallAttempt) RawJSON() string { return r.JSON.raw }
 func (r *ScheduledPhoneCallEventResponseCallAttempt) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Per-call telephony overrides applied when a scheduled phone-call event
-// dispatches. Phone-call events only. New per-call dispatch options should be
-// added here rather than as top-level event fields.
-type ScheduledPhoneCallEventResponseCallSettings struct {
-	// SIP region passed to Telnyx when initiating an outbound call. Values match the
-	// Telnyx TeXML `SipRegion` parameter exactly. Telnyx defaults to `US` when
-	// omitted.
-	//
-	// Any of "US", "Europe", "Canada", "Australia", "Middle East".
-	SipRegion string `json:"sip_region"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		SipRegion   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ScheduledPhoneCallEventResponseCallSettings) RawJSON() string { return r.JSON.raw }
-func (r *ScheduledPhoneCallEventResponseCallSettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -518,7 +561,7 @@ type AIAssistantScheduledEventListResponseUnion struct {
 	// This field is from variant [ScheduledPhoneCallEventResponse].
 	CallDuration int64 `json:"call_duration"`
 	// This field is from variant [ScheduledPhoneCallEventResponse].
-	CallSettings ScheduledPhoneCallEventResponseCallSettings `json:"call_settings"`
+	CallSettings ScheduledCallSettings `json:"call_settings"`
 	// This field is from variant [ScheduledPhoneCallEventResponse].
 	CallStatus     string `json:"call_status"`
 	ConversationID string `json:"conversation_id"`
@@ -634,7 +677,7 @@ type AIAssistantScheduledEventNewParams struct {
 	// Per-call telephony overrides applied when a scheduled phone-call event
 	// dispatches. Phone-call events only. New per-call dispatch options should be
 	// added here rather than as top-level event fields.
-	CallSettings AIAssistantScheduledEventNewParamsCallSettings `json:"call_settings,omitzero"`
+	CallSettings ScheduledCallSettingsParam `json:"call_settings,omitzero"`
 	// Metadata associated with the conversation. Telnyx provides several pieces of
 	// metadata, but customers can also add their own.
 	ConversationMetadata map[string]AIAssistantScheduledEventNewParamsConversationMetadataUnion `json:"conversation_metadata,omitzero"`
@@ -650,33 +693,6 @@ func (r AIAssistantScheduledEventNewParams) MarshalJSON() (data []byte, err erro
 }
 func (r *AIAssistantScheduledEventNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// Per-call telephony overrides applied when a scheduled phone-call event
-// dispatches. Phone-call events only. New per-call dispatch options should be
-// added here rather than as top-level event fields.
-type AIAssistantScheduledEventNewParamsCallSettings struct {
-	// SIP region passed to Telnyx when initiating an outbound call. Values match the
-	// Telnyx TeXML `SipRegion` parameter exactly. Telnyx defaults to `US` when
-	// omitted.
-	//
-	// Any of "US", "Europe", "Canada", "Australia", "Middle East".
-	SipRegion string `json:"sip_region,omitzero"`
-	paramObj
-}
-
-func (r AIAssistantScheduledEventNewParamsCallSettings) MarshalJSON() (data []byte, err error) {
-	type shadow AIAssistantScheduledEventNewParamsCallSettings
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AIAssistantScheduledEventNewParamsCallSettings) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[AIAssistantScheduledEventNewParamsCallSettings](
-		"sip_region", "US", "Europe", "Canada", "Australia", "Middle East",
-	)
 }
 
 // Only one field can be non-zero.

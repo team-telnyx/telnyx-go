@@ -59,7 +59,7 @@ func TestDirPhoneNumberBatchListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"16635d38-75a6-4481-82e8-69af60e05011",
 		telnyx.DirPhoneNumberBatchListParams{
-			FilterStatus: telnyx.DirPhoneNumberBatchListParamsFilterStatusSubmitted,
+			FilterStatus: telnyx.DirPhoneNumberStatusSubmitted,
 			PageNumber:   telnyx.Int(1),
 			PageSize:     telnyx.Int(20),
 		},

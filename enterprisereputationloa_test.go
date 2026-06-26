@@ -61,7 +61,7 @@ func TestEnterpriseReputationLoaRenderWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"4a6192a4-573d-446d-b3ce-aff9117272a6",
 		telnyx.EnterpriseReputationLoaRenderParams{
-			Agent: telnyx.EnterpriseReputationLoaRenderParamsAgent{
+			Agent: telnyx.AgentInputParam{
 				AdministrativeArea: "administrative_area",
 				City:               "city",
 				ContactEmail:       "dev@stainless.com",

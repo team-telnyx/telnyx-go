@@ -322,16 +322,16 @@ func (r *SubNumberOrderUpdateRequirementGroupResponseData) UnmarshalJSON(data []
 }
 
 type SubNumberOrderUpdateRequirementGroupResponseDataPhoneNumber struct {
-	ID                     string                                                                             `json:"id" format:"uuid"`
-	BundleID               string                                                                             `json:"bundle_id" api:"nullable" format:"uuid"`
-	CountryCode            string                                                                             `json:"country_code"`
-	PhoneNumber            string                                                                             `json:"phone_number"`
-	PhoneNumberType        string                                                                             `json:"phone_number_type"`
-	RecordType             string                                                                             `json:"record_type"`
-	RegulatoryRequirements []SubNumberOrderUpdateRequirementGroupResponseDataPhoneNumberRegulatoryRequirement `json:"regulatory_requirements"`
-	RequirementsMet        bool                                                                               `json:"requirements_met"`
-	RequirementsStatus     string                                                                             `json:"requirements_status"`
-	Status                 string                                                                             `json:"status"`
+	ID                     string                                                                              `json:"id" format:"uuid"`
+	BundleID               string                                                                              `json:"bundle_id" api:"nullable" format:"uuid"`
+	CountryCode            string                                                                              `json:"country_code"`
+	PhoneNumber            string                                                                              `json:"phone_number"`
+	PhoneNumberType        string                                                                              `json:"phone_number_type"`
+	RecordType             string                                                                              `json:"record_type"`
+	RegulatoryRequirements []SubNumberOrderUpdateRequirementGroupResponseDataPhoneNumbersRegulatoryRequirement `json:"regulatory_requirements"`
+	RequirementsMet        bool                                                                                `json:"requirements_met"`
+	RequirementsStatus     string                                                                              `json:"requirements_status"`
+	Status                 string                                                                              `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                     respjson.Field
@@ -357,7 +357,7 @@ func (r *SubNumberOrderUpdateRequirementGroupResponseDataPhoneNumber) UnmarshalJ
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type SubNumberOrderUpdateRequirementGroupResponseDataPhoneNumberRegulatoryRequirement struct {
+type SubNumberOrderUpdateRequirementGroupResponseDataPhoneNumbersRegulatoryRequirement struct {
 	FieldType     string `json:"field_type"`
 	FieldValue    string `json:"field_value"`
 	RequirementID string `json:"requirement_id" format:"uuid"`
@@ -374,10 +374,10 @@ type SubNumberOrderUpdateRequirementGroupResponseDataPhoneNumberRegulatoryRequir
 }
 
 // Returns the unmodified JSON received from the API
-func (r SubNumberOrderUpdateRequirementGroupResponseDataPhoneNumberRegulatoryRequirement) RawJSON() string {
+func (r SubNumberOrderUpdateRequirementGroupResponseDataPhoneNumbersRegulatoryRequirement) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *SubNumberOrderUpdateRequirementGroupResponseDataPhoneNumberRegulatoryRequirement) UnmarshalJSON(data []byte) error {
+func (r *SubNumberOrderUpdateRequirementGroupResponseDataPhoneNumbersRegulatoryRequirement) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

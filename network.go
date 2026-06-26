@@ -4,6 +4,7 @@ package telnyx
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -77,7 +78,7 @@ func (r *NetworkService) Update(ctx context.Context, networkID string, body Netw
 }
 
 // List all Networks.
-func (r *NetworkService) List(ctx context.Context, query NetworkListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[NetworkListResponse], err error) {
+func (r *NetworkService) List(ctx context.Context, query NetworkListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[Network], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -95,7 +96,7 @@ func (r *NetworkService) List(ctx context.Context, query NetworkListParams, opts
 }
 
 // List all Networks.
-func (r *NetworkService) ListAutoPaging(ctx context.Context, query NetworkListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[NetworkListResponse] {
+func (r *NetworkService) ListAutoPaging(ctx context.Context, query NetworkListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[Network] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -148,10 +149,49 @@ const (
 	InterfaceStatusDeleting     InterfaceStatus = "deleting"
 )
 
-type NetworkCreateParam struct {
+type Network struct {
 	// A user specified name for the network.
-	Name string `json:"name" api:"required"`
+	Name string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	Record
+}
+
+// Returns the unmodified JSON received from the API
+func (r Network) RawJSON() string { return r.JSON.raw }
+func (r *Network) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this Network to a NetworkParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// NetworkParam.Overrides()
+func (r Network) ToParam() NetworkParam {
+	return param.Override[NetworkParam](json.RawMessage(r.RawJSON()))
+}
+
+type NetworkParam struct {
+	// A user specified name for the network.
+	Name param.Opt[string] `json:"name,omitzero"`
 	RecordParam
+}
+
+func (r NetworkParam) MarshalJSON() (data []byte, err error) {
+	type shadow struct {
+		*NetworkParam
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
+}
+
+type NetworkCreateParam struct {
+	NetworkParam
 }
 
 func (r NetworkCreateParam) MarshalJSON() (data []byte, err error) {
@@ -163,7 +203,7 @@ func (r NetworkCreateParam) MarshalJSON() (data []byte, err error) {
 }
 
 type NetworkNewResponse struct {
-	Data NetworkNewResponseData `json:"data"`
+	Data Network `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -178,26 +218,8 @@ func (r *NetworkNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type NetworkNewResponseData struct {
-	// A user specified name for the network.
-	Name string `json:"name"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	Record
-}
-
-// Returns the unmodified JSON received from the API
-func (r NetworkNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *NetworkNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type NetworkGetResponse struct {
-	Data NetworkGetResponseData `json:"data"`
+	Data Network `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -212,26 +234,8 @@ func (r *NetworkGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type NetworkGetResponseData struct {
-	// A user specified name for the network.
-	Name string `json:"name"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	Record
-}
-
-// Returns the unmodified JSON received from the API
-func (r NetworkGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *NetworkGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type NetworkUpdateResponse struct {
-	Data NetworkUpdateResponseData `json:"data"`
+	Data Network `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -246,44 +250,8 @@ func (r *NetworkUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type NetworkUpdateResponseData struct {
-	// A user specified name for the network.
-	Name string `json:"name"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	Record
-}
-
-// Returns the unmodified JSON received from the API
-func (r NetworkUpdateResponseData) RawJSON() string { return r.JSON.raw }
-func (r *NetworkUpdateResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type NetworkListResponse struct {
-	// A user specified name for the network.
-	Name string `json:"name"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	Record
-}
-
-// Returns the unmodified JSON received from the API
-func (r NetworkListResponse) RawJSON() string { return r.JSON.raw }
-func (r *NetworkListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type NetworkDeleteResponse struct {
-	Data NetworkDeleteResponseData `json:"data"`
+	Data Network `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -298,43 +266,43 @@ func (r *NetworkDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type NetworkDeleteResponseData struct {
-	// A user specified name for the network.
-	Name string `json:"name"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	Record
-}
-
-// Returns the unmodified JSON received from the API
-func (r NetworkDeleteResponseData) RawJSON() string { return r.JSON.raw }
-func (r *NetworkDeleteResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type NetworkListInterfacesResponse struct {
+	// Identifies the resource.
+	ID string `json:"id" format:"uuid"`
+	// ISO 8601 formatted date-time indicating when the resource was created.
+	CreatedAt string `json:"created_at"`
+	// A user specified name for the interface.
+	Name string `json:"name"`
+	// The id of the network associated with the interface.
+	NetworkID string `json:"network_id" format:"uuid"`
 	// Identifies the type of the resource.
 	RecordType string                              `json:"record_type"`
 	Region     NetworkListInterfacesResponseRegion `json:"region"`
 	// The region interface is deployed to.
 	RegionCode string `json:"region_code"`
+	// The current status of the interface deployment.
+	//
+	// Any of "created", "provisioning", "provisioned", "deleting".
+	Status InterfaceStatus `json:"status"`
 	// Identifies the type of the interface.
 	Type string `json:"type"`
+	// ISO 8601 formatted date-time indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Name        respjson.Field
+		NetworkID   respjson.Field
 		RecordType  respjson.Field
 		Region      respjson.Field
 		RegionCode  respjson.Field
+		Status      respjson.Field
 		Type        respjson.Field
+		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	Record
-	NetworkInterface
 }
 
 // Returns the unmodified JSON received from the API

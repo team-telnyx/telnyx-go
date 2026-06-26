@@ -60,7 +60,7 @@ func TestCredentialConnectionNewWithOptionalParams(t *testing.T) {
 			JitterbufferMsecMax: telnyx.Int(200),
 			JitterbufferMsecMin: telnyx.Int(60),
 		},
-		NoiseSuppression: telnyx.CredentialConnectionNewParamsNoiseSuppressionBoth,
+		NoiseSuppression: telnyx.ConnectionNoiseSuppressionBoth,
 		NoiseSuppressionDetails: shared.ConnectionNoiseSuppressionDetailsParam{
 			AttenuationLimit: telnyx.Int(80),
 			Engine:           shared.ConnectionNoiseSuppressionDetailsEngineDeepFilterNet,
@@ -168,7 +168,7 @@ func TestCredentialConnectionUpdateWithOptionalParams(t *testing.T) {
 				JitterbufferMsecMax: telnyx.Int(200),
 				JitterbufferMsecMin: telnyx.Int(60),
 			},
-			NoiseSuppression: telnyx.CredentialConnectionUpdateParamsNoiseSuppressionBoth,
+			NoiseSuppression: telnyx.ConnectionNoiseSuppressionBoth,
 			NoiseSuppressionDetails: shared.ConnectionNoiseSuppressionDetailsParam{
 				AttenuationLimit: telnyx.Int(80),
 				Engine:           shared.ConnectionNoiseSuppressionDetailsEngineDeepFilterNet,

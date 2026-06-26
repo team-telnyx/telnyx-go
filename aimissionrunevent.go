@@ -71,7 +71,7 @@ func (r *AIMissionRunEventService) ListAutoPaging(ctx context.Context, runID str
 }
 
 // Get details of a specific event
-func (r *AIMissionRunEventService) GetEventDetails(ctx context.Context, eventID string, query AIMissionRunEventGetEventDetailsParams, opts ...option.RequestOption) (res *AIMissionRunEventGetEventDetailsResponse, err error) {
+func (r *AIMissionRunEventService) GetEventDetails(ctx context.Context, eventID string, query AIMissionRunEventGetEventDetailsParams, opts ...option.RequestOption) (res *EventResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
@@ -91,7 +91,7 @@ func (r *AIMissionRunEventService) GetEventDetails(ctx context.Context, eventID 
 }
 
 // Log an event for a run
-func (r *AIMissionRunEventService) Log(ctx context.Context, runID string, params AIMissionRunEventLogParams, opts ...option.RequestOption) (res *AIMissionRunEventLogResponse, err error) {
+func (r *AIMissionRunEventService) Log(ctx context.Context, runID string, params AIMissionRunEventLogParams, opts ...option.RequestOption) (res *EventResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.MissionID == "" {
 		err = errors.New("missing required mission_id parameter")
@@ -113,7 +113,7 @@ type EventData struct {
 	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Any of "status_change", "step_started", "step_completed", "step_failed",
 	// "tool_call", "tool_result", "message", "error", "custom".
-	Type           EventDataType  `json:"type" api:"required"`
+	Type           EventType      `json:"type" api:"required"`
 	AgentID        string         `json:"agent_id"`
 	IdempotencyKey string         `json:"idempotency_key"`
 	Payload        map[string]any `json:"payload"`
@@ -140,51 +140,35 @@ func (r *EventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type EventDataType string
+type EventResponse struct {
+	Data EventData `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EventResponse) RawJSON() string { return r.JSON.raw }
+func (r *EventResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EventType string
 
 const (
-	EventDataTypeStatusChange  EventDataType = "status_change"
-	EventDataTypeStepStarted   EventDataType = "step_started"
-	EventDataTypeStepCompleted EventDataType = "step_completed"
-	EventDataTypeStepFailed    EventDataType = "step_failed"
-	EventDataTypeToolCall      EventDataType = "tool_call"
-	EventDataTypeToolResult    EventDataType = "tool_result"
-	EventDataTypeMessage       EventDataType = "message"
-	EventDataTypeError         EventDataType = "error"
-	EventDataTypeCustom        EventDataType = "custom"
+	EventTypeStatusChange  EventType = "status_change"
+	EventTypeStepStarted   EventType = "step_started"
+	EventTypeStepCompleted EventType = "step_completed"
+	EventTypeStepFailed    EventType = "step_failed"
+	EventTypeToolCall      EventType = "tool_call"
+	EventTypeToolResult    EventType = "tool_result"
+	EventTypeMessage       EventType = "message"
+	EventTypeError         EventType = "error"
+	EventTypeCustom        EventType = "custom"
 )
-
-type AIMissionRunEventGetEventDetailsResponse struct {
-	Data EventData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunEventGetEventDetailsResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunEventGetEventDetailsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIMissionRunEventLogResponse struct {
-	Data EventData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionRunEventLogResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionRunEventLogResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 type AIMissionRunEventListParams struct {
 	MissionID string `path:"mission_id" api:"required" format:"uuid" json:"-"`
@@ -221,8 +205,8 @@ type AIMissionRunEventLogParams struct {
 	Summary   string `json:"summary" api:"required"`
 	// Any of "status_change", "step_started", "step_completed", "step_failed",
 	// "tool_call", "tool_result", "message", "error", "custom".
-	Type    AIMissionRunEventLogParamsType `json:"type,omitzero" api:"required"`
-	AgentID param.Opt[string]              `json:"agent_id,omitzero"`
+	Type    EventType         `json:"type,omitzero" api:"required"`
+	AgentID param.Opt[string] `json:"agent_id,omitzero"`
 	// Prevents duplicate events on retry
 	IdempotencyKey param.Opt[string] `json:"idempotency_key,omitzero"`
 	StepID         param.Opt[string] `json:"step_id,omitzero"`
@@ -237,17 +221,3 @@ func (r AIMissionRunEventLogParams) MarshalJSON() (data []byte, err error) {
 func (r *AIMissionRunEventLogParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type AIMissionRunEventLogParamsType string
-
-const (
-	AIMissionRunEventLogParamsTypeStatusChange  AIMissionRunEventLogParamsType = "status_change"
-	AIMissionRunEventLogParamsTypeStepStarted   AIMissionRunEventLogParamsType = "step_started"
-	AIMissionRunEventLogParamsTypeStepCompleted AIMissionRunEventLogParamsType = "step_completed"
-	AIMissionRunEventLogParamsTypeStepFailed    AIMissionRunEventLogParamsType = "step_failed"
-	AIMissionRunEventLogParamsTypeToolCall      AIMissionRunEventLogParamsType = "tool_call"
-	AIMissionRunEventLogParamsTypeToolResult    AIMissionRunEventLogParamsType = "tool_result"
-	AIMissionRunEventLogParamsTypeMessage       AIMissionRunEventLogParamsType = "message"
-	AIMissionRunEventLogParamsTypeError         AIMissionRunEventLogParamsType = "error"
-	AIMissionRunEventLogParamsTypeCustom        AIMissionRunEventLogParamsType = "custom"
-)

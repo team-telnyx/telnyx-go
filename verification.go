@@ -10,6 +10,7 @@ import (
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
@@ -85,6 +86,29 @@ func (r *VerificationService) TriggerWhatsappVerification(ctx context.Context, b
 	path := "verifications/whatsapp"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
+}
+
+// The request body when creating a verification.
+//
+// The properties PhoneNumber, VerifyProfileID are required.
+type CreateVerificationRequestSMSParam struct {
+	// +E164 formatted phone number.
+	PhoneNumber string `json:"phone_number" api:"required"`
+	// The identifier of the associated Verify profile.
+	VerifyProfileID string `json:"verify_profile_id" api:"required" format:"uuid"`
+	// Send a self-generated numeric code to the end-user
+	CustomCode param.Opt[string] `json:"custom_code,omitzero"`
+	// The number of seconds the verification code is valid for.
+	TimeoutSecs param.Opt[int64] `json:"timeout_secs,omitzero"`
+	paramObj
+}
+
+func (r CreateVerificationRequestSMSParam) MarshalJSON() (data []byte, err error) {
+	type shadow CreateVerificationRequestSMSParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CreateVerificationRequestSMSParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type CreateVerificationResponse struct {
@@ -238,20 +262,13 @@ func (r *VerificationTriggerFlashcallParams) UnmarshalJSON(data []byte) error {
 }
 
 type VerificationTriggerSMSParams struct {
-	// +E164 formatted phone number.
-	PhoneNumber string `json:"phone_number" api:"required"`
-	// The identifier of the associated Verify profile.
-	VerifyProfileID string `json:"verify_profile_id" api:"required" format:"uuid"`
-	// Send a self-generated numeric code to the end-user
-	CustomCode param.Opt[string] `json:"custom_code,omitzero"`
-	// The number of seconds the verification code is valid for.
-	TimeoutSecs param.Opt[int64] `json:"timeout_secs,omitzero"`
+	// The request body when creating a verification.
+	CreateVerificationRequestSMS CreateVerificationRequestSMSParam
 	paramObj
 }
 
 func (r VerificationTriggerSMSParams) MarshalJSON() (data []byte, err error) {
-	type shadow VerificationTriggerSMSParams
-	return param.MarshalObject(r, (*shadow)(&r))
+	return shimjson.Marshal(r.CreateVerificationRequestSMS)
 }
 func (r *VerificationTriggerSMSParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)

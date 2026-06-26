@@ -114,8 +114,8 @@ const (
 
 type AIConversationMessageListResponseToolCall struct {
 	// Unique identifier for the tool call.
-	ID       string                                            `json:"id" api:"required"`
-	Function AIConversationMessageListResponseToolCallFunction `json:"function" api:"required"`
+	ID       string                                             `json:"id" api:"required"`
+	Function AIConversationMessageListResponseToolCallsFunction `json:"function" api:"required"`
 	// Type of the tool call.
 	//
 	// Any of "function".
@@ -136,7 +136,7 @@ func (r *AIConversationMessageListResponseToolCall) UnmarshalJSON(data []byte) e
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AIConversationMessageListResponseToolCallFunction struct {
+type AIConversationMessageListResponseToolCallsFunction struct {
 	// JSON-formatted arguments to pass to the function.
 	Arguments string `json:"arguments" api:"required"`
 	// Name of the function to call.
@@ -151,8 +151,8 @@ type AIConversationMessageListResponseToolCallFunction struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AIConversationMessageListResponseToolCallFunction) RawJSON() string { return r.JSON.raw }
-func (r *AIConversationMessageListResponseToolCallFunction) UnmarshalJSON(data []byte) error {
+func (r AIConversationMessageListResponseToolCallsFunction) RawJSON() string { return r.JSON.raw }
+func (r *AIConversationMessageListResponseToolCallsFunction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

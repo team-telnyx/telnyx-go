@@ -84,12 +84,12 @@ func (r *RegulatoryRequirementGetResponseData) UnmarshalJSON(data []byte) error 
 }
 
 type RegulatoryRequirementGetResponseDataRegulatoryRequirement struct {
-	ID                 string                                                                      `json:"id" format:"uuid"`
-	AcceptanceCriteria RegulatoryRequirementGetResponseDataRegulatoryRequirementAcceptanceCriteria `json:"acceptance_criteria"`
-	Description        string                                                                      `json:"description"`
-	Example            string                                                                      `json:"example"`
-	FieldType          string                                                                      `json:"field_type"`
-	Name               string                                                                      `json:"name"`
+	ID                 string                                                                       `json:"id" format:"uuid"`
+	AcceptanceCriteria RegulatoryRequirementGetResponseDataRegulatoryRequirementsAcceptanceCriteria `json:"acceptance_criteria"`
+	Description        string                                                                       `json:"description"`
+	Example            string                                                                       `json:"example"`
+	FieldType          string                                                                       `json:"field_type"`
+	Name               string                                                                       `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -111,7 +111,7 @@ func (r *RegulatoryRequirementGetResponseDataRegulatoryRequirement) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RegulatoryRequirementGetResponseDataRegulatoryRequirementAcceptanceCriteria struct {
+type RegulatoryRequirementGetResponseDataRegulatoryRequirementsAcceptanceCriteria struct {
 	AcceptableCharacters string   `json:"acceptable_characters"`
 	AcceptableValues     []string `json:"acceptable_values"`
 	CaseSensitive        string   `json:"case_sensitive"`
@@ -136,10 +136,10 @@ type RegulatoryRequirementGetResponseDataRegulatoryRequirementAcceptanceCriteria
 }
 
 // Returns the unmodified JSON received from the API
-func (r RegulatoryRequirementGetResponseDataRegulatoryRequirementAcceptanceCriteria) RawJSON() string {
+func (r RegulatoryRequirementGetResponseDataRegulatoryRequirementsAcceptanceCriteria) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *RegulatoryRequirementGetResponseDataRegulatoryRequirementAcceptanceCriteria) UnmarshalJSON(data []byte) error {
+func (r *RegulatoryRequirementGetResponseDataRegulatoryRequirementsAcceptanceCriteria) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

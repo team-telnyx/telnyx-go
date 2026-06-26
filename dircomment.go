@@ -59,7 +59,7 @@ func (r *DirCommentService) New(ctx context.Context, dirID string, body DirComme
 
 // List the comments on a DIR. The enterprise is resolved server-side from the DIR
 // id.
-func (r *DirCommentService) List(ctx context.Context, dirID string, query DirCommentListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[DirCommentListResponse], err error) {
+func (r *DirCommentService) List(ctx context.Context, dirID string, query DirCommentListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[DirComment], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -82,12 +82,95 @@ func (r *DirCommentService) List(ctx context.Context, dirID string, query DirCom
 
 // List the comments on a DIR. The enterprise is resolved server-side from the DIR
 // id.
-func (r *DirCommentService) ListAutoPaging(ctx context.Context, dirID string, query DirCommentListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[DirCommentListResponse] {
+func (r *DirCommentService) ListAutoPaging(ctx context.Context, dirID string, query DirCommentListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[DirComment] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, dirID, query, opts...))
 }
 
+// Comment categorisation. Customers post `customer_inquiry`. The Telnyx team posts
+// `vetting_comment`, `rejection_reason`, `notification`, `status_update`, or
+// `admin_response`. `internal_note` is filtered out of customer-visible responses.
+type CommentType string
+
+const (
+	CommentTypeVettingComment  CommentType = "vetting_comment"
+	CommentTypeRejectionReason CommentType = "rejection_reason"
+	CommentTypeInternalNote    CommentType = "internal_note"
+	CommentTypeNotification    CommentType = "notification"
+	CommentTypeStatusUpdate    CommentType = "status_update"
+	CommentTypeCustomerInquiry CommentType = "customer_inquiry"
+	CommentTypeAdminResponse   CommentType = "admin_response"
+)
+
+type DirComment struct {
+	ID string `json:"id" format:"uuid"`
+	// Display name of the author. May be `null`.
+	AuthorName string `json:"author_name" api:"nullable"`
+	// Who wrote the comment. `admin` covers the Telnyx vetting team.
+	//
+	// Any of "customer", "admin".
+	AuthorRole DirCommentAuthorRole `json:"author_role"`
+	// Comment categorisation. Customers post `customer_inquiry`. The Telnyx team posts
+	// `vetting_comment`, `rejection_reason`, `notification`, `status_update`, or
+	// `admin_response`. `internal_note` is filtered out of customer-visible responses.
+	//
+	// Any of "vetting_comment", "rejection_reason", "internal_note", "notification",
+	// "status_update", "customer_inquiry", "admin_response".
+	CommentType CommentType `json:"comment_type"`
+	Content     string      `json:"content"`
+	CreatedAt   time.Time   `json:"created_at" format:"date-time"`
+	// Resource the comment is attached to. Always `dir` on this endpoint.
+	//
+	// Any of "dir".
+	EntityType DirCommentEntityType `json:"entity_type"`
+	// Always `customer` on this endpoint - internal-only comments are filtered out.
+	//
+	// Any of "customer".
+	Visibility DirCommentVisibility `json:"visibility"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		AuthorName  respjson.Field
+		AuthorRole  respjson.Field
+		CommentType respjson.Field
+		Content     respjson.Field
+		CreatedAt   respjson.Field
+		EntityType  respjson.Field
+		Visibility  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DirComment) RawJSON() string { return r.JSON.raw }
+func (r *DirComment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Who wrote the comment. `admin` covers the Telnyx vetting team.
+type DirCommentAuthorRole string
+
+const (
+	DirCommentAuthorRoleCustomer DirCommentAuthorRole = "customer"
+	DirCommentAuthorRoleAdmin    DirCommentAuthorRole = "admin"
+)
+
+// Resource the comment is attached to. Always `dir` on this endpoint.
+type DirCommentEntityType string
+
+const (
+	DirCommentEntityTypeDir DirCommentEntityType = "dir"
+)
+
+// Always `customer` on this endpoint - internal-only comments are filtered out.
+type DirCommentVisibility string
+
+const (
+	DirCommentVisibilityCustomer DirCommentVisibility = "customer"
+)
+
 type DirCommentNewResponse struct {
-	Data DirCommentNewResponseData `json:"data" api:"required"`
+	Data DirComment `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -101,135 +184,6 @@ func (r DirCommentNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *DirCommentNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type DirCommentNewResponseData struct {
-	ID string `json:"id" format:"uuid"`
-	// Display name of the author. May be `null`.
-	AuthorName string `json:"author_name" api:"nullable"`
-	// Who wrote the comment. `admin` covers the Telnyx vetting team.
-	//
-	// Any of "customer", "admin".
-	AuthorRole string `json:"author_role"`
-	// Comment categorisation. Customers post `customer_inquiry`. The Telnyx team posts
-	// `vetting_comment`, `rejection_reason`, `notification`, `status_update`, or
-	// `admin_response`. `internal_note` is filtered out of customer-visible responses.
-	//
-	// Any of "vetting_comment", "rejection_reason", "internal_note", "notification",
-	// "status_update", "customer_inquiry", "admin_response".
-	CommentType string    `json:"comment_type"`
-	Content     string    `json:"content"`
-	CreatedAt   time.Time `json:"created_at" format:"date-time"`
-	// Resource the comment is attached to. Always `dir` on this endpoint.
-	//
-	// Any of "dir".
-	EntityType string `json:"entity_type"`
-	// Always `customer` on this endpoint - internal-only comments are filtered out.
-	//
-	// Any of "customer".
-	Visibility string `json:"visibility"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		AuthorName  respjson.Field
-		AuthorRole  respjson.Field
-		CommentType respjson.Field
-		Content     respjson.Field
-		CreatedAt   respjson.Field
-		EntityType  respjson.Field
-		Visibility  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DirCommentNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *DirCommentNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DirCommentListResponse struct {
-	ID string `json:"id" format:"uuid"`
-	// Display name of the author. May be `null`.
-	AuthorName string `json:"author_name" api:"nullable"`
-	// Who wrote the comment. `admin` covers the Telnyx vetting team.
-	//
-	// Any of "customer", "admin".
-	AuthorRole DirCommentListResponseAuthorRole `json:"author_role"`
-	// Comment categorisation. Customers post `customer_inquiry`. The Telnyx team posts
-	// `vetting_comment`, `rejection_reason`, `notification`, `status_update`, or
-	// `admin_response`. `internal_note` is filtered out of customer-visible responses.
-	//
-	// Any of "vetting_comment", "rejection_reason", "internal_note", "notification",
-	// "status_update", "customer_inquiry", "admin_response".
-	CommentType DirCommentListResponseCommentType `json:"comment_type"`
-	Content     string                            `json:"content"`
-	CreatedAt   time.Time                         `json:"created_at" format:"date-time"`
-	// Resource the comment is attached to. Always `dir` on this endpoint.
-	//
-	// Any of "dir".
-	EntityType DirCommentListResponseEntityType `json:"entity_type"`
-	// Always `customer` on this endpoint - internal-only comments are filtered out.
-	//
-	// Any of "customer".
-	Visibility DirCommentListResponseVisibility `json:"visibility"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		AuthorName  respjson.Field
-		AuthorRole  respjson.Field
-		CommentType respjson.Field
-		Content     respjson.Field
-		CreatedAt   respjson.Field
-		EntityType  respjson.Field
-		Visibility  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DirCommentListResponse) RawJSON() string { return r.JSON.raw }
-func (r *DirCommentListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Who wrote the comment. `admin` covers the Telnyx vetting team.
-type DirCommentListResponseAuthorRole string
-
-const (
-	DirCommentListResponseAuthorRoleCustomer DirCommentListResponseAuthorRole = "customer"
-	DirCommentListResponseAuthorRoleAdmin    DirCommentListResponseAuthorRole = "admin"
-)
-
-// Comment categorisation. Customers post `customer_inquiry`. The Telnyx team posts
-// `vetting_comment`, `rejection_reason`, `notification`, `status_update`, or
-// `admin_response`. `internal_note` is filtered out of customer-visible responses.
-type DirCommentListResponseCommentType string
-
-const (
-	DirCommentListResponseCommentTypeVettingComment  DirCommentListResponseCommentType = "vetting_comment"
-	DirCommentListResponseCommentTypeRejectionReason DirCommentListResponseCommentType = "rejection_reason"
-	DirCommentListResponseCommentTypeInternalNote    DirCommentListResponseCommentType = "internal_note"
-	DirCommentListResponseCommentTypeNotification    DirCommentListResponseCommentType = "notification"
-	DirCommentListResponseCommentTypeStatusUpdate    DirCommentListResponseCommentType = "status_update"
-	DirCommentListResponseCommentTypeCustomerInquiry DirCommentListResponseCommentType = "customer_inquiry"
-	DirCommentListResponseCommentTypeAdminResponse   DirCommentListResponseCommentType = "admin_response"
-)
-
-// Resource the comment is attached to. Always `dir` on this endpoint.
-type DirCommentListResponseEntityType string
-
-const (
-	DirCommentListResponseEntityTypeDir DirCommentListResponseEntityType = "dir"
-)
-
-// Always `customer` on this endpoint - internal-only comments are filtered out.
-type DirCommentListResponseVisibility string
-
-const (
-	DirCommentListResponseVisibilityCustomer DirCommentListResponseVisibility = "customer"
-)
 
 type DirCommentNewParams struct {
 	// Comment body. 1–5000 characters.
@@ -257,7 +211,7 @@ type DirCommentListParams struct {
 	//
 	// Any of "vetting_comment", "rejection_reason", "internal_note", "notification",
 	// "status_update", "customer_inquiry", "admin_response".
-	CommentType DirCommentListParamsCommentType `query:"comment_type,omitzero" json:"-"`
+	CommentType CommentType `query:"comment_type,omitzero" json:"-"`
 	paramObj
 }
 
@@ -268,17 +222,3 @@ func (r DirCommentListParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
-
-// Restrict to comments of this category. Customer-visible categories only:
-// internal-only comments are filtered out regardless of this filter.
-type DirCommentListParamsCommentType string
-
-const (
-	DirCommentListParamsCommentTypeVettingComment  DirCommentListParamsCommentType = "vetting_comment"
-	DirCommentListParamsCommentTypeRejectionReason DirCommentListParamsCommentType = "rejection_reason"
-	DirCommentListParamsCommentTypeInternalNote    DirCommentListParamsCommentType = "internal_note"
-	DirCommentListParamsCommentTypeNotification    DirCommentListParamsCommentType = "notification"
-	DirCommentListParamsCommentTypeStatusUpdate    DirCommentListParamsCommentType = "status_update"
-	DirCommentListParamsCommentTypeCustomerInquiry DirCommentListParamsCommentType = "customer_inquiry"
-	DirCommentListParamsCommentTypeAdminResponse   DirCommentListParamsCommentType = "admin_response"
-)

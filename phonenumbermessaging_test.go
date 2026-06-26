@@ -53,9 +53,11 @@ func TestPhoneNumberMessagingUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		telnyx.PhoneNumberMessagingUpdateParams{
-			MessagingProduct:   telnyx.String("P2P"),
-			MessagingProfileID: telnyx.String("dd50eba1-a0c0-4563-9925-b25e842a7cb6"),
-			Tags:               []string{"string"},
+			UpdatePhoneNumberMessagingSettingsRequest: telnyx.UpdatePhoneNumberMessagingSettingsRequestParam{
+				MessagingProduct:   telnyx.String("P2P"),
+				MessagingProfileID: telnyx.String("dd50eba1-a0c0-4563-9925-b25e842a7cb6"),
+				Tags:               []string{"string"},
+			},
 		},
 	)
 	if err != nil {

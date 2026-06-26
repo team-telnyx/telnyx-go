@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestNetworkNewWithOptionalParams(t *testing.T) {
+func TestNetworkNew(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -28,8 +28,9 @@ func TestNetworkNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Networks.New(context.TODO(), telnyx.NetworkNewParams{
 		NetworkCreate: telnyx.NetworkCreateParam{
-			RecordParam: telnyx.RecordParam{},
-			Name:        "test network",
+			NetworkParam: telnyx.NetworkParam{
+				RecordParam: telnyx.RecordParam{},
+			},
 		},
 	})
 	if err != nil {
@@ -64,7 +65,7 @@ func TestNetworkGet(t *testing.T) {
 	}
 }
 
-func TestNetworkUpdateWithOptionalParams(t *testing.T) {
+func TestNetworkUpdate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -82,8 +83,9 @@ func TestNetworkUpdateWithOptionalParams(t *testing.T) {
 		"6a09cdc3-8948-47f0-aa62-74ac943d6c58",
 		telnyx.NetworkUpdateParams{
 			NetworkCreate: telnyx.NetworkCreateParam{
-				RecordParam: telnyx.RecordParam{},
-				Name:        "test network",
+				NetworkParam: telnyx.NetworkParam{
+					RecordParam: telnyx.RecordParam{},
+				},
 			},
 		},
 	)

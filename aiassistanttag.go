@@ -38,7 +38,7 @@ func NewAIAssistantTagService(opts ...option.RequestOption) (r AIAssistantTagSer
 }
 
 // Get All Tags
-func (r *AIAssistantTagService) List(ctx context.Context, opts ...option.RequestOption) (res *AIAssistantTagListResponse, err error) {
+func (r *AIAssistantTagService) List(ctx context.Context, opts ...option.RequestOption) (res *TagsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants/tags"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -46,7 +46,7 @@ func (r *AIAssistantTagService) List(ctx context.Context, opts ...option.Request
 }
 
 // Add Assistant Tag
-func (r *AIAssistantTagService) Add(ctx context.Context, assistantID string, body AIAssistantTagAddParams, opts ...option.RequestOption) (res *AIAssistantTagAddResponse, err error) {
+func (r *AIAssistantTagService) Add(ctx context.Context, assistantID string, body AIAssistantTagAddParams, opts ...option.RequestOption) (res *TagsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
@@ -58,7 +58,7 @@ func (r *AIAssistantTagService) Add(ctx context.Context, assistantID string, bod
 }
 
 // Remove Assistant Tag
-func (r *AIAssistantTagService) Remove(ctx context.Context, tag string, body AIAssistantTagRemoveParams, opts ...option.RequestOption) (res *AIAssistantTagRemoveResponse, err error) {
+func (r *AIAssistantTagService) Remove(ctx context.Context, tag string, body AIAssistantTagRemoveParams, opts ...option.RequestOption) (res *TagsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if body.AssistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
@@ -73,7 +73,7 @@ func (r *AIAssistantTagService) Remove(ctx context.Context, tag string, body AIA
 	return res, err
 }
 
-type AIAssistantTagListResponse struct {
+type TagsResponse struct {
 	Tags []string `json:"tags" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -84,40 +84,8 @@ type AIAssistantTagListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AIAssistantTagListResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIAssistantTagListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIAssistantTagAddResponse struct {
-	Tags []string `json:"tags" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Tags        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIAssistantTagAddResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIAssistantTagAddResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIAssistantTagRemoveResponse struct {
-	Tags []string `json:"tags" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Tags        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIAssistantTagRemoveResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIAssistantTagRemoveResponse) UnmarshalJSON(data []byte) error {
+func (r TagsResponse) RawJSON() string { return r.JSON.raw }
+func (r *TagsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

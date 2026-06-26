@@ -48,7 +48,7 @@ func NewAIMissionService(opts ...option.RequestOption) (r AIMissionService) {
 }
 
 // Create a new mission definition
-func (r *AIMissionService) New(ctx context.Context, body AIMissionNewParams, opts ...option.RequestOption) (res *AIMissionNewResponse, err error) {
+func (r *AIMissionService) New(ctx context.Context, body AIMissionNewParams, opts ...option.RequestOption) (res *MissionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/missions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -56,7 +56,7 @@ func (r *AIMissionService) New(ctx context.Context, body AIMissionNewParams, opt
 }
 
 // Get a mission by ID (includes tools, knowledge_bases, mcp_servers)
-func (r *AIMissionService) Get(ctx context.Context, missionID string, opts ...option.RequestOption) (res *AIMissionGetResponse, err error) {
+func (r *AIMissionService) Get(ctx context.Context, missionID string, opts ...option.RequestOption) (res *MissionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if missionID == "" {
 		err = errors.New("missing required mission_id parameter")
@@ -139,7 +139,7 @@ func (r *AIMissionService) ListEventsAutoPaging(ctx context.Context, query AIMis
 }
 
 // Update a mission definition
-func (r *AIMissionService) UpdateMission(ctx context.Context, missionID string, body AIMissionUpdateMissionParams, opts ...option.RequestOption) (res *AIMissionUpdateMissionResponse, err error) {
+func (r *AIMissionService) UpdateMission(ctx context.Context, missionID string, body AIMissionUpdateMissionParams, opts ...option.RequestOption) (res *MissionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if missionID == "" {
 		err = errors.New("missing required mission_id parameter")
@@ -150,17 +150,42 @@ func (r *AIMissionService) UpdateMission(ctx context.Context, missionID string, 
 	return res, err
 }
 
+type EventsListResponse struct {
+	Data []EventData `json:"data" api:"required"`
+	Meta Meta        `json:"meta" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EventsListResponse) RawJSON() string { return r.JSON.raw }
+func (r *EventsListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExecutionMode string
+
+const (
+	ExecutionModeExternal ExecutionMode = "external"
+	ExecutionModeManaged  ExecutionMode = "managed"
+)
+
 type MissionData struct {
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Any of "external", "managed".
-	ExecutionMode MissionDataExecutionMode `json:"execution_mode" api:"required"`
-	MissionID     string                   `json:"mission_id" api:"required" format:"uuid"`
-	Name          string                   `json:"name" api:"required"`
-	UpdatedAt     time.Time                `json:"updated_at" api:"required" format:"date-time"`
-	Description   string                   `json:"description"`
-	Instructions  string                   `json:"instructions"`
-	Metadata      map[string]any           `json:"metadata"`
-	Model         string                   `json:"model"`
+	ExecutionMode ExecutionMode  `json:"execution_mode" api:"required"`
+	MissionID     string         `json:"mission_id" api:"required" format:"uuid"`
+	Name          string         `json:"name" api:"required"`
+	UpdatedAt     time.Time      `json:"updated_at" api:"required" format:"date-time"`
+	Description   string         `json:"description"`
+	Instructions  string         `json:"instructions"`
+	Metadata      map[string]any `json:"metadata"`
+	Model         string         `json:"model"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt     respjson.Field
@@ -183,14 +208,7 @@ func (r *MissionData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type MissionDataExecutionMode string
-
-const (
-	MissionDataExecutionModeExternal MissionDataExecutionMode = "external"
-	MissionDataExecutionModeManaged  MissionDataExecutionMode = "managed"
-)
-
-type AIMissionNewResponse struct {
+type MissionResponse struct {
 	Data MissionData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -201,44 +219,12 @@ type AIMissionNewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AIMissionNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIMissionGetResponse struct {
-	Data MissionData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionGetResponse) UnmarshalJSON(data []byte) error {
+func (r MissionResponse) RawJSON() string { return r.JSON.raw }
+func (r *MissionResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type AIMissionCloneMissionResponse = any
-
-type AIMissionUpdateMissionResponse struct {
-	Data MissionData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIMissionUpdateMissionResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIMissionUpdateMissionResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 type AIMissionNewParams struct {
 	Name         string            `json:"name" api:"required"`
@@ -246,8 +232,8 @@ type AIMissionNewParams struct {
 	Instructions param.Opt[string] `json:"instructions,omitzero"`
 	Model        param.Opt[string] `json:"model,omitzero"`
 	// Any of "external", "managed".
-	ExecutionMode AIMissionNewParamsExecutionMode `json:"execution_mode,omitzero"`
-	Metadata      map[string]any                  `json:"metadata,omitzero"`
+	ExecutionMode ExecutionMode  `json:"execution_mode,omitzero"`
+	Metadata      map[string]any `json:"metadata,omitzero"`
 	paramObj
 }
 
@@ -258,13 +244,6 @@ func (r AIMissionNewParams) MarshalJSON() (data []byte, err error) {
 func (r *AIMissionNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type AIMissionNewParamsExecutionMode string
-
-const (
-	AIMissionNewParamsExecutionModeExternal AIMissionNewParamsExecutionMode = "external"
-	AIMissionNewParamsExecutionModeManaged  AIMissionNewParamsExecutionMode = "managed"
-)
 
 type AIMissionListParams struct {
 	// Page number (1-based)
@@ -307,8 +286,8 @@ type AIMissionUpdateMissionParams struct {
 	Model        param.Opt[string] `json:"model,omitzero"`
 	Name         param.Opt[string] `json:"name,omitzero"`
 	// Any of "external", "managed".
-	ExecutionMode AIMissionUpdateMissionParamsExecutionMode `json:"execution_mode,omitzero"`
-	Metadata      map[string]any                            `json:"metadata,omitzero"`
+	ExecutionMode ExecutionMode  `json:"execution_mode,omitzero"`
+	Metadata      map[string]any `json:"metadata,omitzero"`
 	paramObj
 }
 
@@ -319,10 +298,3 @@ func (r AIMissionUpdateMissionParams) MarshalJSON() (data []byte, err error) {
 func (r *AIMissionUpdateMissionParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type AIMissionUpdateMissionParamsExecutionMode string
-
-const (
-	AIMissionUpdateMissionParamsExecutionModeExternal AIMissionUpdateMissionParamsExecutionMode = "external"
-	AIMissionUpdateMissionParamsExecutionModeManaged  AIMissionUpdateMissionParamsExecutionMode = "managed"
-)

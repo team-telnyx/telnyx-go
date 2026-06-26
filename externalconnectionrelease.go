@@ -59,7 +59,7 @@ func (r *ExternalConnectionReleaseService) Get(ctx context.Context, releaseID st
 // Returns a list of your Releases for the given external connection. These are
 // automatically created when you change the `connection_id` of a phone number that
 // is currently on Microsoft Teams.
-func (r *ExternalConnectionReleaseService) List(ctx context.Context, id string, query ExternalConnectionReleaseListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[ExternalConnectionReleaseListResponse], err error) {
+func (r *ExternalConnectionReleaseService) List(ctx context.Context, id string, query ExternalConnectionReleaseListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[Release], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -83,9 +83,55 @@ func (r *ExternalConnectionReleaseService) List(ctx context.Context, id string, 
 // Returns a list of your Releases for the given external connection. These are
 // automatically created when you change the `connection_id` of a phone number that
 // is currently on Microsoft Teams.
-func (r *ExternalConnectionReleaseService) ListAutoPaging(ctx context.Context, id string, query ExternalConnectionReleaseListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[ExternalConnectionReleaseListResponse] {
+func (r *ExternalConnectionReleaseService) ListAutoPaging(ctx context.Context, id string, query ExternalConnectionReleaseListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[Release] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, id, query, opts...))
 }
+
+type Release struct {
+	// ISO 8601 formatted date indicating when the resource was created.
+	CreatedAt string `json:"created_at"`
+	// A message set if there is an error with the upload process.
+	ErrorMessage string `json:"error_message"`
+	// Represents the status of the release on Microsoft Teams.
+	//
+	// Any of "pending_upload", "pending", "in_progress", "complete", "failed",
+	// "expired", "unknown".
+	Status           ReleaseStatus    `json:"status"`
+	TelephoneNumbers []TnReleaseEntry `json:"telephone_numbers"`
+	TenantID         string           `json:"tenant_id" format:"uuid"`
+	// Uniquely identifies the resource.
+	TicketID string `json:"ticket_id" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt        respjson.Field
+		ErrorMessage     respjson.Field
+		Status           respjson.Field
+		TelephoneNumbers respjson.Field
+		TenantID         respjson.Field
+		TicketID         respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Release) RawJSON() string { return r.JSON.raw }
+func (r *Release) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Represents the status of the release on Microsoft Teams.
+type ReleaseStatus string
+
+const (
+	ReleaseStatusPendingUpload ReleaseStatus = "pending_upload"
+	ReleaseStatusPending       ReleaseStatus = "pending"
+	ReleaseStatusInProgress    ReleaseStatus = "in_progress"
+	ReleaseStatusComplete      ReleaseStatus = "complete"
+	ReleaseStatusFailed        ReleaseStatus = "failed"
+	ReleaseStatusExpired       ReleaseStatus = "expired"
+	ReleaseStatusUnknown       ReleaseStatus = "unknown"
+)
 
 type TnReleaseEntry struct {
 	// Phone number ID from the Telnyx API.
@@ -108,7 +154,7 @@ func (r *TnReleaseEntry) UnmarshalJSON(data []byte) error {
 }
 
 type ExternalConnectionReleaseGetResponse struct {
-	Data ExternalConnectionReleaseGetResponseData `json:"data"`
+	Data Release `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -122,85 +168,6 @@ func (r ExternalConnectionReleaseGetResponse) RawJSON() string { return r.JSON.r
 func (r *ExternalConnectionReleaseGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type ExternalConnectionReleaseGetResponseData struct {
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt string `json:"created_at"`
-	// A message set if there is an error with the upload process.
-	ErrorMessage string `json:"error_message"`
-	// Represents the status of the release on Microsoft Teams.
-	//
-	// Any of "pending_upload", "pending", "in_progress", "complete", "failed",
-	// "expired", "unknown".
-	Status           string           `json:"status"`
-	TelephoneNumbers []TnReleaseEntry `json:"telephone_numbers"`
-	TenantID         string           `json:"tenant_id" format:"uuid"`
-	// Uniquely identifies the resource.
-	TicketID string `json:"ticket_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CreatedAt        respjson.Field
-		ErrorMessage     respjson.Field
-		Status           respjson.Field
-		TelephoneNumbers respjson.Field
-		TenantID         respjson.Field
-		TicketID         respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExternalConnectionReleaseGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionReleaseGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ExternalConnectionReleaseListResponse struct {
-	// ISO 8601 formatted date indicating when the resource was created.
-	CreatedAt string `json:"created_at"`
-	// A message set if there is an error with the upload process.
-	ErrorMessage string `json:"error_message"`
-	// Represents the status of the release on Microsoft Teams.
-	//
-	// Any of "pending_upload", "pending", "in_progress", "complete", "failed",
-	// "expired", "unknown".
-	Status           ExternalConnectionReleaseListResponseStatus `json:"status"`
-	TelephoneNumbers []TnReleaseEntry                            `json:"telephone_numbers"`
-	TenantID         string                                      `json:"tenant_id" format:"uuid"`
-	// Uniquely identifies the resource.
-	TicketID string `json:"ticket_id" format:"uuid"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CreatedAt        respjson.Field
-		ErrorMessage     respjson.Field
-		Status           respjson.Field
-		TelephoneNumbers respjson.Field
-		TenantID         respjson.Field
-		TicketID         respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExternalConnectionReleaseListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ExternalConnectionReleaseListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Represents the status of the release on Microsoft Teams.
-type ExternalConnectionReleaseListResponseStatus string
-
-const (
-	ExternalConnectionReleaseListResponseStatusPendingUpload ExternalConnectionReleaseListResponseStatus = "pending_upload"
-	ExternalConnectionReleaseListResponseStatusPending       ExternalConnectionReleaseListResponseStatus = "pending"
-	ExternalConnectionReleaseListResponseStatusInProgress    ExternalConnectionReleaseListResponseStatus = "in_progress"
-	ExternalConnectionReleaseListResponseStatusComplete      ExternalConnectionReleaseListResponseStatus = "complete"
-	ExternalConnectionReleaseListResponseStatusFailed        ExternalConnectionReleaseListResponseStatus = "failed"
-	ExternalConnectionReleaseListResponseStatusExpired       ExternalConnectionReleaseListResponseStatus = "expired"
-	ExternalConnectionReleaseListResponseStatusUnknown       ExternalConnectionReleaseListResponseStatus = "unknown"
-)
 
 type ExternalConnectionReleaseGetParams struct {
 	ID string `path:"id" api:"required" json:"-"`

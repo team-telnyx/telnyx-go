@@ -134,7 +134,7 @@ func (r *ConferenceService) ListParticipantsAutoPaging(ctx context.Context, conf
 }
 
 // Retrieve details of a specific conference participant by their ID or label.
-func (r *ConferenceService) GetParticipant(ctx context.Context, participantID string, query ConferenceGetParticipantParams, opts ...option.RequestOption) (res *ConferenceGetParticipantResponse, err error) {
+func (r *ConferenceService) GetParticipant(ctx context.Context, participantID string, query ConferenceGetParticipantParams, opts ...option.RequestOption) (res *ConferenceParticipantResource, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.ID == "" {
 		err = errors.New("missing required id parameter")
@@ -150,7 +150,7 @@ func (r *ConferenceService) GetParticipant(ctx context.Context, participantID st
 }
 
 // Update properties of a conference participant.
-func (r *ConferenceService) UpdateParticipant(ctx context.Context, participantID string, params ConferenceUpdateParticipantParams, opts ...option.RequestOption) (res *ConferenceUpdateParticipantResponse, err error) {
+func (r *ConferenceService) UpdateParticipant(ctx context.Context, participantID string, params ConferenceUpdateParticipantParams, opts ...option.RequestOption) (res *ConferenceParticipantResource, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.ID == "" {
 		err = errors.New("missing required id parameter")
@@ -328,6 +328,22 @@ const (
 	ConferenceParticipantStatusLeft    ConferenceParticipantStatus = "left"
 )
 
+type ConferenceParticipantResource struct {
+	Data ConferenceParticipant `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConferenceParticipantResource) RawJSON() string { return r.JSON.raw }
+func (r *ConferenceParticipantResource) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ConferenceNewResponse struct {
 	Data Conference `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -453,38 +469,6 @@ const (
 	ConferenceListParticipantsResponseStatusJoined  ConferenceListParticipantsResponseStatus = "joined"
 	ConferenceListParticipantsResponseStatusLeft    ConferenceListParticipantsResponseStatus = "left"
 )
-
-type ConferenceGetParticipantResponse struct {
-	Data ConferenceParticipant `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ConferenceGetParticipantResponse) RawJSON() string { return r.JSON.raw }
-func (r *ConferenceGetParticipantResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ConferenceUpdateParticipantResponse struct {
-	Data ConferenceParticipant `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ConferenceUpdateParticipantResponse) RawJSON() string { return r.JSON.raw }
-func (r *ConferenceUpdateParticipantResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 type ConferenceNewParams struct {
 	// Unique identifier and token for controlling the call

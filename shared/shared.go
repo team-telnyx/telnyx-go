@@ -961,6 +961,93 @@ const (
 	InboundMessagePayloadTypeMms InboundMessagePayloadType = "MMS"
 )
 
+// The property Type is required.
+type InworldVoiceSettingsParam struct {
+	// Voice settings provider type
+	//
+	// Any of "inworld".
+	Type InworldVoiceSettingsType `json:"type,omitzero" api:"required"`
+	// Controls the expressiveness and consistency of the Inworld `TTS2` model's speech
+	// synthesis. `STABLE` favors consistent, predictable output, `CREATIVE` allows
+	// more expressive variation, and `BALANCED` sits in between. Optional and only
+	// supported by `TTS2`; when omitted, the provider default applies.
+	//
+	// Any of "STABLE", "BALANCED", "CREATIVE".
+	DeliveryMode InworldVoiceSettingsDeliveryMode `json:"delivery_mode,omitzero"`
+	paramObj
+}
+
+func (r InworldVoiceSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow InworldVoiceSettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InworldVoiceSettingsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Voice settings provider type
+type InworldVoiceSettingsType string
+
+const (
+	InworldVoiceSettingsTypeInworld InworldVoiceSettingsType = "inworld"
+)
+
+// Controls the expressiveness and consistency of the Inworld `TTS2` model's speech
+// synthesis. `STABLE` favors consistent, predictable output, `CREATIVE` allows
+// more expressive variation, and `BALANCED` sits in between. Optional and only
+// supported by `TTS2`; when omitted, the provider default applies.
+type InworldVoiceSettingsDeliveryMode string
+
+const (
+	InworldVoiceSettingsDeliveryModeStable   InworldVoiceSettingsDeliveryMode = "STABLE"
+	InworldVoiceSettingsDeliveryModeBalanced InworldVoiceSettingsDeliveryMode = "BALANCED"
+	InworldVoiceSettingsDeliveryModeCreative InworldVoiceSettingsDeliveryMode = "CREATIVE"
+)
+
+type MessagingError struct {
+	Code   string               `json:"code" api:"required"`
+	Title  string               `json:"title" api:"required"`
+	Detail string               `json:"detail"`
+	Meta   map[string]any       `json:"meta"`
+	Source MessagingErrorSource `json:"source"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Code        respjson.Field
+		Title       respjson.Field
+		Detail      respjson.Field
+		Meta        respjson.Field
+		Source      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingError) RawJSON() string { return r.JSON.raw }
+func (r *MessagingError) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessagingErrorSource struct {
+	// Indicates which query parameter caused the error.
+	Parameter string `json:"parameter"`
+	// JSON pointer (RFC6901) to the offending entity.
+	Pointer string `json:"pointer" format:"json-pointer"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Parameter   respjson.Field
+		Pointer     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingErrorSource) RawJSON() string { return r.JSON.raw }
+func (r *MessagingErrorSource) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The set of features available for a specific messaging use case (SMS or MMS).
 // Features can vary depending on the characteristics the phone number, as well as
 // its current product configuration.
@@ -2028,46 +2115,28 @@ func (r *WhatsappTemplateDataWhatsappBusinessAccount) UnmarshalJSON(data []byte)
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type MessagingError struct {
-	Code   string               `json:"code" api:"required"`
-	Title  string               `json:"title" api:"required"`
-	Detail string               `json:"detail"`
-	Meta   map[string]any       `json:"meta"`
-	Source MessagingErrorSource `json:"source"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Title       respjson.Field
-		Detail      respjson.Field
-		Meta        respjson.Field
-		Source      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+// The property Type is required.
+type XaiVoiceSettingsParam struct {
+	// Voice settings provider type
+	//
+	// Any of "xai".
+	Type XaiVoiceSettingsType `json:"type,omitzero" api:"required"`
+	// Language code, or `auto` to detect automatically.
+	Language param.Opt[string] `json:"language,omitzero"`
+	paramObj
 }
 
-// Returns the unmodified JSON received from the API
-func (r MessagingError) RawJSON() string { return r.JSON.raw }
-func (r *MessagingError) UnmarshalJSON(data []byte) error {
+func (r XaiVoiceSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow XaiVoiceSettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *XaiVoiceSettingsParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type MessagingErrorSource struct {
-	// Indicates which query parameter caused the error.
-	Parameter string `json:"parameter"`
-	// JSON pointer (RFC6901) to the offending entity.
-	Pointer string `json:"pointer" format:"json-pointer"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Parameter   respjson.Field
-		Pointer     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
+// Voice settings provider type
+type XaiVoiceSettingsType string
 
-// Returns the unmodified JSON received from the API
-func (r MessagingErrorSource) RawJSON() string { return r.JSON.raw }
-func (r *MessagingErrorSource) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+const (
+	XaiVoiceSettingsTypeXai XaiVoiceSettingsType = "xai"
+)
