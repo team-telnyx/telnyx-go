@@ -106,12 +106,12 @@ func (r *AIService) GetModels(ctx context.Context, opts ...option.RequestOption)
 //
 //  1. The query text is embedded into a 1024-dimensional vector using the
 //     multilingual-e5-large model.
-//  2. The vector is sent to regional OpenSearch clusters for kNN search using HNSW
-//     cosine similarity.
+//  2. The vector is compared against indexed record chunks using semantic
+//     similarity search.
 //  3. When no region is specified, all regions are queried in parallel (fan-out)
 //     and results are merged by score.
-//  4. Results are ranked by cosine similarity score (descending) and truncated to
-//     `top_k`.
+//  4. Results are ranked by similarity score (descending) and paginated via
+//     `page[number]` / `page[size]`.
 //
 // **Authentication:** Requires a Telnyx API key via `Authorization: Bearer <key>`.
 // Results are automatically scoped to the caller's organization —
@@ -125,14 +125,14 @@ func (r *AIService) GetModels(ctx context.Context, opts ...option.RequestOption)
 // **Filtering:** Use `filter[field][operator]=value` query parameters to narrow
 // results before vector search.
 //
-// Top-level filterable fields: `user_id`, `record_type`, `region`, `document_id`,
-// `record_id`, `record_created_at`, `ingested_at`, `retention`
+// Top-level filterable fields: `user_id`, `region`, `record_id`,
+// `record_created_at`, `ingested_at`, `retention`
 //
 // Note: `retention` is filter-only — it can be used to narrow results but is not
 // returned in the response body.
 //
 // Metadata fields: any field not in the list above is resolved to
-// `data.metadata.<field>` in OpenSearch (e.g., `filter[language]=en` →
+// `data.metadata.<field>` (e.g., `filter[language]=en` →
 // `data.metadata.language`).
 //
 // Supported filter operators:
@@ -145,11 +145,11 @@ func (r *AIService) GetModels(ctx context.Context, opts ...option.RequestOption)
 // **Examples:**
 //
 // ```
-// GET /v2/ai/conversation_histories?q=billing+issue&record_type=voice&top_k=10
-// GET /v2/ai/conversation_histories?q=setup+guide&record_type=knowledge_base&region=USA&min_score=0.5
-// GET /v2/ai/conversation_histories?q=refund&record_type=voice&filter[record_created_at][gte]=2026-01-01T00:00:00Z
-// GET /v2/ai/conversation_histories?q=outage&record_type=voice&filter[region][in]=USA,DEU
-// GET /v2/ai/conversation_histories?q=hold+time&record_type=voice&filter[language]=en
+// GET /v2/ai/conversation_histories?q=billing+issue&page[size]=10
+// GET /v2/ai/conversation_histories?q=setup+guide&region=USA&min_score=0.5
+// GET /v2/ai/conversation_histories?q=refund&filter[record_created_at][gte]=2026-01-01T00:00:00Z
+// GET /v2/ai/conversation_histories?q=outage&filter[region][in]=USA,DEU
+// GET /v2/ai/conversation_histories?q=hold+time&filter[language]=en
 // ```
 func (r *AIService) SearchConversationHistories(ctx context.Context, query AISearchConversationHistoriesParams, opts ...option.RequestOption) (res *AISearchConversationHistoriesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -328,9 +328,6 @@ type AISearchConversationHistoriesResponseData struct {
 	ChunkIndex int64 `json:"chunk_index" api:"required"`
 	// Total number of chunks the parent record was split into.
 	ChunkTotal int64 `json:"chunk_total" api:"required"`
-	// Document identifier. Present only for knowledge_base records; null for all other
-	// record types.
-	DocumentID string `json:"document_id" api:"required"`
 	// When the record was chunked, embedded, and indexed (ISO 8601).
 	IngestedAt time.Time `json:"ingested_at" api:"required" format:"date-time"`
 	// Identifier of the organization that owns this record.
@@ -340,10 +337,6 @@ type AISearchConversationHistoriesResponseData struct {
 	// Identifier of the parent record. Multiple chunks from the same record share this
 	// ID.
 	RecordID string `json:"record_id" api:"required"`
-	// Type of the record.
-	//
-	// Any of "voice", "message", "ai_pipeline_storage", "knowledge_base".
-	RecordType string `json:"record_type" api:"required"`
 	// The region where this record is stored.
 	//
 	// Any of "USA", "DEU", "AUS", "UAE".
@@ -355,21 +348,18 @@ type AISearchConversationHistoriesResponseData struct {
 	Text string `json:"text" api:"required"`
 	// Identifier of the user who owns this record.
 	UserID string `json:"user_id" api:"required"`
-	// Arbitrary metadata attached to the record at ingestion time. Stored as a
-	// flat_object in OpenSearch and filterable via filter[field]=value query
-	// parameters.
+	// Arbitrary metadata attached to the record at ingestion time. Filterable via
+	// filter[field]=value query parameters.
 	Metadata map[string]any `json:"metadata"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
 		ChunkIndex      respjson.Field
 		ChunkTotal      respjson.Field
-		DocumentID      respjson.Field
 		IngestedAt      respjson.Field
 		OrganizationID  respjson.Field
 		RecordCreatedAt respjson.Field
 		RecordID        respjson.Field
-		RecordType      respjson.Field
 		Region          respjson.Field
 		Score           respjson.Field
 		Text            respjson.Field
@@ -388,15 +378,13 @@ func (r *AISearchConversationHistoriesResponseData) UnmarshalJSON(data []byte) e
 
 // Pagination metadata following the standard Telnyx V2 API format.
 type AISearchConversationHistoriesResponseMeta struct {
-	// Current page number (always 1 — this API does not support pagination, use top_k
-	// instead).
+	// Current page number (1-based), matching the requested page[number].
 	PageNumber int64 `json:"page_number" api:"required"`
-	// Number of results per page (equals the effective top_k value).
+	// Number of results per page, matching the requested page[size].
 	PageSize int64 `json:"page_size" api:"required"`
 	// Total number of pages.
 	TotalPages int64 `json:"total_pages" api:"required"`
-	// Total number of matching results across all queried regions (before top_k
-	// truncation).
+	// Total number of matching results across all queried regions.
 	TotalResults int64 `json:"total_results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -461,16 +449,8 @@ func (r *AINewResponseDeprecatedParams) UnmarshalJSON(data []byte) error {
 
 type AISearchConversationHistoriesParams struct {
 	// Natural language search query. The text is embedded into a 1024-dimensional
-	// vector and compared against indexed record chunks using kNN cosine similarity.
+	// vector and compared against indexed record chunks using semantic similarity.
 	Q string `query:"q" api:"required" json:"-"`
-	// The type of records to search. Each record type is stored in a separate vector
-	// index.
-	//
-	// Any of "voice", "message", "ai_pipeline_storage", "knowledge_base".
-	RecordType AISearchConversationHistoriesParamsRecordType `query:"record_type,omitzero" api:"required" json:"-"`
-	// Filter by document identifier (exact match). Populated for knowledge_base
-	// records.
-	FilterDocumentID param.Opt[string] `query:"filter[document_id],omitzero" json:"-"`
 	// Only include records ingested (chunked, embedded, and indexed) on or after this
 	// ISO 8601 timestamp.
 	FilterIngestedAtGte param.Opt[time.Time] `query:"filter[ingested_at][gte],omitzero" format:"date-time" json:"-"`
@@ -497,11 +477,12 @@ type AISearchConversationHistoriesParams struct {
 	// Minimum cosine similarity score threshold (0.0 to 1.0). Results below this
 	// threshold are excluded.
 	MinScore param.Opt[float64] `query:"min_score,omitzero" json:"-"`
-	// Maximum number of results to return. Defaults to 20, maximum 100.
-	TopK param.Opt[int64] `query:"top_k,omitzero" json:"-"`
-	// Restrict search to a specific region's OpenSearch cluster. When omitted, all
-	// regions are queried in parallel (fan-out) and results are merged by cosine
-	// similarity score.
+	// Page number to return (1-based). Defaults to 1.
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	// Number of results per page. Defaults to 20, maximum 100.
+	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Restrict search to a specific region. When omitted, all regions are queried in
+	// parallel (fan-out) and results are merged by similarity score.
 	//
 	// Any of "USA", "DEU", "AUS", "UAE".
 	Region AISearchConversationHistoriesParamsRegion `query:"region,omitzero" json:"-"`
@@ -517,20 +498,8 @@ func (r AISearchConversationHistoriesParams) URLQuery() (v url.Values, err error
 	})
 }
 
-// The type of records to search. Each record type is stored in a separate vector
-// index.
-type AISearchConversationHistoriesParamsRecordType string
-
-const (
-	AISearchConversationHistoriesParamsRecordTypeVoice             AISearchConversationHistoriesParamsRecordType = "voice"
-	AISearchConversationHistoriesParamsRecordTypeMessage           AISearchConversationHistoriesParamsRecordType = "message"
-	AISearchConversationHistoriesParamsRecordTypeAIPipelineStorage AISearchConversationHistoriesParamsRecordType = "ai_pipeline_storage"
-	AISearchConversationHistoriesParamsRecordTypeKnowledgeBase     AISearchConversationHistoriesParamsRecordType = "knowledge_base"
-)
-
-// Restrict search to a specific region's OpenSearch cluster. When omitted, all
-// regions are queried in parallel (fan-out) and results are merged by cosine
-// similarity score.
+// Restrict search to a specific region. When omitted, all regions are queried in
+// parallel (fan-out) and results are merged by similarity score.
 type AISearchConversationHistoriesParamsRegion string
 
 const (

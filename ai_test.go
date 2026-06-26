@@ -80,8 +80,6 @@ func TestAISearchConversationHistoriesWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.AI.SearchConversationHistories(context.TODO(), telnyx.AISearchConversationHistoriesParams{
 		Q:                        "customer called about billing issue",
-		RecordType:               telnyx.AISearchConversationHistoriesParamsRecordTypeVoice,
-		FilterDocumentID:         telnyx.String("doc-789"),
 		FilterIngestedAtGte:      telnyx.Time(time.Now()),
 		FilterIngestedAtLte:      telnyx.Time(time.Now()),
 		FilterRecordCreatedAtGte: telnyx.Time(time.Now()),
@@ -91,8 +89,9 @@ func TestAISearchConversationHistoriesWithOptionalParams(t *testing.T) {
 		FilterRetention:          telnyx.String("filter[retention]"),
 		FilterUserID:             telnyx.String("user-123"),
 		MinScore:                 telnyx.Float(0.5),
+		PageNumber:               telnyx.Int(1),
+		PageSize:                 telnyx.Int(10),
 		Region:                   telnyx.AISearchConversationHistoriesParamsRegionUsa,
-		TopK:                     telnyx.Int(10),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
