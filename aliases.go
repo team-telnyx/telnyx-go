@@ -295,6 +295,34 @@ const InboundMessagePayloadTypeSMS = shared.InboundMessagePayloadTypeSMS
 // Equals "MMS"
 const InboundMessagePayloadTypeMms = shared.InboundMessagePayloadTypeMms
 
+// This is an alias to an internal type.
+type InworldVoiceSettingsParam = shared.InworldVoiceSettingsParam
+
+// Voice settings provider type
+//
+// This is an alias to an internal type.
+type InworldVoiceSettingsType = shared.InworldVoiceSettingsType
+
+// Equals "inworld"
+const InworldVoiceSettingsTypeInworld = shared.InworldVoiceSettingsTypeInworld
+
+// Controls the expressiveness and consistency of the Inworld `TTS2` model's speech
+// synthesis. `STABLE` favors consistent, predictable output, `CREATIVE` allows
+// more expressive variation, and `BALANCED` sits in between. Optional and only
+// supported by `TTS2`; when omitted, the provider default applies.
+//
+// This is an alias to an internal type.
+type InworldVoiceSettingsDeliveryMode = shared.InworldVoiceSettingsDeliveryMode
+
+// Equals "STABLE"
+const InworldVoiceSettingsDeliveryModeStable = shared.InworldVoiceSettingsDeliveryModeStable
+
+// Equals "BALANCED"
+const InworldVoiceSettingsDeliveryModeBalanced = shared.InworldVoiceSettingsDeliveryModeBalanced
+
+// Equals "CREATIVE"
+const InworldVoiceSettingsDeliveryModeCreative = shared.InworldVoiceSettingsDeliveryModeCreative
+
 // The set of features available for a specific messaging use case (SMS or MMS).
 // Features can vary depending on the characteristics the phone number, as well as
 // its current product configuration.
@@ -891,3 +919,14 @@ const WhatsappTemplateDataCategoryAuthentication = shared.WhatsappTemplateDataCa
 
 // This is an alias to an internal type.
 type WhatsappTemplateDataWhatsappBusinessAccount = shared.WhatsappTemplateDataWhatsappBusinessAccount
+
+// This is an alias to an internal type.
+type XaiVoiceSettingsParam = shared.XaiVoiceSettingsParam
+
+// Voice settings provider type
+//
+// This is an alias to an internal type.
+type XaiVoiceSettingsType = shared.XaiVoiceSettingsType
+
+// Equals "xai"
+const XaiVoiceSettingsTypeXai = shared.XaiVoiceSettingsTypeXai

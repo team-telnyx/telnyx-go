@@ -682,35 +682,34 @@ func (r *TexmlAccountCallUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type TexmlAccountCallCallsParams struct {
-
-	//
-	// Request body variants
-	//
-
-	// This field is a request body variant, only one variant field can be set.
-	OfWithURL *TexmlAccountCallCallsParamsParamsWithURL `json:",inline"`
-	// This field is a request body variant, only one variant field can be set.
-	OfWithTeXml *TexmlAccountCallCallsParamsParamsWithTeXml `json:",inline"`
-	// This field is a request body variant, only one variant field can be set.
-	OfApplicationDefault *TexmlAccountCallCallsParamsParamsApplicationDefault `json:",inline"`
-
+	// Initiate a TeXML call. Provide either `Url` (fetches TeXML from URL) or `Texml`
+	// (inline TeXML), or neither (uses the application default). `Url` and `Texml` are
+	// mutually exclusive.
+	Params TexmlAccountCallCallsParamsParams
 	paramObj
 }
 
-func (u TexmlAccountCallCallsParams) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfWithURL, u.OfWithTeXml, u.OfApplicationDefault)
+func (r TexmlAccountCallCallsParams) MarshalJSON() (data []byte, err error) {
+	return shimjson.Marshal(r.Params)
 }
 func (r *TexmlAccountCallCallsParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The property URL is required.
-type TexmlAccountCallCallsParamsParamsWithURL struct {
-	// The URL from which Telnyx will retrieve the TeXML call instructions.
-	URL   string            `json:"Url" api:"required"`
-	Texml param.Opt[string] `json:"Texml,omitzero"`
+// Initiate a TeXML call. Provide either `Url` (fetches TeXML from URL) or `Texml`
+// (inline TeXML), or neither (uses the application default). `Url` and `Texml` are
+// mutually exclusive.
+//
+// The properties ApplicationSid, From, To are required.
+type TexmlAccountCallCallsParamsParams struct {
 	// The ID of the TeXML Application.
-	ApplicationSid param.Opt[string] `json:"ApplicationSid,omitzero"`
+	ApplicationSid string `json:"ApplicationSid" api:"required"`
+	// The phone number of the party that initiated the call. Phone numbers are
+	// formatted with a `+` and country code.
+	From string `json:"From" api:"required"`
+	// The phone number of the called party. Phone numbers are formatted with a `+` and
+	// country code.
+	To string `json:"To" api:"required"`
 	// Select whether to perform answering machine detection in the background. By
 	// default execution is blocked until Answering Machine Detection is completed.
 	AsyncAmd param.Opt[bool] `json:"AsyncAmd,omitzero"`
@@ -732,9 +731,6 @@ type TexmlAccountCallCallsParamsParamsWithURL struct {
 	// A failover URL for which Telnyx will retrieve the TeXML call instructions if the
 	// `Url` is not responding.
 	FallbackURL param.Opt[string] `json:"FallbackUrl,omitzero"`
-	// The phone number of the party that initiated the call. Phone numbers are
-	// formatted with a `+` and country code.
-	From param.Opt[string] `json:"From,omitzero"`
 	// Silence duration threshold after a call screening prompt before ending prompt
 	// detection, in milliseconds. Used when `DetectionMode` is `PremiumCallScreening`.
 	MachineDetectionPromptEndTimeout param.Opt[int64] `json:"MachineDetectionPromptEndTimeout,omitzero"`
@@ -776,473 +772,9 @@ type TexmlAccountCallCallsParamsParamsWithURL struct {
 	// created leg will be added to the specified call in supervising mode. Status
 	// callbacks and action callbacks will NOT be sent for the supervising leg.
 	SuperviseCallSid param.Opt[string] `json:"SuperviseCallSid,omitzero"`
-	// The maximum duration of the call in seconds. The minimum value is 30 and the
-	// maximum value is 14400 (4 hours). Default is 14400 seconds.
-	TimeLimit param.Opt[int64] `json:"TimeLimit,omitzero"`
-	// The number of seconds to wait for the called party to answer the call before the
-	// call is canceled. The minimum value is 5 and the maximum value is 120. Default
-	// is 30 seconds.
-	Timeout param.Opt[int64] `json:"Timeout,omitzero"`
-	// The phone number of the called party. Phone numbers are formatted with a `+` and
-	// country code.
-	To param.Opt[string] `json:"To,omitzero"`
-	// HTTP request type used for `AsyncAmdStatusCallback`. The default value is
-	// inherited from TeXML Application setting.
-	//
-	// Any of "GET", "POST".
-	AsyncAmdStatusCallbackMethod string `json:"AsyncAmdStatusCallbackMethod,omitzero"`
-	// Custom HTTP headers to be sent with the call. Each header should be an object
-	// with 'name' and 'value' properties.
-	CustomHeaders []TexmlAccountCallCallsParamsParamsWithURLCustomHeader `json:"CustomHeaders,omitzero"`
-	// Enables Deepfake Detection on the dialed call. When enabled, audio from the
-	// remote party is analyzed to determine whether the voice is AI-generated. Results
-	// are delivered asynchronously via a callback.
-	//
-	// Any of "Enable".
-	DeepfakeDetection string `json:"DeepfakeDetection,omitzero"`
-	// HTTP request type used for `DeepfakeDetectionCallbackUrl`.
-	//
-	// Any of "GET", "POST".
-	DeepfakeDetectionCallbackMethod string `json:"DeepfakeDetectionCallbackMethod,omitzero"`
-	// Allows you to choose between Regular, Premium, and PremiumCallScreening
-	// detections. See
-	// https://developers.telnyx.com/docs/voice/programmable-voice/answering-machine-detection
-	//
-	// Any of "Premium", "Regular", "PremiumCallScreening".
-	DetectionMode string `json:"DetectionMode,omitzero"`
-	// Enables Answering Machine Detection.
-	//
-	// Any of "Enable", "Disable", "DetectMessageEnd".
-	MachineDetection string `json:"MachineDetection,omitzero"`
-	// Defines whether media should be encrypted on the call. When set to `SRTP`, the
-	// call will use Secure Real-time Transport Protocol for media encryption. When set
-	// to `DTLS`, the call will use DTLS for media encryption. Only supported for SIP
-	// destinations.
-	//
-	// Any of "disabled", "SRTP", "DTLS".
-	MediaEncryption string `json:"MediaEncryption,omitzero"`
-	// The number of channels in the final recording. Defaults to `mono`.
-	//
-	// Any of "mono", "dual".
-	RecordingChannels string `json:"RecordingChannels,omitzero"`
-	// HTTP request type used for `RecordingStatusCallback`. Defaults to `POST`.
-	//
-	// Any of "GET", "POST".
-	RecordingStatusCallbackMethod string `json:"RecordingStatusCallbackMethod,omitzero"`
-	// The audio track to record for the call. The default is `both`.
-	//
-	// Any of "inbound", "outbound", "both".
-	RecordingTrack string `json:"RecordingTrack,omitzero"`
-	// Defines the SIP region to be used for the call.
-	//
-	// Any of "US", "Europe", "Canada", "Australia", "Middle East".
-	SipRegion string `json:"SipRegion,omitzero"`
-	// The call events for which Telnyx should send a webhook. Multiple events can be
-	// defined when separated by a space.
-	//
-	// Any of "initiated", "ringing", "answered", "completed".
-	StatusCallbackEvent string `json:"StatusCallbackEvent,omitzero"`
-	// HTTP request type used for `StatusCallback`.
-	//
-	// Any of "GET", "POST".
-	StatusCallbackMethod string `json:"StatusCallbackMethod,omitzero"`
-	// The supervising role for the new leg. Determines the audio behavior: barge (hear
-	// both sides), whisper (only hear supervisor), monitor (hear both sides but
-	// supervisor muted). Default: barge
-	//
-	// Any of "barge", "whisper", "monitor".
-	SupervisingRole string `json:"SupervisingRole,omitzero"`
-	// Whether to trim any leading and trailing silence from the recording. Defaults to
-	// `trim-silence`.
-	//
-	// Any of "trim-silence", "do-not-trim".
-	Trim string `json:"Trim,omitzero"`
-	// HTTP request type used for `Url`. The default value is inherited from TeXML
-	// Application setting.
-	//
-	// Any of "GET", "POST".
-	URLMethod string `json:"UrlMethod,omitzero"`
-	paramObj
-}
-
-func (r TexmlAccountCallCallsParamsParamsWithURL) MarshalJSON() (data []byte, err error) {
-	type shadow TexmlAccountCallCallsParamsParamsWithURL
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TexmlAccountCallCallsParamsParamsWithURL) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
-		"AsyncAmdStatusCallbackMethod", "GET", "POST",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
-		"DeepfakeDetection", "Enable",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
-		"DeepfakeDetectionCallbackMethod", "GET", "POST",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
-		"DetectionMode", "Premium", "Regular", "PremiumCallScreening",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
-		"MachineDetection", "Enable", "Disable", "DetectMessageEnd",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
-		"MediaEncryption", "disabled", "SRTP", "DTLS",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
-		"RecordingChannels", "mono", "dual",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
-		"RecordingStatusCallbackMethod", "GET", "POST",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
-		"RecordingTrack", "inbound", "outbound", "both",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
-		"SipRegion", "US", "Europe", "Canada", "Australia", "Middle East",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
-		"StatusCallbackEvent", "initiated", "ringing", "answered", "completed",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
-		"StatusCallbackMethod", "GET", "POST",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
-		"SupervisingRole", "barge", "whisper", "monitor",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
-		"Trim", "trim-silence", "do-not-trim",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithURL](
-		"UrlMethod", "GET", "POST",
-	)
-}
-
-// The properties Name, Value are required.
-type TexmlAccountCallCallsParamsParamsWithURLCustomHeader struct {
-	// The name of the custom header
-	Name string `json:"name" api:"required"`
-	// The value of the custom header
-	Value string `json:"value" api:"required"`
-	paramObj
-}
-
-func (r TexmlAccountCallCallsParamsParamsWithURLCustomHeader) MarshalJSON() (data []byte, err error) {
-	type shadow TexmlAccountCallCallsParamsParamsWithURLCustomHeader
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TexmlAccountCallCallsParamsParamsWithURLCustomHeader) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property Texml is required.
-type TexmlAccountCallCallsParamsParamsWithTeXml struct {
 	// TeXML to be used as instructions for the call. If provided, the call will
 	// execute these instructions instead of fetching from the Url.
-	Texml string            `json:"Texml" api:"required"`
-	URL   param.Opt[string] `json:"Url,omitzero"`
-	// The ID of the TeXML Application.
-	ApplicationSid param.Opt[string] `json:"ApplicationSid,omitzero"`
-	// Select whether to perform answering machine detection in the background. By
-	// default execution is blocked until Answering Machine Detection is completed.
-	AsyncAmd param.Opt[bool] `json:"AsyncAmd,omitzero"`
-	// URL destination for Telnyx to send AMD callback events to for the call.
-	AsyncAmdStatusCallback param.Opt[string] `json:"AsyncAmdStatusCallback,omitzero"`
-	// To be used as the caller id name (SIP From Display Name) presented to the
-	// destination (`To` number). The string should have a maximum of 128 characters,
-	// containing only letters, numbers, spaces, and `-_~!.+` special characters. If
-	// ommited, the display name will be the same as the number in the `From` field.
-	CallerID param.Opt[string] `json:"CallerId,omitzero"`
-	// Whether to cancel ongoing playback on `greeting ended` detection. Defaults to
-	// `true`.
-	CancelPlaybackOnDetectMessageEnd param.Opt[bool] `json:"CancelPlaybackOnDetectMessageEnd,omitzero"`
-	// Whether to cancel ongoing playback on `machine` detection. Defaults to `true`.
-	CancelPlaybackOnMachineDetection param.Opt[bool] `json:"CancelPlaybackOnMachineDetection,omitzero"`
-	// URL destination for Telnyx to send deepfake detection callback events to for the
-	// call.
-	DeepfakeDetectionCallbackURL param.Opt[string] `json:"DeepfakeDetectionCallbackUrl,omitzero"`
-	// A failover URL for which Telnyx will retrieve the TeXML call instructions if the
-	// `Url` is not responding.
-	FallbackURL param.Opt[string] `json:"FallbackUrl,omitzero"`
-	// The phone number of the party that initiated the call. Phone numbers are
-	// formatted with a `+` and country code.
-	From param.Opt[string] `json:"From,omitzero"`
-	// Silence duration threshold after a call screening prompt before ending prompt
-	// detection, in milliseconds. Used when `DetectionMode` is `PremiumCallScreening`.
-	MachineDetectionPromptEndTimeout param.Opt[int64] `json:"MachineDetectionPromptEndTimeout,omitzero"`
-	// If initial silence duration is greater than this value, consider it a machine.
-	// Ignored when `premium` detection is used.
-	MachineDetectionSilenceTimeout param.Opt[int64] `json:"MachineDetectionSilenceTimeout,omitzero"`
-	// Silence duration threshold after a greeting message or voice for it be
-	// considered human. Ignored when `premium` detection is used.
-	MachineDetectionSpeechEndThreshold param.Opt[int64] `json:"MachineDetectionSpeechEndThreshold,omitzero"`
-	// Maximum threshold of a human greeting. If greeting longer than this value,
-	// considered machine. Ignored when `premium` detection is used.
-	MachineDetectionSpeechThreshold param.Opt[int64] `json:"MachineDetectionSpeechThreshold,omitzero"`
-	// Maximum timeout threshold in milliseconds for overall detection.
-	MachineDetectionTimeout param.Opt[int64] `json:"MachineDetectionTimeout,omitzero"`
-	// The list of comma-separated codecs to be offered on a call.
-	PreferredCodecs param.Opt[string] `json:"PreferredCodecs,omitzero"`
-	// Whether to record the entire participant's call leg. Defaults to `false`.
-	Record param.Opt[bool] `json:"Record,omitzero"`
-	// The URL the recording callbacks will be sent to.
-	RecordingStatusCallback param.Opt[string] `json:"RecordingStatusCallback,omitzero"`
-	// The changes to the recording's state that should generate a call to
-	// `RecoridngStatusCallback`. Can be: `in-progress`, `completed` and `absent`.
-	// Separate multiple values with a space. Defaults to `completed`.
-	RecordingStatusCallbackEvent param.Opt[string] `json:"RecordingStatusCallbackEvent,omitzero"`
-	// The number of seconds that Telnyx will wait for the recording to be stopped if
-	// silence is detected. The timer only starts when the speech is detected. Please
-	// note that the transcription is used to detect silence and the related charge
-	// will be applied. The minimum value is 0. The default value is 0 (infinite)
-	RecordingTimeout param.Opt[int64] `json:"RecordingTimeout,omitzero"`
-	// Whether to send RecordingUrl in webhooks.
-	SendRecordingURL param.Opt[bool] `json:"SendRecordingUrl,omitzero"`
-	// The password to use for SIP authentication.
-	SipAuthPassword param.Opt[string] `json:"SipAuthPassword,omitzero"`
-	// The username to use for SIP authentication.
-	SipAuthUsername param.Opt[string] `json:"SipAuthUsername,omitzero"`
-	// URL destination for Telnyx to send status callback events to for the call.
-	StatusCallback param.Opt[string] `json:"StatusCallback,omitzero"`
-	// The call control ID of the existing call to supervise. When provided, the
-	// created leg will be added to the specified call in supervising mode. Status
-	// callbacks and action callbacks will NOT be sent for the supervising leg.
-	SuperviseCallSid param.Opt[string] `json:"SuperviseCallSid,omitzero"`
-	// The maximum duration of the call in seconds. The minimum value is 30 and the
-	// maximum value is 14400 (4 hours). Default is 14400 seconds.
-	TimeLimit param.Opt[int64] `json:"TimeLimit,omitzero"`
-	// The number of seconds to wait for the called party to answer the call before the
-	// call is canceled. The minimum value is 5 and the maximum value is 120. Default
-	// is 30 seconds.
-	Timeout param.Opt[int64] `json:"Timeout,omitzero"`
-	// The phone number of the called party. Phone numbers are formatted with a `+` and
-	// country code.
-	To param.Opt[string] `json:"To,omitzero"`
-	// HTTP request type used for `AsyncAmdStatusCallback`. The default value is
-	// inherited from TeXML Application setting.
-	//
-	// Any of "GET", "POST".
-	AsyncAmdStatusCallbackMethod string `json:"AsyncAmdStatusCallbackMethod,omitzero"`
-	// Custom HTTP headers to be sent with the call. Each header should be an object
-	// with 'name' and 'value' properties.
-	CustomHeaders []TexmlAccountCallCallsParamsParamsWithTeXmlCustomHeader `json:"CustomHeaders,omitzero"`
-	// Enables Deepfake Detection on the dialed call. When enabled, audio from the
-	// remote party is analyzed to determine whether the voice is AI-generated. Results
-	// are delivered asynchronously via a callback.
-	//
-	// Any of "Enable".
-	DeepfakeDetection string `json:"DeepfakeDetection,omitzero"`
-	// HTTP request type used for `DeepfakeDetectionCallbackUrl`.
-	//
-	// Any of "GET", "POST".
-	DeepfakeDetectionCallbackMethod string `json:"DeepfakeDetectionCallbackMethod,omitzero"`
-	// Allows you to choose between Regular, Premium, and PremiumCallScreening
-	// detections. See
-	// https://developers.telnyx.com/docs/voice/programmable-voice/answering-machine-detection
-	//
-	// Any of "Premium", "Regular", "PremiumCallScreening".
-	DetectionMode string `json:"DetectionMode,omitzero"`
-	// Enables Answering Machine Detection.
-	//
-	// Any of "Enable", "Disable", "DetectMessageEnd".
-	MachineDetection string `json:"MachineDetection,omitzero"`
-	// Defines whether media should be encrypted on the call. When set to `SRTP`, the
-	// call will use Secure Real-time Transport Protocol for media encryption. When set
-	// to `DTLS`, the call will use DTLS for media encryption. Only supported for SIP
-	// destinations.
-	//
-	// Any of "disabled", "SRTP", "DTLS".
-	MediaEncryption string `json:"MediaEncryption,omitzero"`
-	// The number of channels in the final recording. Defaults to `mono`.
-	//
-	// Any of "mono", "dual".
-	RecordingChannels string `json:"RecordingChannels,omitzero"`
-	// HTTP request type used for `RecordingStatusCallback`. Defaults to `POST`.
-	//
-	// Any of "GET", "POST".
-	RecordingStatusCallbackMethod string `json:"RecordingStatusCallbackMethod,omitzero"`
-	// The audio track to record for the call. The default is `both`.
-	//
-	// Any of "inbound", "outbound", "both".
-	RecordingTrack string `json:"RecordingTrack,omitzero"`
-	// Defines the SIP region to be used for the call.
-	//
-	// Any of "US", "Europe", "Canada", "Australia", "Middle East".
-	SipRegion string `json:"SipRegion,omitzero"`
-	// The call events for which Telnyx should send a webhook. Multiple events can be
-	// defined when separated by a space.
-	//
-	// Any of "initiated", "ringing", "answered", "completed".
-	StatusCallbackEvent string `json:"StatusCallbackEvent,omitzero"`
-	// HTTP request type used for `StatusCallback`.
-	//
-	// Any of "GET", "POST".
-	StatusCallbackMethod string `json:"StatusCallbackMethod,omitzero"`
-	// The supervising role for the new leg. Determines the audio behavior: barge (hear
-	// both sides), whisper (only hear supervisor), monitor (hear both sides but
-	// supervisor muted). Default: barge
-	//
-	// Any of "barge", "whisper", "monitor".
-	SupervisingRole string `json:"SupervisingRole,omitzero"`
-	// Whether to trim any leading and trailing silence from the recording. Defaults to
-	// `trim-silence`.
-	//
-	// Any of "trim-silence", "do-not-trim".
-	Trim string `json:"Trim,omitzero"`
-	// HTTP request type used for `Url`. The default value is inherited from TeXML
-	// Application setting.
-	//
-	// Any of "GET", "POST".
-	URLMethod string `json:"UrlMethod,omitzero"`
-	paramObj
-}
-
-func (r TexmlAccountCallCallsParamsParamsWithTeXml) MarshalJSON() (data []byte, err error) {
-	type shadow TexmlAccountCallCallsParamsParamsWithTeXml
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TexmlAccountCallCallsParamsParamsWithTeXml) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
-		"AsyncAmdStatusCallbackMethod", "GET", "POST",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
-		"DeepfakeDetection", "Enable",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
-		"DeepfakeDetectionCallbackMethod", "GET", "POST",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
-		"DetectionMode", "Premium", "Regular", "PremiumCallScreening",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
-		"MachineDetection", "Enable", "Disable", "DetectMessageEnd",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
-		"MediaEncryption", "disabled", "SRTP", "DTLS",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
-		"RecordingChannels", "mono", "dual",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
-		"RecordingStatusCallbackMethod", "GET", "POST",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
-		"RecordingTrack", "inbound", "outbound", "both",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
-		"SipRegion", "US", "Europe", "Canada", "Australia", "Middle East",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
-		"StatusCallbackEvent", "initiated", "ringing", "answered", "completed",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
-		"StatusCallbackMethod", "GET", "POST",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
-		"SupervisingRole", "barge", "whisper", "monitor",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
-		"Trim", "trim-silence", "do-not-trim",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsWithTeXml](
-		"UrlMethod", "GET", "POST",
-	)
-}
-
-// The properties Name, Value are required.
-type TexmlAccountCallCallsParamsParamsWithTeXmlCustomHeader struct {
-	// The name of the custom header
-	Name string `json:"name" api:"required"`
-	// The value of the custom header
-	Value string `json:"value" api:"required"`
-	paramObj
-}
-
-func (r TexmlAccountCallCallsParamsParamsWithTeXmlCustomHeader) MarshalJSON() (data []byte, err error) {
-	type shadow TexmlAccountCallCallsParamsParamsWithTeXmlCustomHeader
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TexmlAccountCallCallsParamsParamsWithTeXmlCustomHeader) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type TexmlAccountCallCallsParamsParamsApplicationDefault struct {
 	Texml param.Opt[string] `json:"Texml,omitzero"`
-	URL   param.Opt[string] `json:"Url,omitzero"`
-	// The ID of the TeXML Application.
-	ApplicationSid param.Opt[string] `json:"ApplicationSid,omitzero"`
-	// Select whether to perform answering machine detection in the background. By
-	// default execution is blocked until Answering Machine Detection is completed.
-	AsyncAmd param.Opt[bool] `json:"AsyncAmd,omitzero"`
-	// URL destination for Telnyx to send AMD callback events to for the call.
-	AsyncAmdStatusCallback param.Opt[string] `json:"AsyncAmdStatusCallback,omitzero"`
-	// To be used as the caller id name (SIP From Display Name) presented to the
-	// destination (`To` number). The string should have a maximum of 128 characters,
-	// containing only letters, numbers, spaces, and `-_~!.+` special characters. If
-	// ommited, the display name will be the same as the number in the `From` field.
-	CallerID param.Opt[string] `json:"CallerId,omitzero"`
-	// Whether to cancel ongoing playback on `greeting ended` detection. Defaults to
-	// `true`.
-	CancelPlaybackOnDetectMessageEnd param.Opt[bool] `json:"CancelPlaybackOnDetectMessageEnd,omitzero"`
-	// Whether to cancel ongoing playback on `machine` detection. Defaults to `true`.
-	CancelPlaybackOnMachineDetection param.Opt[bool] `json:"CancelPlaybackOnMachineDetection,omitzero"`
-	// URL destination for Telnyx to send deepfake detection callback events to for the
-	// call.
-	DeepfakeDetectionCallbackURL param.Opt[string] `json:"DeepfakeDetectionCallbackUrl,omitzero"`
-	// A failover URL for which Telnyx will retrieve the TeXML call instructions if the
-	// `Url` is not responding.
-	FallbackURL param.Opt[string] `json:"FallbackUrl,omitzero"`
-	// The phone number of the party that initiated the call. Phone numbers are
-	// formatted with a `+` and country code.
-	From param.Opt[string] `json:"From,omitzero"`
-	// Silence duration threshold after a call screening prompt before ending prompt
-	// detection, in milliseconds. Used when `DetectionMode` is `PremiumCallScreening`.
-	MachineDetectionPromptEndTimeout param.Opt[int64] `json:"MachineDetectionPromptEndTimeout,omitzero"`
-	// If initial silence duration is greater than this value, consider it a machine.
-	// Ignored when `premium` detection is used.
-	MachineDetectionSilenceTimeout param.Opt[int64] `json:"MachineDetectionSilenceTimeout,omitzero"`
-	// Silence duration threshold after a greeting message or voice for it be
-	// considered human. Ignored when `premium` detection is used.
-	MachineDetectionSpeechEndThreshold param.Opt[int64] `json:"MachineDetectionSpeechEndThreshold,omitzero"`
-	// Maximum threshold of a human greeting. If greeting longer than this value,
-	// considered machine. Ignored when `premium` detection is used.
-	MachineDetectionSpeechThreshold param.Opt[int64] `json:"MachineDetectionSpeechThreshold,omitzero"`
-	// Maximum timeout threshold in milliseconds for overall detection.
-	MachineDetectionTimeout param.Opt[int64] `json:"MachineDetectionTimeout,omitzero"`
-	// The list of comma-separated codecs to be offered on a call.
-	PreferredCodecs param.Opt[string] `json:"PreferredCodecs,omitzero"`
-	// Whether to record the entire participant's call leg. Defaults to `false`.
-	Record param.Opt[bool] `json:"Record,omitzero"`
-	// The URL the recording callbacks will be sent to.
-	RecordingStatusCallback param.Opt[string] `json:"RecordingStatusCallback,omitzero"`
-	// The changes to the recording's state that should generate a call to
-	// `RecoridngStatusCallback`. Can be: `in-progress`, `completed` and `absent`.
-	// Separate multiple values with a space. Defaults to `completed`.
-	RecordingStatusCallbackEvent param.Opt[string] `json:"RecordingStatusCallbackEvent,omitzero"`
-	// The number of seconds that Telnyx will wait for the recording to be stopped if
-	// silence is detected. The timer only starts when the speech is detected. Please
-	// note that the transcription is used to detect silence and the related charge
-	// will be applied. The minimum value is 0. The default value is 0 (infinite)
-	RecordingTimeout param.Opt[int64] `json:"RecordingTimeout,omitzero"`
-	// Whether to send RecordingUrl in webhooks.
-	SendRecordingURL param.Opt[bool] `json:"SendRecordingUrl,omitzero"`
-	// The password to use for SIP authentication.
-	SipAuthPassword param.Opt[string] `json:"SipAuthPassword,omitzero"`
-	// The username to use for SIP authentication.
-	SipAuthUsername param.Opt[string] `json:"SipAuthUsername,omitzero"`
-	// URL destination for Telnyx to send status callback events to for the call.
-	StatusCallback param.Opt[string] `json:"StatusCallback,omitzero"`
-	// The call control ID of the existing call to supervise. When provided, the
-	// created leg will be added to the specified call in supervising mode. Status
-	// callbacks and action callbacks will NOT be sent for the supervising leg.
-	SuperviseCallSid param.Opt[string] `json:"SuperviseCallSid,omitzero"`
 	// The maximum duration of the call in seconds. The minimum value is 30 and the
 	// maximum value is 14400 (4 hours). Default is 14400 seconds.
 	TimeLimit param.Opt[int64] `json:"TimeLimit,omitzero"`
@@ -1250,9 +782,8 @@ type TexmlAccountCallCallsParamsParamsApplicationDefault struct {
 	// call is canceled. The minimum value is 5 and the maximum value is 120. Default
 	// is 30 seconds.
 	Timeout param.Opt[int64] `json:"Timeout,omitzero"`
-	// The phone number of the called party. Phone numbers are formatted with a `+` and
-	// country code.
-	To param.Opt[string] `json:"To,omitzero"`
+	// The URL from which Telnyx will retrieve the TeXML call instructions.
+	URL param.Opt[string] `json:"Url,omitzero"`
 	// HTTP request type used for `AsyncAmdStatusCallback`. The default value is
 	// inherited from TeXML Application setting.
 	//
@@ -1260,7 +791,7 @@ type TexmlAccountCallCallsParamsParamsApplicationDefault struct {
 	AsyncAmdStatusCallbackMethod string `json:"AsyncAmdStatusCallbackMethod,omitzero"`
 	// Custom HTTP headers to be sent with the call. Each header should be an object
 	// with 'name' and 'value' properties.
-	CustomHeaders []TexmlAccountCallCallsParamsParamsApplicationDefaultCustomHeader `json:"CustomHeaders,omitzero"`
+	CustomHeaders []TexmlAccountCallCallsParamsParamsCustomHeader `json:"CustomHeaders,omitzero"`
 	// Enables Deepfake Detection on the dialed call. When enabled, audio from the
 	// remote party is analyzed to determine whether the voice is AI-generated. Results
 	// are delivered asynchronously via a callback.
@@ -1332,64 +863,64 @@ type TexmlAccountCallCallsParamsParamsApplicationDefault struct {
 	paramObj
 }
 
-func (r TexmlAccountCallCallsParamsParamsApplicationDefault) MarshalJSON() (data []byte, err error) {
-	type shadow TexmlAccountCallCallsParamsParamsApplicationDefault
+func (r TexmlAccountCallCallsParamsParams) MarshalJSON() (data []byte, err error) {
+	type shadow TexmlAccountCallCallsParamsParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *TexmlAccountCallCallsParamsParamsApplicationDefault) UnmarshalJSON(data []byte) error {
+func (r *TexmlAccountCallCallsParamsParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParams](
 		"AsyncAmdStatusCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParams](
 		"DeepfakeDetection", "Enable",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParams](
 		"DeepfakeDetectionCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParams](
 		"DetectionMode", "Premium", "Regular", "PremiumCallScreening",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParams](
 		"MachineDetection", "Enable", "Disable", "DetectMessageEnd",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParams](
 		"MediaEncryption", "disabled", "SRTP", "DTLS",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParams](
 		"RecordingChannels", "mono", "dual",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParams](
 		"RecordingStatusCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParams](
 		"RecordingTrack", "inbound", "outbound", "both",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParams](
 		"SipRegion", "US", "Europe", "Canada", "Australia", "Middle East",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParams](
 		"StatusCallbackEvent", "initiated", "ringing", "answered", "completed",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParams](
 		"StatusCallbackMethod", "GET", "POST",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParams](
 		"SupervisingRole", "barge", "whisper", "monitor",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParams](
 		"Trim", "trim-silence", "do-not-trim",
 	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParamsApplicationDefault](
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsParams](
 		"UrlMethod", "GET", "POST",
 	)
 }
 
 // The properties Name, Value are required.
-type TexmlAccountCallCallsParamsParamsApplicationDefaultCustomHeader struct {
+type TexmlAccountCallCallsParamsParamsCustomHeader struct {
 	// The name of the custom header
 	Name string `json:"name" api:"required"`
 	// The value of the custom header
@@ -1397,11 +928,11 @@ type TexmlAccountCallCallsParamsParamsApplicationDefaultCustomHeader struct {
 	paramObj
 }
 
-func (r TexmlAccountCallCallsParamsParamsApplicationDefaultCustomHeader) MarshalJSON() (data []byte, err error) {
-	type shadow TexmlAccountCallCallsParamsParamsApplicationDefaultCustomHeader
+func (r TexmlAccountCallCallsParamsParamsCustomHeader) MarshalJSON() (data []byte, err error) {
+	type shadow TexmlAccountCallCallsParamsParamsCustomHeader
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *TexmlAccountCallCallsParamsParamsApplicationDefaultCustomHeader) UnmarshalJSON(data []byte) error {
+func (r *TexmlAccountCallCallsParamsParamsCustomHeader) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

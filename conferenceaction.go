@@ -16,7 +16,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v4/shared"
-	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
 // Conference command operations
@@ -1313,15 +1312,15 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type ConferenceActionSpeakParamsVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam                    `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam                        `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam                           `json:",omitzero,inline"`
-	OfMinimax    *shared.MinimaxVoiceSettingsParam                `json:",omitzero,inline"`
-	OfAzure      *shared.AzureVoiceSettingsParam                  `json:",omitzero,inline"`
-	OfRime       *shared.RimeVoiceSettingsParam                   `json:",omitzero,inline"`
-	OfResemble   *shared.ResembleVoiceSettingsParam               `json:",omitzero,inline"`
-	OfInworld    *ConferenceActionSpeakParamsVoiceSettingsInworld `json:",omitzero,inline"`
-	OfXai        *ConferenceActionSpeakParamsVoiceSettingsXai     `json:",omitzero,inline"`
+	OfElevenlabs *ElevenLabsVoiceSettingsParam      `json:",omitzero,inline"`
+	OfTelnyx     *TelnyxVoiceSettingsParam          `json:",omitzero,inline"`
+	OfAws        *AwsVoiceSettingsParam             `json:",omitzero,inline"`
+	OfMinimax    *shared.MinimaxVoiceSettingsParam  `json:",omitzero,inline"`
+	OfAzure      *shared.AzureVoiceSettingsParam    `json:",omitzero,inline"`
+	OfRime       *shared.RimeVoiceSettingsParam     `json:",omitzero,inline"`
+	OfResemble   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
+	OfInworld    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
+	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1454,7 +1453,7 @@ func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetSampleRate() *string {
 // Returns a pointer to the underlying variant's property, if present.
 func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetDeliveryMode() *string {
 	if vt := u.OfInworld; vt != nil {
-		return &vt.DeliveryMode
+		return (*string)(&vt.DeliveryMode)
 	}
 	return nil
 }
@@ -1521,58 +1520,9 @@ func init() {
 		apijson.Discriminator[shared.AzureVoiceSettingsParam]("azure"),
 		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
 		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
-		apijson.Discriminator[ConferenceActionSpeakParamsVoiceSettingsInworld]("inworld"),
-		apijson.Discriminator[ConferenceActionSpeakParamsVoiceSettingsXai]("xai"),
+		apijson.Discriminator[shared.InworldVoiceSettingsParam]("inworld"),
+		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
 	)
-}
-
-// The property Type is required.
-type ConferenceActionSpeakParamsVoiceSettingsInworld struct {
-	// Controls the expressiveness and consistency of the Inworld `TTS2` model's speech
-	// synthesis. `STABLE` favors consistent, predictable output, `CREATIVE` allows
-	// more expressive variation, and `BALANCED` sits in between. Optional and only
-	// supported by `TTS2`; when omitted, the provider default applies.
-	//
-	// Any of "STABLE", "BALANCED", "CREATIVE".
-	DeliveryMode string `json:"delivery_mode,omitzero"`
-	// Voice settings provider type
-	//
-	// This field can be elided, and will marshal its zero value as "inworld".
-	Type constant.Inworld `json:"type" default:"inworld"`
-	paramObj
-}
-
-func (r ConferenceActionSpeakParamsVoiceSettingsInworld) MarshalJSON() (data []byte, err error) {
-	type shadow ConferenceActionSpeakParamsVoiceSettingsInworld
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ConferenceActionSpeakParamsVoiceSettingsInworld) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ConferenceActionSpeakParamsVoiceSettingsInworld](
-		"delivery_mode", "STABLE", "BALANCED", "CREATIVE",
-	)
-}
-
-// The property Type is required.
-type ConferenceActionSpeakParamsVoiceSettingsXai struct {
-	// Language code, or `auto` to detect automatically.
-	Language param.Opt[string] `json:"language,omitzero"`
-	// Voice settings provider type
-	//
-	// This field can be elided, and will marshal its zero value as "xai".
-	Type constant.Xai `json:"type" default:"xai"`
-	paramObj
-}
-
-func (r ConferenceActionSpeakParamsVoiceSettingsXai) MarshalJSON() (data []byte, err error) {
-	type shadow ConferenceActionSpeakParamsVoiceSettingsXai
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ConferenceActionSpeakParamsVoiceSettingsXai) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type ConferenceActionStopParams struct {

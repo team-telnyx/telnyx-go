@@ -52,8 +52,34 @@ func (r *WhatsappUserDataService) Update(ctx context.Context, body WhatsappUserD
 	return res, err
 }
 
+type WhatsappUserData struct {
+	CreatedAt  time.Time `json:"created_at" format:"date-time"`
+	RecordType string    `json:"record_type"`
+	UpdatedAt  time.Time `json:"updated_at" format:"date-time"`
+	// Failover URL to receive Whatsapp signup events
+	WebhookFailoverURL string `json:"webhook_failover_url" format:"url"`
+	// URL to receive Whatsapp signup events
+	WebhookURL string `json:"webhook_url" format:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt          respjson.Field
+		RecordType         respjson.Field
+		UpdatedAt          respjson.Field
+		WebhookFailoverURL respjson.Field
+		WebhookURL         respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappUserData) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappUserData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type WhatsappUserDataGetResponse struct {
-	Data WhatsappUserDataGetResponseData `json:"data"`
+	Data WhatsappUserData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -68,34 +94,8 @@ func (r *WhatsappUserDataGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WhatsappUserDataGetResponseData struct {
-	CreatedAt  time.Time `json:"created_at" format:"date-time"`
-	RecordType string    `json:"record_type"`
-	UpdatedAt  time.Time `json:"updated_at" format:"date-time"`
-	// Failover URL to receive Whatsapp signup events
-	WebhookFailoverURL string `json:"webhook_failover_url" format:"url"`
-	// URL to receive Whatsapp signup events
-	WebhookURL string `json:"webhook_url" format:"url"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CreatedAt          respjson.Field
-		RecordType         respjson.Field
-		UpdatedAt          respjson.Field
-		WebhookFailoverURL respjson.Field
-		WebhookURL         respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WhatsappUserDataGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *WhatsappUserDataGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type WhatsappUserDataUpdateResponse struct {
-	Data WhatsappUserDataUpdateResponseData `json:"data"`
+	Data WhatsappUserData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -107,32 +107,6 @@ type WhatsappUserDataUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r WhatsappUserDataUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *WhatsappUserDataUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappUserDataUpdateResponseData struct {
-	CreatedAt  time.Time `json:"created_at" format:"date-time"`
-	RecordType string    `json:"record_type"`
-	UpdatedAt  time.Time `json:"updated_at" format:"date-time"`
-	// Failover URL to receive Whatsapp signup events
-	WebhookFailoverURL string `json:"webhook_failover_url" format:"url"`
-	// URL to receive Whatsapp signup events
-	WebhookURL string `json:"webhook_url" format:"url"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CreatedAt          respjson.Field
-		RecordType         respjson.Field
-		UpdatedAt          respjson.Field
-		WebhookFailoverURL respjson.Field
-		WebhookURL         respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WhatsappUserDataUpdateResponseData) RawJSON() string { return r.JSON.raw }
-func (r *WhatsappUserDataUpdateResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

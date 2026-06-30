@@ -4,6 +4,7 @@ package telnyx
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"net/url"
 	"slices"
@@ -13,6 +14,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
 // Discover available speech-to-text providers, models, and supported languages.
@@ -150,6 +152,130 @@ type SpeechToTextListProvidersResponseMeta struct {
 // Returns the unmodified JSON received from the API
 func (r SpeechToTextListProvidersResponseMeta) RawJSON() string { return r.JSON.raw }
 func (r *SpeechToTextListProvidersResponseMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TranscribeClientEvent = string
+
+// TranscribeServerEventUnion contains all possible properties and values from
+// [TranscribeServerEventTranscript], [TranscribeServerEventError].
+//
+// Use the [TranscribeServerEventUnion.AsAny] method to switch on the variant.
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type TranscribeServerEventUnion struct {
+	// This field is from variant [TranscribeServerEventTranscript].
+	Transcript string `json:"transcript"`
+	// Any of "transcript", "error".
+	Type string `json:"type"`
+	// This field is from variant [TranscribeServerEventTranscript].
+	Confidence float64 `json:"confidence"`
+	// This field is from variant [TranscribeServerEventTranscript].
+	IsFinal bool `json:"is_final"`
+	// This field is from variant [TranscribeServerEventError].
+	Error string `json:"error"`
+	JSON  struct {
+		Transcript respjson.Field
+		Type       respjson.Field
+		Confidence respjson.Field
+		IsFinal    respjson.Field
+		Error      respjson.Field
+		raw        string
+	} `json:"-"`
+}
+
+// anyTranscribeServerEvent is implemented by each variant of
+// [TranscribeServerEventUnion] to add type safety for the return type of
+// [TranscribeServerEventUnion.AsAny]
+type anyTranscribeServerEvent interface {
+	implTranscribeServerEventUnion()
+}
+
+func (TranscribeServerEventTranscript) implTranscribeServerEventUnion() {}
+func (TranscribeServerEventError) implTranscribeServerEventUnion()      {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := TranscribeServerEventUnion.AsAny().(type) {
+//	case telnyx.TranscribeServerEventTranscript:
+//	case telnyx.TranscribeServerEventError:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u TranscribeServerEventUnion) AsAny() anyTranscribeServerEvent {
+	switch u.Type {
+	case "transcript":
+		return u.AsTranscript()
+	case "error":
+		return u.AsError()
+	}
+	return nil
+}
+
+func (u TranscribeServerEventUnion) AsTranscript() (v TranscribeServerEventTranscript) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TranscribeServerEventUnion) AsError() (v TranscribeServerEventError) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u TranscribeServerEventUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *TranscribeServerEventUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Server-to-client frame containing a transcription result.
+type TranscribeServerEventTranscript struct {
+	// The transcribed text from the audio.
+	Transcript string `json:"transcript" api:"required"`
+	// Frame type identifier.
+	Type constant.Transcript `json:"type" default:"transcript"`
+	// Confidence score of the transcription, ranging from 0 to 1.
+	Confidence float64 `json:"confidence"`
+	// Whether this is a final transcription result. When `false`, this is an interim
+	// result that may be refined.
+	IsFinal bool `json:"is_final"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Transcript  respjson.Field
+		Type        respjson.Field
+		Confidence  respjson.Field
+		IsFinal     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TranscribeServerEventTranscript) RawJSON() string { return r.JSON.raw }
+func (r *TranscribeServerEventTranscript) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Server-to-client frame indicating an error during transcription. The connection
+// may be closed shortly after.
+type TranscribeServerEventError struct {
+	// Error message describing what went wrong.
+	Error string `json:"error" api:"required"`
+	// Frame type identifier.
+	Type constant.Error `json:"type" default:"error"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Error       respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TranscribeServerEventError) RawJSON() string { return r.JSON.raw }
+func (r *TranscribeServerEventError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
