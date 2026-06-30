@@ -96,6 +96,20 @@ func (r *WhatsappPhoneNumberService) ResendVerification(ctx context.Context, pho
 	return err
 }
 
+// Returns whether the 24-hour conversation window is currently open for a given
+// source/destination pair. If window_active is false, only template messages may
+// be sent.
+func (r *WhatsappPhoneNumberService) GetConversationWindow(ctx context.Context, phoneNumber string, query WhatsappPhoneNumberGetConversationWindowParams, opts ...option.RequestOption) (res *WhatsappPhoneNumberGetConversationWindowResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if phoneNumber == "" {
+		err = errors.New("missing required phone_number parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("v2/whatsapp/phone_numbers/%s/conversation_window", phoneNumber)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
 // Submit verification code for a phone number
 func (r *WhatsappPhoneNumberService) Verify(ctx context.Context, phoneNumber string, body WhatsappPhoneNumberVerifyParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -150,6 +164,48 @@ func (r *WhatsappPhoneNumberListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type WhatsappPhoneNumberGetConversationWindowResponse struct {
+	Data WhatsappPhoneNumberGetConversationWindowResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappPhoneNumberGetConversationWindowResponse) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappPhoneNumberGetConversationWindowResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappPhoneNumberGetConversationWindowResponseData struct {
+	// Timestamp of the last inbound message that opened the window
+	LastUserMessageAt time.Time `json:"last_user_message_at" format:"date-time"`
+	// Whether the 24-hour conversation window is currently open
+	WindowActive bool `json:"window_active"`
+	// When the window closes. Null if no active window.
+	WindowExpiresAt time.Time `json:"window_expires_at" format:"date-time"`
+	// Window type. Currently always 24h when present.
+	WindowType string `json:"window_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		LastUserMessageAt respjson.Field
+		WindowActive      respjson.Field
+		WindowExpiresAt   respjson.Field
+		WindowType        respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappPhoneNumberGetConversationWindowResponseData) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappPhoneNumberGetConversationWindowResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type WhatsappPhoneNumberListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
@@ -185,6 +241,21 @@ const (
 	WhatsappPhoneNumberResendVerificationParamsVerificationMethodSMS   WhatsappPhoneNumberResendVerificationParamsVerificationMethod = "sms"
 	WhatsappPhoneNumberResendVerificationParamsVerificationMethodVoice WhatsappPhoneNumberResendVerificationParamsVerificationMethod = "voice"
 )
+
+type WhatsappPhoneNumberGetConversationWindowParams struct {
+	// Destination phone number in E.164 format
+	DestinationNumber string `query:"destination_number" api:"required" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [WhatsappPhoneNumberGetConversationWindowParams]'s query
+// parameters as `url.Values`.
+func (r WhatsappPhoneNumberGetConversationWindowParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
 
 type WhatsappPhoneNumberVerifyParams struct {
 	Code string `json:"code" api:"required"`
