@@ -587,6 +587,9 @@ type TexmlAccountCallCallsParamsBodyWithURL struct {
 	SipAuthUsername param.Opt[string] `json:"SipAuthUsername,omitzero"`
 	// URL destination for Telnyx to send status callback events to for the call.
 	StatusCallback param.Opt[string] `json:"StatusCallback,omitzero"`
+	// The call events for which Telnyx should send a webhook. Multiple events can be
+	// defined when separated by a space.
+	StatusCallbackEvent param.Opt[string] `json:"StatusCallbackEvent,omitzero"`
 	// The call control ID of the existing call to supervise. When provided, the
 	// created leg will be added to the specified call in supervising mode. Status
 	// callbacks and action callbacks will NOT be sent for the supervising leg.
@@ -652,11 +655,6 @@ type TexmlAccountCallCallsParamsBodyWithURL struct {
 	//
 	// Any of "US", "Europe", "Canada", "Australia", "Middle East".
 	SipRegion string `json:"SipRegion,omitzero"`
-	// The call events for which Telnyx should send a webhook. Multiple events can be
-	// defined when separated by a space.
-	//
-	// Any of "initiated", "ringing", "answered", "completed".
-	StatusCallbackEvent string `json:"StatusCallbackEvent,omitzero"`
 	// HTTP request type used for `StatusCallback`.
 	//
 	// Any of "GET", "POST".
@@ -718,9 +716,6 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
 		"SipRegion", "US", "Europe", "Canada", "Australia", "Middle East",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
-		"StatusCallbackEvent", "initiated", "ringing", "answered", "completed",
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
 		"StatusCallbackMethod", "GET", "POST",
@@ -822,6 +817,9 @@ type TexmlAccountCallCallsParamsBodyWithTeXml struct {
 	SipAuthUsername param.Opt[string] `json:"SipAuthUsername,omitzero"`
 	// URL destination for Telnyx to send status callback events to for the call.
 	StatusCallback param.Opt[string] `json:"StatusCallback,omitzero"`
+	// The call events for which Telnyx should send a webhook. Multiple events can be
+	// defined when separated by a space.
+	StatusCallbackEvent param.Opt[string] `json:"StatusCallbackEvent,omitzero"`
 	// The call control ID of the existing call to supervise. When provided, the
 	// created leg will be added to the specified call in supervising mode. Status
 	// callbacks and action callbacks will NOT be sent for the supervising leg.
@@ -887,11 +885,6 @@ type TexmlAccountCallCallsParamsBodyWithTeXml struct {
 	//
 	// Any of "US", "Europe", "Canada", "Australia", "Middle East".
 	SipRegion string `json:"SipRegion,omitzero"`
-	// The call events for which Telnyx should send a webhook. Multiple events can be
-	// defined when separated by a space.
-	//
-	// Any of "initiated", "ringing", "answered", "completed".
-	StatusCallbackEvent string `json:"StatusCallbackEvent,omitzero"`
 	// HTTP request type used for `StatusCallback`.
 	//
 	// Any of "GET", "POST".
@@ -953,9 +946,6 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
 		"SipRegion", "US", "Europe", "Canada", "Australia", "Middle East",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
-		"StatusCallbackEvent", "initiated", "ringing", "answered", "completed",
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
 		"StatusCallbackMethod", "GET", "POST",
@@ -1054,6 +1044,9 @@ type TexmlAccountCallCallsParamsBodyApplicationDefault struct {
 	SipAuthUsername param.Opt[string] `json:"SipAuthUsername,omitzero"`
 	// URL destination for Telnyx to send status callback events to for the call.
 	StatusCallback param.Opt[string] `json:"StatusCallback,omitzero"`
+	// The call events for which Telnyx should send a webhook. Multiple events can be
+	// defined when separated by a space.
+	StatusCallbackEvent param.Opt[string] `json:"StatusCallbackEvent,omitzero"`
 	// The call control ID of the existing call to supervise. When provided, the
 	// created leg will be added to the specified call in supervising mode. Status
 	// callbacks and action callbacks will NOT be sent for the supervising leg.
@@ -1119,11 +1112,6 @@ type TexmlAccountCallCallsParamsBodyApplicationDefault struct {
 	//
 	// Any of "US", "Europe", "Canada", "Australia", "Middle East".
 	SipRegion string `json:"SipRegion,omitzero"`
-	// The call events for which Telnyx should send a webhook. Multiple events can be
-	// defined when separated by a space.
-	//
-	// Any of "initiated", "ringing", "answered", "completed".
-	StatusCallbackEvent string `json:"StatusCallbackEvent,omitzero"`
 	// HTTP request type used for `StatusCallback`.
 	//
 	// Any of "GET", "POST".
@@ -1185,9 +1173,6 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
 		"SipRegion", "US", "Europe", "Canada", "Australia", "Middle East",
-	)
-	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
-		"StatusCallbackEvent", "initiated", "ringing", "answered", "completed",
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
 		"StatusCallbackMethod", "GET", "POST",
