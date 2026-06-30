@@ -336,126 +336,6 @@ func init() {
 	)
 }
 
-// Reference to a connected integration attached to an assistant. Discover
-// available integrations with `/ai/integrations` and connected integrations with
-// `/ai/integrations/connections`.
-type AssistantIntegration struct {
-	// Catalog integration ID to attach. This is the `id` from the integrations catalog
-	// at `/ai/integrations` (the same value also appears as `integration_id` on
-	// entries returned by `/ai/integrations/connections`). It is **not** the
-	// connection-level `id` from `/ai/integrations/connections`.
-	IntegrationID string `json:"integration_id" api:"required"`
-	// Optional per-assistant allowlist of integration tool names. When omitted or
-	// empty, all tools allowed by the connected integration are available to the
-	// assistant.
-	AllowedList []string `json:"allowed_list"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		IntegrationID respjson.Field
-		AllowedList   respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AssistantIntegration) RawJSON() string { return r.JSON.raw }
-func (r *AssistantIntegration) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this AssistantIntegration to a AssistantIntegrationParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// AssistantIntegrationParam.Overrides()
-func (r AssistantIntegration) ToParam() AssistantIntegrationParam {
-	return param.Override[AssistantIntegrationParam](json.RawMessage(r.RawJSON()))
-}
-
-// Reference to a connected integration attached to an assistant. Discover
-// available integrations with `/ai/integrations` and connected integrations with
-// `/ai/integrations/connections`.
-//
-// The property IntegrationID is required.
-type AssistantIntegrationParam struct {
-	// Catalog integration ID to attach. This is the `id` from the integrations catalog
-	// at `/ai/integrations` (the same value also appears as `integration_id` on
-	// entries returned by `/ai/integrations/connections`). It is **not** the
-	// connection-level `id` from `/ai/integrations/connections`.
-	IntegrationID string `json:"integration_id" api:"required"`
-	// Optional per-assistant allowlist of integration tool names. When omitted or
-	// empty, all tools allowed by the connected integration are available to the
-	// assistant.
-	AllowedList []string `json:"allowed_list,omitzero"`
-	paramObj
-}
-
-func (r AssistantIntegrationParam) MarshalJSON() (data []byte, err error) {
-	type shadow AssistantIntegrationParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AssistantIntegrationParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Reference to an MCP server attached to an assistant. Create and manage MCP
-// servers with the `/ai/mcp_servers` endpoints, then attach them to assistants by
-// ID.
-type AssistantMcpServer struct {
-	// ID of the MCP server to attach. This must be the `id` of an MCP server returned
-	// by the `/ai/mcp_servers` endpoints.
-	ID string `json:"id" api:"required"`
-	// Optional per-assistant allowlist of MCP tool names. When omitted, the assistant
-	// uses the MCP server's configured `allowed_tools`.
-	AllowedTools []string `json:"allowed_tools"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID           respjson.Field
-		AllowedTools respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AssistantMcpServer) RawJSON() string { return r.JSON.raw }
-func (r *AssistantMcpServer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this AssistantMcpServer to a AssistantMcpServerParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// AssistantMcpServerParam.Overrides()
-func (r AssistantMcpServer) ToParam() AssistantMcpServerParam {
-	return param.Override[AssistantMcpServerParam](json.RawMessage(r.RawJSON()))
-}
-
-// Reference to an MCP server attached to an assistant. Create and manage MCP
-// servers with the `/ai/mcp_servers` endpoints, then attach them to assistants by
-// ID.
-//
-// The property ID is required.
-type AssistantMcpServerParam struct {
-	// ID of the MCP server to attach. This must be the `id` of an MCP server returned
-	// by the `/ai/mcp_servers` endpoints.
-	ID string `json:"id" api:"required"`
-	// Optional per-assistant allowlist of MCP tool names. When omitted, the assistant
-	// uses the MCP server's configured `allowed_tools`.
-	AllowedTools []string `json:"allowed_tools,omitzero"`
-	paramObj
-}
-
-func (r AssistantMcpServerParam) MarshalJSON() (data []byte, err error) {
-	type shadow AssistantMcpServerParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AssistantMcpServerParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // AssistantToolsItemsUnion contains all possible properties and values from
 // [InferenceEmbeddingWebhookToolParamsResp], [RetrievalTool],
 // [AssistantToolHandoff], [HangupTool], [AssistantToolTransfer],
@@ -765,26 +645,26 @@ func (r *AssistantToolTransferTransfer) UnmarshalJSON(data []byte) error {
 }
 
 // AssistantToolTransferTransferTargetsUnion contains all possible properties and
-// values from [[]AssistantToolTransferTransferTargetsTargetsListItem], [string].
+// values from [[]AssistantToolTransferTransferTargetsArrayItem], [string].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfTargetsList OfString]
+// will be valid: OfAssistantToolTransferTransferTargetsArray OfString]
 type AssistantToolTransferTransferTargetsUnion struct {
 	// This field will be present if the value is a
-	// [[]AssistantToolTransferTransferTargetsTargetsListItem] instead of an object.
-	OfTargetsList []AssistantToolTransferTransferTargetsTargetsListItem `json:",inline"`
+	// [[]AssistantToolTransferTransferTargetsArrayItem] instead of an object.
+	OfAssistantToolTransferTransferTargetsArray []AssistantToolTransferTransferTargetsArrayItem `json:",inline"`
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	JSON     struct {
-		OfTargetsList respjson.Field
-		OfString      respjson.Field
-		raw           string
+		OfAssistantToolTransferTransferTargetsArray respjson.Field
+		OfString                                    respjson.Field
+		raw                                         string
 	} `json:"-"`
 }
 
-func (u AssistantToolTransferTransferTargetsUnion) AsTargetsList() (v []AssistantToolTransferTransferTargetsTargetsListItem) {
+func (u AssistantToolTransferTransferTargetsUnion) AsAssistantToolTransferTransferTargetsArray() (v []AssistantToolTransferTransferTargetsArrayItem) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -801,7 +681,7 @@ func (r *AssistantToolTransferTransferTargetsUnion) UnmarshalJSON(data []byte) e
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AssistantToolTransferTransferTargetsTargetsListItem struct {
+type AssistantToolTransferTransferTargetsArrayItem struct {
 	// The destination number or SIP URI of the call.
 	To string `json:"to" api:"required"`
 	// The name of the target.
@@ -816,8 +696,8 @@ type AssistantToolTransferTransferTargetsTargetsListItem struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AssistantToolTransferTransferTargetsTargetsListItem) RawJSON() string { return r.JSON.raw }
-func (r *AssistantToolTransferTransferTargetsTargetsListItem) UnmarshalJSON(data []byte) error {
+func (r AssistantToolTransferTransferTargetsArrayItem) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolTransferTransferTargetsArrayItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1053,26 +933,26 @@ func (r *AssistantToolInviteInviteCustomHeader) UnmarshalJSON(data []byte) error
 }
 
 // AssistantToolInviteInviteTargetsUnion contains all possible properties and
-// values from [[]AssistantToolInviteInviteTargetsTargetsListItem], [string].
+// values from [[]AssistantToolInviteInviteTargetsArrayItem], [string].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfTargetsList OfString]
+// will be valid: OfAssistantToolInviteInviteTargetsArray OfString]
 type AssistantToolInviteInviteTargetsUnion struct {
 	// This field will be present if the value is a
-	// [[]AssistantToolInviteInviteTargetsTargetsListItem] instead of an object.
-	OfTargetsList []AssistantToolInviteInviteTargetsTargetsListItem `json:",inline"`
+	// [[]AssistantToolInviteInviteTargetsArrayItem] instead of an object.
+	OfAssistantToolInviteInviteTargetsArray []AssistantToolInviteInviteTargetsArrayItem `json:",inline"`
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	JSON     struct {
-		OfTargetsList respjson.Field
-		OfString      respjson.Field
-		raw           string
+		OfAssistantToolInviteInviteTargetsArray respjson.Field
+		OfString                                respjson.Field
+		raw                                     string
 	} `json:"-"`
 }
 
-func (u AssistantToolInviteInviteTargetsUnion) AsTargetsList() (v []AssistantToolInviteInviteTargetsTargetsListItem) {
+func (u AssistantToolInviteInviteTargetsUnion) AsAssistantToolInviteInviteTargetsArray() (v []AssistantToolInviteInviteTargetsArrayItem) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1089,7 +969,7 @@ func (r *AssistantToolInviteInviteTargetsUnion) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AssistantToolInviteInviteTargetsTargetsListItem struct {
+type AssistantToolInviteInviteTargetsArrayItem struct {
 	// The destination number or SIP URI of the call.
 	To string `json:"to" api:"required"`
 	// The name of the target.
@@ -1104,8 +984,8 @@ type AssistantToolInviteInviteTargetsTargetsListItem struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AssistantToolInviteInviteTargetsTargetsListItem) RawJSON() string { return r.JSON.raw }
-func (r *AssistantToolInviteInviteTargetsTargetsListItem) UnmarshalJSON(data []byte) error {
+func (r AssistantToolInviteInviteTargetsArrayItem) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolInviteInviteTargetsArrayItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1732,21 +1612,21 @@ func (r *AssistantToolTransferTransferParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type AssistantToolTransferTransferTargetsUnionParam struct {
-	OfTargetsList []AssistantToolTransferTransferTargetsTargetsListItemParam `json:",omitzero,inline"`
-	OfString      param.Opt[string]                                          `json:",omitzero,inline"`
+	OfAssistantToolTransferTransferTargetsArray []AssistantToolTransferTransferTargetsArrayItemParam `json:",omitzero,inline"`
+	OfString                                    param.Opt[string]                                    `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u AssistantToolTransferTransferTargetsUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfTargetsList, u.OfString)
+	return param.MarshalUnion(u, u.OfAssistantToolTransferTransferTargetsArray, u.OfString)
 }
 func (u *AssistantToolTransferTransferTargetsUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *AssistantToolTransferTransferTargetsUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfTargetsList) {
-		return &u.OfTargetsList
+	if !param.IsOmitted(u.OfAssistantToolTransferTransferTargetsArray) {
+		return &u.OfAssistantToolTransferTransferTargetsArray
 	} else if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
 	}
@@ -1754,7 +1634,7 @@ func (u *AssistantToolTransferTransferTargetsUnionParam) asAny() any {
 }
 
 // The property To is required.
-type AssistantToolTransferTransferTargetsTargetsListItemParam struct {
+type AssistantToolTransferTransferTargetsArrayItemParam struct {
 	// The destination number or SIP URI of the call.
 	To string `json:"to" api:"required"`
 	// The name of the target.
@@ -1762,11 +1642,11 @@ type AssistantToolTransferTransferTargetsTargetsListItemParam struct {
 	paramObj
 }
 
-func (r AssistantToolTransferTransferTargetsTargetsListItemParam) MarshalJSON() (data []byte, err error) {
-	type shadow AssistantToolTransferTransferTargetsTargetsListItemParam
+func (r AssistantToolTransferTransferTargetsArrayItemParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolTransferTransferTargetsArrayItemParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AssistantToolTransferTransferTargetsTargetsListItemParam) UnmarshalJSON(data []byte) error {
+func (r *AssistantToolTransferTransferTargetsArrayItemParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1976,21 +1856,21 @@ func (r *AssistantToolInviteInviteCustomHeaderParam) UnmarshalJSON(data []byte) 
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type AssistantToolInviteInviteTargetsUnionParam struct {
-	OfTargetsList []AssistantToolInviteInviteTargetsTargetsListItemParam `json:",omitzero,inline"`
-	OfString      param.Opt[string]                                      `json:",omitzero,inline"`
+	OfAssistantToolInviteInviteTargetsArray []AssistantToolInviteInviteTargetsArrayItemParam `json:",omitzero,inline"`
+	OfString                                param.Opt[string]                                `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u AssistantToolInviteInviteTargetsUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfTargetsList, u.OfString)
+	return param.MarshalUnion(u, u.OfAssistantToolInviteInviteTargetsArray, u.OfString)
 }
 func (u *AssistantToolInviteInviteTargetsUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *AssistantToolInviteInviteTargetsUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfTargetsList) {
-		return &u.OfTargetsList
+	if !param.IsOmitted(u.OfAssistantToolInviteInviteTargetsArray) {
+		return &u.OfAssistantToolInviteInviteTargetsArray
 	} else if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
 	}
@@ -1998,7 +1878,7 @@ func (u *AssistantToolInviteInviteTargetsUnionParam) asAny() any {
 }
 
 // The property To is required.
-type AssistantToolInviteInviteTargetsTargetsListItemParam struct {
+type AssistantToolInviteInviteTargetsArrayItemParam struct {
 	// The destination number or SIP URI of the call.
 	To string `json:"to" api:"required"`
 	// The name of the target.
@@ -2006,11 +1886,11 @@ type AssistantToolInviteInviteTargetsTargetsListItemParam struct {
 	paramObj
 }
 
-func (r AssistantToolInviteInviteTargetsTargetsListItemParam) MarshalJSON() (data []byte, err error) {
-	type shadow AssistantToolInviteInviteTargetsTargetsListItemParam
+func (r AssistantToolInviteInviteTargetsArrayItemParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolInviteInviteTargetsArrayItemParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AssistantToolInviteInviteTargetsTargetsListItemParam) UnmarshalJSON(data []byte) error {
+func (r *AssistantToolInviteInviteTargetsArrayItemParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2338,143 +2218,6 @@ const (
 	EnabledFeaturesMessaging EnabledFeatures = "messaging"
 )
 
-type ExternalLlm struct {
-	// Base URL for the external LLM endpoint.
-	BaseURL string `json:"base_url" api:"required"`
-	// Model identifier to use with the external LLM endpoint.
-	Model string `json:"model" api:"required"`
-	// Authentication method used when connecting to the external LLM endpoint.
-	//
-	// Any of "token", "certificate".
-	AuthenticationMethod ExternalLlmAuthenticationMethod `json:"authentication_method"`
-	// Integration secret identifier for the client certificate used with certificate
-	// authentication.
-	CertificateRef string `json:"certificate_ref"`
-	// When `true`, Telnyx forwards the assistant's dynamic variables to the external
-	// LLM endpoint as a top-level `extra_metadata` object on the chat completion
-	// request body. Defaults to `false`. Example payload sent to the external
-	// endpoint:
-	// `{"extra_metadata": {"customer_name": "Jane", "account_id": "acct_789", "telnyx_agent_target": "+13125550100", "telnyx_end_user_target": "+13125550123"}}`.
-	// Distinct from OpenAI's native `metadata` field, which has its own size and type
-	// limits.
-	ForwardMetadata bool `json:"forward_metadata"`
-	// Integration secret identifier for the external LLM API key.
-	LlmAPIKeyRef string `json:"llm_api_key_ref"`
-	// URL used to retrieve an access token when certificate authentication is enabled.
-	TokenRetrievalURL string `json:"token_retrieval_url"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		BaseURL              respjson.Field
-		Model                respjson.Field
-		AuthenticationMethod respjson.Field
-		CertificateRef       respjson.Field
-		ForwardMetadata      respjson.Field
-		LlmAPIKeyRef         respjson.Field
-		TokenRetrievalURL    respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExternalLlm) RawJSON() string { return r.JSON.raw }
-func (r *ExternalLlm) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Authentication method used when connecting to the external LLM endpoint.
-type ExternalLlmAuthenticationMethod string
-
-const (
-	ExternalLlmAuthenticationMethodToken       ExternalLlmAuthenticationMethod = "token"
-	ExternalLlmAuthenticationMethodCertificate ExternalLlmAuthenticationMethod = "certificate"
-)
-
-// The properties BaseURL, Model are required.
-type ExternalLlmReqParam struct {
-	// Base URL for the external LLM endpoint.
-	BaseURL string `json:"base_url" api:"required"`
-	// Model identifier to use with the external LLM endpoint.
-	Model string `json:"model" api:"required"`
-	// Integration secret identifier for the client certificate used with certificate
-	// authentication.
-	CertificateRef param.Opt[string] `json:"certificate_ref,omitzero"`
-	// When `true`, Telnyx forwards the assistant's dynamic variables to the external
-	// LLM endpoint as a top-level `extra_metadata` object on the chat completion
-	// request body. Defaults to `false`. Example payload sent to the external
-	// endpoint:
-	// `{"extra_metadata": {"customer_name": "Jane", "account_id": "acct_789", "telnyx_agent_target": "+13125550100", "telnyx_end_user_target": "+13125550123"}}`.
-	// Distinct from OpenAI's native `metadata` field, which has its own size and type
-	// limits.
-	ForwardMetadata param.Opt[bool] `json:"forward_metadata,omitzero"`
-	// Integration secret identifier for the external LLM API key.
-	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
-	// URL used to retrieve an access token when certificate authentication is enabled.
-	TokenRetrievalURL param.Opt[string] `json:"token_retrieval_url,omitzero"`
-	// Authentication method used when connecting to the external LLM endpoint.
-	//
-	// Any of "token", "certificate".
-	AuthenticationMethod ExternalLlmReqAuthenticationMethod `json:"authentication_method,omitzero"`
-	paramObj
-}
-
-func (r ExternalLlmReqParam) MarshalJSON() (data []byte, err error) {
-	type shadow ExternalLlmReqParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ExternalLlmReqParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Authentication method used when connecting to the external LLM endpoint.
-type ExternalLlmReqAuthenticationMethod string
-
-const (
-	ExternalLlmReqAuthenticationMethodToken       ExternalLlmReqAuthenticationMethod = "token"
-	ExternalLlmReqAuthenticationMethodCertificate ExternalLlmReqAuthenticationMethod = "certificate"
-)
-
-type FallbackConfig struct {
-	ExternalLlm ExternalLlm `json:"external_llm"`
-	// Integration secret identifier for the fallback model API key.
-	LlmAPIKeyRef string `json:"llm_api_key_ref"`
-	// Fallback Telnyx-hosted model to use when the primary LLM provider is
-	// unavailable.
-	Model string `json:"model"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ExternalLlm  respjson.Field
-		LlmAPIKeyRef respjson.Field
-		Model        respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r FallbackConfig) RawJSON() string { return r.JSON.raw }
-func (r *FallbackConfig) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type FallbackConfigReqParam struct {
-	// Integration secret identifier for the fallback model API key.
-	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
-	// Fallback Telnyx-hosted model to use when the primary LLM provider is
-	// unavailable.
-	Model       param.Opt[string]   `json:"model,omitzero"`
-	ExternalLlm ExternalLlmReqParam `json:"external_llm,omitzero"`
-	paramObj
-}
-
-func (r FallbackConfigReqParam) MarshalJSON() (data []byte, err error) {
-	type shadow FallbackConfigReqParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FallbackConfigReqParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type HangupTool struct {
 	Hangup HangupToolParamsResp `json:"hangup" api:"required"`
 	// Any of "hangup".
@@ -2627,10 +2370,10 @@ type InferenceEmbedding struct {
 	// the
 	// [dynamic variables guide](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
 	// for the full request/response format and timeout behavior.
-	DynamicVariablesWebhookURL string            `json:"dynamic_variables_webhook_url"`
-	EnabledFeatures            []EnabledFeatures `json:"enabled_features"`
-	ExternalLlm                ExternalLlm       `json:"external_llm"`
-	FallbackConfig             FallbackConfig    `json:"fallback_config"`
+	DynamicVariablesWebhookURL string                           `json:"dynamic_variables_webhook_url"`
+	EnabledFeatures            []EnabledFeatures                `json:"enabled_features"`
+	ExternalLlm                InferenceEmbeddingExternalLlm    `json:"external_llm"`
+	FallbackConfig             InferenceEmbeddingFallbackConfig `json:"fallback_config"`
 	// Text that the assistant will use to start the conversation. This may be
 	// templated with
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables).
@@ -2644,7 +2387,7 @@ type InferenceEmbedding struct {
 	// integrations is at `/ai/integrations`; the user's connected integrations are at
 	// `/ai/integrations/connections`. Each item references a catalog integration by
 	// `integration_id`.
-	Integrations []AssistantIntegration `json:"integrations"`
+	Integrations []InferenceEmbeddingIntegration `json:"integrations"`
 	// Settings for interruptions and how the assistant decides the user has finished
 	// speaking. These timings are most relevant when using non turn-taking
 	// transcription models. For turn-taking models like `deepgram/flux`, end-of-turn
@@ -2661,17 +2404,17 @@ type InferenceEmbedding struct {
 	LlmAPIKeyRef string `json:"llm_api_key_ref"`
 	// MCP servers attached to the assistant. Create MCP servers with
 	// `/ai/mcp_servers`, then reference them by `id` here.
-	McpServers            []AssistantMcpServer `json:"mcp_servers"`
-	MessagingSettings     MessagingSettings    `json:"messaging_settings"`
-	ObservabilitySettings Observability        `json:"observability_settings"`
+	McpServers            []InferenceEmbeddingMcpServer `json:"mcp_servers"`
+	MessagingSettings     MessagingSettings             `json:"messaging_settings"`
+	ObservabilitySettings Observability                 `json:"observability_settings"`
 	// Configuration for post-conversation processing. When enabled, the assistant
 	// receives one additional LLM turn after the conversation ends, allowing it to
 	// execute tool calls such as logging to a CRM or sending a summary. The assistant
 	// can execute multiple parallel or sequential tools during this phase.
 	// Telephony-control tools (e.g. hangup, transfer) are unavailable
 	// post-conversation. Beta feature.
-	PostConversationSettings PostConversationSettings `json:"post_conversation_settings"`
-	PrivacySettings          PrivacySettings          `json:"privacy_settings"`
+	PostConversationSettings InferenceEmbeddingPostConversationSettings `json:"post_conversation_settings"`
+	PrivacySettings          PrivacySettings                            `json:"privacy_settings"`
 	// IDs of missions related to this assistant.
 	RelatedMissionIDs []string `json:"related_mission_ids"`
 	// Tags associated with the assistant. Tags can also be managed with the assistant
@@ -2778,7 +2521,7 @@ type InferenceEmbeddingConversationFlowNodeUnion struct {
 	// This field is from variant [InferenceEmbeddingConversationFlowNodePrompt].
 	Instructions string `json:"instructions"`
 	// This field is from variant [InferenceEmbeddingConversationFlowNodePrompt].
-	ExternalLlm ExternalLlm `json:"external_llm"`
+	ExternalLlm InferenceEmbeddingConversationFlowNodePromptExternalLlm `json:"external_llm"`
 	// This field is from variant [InferenceEmbeddingConversationFlowNodePrompt].
 	InstructionsMode string `json:"instructions_mode"`
 	// This field is from variant [InferenceEmbeddingConversationFlowNodePrompt].
@@ -2917,7 +2660,7 @@ type InferenceEmbeddingConversationFlowNodePrompt struct {
 	// route a node's turns to a different external LLM (different `model`, `base_url`,
 	// credentials). Part of the LLM bundle — see `model` for cascade semantics.
 	// Mutually exclusive with `model` on the node (a single LLM identity per node).
-	ExternalLlm ExternalLlm `json:"external_llm"`
+	ExternalLlm InferenceEmbeddingConversationFlowNodePromptExternalLlm `json:"external_llm"`
 	// How `instructions` combine with the assistant-level instructions. `replace`
 	// (default): the node's instructions are used alone. `append`: the node's
 	// instructions are concatenated after the assistant's instructions.
@@ -2986,6 +2729,54 @@ type InferenceEmbeddingConversationFlowNodePrompt struct {
 // Returns the unmodified JSON received from the API
 func (r InferenceEmbeddingConversationFlowNodePrompt) RawJSON() string { return r.JSON.raw }
 func (r *InferenceEmbeddingConversationFlowNodePrompt) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Override for `Assistant.external_llm` while this node is active. Use this to
+// route a node's turns to a different external LLM (different `model`, `base_url`,
+// credentials). Part of the LLM bundle — see `model` for cascade semantics.
+// Mutually exclusive with `model` on the node (a single LLM identity per node).
+type InferenceEmbeddingConversationFlowNodePromptExternalLlm struct {
+	// Base URL for the external LLM endpoint.
+	BaseURL string `json:"base_url" api:"required"`
+	// Model identifier to use with the external LLM endpoint.
+	Model string `json:"model" api:"required"`
+	// Authentication method used when connecting to the external LLM endpoint.
+	//
+	// Any of "token", "certificate".
+	AuthenticationMethod string `json:"authentication_method"`
+	// Integration secret identifier for the client certificate used with certificate
+	// authentication.
+	CertificateRef string `json:"certificate_ref"`
+	// When `true`, Telnyx forwards the assistant's dynamic variables to the external
+	// LLM endpoint as a top-level `extra_metadata` object on the chat completion
+	// request body. Defaults to `false`. Example payload sent to the external
+	// endpoint:
+	// `{"extra_metadata": {"customer_name": "Jane", "account_id": "acct_789", "telnyx_agent_target": "+13125550100", "telnyx_end_user_target": "+13125550123"}}`.
+	// Distinct from OpenAI's native `metadata` field, which has its own size and type
+	// limits.
+	ForwardMetadata bool `json:"forward_metadata"`
+	// Integration secret identifier for the external LLM API key.
+	LlmAPIKeyRef string `json:"llm_api_key_ref"`
+	// URL used to retrieve an access token when certificate authentication is enabled.
+	TokenRetrievalURL string `json:"token_retrieval_url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BaseURL              respjson.Field
+		Model                respjson.Field
+		AuthenticationMethod respjson.Field
+		CertificateRef       respjson.Field
+		ForwardMetadata      respjson.Field
+		LlmAPIKeyRef         respjson.Field
+		TokenRetrievalURL    respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingConversationFlowNodePromptExternalLlm) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingConversationFlowNodePromptExternalLlm) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3682,6 +3473,145 @@ func (r *InferenceEmbeddingConversationFlowEdgeTargetAssistantPosition) Unmarsha
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type InferenceEmbeddingExternalLlm struct {
+	// Base URL for the external LLM endpoint.
+	BaseURL string `json:"base_url" api:"required"`
+	// Model identifier to use with the external LLM endpoint.
+	Model string `json:"model" api:"required"`
+	// Authentication method used when connecting to the external LLM endpoint.
+	//
+	// Any of "token", "certificate".
+	AuthenticationMethod string `json:"authentication_method"`
+	// Integration secret identifier for the client certificate used with certificate
+	// authentication.
+	CertificateRef string `json:"certificate_ref"`
+	// When `true`, Telnyx forwards the assistant's dynamic variables to the external
+	// LLM endpoint as a top-level `extra_metadata` object on the chat completion
+	// request body. Defaults to `false`. Example payload sent to the external
+	// endpoint:
+	// `{"extra_metadata": {"customer_name": "Jane", "account_id": "acct_789", "telnyx_agent_target": "+13125550100", "telnyx_end_user_target": "+13125550123"}}`.
+	// Distinct from OpenAI's native `metadata` field, which has its own size and type
+	// limits.
+	ForwardMetadata bool `json:"forward_metadata"`
+	// Integration secret identifier for the external LLM API key.
+	LlmAPIKeyRef string `json:"llm_api_key_ref"`
+	// URL used to retrieve an access token when certificate authentication is enabled.
+	TokenRetrievalURL string `json:"token_retrieval_url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BaseURL              respjson.Field
+		Model                respjson.Field
+		AuthenticationMethod respjson.Field
+		CertificateRef       respjson.Field
+		ForwardMetadata      respjson.Field
+		LlmAPIKeyRef         respjson.Field
+		TokenRetrievalURL    respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingExternalLlm) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingExternalLlm) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InferenceEmbeddingFallbackConfig struct {
+	ExternalLlm InferenceEmbeddingFallbackConfigExternalLlm `json:"external_llm"`
+	// Integration secret identifier for the fallback model API key.
+	LlmAPIKeyRef string `json:"llm_api_key_ref"`
+	// Fallback Telnyx-hosted model to use when the primary LLM provider is
+	// unavailable.
+	Model string `json:"model"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExternalLlm  respjson.Field
+		LlmAPIKeyRef respjson.Field
+		Model        respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingFallbackConfig) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingFallbackConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InferenceEmbeddingFallbackConfigExternalLlm struct {
+	// Base URL for the external LLM endpoint.
+	BaseURL string `json:"base_url" api:"required"`
+	// Model identifier to use with the external LLM endpoint.
+	Model string `json:"model" api:"required"`
+	// Authentication method used when connecting to the external LLM endpoint.
+	//
+	// Any of "token", "certificate".
+	AuthenticationMethod string `json:"authentication_method"`
+	// Integration secret identifier for the client certificate used with certificate
+	// authentication.
+	CertificateRef string `json:"certificate_ref"`
+	// When `true`, Telnyx forwards the assistant's dynamic variables to the external
+	// LLM endpoint as a top-level `extra_metadata` object on the chat completion
+	// request body. Defaults to `false`. Example payload sent to the external
+	// endpoint:
+	// `{"extra_metadata": {"customer_name": "Jane", "account_id": "acct_789", "telnyx_agent_target": "+13125550100", "telnyx_end_user_target": "+13125550123"}}`.
+	// Distinct from OpenAI's native `metadata` field, which has its own size and type
+	// limits.
+	ForwardMetadata bool `json:"forward_metadata"`
+	// Integration secret identifier for the external LLM API key.
+	LlmAPIKeyRef string `json:"llm_api_key_ref"`
+	// URL used to retrieve an access token when certificate authentication is enabled.
+	TokenRetrievalURL string `json:"token_retrieval_url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BaseURL              respjson.Field
+		Model                respjson.Field
+		AuthenticationMethod respjson.Field
+		CertificateRef       respjson.Field
+		ForwardMetadata      respjson.Field
+		LlmAPIKeyRef         respjson.Field
+		TokenRetrievalURL    respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingFallbackConfigExternalLlm) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingFallbackConfigExternalLlm) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Reference to a connected integration attached to an assistant. Discover
+// available integrations with `/ai/integrations` and connected integrations with
+// `/ai/integrations/connections`.
+type InferenceEmbeddingIntegration struct {
+	// Catalog integration ID to attach. This is the `id` from the integrations catalog
+	// at `/ai/integrations` (the same value also appears as `integration_id` on
+	// entries returned by `/ai/integrations/connections`). It is **not** the
+	// connection-level `id` from `/ai/integrations/connections`.
+	IntegrationID string `json:"integration_id" api:"required"`
+	// Optional per-assistant allowlist of integration tool names. When omitted or
+	// empty, all tools allowed by the connected integration are available to the
+	// assistant.
+	AllowedList []string `json:"allowed_list"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		IntegrationID respjson.Field
+		AllowedList   respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingIntegration) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingIntegration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Settings for interruptions and how the assistant decides the user has finished
 // speaking. These timings are most relevant when using non turn-taking
 // transcription models. For turn-taking models like `deepgram/flux`, end-of-turn
@@ -3697,7 +3627,7 @@ type InferenceEmbeddingInterruptionSettings struct {
 	// thresholds primarily apply to non turn-taking transcription models. For
 	// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
 	// transcription end-of-turn settings under `transcription.settings` instead.
-	StartSpeakingPlan StartSpeakingPlan `json:"start_speaking_plan"`
+	StartSpeakingPlan InferenceEmbeddingInterruptionSettingsStartSpeakingPlan `json:"start_speaking_plan"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DisableGreetingInterruption respjson.Field
@@ -3714,40 +3644,109 @@ func (r *InferenceEmbeddingInterruptionSettings) UnmarshalJSON(data []byte) erro
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// ToParam converts this InferenceEmbeddingInterruptionSettings to a
-// InferenceEmbeddingInterruptionSettingsParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// InferenceEmbeddingInterruptionSettingsParam.Overrides()
-func (r InferenceEmbeddingInterruptionSettings) ToParam() InferenceEmbeddingInterruptionSettingsParam {
-	return param.Override[InferenceEmbeddingInterruptionSettingsParam](json.RawMessage(r.RawJSON()))
+// Controls when the assistant starts speaking after the user stops. These
+// thresholds primarily apply to non turn-taking transcription models. For
+// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
+// transcription end-of-turn settings under `transcription.settings` instead.
+type InferenceEmbeddingInterruptionSettingsStartSpeakingPlan struct {
+	// Endpointing thresholds used to decide when the user has finished speaking.
+	// Applies to non turn-taking transcription models. For `deepgram/flux`, use
+	// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
+	// `eager_eot_threshold`.
+	TranscriptionEndpointingPlan InferenceEmbeddingInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan `json:"transcription_endpointing_plan"`
+	// Minimum seconds to wait before the assistant starts speaking.
+	WaitSeconds float64 `json:"wait_seconds"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		TranscriptionEndpointingPlan respjson.Field
+		WaitSeconds                  respjson.Field
+		ExtraFields                  map[string]respjson.Field
+		raw                          string
+	} `json:"-"`
 }
 
-// Settings for interruptions and how the assistant decides the user has finished
-// speaking. These timings are most relevant when using non turn-taking
-// transcription models. For turn-taking models like `deepgram/flux`, end-of-turn
-// behavior is controlled by the transcription end-of-turn settings under
-// `transcription.settings` (`eot_threshold`, `eot_timeout_ms`,
-// `eager_eot_threshold`).
-type InferenceEmbeddingInterruptionSettingsParam struct {
-	// When true, disables user interruptions while the assistant greeting is playing.
-	DisableGreetingInterruption param.Opt[bool] `json:"disable_greeting_interruption,omitzero"`
-	// Whether users can interrupt the assistant while it is speaking.
-	Enable param.Opt[bool] `json:"enable,omitzero"`
-	// Controls when the assistant starts speaking after the user stops. These
-	// thresholds primarily apply to non turn-taking transcription models. For
-	// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
-	// transcription end-of-turn settings under `transcription.settings` instead.
-	StartSpeakingPlan StartSpeakingPlanParam `json:"start_speaking_plan,omitzero"`
-	paramObj
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingInterruptionSettingsStartSpeakingPlan) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingInterruptionSettingsStartSpeakingPlan) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r InferenceEmbeddingInterruptionSettingsParam) MarshalJSON() (data []byte, err error) {
-	type shadow InferenceEmbeddingInterruptionSettingsParam
-	return param.MarshalObject(r, (*shadow)(&r))
+// Endpointing thresholds used to decide when the user has finished speaking.
+// Applies to non turn-taking transcription models. For `deepgram/flux`, use
+// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
+// `eager_eot_threshold`.
+type InferenceEmbeddingInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan struct {
+	// Seconds to wait after the transcript ends without punctuation.
+	OnNoPunctuationSeconds float64 `json:"on_no_punctuation_seconds"`
+	// Seconds to wait after the transcript ends with a number.
+	OnNumberSeconds float64 `json:"on_number_seconds"`
+	// Seconds to wait after the transcript ends with punctuation.
+	OnPunctuationSeconds float64 `json:"on_punctuation_seconds"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		OnNoPunctuationSeconds respjson.Field
+		OnNumberSeconds        respjson.Field
+		OnPunctuationSeconds   respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
 }
-func (r *InferenceEmbeddingInterruptionSettingsParam) UnmarshalJSON(data []byte) error {
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Reference to an MCP server attached to an assistant. Create and manage MCP
+// servers with the `/ai/mcp_servers` endpoints, then attach them to assistants by
+// ID.
+type InferenceEmbeddingMcpServer struct {
+	// ID of the MCP server to attach. This must be the `id` of an MCP server returned
+	// by the `/ai/mcp_servers` endpoints.
+	ID string `json:"id" api:"required"`
+	// Optional per-assistant allowlist of MCP tool names. When omitted, the assistant
+	// uses the MCP server's configured `allowed_tools`.
+	AllowedTools []string `json:"allowed_tools"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		AllowedTools respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingMcpServer) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingMcpServer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration for post-conversation processing. When enabled, the assistant
+// receives one additional LLM turn after the conversation ends, allowing it to
+// execute tool calls such as logging to a CRM or sending a summary. The assistant
+// can execute multiple parallel or sequential tools during this phase.
+// Telephony-control tools (e.g. hangup, transfer) are unavailable
+// post-conversation. Beta feature.
+type InferenceEmbeddingPostConversationSettings struct {
+	// Whether post-conversation processing is enabled. When true, the assistant will
+	// be invoked after the conversation ends to perform any final tool calls. Defaults
+	// to false.
+	Enabled bool `json:"enabled"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Enabled     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingPostConversationSettings) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingPostConversationSettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -4401,53 +4400,6 @@ const (
 	ObservabilityReqStatusDisabled ObservabilityReqStatus = "disabled"
 )
 
-// Configuration for post-conversation processing. When enabled, the assistant
-// receives one additional LLM turn after the conversation ends, allowing it to
-// execute tool calls such as logging to a CRM or sending a summary. The assistant
-// can execute multiple parallel or sequential tools during this phase.
-// Telephony-control tools (e.g. hangup, transfer) are unavailable
-// post-conversation. Beta feature.
-type PostConversationSettings struct {
-	// Whether post-conversation processing is enabled. When true, the assistant will
-	// be invoked after the conversation ends to perform any final tool calls. Defaults
-	// to false.
-	Enabled bool `json:"enabled"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Enabled     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PostConversationSettings) RawJSON() string { return r.JSON.raw }
-func (r *PostConversationSettings) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Configuration for post-conversation processing. When enabled, the assistant
-// receives one additional LLM turn after the conversation ends, allowing it to
-// execute tool calls such as logging to a CRM or sending a summary. The assistant
-// can execute multiple parallel or sequential tools during this phase.
-// Telephony-control tools (e.g. hangup, transfer) are unavailable
-// post-conversation. Beta feature.
-type PostConversationSettingsReqParam struct {
-	// Whether post-conversation processing is enabled. When true, the assistant will
-	// be invoked after the conversation ends to perform any final tool calls. Defaults
-	// to false.
-	Enabled param.Opt[bool] `json:"enabled,omitzero"`
-	paramObj
-}
-
-func (r PostConversationSettingsReqParam) MarshalJSON() (data []byte, err error) {
-	type shadow PostConversationSettingsReqParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *PostConversationSettingsReqParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type PrivacySettings struct {
 	// If true, conversation history and insights will be stored. If false, they will
 	// not be stored. This in‑tool toggle governs solely the retention of conversation
@@ -4545,65 +4497,6 @@ func (r RetrievalToolParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *RetrievalToolParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Controls when the assistant starts speaking after the user stops. These
-// thresholds primarily apply to non turn-taking transcription models. For
-// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
-// transcription end-of-turn settings under `transcription.settings` instead.
-type StartSpeakingPlan struct {
-	// Endpointing thresholds used to decide when the user has finished speaking.
-	// Applies to non turn-taking transcription models. For `deepgram/flux`, use
-	// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
-	// `eager_eot_threshold`.
-	TranscriptionEndpointingPlan TranscriptionEndpointingPlan `json:"transcription_endpointing_plan"`
-	// Minimum seconds to wait before the assistant starts speaking.
-	WaitSeconds float64 `json:"wait_seconds"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		TranscriptionEndpointingPlan respjson.Field
-		WaitSeconds                  respjson.Field
-		ExtraFields                  map[string]respjson.Field
-		raw                          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StartSpeakingPlan) RawJSON() string { return r.JSON.raw }
-func (r *StartSpeakingPlan) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this StartSpeakingPlan to a StartSpeakingPlanParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// StartSpeakingPlanParam.Overrides()
-func (r StartSpeakingPlan) ToParam() StartSpeakingPlanParam {
-	return param.Override[StartSpeakingPlanParam](json.RawMessage(r.RawJSON()))
-}
-
-// Controls when the assistant starts speaking after the user stops. These
-// thresholds primarily apply to non turn-taking transcription models. For
-// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
-// transcription end-of-turn settings under `transcription.settings` instead.
-type StartSpeakingPlanParam struct {
-	// Minimum seconds to wait before the assistant starts speaking.
-	WaitSeconds param.Opt[float64] `json:"wait_seconds,omitzero"`
-	// Endpointing thresholds used to decide when the user has finished speaking.
-	// Applies to non turn-taking transcription models. For `deepgram/flux`, use
-	// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
-	// `eager_eot_threshold`.
-	TranscriptionEndpointingPlan TranscriptionEndpointingPlanParam `json:"transcription_endpointing_plan,omitzero"`
-	paramObj
-}
-
-func (r StartSpeakingPlanParam) MarshalJSON() (data []byte, err error) {
-	type shadow StartSpeakingPlanParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *StartSpeakingPlanParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -5016,65 +4909,6 @@ func init() {
 	)
 }
 
-// Endpointing thresholds used to decide when the user has finished speaking.
-// Applies to non turn-taking transcription models. For `deepgram/flux`, use
-// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
-// `eager_eot_threshold`.
-type TranscriptionEndpointingPlan struct {
-	// Seconds to wait after the transcript ends without punctuation.
-	OnNoPunctuationSeconds float64 `json:"on_no_punctuation_seconds"`
-	// Seconds to wait after the transcript ends with a number.
-	OnNumberSeconds float64 `json:"on_number_seconds"`
-	// Seconds to wait after the transcript ends with punctuation.
-	OnPunctuationSeconds float64 `json:"on_punctuation_seconds"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		OnNoPunctuationSeconds respjson.Field
-		OnNumberSeconds        respjson.Field
-		OnPunctuationSeconds   respjson.Field
-		ExtraFields            map[string]respjson.Field
-		raw                    string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TranscriptionEndpointingPlan) RawJSON() string { return r.JSON.raw }
-func (r *TranscriptionEndpointingPlan) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this TranscriptionEndpointingPlan to a
-// TranscriptionEndpointingPlanParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// TranscriptionEndpointingPlanParam.Overrides()
-func (r TranscriptionEndpointingPlan) ToParam() TranscriptionEndpointingPlanParam {
-	return param.Override[TranscriptionEndpointingPlanParam](json.RawMessage(r.RawJSON()))
-}
-
-// Endpointing thresholds used to decide when the user has finished speaking.
-// Applies to non turn-taking transcription models. For `deepgram/flux`, use
-// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
-// `eager_eot_threshold`.
-type TranscriptionEndpointingPlanParam struct {
-	// Seconds to wait after the transcript ends without punctuation.
-	OnNoPunctuationSeconds param.Opt[float64] `json:"on_no_punctuation_seconds,omitzero"`
-	// Seconds to wait after the transcript ends with a number.
-	OnNumberSeconds param.Opt[float64] `json:"on_number_seconds,omitzero"`
-	// Seconds to wait after the transcript ends with punctuation.
-	OnPunctuationSeconds param.Opt[float64] `json:"on_punctuation_seconds,omitzero"`
-	paramObj
-}
-
-func (r TranscriptionEndpointingPlanParam) MarshalJSON() (data []byte, err error) {
-	type shadow TranscriptionEndpointingPlanParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscriptionEndpointingPlanParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type TranscriptionSettings struct {
 	// Integration secret identifier for the transcription provider API key. Currently
 	// used for Azure transcription regions that require a customer-provided API key.
@@ -5375,21 +5209,21 @@ func (r *TransferToolTransferParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type TransferToolTransferTargetsUnionParam struct {
-	OfTargetsList []TransferToolTransferTargetsTargetsListItemParam `json:",omitzero,inline"`
-	OfString      param.Opt[string]                                 `json:",omitzero,inline"`
+	OfTransferToolTransferTargetsArray []TransferToolTransferTargetsArrayItemParam `json:",omitzero,inline"`
+	OfString                           param.Opt[string]                           `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u TransferToolTransferTargetsUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfTargetsList, u.OfString)
+	return param.MarshalUnion(u, u.OfTransferToolTransferTargetsArray, u.OfString)
 }
 func (u *TransferToolTransferTargetsUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *TransferToolTransferTargetsUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfTargetsList) {
-		return &u.OfTargetsList
+	if !param.IsOmitted(u.OfTransferToolTransferTargetsArray) {
+		return &u.OfTransferToolTransferTargetsArray
 	} else if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
 	}
@@ -5397,7 +5231,7 @@ func (u *TransferToolTransferTargetsUnionParam) asAny() any {
 }
 
 // The property To is required.
-type TransferToolTransferTargetsTargetsListItemParam struct {
+type TransferToolTransferTargetsArrayItemParam struct {
 	// The destination number or SIP URI of the call.
 	To string `json:"to" api:"required"`
 	// The name of the target.
@@ -5405,11 +5239,11 @@ type TransferToolTransferTargetsTargetsListItemParam struct {
 	paramObj
 }
 
-func (r TransferToolTransferTargetsTargetsListItemParam) MarshalJSON() (data []byte, err error) {
-	type shadow TransferToolTransferTargetsTargetsListItemParam
+func (r TransferToolTransferTargetsArrayItemParam) MarshalJSON() (data []byte, err error) {
+	type shadow TransferToolTransferTargetsArrayItemParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *TransferToolTransferTargetsTargetsListItemParam) UnmarshalJSON(data []byte) error {
+func (r *TransferToolTransferTargetsArrayItemParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -6319,36 +6153,36 @@ type AIAssistantNewParams struct {
 	// every edge's endpoints reference real nodes.
 	ConversationFlow AIAssistantNewParamsConversationFlow `json:"conversation_flow,omitzero"`
 	// Map of dynamic variables and their default values
-	DynamicVariables map[string]any         `json:"dynamic_variables,omitzero"`
-	EnabledFeatures  []EnabledFeatures      `json:"enabled_features,omitzero"`
-	ExternalLlm      ExternalLlmReqParam    `json:"external_llm,omitzero"`
-	FallbackConfig   FallbackConfigReqParam `json:"fallback_config,omitzero"`
-	InsightSettings  InsightSettingsParam   `json:"insight_settings,omitzero"`
+	DynamicVariables map[string]any                     `json:"dynamic_variables,omitzero"`
+	EnabledFeatures  []EnabledFeatures                  `json:"enabled_features,omitzero"`
+	ExternalLlm      AIAssistantNewParamsExternalLlm    `json:"external_llm,omitzero"`
+	FallbackConfig   AIAssistantNewParamsFallbackConfig `json:"fallback_config,omitzero"`
+	InsightSettings  InsightSettingsParam               `json:"insight_settings,omitzero"`
 	// Connected integrations attached to the assistant. The catalog of available
 	// integrations is at `/ai/integrations`; the user's connected integrations are at
 	// `/ai/integrations/connections`. Each item references a catalog integration by
 	// `integration_id`.
-	Integrations []AssistantIntegrationParam `json:"integrations,omitzero"`
+	Integrations []AIAssistantNewParamsIntegration `json:"integrations,omitzero"`
 	// Settings for interruptions and how the assistant decides the user has finished
 	// speaking. These timings are most relevant when using non turn-taking
 	// transcription models. For turn-taking models like `deepgram/flux`, end-of-turn
 	// behavior is controlled by the transcription end-of-turn settings under
 	// `transcription.settings` (`eot_threshold`, `eot_timeout_ms`,
 	// `eager_eot_threshold`).
-	InterruptionSettings InferenceEmbeddingInterruptionSettingsParam `json:"interruption_settings,omitzero"`
+	InterruptionSettings AIAssistantNewParamsInterruptionSettings `json:"interruption_settings,omitzero"`
 	// MCP servers attached to the assistant. Create MCP servers with
 	// `/ai/mcp_servers`, then reference them by `id` here.
-	McpServers            []AssistantMcpServerParam `json:"mcp_servers,omitzero"`
-	MessagingSettings     MessagingSettingsParam    `json:"messaging_settings,omitzero"`
-	ObservabilitySettings ObservabilityReqParam     `json:"observability_settings,omitzero"`
+	McpServers            []AIAssistantNewParamsMcpServer `json:"mcp_servers,omitzero"`
+	MessagingSettings     MessagingSettingsParam          `json:"messaging_settings,omitzero"`
+	ObservabilitySettings ObservabilityReqParam           `json:"observability_settings,omitzero"`
 	// Configuration for post-conversation processing. When enabled, the assistant
 	// receives one additional LLM turn after the conversation ends, allowing it to
 	// execute tool calls such as logging to a CRM or sending a summary. The assistant
 	// can execute multiple parallel or sequential tools during this phase.
 	// Telephony-control tools (e.g. hangup, transfer) are unavailable
 	// post-conversation. Beta feature.
-	PostConversationSettings PostConversationSettingsReqParam `json:"post_conversation_settings,omitzero"`
-	PrivacySettings          PrivacySettingsParam             `json:"privacy_settings,omitzero"`
+	PostConversationSettings AIAssistantNewParamsPostConversationSettings `json:"post_conversation_settings,omitzero"`
+	PrivacySettings          PrivacySettingsParam                         `json:"privacy_settings,omitzero"`
 	// Tags associated with the assistant. Tags can also be managed with the assistant
 	// tag endpoints.
 	Tags              []string               `json:"tags,omitzero"`
@@ -6438,7 +6272,7 @@ func (u AIAssistantNewParamsConversationFlowNodeUnion) GetInstructions() *string
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u AIAssistantNewParamsConversationFlowNodeUnion) GetExternalLlm() *ExternalLlmReqParam {
+func (u AIAssistantNewParamsConversationFlowNodeUnion) GetExternalLlm() *AIAssistantNewParamsConversationFlowNodePromptExternalLlm {
 	if vt := u.OfPrompt; vt != nil {
 		return &vt.ExternalLlm
 	}
@@ -6645,7 +6479,7 @@ type AIAssistantNewParamsConversationFlowNodePrompt struct {
 	// route a node's turns to a different external LLM (different `model`, `base_url`,
 	// credentials). Part of the LLM bundle — see `model` for cascade semantics.
 	// Mutually exclusive with `model` on the node (a single LLM identity per node).
-	ExternalLlm ExternalLlmReqParam `json:"external_llm,omitzero"`
+	ExternalLlm AIAssistantNewParamsConversationFlowNodePromptExternalLlm `json:"external_llm,omitzero"`
 	// How `instructions` combine with the assistant-level instructions. `replace`
 	// (default): the node's instructions are used alone. `append`: the node's
 	// instructions are concatenated after the assistant's instructions.
@@ -6697,6 +6531,53 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[AIAssistantNewParamsConversationFlowNodePrompt](
 		"type", "prompt",
+	)
+}
+
+// Override for `Assistant.external_llm` while this node is active. Use this to
+// route a node's turns to a different external LLM (different `model`, `base_url`,
+// credentials). Part of the LLM bundle — see `model` for cascade semantics.
+// Mutually exclusive with `model` on the node (a single LLM identity per node).
+//
+// The properties BaseURL, Model are required.
+type AIAssistantNewParamsConversationFlowNodePromptExternalLlm struct {
+	// Base URL for the external LLM endpoint.
+	BaseURL string `json:"base_url" api:"required"`
+	// Model identifier to use with the external LLM endpoint.
+	Model string `json:"model" api:"required"`
+	// Integration secret identifier for the client certificate used with certificate
+	// authentication.
+	CertificateRef param.Opt[string] `json:"certificate_ref,omitzero"`
+	// When `true`, Telnyx forwards the assistant's dynamic variables to the external
+	// LLM endpoint as a top-level `extra_metadata` object on the chat completion
+	// request body. Defaults to `false`. Example payload sent to the external
+	// endpoint:
+	// `{"extra_metadata": {"customer_name": "Jane", "account_id": "acct_789", "telnyx_agent_target": "+13125550100", "telnyx_end_user_target": "+13125550123"}}`.
+	// Distinct from OpenAI's native `metadata` field, which has its own size and type
+	// limits.
+	ForwardMetadata param.Opt[bool] `json:"forward_metadata,omitzero"`
+	// Integration secret identifier for the external LLM API key.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// URL used to retrieve an access token when certificate authentication is enabled.
+	TokenRetrievalURL param.Opt[string] `json:"token_retrieval_url,omitzero"`
+	// Authentication method used when connecting to the external LLM endpoint.
+	//
+	// Any of "token", "certificate".
+	AuthenticationMethod string `json:"authentication_method,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsConversationFlowNodePromptExternalLlm) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsConversationFlowNodePromptExternalLlm
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsConversationFlowNodePromptExternalLlm) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantNewParamsConversationFlowNodePromptExternalLlm](
+		"authentication_method", "token", "certificate",
 	)
 }
 
@@ -7357,6 +7238,251 @@ func (r *AIAssistantNewParamsConversationFlowEdgeTargetAssistantPosition) Unmars
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The properties BaseURL, Model are required.
+type AIAssistantNewParamsExternalLlm struct {
+	// Base URL for the external LLM endpoint.
+	BaseURL string `json:"base_url" api:"required"`
+	// Model identifier to use with the external LLM endpoint.
+	Model string `json:"model" api:"required"`
+	// Integration secret identifier for the client certificate used with certificate
+	// authentication.
+	CertificateRef param.Opt[string] `json:"certificate_ref,omitzero"`
+	// When `true`, Telnyx forwards the assistant's dynamic variables to the external
+	// LLM endpoint as a top-level `extra_metadata` object on the chat completion
+	// request body. Defaults to `false`. Example payload sent to the external
+	// endpoint:
+	// `{"extra_metadata": {"customer_name": "Jane", "account_id": "acct_789", "telnyx_agent_target": "+13125550100", "telnyx_end_user_target": "+13125550123"}}`.
+	// Distinct from OpenAI's native `metadata` field, which has its own size and type
+	// limits.
+	ForwardMetadata param.Opt[bool] `json:"forward_metadata,omitzero"`
+	// Integration secret identifier for the external LLM API key.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// URL used to retrieve an access token when certificate authentication is enabled.
+	TokenRetrievalURL param.Opt[string] `json:"token_retrieval_url,omitzero"`
+	// Authentication method used when connecting to the external LLM endpoint.
+	//
+	// Any of "token", "certificate".
+	AuthenticationMethod string `json:"authentication_method,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsExternalLlm) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsExternalLlm
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsExternalLlm) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantNewParamsExternalLlm](
+		"authentication_method", "token", "certificate",
+	)
+}
+
+type AIAssistantNewParamsFallbackConfig struct {
+	// Integration secret identifier for the fallback model API key.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// Fallback Telnyx-hosted model to use when the primary LLM provider is
+	// unavailable.
+	Model       param.Opt[string]                             `json:"model,omitzero"`
+	ExternalLlm AIAssistantNewParamsFallbackConfigExternalLlm `json:"external_llm,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsFallbackConfig) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsFallbackConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsFallbackConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties BaseURL, Model are required.
+type AIAssistantNewParamsFallbackConfigExternalLlm struct {
+	// Base URL for the external LLM endpoint.
+	BaseURL string `json:"base_url" api:"required"`
+	// Model identifier to use with the external LLM endpoint.
+	Model string `json:"model" api:"required"`
+	// Integration secret identifier for the client certificate used with certificate
+	// authentication.
+	CertificateRef param.Opt[string] `json:"certificate_ref,omitzero"`
+	// When `true`, Telnyx forwards the assistant's dynamic variables to the external
+	// LLM endpoint as a top-level `extra_metadata` object on the chat completion
+	// request body. Defaults to `false`. Example payload sent to the external
+	// endpoint:
+	// `{"extra_metadata": {"customer_name": "Jane", "account_id": "acct_789", "telnyx_agent_target": "+13125550100", "telnyx_end_user_target": "+13125550123"}}`.
+	// Distinct from OpenAI's native `metadata` field, which has its own size and type
+	// limits.
+	ForwardMetadata param.Opt[bool] `json:"forward_metadata,omitzero"`
+	// Integration secret identifier for the external LLM API key.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// URL used to retrieve an access token when certificate authentication is enabled.
+	TokenRetrievalURL param.Opt[string] `json:"token_retrieval_url,omitzero"`
+	// Authentication method used when connecting to the external LLM endpoint.
+	//
+	// Any of "token", "certificate".
+	AuthenticationMethod string `json:"authentication_method,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsFallbackConfigExternalLlm) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsFallbackConfigExternalLlm
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsFallbackConfigExternalLlm) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantNewParamsFallbackConfigExternalLlm](
+		"authentication_method", "token", "certificate",
+	)
+}
+
+// Reference to a connected integration attached to an assistant. Discover
+// available integrations with `/ai/integrations` and connected integrations with
+// `/ai/integrations/connections`.
+//
+// The property IntegrationID is required.
+type AIAssistantNewParamsIntegration struct {
+	// Catalog integration ID to attach. This is the `id` from the integrations catalog
+	// at `/ai/integrations` (the same value also appears as `integration_id` on
+	// entries returned by `/ai/integrations/connections`). It is **not** the
+	// connection-level `id` from `/ai/integrations/connections`.
+	IntegrationID string `json:"integration_id" api:"required"`
+	// Optional per-assistant allowlist of integration tool names. When omitted or
+	// empty, all tools allowed by the connected integration are available to the
+	// assistant.
+	AllowedList []string `json:"allowed_list,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsIntegration) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsIntegration
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsIntegration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Settings for interruptions and how the assistant decides the user has finished
+// speaking. These timings are most relevant when using non turn-taking
+// transcription models. For turn-taking models like `deepgram/flux`, end-of-turn
+// behavior is controlled by the transcription end-of-turn settings under
+// `transcription.settings` (`eot_threshold`, `eot_timeout_ms`,
+// `eager_eot_threshold`).
+type AIAssistantNewParamsInterruptionSettings struct {
+	// When true, disables user interruptions while the assistant greeting is playing.
+	DisableGreetingInterruption param.Opt[bool] `json:"disable_greeting_interruption,omitzero"`
+	// Whether users can interrupt the assistant while it is speaking.
+	Enable param.Opt[bool] `json:"enable,omitzero"`
+	// Controls when the assistant starts speaking after the user stops. These
+	// thresholds primarily apply to non turn-taking transcription models. For
+	// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
+	// transcription end-of-turn settings under `transcription.settings` instead.
+	StartSpeakingPlan AIAssistantNewParamsInterruptionSettingsStartSpeakingPlan `json:"start_speaking_plan,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsInterruptionSettings) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsInterruptionSettings
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsInterruptionSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Controls when the assistant starts speaking after the user stops. These
+// thresholds primarily apply to non turn-taking transcription models. For
+// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
+// transcription end-of-turn settings under `transcription.settings` instead.
+type AIAssistantNewParamsInterruptionSettingsStartSpeakingPlan struct {
+	// Minimum seconds to wait before the assistant starts speaking.
+	WaitSeconds param.Opt[float64] `json:"wait_seconds,omitzero"`
+	// Endpointing thresholds used to decide when the user has finished speaking.
+	// Applies to non turn-taking transcription models. For `deepgram/flux`, use
+	// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
+	// `eager_eot_threshold`.
+	TranscriptionEndpointingPlan AIAssistantNewParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan `json:"transcription_endpointing_plan,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsInterruptionSettingsStartSpeakingPlan) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsInterruptionSettingsStartSpeakingPlan
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsInterruptionSettingsStartSpeakingPlan) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Endpointing thresholds used to decide when the user has finished speaking.
+// Applies to non turn-taking transcription models. For `deepgram/flux`, use
+// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
+// `eager_eot_threshold`.
+type AIAssistantNewParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan struct {
+	// Seconds to wait after the transcript ends without punctuation.
+	OnNoPunctuationSeconds param.Opt[float64] `json:"on_no_punctuation_seconds,omitzero"`
+	// Seconds to wait after the transcript ends with a number.
+	OnNumberSeconds param.Opt[float64] `json:"on_number_seconds,omitzero"`
+	// Seconds to wait after the transcript ends with punctuation.
+	OnPunctuationSeconds param.Opt[float64] `json:"on_punctuation_seconds,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Reference to an MCP server attached to an assistant. Create and manage MCP
+// servers with the `/ai/mcp_servers` endpoints, then attach them to assistants by
+// ID.
+//
+// The property ID is required.
+type AIAssistantNewParamsMcpServer struct {
+	// ID of the MCP server to attach. This must be the `id` of an MCP server returned
+	// by the `/ai/mcp_servers` endpoints.
+	ID string `json:"id" api:"required"`
+	// Optional per-assistant allowlist of MCP tool names. When omitted, the assistant
+	// uses the MCP server's configured `allowed_tools`.
+	AllowedTools []string `json:"allowed_tools,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsMcpServer) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsMcpServer
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsMcpServer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration for post-conversation processing. When enabled, the assistant
+// receives one additional LLM turn after the conversation ends, allowing it to
+// execute tool calls such as logging to a CRM or sending a summary. The assistant
+// can execute multiple parallel or sequential tools during this phase.
+// Telephony-control tools (e.g. hangup, transfer) are unavailable
+// post-conversation. Beta feature.
+type AIAssistantNewParamsPostConversationSettings struct {
+	// Whether post-conversation processing is enabled. When true, the assistant will
+	// be invoked after the conversation ends to perform any final tool calls. Defaults
+	// to false.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantNewParamsPostConversationSettings) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantNewParamsPostConversationSettings
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantNewParamsPostConversationSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AIAssistantGetParams struct {
 	// Filter results by call control id.
 	CallControlID param.Opt[string] `query:"call_control_id,omitzero" json:"-"`
@@ -7429,36 +7555,36 @@ type AIAssistantUpdateParams struct {
 	// every edge's endpoints reference real nodes.
 	ConversationFlow AIAssistantUpdateParamsConversationFlow `json:"conversation_flow,omitzero"`
 	// Map of dynamic variables and their default values
-	DynamicVariables map[string]any         `json:"dynamic_variables,omitzero"`
-	EnabledFeatures  []EnabledFeatures      `json:"enabled_features,omitzero"`
-	ExternalLlm      ExternalLlmReqParam    `json:"external_llm,omitzero"`
-	FallbackConfig   FallbackConfigReqParam `json:"fallback_config,omitzero"`
-	InsightSettings  InsightSettingsParam   `json:"insight_settings,omitzero"`
+	DynamicVariables map[string]any                        `json:"dynamic_variables,omitzero"`
+	EnabledFeatures  []EnabledFeatures                     `json:"enabled_features,omitzero"`
+	ExternalLlm      AIAssistantUpdateParamsExternalLlm    `json:"external_llm,omitzero"`
+	FallbackConfig   AIAssistantUpdateParamsFallbackConfig `json:"fallback_config,omitzero"`
+	InsightSettings  InsightSettingsParam                  `json:"insight_settings,omitzero"`
 	// Connected integrations attached to the assistant. The catalog of available
 	// integrations is at `/ai/integrations`; the user's connected integrations are at
 	// `/ai/integrations/connections`. Each item references a catalog integration by
 	// `integration_id`.
-	Integrations []AssistantIntegrationParam `json:"integrations,omitzero"`
+	Integrations []AIAssistantUpdateParamsIntegration `json:"integrations,omitzero"`
 	// Settings for interruptions and how the assistant decides the user has finished
 	// speaking. These timings are most relevant when using non turn-taking
 	// transcription models. For turn-taking models like `deepgram/flux`, end-of-turn
 	// behavior is controlled by the transcription end-of-turn settings under
 	// `transcription.settings` (`eot_threshold`, `eot_timeout_ms`,
 	// `eager_eot_threshold`).
-	InterruptionSettings InferenceEmbeddingInterruptionSettingsParam `json:"interruption_settings,omitzero"`
+	InterruptionSettings AIAssistantUpdateParamsInterruptionSettings `json:"interruption_settings,omitzero"`
 	// MCP servers attached to the assistant. Create MCP servers with
 	// `/ai/mcp_servers`, then reference them by `id` here.
-	McpServers            []AssistantMcpServerParam `json:"mcp_servers,omitzero"`
-	MessagingSettings     MessagingSettingsParam    `json:"messaging_settings,omitzero"`
-	ObservabilitySettings ObservabilityReqParam     `json:"observability_settings,omitzero"`
+	McpServers            []AIAssistantUpdateParamsMcpServer `json:"mcp_servers,omitzero"`
+	MessagingSettings     MessagingSettingsParam             `json:"messaging_settings,omitzero"`
+	ObservabilitySettings ObservabilityReqParam              `json:"observability_settings,omitzero"`
 	// Configuration for post-conversation processing. When enabled, the assistant
 	// receives one additional LLM turn after the conversation ends, allowing it to
 	// execute tool calls such as logging to a CRM or sending a summary. The assistant
 	// can execute multiple parallel or sequential tools during this phase.
 	// Telephony-control tools (e.g. hangup, transfer) are unavailable
 	// post-conversation. Beta feature.
-	PostConversationSettings PostConversationSettingsReqParam `json:"post_conversation_settings,omitzero"`
-	PrivacySettings          PrivacySettingsParam             `json:"privacy_settings,omitzero"`
+	PostConversationSettings AIAssistantUpdateParamsPostConversationSettings `json:"post_conversation_settings,omitzero"`
+	PrivacySettings          PrivacySettingsParam                            `json:"privacy_settings,omitzero"`
 	// Tags associated with the assistant. Tags can also be managed with the assistant
 	// tag endpoints.
 	Tags              []string               `json:"tags,omitzero"`
@@ -7548,7 +7674,7 @@ func (u AIAssistantUpdateParamsConversationFlowNodeUnion) GetInstructions() *str
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u AIAssistantUpdateParamsConversationFlowNodeUnion) GetExternalLlm() *ExternalLlmReqParam {
+func (u AIAssistantUpdateParamsConversationFlowNodeUnion) GetExternalLlm() *AIAssistantUpdateParamsConversationFlowNodePromptExternalLlm {
 	if vt := u.OfPrompt; vt != nil {
 		return &vt.ExternalLlm
 	}
@@ -7755,7 +7881,7 @@ type AIAssistantUpdateParamsConversationFlowNodePrompt struct {
 	// route a node's turns to a different external LLM (different `model`, `base_url`,
 	// credentials). Part of the LLM bundle — see `model` for cascade semantics.
 	// Mutually exclusive with `model` on the node (a single LLM identity per node).
-	ExternalLlm ExternalLlmReqParam `json:"external_llm,omitzero"`
+	ExternalLlm AIAssistantUpdateParamsConversationFlowNodePromptExternalLlm `json:"external_llm,omitzero"`
 	// How `instructions` combine with the assistant-level instructions. `replace`
 	// (default): the node's instructions are used alone. `append`: the node's
 	// instructions are concatenated after the assistant's instructions.
@@ -7807,6 +7933,53 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[AIAssistantUpdateParamsConversationFlowNodePrompt](
 		"type", "prompt",
+	)
+}
+
+// Override for `Assistant.external_llm` while this node is active. Use this to
+// route a node's turns to a different external LLM (different `model`, `base_url`,
+// credentials). Part of the LLM bundle — see `model` for cascade semantics.
+// Mutually exclusive with `model` on the node (a single LLM identity per node).
+//
+// The properties BaseURL, Model are required.
+type AIAssistantUpdateParamsConversationFlowNodePromptExternalLlm struct {
+	// Base URL for the external LLM endpoint.
+	BaseURL string `json:"base_url" api:"required"`
+	// Model identifier to use with the external LLM endpoint.
+	Model string `json:"model" api:"required"`
+	// Integration secret identifier for the client certificate used with certificate
+	// authentication.
+	CertificateRef param.Opt[string] `json:"certificate_ref,omitzero"`
+	// When `true`, Telnyx forwards the assistant's dynamic variables to the external
+	// LLM endpoint as a top-level `extra_metadata` object on the chat completion
+	// request body. Defaults to `false`. Example payload sent to the external
+	// endpoint:
+	// `{"extra_metadata": {"customer_name": "Jane", "account_id": "acct_789", "telnyx_agent_target": "+13125550100", "telnyx_end_user_target": "+13125550123"}}`.
+	// Distinct from OpenAI's native `metadata` field, which has its own size and type
+	// limits.
+	ForwardMetadata param.Opt[bool] `json:"forward_metadata,omitzero"`
+	// Integration secret identifier for the external LLM API key.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// URL used to retrieve an access token when certificate authentication is enabled.
+	TokenRetrievalURL param.Opt[string] `json:"token_retrieval_url,omitzero"`
+	// Authentication method used when connecting to the external LLM endpoint.
+	//
+	// Any of "token", "certificate".
+	AuthenticationMethod string `json:"authentication_method,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsConversationFlowNodePromptExternalLlm) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsConversationFlowNodePromptExternalLlm
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsConversationFlowNodePromptExternalLlm) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantUpdateParamsConversationFlowNodePromptExternalLlm](
+		"authentication_method", "token", "certificate",
 	)
 }
 
@@ -8464,6 +8637,251 @@ func (r AIAssistantUpdateParamsConversationFlowEdgeTargetAssistantPosition) Mars
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *AIAssistantUpdateParamsConversationFlowEdgeTargetAssistantPosition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties BaseURL, Model are required.
+type AIAssistantUpdateParamsExternalLlm struct {
+	// Base URL for the external LLM endpoint.
+	BaseURL string `json:"base_url" api:"required"`
+	// Model identifier to use with the external LLM endpoint.
+	Model string `json:"model" api:"required"`
+	// Integration secret identifier for the client certificate used with certificate
+	// authentication.
+	CertificateRef param.Opt[string] `json:"certificate_ref,omitzero"`
+	// When `true`, Telnyx forwards the assistant's dynamic variables to the external
+	// LLM endpoint as a top-level `extra_metadata` object on the chat completion
+	// request body. Defaults to `false`. Example payload sent to the external
+	// endpoint:
+	// `{"extra_metadata": {"customer_name": "Jane", "account_id": "acct_789", "telnyx_agent_target": "+13125550100", "telnyx_end_user_target": "+13125550123"}}`.
+	// Distinct from OpenAI's native `metadata` field, which has its own size and type
+	// limits.
+	ForwardMetadata param.Opt[bool] `json:"forward_metadata,omitzero"`
+	// Integration secret identifier for the external LLM API key.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// URL used to retrieve an access token when certificate authentication is enabled.
+	TokenRetrievalURL param.Opt[string] `json:"token_retrieval_url,omitzero"`
+	// Authentication method used when connecting to the external LLM endpoint.
+	//
+	// Any of "token", "certificate".
+	AuthenticationMethod string `json:"authentication_method,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsExternalLlm) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsExternalLlm
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsExternalLlm) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantUpdateParamsExternalLlm](
+		"authentication_method", "token", "certificate",
+	)
+}
+
+type AIAssistantUpdateParamsFallbackConfig struct {
+	// Integration secret identifier for the fallback model API key.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// Fallback Telnyx-hosted model to use when the primary LLM provider is
+	// unavailable.
+	Model       param.Opt[string]                                `json:"model,omitzero"`
+	ExternalLlm AIAssistantUpdateParamsFallbackConfigExternalLlm `json:"external_llm,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsFallbackConfig) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsFallbackConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsFallbackConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties BaseURL, Model are required.
+type AIAssistantUpdateParamsFallbackConfigExternalLlm struct {
+	// Base URL for the external LLM endpoint.
+	BaseURL string `json:"base_url" api:"required"`
+	// Model identifier to use with the external LLM endpoint.
+	Model string `json:"model" api:"required"`
+	// Integration secret identifier for the client certificate used with certificate
+	// authentication.
+	CertificateRef param.Opt[string] `json:"certificate_ref,omitzero"`
+	// When `true`, Telnyx forwards the assistant's dynamic variables to the external
+	// LLM endpoint as a top-level `extra_metadata` object on the chat completion
+	// request body. Defaults to `false`. Example payload sent to the external
+	// endpoint:
+	// `{"extra_metadata": {"customer_name": "Jane", "account_id": "acct_789", "telnyx_agent_target": "+13125550100", "telnyx_end_user_target": "+13125550123"}}`.
+	// Distinct from OpenAI's native `metadata` field, which has its own size and type
+	// limits.
+	ForwardMetadata param.Opt[bool] `json:"forward_metadata,omitzero"`
+	// Integration secret identifier for the external LLM API key.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// URL used to retrieve an access token when certificate authentication is enabled.
+	TokenRetrievalURL param.Opt[string] `json:"token_retrieval_url,omitzero"`
+	// Authentication method used when connecting to the external LLM endpoint.
+	//
+	// Any of "token", "certificate".
+	AuthenticationMethod string `json:"authentication_method,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsFallbackConfigExternalLlm) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsFallbackConfigExternalLlm
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsFallbackConfigExternalLlm) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIAssistantUpdateParamsFallbackConfigExternalLlm](
+		"authentication_method", "token", "certificate",
+	)
+}
+
+// Reference to a connected integration attached to an assistant. Discover
+// available integrations with `/ai/integrations` and connected integrations with
+// `/ai/integrations/connections`.
+//
+// The property IntegrationID is required.
+type AIAssistantUpdateParamsIntegration struct {
+	// Catalog integration ID to attach. This is the `id` from the integrations catalog
+	// at `/ai/integrations` (the same value also appears as `integration_id` on
+	// entries returned by `/ai/integrations/connections`). It is **not** the
+	// connection-level `id` from `/ai/integrations/connections`.
+	IntegrationID string `json:"integration_id" api:"required"`
+	// Optional per-assistant allowlist of integration tool names. When omitted or
+	// empty, all tools allowed by the connected integration are available to the
+	// assistant.
+	AllowedList []string `json:"allowed_list,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsIntegration) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsIntegration
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsIntegration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Settings for interruptions and how the assistant decides the user has finished
+// speaking. These timings are most relevant when using non turn-taking
+// transcription models. For turn-taking models like `deepgram/flux`, end-of-turn
+// behavior is controlled by the transcription end-of-turn settings under
+// `transcription.settings` (`eot_threshold`, `eot_timeout_ms`,
+// `eager_eot_threshold`).
+type AIAssistantUpdateParamsInterruptionSettings struct {
+	// When true, disables user interruptions while the assistant greeting is playing.
+	DisableGreetingInterruption param.Opt[bool] `json:"disable_greeting_interruption,omitzero"`
+	// Whether users can interrupt the assistant while it is speaking.
+	Enable param.Opt[bool] `json:"enable,omitzero"`
+	// Controls when the assistant starts speaking after the user stops. These
+	// thresholds primarily apply to non turn-taking transcription models. For
+	// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
+	// transcription end-of-turn settings under `transcription.settings` instead.
+	StartSpeakingPlan AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlan `json:"start_speaking_plan,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsInterruptionSettings) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsInterruptionSettings
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsInterruptionSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Controls when the assistant starts speaking after the user stops. These
+// thresholds primarily apply to non turn-taking transcription models. For
+// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
+// transcription end-of-turn settings under `transcription.settings` instead.
+type AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlan struct {
+	// Minimum seconds to wait before the assistant starts speaking.
+	WaitSeconds param.Opt[float64] `json:"wait_seconds,omitzero"`
+	// Endpointing thresholds used to decide when the user has finished speaking.
+	// Applies to non turn-taking transcription models. For `deepgram/flux`, use
+	// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
+	// `eager_eot_threshold`.
+	TranscriptionEndpointingPlan AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan `json:"transcription_endpointing_plan,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlan) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlan
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlan) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Endpointing thresholds used to decide when the user has finished speaking.
+// Applies to non turn-taking transcription models. For `deepgram/flux`, use
+// `transcription.settings.eot_threshold` / `eot_timeout_ms` /
+// `eager_eot_threshold`.
+type AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan struct {
+	// Seconds to wait after the transcript ends without punctuation.
+	OnNoPunctuationSeconds param.Opt[float64] `json:"on_no_punctuation_seconds,omitzero"`
+	// Seconds to wait after the transcript ends with a number.
+	OnNumberSeconds param.Opt[float64] `json:"on_number_seconds,omitzero"`
+	// Seconds to wait after the transcript ends with punctuation.
+	OnPunctuationSeconds param.Opt[float64] `json:"on_punctuation_seconds,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsInterruptionSettingsStartSpeakingPlanTranscriptionEndpointingPlan) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Reference to an MCP server attached to an assistant. Create and manage MCP
+// servers with the `/ai/mcp_servers` endpoints, then attach them to assistants by
+// ID.
+//
+// The property ID is required.
+type AIAssistantUpdateParamsMcpServer struct {
+	// ID of the MCP server to attach. This must be the `id` of an MCP server returned
+	// by the `/ai/mcp_servers` endpoints.
+	ID string `json:"id" api:"required"`
+	// Optional per-assistant allowlist of MCP tool names. When omitted, the assistant
+	// uses the MCP server's configured `allowed_tools`.
+	AllowedTools []string `json:"allowed_tools,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsMcpServer) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsMcpServer
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsMcpServer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration for post-conversation processing. When enabled, the assistant
+// receives one additional LLM turn after the conversation ends, allowing it to
+// execute tool calls such as logging to a CRM or sending a summary. The assistant
+// can execute multiple parallel or sequential tools during this phase.
+// Telephony-control tools (e.g. hangup, transfer) are unavailable
+// post-conversation. Beta feature.
+type AIAssistantUpdateParamsPostConversationSettings struct {
+	// Whether post-conversation processing is enabled. When true, the assistant will
+	// be invoked after the conversation ends to perform any final tool calls. Defaults
+	// to false.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantUpdateParamsPostConversationSettings) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantUpdateParamsPostConversationSettings
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantUpdateParamsPostConversationSettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

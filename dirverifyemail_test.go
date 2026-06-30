@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestDirVerifyEmailConfirm(t *testing.T) {
+func TestDirVerifyEmailConfirmCode(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,10 +26,10 @@ func TestDirVerifyEmailConfirm(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Dir.VerifyEmail.Confirm(
+	_, err := client.Dir.VerifyEmail.ConfirmCode(
 		context.TODO(),
 		"16635d38-75a6-4481-82e8-69af60e05011",
-		telnyx.DirVerifyEmailConfirmParams{
+		telnyx.DirVerifyEmailConfirmCodeParams{
 			Code: "482915",
 		},
 	)
@@ -42,7 +42,7 @@ func TestDirVerifyEmailConfirm(t *testing.T) {
 	}
 }
 
-func TestDirVerifyEmailSend(t *testing.T) {
+func TestDirVerifyEmailSendCode(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -55,7 +55,7 @@ func TestDirVerifyEmailSend(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Dir.VerifyEmail.Send(context.TODO(), "16635d38-75a6-4481-82e8-69af60e05011")
+	_, err := client.Dir.VerifyEmail.SendCode(context.TODO(), "16635d38-75a6-4481-82e8-69af60e05011")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

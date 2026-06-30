@@ -217,8 +217,6 @@ type Client struct {
 	// Regulatory Requirements
 	RegulatoryRequirements RegulatoryRequirementService
 	Reports                ReportService
-	// Discover available speech-to-text providers, models, and supported languages.
-	SpeechToText SpeechToTextService
 	// Requirement Groups
 	RequirementGroups RequirementGroupService
 	// Types of requirements for international numbers and porting orders
@@ -327,13 +325,6 @@ type Client struct {
 	// contain alias items (text replacement) and phoneme items (IPA pronunciation
 	// notation) that control how specific words are spoken.
 	PronunciationDicts PronunciationDictService
-	// UAC connection operations
-	UacConnections UacConnectionService
-	// Retrieve raw Voice SDK call report stats payloads for WebRTC call
-	// troubleshooting.
-	VoiceSDKCallReports VoiceSDKCallReportService
-	// UAC connection operations
-	SipRegistrationStatus SipRegistrationStatusService
 	// Static reference values the API accepts: call reasons, document types, rejection
 	// types.
 	CallReasons CallReasonService
@@ -341,6 +332,15 @@ type Client struct {
 	// Trademark or impersonation claims filed against your DIR. Customers may contest
 	// a claim with supporting evidence.
 	InfringementClaims InfringementClaimService
+	// UAC connection operations
+	SipRegistrationStatus SipRegistrationStatusService
+	// Discover available speech-to-text providers, models, and supported languages.
+	SpeechToText SpeechToTextService
+	// UAC connection operations
+	UacConnections UacConnectionService
+	// Retrieve raw Voice SDK call report stats payloads for WebRTC call
+	// troubleshooting.
+	VoiceSDKCallReports VoiceSDKCallReportService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -492,7 +492,6 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Regions = NewRegionService(opts...)
 	r.RegulatoryRequirements = NewRegulatoryRequirementService(opts...)
 	r.Reports = NewReportService(opts...)
-	r.SpeechToText = NewSpeechToTextService(opts...)
 	r.RequirementGroups = NewRequirementGroupService(opts...)
 	r.RequirementTypes = NewRequirementTypeService(opts...)
 	r.Requirements = NewRequirementService(opts...)
@@ -548,12 +547,13 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Reputation = NewReputationService(opts...)
 	r.TermsOfService = NewTermsOfServiceService(opts...)
 	r.PronunciationDicts = NewPronunciationDictService(opts...)
-	r.UacConnections = NewUacConnectionService(opts...)
-	r.VoiceSDKCallReports = NewVoiceSDKCallReportService(opts...)
-	r.SipRegistrationStatus = NewSipRegistrationStatusService(opts...)
 	r.CallReasons = NewCallReasonService(opts...)
 	r.Dir = NewDirService(opts...)
 	r.InfringementClaims = NewInfringementClaimService(opts...)
+	r.SipRegistrationStatus = NewSipRegistrationStatusService(opts...)
+	r.SpeechToText = NewSpeechToTextService(opts...)
+	r.UacConnections = NewUacConnectionService(opts...)
+	r.VoiceSDKCallReports = NewVoiceSDKCallReportService(opts...)
 
 	return
 }

@@ -43,7 +43,7 @@ func NewDirVerifyEmailService(opts ...option.RequestOption) (r DirVerifyEmailSer
 //
 // For security, any failure (wrong, expired, already-used, or too many attempts)
 // returns the same generic message.
-func (r *DirVerifyEmailService) Confirm(ctx context.Context, dirID string, body DirVerifyEmailConfirmParams, opts ...option.RequestOption) (res *DirVerifyEmailConfirmResponse, err error) {
+func (r *DirVerifyEmailService) ConfirmCode(ctx context.Context, dirID string, body DirVerifyEmailConfirmCodeParams, opts ...option.RequestOption) (res *DirVerifyEmailConfirmCodeResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if dirID == "" {
 		err = errors.New("missing required dir_id parameter")
@@ -60,7 +60,7 @@ func (r *DirVerifyEmailService) Confirm(ctx context.Context, dirID string, body 
 // The code expires in 15 minutes. Requesting a new code invalidates any previous
 // one. Resends are rate limited (a short cooldown plus a daily cap). Submit the
 // code to `POST /dir/{dir_id}/verify_email/confirm`.
-func (r *DirVerifyEmailService) Send(ctx context.Context, dirID string, opts ...option.RequestOption) (res *DirVerifyEmailSendResponse, err error) {
+func (r *DirVerifyEmailService) SendCode(ctx context.Context, dirID string, opts ...option.RequestOption) (res *DirVerifyEmailSendCodeResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if dirID == "" {
 		err = errors.New("missing required dir_id parameter")
@@ -83,9 +83,9 @@ func (r *DirVerifyEmailService) Status(ctx context.Context, dirID string, opts .
 	return res, err
 }
 
-type DirVerifyEmailConfirmResponse struct {
+type DirVerifyEmailConfirmCodeResponse struct {
 	// Verification state for a DIR's authorizer email.
-	Data DirVerifyEmailConfirmResponseData `json:"data" api:"required"`
+	Data DirVerifyEmailConfirmCodeResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -95,13 +95,13 @@ type DirVerifyEmailConfirmResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DirVerifyEmailConfirmResponse) RawJSON() string { return r.JSON.raw }
-func (r *DirVerifyEmailConfirmResponse) UnmarshalJSON(data []byte) error {
+func (r DirVerifyEmailConfirmCodeResponse) RawJSON() string { return r.JSON.raw }
+func (r *DirVerifyEmailConfirmCodeResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Verification state for a DIR's authorizer email.
-type DirVerifyEmailConfirmResponseData struct {
+type DirVerifyEmailConfirmCodeResponseData struct {
 	// Whether the DIR's authorizer email has been confirmed.
 	EmailVerified bool `json:"email_verified" api:"required"`
 	// Always `email_verification`.
@@ -124,14 +124,14 @@ type DirVerifyEmailConfirmResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DirVerifyEmailConfirmResponseData) RawJSON() string { return r.JSON.raw }
-func (r *DirVerifyEmailConfirmResponseData) UnmarshalJSON(data []byte) error {
+func (r DirVerifyEmailConfirmCodeResponseData) RawJSON() string { return r.JSON.raw }
+func (r *DirVerifyEmailConfirmCodeResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type DirVerifyEmailSendResponse struct {
+type DirVerifyEmailSendCodeResponse struct {
 	// Verification state for a DIR's authorizer email.
-	Data DirVerifyEmailSendResponseData `json:"data" api:"required"`
+	Data DirVerifyEmailSendCodeResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -141,13 +141,13 @@ type DirVerifyEmailSendResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DirVerifyEmailSendResponse) RawJSON() string { return r.JSON.raw }
-func (r *DirVerifyEmailSendResponse) UnmarshalJSON(data []byte) error {
+func (r DirVerifyEmailSendCodeResponse) RawJSON() string { return r.JSON.raw }
+func (r *DirVerifyEmailSendCodeResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Verification state for a DIR's authorizer email.
-type DirVerifyEmailSendResponseData struct {
+type DirVerifyEmailSendCodeResponseData struct {
 	// Whether the DIR's authorizer email has been confirmed.
 	EmailVerified bool `json:"email_verified" api:"required"`
 	// Always `email_verification`.
@@ -170,8 +170,8 @@ type DirVerifyEmailSendResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DirVerifyEmailSendResponseData) RawJSON() string { return r.JSON.raw }
-func (r *DirVerifyEmailSendResponseData) UnmarshalJSON(data []byte) error {
+func (r DirVerifyEmailSendCodeResponseData) RawJSON() string { return r.JSON.raw }
+func (r *DirVerifyEmailSendCodeResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -221,16 +221,16 @@ func (r *DirVerifyEmailStatusResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type DirVerifyEmailConfirmParams struct {
+type DirVerifyEmailConfirmCodeParams struct {
 	// The 6-digit code sent to the authorizer email.
 	Code string `json:"code" api:"required"`
 	paramObj
 }
 
-func (r DirVerifyEmailConfirmParams) MarshalJSON() (data []byte, err error) {
-	type shadow DirVerifyEmailConfirmParams
+func (r DirVerifyEmailConfirmCodeParams) MarshalJSON() (data []byte, err error) {
+	type shadow DirVerifyEmailConfirmCodeParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *DirVerifyEmailConfirmParams) UnmarshalJSON(data []byte) error {
+func (r *DirVerifyEmailConfirmCodeParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
