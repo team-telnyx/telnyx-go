@@ -5436,6 +5436,36 @@ Methods:
 - <code title="post /dir/{dir_id}/phone_numbers">client.Dir.PhoneNumbers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DirPhoneNumberService.Add">Add</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, dirID <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DirPhoneNumberAddParams">DirPhoneNumberAddParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DirPhoneNumberAddResponse">DirPhoneNumberAddResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /dir/{dir_id}/phone_numbers">client.Dir.PhoneNumbers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DirPhoneNumberService.Remove">Remove</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, dirID <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DirPhoneNumberRemoveParams">DirPhoneNumberRemoveParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DirPhoneNumberRemoveResponse">DirPhoneNumberRemoveResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+## References
+
+Params Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ReferenceInputParam">ReferenceInputParam</a>
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#Reference">Reference</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ReferenceList">ReferenceList</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DirReferenceUpdateResponse">DirReferenceUpdateResponse</a>
+
+Methods:
+
+- <code title="post /dir/{dir_id}/references">client.Dir.References.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DirReferenceService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, dirID <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DirReferenceNewParams">DirReferenceNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ReferenceList">ReferenceList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="patch /dir/{dir_id}/references/{ref_type}/{slot}">client.Dir.References.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DirReferenceService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, slot <a href="https://pkg.go.dev/builtin#int64">int64</a>, params <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DirReferenceUpdateParams">DirReferenceUpdateParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DirReferenceUpdateResponse">DirReferenceUpdateResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /dir/{dir_id}/references">client.Dir.References.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DirReferenceService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, dirID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ReferenceList">ReferenceList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+## VerifyEmail
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EmailVerificationStatusWrapped">EmailVerificationStatusWrapped</a>
+
+Methods:
+
+- <code title="post /dir/{dir_id}/verify_email">client.Dir.VerifyEmail.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DirVerifyEmailService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, dirID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EmailVerificationStatusWrapped">EmailVerificationStatusWrapped</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /dir/{dir_id}/verify_email">client.Dir.VerifyEmail.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DirVerifyEmailService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, dirID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EmailVerificationStatusWrapped">EmailVerificationStatusWrapped</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /dir/{dir_id}/verify_email/confirm">client.Dir.VerifyEmail.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DirVerifyEmailService.Confirm">Confirm</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, dirID <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DirVerifyEmailConfirmParams">DirVerifyEmailConfirmParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EmailVerificationStatusWrapped">EmailVerificationStatusWrapped</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # InfringementClaims
 
 Response Types:

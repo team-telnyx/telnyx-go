@@ -2605,38 +2605,6 @@ func init() {
 	)
 }
 
-type TranscriptionStartRequestTranscriptionEngineConfigParakeetParam struct {
-	// Whether to send also interim results. If set to false, only final results will
-	// be sent.
-	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
-	// Engine identifier for Parakeet transcription service
-	//
-	// Any of "Parakeet".
-	TranscriptionEngine string `json:"transcription_engine,omitzero"`
-	// The model to use for transcription.
-	//
-	// Any of "parakeet/tdt-0.6b-v3".
-	TranscriptionModel string `json:"transcription_model,omitzero"`
-	paramObj
-}
-
-func (r TranscriptionStartRequestTranscriptionEngineConfigParakeetParam) MarshalJSON() (data []byte, err error) {
-	type shadow TranscriptionStartRequestTranscriptionEngineConfigParakeetParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscriptionStartRequestTranscriptionEngineConfigParakeetParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigParakeetParam](
-		"transcription_engine", "Parakeet",
-	)
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigParakeetParam](
-		"transcription_model", "parakeet/tdt-0.6b-v3",
-	)
-}
-
 // Messages sent by an end user
 //
 // The properties Content, Role are required.

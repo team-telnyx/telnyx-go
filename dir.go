@@ -38,6 +38,13 @@ type DirService struct {
 	// Associate phone numbers with a verified DIR so calls from those numbers carry
 	// the DIR's display identity.
 	PhoneNumbers DirPhoneNumberService
+	// Submit and manage the two business references and one financial reference that
+	// vouch for a DIR. References are contacted to confirm the business identity
+	// during vetting.
+	References DirReferenceService
+	// Verify ownership of a DIR's authorizer email. A short code is emailed and
+	// confirmed; the email must be verified before references can be submitted.
+	VerifyEmail DirVerifyEmailService
 }
 
 // NewDirService generates a new service that applies the given options to each
@@ -49,6 +56,8 @@ func NewDirService(opts ...option.RequestOption) (r DirService) {
 	r.Comments = NewDirCommentService(opts...)
 	r.PhoneNumberBatches = NewDirPhoneNumberBatchService(opts...)
 	r.PhoneNumbers = NewDirPhoneNumberService(opts...)
+	r.References = NewDirReferenceService(opts...)
+	r.VerifyEmail = NewDirVerifyEmailService(opts...)
 	return
 }
 
