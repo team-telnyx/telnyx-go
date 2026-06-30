@@ -922,9 +922,19 @@ type DeepgramNova2ConfigParam struct {
 	// Whether to send also interim results. If set to false, only final results will
 	// be sent.
 	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
+	// Enable Deepgram's smart formatting (capitalization, punctuation, and digit
+	// normalization). Note: Telnyx defaults this to `true`, overriding Deepgram's
+	// underlying default of `false` — omit the field to get a smart-formatted
+	// transcript, or set it to `false` to receive the raw lowercase transcript without
+	// punctuation.
+	SmartFormat param.Opt[bool] `json:"smart_format,omitzero"`
 	// Number of milliseconds of silence to consider an utterance ended. Ranges from 0
 	// to 5000 ms.
 	UtteranceEndMs param.Opt[int64] `json:"utterance_end_ms,omitzero"`
+	// Nova-2 keyword biasing without intensifiers. Up to 100 terms to bias recognition
+	// toward. For weighted biasing, use `keywords_boosting` instead. Nova-2-only; use
+	// `keyterms` on Nova-3.
+	Hints []string `json:"hints,omitzero"`
 	// Keywords and their respective intensifiers (boosting values) to improve
 	// transcription accuracy for specific words or phrases. The intensifier should be
 	// a numeric value. Example: `{"snuffleupagus": 5, "systrom": 2, "krieger": 1}`.
@@ -1019,9 +1029,18 @@ type DeepgramNova3ConfigParam struct {
 	// Whether to send also interim results. If set to false, only final results will
 	// be sent.
 	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
+	// Enable Deepgram's smart formatting (capitalization, punctuation, and digit
+	// normalization). Note: Telnyx defaults this to `true`, overriding Deepgram's
+	// underlying default of `false` — omit the field to get a smart-formatted
+	// transcript, or set it to `false` to receive the raw lowercase transcript without
+	// punctuation.
+	SmartFormat param.Opt[bool] `json:"smart_format,omitzero"`
 	// Number of milliseconds of silence to consider an utterance ended. Ranges from 0
 	// to 5000 ms.
 	UtteranceEndMs param.Opt[int64] `json:"utterance_end_ms,omitzero"`
+	// Nova-3 keyterm prompting. Up to 100 domain-specific terms or brand names to bias
+	// recognition toward. Nova-3-only; use `hints` on Nova-2.
+	Keyterms []string `json:"keyterms,omitzero"`
 	// Keywords and their respective intensifiers (boosting values) to improve
 	// transcription accuracy for specific words or phrases. The intensifier should be
 	// a numeric value. Example: `{"snuffleupagus": 5, "systrom": 2, "krieger": 1}`.
@@ -2364,6 +2383,14 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetMaxEndp
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetKeyterms() []string {
+	if vt := u.OfDeepgramNova3; vt != nil {
+		return vt.Keyterms
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetEnableSpeakerDiarization() *bool {
 	if vt := u.OfGoogle; vt != nil && vt.EnableSpeakerDiarization.Valid() {
 		return &vt.EnableSpeakerDiarization.Value
@@ -2528,6 +2555,16 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscr
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetSmartFormat() *bool {
+	if vt := u.OfDeepgramNova2; vt != nil && vt.SmartFormat.Valid() {
+		return &vt.SmartFormat.Value
+	} else if vt := u.OfDeepgramNova3; vt != nil && vt.SmartFormat.Valid() {
+		return &vt.SmartFormat.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetUtteranceEndMs() *int64 {
 	if vt := u.OfDeepgramNova2; vt != nil && vt.UtteranceEndMs.Valid() {
 		return &vt.UtteranceEndMs.Value
@@ -2542,6 +2579,8 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetHints()
 	if vt := u.OfGoogle; vt != nil {
 		return vt.Hints
 	} else if vt := u.OfA; vt != nil {
+		return vt.Hints
+	} else if vt := u.OfDeepgramNova2; vt != nil {
 		return vt.Hints
 	}
 	return nil
