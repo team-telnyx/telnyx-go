@@ -178,17 +178,6 @@ func (r *AdvancedOrderNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AdvancedOrderNewParamsPhoneNumberType string
-
-const (
-	AdvancedOrderNewParamsPhoneNumberTypeLocal      AdvancedOrderNewParamsPhoneNumberType = "local"
-	AdvancedOrderNewParamsPhoneNumberTypeMobile     AdvancedOrderNewParamsPhoneNumberType = "mobile"
-	AdvancedOrderNewParamsPhoneNumberTypeTollFree   AdvancedOrderNewParamsPhoneNumberType = "toll_free"
-	AdvancedOrderNewParamsPhoneNumberTypeSharedCost AdvancedOrderNewParamsPhoneNumberType = "shared_cost"
-	AdvancedOrderNewParamsPhoneNumberTypeNational   AdvancedOrderNewParamsPhoneNumberType = "national"
-	AdvancedOrderNewParamsPhoneNumberTypeLandline   AdvancedOrderNewParamsPhoneNumberType = "landline"
-)
-
 type AdvancedOrderUpdateRequirementGroupParams struct {
 	AdvancedOrderRequest AdvancedOrderRequestParam
 	paramObj
@@ -200,14 +189,3 @@ func (r AdvancedOrderUpdateRequirementGroupParams) MarshalJSON() (data []byte, e
 func (r *AdvancedOrderUpdateRequirementGroupParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType string
-
-const (
-	AdvancedOrderUpdateRequirementGroupParamsPhoneNumberTypeLocal      AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType = "local"
-	AdvancedOrderUpdateRequirementGroupParamsPhoneNumberTypeMobile     AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType = "mobile"
-	AdvancedOrderUpdateRequirementGroupParamsPhoneNumberTypeTollFree   AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType = "toll_free"
-	AdvancedOrderUpdateRequirementGroupParamsPhoneNumberTypeSharedCost AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType = "shared_cost"
-	AdvancedOrderUpdateRequirementGroupParamsPhoneNumberTypeNational   AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType = "national"
-	AdvancedOrderUpdateRequirementGroupParamsPhoneNumberTypeLandline   AdvancedOrderUpdateRequirementGroupParamsPhoneNumberType = "landline"
-)
