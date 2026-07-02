@@ -33,11 +33,11 @@ func TestEnterpriseDirNewWithOptionalParams(t *testing.T) {
 		telnyx.EnterpriseDirNewParams{
 			AuthorizerEmail:        "sam@acmeplumbing.example.com",
 			AuthorizerName:         "Sam Owner",
+			CallReasons:            []string{"Appointment reminders", "Billing inquiries"},
 			CertifyBrandIsAccurate: true,
 			CertifyIPOwnership:     true,
 			CertifyNoShaftContent:  true,
 			DisplayName:            "Acme Plumbing",
-			CallReasons:            []string{"Appointment reminders", "Billing inquiries"},
 			Documents: []telnyx.DocumentParam{{
 				DocumentID:   "2a7e8337-e803-4057-a4ae-26c40eb0bc6c",
 				DocumentType: telnyx.DocumentDocumentTypeBusinessRegistration,

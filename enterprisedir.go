@@ -127,6 +127,9 @@ type EnterpriseDirNewParams struct {
 	// Name of the person at your enterprise who is authorizing this DIR registration.
 	// Must be a real individual (used for audit and trademark-claim contests).
 	AuthorizerName string `json:"authorizer_name" api:"required"`
+	// 1–10 reasons your business calls customers. Validate phrasing against
+	// `POST /call_reasons/validate`.
+	CallReasons []string `json:"call_reasons,omitzero" api:"required"`
 	// Must be `true`.
 	//
 	// Any of true.
@@ -147,9 +150,6 @@ type EnterpriseDirNewParams struct {
 	// Set to true if your organization places calls on behalf of other enterprises
 	// (BPO/reseller).
 	Reselling param.Opt[bool] `json:"reselling,omitzero"`
-	// 1–10 reasons your business calls customers. Validate phrasing against
-	// `POST /call_reasons/validate`.
-	CallReasons []string `json:"call_reasons,omitzero"`
 	// Supporting documents. Each `document_id` may appear at most once on a DIR.
 	Documents []DocumentParam `json:"documents,omitzero"`
 	paramObj
