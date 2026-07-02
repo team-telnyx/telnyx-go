@@ -3,7 +3,7 @@
 package telnyx
 
 import (
-	"github.com/stainless-sdks/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 // LegacyReportingService contains methods and other services that help with

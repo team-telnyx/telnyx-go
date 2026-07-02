@@ -11,13 +11,13 @@ import (
 	"slices"
 	"time"
 
-	"github.com/stainless-sdks/telnyx-go/v4/internal/apijson"
-	"github.com/stainless-sdks/telnyx-go/v4/internal/apiquery"
-	"github.com/stainless-sdks/telnyx-go/v4/internal/requestconfig"
-	"github.com/stainless-sdks/telnyx-go/v4/option"
-	"github.com/stainless-sdks/telnyx-go/v4/packages/pagination"
-	"github.com/stainless-sdks/telnyx-go/v4/packages/param"
-	"github.com/stainless-sdks/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // DirService contains methods and other services that help with interacting with
@@ -1599,7 +1599,8 @@ type DirUpdateInfringementParams struct {
 	// Publicly accessible HTTPS URL (max 128 chars) to a 256x256 BMP logo (max 1 MB).
 	LogoURL     param.Opt[string] `json:"logo_url,omitzero"`
 	CallReasons []string          `json:"call_reasons,omitzero"`
-	// Append-only supporting documents.
+	// Append-only supporting documents to attach while resolving the claim (e.g.
+	// authorization or licensing proof).
 	Documents []DirUpdateInfringementParamsDocument `json:"documents,omitzero"`
 	paramObj
 }

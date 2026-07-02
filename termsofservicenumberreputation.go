@@ -8,10 +8,10 @@ import (
 	"slices"
 	"time"
 
-	"github.com/stainless-sdks/telnyx-go/v4/internal/apijson"
-	"github.com/stainless-sdks/telnyx-go/v4/internal/requestconfig"
-	"github.com/stainless-sdks/telnyx-go/v4/option"
-	"github.com/stainless-sdks/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // Accept and review the Branded Calling and Phone Number Reputation terms of

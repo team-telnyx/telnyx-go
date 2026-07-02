@@ -1,7 +1,7 @@
 package apiquery
 
 import (
-	"github.com/stainless-sdks/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"reflect"
 )
 

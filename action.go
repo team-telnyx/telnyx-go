@@ -3,9 +3,9 @@
 package telnyx
 
 import (
-	"github.com/stainless-sdks/telnyx-go/v4/internal/apijson"
-	"github.com/stainless-sdks/telnyx-go/v4/option"
-	"github.com/stainless-sdks/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // ActionService contains methods and other services that help with interacting

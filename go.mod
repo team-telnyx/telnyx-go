@@ -1,4 +1,4 @@
-module github.com/stainless-sdks/telnyx-go/v4
+module github.com/team-telnyx/telnyx-go/v4
 
 go 1.22
 

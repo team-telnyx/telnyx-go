@@ -9,12 +9,12 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/stainless-sdks/telnyx-go/v4/internal/apijson"
-	shimjson "github.com/stainless-sdks/telnyx-go/v4/internal/encoding/json"
-	"github.com/stainless-sdks/telnyx-go/v4/internal/requestconfig"
-	"github.com/stainless-sdks/telnyx-go/v4/option"
-	"github.com/stainless-sdks/telnyx-go/v4/packages/param"
-	"github.com/stainless-sdks/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // Voicemail API

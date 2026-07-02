@@ -14,13 +14,13 @@ import (
 	"slices"
 	"time"
 
-	"github.com/stainless-sdks/telnyx-go/v4/internal/apiform"
-	"github.com/stainless-sdks/telnyx-go/v4/internal/apijson"
-	"github.com/stainless-sdks/telnyx-go/v4/internal/apiquery"
-	"github.com/stainless-sdks/telnyx-go/v4/internal/requestconfig"
-	"github.com/stainless-sdks/telnyx-go/v4/option"
-	"github.com/stainless-sdks/telnyx-go/v4/packages/param"
-	"github.com/stainless-sdks/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiform"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // Read and write keys within a KV namespace

@@ -2,7 +2,7 @@ package apiform
 
 import (
 	"bytes"
-	"github.com/stainless-sdks/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"io"
 	"mime/multipart"
 	"strings"

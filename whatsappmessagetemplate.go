@@ -9,13 +9,13 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/stainless-sdks/telnyx-go/v4/internal/apijson"
-	"github.com/stainless-sdks/telnyx-go/v4/internal/requestconfig"
-	"github.com/stainless-sdks/telnyx-go/v4/option"
-	"github.com/stainless-sdks/telnyx-go/v4/packages/param"
-	"github.com/stainless-sdks/telnyx-go/v4/packages/respjson"
-	"github.com/stainless-sdks/telnyx-go/v4/shared"
-	"github.com/stainless-sdks/telnyx-go/v4/shared/constant"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared"
+	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
 // Manage Whatsapp message templates

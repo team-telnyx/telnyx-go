@@ -10,9 +10,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/telnyx-go/v4"
-	"github.com/stainless-sdks/telnyx-go/v4/internal/testutil"
-	"github.com/stainless-sdks/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestStorageBucketSslCertificateNewWithOptionalParams(t *testing.T) {

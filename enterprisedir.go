@@ -11,13 +11,13 @@ import (
 	"slices"
 	"time"
 
-	"github.com/stainless-sdks/telnyx-go/v4/internal/apijson"
-	"github.com/stainless-sdks/telnyx-go/v4/internal/apiquery"
-	"github.com/stainless-sdks/telnyx-go/v4/internal/requestconfig"
-	"github.com/stainless-sdks/telnyx-go/v4/option"
-	"github.com/stainless-sdks/telnyx-go/v4/packages/pagination"
-	"github.com/stainless-sdks/telnyx-go/v4/packages/param"
-	"github.com/stainless-sdks/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
+	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
+	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
 // A Display Identity Record (DIR) is the verified calling identity (display name,
@@ -467,6 +467,9 @@ type EnterpriseDirNewParams struct {
 	// Name of the person at your enterprise who is authorizing this DIR registration.
 	// Must be a real individual (used for audit and trademark-claim contests).
 	AuthorizerName string `json:"authorizer_name" api:"required"`
+	// 1–10 reasons your business calls customers. Validate phrasing against
+	// `POST /call_reasons/validate`.
+	CallReasons []string `json:"call_reasons,omitzero" api:"required"`
 	// Must be `true`.
 	//
 	// Any of true.
@@ -487,9 +490,6 @@ type EnterpriseDirNewParams struct {
 	// Set to true if your organization places calls on behalf of other enterprises
 	// (BPO/reseller).
 	Reselling param.Opt[bool] `json:"reselling,omitzero"`
-	// 1–10 reasons your business calls customers. Validate phrasing against
-	// `POST /call_reasons/validate`.
-	CallReasons []string `json:"call_reasons,omitzero"`
 	// Supporting documents. Each `document_id` may appear at most once on a DIR.
 	Documents []EnterpriseDirNewParamsDocument `json:"documents,omitzero"`
 	paramObj

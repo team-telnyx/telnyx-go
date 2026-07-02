@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/telnyx-go/v4"
-	"github.com/stainless-sdks/telnyx-go/v4/internal/testutil"
-	"github.com/stainless-sdks/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4"
+	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
+	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestEnterpriseDirNewWithOptionalParams(t *testing.T) {
@@ -33,11 +33,11 @@ func TestEnterpriseDirNewWithOptionalParams(t *testing.T) {
 		telnyx.EnterpriseDirNewParams{
 			AuthorizerEmail:        "sam@acmeplumbing.example.com",
 			AuthorizerName:         "Sam Owner",
+			CallReasons:            []string{"Appointment reminders", "Billing inquiries"},
 			CertifyBrandIsAccurate: true,
 			CertifyIPOwnership:     true,
 			CertifyNoShaftContent:  true,
 			DisplayName:            "Acme Plumbing",
-			CallReasons:            []string{"Appointment reminders", "Billing inquiries"},
 			Documents: []telnyx.EnterpriseDirNewParamsDocument{{
 				DocumentID:   "2a7e8337-e803-4057-a4ae-26c40eb0bc6c",
 				DocumentType: "business_registration",
