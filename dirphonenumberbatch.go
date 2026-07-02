@@ -11,13 +11,13 @@ import (
 	"slices"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
-	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
-	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v4/option"
-	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
-	"github.com/team-telnyx/telnyx-go/v4/packages/param"
-	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/stainless-sdks/telnyx-go/v4/internal/apijson"
+	"github.com/stainless-sdks/telnyx-go/v4/internal/apiquery"
+	"github.com/stainless-sdks/telnyx-go/v4/internal/requestconfig"
+	"github.com/stainless-sdks/telnyx-go/v4/option"
+	"github.com/stainless-sdks/telnyx-go/v4/packages/pagination"
+	"github.com/stainless-sdks/telnyx-go/v4/packages/param"
+	"github.com/stainless-sdks/telnyx-go/v4/packages/respjson"
 )
 
 // Phone numbers are submitted to Telnyx for vetting in batches. Batches group all

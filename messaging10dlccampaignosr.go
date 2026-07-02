@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
-	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/stainless-sdks/telnyx-go/v4/internal/requestconfig"
+	"github.com/stainless-sdks/telnyx-go/v4/option"
 )
 
 // Campaign operations

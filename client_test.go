@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/team-telnyx/telnyx-go/v4"
-	"github.com/team-telnyx/telnyx-go/v4/internal"
-	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/stainless-sdks/telnyx-go/v4"
+	"github.com/stainless-sdks/telnyx-go/v4/internal"
+	"github.com/stainless-sdks/telnyx-go/v4/option"
 )
 
 type closureTransport struct {

@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stainless-sdks/telnyx-go/v4"
+	"github.com/stainless-sdks/telnyx-go/v4/option"
 	standardwebhooks "github.com/standard-webhooks/standard-webhooks/libraries/go"
-	"github.com/team-telnyx/telnyx-go/v4"
-	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
 func TestWebhookUnwrap(t *testing.T) {
