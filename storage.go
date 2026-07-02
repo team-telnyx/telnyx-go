@@ -29,6 +29,8 @@ type StorageService struct {
 	MigrationSources StorageMigrationSourceService
 	// Migrate data from an external provider into Telnyx Cloud Storage
 	Migrations StorageMigrationService
+	// Manage KV storage namespaces
+	Kvs StorageKvService
 }
 
 // NewStorageService generates a new service that applies the given options to each
@@ -40,6 +42,7 @@ func NewStorageService(opts ...option.RequestOption) (r StorageService) {
 	r.Buckets = NewStorageBucketService(opts...)
 	r.MigrationSources = NewStorageMigrationSourceService(opts...)
 	r.Migrations = NewStorageMigrationService(opts...)
+	r.Kvs = NewStorageKvService(opts...)
 	return
 }
 
