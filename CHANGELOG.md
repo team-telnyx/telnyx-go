@@ -1,25 +1,11 @@
 # Changelog
 
-## [4.83.0](https://github.com/team-telnyx/telnyx-go/compare/v4.82.0...v4.83.0) (2026-07-01)
+## [4.107.1](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.107.0...v4.107.1) (2026-06-26)
 
 
 ### Chores
 
-* remove leaked staging-only promote-to-prod.yml from prod ([#115](https://github.com/team-telnyx/telnyx-go/issues/115)) ([b387bb0](https://github.com/team-telnyx/telnyx-go/commit/b387bb0022da6c5d2460f92feda6ec7bd046c8cf))
-
-## 4.82.0 (2026-06-26)
-
-Full Changelog: [v4.81.1...v4.82.0](https://github.com/team-telnyx/telnyx-go/compare/v4.81.1...v4.82.0)
-
-### Features
-
-* **transcriptions-search:** hide record_type, remove document_id, scrub internal references ([e2aed7b](https://github.com/team-telnyx/telnyx-go/commit/e2aed7b4e810e437134cb635ee80fbf032c21099))
-
-
-### Chores
-
-* add release-please workflow + fix config for STLC cutover ([#111](https://github.com/team-telnyx/telnyx-go/issues/111)) ([ef499b8](https://github.com/team-telnyx/telnyx-go/commit/ef499b868d7b8bb8e56f2b4018f4a3190f2b769b))
-* promote from staging b60c57b ([8a4cc47](https://github.com/team-telnyx/telnyx-go/commit/8a4cc479e10fa708d5154167962142192edc6505))
+* add promote-to-prod workflow for STLC cutover ([b60c57b](https://github.com/team-telnyx/telnyx-go-staging/commit/b60c57b19c578f84e0c2eb3c03d4263475f7a092))
 
 ## [4.107.0](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.106.0...v4.107.0) (2026-06-26)
 

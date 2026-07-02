@@ -137,7 +137,7 @@ func TestTexmlAccountCallCallsWithOptionalParams(t *testing.T) {
 				SipAuthUsername:                    telnyx.String("user"),
 				SipRegion:                          "Canada",
 				StatusCallback:                     telnyx.String("https://www.example.com/statuscallback-listener"),
-				StatusCallbackEvent:                "initiated",
+				StatusCallbackEvent:                telnyx.String("initiated answered"),
 				StatusCallbackMethod:               "GET",
 				SuperviseCallSid:                   telnyx.String("v3:MdI91X4lWFEs7IgbBEOT9M4AigoY08M0WWZFISt1Yw2axZ_IiE4pqg"),
 				SupervisingRole:                    "monitor",
