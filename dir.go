@@ -721,7 +721,8 @@ type DirUpdateInfringementParams struct {
 	// Publicly accessible HTTPS URL (max 128 chars) to a 256x256 BMP logo (max 1 MB).
 	LogoURL     param.Opt[string] `json:"logo_url,omitzero"`
 	CallReasons []string          `json:"call_reasons,omitzero"`
-	// Append-only supporting documents.
+	// Append-only supporting documents to attach while resolving the claim (e.g.
+	// authorization or licensing proof).
 	Documents []DocumentParam `json:"documents,omitzero"`
 	paramObj
 }
