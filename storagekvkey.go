@@ -19,6 +19,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
@@ -49,7 +50,7 @@ func NewStorageKvKeyService(opts ...option.RequestOption) (r StorageKvKeyService
 // type (defaults to `application/octet-stream`).
 func (r *StorageKvKeyService) Get(ctx context.Context, key string, query StorageKvKeyGetParams, opts ...option.RequestOption) (res *http.Response, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
 	if query.ID == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -67,9 +68,9 @@ func (r *StorageKvKeyService) Get(ctx context.Context, key string, query Storage
 // the value — no base64, no JSON envelope — up to 1 MiB. The request's
 // `Content-Type` header is stored with the value and echoed back on retrieval.
 // Returns `201` when the key is created and `200` when an existing key is updated.
-func (r *StorageKvKeyService) Update(ctx context.Context, key string, params StorageKvKeyUpdateParams, opts ...option.RequestOption) (err error) {
+func (r *StorageKvKeyService) Update(ctx context.Context, key string, body io.Reader, params StorageKvKeyUpdateParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*"), option.WithRequestBody("application/octet-stream", body)}, opts...)
 	if params.ID == "" {
 		err = errors.New("missing required id parameter")
 		return err
@@ -79,21 +80,37 @@ func (r *StorageKvKeyService) Update(ctx context.Context, key string, params Sto
 		return err
 	}
 	path := fmt.Sprintf("storage/kvs/%s/keys/%s", params.ID, key)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, nil, opts...)
 	return err
 }
 
 // Lists the keys in a namespace. Returns key names and metadata only, never
 // values. Results are paginated with `limit` and an opaque `cursor`.
-func (r *StorageKvKeyService) List(ctx context.Context, id string, query StorageKvKeyListParams, opts ...option.RequestOption) (res *StorageKvKeyListResponse, err error) {
+func (r *StorageKvKeyService) List(ctx context.Context, id string, query StorageKvKeyListParams, opts ...option.RequestOption) (res *pagination.CursorFlatPagination[StorageKvKeyListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("storage/kvs/%s/keys", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Lists the keys in a namespace. Returns key names and metadata only, never
+// values. Results are paginated with `limit` and an opaque `cursor`.
+func (r *StorageKvKeyService) ListAutoPaging(ctx context.Context, id string, query StorageKvKeyListParams, opts ...option.RequestOption) *pagination.CursorFlatPaginationAutoPager[StorageKvKeyListResponse] {
+	return pagination.NewCursorFlatPaginationAutoPager(r.List(ctx, id, query, opts...))
 }
 
 // Deletes a key. Idempotent: deleting a key that does not exist still succeeds.
@@ -115,26 +132,6 @@ func (r *StorageKvKeyService) Delete(ctx context.Context, key string, body Stora
 }
 
 type StorageKvKeyListResponse struct {
-	Data       []StorageKvKeyListResponseData `json:"data"`
-	Meta       StorageKvKeyListResponseMeta   `json:"meta"`
-	RecordType string                         `json:"record_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StorageKvKeyListResponse) RawJSON() string { return r.JSON.raw }
-func (r *StorageKvKeyListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type StorageKvKeyListResponseData struct {
 	Key string `json:"key"`
 	// Size of the stored value in bytes.
 	SizeBytes int64     `json:"size_bytes"`
@@ -150,29 +147,8 @@ type StorageKvKeyListResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r StorageKvKeyListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *StorageKvKeyListResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type StorageKvKeyListResponseMeta struct {
-	// Opaque cursor for the next page; pass it back as the `cursor` query parameter.
-	// Omitted when there are no further results.
-	Cursor string `json:"cursor"`
-	// Whether more results are available on a following page.
-	HasMore bool `json:"has_more"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Cursor      respjson.Field
-		HasMore     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StorageKvKeyListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *StorageKvKeyListResponseMeta) UnmarshalJSON(data []byte) error {
+func (r StorageKvKeyListResponse) RawJSON() string { return r.JSON.raw }
+func (r *StorageKvKeyListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -183,8 +159,6 @@ type StorageKvKeyGetParams struct {
 
 type StorageKvKeyUpdateParams struct {
 	ID string `path:"id" api:"required" format:"uuid" json:"-"`
-	// Raw value bytes, stored verbatim.
-	Body io.Reader
 	// Time-to-live in seconds. When set, the key expires and is deleted after this
 	// duration. Requires a namespace provisioned with TTL support; namespaces without
 	// it return a `409`.
@@ -195,7 +169,7 @@ type StorageKvKeyUpdateParams struct {
 func (r StorageKvKeyUpdateParams) MarshalMultipart() (data []byte, contentType string, err error) {
 	buf := bytes.NewBuffer(nil)
 	writer := multipart.NewWriter(buf)
-	err = apiform.MarshalRoot(r.Body, writer)
+	err = apiform.MarshalRoot(r, writer)
 	if err == nil {
 		err = apiform.WriteExtras(writer, r.ExtraFields())
 	}

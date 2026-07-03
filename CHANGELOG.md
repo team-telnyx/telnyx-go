@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.86.0](https://github.com/team-telnyx/telnyx-go/compare/v4.85.0...v4.86.0) (2026-07-03)
+
+
+### Bug Fixes
+
+* add git clean -fdx to tree replacement step in release-please.yml ([#137](https://github.com/team-telnyx/telnyx-go/issues/137)) ([6158f78](https://github.com/team-telnyx/telnyx-go/commit/6158f78c75a628b5a19e321f7b6a8742f3ae5512))
+* use git reset --hard for tree replacement, force-push, and fix PR URL regex in release-please.yml ([#138](https://github.com/team-telnyx/telnyx-go/issues/138)) ([de15491](https://github.com/team-telnyx/telnyx-go/commit/de15491f2ff9a55c89eb8dfdcfa47934283d118f))
+
 ## [4.85.0](https://github.com/team-telnyx/telnyx-go/compare/v4.84.0...v4.85.0) (2026-07-02)
 
 
