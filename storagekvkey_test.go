@@ -133,9 +133,9 @@ func TestStorageKvKeySetWithOptionalParams(t *testing.T) {
 	err := client.Storage.Kvs.Keys.Set(
 		context.TODO(),
 		"key",
+		io.Reader(bytes.NewBuffer([]byte("Example data"))),
 		telnyx.StorageKvKeySetParams{
 			ID:      "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-			Body:    io.Reader(bytes.NewBuffer([]byte("Example data"))),
 			TtlSecs: telnyx.Int(1),
 		},
 	)

@@ -49,7 +49,7 @@ func NewStorageKvKeyService(opts ...option.RequestOption) (r StorageKvKeyService
 // type (defaults to `application/octet-stream`).
 func (r *StorageKvKeyService) Get(ctx context.Context, key string, query StorageKvKeyGetParams, opts ...option.RequestOption) (res *http.Response, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
 	if query.ID == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -98,9 +98,9 @@ func (r *StorageKvKeyService) Delete(ctx context.Context, key string, body Stora
 // the value — no base64, no JSON envelope — up to 1 MiB. The request's
 // `Content-Type` header is stored with the value and echoed back on retrieval.
 // Returns `201` when the key is created and `200` when an existing key is updated.
-func (r *StorageKvKeyService) Set(ctx context.Context, key string, params StorageKvKeySetParams, opts ...option.RequestOption) (err error) {
+func (r *StorageKvKeyService) Set(ctx context.Context, key string, body io.Reader, params StorageKvKeySetParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*"), option.WithRequestBody("application/octet-stream", body)}, opts...)
 	if params.ID == "" {
 		err = errors.New("missing required id parameter")
 		return err
@@ -110,7 +110,7 @@ func (r *StorageKvKeyService) Set(ctx context.Context, key string, params Storag
 		return err
 	}
 	path := fmt.Sprintf("storage/kvs/%s/keys/%s", params.ID, key)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, nil, opts...)
 	return err
 }
 
@@ -206,8 +206,6 @@ type StorageKvKeyDeleteParams struct {
 
 type StorageKvKeySetParams struct {
 	ID string `path:"id" api:"required" format:"uuid" json:"-"`
-	// Raw value bytes, stored verbatim.
-	Body io.Reader
 	// Time-to-live in seconds. When set, the key expires and is deleted after this
 	// duration. Requires a namespace provisioned with TTL support; namespaces without
 	// it return a `409`.
@@ -218,7 +216,7 @@ type StorageKvKeySetParams struct {
 func (r StorageKvKeySetParams) MarshalMultipart() (data []byte, contentType string, err error) {
 	buf := bytes.NewBuffer(nil)
 	writer := multipart.NewWriter(buf)
-	err = apiform.MarshalRoot(r.Body, writer)
+	err = apiform.MarshalRoot(r, writer)
 	if err == nil {
 		err = apiform.WriteExtras(writer, r.ExtraFields())
 	}
