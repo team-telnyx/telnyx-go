@@ -8,6 +8,16 @@
 * sync code from next into release PR ([#150](https://github.com/team-telnyx/telnyx-go/issues/150)) ([35f4077](https://github.com/team-telnyx/telnyx-go/commit/35f407761c7d2c4680754b8da5359cc5369f14b4))
 * sync code from next into release PR ([#151](https://github.com/team-telnyx/telnyx-go/issues/151)) ([ec01099](https://github.com/team-telnyx/telnyx-go/commit/ec01099de5a29166a81f4651053e98dfd67ec8a5))
 * sync code from next into release PR ([#152](https://github.com/team-telnyx/telnyx-go/issues/152)) ([df334e5](https://github.com/team-telnyx/telnyx-go/commit/df334e5ef13d0418d64409097c4a1f9843266338))
+* sync code from next into release PR ([#153](https://github.com/team-telnyx/telnyx-go/issues/153)) ([d925f4c](https://github.com/team-telnyx/telnyx-go/commit/d925f4ca27c9b92308950fc1c36e1c75107ece4f))
+
+## [4.87.0](https://github.com/team-telnyx/telnyx-go/compare/v4.87.0...v4.87.0) (2026-07-03)
+
+
+### Chores
+
+* sync code from next into release PR ([#150](https://github.com/team-telnyx/telnyx-go/issues/150)) ([35f4077](https://github.com/team-telnyx/telnyx-go/commit/35f407761c7d2c4680754b8da5359cc5369f14b4))
+* sync code from next into release PR ([#151](https://github.com/team-telnyx/telnyx-go/issues/151)) ([ec01099](https://github.com/team-telnyx/telnyx-go/commit/ec01099de5a29166a81f4651053e98dfd67ec8a5))
+* sync code from next into release PR ([#152](https://github.com/team-telnyx/telnyx-go/issues/152)) ([df334e5](https://github.com/team-telnyx/telnyx-go/commit/df334e5ef13d0418d64409097c4a1f9843266338))
 
 ## [4.87.0](https://github.com/team-telnyx/telnyx-go/compare/v4.87.0...v4.87.0) (2026-07-03)
 
