@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.87.0 (2026-07-03)
+
+Full Changelog: [v4.86.0...v4.87.0](https://github.com/team-telnyx/telnyx-go/compare/v4.86.0...v4.87.0)
+
+### Chores
+
+* promote from staging 0eb1dfc ([81b3b8e](https://github.com/team-telnyx/telnyx-go/commit/81b3b8e807a3742da660c26a5a614de63409c50b))
+* promote from staging 4259868 ([de9bf4d](https://github.com/team-telnyx/telnyx-go/commit/de9bf4de0c456d15f3b32ea09976d1aa496f68d6))
+
 ## [4.107.1](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.107.0...v4.107.1) (2026-06-26)
 
 
