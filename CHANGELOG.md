@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.87.0](https://github.com/team-telnyx/telnyx-go/compare/v4.86.0...v4.87.0) (2026-07-03)
+
+
+### Bug Fixes
+
+* **release:** take first Release-As match (multiline output broke GITHUB_OUTPUT) ([#148](https://github.com/team-telnyx/telnyx-go/issues/148)) ([1c3cece](https://github.com/team-telnyx/telnyx-go/commit/1c3cece008509f0e5b4d2f50c66b61ac22158919))
+
 ## [4.86.0](https://github.com/team-telnyx/telnyx-go/compare/v4.85.0...v4.86.0) (2026-07-03)
 
 

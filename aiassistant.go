@@ -5508,10 +5508,13 @@ type TranscriptionSettings struct {
 	//   - `xai/grok-stt` is a multilingual Grok STT model.
 	//   - `soniox/stt-rt-v4` is a multilingual streaming model with automatic language
 	//     detection and configurable endpointing.
+	//   - `parakeet/tdt-0.6b-v3` is a multilingual transcription model with automatic
+	//     language detection.
 	//
 	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
 	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
+	// "parakeet/tdt-0.6b-v3", "distil-whisper/distil-large-v2",
+	// "openai/whisper-large-v3-turbo".
 	Model TranscriptionSettingsModel `json:"model"`
 	// Region on third party cloud providers (currently Azure) if using one of their
 	// models. Some regions require `api_key_ref`.
@@ -5556,6 +5559,8 @@ func (r TranscriptionSettings) ToParam() TranscriptionSettingsParam {
 //   - `xai/grok-stt` is a multilingual Grok STT model.
 //   - `soniox/stt-rt-v4` is a multilingual streaming model with automatic language
 //     detection and configurable endpointing.
+//   - `parakeet/tdt-0.6b-v3` is a multilingual transcription model with automatic
+//     language detection.
 type TranscriptionSettingsModel string
 
 const (
@@ -5566,6 +5571,7 @@ const (
 	TranscriptionSettingsModelAssemblyaiUniversalStreaming TranscriptionSettingsModel = "assemblyai/universal-streaming"
 	TranscriptionSettingsModelXaiGrokStt                   TranscriptionSettingsModel = "xai/grok-stt"
 	TranscriptionSettingsModelSonioxSttRtV4                TranscriptionSettingsModel = "soniox/stt-rt-v4"
+	TranscriptionSettingsModelParakeetTdt0_6bV3            TranscriptionSettingsModel = "parakeet/tdt-0.6b-v3"
 	TranscriptionSettingsModelDistilWhisperDistilLargeV2   TranscriptionSettingsModel = "distil-whisper/distil-large-v2"
 	TranscriptionSettingsModelOpenAIWhisperLargeV3Turbo    TranscriptionSettingsModel = "openai/whisper-large-v3-turbo"
 )
@@ -5597,10 +5603,13 @@ type TranscriptionSettingsParam struct {
 	//   - `xai/grok-stt` is a multilingual Grok STT model.
 	//   - `soniox/stt-rt-v4` is a multilingual streaming model with automatic language
 	//     detection and configurable endpointing.
+	//   - `parakeet/tdt-0.6b-v3` is a multilingual transcription model with automatic
+	//     language detection.
 	//
 	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
 	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
+	// "parakeet/tdt-0.6b-v3", "distil-whisper/distil-large-v2",
+	// "openai/whisper-large-v3-turbo".
 	Model    TranscriptionSettingsModel       `json:"model,omitzero"`
 	Settings TranscriptionSettingsConfigParam `json:"settings,omitzero"`
 	paramObj
