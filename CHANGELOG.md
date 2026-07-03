@@ -1,5 +1,22 @@
 # Changelog
 
+## 4.86.0 (2026-07-03)
+
+Full Changelog: [v4.85.0...v4.86.0](https://github.com/team-telnyx/telnyx-go/compare/v4.85.0...v4.86.0)
+
+### Bug Fixes
+
+* add git clean -fdx to tree replacement step in release-please.yml ([#137](https://github.com/team-telnyx/telnyx-go/issues/137)) ([6158f78](https://github.com/team-telnyx/telnyx-go/commit/6158f78c75a628b5a19e321f7b6a8742f3ae5512))
+* use git reset --hard for tree replacement, force-push, and fix PR URL regex in release-please.yml ([#138](https://github.com/team-telnyx/telnyx-go/issues/138)) ([de15491](https://github.com/team-telnyx/telnyx-go/commit/de15491f2ff9a55c89eb8dfdcfa47934283d118f))
+
+
+### Chores
+
+* merge main into next to restore release ancestry ([481e46e](https://github.com/team-telnyx/telnyx-go/commit/481e46e4fe7c92c5e33a27066ccc132e302d457a))
+* promote from staging 0bd3c20 ([9e59786](https://github.com/team-telnyx/telnyx-go/commit/9e5978697e866c2f94ebaa009bd5f27e7f99c9e7))
+* promote from staging 7169f9d ([7542e3d](https://github.com/team-telnyx/telnyx-go/commit/7542e3d842bc9a0deffa233c5181df303569661d))
+* promote from staging f9a60d9 ([5e65653](https://github.com/team-telnyx/telnyx-go/commit/5e656539fd4974fd8ae02a1913c8c50fa4d06bd8))
+
 ## [4.107.1](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.107.0...v4.107.1) (2026-06-26)
 
 
