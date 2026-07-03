@@ -3,6 +3,13 @@
 ## [4.87.0](https://github.com/team-telnyx/telnyx-go/compare/v4.87.0...v4.87.0) (2026-07-03)
 
 
+### Chores
+
+* sync code from next into release PR ([#150](https://github.com/team-telnyx/telnyx-go/issues/150)) ([35f4077](https://github.com/team-telnyx/telnyx-go/commit/35f407761c7d2c4680754b8da5359cc5369f14b4))
+
+## [4.87.0](https://github.com/team-telnyx/telnyx-go/compare/v4.87.0...v4.87.0) (2026-07-03)
+
+
 ### release
 
 * 4.84.0 ([#131](https://github.com/team-telnyx/telnyx-go/issues/131)) ([cf610cf](https://github.com/team-telnyx/telnyx-go/commit/cf610cf13c90004586e2c33935150d14e8e26ee4))
