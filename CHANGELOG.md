@@ -1,5 +1,22 @@
 # Changelog
 
+## 4.86.0 (2026-07-03)
+
+Full Changelog: [v4.85.0...v4.86.0](https://github.com/team-telnyx/telnyx-go/compare/v4.85.0...v4.86.0)
+
+### release
+
+* 4.84.0 ([#131](https://github.com/team-telnyx/telnyx-go/issues/131)) ([cf610cf](https://github.com/team-telnyx/telnyx-go/commit/cf610cf13c90004586e2c33935150d14e8e26ee4))
+
+
+### Chores
+
+* promote from staging 0bd3c20 ([9e59786](https://github.com/team-telnyx/telnyx-go/commit/9e5978697e866c2f94ebaa009bd5f27e7f99c9e7))
+* promote from staging 44590bb ([709e9cd](https://github.com/team-telnyx/telnyx-go/commit/709e9cd98599aa6d8c40c735940f78d5d1968756))
+* promote from staging 7169f9d ([7542e3d](https://github.com/team-telnyx/telnyx-go/commit/7542e3d842bc9a0deffa233c5181df303569661d))
+* promote from staging f9a60d9 ([5e65653](https://github.com/team-telnyx/telnyx-go/commit/5e656539fd4974fd8ae02a1913c8c50fa4d06bd8))
+* sync repo ([a6d9a43](https://github.com/team-telnyx/telnyx-go/commit/a6d9a43ad5014ba20ba55549d92daed0a20542e0))
+
 ## [4.107.1](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.107.0...v4.107.1) (2026-06-26)
 
 
