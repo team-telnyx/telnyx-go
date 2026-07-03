@@ -477,6 +477,11 @@ type UacInbound struct {
 	SimultaneousRinging UacInboundSimultaneousRinging `json:"simultaneous_ringing"`
 	// Defaults to true.
 	SipCompactHeadersEnabled bool `json:"sip_compact_headers_enabled"`
+	// Selects which `sip_region` to receive inbound calls from. If null, the default
+	// region (US) will be used.
+	//
+	// Any of "US", "Europe", "Australia".
+	SipRegion UacInboundSipRegion `json:"sip_region"`
 	// The Telnyx-generated SIP subdomain for this UAC connection.
 	SipSubdomain string `json:"sip_subdomain"`
 	// Controls which SIP URI callers may reach this connection.
@@ -500,6 +505,7 @@ type UacInbound struct {
 		ShakenStirEnabled           respjson.Field
 		SimultaneousRinging         respjson.Field
 		SipCompactHeadersEnabled    respjson.Field
+		SipRegion                   respjson.Field
 		SipSubdomain                respjson.Field
 		SipSubdomainReceiveSettings respjson.Field
 		Timeout1xxSecs              respjson.Field
@@ -551,6 +557,16 @@ type UacInboundSimultaneousRinging string
 const (
 	UacInboundSimultaneousRingingDisabled UacInboundSimultaneousRinging = "disabled"
 	UacInboundSimultaneousRingingEnabled  UacInboundSimultaneousRinging = "enabled"
+)
+
+// Selects which `sip_region` to receive inbound calls from. If null, the default
+// region (US) will be used.
+type UacInboundSipRegion string
+
+const (
+	UacInboundSipRegionUs        UacInboundSipRegion = "US"
+	UacInboundSipRegionEurope    UacInboundSipRegion = "Europe"
+	UacInboundSipRegionAustralia UacInboundSipRegion = "Australia"
 )
 
 // Controls which SIP URI callers may reach this connection.
@@ -607,6 +623,11 @@ type UacInboundRequestParam struct {
 	//
 	// Any of "disabled", "enabled".
 	SimultaneousRinging UacInboundRequestSimultaneousRinging `json:"simultaneous_ringing,omitzero"`
+	// Selects which `sip_region` to receive inbound calls from. If null, the default
+	// region (US) will be used.
+	//
+	// Any of "US", "Europe", "Australia".
+	SipRegion UacInboundRequestSipRegion `json:"sip_region,omitzero"`
 	paramObj
 }
 
@@ -654,6 +675,16 @@ type UacInboundRequestSimultaneousRinging string
 const (
 	UacInboundRequestSimultaneousRingingDisabled UacInboundRequestSimultaneousRinging = "disabled"
 	UacInboundRequestSimultaneousRingingEnabled  UacInboundRequestSimultaneousRinging = "enabled"
+)
+
+// Selects which `sip_region` to receive inbound calls from. If null, the default
+// region (US) will be used.
+type UacInboundRequestSipRegion string
+
+const (
+	UacInboundRequestSipRegionUs        UacInboundRequestSipRegion = "US"
+	UacInboundRequestSipRegionEurope    UacInboundRequestSipRegion = "Europe"
+	UacInboundRequestSipRegionAustralia UacInboundRequestSipRegion = "Australia"
 )
 
 // Internal Telnyx-side settings for a UAC connection.
