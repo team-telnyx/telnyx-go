@@ -66,7 +66,7 @@ func (r *SpeechToTextService) ListProviders(ctx context.Context, query SpeechToT
 // `Authorization: Bearer <API_KEY>` header.
 //
 // Supported engines: `Azure`, `Deepgram`, `Google`, `Telnyx`, `xAI`,
-// `Speechmatics`, `Soniox`.
+// `Speechmatics`, `Soniox`, `Parakeet`.
 //
 // **Connection flow:**
 //
@@ -324,8 +324,8 @@ type SpeechToTextListProvidersParams struct {
 	// models currently registered for any service type will return an empty `data`
 	// array rather than an error.
 	//
-	// Any of "deepgram", "speechmatics", "assemblyai", "xai", "soniox", "azure",
-	// "openai", "google", "telnyx".
+	// Any of "deepgram", "speechmatics", "assemblyai", "xai", "soniox", "parakeet",
+	// "azure", "openai", "google", "telnyx".
 	Provider SpeechToTextListProvidersParamsProvider `query:"provider,omitzero" json:"-"`
 	// Filter to entries that support the given service type. For backward
 	// compatibility with the values that briefly shipped before the product-aligned
@@ -361,6 +361,7 @@ const (
 	SpeechToTextListProvidersParamsProviderAssemblyai   SpeechToTextListProvidersParamsProvider = "assemblyai"
 	SpeechToTextListProvidersParamsProviderXai          SpeechToTextListProvidersParamsProvider = "xai"
 	SpeechToTextListProvidersParamsProviderSoniox       SpeechToTextListProvidersParamsProvider = "soniox"
+	SpeechToTextListProvidersParamsProviderParakeet     SpeechToTextListProvidersParamsProvider = "parakeet"
 	SpeechToTextListProvidersParamsProviderAzure        SpeechToTextListProvidersParamsProvider = "azure"
 	SpeechToTextListProvidersParamsProviderOpenAI       SpeechToTextListProvidersParamsProvider = "openai"
 	SpeechToTextListProvidersParamsProviderGoogle       SpeechToTextListProvidersParamsProvider = "google"
@@ -374,7 +375,8 @@ type SpeechToTextGetTranscriptionParams struct {
 	InputFormat SpeechToTextGetTranscriptionParamsInputFormat `query:"input_format,omitzero" api:"required" json:"-"`
 	// The transcription engine to use for processing the audio stream.
 	//
-	// Any of "Azure", "Deepgram", "Google", "Telnyx", "xAI", "Speechmatics", "Soniox".
+	// Any of "Azure", "Deepgram", "Google", "Telnyx", "xAI", "Speechmatics", "Soniox",
+	// "Parakeet".
 	TranscriptionEngine SpeechToTextGetTranscriptionParamsTranscriptionEngine `query:"transcription_engine,omitzero" api:"required" json:"-"`
 	// Silence duration (in milliseconds) that triggers end-of-speech detection. When
 	// set, the engine uses this value to determine when a speaker has stopped talking.
@@ -401,7 +403,7 @@ type SpeechToTextGetTranscriptionParams struct {
 	// "latest_short", "command_and_search", "phone_call", "video", "default",
 	// "medical_conversation", "medical_dictation", "openai/whisper-tiny",
 	// "openai/whisper-large-v3-turbo", "xai/grok-stt", "speechmatics/standard",
-	// "soniox/stt-rt-v4".
+	// "soniox/stt-rt-v4", "parakeet/tdt-0.6b-v3".
 	Model SpeechToTextGetTranscriptionParamsModel `query:"model,omitzero" json:"-"`
 	paramObj
 }
@@ -434,6 +436,7 @@ const (
 	SpeechToTextGetTranscriptionParamsTranscriptionEngineXAI          SpeechToTextGetTranscriptionParamsTranscriptionEngine = "xAI"
 	SpeechToTextGetTranscriptionParamsTranscriptionEngineSpeechmatics SpeechToTextGetTranscriptionParamsTranscriptionEngine = "Speechmatics"
 	SpeechToTextGetTranscriptionParamsTranscriptionEngineSoniox       SpeechToTextGetTranscriptionParamsTranscriptionEngine = "Soniox"
+	SpeechToTextGetTranscriptionParamsTranscriptionEngineParakeet     SpeechToTextGetTranscriptionParamsTranscriptionEngine = "Parakeet"
 )
 
 // The specific model to use within the selected transcription engine.
@@ -456,4 +459,5 @@ const (
 	SpeechToTextGetTranscriptionParamsModelXaiGrokStt                SpeechToTextGetTranscriptionParamsModel = "xai/grok-stt"
 	SpeechToTextGetTranscriptionParamsModelSpeechmaticsStandard      SpeechToTextGetTranscriptionParamsModel = "speechmatics/standard"
 	SpeechToTextGetTranscriptionParamsModelSonioxSttRtV4             SpeechToTextGetTranscriptionParamsModel = "soniox/stt-rt-v4"
+	SpeechToTextGetTranscriptionParamsModelParakeetTdt0_6bV3         SpeechToTextGetTranscriptionParamsModel = "parakeet/tdt-0.6b-v3"
 )
