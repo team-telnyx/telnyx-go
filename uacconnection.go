@@ -402,6 +402,11 @@ type UacConnectionNewResponseDataInbound struct {
 	SimultaneousRinging string `json:"simultaneous_ringing"`
 	// Defaults to true.
 	SipCompactHeadersEnabled bool `json:"sip_compact_headers_enabled"`
+	// Selects which `sip_region` to receive inbound calls from. If null, the default
+	// region (US) will be used.
+	//
+	// Any of "US", "Europe", "Australia".
+	SipRegion string `json:"sip_region"`
 	// The Telnyx-generated SIP subdomain for this UAC connection.
 	SipSubdomain string `json:"sip_subdomain"`
 	// Controls which SIP URI callers may reach this connection.
@@ -425,6 +430,7 @@ type UacConnectionNewResponseDataInbound struct {
 		ShakenStirEnabled           respjson.Field
 		SimultaneousRinging         respjson.Field
 		SipCompactHeadersEnabled    respjson.Field
+		SipRegion                   respjson.Field
 		SipSubdomain                respjson.Field
 		SipSubdomainReceiveSettings respjson.Field
 		Timeout1xxSecs              respjson.Field
@@ -803,6 +809,11 @@ type UacConnectionGetResponseDataInbound struct {
 	SimultaneousRinging string `json:"simultaneous_ringing"`
 	// Defaults to true.
 	SipCompactHeadersEnabled bool `json:"sip_compact_headers_enabled"`
+	// Selects which `sip_region` to receive inbound calls from. If null, the default
+	// region (US) will be used.
+	//
+	// Any of "US", "Europe", "Australia".
+	SipRegion string `json:"sip_region"`
 	// The Telnyx-generated SIP subdomain for this UAC connection.
 	SipSubdomain string `json:"sip_subdomain"`
 	// Controls which SIP URI callers may reach this connection.
@@ -826,6 +837,7 @@ type UacConnectionGetResponseDataInbound struct {
 		ShakenStirEnabled           respjson.Field
 		SimultaneousRinging         respjson.Field
 		SipCompactHeadersEnabled    respjson.Field
+		SipRegion                   respjson.Field
 		SipSubdomain                respjson.Field
 		SipSubdomainReceiveSettings respjson.Field
 		Timeout1xxSecs              respjson.Field
@@ -1204,6 +1216,11 @@ type UacConnectionUpdateResponseDataInbound struct {
 	SimultaneousRinging string `json:"simultaneous_ringing"`
 	// Defaults to true.
 	SipCompactHeadersEnabled bool `json:"sip_compact_headers_enabled"`
+	// Selects which `sip_region` to receive inbound calls from. If null, the default
+	// region (US) will be used.
+	//
+	// Any of "US", "Europe", "Australia".
+	SipRegion string `json:"sip_region"`
 	// The Telnyx-generated SIP subdomain for this UAC connection.
 	SipSubdomain string `json:"sip_subdomain"`
 	// Controls which SIP URI callers may reach this connection.
@@ -1227,6 +1244,7 @@ type UacConnectionUpdateResponseDataInbound struct {
 		ShakenStirEnabled           respjson.Field
 		SimultaneousRinging         respjson.Field
 		SipCompactHeadersEnabled    respjson.Field
+		SipRegion                   respjson.Field
 		SipSubdomain                respjson.Field
 		SipSubdomainReceiveSettings respjson.Field
 		Timeout1xxSecs              respjson.Field
@@ -1599,6 +1617,11 @@ type UacConnectionListResponseInbound struct {
 	SimultaneousRinging string `json:"simultaneous_ringing"`
 	// Defaults to true.
 	SipCompactHeadersEnabled bool `json:"sip_compact_headers_enabled"`
+	// Selects which `sip_region` to receive inbound calls from. If null, the default
+	// region (US) will be used.
+	//
+	// Any of "US", "Europe", "Australia".
+	SipRegion string `json:"sip_region"`
 	// The Telnyx-generated SIP subdomain for this UAC connection.
 	SipSubdomain string `json:"sip_subdomain"`
 	// Controls which SIP URI callers may reach this connection.
@@ -1622,6 +1645,7 @@ type UacConnectionListResponseInbound struct {
 		ShakenStirEnabled           respjson.Field
 		SimultaneousRinging         respjson.Field
 		SipCompactHeadersEnabled    respjson.Field
+		SipRegion                   respjson.Field
 		SipSubdomain                respjson.Field
 		SipSubdomainReceiveSettings respjson.Field
 		Timeout1xxSecs              respjson.Field
@@ -2034,6 +2058,11 @@ type UacConnectionDeleteResponseDataInbound struct {
 	SimultaneousRinging string `json:"simultaneous_ringing"`
 	// Defaults to true.
 	SipCompactHeadersEnabled bool `json:"sip_compact_headers_enabled"`
+	// Selects which `sip_region` to receive inbound calls from. If null, the default
+	// region (US) will be used.
+	//
+	// Any of "US", "Europe", "Australia".
+	SipRegion string `json:"sip_region"`
 	// The Telnyx-generated SIP subdomain for this UAC connection.
 	SipSubdomain string `json:"sip_subdomain"`
 	// Controls which SIP URI callers may reach this connection.
@@ -2057,6 +2086,7 @@ type UacConnectionDeleteResponseDataInbound struct {
 		ShakenStirEnabled           respjson.Field
 		SimultaneousRinging         respjson.Field
 		SipCompactHeadersEnabled    respjson.Field
+		SipRegion                   respjson.Field
 		SipSubdomain                respjson.Field
 		SipSubdomainReceiveSettings respjson.Field
 		Timeout1xxSecs              respjson.Field
@@ -2355,6 +2385,11 @@ type UacConnectionNewParamsInbound struct {
 	//
 	// Any of "disabled", "enabled".
 	SimultaneousRinging string `json:"simultaneous_ringing,omitzero"`
+	// Selects which `sip_region` to receive inbound calls from. If null, the default
+	// region (US) will be used.
+	//
+	// Any of "US", "Europe", "Australia".
+	SipRegion string `json:"sip_region,omitzero"`
 	paramObj
 }
 
@@ -2378,6 +2413,9 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[UacConnectionNewParamsInbound](
 		"simultaneous_ringing", "disabled", "enabled",
+	)
+	apijson.RegisterFieldValidator[UacConnectionNewParamsInbound](
+		"sip_region", "US", "Europe", "Australia",
 	)
 }
 
@@ -2694,6 +2732,11 @@ type UacConnectionUpdateParamsInbound struct {
 	//
 	// Any of "disabled", "enabled".
 	SimultaneousRinging string `json:"simultaneous_ringing,omitzero"`
+	// Selects which `sip_region` to receive inbound calls from. If null, the default
+	// region (US) will be used.
+	//
+	// Any of "US", "Europe", "Australia".
+	SipRegion string `json:"sip_region,omitzero"`
 	paramObj
 }
 
@@ -2717,6 +2760,9 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[UacConnectionUpdateParamsInbound](
 		"simultaneous_ringing", "disabled", "enabled",
+	)
+	apijson.RegisterFieldValidator[UacConnectionUpdateParamsInbound](
+		"sip_region", "US", "Europe", "Australia",
 	)
 }
 
