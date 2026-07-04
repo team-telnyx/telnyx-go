@@ -1,5 +1,20 @@
 # Changelog
 
+## 4.88.0 (2026-07-04)
+
+Full Changelog: [v4.87.0...v4.88.0](https://github.com/team-telnyx/telnyx-go/compare/v4.87.0...v4.88.0)
+
+### Bug Fixes
+
+* **release:** ghost guard also verifies the GitHub Release exists ([#164](https://github.com/team-telnyx/telnyx-go/issues/164)) ([c43b51e](https://github.com/team-telnyx/telnyx-go/commit/c43b51e46ae9c07c1992472e0ee6d17146cf353f))
+* **release:** scan next's commits in release-pr (stop depending on master hotfixes) ([#159](https://github.com/team-telnyx/telnyx-go/issues/159)) ([6b635d8](https://github.com/team-telnyx/telnyx-go/commit/6b635d8ce971fe8a276a20637c8876a43c3832d5))
+
+
+### Chores
+
+* promote from staging 5e16153 ([b4b1b55](https://github.com/team-telnyx/telnyx-go/commit/b4b1b55657afc87bb8d1ec67a4714c0ed4f01d78))
+* promote from staging 7160650 ([6786fc5](https://github.com/team-telnyx/telnyx-go/commit/6786fc595956f1f9022cdc677244d8a5fd6bc00b))
+
 ## [4.107.1](https://github.com/team-telnyx/telnyx-go-staging/compare/v4.107.0...v4.107.1) (2026-06-26)
 
 
