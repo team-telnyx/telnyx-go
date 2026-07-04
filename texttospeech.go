@@ -449,10 +449,10 @@ type TextToSpeechGenerateSpeechParams struct {
 	Text param.Opt[string] `json:"text,omitzero"`
 	// Voice identifier in the format `provider.model_id.voice_id` or
 	// `provider.voice_id`. Examples: `telnyx.NaturalHD.Alloy`,
-	// `Telnyx.Ultra.<voice_id>`, `azure.en-US-AvaMultilingualNeural`,
-	// `aws.Polly.Generative.Lucia`. When provided, `provider`, `model_id`, and
-	// `voice_id` are extracted automatically and take precedence over individual
-	// parameters.
+	// `Telnyx.Ultra.<voice_id>`, `Telnyx.Bayan.Ahmed`, `Telnyx.Sukhan.urdu-professor`,
+	// `azure.en-US-AvaMultilingualNeural`, `aws.Polly.Generative.Lucia`. When
+	// provided, `provider`, `model_id`, and `voice_id` are extracted automatically and
+	// take precedence over individual parameters.
 	Voice param.Opt[string] `json:"voice,omitzero"`
 	// AWS Polly provider-specific parameters.
 	Aws TextToSpeechGenerateSpeechParamsAws `json:"aws,omitzero"`
@@ -478,7 +478,9 @@ type TextToSpeechGenerateSpeechParams struct {
 	Rime TextToSpeechGenerateSpeechParamsRime `json:"rime,omitzero"`
 	// Telnyx provider-specific parameters. Use `voice_speed` and `temperature` for
 	// `Natural` and `NaturalHD` models. For the `Ultra` model, use `voice_speed`,
-	// `volume`, and `emotion`.
+	// `volume`, and `emotion`. `Bayan` and `Sukhan` don't use `temperature`, `volume`,
+	// or `emotion`, and don't support `voice_speed`. `Sukhan`'s `response_format` is
+	// restricted to `mp3` or `pcm` (no `wav`).
 	Telnyx TextToSpeechGenerateSpeechParamsTelnyx `json:"telnyx,omitzero"`
 	// Text type. Use `ssml` for SSML-formatted input (supported by AWS and Azure).
 	//
@@ -675,7 +677,9 @@ func (r *TextToSpeechGenerateSpeechParamsRime) UnmarshalJSON(data []byte) error 
 
 // Telnyx provider-specific parameters. Use `voice_speed` and `temperature` for
 // `Natural` and `NaturalHD` models. For the `Ultra` model, use `voice_speed`,
-// `volume`, and `emotion`.
+// `volume`, and `emotion`. `Bayan` and `Sukhan` don't use `temperature`, `volume`,
+// or `emotion`, and don't support `voice_speed`. `Sukhan`'s `response_format` is
+// restricted to `mp3` or `pcm` (no `wav`).
 type TextToSpeechGenerateSpeechParamsTelnyx struct {
 	// Audio response format.
 	ResponseFormat param.Opt[string] `json:"response_format,omitzero"`
@@ -683,7 +687,8 @@ type TextToSpeechGenerateSpeechParamsTelnyx struct {
 	SamplingRate param.Opt[int64] `json:"sampling_rate,omitzero"`
 	// Sampling temperature. Applies to `Natural` and `NaturalHD` models only.
 	Temperature param.Opt[float64] `json:"temperature,omitzero"`
-	// Voice speed multiplier. Applies to all models. Range: 0.5 to 2.0.
+	// Voice speed multiplier. Applies to all models except `Bayan` and `Sukhan`, which
+	// don't support it. Range: 0.5 to 2.0.
 	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
 	// Volume level for the Ultra model. Range: 0.0 to 2.0.
 	Volume param.Opt[float64] `json:"volume,omitzero"`
@@ -803,10 +808,10 @@ type TextToSpeechGetSpeechParams struct {
 	SocketID param.Opt[string] `query:"socket_id,omitzero" json:"-"`
 	// Voice identifier in the format `provider.model_id.voice_id` or
 	// `provider.voice_id` (e.g. `telnyx.NaturalHD.Telnyx_Alloy`,
-	// `Telnyx.Ultra.<voice_id>`, or `azure.en-US-AvaMultilingualNeural`). When
-	// provided, the `provider`, `model_id`, and `voice_id` are extracted
-	// automatically. Takes precedence over individual `provider`/`model_id`/`voice_id`
-	// parameters.
+	// `Telnyx.Ultra.<voice_id>`, `Telnyx.Bayan.Ahmed`, `Telnyx.Sukhan.urdu-professor`,
+	// or `azure.en-US-AvaMultilingualNeural`). When provided, the `provider`,
+	// `model_id`, and `voice_id` are extracted automatically. Takes precedence over
+	// individual `provider`/`model_id`/`voice_id` parameters.
 	Voice param.Opt[string] `query:"voice,omitzero" json:"-"`
 	// Voice identifier for the chosen provider.
 	VoiceID param.Opt[string] `query:"voice_id,omitzero" json:"-"`
