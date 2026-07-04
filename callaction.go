@@ -1254,7 +1254,8 @@ type TelnyxVoiceSettingsParam struct {
 	// Any of "telnyx".
 	Type TelnyxVoiceSettingsType `json:"type,omitzero" api:"required"`
 	// The voice speed to be used for the voice. The voice speed must be between 0.1
-	// and 2.0. Default value is 1.0.
+	// and 2.0. Default value is 1.0. Not supported for `Telnyx.Bayan.*` or
+	// `Telnyx.Sukhan.*` voices.
 	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
 	paramObj
 }
@@ -1299,6 +1300,8 @@ type TranscriptionConfigParam struct {
 	//   - `xai/grok-stt` for live streaming transcription.
 	//   - `soniox/stt-rt-v4` for live streaming multilingual transcription with
 	//     automatic language detection.
+	//   - `parakeet/tdt-0.6b-v3` for multilingual transcription with automatic language
+	//     detection.
 	//   - `azure/fast` and `azure/realtime`; Azure models require `region`, and
 	//     unsupported regions require `api_key_ref`.
 	//   - `google/latest_long` for non-streaming multilingual transcription.
@@ -1310,7 +1313,7 @@ type TranscriptionConfigParam struct {
 	// Any of "deepgram/flux", "flux", "deepgram/nova-3", "deepgram/nova-2",
 	// "speechmatics/standard", "speechmatics/enhanced",
 	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "azure/fast", "azure/realtime", "google/latest_long",
+	// "parakeet/tdt-0.6b-v3", "azure/fast", "azure/realtime", "google/latest_long",
 	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
 	Model TranscriptionConfigModel `json:"model,omitzero"`
 	paramObj
@@ -1335,6 +1338,8 @@ func (r *TranscriptionConfigParam) UnmarshalJSON(data []byte) error {
 //   - `xai/grok-stt` for live streaming transcription.
 //   - `soniox/stt-rt-v4` for live streaming multilingual transcription with
 //     automatic language detection.
+//   - `parakeet/tdt-0.6b-v3` for multilingual transcription with automatic language
+//     detection.
 //   - `azure/fast` and `azure/realtime`; Azure models require `region`, and
 //     unsupported regions require `api_key_ref`.
 //   - `google/latest_long` for non-streaming multilingual transcription.
@@ -1354,6 +1359,7 @@ const (
 	TranscriptionConfigModelAssemblyaiUniversalStreaming TranscriptionConfigModel = "assemblyai/universal-streaming"
 	TranscriptionConfigModelXaiGrokStt                   TranscriptionConfigModel = "xai/grok-stt"
 	TranscriptionConfigModelSonioxSttRtV4                TranscriptionConfigModel = "soniox/stt-rt-v4"
+	TranscriptionConfigModelParakeetTdt0_6bV3            TranscriptionConfigModel = "parakeet/tdt-0.6b-v3"
 	TranscriptionConfigModelAzureFast                    TranscriptionConfigModel = "azure/fast"
 	TranscriptionConfigModelAzureRealtime                TranscriptionConfigModel = "azure/realtime"
 	TranscriptionConfigModelGoogleLatestLong             TranscriptionConfigModel = "google/latest_long"
@@ -4965,6 +4971,9 @@ type CallActionGatherUsingSpeakParams struct {
 	//     [available voices](https://elevenlabs.io/docs/api-reference/get-voices).
 	//   - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>` (e.g., `Telnyx.KokoroTTS.af`).
 	//     Use `voice_settings` to configure voice_speed and other synthesis parameters.
+	//     `Bayan` provides Arabic (multiple dialects) and English voices (e.g.,
+	//     `Telnyx.Bayan.Ahmed`, `Telnyx.Bayan.Amanda`). `Sukhan` provides Urdu voices
+	//     (e.g., `Telnyx.Sukhan.urdu-professor`); `voice_speed` is not supported.
 	//   - **Minimax:** Use `Minimax.<ModelId>.<VoiceId>` (e.g.,
 	//     `Minimax.speech-02-hd.Wise_Woman`). Supported models: `speech-02-turbo`,
 	//     `speech-02-hd`, `speech-2.6-turbo`, `speech-2.8-turbo`. Use `voice_settings`
@@ -5634,6 +5643,9 @@ type CallActionSpeakParams struct {
 	//     [available voices](https://elevenlabs.io/docs/api-reference/get-voices).
 	//   - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>` (e.g., `Telnyx.KokoroTTS.af`).
 	//     Use `voice_settings` to configure voice_speed and other synthesis parameters.
+	//     `Bayan` provides Arabic (multiple dialects) and English voices (e.g.,
+	//     `Telnyx.Bayan.Ahmed`, `Telnyx.Bayan.Amanda`). `Sukhan` provides Urdu voices
+	//     (e.g., `Telnyx.Sukhan.urdu-professor`); `voice_speed` is not supported.
 	//   - **Minimax:** Use `Minimax.<ModelId>.<VoiceId>` (e.g.,
 	//     `Minimax.speech-02-hd.Wise_Woman`). Supported models: `speech-02-turbo`,
 	//     `speech-02-hd`, `speech-2.6-turbo`, `speech-2.8-turbo`. Use `voice_settings`

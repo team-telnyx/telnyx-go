@@ -160,8 +160,8 @@ type SpeechToTextListProvidersParams struct {
 	// models currently registered for any service type will return an empty `data`
 	// array rather than an error.
 	//
-	// Any of "deepgram", "speechmatics", "assemblyai", "xai", "soniox", "azure",
-	// "openai", "google", "telnyx".
+	// Any of "deepgram", "speechmatics", "assemblyai", "xai", "soniox", "parakeet",
+	// "azure", "openai", "google", "telnyx".
 	Provider SpeechToTextListProvidersParamsProvider `query:"provider,omitzero" json:"-"`
 	// Filter to entries that support the given service type. For backward
 	// compatibility with the values that briefly shipped before the product-aligned
@@ -197,6 +197,7 @@ const (
 	SpeechToTextListProvidersParamsProviderAssemblyai   SpeechToTextListProvidersParamsProvider = "assemblyai"
 	SpeechToTextListProvidersParamsProviderXai          SpeechToTextListProvidersParamsProvider = "xai"
 	SpeechToTextListProvidersParamsProviderSoniox       SpeechToTextListProvidersParamsProvider = "soniox"
+	SpeechToTextListProvidersParamsProviderParakeet     SpeechToTextListProvidersParamsProvider = "parakeet"
 	SpeechToTextListProvidersParamsProviderAzure        SpeechToTextListProvidersParamsProvider = "azure"
 	SpeechToTextListProvidersParamsProviderOpenAI       SpeechToTextListProvidersParamsProvider = "openai"
 	SpeechToTextListProvidersParamsProviderGoogle       SpeechToTextListProvidersParamsProvider = "google"
