@@ -3,22 +3,15 @@
 package telnyx
 
 import (
-	"context"
 	"encoding/json"
-	"net/http"
-	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
-	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
-	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
-// Generate text with LLMs
-//
 // AIChatService contains methods and other services that help with interacting
 // with the telnyx API.
 //
@@ -36,19 +29,6 @@ func NewAIChatService(opts ...option.RequestOption) (r AIChatService) {
 	r = AIChatService{}
 	r.Options = opts
 	return
-}
-
-// **Deprecated**: Use `POST /v2/ai/openai/chat/completions` instead. Chat with a
-// language model. This endpoint is consistent with the
-// [OpenAI Chat Completions API](https://platform.openai.com/docs/api-reference/chat)
-// and may be used with the OpenAI JS or Python SDK.
-//
-// Deprecated: deprecated
-func (r *AIChatService) NewCompletion(ctx context.Context, body AIChatNewCompletionParams, opts ...option.RequestOption) (res *AIChatNewCompletionResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "ai/chat/completions"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
 }
 
 type BucketIDs struct {
@@ -425,19 +405,5 @@ func (r ChatCompletionRequestToolsRetrievalParam) MarshalJSON() (data []byte, er
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *ChatCompletionRequestToolsRetrievalParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AIChatNewCompletionResponse map[string]any
-
-type AIChatNewCompletionParams struct {
-	ChatCompletionRequest ChatCompletionRequestParam
-	paramObj
-}
-
-func (r AIChatNewCompletionParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.ChatCompletionRequest)
-}
-func (r *AIChatNewCompletionParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

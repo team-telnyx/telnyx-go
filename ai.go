@@ -11,7 +11,6 @@ import (
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
-	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
@@ -29,8 +28,7 @@ type AIService struct {
 	// Configure AI assistant specifications
 	Assistants AIAssistantService
 	Audio      AIAudioService
-	// Generate text with LLMs
-	Chat AIChatService
+	Chat       AIChatService
 	// Identify common themes and patterns in your embedded documents
 	Clusters AIClusterService
 	// Manage historical AI assistant conversations
@@ -65,21 +63,6 @@ func NewAIService(opts ...option.RequestOption) (r AIService) {
 	r.OpenAI = NewAIOpenAIService(opts...)
 	r.Tools = NewAIToolService(opts...)
 	return
-}
-
-// **Deprecated**: Use `POST /v2/ai/openai/responses` instead. This endpoint is
-// compatible with the
-// [OpenAI Responses API](https://developers.openai.com/api/reference/responses/overview)
-// and may be used with the OpenAI JS or Python SDK. Response id parameter is not
-// supported at the moment. Use the `conversation` parameter with a Telnyx
-// Conversation ID to leverage persistent conversations.
-//
-// Deprecated: deprecated
-func (r *AIService) NewResponseDeprecated(ctx context.Context, body AINewResponseDeprecatedParams, opts ...option.RequestOption) (res *AINewResponseDeprecatedResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "ai/responses"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
 }
 
 // Performs semantic vector search across conversation history records.
@@ -137,24 +120,6 @@ func (r *AIService) GetConversationHistories(ctx context.Context, query AIGetCon
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/conversation_histories"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
-}
-
-// **Deprecated**: Use `GET /v2/ai/openai/models` instead.
-//
-// Returns the same `ModelsResponse` payload as the OpenAI-compatible endpoint —
-// open-source LLMs hosted on Telnyx (e.g. `moonshotai/Kimi-K2.6`,
-// `zai-org/GLM-5.1-FP8`, `MiniMaxAI/MiniMax-M2.7`), embedding models, and
-// fine-tuned models — kept around for backwards compatibility. New integrations
-// should use `/v2/ai/openai/models`.
-//
-// Model ids follow the `{organization}/{model_name}` convention from Hugging Face.
-//
-// Deprecated: deprecated
-func (r *AIService) GetModels(ctx context.Context, opts ...option.RequestOption) (res *ModelsResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "ai/models"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
 
@@ -305,8 +270,6 @@ func (r *ModelsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AINewResponseDeprecatedResponse map[string]any
-
 // Search response following the standard Telnyx V2 API format.
 type AIGetConversationHistoriesResponse struct {
 	// Ranked list of matching text chunks, sorted by cosine similarity score
@@ -443,18 +406,6 @@ type AISummarizeResponseData struct {
 // Returns the unmodified JSON received from the API
 func (r AISummarizeResponseData) RawJSON() string { return r.JSON.raw }
 func (r *AISummarizeResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AINewResponseDeprecatedParams struct {
-	ResponseRequest map[string]any
-	paramObj
-}
-
-func (r AINewResponseDeprecatedParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.ResponseRequest)
-}
-func (r *AINewResponseDeprecatedParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
