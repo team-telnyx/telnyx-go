@@ -23,6 +23,7 @@ type Arithmetic string      // Always "arithmetic"
 type Assistant string       // Always "assistant"
 type BoolLiteral string     // Always "bool_literal"
 type BoolOp string          // Always "bool_op"
+type ClientSideTool string  // Always "client_side_tool"
 type Comparative string     // Always "comparative"
 type Comparison string      // Always "comparison"
 type Default string         // Always "default"
@@ -54,6 +55,7 @@ func (c Arithmetic) Default() Arithmetic           { return "arithmetic" }
 func (c Assistant) Default() Assistant             { return "assistant" }
 func (c BoolLiteral) Default() BoolLiteral         { return "bool_literal" }
 func (c BoolOp) Default() BoolOp                   { return "bool_op" }
+func (c ClientSideTool) Default() ClientSideTool   { return "client_side_tool" }
 func (c Comparative) Default() Comparative         { return "comparative" }
 func (c Comparison) Default() Comparison           { return "comparison" }
 func (c Default) Default() Default                 { return "default" }
@@ -85,6 +87,7 @@ func (c Arithmetic) MarshalJSON() ([]byte, error)      { return marshalString(c)
 func (c Assistant) MarshalJSON() ([]byte, error)       { return marshalString(c) }
 func (c BoolLiteral) MarshalJSON() ([]byte, error)     { return marshalString(c) }
 func (c BoolOp) MarshalJSON() ([]byte, error)          { return marshalString(c) }
+func (c ClientSideTool) MarshalJSON() ([]byte, error)  { return marshalString(c) }
 func (c Comparative) MarshalJSON() ([]byte, error)     { return marshalString(c) }
 func (c Comparison) MarshalJSON() ([]byte, error)      { return marshalString(c) }
 func (c Default) MarshalJSON() ([]byte, error)         { return marshalString(c) }
