@@ -871,6 +871,16 @@ Methods:
 
 - <code title="get /ai/conversations/{conversation_id}/messages">client.AI.Conversations.Messages.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIConversationMessageService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, conversationID <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIConversationMessageListParams">AIConversationMessageListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIConversationMessageListResponse">AIConversationMessageListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+### ConversationInsights
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIConversationConversationInsightGetAggregatesResponse">AIConversationConversationInsightGetAggregatesResponse</a>
+
+Methods:
+
+- <code title="get /ai/conversations/conversation-insights/aggregates">client.AI.Conversations.ConversationInsights.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIConversationConversationInsightService.GetAggregates">GetAggregates</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIConversationConversationInsightGetAggregatesParams">AIConversationConversationInsightGetAggregatesParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIConversationConversationInsightGetAggregatesResponse">AIConversationConversationInsightGetAggregatesResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 ## Embeddings
 
 Response Types:

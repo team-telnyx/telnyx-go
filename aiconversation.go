@@ -35,6 +35,8 @@ type AIConversationService struct {
 	Insights AIConversationInsightService
 	// Manage historical AI assistant conversations
 	Messages AIConversationMessageService
+	// Manage historical AI assistant conversations
+	ConversationInsights AIConversationConversationInsightService
 }
 
 // NewAIConversationService generates a new service that applies the given options
@@ -46,6 +48,7 @@ func NewAIConversationService(opts ...option.RequestOption) (r AIConversationSer
 	r.InsightGroups = NewAIConversationInsightGroupService(opts...)
 	r.Insights = NewAIConversationInsightService(opts...)
 	r.Messages = NewAIConversationMessageService(opts...)
+	r.ConversationInsights = NewAIConversationConversationInsightService(opts...)
 	return
 }
 
