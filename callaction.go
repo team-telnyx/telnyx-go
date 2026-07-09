@@ -1445,7 +1445,8 @@ type TelnyxVoiceSettingsParam struct {
 	// Any of "telnyx".
 	Type TelnyxVoiceSettingsType `json:"type,omitzero" api:"required"`
 	// The voice speed to be used for the voice. The voice speed must be between 0.1
-	// and 2.0. Default value is 1.0.
+	// and 2.0. Default value is 1.0. Not supported for `Telnyx.Bayan.*` or
+	// `Telnyx.Sukhan.*` voices.
 	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
 	paramObj
 }
@@ -4062,6 +4063,9 @@ type CallActionGatherUsingAIParams struct {
 	//   - **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`,
 	//     `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`,
 	//     `Max`, `TTS2`.
+	//   - **Fish Audio:** Use `FishAudio.<ModelId>.<VoiceId>` (e.g.,
+	//     `FishAudio.s2.1-pro.<reference_id>`). Supported models: `s2.1-pro`, `s2-pro`,
+	//     `s1`. `VoiceId` is a Fish Voice-Library reference ID.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
 	Voice param.Opt[string] `json:"voice,omitzero"`
@@ -4373,6 +4377,9 @@ type CallActionGatherUsingSpeakParams struct {
 	//     [available voices](https://elevenlabs.io/docs/api-reference/get-voices).
 	//   - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>` (e.g., `Telnyx.KokoroTTS.af`).
 	//     Use `voice_settings` to configure voice_speed and other synthesis parameters.
+	//     `Bayan` provides Arabic (multiple dialects) and English voices (e.g.,
+	//     `Telnyx.Bayan.Ahmed`, `Telnyx.Bayan.Amanda`). `Sukhan` provides Urdu voices
+	//     (e.g., `Telnyx.Sukhan.urdu-professor`); `voice_speed` is not supported.
 	//   - **Minimax:** Use `Minimax.<ModelId>.<VoiceId>` (e.g.,
 	//     `Minimax.speech-02-hd.Wise_Woman`). Supported models: `speech-02-turbo`,
 	//     `speech-02-hd`, `speech-2.6-turbo`, `speech-2.8-turbo`. Use `voice_settings`
@@ -4387,6 +4394,9 @@ type CallActionGatherUsingSpeakParams struct {
 	//     `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`,
 	//     `Max`, `TTS2`. Use `voice_settings` to configure `delivery_mode` (`STABLE`,
 	//     `BALANCED`, `CREATIVE`), supported by `TTS2` only.
+	//   - **Fish Audio:** Use `FishAudio.<ModelId>.<VoiceId>` (e.g.,
+	//     `FishAudio.s2.1-pro.<reference_id>`). Supported models: `s2.1-pro`, `s2-pro`,
+	//     `s1`. `VoiceId` is a Fish Voice-Library reference ID.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
 	//
@@ -4959,6 +4969,9 @@ type CallActionSpeakParams struct {
 	//     [available voices](https://elevenlabs.io/docs/api-reference/get-voices).
 	//   - **Telnyx:** Use `Telnyx.<model_id>.<voice_id>` (e.g., `Telnyx.KokoroTTS.af`).
 	//     Use `voice_settings` to configure voice_speed and other synthesis parameters.
+	//     `Bayan` provides Arabic (multiple dialects) and English voices (e.g.,
+	//     `Telnyx.Bayan.Ahmed`, `Telnyx.Bayan.Amanda`). `Sukhan` provides Urdu voices
+	//     (e.g., `Telnyx.Sukhan.urdu-professor`); `voice_speed` is not supported.
 	//   - **Minimax:** Use `Minimax.<ModelId>.<VoiceId>` (e.g.,
 	//     `Minimax.speech-02-hd.Wise_Woman`). Supported models: `speech-02-turbo`,
 	//     `speech-02-hd`, `speech-2.6-turbo`, `speech-2.8-turbo`. Use `voice_settings`
@@ -4973,6 +4986,9 @@ type CallActionSpeakParams struct {
 	//     `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`,
 	//     `Max`, `TTS2`. Use `voice_settings` to configure `delivery_mode` (`STABLE`,
 	//     `BALANCED`, `CREATIVE`), supported by `TTS2` only.
+	//   - **Fish Audio:** Use `FishAudio.<ModelId>.<VoiceId>` (e.g.,
+	//     `FishAudio.s2.1-pro.<reference_id>`). Supported models: `s2.1-pro`, `s2-pro`,
+	//     `s1`. `VoiceId` is a Fish Voice-Library reference ID.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
 	//
@@ -5347,6 +5363,9 @@ type CallActionStartAIAssistantParams struct {
 	//   - **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`,
 	//     `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`,
 	//     `Max`, `TTS2`.
+	//   - **Fish Audio:** Use `FishAudio.<ModelId>.<VoiceId>` (e.g.,
+	//     `FishAudio.s2.1-pro.<reference_id>`). Supported models: `s2.1-pro`, `s2-pro`,
+	//     `s1`. `VoiceId` is a Fish Voice-Library reference ID.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
 	Voice param.Opt[string] `json:"voice,omitzero"`
@@ -5708,6 +5727,9 @@ type CallActionStartConversationRelayParams struct {
 	//   - **Inworld:** Use `Inworld.<ModelId>.<VoiceId>` (e.g., `Inworld.Mini.Loretta`,
 	//     `Inworld.Max.Oliver`, `Inworld.TTS2.Loretta`). Supported models: `Mini`,
 	//     `Max`, `TTS2`.
+	//   - **Fish Audio:** Use `FishAudio.<ModelId>.<VoiceId>` (e.g.,
+	//     `FishAudio.s2.1-pro.<reference_id>`). Supported models: `s2.1-pro`, `s2-pro`,
+	//     `s1`. `VoiceId` is a Fish Voice-Library reference ID.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
 	Voice param.Opt[string] `json:"voice,omitzero"`

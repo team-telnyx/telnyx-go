@@ -1,5 +1,24 @@
 # Changelog
 
+## [4.88.0](https://github.com/team-telnyx/telnyx-go/compare/v4.87.0...v4.88.0) (2026-07-09)
+
+
+### Bug Fixes
+
+* **release:** ghost guard also verifies the GitHub Release exists ([#164](https://github.com/team-telnyx/telnyx-go/issues/164)) ([c43b51e](https://github.com/team-telnyx/telnyx-go/commit/c43b51e46ae9c07c1992472e0ee6d17146cf353f))
+* **release:** scan next's commits in release-pr (stop depending on master hotfixes) ([#159](https://github.com/team-telnyx/telnyx-go/issues/159)) ([6b635d8](https://github.com/team-telnyx/telnyx-go/commit/6b635d8ce971fe8a276a20637c8876a43c3832d5))
+
+
+### Chores
+
+* sync code from next into release PR ([#150](https://github.com/team-telnyx/telnyx-go/issues/150)) ([35f4077](https://github.com/team-telnyx/telnyx-go/commit/35f407761c7d2c4680754b8da5359cc5369f14b4))
+* sync code from next into release PR ([#151](https://github.com/team-telnyx/telnyx-go/issues/151)) ([ec01099](https://github.com/team-telnyx/telnyx-go/commit/ec01099de5a29166a81f4651053e98dfd67ec8a5))
+* sync code from next into release PR ([#152](https://github.com/team-telnyx/telnyx-go/issues/152)) ([df334e5](https://github.com/team-telnyx/telnyx-go/commit/df334e5ef13d0418d64409097c4a1f9843266338))
+* sync code from next into release PR ([#153](https://github.com/team-telnyx/telnyx-go/issues/153)) ([d925f4c](https://github.com/team-telnyx/telnyx-go/commit/d925f4ca27c9b92308950fc1c36e1c75107ece4f))
+* sync code from next into release PR ([#155](https://github.com/team-telnyx/telnyx-go/issues/155)) ([5c4a9c3](https://github.com/team-telnyx/telnyx-go/commit/5c4a9c375bd801a815e21a66a77fb8505a1e8371))
+* sync code from next into release PR ([#156](https://github.com/team-telnyx/telnyx-go/issues/156)) ([4b64261](https://github.com/team-telnyx/telnyx-go/commit/4b642614d82c30ecc54a984a0fe099ef53939d14))
+* sync code from next into release PR ([#157](https://github.com/team-telnyx/telnyx-go/issues/157)) ([7347356](https://github.com/team-telnyx/telnyx-go/commit/73473562dbe8ce5d116d7d9861b9507965ddc4f7))
+
 ## [4.87.0](https://github.com/team-telnyx/telnyx-go/compare/v4.87.0...v4.87.0) (2026-07-03)
 
 

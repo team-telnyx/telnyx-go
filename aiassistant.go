@@ -457,8 +457,8 @@ func (r *AssistantMcpServerParam) UnmarshalJSON(data []byte) error {
 }
 
 // AssistantToolUnion contains all possible properties and values from
-// [InferenceEmbeddingWebhookToolParamsResp], [RetrievalTool],
-// [AssistantToolHandoff], [HangupTool], [AssistantToolTransfer],
+// [InferenceEmbeddingWebhookToolParamsResp], [AssistantToolClientSideTool],
+// [RetrievalTool], [AssistantToolHandoff], [HangupTool], [AssistantToolTransfer],
 // [AssistantToolInvite], [AssistantToolRefer], [AssistantToolSendDtmf],
 // [AssistantToolSendMessage], [AssistantToolSkipTurn].
 //
@@ -466,11 +466,13 @@ func (r *AssistantMcpServerParam) UnmarshalJSON(data []byte) error {
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AssistantToolUnion struct {
-	// Any of "webhook", "retrieval", "handoff", "hangup", "transfer", "invite",
-	// "refer", "send_dtmf", "send_message", "skip_turn".
+	// Any of "webhook", "client_side_tool", "retrieval", "handoff", "hangup",
+	// "transfer", "invite", "refer", "send_dtmf", "send_message", "skip_turn".
 	Type string `json:"type"`
 	// This field is from variant [InferenceEmbeddingWebhookToolParamsResp].
 	Webhook InferenceEmbeddingWebhookToolParamsWebhookResp `json:"webhook"`
+	// This field is from variant [AssistantToolClientSideTool].
+	ClientSideTool AssistantToolClientSideToolClientSideTool `json:"client_side_tool"`
 	// This field is from variant [RetrievalTool].
 	Retrieval BucketIDs `json:"retrieval"`
 	// This field is from variant [AssistantToolHandoff].
@@ -490,18 +492,19 @@ type AssistantToolUnion struct {
 	// This field is from variant [AssistantToolSkipTurn].
 	SkipTurn AssistantToolSkipTurnSkipTurn `json:"skip_turn"`
 	JSON     struct {
-		Type        respjson.Field
-		Webhook     respjson.Field
-		Retrieval   respjson.Field
-		Handoff     respjson.Field
-		Hangup      respjson.Field
-		Transfer    respjson.Field
-		Invite      respjson.Field
-		Refer       respjson.Field
-		SendDtmf    respjson.Field
-		SendMessage respjson.Field
-		SkipTurn    respjson.Field
-		raw         string
+		Type           respjson.Field
+		Webhook        respjson.Field
+		ClientSideTool respjson.Field
+		Retrieval      respjson.Field
+		Handoff        respjson.Field
+		Hangup         respjson.Field
+		Transfer       respjson.Field
+		Invite         respjson.Field
+		Refer          respjson.Field
+		SendDtmf       respjson.Field
+		SendMessage    respjson.Field
+		SkipTurn       respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -512,6 +515,7 @@ type anyAssistantTool interface {
 }
 
 func (InferenceEmbeddingWebhookToolParamsResp) implAssistantToolUnion() {}
+func (AssistantToolClientSideTool) implAssistantToolUnion()             {}
 func (RetrievalTool) implAssistantToolUnion()                           {}
 func (AssistantToolHandoff) implAssistantToolUnion()                    {}
 func (HangupTool) implAssistantToolUnion()                              {}
@@ -526,6 +530,7 @@ func (AssistantToolSkipTurn) implAssistantToolUnion()                   {}
 //
 //	switch variant := AssistantToolUnion.AsAny().(type) {
 //	case telnyx.InferenceEmbeddingWebhookToolParamsResp:
+//	case telnyx.AssistantToolClientSideTool:
 //	case telnyx.RetrievalTool:
 //	case telnyx.AssistantToolHandoff:
 //	case telnyx.HangupTool:
@@ -542,6 +547,8 @@ func (u AssistantToolUnion) AsAny() anyAssistantTool {
 	switch u.Type {
 	case "webhook":
 		return u.AsWebhook()
+	case "client_side_tool":
+		return u.AsClientSideTool()
 	case "retrieval":
 		return u.AsRetrieval()
 	case "handoff":
@@ -565,6 +572,11 @@ func (u AssistantToolUnion) AsAny() anyAssistantTool {
 }
 
 func (u AssistantToolUnion) AsWebhook() (v InferenceEmbeddingWebhookToolParamsResp) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u AssistantToolUnion) AsClientSideTool() (v AssistantToolClientSideTool) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -628,6 +640,75 @@ func (r *AssistantToolUnion) UnmarshalJSON(data []byte) error {
 // AssistantToolUnionParam.Overrides()
 func (r AssistantToolUnion) ToParam() AssistantToolUnionParam {
 	return param.Override[AssistantToolUnionParam](json.RawMessage(r.RawJSON()))
+}
+
+type AssistantToolClientSideTool struct {
+	ClientSideTool AssistantToolClientSideToolClientSideTool `json:"client_side_tool" api:"required"`
+	Type           constant.ClientSideTool                   `json:"type" default:"client_side_tool"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ClientSideTool respjson.Field
+		Type           respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolClientSideTool) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolClientSideTool) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AssistantToolClientSideToolClientSideTool struct {
+	// The description of the tool.
+	Description string `json:"description" api:"required"`
+	// The name of the tool.
+	Name string `json:"name" api:"required"`
+	// The parameters the tool accepts, described as a JSON Schema object. See the
+	// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
+	// documentation about the format
+	Parameters AssistantToolClientSideToolClientSideToolParameters `json:"parameters" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Description respjson.Field
+		Name        respjson.Field
+		Parameters  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolClientSideToolClientSideTool) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolClientSideToolClientSideTool) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The parameters the tool accepts, described as a JSON Schema object. See the
+// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
+// documentation about the format
+type AssistantToolClientSideToolClientSideToolParameters struct {
+	// The properties of the parameters.
+	Properties map[string]any `json:"properties"`
+	// The required properties of the parameters.
+	Required []string `json:"required"`
+	// Any of "object".
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Properties  respjson.Field
+		Required    respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolClientSideToolClientSideToolParameters) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolClientSideToolClientSideToolParameters) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The handoff tool allows the assistant to hand off control of the conversation to
@@ -1371,6 +1452,12 @@ func AssistantToolParamOfWebhook(webhook InferenceEmbeddingWebhookToolParamsWebh
 	return AssistantToolUnionParam{OfWebhook: &variant}
 }
 
+func AssistantToolParamOfClientSideTool(clientSideTool AssistantToolClientSideToolClientSideToolParam) AssistantToolUnionParam {
+	var variant AssistantToolClientSideToolParam
+	variant.ClientSideTool = clientSideTool
+	return AssistantToolUnionParam{OfClientSideTool: &variant}
+}
+
 func AssistantToolParamOfRetrieval(retrieval BucketIDsParam) AssistantToolUnionParam {
 	var variant RetrievalToolParam
 	variant.Retrieval = retrieval
@@ -1429,21 +1516,23 @@ func AssistantToolParamOfSkipTurn(skipTurn AssistantToolSkipTurnSkipTurnParam) A
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type AssistantToolUnionParam struct {
-	OfWebhook     *InferenceEmbeddingWebhookToolParams `json:",omitzero,inline"`
-	OfRetrieval   *RetrievalToolParam                  `json:",omitzero,inline"`
-	OfHandoff     *AssistantToolHandoffParam           `json:",omitzero,inline"`
-	OfHangup      *HangupToolParam                     `json:",omitzero,inline"`
-	OfTransfer    *AssistantToolTransferParam          `json:",omitzero,inline"`
-	OfInvite      *AssistantToolInviteParam            `json:",omitzero,inline"`
-	OfRefer       *AssistantToolReferParam             `json:",omitzero,inline"`
-	OfSendDtmf    *AssistantToolSendDtmfParam          `json:",omitzero,inline"`
-	OfSendMessage *AssistantToolSendMessageParam       `json:",omitzero,inline"`
-	OfSkipTurn    *AssistantToolSkipTurnParam          `json:",omitzero,inline"`
+	OfWebhook        *InferenceEmbeddingWebhookToolParams `json:",omitzero,inline"`
+	OfClientSideTool *AssistantToolClientSideToolParam    `json:",omitzero,inline"`
+	OfRetrieval      *RetrievalToolParam                  `json:",omitzero,inline"`
+	OfHandoff        *AssistantToolHandoffParam           `json:",omitzero,inline"`
+	OfHangup         *HangupToolParam                     `json:",omitzero,inline"`
+	OfTransfer       *AssistantToolTransferParam          `json:",omitzero,inline"`
+	OfInvite         *AssistantToolInviteParam            `json:",omitzero,inline"`
+	OfRefer          *AssistantToolReferParam             `json:",omitzero,inline"`
+	OfSendDtmf       *AssistantToolSendDtmfParam          `json:",omitzero,inline"`
+	OfSendMessage    *AssistantToolSendMessageParam       `json:",omitzero,inline"`
+	OfSkipTurn       *AssistantToolSkipTurnParam          `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u AssistantToolUnionParam) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfWebhook,
+		u.OfClientSideTool,
 		u.OfRetrieval,
 		u.OfHandoff,
 		u.OfHangup,
@@ -1461,6 +1550,8 @@ func (u *AssistantToolUnionParam) UnmarshalJSON(data []byte) error {
 func (u *AssistantToolUnionParam) asAny() any {
 	if !param.IsOmitted(u.OfWebhook) {
 		return u.OfWebhook
+	} else if !param.IsOmitted(u.OfClientSideTool) {
+		return u.OfClientSideTool
 	} else if !param.IsOmitted(u.OfRetrieval) {
 		return u.OfRetrieval
 	} else if !param.IsOmitted(u.OfHandoff) {
@@ -1487,6 +1578,14 @@ func (u *AssistantToolUnionParam) asAny() any {
 func (u AssistantToolUnionParam) GetWebhook() *InferenceEmbeddingWebhookToolParamsWebhook {
 	if vt := u.OfWebhook; vt != nil {
 		return &vt.Webhook
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AssistantToolUnionParam) GetClientSideTool() *AssistantToolClientSideToolClientSideToolParam {
+	if vt := u.OfClientSideTool; vt != nil {
+		return &vt.ClientSideTool
 	}
 	return nil
 }
@@ -1567,6 +1666,8 @@ func (u AssistantToolUnionParam) GetSkipTurn() *AssistantToolSkipTurnSkipTurnPar
 func (u AssistantToolUnionParam) GetType() *string {
 	if vt := u.OfWebhook; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfClientSideTool; vt != nil {
+		return (*string)(&vt.Type)
 	} else if vt := u.OfRetrieval; vt != nil {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfHandoff; vt != nil {
@@ -1593,6 +1694,7 @@ func init() {
 	apijson.RegisterUnion[AssistantToolUnionParam](
 		"type",
 		apijson.Discriminator[InferenceEmbeddingWebhookToolParams]("webhook"),
+		apijson.Discriminator[AssistantToolClientSideToolParam]("client_side_tool"),
 		apijson.Discriminator[RetrievalToolParam]("retrieval"),
 		apijson.Discriminator[AssistantToolHandoffParam]("handoff"),
 		apijson.Discriminator[HangupToolParam]("hangup"),
@@ -1602,6 +1704,70 @@ func init() {
 		apijson.Discriminator[AssistantToolSendDtmfParam]("send_dtmf"),
 		apijson.Discriminator[AssistantToolSendMessageParam]("send_message"),
 		apijson.Discriminator[AssistantToolSkipTurnParam]("skip_turn"),
+	)
+}
+
+// The properties ClientSideTool, Type are required.
+type AssistantToolClientSideToolParam struct {
+	ClientSideTool AssistantToolClientSideToolClientSideToolParam `json:"client_side_tool,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "client_side_tool".
+	Type constant.ClientSideTool `json:"type" default:"client_side_tool"`
+	paramObj
+}
+
+func (r AssistantToolClientSideToolParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolClientSideToolParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolClientSideToolParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Description, Name, Parameters are required.
+type AssistantToolClientSideToolClientSideToolParam struct {
+	// The description of the tool.
+	Description string `json:"description" api:"required"`
+	// The name of the tool.
+	Name string `json:"name" api:"required"`
+	// The parameters the tool accepts, described as a JSON Schema object. See the
+	// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
+	// documentation about the format
+	Parameters AssistantToolClientSideToolClientSideToolParametersParam `json:"parameters,omitzero" api:"required"`
+	paramObj
+}
+
+func (r AssistantToolClientSideToolClientSideToolParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolClientSideToolClientSideToolParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolClientSideToolClientSideToolParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The parameters the tool accepts, described as a JSON Schema object. See the
+// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
+// documentation about the format
+type AssistantToolClientSideToolClientSideToolParametersParam struct {
+	// The properties of the parameters.
+	Properties map[string]any `json:"properties,omitzero"`
+	// The required properties of the parameters.
+	Required []string `json:"required,omitzero"`
+	// Any of "object".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r AssistantToolClientSideToolClientSideToolParametersParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolClientSideToolClientSideToolParametersParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolClientSideToolClientSideToolParametersParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AssistantToolClientSideToolClientSideToolParametersParam](
+		"type", "object",
 	)
 }
 

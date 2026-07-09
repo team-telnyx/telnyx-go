@@ -136,14 +136,15 @@ func (r *SharedToolResponse) UnmarshalJSON(data []byte) error {
 type AIToolDeleteResponse = any
 
 type AIToolNewParams struct {
-	DisplayName string           `json:"display_name" api:"required"`
-	Type        string           `json:"type" api:"required"`
-	TimeoutMs   param.Opt[int64] `json:"timeout_ms,omitzero"`
-	Function    map[string]any   `json:"function,omitzero"`
-	Handoff     map[string]any   `json:"handoff,omitzero"`
-	Invite      map[string]any   `json:"invite,omitzero"`
-	Retrieval   map[string]any   `json:"retrieval,omitzero"`
-	Webhook     map[string]any   `json:"webhook,omitzero"`
+	DisplayName    string           `json:"display_name" api:"required"`
+	Type           string           `json:"type" api:"required"`
+	TimeoutMs      param.Opt[int64] `json:"timeout_ms,omitzero"`
+	ClientSideTool map[string]any   `json:"client_side_tool,omitzero"`
+	Function       map[string]any   `json:"function,omitzero"`
+	Handoff        map[string]any   `json:"handoff,omitzero"`
+	Invite         map[string]any   `json:"invite,omitzero"`
+	Retrieval      map[string]any   `json:"retrieval,omitzero"`
+	Webhook        map[string]any   `json:"webhook,omitzero"`
 	paramObj
 }
 
@@ -156,14 +157,15 @@ func (r *AIToolNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type AIToolUpdateParams struct {
-	DisplayName param.Opt[string] `json:"display_name,omitzero"`
-	TimeoutMs   param.Opt[int64]  `json:"timeout_ms,omitzero"`
-	Type        param.Opt[string] `json:"type,omitzero"`
-	Function    map[string]any    `json:"function,omitzero"`
-	Handoff     map[string]any    `json:"handoff,omitzero"`
-	Invite      map[string]any    `json:"invite,omitzero"`
-	Retrieval   map[string]any    `json:"retrieval,omitzero"`
-	Webhook     map[string]any    `json:"webhook,omitzero"`
+	DisplayName    param.Opt[string] `json:"display_name,omitzero"`
+	TimeoutMs      param.Opt[int64]  `json:"timeout_ms,omitzero"`
+	Type           param.Opt[string] `json:"type,omitzero"`
+	ClientSideTool map[string]any    `json:"client_side_tool,omitzero"`
+	Function       map[string]any    `json:"function,omitzero"`
+	Handoff        map[string]any    `json:"handoff,omitzero"`
+	Invite         map[string]any    `json:"invite,omitzero"`
+	Retrieval      map[string]any    `json:"retrieval,omitzero"`
+	Webhook        map[string]any    `json:"webhook,omitzero"`
 	paramObj
 }
 

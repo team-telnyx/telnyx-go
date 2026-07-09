@@ -179,6 +179,11 @@ type PhoneNumberDetailed struct {
 	Status PhoneNumberDetailedStatus `json:"status" api:"required"`
 	// A list of user-assigned tags to help manage the phone number.
 	Tags []string `json:"tags" api:"required"`
+	// ISO 8601 formatted date indicating when the phone number was first activated
+	// (transitioned from purchase-pending or port-pending to active). Will be null for
+	// numbers that have not yet been activated, or for legacy numbers activated before
+	// this field was tracked.
+	ActivatedAt time.Time `json:"activated_at" api:"nullable" format:"date-time"`
 	// Identifies the billing group associated with the phone number.
 	BillingGroupID string `json:"billing_group_id" api:"nullable"`
 	// Indicates if call forwarding will be enabled for this number if forwards_to and
@@ -245,6 +250,7 @@ type PhoneNumberDetailed struct {
 		RecordType            respjson.Field
 		Status                respjson.Field
 		Tags                  respjson.Field
+		ActivatedAt           respjson.Field
 		BillingGroupID        respjson.Field
 		CallForwardingEnabled respjson.Field
 		CallRecordingEnabled  respjson.Field
@@ -396,6 +402,11 @@ func (r *PhoneNumberDeleteResponse) UnmarshalJSON(data []byte) error {
 type PhoneNumberDeleteResponseData struct {
 	// Identifies the resource.
 	ID string `json:"id"`
+	// ISO 8601 formatted date indicating when the phone number was first activated
+	// (transitioned from purchase-pending or port-pending to active). Will be null for
+	// numbers that have not yet been activated, or for legacy numbers activated before
+	// this field was tracked.
+	ActivatedAt time.Time `json:"activated_at" api:"nullable" format:"date-time"`
 	// Identifies the billing group associated with the phone number.
 	BillingGroupID string `json:"billing_group_id"`
 	// Indicates if call forwarding will be enabled for this number if forwards_to and
@@ -461,6 +472,7 @@ type PhoneNumberDeleteResponseData struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
+		ActivatedAt           respjson.Field
 		BillingGroupID        respjson.Field
 		CallForwardingEnabled respjson.Field
 		CallRecordingEnabled  respjson.Field
@@ -499,6 +511,11 @@ func (r *PhoneNumberDeleteResponseData) UnmarshalJSON(data []byte) error {
 type PhoneNumberSlimListResponse struct {
 	// Identifies the resource.
 	ID string `json:"id"`
+	// ISO 8601 formatted date indicating when the phone number was first activated
+	// (transitioned from purchase-pending or port-pending to active). Will be null for
+	// numbers that have not yet been activated, or for legacy numbers activated before
+	// this field was tracked.
+	ActivatedAt time.Time `json:"activated_at" api:"nullable" format:"date-time"`
 	// Identifies the billing group associated with the phone number.
 	BillingGroupID string `json:"billing_group_id"`
 	// Indicates if call forwarding will be enabled for this number if forwards_to and
@@ -572,6 +589,7 @@ type PhoneNumberSlimListResponse struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
+		ActivatedAt           respjson.Field
 		BillingGroupID        respjson.Field
 		CallForwardingEnabled respjson.Field
 		CallRecordingEnabled  respjson.Field

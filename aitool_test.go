@@ -29,6 +29,9 @@ func TestAIToolNewWithOptionalParams(t *testing.T) {
 	_, err := client.AI.Tools.New(context.TODO(), telnyx.AIToolNewParams{
 		DisplayName: "display_name",
 		Type:        "type",
+		ClientSideTool: map[string]any{
+			"foo": "bar",
+		},
 		Function: map[string]any{
 			"foo": "bar",
 		},
@@ -95,6 +98,9 @@ func TestAIToolUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"tool_id",
 		telnyx.AIToolUpdateParams{
+			ClientSideTool: map[string]any{
+				"foo": "bar",
+			},
 			DisplayName: telnyx.String("display_name"),
 			Function: map[string]any{
 				"foo": "bar",
