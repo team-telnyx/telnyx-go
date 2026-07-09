@@ -56,7 +56,7 @@ func TestVerifyProfileNewWithOptionalParams(t *testing.T) {
 		Whatsapp: telnyx.VerifyProfileNewParamsWhatsapp{
 			DefaultVerificationTimeoutSecs: telnyx.Int(300),
 			SenderPhoneNumber:              telnyx.String("+13035551234"),
-			TemplateID:                     telnyx.String("authentication_template_name"),
+			TemplateID:                     telnyx.String("authentication_template_id"),
 			WabaID:                         telnyx.String("1234567890"),
 			WhitelistedDestinations:        []string{"US", "CA"},
 		},
@@ -134,7 +134,7 @@ func TestVerifyProfileUpdateWithOptionalParams(t *testing.T) {
 			Whatsapp: telnyx.VerifyProfileUpdateParamsWhatsapp{
 				DefaultVerificationTimeoutSecs: telnyx.Int(300),
 				SenderPhoneNumber:              telnyx.String("+13035551234"),
-				TemplateID:                     telnyx.String("authentication_template_name"),
+				TemplateID:                     telnyx.String("authentication_template_id"),
 				WabaID:                         telnyx.String("1234567890"),
 				WhitelistedDestinations:        []string{"US", "CA"},
 			},

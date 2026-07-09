@@ -325,7 +325,7 @@ type VerifyProfileWhatsapp struct {
 	MessagingTemplateID string `json:"messaging_template_id" format:"uuid"`
 	// Phone number registered on the customer WABA to send OTPs from
 	SenderPhoneNumber string `json:"sender_phone_number" api:"nullable"`
-	// Customer pre-approved authentication template name registered on Meta
+	// Customer pre-approved authentication template ID registered on Meta
 	TemplateID string `json:"template_id" api:"nullable"`
 	// Customer Meta WABA ID for Bring-Your-Own-WABA sending
 	WabaID string `json:"waba_id" api:"nullable"`
@@ -527,7 +527,7 @@ func (r *VerifyProfileNewParamsSMS) UnmarshalJSON(data []byte) error {
 type VerifyProfileNewParamsWhatsapp struct {
 	// Phone number registered on the customer WABA to send OTPs from
 	SenderPhoneNumber param.Opt[string] `json:"sender_phone_number,omitzero"`
-	// Customer pre-approved authentication template name registered on Meta
+	// Customer pre-approved authentication template ID registered on Meta
 	TemplateID param.Opt[string] `json:"template_id,omitzero"`
 	// Customer Meta WABA ID for Bring-Your-Own-WABA sending
 	WabaID param.Opt[string] `json:"waba_id,omitzero"`
@@ -645,7 +645,7 @@ func (r *VerifyProfileUpdateParamsSMS) UnmarshalJSON(data []byte) error {
 type VerifyProfileUpdateParamsWhatsapp struct {
 	// Phone number registered on the customer WABA to send OTPs from
 	SenderPhoneNumber param.Opt[string] `json:"sender_phone_number,omitzero"`
-	// Customer pre-approved authentication template name registered on Meta
+	// Customer pre-approved authentication template ID registered on Meta
 	TemplateID param.Opt[string] `json:"template_id,omitzero"`
 	// Customer Meta WABA ID for Bring-Your-Own-WABA sending
 	WabaID param.Opt[string] `json:"waba_id,omitzero"`
