@@ -41,7 +41,8 @@ type AIService struct {
 	Missions     AIMissionService
 	OpenAI       AIOpenAIService
 	// Configure AI assistant specifications
-	Tools AIToolService
+	Tools     AIToolService
+	Anthropic AIAnthropicService
 }
 
 // NewAIService generates a new service that applies the given options to each
@@ -62,6 +63,7 @@ func NewAIService(opts ...option.RequestOption) (r AIService) {
 	r.Missions = NewAIMissionService(opts...)
 	r.OpenAI = NewAIOpenAIService(opts...)
 	r.Tools = NewAIToolService(opts...)
+	r.Anthropic = NewAIAnthropicService(opts...)
 	return
 }
 

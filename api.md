@@ -1170,6 +1170,18 @@ Methods:
 - <code title="get /ai/tools">client.AI.Tools.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIToolService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIToolListParams">AIToolListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SharedToolResponse">SharedToolResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /ai/tools/{tool_id}">client.AI.Tools.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIToolService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, toolID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIToolDeleteResponse">AIToolDeleteResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+## Anthropic
+
+### V1
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIAnthropicV1MessagesResponse">AIAnthropicV1MessagesResponse</a>
+
+Methods:
+
+- <code title="post /ai/anthropic/v1/messages">client.AI.Anthropic.V1.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIAnthropicV1Service.Messages">Messages</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIAnthropicV1MessagesParams">AIAnthropicV1MessagesParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIAnthropicV1MessagesResponse">AIAnthropicV1MessagesResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # AuditEvents
 
 Response Types:
