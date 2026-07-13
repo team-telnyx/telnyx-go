@@ -1521,7 +1521,7 @@ type TranscriptionConfigParam struct {
 	//   - `xai/grok-stt` for live streaming transcription.
 	//   - `soniox/stt-rt-v4` for live streaming multilingual transcription with
 	//     automatic language detection.
-	//   - `parakeet/tdt-0.6b-v3` for multilingual transcription with automatic language
+	//   - `nvidia/parakeet-v3` for multilingual transcription with automatic language
 	//     detection.
 	//   - `azure/fast` and `azure/realtime`; Azure models require `region`, and
 	//     unsupported regions require `api_key_ref`.
@@ -1534,7 +1534,7 @@ type TranscriptionConfigParam struct {
 	// Any of "deepgram/flux", "flux", "deepgram/nova-3", "deepgram/nova-2",
 	// "speechmatics/standard", "speechmatics/enhanced",
 	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "parakeet/tdt-0.6b-v3", "azure/fast", "azure/realtime", "google/latest_long",
+	// "nvidia/parakeet-v3", "azure/fast", "azure/realtime", "google/latest_long",
 	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
 	Model TranscriptionConfigModel `json:"model,omitzero"`
 	paramObj
@@ -1559,7 +1559,7 @@ func (r *TranscriptionConfigParam) UnmarshalJSON(data []byte) error {
 //   - `xai/grok-stt` for live streaming transcription.
 //   - `soniox/stt-rt-v4` for live streaming multilingual transcription with
 //     automatic language detection.
-//   - `parakeet/tdt-0.6b-v3` for multilingual transcription with automatic language
+//   - `nvidia/parakeet-v3` for multilingual transcription with automatic language
 //     detection.
 //   - `azure/fast` and `azure/realtime`; Azure models require `region`, and
 //     unsupported regions require `api_key_ref`.
@@ -1580,7 +1580,7 @@ const (
 	TranscriptionConfigModelAssemblyaiUniversalStreaming TranscriptionConfigModel = "assemblyai/universal-streaming"
 	TranscriptionConfigModelXaiGrokStt                   TranscriptionConfigModel = "xai/grok-stt"
 	TranscriptionConfigModelSonioxSttRtV4                TranscriptionConfigModel = "soniox/stt-rt-v4"
-	TranscriptionConfigModelParakeetTdt0_6bV3            TranscriptionConfigModel = "parakeet/tdt-0.6b-v3"
+	TranscriptionConfigModelNvidiaParakeetV3             TranscriptionConfigModel = "nvidia/parakeet-v3"
 	TranscriptionConfigModelAzureFast                    TranscriptionConfigModel = "azure/fast"
 	TranscriptionConfigModelAzureRealtime                TranscriptionConfigModel = "azure/realtime"
 	TranscriptionConfigModelGoogleLatestLong             TranscriptionConfigModel = "google/latest_long"
@@ -1985,7 +1985,7 @@ type TranscriptionEngineParakeetConfigParam struct {
 	TranscriptionEngine TranscriptionEngineParakeetConfigTranscriptionEngine `json:"transcription_engine,omitzero"`
 	// The model to use for transcription.
 	//
-	// Any of "parakeet/tdt-0.6b-v3".
+	// Any of "nvidia/parakeet-v3".
 	TranscriptionModel TranscriptionEngineParakeetConfigTranscriptionModel `json:"transcription_model,omitzero"`
 	paramObj
 }
@@ -2009,7 +2009,7 @@ const (
 type TranscriptionEngineParakeetConfigTranscriptionModel string
 
 const (
-	TranscriptionEngineParakeetConfigTranscriptionModelParakeetTdt0_6bV3 TranscriptionEngineParakeetConfigTranscriptionModel = "parakeet/tdt-0.6b-v3"
+	TranscriptionEngineParakeetConfigTranscriptionModelNvidiaParakeetV3 TranscriptionEngineParakeetConfigTranscriptionModel = "nvidia/parakeet-v3"
 )
 
 // The property TranscriptionEngine is required.
