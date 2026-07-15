@@ -31,6 +31,9 @@ type StorageService struct {
 	Migrations StorageMigrationService
 	// Manage KV storage namespaces
 	Kvs StorageKvService
+	// Manage CloudFS filesystems — JuiceFS-compatible filesystems backed by Telnyx
+	// Cloud Storage
+	Cloudfs StorageCloudfService
 }
 
 // NewStorageService generates a new service that applies the given options to each
@@ -43,6 +46,7 @@ func NewStorageService(opts ...option.RequestOption) (r StorageService) {
 	r.MigrationSources = NewStorageMigrationSourceService(opts...)
 	r.Migrations = NewStorageMigrationService(opts...)
 	r.Kvs = NewStorageKvService(opts...)
+	r.Cloudfs = NewStorageCloudfService(opts...)
 	return
 }
 
