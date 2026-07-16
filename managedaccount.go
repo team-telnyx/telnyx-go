@@ -498,7 +498,7 @@ type ManagedAccountListParams struct {
 	PageSize                 param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally:
 	// filter[email][contains], filter[email][eq], filter[organization_name][contains],
-	// filter[organization_name][eq]
+	// filter[organization_name][eq], filter[status][eq]
 	Filter ManagedAccountListParamsFilter `query:"filter,omitzero" json:"-"`
 	// Specifies the sort order for results. By default sorting direction is ascending.
 	// To have the results sorted in descending order add the <code> -</code>
@@ -532,10 +532,11 @@ func (r ManagedAccountListParams) URLQuery() (v url.Values, err error) {
 
 // Consolidated filter parameter (deepObject style). Originally:
 // filter[email][contains], filter[email][eq], filter[organization_name][contains],
-// filter[organization_name][eq]
+// filter[organization_name][eq], filter[status][eq]
 type ManagedAccountListParamsFilter struct {
 	Email            ManagedAccountListParamsFilterEmail            `query:"email,omitzero" json:"-"`
 	OrganizationName ManagedAccountListParamsFilterOrganizationName `query:"organization_name,omitzero" json:"-"`
+	Status           ManagedAccountListParamsFilterStatus           `query:"status,omitzero" json:"-"`
 	paramObj
 }
 
@@ -581,6 +582,25 @@ type ManagedAccountListParamsFilterOrganizationName struct {
 // URLQuery serializes [ManagedAccountListParamsFilterOrganizationName]'s query
 // parameters as `url.Values`.
 func (r ManagedAccountListParamsFilterOrganizationName) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type ManagedAccountListParamsFilterStatus struct {
+	// If present, only returns managed accounts with the <code>status</code> matching
+	// exactly the value given. Use <code>enabled</code> or <code>disabled</code> to
+	// filter accounts by whether they are currently able to use Telnyx services.
+	//
+	// Any of "all", "active", "enabled", "cancelled", "disabled", "blocked".
+	Eq string `query:"eq,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ManagedAccountListParamsFilterStatus]'s query parameters as
+// `url.Values`.
+func (r ManagedAccountListParamsFilterStatus) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
