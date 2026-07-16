@@ -38,6 +38,7 @@ type MediaName string       // Always "media_name"
 type MediaURL string        // Always "media_url"
 type Node string            // Always "node"
 type NumberLiteral string   // Always "number_literal"
+type Pay string             // Always "pay"
 type PredefinedMedia string // Always "predefined_media"
 type Refer string           // Always "refer"
 type Retrieval string       // Always "retrieval"
@@ -70,6 +71,7 @@ func (c MediaName) Default() MediaName             { return "media_name" }
 func (c MediaURL) Default() MediaURL               { return "media_url" }
 func (c Node) Default() Node                       { return "node" }
 func (c NumberLiteral) Default() NumberLiteral     { return "number_literal" }
+func (c Pay) Default() Pay                         { return "pay" }
 func (c PredefinedMedia) Default() PredefinedMedia { return "predefined_media" }
 func (c Refer) Default() Refer                     { return "refer" }
 func (c Retrieval) Default() Retrieval             { return "retrieval" }
@@ -102,6 +104,7 @@ func (c MediaName) MarshalJSON() ([]byte, error)       { return marshalString(c)
 func (c MediaURL) MarshalJSON() ([]byte, error)        { return marshalString(c) }
 func (c Node) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c NumberLiteral) MarshalJSON() ([]byte, error)   { return marshalString(c) }
+func (c Pay) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c PredefinedMedia) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c Refer) MarshalJSON() ([]byte, error)           { return marshalString(c) }
 func (c Retrieval) MarshalJSON() ([]byte, error)       { return marshalString(c) }

@@ -41,6 +41,12 @@ func TestAIToolNewWithOptionalParams(t *testing.T) {
 		Invite: map[string]any{
 			"foo": "bar",
 		},
+		Pay: telnyx.PayToolParams{
+			ConnectorName: "connector_name",
+			Currency:      telnyx.String("currency"),
+			Description:   telnyx.String("description"),
+			PaymentMethod: telnyx.String("payment_method"),
+		},
 		Retrieval: map[string]any{
 			"foo": "bar",
 		},
@@ -110,6 +116,12 @@ func TestAIToolUpdateWithOptionalParams(t *testing.T) {
 			},
 			Invite: map[string]any{
 				"foo": "bar",
+			},
+			Pay: telnyx.PayToolParams{
+				ConnectorName: "connector_name",
+				Currency:      telnyx.String("currency"),
+				Description:   telnyx.String("description"),
+				PaymentMethod: telnyx.String("payment_method"),
 			},
 			Retrieval: map[string]any{
 				"foo": "bar",

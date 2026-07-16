@@ -460,14 +460,14 @@ func (r *AssistantMcpServerParam) UnmarshalJSON(data []byte) error {
 // [InferenceEmbeddingWebhookToolParamsResp], [AssistantToolClientSideTool],
 // [RetrievalTool], [AssistantToolHandoff], [HangupTool], [AssistantToolTransfer],
 // [AssistantToolInvite], [AssistantToolRefer], [AssistantToolSendDtmf],
-// [AssistantToolSendMessage], [AssistantToolSkipTurn].
+// [AssistantToolSendMessage], [AssistantToolSkipTurn], [AssistantToolPay].
 //
 // Use the [AssistantToolUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AssistantToolUnion struct {
 	// Any of "webhook", "client_side_tool", "retrieval", "handoff", "hangup",
-	// "transfer", "invite", "refer", "send_dtmf", "send_message", "skip_turn".
+	// "transfer", "invite", "refer", "send_dtmf", "send_message", "skip_turn", "pay".
 	Type string `json:"type"`
 	// This field is from variant [InferenceEmbeddingWebhookToolParamsResp].
 	Webhook InferenceEmbeddingWebhookToolParamsWebhookResp `json:"webhook"`
@@ -491,7 +491,9 @@ type AssistantToolUnion struct {
 	SendMessage AssistantToolSendMessageSendMessage `json:"send_message"`
 	// This field is from variant [AssistantToolSkipTurn].
 	SkipTurn AssistantToolSkipTurnSkipTurn `json:"skip_turn"`
-	JSON     struct {
+	// This field is from variant [AssistantToolPay].
+	Pay  PayToolParamsResp `json:"pay"`
+	JSON struct {
 		Type           respjson.Field
 		Webhook        respjson.Field
 		ClientSideTool respjson.Field
@@ -504,6 +506,7 @@ type AssistantToolUnion struct {
 		SendDtmf       respjson.Field
 		SendMessage    respjson.Field
 		SkipTurn       respjson.Field
+		Pay            respjson.Field
 		raw            string
 	} `json:"-"`
 }
@@ -525,6 +528,7 @@ func (AssistantToolRefer) implAssistantToolUnion()                      {}
 func (AssistantToolSendDtmf) implAssistantToolUnion()                   {}
 func (AssistantToolSendMessage) implAssistantToolUnion()                {}
 func (AssistantToolSkipTurn) implAssistantToolUnion()                   {}
+func (AssistantToolPay) implAssistantToolUnion()                        {}
 
 // Use the following switch statement to find the correct variant
 //
@@ -540,6 +544,7 @@ func (AssistantToolSkipTurn) implAssistantToolUnion()                   {}
 //	case telnyx.AssistantToolSendDtmf:
 //	case telnyx.AssistantToolSendMessage:
 //	case telnyx.AssistantToolSkipTurn:
+//	case telnyx.AssistantToolPay:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -567,6 +572,8 @@ func (u AssistantToolUnion) AsAny() anyAssistantTool {
 		return u.AsSendMessage()
 	case "skip_turn":
 		return u.AsSkipTurn()
+	case "pay":
+		return u.AsPay()
 	}
 	return nil
 }
@@ -622,6 +629,11 @@ func (u AssistantToolUnion) AsSendMessage() (v AssistantToolSendMessage) {
 }
 
 func (u AssistantToolUnion) AsSkipTurn() (v AssistantToolSkipTurn) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u AssistantToolUnion) AsPay() (v AssistantToolPay) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1446,6 +1458,28 @@ func (r *AssistantToolSkipTurnSkipTurn) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The pay tool allows the assistant to collect card payments from the caller via
+// DTMF during the conversation. Recording is automatically paused while the pay
+// tool is active and resumes when the payment flow completes. The connector_name
+// must reference a pay connector configured in the Telnyx API.
+type AssistantToolPay struct {
+	Pay  PayToolParamsResp `json:"pay" api:"required"`
+	Type constant.Pay      `json:"type" default:"pay"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Pay         respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolPay) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolPay) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 func AssistantToolParamOfWebhook(webhook InferenceEmbeddingWebhookToolParamsWebhook) AssistantToolUnionParam {
 	var variant InferenceEmbeddingWebhookToolParams
 	variant.Webhook = webhook
@@ -1512,6 +1546,12 @@ func AssistantToolParamOfSkipTurn(skipTurn AssistantToolSkipTurnSkipTurnParam) A
 	return AssistantToolUnionParam{OfSkipTurn: &variant}
 }
 
+func AssistantToolParamOfPay(pay PayToolParams) AssistantToolUnionParam {
+	var variant AssistantToolPayParam
+	variant.Pay = pay
+	return AssistantToolUnionParam{OfPay: &variant}
+}
+
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
@@ -1527,6 +1567,7 @@ type AssistantToolUnionParam struct {
 	OfSendDtmf       *AssistantToolSendDtmfParam          `json:",omitzero,inline"`
 	OfSendMessage    *AssistantToolSendMessageParam       `json:",omitzero,inline"`
 	OfSkipTurn       *AssistantToolSkipTurnParam          `json:",omitzero,inline"`
+	OfPay            *AssistantToolPayParam               `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1541,7 +1582,8 @@ func (u AssistantToolUnionParam) MarshalJSON() ([]byte, error) {
 		u.OfRefer,
 		u.OfSendDtmf,
 		u.OfSendMessage,
-		u.OfSkipTurn)
+		u.OfSkipTurn,
+		u.OfPay)
 }
 func (u *AssistantToolUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1570,6 +1612,8 @@ func (u *AssistantToolUnionParam) asAny() any {
 		return u.OfSendMessage
 	} else if !param.IsOmitted(u.OfSkipTurn) {
 		return u.OfSkipTurn
+	} else if !param.IsOmitted(u.OfPay) {
+		return u.OfPay
 	}
 	return nil
 }
@@ -1663,6 +1707,14 @@ func (u AssistantToolUnionParam) GetSkipTurn() *AssistantToolSkipTurnSkipTurnPar
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u AssistantToolUnionParam) GetPay() *PayToolParams {
+	if vt := u.OfPay; vt != nil {
+		return &vt.Pay
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u AssistantToolUnionParam) GetType() *string {
 	if vt := u.OfWebhook; vt != nil {
 		return (*string)(&vt.Type)
@@ -1686,6 +1738,8 @@ func (u AssistantToolUnionParam) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfSkipTurn; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfPay; vt != nil {
+		return (*string)(&vt.Type)
 	}
 	return nil
 }
@@ -1704,6 +1758,7 @@ func init() {
 		apijson.Discriminator[AssistantToolSendDtmfParam]("send_dtmf"),
 		apijson.Discriminator[AssistantToolSendMessageParam]("send_message"),
 		apijson.Discriminator[AssistantToolSkipTurnParam]("skip_turn"),
+		apijson.Discriminator[AssistantToolPayParam]("pay"),
 	)
 }
 
@@ -2412,6 +2467,27 @@ func (r AssistantToolSkipTurnSkipTurnParam) MarshalJSON() (data []byte, err erro
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *AssistantToolSkipTurnSkipTurnParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The pay tool allows the assistant to collect card payments from the caller via
+// DTMF during the conversation. Recording is automatically paused while the pay
+// tool is active and resumes when the payment flow completes. The connector_name
+// must reference a pay connector configured in the Telnyx API.
+//
+// The properties Pay, Type are required.
+type AssistantToolPayParam struct {
+	Pay PayToolParams `json:"pay,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "pay".
+	Type constant.Pay `json:"type" default:"pay"`
+	paramObj
+}
+
+func (r AssistantToolPayParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolPayParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolPayParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

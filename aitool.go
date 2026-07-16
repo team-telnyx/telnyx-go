@@ -4,6 +4,7 @@ package telnyx
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -107,6 +108,64 @@ func (r *AIToolService) Delete(ctx context.Context, toolID string, opts ...optio
 	return res, err
 }
 
+type PayToolParamsResp struct {
+	// The name of the pay connector configured in the Telnyx API. Must reference an
+	// existing pay connector for this organization.
+	ConnectorName string `json:"connector_name" api:"required"`
+	// Default currency for payments processed by this tool.
+	Currency string `json:"currency"`
+	// Optional description of the pay tool that will be passed to the assistant.
+	Description string `json:"description" api:"nullable"`
+	// Default payment method for payments processed by this tool.
+	PaymentMethod string `json:"payment_method"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ConnectorName respjson.Field
+		Currency      respjson.Field
+		Description   respjson.Field
+		PaymentMethod respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PayToolParamsResp) RawJSON() string { return r.JSON.raw }
+func (r *PayToolParamsResp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this PayToolParamsResp to a PayToolParams.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// PayToolParams.Overrides()
+func (r PayToolParamsResp) ToParam() PayToolParams {
+	return param.Override[PayToolParams](json.RawMessage(r.RawJSON()))
+}
+
+// The property ConnectorName is required.
+type PayToolParams struct {
+	// The name of the pay connector configured in the Telnyx API. Must reference an
+	// existing pay connector for this organization.
+	ConnectorName string `json:"connector_name" api:"required"`
+	// Optional description of the pay tool that will be passed to the assistant.
+	Description param.Opt[string] `json:"description,omitzero"`
+	// Default currency for payments processed by this tool.
+	Currency param.Opt[string] `json:"currency,omitzero"`
+	// Default payment method for payments processed by this tool.
+	PaymentMethod param.Opt[string] `json:"payment_method,omitzero"`
+	paramObj
+}
+
+func (r PayToolParams) MarshalJSON() (data []byte, err error) {
+	type shadow PayToolParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PayToolParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type SharedToolResponse struct {
 	ID             string         `json:"id" api:"required"`
 	ToolDefinition map[string]any `json:"tool_definition" api:"required"`
@@ -143,6 +202,7 @@ type AIToolNewParams struct {
 	Function       map[string]any   `json:"function,omitzero"`
 	Handoff        map[string]any   `json:"handoff,omitzero"`
 	Invite         map[string]any   `json:"invite,omitzero"`
+	Pay            PayToolParams    `json:"pay,omitzero"`
 	Retrieval      map[string]any   `json:"retrieval,omitzero"`
 	Webhook        map[string]any   `json:"webhook,omitzero"`
 	paramObj
@@ -164,6 +224,7 @@ type AIToolUpdateParams struct {
 	Function       map[string]any    `json:"function,omitzero"`
 	Handoff        map[string]any    `json:"handoff,omitzero"`
 	Invite         map[string]any    `json:"invite,omitzero"`
+	Pay            PayToolParams     `json:"pay,omitzero"`
 	Retrieval      map[string]any    `json:"retrieval,omitzero"`
 	Webhook        map[string]any    `json:"webhook,omitzero"`
 	paramObj
