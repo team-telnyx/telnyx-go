@@ -5325,52 +5325,6 @@ func (r *FaxSendingStartedMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type InboundMessage struct {
-	// Identifies the type of resource.
-	ID string `json:"id" format:"uuid"`
-	// The type of event being delivered.
-	//
-	// Any of "message.received".
-	EventType InboundMessageEventType `json:"event_type"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	OccurredAt time.Time                    `json:"occurred_at" format:"date-time"`
-	Payload    shared.InboundMessagePayload `json:"payload"`
-	// Identifies the type of the resource.
-	//
-	// Any of "event".
-	RecordType InboundMessageRecordType `json:"record_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		EventType   respjson.Field
-		OccurredAt  respjson.Field
-		Payload     respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InboundMessage) RawJSON() string { return r.JSON.raw }
-func (r *InboundMessage) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The type of event being delivered.
-type InboundMessageEventType string
-
-const (
-	InboundMessageEventTypeMessageReceived InboundMessageEventType = "message.received"
-)
-
-// Identifies the type of the resource.
-type InboundMessageRecordType string
-
-const (
-	InboundMessageRecordTypeEvent InboundMessageRecordType = "event"
-)
-
 type NumberOrderStatusUpdate struct {
 	Data NumberOrderStatusUpdateData `json:"data" api:"required"`
 	Meta NumberOrderStatusUpdateMeta `json:"meta" api:"required"`
@@ -7043,7 +6997,7 @@ func (r *HostedNumberOrderEventWebhookEventDataPayloadNumber) UnmarshalJSON(data
 }
 
 type InboundMessageWebhookEvent struct {
-	Data InboundMessage `json:"data"`
+	Data InboundMessageWebhookEventData `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -7055,6 +7009,38 @@ type InboundMessageWebhookEvent struct {
 // Returns the unmodified JSON received from the API
 func (r InboundMessageWebhookEvent) RawJSON() string { return r.JSON.raw }
 func (r *InboundMessageWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InboundMessageWebhookEventData struct {
+	// Identifies the type of resource.
+	ID string `json:"id" format:"uuid"`
+	// The type of event being delivered.
+	//
+	// Any of "message.received".
+	EventType string `json:"event_type"`
+	// ISO 8601 formatted date indicating when the resource was created.
+	OccurredAt time.Time                    `json:"occurred_at" format:"date-time"`
+	Payload    shared.InboundMessagePayload `json:"payload"`
+	// Identifies the type of the resource.
+	//
+	// Any of "event".
+	RecordType string `json:"record_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InboundMessageWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *InboundMessageWebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -7154,7 +7140,7 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// [ConferenceRecordingSaved], [ConferenceSpeakEnded], [ConferenceSpeakStarted],
 	// [OutboundMessage], [FaxDeliveredData], [FaxFailedData], [FaxMediaProcessedData],
 	// [FaxQueuedData], [FaxSendingStartedData],
-	// [HostedNumberOrderEventWebhookEventData], [InboundMessage],
+	// [HostedNumberOrderEventWebhookEventData], [InboundMessageWebhookEventData],
 	// [NumberOrderStatusUpdateData], [ReplacedLinkClick], [Transcription]
 	Data UnsafeUnwrapWebhookEventUnionData `json:"data"`
 	// This field is from variant [CampaignStatusUpdate].
@@ -8345,7 +8331,7 @@ type UnwrapWebhookEventUnion struct {
 	// [ConferenceRecordingSaved], [ConferenceSpeakEnded], [ConferenceSpeakStarted],
 	// [OutboundMessage], [FaxDeliveredData], [FaxFailedData], [FaxMediaProcessedData],
 	// [FaxQueuedData], [FaxSendingStartedData],
-	// [HostedNumberOrderEventWebhookEventData], [InboundMessage],
+	// [HostedNumberOrderEventWebhookEventData], [InboundMessageWebhookEventData],
 	// [NumberOrderStatusUpdateData], [ReplacedLinkClick], [Transcription]
 	Data UnwrapWebhookEventUnionData `json:"data"`
 	// This field is from variant [CampaignStatusUpdate].
