@@ -403,7 +403,7 @@ type SpeechToTextGetTranscriptionParams struct {
 	// "latest_short", "command_and_search", "phone_call", "video", "default",
 	// "medical_conversation", "medical_dictation", "openai/whisper-tiny",
 	// "openai/whisper-large-v3-turbo", "xai/grok-stt", "speechmatics/standard",
-	// "soniox/stt-rt-v4", "parakeet/tdt-0.6b-v3".
+	// "soniox/stt-rt-v4", "nvidia/parakeet-v3".
 	Model SpeechToTextGetTranscriptionParamsModel `query:"model,omitzero" json:"-"`
 	paramObj
 }
@@ -459,5 +459,5 @@ const (
 	SpeechToTextGetTranscriptionParamsModelXaiGrokStt                SpeechToTextGetTranscriptionParamsModel = "xai/grok-stt"
 	SpeechToTextGetTranscriptionParamsModelSpeechmaticsStandard      SpeechToTextGetTranscriptionParamsModel = "speechmatics/standard"
 	SpeechToTextGetTranscriptionParamsModelSonioxSttRtV4             SpeechToTextGetTranscriptionParamsModel = "soniox/stt-rt-v4"
-	SpeechToTextGetTranscriptionParamsModelParakeetTdt0_6bV3         SpeechToTextGetTranscriptionParamsModel = "parakeet/tdt-0.6b-v3"
+	SpeechToTextGetTranscriptionParamsModelNvidiaParakeetV3          SpeechToTextGetTranscriptionParamsModel = "nvidia/parakeet-v3"
 )

@@ -117,6 +117,9 @@ func TestManagedAccountListWithOptionalParams(t *testing.T) {
 				Contains: telnyx.String("contains"),
 				Eq:       telnyx.String("Example Company LLC"),
 			},
+			Status: telnyx.ManagedAccountListParamsFilterStatus{
+				Eq: "enabled",
+			},
 		},
 		IncludeCancelledAccounts: telnyx.Bool(true),
 		PageNumber:               telnyx.Int(0),

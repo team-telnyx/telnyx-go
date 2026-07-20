@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestAIToolNewWithOptionalParams(t *testing.T) {
+func TestStorageCloudfNew(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,34 +26,10 @@ func TestAIToolNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Tools.New(context.TODO(), telnyx.AIToolNewParams{
-		DisplayName: "display_name",
-		Type:        "type",
-		ClientSideTool: map[string]any{
-			"foo": "bar",
-		},
-		Function: map[string]any{
-			"foo": "bar",
-		},
-		Handoff: map[string]any{
-			"foo": "bar",
-		},
-		Invite: map[string]any{
-			"foo": "bar",
-		},
-		Pay: telnyx.PayToolParams{
-			ConnectorName: "connector_name",
-			Currency:      telnyx.String("currency"),
-			Description:   telnyx.String("description"),
-			PaymentMethod: telnyx.String("payment_method"),
-		},
-		Retrieval: map[string]any{
-			"foo": "bar",
-		},
-		TimeoutMs: telnyx.Int(0),
-		Webhook: map[string]any{
-			"foo": "bar",
-		},
+	_, err := client.Storage.Cloudfs.New(context.TODO(), telnyx.StorageCloudfNewParams{
+		Name:           "agent-fs",
+		Region:         telnyx.StorageCloudfNewParamsRegionUsEast1,
+		IdempotencyKey: "Idempotency-Key",
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -64,7 +40,7 @@ func TestAIToolNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAIToolGet(t *testing.T) {
+func TestStorageCloudfGet(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -77,7 +53,7 @@ func TestAIToolGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Tools.Get(context.TODO(), "tool_id")
+	_, err := client.Storage.Cloudfs.Get(context.TODO(), "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -87,7 +63,7 @@ func TestAIToolGet(t *testing.T) {
 	}
 }
 
-func TestAIToolUpdateWithOptionalParams(t *testing.T) {
+func TestStorageCloudfUpdateWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -100,37 +76,11 @@ func TestAIToolUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Tools.Update(
+	_, err := client.Storage.Cloudfs.Update(
 		context.TODO(),
-		"tool_id",
-		telnyx.AIToolUpdateParams{
-			ClientSideTool: map[string]any{
-				"foo": "bar",
-			},
-			DisplayName: telnyx.String("display_name"),
-			Function: map[string]any{
-				"foo": "bar",
-			},
-			Handoff: map[string]any{
-				"foo": "bar",
-			},
-			Invite: map[string]any{
-				"foo": "bar",
-			},
-			Pay: telnyx.PayToolParams{
-				ConnectorName: "connector_name",
-				Currency:      telnyx.String("currency"),
-				Description:   telnyx.String("description"),
-				PaymentMethod: telnyx.String("payment_method"),
-			},
-			Retrieval: map[string]any{
-				"foo": "bar",
-			},
-			TimeoutMs: telnyx.Int(0),
-			Type:      telnyx.String("type"),
-			Webhook: map[string]any{
-				"foo": "bar",
-			},
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		telnyx.StorageCloudfUpdateParams{
+			Name: telnyx.String("agent-fs"),
 		},
 	)
 	if err != nil {
@@ -142,7 +92,7 @@ func TestAIToolUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAIToolListWithOptionalParams(t *testing.T) {
+func TestStorageCloudfListWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -155,11 +105,14 @@ func TestAIToolListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Tools.List(context.TODO(), telnyx.AIToolListParams{
-		FilterName: telnyx.String("filter[name]"),
-		FilterType: telnyx.String("filter[type]"),
-		PageNumber: telnyx.Int(1),
-		PageSize:   telnyx.Int(1),
+	_, err := client.Storage.Cloudfs.List(context.TODO(), telnyx.StorageCloudfListParams{
+		FilterName:   telnyx.String("filter[name]"),
+		FilterRegion: telnyx.String("us-east-1"),
+		FilterStatus: telnyx.StorageCloudfListParamsFilterStatusProvisioning,
+		PageAfter:    telnyx.String("page[after]"),
+		PageBefore:   telnyx.String("page[before]"),
+		PageLimit:    telnyx.Int(1),
+		Sort:         telnyx.StorageCloudfListParamsSortCreatedAt,
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -170,7 +123,7 @@ func TestAIToolListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAIToolDelete(t *testing.T) {
+func TestStorageCloudfDelete(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -183,7 +136,7 @@ func TestAIToolDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Tools.Delete(context.TODO(), "tool_id")
+	_, err := client.Storage.Cloudfs.Delete(context.TODO(), "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

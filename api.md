@@ -290,7 +290,6 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#FaxMediaProcessed">FaxMediaProcessed</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#FaxQueued">FaxQueued</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#FaxSendingStarted">FaxSendingStarted</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#InboundMessage">InboundMessage</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#NumberOrderStatusUpdate">NumberOrderStatusUpdate</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#OutboundMessage">OutboundMessage</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ReplacedLinkClick">ReplacedLinkClick</a>
@@ -1157,8 +1156,13 @@ Methods:
 
 ## Tools
 
+Params Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#PayToolParams">PayToolParams</a>
+
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#PayToolParamsResp">PayToolParamsResp</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SharedToolResponse">SharedToolResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIToolDeleteResponse">AIToolDeleteResponse</a>
 
@@ -1169,6 +1173,18 @@ Methods:
 - <code title="patch /ai/tools/{tool_id}">client.AI.Tools.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIToolService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, toolID <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIToolUpdateParams">AIToolUpdateParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SharedToolResponse">SharedToolResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /ai/tools">client.AI.Tools.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIToolService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIToolListParams">AIToolListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SharedToolResponse">SharedToolResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /ai/tools/{tool_id}">client.AI.Tools.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIToolService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, toolID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIToolDeleteResponse">AIToolDeleteResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+## Anthropic
+
+### V1
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIAnthropicV1MessagesResponse">AIAnthropicV1MessagesResponse</a>
+
+Methods:
+
+- <code title="post /ai/anthropic/v1/messages">client.AI.Anthropic.V1.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIAnthropicV1Service.Messages">Messages</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIAnthropicV1MessagesParams">AIAnthropicV1MessagesParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIAnthropicV1MessagesResponse">AIAnthropicV1MessagesResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # AuditEvents
 
@@ -3656,7 +3672,7 @@ Response Types:
 
 Methods:
 
-- <code title="get /requirements/{id}">client.Requirements.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RequirementService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RequirementGetResponse">RequirementGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /requirements/{id}">client.Requirements.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RequirementService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RequirementGetParams">RequirementGetParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RequirementGetResponse">RequirementGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /requirements">client.Requirements.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RequirementService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RequirementListParams">RequirementListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DocReqsRequirement">DocReqsRequirement</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # RoomCompositions
@@ -4073,6 +4089,29 @@ Methods:
 - <code title="put /storage/kvs/{id}/keys/{key}">client.Storage.Kvs.Keys.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageKvKeyService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, key <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/builtin#io.Reader">io.Reader</a>, params <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageKvKeyUpdateParams">StorageKvKeyUpdateParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 - <code title="get /storage/kvs/{id}/keys">client.Storage.Kvs.Keys.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageKvKeyService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageKvKeyListParams">StorageKvKeyListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#CursorFlatPagination">CursorFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageKvKeyListResponse">StorageKvKeyListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /storage/kvs/{id}/keys/{key}">client.Storage.Kvs.Keys.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageKvKeyService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, key <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageKvKeyDeleteParams">StorageKvKeyDeleteParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+
+## Cloudfs
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#CloudfsFilesystemDetailResponseWrapper">CloudfsFilesystemDetailResponseWrapper</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#CloudfsFilesystemResponseWrapper">CloudfsFilesystemResponseWrapper</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#CloudfsFilesystemStatus">CloudfsFilesystemStatus</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageCloudfListResponse">StorageCloudfListResponse</a>
+
+Methods:
+
+- <code title="post /storage/cloudfs">client.Storage.Cloudfs.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageCloudfService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageCloudfNewParams">StorageCloudfNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#CloudfsFilesystemResponseWrapper">CloudfsFilesystemResponseWrapper</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /storage/cloudfs/{id}">client.Storage.Cloudfs.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageCloudfService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#CloudfsFilesystemDetailResponseWrapper">CloudfsFilesystemDetailResponseWrapper</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="patch /storage/cloudfs/{id}">client.Storage.Cloudfs.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageCloudfService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageCloudfUpdateParams">StorageCloudfUpdateParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#CloudfsFilesystemDetailResponseWrapper">CloudfsFilesystemDetailResponseWrapper</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /storage/cloudfs">client.Storage.Cloudfs.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageCloudfService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageCloudfListParams">StorageCloudfListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageCloudfListResponse">StorageCloudfListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /storage/cloudfs/{id}">client.Storage.Cloudfs.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageCloudfService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#CloudfsFilesystemDetailResponseWrapper">CloudfsFilesystemDetailResponseWrapper</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+### Actions
+
+Methods:
+
+- <code title="post /storage/cloudfs/{id}/actions/rotate-meta-token">client.Storage.Cloudfs.Actions.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageCloudfActionService.RotateMetaToken">RotateMetaToken</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageCloudfActionRotateMetaTokenParams">StorageCloudfActionRotateMetaTokenParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#CloudfsFilesystemResponseWrapper">CloudfsFilesystemResponseWrapper</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # SubNumberOrders
 

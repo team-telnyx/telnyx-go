@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.89.0](https://github.com/team-telnyx/telnyx-go/compare/v4.88.0...v4.89.0) (2026-07-17)
+
+
+### Bug Fixes
+
+* **release:** assert a release PR exists for unreleased commits ([#172](https://github.com/team-telnyx/telnyx-go/issues/172)) ([a192547](https://github.com/team-telnyx/telnyx-go/commit/a19254787591873af875cb228a0df5394e05f693))
+* **release:** make the --local scan clone see the repointed release branch ([#170](https://github.com/team-telnyx/telnyx-go/issues/170)) ([6371a8e](https://github.com/team-telnyx/telnyx-go/commit/6371a8eefc9fb7fef094ca8fa3ae259699df78a1))
+
 ## [4.88.0](https://github.com/team-telnyx/telnyx-go/compare/v4.87.0...v4.88.0) (2026-07-09)
 
 

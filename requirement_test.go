@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestRequirementGet(t *testing.T) {
+func TestRequirementGetWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,13 @@ func TestRequirementGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Requirements.Get(context.TODO(), "a9dad8d5-fdbd-49d7-aa23-39bb08a5ebaa")
+	_, err := client.Requirements.Get(
+		context.TODO(),
+		"a9dad8d5-fdbd-49d7-aa23-39bb08a5ebaa",
+		telnyx.RequirementGetParams{
+			Version: telnyx.Int(0),
+		},
+	)
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -58,6 +64,7 @@ func TestRequirementListWithOptionalParams(t *testing.T) {
 		PageNumber: telnyx.Int(0),
 		PageSize:   telnyx.Int(0),
 		Sort:       []string{"country_code"},
+		Version:    telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
