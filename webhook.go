@@ -425,7 +425,7 @@ type CallAnsweredPayload struct {
 	// Number or SIP URI placing the call.
 	From string `json:"from"`
 	// User-to-User and Diversion headers from sip invite.
-	SipHeaders []SipHeader `json:"sip_headers"`
+	SipHeaders []CallAnsweredPayloadSipHeader `json:"sip_headers"`
 	// ISO 8601 datetime of when the call started.
 	StartTime time.Time `json:"start_time" format:"date-time"`
 	// State received from a command.
@@ -458,6 +458,28 @@ type CallAnsweredPayload struct {
 // Returns the unmodified JSON received from the API
 func (r CallAnsweredPayload) RawJSON() string { return r.JSON.raw }
 func (r *CallAnsweredPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallAnsweredPayloadSipHeader struct {
+	// The name of the header received from the SIP INVITE.
+	//
+	// Any of "User-to-User", "Diversion".
+	Name string `json:"name" api:"required"`
+	// The value of the header.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallAnsweredPayloadSipHeader) RawJSON() string { return r.JSON.raw }
+func (r *CallAnsweredPayloadSipHeader) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1319,7 +1341,7 @@ type CallHangupPayload struct {
 	// unavailable (in inbound calls for example) this is set to `unspecified`.
 	SipHangupCause string `json:"sip_hangup_cause"`
 	// User-to-User and Diversion headers from sip invite.
-	SipHeaders []SipHeader `json:"sip_headers"`
+	SipHeaders []CallHangupPayloadSipHeader `json:"sip_headers"`
 	// ISO 8601 datetime of when the call started.
 	StartTime time.Time `json:"start_time" format:"date-time"`
 	// State received from a command.
@@ -1433,6 +1455,28 @@ func (r *CallHangupPayloadCallQualityStatsOutbound) UnmarshalJSON(data []byte) e
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type CallHangupPayloadSipHeader struct {
+	// The name of the header received from the SIP INVITE.
+	//
+	// Any of "User-to-User", "Diversion".
+	Name string `json:"name" api:"required"`
+	// The value of the header.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallHangupPayloadSipHeader) RawJSON() string { return r.JSON.raw }
+func (r *CallHangupPayloadSipHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Identifies the type of the resource.
 type CallHangupRecordType string
 
@@ -1513,7 +1557,7 @@ type CallInitiatedPayload struct {
 	// Whether attestation was successfully validated or not.
 	ShakenStirValidated bool `json:"shaken_stir_validated"`
 	// User-to-User and Diversion headers from sip invite.
-	SipHeaders []SipHeader `json:"sip_headers"`
+	SipHeaders []CallInitiatedPayloadSipHeader `json:"sip_headers"`
 	// ISO 8601 datetime of when the call started.
 	StartTime time.Time `json:"start_time" format:"date-time"`
 	// State received from a command.
@@ -1553,6 +1597,28 @@ type CallInitiatedPayload struct {
 // Returns the unmodified JSON received from the API
 func (r CallInitiatedPayload) RawJSON() string { return r.JSON.raw }
 func (r *CallInitiatedPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallInitiatedPayloadSipHeader struct {
+	// The name of the header received from the SIP INVITE.
+	//
+	// Any of "User-to-User", "Diversion".
+	Name string `json:"name" api:"required"`
+	// The value of the header.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallInitiatedPayloadSipHeader) RawJSON() string { return r.JSON.raw }
+func (r *CallInitiatedPayloadSipHeader) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -7635,10 +7701,12 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	// This field is from variant [CallAIGatherPartialResultsPayload].
 	PartialResults map[string]any    `json:"partial_results"`
 	CustomHeaders  []CustomSipHeader `json:"custom_headers"`
-	SipHeaders     []SipHeader       `json:"sip_headers"`
-	StartTime      time.Time         `json:"start_time"`
-	State          string            `json:"state"`
-	Tags           []string          `json:"tags"`
+	// This field is a union of [[]CallAnsweredPayloadSipHeader],
+	// [[]CallHangupPayloadSipHeader], [[]CallInitiatedPayloadSipHeader]
+	SipHeaders UnsafeUnwrapWebhookEventUnionDataPayloadSipHeaders `json:"sip_headers"`
+	StartTime  time.Time                                          `json:"start_time"`
+	State      string                                             `json:"state"`
+	Tags       []string                                           `json:"tags"`
 	// This field is from variant [CallConversationEndedPayload].
 	AssistantID      string `json:"assistant_id"`
 	CallingPartyType string `json:"calling_party_type"`
@@ -8061,6 +8129,39 @@ type UnsafeUnwrapWebhookEventUnionDataPayloadTo struct {
 }
 
 func (r *UnsafeUnwrapWebhookEventUnionDataPayloadTo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionDataPayloadSipHeaders is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion].
+// UnsafeUnwrapWebhookEventUnionDataPayloadSipHeaders provides convenient access to
+// the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfCallAnsweredPayloadSipHeaders OfCallHangupPayloadSipHeaders
+// OfCallInitiatedPayloadSipHeaders]
+type UnsafeUnwrapWebhookEventUnionDataPayloadSipHeaders struct {
+	// This field will be present if the value is a [[]CallAnsweredPayloadSipHeader]
+	// instead of an object.
+	OfCallAnsweredPayloadSipHeaders []CallAnsweredPayloadSipHeader `json:",inline"`
+	// This field will be present if the value is a [[]CallHangupPayloadSipHeader]
+	// instead of an object.
+	OfCallHangupPayloadSipHeaders []CallHangupPayloadSipHeader `json:",inline"`
+	// This field will be present if the value is a [[]CallInitiatedPayloadSipHeader]
+	// instead of an object.
+	OfCallInitiatedPayloadSipHeaders []CallInitiatedPayloadSipHeader `json:",inline"`
+	JSON                             struct {
+		OfCallAnsweredPayloadSipHeaders  respjson.Field
+		OfCallHangupPayloadSipHeaders    respjson.Field
+		OfCallInitiatedPayloadSipHeaders respjson.Field
+		raw                              string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionDataPayloadSipHeaders) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8826,10 +8927,12 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	// This field is from variant [CallAIGatherPartialResultsPayload].
 	PartialResults map[string]any    `json:"partial_results"`
 	CustomHeaders  []CustomSipHeader `json:"custom_headers"`
-	SipHeaders     []SipHeader       `json:"sip_headers"`
-	StartTime      time.Time         `json:"start_time"`
-	State          string            `json:"state"`
-	Tags           []string          `json:"tags"`
+	// This field is a union of [[]CallAnsweredPayloadSipHeader],
+	// [[]CallHangupPayloadSipHeader], [[]CallInitiatedPayloadSipHeader]
+	SipHeaders UnwrapWebhookEventUnionDataPayloadSipHeaders `json:"sip_headers"`
+	StartTime  time.Time                                    `json:"start_time"`
+	State      string                                       `json:"state"`
+	Tags       []string                                     `json:"tags"`
 	// This field is from variant [CallConversationEndedPayload].
 	AssistantID      string `json:"assistant_id"`
 	CallingPartyType string `json:"calling_party_type"`
@@ -9251,6 +9354,38 @@ type UnwrapWebhookEventUnionDataPayloadTo struct {
 }
 
 func (r *UnwrapWebhookEventUnionDataPayloadTo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnwrapWebhookEventUnionDataPayloadSipHeaders is an implicit subunion of
+// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataPayloadSipHeaders provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnwrapWebhookEventUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfCallAnsweredPayloadSipHeaders OfCallHangupPayloadSipHeaders
+// OfCallInitiatedPayloadSipHeaders]
+type UnwrapWebhookEventUnionDataPayloadSipHeaders struct {
+	// This field will be present if the value is a [[]CallAnsweredPayloadSipHeader]
+	// instead of an object.
+	OfCallAnsweredPayloadSipHeaders []CallAnsweredPayloadSipHeader `json:",inline"`
+	// This field will be present if the value is a [[]CallHangupPayloadSipHeader]
+	// instead of an object.
+	OfCallHangupPayloadSipHeaders []CallHangupPayloadSipHeader `json:",inline"`
+	// This field will be present if the value is a [[]CallInitiatedPayloadSipHeader]
+	// instead of an object.
+	OfCallInitiatedPayloadSipHeaders []CallInitiatedPayloadSipHeader `json:",inline"`
+	JSON                             struct {
+		OfCallAnsweredPayloadSipHeaders  respjson.Field
+		OfCallHangupPayloadSipHeaders    respjson.Field
+		OfCallInitiatedPayloadSipHeaders respjson.Field
+		raw                              string
+	} `json:"-"`
+}
+
+func (r *UnwrapWebhookEventUnionDataPayloadSipHeaders) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
