@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.90.0](https://github.com/team-telnyx/telnyx-go/compare/v4.89.0...v4.90.0) (2026-07-21)
+
+
+### Features
+
+* promote from staging 8812aab ([210c90c](https://github.com/team-telnyx/telnyx-go/commit/210c90cd5c7f02f851800f339d0e06cea73934c7))
+
+
+### Bug Fixes
+
+* scan next commits when creating release PR ([#173](https://github.com/team-telnyx/telnyx-go/issues/173)) ([e3b438a](https://github.com/team-telnyx/telnyx-go/commit/e3b438af7de816f62af8bc709445324ce32db9b7))
+
 ## [4.89.0](https://github.com/team-telnyx/telnyx-go/compare/v4.88.0...v4.89.0) (2026-07-17)
 
 
