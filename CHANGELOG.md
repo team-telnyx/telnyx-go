@@ -1,5 +1,20 @@
 # Changelog
 
+## [4.90.0](https://github.com/team-telnyx/telnyx-go/compare/v4.89.0...v4.90.0) (2026-07-21)
+
+
+### Features
+
+* promote from staging 8812aab ([653aa0a](https://github.com/team-telnyx/telnyx-go/commit/653aa0aac77b2fea341034038ab882e923f0a7a9))
+
+
+### Bug Fixes
+
+* **release:** configure identity before synthetic commit ([#177](https://github.com/team-telnyx/telnyx-go/issues/177)) ([c72deff](https://github.com/team-telnyx/telnyx-go/commit/c72deff8dbcb95e15430a23c1c53f4eadc97d8f9))
+* **release:** handle local checkout and obsolete path ([#178](https://github.com/team-telnyx/telnyx-go/issues/178)) ([4c92b67](https://github.com/team-telnyx/telnyx-go/commit/4c92b67a677e06bd19818704068eb9c3d21b340d))
+* **release:** keep release PR history on production base ([#175](https://github.com/team-telnyx/telnyx-go/issues/175)) ([e319d27](https://github.com/team-telnyx/telnyx-go/commit/e319d27d5019d2b01cd1ea9e14fe15a9106ae295))
+* scan next commits when creating release PR ([#173](https://github.com/team-telnyx/telnyx-go/issues/173)) ([e3b438a](https://github.com/team-telnyx/telnyx-go/commit/e3b438af7de816f62af8bc709445324ce32db9b7))
+
 ## [4.89.0](https://github.com/team-telnyx/telnyx-go/compare/v4.88.0...v4.89.0) (2026-07-17)
 
 
