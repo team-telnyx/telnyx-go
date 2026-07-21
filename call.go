@@ -1112,44 +1112,6 @@ func (r *DialogflowConfigParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type SipHeader struct {
-	// The name of the header to add.
-	//
-	// Any of "User-to-User".
-	Name SipHeaderName `json:"name" api:"required"`
-	// The value of the header.
-	Value string `json:"value" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Name        respjson.Field
-		Value       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SipHeader) RawJSON() string { return r.JSON.raw }
-func (r *SipHeader) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this SipHeader to a SipHeaderParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// SipHeaderParam.Overrides()
-func (r SipHeader) ToParam() SipHeaderParam {
-	return param.Override[SipHeaderParam](json.RawMessage(r.RawJSON()))
-}
-
-// The name of the header to add.
-type SipHeaderName string
-
-const (
-	SipHeaderNameUserToUser SipHeaderName = "User-to-User"
-)
-
 // The properties Name, Value are required.
 type SipHeaderParam struct {
 	// The name of the header to add.
@@ -1168,6 +1130,13 @@ func (r SipHeaderParam) MarshalJSON() (data []byte, err error) {
 func (r *SipHeaderParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// The name of the header to add.
+type SipHeaderName string
+
+const (
+	SipHeaderNameUserToUser SipHeaderName = "User-to-User"
+)
 
 // Use this field to modify sound effects, for example adjust the pitch.
 type SoundModificationsParam struct {
