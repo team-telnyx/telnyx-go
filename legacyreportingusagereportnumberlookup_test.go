@@ -65,7 +65,7 @@ func TestLegacyReportingUsageReportNumberLookupGet(t *testing.T) {
 	}
 }
 
-func TestLegacyReportingUsageReportNumberLookupList(t *testing.T) {
+func TestLegacyReportingUsageReportNumberLookupListWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -78,7 +78,10 @@ func TestLegacyReportingUsageReportNumberLookupList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Legacy.Reporting.UsageReports.NumberLookup.List(context.TODO())
+	_, err := client.Legacy.Reporting.UsageReports.NumberLookup.List(context.TODO(), telnyx.LegacyReportingUsageReportNumberLookupListParams{
+		Page:    telnyx.Int(0),
+		PerPage: telnyx.Int(0),
+	})
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

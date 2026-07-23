@@ -1750,8 +1750,9 @@ type ShortCode struct {
 	// Any of "short_code".
 	RecordType ShortCodeRecordType `json:"record_type"`
 	// Short digit sequence used to address messages.
-	ShortCode string   `json:"short_code"`
-	Tags      []string `json:"tags"`
+	ShortCode string `json:"short_code"`
+	// Tags associated with the resource.
+	Tags []string `json:"tags"`
 	// ISO 8601 formatted date indicating when the resource was updated.
 	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
