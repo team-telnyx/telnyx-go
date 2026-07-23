@@ -51,7 +51,7 @@ func NewTextToSpeechService(opts ...option.RequestOption) (r TextToSpeechService
 // with provider-specific parameters.
 //
 // Supported providers: `aws`, `telnyx`, `azure`, `elevenlabs`, `minimax`, `rime`,
-// `resemble`, `xai`.
+// `resemble`, `xai`, `humain`.
 //
 // The Telnyx `Ultra` model supports 44 languages with emotion control, speed
 // adjustment, and volume control. Use the `telnyx` provider-specific parameters to
@@ -81,7 +81,7 @@ func (r *TextToSpeechService) ListVoices(ctx context.Context, query TextToSpeech
 // synthesize; receive JSON frames containing base64-encoded audio chunks.
 //
 // Supported providers: `aws`, `telnyx`, `azure`, `murfai`, `minimax`, `rime`,
-// `resemble`, `elevenlabs`, `xai`.
+// `resemble`, `elevenlabs`, `xai`, `humain`.
 //
 // **Connection flow:**
 //
@@ -460,6 +460,10 @@ type TextToSpeechGenerateSpeechParams struct {
 	Azure TextToSpeechGenerateSpeechParamsAzure `json:"azure,omitzero"`
 	// ElevenLabs provider-specific parameters.
 	Elevenlabs TextToSpeechGenerateSpeechParamsElevenlabs `json:"elevenlabs,omitzero"`
+	// Humain provider-specific parameters. Unlike other providers, Humain has no
+	// format/sample-rate negotiation (output is always PCM16 24kHz mono) and no
+	// language parameter — language is fixed per voice.
+	Humain TextToSpeechGenerateSpeechParamsHumain `json:"humain,omitzero"`
 	// Minimax provider-specific parameters.
 	Minimax TextToSpeechGenerateSpeechParamsMinimax `json:"minimax,omitzero"`
 	// Determines the response format. `binary_output` returns raw audio bytes,
@@ -470,7 +474,7 @@ type TextToSpeechGenerateSpeechParams struct {
 	// TTS provider. Required unless `voice` is provided.
 	//
 	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "rime", "resemble",
-	// "xai".
+	// "xai", "humain".
 	Provider TextToSpeechGenerateSpeechParamsProvider `json:"provider,omitzero"`
 	// Resemble AI provider-specific parameters.
 	Resemble TextToSpeechGenerateSpeechParamsResemble `json:"resemble,omitzero"`
@@ -589,6 +593,36 @@ func (r *TextToSpeechGenerateSpeechParamsElevenlabs) UnmarshalJSON(data []byte) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Humain provider-specific parameters. Unlike other providers, Humain has no
+// format/sample-rate negotiation (output is always PCM16 24kHz mono) and no
+// language parameter — language is fixed per voice.
+//
+// The property VoiceID is required.
+type TextToSpeechGenerateSpeechParamsHumain struct {
+	// Humain voice identifier.
+	//
+	// Any of "sara-en", "abdulaziz-en", "sara-ar", "abdulaziz-ar", "nourah-ar",
+	// "abdullah-ar".
+	VoiceID string `json:"voice_id,omitzero" api:"required"`
+	// Time-to-first-byte eagerness, trading synthesis latency for quality.
+	TtfbEagerness param.Opt[float64] `json:"ttfb_eagerness,omitzero"`
+	paramObj
+}
+
+func (r TextToSpeechGenerateSpeechParamsHumain) MarshalJSON() (data []byte, err error) {
+	type shadow TextToSpeechGenerateSpeechParamsHumain
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TextToSpeechGenerateSpeechParamsHumain) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TextToSpeechGenerateSpeechParamsHumain](
+		"voice_id", "sara-en", "abdulaziz-en", "sara-ar", "abdulaziz-ar", "nourah-ar", "abdullah-ar",
+	)
+}
+
 // Minimax provider-specific parameters.
 type TextToSpeechGenerateSpeechParamsMinimax struct {
 	// Language code to boost pronunciation for.
@@ -633,6 +667,7 @@ const (
 	TextToSpeechGenerateSpeechParamsProviderRime       TextToSpeechGenerateSpeechParamsProvider = "rime"
 	TextToSpeechGenerateSpeechParamsProviderResemble   TextToSpeechGenerateSpeechParamsProvider = "resemble"
 	TextToSpeechGenerateSpeechParamsProviderXai        TextToSpeechGenerateSpeechParamsProvider = "xai"
+	TextToSpeechGenerateSpeechParamsProviderHumain     TextToSpeechGenerateSpeechParamsProvider = "humain"
 )
 
 // Resemble AI provider-specific parameters.
@@ -769,7 +804,7 @@ type TextToSpeechListVoicesParams struct {
 	// Filter voices by provider. If omitted, voices from all providers are returned.
 	//
 	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "rime", "resemble",
-	// "xai".
+	// "xai", "humain".
 	Provider TextToSpeechListVoicesParamsProvider `query:"provider,omitzero" json:"-"`
 	paramObj
 }
@@ -795,6 +830,7 @@ const (
 	TextToSpeechListVoicesParamsProviderRime       TextToSpeechListVoicesParamsProvider = "rime"
 	TextToSpeechListVoicesParamsProviderResemble   TextToSpeechListVoicesParamsProvider = "resemble"
 	TextToSpeechListVoicesParamsProviderXai        TextToSpeechListVoicesParamsProvider = "xai"
+	TextToSpeechListVoicesParamsProviderHumain     TextToSpeechListVoicesParamsProvider = "humain"
 )
 
 type TextToSpeechGetSpeechParams struct {
@@ -825,7 +861,7 @@ type TextToSpeechGetSpeechParams struct {
 	// provided.
 	//
 	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "murfai", "rime",
-	// "resemble", "xai".
+	// "resemble", "xai", "humain".
 	Provider TextToSpeechGetSpeechParamsProvider `query:"provider,omitzero" json:"-"`
 	paramObj
 }
@@ -864,4 +900,5 @@ const (
 	TextToSpeechGetSpeechParamsProviderRime       TextToSpeechGetSpeechParamsProvider = "rime"
 	TextToSpeechGetSpeechParamsProviderResemble   TextToSpeechGetSpeechParamsProvider = "resemble"
 	TextToSpeechGetSpeechParamsProviderXai        TextToSpeechGetSpeechParamsProvider = "xai"
+	TextToSpeechGetSpeechParamsProviderHumain     TextToSpeechGetSpeechParamsProvider = "humain"
 )

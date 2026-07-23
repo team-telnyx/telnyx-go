@@ -4130,6 +4130,10 @@ type CallActionGatherUsingAIParams struct {
 	//     `s1`. `VoiceId` is a Fish Voice-Library reference ID.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
+	//   - **Humain:** Use `Humain.<VoiceId>` (e.g., `Humain.sara-ar`). Available voices:
+	//     `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`,
+	//     `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no
+	//     `ModelId` segment.
 	Voice param.Opt[string] `json:"voice,omitzero"`
 	// Assistant configuration including choice of LLM, custom instructions, and tools.
 	Assistant AssistantParam `json:"assistant,omitzero"`
@@ -4461,6 +4465,10 @@ type CallActionGatherUsingSpeakParams struct {
 	//     `s1`. `VoiceId` is a Fish Voice-Library reference ID.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
+	//   - **Humain:** Use `Humain.<VoiceId>` (e.g., `Humain.sara-ar`). Available voices:
+	//     `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`,
+	//     `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no
+	//     `ModelId` segment.
 	//
 	// For service_level basic, you may define the gender of the speaker (male or
 	// female).
@@ -5053,6 +5061,10 @@ type CallActionSpeakParams struct {
 	//     `s1`. `VoiceId` is a Fish Voice-Library reference ID.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
+	//   - **Humain:** Use `Humain.<VoiceId>` (e.g., `Humain.sara-ar`). Available voices:
+	//     `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`,
+	//     `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no
+	//     `ModelId` segment.
 	//
 	// For service_level basic, you may define the gender of the speaker (male or
 	// female).
@@ -5430,6 +5442,10 @@ type CallActionStartAIAssistantParams struct {
 	//     `s1`. `VoiceId` is a Fish Voice-Library reference ID.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
+	//   - **Humain:** Use `Humain.<VoiceId>` (e.g., `Humain.sara-ar`). Available voices:
+	//     `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`,
+	//     `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no
+	//     `ModelId` segment.
 	Voice param.Opt[string] `json:"voice,omitzero"`
 	// AI Assistant configuration. All fields except `id` are optional — the
 	// assistant's stored configuration will be used as fallback for any omitted
@@ -5794,6 +5810,10 @@ type CallActionStartConversationRelayParams struct {
 	//     `s1`. `VoiceId` is a Fish Voice-Library reference ID.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
+	//   - **Humain:** Use `Humain.<VoiceId>` (e.g., `Humain.sara-ar`). Available voices:
+	//     `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`,
+	//     `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no
+	//     `ModelId` segment.
 	Voice param.Opt[string] `json:"voice,omitzero"`
 	// Custom parameters for the Conversation Relay session. Pass key-value data as
 	// `assistant.dynamic_variables` to make it available to the relay session.
