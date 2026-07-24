@@ -1828,6 +1828,7 @@ func TestCallActionTransferWithOptionalParams(t *testing.T) {
 			RecordTimeoutSecs:    telnyx.Int(100),
 			RecordTrack:          telnyx.CallActionTransferParamsRecordTrackOutbound,
 			RecordTrim:           telnyx.CallActionTransferParamsRecordTrimTrimSilence,
+			RouteToMobile:        telnyx.Bool(true),
 			SendDigitsOnAnswer:   telnyx.String("wwww200"),
 			SipAuthPassword:      telnyx.String("password"),
 			SipAuthUsername:      telnyx.String("username"),

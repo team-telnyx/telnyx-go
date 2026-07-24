@@ -186,7 +186,7 @@ type WhatsappPhoneNumberGetConversationWindowResponseData struct {
 	// Whether the 24-hour conversation window is currently open
 	WindowActive bool `json:"window_active"`
 	// When the window closes. Null if no active window.
-	WindowExpiresAt time.Time `json:"window_expires_at" format:"date-time"`
+	WindowExpiresAt time.Time `json:"window_expires_at" api:"nullable" format:"date-time"`
 	// Window type. Currently always 24h when present.
 	WindowType string `json:"window_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].

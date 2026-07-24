@@ -52,6 +52,10 @@ func TestTextToSpeechGenerateSpeechWithOptionalParams(t *testing.T) {
 				"foo": "bar",
 			},
 		},
+		Humain: telnyx.TextToSpeechGenerateSpeechParamsHumain{
+			VoiceID:       "sara-en",
+			TtfbEagerness: telnyx.Float(0),
+		},
 		Language: telnyx.String("language"),
 		Minimax: telnyx.TextToSpeechGenerateSpeechParamsMinimax{
 			LanguageBoost:  telnyx.String("language_boost"),

@@ -4950,14 +4950,16 @@ type FaxFailedDataPayload struct {
 	//
 	// Any of "inbound", "outbound".
 	Direction string `json:"direction"`
-	// Cause of the sending failure
-	//
-	// Any of "rejected".
+	// Customer-facing cause of the fax failure. Mapped from the more granular
+	// `internal_failure_reason`.
 	FailureReason string `json:"failure_reason"`
 	// Identifies the fax.
 	FaxID string `json:"fax_id" format:"uuid"`
 	// The phone number, in E.164 format, the fax will be sent from.
 	From string `json:"from"`
+	// Internal, more granular cause of the fax failure. Useful for deeper debugging
+	// beyond the customer-facing `failure_reason`.
+	InternalFailureReason string `json:"internal_failure_reason"`
 	// The media_name used for the fax's media. Must point to a file previously
 	// uploaded to api.telnyx.com/v2/media by the same user/organization. Supported
 	// formats: PDF, TIFF, JPEG, PNG, DOC, DOCX, RTF, and TXT. media_name and
@@ -4976,19 +4978,20 @@ type FaxFailedDataPayload struct {
 	UserID string `json:"user_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ClientState      respjson.Field
-		ConnectionID     respjson.Field
-		Direction        respjson.Field
-		FailureReason    respjson.Field
-		FaxID            respjson.Field
-		From             respjson.Field
-		MediaName        respjson.Field
-		OriginalMediaURL respjson.Field
-		Status           respjson.Field
-		To               respjson.Field
-		UserID           respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		ClientState           respjson.Field
+		ConnectionID          respjson.Field
+		Direction             respjson.Field
+		FailureReason         respjson.Field
+		FaxID                 respjson.Field
+		From                  respjson.Field
+		InternalFailureReason respjson.Field
+		MediaName             respjson.Field
+		OriginalMediaURL      respjson.Field
+		Status                respjson.Field
+		To                    respjson.Field
+		UserID                respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
 	} `json:"-"`
 }
 
@@ -7852,6 +7855,8 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	// This field is from variant [FaxDeliveredDataPayload].
 	PageCount int64  `json:"page_count"`
 	UserID    string `json:"user_id"`
+	// This field is from variant [FaxFailedDataPayload].
+	InternalFailureReason string `json:"internal_failure_reason"`
 	// This field is from variant [HostedNumberOrderEventWebhookEventDataPayload].
 	ApprovalDeadline int64 `json:"approval_deadline"`
 	// This field is from variant [HostedNumberOrderEventWebhookEventDataPayload].
@@ -7988,6 +7993,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		OriginalMediaURL         respjson.Field
 		PageCount                respjson.Field
 		UserID                   respjson.Field
+		InternalFailureReason    respjson.Field
 		ApprovalDeadline         respjson.Field
 		Decision                 respjson.Field
 		Numbers                  respjson.Field
@@ -9078,6 +9084,8 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	// This field is from variant [FaxDeliveredDataPayload].
 	PageCount int64  `json:"page_count"`
 	UserID    string `json:"user_id"`
+	// This field is from variant [FaxFailedDataPayload].
+	InternalFailureReason string `json:"internal_failure_reason"`
 	// This field is from variant [HostedNumberOrderEventWebhookEventDataPayload].
 	ApprovalDeadline int64 `json:"approval_deadline"`
 	// This field is from variant [HostedNumberOrderEventWebhookEventDataPayload].
@@ -9214,6 +9222,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		OriginalMediaURL         respjson.Field
 		PageCount                respjson.Field
 		UserID                   respjson.Field
+		InternalFailureReason    respjson.Field
 		ApprovalDeadline         respjson.Field
 		Decision                 respjson.Field
 		Numbers                  respjson.Field
