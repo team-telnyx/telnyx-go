@@ -34,6 +34,8 @@ type WhatsappPhoneNumberService struct {
 	CallingSettings WhatsappPhoneNumberCallingSettingService
 	// Manage Whatsapp phone numbers
 	Profile WhatsappPhoneNumberProfileService
+	// Manage Whatsapp phone numbers
+	ConversationalComponents WhatsappPhoneNumberConversationalComponentService
 }
 
 // NewWhatsappPhoneNumberService generates a new service that applies the given
@@ -44,6 +46,7 @@ func NewWhatsappPhoneNumberService(opts ...option.RequestOption) (r WhatsappPhon
 	r.Options = opts
 	r.CallingSettings = NewWhatsappPhoneNumberCallingSettingService(opts...)
 	r.Profile = NewWhatsappPhoneNumberProfileService(opts...)
+	r.ConversationalComponents = NewWhatsappPhoneNumberConversationalComponentService(opts...)
 	return
 }
 
