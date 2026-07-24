@@ -1512,7 +1512,10 @@ type TranscriptionConfigParam struct {
 	// `assemblyai/universal-streaming`, `auto` (or unset) enables native multilingual
 	// code-switching; ISO 639-1 codes (`en`, `es`, `de`, `fr`, `pt`, `it`, `tr`, `nl`,
 	// `sv`, `no`, `da`, `fi`, `hi`, `vi`, `ar`, `he`, `ja`, `zh`) bias the session to
-	// that language.
+	// that language. For `humain/realtime`, supported values are `ar`, `en`,
+	// `codeswitch` (Arabic/English code-switching), and `auto` (resolves server-side
+	// to code-switching). Unlike other models, `humain/realtime` does not fall back to
+	// `auto` when `language` is omitted — omitting it applies `en` instead.
 	Language param.Opt[string] `json:"language,omitzero"`
 	// The speech to text model to be used by the voice assistant. Supported models
 	// include:
@@ -1527,6 +1530,8 @@ type TranscriptionConfigParam struct {
 	//     automatic language detection.
 	//   - `nvidia/parakeet-v3` for multilingual transcription with automatic language
 	//     detection.
+	//   - `humain/realtime` for live streaming transcription with native Arabic and
+	//     Arabic/English code-switching support.
 	//   - `azure/fast` and `azure/realtime`; Azure models require `region`, and
 	//     unsupported regions require `api_key_ref`.
 	//   - `google/latest_long` for non-streaming multilingual transcription.
@@ -1538,8 +1543,9 @@ type TranscriptionConfigParam struct {
 	// Any of "deepgram/flux", "flux", "deepgram/nova-3", "deepgram/nova-2",
 	// "speechmatics/standard", "speechmatics/enhanced",
 	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "nvidia/parakeet-v3", "azure/fast", "azure/realtime", "google/latest_long",
-	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
+	// "nvidia/parakeet-v3", "humain/realtime", "azure/fast", "azure/realtime",
+	// "google/latest_long", "distil-whisper/distil-large-v2",
+	// "openai/whisper-large-v3-turbo".
 	Model TranscriptionConfigModel `json:"model,omitzero"`
 	paramObj
 }
@@ -1565,6 +1571,8 @@ func (r *TranscriptionConfigParam) UnmarshalJSON(data []byte) error {
 //     automatic language detection.
 //   - `nvidia/parakeet-v3` for multilingual transcription with automatic language
 //     detection.
+//   - `humain/realtime` for live streaming transcription with native Arabic and
+//     Arabic/English code-switching support.
 //   - `azure/fast` and `azure/realtime`; Azure models require `region`, and
 //     unsupported regions require `api_key_ref`.
 //   - `google/latest_long` for non-streaming multilingual transcription.
@@ -1585,6 +1593,7 @@ const (
 	TranscriptionConfigModelXaiGrokStt                   TranscriptionConfigModel = "xai/grok-stt"
 	TranscriptionConfigModelSonioxSttRtV4                TranscriptionConfigModel = "soniox/stt-rt-v4"
 	TranscriptionConfigModelNvidiaParakeetV3             TranscriptionConfigModel = "nvidia/parakeet-v3"
+	TranscriptionConfigModelHumainRealtime               TranscriptionConfigModel = "humain/realtime"
 	TranscriptionConfigModelAzureFast                    TranscriptionConfigModel = "azure/fast"
 	TranscriptionConfigModelAzureRealtime                TranscriptionConfigModel = "azure/realtime"
 	TranscriptionConfigModelGoogleLatestLong             TranscriptionConfigModel = "google/latest_long"
@@ -2262,7 +2271,7 @@ type TranscriptionStartRequestParam struct {
 	// `Telnyx` are supported for backward compatibility.
 	//
 	// Any of "Google", "Telnyx", "Deepgram", "Azure", "xAI", "AssemblyAI",
-	// "Speechmatics", "Soniox", "Parakeet", "A", "B".
+	// "Speechmatics", "Soniox", "Parakeet", "Humain", "A", "B".
 	TranscriptionEngine       TranscriptionStartRequestTranscriptionEngine                 `json:"transcription_engine,omitzero"`
 	TranscriptionEngineConfig TranscriptionStartRequestTranscriptionEngineConfigUnionParam `json:"transcription_engine_config,omitzero"`
 	paramObj
@@ -2290,6 +2299,7 @@ const (
 	TranscriptionStartRequestTranscriptionEngineSpeechmatics TranscriptionStartRequestTranscriptionEngine = "Speechmatics"
 	TranscriptionStartRequestTranscriptionEngineSoniox       TranscriptionStartRequestTranscriptionEngine = "Soniox"
 	TranscriptionStartRequestTranscriptionEngineParakeet     TranscriptionStartRequestTranscriptionEngine = "Parakeet"
+	TranscriptionStartRequestTranscriptionEngineHumain       TranscriptionStartRequestTranscriptionEngine = "Humain"
 	TranscriptionStartRequestTranscriptionEngineA            TranscriptionStartRequestTranscriptionEngine = "A"
 	TranscriptionStartRequestTranscriptionEngineB            TranscriptionStartRequestTranscriptionEngine = "B"
 )
@@ -2298,18 +2308,19 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type TranscriptionStartRequestTranscriptionEngineConfigUnionParam struct {
-	OfGoogle        *TranscriptionEngineGoogleConfigParam       `json:",omitzero,inline"`
-	OfTelnyx        *TranscriptionEngineTelnyxConfigParam       `json:",omitzero,inline"`
-	OfAzure         *TranscriptionEngineAzureConfigParam        `json:",omitzero,inline"`
-	OfXAI           *TranscriptionEngineXaiConfigParam          `json:",omitzero,inline"`
-	OfAssemblyAI    *TranscriptionEngineAssemblyaiConfigParam   `json:",omitzero,inline"`
-	OfSpeechmatics  *TranscriptionEngineSpeechmaticsConfigParam `json:",omitzero,inline"`
-	OfSoniox        *TranscriptionEngineSonioxConfigParam       `json:",omitzero,inline"`
-	OfParakeet      *TranscriptionEngineParakeetConfigParam     `json:",omitzero,inline"`
-	OfA             *TranscriptionEngineAConfigParam            `json:",omitzero,inline"`
-	OfB             *TranscriptionEngineBConfigParam            `json:",omitzero,inline"`
-	OfDeepgramNova2 *DeepgramNova2ConfigParam                   `json:",omitzero,inline"`
-	OfDeepgramNova3 *DeepgramNova3ConfigParam                   `json:",omitzero,inline"`
+	OfGoogle        *TranscriptionEngineGoogleConfigParam                          `json:",omitzero,inline"`
+	OfTelnyx        *TranscriptionEngineTelnyxConfigParam                          `json:",omitzero,inline"`
+	OfAzure         *TranscriptionEngineAzureConfigParam                           `json:",omitzero,inline"`
+	OfXAI           *TranscriptionEngineXaiConfigParam                             `json:",omitzero,inline"`
+	OfAssemblyAI    *TranscriptionEngineAssemblyaiConfigParam                      `json:",omitzero,inline"`
+	OfSpeechmatics  *TranscriptionEngineSpeechmaticsConfigParam                    `json:",omitzero,inline"`
+	OfSoniox        *TranscriptionEngineSonioxConfigParam                          `json:",omitzero,inline"`
+	OfParakeet      *TranscriptionEngineParakeetConfigParam                        `json:",omitzero,inline"`
+	OfHumain        *TranscriptionStartRequestTranscriptionEngineConfigHumainParam `json:",omitzero,inline"`
+	OfA             *TranscriptionEngineAConfigParam                               `json:",omitzero,inline"`
+	OfB             *TranscriptionEngineBConfigParam                               `json:",omitzero,inline"`
+	OfDeepgramNova2 *DeepgramNova2ConfigParam                                      `json:",omitzero,inline"`
+	OfDeepgramNova3 *DeepgramNova3ConfigParam                                      `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -2322,6 +2333,7 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) MarshalJSO
 		u.OfSpeechmatics,
 		u.OfSoniox,
 		u.OfParakeet,
+		u.OfHumain,
 		u.OfA,
 		u.OfB,
 		u.OfDeepgramNova2,
@@ -2348,6 +2360,8 @@ func (u *TranscriptionStartRequestTranscriptionEngineConfigUnionParam) asAny() a
 		return u.OfSoniox
 	} else if !param.IsOmitted(u.OfParakeet) {
 		return u.OfParakeet
+	} else if !param.IsOmitted(u.OfHumain) {
+		return u.OfHumain
 	} else if !param.IsOmitted(u.OfA) {
 		return u.OfA
 	} else if !param.IsOmitted(u.OfB) {
@@ -2448,6 +2462,8 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetLanguag
 		return (*string)(&vt.Language)
 	} else if vt := u.OfSoniox; vt != nil && vt.Language.Valid() {
 		return &vt.Language.Value
+	} else if vt := u.OfHumain; vt != nil {
+		return (*string)(&vt.Language)
 	} else if vt := u.OfA; vt != nil {
 		return (*string)(&vt.Language)
 	} else if vt := u.OfB; vt != nil {
@@ -2518,6 +2534,8 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscr
 		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfParakeet; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
+	} else if vt := u.OfHumain; vt != nil {
+		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfA; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfB; vt != nil {
@@ -2553,6 +2571,8 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscr
 	} else if vt := u.OfSoniox; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
 	} else if vt := u.OfParakeet; vt != nil {
+		return (*string)(&vt.TranscriptionModel)
+	} else if vt := u.OfHumain; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
 	} else if vt := u.OfB; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
@@ -2647,10 +2667,48 @@ func init() {
 		apijson.Discriminator[TranscriptionEngineSpeechmaticsConfigParam]("Speechmatics"),
 		apijson.Discriminator[TranscriptionEngineSonioxConfigParam]("Soniox"),
 		apijson.Discriminator[TranscriptionEngineParakeetConfigParam]("Parakeet"),
+		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigHumainParam]("Humain"),
 		apijson.Discriminator[TranscriptionEngineAConfigParam]("A"),
 		apijson.Discriminator[TranscriptionEngineBConfigParam]("B"),
 		apijson.Discriminator[DeepgramNova2ConfigParam]("deepgram/nova-2"),
 		apijson.Discriminator[DeepgramNova3ConfigParam]("deepgram/nova-3"),
+	)
+}
+
+type TranscriptionStartRequestTranscriptionEngineConfigHumainParam struct {
+	// The language of the audio to be transcribed. `codeswitch` enables Arabic/English
+	// code-switching. `auto` resolves server-side to code-switching.
+	//
+	// Any of "ar", "en", "codeswitch", "auto".
+	Language string `json:"language,omitzero"`
+	// Engine identifier for Humain transcription service
+	//
+	// Any of "Humain".
+	TranscriptionEngine string `json:"transcription_engine,omitzero"`
+	// The model to use for transcription.
+	//
+	// Any of "humain/realtime".
+	TranscriptionModel string `json:"transcription_model,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionStartRequestTranscriptionEngineConfigHumainParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionStartRequestTranscriptionEngineConfigHumainParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionStartRequestTranscriptionEngineConfigHumainParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigHumainParam](
+		"language", "ar", "en", "codeswitch", "auto",
+	)
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigHumainParam](
+		"transcription_engine", "Humain",
+	)
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigHumainParam](
+		"transcription_model", "humain/realtime",
 	)
 }
 
@@ -4072,6 +4130,10 @@ type CallActionGatherUsingAIParams struct {
 	//     `s1`. `VoiceId` is a Fish Voice-Library reference ID.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
+	//   - **Humain:** Use `Humain.<VoiceId>` (e.g., `Humain.sara-ar`). Available voices:
+	//     `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`,
+	//     `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no
+	//     `ModelId` segment.
 	Voice param.Opt[string] `json:"voice,omitzero"`
 	// Assistant configuration including choice of LLM, custom instructions, and tools.
 	Assistant AssistantParam `json:"assistant,omitzero"`
@@ -4403,6 +4465,10 @@ type CallActionGatherUsingSpeakParams struct {
 	//     `s1`. `VoiceId` is a Fish Voice-Library reference ID.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
+	//   - **Humain:** Use `Humain.<VoiceId>` (e.g., `Humain.sara-ar`). Available voices:
+	//     `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`,
+	//     `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no
+	//     `ModelId` segment.
 	//
 	// For service_level basic, you may define the gender of the speaker (male or
 	// female).
@@ -4995,6 +5061,10 @@ type CallActionSpeakParams struct {
 	//     `s1`. `VoiceId` is a Fish Voice-Library reference ID.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
+	//   - **Humain:** Use `Humain.<VoiceId>` (e.g., `Humain.sara-ar`). Available voices:
+	//     `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`,
+	//     `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no
+	//     `ModelId` segment.
 	//
 	// For service_level basic, you may define the gender of the speaker (male or
 	// female).
@@ -5372,6 +5442,10 @@ type CallActionStartAIAssistantParams struct {
 	//     `s1`. `VoiceId` is a Fish Voice-Library reference ID.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
+	//   - **Humain:** Use `Humain.<VoiceId>` (e.g., `Humain.sara-ar`). Available voices:
+	//     `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`,
+	//     `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no
+	//     `ModelId` segment.
 	Voice param.Opt[string] `json:"voice,omitzero"`
 	// AI Assistant configuration. All fields except `id` are optional — the
 	// assistant's stored configuration will be used as fallback for any omitted
@@ -5736,6 +5810,10 @@ type CallActionStartConversationRelayParams struct {
 	//     `s1`. `VoiceId` is a Fish Voice-Library reference ID.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
+	//   - **Humain:** Use `Humain.<VoiceId>` (e.g., `Humain.sara-ar`). Available voices:
+	//     `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`,
+	//     `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no
+	//     `ModelId` segment.
 	Voice param.Opt[string] `json:"voice,omitzero"`
 	// Custom parameters for the Conversation Relay session. Pass key-value data as
 	// `assistant.dynamic_variables` to make it available to the relay session.
@@ -7136,6 +7214,13 @@ type CallActionTransferParams struct {
 	// silence and the related charge will be applied. The minimum value is 0. The
 	// default value is 0 (infinite).
 	RecordTimeoutSecs param.Opt[int64] `json:"record_timeout_secs,omitzero"`
+	// When set to true, routes the call directly to the mobile device associated with
+	// the destination Telnyx Mobile number, bypassing Inbound Calls Interception
+	// configured in the Telnyx Portal under Mobile Numbers → select the number → Voice
+	// → Call Interception. Use this when transferring an intercepted call to the
+	// mobile device to prevent the call from being intercepted again. Defaults to
+	// false.
+	RouteToMobile param.Opt[bool] `json:"route_to_mobile,omitzero"`
 	// DTMF digits to send automatically after the transfer destination answers. Useful
 	// for reaching an extension behind an IVR (e.g. `"200"` to dial extension 200 once
 	// the called party picks up). Allowed characters: `0-9`, `A-D`, `w` (0.5s pause),
