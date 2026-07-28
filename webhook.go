@@ -5394,6 +5394,27 @@ func (r *FaxSendingStartedMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type InboundMessage struct {
+	// Any of "inbound".
+	Direction string `json:"direction"`
+	// Any of "received".
+	Status string `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Direction   respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	ThreadMessage
+}
+
+// Returns the unmodified JSON received from the API
+func (r InboundMessage) RawJSON() string { return r.JSON.raw }
+func (r *InboundMessage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type NumberOrderStatusUpdate struct {
 	Data NumberOrderStatusUpdateData `json:"data" api:"required"`
 	Meta NumberOrderStatusUpdateMeta `json:"meta" api:"required"`

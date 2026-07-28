@@ -341,6 +341,26 @@ type Client struct {
 	// Trademark or impersonation claims filed against your DIR. Customers may contest
 	// a claim with supporting evidence.
 	InfringementClaims InfringementClaimService
+	// Recipient suppression records (`/v2/email_blocks`).
+	EmailBlocks  EmailBlockService
+	EmailDomains EmailDomainService
+	// Retrieve account-level email events and event statistics.
+	EmailEvents EmailEventService
+	// Create and manage agent inboxes, retrieve inbound messages and threads, and
+	// reply to or forward messages.
+	EmailInboxes EmailInboxService
+	// Send and manage email messages. Legacy `/v2/emails` routes are aliases for these
+	// endpoints.
+	EmailMessages EmailMessageService
+	// Create, list, retrieve, update, delete, and render Liquid email templates.
+	EmailTemplates EmailTemplateService
+	// Account-wide conversation threads across every inbox, for agents operating many
+	// inboxes at once.
+	EmailThreads EmailThreadService
+	// Named groups and group-scoped suppressions.
+	EmailUnsubscribeGroups EmailUnsubscribeGroupService
+	// Validate email addresses synchronously or in asynchronous batches.
+	EmailValidations EmailValidationService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -554,6 +574,15 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.CallReasons = NewCallReasonService(opts...)
 	r.Dir = NewDirService(opts...)
 	r.InfringementClaims = NewInfringementClaimService(opts...)
+	r.EmailBlocks = NewEmailBlockService(opts...)
+	r.EmailDomains = NewEmailDomainService(opts...)
+	r.EmailEvents = NewEmailEventService(opts...)
+	r.EmailInboxes = NewEmailInboxService(opts...)
+	r.EmailMessages = NewEmailMessageService(opts...)
+	r.EmailTemplates = NewEmailTemplateService(opts...)
+	r.EmailThreads = NewEmailThreadService(opts...)
+	r.EmailUnsubscribeGroups = NewEmailUnsubscribeGroupService(opts...)
+	r.EmailValidations = NewEmailValidationService(opts...)
 
 	return
 }
