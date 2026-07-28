@@ -291,11 +291,14 @@ jobs:
             --manifest-file .release-please-manifest.json \
             2>&1
 
-      - name: Verify release commit produced a tag (ghost-release guard)
+      - name: Verify release commit produced an exact tag (ghost-release guard)
         if: github.ref == 'refs/heads/main'
+        id: release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -euo pipefail
+
           # `github-release` exits 0 even when it finds nothing to release ([]).
           # If the commit that triggered this run is a merged `release: X.Y.Z`
           # commit, a missing vX.Y.Z tag here means it silently no-opped —
@@ -304,16 +307,144 @@ jobs:
           MSG=$(git log -1 --format=%s "$GITHUB_SHA")
           VER=$(echo "$MSG" | grep -oP '^release:\s*\K[0-9][0-9.]*' || true)
           if [ -z "$VER" ]; then
+            echo "is_release=false" >> "$GITHUB_OUTPUT"
             echo "Not a release commit; nothing to verify"
             exit 0
           fi
-          if git ls-remote --exit-code --tags origin "v$VER" >/dev/null 2>&1; then
-            if ! gh api "repos/${{ github.repository }}/releases/tags/v$VER" >/dev/null 2>&1; then
-              echo "::error::Tag v$VER exists but there is no GitHub Release for it - the publish workflow (release: published) will never fire. Create it: gh release create v$VER --generate-notes"
-              exit 1
-            fi
-            echo "Tag v$VER and its GitHub Release exist - release verified"
-          else
-            echo "::error::Merged release commit for $VER but no v$VER tag exists. github-release silently no-opped (merged release PR likely missing the autorelease pending label). Add the label to the merged PR and re-run this workflow."
+
+          TAG="v$VER"
+          if ! git ls-remote --exit-code --tags origin "$TAG" >/dev/null 2>&1; then
+            echo "::error::Merged release commit for $VER but no $TAG tag exists. github-release silently no-opped (merged release PR likely missing the autorelease pending label). Add the label to the merged PR and re-run this workflow."
             exit 1
           fi
+          if ! gh api "repos/${{ github.repository }}/releases/tags/$TAG" >/dev/null 2>&1; then
+            echo "::error::Tag $TAG exists but there is no GitHub Release for it - downstream release automation must not run. Create it: gh release create $TAG --generate-notes"
+            exit 1
+          fi
+
+          # Support lightweight and annotated tags, but require the fully
+          # dereferenced tag target to be this exact release commit.
+          TAG_OBJECT=$(gh api "repos/${{ github.repository }}/git/ref/tags/$TAG")
+          TAG_TYPE=$(jq -r '.object.type' <<<"$TAG_OBJECT")
+          TAG_SHA=$(jq -r '.object.sha' <<<"$TAG_OBJECT")
+          for _ in 1 2 3 4 5; do
+            if [ "$TAG_TYPE" = "commit" ]; then
+              break
+            fi
+            if [ "$TAG_TYPE" != "tag" ]; then
+              echo "::error::$TAG points to unsupported Git object type '$TAG_TYPE'"
+              exit 1
+            fi
+            TAG_OBJECT=$(gh api "repos/${{ github.repository }}/git/tags/$TAG_SHA")
+            TAG_TYPE=$(jq -r '.object.type' <<<"$TAG_OBJECT")
+            TAG_SHA=$(jq -r '.object.sha' <<<"$TAG_OBJECT")
+          done
+          if [ "$TAG_TYPE" != "commit" ] || [ "$TAG_SHA" != "$GITHUB_SHA" ]; then
+            echo "::error::$TAG resolves to ${TAG_TYPE}:${TAG_SHA}, expected commit:${GITHUB_SHA}"
+            exit 1
+          fi
+
+          {
+            echo "is_release=true"
+            echo "version=$VER"
+            echo "tag=$TAG"
+            echo "release_sha=$GITHUB_SHA"
+          } >> "$GITHUB_OUTPUT"
+          echo "Tag $TAG and its GitHub Release exist at exact commit $GITHUB_SHA"
+
+      - name: Dispatch compatible release to CLI promotion
+        if: github.ref == 'refs/heads/main' && steps.release.outputs.is_release == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.SDK_WRITE_TOKEN }}
+          VERSION: ${{ steps.release.outputs.version }}
+          RELEASE_SHA: ${{ steps.release.outputs.release_sha }}
+        run: |
+          set -euo pipefail
+
+          # Attest the immutable generation chain rather than trusting a mutable
+          # latest tag: Go release → release PR → Go staging merge → generated
+          # staging PR → telnyx-sdk-config commit.
+          RELEASE_PRS=$(gh api "repos/${{ github.repository }}/commits/$RELEASE_SHA/pulls")
+          RELEASE_PR=$(jq -ce \
+            --arg sha "$RELEASE_SHA" \
+            --arg title "release: $VERSION" \
+            '[.[] | select(
+              .state == "closed" and
+              .merged_at != null and
+              .merge_commit_sha == $sha and
+              .base.ref == "main" and
+              .title == $title and
+              .user.login == "ankitTelnyx" and
+              (.head.ref | startswith("release-please--"))
+            )] | if length == 1 then .[0] else error("expected exactly one merged release PR") end' \
+            <<<"$RELEASE_PRS")
+
+          mapfile -t STAGING_REFS < <(
+            jq -r '.body // ""' <<<"$RELEASE_PR" \
+              | grep -oE 'promote from staging [0-9a-f]{7,40}' \
+              | awk '{print $4}' \
+              | sort -u
+          )
+          if [ "${#STAGING_REFS[@]}" -ne 1 ]; then
+            echo "::error::Expected exactly one Go staging provenance reference in release PR"
+            exit 1
+          fi
+          STAGING_SHA=$(gh api \
+            "repos/team-telnyx/telnyx-go-staging/commits/${STAGING_REFS[0]}" \
+            --jq '.sha')
+          if ! [[ "$STAGING_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::Go staging reference did not resolve to a full commit SHA"
+            exit 1
+          fi
+
+          STAGING_PRS=$(gh api \
+            "repos/team-telnyx/telnyx-go-staging/commits/$STAGING_SHA/pulls")
+          STAGING_PR=$(jq -ce \
+            --arg sha "$STAGING_SHA" \
+            '[.[] | select(
+              .state == "closed" and
+              .merged_at != null and
+              .merge_commit_sha == $sha and
+              .base.ref == "main" and
+              .user.login == "ankitTelnyx" and
+              .head.ref == "stlc/generate"
+            )] | if length == 1 then .[0] else error("expected exactly one generated Go staging PR") end' \
+            <<<"$STAGING_PRS")
+
+          mapfile -t SDK_CONFIG_SHAS < <(
+            jq -r '.body // ""' <<<"$STAGING_PR" \
+              | grep -oE 'https://github.com/team-telnyx/telnyx-sdk-config/commit/[0-9a-f]{40}' \
+              | sed 's|.*/||' \
+              | sort -u
+          )
+          if [ "${#SDK_CONFIG_SHAS[@]}" -ne 1 ]; then
+            echo "::error::Expected exactly one telnyx-sdk-config commit in generated Go staging PR"
+            exit 1
+          fi
+          SDK_CONFIG_SHA=${SDK_CONFIG_SHAS[0]}
+          RESOLVED_CONFIG_SHA=$(gh api \
+            "repos/team-telnyx/telnyx-sdk-config/commits/$SDK_CONFIG_SHA" \
+            --jq '.sha')
+          if [ "$RESOLVED_CONFIG_SHA" != "$SDK_CONFIG_SHA" ]; then
+            echo "::error::SDK config provenance did not resolve to the expected commit"
+            exit 1
+          fi
+
+          jq -n \
+            --arg version "v$VERSION" \
+            --arg release_sha "$RELEASE_SHA" \
+            --arg sdk_config_sha "$SDK_CONFIG_SHA" \
+            '{
+              event_type: "telnyx-go-released",
+              client_payload: {
+                go_version: $version,
+                go_release_sha: $release_sha,
+                sdk_config_sha: $sdk_config_sha
+              }
+            }' \
+            | gh api \
+                repos/team-telnyx/telnyx-cli-staging/dispatches \
+                --method POST \
+                --input -
+
+          echo "Dispatched v$VERSION from SDK config $SDK_CONFIG_SHA to CLI promotion"
