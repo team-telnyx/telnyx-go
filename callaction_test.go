@@ -42,6 +42,7 @@ func TestCallActionAddAIAssistantMessagesWithOptionalParams(t *testing.T) {
 					},
 				},
 			}},
+			TriggerResponse: telnyx.Bool(false),
 		},
 	)
 	if err != nil {

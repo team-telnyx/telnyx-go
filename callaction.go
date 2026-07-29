@@ -3539,6 +3539,10 @@ type CallActionAddAIAssistantMessagesParams struct {
 	// Use this field to avoid duplicate commands. Telnyx will ignore any command with
 	// the same `command_id` for the same `call_control_id`.
 	CommandID param.Opt[string] `json:"command_id,omitzero"`
+	// When `true`, the injected messages immediately trigger an assistant
+	// response/turn instead of waiting for the next natural turn or idle timeout. This
+	// may interrupt a user who is still speaking.
+	TriggerResponse param.Opt[bool] `json:"trigger_response,omitzero"`
 	// The messages to add to the conversation.
 	Messages []CallActionAddAIAssistantMessagesParamsMessageUnion `json:"messages,omitzero"`
 	paramObj
