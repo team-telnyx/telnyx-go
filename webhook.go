@@ -6368,6 +6368,324 @@ func (r *CallMachinePremiumGreetingEndedWebhookEvent) UnmarshalJSON(data []byte)
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type CallPaymentCompletedWebhookEvent struct {
+	Data CallPaymentCompletedWebhookEventData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallPaymentCompletedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *CallPaymentCompletedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallPaymentCompletedWebhookEventData struct {
+	// Unique identifier for the event.
+	ID string `json:"id" format:"uuid"`
+	// The type of event being delivered.
+	//
+	// Any of "call.payment.completed".
+	EventType string `json:"event_type"`
+	// ISO 8601 datetime when the event occurred.
+	OccurredAt time.Time                                   `json:"occurred_at" format:"date-time"`
+	Payload    CallPaymentCompletedWebhookEventDataPayload `json:"payload"`
+	// Identifies the type of the resource.
+	//
+	// Any of "event".
+	RecordType string `json:"record_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallPaymentCompletedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *CallPaymentCompletedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallPaymentCompletedWebhookEventDataPayload struct {
+	// Masked bank account number with only the last two digits visible.
+	BankAccountNumber string `json:"bank_account_number"`
+	// Bank account type, when available.
+	BankAccountType string `json:"bank_account_type"`
+	// Bank routing number collected from the caller.
+	BankRoutingNumber string `json:"bank_routing_number"`
+	// Call ID used to issue commands via Call Control API.
+	CallControlID string `json:"call_control_id"`
+	// ID unique to the call leg.
+	CallLegID string `json:"call_leg_id"`
+	// ID shared by related call legs in the same call session.
+	CallSessionID string `json:"call_session_id"`
+	// Charge identifier returned for a successful charge transaction.
+	ChargeID string `json:"charge_id"`
+	// Base64-encoded state received from the command.
+	ClientState string `json:"client_state"`
+	// Call Control App ID used in the call.
+	ConnectionID string `json:"connection_id"`
+	// Additional connector error information, when supplied by the processor.
+	ConnectorError CallPaymentCompletedWebhookEventDataPayloadConnectorErrorUnion `json:"connector_error"`
+	// Card expiration date in MMYY format.
+	ExpirationDate string `json:"expiration_date"`
+	// Number or SIP URI placing the call.
+	From string `json:"from"`
+	// Error code returned by the payment connector or processor.
+	PayErrorCode string `json:"pay_error_code"`
+	// Masked card number with only the last four digits visible.
+	PaymentCardNumber string `json:"payment_card_number"`
+	// Billing postal code collected from the caller.
+	PaymentCardPostalCode string `json:"payment_card_postal_code"`
+	// Detected card type. Present only for the recognized card brands listed below.
+	//
+	// Any of "visa", "mastercard", "amex", "discover", "diners-club", "jcb".
+	PaymentCardType string `json:"payment_card_type"`
+	// Payment confirmation code returned by the processor, when available.
+	PaymentConfirmationCode string `json:"payment_confirmation_code"`
+	// Name of the Pay connector used.
+	PaymentConnector string `json:"payment_connector"`
+	// Step-level or processor error associated with the final result.
+	PaymentError string `json:"payment_error"`
+	// Payment method being collected.
+	//
+	// Any of "credit-card", "ach-debit".
+	PaymentMethod string `json:"payment_method"`
+	// Final Pay session result.
+	//
+	// Any of "success", "payment-connector-error", "internal-error",
+	// "too-many-failed-attempts", "cancelled".
+	Result string `json:"result"`
+	// Fully masked card security code.
+	SecurityCode string `json:"security_code"`
+	// Destination number or SIP URI of the call.
+	To string `json:"to"`
+	// Token identifier returned for a successful tokenize transaction.
+	TokenID string `json:"token_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BankAccountNumber       respjson.Field
+		BankAccountType         respjson.Field
+		BankRoutingNumber       respjson.Field
+		CallControlID           respjson.Field
+		CallLegID               respjson.Field
+		CallSessionID           respjson.Field
+		ChargeID                respjson.Field
+		ClientState             respjson.Field
+		ConnectionID            respjson.Field
+		ConnectorError          respjson.Field
+		ExpirationDate          respjson.Field
+		From                    respjson.Field
+		PayErrorCode            respjson.Field
+		PaymentCardNumber       respjson.Field
+		PaymentCardPostalCode   respjson.Field
+		PaymentCardType         respjson.Field
+		PaymentConfirmationCode respjson.Field
+		PaymentConnector        respjson.Field
+		PaymentError            respjson.Field
+		PaymentMethod           respjson.Field
+		Result                  respjson.Field
+		SecurityCode            respjson.Field
+		To                      respjson.Field
+		TokenID                 respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallPaymentCompletedWebhookEventDataPayload) RawJSON() string { return r.JSON.raw }
+func (r *CallPaymentCompletedWebhookEventDataPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// CallPaymentCompletedWebhookEventDataPayloadConnectorErrorUnion contains all
+// possible properties and values from [string], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString
+// OfCallPaymentCompletedWebhookEventDataPayloadConnectorErrorUnionMember1]
+type CallPaymentCompletedWebhookEventDataPayloadConnectorErrorUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfCallPaymentCompletedWebhookEventDataPayloadConnectorErrorUnionMember1 any `json:",inline"`
+	JSON                                                                    struct {
+		OfString                                                                respjson.Field
+		OfCallPaymentCompletedWebhookEventDataPayloadConnectorErrorUnionMember1 respjson.Field
+		raw                                                                     string
+	} `json:"-"`
+}
+
+func (u CallPaymentCompletedWebhookEventDataPayloadConnectorErrorUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u CallPaymentCompletedWebhookEventDataPayloadConnectorErrorUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u CallPaymentCompletedWebhookEventDataPayloadConnectorErrorUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *CallPaymentCompletedWebhookEventDataPayloadConnectorErrorUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallPaymentProgressWebhookEvent struct {
+	Data CallPaymentProgressWebhookEventData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallPaymentProgressWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *CallPaymentProgressWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallPaymentProgressWebhookEventData struct {
+	// Unique identifier for the event.
+	ID string `json:"id" format:"uuid"`
+	// The type of event being delivered.
+	//
+	// Any of "call.payment.progress".
+	EventType string `json:"event_type"`
+	// ISO 8601 datetime when the event occurred.
+	OccurredAt time.Time                                  `json:"occurred_at" format:"date-time"`
+	Payload    CallPaymentProgressWebhookEventDataPayload `json:"payload"`
+	// Identifies the type of the resource.
+	//
+	// Any of "event".
+	RecordType string `json:"record_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallPaymentProgressWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *CallPaymentProgressWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallPaymentProgressWebhookEventDataPayload struct {
+	// Current 1-based attempt number for the step.
+	Attempt int64 `json:"attempt"`
+	// Masked bank account number with only the last two digits visible.
+	BankAccountNumber string `json:"bank_account_number"`
+	// Bank account type, when available.
+	BankAccountType string `json:"bank_account_type"`
+	// Bank routing number collected from the caller.
+	BankRoutingNumber string `json:"bank_routing_number"`
+	// Call ID used to issue commands via Call Control API.
+	CallControlID string `json:"call_control_id"`
+	// ID unique to the call leg.
+	CallLegID string `json:"call_leg_id"`
+	// ID shared by related call legs in the same call session.
+	CallSessionID string `json:"call_session_id"`
+	// Base64-encoded state received from the command.
+	ClientState string `json:"client_state"`
+	// Call Control App ID used in the call.
+	ConnectionID string `json:"connection_id"`
+	// Step-level error when payment collection fails.
+	//
+	// Any of "timeout", "invalid-card-number", "invalid-date",
+	// "invalid-security-code", "invalid-postal-code", "invalid-bank-routing-number",
+	// "invalid-bank-account-number", "input-matching-failed".
+	ErrorType string `json:"error_type"`
+	// Card expiration date in MMYY format.
+	ExpirationDate string `json:"expiration_date"`
+	// Number or SIP URI placing the call.
+	From string `json:"from"`
+	// Masked card number with only the last four digits visible.
+	PaymentCardNumber string `json:"payment_card_number"`
+	// Billing postal code collected from the caller.
+	PaymentCardPostalCode string `json:"payment_card_postal_code"`
+	// Detected card type. Present only for the recognized card brands listed below.
+	//
+	// Any of "visa", "mastercard", "amex", "discover", "diners-club", "jcb".
+	PaymentCardType string `json:"payment_card_type"`
+	// Name of the Pay connector used.
+	PaymentConnector string `json:"payment_connector"`
+	// Payment method being collected.
+	//
+	// Any of "credit-card", "ach-debit".
+	PaymentMethod string `json:"payment_method"`
+	// Status of the current payment step.
+	//
+	// Any of "completed", "failed", "processing".
+	PaymentStatus string `json:"payment_status"`
+	// Current payment collection or processing step.
+	//
+	// Any of "payment-card-number", "expiration-date", "postal-code", "security-code",
+	// "bank-routing-number", "bank-account-number", "payment-processing".
+	PaymentStep string `json:"payment_step"`
+	// Fully masked card security code.
+	SecurityCode string `json:"security_code"`
+	// Destination number or SIP URI of the call.
+	To string `json:"to"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Attempt               respjson.Field
+		BankAccountNumber     respjson.Field
+		BankAccountType       respjson.Field
+		BankRoutingNumber     respjson.Field
+		CallControlID         respjson.Field
+		CallLegID             respjson.Field
+		CallSessionID         respjson.Field
+		ClientState           respjson.Field
+		ConnectionID          respjson.Field
+		ErrorType             respjson.Field
+		ExpirationDate        respjson.Field
+		From                  respjson.Field
+		PaymentCardNumber     respjson.Field
+		PaymentCardPostalCode respjson.Field
+		PaymentCardType       respjson.Field
+		PaymentConnector      respjson.Field
+		PaymentMethod         respjson.Field
+		PaymentStatus         respjson.Field
+		PaymentStep           respjson.Field
+		SecurityCode          respjson.Field
+		To                    respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallPaymentProgressWebhookEventDataPayload) RawJSON() string { return r.JSON.raw }
+func (r *CallPaymentProgressWebhookEventDataPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type CallPlaybackEndedWebhookEvent struct {
 	Data CallPlaybackEnded `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -7180,18 +7498,19 @@ func (r *TranscriptionWebhookEvent) UnmarshalJSON(data []byte) error {
 // [CallLeftQueueWebhookEvent], [CallMachineDetectionEndedWebhookEvent],
 // [CallMachineGreetingEndedWebhookEvent],
 // [CallMachinePremiumDetectionEndedWebhookEvent],
-// [CallMachinePremiumGreetingEndedWebhookEvent], [CallPlaybackEndedWebhookEvent],
-// [CallPlaybackStartedWebhookEvent], [CallRecordingErrorWebhookEvent],
-// [CallRecordingSavedWebhookEvent], [CallRecordingTranscriptionSavedWebhookEvent],
-// [CallReferCompletedWebhookEvent], [CallReferFailedWebhookEvent],
-// [CallReferStartedWebhookEvent], [CallSiprecFailedWebhookEvent],
-// [CallSiprecStartedWebhookEvent], [CallSiprecStoppedWebhookEvent],
-// [CallSpeakEndedWebhookEvent], [CallSpeakStartedWebhookEvent],
-// [CallStreamingFailedWebhookEvent], [CallStreamingStartedWebhookEvent],
-// [CallStreamingStoppedWebhookEvent], [CallUnholdWebhookEvent],
-// [CampaignStatusUpdate], [ConferenceCreatedWebhookEvent],
-// [ConferenceEndedWebhookEvent], [ConferenceFloorChanged],
-// [ConferenceParticipantJoinedWebhookEvent],
+// [CallMachinePremiumGreetingEndedWebhookEvent],
+// [CallPaymentCompletedWebhookEvent], [CallPaymentProgressWebhookEvent],
+// [CallPlaybackEndedWebhookEvent], [CallPlaybackStartedWebhookEvent],
+// [CallRecordingErrorWebhookEvent], [CallRecordingSavedWebhookEvent],
+// [CallRecordingTranscriptionSavedWebhookEvent], [CallReferCompletedWebhookEvent],
+// [CallReferFailedWebhookEvent], [CallReferStartedWebhookEvent],
+// [CallSiprecFailedWebhookEvent], [CallSiprecStartedWebhookEvent],
+// [CallSiprecStoppedWebhookEvent], [CallSpeakEndedWebhookEvent],
+// [CallSpeakStartedWebhookEvent], [CallStreamingFailedWebhookEvent],
+// [CallStreamingStartedWebhookEvent], [CallStreamingStoppedWebhookEvent],
+// [CallUnholdWebhookEvent], [CampaignStatusUpdate],
+// [ConferenceCreatedWebhookEvent], [ConferenceEndedWebhookEvent],
+// [ConferenceFloorChanged], [ConferenceParticipantJoinedWebhookEvent],
 // [ConferenceParticipantLeftWebhookEvent],
 // [ConferenceParticipantPlaybackEndedWebhookEvent],
 // [ConferenceParticipantPlaybackStartedWebhookEvent],
@@ -7217,6 +7536,7 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// [CallHangup], [CallHoldWebhookEventData], [CallInitiated], [CallLeftQueue],
 	// [CallMachineDetectionEnded], [CallMachineGreetingEnded],
 	// [CallMachinePremiumDetectionEnded], [CallMachinePremiumGreetingEnded],
+	// [CallPaymentCompletedWebhookEventData], [CallPaymentProgressWebhookEventData],
 	// [CallPlaybackEnded], [CallPlaybackStarted], [CallRecordingError],
 	// [CallRecordingSaved], [CallRecordingTranscriptionSaved], [CallReferCompleted],
 	// [CallReferFailed], [CallReferStarted], [CallSiprecFailed], [CallSiprecStarted],
@@ -7391,6 +7711,16 @@ func (u UnsafeUnwrapWebhookEventUnion) AsCallMachinePremiumDetectionEndedEvent()
 }
 
 func (u UnsafeUnwrapWebhookEventUnion) AsCallMachinePremiumGreetingEndedEvent() (v CallMachinePremiumGreetingEndedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallPaymentCompletedEvent() (v CallPaymentCompletedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallPaymentProgressEvent() (v CallPaymentProgressWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -7638,7 +7968,9 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	// [CallHoldWebhookEventDataPayload], [CallInitiatedPayload],
 	// [CallLeftQueuePayload], [CallMachineDetectionEndedPayload],
 	// [CallMachineGreetingEndedPayload], [CallMachinePremiumDetectionEndedPayload],
-	// [CallMachinePremiumGreetingEndedPayload], [CallPlaybackEndedPayload],
+	// [CallMachinePremiumGreetingEndedPayload],
+	// [CallPaymentCompletedWebhookEventDataPayload],
+	// [CallPaymentProgressWebhookEventDataPayload], [CallPlaybackEndedPayload],
 	// [CallPlaybackStartedPayload], [CallRecordingErrorPayload],
 	// [CallRecordingSavedPayload], [CallRecordingTranscriptionSavedPayload],
 	// [CallReferCompletedPayload], [CallReferFailedPayload],
@@ -7704,7 +8036,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	ConnectionID  string `json:"connection_id"`
 	// This field is a union of [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
-	// [string], [string], [string], [string], [string], [string],
+	// [string], [string], [string], [string], [string], [string], [string], [string],
 	// [OutboundMessagePayloadFrom], [string], [string], [string], [string], [string],
 	// [shared.InboundMessagePayloadFrom]
 	From UnsafeUnwrapWebhookEventUnionDataPayloadFrom `json:"from"`
@@ -7713,12 +8045,12 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	// [[]CallAIGatherPartialResultsPayloadMessageHistory]
 	MessageHistory UnsafeUnwrapWebhookEventUnionDataPayloadMessageHistory `json:"message_history"`
 	// This field is a union of [map[string]any], [string], [string], [string],
-	// [string], [string]
+	// [string], [string], [string]
 	Result UnsafeUnwrapWebhookEventUnionDataPayloadResult `json:"result"`
 	Status string                                         `json:"status"`
 	// This field is a union of [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
-	// [string], [string], [string], [string], [string], [string],
+	// [string], [string], [string], [string], [string], [string], [string], [string],
 	// [[]OutboundMessagePayloadTo], [string], [string], [string], [string], [string],
 	// [[]shared.InboundMessagePayloadTo]
 	To UnsafeUnwrapWebhookEventUnionDataPayloadTo `json:"to"`
@@ -7800,10 +8132,40 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	// This field is from variant [CallLeftQueuePayload].
 	QueuePosition int64 `json:"queue_position"`
 	// This field is from variant [CallLeftQueuePayload].
-	WaitTimeSecs int64  `json:"wait_time_secs"`
-	MediaName    string `json:"media_name"`
-	MediaURL     string `json:"media_url"`
-	Overlay      bool   `json:"overlay"`
+	WaitTimeSecs      int64  `json:"wait_time_secs"`
+	BankAccountNumber string `json:"bank_account_number"`
+	BankAccountType   string `json:"bank_account_type"`
+	BankRoutingNumber string `json:"bank_routing_number"`
+	// This field is from variant [CallPaymentCompletedWebhookEventDataPayload].
+	ChargeID string `json:"charge_id"`
+	// This field is from variant [CallPaymentCompletedWebhookEventDataPayload].
+	ConnectorError CallPaymentCompletedWebhookEventDataPayloadConnectorErrorUnion `json:"connector_error"`
+	ExpirationDate string                                                         `json:"expiration_date"`
+	// This field is from variant [CallPaymentCompletedWebhookEventDataPayload].
+	PayErrorCode          string `json:"pay_error_code"`
+	PaymentCardNumber     string `json:"payment_card_number"`
+	PaymentCardPostalCode string `json:"payment_card_postal_code"`
+	PaymentCardType       string `json:"payment_card_type"`
+	// This field is from variant [CallPaymentCompletedWebhookEventDataPayload].
+	PaymentConfirmationCode string `json:"payment_confirmation_code"`
+	PaymentConnector        string `json:"payment_connector"`
+	// This field is from variant [CallPaymentCompletedWebhookEventDataPayload].
+	PaymentError  string `json:"payment_error"`
+	PaymentMethod string `json:"payment_method"`
+	SecurityCode  string `json:"security_code"`
+	// This field is from variant [CallPaymentCompletedWebhookEventDataPayload].
+	TokenID string `json:"token_id"`
+	// This field is from variant [CallPaymentProgressWebhookEventDataPayload].
+	Attempt int64 `json:"attempt"`
+	// This field is from variant [CallPaymentProgressWebhookEventDataPayload].
+	ErrorType string `json:"error_type"`
+	// This field is from variant [CallPaymentProgressWebhookEventDataPayload].
+	PaymentStatus string `json:"payment_status"`
+	// This field is from variant [CallPaymentProgressWebhookEventDataPayload].
+	PaymentStep string `json:"payment_step"`
+	MediaName   string `json:"media_name"`
+	MediaURL    string `json:"media_url"`
+	Overlay     bool   `json:"overlay"`
 	// This field is from variant [CallPlaybackEndedPayload].
 	StatusDetail string `json:"status_detail"`
 	Channels     string `json:"channels"`
@@ -7962,6 +8324,26 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		ShakenStirValidated      respjson.Field
 		QueuePosition            respjson.Field
 		WaitTimeSecs             respjson.Field
+		BankAccountNumber        respjson.Field
+		BankAccountType          respjson.Field
+		BankRoutingNumber        respjson.Field
+		ChargeID                 respjson.Field
+		ConnectorError           respjson.Field
+		ExpirationDate           respjson.Field
+		PayErrorCode             respjson.Field
+		PaymentCardNumber        respjson.Field
+		PaymentCardPostalCode    respjson.Field
+		PaymentCardType          respjson.Field
+		PaymentConfirmationCode  respjson.Field
+		PaymentConnector         respjson.Field
+		PaymentError             respjson.Field
+		PaymentMethod            respjson.Field
+		SecurityCode             respjson.Field
+		TokenID                  respjson.Field
+		Attempt                  respjson.Field
+		ErrorType                respjson.Field
+		PaymentStatus            respjson.Field
+		PaymentStep              respjson.Field
 		MediaName                respjson.Field
 		MediaURL                 respjson.Field
 		Overlay                  respjson.Field
@@ -8111,16 +8493,16 @@ func (r *UnsafeUnwrapWebhookEventUnionDataPayloadMessageHistory) UnmarshalJSON(d
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfCallAIGatherEndedPayloadResult
-// OfCallMachinePremiumGreetingEndedPayloadResult]
+// OfCallPaymentCompletedWebhookEventDataPayloadResult]
 type UnsafeUnwrapWebhookEventUnionDataPayloadResult struct {
 	// This field will be present if the value is a [any] instead of an object.
 	OfCallAIGatherEndedPayloadResult any `json:",inline"`
 	// This field will be present if the value is a [string] instead of an object.
-	OfCallMachinePremiumGreetingEndedPayloadResult string `json:",inline"`
-	JSON                                           struct {
-		OfCallAIGatherEndedPayloadResult               respjson.Field
-		OfCallMachinePremiumGreetingEndedPayloadResult respjson.Field
-		raw                                            string
+	OfCallPaymentCompletedWebhookEventDataPayloadResult string `json:",inline"`
+	JSON                                                struct {
+		OfCallAIGatherEndedPayloadResult                    respjson.Field
+		OfCallPaymentCompletedWebhookEventDataPayloadResult respjson.Field
+		raw                                                 string
 	} `json:"-"`
 }
 
@@ -8409,18 +8791,19 @@ func (r *UnsafeUnwrapWebhookEventUnionMeta) UnmarshalJSON(data []byte) error {
 // [CallLeftQueueWebhookEvent], [CallMachineDetectionEndedWebhookEvent],
 // [CallMachineGreetingEndedWebhookEvent],
 // [CallMachinePremiumDetectionEndedWebhookEvent],
-// [CallMachinePremiumGreetingEndedWebhookEvent], [CallPlaybackEndedWebhookEvent],
-// [CallPlaybackStartedWebhookEvent], [CallRecordingErrorWebhookEvent],
-// [CallRecordingSavedWebhookEvent], [CallRecordingTranscriptionSavedWebhookEvent],
-// [CallReferCompletedWebhookEvent], [CallReferFailedWebhookEvent],
-// [CallReferStartedWebhookEvent], [CallSiprecFailedWebhookEvent],
-// [CallSiprecStartedWebhookEvent], [CallSiprecStoppedWebhookEvent],
-// [CallSpeakEndedWebhookEvent], [CallSpeakStartedWebhookEvent],
-// [CallStreamingFailedWebhookEvent], [CallStreamingStartedWebhookEvent],
-// [CallStreamingStoppedWebhookEvent], [CallUnholdWebhookEvent],
-// [CampaignStatusUpdate], [ConferenceCreatedWebhookEvent],
-// [ConferenceEndedWebhookEvent], [ConferenceFloorChanged],
-// [ConferenceParticipantJoinedWebhookEvent],
+// [CallMachinePremiumGreetingEndedWebhookEvent],
+// [CallPaymentCompletedWebhookEvent], [CallPaymentProgressWebhookEvent],
+// [CallPlaybackEndedWebhookEvent], [CallPlaybackStartedWebhookEvent],
+// [CallRecordingErrorWebhookEvent], [CallRecordingSavedWebhookEvent],
+// [CallRecordingTranscriptionSavedWebhookEvent], [CallReferCompletedWebhookEvent],
+// [CallReferFailedWebhookEvent], [CallReferStartedWebhookEvent],
+// [CallSiprecFailedWebhookEvent], [CallSiprecStartedWebhookEvent],
+// [CallSiprecStoppedWebhookEvent], [CallSpeakEndedWebhookEvent],
+// [CallSpeakStartedWebhookEvent], [CallStreamingFailedWebhookEvent],
+// [CallStreamingStartedWebhookEvent], [CallStreamingStoppedWebhookEvent],
+// [CallUnholdWebhookEvent], [CampaignStatusUpdate],
+// [ConferenceCreatedWebhookEvent], [ConferenceEndedWebhookEvent],
+// [ConferenceFloorChanged], [ConferenceParticipantJoinedWebhookEvent],
 // [ConferenceParticipantLeftWebhookEvent],
 // [ConferenceParticipantPlaybackEndedWebhookEvent],
 // [ConferenceParticipantPlaybackStartedWebhookEvent],
@@ -8446,6 +8829,7 @@ type UnwrapWebhookEventUnion struct {
 	// [CallHangup], [CallHoldWebhookEventData], [CallInitiated], [CallLeftQueue],
 	// [CallMachineDetectionEnded], [CallMachineGreetingEnded],
 	// [CallMachinePremiumDetectionEnded], [CallMachinePremiumGreetingEnded],
+	// [CallPaymentCompletedWebhookEventData], [CallPaymentProgressWebhookEventData],
 	// [CallPlaybackEnded], [CallPlaybackStarted], [CallRecordingError],
 	// [CallRecordingSaved], [CallRecordingTranscriptionSaved], [CallReferCompleted],
 	// [CallReferFailed], [CallReferStarted], [CallSiprecFailed], [CallSiprecStarted],
@@ -8620,6 +9004,16 @@ func (u UnwrapWebhookEventUnion) AsCallMachinePremiumDetectionEndedEvent() (v Ca
 }
 
 func (u UnwrapWebhookEventUnion) AsCallMachinePremiumGreetingEndedEvent() (v CallMachinePremiumGreetingEndedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsCallPaymentCompletedEvent() (v CallPaymentCompletedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsCallPaymentProgressEvent() (v CallPaymentProgressWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -8867,7 +9261,9 @@ type UnwrapWebhookEventUnionData struct {
 	// [CallHoldWebhookEventDataPayload], [CallInitiatedPayload],
 	// [CallLeftQueuePayload], [CallMachineDetectionEndedPayload],
 	// [CallMachineGreetingEndedPayload], [CallMachinePremiumDetectionEndedPayload],
-	// [CallMachinePremiumGreetingEndedPayload], [CallPlaybackEndedPayload],
+	// [CallMachinePremiumGreetingEndedPayload],
+	// [CallPaymentCompletedWebhookEventDataPayload],
+	// [CallPaymentProgressWebhookEventDataPayload], [CallPlaybackEndedPayload],
 	// [CallPlaybackStartedPayload], [CallRecordingErrorPayload],
 	// [CallRecordingSavedPayload], [CallRecordingTranscriptionSavedPayload],
 	// [CallReferCompletedPayload], [CallReferFailedPayload],
@@ -8933,7 +9329,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	ConnectionID  string `json:"connection_id"`
 	// This field is a union of [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
-	// [string], [string], [string], [string], [string], [string],
+	// [string], [string], [string], [string], [string], [string], [string], [string],
 	// [OutboundMessagePayloadFrom], [string], [string], [string], [string], [string],
 	// [shared.InboundMessagePayloadFrom]
 	From UnwrapWebhookEventUnionDataPayloadFrom `json:"from"`
@@ -8942,12 +9338,12 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	// [[]CallAIGatherPartialResultsPayloadMessageHistory]
 	MessageHistory UnwrapWebhookEventUnionDataPayloadMessageHistory `json:"message_history"`
 	// This field is a union of [map[string]any], [string], [string], [string],
-	// [string], [string]
+	// [string], [string], [string]
 	Result UnwrapWebhookEventUnionDataPayloadResult `json:"result"`
 	Status string                                   `json:"status"`
 	// This field is a union of [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
-	// [string], [string], [string], [string], [string], [string],
+	// [string], [string], [string], [string], [string], [string], [string], [string],
 	// [[]OutboundMessagePayloadTo], [string], [string], [string], [string], [string],
 	// [[]shared.InboundMessagePayloadTo]
 	To UnwrapWebhookEventUnionDataPayloadTo `json:"to"`
@@ -9029,10 +9425,40 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	// This field is from variant [CallLeftQueuePayload].
 	QueuePosition int64 `json:"queue_position"`
 	// This field is from variant [CallLeftQueuePayload].
-	WaitTimeSecs int64  `json:"wait_time_secs"`
-	MediaName    string `json:"media_name"`
-	MediaURL     string `json:"media_url"`
-	Overlay      bool   `json:"overlay"`
+	WaitTimeSecs      int64  `json:"wait_time_secs"`
+	BankAccountNumber string `json:"bank_account_number"`
+	BankAccountType   string `json:"bank_account_type"`
+	BankRoutingNumber string `json:"bank_routing_number"`
+	// This field is from variant [CallPaymentCompletedWebhookEventDataPayload].
+	ChargeID string `json:"charge_id"`
+	// This field is from variant [CallPaymentCompletedWebhookEventDataPayload].
+	ConnectorError CallPaymentCompletedWebhookEventDataPayloadConnectorErrorUnion `json:"connector_error"`
+	ExpirationDate string                                                         `json:"expiration_date"`
+	// This field is from variant [CallPaymentCompletedWebhookEventDataPayload].
+	PayErrorCode          string `json:"pay_error_code"`
+	PaymentCardNumber     string `json:"payment_card_number"`
+	PaymentCardPostalCode string `json:"payment_card_postal_code"`
+	PaymentCardType       string `json:"payment_card_type"`
+	// This field is from variant [CallPaymentCompletedWebhookEventDataPayload].
+	PaymentConfirmationCode string `json:"payment_confirmation_code"`
+	PaymentConnector        string `json:"payment_connector"`
+	// This field is from variant [CallPaymentCompletedWebhookEventDataPayload].
+	PaymentError  string `json:"payment_error"`
+	PaymentMethod string `json:"payment_method"`
+	SecurityCode  string `json:"security_code"`
+	// This field is from variant [CallPaymentCompletedWebhookEventDataPayload].
+	TokenID string `json:"token_id"`
+	// This field is from variant [CallPaymentProgressWebhookEventDataPayload].
+	Attempt int64 `json:"attempt"`
+	// This field is from variant [CallPaymentProgressWebhookEventDataPayload].
+	ErrorType string `json:"error_type"`
+	// This field is from variant [CallPaymentProgressWebhookEventDataPayload].
+	PaymentStatus string `json:"payment_status"`
+	// This field is from variant [CallPaymentProgressWebhookEventDataPayload].
+	PaymentStep string `json:"payment_step"`
+	MediaName   string `json:"media_name"`
+	MediaURL    string `json:"media_url"`
+	Overlay     bool   `json:"overlay"`
 	// This field is from variant [CallPlaybackEndedPayload].
 	StatusDetail string `json:"status_detail"`
 	Channels     string `json:"channels"`
@@ -9191,6 +9617,26 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		ShakenStirValidated      respjson.Field
 		QueuePosition            respjson.Field
 		WaitTimeSecs             respjson.Field
+		BankAccountNumber        respjson.Field
+		BankAccountType          respjson.Field
+		BankRoutingNumber        respjson.Field
+		ChargeID                 respjson.Field
+		ConnectorError           respjson.Field
+		ExpirationDate           respjson.Field
+		PayErrorCode             respjson.Field
+		PaymentCardNumber        respjson.Field
+		PaymentCardPostalCode    respjson.Field
+		PaymentCardType          respjson.Field
+		PaymentConfirmationCode  respjson.Field
+		PaymentConnector         respjson.Field
+		PaymentError             respjson.Field
+		PaymentMethod            respjson.Field
+		SecurityCode             respjson.Field
+		TokenID                  respjson.Field
+		Attempt                  respjson.Field
+		ErrorType                respjson.Field
+		PaymentStatus            respjson.Field
+		PaymentStep              respjson.Field
 		MediaName                respjson.Field
 		MediaURL                 respjson.Field
 		Overlay                  respjson.Field
@@ -9339,16 +9785,16 @@ func (r *UnwrapWebhookEventUnionDataPayloadMessageHistory) UnmarshalJSON(data []
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfCallAIGatherEndedPayloadResult
-// OfCallMachinePremiumGreetingEndedPayloadResult]
+// OfCallPaymentCompletedWebhookEventDataPayloadResult]
 type UnwrapWebhookEventUnionDataPayloadResult struct {
 	// This field will be present if the value is a [any] instead of an object.
 	OfCallAIGatherEndedPayloadResult any `json:",inline"`
 	// This field will be present if the value is a [string] instead of an object.
-	OfCallMachinePremiumGreetingEndedPayloadResult string `json:",inline"`
-	JSON                                           struct {
-		OfCallAIGatherEndedPayloadResult               respjson.Field
-		OfCallMachinePremiumGreetingEndedPayloadResult respjson.Field
-		raw                                            string
+	OfCallPaymentCompletedWebhookEventDataPayloadResult string `json:",inline"`
+	JSON                                                struct {
+		OfCallAIGatherEndedPayloadResult                    respjson.Field
+		OfCallPaymentCompletedWebhookEventDataPayloadResult respjson.Field
+		raw                                                 string
 	} `json:"-"`
 }
 

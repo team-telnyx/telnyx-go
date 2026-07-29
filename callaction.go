@@ -255,6 +255,36 @@ func (r *CallActionService) PauseRecording(ctx context.Context, callControlID st
 	return res, err
 }
 
+// Collect payment details from the caller using DTMF and either charge or tokenize
+// the payment method through a configured Pay connector. Pay pauses active call
+// recordings while sensitive payment details are collected.
+//
+// When `payment_token` is supplied, the DTMF collection steps are skipped and the
+// existing token is sent to the connector.
+//
+// **Expected Webhooks:**
+//
+// - `call.payment.progress`
+// - `call.payment.completed`
+//
+// **Test mode card numbers:** `4111111111111111` (Visa), `5555555555554444`
+// (Mastercard), `378282246310005` (American Express), `6011111111111117`
+// (Discover), `3065930009020004` (Diners Club), `3566002020360505` (JCB),
+// `6200000000000005` (UnionPay), and `6771798021000008` (Maestro). Test-mode
+// connectors reject other card numbers before contacting the configured processor.
+// The UnionPay and Maestro numbers are accepted for processor testing, but Pay
+// currently does not emit a card type for them.
+func (r *CallActionService) Pay(ctx context.Context, callControlID string, body CallActionPayParams, opts ...option.RequestOption) (res *CallActionPayResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if callControlID == "" {
+		err = errors.New("missing required call_control_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("calls/%s/actions/pay", callControlID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
 // Initiate a SIP Refer on a Call Control call. You can initiate a SIP Refer at any
 // point in the duration of a call.
 //
@@ -1279,6 +1309,71 @@ func (u *LoopcountUnionParam) asAny() any {
 		return &u.OfInt.Value
 	}
 	return nil
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type PayPromptValueUnionParam struct {
+	OfString              param.Opt[string]              `json:",omitzero,inline"`
+	OfPayPromptValueArray []PayPromptValueArrayItemParam `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u PayPromptValueUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfPayPromptValueArray)
+}
+func (u *PayPromptValueUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *PayPromptValueUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfPayPromptValueArray) {
+		return &u.OfPayPromptValueArray
+	}
+	return nil
+}
+
+// A text-to-speech prompt with optional matching qualifiers.
+//
+// The property Text is required.
+type PayPromptValueArrayItemParam struct {
+	// Text spoken for the payment collection step.
+	Text string `json:"text" api:"required"`
+	// Space-separated 1-based attempt numbers for which this prompt applies.
+	Attempt param.Opt[string] `json:"attempt,omitzero"`
+	// Lowercase, case-sensitive detected card type for which this prompt applies. Only
+	// the listed brands are currently detected; accepted UnionPay and Maestro test
+	// cards do not produce a card-type qualifier.
+	//
+	// Any of "visa", "mastercard", "amex", "discover", "diners-club", "jcb".
+	CardType string `json:"card_type,omitzero"`
+	// Step error for which this prompt applies.
+	//
+	// Any of "timeout", "invalid-card-number", "invalid-date",
+	// "invalid-security-code", "invalid-postal-code", "invalid-bank-routing-number",
+	// "invalid-bank-account-number", "input-matching-failed".
+	ErrorType string `json:"error_type,omitzero"`
+	paramObj
+}
+
+func (r PayPromptValueArrayItemParam) MarshalJSON() (data []byte, err error) {
+	type shadow PayPromptValueArrayItemParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PayPromptValueArrayItemParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[PayPromptValueArrayItemParam](
+		"card_type", "visa", "mastercard", "amex", "discover", "diners-club", "jcb",
+	)
+	apijson.RegisterFieldValidator[PayPromptValueArrayItemParam](
+		"error_type", "timeout", "invalid-card-number", "invalid-date", "invalid-security-code", "invalid-postal-code", "invalid-bank-routing-number", "invalid-bank-account-number", "input-matching-failed",
+	)
 }
 
 type StopRecordingRequestParam struct {
@@ -2951,6 +3046,22 @@ type CallActionPauseRecordingResponse struct {
 // Returns the unmodified JSON received from the API
 func (r CallActionPauseRecordingResponse) RawJSON() string { return r.JSON.raw }
 func (r *CallActionPauseRecordingResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallActionPayResponse struct {
+	Data CallControlCommandResult `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallActionPayResponse) RawJSON() string { return r.JSON.raw }
+func (r *CallActionPayResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -4881,6 +4992,115 @@ func (r CallActionPauseRecordingParams) MarshalJSON() (data []byte, err error) {
 func (r *CallActionPauseRecordingParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type CallActionPayParams struct {
+	// Amount to charge. Required when `transaction_type` is `charge`.
+	Amount param.Opt[float64] `json:"amount,omitzero"`
+	// Base64-encoded state included in subsequent webhooks.
+	ClientState param.Opt[string] `json:"client_state,omitzero"`
+	// Idempotency key for the command. Telnyx ignores a duplicate command with the
+	// same `command_id` for the same `call_control_id`.
+	CommandID param.Opt[string] `json:"command_id,omitzero"`
+	// Name of the Pay connector used to process the transaction.
+	ConnectorName param.Opt[string] `json:"connector_name,omitzero"`
+	// Optional description forwarded with the payment transaction.
+	Description param.Opt[string] `json:"description,omitzero"`
+	// Time in milliseconds to wait between consecutive DTMF digits.
+	InterDigitTimeoutMillis param.Opt[int64] `json:"inter_digit_timeout_millis,omitzero"`
+	// Language used for payment prompts.
+	Language param.Opt[string] `json:"language,omitzero"`
+	// Maximum number of attempts for each payment collection step.
+	MaxAttempts param.Opt[int64] `json:"max_attempts,omitzero"`
+	// Existing payment token. When supplied, payment-detail collection is skipped.
+	PaymentToken param.Opt[string] `json:"payment_token,omitzero"`
+	// Speech synthesis service level used for payment prompts. Pay defaults to
+	// `premium`.
+	ServiceLevel param.Opt[string] `json:"service_level,omitzero"`
+	// Time in milliseconds to wait for DTMF input for each collection step.
+	TimeoutMillis param.Opt[int64] `json:"timeout_millis,omitzero"`
+	// Voice used for payment prompts. Accepts `male`, `female`, or a provider voice in
+	// `<Provider>.<Model>.<VoiceId>` format, for example `AWS.Polly.Joanna` or
+	// `Telnyx.KokoroTTS.af`.
+	Voice param.Opt[string] `json:"voice,omitzero"`
+	// Currency used for the transaction. Pay currently supports USD only.
+	//
+	// Any of "USD", "usd".
+	Currency CallActionPayParamsCurrency `json:"currency,omitzero"`
+	// Metadata forwarded to the Pay connector.
+	Metadata map[string]any `json:"metadata,omitzero"`
+	// Additional parameters forwarded to the Pay connector.
+	Parameters map[string]any `json:"parameters,omitzero"`
+	// Payment method to collect.
+	//
+	// Any of "credit-card", "ach-debit".
+	PaymentMethod CallActionPayParamsPaymentMethod `json:"payment_method,omitzero"`
+	// Custom text-to-speech prompts keyed by payment collection step.
+	Prompts CallActionPayParamsPrompts `json:"prompts,omitzero"`
+	// Transaction to perform. If omitted, Pay infers `tokenize` when `amount` is
+	// absent or zero and `charge` when `amount` is positive.
+	//
+	// Any of "charge", "tokenize".
+	TransactionType CallActionPayParamsTransactionType `json:"transaction_type,omitzero"`
+	paramObj
+}
+
+func (r CallActionPayParams) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionPayParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionPayParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Currency used for the transaction. Pay currently supports USD only.
+type CallActionPayParamsCurrency string
+
+const (
+	CallActionPayParamsCurrencyUsdUppercase CallActionPayParamsCurrency = "USD"
+	CallActionPayParamsCurrencyUsd          CallActionPayParamsCurrency = "usd"
+)
+
+// Payment method to collect.
+type CallActionPayParamsPaymentMethod string
+
+const (
+	CallActionPayParamsPaymentMethodCreditCard CallActionPayParamsPaymentMethod = "credit-card"
+	CallActionPayParamsPaymentMethodACHDebit   CallActionPayParamsPaymentMethod = "ach-debit"
+)
+
+// Custom text-to-speech prompts keyed by payment collection step.
+type CallActionPayParamsPrompts struct {
+	// A default prompt string or an ordered list of qualified prompts.
+	BankAccountNumber PayPromptValueUnionParam `json:"bank-account-number,omitzero"`
+	// A default prompt string or an ordered list of qualified prompts.
+	BankRoutingNumber PayPromptValueUnionParam `json:"bank-routing-number,omitzero"`
+	// A default prompt string or an ordered list of qualified prompts.
+	ExpirationDate PayPromptValueUnionParam `json:"expiration-date,omitzero"`
+	// A default prompt string or an ordered list of qualified prompts.
+	PaymentCardNumber PayPromptValueUnionParam `json:"payment-card-number,omitzero"`
+	// A default prompt string or an ordered list of qualified prompts.
+	PostalCode PayPromptValueUnionParam `json:"postal-code,omitzero"`
+	// A default prompt string or an ordered list of qualified prompts.
+	SecurityCode PayPromptValueUnionParam `json:"security-code,omitzero"`
+	paramObj
+}
+
+func (r CallActionPayParamsPrompts) MarshalJSON() (data []byte, err error) {
+	type shadow CallActionPayParamsPrompts
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CallActionPayParamsPrompts) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Transaction to perform. If omitted, Pay infers `tokenize` when `amount` is
+// absent or zero and `charge` when `amount` is positive.
+type CallActionPayParamsTransactionType string
+
+const (
+	CallActionPayParamsTransactionTypeCharge   CallActionPayParamsTransactionType = "charge"
+	CallActionPayParamsTransactionTypeTokenize CallActionPayParamsTransactionType = "tokenize"
+)
 
 type CallActionReferParams struct {
 	// The SIP URI to which the call will be referred to.
