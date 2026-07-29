@@ -64,8 +64,7 @@ func (r *EmailTemplateService) Get(ctx context.Context, id string, opts ...optio
 	return res, err
 }
 
-// Replaces template fields. Behaves identically to PATCH; provided for
-// compatibility with Phoenix resource routes.
+// Updates one or more template fields.
 func (r *EmailTemplateService) Update(ctx context.Context, id string, body EmailTemplateUpdateParams, opts ...option.RequestOption) (res *EmailTemplateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -73,7 +72,7 @@ func (r *EmailTemplateService) Update(ctx context.Context, id string, body Email
 		return nil, err
 	}
 	path := fmt.Sprintf("email_templates/%s", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
 

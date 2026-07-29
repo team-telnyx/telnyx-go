@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestEmailInboxFilterNewWithOptionalParams(t *testing.T) {
+func TestEmailInboxFilterNew(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -30,8 +30,10 @@ func TestEmailInboxFilterNewWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.EmailInboxFilterNewParams{
-			Allowlist: []string{"trusted@example.com", "@partner.example"},
-			Blocklist: []string{"@spam.example"},
+			MutateInboxFiltersRequest: telnyx.MutateInboxFiltersRequestParam{
+				Entries: []string{"@spam.example"},
+				Type:    telnyx.MutateInboxFiltersRequestTypeBlocklist,
+			},
 		},
 	)
 	if err != nil {

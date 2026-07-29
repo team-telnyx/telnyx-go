@@ -77,13 +77,7 @@ func (r *EmailInboxDraftService) Get(ctx context.Context, draftID string, query 
 	return res, err
 }
 
-// Updates the supplied fields on a draft. `account_id` and `inbox_id` are
-// server-owned and ignored if present in the body, so a draft can never be moved
-// between accounts or inboxes.
-//
-// A draft that is being sent or has already been sent is immutable and returns 422
-// — modifying it would race with delivery or rewrite the record of what was
-// actually sent.
+// Identical to `PUT`; both apply a partial update to the supplied fields.
 func (r *EmailInboxDraftService) Update(ctx context.Context, draftID string, params EmailInboxDraftUpdateParams, opts ...option.RequestOption) (res *EmailDraftResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.InboxID == "" {
@@ -95,7 +89,7 @@ func (r *EmailInboxDraftService) Update(ctx context.Context, draftID string, par
 		return nil, err
 	}
 	path := fmt.Sprintf("email_inboxes/%s/drafts/%s", params.InboxID, draftID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return res, err
 }
 

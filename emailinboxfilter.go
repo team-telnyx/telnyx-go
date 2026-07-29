@@ -39,8 +39,8 @@ func NewEmailInboxFilterService(opts ...option.RequestOption) (r EmailInboxFilte
 	return
 }
 
-// Replaces both sender filter lists atomically. Omitting either list clears that
-// list. Use `POST` or `DELETE` for incremental changes.
+// Adds entries to either the allowlist or blocklist. The operation is an
+// idempotent set union: entries already present remain unchanged.
 func (r *EmailInboxFilterService) New(ctx context.Context, inboxID string, body EmailInboxFilterNewParams, opts ...option.RequestOption) (res *EmailInboxFilterNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if inboxID == "" {
@@ -48,7 +48,7 @@ func (r *EmailInboxFilterService) New(ctx context.Context, inboxID string, body 
 		return nil, err
 	}
 	path := fmt.Sprintf("email_inboxes/%s/filters", inboxID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
 
@@ -218,14 +218,12 @@ func (r *EmailInboxFilterDeleteAllResponseData) UnmarshalJSON(data []byte) error
 }
 
 type EmailInboxFilterNewParams struct {
-	Allowlist []string `json:"allowlist,omitzero"`
-	Blocklist []string `json:"blocklist,omitzero"`
+	MutateInboxFiltersRequest MutateInboxFiltersRequestParam
 	paramObj
 }
 
 func (r EmailInboxFilterNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow EmailInboxFilterNewParams
-	return param.MarshalObject(r, (*shadow)(&r))
+	return shimjson.Marshal(r.MutateInboxFiltersRequest)
 }
 func (r *EmailInboxFilterNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
