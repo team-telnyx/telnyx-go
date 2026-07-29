@@ -39,19 +39,6 @@ func NewEmailInboxFilterService(opts ...option.RequestOption) (r EmailInboxFilte
 	return
 }
 
-// Adds entries to either the allowlist or blocklist. The operation is an
-// idempotent set union: entries already present remain unchanged.
-func (r *EmailInboxFilterService) New(ctx context.Context, inboxID string, body EmailInboxFilterNewParams, opts ...option.RequestOption) (res *EmailInboxFilterNewResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	if inboxID == "" {
-		err = errors.New("missing required inbox_id parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("email_inboxes/%s/filters", inboxID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
-}
-
 // Returns the inbox's sender allowlist and blocklist. Entries are normalized to
 // lowercase. A blocklist match takes precedence over an allowlist match; when both
 // lists are empty, all senders are accepted.
@@ -66,6 +53,19 @@ func (r *EmailInboxFilterService) List(ctx context.Context, inboxID string, opts
 	return res, err
 }
 
+// Adds entries to either the allowlist or blocklist. The operation is an
+// idempotent set union: entries already present remain unchanged.
+func (r *EmailInboxFilterService) Add(ctx context.Context, inboxID string, body EmailInboxFilterAddParams, opts ...option.RequestOption) (res *EmailInboxFilterAddResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if inboxID == "" {
+		err = errors.New("missing required inbox_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("email_inboxes/%s/filters", inboxID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
 // Removes entries from either the allowlist or blocklist. The operation is
 // idempotent: removing an entry that is not present still returns the current
 // filter lists.
@@ -77,6 +77,19 @@ func (r *EmailInboxFilterService) DeleteAll(ctx context.Context, inboxID string,
 	}
 	path := fmt.Sprintf("email_inboxes/%s/filters", inboxID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	return res, err
+}
+
+// Replaces both sender filter lists atomically. Omitting either list clears that
+// list. Use `POST` or `DELETE` for incremental changes.
+func (r *EmailInboxFilterService) Replace(ctx context.Context, inboxID string, body EmailInboxFilterReplaceParams, opts ...option.RequestOption) (res *EmailInboxFilterReplaceResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if inboxID == "" {
+		err = errors.New("missing required inbox_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("email_inboxes/%s/filters", inboxID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
 }
 
@@ -105,43 +118,6 @@ const (
 	MutateInboxFiltersRequestTypeAllowlist MutateInboxFiltersRequestType = "allowlist"
 	MutateInboxFiltersRequestTypeBlocklist MutateInboxFiltersRequestType = "blocklist"
 )
-
-type EmailInboxFilterNewResponse struct {
-	Data EmailInboxFilterNewResponseData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailInboxFilterNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *EmailInboxFilterNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EmailInboxFilterNewResponseData struct {
-	Allowlist []string `json:"allowlist" api:"required"`
-	Blocklist []string `json:"blocklist" api:"required"`
-	// Any of "email_inbox_filters".
-	RecordType string `json:"record_type" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Allowlist   respjson.Field
-		Blocklist   respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailInboxFilterNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *EmailInboxFilterNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 type EmailInboxFilterListResponse struct {
 	Data EmailInboxFilterListResponseData `json:"data" api:"required"`
@@ -177,6 +153,43 @@ type EmailInboxFilterListResponseData struct {
 // Returns the unmodified JSON received from the API
 func (r EmailInboxFilterListResponseData) RawJSON() string { return r.JSON.raw }
 func (r *EmailInboxFilterListResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EmailInboxFilterAddResponse struct {
+	Data EmailInboxFilterAddResponseData `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailInboxFilterAddResponse) RawJSON() string { return r.JSON.raw }
+func (r *EmailInboxFilterAddResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EmailInboxFilterAddResponseData struct {
+	Allowlist []string `json:"allowlist" api:"required"`
+	Blocklist []string `json:"blocklist" api:"required"`
+	// Any of "email_inbox_filters".
+	RecordType string `json:"record_type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Allowlist   respjson.Field
+		Blocklist   respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailInboxFilterAddResponseData) RawJSON() string { return r.JSON.raw }
+func (r *EmailInboxFilterAddResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -217,15 +230,52 @@ func (r *EmailInboxFilterDeleteAllResponseData) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type EmailInboxFilterNewParams struct {
+type EmailInboxFilterReplaceResponse struct {
+	Data EmailInboxFilterReplaceResponseData `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailInboxFilterReplaceResponse) RawJSON() string { return r.JSON.raw }
+func (r *EmailInboxFilterReplaceResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EmailInboxFilterReplaceResponseData struct {
+	Allowlist []string `json:"allowlist" api:"required"`
+	Blocklist []string `json:"blocklist" api:"required"`
+	// Any of "email_inbox_filters".
+	RecordType string `json:"record_type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Allowlist   respjson.Field
+		Blocklist   respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailInboxFilterReplaceResponseData) RawJSON() string { return r.JSON.raw }
+func (r *EmailInboxFilterReplaceResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EmailInboxFilterAddParams struct {
 	MutateInboxFiltersRequest MutateInboxFiltersRequestParam
 	paramObj
 }
 
-func (r EmailInboxFilterNewParams) MarshalJSON() (data []byte, err error) {
+func (r EmailInboxFilterAddParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.MutateInboxFiltersRequest)
 }
-func (r *EmailInboxFilterNewParams) UnmarshalJSON(data []byte) error {
+func (r *EmailInboxFilterAddParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -238,5 +288,19 @@ func (r EmailInboxFilterDeleteAllParams) MarshalJSON() (data []byte, err error) 
 	return shimjson.Marshal(r.MutateInboxFiltersRequest)
 }
 func (r *EmailInboxFilterDeleteAllParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EmailInboxFilterReplaceParams struct {
+	Allowlist []string `json:"allowlist,omitzero"`
+	Blocklist []string `json:"blocklist,omitzero"`
+	paramObj
+}
+
+func (r EmailInboxFilterReplaceParams) MarshalJSON() (data []byte, err error) {
+	type shadow EmailInboxFilterReplaceParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *EmailInboxFilterReplaceParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

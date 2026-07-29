@@ -180,3 +180,38 @@ func TestEmailTemplateRenderWithOptionalParams(t *testing.T) {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
 }
+
+func TestEmailTemplateReplaceWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.EmailTemplates.Replace(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		telnyx.EmailTemplateReplaceParams{
+			UpdateEmailTemplateRequest: telnyx.UpdateEmailTemplateRequestParam{
+				HTMLBody:  telnyx.String("html_body"),
+				Name:      telnyx.String("name"),
+				Subject:   telnyx.String("subject"),
+				TextBody:  telnyx.String("text_body"),
+				Variables: []string{"string"},
+			},
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}

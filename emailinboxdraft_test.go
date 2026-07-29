@@ -135,10 +135,10 @@ func TestEmailInboxDraftUpdateWithOptionalParams(t *testing.T) {
 				Labels:   []string{"string"},
 				Metadata: map[string]any{},
 				ReplyTo:  telnyx.String("reply_to"),
-				Subject:  telnyx.String("subject"),
+				Subject:  telnyx.String("Quarterly update (revised)"),
 				Tags:     []string{"string"},
 				Text:     telnyx.String("text"),
-				TextBody: telnyx.String("text_body"),
+				TextBody: telnyx.String("Updated body."),
 				To: []telnyx.EmailAddressInputUnionParam{{
 					OfString: telnyx.String("string"),
 				}},
@@ -203,6 +203,61 @@ func TestEmailInboxDraftDelete(t *testing.T) {
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.EmailInboxDraftDeleteParams{
 			InboxID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestEmailInboxDraftPatchWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.EmailInboxes.Drafts.Patch(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		telnyx.EmailInboxDraftPatchParams{
+			InboxID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			EmailDraftRequest: telnyx.EmailDraftRequestParam{
+				Attachments: []any{map[string]any{}},
+				Bcc: []telnyx.EmailAddressInputUnionParam{{
+					OfString: telnyx.String("string"),
+				}},
+				Cc: []telnyx.EmailAddressInputUnionParam{{
+					OfString: telnyx.String("string"),
+				}},
+				FromEmail: telnyx.String("from_email"),
+				FromName:  telnyx.String("from_name"),
+				Headers: map[string]string{
+					"foo": "string",
+				},
+				HTML:     telnyx.String("html"),
+				HTMLBody: telnyx.String("html_body"),
+				Labels:   []string{"string"},
+				Metadata: map[string]any{},
+				ReplyTo:  telnyx.String("reply_to"),
+				Subject:  telnyx.String("subject"),
+				Tags:     []string{"string"},
+				Text:     telnyx.String("text"),
+				TextBody: telnyx.String("text_body"),
+				To: []telnyx.EmailAddressInputUnionParam{{
+					OfString: telnyx.String("string"),
+				}},
+			},
 		},
 	)
 	if err != nil {

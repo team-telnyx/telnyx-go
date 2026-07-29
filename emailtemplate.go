@@ -110,6 +110,19 @@ func (r *EmailTemplateService) Render(ctx context.Context, id string, body Email
 	return res, err
 }
 
+// Replaces template fields. Behaves identically to PATCH; provided for
+// compatibility with Phoenix resource routes.
+func (r *EmailTemplateService) Replace(ctx context.Context, id string, body EmailTemplateReplaceParams, opts ...option.RequestOption) (res *EmailTemplateResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("email_templates/%s", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	return res, err
+}
+
 type EmailTemplate struct {
 	ID        string    `json:"id" api:"required" format:"uuid"`
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
@@ -305,5 +318,17 @@ func (r EmailTemplateRenderParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *EmailTemplateRenderParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EmailTemplateReplaceParams struct {
+	UpdateEmailTemplateRequest UpdateEmailTemplateRequestParam
+	paramObj
+}
+
+func (r EmailTemplateReplaceParams) MarshalJSON() (data []byte, err error) {
+	return shimjson.Marshal(r.UpdateEmailTemplateRequest)
+}
+func (r *EmailTemplateReplaceParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

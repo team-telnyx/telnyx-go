@@ -77,7 +77,13 @@ func (r *EmailInboxDraftService) Get(ctx context.Context, draftID string, query 
 	return res, err
 }
 
-// Identical to `PUT`; both apply a partial update to the supplied fields.
+// Updates the supplied fields on a draft. `account_id` and `inbox_id` are
+// server-owned and ignored if present in the body, so a draft can never be moved
+// between accounts or inboxes.
+//
+// A draft that is being sent or has already been sent is immutable and returns 422
+// — modifying it would race with delivery or rewrite the record of what was
+// actually sent.
 func (r *EmailInboxDraftService) Update(ctx context.Context, draftID string, params EmailInboxDraftUpdateParams, opts ...option.RequestOption) (res *EmailDraftResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.InboxID == "" {
@@ -89,7 +95,7 @@ func (r *EmailInboxDraftService) Update(ctx context.Context, draftID string, par
 		return nil, err
 	}
 	path := fmt.Sprintf("email_inboxes/%s/drafts/%s", params.InboxID, draftID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
 	return res, err
 }
 
@@ -122,6 +128,22 @@ func (r *EmailInboxDraftService) Delete(ctx context.Context, draftID string, bod
 	path := fmt.Sprintf("email_inboxes/%s/drafts/%s", body.InboxID, draftID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
+}
+
+// Identical to `PUT`; both apply a partial update to the supplied fields.
+func (r *EmailInboxDraftService) Patch(ctx context.Context, draftID string, params EmailInboxDraftPatchParams, opts ...option.RequestOption) (res *EmailDraftResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if params.InboxID == "" {
+		err = errors.New("missing required inbox_id parameter")
+		return nil, err
+	}
+	if draftID == "" {
+		err = errors.New("missing required draft_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("email_inboxes/%s/drafts/%s", params.InboxID, draftID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
+	return res, err
 }
 
 // Sends the draft through the standard send pipeline — the same domain resolution,
@@ -597,6 +619,22 @@ const (
 type EmailInboxDraftDeleteParams struct {
 	InboxID string `path:"inbox_id" api:"required" format:"uuid" json:"-"`
 	paramObj
+}
+
+type EmailInboxDraftPatchParams struct {
+	InboxID string `path:"inbox_id" api:"required" format:"uuid" json:"-"`
+	// All fields are optional — a draft may be saved incomplete. `account_id`,
+	// `inbox_id`, `status`, `sent_at`, `sent_message_id`, `reply_to_message_id` and
+	// `thread_id` are server-owned and ignored if supplied.
+	EmailDraftRequest EmailDraftRequestParam
+	paramObj
+}
+
+func (r EmailInboxDraftPatchParams) MarshalJSON() (data []byte, err error) {
+	return shimjson.Marshal(r.EmailDraftRequest)
+}
+func (r *EmailInboxDraftPatchParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type EmailInboxDraftSendParams struct {
