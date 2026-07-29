@@ -361,6 +361,7 @@ type Client struct {
 	EmailUnsubscribeGroups EmailUnsubscribeGroupService
 	// Validate email addresses synchronously or in asynchronous batches.
 	EmailValidations EmailValidationService
+	Pricing          PricingService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -583,6 +584,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.EmailThreads = NewEmailThreadService(opts...)
 	r.EmailUnsubscribeGroups = NewEmailUnsubscribeGroupService(opts...)
 	r.EmailValidations = NewEmailValidationService(opts...)
+	r.Pricing = NewPricingService(opts...)
 
 	return
 }
