@@ -59,7 +59,8 @@ func TestAIOpenAIChatNewCompletionWithOptionalParams(t *testing.T) {
 			ResponseFormat: telnyx.ChatCompletionRequestResponseFormatParam{
 				Type: "text",
 			},
-			Seed: telnyx.Int(0),
+			Seed:        telnyx.Int(0),
+			ServiceTier: telnyx.String("service_tier"),
 			Stop: telnyx.ChatCompletionRequestStopUnionParam{
 				OfString: telnyx.String("string"),
 			},
