@@ -1610,7 +1610,10 @@ type TranscriptionConfigParam struct {
 	// that language. For `humain/realtime`, supported values are `ar`, `en`,
 	// `codeswitch` (Arabic/English code-switching), and `auto` (resolves server-side
 	// to code-switching). Unlike other models, `humain/realtime` does not fall back to
-	// `auto` when `language` is omitted — omitting it applies `en` instead.
+	// `auto` when `language` is omitted — omitting it applies `en` instead. For
+	// `reson8/turns`, supported values are `auto` (or unset) for automatic language
+	// detection, and the language codes `nl`, `en`, `fr`, `fy`, `de`, `it`, `pl`,
+	// `pt`, `es`, and `sv` to fix the transcription language.
 	Language param.Opt[string] `json:"language,omitzero"`
 	// The speech to text model to be used by the voice assistant. Supported models
 	// include:
@@ -1627,6 +1630,8 @@ type TranscriptionConfigParam struct {
 	//     detection.
 	//   - `humain/realtime` for live streaming transcription with native Arabic and
 	//     Arabic/English code-switching support.
+	//   - `reson8/turns` for live streaming turn-based transcription of 10 European
+	//     languages with automatic language detection.
 	//   - `azure/fast` and `azure/realtime`; Azure models require `region`, and
 	//     unsupported regions require `api_key_ref`.
 	//   - `google/latest_long` for non-streaming multilingual transcription.
@@ -1638,8 +1643,8 @@ type TranscriptionConfigParam struct {
 	// Any of "deepgram/flux", "flux", "deepgram/nova-3", "deepgram/nova-2",
 	// "speechmatics/standard", "speechmatics/enhanced",
 	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "nvidia/parakeet-v3", "humain/realtime", "azure/fast", "azure/realtime",
-	// "google/latest_long", "distil-whisper/distil-large-v2",
+	// "nvidia/parakeet-v3", "humain/realtime", "reson8/turns", "azure/fast",
+	// "azure/realtime", "google/latest_long", "distil-whisper/distil-large-v2",
 	// "openai/whisper-large-v3-turbo".
 	Model TranscriptionConfigModel `json:"model,omitzero"`
 	paramObj
@@ -1668,6 +1673,8 @@ func (r *TranscriptionConfigParam) UnmarshalJSON(data []byte) error {
 //     detection.
 //   - `humain/realtime` for live streaming transcription with native Arabic and
 //     Arabic/English code-switching support.
+//   - `reson8/turns` for live streaming turn-based transcription of 10 European
+//     languages with automatic language detection.
 //   - `azure/fast` and `azure/realtime`; Azure models require `region`, and
 //     unsupported regions require `api_key_ref`.
 //   - `google/latest_long` for non-streaming multilingual transcription.
@@ -1689,6 +1696,7 @@ const (
 	TranscriptionConfigModelSonioxSttRtV4                TranscriptionConfigModel = "soniox/stt-rt-v4"
 	TranscriptionConfigModelNvidiaParakeetV3             TranscriptionConfigModel = "nvidia/parakeet-v3"
 	TranscriptionConfigModelHumainRealtime               TranscriptionConfigModel = "humain/realtime"
+	TranscriptionConfigModelReson8Turns                  TranscriptionConfigModel = "reson8/turns"
 	TranscriptionConfigModelAzureFast                    TranscriptionConfigModel = "azure/fast"
 	TranscriptionConfigModelAzureRealtime                TranscriptionConfigModel = "azure/realtime"
 	TranscriptionConfigModelGoogleLatestLong             TranscriptionConfigModel = "google/latest_long"
@@ -2366,7 +2374,7 @@ type TranscriptionStartRequestParam struct {
 	// `Telnyx` are supported for backward compatibility.
 	//
 	// Any of "Google", "Telnyx", "Deepgram", "Azure", "xAI", "AssemblyAI",
-	// "Speechmatics", "Soniox", "Parakeet", "Humain", "A", "B".
+	// "Speechmatics", "Soniox", "Parakeet", "Humain", "Reson8", "A", "B".
 	TranscriptionEngine       TranscriptionStartRequestTranscriptionEngine                 `json:"transcription_engine,omitzero"`
 	TranscriptionEngineConfig TranscriptionStartRequestTranscriptionEngineConfigUnionParam `json:"transcription_engine_config,omitzero"`
 	paramObj
@@ -2395,6 +2403,7 @@ const (
 	TranscriptionStartRequestTranscriptionEngineSoniox       TranscriptionStartRequestTranscriptionEngine = "Soniox"
 	TranscriptionStartRequestTranscriptionEngineParakeet     TranscriptionStartRequestTranscriptionEngine = "Parakeet"
 	TranscriptionStartRequestTranscriptionEngineHumain       TranscriptionStartRequestTranscriptionEngine = "Humain"
+	TranscriptionStartRequestTranscriptionEngineReson8       TranscriptionStartRequestTranscriptionEngine = "Reson8"
 	TranscriptionStartRequestTranscriptionEngineA            TranscriptionStartRequestTranscriptionEngine = "A"
 	TranscriptionStartRequestTranscriptionEngineB            TranscriptionStartRequestTranscriptionEngine = "B"
 )
@@ -2412,6 +2421,7 @@ type TranscriptionStartRequestTranscriptionEngineConfigUnionParam struct {
 	OfSoniox        *TranscriptionEngineSonioxConfigParam                          `json:",omitzero,inline"`
 	OfParakeet      *TranscriptionEngineParakeetConfigParam                        `json:",omitzero,inline"`
 	OfHumain        *TranscriptionStartRequestTranscriptionEngineConfigHumainParam `json:",omitzero,inline"`
+	OfReson8        *TranscriptionStartRequestTranscriptionEngineConfigReson8Param `json:",omitzero,inline"`
 	OfA             *TranscriptionEngineAConfigParam                               `json:",omitzero,inline"`
 	OfB             *TranscriptionEngineBConfigParam                               `json:",omitzero,inline"`
 	OfDeepgramNova2 *DeepgramNova2ConfigParam                                      `json:",omitzero,inline"`
@@ -2429,6 +2439,7 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) MarshalJSO
 		u.OfSoniox,
 		u.OfParakeet,
 		u.OfHumain,
+		u.OfReson8,
 		u.OfA,
 		u.OfB,
 		u.OfDeepgramNova2,
@@ -2457,6 +2468,8 @@ func (u *TranscriptionStartRequestTranscriptionEngineConfigUnionParam) asAny() a
 		return u.OfParakeet
 	} else if !param.IsOmitted(u.OfHumain) {
 		return u.OfHumain
+	} else if !param.IsOmitted(u.OfReson8) {
+		return u.OfReson8
 	} else if !param.IsOmitted(u.OfA) {
 		return u.OfA
 	} else if !param.IsOmitted(u.OfB) {
@@ -2559,6 +2572,8 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetLanguag
 		return &vt.Language.Value
 	} else if vt := u.OfHumain; vt != nil {
 		return (*string)(&vt.Language)
+	} else if vt := u.OfReson8; vt != nil {
+		return (*string)(&vt.Language)
 	} else if vt := u.OfA; vt != nil {
 		return (*string)(&vt.Language)
 	} else if vt := u.OfB; vt != nil {
@@ -2631,6 +2646,8 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscr
 		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfHumain; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
+	} else if vt := u.OfReson8; vt != nil {
+		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfA; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfB; vt != nil {
@@ -2668,6 +2685,8 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscr
 	} else if vt := u.OfParakeet; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
 	} else if vt := u.OfHumain; vt != nil {
+		return (*string)(&vt.TranscriptionModel)
+	} else if vt := u.OfReson8; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
 	} else if vt := u.OfB; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
@@ -2763,6 +2782,7 @@ func init() {
 		apijson.Discriminator[TranscriptionEngineSonioxConfigParam]("Soniox"),
 		apijson.Discriminator[TranscriptionEngineParakeetConfigParam]("Parakeet"),
 		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigHumainParam]("Humain"),
+		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigReson8Param]("Reson8"),
 		apijson.Discriminator[TranscriptionEngineAConfigParam]("A"),
 		apijson.Discriminator[TranscriptionEngineBConfigParam]("B"),
 		apijson.Discriminator[DeepgramNova2ConfigParam]("deepgram/nova-2"),
@@ -2804,6 +2824,43 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigHumainParam](
 		"transcription_model", "humain/realtime",
+	)
+}
+
+type TranscriptionStartRequestTranscriptionEngineConfigReson8Param struct {
+	// The language of the audio to be transcribed. `auto` (the default, also applied
+	// when `language` is omitted) enables automatic language detection.
+	//
+	// Any of "auto", "nl", "en", "fr", "fy", "de", "it", "pl", "pt", "es", "sv".
+	Language string `json:"language,omitzero"`
+	// Engine identifier for Reson8 transcription service
+	//
+	// Any of "Reson8".
+	TranscriptionEngine string `json:"transcription_engine,omitzero"`
+	// The model to use for transcription.
+	//
+	// Any of "reson8/turns".
+	TranscriptionModel string `json:"transcription_model,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionStartRequestTranscriptionEngineConfigReson8Param) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionStartRequestTranscriptionEngineConfigReson8Param
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionStartRequestTranscriptionEngineConfigReson8Param) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigReson8Param](
+		"language", "auto", "nl", "en", "fr", "fy", "de", "it", "pl", "pt", "es", "sv",
+	)
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigReson8Param](
+		"transcription_engine", "Reson8",
+	)
+	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigReson8Param](
+		"transcription_model", "reson8/turns",
 	)
 }
 
