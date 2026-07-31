@@ -123,6 +123,24 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 						Type: telnyx.HangupToolTypeHangup,
 					},
 				}},
+				VoiceSettings: telnyx.VoiceSettingsParam{
+					Voice:     "voice",
+					APIKeyRef: telnyx.String("api_key_ref"),
+					BackgroundAudio: telnyx.VoiceSettingsBackgroundAudioUnionParam{
+						OfPredefinedMedia: &telnyx.VoiceSettingsBackgroundAudioPredefinedMediaParam{
+							Value:  "silence",
+							Volume: telnyx.Float(0.1),
+						},
+					},
+					ExpressiveMode:  telnyx.Bool(true),
+					LanguageBoost:   telnyx.VoiceSettingsLanguageBoostAuto,
+					SimilarityBoost: telnyx.Float(0),
+					Speed:           telnyx.Float(0),
+					Style:           telnyx.Float(0),
+					Temperature:     telnyx.Float(0),
+					UseSpeakerBoost: telnyx.Bool(true),
+					VoiceSpeed:      telnyx.Float(0),
+				},
 			},
 			BillingGroupID: telnyx.String("f5586561-8ff0-4291-a0ac-84fe544797bd"),
 			ClientState:    telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
@@ -1056,6 +1074,24 @@ func TestCallActionStartAIAssistantWithOptionalParams(t *testing.T) {
 						Type: shared.BookAppointmentToolTypeBookAppointment,
 					},
 				}},
+				VoiceSettings: telnyx.VoiceSettingsParam{
+					Voice:     "voice",
+					APIKeyRef: telnyx.String("api_key_ref"),
+					BackgroundAudio: telnyx.VoiceSettingsBackgroundAudioUnionParam{
+						OfPredefinedMedia: &telnyx.VoiceSettingsBackgroundAudioPredefinedMediaParam{
+							Value:  "silence",
+							Volume: telnyx.Float(0.1),
+						},
+					},
+					ExpressiveMode:  telnyx.Bool(true),
+					LanguageBoost:   telnyx.VoiceSettingsLanguageBoostAuto,
+					SimilarityBoost: telnyx.Float(0),
+					Speed:           telnyx.Float(0),
+					Style:           telnyx.Float(0),
+					Temperature:     telnyx.Float(0),
+					UseSpeakerBoost: telnyx.Bool(true),
+					VoiceSpeed:      telnyx.Float(0),
+				},
 			},
 			ClientState: telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
 			CommandID:   telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
@@ -1082,13 +1118,6 @@ func TestCallActionStartAIAssistantWithOptionalParams(t *testing.T) {
 			Transcription: telnyx.TranscriptionConfigParam{
 				Language: telnyx.String("auto"),
 				Model:    telnyx.TranscriptionConfigModelDistilWhisperDistilLargeV2,
-			},
-			Voice: telnyx.String("Telnyx.KokoroTTS.af"),
-			VoiceSettings: telnyx.CallActionStartAIAssistantParamsVoiceSettingsUnion{
-				OfElevenlabs: &telnyx.ElevenLabsVoiceSettingsParam{
-					Type:      telnyx.ElevenLabsVoiceSettingsTypeElevenlabs,
-					APIKeyRef: telnyx.String("my_elevenlabs_api_key"),
-				},
 			},
 		},
 	)

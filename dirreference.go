@@ -45,9 +45,19 @@ func NewDirReferenceService(opts ...option.RequestOption) (r DirReferenceService
 // endpoint). Until it is, this returns `409` and no references are stored.
 //
 // The request body carries exactly two business references plus one financial
-// reference. On success the references are stored and the response echoes them in
-// the same shape as the GET. Submitting again converges on the already-stored
-// references rather than erroring.
+// reference. The first submission stores them and returns `201`. Resubmitting
+// returns `200`: identical values are simply confirmed and nothing is written,
+// while changed values replace those references.
+//
+// Replacing a reference is allowed only while the DIR itself is still editable,
+// the same window in which a single reference may be updated; once the DIR has
+// been submitted for vetting this returns `400`. A replaced reference's pending
+// verification call is cancelled and its dial-in code stops working, and the
+// replacement contact is emailed fresh scheduling details. References whose
+// details did not change keep their existing call, code, and the notice already
+// sent to them.
+//
+// The response always echoes the stored references in the same shape as the GET.
 func (r *DirReferenceService) New(ctx context.Context, dirID string, body DirReferenceNewParams, opts ...option.RequestOption) (res *ReferenceList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if dirID == "" {
@@ -80,10 +90,12 @@ func (r *DirReferenceService) Update(ctx context.Context, slot int64, params Dir
 
 // List the business and financial references submitted for a DIR.
 //
-// Returns the two business references (slots 0 and 1) followed by the single
-// financial reference. Each entry carries only the customer-supplied details
-// (name, title, organization, relationship, phone, email, timezone). Returns an
-// empty list when no references were submitted.
+// Returns the two business references (slots 1 and 2) followed by the single
+// financial reference. Each entry carries its `ref_type` and `slot`, which
+// together address the reference when updating it, alongside the details supplied
+// when it was submitted (name, title, organization, relationship, phone, email,
+// timezone). No internal identifiers are exposed. Returns an empty list when no
+// references were submitted.
 func (r *DirReferenceService) List(ctx context.Context, dirID string, opts ...option.RequestOption) (res *ReferenceList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if dirID == "" {
@@ -110,8 +122,10 @@ type Reference struct {
 	//
 	// Any of "business", "financial".
 	RefType ReferenceRefType `json:"ref_type" api:"required"`
-	// Position within the reference type. Business references occupy slots 0 and 1;
-	// the financial reference occupies slot 0.
+	// Position within the reference type, counting from 1. Business references occupy
+	// slots 1 and 2, in the order they were sent in the `business_references` array;
+	// the financial reference occupies slot 1. Use this value together with `ref_type`
+	// to address the reference when updating it.
 	Slot int64 `json:"slot" api:"required"`
 	// IANA timezone id for the reference. Calls are only placed within the reference's
 	// local 8am-9pm window.
@@ -229,7 +243,9 @@ func (r *DirReferenceUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type DirReferenceNewParams struct {
-	// Exactly two business references.
+	// Exactly two business references. Array order determines each one's slot: the
+	// first entry becomes slot 1 and the second becomes slot 2. Those slots are what
+	// you pass when updating a single reference later.
 	BusinessReferences []ReferenceInputParam `json:"business_references,omitzero" api:"required"`
 	// One reference supplied at submit. The reference type is implied by the field
 	// that carries it (business_references vs financial_reference).

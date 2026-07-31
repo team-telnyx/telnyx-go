@@ -135,7 +135,8 @@ type CallAssistantRequestParam struct {
 	ObservabilitySettings map[string]any `json:"observability_settings,omitzero"`
 	// Inline tool definitions available to the assistant (webhook, retrieval,
 	// transfer, hangup, etc.). Overrides the assistant's stored tools if provided.
-	Tools []CallAssistantRequestToolsUnionParam `json:"tools,omitzero"`
+	Tools         []CallAssistantRequestToolsUnionParam `json:"tools,omitzero"`
+	VoiceSettings VoiceSettingsParam                    `json:"voice_settings,omitzero"`
 	paramObj
 }
 
