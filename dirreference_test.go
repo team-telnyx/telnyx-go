@@ -82,7 +82,7 @@ func TestDirReferenceUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Dir.References.Update(
 		context.TODO(),
-		0,
+		1,
 		telnyx.DirReferenceUpdateParams{
 			DirID:                    "16635d38-75a6-4481-82e8-69af60e05011",
 			RefType:                  telnyx.DirReferenceUpdateParamsRefTypeBusiness,

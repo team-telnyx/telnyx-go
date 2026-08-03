@@ -901,6 +901,7 @@ func TestAIAssistantChatWithOptionalParams(t *testing.T) {
 			Content:        "Tell me a joke about cats",
 			ConversationID: "42b20469-1215-4a9a-8964-c36f66b406f4",
 			Name:           telnyx.String("Charlie"),
+			Stream:         telnyx.Bool(true),
 		},
 	)
 	if err != nil {

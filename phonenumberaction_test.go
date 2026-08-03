@@ -30,7 +30,7 @@ func TestPhoneNumberActionChangeBundleStatus(t *testing.T) {
 		context.TODO(),
 		"1293384261075731499",
 		telnyx.PhoneNumberActionChangeBundleStatusParams{
-			BundleID: "5194d8fc-87e6-4188-baa9-1c434bbe861b",
+			BundleID: telnyx.String("5194d8fc-87e6-4188-baa9-1c434bbe861b"),
 		},
 	)
 	if err != nil {

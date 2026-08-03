@@ -281,7 +281,7 @@ type PhoneNumberActionChangeBundleStatusParams struct {
 	// the number from a bundle, this must be null. You cannot assign a number from one
 	// bundle to another directly. You must first remove it from a bundle, and then
 	// assign it to a new bundle.
-	BundleID string `json:"bundle_id" api:"required"`
+	BundleID param.Opt[string] `json:"bundle_id,omitzero" api:"required"`
 	paramObj
 }
 

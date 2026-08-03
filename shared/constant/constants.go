@@ -42,6 +42,7 @@ type Pay string             // Always "pay"
 type PredefinedMedia string // Always "predefined_media"
 type Refer string           // Always "refer"
 type Retrieval string       // Always "retrieval"
+type S3Generic string       // Always "s3-generic"
 type SendDtmf string        // Always "send_dtmf"
 type SendMessage string     // Always "send_message"
 type Simple string          // Always "simple"
@@ -75,6 +76,7 @@ func (c Pay) Default() Pay                         { return "pay" }
 func (c PredefinedMedia) Default() PredefinedMedia { return "predefined_media" }
 func (c Refer) Default() Refer                     { return "refer" }
 func (c Retrieval) Default() Retrieval             { return "retrieval" }
+func (c S3Generic) Default() S3Generic             { return "s3-generic" }
 func (c SendDtmf) Default() SendDtmf               { return "send_dtmf" }
 func (c SendMessage) Default() SendMessage         { return "send_message" }
 func (c Simple) Default() Simple                   { return "simple" }
@@ -108,6 +110,7 @@ func (c Pay) MarshalJSON() ([]byte, error)             { return marshalString(c)
 func (c PredefinedMedia) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c Refer) MarshalJSON() ([]byte, error)           { return marshalString(c) }
 func (c Retrieval) MarshalJSON() ([]byte, error)       { return marshalString(c) }
+func (c S3Generic) MarshalJSON() ([]byte, error)       { return marshalString(c) }
 func (c SendDtmf) MarshalJSON() ([]byte, error)        { return marshalString(c) }
 func (c SendMessage) MarshalJSON() ([]byte, error)     { return marshalString(c) }
 func (c Simple) MarshalJSON() ([]byte, error)          { return marshalString(c) }

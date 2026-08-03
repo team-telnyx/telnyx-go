@@ -354,6 +354,9 @@ type UacExternalSettings struct {
 	//
 	// Any of "UDP", "TLS", "TCP".
 	Transport UacExternalSettingsTransport `json:"transport" api:"nullable"`
+	// Custom SIP User-Agent header value that Telnyx uses on outbound REGISTER and
+	// INVITE messages. Set to null to use Telnyx's default User-Agent.
+	UserAgent string `json:"user_agent" api:"nullable"`
 	// The SIP username used to authenticate with the external SIP peer for
 	// registrations and outbound calls. Must start with a letter or number and contain
 	// only letters, numbers, hyphens, and underscores.
@@ -367,6 +370,7 @@ type UacExternalSettings struct {
 		Password      respjson.Field
 		Proxy         respjson.Field
 		Transport     respjson.Field
+		UserAgent     respjson.Field
 		Username      respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
@@ -413,6 +417,9 @@ type UacExternalSettingsParam struct {
 	// An optional SIP proxy used to route outbound requests before reaching the
 	// external SIP peer.
 	OutboundProxy param.Opt[string] `json:"outbound_proxy,omitzero"`
+	// Custom SIP User-Agent header value that Telnyx uses on outbound REGISTER and
+	// INVITE messages. Set to null to use Telnyx's default User-Agent.
+	UserAgent param.Opt[string] `json:"user_agent,omitzero"`
 	// The SIP password used for digest authentication with the external SIP peer.
 	Password param.Opt[string] `json:"password,omitzero"`
 	// The SIP proxy address of the external SIP peer used for registrations and

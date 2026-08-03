@@ -126,26 +126,32 @@ type PhoneNumberCampaign struct {
 	// Extra info about a failure to assign/unassign a number. Relevant only if the
 	// assignmentStatus is either FAILED_ASSIGNMENT or FAILED_UNASSIGNMENT
 	FailureReasons string `json:"failureReasons"`
+	// The assignment status of the number towards other carriers.
+	NonTmobileNumberMappingStatus string `json:"nonTmobileNumberMappingStatus"`
 	// TCR's alphanumeric ID for the brand.
 	TcrBrandID string `json:"tcrBrandId"`
 	// TCR's alphanumeric ID for the campaign.
 	TcrCampaignID string `json:"tcrCampaignId"`
 	// Campaign ID. Empty if the number is associated to a shared campaign.
 	TelnyxCampaignID string `json:"telnyxCampaignId"`
+	// The T-Mobile assignment status of the number.
+	TmobileNumberMappingStatus string `json:"tmobileNumberMappingStatus"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CampaignID       respjson.Field
-		CreatedAt        respjson.Field
-		PhoneNumber      respjson.Field
-		UpdatedAt        respjson.Field
-		AssignmentStatus respjson.Field
-		BrandID          respjson.Field
-		FailureReasons   respjson.Field
-		TcrBrandID       respjson.Field
-		TcrCampaignID    respjson.Field
-		TelnyxCampaignID respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		CampaignID                    respjson.Field
+		CreatedAt                     respjson.Field
+		PhoneNumber                   respjson.Field
+		UpdatedAt                     respjson.Field
+		AssignmentStatus              respjson.Field
+		BrandID                       respjson.Field
+		FailureReasons                respjson.Field
+		NonTmobileNumberMappingStatus respjson.Field
+		TcrBrandID                    respjson.Field
+		TcrCampaignID                 respjson.Field
+		TelnyxCampaignID              respjson.Field
+		TmobileNumberMappingStatus    respjson.Field
+		ExtraFields                   map[string]respjson.Field
+		raw                           string
 	} `json:"-"`
 }
 
