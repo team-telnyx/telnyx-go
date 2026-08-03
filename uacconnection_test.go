@@ -11,6 +11,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4"
 	"github.com/team-telnyx/telnyx-go/v4/internal/testutil"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
@@ -45,6 +46,7 @@ func TestUacConnectionNewWithOptionalParams(t *testing.T) {
 			Password:      telnyx.String("testtesttest"),
 			Proxy:         telnyx.String("sip-pbx.acme.example"),
 			Transport:     telnyx.UacExternalSettingsTransportTls,
+			UserAgent:     telnyx.String("Telnyx-Usage-Voice-Trunk/1.0"),
 			Username:      telnyx.String("ext8492"),
 		},
 		Inbound: telnyx.UacInboundRequestParam{
@@ -169,6 +171,7 @@ func TestUacConnectionUpdateWithOptionalParams(t *testing.T) {
 				Password:      telnyx.String("testtesttest"),
 				Proxy:         telnyx.String("sip-pbx.acme.example"),
 				Transport:     telnyx.UacExternalSettingsTransportTls,
+				UserAgent:     param.Null[string](),
 				Username:      telnyx.String("ext8492"),
 			},
 			Inbound: telnyx.UacInboundRequestParam{
