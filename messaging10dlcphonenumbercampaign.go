@@ -61,7 +61,7 @@ func (r *Messaging10dlcPhoneNumberCampaignService) Get(ctx context.Context, phon
 	return res, err
 }
 
-// Create New Phone Number Campaign
+// Update Phone Number Campaign
 func (r *Messaging10dlcPhoneNumberCampaignService) Update(ctx context.Context, campaignPhoneNumber string, body Messaging10dlcPhoneNumberCampaignUpdateParams, opts ...option.RequestOption) (res *PhoneNumberCampaign, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if campaignPhoneNumber == "" {

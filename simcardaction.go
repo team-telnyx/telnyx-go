@@ -53,7 +53,7 @@ func (r *SimCardActionService) Get(ctx context.Context, id string, opts ...optio
 
 // This API lists a paginated collection of SIM card actions. It enables exploring
 // a collection of existing asynchronous operations using specific filters.
-func (r *SimCardActionService) List(ctx context.Context, query SimCardActionListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[SimCardAction], err error) {
+func (r *SimCardActionService) List(ctx context.Context, query SimCardActionListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[WirelessSimCardAction], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -72,7 +72,7 @@ func (r *SimCardActionService) List(ctx context.Context, query SimCardActionList
 
 // This API lists a paginated collection of SIM card actions. It enables exploring
 // a collection of existing asynchronous operations using specific filters.
-func (r *SimCardActionService) ListAutoPaging(ctx context.Context, query SimCardActionListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[SimCardAction] {
+func (r *SimCardActionService) ListAutoPaging(ctx context.Context, query SimCardActionListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[WirelessSimCardAction] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -276,7 +276,7 @@ const (
 
 // This object represents a SIM card action. It allows tracking the current status
 // of an operation that impacts the SIM card.
-type SimCardAction struct {
+type WirelessSimCardAction struct {
 	// Identifies the resource.
 	ID string `json:"id" format:"uuid"`
 	// The operation type. It can be one of the following: <br/>
@@ -290,15 +290,15 @@ type SimCardAction struct {
 	//	</ul>
 	//
 	// Any of "enable", "enable_standby_sim_card", "disable", "set_standby".
-	ActionType SimCardActionActionType `json:"action_type"`
+	ActionType WirelessSimCardActionActionType `json:"action_type"`
 	// ISO 8601 formatted date-time indicating when the resource was created.
 	CreatedAt  string `json:"created_at"`
 	RecordType string `json:"record_type"`
 	// A JSON object representation of the action params.
 	Settings map[string]any `json:"settings" api:"nullable"`
 	// The related SIM card identifier.
-	SimCardID string              `json:"sim_card_id" format:"uuid"`
-	Status    SimCardActionStatus `json:"status"`
+	SimCardID string                      `json:"sim_card_id" format:"uuid"`
+	Status    WirelessSimCardActionStatus `json:"status"`
 	// ISO 8601 formatted date-time indicating when the resource was updated.
 	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -317,8 +317,8 @@ type SimCardAction struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r SimCardAction) RawJSON() string { return r.JSON.raw }
-func (r *SimCardAction) UnmarshalJSON(data []byte) error {
+func (r WirelessSimCardAction) RawJSON() string { return r.JSON.raw }
+func (r *WirelessSimCardAction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -331,16 +331,16 @@ func (r *SimCardAction) UnmarshalJSON(data []byte) error {
 //	<li><code>disable</code> - move the SIM card to the <code>disabled</code> status</li>
 //	<li><code>set_standby</code> - move the SIM card to the <code>standby</code> status</li>
 //	</ul>
-type SimCardActionActionType string
+type WirelessSimCardActionActionType string
 
 const (
-	SimCardActionActionTypeEnable               SimCardActionActionType = "enable"
-	SimCardActionActionTypeEnableStandbySimCard SimCardActionActionType = "enable_standby_sim_card"
-	SimCardActionActionTypeDisable              SimCardActionActionType = "disable"
-	SimCardActionActionTypeSetStandby           SimCardActionActionType = "set_standby"
+	WirelessSimCardActionActionTypeEnable               WirelessSimCardActionActionType = "enable"
+	WirelessSimCardActionActionTypeEnableStandbySimCard WirelessSimCardActionActionType = "enable_standby_sim_card"
+	WirelessSimCardActionActionTypeDisable              WirelessSimCardActionActionType = "disable"
+	WirelessSimCardActionActionTypeSetStandby           WirelessSimCardActionActionType = "set_standby"
 )
 
-type SimCardActionStatus struct {
+type WirelessSimCardActionStatus struct {
 	// It describes why the SIM card action is in the current status. This will be
 	// <code>null</code> for self-explanatory statuses, such as
 	// <code>in-progress</code> and <code>completed</code> but will include further
@@ -360,15 +360,15 @@ type SimCardActionStatus struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r SimCardActionStatus) RawJSON() string { return r.JSON.raw }
-func (r *SimCardActionStatus) UnmarshalJSON(data []byte) error {
+func (r WirelessSimCardActionStatus) RawJSON() string { return r.JSON.raw }
+func (r *WirelessSimCardActionStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type SimCardActionGetResponse struct {
 	// This object represents a SIM card action. It allows tracking the current status
 	// of an operation that impacts the SIM card.
-	Data SimCardAction `json:"data"`
+	Data WirelessSimCardAction `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -440,7 +440,7 @@ func (r *SimCardActionBulkSetPublicIPsResponse) UnmarshalJSON(data []byte) error
 type SimCardActionDisableResponse struct {
 	// This object represents a SIM card action. It allows tracking the current status
 	// of an operation that impacts the SIM card.
-	Data SimCardAction `json:"data"`
+	Data WirelessSimCardAction `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -458,7 +458,7 @@ func (r *SimCardActionDisableResponse) UnmarshalJSON(data []byte) error {
 type SimCardActionEnableResponse struct {
 	// This object represents a SIM card action. It allows tracking the current status
 	// of an operation that impacts the SIM card.
-	Data SimCardAction `json:"data"`
+	Data WirelessSimCardAction `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -476,7 +476,7 @@ func (r *SimCardActionEnableResponse) UnmarshalJSON(data []byte) error {
 type SimCardActionRemovePublicIPResponse struct {
 	// This object represents a SIM card action. It allows tracking the current status
 	// of an operation that impacts the SIM card.
-	Data SimCardAction `json:"data"`
+	Data WirelessSimCardAction `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -494,7 +494,7 @@ func (r *SimCardActionRemovePublicIPResponse) UnmarshalJSON(data []byte) error {
 type SimCardActionSetPublicIPResponse struct {
 	// This object represents a SIM card action. It allows tracking the current status
 	// of an operation that impacts the SIM card.
-	Data SimCardAction `json:"data"`
+	Data WirelessSimCardAction `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -512,7 +512,7 @@ func (r *SimCardActionSetPublicIPResponse) UnmarshalJSON(data []byte) error {
 type SimCardActionSetStandbyResponse struct {
 	// This object represents a SIM card action. It allows tracking the current status
 	// of an operation that impacts the SIM card.
-	Data SimCardAction `json:"data"`
+	Data WirelessSimCardAction `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

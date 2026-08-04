@@ -75,8 +75,8 @@ func (r *ReportService) ListWdrsAutoPaging(ctx context.Context, query ReportList
 }
 
 type ReportListMdrsResponse struct {
-	Data []ReportListMdrsResponseData `json:"data"`
-	Meta PaginationMetaReporting      `json:"meta"`
+	Data []ReportListMdrsResponseData      `json:"data"`
+	Meta ReportingPaginationMeta77109e5d17 `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

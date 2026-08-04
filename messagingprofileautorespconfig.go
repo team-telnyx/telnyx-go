@@ -18,7 +18,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // Opt-Out Management
@@ -195,8 +194,8 @@ func (r *AutoRespConfigResponse) UnmarshalJSON(data []byte) error {
 
 // List of Auto-Response Settings
 type MessagingProfileAutorespConfigListResponse struct {
-	Data []AutoRespConfig               `json:"data" api:"required"`
-	Meta shared.MessagingPaginationMeta `json:"meta" api:"required"`
+	Data []AutoRespConfig                  `json:"data" api:"required"`
+	Meta MessagingPaginationMeta0b38e7044b `json:"meta" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

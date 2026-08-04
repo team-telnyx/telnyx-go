@@ -45,7 +45,7 @@ func NewMessagingTollfreeVerificationRequestService(opts ...option.RequestOption
 }
 
 // Submit a new tollfree verification request
-func (r *MessagingTollfreeVerificationRequestService) New(ctx context.Context, body MessagingTollfreeVerificationRequestNewParams, opts ...option.RequestOption) (res *VerificationRequestEgress, err error) {
+func (r *MessagingTollfreeVerificationRequestService) New(ctx context.Context, body MessagingTollfreeVerificationRequestNewParams, opts ...option.RequestOption) (res *MessagingTollFreeVerificationVerificationRequestEgress, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "messaging_tollfree/verification/requests"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -53,7 +53,7 @@ func (r *MessagingTollfreeVerificationRequestService) New(ctx context.Context, b
 }
 
 // Get a single verification request by its ID.
-func (r *MessagingTollfreeVerificationRequestService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *VerificationRequestStatus, err error) {
+func (r *MessagingTollfreeVerificationRequestService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *MessagingTollfreeVerificationRequestGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -66,7 +66,7 @@ func (r *MessagingTollfreeVerificationRequestService) Get(ctx context.Context, i
 
 // Update an existing tollfree verification request. This is particularly useful
 // when there are pending customer actions to be taken.
-func (r *MessagingTollfreeVerificationRequestService) Update(ctx context.Context, id string, body MessagingTollfreeVerificationRequestUpdateParams, opts ...option.RequestOption) (res *VerificationRequestEgress, err error) {
+func (r *MessagingTollfreeVerificationRequestService) Update(ctx context.Context, id string, body MessagingTollfreeVerificationRequestUpdateParams, opts ...option.RequestOption) (res *MessagingTollFreeVerificationVerificationRequestEgress, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -134,47 +134,16 @@ func (r *MessagingTollfreeVerificationRequestService) GetStatusHistory(ctx conte
 	return res, err
 }
 
-// A phone number
-type TfPhoneNumber struct {
-	PhoneNumber string `json:"phoneNumber" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PhoneNumber respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
+// Business entity classification
+type MessagingTollFreeVerificationEntityType string
 
-// Returns the unmodified JSON received from the API
-func (r TfPhoneNumber) RawJSON() string { return r.JSON.raw }
-func (r *TfPhoneNumber) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this TfPhoneNumber to a TfPhoneNumberParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// TfPhoneNumberParam.Overrides()
-func (r TfPhoneNumber) ToParam() TfPhoneNumberParam {
-	return param.Override[TfPhoneNumberParam](json.RawMessage(r.RawJSON()))
-}
-
-// A phone number
-//
-// The property PhoneNumber is required.
-type TfPhoneNumberParam struct {
-	PhoneNumber string `json:"phoneNumber" api:"required"`
-	paramObj
-}
-
-func (r TfPhoneNumberParam) MarshalJSON() (data []byte, err error) {
-	type shadow TfPhoneNumberParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TfPhoneNumberParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+const (
+	MessagingTollFreeVerificationEntityTypeSoleProprietor MessagingTollFreeVerificationEntityType = "SOLE_PROPRIETOR"
+	MessagingTollFreeVerificationEntityTypePrivateProfit  MessagingTollFreeVerificationEntityType = "PRIVATE_PROFIT"
+	MessagingTollFreeVerificationEntityTypePublicProfit   MessagingTollFreeVerificationEntityType = "PUBLIC_PROFIT"
+	MessagingTollFreeVerificationEntityTypeNonProfit      MessagingTollFreeVerificationEntityType = "NON_PROFIT"
+	MessagingTollFreeVerificationEntityTypeGovernment     MessagingTollFreeVerificationEntityType = "GOVERNMENT"
+)
 
 // The body of a tollfree verification request
 //
@@ -183,7 +152,7 @@ func (r *TfPhoneNumberParam) UnmarshalJSON(data []byte) error {
 // BusinessContactPhone, BusinessName, BusinessState, BusinessZip,
 // CorporateWebsite, MessageVolume, OptInWorkflow, OptInWorkflowImageURLs,
 // PhoneNumbers, ProductionMessageContent, UseCase, UseCaseSummary are required.
-type TfVerificationRequestParam struct {
+type MessagingTollFreeVerificationTfVerificationRequestParam struct {
 	// Any additional information
 	AdditionalInformation string `json:"additionalInformation" api:"required"`
 	// Line 1 of the business address
@@ -280,15 +249,172 @@ type TfVerificationRequestParam struct {
 	//
 	// Any of "SOLE_PROPRIETOR", "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT",
 	// "GOVERNMENT".
-	EntityType TollFreeVerificationEntityType `json:"entityType,omitzero"`
+	EntityType MessagingTollFreeVerificationEntityType `json:"entityType,omitzero"`
 	paramObj
 }
 
-func (r TfVerificationRequestParam) MarshalJSON() (data []byte, err error) {
-	type shadow TfVerificationRequestParam
+func (r MessagingTollFreeVerificationTfVerificationRequestParam) MarshalJSON() (data []byte, err error) {
+	type shadow MessagingTollFreeVerificationTfVerificationRequestParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *TfVerificationRequestParam) UnmarshalJSON(data []byte) error {
+func (r *MessagingTollFreeVerificationTfVerificationRequestParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A verification request as it comes out of the database
+type MessagingTollFreeVerificationVerificationRequestEgress struct {
+	ID                       string `json:"id" api:"required" format:"uuid"`
+	AdditionalInformation    string `json:"additionalInformation" api:"required"`
+	BusinessAddr1            string `json:"businessAddr1" api:"required"`
+	BusinessCity             string `json:"businessCity" api:"required"`
+	BusinessContactEmail     string `json:"businessContactEmail" api:"required"`
+	BusinessContactFirstName string `json:"businessContactFirstName" api:"required"`
+	BusinessContactLastName  string `json:"businessContactLastName" api:"required"`
+	BusinessContactPhone     string `json:"businessContactPhone" api:"required"`
+	BusinessName             string `json:"businessName" api:"required"`
+	BusinessState            string `json:"businessState" api:"required"`
+	BusinessZip              string `json:"businessZip" api:"required"`
+	CorporateWebsite         string `json:"corporateWebsite" api:"required"`
+	// Message Volume Enums
+	//
+	// Any of "10", "100", "1,000", "10,000", "100,000", "250,000", "500,000",
+	// "750,000", "1,000,000", "5,000,000", "10,000,000+".
+	MessageVolume            Volume          `json:"messageVolume" api:"required"`
+	OptInWorkflow            string          `json:"optInWorkflow" api:"required"`
+	OptInWorkflowImageURLs   []URL           `json:"optInWorkflowImageURLs" api:"required"`
+	PhoneNumbers             []TfPhoneNumber `json:"phoneNumbers" api:"required"`
+	ProductionMessageContent string          `json:"productionMessageContent" api:"required"`
+	// Tollfree usecase categories
+	//
+	// Any of "2FA", "App Notifications", "Appointments", "Auctions", "Auto Repair
+	// Services", "Bank Transfers", "Billing", "Booking Confirmations", "Business
+	// Updates", "COVID-19 Alerts", "Career Training", "Chatbot", "Conversational /
+	// Alerts", "Courier Services & Deliveries", "Emergency Alerts", "Events &
+	// Planning", "Financial Services", "Fraud Alerts", "Fundraising", "General
+	// Marketing", "General School Updates", "HR / Staffing", "Healthcare Alerts",
+	// "Housing Community Updates", "Insurance Services", "Job Dispatch", "Legal
+	// Services", "Mixed", "Motivational Reminders", "Notary Notifications", "Order
+	// Notifications", "Political", "Public Works", "Real Estate Services", "Religious
+	// Services", "Repair and Diagnostics Alerts", "Rewards Program", "Surveys",
+	// "System Alerts", "Voting Reminders", "Waitlist Alerts", "Webinar Reminders",
+	// "Workshop Alerts".
+	UseCase                     UseCaseCategories `json:"useCase" api:"required"`
+	UseCaseSummary              string            `json:"useCaseSummary" api:"required"`
+	VerificationRequestID       string            `json:"verificationRequestId" api:"required"`
+	AgeGatedContent             bool              `json:"ageGatedContent"`
+	BusinessAddr2               string            `json:"businessAddr2"`
+	BusinessRegistrationCountry string            `json:"businessRegistrationCountry"`
+	BusinessRegistrationNumber  string            `json:"businessRegistrationNumber"`
+	BusinessRegistrationType    string            `json:"businessRegistrationType"`
+	// Campaign Verify Authorization Token required for Political use case submissions
+	// starting February 17, 2026
+	CampaignVerifyAuthorizationToken string `json:"campaignVerifyAuthorizationToken" api:"nullable"`
+	DoingBusinessAs                  string `json:"doingBusinessAs"`
+	// Business entity classification
+	//
+	// Any of "SOLE_PROPRIETOR", "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT",
+	// "GOVERNMENT".
+	EntityType                MessagingTollFreeVerificationEntityType `json:"entityType"`
+	HelpMessageResponse       string                                  `json:"helpMessageResponse"`
+	IsvReseller               string                                  `json:"isvReseller"`
+	OptInConfirmationResponse string                                  `json:"optInConfirmationResponse"`
+	OptInKeywords             string                                  `json:"optInKeywords"`
+	PrivacyPolicyURL          string                                  `json:"privacyPolicyURL"`
+	TermsAndConditionURL      string                                  `json:"termsAndConditionURL"`
+	// Tollfree verification status
+	//
+	// Any of "Verified", "Rejected", "Waiting For Vendor", "Waiting For Customer",
+	// "Waiting For Telnyx", "In Progress".
+	VerificationStatus TfVerificationStatus `json:"verificationStatus"`
+	WebhookURL         string               `json:"webhookUrl"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                               respjson.Field
+		AdditionalInformation            respjson.Field
+		BusinessAddr1                    respjson.Field
+		BusinessCity                     respjson.Field
+		BusinessContactEmail             respjson.Field
+		BusinessContactFirstName         respjson.Field
+		BusinessContactLastName          respjson.Field
+		BusinessContactPhone             respjson.Field
+		BusinessName                     respjson.Field
+		BusinessState                    respjson.Field
+		BusinessZip                      respjson.Field
+		CorporateWebsite                 respjson.Field
+		MessageVolume                    respjson.Field
+		OptInWorkflow                    respjson.Field
+		OptInWorkflowImageURLs           respjson.Field
+		PhoneNumbers                     respjson.Field
+		ProductionMessageContent         respjson.Field
+		UseCase                          respjson.Field
+		UseCaseSummary                   respjson.Field
+		VerificationRequestID            respjson.Field
+		AgeGatedContent                  respjson.Field
+		BusinessAddr2                    respjson.Field
+		BusinessRegistrationCountry      respjson.Field
+		BusinessRegistrationNumber       respjson.Field
+		BusinessRegistrationType         respjson.Field
+		CampaignVerifyAuthorizationToken respjson.Field
+		DoingBusinessAs                  respjson.Field
+		EntityType                       respjson.Field
+		HelpMessageResponse              respjson.Field
+		IsvReseller                      respjson.Field
+		OptInConfirmationResponse        respjson.Field
+		OptInKeywords                    respjson.Field
+		PrivacyPolicyURL                 respjson.Field
+		TermsAndConditionURL             respjson.Field
+		VerificationStatus               respjson.Field
+		WebhookURL                       respjson.Field
+		ExtraFields                      map[string]respjson.Field
+		raw                              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingTollFreeVerificationVerificationRequestEgress) RawJSON() string { return r.JSON.raw }
+func (r *MessagingTollFreeVerificationVerificationRequestEgress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A phone number
+type TfPhoneNumber struct {
+	PhoneNumber string `json:"phoneNumber" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PhoneNumber respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TfPhoneNumber) RawJSON() string { return r.JSON.raw }
+func (r *TfPhoneNumber) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this TfPhoneNumber to a TfPhoneNumberParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// TfPhoneNumberParam.Overrides()
+func (r TfPhoneNumber) ToParam() TfPhoneNumberParam {
+	return param.Override[TfPhoneNumberParam](json.RawMessage(r.RawJSON()))
+}
+
+// A phone number
+//
+// The property PhoneNumber is required.
+type TfPhoneNumberParam struct {
+	PhoneNumber string `json:"phoneNumber" api:"required"`
+	paramObj
+}
+
+func (r TfPhoneNumberParam) MarshalJSON() (data []byte, err error) {
+	type shadow TfPhoneNumberParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TfPhoneNumberParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -402,121 +528,6 @@ const (
 	UseCaseCategoriesWebinarReminders           UseCaseCategories = "Webinar Reminders"
 	UseCaseCategoriesWorkshopAlerts             UseCaseCategories = "Workshop Alerts"
 )
-
-// A verification request as it comes out of the database
-type VerificationRequestEgress struct {
-	ID                       string `json:"id" api:"required" format:"uuid"`
-	AdditionalInformation    string `json:"additionalInformation" api:"required"`
-	BusinessAddr1            string `json:"businessAddr1" api:"required"`
-	BusinessCity             string `json:"businessCity" api:"required"`
-	BusinessContactEmail     string `json:"businessContactEmail" api:"required"`
-	BusinessContactFirstName string `json:"businessContactFirstName" api:"required"`
-	BusinessContactLastName  string `json:"businessContactLastName" api:"required"`
-	BusinessContactPhone     string `json:"businessContactPhone" api:"required"`
-	BusinessName             string `json:"businessName" api:"required"`
-	BusinessState            string `json:"businessState" api:"required"`
-	BusinessZip              string `json:"businessZip" api:"required"`
-	CorporateWebsite         string `json:"corporateWebsite" api:"required"`
-	// Message Volume Enums
-	//
-	// Any of "10", "100", "1,000", "10,000", "100,000", "250,000", "500,000",
-	// "750,000", "1,000,000", "5,000,000", "10,000,000+".
-	MessageVolume            Volume          `json:"messageVolume" api:"required"`
-	OptInWorkflow            string          `json:"optInWorkflow" api:"required"`
-	OptInWorkflowImageURLs   []URL           `json:"optInWorkflowImageURLs" api:"required"`
-	PhoneNumbers             []TfPhoneNumber `json:"phoneNumbers" api:"required"`
-	ProductionMessageContent string          `json:"productionMessageContent" api:"required"`
-	// Tollfree usecase categories
-	//
-	// Any of "2FA", "App Notifications", "Appointments", "Auctions", "Auto Repair
-	// Services", "Bank Transfers", "Billing", "Booking Confirmations", "Business
-	// Updates", "COVID-19 Alerts", "Career Training", "Chatbot", "Conversational /
-	// Alerts", "Courier Services & Deliveries", "Emergency Alerts", "Events &
-	// Planning", "Financial Services", "Fraud Alerts", "Fundraising", "General
-	// Marketing", "General School Updates", "HR / Staffing", "Healthcare Alerts",
-	// "Housing Community Updates", "Insurance Services", "Job Dispatch", "Legal
-	// Services", "Mixed", "Motivational Reminders", "Notary Notifications", "Order
-	// Notifications", "Political", "Public Works", "Real Estate Services", "Religious
-	// Services", "Repair and Diagnostics Alerts", "Rewards Program", "Surveys",
-	// "System Alerts", "Voting Reminders", "Waitlist Alerts", "Webinar Reminders",
-	// "Workshop Alerts".
-	UseCase                     UseCaseCategories `json:"useCase" api:"required"`
-	UseCaseSummary              string            `json:"useCaseSummary" api:"required"`
-	VerificationRequestID       string            `json:"verificationRequestId" api:"required"`
-	AgeGatedContent             bool              `json:"ageGatedContent"`
-	BusinessAddr2               string            `json:"businessAddr2"`
-	BusinessRegistrationCountry string            `json:"businessRegistrationCountry"`
-	BusinessRegistrationNumber  string            `json:"businessRegistrationNumber"`
-	BusinessRegistrationType    string            `json:"businessRegistrationType"`
-	// Campaign Verify Authorization Token required for Political use case submissions
-	// starting February 17, 2026
-	CampaignVerifyAuthorizationToken string `json:"campaignVerifyAuthorizationToken" api:"nullable"`
-	DoingBusinessAs                  string `json:"doingBusinessAs"`
-	// Business entity classification
-	//
-	// Any of "SOLE_PROPRIETOR", "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT",
-	// "GOVERNMENT".
-	EntityType                TollFreeVerificationEntityType `json:"entityType"`
-	HelpMessageResponse       string                         `json:"helpMessageResponse"`
-	IsvReseller               string                         `json:"isvReseller"`
-	OptInConfirmationResponse string                         `json:"optInConfirmationResponse"`
-	OptInKeywords             string                         `json:"optInKeywords"`
-	PrivacyPolicyURL          string                         `json:"privacyPolicyURL"`
-	TermsAndConditionURL      string                         `json:"termsAndConditionURL"`
-	// Tollfree verification status
-	//
-	// Any of "Verified", "Rejected", "Waiting For Vendor", "Waiting For Customer",
-	// "Waiting For Telnyx", "In Progress".
-	VerificationStatus TfVerificationStatus `json:"verificationStatus"`
-	WebhookURL         string               `json:"webhookUrl"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                               respjson.Field
-		AdditionalInformation            respjson.Field
-		BusinessAddr1                    respjson.Field
-		BusinessCity                     respjson.Field
-		BusinessContactEmail             respjson.Field
-		BusinessContactFirstName         respjson.Field
-		BusinessContactLastName          respjson.Field
-		BusinessContactPhone             respjson.Field
-		BusinessName                     respjson.Field
-		BusinessState                    respjson.Field
-		BusinessZip                      respjson.Field
-		CorporateWebsite                 respjson.Field
-		MessageVolume                    respjson.Field
-		OptInWorkflow                    respjson.Field
-		OptInWorkflowImageURLs           respjson.Field
-		PhoneNumbers                     respjson.Field
-		ProductionMessageContent         respjson.Field
-		UseCase                          respjson.Field
-		UseCaseSummary                   respjson.Field
-		VerificationRequestID            respjson.Field
-		AgeGatedContent                  respjson.Field
-		BusinessAddr2                    respjson.Field
-		BusinessRegistrationCountry      respjson.Field
-		BusinessRegistrationNumber       respjson.Field
-		BusinessRegistrationType         respjson.Field
-		CampaignVerifyAuthorizationToken respjson.Field
-		DoingBusinessAs                  respjson.Field
-		EntityType                       respjson.Field
-		HelpMessageResponse              respjson.Field
-		IsvReseller                      respjson.Field
-		OptInConfirmationResponse        respjson.Field
-		OptInKeywords                    respjson.Field
-		PrivacyPolicyURL                 respjson.Field
-		TermsAndConditionURL             respjson.Field
-		VerificationStatus               respjson.Field
-		WebhookURL                       respjson.Field
-		ExtraFields                      map[string]respjson.Field
-		raw                              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VerificationRequestEgress) RawJSON() string { return r.JSON.raw }
-func (r *VerificationRequestEgress) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 // A verification request and its status, suitable for returning to users
 type VerificationRequestStatus struct {
@@ -654,6 +665,125 @@ const (
 	VolumeV10000000Plus Volume = "10,000,000+"
 )
 
+// A verification request and its status, suitable for returning to users
+type MessagingTollfreeVerificationRequestGetResponse struct {
+	ID                       string `json:"id" api:"required" format:"uuid"`
+	AdditionalInformation    string `json:"additionalInformation" api:"required"`
+	BusinessAddr1            string `json:"businessAddr1" api:"required"`
+	BusinessCity             string `json:"businessCity" api:"required"`
+	BusinessContactEmail     string `json:"businessContactEmail" api:"required"`
+	BusinessContactFirstName string `json:"businessContactFirstName" api:"required"`
+	BusinessContactLastName  string `json:"businessContactLastName" api:"required"`
+	BusinessContactPhone     string `json:"businessContactPhone" api:"required"`
+	BusinessName             string `json:"businessName" api:"required"`
+	BusinessState            string `json:"businessState" api:"required"`
+	BusinessZip              string `json:"businessZip" api:"required"`
+	CorporateWebsite         string `json:"corporateWebsite" api:"required"`
+	// Message Volume Enums
+	//
+	// Any of "10", "100", "1,000", "10,000", "100,000", "250,000", "500,000",
+	// "750,000", "1,000,000", "5,000,000", "10,000,000+".
+	MessageVolume            Volume          `json:"messageVolume" api:"required"`
+	OptInWorkflow            string          `json:"optInWorkflow" api:"required"`
+	OptInWorkflowImageURLs   []URL           `json:"optInWorkflowImageURLs" api:"required"`
+	PhoneNumbers             []TfPhoneNumber `json:"phoneNumbers" api:"required"`
+	ProductionMessageContent string          `json:"productionMessageContent" api:"required"`
+	// Tollfree usecase categories
+	//
+	// Any of "2FA", "App Notifications", "Appointments", "Auctions", "Auto Repair
+	// Services", "Bank Transfers", "Billing", "Booking Confirmations", "Business
+	// Updates", "COVID-19 Alerts", "Career Training", "Chatbot", "Conversational /
+	// Alerts", "Courier Services & Deliveries", "Emergency Alerts", "Events &
+	// Planning", "Financial Services", "Fraud Alerts", "Fundraising", "General
+	// Marketing", "General School Updates", "HR / Staffing", "Healthcare Alerts",
+	// "Housing Community Updates", "Insurance Services", "Job Dispatch", "Legal
+	// Services", "Mixed", "Motivational Reminders", "Notary Notifications", "Order
+	// Notifications", "Political", "Public Works", "Real Estate Services", "Religious
+	// Services", "Repair and Diagnostics Alerts", "Rewards Program", "Surveys",
+	// "System Alerts", "Voting Reminders", "Waitlist Alerts", "Webinar Reminders",
+	// "Workshop Alerts".
+	UseCase        UseCaseCategories `json:"useCase" api:"required"`
+	UseCaseSummary string            `json:"useCaseSummary" api:"required"`
+	// Tollfree verification status
+	//
+	// Any of "Verified", "Rejected", "Waiting For Vendor", "Waiting For Customer",
+	// "Waiting For Telnyx", "In Progress".
+	VerificationStatus          TfVerificationStatus `json:"verificationStatus" api:"required"`
+	AgeGatedContent             bool                 `json:"ageGatedContent"`
+	BusinessAddr2               string               `json:"businessAddr2"`
+	BusinessRegistrationCountry string               `json:"businessRegistrationCountry"`
+	BusinessRegistrationNumber  string               `json:"businessRegistrationNumber"`
+	BusinessRegistrationType    string               `json:"businessRegistrationType"`
+	// Campaign Verify Authorization Token required for Political use case submissions
+	// starting February 17, 2026
+	CampaignVerifyAuthorizationToken string    `json:"campaignVerifyAuthorizationToken" api:"nullable"`
+	CreatedAt                        time.Time `json:"createdAt" format:"date-time"`
+	DoingBusinessAs                  string    `json:"doingBusinessAs"`
+	// Business entity classification
+	//
+	// Any of "SOLE_PROPRIETOR", "PRIVATE_PROFIT", "PUBLIC_PROFIT", "NON_PROFIT",
+	// "GOVERNMENT".
+	EntityType                MessagingTollFreeVerificationEntityType `json:"entityType"`
+	HelpMessageResponse       string                                  `json:"helpMessageResponse"`
+	IsvReseller               string                                  `json:"isvReseller"`
+	OptInConfirmationResponse string                                  `json:"optInConfirmationResponse"`
+	OptInKeywords             string                                  `json:"optInKeywords"`
+	PrivacyPolicyURL          string                                  `json:"privacyPolicyURL"`
+	Reason                    string                                  `json:"reason"`
+	TermsAndConditionURL      string                                  `json:"termsAndConditionURL"`
+	UpdatedAt                 time.Time                               `json:"updatedAt" format:"date-time"`
+	WebhookURL                string                                  `json:"webhookUrl"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                               respjson.Field
+		AdditionalInformation            respjson.Field
+		BusinessAddr1                    respjson.Field
+		BusinessCity                     respjson.Field
+		BusinessContactEmail             respjson.Field
+		BusinessContactFirstName         respjson.Field
+		BusinessContactLastName          respjson.Field
+		BusinessContactPhone             respjson.Field
+		BusinessName                     respjson.Field
+		BusinessState                    respjson.Field
+		BusinessZip                      respjson.Field
+		CorporateWebsite                 respjson.Field
+		MessageVolume                    respjson.Field
+		OptInWorkflow                    respjson.Field
+		OptInWorkflowImageURLs           respjson.Field
+		PhoneNumbers                     respjson.Field
+		ProductionMessageContent         respjson.Field
+		UseCase                          respjson.Field
+		UseCaseSummary                   respjson.Field
+		VerificationStatus               respjson.Field
+		AgeGatedContent                  respjson.Field
+		BusinessAddr2                    respjson.Field
+		BusinessRegistrationCountry      respjson.Field
+		BusinessRegistrationNumber       respjson.Field
+		BusinessRegistrationType         respjson.Field
+		CampaignVerifyAuthorizationToken respjson.Field
+		CreatedAt                        respjson.Field
+		DoingBusinessAs                  respjson.Field
+		EntityType                       respjson.Field
+		HelpMessageResponse              respjson.Field
+		IsvReseller                      respjson.Field
+		OptInConfirmationResponse        respjson.Field
+		OptInKeywords                    respjson.Field
+		PrivacyPolicyURL                 respjson.Field
+		Reason                           respjson.Field
+		TermsAndConditionURL             respjson.Field
+		UpdatedAt                        respjson.Field
+		WebhookURL                       respjson.Field
+		ExtraFields                      map[string]respjson.Field
+		raw                              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingTollfreeVerificationRequestGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *MessagingTollfreeVerificationRequestGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // A paginated response
 type MessagingTollfreeVerificationRequestGetStatusHistoryResponse struct {
 	// The records yielded by this request
@@ -708,12 +838,12 @@ func (r *MessagingTollfreeVerificationRequestGetStatusHistoryResponseRecord) Unm
 
 type MessagingTollfreeVerificationRequestNewParams struct {
 	// The body of a tollfree verification request
-	TfVerificationRequest TfVerificationRequestParam
+	MessagingTollFreeVerificationTfVerificationRequest MessagingTollFreeVerificationTfVerificationRequestParam
 	paramObj
 }
 
 func (r MessagingTollfreeVerificationRequestNewParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.TfVerificationRequest)
+	return shimjson.Marshal(r.MessagingTollFreeVerificationTfVerificationRequest)
 }
 func (r *MessagingTollfreeVerificationRequestNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
@@ -721,12 +851,12 @@ func (r *MessagingTollfreeVerificationRequestNewParams) UnmarshalJSON(data []byt
 
 type MessagingTollfreeVerificationRequestUpdateParams struct {
 	// The body of a tollfree verification request
-	TfVerificationRequest TfVerificationRequestParam
+	MessagingTollFreeVerificationTfVerificationRequest MessagingTollFreeVerificationTfVerificationRequestParam
 	paramObj
 }
 
 func (r MessagingTollfreeVerificationRequestUpdateParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.TfVerificationRequest)
+	return shimjson.Marshal(r.MessagingTollFreeVerificationTfVerificationRequest)
 }
 func (r *MessagingTollfreeVerificationRequestUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)

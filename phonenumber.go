@@ -83,7 +83,7 @@ func (r *PhoneNumberService) Update(ctx context.Context, phoneNumberID string, b
 }
 
 // List phone numbers
-func (r *PhoneNumberService) List(ctx context.Context, query PhoneNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PhoneNumberDetailed], err error) {
+func (r *PhoneNumberService) List(ctx context.Context, query PhoneNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[NumbersPhoneNumberDetailed], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -101,7 +101,7 @@ func (r *PhoneNumberService) List(ctx context.Context, query PhoneNumberListPara
 }
 
 // List phone numbers
-func (r *PhoneNumberService) ListAutoPaging(ctx context.Context, query PhoneNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PhoneNumberDetailed] {
+func (r *PhoneNumberService) ListAutoPaging(ctx context.Context, query PhoneNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[NumbersPhoneNumberDetailed] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -142,7 +142,7 @@ func (r *PhoneNumberService) SlimListAutoPaging(ctx context.Context, query Phone
 	return pagination.NewDefaultFlatPaginationAutoPager(r.SlimList(ctx, query, opts...))
 }
 
-type PhoneNumberDetailed struct {
+type NumbersPhoneNumberDetailed struct {
 	// Identifies the resource.
 	ID string `json:"id" api:"required"`
 	// The ISO 3166-1 alpha-2 country code of the phone number.
@@ -165,7 +165,7 @@ type PhoneNumberDetailed struct {
 	//
 	// Any of "local", "toll_free", "mobile", "national", "shared_cost", "landline",
 	// "tollfree", "shortcode", "longcode".
-	PhoneNumberType PhoneNumberDetailedPhoneNumberType `json:"phone_number_type" api:"required"`
+	PhoneNumberType NumbersPhoneNumberDetailedPhoneNumberType `json:"phone_number_type" api:"required"`
 	// ISO 8601 formatted date indicating when the resource was purchased.
 	PurchasedAt string `json:"purchased_at" api:"required"`
 	// Identifies the type of the resource.
@@ -176,7 +176,7 @@ type PhoneNumberDetailed struct {
 	// "active", "deleted", "emergency-only", "ported-out", "port-out-pending",
 	// "requirement-info-pending", "requirement-info-under-review",
 	// "requirement-info-exception", "provision-pending".
-	Status PhoneNumberDetailedStatus `json:"status" api:"required"`
+	Status NumbersPhoneNumberDetailedStatus `json:"status" api:"required"`
 	// A list of user-assigned tags to help manage the phone number.
 	Tags []string `json:"tags" api:"required"`
 	// ISO 8601 formatted date indicating when the phone number was first activated
@@ -214,7 +214,7 @@ type PhoneNumberDetailed struct {
 	//
 	// Any of "active", "deprovisioning", "disabled", "provisioning",
 	// "provisioning-failed".
-	EmergencyStatus PhoneNumberDetailedEmergencyStatus `json:"emergency_status"`
+	EmergencyStatus NumbersPhoneNumberDetailedEmergencyStatus `json:"emergency_status"`
 	// Indicates whether HD voice is enabled for this number.
 	HDVoiceEnabled bool `json:"hd_voice_enabled"`
 	// The inbound_call_screening setting is a phone number configuration option
@@ -223,7 +223,7 @@ type PhoneNumberDetailed struct {
 	// feature has an additional per-number monthly cost associated with it.
 	//
 	// Any of "disabled", "reject_calls", "flag_calls".
-	InboundCallScreening PhoneNumberDetailedInboundCallScreening `json:"inbound_call_screening"`
+	InboundCallScreening NumbersPhoneNumberDetailedInboundCallScreening `json:"inbound_call_screening"`
 	// Identifies the messaging profile associated with the phone number.
 	MessagingProfileID string `json:"messaging_profile_id" api:"nullable"`
 	// The name of the messaging profile associated with the phone number.
@@ -232,7 +232,7 @@ type PhoneNumberDetailed struct {
 	// information may not be available.
 	//
 	// Any of "number_order", "port_request".
-	SourceType PhoneNumberDetailedSourceType `json:"source_type" api:"nullable"`
+	SourceType NumbersPhoneNumberDetailedSourceType `json:"source_type" api:"nullable"`
 	// Indicates whether T38 Fax Gateway for inbound calls to this number.
 	T38FaxGatewayEnabled bool `json:"t38_fax_gateway_enabled"`
 	// ISO 8601 formatted date indicating when the resource was updated.
@@ -275,84 +275,84 @@ type PhoneNumberDetailed struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PhoneNumberDetailed) RawJSON() string { return r.JSON.raw }
-func (r *PhoneNumberDetailed) UnmarshalJSON(data []byte) error {
+func (r NumbersPhoneNumberDetailed) RawJSON() string { return r.JSON.raw }
+func (r *NumbersPhoneNumberDetailed) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The phone number's type. Note: For numbers purchased prior to July 2023 or when
 // fetching a number's details immediately after a purchase completes, the legacy
 // values `tollfree`, `shortcode` or `longcode` may be returned instead.
-type PhoneNumberDetailedPhoneNumberType string
+type NumbersPhoneNumberDetailedPhoneNumberType string
 
 const (
-	PhoneNumberDetailedPhoneNumberTypeLocal      PhoneNumberDetailedPhoneNumberType = "local"
-	PhoneNumberDetailedPhoneNumberTypeTollFree   PhoneNumberDetailedPhoneNumberType = "toll_free"
-	PhoneNumberDetailedPhoneNumberTypeMobile     PhoneNumberDetailedPhoneNumberType = "mobile"
-	PhoneNumberDetailedPhoneNumberTypeNational   PhoneNumberDetailedPhoneNumberType = "national"
-	PhoneNumberDetailedPhoneNumberTypeSharedCost PhoneNumberDetailedPhoneNumberType = "shared_cost"
-	PhoneNumberDetailedPhoneNumberTypeLandline   PhoneNumberDetailedPhoneNumberType = "landline"
-	PhoneNumberDetailedPhoneNumberTypeTollfree   PhoneNumberDetailedPhoneNumberType = "tollfree"
-	PhoneNumberDetailedPhoneNumberTypeShortcode  PhoneNumberDetailedPhoneNumberType = "shortcode"
-	PhoneNumberDetailedPhoneNumberTypeLongcode   PhoneNumberDetailedPhoneNumberType = "longcode"
+	NumbersPhoneNumberDetailedPhoneNumberTypeLocal      NumbersPhoneNumberDetailedPhoneNumberType = "local"
+	NumbersPhoneNumberDetailedPhoneNumberTypeTollFree   NumbersPhoneNumberDetailedPhoneNumberType = "toll_free"
+	NumbersPhoneNumberDetailedPhoneNumberTypeMobile     NumbersPhoneNumberDetailedPhoneNumberType = "mobile"
+	NumbersPhoneNumberDetailedPhoneNumberTypeNational   NumbersPhoneNumberDetailedPhoneNumberType = "national"
+	NumbersPhoneNumberDetailedPhoneNumberTypeSharedCost NumbersPhoneNumberDetailedPhoneNumberType = "shared_cost"
+	NumbersPhoneNumberDetailedPhoneNumberTypeLandline   NumbersPhoneNumberDetailedPhoneNumberType = "landline"
+	NumbersPhoneNumberDetailedPhoneNumberTypeTollfree   NumbersPhoneNumberDetailedPhoneNumberType = "tollfree"
+	NumbersPhoneNumberDetailedPhoneNumberTypeShortcode  NumbersPhoneNumberDetailedPhoneNumberType = "shortcode"
+	NumbersPhoneNumberDetailedPhoneNumberTypeLongcode   NumbersPhoneNumberDetailedPhoneNumberType = "longcode"
 )
 
 // The phone number's current status.
-type PhoneNumberDetailedStatus string
+type NumbersPhoneNumberDetailedStatus string
 
 const (
-	PhoneNumberDetailedStatusPurchasePending            PhoneNumberDetailedStatus = "purchase-pending"
-	PhoneNumberDetailedStatusPurchaseFailed             PhoneNumberDetailedStatus = "purchase-failed"
-	PhoneNumberDetailedStatusPortPending                PhoneNumberDetailedStatus = "port-pending"
-	PhoneNumberDetailedStatusPortFailed                 PhoneNumberDetailedStatus = "port-failed"
-	PhoneNumberDetailedStatusActive                     PhoneNumberDetailedStatus = "active"
-	PhoneNumberDetailedStatusDeleted                    PhoneNumberDetailedStatus = "deleted"
-	PhoneNumberDetailedStatusEmergencyOnly              PhoneNumberDetailedStatus = "emergency-only"
-	PhoneNumberDetailedStatusPortedOut                  PhoneNumberDetailedStatus = "ported-out"
-	PhoneNumberDetailedStatusPortOutPending             PhoneNumberDetailedStatus = "port-out-pending"
-	PhoneNumberDetailedStatusRequirementInfoPending     PhoneNumberDetailedStatus = "requirement-info-pending"
-	PhoneNumberDetailedStatusRequirementInfoUnderReview PhoneNumberDetailedStatus = "requirement-info-under-review"
-	PhoneNumberDetailedStatusRequirementInfoException   PhoneNumberDetailedStatus = "requirement-info-exception"
-	PhoneNumberDetailedStatusProvisionPending           PhoneNumberDetailedStatus = "provision-pending"
+	NumbersPhoneNumberDetailedStatusPurchasePending            NumbersPhoneNumberDetailedStatus = "purchase-pending"
+	NumbersPhoneNumberDetailedStatusPurchaseFailed             NumbersPhoneNumberDetailedStatus = "purchase-failed"
+	NumbersPhoneNumberDetailedStatusPortPending                NumbersPhoneNumberDetailedStatus = "port-pending"
+	NumbersPhoneNumberDetailedStatusPortFailed                 NumbersPhoneNumberDetailedStatus = "port-failed"
+	NumbersPhoneNumberDetailedStatusActive                     NumbersPhoneNumberDetailedStatus = "active"
+	NumbersPhoneNumberDetailedStatusDeleted                    NumbersPhoneNumberDetailedStatus = "deleted"
+	NumbersPhoneNumberDetailedStatusEmergencyOnly              NumbersPhoneNumberDetailedStatus = "emergency-only"
+	NumbersPhoneNumberDetailedStatusPortedOut                  NumbersPhoneNumberDetailedStatus = "ported-out"
+	NumbersPhoneNumberDetailedStatusPortOutPending             NumbersPhoneNumberDetailedStatus = "port-out-pending"
+	NumbersPhoneNumberDetailedStatusRequirementInfoPending     NumbersPhoneNumberDetailedStatus = "requirement-info-pending"
+	NumbersPhoneNumberDetailedStatusRequirementInfoUnderReview NumbersPhoneNumberDetailedStatus = "requirement-info-under-review"
+	NumbersPhoneNumberDetailedStatusRequirementInfoException   NumbersPhoneNumberDetailedStatus = "requirement-info-exception"
+	NumbersPhoneNumberDetailedStatusProvisionPending           NumbersPhoneNumberDetailedStatus = "provision-pending"
 )
 
 // Indicates the status of the provisioning of emergency services for the phone
 // number. This field contains information about activity that may be ongoing for a
 // number where it either is being provisioned or deprovisioned but is not yet
 // enabled/disabled.
-type PhoneNumberDetailedEmergencyStatus string
+type NumbersPhoneNumberDetailedEmergencyStatus string
 
 const (
-	PhoneNumberDetailedEmergencyStatusActive             PhoneNumberDetailedEmergencyStatus = "active"
-	PhoneNumberDetailedEmergencyStatusDeprovisioning     PhoneNumberDetailedEmergencyStatus = "deprovisioning"
-	PhoneNumberDetailedEmergencyStatusDisabled           PhoneNumberDetailedEmergencyStatus = "disabled"
-	PhoneNumberDetailedEmergencyStatusProvisioning       PhoneNumberDetailedEmergencyStatus = "provisioning"
-	PhoneNumberDetailedEmergencyStatusProvisioningFailed PhoneNumberDetailedEmergencyStatus = "provisioning-failed"
+	NumbersPhoneNumberDetailedEmergencyStatusActive             NumbersPhoneNumberDetailedEmergencyStatus = "active"
+	NumbersPhoneNumberDetailedEmergencyStatusDeprovisioning     NumbersPhoneNumberDetailedEmergencyStatus = "deprovisioning"
+	NumbersPhoneNumberDetailedEmergencyStatusDisabled           NumbersPhoneNumberDetailedEmergencyStatus = "disabled"
+	NumbersPhoneNumberDetailedEmergencyStatusProvisioning       NumbersPhoneNumberDetailedEmergencyStatus = "provisioning"
+	NumbersPhoneNumberDetailedEmergencyStatusProvisioningFailed NumbersPhoneNumberDetailedEmergencyStatus = "provisioning-failed"
 )
 
 // The inbound_call_screening setting is a phone number configuration option
 // variable that allows users to configure their settings to block or flag
 // fraudulent calls. It can be set to disabled, reject_calls, or flag_calls. This
 // feature has an additional per-number monthly cost associated with it.
-type PhoneNumberDetailedInboundCallScreening string
+type NumbersPhoneNumberDetailedInboundCallScreening string
 
 const (
-	PhoneNumberDetailedInboundCallScreeningDisabled    PhoneNumberDetailedInboundCallScreening = "disabled"
-	PhoneNumberDetailedInboundCallScreeningRejectCalls PhoneNumberDetailedInboundCallScreening = "reject_calls"
-	PhoneNumberDetailedInboundCallScreeningFlagCalls   PhoneNumberDetailedInboundCallScreening = "flag_calls"
+	NumbersPhoneNumberDetailedInboundCallScreeningDisabled    NumbersPhoneNumberDetailedInboundCallScreening = "disabled"
+	NumbersPhoneNumberDetailedInboundCallScreeningRejectCalls NumbersPhoneNumberDetailedInboundCallScreening = "reject_calls"
+	NumbersPhoneNumberDetailedInboundCallScreeningFlagCalls   NumbersPhoneNumberDetailedInboundCallScreening = "flag_calls"
 )
 
 // Indicates if the phone number was purchased or ported in. For some numbers this
 // information may not be available.
-type PhoneNumberDetailedSourceType string
+type NumbersPhoneNumberDetailedSourceType string
 
 const (
-	PhoneNumberDetailedSourceTypeNumberOrder PhoneNumberDetailedSourceType = "number_order"
-	PhoneNumberDetailedSourceTypePortRequest PhoneNumberDetailedSourceType = "port_request"
+	NumbersPhoneNumberDetailedSourceTypeNumberOrder NumbersPhoneNumberDetailedSourceType = "number_order"
+	NumbersPhoneNumberDetailedSourceTypePortRequest NumbersPhoneNumberDetailedSourceType = "port_request"
 )
 
 type PhoneNumberGetResponse struct {
-	Data PhoneNumberDetailed `json:"data"`
+	Data NumbersPhoneNumberDetailed `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -368,7 +368,7 @@ func (r *PhoneNumberGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type PhoneNumberUpdateResponse struct {
-	Data PhoneNumberDetailed `json:"data"`
+	Data NumbersPhoneNumberDetailed `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

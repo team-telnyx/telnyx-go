@@ -15,7 +15,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // Virtual Cross Connect operations
@@ -78,8 +77,8 @@ type VirtualCrossConnectsCoverageListResponse struct {
 	// The region where your Virtual Private Cloud hosts are located. Should be
 	// identical to how the cloud provider names region, i.e. us-east-1 for AWS but
 	// Frankfurt for Azure
-	CloudProviderRegion string                 `json:"cloud_provider_region"`
-	Location            shared.NetappsLocation `json:"location"`
+	CloudProviderRegion string                    `json:"cloud_provider_region"`
+	Location            NetappsLocation17904fcfbc `json:"location"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
