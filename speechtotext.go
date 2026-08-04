@@ -66,7 +66,7 @@ func (r *SpeechToTextService) ListProviders(ctx context.Context, query SpeechToT
 // `Authorization: Bearer <API_KEY>` header.
 //
 // Supported engines: `Azure`, `Deepgram`, `Google`, `Telnyx`, `xAI`,
-// `Speechmatics`, `Soniox`, `Parakeet`.
+// `Speechmatics`, `Soniox`, `Parakeet`, `Humain`, `Reson8`.
 //
 // **Connection flow:**
 //
@@ -325,7 +325,7 @@ type SpeechToTextListProvidersParams struct {
 	// array rather than an error.
 	//
 	// Any of "deepgram", "speechmatics", "assemblyai", "xai", "soniox", "parakeet",
-	// "azure", "openai", "google", "telnyx".
+	// "humain", "reson8", "azure", "openai", "google", "telnyx".
 	Provider SpeechToTextListProvidersParamsProvider `query:"provider,omitzero" json:"-"`
 	// Filter to entries that support the given service type. For backward
 	// compatibility with the values that briefly shipped before the product-aligned
@@ -362,6 +362,8 @@ const (
 	SpeechToTextListProvidersParamsProviderXai          SpeechToTextListProvidersParamsProvider = "xai"
 	SpeechToTextListProvidersParamsProviderSoniox       SpeechToTextListProvidersParamsProvider = "soniox"
 	SpeechToTextListProvidersParamsProviderParakeet     SpeechToTextListProvidersParamsProvider = "parakeet"
+	SpeechToTextListProvidersParamsProviderHumain       SpeechToTextListProvidersParamsProvider = "humain"
+	SpeechToTextListProvidersParamsProviderReson8       SpeechToTextListProvidersParamsProvider = "reson8"
 	SpeechToTextListProvidersParamsProviderAzure        SpeechToTextListProvidersParamsProvider = "azure"
 	SpeechToTextListProvidersParamsProviderOpenAI       SpeechToTextListProvidersParamsProvider = "openai"
 	SpeechToTextListProvidersParamsProviderGoogle       SpeechToTextListProvidersParamsProvider = "google"
@@ -376,7 +378,7 @@ type SpeechToTextGetTranscriptionParams struct {
 	// The transcription engine to use for processing the audio stream.
 	//
 	// Any of "Azure", "Deepgram", "Google", "Telnyx", "xAI", "Speechmatics", "Soniox",
-	// "Parakeet".
+	// "Parakeet", "Humain", "Reson8".
 	TranscriptionEngine SpeechToTextGetTranscriptionParamsTranscriptionEngine `query:"transcription_engine,omitzero" api:"required" json:"-"`
 	// Silence duration (in milliseconds) that triggers end-of-speech detection. When
 	// set, the engine uses this value to determine when a speaker has stopped talking.
@@ -403,7 +405,7 @@ type SpeechToTextGetTranscriptionParams struct {
 	// "latest_short", "command_and_search", "phone_call", "video", "default",
 	// "medical_conversation", "medical_dictation", "openai/whisper-tiny",
 	// "openai/whisper-large-v3-turbo", "xai/grok-stt", "speechmatics/standard",
-	// "soniox/stt-rt-v4", "nvidia/parakeet-v3".
+	// "soniox/stt-rt-v4", "nvidia/parakeet-v3", "humain/realtime", "reson8/turns".
 	Model SpeechToTextGetTranscriptionParamsModel `query:"model,omitzero" json:"-"`
 	paramObj
 }
@@ -437,6 +439,8 @@ const (
 	SpeechToTextGetTranscriptionParamsTranscriptionEngineSpeechmatics SpeechToTextGetTranscriptionParamsTranscriptionEngine = "Speechmatics"
 	SpeechToTextGetTranscriptionParamsTranscriptionEngineSoniox       SpeechToTextGetTranscriptionParamsTranscriptionEngine = "Soniox"
 	SpeechToTextGetTranscriptionParamsTranscriptionEngineParakeet     SpeechToTextGetTranscriptionParamsTranscriptionEngine = "Parakeet"
+	SpeechToTextGetTranscriptionParamsTranscriptionEngineHumain       SpeechToTextGetTranscriptionParamsTranscriptionEngine = "Humain"
+	SpeechToTextGetTranscriptionParamsTranscriptionEngineReson8       SpeechToTextGetTranscriptionParamsTranscriptionEngine = "Reson8"
 )
 
 // The specific model to use within the selected transcription engine.
@@ -460,4 +464,6 @@ const (
 	SpeechToTextGetTranscriptionParamsModelSpeechmaticsStandard      SpeechToTextGetTranscriptionParamsModel = "speechmatics/standard"
 	SpeechToTextGetTranscriptionParamsModelSonioxSttRtV4             SpeechToTextGetTranscriptionParamsModel = "soniox/stt-rt-v4"
 	SpeechToTextGetTranscriptionParamsModelNvidiaParakeetV3          SpeechToTextGetTranscriptionParamsModel = "nvidia/parakeet-v3"
+	SpeechToTextGetTranscriptionParamsModelHumainRealtime            SpeechToTextGetTranscriptionParamsModel = "humain/realtime"
+	SpeechToTextGetTranscriptionParamsModelReson8Turns               SpeechToTextGetTranscriptionParamsModel = "reson8/turns"
 )

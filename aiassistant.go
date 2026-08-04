@@ -5736,7 +5736,13 @@ type TranscriptionSettings struct {
 	// hint), `multi` (no language hint), and language-specific hints `en`, `es`, `fr`,
 	// `de`, `hi`, `ru`, `pt`, `ja`, `it`, and `nl`. For `soniox/stt-rt-v4`, `auto`
 	// omits the language hint and lets Soniox auto-detect; ISO 639-1 codes (e.g. `en`,
-	// `es`) bias detection toward that language.
+	// `es`) bias detection toward that language. For `humain/realtime`, supported
+	// values are `ar`, `en`, `codeswitch` (Arabic/English code-switching), and `auto`
+	// (resolves server-side to code-switching). Unlike other models, `humain/realtime`
+	// does not fall back to `auto` when `language` is omitted — omitting it applies
+	// `en` instead. For `reson8/turns`, supported values are `auto` (or unset) for
+	// automatic language detection, and the language codes `nl`, `en`, `fr`, `fy`,
+	// `de`, `it`, `pl`, `pt`, `es`, and `sv` to fix the transcription language.
 	Language string `json:"language"`
 	// The speech to text model to be used by the voice assistant. All Deepgram models
 	// are run on-premise.
@@ -5752,11 +5758,15 @@ type TranscriptionSettings struct {
 	//     detection and configurable endpointing.
 	//   - `nvidia/parakeet-v3` is a multilingual transcription model with automatic
 	//     language detection.
+	//   - `humain/realtime` is a streaming model with native Arabic and Arabic/English
+	//     code-switching support.
+	//   - `reson8/turns` is a turn-based streaming model covering 10 European languages
+	//     with automatic language detection.
 	//
 	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
 	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "nvidia/parakeet-v3", "distil-whisper/distil-large-v2",
-	// "openai/whisper-large-v3-turbo".
+	// "nvidia/parakeet-v3", "humain/realtime", "reson8/turns",
+	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
 	Model TranscriptionSettingsModel `json:"model"`
 	// Region on third party cloud providers (currently Azure) if using one of their
 	// models. Some regions require `api_key_ref`.
@@ -5803,6 +5813,10 @@ func (r TranscriptionSettings) ToParam() TranscriptionSettingsParam {
 //     detection and configurable endpointing.
 //   - `nvidia/parakeet-v3` is a multilingual transcription model with automatic
 //     language detection.
+//   - `humain/realtime` is a streaming model with native Arabic and Arabic/English
+//     code-switching support.
+//   - `reson8/turns` is a turn-based streaming model covering 10 European languages
+//     with automatic language detection.
 type TranscriptionSettingsModel string
 
 const (
@@ -5814,6 +5828,8 @@ const (
 	TranscriptionSettingsModelXaiGrokStt                   TranscriptionSettingsModel = "xai/grok-stt"
 	TranscriptionSettingsModelSonioxSttRtV4                TranscriptionSettingsModel = "soniox/stt-rt-v4"
 	TranscriptionSettingsModelNvidiaParakeetV3             TranscriptionSettingsModel = "nvidia/parakeet-v3"
+	TranscriptionSettingsModelHumainRealtime               TranscriptionSettingsModel = "humain/realtime"
+	TranscriptionSettingsModelReson8Turns                  TranscriptionSettingsModel = "reson8/turns"
 	TranscriptionSettingsModelDistilWhisperDistilLargeV2   TranscriptionSettingsModel = "distil-whisper/distil-large-v2"
 	TranscriptionSettingsModelOpenAIWhisperLargeV3Turbo    TranscriptionSettingsModel = "openai/whisper-large-v3-turbo"
 )
@@ -5828,7 +5844,13 @@ type TranscriptionSettingsParam struct {
 	// hint), `multi` (no language hint), and language-specific hints `en`, `es`, `fr`,
 	// `de`, `hi`, `ru`, `pt`, `ja`, `it`, and `nl`. For `soniox/stt-rt-v4`, `auto`
 	// omits the language hint and lets Soniox auto-detect; ISO 639-1 codes (e.g. `en`,
-	// `es`) bias detection toward that language.
+	// `es`) bias detection toward that language. For `humain/realtime`, supported
+	// values are `ar`, `en`, `codeswitch` (Arabic/English code-switching), and `auto`
+	// (resolves server-side to code-switching). Unlike other models, `humain/realtime`
+	// does not fall back to `auto` when `language` is omitted — omitting it applies
+	// `en` instead. For `reson8/turns`, supported values are `auto` (or unset) for
+	// automatic language detection, and the language codes `nl`, `en`, `fr`, `fy`,
+	// `de`, `it`, `pl`, `pt`, `es`, and `sv` to fix the transcription language.
 	Language param.Opt[string] `json:"language,omitzero"`
 	// Region on third party cloud providers (currently Azure) if using one of their
 	// models. Some regions require `api_key_ref`.
@@ -5847,11 +5869,15 @@ type TranscriptionSettingsParam struct {
 	//     detection and configurable endpointing.
 	//   - `nvidia/parakeet-v3` is a multilingual transcription model with automatic
 	//     language detection.
+	//   - `humain/realtime` is a streaming model with native Arabic and Arabic/English
+	//     code-switching support.
+	//   - `reson8/turns` is a turn-based streaming model covering 10 European languages
+	//     with automatic language detection.
 	//
 	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
 	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "nvidia/parakeet-v3", "distil-whisper/distil-large-v2",
-	// "openai/whisper-large-v3-turbo".
+	// "nvidia/parakeet-v3", "humain/realtime", "reson8/turns",
+	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
 	Model    TranscriptionSettingsModel       `json:"model,omitzero"`
 	Settings TranscriptionSettingsConfigParam `json:"settings,omitzero"`
 	paramObj
@@ -7170,6 +7196,12 @@ type AIAssistantChatParams struct {
 	ConversationID string `json:"conversation_id" api:"required"`
 	// The optional display name of the user sending the message
 	Name param.Opt[string] `json:"name,omitzero"`
+	// When true, the response is streamed as Server-Sent Events (`text/event-stream`):
+	// `delta` events carry content fragments as they are generated, a final `done`
+	// event carries the full content plus `whatsapp_template`, and a terminal `error`
+	// event reports failures that happen after streaming started. When false
+	// (default), the response is a single JSON object.
+	Stream param.Opt[bool] `json:"stream,omitzero"`
 	paramObj
 }
 

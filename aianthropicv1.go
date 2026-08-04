@@ -70,7 +70,9 @@ type AIAnthropicV1MessagesParams struct {
 	BillingGroupID param.Opt[string] `json:"billing_group_id,omitzero" format:"uuid"`
 	// Maximum number of retries for the request.
 	MaxRetries param.Opt[int64] `json:"max_retries,omitzero"`
-	// Service tier for the request.
+	// The service tier to use for this request. Supported values vary by model; use
+	// the Telnyx models endpoint and inspect the model's `service_tiers` field. If
+	// omitted, Telnyx-hosted models use `default`.
 	ServiceTier param.Opt[string] `json:"service_tier,omitzero"`
 	// Whether to stream the response as Anthropic-format Server-Sent Events.
 	Stream param.Opt[bool] `json:"stream,omitzero"`

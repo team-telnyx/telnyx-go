@@ -124,8 +124,9 @@ func (r *ShortCodeUpdateResponse) UnmarshalJSON(data []byte) error {
 
 type ShortCodeUpdateParams struct {
 	// Unique identifier for a messaging profile.
-	MessagingProfileID string   `json:"messaging_profile_id" api:"required"`
-	Tags               []string `json:"tags,omitzero"`
+	MessagingProfileID string `json:"messaging_profile_id" api:"required"`
+	// Tags associated with the resource.
+	Tags []string `json:"tags,omitzero"`
 	paramObj
 }
 

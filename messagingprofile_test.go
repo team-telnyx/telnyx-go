@@ -29,7 +29,7 @@ func TestMessagingProfileNewWithOptionalParams(t *testing.T) {
 	_, err := client.MessagingProfiles.New(context.TODO(), telnyx.MessagingProfileNewParams{
 		Name:                    "My name",
 		WhitelistedDestinations: []string{"US"},
-		AIAssistantID:           telnyx.String("ai_assistant_id"),
+		AIAssistantID:           telnyx.String("ai_assistant-a80a9d4a-728c-4593-852c-2e93ad890000"),
 		AlphaSender:             telnyx.String("sqF"),
 		DailySpendLimit:         telnyx.String("269125115713"),
 		DailySpendLimitEnabled:  telnyx.Bool(true),

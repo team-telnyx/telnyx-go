@@ -42,6 +42,7 @@ func TestCallActionAddAIAssistantMessagesWithOptionalParams(t *testing.T) {
 					},
 				},
 			}},
+			TriggerResponse: telnyx.Bool(false),
 		},
 	)
 	if err != nil {
@@ -122,6 +123,24 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 						Type: telnyx.HangupToolTypeHangup,
 					},
 				}},
+				VoiceSettings: telnyx.VoiceSettingsParam{
+					Voice:     "voice",
+					APIKeyRef: telnyx.String("api_key_ref"),
+					BackgroundAudio: telnyx.VoiceSettingsBackgroundAudioUnionParam{
+						OfPredefinedMedia: &telnyx.VoiceSettingsBackgroundAudioPredefinedMediaParam{
+							Value:  "silence",
+							Volume: telnyx.Float(0.1),
+						},
+					},
+					ExpressiveMode:  telnyx.Bool(true),
+					LanguageBoost:   telnyx.VoiceSettingsLanguageBoostAuto,
+					SimilarityBoost: telnyx.Float(0),
+					Speed:           telnyx.Float(0),
+					Style:           telnyx.Float(0),
+					Temperature:     telnyx.Float(0),
+					UseSpeakerBoost: telnyx.Bool(true),
+					VoiceSpeed:      telnyx.Float(0),
+				},
 			},
 			BillingGroupID: telnyx.String("f5586561-8ff0-4291-a0ac-84fe544797bd"),
 			ClientState:    telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
@@ -688,6 +707,85 @@ func TestCallActionPauseRecordingWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestCallActionPayWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Calls.Actions.Pay(
+		context.TODO(),
+		"call_control_id",
+		telnyx.CallActionPayParams{
+			Amount:                  telnyx.Float(10.5),
+			ClientState:             telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
+			CommandID:               telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
+			ConnectorName:           telnyx.String("Default"),
+			Currency:                telnyx.CallActionPayParamsCurrencyUsdUppercase,
+			Description:             telnyx.String("Order 12345"),
+			InterDigitTimeoutMillis: telnyx.Int(5000),
+			Language:                telnyx.String("en-US"),
+			MaxAttempts:             telnyx.Int(3),
+			Metadata: map[string]any{
+				"order_id": "bar",
+			},
+			Parameters: map[string]any{
+				"customer_id": "bar",
+			},
+			PaymentMethod: telnyx.CallActionPayParamsPaymentMethodCreditCard,
+			PaymentToken:  telnyx.String("tok_abc123"),
+			Prompts: telnyx.CallActionPayParamsPrompts{
+				BankAccountNumber: telnyx.PayPromptValueUnionParam{
+					OfString: telnyx.String("x"),
+				},
+				BankRoutingNumber: telnyx.PayPromptValueUnionParam{
+					OfString: telnyx.String("x"),
+				},
+				ExpirationDate: telnyx.PayPromptValueUnionParam{
+					OfString: telnyx.String("x"),
+				},
+				PaymentCardNumber: telnyx.PayPromptValueUnionParam{
+					OfPayPromptValueArray: []telnyx.PayPromptValueArrayItemParam{{
+						Text:      "Please enter your card number.",
+						Attempt:   telnyx.String("2 3"),
+						CardType:  "amex",
+						ErrorType: "invalid-card-number",
+					}, {
+						Text:      "That card number was not accepted. Please try again.",
+						Attempt:   telnyx.String("2 3"),
+						CardType:  "amex",
+						ErrorType: "invalid-card-number",
+					}},
+				},
+				PostalCode: telnyx.PayPromptValueUnionParam{
+					OfString: telnyx.String("x"),
+				},
+				SecurityCode: telnyx.PayPromptValueUnionParam{
+					OfString: telnyx.String("x"),
+				},
+			},
+			ServiceLevel:    telnyx.String("service_level"),
+			TimeoutMillis:   telnyx.Int(5000),
+			TransactionType: telnyx.CallActionPayParamsTransactionTypeCharge,
+			Voice:           telnyx.String("female"),
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestCallActionReferWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
@@ -976,6 +1074,24 @@ func TestCallActionStartAIAssistantWithOptionalParams(t *testing.T) {
 						Type: shared.BookAppointmentToolTypeBookAppointment,
 					},
 				}},
+				VoiceSettings: telnyx.VoiceSettingsParam{
+					Voice:     "voice",
+					APIKeyRef: telnyx.String("api_key_ref"),
+					BackgroundAudio: telnyx.VoiceSettingsBackgroundAudioUnionParam{
+						OfPredefinedMedia: &telnyx.VoiceSettingsBackgroundAudioPredefinedMediaParam{
+							Value:  "silence",
+							Volume: telnyx.Float(0.1),
+						},
+					},
+					ExpressiveMode:  telnyx.Bool(true),
+					LanguageBoost:   telnyx.VoiceSettingsLanguageBoostAuto,
+					SimilarityBoost: telnyx.Float(0),
+					Speed:           telnyx.Float(0),
+					Style:           telnyx.Float(0),
+					Temperature:     telnyx.Float(0),
+					UseSpeakerBoost: telnyx.Bool(true),
+					VoiceSpeed:      telnyx.Float(0),
+				},
 			},
 			ClientState: telnyx.String("aGF2ZSBhIG5pY2UgZGF5ID1d"),
 			CommandID:   telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
@@ -1002,13 +1118,6 @@ func TestCallActionStartAIAssistantWithOptionalParams(t *testing.T) {
 			Transcription: telnyx.TranscriptionConfigParam{
 				Language: telnyx.String("auto"),
 				Model:    telnyx.TranscriptionConfigModelDistilWhisperDistilLargeV2,
-			},
-			Voice: telnyx.String("Telnyx.KokoroTTS.af"),
-			VoiceSettings: telnyx.CallActionStartAIAssistantParamsVoiceSettingsUnion{
-				OfElevenlabs: &telnyx.ElevenLabsVoiceSettingsParam{
-					Type:      telnyx.ElevenLabsVoiceSettingsTypeElevenlabs,
-					APIKeyRef: telnyx.String("my_elevenlabs_api_key"),
-				},
 			},
 		},
 	)
@@ -1828,6 +1937,7 @@ func TestCallActionTransferWithOptionalParams(t *testing.T) {
 			RecordTimeoutSecs:    telnyx.Int(100),
 			RecordTrack:          telnyx.CallActionTransferParamsRecordTrackOutbound,
 			RecordTrim:           telnyx.CallActionTransferParamsRecordTrimTrimSilence,
+			RouteToMobile:        telnyx.Bool(true),
 			SendDigitsOnAnswer:   telnyx.String("wwww200"),
 			SipAuthPassword:      telnyx.String("password"),
 			SipAuthUsername:      telnyx.String("username"),

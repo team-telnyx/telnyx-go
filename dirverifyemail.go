@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"slices"
+	"time"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
@@ -113,13 +114,21 @@ type EmailVerificationStatusWrappedData struct {
 	//
 	// Any of "sent", "verified", "unverified".
 	Status string `json:"status" api:"required"`
+	// When the outstanding code stops being accepted. Null when no verification is in
+	// progress.
+	ExpiresAt time.Time `json:"expires_at" api:"nullable" format:"date-time"`
+	// How many more codes may be requested for this DIR today. Null when the daily cap
+	// does not apply.
+	SendsRemainingToday int64 `json:"sends_remaining_today" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		EmailVerified respjson.Field
-		RecordType    respjson.Field
-		Status        respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
+		EmailVerified       respjson.Field
+		RecordType          respjson.Field
+		Status              respjson.Field
+		ExpiresAt           respjson.Field
+		SendsRemainingToday respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 

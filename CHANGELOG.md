@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.91.0](https://github.com/team-telnyx/telnyx-go/compare/v4.90.0...v4.91.0) (2026-08-03)
+
+
+### Features
+
+* promote from staging 09fd9b4 ([d550bb2](https://github.com/team-telnyx/telnyx-go/commit/d550bb2983c0fc93103e36e7779b723e24472b56))
+
+
+### Chores
+
+* add repository code owner ([#181](https://github.com/team-telnyx/telnyx-go/issues/181)) ([bb9a6d1](https://github.com/team-telnyx/telnyx-go/commit/bb9a6d1b13dfe9f871ac449eafd033afcc6e4486))
+
 ## [4.90.0](https://github.com/team-telnyx/telnyx-go/compare/v4.89.0...v4.90.0) (2026-07-21)
 
 

@@ -109,6 +109,10 @@ type AIOpenAINewResponseParams struct {
 	// Model identifier to use for the response, for example `zai-org/GLM-5.1-FP8` or
 	// another model available from the Telnyx OpenAI-compatible models endpoint.
 	Model param.Opt[string] `json:"model,omitzero"`
+	// The service tier to use for this request. Supported values vary by model; use
+	// `GET /v2/ai/openai/models` and inspect the model's `service_tiers` field. If
+	// omitted, Telnyx-hosted models use `default`.
+	ServiceTier param.Opt[string] `json:"service_tier,omitzero"`
 	// Set to `true` to stream Server-Sent Events, matching OpenAI's Responses
 	// streaming format.
 	Stream param.Opt[bool] `json:"stream,omitzero"`

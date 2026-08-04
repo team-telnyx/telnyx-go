@@ -207,6 +207,12 @@ type ModelMetadata struct {
 	// Public region names where the model is currently deployed (e.g. `us-central-1`,
 	// `eu-central-1`).
 	Regions []string `json:"regions"`
+	// Service tiers supported by this Telnyx-hosted model. Use one of these values as
+	// `service_tier` in Chat Completions or Responses requests. This field is omitted
+	// for externally hosted models.
+	//
+	// Any of "default", "priority", "flex".
+	ServiceTiers []string `json:"service_tiers"`
 	// Primary task the model is intended for, e.g. `text-generation`,
 	// `audio-text-to-text`, `feature-extraction` (embeddings).
 	Task string `json:"task"`
@@ -231,6 +237,7 @@ type ModelMetadata struct {
 		Pricing                  respjson.Field
 		RecommendedForAssistants respjson.Field
 		Regions                  respjson.Field
+		ServiceTiers             respjson.Field
 		Task                     respjson.Field
 		ExtraFields              map[string]respjson.Field
 		raw                      string

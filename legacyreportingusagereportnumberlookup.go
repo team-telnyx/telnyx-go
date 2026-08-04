@@ -7,12 +7,15 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
@@ -60,11 +63,26 @@ func (r *LegacyReportingUsageReportNumberLookupService) Get(ctx context.Context,
 }
 
 // Retrieve a paginated list of telco data usage reports
-func (r *LegacyReportingUsageReportNumberLookupService) List(ctx context.Context, opts ...option.RequestOption) (res *LegacyReportingUsageReportNumberLookupListResponse, err error) {
+func (r *LegacyReportingUsageReportNumberLookupService) List(ctx context.Context, query LegacyReportingUsageReportNumberLookupListParams, opts ...option.RequestOption) (res *pagination.PerPagePagination[TelcoDataUsageReportResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "legacy/reporting/usage_reports/number_lookup"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a paginated list of telco data usage reports
+func (r *LegacyReportingUsageReportNumberLookupService) ListAutoPaging(ctx context.Context, query LegacyReportingUsageReportNumberLookupListParams, opts ...option.RequestOption) *pagination.PerPagePaginationAutoPager[TelcoDataUsageReportResponse] {
+	return pagination.NewPerPagePaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a specific telco data usage report by its ID
@@ -211,24 +229,6 @@ func (r *LegacyReportingUsageReportNumberLookupGetResponse) UnmarshalJSON(data [
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type LegacyReportingUsageReportNumberLookupListResponse struct {
-	Data []TelcoDataUsageReportResponse `json:"data"`
-	Meta StandardPaginationMeta         `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LegacyReportingUsageReportNumberLookupListResponse) RawJSON() string { return r.JSON.raw }
-func (r *LegacyReportingUsageReportNumberLookupListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type LegacyReportingUsageReportNumberLookupNewParams struct {
 	// End date for the usage report
 	EndDate param.Opt[time.Time] `json:"endDate,omitzero" format:"date"`
@@ -258,3 +258,20 @@ const (
 	LegacyReportingUsageReportNumberLookupNewParamsAggregationTypeAll                  LegacyReportingUsageReportNumberLookupNewParamsAggregationType = "ALL"
 	LegacyReportingUsageReportNumberLookupNewParamsAggregationTypeByOrganizationMember LegacyReportingUsageReportNumberLookupNewParamsAggregationType = "BY_ORGANIZATION_MEMBER"
 )
+
+type LegacyReportingUsageReportNumberLookupListParams struct {
+	// Page number to retrieve (1-based).
+	Page param.Opt[int64] `query:"page,omitzero" json:"-"`
+	// Filter results by per page.
+	PerPage param.Opt[int64] `query:"per_page,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [LegacyReportingUsageReportNumberLookupListParams]'s query
+// parameters as `url.Values`.
+func (r LegacyReportingUsageReportNumberLookupListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}

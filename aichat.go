@@ -127,6 +127,10 @@ type ChatCompletionRequestParam struct {
 	// such that repeated requests with the same `seed` and parameters should return
 	// the same result.
 	Seed param.Opt[int64] `json:"seed,omitzero"`
+	// The service tier to use for this request. Supported values vary by model; use
+	// `GET /v2/ai/openai/models` and inspect the model's `service_tiers` field. If
+	// omitted, Telnyx-hosted models use `default`.
+	ServiceTier param.Opt[string] `json:"service_tier,omitzero"`
 	// Whether or not to stream data-only server-sent events as they become available.
 	Stream param.Opt[bool] `json:"stream,omitzero"`
 	// Adjusts the "creativity" of the model. Lower values make the model more
