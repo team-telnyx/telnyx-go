@@ -50,7 +50,9 @@ func (r *RoomCompositionService) New(ctx context.Context, body RoomCompositionNe
 	return res, err
 }
 
-// View a room composition.
+// Returns the composition identified by `room_composition_id`, including its room
+// and session, processing status, media details, video layout, lifecycle
+// timestamps, and download URL.
 func (r *RoomCompositionService) Get(ctx context.Context, roomCompositionID string, opts ...option.RequestOption) (res *RoomCompositionGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if roomCompositionID == "" {
@@ -62,7 +64,8 @@ func (r *RoomCompositionService) Get(ctx context.Context, roomCompositionID stri
 	return res, err
 }
 
-// View a list of room compositions.
+// Returns a paginated list of room compositions. Filter compositions by creation
+// date, room session, or processing status.
 func (r *RoomCompositionService) List(ctx context.Context, query RoomCompositionListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[RoomComposition], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -80,7 +83,8 @@ func (r *RoomCompositionService) List(ctx context.Context, query RoomComposition
 	return res, nil
 }
 
-// View a list of room compositions.
+// Returns a paginated list of room compositions. Filter compositions by creation
+// date, room session, or processing status.
 func (r *RoomCompositionService) ListAutoPaging(ctx context.Context, query RoomCompositionListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[RoomComposition] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }

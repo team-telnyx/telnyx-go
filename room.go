@@ -55,7 +55,9 @@ func (r *RoomService) New(ctx context.Context, body RoomNewParams, opts ...optio
 	return res, err
 }
 
-// View a room.
+// Returns the room identified by `room_id`, including its participant limit,
+// recording and webhook configuration, and active session identifier. Use
+// `include_sessions` to include its sessions.
 func (r *RoomService) Get(ctx context.Context, roomID string, query RoomGetParams, opts ...option.RequestOption) (res *RoomGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if roomID == "" {
@@ -79,7 +81,8 @@ func (r *RoomService) Update(ctx context.Context, roomID string, body RoomUpdate
 	return res, err
 }
 
-// View a list of rooms.
+// Returns a paginated list of rooms. Filter the results by creation or update date
+// and unique name, and use `include_sessions` to include each room’s sessions.
 func (r *RoomService) List(ctx context.Context, query RoomListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[Room], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -97,7 +100,8 @@ func (r *RoomService) List(ctx context.Context, query RoomListParams, opts ...op
 	return res, nil
 }
 
-// View a list of rooms.
+// Returns a paginated list of rooms. Filter the results by creation or update date
+// and unique name, and use `include_sessions` to include each room’s sessions.
 func (r *RoomService) ListAutoPaging(ctx context.Context, query RoomListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[Room] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
