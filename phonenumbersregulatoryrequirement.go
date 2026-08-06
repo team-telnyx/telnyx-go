@@ -37,7 +37,9 @@ func NewPhoneNumbersRegulatoryRequirementService(opts ...option.RequestOption) (
 	return
 }
 
-// Retrieve regulatory requirements for a list of phone numbers
+// Returns the regulatory requirements that apply to the supplied comma-separated
+// phone numbers. The response includes the matching requirement records and
+// pagination metadata.
 func (r *PhoneNumbersRegulatoryRequirementService) Get(ctx context.Context, query PhoneNumbersRegulatoryRequirementGetParams, opts ...option.RequestOption) (res *PhoneNumbersRegulatoryRequirementGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "phone_numbers_regulatory_requirements"

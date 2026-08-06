@@ -58,7 +58,8 @@ func NewPhoneNumberService(opts ...option.RequestOption) (r PhoneNumberService) 
 	return
 }
 
-// Retrieve a phone number
+// Returns the detailed configuration and current state of the phone number
+// identified by `id`.
 func (r *PhoneNumberService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PhoneNumberGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -70,7 +71,8 @@ func (r *PhoneNumberService) Get(ctx context.Context, id string, opts ...option.
 	return res, err
 }
 
-// Update a phone number
+// Updates the configurable settings of the specified phone number. The response
+// contains the complete updated phone-number representation.
 func (r *PhoneNumberService) Update(ctx context.Context, phoneNumberID string, body PhoneNumberUpdateParams, opts ...option.RequestOption) (res *PhoneNumberUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumberID == "" {
@@ -82,7 +84,9 @@ func (r *PhoneNumberService) Update(ctx context.Context, phoneNumberID string, b
 	return res, err
 }
 
-// List phone numbers
+// Returns phone numbers associated with the account. Results support pagination,
+// sorting, and filters for number attributes, status, source, connections, billing
+// groups, emergency addresses, tags, and customer references.
 func (r *PhoneNumberService) List(ctx context.Context, query PhoneNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[NumbersPhoneNumberDetailed], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -100,12 +104,15 @@ func (r *PhoneNumberService) List(ctx context.Context, query PhoneNumberListPara
 	return res, nil
 }
 
-// List phone numbers
+// Returns phone numbers associated with the account. Results support pagination,
+// sorting, and filters for number attributes, status, source, connections, billing
+// groups, emergency addresses, tags, and customer references.
 func (r *PhoneNumberService) ListAutoPaging(ctx context.Context, query PhoneNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[NumbersPhoneNumberDetailed] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a phone number
+// Deletes the specified phone number from the account. The response contains the
+// phone number's final deleted representation.
 func (r *PhoneNumberService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *PhoneNumberDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

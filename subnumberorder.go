@@ -82,7 +82,9 @@ func (r *SubNumberOrderService) Cancel(ctx context.Context, subNumberOrderID str
 	return res, err
 }
 
-// Update requirement group for a sub number order
+// Associates an existing requirement group with the specified sub number order.
+// The response contains the updated sub number order requirement-group
+// relationship.
 func (r *SubNumberOrderService) UpdateRequirementGroup(ctx context.Context, id string, body SubNumberOrderUpdateRequirementGroupParams, opts ...option.RequestOption) (res *SubNumberOrderUpdateRequirementGroupResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

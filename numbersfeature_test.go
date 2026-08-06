@@ -27,7 +27,7 @@ func TestNumbersFeatureNew(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.NumbersFeatures.New(context.TODO(), telnyx.NumbersFeatureNewParams{
-		PhoneNumbers: []string{"string"},
+		PhoneNumbers: []string{"+19705555098"},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

@@ -28,7 +28,7 @@ func TestEmailBlockNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.EmailBlocks.New(context.TODO(), telnyx.EmailBlockNewParams{
-		To:        "to",
+		To:        "spammer@bad.tld",
 		DomainID:  telnyx.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		ExpiresAt: telnyx.Time(time.Now()),
 		From:      telnyx.String("from"),
