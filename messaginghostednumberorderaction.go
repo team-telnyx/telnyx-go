@@ -41,7 +41,7 @@ func NewMessagingHostedNumberOrderActionService(opts ...option.RequestOption) (r
 	return
 }
 
-// Upload hosted number document
+// Uploads a supporting document to the specified hosted-messaging order.
 func (r *MessagingHostedNumberOrderActionService) UploadFile(ctx context.Context, id string, body MessagingHostedNumberOrderActionUploadFileParams, opts ...option.RequestOption) (res *MessagingHostedNumberOrderActionUploadFileResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

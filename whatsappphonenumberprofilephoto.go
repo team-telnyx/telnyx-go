@@ -40,7 +40,8 @@ func NewWhatsappPhoneNumberProfilePhotoService(opts ...option.RequestOption) (r 
 	return
 }
 
-// Get Whatsapp profile photo
+// Returns the current business-profile photo for the specified WhatsApp phone
+// number.
 func (r *WhatsappPhoneNumberProfilePhotoService) Get(ctx context.Context, phoneNumber string, opts ...option.RequestOption) (res *WhatsappPhoneNumberProfilePhotoGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
@@ -52,7 +53,7 @@ func (r *WhatsappPhoneNumberProfilePhotoService) Get(ctx context.Context, phoneN
 	return res, err
 }
 
-// Delete Whatsapp profile photo
+// Removes the business-profile photo from the specified WhatsApp phone number.
 func (r *WhatsappPhoneNumberProfilePhotoService) Delete(ctx context.Context, phoneNumber string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -65,7 +66,8 @@ func (r *WhatsappPhoneNumberProfilePhotoService) Delete(ctx context.Context, pho
 	return err
 }
 
-// Upload Whatsapp profile photo
+// Uploads and assigns a business-profile photo to the specified WhatsApp phone
+// number.
 func (r *WhatsappPhoneNumberProfilePhotoService) Upload(ctx context.Context, phoneNumber string, body WhatsappPhoneNumberProfilePhotoUploadParams, opts ...option.RequestOption) (res *WhatsappPhoneNumberProfilePhotoUploadResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {

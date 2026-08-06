@@ -51,7 +51,8 @@ func NewMessaging10dlcService(opts ...option.RequestOption) (r Messaging10dlcSer
 	return
 }
 
-// Get Enum
+// Returns the accepted values for the selected 10DLC enumeration endpoint. Use
+// these values when constructing brand and campaign requests.
 func (r *Messaging10dlcService) GetEnum(ctx context.Context, endpoint Messaging10dlcGetEnumParamsEndpoint, opts ...option.RequestOption) (res *Messaging10dlcGetEnumResponseUnion, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("10dlc/enum/%v", endpoint)

@@ -36,7 +36,8 @@ func NewWhatsappUserDataService(opts ...option.RequestOption) (r WhatsappUserDat
 	return
 }
 
-// Fetch Whatsapp user data
+// Returns the WhatsApp user-data settings associated with the authenticated Telnyx
+// account.
 func (r *WhatsappUserDataService) Get(ctx context.Context, opts ...option.RequestOption) (res *WhatsappUserDataGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/whatsapp/user_data"
@@ -44,7 +45,8 @@ func (r *WhatsappUserDataService) Get(ctx context.Context, opts ...option.Reques
 	return res, err
 }
 
-// Update Whatsapp user data
+// Updates the supplied WhatsApp user-data settings for the authenticated Telnyx
+// account.
 func (r *WhatsappUserDataService) Update(ctx context.Context, body WhatsappUserDataUpdateParams, opts ...option.RequestOption) (res *WhatsappUserDataUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/whatsapp/user_data"

@@ -40,7 +40,7 @@ func NewWhatsappBusinessAccountPhoneNumberService(opts ...option.RequestOption) 
 	return
 }
 
-// List phone numbers for a WABA
+// Returns phone numbers registered under the specified WhatsApp Business Account.
 func (r *WhatsappBusinessAccountPhoneNumberService) List(ctx context.Context, id string, query WhatsappBusinessAccountPhoneNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[WhatsappBusinessAccountPhoneNumberListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -62,12 +62,13 @@ func (r *WhatsappBusinessAccountPhoneNumberService) List(ctx context.Context, id
 	return res, nil
 }
 
-// List phone numbers for a WABA
+// Returns phone numbers registered under the specified WhatsApp Business Account.
 func (r *WhatsappBusinessAccountPhoneNumberService) ListAutoPaging(ctx context.Context, id string, query WhatsappBusinessAccountPhoneNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[WhatsappBusinessAccountPhoneNumberListResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, id, query, opts...))
 }
 
-// Initialize Whatsapp phone number verification
+// Starts verification of a phone number for the specified WhatsApp Business
+// Account using the requested verification method.
 func (r *WhatsappBusinessAccountPhoneNumberService) InitializeVerification(ctx context.Context, id string, body WhatsappBusinessAccountPhoneNumberInitializeVerificationParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)

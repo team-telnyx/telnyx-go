@@ -38,7 +38,8 @@ func NewMessagingURLDomainService(opts ...option.RequestOption) (r MessagingURLD
 	return
 }
 
-// List messaging URL domains
+// Returns the URL domains available to the authenticated account for message URL
+// shortening.
 func (r *MessagingURLDomainService) List(ctx context.Context, query MessagingURLDomainListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MessagingURLDomainListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -56,7 +57,8 @@ func (r *MessagingURLDomainService) List(ctx context.Context, query MessagingURL
 	return res, nil
 }
 
-// List messaging URL domains
+// Returns the URL domains available to the authenticated account for message URL
+// shortening.
 func (r *MessagingURLDomainService) ListAutoPaging(ctx context.Context, query MessagingURLDomainListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MessagingURLDomainListResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }

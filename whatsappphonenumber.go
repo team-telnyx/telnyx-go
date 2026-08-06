@@ -51,7 +51,7 @@ func NewWhatsappPhoneNumberService(opts ...option.RequestOption) (r WhatsappPhon
 	return
 }
 
-// List Whatsapp phone numbers
+// Returns WhatsApp phone numbers linked to the authenticated Telnyx account.
 func (r *WhatsappPhoneNumberService) List(ctx context.Context, query WhatsappPhoneNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[WhatsappPhoneNumberListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -69,12 +69,12 @@ func (r *WhatsappPhoneNumberService) List(ctx context.Context, query WhatsappPho
 	return res, nil
 }
 
-// List Whatsapp phone numbers
+// Returns WhatsApp phone numbers linked to the authenticated Telnyx account.
 func (r *WhatsappPhoneNumberService) ListAutoPaging(ctx context.Context, query WhatsappPhoneNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[WhatsappPhoneNumberListResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a Whatsapp phone number
+// Removes the specified phone number from Telnyx WhatsApp management.
 func (r *WhatsappPhoneNumberService) Delete(ctx context.Context, phoneNumber string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -95,7 +95,7 @@ func (r *WhatsappPhoneNumberService) Get(ctx context.Context, query WhatsappPhon
 	return res, err
 }
 
-// Resend verification code
+// Requests a new verification code for the specified WhatsApp phone number.
 func (r *WhatsappPhoneNumberService) ResendVerification(ctx context.Context, phoneNumber string, body WhatsappPhoneNumberResendVerificationParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -122,7 +122,7 @@ func (r *WhatsappPhoneNumberService) GetConversationWindow(ctx context.Context, 
 	return res, err
 }
 
-// Submit verification code for a phone number
+// Submits the verification code received for the specified WhatsApp phone number.
 func (r *WhatsappPhoneNumberService) Verify(ctx context.Context, phoneNumber string, body WhatsappPhoneNumberVerifyParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)

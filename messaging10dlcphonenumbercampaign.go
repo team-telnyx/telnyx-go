@@ -41,7 +41,8 @@ func NewMessaging10dlcPhoneNumberCampaignService(opts ...option.RequestOption) (
 	return
 }
 
-// Create New Phone Number Campaign
+// Assigns a phone number to a 10DLC campaign. The assignment controls which
+// registered campaign is used for traffic from that number.
 func (r *Messaging10dlcPhoneNumberCampaignService) New(ctx context.Context, body Messaging10dlcPhoneNumberCampaignNewParams, opts ...option.RequestOption) (res *PhoneNumberCampaign, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "10dlc/phone_number_campaigns"
@@ -61,7 +62,7 @@ func (r *Messaging10dlcPhoneNumberCampaignService) Get(ctx context.Context, phon
 	return res, err
 }
 
-// Update Phone Number Campaign
+// Replaces the 10DLC campaign assignment for the specified phone number.
 func (r *Messaging10dlcPhoneNumberCampaignService) Update(ctx context.Context, campaignPhoneNumber string, body Messaging10dlcPhoneNumberCampaignUpdateParams, opts ...option.RequestOption) (res *PhoneNumberCampaign, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if campaignPhoneNumber == "" {
@@ -73,7 +74,8 @@ func (r *Messaging10dlcPhoneNumberCampaignService) Update(ctx context.Context, c
 	return res, err
 }
 
-// List phone number campaigns
+// Returns phone-number-to-campaign assignments for the authenticated account.
+// Apply the documented filters and pagination parameters to narrow the result set.
 func (r *Messaging10dlcPhoneNumberCampaignService) List(ctx context.Context, query Messaging10dlcPhoneNumberCampaignListParams, opts ...option.RequestOption) (res *pagination.PerPagePaginationV2[PhoneNumberCampaign], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -91,7 +93,8 @@ func (r *Messaging10dlcPhoneNumberCampaignService) List(ctx context.Context, que
 	return res, nil
 }
 
-// List phone number campaigns
+// Returns phone-number-to-campaign assignments for the authenticated account.
+// Apply the documented filters and pagination parameters to narrow the result set.
 func (r *Messaging10dlcPhoneNumberCampaignService) ListAutoPaging(ctx context.Context, query Messaging10dlcPhoneNumberCampaignListParams, opts ...option.RequestOption) *pagination.PerPagePaginationV2AutoPager[PhoneNumberCampaign] {
 	return pagination.NewPerPagePaginationV2AutoPager(r.List(ctx, query, opts...))
 }

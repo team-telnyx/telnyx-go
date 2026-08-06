@@ -36,7 +36,8 @@ func NewMessaging10dlcCampaignUsecaseService(opts ...option.RequestOption) (r Me
 	return
 }
 
-// Get Campaign Cost
+// Returns the upfront and monthly cost associated with the selected 10DLC campaign
+// use case.
 func (r *Messaging10dlcCampaignUsecaseService) GetCost(ctx context.Context, query Messaging10dlcCampaignUsecaseGetCostParams, opts ...option.RequestOption) (res *Messaging10dlcCampaignUsecaseGetCostResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "10dlc/campaign/usecase/cost"

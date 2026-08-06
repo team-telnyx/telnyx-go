@@ -38,7 +38,8 @@ func NewWhatsappMessageTemplateService(opts ...option.RequestOption) (r Whatsapp
 	return
 }
 
-// Get a Whatsapp message template by ID
+// Returns the content, components, language, and current review state of the
+// specified WhatsApp message template.
 func (r *WhatsappMessageTemplateService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *WhatsappMessageTemplateGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -50,7 +51,7 @@ func (r *WhatsappMessageTemplateService) Get(ctx context.Context, id string, opt
 	return res, err
 }
 
-// Update a Whatsapp message template
+// Updates the editable fields of the specified WhatsApp message template.
 func (r *WhatsappMessageTemplateService) Update(ctx context.Context, id string, body WhatsappMessageTemplateUpdateParams, opts ...option.RequestOption) (res *WhatsappMessageTemplateUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -62,7 +63,7 @@ func (r *WhatsappMessageTemplateService) Update(ctx context.Context, id string, 
 	return res, err
 }
 
-// Delete a Whatsapp message template
+// Deletes the specified WhatsApp message template.
 func (r *WhatsappMessageTemplateService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)

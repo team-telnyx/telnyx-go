@@ -109,7 +109,8 @@ func (r *MessageService) Send(ctx context.Context, body MessageSendParams, opts 
 	return res, err
 }
 
-// Send a group MMS message
+// Queues an MMS addressed to multiple recipients as a group conversation. Delivery
+// events are reported asynchronously through messaging webhooks.
 func (r *MessageService) SendGroupMms(ctx context.Context, body MessageSendGroupMmsParams, opts ...option.RequestOption) (res *MessageSendGroupMmsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/group_mms"
@@ -117,7 +118,8 @@ func (r *MessageService) SendGroupMms(ctx context.Context, body MessageSendGroup
 	return res, err
 }
 
-// Send a long code message
+// Queues an outbound SMS or MMS using a long-code sender. Delivery progress and
+// final disposition are reported asynchronously through messaging webhooks.
 func (r *MessageService) SendLongCode(ctx context.Context, body MessageSendLongCodeParams, opts ...option.RequestOption) (res *MessageSendLongCodeResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/long_code"
@@ -125,7 +127,8 @@ func (r *MessageService) SendLongCode(ctx context.Context, body MessageSendLongC
 	return res, err
 }
 
-// Send a message using number pool
+// Queues an outbound message using a number pool. Telnyx selects an eligible
+// sender from the pool according to its messaging profile configuration.
 func (r *MessageService) SendNumberPool(ctx context.Context, body MessageSendNumberPoolParams, opts ...option.RequestOption) (res *MessageSendNumberPoolResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/number_pool"
@@ -133,7 +136,8 @@ func (r *MessageService) SendNumberPool(ctx context.Context, body MessageSendNum
 	return res, err
 }
 
-// Send a short code message
+// Queues an outbound SMS or MMS using a short-code sender. Delivery progress and
+// final disposition are reported asynchronously through messaging webhooks.
 func (r *MessageService) SendShortCode(ctx context.Context, body MessageSendShortCodeParams, opts ...option.RequestOption) (res *MessageSendShortCodeResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/short_code"
