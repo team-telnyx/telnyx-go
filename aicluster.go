@@ -41,7 +41,7 @@ func NewAIClusterService(opts ...option.RequestOption) (r AIClusterService) {
 	return
 }
 
-// Fetch a cluster
+// Fetch the results of a clustering task, including the discovered clusters.
 func (r *AIClusterService) Get(ctx context.Context, taskID string, query AIClusterGetParams, opts ...option.RequestOption) (res *AIClusterGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if taskID == "" {
@@ -53,7 +53,7 @@ func (r *AIClusterService) Get(ctx context.Context, taskID string, query AIClust
 	return res, err
 }
 
-// List all clusters
+// Retrieve a paginated list of clustering tasks and their statuses.
 func (r *AIClusterService) List(ctx context.Context, query AIClusterListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[AIClusterListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -71,12 +71,12 @@ func (r *AIClusterService) List(ctx context.Context, query AIClusterListParams, 
 	return res, nil
 }
 
-// List all clusters
+// Retrieve a paginated list of clustering tasks and their statuses.
 func (r *AIClusterService) ListAutoPaging(ctx context.Context, query AIClusterListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[AIClusterListResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a cluster
+// Delete a clustering task and its computed results.
 func (r *AIClusterService) Delete(ctx context.Context, taskID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -99,7 +99,7 @@ func (r *AIClusterService) Compute(ctx context.Context, body AIClusterComputePar
 	return res, err
 }
 
-// Fetch a cluster visualization
+// Fetch a visualization image of the clusters computed by a clustering task.
 func (r *AIClusterService) FetchGraph(ctx context.Context, taskID string, query AIClusterFetchGraphParams, opts ...option.RequestOption) (res *http.Response, err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "image/png")}, opts...)

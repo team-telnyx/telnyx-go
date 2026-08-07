@@ -50,7 +50,7 @@ func NewStorageService(opts ...option.RequestOption) (r StorageService) {
 	return
 }
 
-// List Migration Source coverage
+// List the external storage providers and regions supported as migration sources.
 func (r *StorageService) ListMigrationSourceCoverage(ctx context.Context, opts ...option.RequestOption) (res *StorageListMigrationSourceCoverageResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "storage/migration_source_coverage"

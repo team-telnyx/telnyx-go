@@ -39,7 +39,7 @@ func NewPaymentService(opts ...option.RequestOption) (r PaymentService) {
 	return
 }
 
-// Create a stored payment transaction
+// Create a transaction that charges a stored payment method on the account.
 func (r *PaymentService) NewStoredPaymentTransaction(ctx context.Context, body PaymentNewStoredPaymentTransactionParams, opts ...option.RequestOption) (res *PaymentNewStoredPaymentTransactionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/payment/stored_payment_transactions"

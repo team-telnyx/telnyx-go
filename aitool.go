@@ -41,7 +41,7 @@ func NewAIToolService(opts ...option.RequestOption) (r AIToolService) {
 	return
 }
 
-// Create Tool
+// Create a new custom AI tool that can be attached to AI assistants.
 func (r *AIToolService) New(ctx context.Context, body AIToolNewParams, opts ...option.RequestOption) (res *SharedToolResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/tools"
@@ -49,7 +49,7 @@ func (r *AIToolService) New(ctx context.Context, body AIToolNewParams, opts ...o
 	return res, err
 }
 
-// Get Tool
+// Retrieve the details of a specific AI tool.
 func (r *AIToolService) Get(ctx context.Context, toolID string, opts ...option.RequestOption) (res *SharedToolResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if toolID == "" {
@@ -61,7 +61,7 @@ func (r *AIToolService) Get(ctx context.Context, toolID string, opts ...option.R
 	return res, err
 }
 
-// Update Tool
+// Update the configuration of an existing AI tool.
 func (r *AIToolService) Update(ctx context.Context, toolID string, body AIToolUpdateParams, opts ...option.RequestOption) (res *SharedToolResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if toolID == "" {
@@ -73,7 +73,7 @@ func (r *AIToolService) Update(ctx context.Context, toolID string, body AIToolUp
 	return res, err
 }
 
-// List Tools
+// Retrieve a list of the custom AI tools configured on your account.
 func (r *AIToolService) List(ctx context.Context, query AIToolListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[SharedToolResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -91,12 +91,12 @@ func (r *AIToolService) List(ctx context.Context, query AIToolListParams, opts .
 	return res, nil
 }
 
-// List Tools
+// Retrieve a list of the custom AI tools configured on your account.
 func (r *AIToolService) ListAutoPaging(ctx context.Context, query AIToolListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[SharedToolResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete Tool
+// Delete a custom AI tool.
 func (r *AIToolService) Delete(ctx context.Context, toolID string, opts ...option.RequestOption) (res *AIToolDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if toolID == "" {

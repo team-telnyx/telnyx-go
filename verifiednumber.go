@@ -52,7 +52,7 @@ func (r *VerifiedNumberService) New(ctx context.Context, body VerifiedNumberNewP
 	return res, err
 }
 
-// Retrieve a verified number
+// Retrieve the details of a verified number on your account.
 func (r *VerifiedNumberService) Get(ctx context.Context, phoneNumber string, opts ...option.RequestOption) (res *VerifiedNumberDataWrapper, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
@@ -87,7 +87,7 @@ func (r *VerifiedNumberService) ListAutoPaging(ctx context.Context, query Verifi
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a verified number
+// Remove a verified number from your account.
 func (r *VerifiedNumberService) Delete(ctx context.Context, phoneNumber string, opts ...option.RequestOption) (res *VerifiedNumberDataWrapper, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {

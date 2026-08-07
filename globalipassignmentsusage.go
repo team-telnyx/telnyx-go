@@ -38,7 +38,7 @@ func NewGlobalIPAssignmentsUsageService(opts ...option.RequestOption) (r GlobalI
 	return
 }
 
-// Global IP Assignment Usage Metrics
+// Retrieve usage metrics for your Global IP assignments.
 func (r *GlobalIPAssignmentsUsageService) Get(ctx context.Context, query GlobalIPAssignmentsUsageGetParams, opts ...option.RequestOption) (res *GlobalIPAssignmentsUsageGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_assignments_usage"

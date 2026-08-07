@@ -87,7 +87,7 @@ func (r *WhatsappPhoneNumberService) Delete(ctx context.Context, phoneNumber str
 	return err
 }
 
-// List Whatsapp phone numbers
+// Retrieve a list of the phone numbers registered for WhatsApp on your account.
 func (r *WhatsappPhoneNumberService) Get(ctx context.Context, query WhatsappPhoneNumberGetParams, opts ...option.RequestOption) (res *WhatsappPhoneNumberGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "whatsapp/phone_numbers"
