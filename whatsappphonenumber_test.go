@@ -163,7 +163,7 @@ func TestWhatsappPhoneNumberVerify(t *testing.T) {
 		context.TODO(),
 		"phone_number",
 		telnyx.WhatsappPhoneNumberVerifyParams{
-			Code: "code",
+			Code: "string",
 		},
 	)
 	if err != nil {

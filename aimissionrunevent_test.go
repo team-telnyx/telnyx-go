@@ -95,14 +95,14 @@ func TestAIMissionRunEventLogWithOptionalParams(t *testing.T) {
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.AIMissionRunEventLogParams{
 			MissionID:      "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-			Summary:        "summary",
+			Summary:        "Summary",
 			Type:           telnyx.EventTypeStatusChange,
-			AgentID:        telnyx.String("agent_id"),
-			IdempotencyKey: telnyx.String("idempotency_key"),
+			AgentID:        telnyx.String("Agent Id"),
+			IdempotencyKey: telnyx.String("Idempotency Key"),
 			Payload: map[string]any{
 				"foo": "bar",
 			},
-			StepID: telnyx.String("step_id"),
+			StepID: telnyx.String("Step Id"),
 		},
 	)
 	if err != nil {
