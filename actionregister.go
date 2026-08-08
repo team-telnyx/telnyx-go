@@ -49,8 +49,8 @@ func (r *ActionRegisterService) New(ctx context.Context, body ActionRegisterNewP
 
 type ActionRegisterNewResponse struct {
 	// Successfully registered SIM cards.
-	Data   []shared.SimpleSimCard `json:"data"`
-	Errors []WirelessError        `json:"errors"`
+	Data   []shared.SimpleSimCard    `json:"data"`
+	Errors []WirelessErrorC5290d5308 `json:"errors"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

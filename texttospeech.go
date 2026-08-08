@@ -145,6 +145,9 @@ func (r *TextToSpeechListVoicesResponse) UnmarshalJSON(data []byte) error {
 type TextToSpeechListVoicesResponseVoice struct {
 	// Voice gender.
 	Gender string `json:"gender"`
+	// Whether this voice runs on Telnyx-hosted infrastructure (`true`) or is provided
+	// by a third-party vendor (`false`).
+	Hosted bool `json:"hosted"`
 	// Language code.
 	Language string `json:"language"`
 	// Voice name.
@@ -156,6 +159,7 @@ type TextToSpeechListVoicesResponseVoice struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Gender      respjson.Field
+		Hosted      respjson.Field
 		Language    respjson.Field
 		Name        respjson.Field
 		Provider    respjson.Field

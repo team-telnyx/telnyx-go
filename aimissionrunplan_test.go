@@ -32,13 +32,13 @@ func TestAIMissionRunPlanNew(t *testing.T) {
 		telnyx.AIMissionRunPlanNewParams{
 			MissionID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			Steps: []telnyx.CreatePlanStepRequestParam{{
-				Description: "description",
+				Description: "Description",
 				Sequence:    0,
-				StepID:      "step_id",
+				StepID:      "Step Id",
 				Metadata: map[string]any{
 					"foo": "bar",
 				},
-				ParentStepID: telnyx.String("parent_step_id"),
+				ParentStepID: telnyx.String("Parent Step Id"),
 			}},
 		},
 	)
@@ -99,13 +99,13 @@ func TestAIMissionRunPlanAddStepsToPlan(t *testing.T) {
 		telnyx.AIMissionRunPlanAddStepsToPlanParams{
 			MissionID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			Steps: []telnyx.CreatePlanStepRequestParam{{
-				Description: "description",
+				Description: "Description",
 				Sequence:    0,
-				StepID:      "step_id",
+				StepID:      "Step Id",
 				Metadata: map[string]any{
 					"foo": "bar",
 				},
-				ParentStepID: telnyx.String("parent_step_id"),
+				ParentStepID: telnyx.String("Parent Step Id"),
 			}},
 		},
 	)

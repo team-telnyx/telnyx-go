@@ -38,7 +38,8 @@ func NewLedgerBillingGroupReportService(opts ...option.RequestOption) (r LedgerB
 	return
 }
 
-// Create a ledger billing group report
+// Create a ledger billing group report, which aggregates ledger activity by
+// billing group.
 func (r *LedgerBillingGroupReportService) New(ctx context.Context, body LedgerBillingGroupReportNewParams, opts ...option.RequestOption) (res *LedgerBillingGroupReportNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ledger_billing_group_reports"
@@ -46,7 +47,8 @@ func (r *LedgerBillingGroupReportService) New(ctx context.Context, body LedgerBi
 	return res, err
 }
 
-// Get a ledger billing group report
+// Retrieve the details and status of a previously created ledger billing group
+// report.
 func (r *LedgerBillingGroupReportService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *LedgerBillingGroupReportGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

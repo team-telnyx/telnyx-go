@@ -13,7 +13,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // MessagingProfileMetricService contains methods and other services that help with
@@ -57,8 +56,8 @@ const (
 )
 
 type MessagingProfileMetricListResponse struct {
-	Data []map[string]any               `json:"data"`
-	Meta shared.MessagingPaginationMeta `json:"meta"`
+	Data []map[string]any                  `json:"data"`
+	Meta MessagingPaginationMeta0b38e7044b `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

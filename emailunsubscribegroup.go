@@ -44,7 +44,8 @@ func NewEmailUnsubscribeGroupService(opts ...option.RequestOption) (r EmailUnsub
 	return
 }
 
-// Create an unsubscribe group
+// Creates an account-owned unsubscribe group for associating email categories with
+// separate recipient suppression lists.
 func (r *EmailUnsubscribeGroupService) New(ctx context.Context, body EmailUnsubscribeGroupNewParams, opts ...option.RequestOption) (res *UnsubscribeGroupResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "email_unsubscribe_groups"
@@ -52,7 +53,7 @@ func (r *EmailUnsubscribeGroupService) New(ctx context.Context, body EmailUnsubs
 	return res, err
 }
 
-// Retrieve an unsubscribe group
+// Returns the account-owned unsubscribe group identified by ID.
 func (r *EmailUnsubscribeGroupService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *UnsubscribeGroupResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

@@ -61,7 +61,8 @@ func (r *EmailBlockService) New(ctx context.Context, body EmailBlockNewParams, o
 	return res, err
 }
 
-// Retrieve a suppression
+// Returns the account-owned suppression identified by ID. Cross-account lookups
+// and malformed IDs return `404` without exposing another account’s data.
 func (r *EmailBlockService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *EmailBlockResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

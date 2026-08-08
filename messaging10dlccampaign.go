@@ -143,7 +143,8 @@ func (r *Messaging10dlcCampaignService) GetOperationStatus(ctx context.Context, 
 	return res, err
 }
 
-// Get Sharing Status
+// Returns whether the campaign is configured for partner sharing and the current
+// sharing state.
 func (r *Messaging10dlcCampaignService) GetSharingStatus(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *Messaging10dlcCampaignGetSharingStatusResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {

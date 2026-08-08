@@ -36,7 +36,8 @@ func NewAdvancedOrderService(opts ...option.RequestOption) (r AdvancedOrderServi
 	return
 }
 
-// Create Advanced Order
+// Creates an advanced number order from the requested order configuration. The
+// response contains the resulting advanced order and its initial state.
 func (r *AdvancedOrderService) New(ctx context.Context, body AdvancedOrderNewParams, opts ...option.RequestOption) (res *AdvancedOrder, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "advanced_orders"
@@ -44,7 +45,8 @@ func (r *AdvancedOrderService) New(ctx context.Context, body AdvancedOrderNewPar
 	return res, err
 }
 
-// Get Advanced Order
+// Returns the advanced number order identified by `order_id`, including its
+// configuration and current state.
 func (r *AdvancedOrderService) Get(ctx context.Context, orderID string, opts ...option.RequestOption) (res *AdvancedOrder, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if orderID == "" {
@@ -56,7 +58,8 @@ func (r *AdvancedOrderService) Get(ctx context.Context, orderID string, opts ...
 	return res, err
 }
 
-// List Advanced Orders
+// Returns the advanced number orders associated with the account. Each result
+// includes the order configuration and its current state.
 func (r *AdvancedOrderService) List(ctx context.Context, opts ...option.RequestOption) (res *AdvancedOrderListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "advanced_orders"
@@ -64,7 +67,8 @@ func (r *AdvancedOrderService) List(ctx context.Context, opts ...option.RequestO
 	return res, err
 }
 
-// Update Advanced Order
+// Updates the requirement-group configuration for the specified advanced number
+// order. The response contains the updated advanced order.
 func (r *AdvancedOrderService) UpdateRequirementGroup(ctx context.Context, advancedOrderID string, body AdvancedOrderUpdateRequirementGroupParams, opts ...option.RequestOption) (res *AdvancedOrder, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if advancedOrderID == "" {

@@ -44,7 +44,8 @@ func NewMessagingHostedNumberOrderService(opts ...option.RequestOption) (r Messa
 	return
 }
 
-// Create a messaging hosted number order
+// Creates an order to enable Telnyx messaging on phone numbers whose voice service
+// remains with another carrier.
 func (r *MessagingHostedNumberOrderService) New(ctx context.Context, body MessagingHostedNumberOrderNewParams, opts ...option.RequestOption) (res *MessagingHostedNumberOrderNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "messaging_hosted_number_orders"
@@ -52,7 +53,8 @@ func (r *MessagingHostedNumberOrderService) New(ctx context.Context, body Messag
 	return res, err
 }
 
-// Retrieve a messaging hosted number order
+// Returns the current state, phone numbers, and required actions for the specified
+// hosted-messaging order.
 func (r *MessagingHostedNumberOrderService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *MessagingHostedNumberOrderGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -64,7 +66,8 @@ func (r *MessagingHostedNumberOrderService) Get(ctx context.Context, id string, 
 	return res, err
 }
 
-// List messaging hosted number orders
+// Returns hosted-messaging orders for the authenticated account. Apply the
+// documented filters and pagination parameters to narrow the result set.
 func (r *MessagingHostedNumberOrderService) List(ctx context.Context, query MessagingHostedNumberOrderListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[shared.MessagingHostedNumberOrder], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -82,7 +85,8 @@ func (r *MessagingHostedNumberOrderService) List(ctx context.Context, query Mess
 	return res, nil
 }
 
-// List messaging hosted number orders
+// Returns hosted-messaging orders for the authenticated account. Apply the
+// documented filters and pagination parameters to narrow the result set.
 func (r *MessagingHostedNumberOrderService) ListAutoPaging(ctx context.Context, query MessagingHostedNumberOrderListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[shared.MessagingHostedNumberOrder] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
@@ -99,7 +103,8 @@ func (r *MessagingHostedNumberOrderService) Delete(ctx context.Context, id strin
 	return res, err
 }
 
-// Check hosted messaging eligibility
+// Checks whether the supplied phone numbers are eligible for hosted messaging
+// before an order is created.
 func (r *MessagingHostedNumberOrderService) CheckEligibility(ctx context.Context, body MessagingHostedNumberOrderCheckEligibilityParams, opts ...option.RequestOption) (res *MessagingHostedNumberOrderCheckEligibilityResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "messaging_hosted_number_orders/eligibility_numbers_check"

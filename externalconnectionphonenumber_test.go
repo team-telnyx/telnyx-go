@@ -60,7 +60,7 @@ func TestExternalConnectionPhoneNumberUpdateWithOptionalParams(t *testing.T) {
 		"1234567889",
 		telnyx.ExternalConnectionPhoneNumberUpdateParams{
 			ID:         "1293384261075731499",
-			LocationID: telnyx.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			LocationID: telnyx.String("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
 		},
 	)
 	if err != nil {

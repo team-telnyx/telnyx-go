@@ -41,7 +41,7 @@ func NewAIToolService(opts ...option.RequestOption) (r AIToolService) {
 	return
 }
 
-// Create Tool
+// Create a new custom AI tool that can be attached to AI assistants.
 func (r *AIToolService) New(ctx context.Context, body AIToolNewParams, opts ...option.RequestOption) (res *SharedToolResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/tools"
@@ -49,7 +49,7 @@ func (r *AIToolService) New(ctx context.Context, body AIToolNewParams, opts ...o
 	return res, err
 }
 
-// Get Tool
+// Retrieve the details of a specific AI tool.
 func (r *AIToolService) Get(ctx context.Context, toolID string, opts ...option.RequestOption) (res *SharedToolResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if toolID == "" {
@@ -61,7 +61,7 @@ func (r *AIToolService) Get(ctx context.Context, toolID string, opts ...option.R
 	return res, err
 }
 
-// Update Tool
+// Update the configuration of an existing AI tool.
 func (r *AIToolService) Update(ctx context.Context, toolID string, body AIToolUpdateParams, opts ...option.RequestOption) (res *SharedToolResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if toolID == "" {
@@ -73,7 +73,7 @@ func (r *AIToolService) Update(ctx context.Context, toolID string, body AIToolUp
 	return res, err
 }
 
-// List Tools
+// Retrieve a list of the custom AI tools configured on your account.
 func (r *AIToolService) List(ctx context.Context, query AIToolListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[SharedToolResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -91,12 +91,12 @@ func (r *AIToolService) List(ctx context.Context, query AIToolListParams, opts .
 	return res, nil
 }
 
-// List Tools
+// Retrieve a list of the custom AI tools configured on your account.
 func (r *AIToolService) ListAutoPaging(ctx context.Context, query AIToolListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[SharedToolResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete Tool
+// Delete a custom AI tool.
 func (r *AIToolService) Delete(ctx context.Context, toolID string, opts ...option.RequestOption) (res *AIToolDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if toolID == "" {
@@ -192,6 +192,117 @@ func (r *SharedToolResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Configuration for an update_dynamic_variables tool.
+type UpdateDynamicVariablesToolParamsResp struct {
+	// Description of the tool passed to the assistant, guiding when to call it and
+	// which variables to update.
+	Description string `json:"description" api:"required"`
+	// The function name surfaced to the LLM. Must match the OpenAI function-name
+	// pattern `^[a-zA-Z0-9_-]+$` and be unique across the assistant's function,
+	// webhook, and client_side tools.
+	Name string `json:"name" api:"required"`
+	// The dynamic variables the assistant is allowed to write. At least one is
+	// required.
+	UpdatableVariables []UpdateDynamicVariablesToolParamsUpdatableVariableResp `json:"updatable_variables" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Description        respjson.Field
+		Name               respjson.Field
+		UpdatableVariables respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UpdateDynamicVariablesToolParamsResp) RawJSON() string { return r.JSON.raw }
+func (r *UpdateDynamicVariablesToolParamsResp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this UpdateDynamicVariablesToolParamsResp to a
+// UpdateDynamicVariablesToolParams.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// UpdateDynamicVariablesToolParams.Overrides()
+func (r UpdateDynamicVariablesToolParamsResp) ToParam() UpdateDynamicVariablesToolParams {
+	return param.Override[UpdateDynamicVariablesToolParams](json.RawMessage(r.RawJSON()))
+}
+
+type UpdateDynamicVariablesToolParamsUpdatableVariableResp struct {
+	// The dynamic-variable key to update. Must match `^[a-zA-Z0-9._-]+$` and may not
+	// start with the reserved `telnyx_` prefix (reserved for system variables). The
+	// `pattern` encodes both rules via a negative lookahead.
+	Name string `json:"name" api:"required"`
+	// Optional description of the variable, guiding the assistant on what value to
+	// capture.
+	Description string `json:"description"`
+	// Optional hint for the variable's value type (e.g. `string`).
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Description respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UpdateDynamicVariablesToolParamsUpdatableVariableResp) RawJSON() string { return r.JSON.raw }
+func (r *UpdateDynamicVariablesToolParamsUpdatableVariableResp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration for an update_dynamic_variables tool.
+//
+// The properties Description, Name, UpdatableVariables are required.
+type UpdateDynamicVariablesToolParams struct {
+	// Description of the tool passed to the assistant, guiding when to call it and
+	// which variables to update.
+	Description string `json:"description" api:"required"`
+	// The function name surfaced to the LLM. Must match the OpenAI function-name
+	// pattern `^[a-zA-Z0-9_-]+$` and be unique across the assistant's function,
+	// webhook, and client_side tools.
+	Name string `json:"name" api:"required"`
+	// The dynamic variables the assistant is allowed to write. At least one is
+	// required.
+	UpdatableVariables []UpdateDynamicVariablesToolParamsUpdatableVariable `json:"updatable_variables,omitzero" api:"required"`
+	paramObj
+}
+
+func (r UpdateDynamicVariablesToolParams) MarshalJSON() (data []byte, err error) {
+	type shadow UpdateDynamicVariablesToolParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UpdateDynamicVariablesToolParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Name is required.
+type UpdateDynamicVariablesToolParamsUpdatableVariable struct {
+	// The dynamic-variable key to update. Must match `^[a-zA-Z0-9._-]+$` and may not
+	// start with the reserved `telnyx_` prefix (reserved for system variables). The
+	// `pattern` encodes both rules via a negative lookahead.
+	Name string `json:"name" api:"required"`
+	// Optional description of the variable, guiding the assistant on what value to
+	// capture.
+	Description param.Opt[string] `json:"description,omitzero"`
+	// Optional hint for the variable's value type (e.g. `string`).
+	Type param.Opt[string] `json:"type,omitzero"`
+	paramObj
+}
+
+func (r UpdateDynamicVariablesToolParamsUpdatableVariable) MarshalJSON() (data []byte, err error) {
+	type shadow UpdateDynamicVariablesToolParamsUpdatableVariable
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UpdateDynamicVariablesToolParamsUpdatableVariable) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AIToolDeleteResponse = any
 
 type AIToolNewParams struct {
@@ -204,7 +315,9 @@ type AIToolNewParams struct {
 	Invite         map[string]any   `json:"invite,omitzero"`
 	Pay            PayToolParams    `json:"pay,omitzero"`
 	Retrieval      map[string]any   `json:"retrieval,omitzero"`
-	Webhook        map[string]any   `json:"webhook,omitzero"`
+	// Configuration for an update_dynamic_variables tool.
+	UpdateDynamicVariables UpdateDynamicVariablesToolParams `json:"update_dynamic_variables,omitzero"`
+	Webhook                map[string]any                   `json:"webhook,omitzero"`
 	paramObj
 }
 
@@ -226,7 +339,9 @@ type AIToolUpdateParams struct {
 	Invite         map[string]any    `json:"invite,omitzero"`
 	Pay            PayToolParams     `json:"pay,omitzero"`
 	Retrieval      map[string]any    `json:"retrieval,omitzero"`
-	Webhook        map[string]any    `json:"webhook,omitzero"`
+	// Configuration for an update_dynamic_variables tool.
+	UpdateDynamicVariables UpdateDynamicVariablesToolParams `json:"update_dynamic_variables,omitzero"`
+	Webhook                map[string]any                   `json:"webhook,omitzero"`
 	paramObj
 }
 

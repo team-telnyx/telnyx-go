@@ -101,8 +101,8 @@ func TestAIMissionRunUpdateWithOptionalParams(t *testing.T) {
 			ResultPayload: map[string]any{
 				"foo": "bar",
 			},
-			ResultSummary: telnyx.String("result_summary"),
-			Status:        telnyx.RunStatusPending,
+			ResultSummary: telnyx.String("Processed 24 customer records successfully."),
+			Status:        telnyx.RunStatusSucceeded,
 		},
 	)
 	if err != nil {

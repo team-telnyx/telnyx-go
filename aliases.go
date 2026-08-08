@@ -239,63 +239,6 @@ const HostedNumberStatusProvisioning = shared.HostedNumberStatusProvisioning
 const HostedNumberStatusSuccessful = shared.HostedNumberStatusSuccessful
 
 // This is an alias to an internal type.
-type InboundMessagePayload = shared.InboundMessagePayload
-
-// This is an alias to an internal type.
-type InboundMessagePayloadCc = shared.InboundMessagePayloadCc
-
-// This is an alias to an internal type.
-type InboundMessagePayloadCost = shared.InboundMessagePayloadCost
-
-// Detailed breakdown of the message cost components.
-//
-// This is an alias to an internal type.
-type InboundMessagePayloadCostBreakdown = shared.InboundMessagePayloadCostBreakdown
-
-// This is an alias to an internal type.
-type InboundMessagePayloadCostBreakdownCarrierFee = shared.InboundMessagePayloadCostBreakdownCarrierFee
-
-// This is an alias to an internal type.
-type InboundMessagePayloadCostBreakdownRate = shared.InboundMessagePayloadCostBreakdownRate
-
-// The direction of the message. Inbound messages are sent to you whereas outbound
-// messages are sent from you.
-//
-// This is an alias to an internal type.
-type InboundMessagePayloadDirection = shared.InboundMessagePayloadDirection
-
-// Equals "inbound"
-const InboundMessagePayloadDirectionInbound = shared.InboundMessagePayloadDirectionInbound
-
-// This is an alias to an internal type.
-type InboundMessagePayloadFrom = shared.InboundMessagePayloadFrom
-
-// This is an alias to an internal type.
-type InboundMessagePayloadMedia = shared.InboundMessagePayloadMedia
-
-// Identifies the type of the resource.
-//
-// This is an alias to an internal type.
-type InboundMessagePayloadRecordType = shared.InboundMessagePayloadRecordType
-
-// Equals "message"
-const InboundMessagePayloadRecordTypeMessage = shared.InboundMessagePayloadRecordTypeMessage
-
-// This is an alias to an internal type.
-type InboundMessagePayloadTo = shared.InboundMessagePayloadTo
-
-// The type of message. This value can be either 'sms' or 'mms'.
-//
-// This is an alias to an internal type.
-type InboundMessagePayloadType = shared.InboundMessagePayloadType
-
-// Equals "SMS"
-const InboundMessagePayloadTypeSMS = shared.InboundMessagePayloadTypeSMS
-
-// Equals "MMS"
-const InboundMessagePayloadTypeMms = shared.InboundMessagePayloadTypeMms
-
-// This is an alias to an internal type.
 type InworldVoiceSettingsParam = shared.InworldVoiceSettingsParam
 
 // Voice settings provider type
@@ -524,9 +467,6 @@ const MinimaxVoiceSettingsLanguageBoostTamil = shared.MinimaxVoiceSettingsLangua
 
 // Equals "Afrikaans"
 const MinimaxVoiceSettingsLanguageBoostAfrikaans = shared.MinimaxVoiceSettingsLanguageBoostAfrikaans
-
-// This is an alias to an internal type.
-type NetappsLocation = shared.NetappsLocation
 
 // High level health metrics about the number and it's messaging sending patterns.
 //

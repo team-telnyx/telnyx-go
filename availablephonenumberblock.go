@@ -38,7 +38,9 @@ func NewAvailablePhoneNumberBlockService(opts ...option.RequestOption) (r Availa
 	return
 }
 
-// List available phone number blocks
+// Searches the Telnyx inventory for available contiguous phone-number blocks.
+// Results can be filtered by locality, country, national destination code, and
+// number type.
 func (r *AvailablePhoneNumberBlockService) List(ctx context.Context, query AvailablePhoneNumberBlockListParams, opts ...option.RequestOption) (res *AvailablePhoneNumberBlockListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "available_phone_number_blocks"

@@ -42,7 +42,8 @@ func NewRoomParticipantService(opts ...option.RequestOption) (r RoomParticipantS
 	return
 }
 
-// View a room participant.
+// Returns the participant identified by `room_participant_id`, including its
+// session, context, and join, update, and leave timestamps.
 func (r *RoomParticipantService) Get(ctx context.Context, roomParticipantID string, opts ...option.RequestOption) (res *RoomParticipantGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if roomParticipantID == "" {
@@ -54,7 +55,8 @@ func (r *RoomParticipantService) Get(ctx context.Context, roomParticipantID stri
 	return res, err
 }
 
-// View a list of room participants.
+// Returns a paginated list of room participants across sessions. Filter
+// participants by session, join, update, or leave date and by participant context.
 func (r *RoomParticipantService) List(ctx context.Context, query RoomParticipantListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[shared.RoomParticipant], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -72,7 +74,8 @@ func (r *RoomParticipantService) List(ctx context.Context, query RoomParticipant
 	return res, nil
 }
 
-// View a list of room participants.
+// Returns a paginated list of room participants across sessions. Filter
+// participants by session, join, update, or leave date and by participant context.
 func (r *RoomParticipantService) ListAutoPaging(ctx context.Context, query RoomParticipantListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[shared.RoomParticipant] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }

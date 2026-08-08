@@ -41,7 +41,7 @@ func NewMobileVoiceConnectionService(opts ...option.RequestOption) (r MobileVoic
 	return
 }
 
-// Create a Mobile Voice Connection
+// Create a new mobile voice connection.
 func (r *MobileVoiceConnectionService) New(ctx context.Context, body MobileVoiceConnectionNewParams, opts ...option.RequestOption) (res *MobileVoiceConnectionNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/mobile_voice_connections"
@@ -49,7 +49,7 @@ func (r *MobileVoiceConnectionService) New(ctx context.Context, body MobileVoice
 	return res, err
 }
 
-// Retrieve a Mobile Voice Connection
+// Retrieve the details of a specific mobile voice connection.
 func (r *MobileVoiceConnectionService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *MobileVoiceConnectionGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -61,7 +61,7 @@ func (r *MobileVoiceConnectionService) Get(ctx context.Context, id string, opts 
 	return res, err
 }
 
-// Update a Mobile Voice Connection
+// Update the settings of a specific mobile voice connection.
 func (r *MobileVoiceConnectionService) Update(ctx context.Context, id string, body MobileVoiceConnectionUpdateParams, opts ...option.RequestOption) (res *MobileVoiceConnectionUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -73,7 +73,7 @@ func (r *MobileVoiceConnectionService) Update(ctx context.Context, id string, bo
 	return res, err
 }
 
-// List Mobile Voice Connections
+// Retrieve a paginated list of mobile voice connections on your account.
 func (r *MobileVoiceConnectionService) List(ctx context.Context, query MobileVoiceConnectionListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MobileVoiceConnection], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -91,12 +91,12 @@ func (r *MobileVoiceConnectionService) List(ctx context.Context, query MobileVoi
 	return res, nil
 }
 
-// List Mobile Voice Connections
+// Retrieve a paginated list of mobile voice connections on your account.
 func (r *MobileVoiceConnectionService) ListAutoPaging(ctx context.Context, query MobileVoiceConnectionListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MobileVoiceConnection] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a Mobile Voice Connection
+// Delete a mobile voice connection from your account.
 func (r *MobileVoiceConnectionService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *MobileVoiceConnectionDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

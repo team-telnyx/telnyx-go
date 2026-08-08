@@ -42,7 +42,8 @@ func NewPhoneNumberMessagingService(opts ...option.RequestOption) (r PhoneNumber
 	return
 }
 
-// Retrieve a phone number with messaging settings
+// Returns the messaging product and messaging-profile assignment for the specified
+// phone number.
 func (r *PhoneNumberMessagingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PhoneNumberMessagingGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -54,7 +55,8 @@ func (r *PhoneNumberMessagingService) Get(ctx context.Context, id string, opts .
 	return res, err
 }
 
-// Update the messaging profile and/or messaging product of a phone number
+// Updates the messaging product, messaging profile, or both for the specified
+// phone number.
 func (r *PhoneNumberMessagingService) Update(ctx context.Context, id string, body PhoneNumberMessagingUpdateParams, opts ...option.RequestOption) (res *PhoneNumberMessagingUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -66,7 +68,8 @@ func (r *PhoneNumberMessagingService) Update(ctx context.Context, id string, bod
 	return res, err
 }
 
-// List phone numbers with messaging settings
+// Returns phone numbers with their current messaging product and messaging-profile
+// assignments.
 func (r *PhoneNumberMessagingService) List(ctx context.Context, query PhoneNumberMessagingListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[shared.PhoneNumberWithMessagingSettings], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -84,7 +87,8 @@ func (r *PhoneNumberMessagingService) List(ctx context.Context, query PhoneNumbe
 	return res, nil
 }
 
-// List phone numbers with messaging settings
+// Returns phone numbers with their current messaging product and messaging-profile
+// assignments.
 func (r *PhoneNumberMessagingService) ListAutoPaging(ctx context.Context, query PhoneNumberMessagingListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[shared.PhoneNumberWithMessagingSettings] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }

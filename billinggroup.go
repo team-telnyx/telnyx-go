@@ -41,7 +41,8 @@ func NewBillingGroupService(opts ...option.RequestOption) (r BillingGroupService
 	return
 }
 
-// Create a billing group
+// Create a new billing group, which can be used to organize resources for billing
+// purposes.
 func (r *BillingGroupService) New(ctx context.Context, body BillingGroupNewParams, opts ...option.RequestOption) (res *BillingGroupNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "billing_groups"
@@ -49,7 +50,7 @@ func (r *BillingGroupService) New(ctx context.Context, body BillingGroupNewParam
 	return res, err
 }
 
-// Get a billing group
+// Retrieve the details of a specific billing group.
 func (r *BillingGroupService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *BillingGroupGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -61,7 +62,7 @@ func (r *BillingGroupService) Get(ctx context.Context, id string, opts ...option
 	return res, err
 }
 
-// Update a billing group
+// Update the properties of an existing billing group.
 func (r *BillingGroupService) Update(ctx context.Context, id string, body BillingGroupUpdateParams, opts ...option.RequestOption) (res *BillingGroupUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -73,7 +74,7 @@ func (r *BillingGroupService) Update(ctx context.Context, id string, body Billin
 	return res, err
 }
 
-// List all billing groups
+// Retrieve a paginated list of billing groups on your account.
 func (r *BillingGroupService) List(ctx context.Context, query BillingGroupListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[BillingGroup], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -91,12 +92,12 @@ func (r *BillingGroupService) List(ctx context.Context, query BillingGroupListPa
 	return res, nil
 }
 
-// List all billing groups
+// Retrieve a paginated list of billing groups on your account.
 func (r *BillingGroupService) ListAutoPaging(ctx context.Context, query BillingGroupListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[BillingGroup] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a billing group
+// Delete a billing group from your account.
 func (r *BillingGroupService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *BillingGroupDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

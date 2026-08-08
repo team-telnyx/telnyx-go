@@ -47,7 +47,7 @@ func (r *StorageMigrationSourceService) New(ctx context.Context, body StorageMig
 	return res, err
 }
 
-// Get a Migration Source
+// Retrieve the details of a specific migration source.
 func (r *StorageMigrationSourceService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *StorageMigrationSourceGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -59,7 +59,9 @@ func (r *StorageMigrationSourceService) Get(ctx context.Context, id string, opts
 	return res, err
 }
 
-// List all Migration Sources
+// List the migration sources configured on your account. A migration source is an
+// external storage bucket from which data can be migrated into Telnyx Cloud
+// Storage.
 func (r *StorageMigrationSourceService) List(ctx context.Context, opts ...option.RequestOption) (res *StorageMigrationSourceListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "storage/migration_sources"
@@ -67,7 +69,7 @@ func (r *StorageMigrationSourceService) List(ctx context.Context, opts ...option
 	return res, err
 }
 
-// Delete a Migration Source
+// Delete a migration source configuration.
 func (r *StorageMigrationSourceService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *StorageMigrationSourceDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
