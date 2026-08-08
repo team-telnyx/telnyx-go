@@ -5345,6 +5345,10 @@ type TelephonySettings struct {
 	// Default Texml App used for voice calls with your assistant. This will be created
 	// automatically on assistant creation.
 	DefaultTexmlAppID string `json:"default_texml_app_id"`
+	// Disable inbound DTMF for the entire call. Must be set to true if a 'pay' tool is
+	// configured anywhere on the assistant — on the main tool array or on any workflow
+	// node — enforced at write time.
+	DisableDtmf bool `json:"disable_dtmf"`
 	// The noise suppression engine to use. Use 'disabled' to turn off noise
 	// suppression.
 	//
@@ -5383,6 +5387,7 @@ type TelephonySettings struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DefaultTexmlAppID               respjson.Field
+		DisableDtmf                     respjson.Field
 		NoiseSuppression                respjson.Field
 		NoiseSuppressionConfig          respjson.Field
 		RecordingSettings               respjson.Field
@@ -5563,6 +5568,10 @@ type TelephonySettingsParam struct {
 	// Default Texml App used for voice calls with your assistant. This will be created
 	// automatically on assistant creation.
 	DefaultTexmlAppID param.Opt[string] `json:"default_texml_app_id,omitzero"`
+	// Disable inbound DTMF for the entire call. Must be set to true if a 'pay' tool is
+	// configured anywhere on the assistant — on the main tool array or on any workflow
+	// node — enforced at write time.
+	DisableDtmf param.Opt[bool] `json:"disable_dtmf,omitzero"`
 	// When enabled, allows users to interact with your AI assistant directly from your
 	// website without requiring authentication. This is required for FE widgets that
 	// work with assistants that have telephony enabled.
