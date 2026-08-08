@@ -28,7 +28,7 @@ func TestMessagingTollfreeVerificationRequestNewWithOptionalParams(t *testing.T)
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.MessagingTollfree.Verification.Requests.New(context.TODO(), telnyx.MessagingTollfreeVerificationRequestNewParams{
-		TfVerificationRequest: telnyx.TfVerificationRequestParam{
+		MessagingTollFreeVerificationTfVerificationRequest: telnyx.MessagingTollFreeVerificationTfVerificationRequestParam{
 			AdditionalInformation:    "additionalInformation",
 			BusinessAddr1:            "600 Congress Avenue",
 			BusinessCity:             "Austin",
@@ -62,7 +62,7 @@ func TestMessagingTollfreeVerificationRequestNewWithOptionalParams(t *testing.T)
 			BusinessRegistrationType:         telnyx.String("EIN"),
 			CampaignVerifyAuthorizationToken: telnyx.String("cv_token_abc123xyz"),
 			DoingBusinessAs:                  telnyx.String("Acme Services"),
-			EntityType:                       telnyx.TollFreeVerificationEntityTypeSoleProprietor,
+			EntityType:                       telnyx.MessagingTollFreeVerificationEntityTypeSoleProprietor,
 			HelpMessageResponse:              telnyx.String("Reply HELP for assistance or STOP to unsubscribe. Contact: support@example.com"),
 			IsvReseller:                      telnyx.String("isvReseller"),
 			OptInConfirmationResponse:        telnyx.String("You have successfully opted in to receive messages from Acme Corp"),
@@ -121,7 +121,7 @@ func TestMessagingTollfreeVerificationRequestUpdateWithOptionalParams(t *testing
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.MessagingTollfreeVerificationRequestUpdateParams{
-			TfVerificationRequest: telnyx.TfVerificationRequestParam{
+			MessagingTollFreeVerificationTfVerificationRequest: telnyx.MessagingTollFreeVerificationTfVerificationRequestParam{
 				AdditionalInformation:    "additionalInformation",
 				BusinessAddr1:            "600 Congress Avenue",
 				BusinessCity:             "Austin",
@@ -155,7 +155,7 @@ func TestMessagingTollfreeVerificationRequestUpdateWithOptionalParams(t *testing
 				BusinessRegistrationType:         telnyx.String("EIN"),
 				CampaignVerifyAuthorizationToken: telnyx.String("cv_token_abc123xyz"),
 				DoingBusinessAs:                  telnyx.String("Acme Services"),
-				EntityType:                       telnyx.TollFreeVerificationEntityTypeSoleProprietor,
+				EntityType:                       telnyx.MessagingTollFreeVerificationEntityTypeSoleProprietor,
 				HelpMessageResponse:              telnyx.String("Reply HELP for assistance or STOP to unsubscribe. Contact: support@example.com"),
 				IsvReseller:                      telnyx.String("isvReseller"),
 				OptInConfirmationResponse:        telnyx.String("You have successfully opted in to receive messages from Acme Corp"),

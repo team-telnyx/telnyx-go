@@ -270,6 +270,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 		Tags: []string{"string"},
 		TelephonySettings: telnyx.TelephonySettingsParam{
 			DefaultTexmlAppID: telnyx.String("default_texml_app_id"),
+			DisableDtmf:       telnyx.Bool(true),
 			NoiseSuppression:  telnyx.TelephonySettingsNoiseSuppressionKrisp,
 			NoiseSuppressionConfig: telnyx.TelephonySettingsNoiseSuppressionConfigParam{
 				AttenuationLimit: telnyx.Int(0),
@@ -698,6 +699,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 			Tags:          []string{"string"},
 			TelephonySettings: telnyx.TelephonySettingsParam{
 				DefaultTexmlAppID: telnyx.String("default_texml_app_id"),
+				DisableDtmf:       telnyx.Bool(true),
 				NoiseSuppression:  telnyx.TelephonySettingsNoiseSuppressionKrisp,
 				NoiseSuppressionConfig: telnyx.TelephonySettingsNoiseSuppressionConfigParam{
 					AttenuationLimit: telnyx.Int(0),
@@ -973,7 +975,7 @@ func TestAIAssistantImportsWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.Assistants.Imports(context.TODO(), telnyx.AIAssistantImportsParams{
-		APIKeyRef: "api_key_ref",
+		APIKeyRef: "string",
 		Provider:  telnyx.AIAssistantImportsParamsProviderElevenlabs,
 		ImportIDs: []string{"string"},
 	})
@@ -1003,15 +1005,15 @@ func TestAIAssistantSendSMSWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"assistant_id",
 		telnyx.AIAssistantSendSMSParams{
-			From: "from",
-			To:   "to",
+			From: "From",
+			To:   "To",
 			ConversationMetadata: map[string]telnyx.AIAssistantSendSMSParamsConversationMetadataUnion{
 				"foo": {
 					OfString: telnyx.String("string"),
 				},
 			},
-			ShouldCreateConversation: telnyx.Bool(true),
-			Text:                     telnyx.String("text"),
+			ShouldCreateConversation: telnyx.Bool(false),
+			Text:                     telnyx.String("Text"),
 		},
 	)
 	if err != nil {

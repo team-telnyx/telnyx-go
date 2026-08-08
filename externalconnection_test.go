@@ -192,7 +192,7 @@ func TestExternalConnectionUpdateLocation(t *testing.T) {
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.ExternalConnectionUpdateLocationParams{
 			ID:                       "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-			StaticEmergencyAddressID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			StaticEmergencyAddressID: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
 		},
 	)
 	if err != nil {

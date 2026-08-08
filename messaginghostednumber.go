@@ -87,7 +87,7 @@ func (r *MessagingHostedNumberService) ListAutoPaging(ctx context.Context, query
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a messaging hosted number
+// Removes the specified hosted number from Telnyx messaging management.
 func (r *MessagingHostedNumberService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *MessagingHostedNumberDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

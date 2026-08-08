@@ -60,7 +60,7 @@ func (r *PricingProductService) Get(ctx context.Context, slug string, query Pric
 // Returns the full product catalog with pagination. Each entry contains a slug,
 // display name, and description. Use the slug to fetch per-product pricing via GET
 // /pricing/products/{slug}.
-func (r *PricingProductService) List(ctx context.Context, query PricingProductListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPaginationForInexplicitNumberOrders[PricingProductListResponse], err error) {
+func (r *PricingProductService) List(ctx context.Context, query PricingProductListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PricingProductListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -80,8 +80,8 @@ func (r *PricingProductService) List(ctx context.Context, query PricingProductLi
 // Returns the full product catalog with pagination. Each entry contains a slug,
 // display name, and description. Use the slug to fetch per-product pricing via GET
 // /pricing/products/{slug}.
-func (r *PricingProductService) ListAutoPaging(ctx context.Context, query PricingProductListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationForInexplicitNumberOrdersAutoPager[PricingProductListResponse] {
-	return pagination.NewDefaultFlatPaginationForInexplicitNumberOrdersAutoPager(r.List(ctx, query, opts...))
+func (r *PricingProductService) ListAutoPaging(ctx context.Context, query PricingProductListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PricingProductListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type PricingPaginationMeta struct {
@@ -316,10 +316,11 @@ func (r *PricingProductListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type PricingProductGetParams struct {
+	FilterCountryISO param.Opt[string] `query:"filter[country_iso],omitzero" json:"-"`
 	// Page number (1-based).
-	PageNumber param.Opt[int64] `query:"page_number,omitzero" json:"-"`
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	// Number of items per page (max 100).
-	PageSize param.Opt[int64] `query:"page_size,omitzero" json:"-"`
+	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	paramObj
 }
 
@@ -334,9 +335,9 @@ func (r PricingProductGetParams) URLQuery() (v url.Values, err error) {
 
 type PricingProductListParams struct {
 	// Page number (1-based).
-	PageNumber param.Opt[int64] `query:"page_number,omitzero" json:"-"`
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	// Number of items per page (max 100).
-	PageSize param.Opt[int64] `query:"page_size,omitzero" json:"-"`
+	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	paramObj
 }
 

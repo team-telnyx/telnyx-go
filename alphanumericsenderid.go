@@ -131,6 +131,28 @@ const (
 	AlphanumericSenderIDRecordTypeAlphanumericSenderID AlphanumericSenderIDRecordType = "alphanumeric_sender_id"
 )
 
+type MessagingPaginationMeta0b38e7044b struct {
+	PageNumber   int64 `json:"page_number" api:"required"`
+	PageSize     int64 `json:"page_size" api:"required"`
+	TotalPages   int64 `json:"total_pages" api:"required"`
+	TotalResults int64 `json:"total_results" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingPaginationMeta0b38e7044b) RawJSON() string { return r.JSON.raw }
+func (r *MessagingPaginationMeta0b38e7044b) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AlphanumericSenderIDNewResponse struct {
 	Data AlphanumericSenderID `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].

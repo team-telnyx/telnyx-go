@@ -50,8 +50,8 @@ func TestOAuthGrants(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.OAuth.Grants(context.TODO(), telnyx.OAuthGrantsParams{
-		Allowed:      true,
-		ConsentToken: "consent_token",
+		Allowed:      false,
+		ConsentToken: "string",
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -78,7 +78,7 @@ func TestOAuthIntrospect(t *testing.T) {
 		option.WithClientSecret("My Client Secret"),
 	)
 	_, err := client.OAuth.Introspect(context.TODO(), telnyx.OAuthIntrospectParams{
-		Token: "token",
+		Token: "string",
 	})
 	if err != nil {
 		var apierr *telnyx.Error

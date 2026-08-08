@@ -42,7 +42,8 @@ func NewPhoneNumberJobService(opts ...option.RequestOption) (r PhoneNumberJobSer
 	return
 }
 
-// Retrieve a phone numbers job
+// Returns the status and details of the phone-number background job identified by
+// `id`.
 func (r *PhoneNumberJobService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PhoneNumberJobGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -54,7 +55,8 @@ func (r *PhoneNumberJobService) Get(ctx context.Context, id string, opts ...opti
 	return res, err
 }
 
-// Lists the phone numbers jobs
+// Returns background jobs that operate on phone numbers. Results can be filtered
+// by job type and sorted by creation time, and include pagination metadata.
 func (r *PhoneNumberJobService) List(ctx context.Context, query PhoneNumberJobListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PhoneNumbersJob], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -72,7 +74,8 @@ func (r *PhoneNumberJobService) List(ctx context.Context, query PhoneNumberJobLi
 	return res, nil
 }
 
-// Lists the phone numbers jobs
+// Returns background jobs that operate on phone numbers. Results can be filtered
+// by job type and sorted by creation time, and include pagination metadata.
 func (r *PhoneNumberJobService) ListAutoPaging(ctx context.Context, query PhoneNumberJobListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PhoneNumbersJob] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }

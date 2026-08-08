@@ -41,7 +41,9 @@ func NewRoomRecordingService(opts ...option.RequestOption) (r RoomRecordingServi
 	return
 }
 
-// View a room recording.
+// Returns the recording identified by `room_recording_id`, including its room,
+// session, participant, status, media details, lifecycle timestamps, and download
+// URL.
 func (r *RoomRecordingService) Get(ctx context.Context, roomRecordingID string, opts ...option.RequestOption) (res *RoomRecordingGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if roomRecordingID == "" {
@@ -53,7 +55,8 @@ func (r *RoomRecordingService) Get(ctx context.Context, roomRecordingID string, 
 	return res, err
 }
 
-// View a list of room recordings.
+// Returns a paginated list of room recordings. Filter recordings by room, session,
+// participant, recording type, status, duration, or start and end dates.
 func (r *RoomRecordingService) List(ctx context.Context, query RoomRecordingListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[RoomRecording], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -71,7 +74,8 @@ func (r *RoomRecordingService) List(ctx context.Context, query RoomRecordingList
 	return res, nil
 }
 
-// View a list of room recordings.
+// Returns a paginated list of room recordings. Filter recordings by room, session,
+// participant, recording type, status, duration, or start and end dates.
 func (r *RoomRecordingService) ListAutoPaging(ctx context.Context, query RoomRecordingListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[RoomRecording] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
@@ -89,7 +93,9 @@ func (r *RoomRecordingService) Delete(ctx context.Context, roomRecordingID strin
 	return err
 }
 
-// Delete several room recordings in a bulk.
+// Deletes the room recordings that match the supplied filters and returns the
+// number of recordings affected. Filters support room, session, participant,
+// recording type, status, duration, and start or end dates.
 func (r *RoomRecordingService) DeleteBulk(ctx context.Context, body RoomRecordingDeleteBulkParams, opts ...option.RequestOption) (res *RoomRecordingDeleteBulkResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "room_recordings"

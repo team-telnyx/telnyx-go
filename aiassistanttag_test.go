@@ -53,7 +53,7 @@ func TestAIAssistantTagAdd(t *testing.T) {
 		context.TODO(),
 		"assistant_id",
 		telnyx.AIAssistantTagAddParams{
-			Tag: "tag",
+			Tag: "Tag",
 		},
 	)
 	if err != nil {

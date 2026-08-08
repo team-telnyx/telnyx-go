@@ -31,7 +31,7 @@ func TestAIConversationNewWithOptionalParams(t *testing.T) {
 		Metadata: map[string]string{
 			"foo": "string",
 		},
-		Name: telnyx.String("name"),
+		Name: telnyx.String("string"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -172,16 +172,16 @@ func TestAIConversationAddMessageWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.AIConversationAddMessageParams{
-			Role:    "role",
-			Content: telnyx.String("content"),
+			Role:    "Role",
+			Content: telnyx.String(""),
 			Metadata: map[string]telnyx.AIConversationAddMessageParamsMetadataUnion{
 				"foo": {
 					OfString: telnyx.String("string"),
 				},
 			},
-			Name:       telnyx.String("name"),
+			Name:       telnyx.String("Name"),
 			SentAt:     telnyx.Time(time.Now()),
-			ToolCallID: telnyx.String("tool_call_id"),
+			ToolCallID: telnyx.String("Tool Call Id"),
 			ToolCalls: []map[string]any{{
 				"foo": "bar",
 			}},

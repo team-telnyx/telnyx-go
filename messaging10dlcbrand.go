@@ -164,7 +164,9 @@ func (r *Messaging10dlcBrandService) GetSMSOtpByReference(ctx context.Context, r
 	return res, err
 }
 
-// Resend brand 2FA email
+// Requests a new two-factor authentication email for the specified 10DLC brand.
+// Complete verification through the link delivered to the brand contact before
+// continuing registration.
 func (r *Messaging10dlcBrandService) Resend2faEmail(ctx context.Context, brandID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)

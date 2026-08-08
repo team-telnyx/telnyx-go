@@ -28,8 +28,8 @@ func TestAccessIPRangeNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AccessIPRanges.New(context.TODO(), telnyx.AccessIPRangeNewParams{
-		CidrBlock:   "cidr_block",
-		Description: telnyx.String("description"),
+		CidrBlock:   "Cidr Block",
+		Description: telnyx.String("Description"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

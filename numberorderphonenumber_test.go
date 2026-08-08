@@ -80,7 +80,7 @@ func TestNumberOrderPhoneNumberUpdateRequirementGroup(t *testing.T) {
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.NumberOrderPhoneNumberUpdateRequirementGroupParams{
-			RequirementGroupID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			RequirementGroupID: "a4b201f9-8646-4e54-a7d2-b2e403eeaf8c",
 		},
 	)
 	if err != nil {

@@ -27,8 +27,8 @@ func TestEmailUnsubscribeGroupNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.EmailUnsubscribeGroups.New(context.TODO(), telnyx.EmailUnsubscribeGroupNewParams{
-		Name:        "x",
-		Description: telnyx.String("description"),
+		Name:        "Marketing Newsletter",
+		Description: telnyx.String("Weekly product updates and promotions"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -79,7 +79,7 @@ func TestEmailUnsubscribeGroupUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.EmailUnsubscribeGroupUpdateParams{
-			Description: telnyx.String("description"),
+			Description: telnyx.String("Weekly product updates and promotions"),
 			Name:        telnyx.String("x"),
 		},
 	)

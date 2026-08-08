@@ -36,7 +36,8 @@ func NewVerifiedNumberActionService(opts ...option.RequestOption) (r VerifiedNum
 	return
 }
 
-// Submit verification code
+// Submit the verification code received via the selected verification method to
+// verify a phone number.
 func (r *VerifiedNumberActionService) SubmitVerificationCode(ctx context.Context, phoneNumber string, body VerifiedNumberActionSubmitVerificationCodeParams, opts ...option.RequestOption) (res *VerifiedNumberDataWrapper, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {

@@ -39,7 +39,8 @@ func NewWhatsappTemplateService(opts ...option.RequestOption) (r WhatsappTemplat
 	return
 }
 
-// Create a Whatsapp message template
+// Creates a WhatsApp message template for review and subsequent use in template
+// messages.
 func (r *WhatsappTemplateService) New(ctx context.Context, body WhatsappTemplateNewParams, opts ...option.RequestOption) (res *WhatsappTemplateNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/whatsapp/message_templates"
@@ -47,7 +48,8 @@ func (r *WhatsappTemplateService) New(ctx context.Context, body WhatsappTemplate
 	return res, err
 }
 
-// List Whatsapp message templates
+// Returns WhatsApp message templates owned by the authenticated account, including
+// their current review state.
 func (r *WhatsappTemplateService) List(ctx context.Context, query WhatsappTemplateListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[shared.WhatsappTemplateData], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -65,7 +67,8 @@ func (r *WhatsappTemplateService) List(ctx context.Context, query WhatsappTempla
 	return res, nil
 }
 
-// List Whatsapp message templates
+// Returns WhatsApp message templates owned by the authenticated account, including
+// their current review state.
 func (r *WhatsappTemplateService) ListAutoPaging(ctx context.Context, query WhatsappTemplateListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[shared.WhatsappTemplateData] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }

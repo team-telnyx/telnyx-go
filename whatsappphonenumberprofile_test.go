@@ -53,14 +53,14 @@ func TestWhatsappPhoneNumberProfileUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"phone_number",
 		telnyx.WhatsappPhoneNumberProfileUpdateParams{
-			About:       telnyx.String("about"),
-			Address:     telnyx.String("address"),
-			Category:    telnyx.String("category"),
-			Description: telnyx.String("description"),
-			DisplayName: telnyx.String("display_name"),
-			Email:       telnyx.String("email"),
-			ProfileID:   telnyx.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			Website:     telnyx.String("website"),
+			About:       telnyx.String("string"),
+			Address:     telnyx.String("string"),
+			Category:    telnyx.String("string"),
+			Description: telnyx.String("string"),
+			DisplayName: telnyx.String("string"),
+			Email:       telnyx.String("string"),
+			ProfileID:   telnyx.String("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
+			Website:     telnyx.String("string"),
 		},
 	)
 	if err != nil {

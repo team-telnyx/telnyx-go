@@ -38,7 +38,7 @@ func NewGlobalIPAssignmentHealthService(opts ...option.RequestOption) (r GlobalI
 	return
 }
 
-// Global IP Assignment Health Check Metrics
+// Retrieve health check metrics for your Global IP assignments.
 func (r *GlobalIPAssignmentHealthService) Get(ctx context.Context, query GlobalIPAssignmentHealthGetParams, opts ...option.RequestOption) (res *GlobalIPAssignmentHealthGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_assignment_health"

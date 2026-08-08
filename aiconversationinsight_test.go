@@ -27,12 +27,12 @@ func TestAIConversationInsightNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.Conversations.Insights.New(context.TODO(), telnyx.AIConversationInsightNewParams{
-		Instructions: "instructions",
-		Name:         "name",
+		Instructions: "Instructions",
+		Name:         "Name",
 		JsonSchema: telnyx.AIConversationInsightNewParamsJsonSchemaUnion{
 			OfString: telnyx.String("string"),
 		},
-		Webhook: telnyx.String("webhook"),
+		Webhook: telnyx.String(""),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -83,12 +83,12 @@ func TestAIConversationInsightUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.AIConversationInsightUpdateParams{
-			Instructions: telnyx.String("instructions"),
+			Instructions: telnyx.String("Instructions"),
 			JsonSchema: telnyx.AIConversationInsightUpdateParamsJsonSchemaUnion{
 				OfString: telnyx.String("string"),
 			},
-			Name:    telnyx.String("name"),
-			Webhook: telnyx.String("webhook"),
+			Name:    telnyx.String("Name"),
+			Webhook: telnyx.String("Webhook"),
 		},
 	)
 	if err != nil {

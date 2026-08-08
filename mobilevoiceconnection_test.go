@@ -28,16 +28,16 @@ func TestMobileVoiceConnectionNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.MobileVoiceConnections.New(context.TODO(), telnyx.MobileVoiceConnectionNewParams{
 		Active:         telnyx.Bool(true),
-		ConnectionName: telnyx.String("connection_name"),
+		ConnectionName: telnyx.String("Telnyx Mobile Voice IMS"),
 		Inbound: telnyx.MobileVoiceConnectionNewParamsInbound{
 			ChannelLimit: telnyx.Int(0),
 		},
 		Outbound: telnyx.MobileVoiceConnectionNewParamsOutbound{
 			ChannelLimit:           telnyx.Int(0),
-			OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
+			OutboundVoiceProfileID: telnyx.String("string"),
 		},
 		Tags:                    []string{"string"},
-		WebhookAPIVersion:       telnyx.MobileVoiceConnectionNewParamsWebhookAPIVersionV1,
+		WebhookAPIVersion:       telnyx.MobileVoiceConnectionNewParamsWebhookAPIVersionV2,
 		WebhookEventFailoverURL: telnyx.String("webhook_event_failover_url"),
 		WebhookEventURL:         telnyx.String("webhook_event_url"),
 		WebhookTimeoutSecs:      telnyx.Int(0),
@@ -91,14 +91,14 @@ func TestMobileVoiceConnectionUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		telnyx.MobileVoiceConnectionUpdateParams{
-			Active:         telnyx.Bool(true),
-			ConnectionName: telnyx.String("connection_name"),
+			Active:         telnyx.Bool(false),
+			ConnectionName: telnyx.String("string"),
 			Inbound: telnyx.MobileVoiceConnectionUpdateParamsInbound{
 				ChannelLimit: telnyx.Int(0),
 			},
 			Outbound: telnyx.MobileVoiceConnectionUpdateParamsOutbound{
 				ChannelLimit:           telnyx.Int(0),
-				OutboundVoiceProfileID: telnyx.String("outbound_voice_profile_id"),
+				OutboundVoiceProfileID: telnyx.String("string"),
 			},
 			Tags:                    []string{"string"},
 			WebhookAPIVersion:       telnyx.MobileVoiceConnectionUpdateParamsWebhookAPIVersionV1,

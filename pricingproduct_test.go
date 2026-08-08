@@ -30,8 +30,9 @@ func TestPricingProductGetWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"slug",
 		telnyx.PricingProductGetParams{
-			PageNumber: telnyx.Int(1),
-			PageSize:   telnyx.Int(1),
+			FilterCountryISO: telnyx.String("SE"),
+			PageNumber:       telnyx.Int(1),
+			PageSize:         telnyx.Int(1),
 		},
 	)
 	if err != nil {

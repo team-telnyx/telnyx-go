@@ -460,14 +460,16 @@ func (r *AssistantMcpServerParam) UnmarshalJSON(data []byte) error {
 // [InferenceEmbeddingWebhookToolParamsResp], [AssistantToolClientSideTool],
 // [RetrievalTool], [AssistantToolHandoff], [HangupTool], [AssistantToolTransfer],
 // [AssistantToolInvite], [AssistantToolRefer], [AssistantToolSendDtmf],
-// [AssistantToolSendMessage], [AssistantToolSkipTurn], [AssistantToolPay].
+// [AssistantToolSendMessage], [AssistantToolSkipTurn], [AssistantToolPay],
+// [AssistantToolUpdateDynamicVariables].
 //
 // Use the [AssistantToolUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AssistantToolUnion struct {
 	// Any of "webhook", "client_side_tool", "retrieval", "handoff", "hangup",
-	// "transfer", "invite", "refer", "send_dtmf", "send_message", "skip_turn", "pay".
+	// "transfer", "invite", "refer", "send_dtmf", "send_message", "skip_turn", "pay",
+	// "update_dynamic_variables".
 	Type string `json:"type"`
 	// This field is from variant [InferenceEmbeddingWebhookToolParamsResp].
 	Webhook InferenceEmbeddingWebhookToolParamsWebhookResp `json:"webhook"`
@@ -492,22 +494,25 @@ type AssistantToolUnion struct {
 	// This field is from variant [AssistantToolSkipTurn].
 	SkipTurn AssistantToolSkipTurnSkipTurn `json:"skip_turn"`
 	// This field is from variant [AssistantToolPay].
-	Pay  PayToolParamsResp `json:"pay"`
-	JSON struct {
-		Type           respjson.Field
-		Webhook        respjson.Field
-		ClientSideTool respjson.Field
-		Retrieval      respjson.Field
-		Handoff        respjson.Field
-		Hangup         respjson.Field
-		Transfer       respjson.Field
-		Invite         respjson.Field
-		Refer          respjson.Field
-		SendDtmf       respjson.Field
-		SendMessage    respjson.Field
-		SkipTurn       respjson.Field
-		Pay            respjson.Field
-		raw            string
+	Pay PayToolParamsResp `json:"pay"`
+	// This field is from variant [AssistantToolUpdateDynamicVariables].
+	UpdateDynamicVariables UpdateDynamicVariablesToolParamsResp `json:"update_dynamic_variables"`
+	JSON                   struct {
+		Type                   respjson.Field
+		Webhook                respjson.Field
+		ClientSideTool         respjson.Field
+		Retrieval              respjson.Field
+		Handoff                respjson.Field
+		Hangup                 respjson.Field
+		Transfer               respjson.Field
+		Invite                 respjson.Field
+		Refer                  respjson.Field
+		SendDtmf               respjson.Field
+		SendMessage            respjson.Field
+		SkipTurn               respjson.Field
+		Pay                    respjson.Field
+		UpdateDynamicVariables respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -529,6 +534,7 @@ func (AssistantToolSendDtmf) implAssistantToolUnion()                   {}
 func (AssistantToolSendMessage) implAssistantToolUnion()                {}
 func (AssistantToolSkipTurn) implAssistantToolUnion()                   {}
 func (AssistantToolPay) implAssistantToolUnion()                        {}
+func (AssistantToolUpdateDynamicVariables) implAssistantToolUnion()     {}
 
 // Use the following switch statement to find the correct variant
 //
@@ -545,6 +551,7 @@ func (AssistantToolPay) implAssistantToolUnion()                        {}
 //	case telnyx.AssistantToolSendMessage:
 //	case telnyx.AssistantToolSkipTurn:
 //	case telnyx.AssistantToolPay:
+//	case telnyx.AssistantToolUpdateDynamicVariables:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -574,6 +581,8 @@ func (u AssistantToolUnion) AsAny() anyAssistantTool {
 		return u.AsSkipTurn()
 	case "pay":
 		return u.AsPay()
+	case "update_dynamic_variables":
+		return u.AsUpdateDynamicVariables()
 	}
 	return nil
 }
@@ -634,6 +643,11 @@ func (u AssistantToolUnion) AsSkipTurn() (v AssistantToolSkipTurn) {
 }
 
 func (u AssistantToolUnion) AsPay() (v AssistantToolPay) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u AssistantToolUnion) AsUpdateDynamicVariables() (v AssistantToolUpdateDynamicVariables) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1480,6 +1494,30 @@ func (r *AssistantToolPay) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The update_dynamic_variables tool lets the assistant write values into the
+// conversation's dynamic-variables context during the call. Updated variables are
+// available to later `{{variable}}` interpolation (prompts, speak nodes, message
+// templates) and to flow edge conditions. Declare each variable the assistant is
+// allowed to set under `updatable_variables`.
+type AssistantToolUpdateDynamicVariables struct {
+	Type constant.UpdateDynamicVariables `json:"type" default:"update_dynamic_variables"`
+	// Configuration for an update_dynamic_variables tool.
+	UpdateDynamicVariables UpdateDynamicVariablesToolParamsResp `json:"update_dynamic_variables" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type                   respjson.Field
+		UpdateDynamicVariables respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolUpdateDynamicVariables) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolUpdateDynamicVariables) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 func AssistantToolParamOfWebhook(webhook InferenceEmbeddingWebhookToolParamsWebhook) AssistantToolUnionParam {
 	var variant InferenceEmbeddingWebhookToolParams
 	variant.Webhook = webhook
@@ -1552,22 +1590,29 @@ func AssistantToolParamOfPay(pay PayToolParams) AssistantToolUnionParam {
 	return AssistantToolUnionParam{OfPay: &variant}
 }
 
+func AssistantToolParamOfUpdateDynamicVariables(updateDynamicVariables UpdateDynamicVariablesToolParams) AssistantToolUnionParam {
+	var variant AssistantToolUpdateDynamicVariablesParam
+	variant.UpdateDynamicVariables = updateDynamicVariables
+	return AssistantToolUnionParam{OfUpdateDynamicVariables: &variant}
+}
+
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type AssistantToolUnionParam struct {
-	OfWebhook        *InferenceEmbeddingWebhookToolParams `json:",omitzero,inline"`
-	OfClientSideTool *AssistantToolClientSideToolParam    `json:",omitzero,inline"`
-	OfRetrieval      *RetrievalToolParam                  `json:",omitzero,inline"`
-	OfHandoff        *AssistantToolHandoffParam           `json:",omitzero,inline"`
-	OfHangup         *HangupToolParam                     `json:",omitzero,inline"`
-	OfTransfer       *AssistantToolTransferParam          `json:",omitzero,inline"`
-	OfInvite         *AssistantToolInviteParam            `json:",omitzero,inline"`
-	OfRefer          *AssistantToolReferParam             `json:",omitzero,inline"`
-	OfSendDtmf       *AssistantToolSendDtmfParam          `json:",omitzero,inline"`
-	OfSendMessage    *AssistantToolSendMessageParam       `json:",omitzero,inline"`
-	OfSkipTurn       *AssistantToolSkipTurnParam          `json:",omitzero,inline"`
-	OfPay            *AssistantToolPayParam               `json:",omitzero,inline"`
+	OfWebhook                *InferenceEmbeddingWebhookToolParams      `json:",omitzero,inline"`
+	OfClientSideTool         *AssistantToolClientSideToolParam         `json:",omitzero,inline"`
+	OfRetrieval              *RetrievalToolParam                       `json:",omitzero,inline"`
+	OfHandoff                *AssistantToolHandoffParam                `json:",omitzero,inline"`
+	OfHangup                 *HangupToolParam                          `json:",omitzero,inline"`
+	OfTransfer               *AssistantToolTransferParam               `json:",omitzero,inline"`
+	OfInvite                 *AssistantToolInviteParam                 `json:",omitzero,inline"`
+	OfRefer                  *AssistantToolReferParam                  `json:",omitzero,inline"`
+	OfSendDtmf               *AssistantToolSendDtmfParam               `json:",omitzero,inline"`
+	OfSendMessage            *AssistantToolSendMessageParam            `json:",omitzero,inline"`
+	OfSkipTurn               *AssistantToolSkipTurnParam               `json:",omitzero,inline"`
+	OfPay                    *AssistantToolPayParam                    `json:",omitzero,inline"`
+	OfUpdateDynamicVariables *AssistantToolUpdateDynamicVariablesParam `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1583,7 +1628,8 @@ func (u AssistantToolUnionParam) MarshalJSON() ([]byte, error) {
 		u.OfSendDtmf,
 		u.OfSendMessage,
 		u.OfSkipTurn,
-		u.OfPay)
+		u.OfPay,
+		u.OfUpdateDynamicVariables)
 }
 func (u *AssistantToolUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1614,6 +1660,8 @@ func (u *AssistantToolUnionParam) asAny() any {
 		return u.OfSkipTurn
 	} else if !param.IsOmitted(u.OfPay) {
 		return u.OfPay
+	} else if !param.IsOmitted(u.OfUpdateDynamicVariables) {
+		return u.OfUpdateDynamicVariables
 	}
 	return nil
 }
@@ -1715,6 +1763,14 @@ func (u AssistantToolUnionParam) GetPay() *PayToolParams {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u AssistantToolUnionParam) GetUpdateDynamicVariables() *UpdateDynamicVariablesToolParams {
+	if vt := u.OfUpdateDynamicVariables; vt != nil {
+		return &vt.UpdateDynamicVariables
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u AssistantToolUnionParam) GetType() *string {
 	if vt := u.OfWebhook; vt != nil {
 		return (*string)(&vt.Type)
@@ -1740,6 +1796,8 @@ func (u AssistantToolUnionParam) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfPay; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfUpdateDynamicVariables; vt != nil {
+		return (*string)(&vt.Type)
 	}
 	return nil
 }
@@ -1759,6 +1817,7 @@ func init() {
 		apijson.Discriminator[AssistantToolSendMessageParam]("send_message"),
 		apijson.Discriminator[AssistantToolSkipTurnParam]("skip_turn"),
 		apijson.Discriminator[AssistantToolPayParam]("pay"),
+		apijson.Discriminator[AssistantToolUpdateDynamicVariablesParam]("update_dynamic_variables"),
 	)
 }
 
@@ -2488,6 +2547,30 @@ func (r AssistantToolPayParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *AssistantToolPayParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The update_dynamic_variables tool lets the assistant write values into the
+// conversation's dynamic-variables context during the call. Updated variables are
+// available to later `{{variable}}` interpolation (prompts, speak nodes, message
+// templates) and to flow edge conditions. Declare each variable the assistant is
+// allowed to set under `updatable_variables`.
+//
+// The properties Type, UpdateDynamicVariables are required.
+type AssistantToolUpdateDynamicVariablesParam struct {
+	// Configuration for an update_dynamic_variables tool.
+	UpdateDynamicVariables UpdateDynamicVariablesToolParams `json:"update_dynamic_variables,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as
+	// "update_dynamic_variables".
+	Type constant.UpdateDynamicVariables `json:"type" default:"update_dynamic_variables"`
+	paramObj
+}
+
+func (r AssistantToolUpdateDynamicVariablesParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolUpdateDynamicVariablesParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolUpdateDynamicVariablesParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -5262,6 +5345,10 @@ type TelephonySettings struct {
 	// Default Texml App used for voice calls with your assistant. This will be created
 	// automatically on assistant creation.
 	DefaultTexmlAppID string `json:"default_texml_app_id"`
+	// Disable inbound DTMF for the entire call. Must be set to true if a 'pay' tool is
+	// configured anywhere on the assistant — on the main tool array or on any workflow
+	// node — enforced at write time.
+	DisableDtmf bool `json:"disable_dtmf"`
 	// The noise suppression engine to use. Use 'disabled' to turn off noise
 	// suppression.
 	//
@@ -5300,6 +5387,7 @@ type TelephonySettings struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DefaultTexmlAppID               respjson.Field
+		DisableDtmf                     respjson.Field
 		NoiseSuppression                respjson.Field
 		NoiseSuppressionConfig          respjson.Field
 		RecordingSettings               respjson.Field
@@ -5480,6 +5568,10 @@ type TelephonySettingsParam struct {
 	// Default Texml App used for voice calls with your assistant. This will be created
 	// automatically on assistant creation.
 	DefaultTexmlAppID param.Opt[string] `json:"default_texml_app_id,omitzero"`
+	// Disable inbound DTMF for the entire call. Must be set to true if a 'pay' tool is
+	// configured anywhere on the assistant — on the main tool array or on any workflow
+	// node — enforced at write time.
+	DisableDtmf param.Opt[bool] `json:"disable_dtmf,omitzero"`
 	// When enabled, allows users to interact with your AI assistant directly from your
 	// website without requiring authentication. This is required for FE widgets that
 	// work with assistants that have telephony enabled.

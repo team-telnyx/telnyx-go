@@ -46,7 +46,8 @@ func NewMessagingProfileService(opts ...option.RequestOption) (r MessagingProfil
 	return
 }
 
-// Create a messaging profile
+// Creates a messaging profile that controls outbound sender selection, webhook
+// delivery, and inbound message handling for associated numbers and short codes.
 func (r *MessagingProfileService) New(ctx context.Context, body MessagingProfileNewParams, opts ...option.RequestOption) (res *MessagingProfileNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "messaging_profiles"
@@ -54,7 +55,8 @@ func (r *MessagingProfileService) New(ctx context.Context, body MessagingProfile
 	return res, err
 }
 
-// Retrieve a messaging profile
+// Returns the complete configuration of the specified messaging profile, including
+// webhook and sender-selection settings.
 func (r *MessagingProfileService) Get(ctx context.Context, messagingProfileID string, opts ...option.RequestOption) (res *MessagingProfileGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if messagingProfileID == "" {
@@ -66,7 +68,8 @@ func (r *MessagingProfileService) Get(ctx context.Context, messagingProfileID st
 	return res, err
 }
 
-// Update a messaging profile
+// Updates the supplied settings on the specified messaging profile. Settings
+// omitted from the request remain unchanged.
 func (r *MessagingProfileService) Update(ctx context.Context, messagingProfileID string, body MessagingProfileUpdateParams, opts ...option.RequestOption) (res *MessagingProfileUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if messagingProfileID == "" {
@@ -78,7 +81,8 @@ func (r *MessagingProfileService) Update(ctx context.Context, messagingProfileID
 	return res, err
 }
 
-// List messaging profiles
+// Returns messaging profiles owned by the authenticated account. Apply the
+// documented filters and pagination parameters to narrow the result set.
 func (r *MessagingProfileService) List(ctx context.Context, query MessagingProfileListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MessagingProfile], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -96,12 +100,14 @@ func (r *MessagingProfileService) List(ctx context.Context, query MessagingProfi
 	return res, nil
 }
 
-// List messaging profiles
+// Returns messaging profiles owned by the authenticated account. Apply the
+// documented filters and pagination parameters to narrow the result set.
 func (r *MessagingProfileService) ListAutoPaging(ctx context.Context, query MessagingProfileListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MessagingProfile] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a messaging profile
+// Deletes the specified messaging profile and returns the profile's final
+// configuration.
 func (r *MessagingProfileService) Delete(ctx context.Context, messagingProfileID string, opts ...option.RequestOption) (res *MessagingProfileDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if messagingProfileID == "" {
@@ -140,7 +146,8 @@ func (r *MessagingProfileService) ListAlphanumericSenderIDsAutoPaging(ctx contex
 	return pagination.NewDefaultFlatPaginationAutoPager(r.ListAlphanumericSenderIDs(ctx, id, query, opts...))
 }
 
-// List phone numbers associated with a messaging profile
+// Returns the phone numbers currently associated with the specified messaging
+// profile.
 func (r *MessagingProfileService) ListPhoneNumbers(ctx context.Context, messagingProfileID string, query MessagingProfileListPhoneNumbersParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[shared.PhoneNumberWithMessagingSettings], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -162,12 +169,14 @@ func (r *MessagingProfileService) ListPhoneNumbers(ctx context.Context, messagin
 	return res, nil
 }
 
-// List phone numbers associated with a messaging profile
+// Returns the phone numbers currently associated with the specified messaging
+// profile.
 func (r *MessagingProfileService) ListPhoneNumbersAutoPaging(ctx context.Context, messagingProfileID string, query MessagingProfileListPhoneNumbersParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[shared.PhoneNumberWithMessagingSettings] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.ListPhoneNumbers(ctx, messagingProfileID, query, opts...))
 }
 
-// List short codes associated with a messaging profile
+// Returns the short codes currently associated with the specified messaging
+// profile.
 func (r *MessagingProfileService) ListShortCodes(ctx context.Context, messagingProfileID string, query MessagingProfileListShortCodesParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[shared.ShortCode], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -189,7 +198,8 @@ func (r *MessagingProfileService) ListShortCodes(ctx context.Context, messagingP
 	return res, nil
 }
 
-// List short codes associated with a messaging profile
+// Returns the short codes currently associated with the specified messaging
+// profile.
 func (r *MessagingProfileService) ListShortCodesAutoPaging(ctx context.Context, messagingProfileID string, query MessagingProfileListShortCodesParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[shared.ShortCode] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.ListShortCodes(ctx, messagingProfileID, query, opts...))
 }

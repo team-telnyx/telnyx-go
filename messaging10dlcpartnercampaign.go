@@ -125,7 +125,7 @@ func (r *Messaging10dlcPartnerCampaignService) ListSharedByMeAutoPaging(ctx cont
 	return pagination.NewPerPagePaginationV2AutoPager(r.ListSharedByMe(ctx, query, opts...))
 }
 
-// Get Sharing Status
+// Returns the partner-sharing state for the specified campaign.
 func (r *Messaging10dlcPartnerCampaignService) GetSharingStatus(ctx context.Context, campaignID string, opts ...option.RequestOption) (res *Messaging10dlcPartnerCampaignGetSharingStatusResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if campaignID == "" {

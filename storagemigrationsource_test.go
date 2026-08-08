@@ -28,13 +28,13 @@ func TestStorageMigrationSourceNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Storage.MigrationSources.New(context.TODO(), telnyx.StorageMigrationSourceNewParams{
 		MigrationSourceParams: telnyx.MigrationSourceParams{
-			BucketName: "bucket_name",
+			BucketName: "string",
 			Provider:   telnyx.MigrationSourceParamsProviderAws,
 			ProviderAuth: telnyx.MigrationSourceParamsProviderAuth{
-				AccessKey:       telnyx.String("access_key"),
-				SecretAccessKey: telnyx.String("secret_access_key"),
+				AccessKey:       telnyx.String("string"),
+				SecretAccessKey: telnyx.String("string"),
 			},
-			SourceRegion: telnyx.String("source_region"),
+			SourceRegion: telnyx.String("string"),
 		},
 	})
 	if err != nil {

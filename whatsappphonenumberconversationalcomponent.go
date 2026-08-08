@@ -38,7 +38,8 @@ func NewWhatsappPhoneNumberConversationalComponentService(opts ...option.Request
 	return
 }
 
-// Get phone number conversational components
+// Returns the conversational components configured for the specified WhatsApp
+// phone number.
 func (r *WhatsappPhoneNumberConversationalComponentService) List(ctx context.Context, phoneNumber string, opts ...option.RequestOption) (res *WhatsappPhoneNumberConversationalComponentListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
@@ -50,7 +51,8 @@ func (r *WhatsappPhoneNumberConversationalComponentService) List(ctx context.Con
 	return res, err
 }
 
-// Update phone number conversational components
+// Updates the conversational components configured for the specified WhatsApp
+// phone number.
 func (r *WhatsappPhoneNumberConversationalComponentService) PatchAll(ctx context.Context, phoneNumber string, body WhatsappPhoneNumberConversationalComponentPatchAllParams, opts ...option.RequestOption) (res *WhatsappPhoneNumberConversationalComponentPatchAllResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {

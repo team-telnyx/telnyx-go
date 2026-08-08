@@ -38,7 +38,9 @@ func NewPhoneNumberCsvDownloadService(opts ...option.RequestOption) (r PhoneNumb
 	return
 }
 
-// Create a CSV download
+// Starts generation of a CSV export for phone numbers matching the supplied
+// filters. The `csv_format` parameter selects the output format, and the response
+// contains the resulting download record.
 func (r *PhoneNumberCsvDownloadService) New(ctx context.Context, body PhoneNumberCsvDownloadNewParams, opts ...option.RequestOption) (res *PhoneNumberCsvDownloadNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "phone_numbers/csv_downloads"
@@ -46,7 +48,8 @@ func (r *PhoneNumberCsvDownloadService) New(ctx context.Context, body PhoneNumbe
 	return res, err
 }
 
-// Retrieve a CSV download
+// Returns the current status and download details for the CSV export identified by
+// `id`.
 func (r *PhoneNumberCsvDownloadService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PhoneNumberCsvDownloadGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -58,7 +61,8 @@ func (r *PhoneNumberCsvDownloadService) Get(ctx context.Context, id string, opts
 	return res, err
 }
 
-// List CSV downloads
+// Returns CSV export jobs created for account phone numbers, including each
+// export's current status and pagination metadata.
 func (r *PhoneNumberCsvDownloadService) List(ctx context.Context, query PhoneNumberCsvDownloadListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[CsvDownload], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -76,7 +80,8 @@ func (r *PhoneNumberCsvDownloadService) List(ctx context.Context, query PhoneNum
 	return res, nil
 }
 
-// List CSV downloads
+// Returns CSV export jobs created for account phone numbers, including each
+// export's current status and pagination metadata.
 func (r *PhoneNumberCsvDownloadService) ListAutoPaging(ctx context.Context, query PhoneNumberCsvDownloadListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[CsvDownload] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
