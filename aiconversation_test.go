@@ -83,7 +83,7 @@ func TestAIConversationUpdateWithOptionalParams(t *testing.T) {
 		"conversation_id",
 		telnyx.AIConversationUpdateParams{
 			Metadata: map[string]string{
-				"foo": "string",
+				"ai_disabled": "true",
 			},
 		},
 	)

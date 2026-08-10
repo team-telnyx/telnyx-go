@@ -31,10 +31,10 @@ func TestAIMissionRunNewWithOptionalParams(t *testing.T) {
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.AIMissionRunNewParams{
 			Input: map[string]any{
-				"foo": "bar",
+				"objective": "bar",
 			},
 			Metadata: map[string]any{
-				"foo": "bar",
+				"requested_by": "bar",
 			},
 		},
 	)
