@@ -207,8 +207,8 @@ type Client struct {
 	// Public Internet Gateway operations
 	PublicInternetGateways PublicInternetGatewayService
 	// Queue commands operations
-	Queues    QueueService
-	RcsAgents RcsAgentService
+	Queues QueueService
+	Rcs    RcService
 	// Call Recordings operations.
 	RecordingTranscriptions RecordingTranscriptionService
 	// Call Recordings operations.
@@ -507,7 +507,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.PrivateWirelessGateways = NewPrivateWirelessGatewayService(opts...)
 	r.PublicInternetGateways = NewPublicInternetGatewayService(opts...)
 	r.Queues = NewQueueService(opts...)
-	r.RcsAgents = NewRcsAgentService(opts...)
+	r.Rcs = NewRcService(opts...)
 	r.RecordingTranscriptions = NewRecordingTranscriptionService(opts...)
 	r.Recordings = NewRecordingService(opts...)
 	r.Regions = NewRegionService(opts...)

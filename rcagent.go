@@ -10,21 +10,21 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
-// RcsAgentService contains methods and other services that help with interacting
+// RcAgentService contains methods and other services that help with interacting
 // with the telnyx API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewRcsAgentService] method instead.
-type RcsAgentService struct {
+// the [NewRcAgentService] method instead.
+type RcAgentService struct {
 	Options []option.RequestOption
 }
 
-// NewRcsAgentService generates a new service that applies the given options to
-// each request. These options are applied after the parent client's options (if
-// there is one), and before any request-specific options.
-func NewRcsAgentService(opts ...option.RequestOption) (r RcsAgentService) {
-	r = RcsAgentService{}
+// NewRcAgentService generates a new service that applies the given options to each
+// request. These options are applied after the parent client's options (if there
+// is one), and before any request-specific options.
+func NewRcAgentService(opts ...option.RequestOption) (r RcAgentService) {
+	r = RcAgentService{}
 	r.Options = opts
 	return
 }

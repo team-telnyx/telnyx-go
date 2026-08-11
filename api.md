@@ -3520,7 +3520,9 @@ Methods:
 - <code title="get /queues/{queue_name}/calls">client.Queues.Calls.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#QueueCallService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, queueName <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#QueueCallListParams">QueueCallListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#QueueCall">QueueCall</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /queues/{queue_name}/calls/{call_control_id}">client.Queues.Calls.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#QueueCallService.Remove">Remove</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, callControlID <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#QueueCallRemoveParams">QueueCallRemoveParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 
-# RcsAgents
+# Rcs
+
+## Agents
 
 Response Types:
 
