@@ -31,6 +31,8 @@ import (
 // the [NewFqdnConnectionService] method instead.
 type FqdnConnectionService struct {
 	Options []option.RequestOption
+	// FQDN connection operations
+	FqdnAuthentication FqdnConnectionFqdnAuthenticationService
 }
 
 // NewFqdnConnectionService generates a new service that applies the given options
@@ -39,6 +41,7 @@ type FqdnConnectionService struct {
 func NewFqdnConnectionService(opts ...option.RequestOption) (r FqdnConnectionService) {
 	r = FqdnConnectionService{}
 	r.Options = opts
+	r.FqdnAuthentication = NewFqdnConnectionFqdnAuthenticationService(opts...)
 	return
 }
 
@@ -132,6 +135,10 @@ type FqdnConnection struct {
 	CallCostEnabled bool `json:"call_cost_enabled"`
 	// Specifies if call cost webhooks should be sent for this connection.
 	CallCostInWebhooks bool `json:"call_cost_in_webhooks"`
+	// Whether conversation persistence is enabled for this connection. When enabled,
+	// calls handled by the connection are transcribed, stored, and indexed. Defaults
+	// to false.
+	ConversationPersistence bool `json:"conversation_persistence"`
 	// ISO 8601 formatted date indicating when the resource was created.
 	CreatedAt string `json:"created_at"`
 	// When enabled, Telnyx will generate comfort noise when you place the call on
@@ -233,6 +240,7 @@ type FqdnConnection struct {
 		AndroidPushCredentialID          respjson.Field
 		CallCostEnabled                  respjson.Field
 		CallCostInWebhooks               respjson.Field
+		ConversationPersistence          respjson.Field
 		CreatedAt                        respjson.Field
 		DefaultOnHoldComfortNoiseEnabled respjson.Field
 		DtmfType                         respjson.Field
@@ -885,6 +893,10 @@ type FqdnConnectionUpdateParams struct {
 	CallCostInWebhooks param.Opt[bool] `json:"call_cost_in_webhooks,omitzero"`
 	// A user-assigned name to help manage the connection.
 	ConnectionName param.Opt[string] `json:"connection_name,omitzero"`
+	// Whether conversation persistence is enabled for this connection. When enabled,
+	// calls handled by the connection are transcribed, stored, and indexed. Defaults
+	// to false.
+	ConversationPersistence param.Opt[bool] `json:"conversation_persistence,omitzero"`
 	// When enabled, Telnyx will generate comfort noise when you place the call on
 	// hold. If disabled, you will need to generate comfort noise or on hold music to
 	// avoid RTP timeout.

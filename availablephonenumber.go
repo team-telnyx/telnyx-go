@@ -38,7 +38,10 @@ func NewAvailablePhoneNumberService(opts ...option.RequestOption) (r AvailablePh
 	return
 }
 
-// List available phone numbers
+// Searches the Telnyx inventory for available phone numbers. Filters support
+// number patterns, location, number type, features, reservability, and other
+// inventory constraints; the response includes matching numbers and search
+// metadata.
 func (r *AvailablePhoneNumberService) List(ctx context.Context, query AvailablePhoneNumberListParams, opts ...option.RequestOption) (res *AvailablePhoneNumberListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "available_phone_numbers"

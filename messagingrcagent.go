@@ -39,7 +39,7 @@ func NewMessagingRcAgentService(opts ...option.RequestOption) (r MessagingRcAgen
 	return
 }
 
-// Retrieve an RCS agent
+// Returns the configuration and current state of the specified RCS agent.
 func (r *MessagingRcAgentService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *RcsAgentResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -51,7 +51,7 @@ func (r *MessagingRcAgentService) Get(ctx context.Context, id string, opts ...op
 	return res, err
 }
 
-// Modify an RCS agent
+// Updates the supplied configuration fields on the specified RCS agent.
 func (r *MessagingRcAgentService) Update(ctx context.Context, id string, body MessagingRcAgentUpdateParams, opts ...option.RequestOption) (res *RcsAgentResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -63,7 +63,7 @@ func (r *MessagingRcAgentService) Update(ctx context.Context, id string, body Me
 	return res, err
 }
 
-// List all RCS agents
+// Returns RCS agents available to the authenticated account.
 func (r *MessagingRcAgentService) List(ctx context.Context, query MessagingRcAgentListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[RcsAgent], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -81,7 +81,7 @@ func (r *MessagingRcAgentService) List(ctx context.Context, query MessagingRcAge
 	return res, nil
 }
 
-// List all RCS agents
+// Returns RCS agents available to the authenticated account.
 func (r *MessagingRcAgentService) ListAutoPaging(ctx context.Context, query MessagingRcAgentListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[RcsAgent] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }

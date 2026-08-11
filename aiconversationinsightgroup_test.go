@@ -53,9 +53,9 @@ func TestAIConversationInsightGroupUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.AIConversationInsightGroupUpdateParams{
-			Description: telnyx.String("description"),
-			Name:        telnyx.String("name"),
-			Webhook:     telnyx.String("webhook"),
+			Description: telnyx.String("Description"),
+			Name:        telnyx.String("Name"),
+			Webhook:     telnyx.String("Webhook"),
 		},
 	)
 	if err != nil {
@@ -104,9 +104,9 @@ func TestAIConversationInsightGroupInsightGroupsWithOptionalParams(t *testing.T)
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.Conversations.InsightGroups.InsightGroups(context.TODO(), telnyx.AIConversationInsightGroupInsightGroupsParams{
-		Name:        "name",
-		Description: telnyx.String("description"),
-		Webhook:     telnyx.String("webhook"),
+		Name:        "Name",
+		Description: telnyx.String("Description"),
+		Webhook:     telnyx.String(""),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

@@ -37,7 +37,7 @@ func NewAIAssistantTagService(opts ...option.RequestOption) (r AIAssistantTagSer
 	return
 }
 
-// Get All Tags
+// Retrieve all tags that have been applied to your AI assistants.
 func (r *AIAssistantTagService) List(ctx context.Context, opts ...option.RequestOption) (res *TagsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants/tags"
@@ -45,7 +45,7 @@ func (r *AIAssistantTagService) List(ctx context.Context, opts ...option.Request
 	return res, err
 }
 
-// Add Assistant Tag
+// Add a tag to an AI assistant. Tags help you organize and filter your assistants.
 func (r *AIAssistantTagService) Add(ctx context.Context, assistantID string, body AIAssistantTagAddParams, opts ...option.RequestOption) (res *TagsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
@@ -57,7 +57,7 @@ func (r *AIAssistantTagService) Add(ctx context.Context, assistantID string, bod
 	return res, err
 }
 
-// Remove Assistant Tag
+// Remove a tag from an AI assistant.
 func (r *AIAssistantTagService) Remove(ctx context.Context, tag string, body AIAssistantTagRemoveParams, opts ...option.RequestOption) (res *TagsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if body.AssistantID == "" {

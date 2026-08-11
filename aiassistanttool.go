@@ -37,7 +37,7 @@ func NewAIAssistantToolService(opts ...option.RequestOption) (r AIAssistantToolS
 	return
 }
 
-// Add Assistant Tool
+// Attach an existing tool to an AI assistant.
 func (r *AIAssistantToolService) Add(ctx context.Context, toolID string, body AIAssistantToolAddParams, opts ...option.RequestOption) (res *AIAssistantToolAddResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if body.AssistantID == "" {
@@ -53,7 +53,7 @@ func (r *AIAssistantToolService) Add(ctx context.Context, toolID string, body AI
 	return res, err
 }
 
-// Remove Assistant Tool
+// Detach a tool from an AI assistant.
 func (r *AIAssistantToolService) Remove(ctx context.Context, toolID string, body AIAssistantToolRemoveParams, opts ...option.RequestOption) (res *AIAssistantToolRemoveResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if body.AssistantID == "" {

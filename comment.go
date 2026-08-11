@@ -42,7 +42,8 @@ func NewCommentService(opts ...option.RequestOption) (r CommentService) {
 	return
 }
 
-// Create a comment
+// Creates a comment associated with a supported number-order record. The response
+// contains the created comment.
 func (r *CommentService) New(ctx context.Context, body CommentNewParams, opts ...option.RequestOption) (res *CommentNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "comments"
@@ -50,7 +51,8 @@ func (r *CommentService) New(ctx context.Context, body CommentNewParams, opts ..
 	return res, err
 }
 
-// Retrieve a comment
+// Returns the comment identified by `id`, including its associated record and
+// comment metadata.
 func (r *CommentService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *CommentGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -62,7 +64,8 @@ func (r *CommentService) Get(ctx context.Context, id string, opts ...option.Requ
 	return res, err
 }
 
-// Retrieve all comments
+// Returns comments associated with number-order records. Results can be filtered
+// by record type and record ID and include pagination metadata.
 func (r *CommentService) List(ctx context.Context, query CommentListParams, opts ...option.RequestOption) (res *CommentListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "comments"
@@ -70,7 +73,8 @@ func (r *CommentService) List(ctx context.Context, query CommentListParams, opts
 	return res, err
 }
 
-// Mark a comment as read
+// Marks the specified comment as read. The response contains the updated read
+// state for the comment.
 func (r *CommentService) MarkAsRead(ctx context.Context, id string, opts ...option.RequestOption) (res *CommentMarkAsReadResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

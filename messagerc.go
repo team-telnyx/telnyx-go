@@ -53,7 +53,8 @@ func (r *MessageRcService) GenerateDeeplink(ctx context.Context, agentID string,
 	return res, err
 }
 
-// Send an RCS message
+// Queues an outbound RCS message through the selected RCS agent. Check recipient
+// capabilities before sending features that require RCS support.
 func (r *MessageRcService) Send(ctx context.Context, body MessageRcSendParams, opts ...option.RequestOption) (res *MessageRcSendResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/rcs"

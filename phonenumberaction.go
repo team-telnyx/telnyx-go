@@ -37,8 +37,9 @@ func NewPhoneNumberActionService(opts ...option.RequestOption) (r PhoneNumberAct
 	return
 }
 
-// Change the bundle status for a phone number (set to being in a bundle or remove
-// from a bundle)
+// Adds the specified phone number to a bundle or removes it from a bundle
+// according to the requested status change. The response contains the phone number
+// with its updated bundle state.
 func (r *PhoneNumberActionService) ChangeBundleStatus(ctx context.Context, id string, body PhoneNumberActionChangeBundleStatusParams, opts ...option.RequestOption) (res *PhoneNumberActionChangeBundleStatusResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -50,7 +51,9 @@ func (r *PhoneNumberActionService) ChangeBundleStatus(ctx context.Context, id st
 	return res, err
 }
 
-// Enable emergency for a phone number
+// Associates emergency-service settings with the specified phone number. The
+// operation returns the updated phone-number configuration when completed
+// immediately or an accepted state when processing continues asynchronously.
 func (r *PhoneNumberActionService) EnableEmergency(ctx context.Context, id string, body PhoneNumberActionEnableEmergencyParams, opts ...option.RequestOption) (res *PhoneNumberActionEnableEmergencyResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

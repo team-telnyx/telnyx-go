@@ -48,8 +48,9 @@ func NewAddressActionService(opts ...option.RequestOption) (r AddressActionServi
 	return
 }
 
-// Accepts this address suggestion as a new emergency address for Operator Connect
-// and finishes the uploads of the numbers associated with it to Microsoft.
+// Accept the validated address suggestion for this address, replacing the original
+// values, and finish uploading the numbers associated with it to Microsoft for
+// Operator Connect.
 func (r *AddressActionService) AcceptSuggestions(ctx context.Context, addressUuid string, body AddressActionAcceptSuggestionsParams, opts ...option.RequestOption) (res *AddressActionAcceptSuggestionsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if addressUuid == "" {

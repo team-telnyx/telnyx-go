@@ -30,7 +30,7 @@ func TestEmailBlockImportNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.EmailBlocks.Import.New(context.TODO(), telnyx.EmailBlockImportNewParams{
 		File:         io.Reader(bytes.NewBuffer([]byte("Example data"))),
-		BlockTtlDays: telnyx.Int(1),
+		BlockTtlDays: telnyx.Int(30),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

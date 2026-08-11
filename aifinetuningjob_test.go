@@ -27,12 +27,12 @@ func TestAIFineTuningJobNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.FineTuning.Jobs.New(context.TODO(), telnyx.AIFineTuningJobNewParams{
-		Model:        "model",
-		TrainingFile: "training_file",
+		Model:        "string",
+		TrainingFile: "string",
 		Hyperparameters: telnyx.AIFineTuningJobNewParamsHyperparameters{
-			NEpochs: telnyx.Int(1),
+			NEpochs: telnyx.Int(3),
 		},
-		Suffix: telnyx.String("suffix"),
+		Suffix: telnyx.String("string"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

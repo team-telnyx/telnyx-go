@@ -41,7 +41,7 @@ func NewWhatsappPhoneNumberProfileService(opts ...option.RequestOption) (r Whats
 	return
 }
 
-// Get phone number business profile
+// Returns the business profile displayed for the specified WhatsApp phone number.
 func (r *WhatsappPhoneNumberProfileService) Get(ctx context.Context, phoneNumber string, opts ...option.RequestOption) (res *WhatsappPhoneNumberProfileGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
@@ -53,7 +53,8 @@ func (r *WhatsappPhoneNumberProfileService) Get(ctx context.Context, phoneNumber
 	return res, err
 }
 
-// Update phone number business profile
+// Updates the supplied business-profile fields for the specified WhatsApp phone
+// number.
 func (r *WhatsappPhoneNumberProfileService) Update(ctx context.Context, phoneNumber string, body WhatsappPhoneNumberProfileUpdateParams, opts ...option.RequestOption) (res *WhatsappPhoneNumberProfileUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {

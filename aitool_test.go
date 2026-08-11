@@ -51,6 +51,15 @@ func TestAIToolNewWithOptionalParams(t *testing.T) {
 			"foo": "bar",
 		},
 		TimeoutMs: telnyx.Int(0),
+		UpdateDynamicVariables: telnyx.UpdateDynamicVariablesToolParams{
+			Description: "Collect caller details into conversation variables.",
+			Name:        "collect_details",
+			UpdatableVariables: []telnyx.UpdateDynamicVariablesToolParamsUpdatableVariable{{
+				Name:        "customer_name",
+				Description: telnyx.String("The caller's full name."),
+				Type:        telnyx.String("string"),
+			}},
+		},
 		Webhook: map[string]any{
 			"foo": "bar",
 		},
@@ -128,6 +137,15 @@ func TestAIToolUpdateWithOptionalParams(t *testing.T) {
 			},
 			TimeoutMs: telnyx.Int(0),
 			Type:      telnyx.String("type"),
+			UpdateDynamicVariables: telnyx.UpdateDynamicVariablesToolParams{
+				Description: "Collect caller details into conversation variables.",
+				Name:        "collect_details",
+				UpdatableVariables: []telnyx.UpdateDynamicVariablesToolParamsUpdatableVariable{{
+					Name:        "customer_name",
+					Description: telnyx.String("The caller's full name."),
+					Type:        telnyx.String("string"),
+				}},
+			},
 			Webhook: map[string]any{
 				"foo": "bar",
 			},

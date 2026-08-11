@@ -54,19 +54,19 @@ func TestMobilePhoneNumberUpdateWithOptionalParams(t *testing.T) {
 		"id",
 		telnyx.MobilePhoneNumberUpdateParams{
 			CallForwarding: telnyx.MobilePhoneNumberUpdateParamsCallForwarding{
-				CallForwardingEnabled: telnyx.Bool(true),
+				CallForwardingEnabled: telnyx.Bool(false),
 				ForwardingType:        "always",
 				ForwardsTo:            telnyx.String("forwards_to"),
 			},
 			CallRecording: telnyx.MobilePhoneNumberUpdateParamsCallRecording{
 				InboundCallRecordingChannels: "single",
-				InboundCallRecordingEnabled:  telnyx.Bool(true),
+				InboundCallRecordingEnabled:  telnyx.Bool(false),
 				InboundCallRecordingFormat:   "wav",
 			},
-			CallerIDNameEnabled: telnyx.Bool(true),
+			CallerIDNameEnabled: telnyx.Bool(false),
 			CnamListing: telnyx.MobilePhoneNumberUpdateParamsCnamListing{
 				CnamListingDetails: telnyx.String("cnam_listing_details"),
-				CnamListingEnabled: telnyx.Bool(true),
+				CnamListingEnabled: telnyx.Bool(false),
 			},
 			ConnectionID:      telnyx.String("connection_id"),
 			CustomerReference: telnyx.String("customer_reference"),
@@ -74,7 +74,7 @@ func TestMobilePhoneNumberUpdateWithOptionalParams(t *testing.T) {
 				InterceptionAppID: telnyx.String("interception_app_id"),
 			},
 			InboundCallScreening: telnyx.MobilePhoneNumberUpdateParamsInboundCallScreeningDisabled,
-			NoiseSuppression:     telnyx.Bool(true),
+			NoiseSuppression:     telnyx.Bool(false),
 			Outbound: telnyx.MobilePhoneNumberUpdateParamsOutbound{
 				InterceptionAppID: telnyx.String("interception_app_id"),
 			},

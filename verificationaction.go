@@ -36,7 +36,9 @@ func NewVerificationActionService(opts ...option.RequestOption) (r VerificationA
 	return
 }
 
-// Verify verification code by ID
+// Checks the supplied code, or the supplied status for a custom-code verification,
+// against the verification identified by ID. The response indicates whether the
+// verification was accepted or rejected.
 func (r *VerificationActionService) Verify(ctx context.Context, verificationID string, body VerificationActionVerifyParams, opts ...option.RequestOption) (res *VerifyVerificationCodeResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if verificationID == "" {

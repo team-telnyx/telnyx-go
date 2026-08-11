@@ -184,8 +184,8 @@ func TestMessagingHostedNumberOrderValidateCodes(t *testing.T) {
 		"id",
 		telnyx.MessagingHostedNumberOrderValidateCodesParams{
 			VerificationCodes: []telnyx.MessagingHostedNumberOrderValidateCodesParamsVerificationCode{{
-				Code:        "code",
-				PhoneNumber: "phone_number",
+				Code:        "string",
+				PhoneNumber: "string",
 			}},
 		},
 	)

@@ -60,7 +60,8 @@ func (r *VerifyProfileService) Get(ctx context.Context, verifyProfileID string, 
 	return res, err
 }
 
-// Update Verify profile
+// Updates the specified Verify profile's name, webhook destinations, language,
+// daily spend limits, or channel-specific settings. Returns the updated profile.
 func (r *VerifyProfileService) Update(ctx context.Context, verifyProfileID string, body VerifyProfileUpdateParams, opts ...option.RequestOption) (res *VerifyProfileData, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if verifyProfileID == "" {
@@ -95,7 +96,7 @@ func (r *VerifyProfileService) ListAutoPaging(ctx context.Context, query VerifyP
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete Verify profile
+// Deletes the specified Verify profile and returns the deleted profile record.
 func (r *VerifyProfileService) Delete(ctx context.Context, verifyProfileID string, opts ...option.RequestOption) (res *VerifyProfileData, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if verifyProfileID == "" {

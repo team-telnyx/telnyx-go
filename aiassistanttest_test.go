@@ -91,17 +91,17 @@ func TestAIAssistantTestUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"test_id",
 		telnyx.AIAssistantTestUpdateParams{
-			Description:        telnyx.String("description"),
-			Destination:        telnyx.String("x"),
-			Instructions:       telnyx.String("x"),
-			MaxDurationSeconds: telnyx.Int(1),
-			Name:               telnyx.String("x"),
+			Description:        telnyx.String("Description"),
+			Destination:        telnyx.String("Destination"),
+			Instructions:       telnyx.String("Instructions"),
+			MaxDurationSeconds: telnyx.Int(30),
+			Name:               telnyx.String("Name"),
 			Rubric: []telnyx.AIAssistantTestUpdateParamsRubric{{
-				Criteria: "criteria",
-				Name:     "name",
+				Criteria: "string",
+				Name:     "string",
 			}},
 			TelnyxConversationChannel: telnyx.TelnyxConversationChannelPhoneCall,
-			TestSuite:                 telnyx.String("test_suite"),
+			TestSuite:                 telnyx.String("Test Suite"),
 		},
 	)
 	if err != nil {

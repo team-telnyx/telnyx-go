@@ -43,7 +43,9 @@ func NewRoomSessionService(opts ...option.RequestOption) (r RoomSessionService) 
 	return
 }
 
-// View a room session.
+// Returns the room session identified by `room_session_id`, including its room,
+// active status, and lifecycle timestamps. Use `include_participants` to include
+// its participant records.
 func (r *RoomSessionService) Get(ctx context.Context, roomSessionID string, query RoomSessionGetParams, opts ...option.RequestOption) (res *RoomSessionGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if roomSessionID == "" {
@@ -55,7 +57,9 @@ func (r *RoomSessionService) Get(ctx context.Context, roomSessionID string, quer
 	return res, err
 }
 
-// View a list of room sessions.
+// Returns a paginated list of room sessions across the account. Filter sessions by
+// room, creation, update, or end date and active status, and use
+// `include_participants` to include participant records.
 func (r *RoomSessionService) List0(ctx context.Context, query RoomSessionList0Params, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[RoomSession], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -73,12 +77,16 @@ func (r *RoomSessionService) List0(ctx context.Context, query RoomSessionList0Pa
 	return res, nil
 }
 
-// View a list of room sessions.
+// Returns a paginated list of room sessions across the account. Filter sessions by
+// room, creation, update, or end date and active status, and use
+// `include_participants` to include participant records.
 func (r *RoomSessionService) List0AutoPaging(ctx context.Context, query RoomSessionList0Params, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[RoomSession] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List0(ctx, query, opts...))
 }
 
-// View a list of room sessions.
+// Returns a paginated list of sessions for the specified room. Filter sessions by
+// creation, update, or end date and active status, and use `include_participants`
+// to include participant records.
 func (r *RoomSessionService) List1(ctx context.Context, roomID string, query RoomSessionList1Params, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[RoomSession], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -100,12 +108,15 @@ func (r *RoomSessionService) List1(ctx context.Context, roomID string, query Roo
 	return res, nil
 }
 
-// View a list of room sessions.
+// Returns a paginated list of sessions for the specified room. Filter sessions by
+// creation, update, or end date and active status, and use `include_participants`
+// to include participant records.
 func (r *RoomSessionService) List1AutoPaging(ctx context.Context, roomID string, query RoomSessionList1Params, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[RoomSession] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List1(ctx, roomID, query, opts...))
 }
 
-// View a list of room participants.
+// Returns a paginated list of participants for the specified room session. Filter
+// participants by join, update, or leave date and by participant context.
 func (r *RoomSessionService) GetParticipants(ctx context.Context, roomSessionID string, query RoomSessionGetParticipantsParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[shared.RoomParticipant], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -127,7 +138,8 @@ func (r *RoomSessionService) GetParticipants(ctx context.Context, roomSessionID 
 	return res, nil
 }
 
-// View a list of room participants.
+// Returns a paginated list of participants for the specified room session. Filter
+// participants by join, update, or leave date and by participant context.
 func (r *RoomSessionService) GetParticipantsAutoPaging(ctx context.Context, roomSessionID string, query RoomSessionGetParticipantsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[shared.RoomParticipant] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.GetParticipants(ctx, roomSessionID, query, opts...))
 }

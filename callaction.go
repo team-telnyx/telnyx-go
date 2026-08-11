@@ -448,7 +448,8 @@ func (r *CallActionService) StartForking(ctx context.Context, callControlID stri
 	return res, err
 }
 
-// Noise Suppression Start (BETA)
+// Start noise suppression on an active call to reduce background noise. This
+// feature is currently in beta.
 func (r *CallActionService) StartNoiseSuppression(ctx context.Context, callControlID string, body CallActionStartNoiseSuppressionParams, opts ...option.RequestOption) (res *CallActionStartNoiseSuppressionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
@@ -611,7 +612,8 @@ func (r *CallActionService) StopGather(ctx context.Context, callControlID string
 	return res, err
 }
 
-// Noise Suppression Stop (BETA)
+// Stop noise suppression previously started on an active call. This feature is
+// currently in beta.
 func (r *CallActionService) StopNoiseSuppression(ctx context.Context, callControlID string, body CallActionStopNoiseSuppressionParams, opts ...option.RequestOption) (res *CallActionStopNoiseSuppressionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {

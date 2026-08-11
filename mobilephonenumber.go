@@ -43,7 +43,7 @@ func NewMobilePhoneNumberService(opts ...option.RequestOption) (r MobilePhoneNum
 	return
 }
 
-// Retrieve a Mobile Phone Number
+// Retrieve the details of a specific mobile phone number.
 func (r *MobilePhoneNumberService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *MobilePhoneNumberGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -55,7 +55,7 @@ func (r *MobilePhoneNumberService) Get(ctx context.Context, id string, opts ...o
 	return res, err
 }
 
-// Update a Mobile Phone Number
+// Update the settings of a specific mobile phone number.
 func (r *MobilePhoneNumberService) Update(ctx context.Context, id string, body MobilePhoneNumberUpdateParams, opts ...option.RequestOption) (res *MobilePhoneNumberUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -67,7 +67,7 @@ func (r *MobilePhoneNumberService) Update(ctx context.Context, id string, body M
 	return res, err
 }
 
-// List Mobile Phone Numbers
+// Retrieve a paginated list of mobile phone numbers on your account.
 func (r *MobilePhoneNumberService) List(ctx context.Context, query MobilePhoneNumberListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MobilePhoneNumber], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -85,7 +85,7 @@ func (r *MobilePhoneNumberService) List(ctx context.Context, query MobilePhoneNu
 	return res, nil
 }
 
-// List Mobile Phone Numbers
+// Retrieve a paginated list of mobile phone numbers on your account.
 func (r *MobilePhoneNumberService) ListAutoPaging(ctx context.Context, query MobilePhoneNumberListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MobilePhoneNumber] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }

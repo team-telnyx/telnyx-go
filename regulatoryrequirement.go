@@ -37,7 +37,9 @@ func NewRegulatoryRequirementService(opts ...option.RequestOption) (r Regulatory
 	return
 }
 
-// Retrieve regulatory requirements
+// Returns regulatory requirements for number ordering, porting, or other supported
+// actions. Results can be filtered by phone number, requirement group, country,
+// number type, and action.
 func (r *RegulatoryRequirementService) Get(ctx context.Context, query RegulatoryRequirementGetParams, opts ...option.RequestOption) (res *RegulatoryRequirementGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "regulatory_requirements"

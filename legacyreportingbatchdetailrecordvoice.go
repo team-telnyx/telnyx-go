@@ -188,8 +188,8 @@ func (r *LegacyReportingBatchDetailRecordVoiceGetResponse) UnmarshalJSON(data []
 }
 
 type LegacyReportingBatchDetailRecordVoiceListResponse struct {
-	Data []CdrDetailedReqResponse `json:"data"`
-	Meta BatchCsvPaginationMeta   `json:"meta"`
+	Data []CdrDetailedReqResponse         `json:"data"`
+	Meta BatchCsvPaginationMeta705dfa7312 `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

@@ -30,8 +30,8 @@ func TestAIAssistantInstructionEnhanceWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"assistant_id",
 		telnyx.AIAssistantInstructionEnhanceParams{
-			EnhancementPrompt: telnyx.String("enhancement_prompt"),
-			Instructions:      telnyx.String("instructions"),
+			EnhancementPrompt: telnyx.String("string"),
+			Instructions:      telnyx.String("string"),
 		},
 	)
 	if err != nil {

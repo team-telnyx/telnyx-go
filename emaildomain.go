@@ -43,7 +43,8 @@ func NewEmailDomainService(opts ...option.RequestOption) (r EmailDomainService) 
 	return
 }
 
-// Create an email domain
+// Registers a domain for email sending and optional inbound delivery. The response
+// includes the domain configuration and current verification state.
 func (r *EmailDomainService) New(ctx context.Context, body EmailDomainNewParams, opts ...option.RequestOption) (res *EmailDomainResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "email_domains"
@@ -64,7 +65,9 @@ func (r *EmailDomainService) Get(ctx context.Context, id string, opts ...option.
 	return res, err
 }
 
-// Update an email domain
+// Updates mutable settings for an existing email domain, including inbound
+// delivery and tracking configuration. Shared domains are read-only for non-owner
+// accounts.
 func (r *EmailDomainService) Update(ctx context.Context, id string, body EmailDomainUpdateParams, opts ...option.RequestOption) (res *EmailDomainResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -101,7 +104,8 @@ func (r *EmailDomainService) ListAutoPaging(ctx context.Context, query EmailDoma
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete an email domain
+// Deletes an email domain configuration. Verified domains require `force=true`,
+// and shared domains are read-only for non-owner accounts.
 func (r *EmailDomainService) Delete(ctx context.Context, id string, body EmailDomainDeleteParams, opts ...option.RequestOption) (res *EmailDomainResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -113,7 +117,8 @@ func (r *EmailDomainService) Delete(ctx context.Context, id string, body EmailDo
 	return res, err
 }
 
-// List DNS records for an email domain
+// Returns the DNS records Telnyx generated for domain ownership and DKIM
+// verification, plus MX records when inbound delivery is enabled.
 func (r *EmailDomainService) GetDNSRecords(ctx context.Context, domainID string, opts ...option.RequestOption) (res *EmailDomainGetDNSRecordsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if domainID == "" {
@@ -137,7 +142,8 @@ func (r *EmailDomainService) GetHealth(ctx context.Context, id string, opts ...o
 	return res, err
 }
 
-// Verify DNS records for an email domain
+// Checks the published DNS records against the records required for the email
+// domain and returns the latest verification results.
 func (r *EmailDomainService) Verify(ctx context.Context, domainID string, opts ...option.RequestOption) (res *EmailDomainResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if domainID == "" {

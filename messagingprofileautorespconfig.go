@@ -18,7 +18,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // Opt-Out Management
@@ -42,7 +41,8 @@ func NewMessagingProfileAutorespConfigService(opts ...option.RequestOption) (r M
 	return
 }
 
-// Create auto-response setting
+// Creates an auto-response rule on the specified messaging profile. Matching
+// inbound messages trigger the configured response.
 func (r *MessagingProfileAutorespConfigService) New(ctx context.Context, profileID string, body MessagingProfileAutorespConfigNewParams, opts ...option.RequestOption) (res *AutoRespConfigResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if profileID == "" {
@@ -54,7 +54,8 @@ func (r *MessagingProfileAutorespConfigService) New(ctx context.Context, profile
 	return res, err
 }
 
-// Get Auto-Response Setting
+// Returns the matching criteria and response content for the specified
+// auto-response rule.
 func (r *MessagingProfileAutorespConfigService) Get(ctx context.Context, autorespCfgID string, query MessagingProfileAutorespConfigGetParams, opts ...option.RequestOption) (res *AutoRespConfigResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.ProfileID == "" {
@@ -70,7 +71,7 @@ func (r *MessagingProfileAutorespConfigService) Get(ctx context.Context, autores
 	return res, err
 }
 
-// Update Auto-Response Setting
+// Replaces the configuration of the specified auto-response rule.
 func (r *MessagingProfileAutorespConfigService) Update(ctx context.Context, autorespCfgID string, params MessagingProfileAutorespConfigUpdateParams, opts ...option.RequestOption) (res *AutoRespConfigResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.ProfileID == "" {
@@ -86,7 +87,7 @@ func (r *MessagingProfileAutorespConfigService) Update(ctx context.Context, auto
 	return res, err
 }
 
-// List Auto-Response Settings
+// Returns the auto-response rules configured for the specified messaging profile.
 func (r *MessagingProfileAutorespConfigService) List(ctx context.Context, profileID string, query MessagingProfileAutorespConfigListParams, opts ...option.RequestOption) (res *MessagingProfileAutorespConfigListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if profileID == "" {
@@ -98,7 +99,7 @@ func (r *MessagingProfileAutorespConfigService) List(ctx context.Context, profil
 	return res, err
 }
 
-// Delete Auto-Response Setting
+// Deletes the specified auto-response rule from the messaging profile.
 func (r *MessagingProfileAutorespConfigService) Delete(ctx context.Context, autorespCfgID string, body MessagingProfileAutorespConfigDeleteParams, opts ...option.RequestOption) (res *string, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if body.ProfileID == "" {
@@ -195,8 +196,8 @@ func (r *AutoRespConfigResponse) UnmarshalJSON(data []byte) error {
 
 // List of Auto-Response Settings
 type MessagingProfileAutorespConfigListResponse struct {
-	Data []AutoRespConfig               `json:"data" api:"required"`
-	Meta shared.MessagingPaginationMeta `json:"meta" api:"required"`
+	Data []AutoRespConfig                  `json:"data" api:"required"`
+	Meta MessagingPaginationMeta0b38e7044b `json:"meta" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

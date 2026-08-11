@@ -55,7 +55,8 @@ func (r *EmailDomainWebhookService) New(ctx context.Context, domainID string, bo
 	return res, err
 }
 
-// Retrieve a webhook
+// Returns the webhook subscription identified by ID within the specified email
+// domain.
 func (r *EmailDomainWebhookService) Get(ctx context.Context, id string, query EmailDomainWebhookGetParams, opts ...option.RequestOption) (res *EmailWebhookResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.DomainID == "" {
@@ -88,7 +89,8 @@ func (r *EmailDomainWebhookService) Update(ctx context.Context, id string, param
 	return res, err
 }
 
-// List webhooks for an email domain
+// Returns a paginated list of webhook subscriptions scoped to the email domain.
+// Results can be sorted by creation time.
 func (r *EmailDomainWebhookService) List(ctx context.Context, domainID string, query EmailDomainWebhookListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[EmailWebhook], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -110,12 +112,14 @@ func (r *EmailDomainWebhookService) List(ctx context.Context, domainID string, q
 	return res, nil
 }
 
-// List webhooks for an email domain
+// Returns a paginated list of webhook subscriptions scoped to the email domain.
+// Results can be sorted by creation time.
 func (r *EmailDomainWebhookService) ListAutoPaging(ctx context.Context, domainID string, query EmailDomainWebhookListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[EmailWebhook] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, domainID, query, opts...))
 }
 
-// Delete a webhook
+// Deletes the webhook subscription identified by ID within the specified email
+// domain and returns the deleted subscription.
 func (r *EmailDomainWebhookService) Delete(ctx context.Context, id string, body EmailDomainWebhookDeleteParams, opts ...option.RequestOption) (res *EmailWebhookResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if body.DomainID == "" {

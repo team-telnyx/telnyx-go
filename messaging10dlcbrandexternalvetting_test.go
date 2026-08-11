@@ -53,9 +53,9 @@ func TestMessaging10dlcBrandExternalVettingImportsWithOptionalParams(t *testing.
 		context.TODO(),
 		"brandId",
 		telnyx.Messaging10dlcBrandExternalVettingImportsParams{
-			EvpID:        "evpId",
-			VettingID:    "vettingId",
-			VettingToken: telnyx.String("vettingToken"),
+			EvpID:        "Evpid",
+			VettingID:    "Vettingid",
+			VettingToken: telnyx.String("Vettingtoken"),
 		},
 	)
 	if err != nil {
@@ -84,8 +84,8 @@ func TestMessaging10dlcBrandExternalVettingOrder(t *testing.T) {
 		context.TODO(),
 		"brandId",
 		telnyx.Messaging10dlcBrandExternalVettingOrderParams{
-			EvpID:        "evpId",
-			VettingClass: "vettingClass",
+			EvpID:        "Evpid",
+			VettingClass: "Vettingclass",
 		},
 	)
 	if err != nil {

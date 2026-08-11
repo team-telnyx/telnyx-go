@@ -60,9 +60,9 @@ func TestWhatsappBusinessAccountPhoneNumberInitializeVerificationWithOptionalPar
 		context.TODO(),
 		"id",
 		telnyx.WhatsappBusinessAccountPhoneNumberInitializeVerificationParams{
-			DisplayName:        "display_name",
-			PhoneNumber:        "phone_number",
-			Language:           telnyx.String("language"),
+			DisplayName:        "string",
+			PhoneNumber:        "string",
+			Language:           telnyx.String("en_US"),
 			VerificationMethod: telnyx.WhatsappBusinessAccountPhoneNumberInitializeVerificationParamsVerificationMethodSMS,
 		},
 	)

@@ -52,7 +52,8 @@ func (r *OtaUpdateService) Get(ctx context.Context, id string, opts ...option.Re
 	return res, err
 }
 
-// List OTA updates
+// Retrieve a paginated list of over-the-air (OTA) update operations for your SIM
+// cards.
 func (r *OtaUpdateService) List(ctx context.Context, query OtaUpdateListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[OtaUpdateListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -70,7 +71,8 @@ func (r *OtaUpdateService) List(ctx context.Context, query OtaUpdateListParams, 
 	return res, nil
 }
 
-// List OTA updates
+// Retrieve a paginated list of over-the-air (OTA) update operations for your SIM
+// cards.
 func (r *OtaUpdateService) ListAutoPaging(ctx context.Context, query OtaUpdateListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[OtaUpdateListResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }

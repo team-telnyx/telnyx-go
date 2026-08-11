@@ -50,8 +50,8 @@ func TestWhatsappUserDataUpdateWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Whatsapp.UserData.Update(context.TODO(), telnyx.WhatsappUserDataUpdateParams{
-		WebhookFailoverURL: telnyx.String("webhook_failover_url"),
-		WebhookURL:         telnyx.String("webhook_url"),
+		WebhookFailoverURL: telnyx.String("https://example.com"),
+		WebhookURL:         telnyx.String("https://example.com"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

@@ -53,7 +53,7 @@ func TestWhatsappPhoneNumberCallingSettingUpdate(t *testing.T) {
 		context.TODO(),
 		"phone_number",
 		telnyx.WhatsappPhoneNumberCallingSettingUpdateParams{
-			Enabled: true,
+			Enabled: false,
 		},
 	)
 	if err != nil {

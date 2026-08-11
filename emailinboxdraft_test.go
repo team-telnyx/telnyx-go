@@ -250,10 +250,10 @@ func TestEmailInboxDraftPatchWithOptionalParams(t *testing.T) {
 				Labels:   []string{"string"},
 				Metadata: map[string]any{},
 				ReplyTo:  telnyx.String("reply_to"),
-				Subject:  telnyx.String("subject"),
+				Subject:  telnyx.String("Quarterly update (revised)"),
 				Tags:     []string{"string"},
 				Text:     telnyx.String("text"),
-				TextBody: telnyx.String("text_body"),
+				TextBody: telnyx.String("Updated body."),
 				To: []telnyx.EmailAddressInputUnionParam{{
 					OfString: telnyx.String("string"),
 				}},

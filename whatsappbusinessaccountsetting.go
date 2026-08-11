@@ -38,7 +38,7 @@ func NewWhatsappBusinessAccountSettingService(opts ...option.RequestOption) (r W
 	return
 }
 
-// Get WABA settings
+// Returns account-level settings for the specified WhatsApp Business Account.
 func (r *WhatsappBusinessAccountSettingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *WhatsappBusinessAccountSettingGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -50,7 +50,8 @@ func (r *WhatsappBusinessAccountSettingService) Get(ctx context.Context, id stri
 	return res, err
 }
 
-// Update WABA settings
+// Updates the supplied account-level settings for the specified WhatsApp Business
+// Account.
 func (r *WhatsappBusinessAccountSettingService) Update(ctx context.Context, id string, body WhatsappBusinessAccountSettingUpdateParams, opts ...option.RequestOption) (res *WhatsappBusinessAccountSettingUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

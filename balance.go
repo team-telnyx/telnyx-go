@@ -34,7 +34,8 @@ func NewBalanceService(opts ...option.RequestOption) (r BalanceService) {
 	return
 }
 
-// Get user balance details
+// Retrieve the current balance, available credit, and credit limit for your
+// account.
 func (r *BalanceService) Get(ctx context.Context, opts ...option.RequestOption) (res *BalanceGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "balance"

@@ -54,8 +54,8 @@ func TestWhatsappPhoneNumberConversationalComponentPatchAllWithOptionalParams(t 
 		"phone_number",
 		telnyx.WhatsappPhoneNumberConversationalComponentPatchAllParams{
 			Commands: []telnyx.WhatsappPhoneNumberConversationalComponentPatchAllParamsCommand{{
-				Command:     telnyx.String("command"),
-				Description: telnyx.String("description"),
+				Command:     telnyx.String("string"),
+				Description: telnyx.String("string"),
 			}},
 			IceBreakers: []string{"string"},
 		},

@@ -52,7 +52,8 @@ func (r *EmailTemplateService) New(ctx context.Context, params EmailTemplateNewP
 	return res, err
 }
 
-// Get an email template
+// Returns the account-owned template identified by ID, including its Liquid
+// subject and bodies, declared variables, and timestamps.
 func (r *EmailTemplateService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *EmailTemplateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -84,7 +85,8 @@ func (r *EmailTemplateService) List(ctx context.Context, query EmailTemplateList
 	return res, err
 }
 
-// Delete an email template
+// Deletes the account-owned template. The operation returns `204` with no body and
+// prevents future sends or renders from using the deleted template ID.
 func (r *EmailTemplateService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)

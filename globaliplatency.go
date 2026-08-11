@@ -38,7 +38,7 @@ func NewGlobalIPLatencyService(opts ...option.RequestOption) (r GlobalIPLatencyS
 	return
 }
 
-// Global IP Latency Metrics
+// Retrieve latency metrics measured for your Global IPs.
 func (r *GlobalIPLatencyService) Get(ctx context.Context, query GlobalIPLatencyGetParams, opts ...option.RequestOption) (res *GlobalIPLatencyGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_latency"
