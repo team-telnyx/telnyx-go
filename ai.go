@@ -30,7 +30,8 @@ type AIService struct {
 	Audio      AIAudioService
 	Chat       AIChatService
 	// Identify common themes and patterns in your embedded documents
-	Clusters AIClusterService
+	Clusters    AIClusterService
+	Collections AICollectionService
 	// Manage historical AI assistant conversations
 	Conversations AIConversationService
 	// Embed documents and perform text searches
@@ -55,6 +56,7 @@ func NewAIService(opts ...option.RequestOption) (r AIService) {
 	r.Audio = NewAIAudioService(opts...)
 	r.Chat = NewAIChatService(opts...)
 	r.Clusters = NewAIClusterService(opts...)
+	r.Collections = NewAICollectionService(opts...)
 	r.Conversations = NewAIConversationService(opts...)
 	r.Embeddings = NewAIEmbeddingService(opts...)
 	r.FineTuning = NewAIFineTuningService(opts...)

@@ -803,6 +803,8 @@ Methods:
 - <code title="post /ai/clusters">client.AI.Clusters.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIClusterService.Compute">Compute</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIClusterComputeParams">AIClusterComputeParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIClusterComputeResponse">AIClusterComputeResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /ai/clusters/{task_id}/graph">client.AI.Clusters.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIClusterService.FetchGraph">FetchGraph</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, taskID <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIClusterFetchGraphParams">AIClusterFetchGraphParams</a>) (\*http.Response, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+## Collections
+
 ## Conversations
 
 Response Types:
