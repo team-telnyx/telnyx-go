@@ -139,8 +139,7 @@ type Client struct {
 	// Managed Accounts operations
 	ManagedAccounts ManagedAccountService
 	// Media Storage operations
-	Media MediaService
-	// Messages
+	Media     MediaService
 	Messages  MessageService
 	Messaging MessagingService
 	// Manage your messaging hosted numbers
