@@ -14,7 +14,10 @@ import (
 // the [NewRcService] method instead.
 type RcService struct {
 	Options []option.RequestOption
-	Agents  RcAgentService
+	// Manage RCS agent registration, testing, verification, and launch.
+	Agents RcAgentService
+	// Manage the legal business entities that operate RCS agents.
+	Brands RcBrandService
 }
 
 // NewRcService generates a new service that applies the given options to each
@@ -24,5 +27,6 @@ func NewRcService(opts ...option.RequestOption) (r RcService) {
 	r = RcService{}
 	r.Options = opts
 	r.Agents = NewRcAgentService(opts...)
+	r.Brands = NewRcBrandService(opts...)
 	return
 }

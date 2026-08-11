@@ -27,6 +27,7 @@ type ClientSideTool string         // Always "client_side_tool"
 type Comparative string            // Always "comparative"
 type Comparison string             // Always "comparison"
 type Default string                // Always "default"
+type Ein string                    // Always "EIN"
 type Error string                  // Always "error"
 type Expression string             // Always "expression"
 type Function string               // Always "function"
@@ -47,6 +48,7 @@ type SendDtmf string               // Always "send_dtmf"
 type SendMessage string            // Always "send_message"
 type Simple string                 // Always "simple"
 type SkipTurn string               // Always "skip_turn"
+type StockSymbol string            // Always "STOCK_SYMBOL"
 type StringLiteral string          // Always "string_literal"
 type Transcript string             // Always "transcript"
 type Transfer string               // Always "transfer"
@@ -62,6 +64,7 @@ func (c ClientSideTool) Default() ClientSideTool                 { return "clien
 func (c Comparative) Default() Comparative                       { return "comparative" }
 func (c Comparison) Default() Comparison                         { return "comparison" }
 func (c Default) Default() Default                               { return "default" }
+func (c Ein) Default() Ein                                       { return "EIN" }
 func (c Error) Default() Error                                   { return "error" }
 func (c Expression) Default() Expression                         { return "expression" }
 func (c Function) Default() Function                             { return "function" }
@@ -82,6 +85,7 @@ func (c SendDtmf) Default() SendDtmf                             { return "send_
 func (c SendMessage) Default() SendMessage                       { return "send_message" }
 func (c Simple) Default() Simple                                 { return "simple" }
 func (c SkipTurn) Default() SkipTurn                             { return "skip_turn" }
+func (c StockSymbol) Default() StockSymbol                       { return "STOCK_SYMBOL" }
 func (c StringLiteral) Default() StringLiteral                   { return "string_literal" }
 func (c Transcript) Default() Transcript                         { return "transcript" }
 func (c Transfer) Default() Transfer                             { return "transfer" }
@@ -97,6 +101,7 @@ func (c ClientSideTool) MarshalJSON() ([]byte, error)         { return marshalSt
 func (c Comparative) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c Comparison) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Default) MarshalJSON() ([]byte, error)                { return marshalString(c) }
+func (c Ein) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c Error) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
 func (c Expression) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Function) MarshalJSON() ([]byte, error)               { return marshalString(c) }
@@ -117,6 +122,7 @@ func (c SendDtmf) MarshalJSON() ([]byte, error)               { return marshalSt
 func (c SendMessage) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c Simple) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c SkipTurn) MarshalJSON() ([]byte, error)               { return marshalString(c) }
+func (c StockSymbol) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c StringLiteral) MarshalJSON() ([]byte, error)          { return marshalString(c) }
 func (c Transcript) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Transfer) MarshalJSON() ([]byte, error)               { return marshalString(c) }

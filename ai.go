@@ -30,7 +30,9 @@ type AIService struct {
 	Audio      AIAudioService
 	Chat       AIChatService
 	// Identify common themes and patterns in your embedded documents
-	Clusters    AIClusterService
+	Clusters AIClusterService
+	// Create and manage logical collections of your Telnyx data, tune retrieval
+	// settings, manage sources, and run collection-scoped semantic search.
 	Collections AICollectionService
 	// Manage historical AI assistant conversations
 	Conversations AIConversationService
@@ -113,13 +115,11 @@ func NewAIService(opts ...option.RequestOption) (r AIService) {
 //
 // **Examples:**
 //
-// ```
-// GET /v2/ai/conversation_histories?q=billing+issue&page[size]=10
-// GET /v2/ai/conversation_histories?q=setup+guide&region=USA&min_score=0.5
-// GET /v2/ai/conversation_histories?q=refund&filter[record_created_at][gte]=2026-01-01T00:00:00Z
-// GET /v2/ai/conversation_histories?q=outage&filter[region][in]=USA,DEU
-// GET /v2/ai/conversation_histories?q=hold+time&filter[language]=en
-// ```
+// - `GET /v2/ai/conversation_histories?q=billing+issue&page[size]=10`
+// - `GET /v2/ai/conversation_histories?q=setup+guide&region=USA&min_score=0.5`
+// - `GET /v2/ai/conversation_histories?q=refund&filter[record_created_at][gte]=2026-01-01T00:00:00Z`
+// - `GET /v2/ai/conversation_histories?q=outage&filter[region][in]=USA,DEU`
+// - `GET /v2/ai/conversation_histories?q=hold+time&filter[language]=en`
 func (r *AIService) GetConversationHistories(ctx context.Context, query AIGetConversationHistoriesParams, opts ...option.RequestOption) (res *AIGetConversationHistoriesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/conversation_histories"
