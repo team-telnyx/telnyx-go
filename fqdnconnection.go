@@ -31,6 +31,8 @@ import (
 // the [NewFqdnConnectionService] method instead.
 type FqdnConnectionService struct {
 	Options []option.RequestOption
+	// FQDN connection operations
+	FqdnAuthentication FqdnConnectionFqdnAuthenticationService
 }
 
 // NewFqdnConnectionService generates a new service that applies the given options
@@ -39,6 +41,7 @@ type FqdnConnectionService struct {
 func NewFqdnConnectionService(opts ...option.RequestOption) (r FqdnConnectionService) {
 	r = FqdnConnectionService{}
 	r.Options = opts
+	r.FqdnAuthentication = NewFqdnConnectionFqdnAuthenticationService(opts...)
 	return
 }
 
