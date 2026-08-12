@@ -41,7 +41,7 @@ func NewAccessIPRangeService(opts ...option.RequestOption) (r AccessIPRangeServi
 	return
 }
 
-// Create new Access IP Range
+// Create a new access IP range on your account.
 func (r *AccessIPRangeService) New(ctx context.Context, body AccessIPRangeNewParams, opts ...option.RequestOption) (res *AccessIPRange, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "access_ip_ranges"
@@ -49,7 +49,7 @@ func (r *AccessIPRangeService) New(ctx context.Context, body AccessIPRangeNewPar
 	return res, err
 }
 
-// List all Access IP Ranges
+// Retrieve a paginated list of access IP ranges configured on your account.
 func (r *AccessIPRangeService) List(ctx context.Context, query AccessIPRangeListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[AccessIPRange], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -67,12 +67,12 @@ func (r *AccessIPRangeService) List(ctx context.Context, query AccessIPRangeList
 	return res, nil
 }
 
-// List all Access IP Ranges
+// Retrieve a paginated list of access IP ranges configured on your account.
 func (r *AccessIPRangeService) ListAutoPaging(ctx context.Context, query AccessIPRangeListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[AccessIPRange] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete access IP ranges
+// Delete an access IP range from your account.
 func (r *AccessIPRangeService) Delete(ctx context.Context, accessIPRangeID string, opts ...option.RequestOption) (res *AccessIPRange, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if accessIPRangeID == "" {

@@ -209,16 +209,16 @@ const (
 	MdrUsageReportStatusExpired  MdrUsageReportStatus = "EXPIRED"
 )
 
-type PaginationMetaReporting struct {
-	PageNumber   int64 `json:"page_number" api:"required"`
-	TotalPages   int64 `json:"total_pages" api:"required"`
+type ReportingPaginationMeta77109e5d17 struct {
+	PageNumber   int64 `json:"page_number"`
 	PageSize     int64 `json:"page_size"`
+	TotalPages   int64 `json:"total_pages"`
 	TotalResults int64 `json:"total_results"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PageNumber   respjson.Field
-		TotalPages   respjson.Field
 		PageSize     respjson.Field
+		TotalPages   respjson.Field
 		TotalResults respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -226,8 +226,8 @@ type PaginationMetaReporting struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PaginationMetaReporting) RawJSON() string { return r.JSON.raw }
-func (r *PaginationMetaReporting) UnmarshalJSON(data []byte) error {
+func (r ReportingPaginationMeta77109e5d17) RawJSON() string { return r.JSON.raw }
+func (r *ReportingPaginationMeta77109e5d17) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

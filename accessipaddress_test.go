@@ -28,8 +28,8 @@ func TestAccessIPAddressNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AccessIPAddress.New(context.TODO(), telnyx.AccessIPAddressNewParams{
-		IPAddress:   "ip_address",
-		Description: telnyx.String("description"),
+		IPAddress:   "Ip Address",
+		Description: telnyx.String("Description"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

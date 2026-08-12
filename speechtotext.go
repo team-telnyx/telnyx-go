@@ -120,6 +120,9 @@ func (r *SpeechToTextListProvidersResponse) UnmarshalJSON(data []byte) error {
 // A (provider, model) tuple along with the service surfaces it supports. Each
 // entry in `service_types` describes one surface and the languages accepted on it.
 type SpeechToTextListProvidersResponseData struct {
+	// Whether this model runs on Telnyx-hosted infrastructure (`true`) or is provided
+	// by a third-party vendor (`false`).
+	Hosted bool `json:"hosted" api:"required"`
 	// Provider-scoped model name.
 	Model string `json:"model" api:"required"`
 	// STT provider name.
@@ -130,6 +133,7 @@ type SpeechToTextListProvidersResponseData struct {
 	ServiceTypes []SpeechToTextListProvidersResponseDataServiceType `json:"service_types" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Hosted       respjson.Field
 		Model        respjson.Field
 		Provider     respjson.Field
 		ServiceTypes respjson.Field

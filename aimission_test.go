@@ -27,14 +27,14 @@ func TestAIMissionNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.Missions.New(context.TODO(), telnyx.AIMissionNewParams{
-		Name:          "name",
-		Description:   telnyx.String("description"),
+		Name:          "Name",
+		Description:   telnyx.String("Description"),
 		ExecutionMode: telnyx.ExecutionModeExternal,
-		Instructions:  telnyx.String("instructions"),
+		Instructions:  telnyx.String("Instructions"),
 		Metadata: map[string]any{
 			"foo": "bar",
 		},
-		Model: telnyx.String("model"),
+		Model: telnyx.String("Model"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -184,14 +184,14 @@ func TestAIMissionUpdateMissionWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.AIMissionUpdateMissionParams{
-			Description:   telnyx.String("description"),
+			Description:   telnyx.String("Description"),
 			ExecutionMode: telnyx.ExecutionModeExternal,
-			Instructions:  telnyx.String("instructions"),
+			Instructions:  telnyx.String("Instructions"),
 			Metadata: map[string]any{
 				"foo": "bar",
 			},
-			Model: telnyx.String("model"),
-			Name:  telnyx.String("name"),
+			Model: telnyx.String("Model"),
+			Name:  telnyx.String("Name"),
 		},
 	)
 	if err != nil {

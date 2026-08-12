@@ -42,7 +42,8 @@ func NewPhoneNumberVoiceService(opts ...option.RequestOption) (r PhoneNumberVoic
 	return
 }
 
-// Retrieve a phone number with voice settings
+// Returns the specified phone number together with its current voice
+// configuration.
 func (r *PhoneNumberVoiceService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PhoneNumberVoiceGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -54,7 +55,8 @@ func (r *PhoneNumberVoiceService) Get(ctx context.Context, id string, opts ...op
 	return res, err
 }
 
-// Update a phone number with voice settings
+// Updates the voice configuration for the specified phone number. The response
+// contains the phone number with its updated voice settings.
 func (r *PhoneNumberVoiceService) Update(ctx context.Context, id string, body PhoneNumberVoiceUpdateParams, opts ...option.RequestOption) (res *PhoneNumberVoiceUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -66,7 +68,9 @@ func (r *PhoneNumberVoiceService) Update(ctx context.Context, id string, body Ph
 	return res, err
 }
 
-// List phone numbers with voice settings
+// Returns account phone numbers together with their voice settings. Results
+// support pagination, sorting, and filters for number, connection name, customer
+// reference, and voice usage payment method.
 func (r *PhoneNumberVoiceService) List(ctx context.Context, query PhoneNumberVoiceListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PhoneNumberWithVoiceSettings], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -84,7 +88,9 @@ func (r *PhoneNumberVoiceService) List(ctx context.Context, query PhoneNumberVoi
 	return res, nil
 }
 
-// List phone numbers with voice settings
+// Returns account phone numbers together with their voice settings. Results
+// support pagination, sorting, and filters for number, connection name, customer
+// reference, and voice usage payment method.
 func (r *PhoneNumberVoiceService) ListAutoPaging(ctx context.Context, query PhoneNumberVoiceListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PhoneNumberWithVoiceSettings] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }

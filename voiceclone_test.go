@@ -148,8 +148,8 @@ func TestVoiceCloneNewFromUploadWithOptionalParams(t *testing.T) {
 		OfTelnyxQwen3TtsClone: &telnyx.VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestTelnyxQwen3TtsClone{
 			AudioFile: io.Reader(bytes.NewBuffer([]byte("Example data"))),
 			Gender:    "male",
-			Language:  "lkf-Lz1vLbBu-9uDh-9AHaOS2D-Cbf",
-			Name:      "name",
+			Language:  "en",
+			Name:      "My cloned voice",
 			Provider:  "telnyx",
 			Label:     telnyx.String("label"),
 			ModelID:   "Qwen3TTS",

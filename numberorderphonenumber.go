@@ -59,7 +59,8 @@ func (r *NumberOrderPhoneNumberService) List(ctx context.Context, query NumberOr
 	return res, err
 }
 
-// Update requirement group for a phone number order
+// Associates an existing requirement group with a phone number in a number order.
+// The response contains the updated number-order phone-number details.
 func (r *NumberOrderPhoneNumberService) UpdateRequirementGroup(ctx context.Context, id string, body NumberOrderPhoneNumberUpdateRequirementGroupParams, opts ...option.RequestOption) (res *NumberOrderPhoneNumberUpdateRequirementGroupResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

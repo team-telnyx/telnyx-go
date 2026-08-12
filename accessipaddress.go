@@ -41,7 +41,7 @@ func NewAccessIPAddressService(opts ...option.RequestOption) (r AccessIPAddressS
 	return
 }
 
-// Create new Access IP Address
+// Create a new access IP address entry on your account.
 func (r *AccessIPAddressService) New(ctx context.Context, body AccessIPAddressNewParams, opts ...option.RequestOption) (res *AccessIPAddressResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "access_ip_address"
@@ -49,7 +49,7 @@ func (r *AccessIPAddressService) New(ctx context.Context, body AccessIPAddressNe
 	return res, err
 }
 
-// Retrieve an access IP address
+// Retrieve the details of a specific access IP address.
 func (r *AccessIPAddressService) Get(ctx context.Context, accessIPAddressID string, opts ...option.RequestOption) (res *AccessIPAddressResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if accessIPAddressID == "" {
@@ -61,7 +61,7 @@ func (r *AccessIPAddressService) Get(ctx context.Context, accessIPAddressID stri
 	return res, err
 }
 
-// List all Access IP Addresses
+// Retrieve a paginated list of access IP addresses configured on your account.
 func (r *AccessIPAddressService) List(ctx context.Context, query AccessIPAddressListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[AccessIPAddressResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -79,12 +79,12 @@ func (r *AccessIPAddressService) List(ctx context.Context, query AccessIPAddress
 	return res, nil
 }
 
-// List all Access IP Addresses
+// Retrieve a paginated list of access IP addresses configured on your account.
 func (r *AccessIPAddressService) ListAutoPaging(ctx context.Context, query AccessIPAddressListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[AccessIPAddressResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete access IP address
+// Delete an access IP address entry from your account.
 func (r *AccessIPAddressService) Delete(ctx context.Context, accessIPAddressID string, opts ...option.RequestOption) (res *AccessIPAddressResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if accessIPAddressID == "" {

@@ -140,16 +140,16 @@ func (r *MdrUsageReportResponseLegacy) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type StandardPaginationMeta struct {
-	PageNumber   int64 `json:"page_number" api:"required"`
-	TotalPages   int64 `json:"total_pages" api:"required"`
+type StandardPaginationMetaFfba4faa88 struct {
+	PageNumber   int64 `json:"page_number"`
 	PageSize     int64 `json:"page_size"`
+	TotalPages   int64 `json:"total_pages"`
 	TotalResults int64 `json:"total_results"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PageNumber   respjson.Field
-		TotalPages   respjson.Field
 		PageSize     respjson.Field
+		TotalPages   respjson.Field
 		TotalResults respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -157,8 +157,8 @@ type StandardPaginationMeta struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r StandardPaginationMeta) RawJSON() string { return r.JSON.raw }
-func (r *StandardPaginationMeta) UnmarshalJSON(data []byte) error {
+func (r StandardPaginationMetaFfba4faa88) RawJSON() string { return r.JSON.raw }
+func (r *StandardPaginationMetaFfba4faa88) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

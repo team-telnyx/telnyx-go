@@ -38,7 +38,7 @@ func NewWhatsappPhoneNumberCallingSettingService(opts ...option.RequestOption) (
 	return
 }
 
-// Get calling settings for a phone number
+// Returns the WhatsApp calling configuration for the specified phone number.
 func (r *WhatsappPhoneNumberCallingSettingService) Get(ctx context.Context, phoneNumber string, opts ...option.RequestOption) (res *WhatsappPhoneNumberCallingSettingGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
@@ -50,7 +50,7 @@ func (r *WhatsappPhoneNumberCallingSettingService) Get(ctx context.Context, phon
 	return res, err
 }
 
-// Enable or disable Whatsapp calling for a phone number
+// Enables or disables WhatsApp calling for the specified phone number.
 func (r *WhatsappPhoneNumberCallingSettingService) Update(ctx context.Context, phoneNumber string, body WhatsappPhoneNumberCallingSettingUpdateParams, opts ...option.RequestOption) (res *WhatsappPhoneNumberCallingSettingUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {

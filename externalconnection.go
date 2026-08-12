@@ -136,7 +136,8 @@ func (r *ExternalConnectionService) Delete(ctx context.Context, id string, opts 
 	return res, err
 }
 
-// Update a location's static emergency address
+// Update the static emergency address assigned to a specific location of an
+// external connection.
 func (r *ExternalConnectionService) UpdateLocation(ctx context.Context, locationID string, params ExternalConnectionUpdateLocationParams, opts ...option.RequestOption) (res *ExternalConnectionUpdateLocationResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.ID == "" {

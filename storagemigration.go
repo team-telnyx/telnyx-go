@@ -52,7 +52,7 @@ func (r *StorageMigrationService) New(ctx context.Context, body StorageMigration
 	return res, err
 }
 
-// Get a Migration
+// Retrieve the details and status of a specific storage migration.
 func (r *StorageMigrationService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *StorageMigrationGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -64,7 +64,7 @@ func (r *StorageMigrationService) Get(ctx context.Context, id string, opts ...op
 	return res, err
 }
 
-// List all Migrations
+// Retrieve a list of the storage migrations on your account.
 func (r *StorageMigrationService) List(ctx context.Context, opts ...option.RequestOption) (res *StorageMigrationListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "storage/migrations"

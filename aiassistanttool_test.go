@@ -90,10 +90,10 @@ func TestAIAssistantToolTestWithOptionalParams(t *testing.T) {
 		telnyx.AIAssistantToolTestParams{
 			AssistantID: "assistant_id",
 			Arguments: map[string]any{
-				"foo": "bar",
+				"order_id": "bar",
 			},
 			DynamicVariables: map[string]any{
-				"foo": "bar",
+				"customer_name": "bar",
 			},
 		},
 	)

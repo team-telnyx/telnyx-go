@@ -37,7 +37,8 @@ func NewMessagingNumbersBulkUpdateService(opts ...option.RequestOption) (r Messa
 	return
 }
 
-// Bulk update phone number profiles
+// Starts a bulk update of messaging-profile assignments for the supplied phone
+// numbers. The response identifies the order used to monitor processing.
 func (r *MessagingNumbersBulkUpdateService) New(ctx context.Context, body MessagingNumbersBulkUpdateNewParams, opts ...option.RequestOption) (res *MessagingNumbersBulkUpdateNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "messaging_numbers_bulk_updates"
@@ -45,7 +46,8 @@ func (r *MessagingNumbersBulkUpdateService) New(ctx context.Context, body Messag
 	return res, err
 }
 
-// Retrieve bulk update status
+// Returns processing status and results for a bulk messaging-settings update
+// order.
 func (r *MessagingNumbersBulkUpdateService) Get(ctx context.Context, orderID string, opts ...option.RequestOption) (res *MessagingNumbersBulkUpdateGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if orderID == "" {

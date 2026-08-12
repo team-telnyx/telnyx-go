@@ -39,7 +39,8 @@ func NewVerificationByPhoneNumberService(opts ...option.RequestOption) (r Verifi
 	return
 }
 
-// List verifications by phone number
+// Returns a paginated list of verifications associated with the specified phone
+// number.
 func (r *VerificationByPhoneNumberService) List(ctx context.Context, phoneNumber string, opts ...option.RequestOption) (res *VerificationByPhoneNumberListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {

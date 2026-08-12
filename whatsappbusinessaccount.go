@@ -46,7 +46,7 @@ func NewWhatsappBusinessAccountService(opts ...option.RequestOption) (r Whatsapp
 	return
 }
 
-// Get a single Whatsapp Business Account
+// Returns the configuration and status of the specified WhatsApp Business Account.
 func (r *WhatsappBusinessAccountService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *WhatsappBusinessAccountGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -58,7 +58,7 @@ func (r *WhatsappBusinessAccountService) Get(ctx context.Context, id string, opt
 	return res, err
 }
 
-// List Whatsapp Business Accounts
+// Returns WhatsApp Business Accounts linked to the authenticated Telnyx account.
 func (r *WhatsappBusinessAccountService) List(ctx context.Context, query WhatsappBusinessAccountListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[WhatsappBusinessAccountListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -76,12 +76,13 @@ func (r *WhatsappBusinessAccountService) List(ctx context.Context, query Whatsap
 	return res, nil
 }
 
-// List Whatsapp Business Accounts
+// Returns WhatsApp Business Accounts linked to the authenticated Telnyx account.
 func (r *WhatsappBusinessAccountService) ListAutoPaging(ctx context.Context, query WhatsappBusinessAccountListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[WhatsappBusinessAccountListResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a Whatsapp Business Account
+// Unlinks and deletes the specified WhatsApp Business Account resource from
+// Telnyx.
 func (r *WhatsappBusinessAccountService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)

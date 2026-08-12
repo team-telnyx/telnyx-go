@@ -65,7 +65,7 @@ func (r *UserAddressService) Get(ctx context.Context, id string, opts ...option.
 }
 
 // Returns a list of your user addresses.
-func (r *UserAddressService) List(ctx context.Context, query UserAddressListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[UserAddress], err error) {
+func (r *UserAddressService) List(ctx context.Context, query UserAddressListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[UserAddressesUserAddress], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -83,11 +83,11 @@ func (r *UserAddressService) List(ctx context.Context, query UserAddressListPara
 }
 
 // Returns a list of your user addresses.
-func (r *UserAddressService) ListAutoPaging(ctx context.Context, query UserAddressListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[UserAddress] {
+func (r *UserAddressService) ListAutoPaging(ctx context.Context, query UserAddressListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[UserAddressesUserAddress] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-type UserAddress struct {
+type UserAddressesUserAddress struct {
 	// Uniquely identifies the user address.
 	ID string `json:"id" format:"uuid"`
 	// The locality of the user address. For US addresses, this corresponds to the
@@ -152,13 +152,13 @@ type UserAddress struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r UserAddress) RawJSON() string { return r.JSON.raw }
-func (r *UserAddress) UnmarshalJSON(data []byte) error {
+func (r UserAddressesUserAddress) RawJSON() string { return r.JSON.raw }
+func (r *UserAddressesUserAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type UserAddressNewResponse struct {
-	Data UserAddress `json:"data"`
+	Data UserAddressesUserAddress `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -174,7 +174,7 @@ func (r *UserAddressNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type UserAddressGetResponse struct {
-	Data UserAddress `json:"data"`
+	Data UserAddressesUserAddress `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

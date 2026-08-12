@@ -38,7 +38,7 @@ func NewGlobalIPUsageService(opts ...option.RequestOption) (r GlobalIPUsageServi
 	return
 }
 
-// Global IP Usage Metrics
+// Retrieve usage metrics for your Global IPs.
 func (r *GlobalIPUsageService) Get(ctx context.Context, query GlobalIPUsageGetParams, opts ...option.RequestOption) (res *GlobalIPUsageGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_usage"

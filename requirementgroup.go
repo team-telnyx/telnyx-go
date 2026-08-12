@@ -40,7 +40,9 @@ func NewRequirementGroupService(opts ...option.RequestOption) (r RequirementGrou
 	return
 }
 
-// Create a new requirement group
+// Creates a regulatory requirement group for a country, number type, and ordering
+// or porting action. Optional customer-reference and requirement values are
+// retained on the created group.
 func (r *RequirementGroupService) New(ctx context.Context, body RequirementGroupNewParams, opts ...option.RequestOption) (res *RequirementGroup, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "requirement_groups"
@@ -48,7 +50,8 @@ func (r *RequirementGroupService) New(ctx context.Context, body RequirementGroup
 	return res, err
 }
 
-// Get a single requirement group by ID
+// Returns the regulatory requirement group identified by `id`, including its
+// requirement values and current approval status.
 func (r *RequirementGroupService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *RequirementGroup, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -60,7 +63,8 @@ func (r *RequirementGroupService) Get(ctx context.Context, id string, opts ...op
 	return res, err
 }
 
-// Update requirement values in requirement group
+// Updates the customer reference or regulatory requirement values on the specified
+// requirement group. The response contains the updated group.
 func (r *RequirementGroupService) Update(ctx context.Context, id string, body RequirementGroupUpdateParams, opts ...option.RequestOption) (res *RequirementGroup, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -72,7 +76,8 @@ func (r *RequirementGroupService) Update(ctx context.Context, id string, body Re
 	return res, err
 }
 
-// List requirement groups
+// Returns regulatory requirement groups for the account. Results can be filtered
+// by country, number type, action, approval status, and customer reference.
 func (r *RequirementGroupService) List(ctx context.Context, query RequirementGroupListParams, opts ...option.RequestOption) (res *[]RequirementGroup, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "requirement_groups"
@@ -80,7 +85,8 @@ func (r *RequirementGroupService) List(ctx context.Context, query RequirementGro
 	return res, err
 }
 
-// Delete a requirement group by ID
+// Deletes the regulatory requirement group identified by `id`. The response
+// contains the deleted requirement-group representation.
 func (r *RequirementGroupService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *RequirementGroup, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -92,7 +98,8 @@ func (r *RequirementGroupService) Delete(ctx context.Context, id string, opts ..
 	return res, err
 }
 
-// Submit a Requirement Group for Approval
+// Submits the specified regulatory requirement group for approval. The response
+// contains the requirement group with its resulting approval status.
 func (r *RequirementGroupService) SubmitForApproval(ctx context.Context, id string, opts ...option.RequestOption) (res *RequirementGroup, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

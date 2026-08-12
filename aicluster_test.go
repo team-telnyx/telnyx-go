@@ -110,11 +110,11 @@ func TestAIClusterComputeWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.Clusters.Compute(context.TODO(), telnyx.AIClusterComputeParams{
-		Bucket:            "bucket",
+		Bucket:            "string",
 		Files:             []string{"string"},
-		MinClusterSize:    telnyx.Int(0),
-		MinSubclusterSize: telnyx.Int(0),
-		Prefix:            telnyx.String("prefix"),
+		MinClusterSize:    telnyx.Int(25),
+		MinSubclusterSize: telnyx.Int(5),
+		Prefix:            telnyx.String("string"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

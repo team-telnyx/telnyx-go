@@ -34,13 +34,13 @@ func TestAIAssistantCanaryDeployNewWithOptionalParams(t *testing.T) {
 				Rules: []telnyx.RuleInputParam{{
 					Serve: telnyx.ServeParam{
 						Rollout: []telnyx.RolloutSlotParam{{
-							VersionID: "version_id",
+							VersionID: "Version Id",
 							Weight:    0,
 						}},
-						VersionID: telnyx.String("version_id"),
+						VersionID: telnyx.String("Version Id"),
 					},
 					Match: []telnyx.ClauseParam{{
-						Attribute: "attribute",
+						Attribute: "Attribute",
 						Operator:  telnyx.ClauseOperatorIn,
 						Values:    []string{"string"},
 					}},
@@ -101,13 +101,13 @@ func TestAIAssistantCanaryDeployUpdateWithOptionalParams(t *testing.T) {
 				Rules: []telnyx.RuleInputParam{{
 					Serve: telnyx.ServeParam{
 						Rollout: []telnyx.RolloutSlotParam{{
-							VersionID: "version_id",
+							VersionID: "Version Id",
 							Weight:    0,
 						}},
-						VersionID: telnyx.String("version_id"),
+						VersionID: telnyx.String("Version Id"),
 					},
 					Match: []telnyx.ClauseParam{{
-						Attribute: "attribute",
+						Attribute: "Attribute",
 						Operator:  telnyx.ClauseOperatorIn,
 						Values:    []string{"string"},
 					}},

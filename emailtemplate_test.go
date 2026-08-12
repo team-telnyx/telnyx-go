@@ -86,7 +86,7 @@ func TestEmailTemplateUpdateWithOptionalParams(t *testing.T) {
 			UpdateEmailTemplateRequest: telnyx.UpdateEmailTemplateRequestParam{
 				HTMLBody:  telnyx.String("html_body"),
 				Name:      telnyx.String("name"),
-				Subject:   telnyx.String("subject"),
+				Subject:   telnyx.String("Welcome aboard, {{first_name}}!"),
 				TextBody:  telnyx.String("text_body"),
 				Variables: []string{"string"},
 			},
@@ -201,7 +201,7 @@ func TestEmailTemplateReplaceWithOptionalParams(t *testing.T) {
 			UpdateEmailTemplateRequest: telnyx.UpdateEmailTemplateRequestParam{
 				HTMLBody:  telnyx.String("html_body"),
 				Name:      telnyx.String("name"),
-				Subject:   telnyx.String("subject"),
+				Subject:   telnyx.String("Welcome aboard, {{first_name}}!"),
 				TextBody:  telnyx.String("text_body"),
 				Variables: []string{"string"},
 			},

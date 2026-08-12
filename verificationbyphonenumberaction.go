@@ -37,7 +37,8 @@ func NewVerificationByPhoneNumberActionService(opts ...option.RequestOption) (r 
 	return
 }
 
-// Verify verification code by phone number
+// Submits a verification code for the specified phone number and Verify profile.
+// The response indicates whether the code was accepted or rejected.
 func (r *VerificationByPhoneNumberActionService) Verify(ctx context.Context, phoneNumber string, body VerificationByPhoneNumberActionVerifyParams, opts ...option.RequestOption) (res *VerifyVerificationCodeResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {

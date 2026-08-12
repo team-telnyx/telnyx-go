@@ -74,7 +74,7 @@ func (r *FaxService) New(ctx context.Context, body FaxNewParams, opts ...option.
 	return res, err
 }
 
-// View a fax
+// Retrieve the details of a single fax.
 func (r *FaxService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *FaxGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -86,7 +86,7 @@ func (r *FaxService) Get(ctx context.Context, id string, opts ...option.RequestO
 	return res, err
 }
 
-// View a list of faxes
+// Retrieve a paginated list of faxes sent or received on your account.
 func (r *FaxService) List(ctx context.Context, query FaxListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[Fax], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -104,12 +104,12 @@ func (r *FaxService) List(ctx context.Context, query FaxListParams, opts ...opti
 	return res, nil
 }
 
-// View a list of faxes
+// Retrieve a paginated list of faxes sent or received on your account.
 func (r *FaxService) ListAutoPaging(ctx context.Context, query FaxListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[Fax] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a fax
+// Delete a fax resource from your account.
 func (r *FaxService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)

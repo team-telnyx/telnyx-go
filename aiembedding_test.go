@@ -27,9 +27,9 @@ func TestAIEmbeddingNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.Embeddings.New(context.TODO(), telnyx.AIEmbeddingNewParams{
-		BucketName:               "bucket_name",
-		DocumentChunkOverlapSize: telnyx.Int(0),
-		DocumentChunkSize:        telnyx.Int(0),
+		BucketName:               "Bucket Name",
+		DocumentChunkOverlapSize: telnyx.Int(512),
+		DocumentChunkSize:        telnyx.Int(1024),
 		EmbeddingModel:           telnyx.AIEmbeddingNewParamsEmbeddingModelThenlperGteLarge,
 		Loader:                   telnyx.AIEmbeddingNewParamsLoaderDefault,
 	})
@@ -104,9 +104,9 @@ func TestAIEmbeddingSimilaritySearchWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.Embeddings.SimilaritySearch(context.TODO(), telnyx.AIEmbeddingSimilaritySearchParams{
-		BucketName: "bucket_name",
-		Query:      "query",
-		NumOfDocs:  telnyx.Int(0),
+		BucketName: "Bucket Name",
+		Query:      "Query",
+		NumOfDocs:  telnyx.Int(3),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -131,8 +131,8 @@ func TestAIEmbeddingURL(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.Embeddings.URL(context.TODO(), telnyx.AIEmbeddingURLParams{
-		BucketName: "bucket_name",
-		URL:        "url",
+		BucketName: "Bucket Name",
+		URL:        "URL",
 	})
 	if err != nil {
 		var apierr *telnyx.Error

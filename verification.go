@@ -44,7 +44,8 @@ func NewVerificationService(opts ...option.RequestOption) (r VerificationService
 	return
 }
 
-// Retrieve verification
+// Returns the verification identified by ID, including its channel, phone number,
+// Verify profile, timeout, and current status.
 func (r *VerificationService) Get(ctx context.Context, verificationID string, opts ...option.RequestOption) (res *VerificationGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if verificationID == "" {
@@ -56,7 +57,9 @@ func (r *VerificationService) Get(ctx context.Context, verificationID string, op
 	return res, err
 }
 
-// Trigger Call verification
+// Starts a verification for the specified phone number and delivers its code in a
+// voice call using the selected Verify profile. Returns the pending verification
+// record.
 func (r *VerificationService) TriggerCall(ctx context.Context, body VerificationTriggerCallParams, opts ...option.RequestOption) (res *CreateVerificationResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "verifications/call"
@@ -64,7 +67,9 @@ func (r *VerificationService) TriggerCall(ctx context.Context, body Verification
 	return res, err
 }
 
-// Trigger Flash call verification
+// Starts a verification for the specified phone number and places a brief call
+// with the code embedded in the caller ID. Returns the pending verification
+// record.
 func (r *VerificationService) TriggerFlashcall(ctx context.Context, body VerificationTriggerFlashcallParams, opts ...option.RequestOption) (res *CreateVerificationResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "verifications/flashcall"
@@ -72,7 +77,8 @@ func (r *VerificationService) TriggerFlashcall(ctx context.Context, body Verific
 	return res, err
 }
 
-// Trigger SMS verification
+// Starts a verification for the specified phone number and sends its code by SMS
+// using the selected Verify profile. Returns the pending verification record.
 func (r *VerificationService) TriggerSMS(ctx context.Context, body VerificationTriggerSMSParams, opts ...option.RequestOption) (res *CreateVerificationResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "verifications/sms"
@@ -80,7 +86,9 @@ func (r *VerificationService) TriggerSMS(ctx context.Context, body VerificationT
 	return res, err
 }
 
-// Trigger WhatsApp verification
+// Starts a verification for the specified phone number and sends its code over
+// WhatsApp using the selected Verify profile. Returns the pending verification
+// record.
 func (r *VerificationService) TriggerWhatsappVerification(ctx context.Context, body VerificationTriggerWhatsappVerificationParams, opts ...option.RequestOption) (res *CreateVerificationResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "verifications/whatsapp"

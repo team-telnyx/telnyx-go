@@ -40,7 +40,7 @@ func NewMobilePhoneNumberMessagingService(opts ...option.RequestOption) (r Mobil
 	return
 }
 
-// Retrieve a mobile phone number with messaging settings
+// Returns the messaging configuration for the specified mobile phone number.
 func (r *MobilePhoneNumberMessagingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *MobilePhoneNumberMessagingGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -52,7 +52,7 @@ func (r *MobilePhoneNumberMessagingService) Get(ctx context.Context, id string, 
 	return res, err
 }
 
-// List mobile phone numbers with messaging settings
+// Returns mobile phone numbers with their current messaging configuration.
 func (r *MobilePhoneNumberMessagingService) List(ctx context.Context, query MobilePhoneNumberMessagingListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MobilePhoneNumberWithMessagingSettings], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -70,7 +70,7 @@ func (r *MobilePhoneNumberMessagingService) List(ctx context.Context, query Mobi
 	return res, nil
 }
 
-// List mobile phone numbers with messaging settings
+// Returns mobile phone numbers with their current messaging configuration.
 func (r *MobilePhoneNumberMessagingService) ListAutoPaging(ctx context.Context, query MobilePhoneNumberMessagingListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MobilePhoneNumberWithMessagingSettings] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }

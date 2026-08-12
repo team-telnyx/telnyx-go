@@ -50,7 +50,9 @@ func (r *RoomSessionActionService) End(ctx context.Context, roomSessionID string
 	return res, err
 }
 
-// Kick participants from a room session.
+// Removes the selected participants from the specified room session. Apply the
+// action to a list of participant IDs or to `all`, with optional participant IDs
+// excluded from the action.
 func (r *RoomSessionActionService) Kick(ctx context.Context, roomSessionID string, body RoomSessionActionKickParams, opts ...option.RequestOption) (res *RoomSessionActionKickResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if roomSessionID == "" {
@@ -62,7 +64,9 @@ func (r *RoomSessionActionService) Kick(ctx context.Context, roomSessionID strin
 	return res, err
 }
 
-// Mute participants in room session.
+// Mutes the selected participants in the specified room session. Apply the action
+// to a list of participant IDs or to `all`, with optional participant IDs excluded
+// from the action.
 func (r *RoomSessionActionService) Mute(ctx context.Context, roomSessionID string, body RoomSessionActionMuteParams, opts ...option.RequestOption) (res *RoomSessionActionMuteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if roomSessionID == "" {
@@ -74,7 +78,9 @@ func (r *RoomSessionActionService) Mute(ctx context.Context, roomSessionID strin
 	return res, err
 }
 
-// Unmute participants in room session.
+// Unmutes the selected participants in the specified room session. Apply the
+// action to a list of participant IDs or to `all`, with optional participant IDs
+// excluded from the action.
 func (r *RoomSessionActionService) Unmute(ctx context.Context, roomSessionID string, body RoomSessionActionUnmuteParams, opts ...option.RequestOption) (res *RoomSessionActionUnmuteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if roomSessionID == "" {

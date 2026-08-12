@@ -19,8 +19,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
-// Messages
-//
 // MessageService contains methods and other services that help with interacting
 // with the telnyx API.
 //
@@ -109,7 +107,8 @@ func (r *MessageService) Send(ctx context.Context, body MessageSendParams, opts 
 	return res, err
 }
 
-// Send a group MMS message
+// Queues an MMS addressed to multiple recipients as a group conversation. Delivery
+// events are reported asynchronously through messaging webhooks.
 func (r *MessageService) SendGroupMms(ctx context.Context, body MessageSendGroupMmsParams, opts ...option.RequestOption) (res *MessageSendGroupMmsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/group_mms"
@@ -117,7 +116,8 @@ func (r *MessageService) SendGroupMms(ctx context.Context, body MessageSendGroup
 	return res, err
 }
 
-// Send a long code message
+// Queues an outbound SMS or MMS using a long-code sender. Delivery progress and
+// final disposition are reported asynchronously through messaging webhooks.
 func (r *MessageService) SendLongCode(ctx context.Context, body MessageSendLongCodeParams, opts ...option.RequestOption) (res *MessageSendLongCodeResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/long_code"
@@ -125,7 +125,8 @@ func (r *MessageService) SendLongCode(ctx context.Context, body MessageSendLongC
 	return res, err
 }
 
-// Send a message using number pool
+// Queues an outbound message using a number pool. Telnyx selects an eligible
+// sender from the pool according to its messaging profile configuration.
 func (r *MessageService) SendNumberPool(ctx context.Context, body MessageSendNumberPoolParams, opts ...option.RequestOption) (res *MessageSendNumberPoolResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/number_pool"
@@ -133,7 +134,8 @@ func (r *MessageService) SendNumberPool(ctx context.Context, body MessageSendNum
 	return res, err
 }
 
-// Send a short code message
+// Queues an outbound SMS or MMS using a short-code sender. Delivery progress and
+// final disposition are reported asynchronously through messaging webhooks.
 func (r *MessageService) SendShortCode(ctx context.Context, body MessageSendShortCodeParams, opts ...option.RequestOption) (res *MessageSendShortCodeResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/short_code"
@@ -148,6 +150,392 @@ func (r *MessageService) SendWithAlphanumericSender(ctx context.Context, body Me
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
+
+// Sends a WhatsApp message using a Telnyx WhatsApp-enabled number. The message
+// body, interactive elements, media, location, and reaction content are specified
+// in the `whatsapp_message` field. Delivery progress and final disposition are
+// reported asynchronously through messaging webhooks.
+func (r *MessageService) Whatsapp(ctx context.Context, body MessageWhatsappParams, opts ...option.RequestOption) (res *MessageWhatsappResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "messages/whatsapp"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
+type MessagingError0b38e7044b struct {
+	Code   string                         `json:"code" api:"required"`
+	Title  string                         `json:"title" api:"required"`
+	Detail string                         `json:"detail"`
+	Meta   any                            `json:"meta"`
+	Source MessagingError0b38e7044bSource `json:"source"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Code        respjson.Field
+		Title       respjson.Field
+		Detail      respjson.Field
+		Meta        respjson.Field
+		Source      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingError0b38e7044b) RawJSON() string { return r.JSON.raw }
+func (r *MessagingError0b38e7044b) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessagingError0b38e7044bSource struct {
+	// Indicates which query parameter caused the error.
+	Parameter string `json:"parameter"`
+	// JSON pointer (RFC6901) to the offending entity.
+	Pointer string `json:"pointer" format:"json-pointer"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Parameter   respjson.Field
+		Pointer     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingError0b38e7044bSource) RawJSON() string { return r.JSON.raw }
+func (r *MessagingError0b38e7044bSource) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessagingOutboundMessagePayload struct {
+	// Identifies the type of resource.
+	ID string                              `json:"id" format:"uuid"`
+	Cc []MessagingOutboundMessagePayloadCc `json:"cc"`
+	// ISO 8601 formatted date indicating when the message was finalized.
+	CompletedAt time.Time                           `json:"completed_at" api:"nullable" format:"date-time"`
+	Cost        MessagingOutboundMessagePayloadCost `json:"cost" api:"nullable"`
+	// Detailed breakdown of the message cost components.
+	CostBreakdown MessagingOutboundMessagePayloadCostBreakdown `json:"cost_breakdown" api:"nullable"`
+	// The direction of the message. Inbound messages are sent to you whereas outbound
+	// messages are sent from you.
+	//
+	// Any of "outbound".
+	Direction MessagingOutboundMessagePayloadDirection `json:"direction"`
+	// Encoding scheme used for the message body.
+	Encoding string `json:"encoding"`
+	// These errors may point at addressees when referring to unsuccessful/unconfirmed
+	// delivery statuses.
+	Errors []MessagingError0b38e7044b             `json:"errors"`
+	From   MessagingOutboundMessagePayloadFrom    `json:"from"`
+	Media  []MessagingOutboundMessagePayloadMedia `json:"media"`
+	// Unique identifier for a messaging profile.
+	MessagingProfileID string `json:"messaging_profile_id"`
+	// The number of characters in the message text
+	NumChars int64 `json:"num_chars"`
+	// The id of the organization the messaging profile belongs to.
+	OrganizationID string `json:"organization_id" format:"uuid"`
+	// Number of parts into which the message's body must be split.
+	Parts int64 `json:"parts"`
+	// ISO 8601 formatted date indicating when the message request was received.
+	ReceivedAt time.Time `json:"received_at" format:"date-time"`
+	// Identifies the type of the resource.
+	//
+	// Any of "message".
+	RecordType MessagingOutboundMessagePayloadRecordType `json:"record_type"`
+	// ISO 8601 formatted date indicating when the message was sent.
+	SentAt time.Time `json:"sent_at" api:"nullable" format:"date-time"`
+	// Indicates whether smart encoding was applied to this message. When `true`, one
+	// or more Unicode characters were automatically replaced with GSM-7 equivalents to
+	// reduce segment count and cost. The original message text is preserved in
+	// webhooks.
+	SmartEncodingApplied bool `json:"smart_encoding_applied"`
+	// Subject of multimedia message
+	Subject string `json:"subject" api:"nullable"`
+	// Tags associated with the resource.
+	Tags []string `json:"tags"`
+	// Indicates whether the TCR campaign is billable.
+	TcrCampaignBillable bool `json:"tcr_campaign_billable"`
+	// The Campaign Registry (TCR) campaign ID associated with the message.
+	TcrCampaignID string `json:"tcr_campaign_id" api:"nullable"`
+	// The registration status of the TCR campaign.
+	TcrCampaignRegistered string `json:"tcr_campaign_registered" api:"nullable"`
+	// Message body (i.e., content) as a non-empty string.
+	//
+	// **Required for SMS**
+	Text string                              `json:"text"`
+	To   []MessagingOutboundMessagePayloadTo `json:"to"`
+	// The type of message.
+	//
+	// Any of "SMS", "MMS".
+	Type MessagingOutboundMessagePayloadType `json:"type"`
+	// Message must be out of the queue by this time or else it will be discarded and
+	// marked as 'sending_failed'. Once the message moves out of the queue, this field
+	// will be nulled
+	ValidUntil time.Time `json:"valid_until" api:"nullable" format:"date-time"`
+	// Seconds the message is queued due to rate limiting before being sent to the
+	// carrier. Represents the maximum wait across all applicable rate limits (account,
+	// carrier, campaign). 0.0 = no queuing delay.
+	WaitSeconds float64 `json:"wait_seconds" api:"nullable"`
+	// The failover URL where webhooks related to this message will be sent if sending
+	// to the primary URL fails.
+	WebhookFailoverURL string `json:"webhook_failover_url" api:"nullable" format:"url"`
+	// The URL where webhooks related to this message will be sent.
+	WebhookURL string `json:"webhook_url" api:"nullable" format:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                    respjson.Field
+		Cc                    respjson.Field
+		CompletedAt           respjson.Field
+		Cost                  respjson.Field
+		CostBreakdown         respjson.Field
+		Direction             respjson.Field
+		Encoding              respjson.Field
+		Errors                respjson.Field
+		From                  respjson.Field
+		Media                 respjson.Field
+		MessagingProfileID    respjson.Field
+		NumChars              respjson.Field
+		OrganizationID        respjson.Field
+		Parts                 respjson.Field
+		ReceivedAt            respjson.Field
+		RecordType            respjson.Field
+		SentAt                respjson.Field
+		SmartEncodingApplied  respjson.Field
+		Subject               respjson.Field
+		Tags                  respjson.Field
+		TcrCampaignBillable   respjson.Field
+		TcrCampaignID         respjson.Field
+		TcrCampaignRegistered respjson.Field
+		Text                  respjson.Field
+		To                    respjson.Field
+		Type                  respjson.Field
+		ValidUntil            respjson.Field
+		WaitSeconds           respjson.Field
+		WebhookFailoverURL    respjson.Field
+		WebhookURL            respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingOutboundMessagePayload) RawJSON() string { return r.JSON.raw }
+func (r *MessagingOutboundMessagePayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessagingOutboundMessagePayloadCc struct {
+	// The carrier of the receiver.
+	Carrier string `json:"carrier"`
+	// The line-type of the receiver.
+	//
+	// Any of "Wireline", "Wireless", "VoWiFi", "VoIP", "Pre-Paid Wireless", "".
+	LineType string `json:"line_type"`
+	// Receiving address (+E.164 formatted phone number or short code).
+	PhoneNumber string `json:"phone_number"`
+	// Any of "queued", "sending", "sent", "delivered", "sending_failed",
+	// "delivery_failed", "delivery_unconfirmed".
+	Status string `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Carrier     respjson.Field
+		LineType    respjson.Field
+		PhoneNumber respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingOutboundMessagePayloadCc) RawJSON() string { return r.JSON.raw }
+func (r *MessagingOutboundMessagePayloadCc) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessagingOutboundMessagePayloadCost struct {
+	// The amount deducted from your account.
+	Amount string `json:"amount"`
+	// The ISO 4217 currency identifier.
+	Currency string `json:"currency"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount      respjson.Field
+		Currency    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingOutboundMessagePayloadCost) RawJSON() string { return r.JSON.raw }
+func (r *MessagingOutboundMessagePayloadCost) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Detailed breakdown of the message cost components.
+type MessagingOutboundMessagePayloadCostBreakdown struct {
+	CarrierFee MessagingOutboundMessagePayloadCostBreakdownCarrierFee `json:"carrier_fee"`
+	Rate       MessagingOutboundMessagePayloadCostBreakdownRate       `json:"rate"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CarrierFee  respjson.Field
+		Rate        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingOutboundMessagePayloadCostBreakdown) RawJSON() string { return r.JSON.raw }
+func (r *MessagingOutboundMessagePayloadCostBreakdown) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessagingOutboundMessagePayloadCostBreakdownCarrierFee struct {
+	// The carrier fee amount.
+	Amount string `json:"amount"`
+	// The ISO 4217 currency identifier.
+	Currency string `json:"currency"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount      respjson.Field
+		Currency    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingOutboundMessagePayloadCostBreakdownCarrierFee) RawJSON() string { return r.JSON.raw }
+func (r *MessagingOutboundMessagePayloadCostBreakdownCarrierFee) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessagingOutboundMessagePayloadCostBreakdownRate struct {
+	// The rate amount applied.
+	Amount string `json:"amount"`
+	// The ISO 4217 currency identifier.
+	Currency string `json:"currency"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount      respjson.Field
+		Currency    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingOutboundMessagePayloadCostBreakdownRate) RawJSON() string { return r.JSON.raw }
+func (r *MessagingOutboundMessagePayloadCostBreakdownRate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The direction of the message. Inbound messages are sent to you whereas outbound
+// messages are sent from you.
+type MessagingOutboundMessagePayloadDirection string
+
+const (
+	MessagingOutboundMessagePayloadDirectionOutbound MessagingOutboundMessagePayloadDirection = "outbound"
+)
+
+type MessagingOutboundMessagePayloadFrom struct {
+	// The carrier of the receiver.
+	Carrier string `json:"carrier"`
+	// The line-type of the receiver.
+	//
+	// Any of "Wireline", "Wireless", "VoWiFi", "VoIP", "Pre-Paid Wireless", "".
+	LineType string `json:"line_type"`
+	// Sending address (+E.164 formatted phone number, alphanumeric sender ID, or short
+	// code).
+	PhoneNumber string `json:"phone_number"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Carrier     respjson.Field
+		LineType    respjson.Field
+		PhoneNumber respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingOutboundMessagePayloadFrom) RawJSON() string { return r.JSON.raw }
+func (r *MessagingOutboundMessagePayloadFrom) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessagingOutboundMessagePayloadMedia struct {
+	// The MIME type of the requested media.
+	ContentType string `json:"content_type" api:"nullable"`
+	// The SHA256 hash of the requested media.
+	Sha256 string `json:"sha256" api:"nullable"`
+	// The size of the requested media.
+	Size int64 `json:"size" api:"nullable"`
+	// The url of the media requested to be sent.
+	URL string `json:"url" format:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ContentType respjson.Field
+		Sha256      respjson.Field
+		Size        respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingOutboundMessagePayloadMedia) RawJSON() string { return r.JSON.raw }
+func (r *MessagingOutboundMessagePayloadMedia) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies the type of the resource.
+type MessagingOutboundMessagePayloadRecordType string
+
+const (
+	MessagingOutboundMessagePayloadRecordTypeMessage MessagingOutboundMessagePayloadRecordType = "message"
+)
+
+type MessagingOutboundMessagePayloadTo struct {
+	// The carrier of the receiver.
+	Carrier string `json:"carrier"`
+	// The line-type of the receiver.
+	//
+	// Any of "Wireline", "Wireless", "VoWiFi", "VoIP", "Pre-Paid Wireless", "".
+	LineType string `json:"line_type"`
+	// Receiving address (+E.164 formatted phone number or short code).
+	PhoneNumber string `json:"phone_number"`
+	// The delivery status of the message.
+	//
+	// Any of "queued", "sending", "sent", "expired", "sending_failed",
+	// "delivery_unconfirmed", "delivered", "delivery_failed".
+	Status string `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Carrier     respjson.Field
+		LineType    respjson.Field
+		PhoneNumber respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingOutboundMessagePayloadTo) RawJSON() string { return r.JSON.raw }
+func (r *MessagingOutboundMessagePayloadTo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The type of message.
+type MessagingOutboundMessagePayloadType string
+
+const (
+	MessagingOutboundMessagePayloadTypeSMS MessagingOutboundMessagePayloadType = "SMS"
+	MessagingOutboundMessagePayloadTypeMms MessagingOutboundMessagePayloadType = "MMS"
+)
 
 type OutboundMessagePayload struct {
 	// Identifies the type of resource.
@@ -1322,6 +1710,1311 @@ func (r *RcsToItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type WhatsappContact struct {
+	Addresses []WhatsappContactAddress `json:"addresses"`
+	Birthday  string                   `json:"birthday"`
+	Emails    []WhatsappContactEmail   `json:"emails"`
+	Name      string                   `json:"name"`
+	Org       WhatsappContactOrg       `json:"org"`
+	Phones    []WhatsappContactPhone   `json:"phones"`
+	URLs      []WhatsappContactURL     `json:"urls"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Addresses   respjson.Field
+		Birthday    respjson.Field
+		Emails      respjson.Field
+		Name        respjson.Field
+		Org         respjson.Field
+		Phones      respjson.Field
+		URLs        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappContact) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappContact) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this WhatsappContact to a WhatsappContactParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// WhatsappContactParam.Overrides()
+func (r WhatsappContact) ToParam() WhatsappContactParam {
+	return param.Override[WhatsappContactParam](json.RawMessage(r.RawJSON()))
+}
+
+type WhatsappContactAddress struct {
+	City        string `json:"city"`
+	Country     string `json:"country"`
+	CountryCode string `json:"country_code"`
+	State       string `json:"state"`
+	Street      string `json:"street"`
+	Type        string `json:"type"`
+	Zip         string `json:"zip"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		City        respjson.Field
+		Country     respjson.Field
+		CountryCode respjson.Field
+		State       respjson.Field
+		Street      respjson.Field
+		Type        respjson.Field
+		Zip         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappContactAddress) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappContactAddress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappContactEmail struct {
+	Email string `json:"email"`
+	Type  string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Email       respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappContactEmail) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappContactEmail) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappContactOrg struct {
+	Company    string `json:"company"`
+	Department string `json:"department"`
+	Title      string `json:"title"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Company     respjson.Field
+		Department  respjson.Field
+		Title       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappContactOrg) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappContactOrg) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappContactPhone struct {
+	Phone string `json:"phone"`
+	Type  string `json:"type"`
+	WaID  string `json:"wa_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Phone       respjson.Field
+		Type        respjson.Field
+		WaID        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappContactPhone) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappContactPhone) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappContactURL struct {
+	Type string `json:"type"`
+	URL  string `json:"url" format:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappContactURL) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappContactURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappContactParam struct {
+	Birthday  param.Opt[string]             `json:"birthday,omitzero"`
+	Name      param.Opt[string]             `json:"name,omitzero"`
+	Addresses []WhatsappContactAddressParam `json:"addresses,omitzero"`
+	Emails    []WhatsappContactEmailParam   `json:"emails,omitzero"`
+	Org       WhatsappContactOrgParam       `json:"org,omitzero"`
+	Phones    []WhatsappContactPhoneParam   `json:"phones,omitzero"`
+	URLs      []WhatsappContactURLParam     `json:"urls,omitzero"`
+	paramObj
+}
+
+func (r WhatsappContactParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappContactParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappContactParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappContactAddressParam struct {
+	City        param.Opt[string] `json:"city,omitzero"`
+	Country     param.Opt[string] `json:"country,omitzero"`
+	CountryCode param.Opt[string] `json:"country_code,omitzero"`
+	State       param.Opt[string] `json:"state,omitzero"`
+	Street      param.Opt[string] `json:"street,omitzero"`
+	Type        param.Opt[string] `json:"type,omitzero"`
+	Zip         param.Opt[string] `json:"zip,omitzero"`
+	paramObj
+}
+
+func (r WhatsappContactAddressParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappContactAddressParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappContactAddressParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappContactEmailParam struct {
+	Email param.Opt[string] `json:"email,omitzero"`
+	Type  param.Opt[string] `json:"type,omitzero"`
+	paramObj
+}
+
+func (r WhatsappContactEmailParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappContactEmailParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappContactEmailParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappContactOrgParam struct {
+	Company    param.Opt[string] `json:"company,omitzero"`
+	Department param.Opt[string] `json:"department,omitzero"`
+	Title      param.Opt[string] `json:"title,omitzero"`
+	paramObj
+}
+
+func (r WhatsappContactOrgParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappContactOrgParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappContactOrgParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappContactPhoneParam struct {
+	Phone param.Opt[string] `json:"phone,omitzero"`
+	Type  param.Opt[string] `json:"type,omitzero"`
+	WaID  param.Opt[string] `json:"wa_id,omitzero"`
+	paramObj
+}
+
+func (r WhatsappContactPhoneParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappContactPhoneParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappContactPhoneParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappContactURLParam struct {
+	Type param.Opt[string] `json:"type,omitzero"`
+	URL  param.Opt[string] `json:"url,omitzero" format:"url"`
+	paramObj
+}
+
+func (r WhatsappContactURLParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappContactURLParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappContactURLParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractive struct {
+	Action WhatsappInteractiveAction `json:"action"`
+	Body   WhatsappInteractiveBody   `json:"body"`
+	Footer WhatsappInteractiveFooter `json:"footer"`
+	Header WhatsappInteractiveHeader `json:"header"`
+	// Any of "cta_url", "list", "carousel", "button", "location_request_message".
+	Type WhatsappInteractiveType `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Action      respjson.Field
+		Body        respjson.Field
+		Footer      respjson.Field
+		Header      respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappInteractive) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappInteractive) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this WhatsappInteractive to a WhatsappInteractiveParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// WhatsappInteractiveParam.Overrides()
+func (r WhatsappInteractive) ToParam() WhatsappInteractiveParam {
+	return param.Override[WhatsappInteractiveParam](json.RawMessage(r.RawJSON()))
+}
+
+type WhatsappInteractiveAction struct {
+	Button            string                              `json:"button"`
+	Buttons           []WhatsappInteractiveActionButton   `json:"buttons"`
+	Cards             []WhatsappInteractiveActionCard     `json:"cards"`
+	CatalogID         string                              `json:"catalog_id"`
+	Mode              string                              `json:"mode"`
+	Name              string                              `json:"name"`
+	Parameters        WhatsappInteractiveActionParameters `json:"parameters"`
+	ProductRetailerID string                              `json:"product_retailer_id"`
+	Sections          []WhatsappInteractiveActionSection  `json:"sections"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Button            respjson.Field
+		Buttons           respjson.Field
+		Cards             respjson.Field
+		CatalogID         respjson.Field
+		Mode              respjson.Field
+		Name              respjson.Field
+		Parameters        respjson.Field
+		ProductRetailerID respjson.Field
+		Sections          respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappInteractiveAction) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappInteractiveAction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveActionButton struct {
+	Reply WhatsappInteractiveActionButtonsReply `json:"reply"`
+	// Any of "reply".
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Reply       respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappInteractiveActionButton) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappInteractiveActionButton) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveActionButtonsReply struct {
+	// unique identifier for each button, 256 character maximum
+	ID string `json:"id"`
+	// button label, 20 character maximum
+	Title string `json:"title"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Title       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappInteractiveActionButtonsReply) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappInteractiveActionButtonsReply) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveActionCard struct {
+	Action WhatsappInteractiveActionCardsAction `json:"action"`
+	Body   WhatsappInteractiveActionCardsBody   `json:"body"`
+	// unique index for each card (0-9)
+	CardIndex int64                                `json:"card_index"`
+	Header    WhatsappInteractiveActionCardsHeader `json:"header"`
+	// Any of "cta_url".
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Action      respjson.Field
+		Body        respjson.Field
+		CardIndex   respjson.Field
+		Header      respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappInteractiveActionCard) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappInteractiveActionCard) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveActionCardsAction struct {
+	// the unique ID of the catalog
+	CatalogID string `json:"catalog_id"`
+	// the unique retailer ID of the product
+	ProductRetailerID string `json:"product_retailer_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CatalogID         respjson.Field
+		ProductRetailerID respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappInteractiveActionCardsAction) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappInteractiveActionCardsAction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveActionCardsBody struct {
+	// 160 character maximum, up to 2 line breaks
+	Text string `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappInteractiveActionCardsBody) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappInteractiveActionCardsBody) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveActionCardsHeader struct {
+	Image WhatsappMedia `json:"image"`
+	// Any of "image", "video".
+	Type  string        `json:"type"`
+	Video WhatsappMedia `json:"video"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Image       respjson.Field
+		Type        respjson.Field
+		Video       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappInteractiveActionCardsHeader) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappInteractiveActionCardsHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveActionParameters struct {
+	// button label text, 20 character maximum
+	DisplayText string `json:"display_text"`
+	// button URL to load when tapped by the user
+	URL string `json:"url" format:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DisplayText respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappInteractiveActionParameters) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappInteractiveActionParameters) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveActionSection struct {
+	ProductItems []WhatsappInteractiveActionSectionsProductItem `json:"product_items"`
+	Rows         []WhatsappInteractiveActionSectionsRow         `json:"rows"`
+	// section title, 24 character maximum
+	Title string `json:"title"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ProductItems respjson.Field
+		Rows         respjson.Field
+		Title        respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappInteractiveActionSection) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappInteractiveActionSection) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveActionSectionsProductItem struct {
+	ProductRetailerID string `json:"product_retailer_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ProductRetailerID respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappInteractiveActionSectionsProductItem) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappInteractiveActionSectionsProductItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveActionSectionsRow struct {
+	// arbitrary string identifying the row, 200 character maximum
+	ID string `json:"id"`
+	// row description, 72 character maximum
+	Description string `json:"description"`
+	// row title, 24 character maximum
+	Title string `json:"title"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Description respjson.Field
+		Title       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappInteractiveActionSectionsRow) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappInteractiveActionSectionsRow) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveBody struct {
+	// body text, 1024 character maximum
+	Text string `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappInteractiveBody) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappInteractiveBody) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveFooter struct {
+	// footer text, 60 character maximum
+	Text string `json:"text"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappInteractiveFooter) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappInteractiveFooter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveHeader struct {
+	Document WhatsappMedia `json:"document"`
+	Image    WhatsappMedia `json:"image"`
+	SubText  string        `json:"sub_text"`
+	// header text, 60 character maximum
+	Text  string        `json:"text"`
+	Video WhatsappMedia `json:"video"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Document    respjson.Field
+		Image       respjson.Field
+		SubText     respjson.Field
+		Text        respjson.Field
+		Video       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappInteractiveHeader) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappInteractiveHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveType string
+
+const (
+	WhatsappInteractiveTypeCtaURL                 WhatsappInteractiveType = "cta_url"
+	WhatsappInteractiveTypeList                   WhatsappInteractiveType = "list"
+	WhatsappInteractiveTypeCarousel               WhatsappInteractiveType = "carousel"
+	WhatsappInteractiveTypeButton                 WhatsappInteractiveType = "button"
+	WhatsappInteractiveTypeLocationRequestMessage WhatsappInteractiveType = "location_request_message"
+)
+
+type WhatsappInteractiveParam struct {
+	Action WhatsappInteractiveActionParam `json:"action,omitzero"`
+	Body   WhatsappInteractiveBodyParam   `json:"body,omitzero"`
+	Footer WhatsappInteractiveFooterParam `json:"footer,omitzero"`
+	Header WhatsappInteractiveHeaderParam `json:"header,omitzero"`
+	// Any of "cta_url", "list", "carousel", "button", "location_request_message".
+	Type WhatsappInteractiveType `json:"type,omitzero"`
+	paramObj
+}
+
+func (r WhatsappInteractiveParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappInteractiveParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappInteractiveParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveActionParam struct {
+	Button            param.Opt[string]                        `json:"button,omitzero"`
+	CatalogID         param.Opt[string]                        `json:"catalog_id,omitzero"`
+	Mode              param.Opt[string]                        `json:"mode,omitzero"`
+	Name              param.Opt[string]                        `json:"name,omitzero"`
+	ProductRetailerID param.Opt[string]                        `json:"product_retailer_id,omitzero"`
+	Buttons           []WhatsappInteractiveActionButtonParam   `json:"buttons,omitzero"`
+	Cards             []WhatsappInteractiveActionCardParam     `json:"cards,omitzero"`
+	Parameters        WhatsappInteractiveActionParametersParam `json:"parameters,omitzero"`
+	Sections          []WhatsappInteractiveActionSectionParam  `json:"sections,omitzero"`
+	paramObj
+}
+
+func (r WhatsappInteractiveActionParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappInteractiveActionParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappInteractiveActionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveActionButtonParam struct {
+	Reply WhatsappInteractiveActionButtonsReplyParam `json:"reply,omitzero"`
+	// Any of "reply".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r WhatsappInteractiveActionButtonParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappInteractiveActionButtonParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappInteractiveActionButtonParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[WhatsappInteractiveActionButtonParam](
+		"type", "reply",
+	)
+}
+
+type WhatsappInteractiveActionButtonsReplyParam struct {
+	// unique identifier for each button, 256 character maximum
+	ID param.Opt[string] `json:"id,omitzero"`
+	// button label, 20 character maximum
+	Title param.Opt[string] `json:"title,omitzero"`
+	paramObj
+}
+
+func (r WhatsappInteractiveActionButtonsReplyParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappInteractiveActionButtonsReplyParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappInteractiveActionButtonsReplyParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveActionCardParam struct {
+	// unique index for each card (0-9)
+	CardIndex param.Opt[int64]                          `json:"card_index,omitzero"`
+	Action    WhatsappInteractiveActionCardsActionParam `json:"action,omitzero"`
+	Body      WhatsappInteractiveActionCardsBodyParam   `json:"body,omitzero"`
+	Header    WhatsappInteractiveActionCardsHeaderParam `json:"header,omitzero"`
+	// Any of "cta_url".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r WhatsappInteractiveActionCardParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappInteractiveActionCardParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappInteractiveActionCardParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[WhatsappInteractiveActionCardParam](
+		"type", "cta_url",
+	)
+}
+
+type WhatsappInteractiveActionCardsActionParam struct {
+	// the unique ID of the catalog
+	CatalogID param.Opt[string] `json:"catalog_id,omitzero"`
+	// the unique retailer ID of the product
+	ProductRetailerID param.Opt[string] `json:"product_retailer_id,omitzero"`
+	paramObj
+}
+
+func (r WhatsappInteractiveActionCardsActionParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappInteractiveActionCardsActionParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappInteractiveActionCardsActionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveActionCardsBodyParam struct {
+	// 160 character maximum, up to 2 line breaks
+	Text param.Opt[string] `json:"text,omitzero"`
+	paramObj
+}
+
+func (r WhatsappInteractiveActionCardsBodyParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappInteractiveActionCardsBodyParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappInteractiveActionCardsBodyParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveActionCardsHeaderParam struct {
+	Image WhatsappMediaParam `json:"image,omitzero"`
+	// Any of "image", "video".
+	Type  string             `json:"type,omitzero"`
+	Video WhatsappMediaParam `json:"video,omitzero"`
+	paramObj
+}
+
+func (r WhatsappInteractiveActionCardsHeaderParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappInteractiveActionCardsHeaderParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappInteractiveActionCardsHeaderParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[WhatsappInteractiveActionCardsHeaderParam](
+		"type", "image", "video",
+	)
+}
+
+type WhatsappInteractiveActionParametersParam struct {
+	// button label text, 20 character maximum
+	DisplayText param.Opt[string] `json:"display_text,omitzero"`
+	// button URL to load when tapped by the user
+	URL param.Opt[string] `json:"url,omitzero" format:"url"`
+	paramObj
+}
+
+func (r WhatsappInteractiveActionParametersParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappInteractiveActionParametersParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappInteractiveActionParametersParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveActionSectionParam struct {
+	// section title, 24 character maximum
+	Title        param.Opt[string]                                   `json:"title,omitzero"`
+	ProductItems []WhatsappInteractiveActionSectionsProductItemParam `json:"product_items,omitzero"`
+	Rows         []WhatsappInteractiveActionSectionsRowParam         `json:"rows,omitzero"`
+	paramObj
+}
+
+func (r WhatsappInteractiveActionSectionParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappInteractiveActionSectionParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappInteractiveActionSectionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveActionSectionsProductItemParam struct {
+	ProductRetailerID param.Opt[string] `json:"product_retailer_id,omitzero"`
+	paramObj
+}
+
+func (r WhatsappInteractiveActionSectionsProductItemParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappInteractiveActionSectionsProductItemParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappInteractiveActionSectionsProductItemParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveActionSectionsRowParam struct {
+	// arbitrary string identifying the row, 200 character maximum
+	ID param.Opt[string] `json:"id,omitzero"`
+	// row description, 72 character maximum
+	Description param.Opt[string] `json:"description,omitzero"`
+	// row title, 24 character maximum
+	Title param.Opt[string] `json:"title,omitzero"`
+	paramObj
+}
+
+func (r WhatsappInteractiveActionSectionsRowParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappInteractiveActionSectionsRowParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappInteractiveActionSectionsRowParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveBodyParam struct {
+	// body text, 1024 character maximum
+	Text param.Opt[string] `json:"text,omitzero"`
+	paramObj
+}
+
+func (r WhatsappInteractiveBodyParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappInteractiveBodyParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappInteractiveBodyParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveFooterParam struct {
+	// footer text, 60 character maximum
+	Text param.Opt[string] `json:"text,omitzero"`
+	paramObj
+}
+
+func (r WhatsappInteractiveFooterParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappInteractiveFooterParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappInteractiveFooterParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappInteractiveHeaderParam struct {
+	SubText param.Opt[string] `json:"sub_text,omitzero"`
+	// header text, 60 character maximum
+	Text     param.Opt[string]  `json:"text,omitzero"`
+	Document WhatsappMediaParam `json:"document,omitzero"`
+	Image    WhatsappMediaParam `json:"image,omitzero"`
+	Video    WhatsappMediaParam `json:"video,omitzero"`
+	paramObj
+}
+
+func (r WhatsappInteractiveHeaderParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappInteractiveHeaderParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappInteractiveHeaderParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappLocation struct {
+	Address   string `json:"address"`
+	Latitude  string `json:"latitude"`
+	Longitude string `json:"longitude"`
+	Name      string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Address     respjson.Field
+		Latitude    respjson.Field
+		Longitude   respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappLocation) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappLocation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this WhatsappLocation to a WhatsappLocationParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// WhatsappLocationParam.Overrides()
+func (r WhatsappLocation) ToParam() WhatsappLocationParam {
+	return param.Override[WhatsappLocationParam](json.RawMessage(r.RawJSON()))
+}
+
+type WhatsappLocationParam struct {
+	Address   param.Opt[string] `json:"address,omitzero"`
+	Latitude  param.Opt[string] `json:"latitude,omitzero"`
+	Longitude param.Opt[string] `json:"longitude,omitzero"`
+	Name      param.Opt[string] `json:"name,omitzero"`
+	paramObj
+}
+
+func (r WhatsappLocationParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappLocationParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappLocationParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappMedia struct {
+	// media caption
+	Caption string `json:"caption"`
+	// file name with extension
+	Filename string `json:"filename"`
+	// media URL
+	Link string `json:"link" format:"url"`
+	// true if voice message
+	Voice bool `json:"voice"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Caption     respjson.Field
+		Filename    respjson.Field
+		Link        respjson.Field
+		Voice       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappMedia) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappMedia) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this WhatsappMedia to a WhatsappMediaParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// WhatsappMediaParam.Overrides()
+func (r WhatsappMedia) ToParam() WhatsappMediaParam {
+	return param.Override[WhatsappMediaParam](json.RawMessage(r.RawJSON()))
+}
+
+type WhatsappMediaParam struct {
+	// media caption
+	Caption param.Opt[string] `json:"caption,omitzero"`
+	// file name with extension
+	Filename param.Opt[string] `json:"filename,omitzero"`
+	// media URL
+	Link param.Opt[string] `json:"link,omitzero" format:"url"`
+	// true if voice message
+	Voice param.Opt[bool] `json:"voice,omitzero"`
+	paramObj
+}
+
+func (r WhatsappMediaParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappMediaParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappMediaParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappMessageContent struct {
+	Audio WhatsappMedia `json:"audio"`
+	// custom data to return with status update
+	BizOpaqueCallbackData string              `json:"biz_opaque_callback_data"`
+	Contacts              []WhatsappContact   `json:"contacts"`
+	Document              WhatsappMedia       `json:"document"`
+	Image                 WhatsappMedia       `json:"image"`
+	Interactive           WhatsappInteractive `json:"interactive"`
+	Location              WhatsappLocation    `json:"location"`
+	Reaction              WhatsappReaction    `json:"reaction"`
+	Sticker               WhatsappMedia       `json:"sticker"`
+	// Template message object. Provide either template_id or name + language to
+	// identify the template.
+	Template WhatsappMessageContentTemplate `json:"template"`
+	// Text message content. Can only be sent within a 24-hour customer service window.
+	Text WhatsappMessageContentText `json:"text"`
+	// Any of "audio", "document", "image", "sticker", "video", "interactive",
+	// "location", "template", "reaction", "contacts", "text".
+	Type  WhatsappMessageContentType `json:"type"`
+	Video WhatsappMedia              `json:"video"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Audio                 respjson.Field
+		BizOpaqueCallbackData respjson.Field
+		Contacts              respjson.Field
+		Document              respjson.Field
+		Image                 respjson.Field
+		Interactive           respjson.Field
+		Location              respjson.Field
+		Reaction              respjson.Field
+		Sticker               respjson.Field
+		Template              respjson.Field
+		Text                  respjson.Field
+		Type                  respjson.Field
+		Video                 respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappMessageContent) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappMessageContent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this WhatsappMessageContent to a WhatsappMessageContentParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// WhatsappMessageContentParam.Overrides()
+func (r WhatsappMessageContent) ToParam() WhatsappMessageContentParam {
+	return param.Override[WhatsappMessageContentParam](json.RawMessage(r.RawJSON()))
+}
+
+// Template message object. Provide either template_id or name + language to
+// identify the template.
+type WhatsappMessageContentTemplate struct {
+	// Template parameter values for header, body, and button components.
+	Components []WhatsappMessageContentTemplateComponent `json:"components"`
+	// Template language. Required unless template_id is provided.
+	Language WhatsappMessageContentTemplateLanguage `json:"language"`
+	// Template name as registered with Meta. Required unless template_id is provided.
+	Name string `json:"name"`
+	// Telnyx template ID (the id field from template list/get responses). When
+	// provided, name and language are resolved automatically.
+	TemplateID string `json:"template_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Components  respjson.Field
+		Language    respjson.Field
+		Name        respjson.Field
+		TemplateID  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappMessageContentTemplate) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappMessageContentTemplate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappMessageContentTemplateComponent struct {
+	// Button index (required for button components)
+	Index      int64                                               `json:"index"`
+	Parameters []WhatsappMessageContentTemplateComponentsParameter `json:"parameters"`
+	// Any of "quick_reply", "url".
+	SubType string `json:"sub_type"`
+	// Any of "header", "body", "button".
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Index       respjson.Field
+		Parameters  respjson.Field
+		SubType     respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappMessageContentTemplateComponent) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappMessageContentTemplateComponent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappMessageContentTemplateComponentsParameter struct {
+	Text string `json:"text"`
+	// Any of "text", "image", "video", "document", "currency", "date_time".
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Text        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappMessageContentTemplateComponentsParameter) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappMessageContentTemplateComponentsParameter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Template language. Required unless template_id is provided.
+type WhatsappMessageContentTemplateLanguage struct {
+	// Language code (e.g. en_US)
+	Code   string `json:"code" api:"required"`
+	Policy string `json:"policy"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Code        respjson.Field
+		Policy      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappMessageContentTemplateLanguage) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappMessageContentTemplateLanguage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Text message content. Can only be sent within a 24-hour customer service window.
+type WhatsappMessageContentText struct {
+	// The text message body.
+	Body string `json:"body" api:"required"`
+	// Whether to show a URL preview in the message.
+	PreviewURL bool `json:"preview_url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Body        respjson.Field
+		PreviewURL  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappMessageContentText) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappMessageContentText) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappMessageContentType string
+
+const (
+	WhatsappMessageContentTypeAudio       WhatsappMessageContentType = "audio"
+	WhatsappMessageContentTypeDocument    WhatsappMessageContentType = "document"
+	WhatsappMessageContentTypeImage       WhatsappMessageContentType = "image"
+	WhatsappMessageContentTypeSticker     WhatsappMessageContentType = "sticker"
+	WhatsappMessageContentTypeVideo       WhatsappMessageContentType = "video"
+	WhatsappMessageContentTypeInteractive WhatsappMessageContentType = "interactive"
+	WhatsappMessageContentTypeLocation    WhatsappMessageContentType = "location"
+	WhatsappMessageContentTypeTemplate    WhatsappMessageContentType = "template"
+	WhatsappMessageContentTypeReaction    WhatsappMessageContentType = "reaction"
+	WhatsappMessageContentTypeContacts    WhatsappMessageContentType = "contacts"
+	WhatsappMessageContentTypeText        WhatsappMessageContentType = "text"
+)
+
+type WhatsappMessageContentParam struct {
+	// custom data to return with status update
+	BizOpaqueCallbackData param.Opt[string]        `json:"biz_opaque_callback_data,omitzero"`
+	Audio                 WhatsappMediaParam       `json:"audio,omitzero"`
+	Contacts              []WhatsappContactParam   `json:"contacts,omitzero"`
+	Document              WhatsappMediaParam       `json:"document,omitzero"`
+	Image                 WhatsappMediaParam       `json:"image,omitzero"`
+	Interactive           WhatsappInteractiveParam `json:"interactive,omitzero"`
+	Location              WhatsappLocationParam    `json:"location,omitzero"`
+	Reaction              WhatsappReactionParam    `json:"reaction,omitzero"`
+	Sticker               WhatsappMediaParam       `json:"sticker,omitzero"`
+	// Template message object. Provide either template_id or name + language to
+	// identify the template.
+	Template WhatsappMessageContentTemplateParam `json:"template,omitzero"`
+	// Text message content. Can only be sent within a 24-hour customer service window.
+	Text WhatsappMessageContentTextParam `json:"text,omitzero"`
+	// Any of "audio", "document", "image", "sticker", "video", "interactive",
+	// "location", "template", "reaction", "contacts", "text".
+	Type  WhatsappMessageContentType `json:"type,omitzero"`
+	Video WhatsappMediaParam         `json:"video,omitzero"`
+	paramObj
+}
+
+func (r WhatsappMessageContentParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappMessageContentParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappMessageContentParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Template message object. Provide either template_id or name + language to
+// identify the template.
+type WhatsappMessageContentTemplateParam struct {
+	// Template name as registered with Meta. Required unless template_id is provided.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Telnyx template ID (the id field from template list/get responses). When
+	// provided, name and language are resolved automatically.
+	TemplateID param.Opt[string] `json:"template_id,omitzero"`
+	// Template parameter values for header, body, and button components.
+	Components []WhatsappMessageContentTemplateComponentParam `json:"components,omitzero"`
+	// Template language. Required unless template_id is provided.
+	Language WhatsappMessageContentTemplateLanguageParam `json:"language,omitzero"`
+	paramObj
+}
+
+func (r WhatsappMessageContentTemplateParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappMessageContentTemplateParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappMessageContentTemplateParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappMessageContentTemplateComponentParam struct {
+	// Button index (required for button components)
+	Index      param.Opt[int64]                                         `json:"index,omitzero"`
+	Parameters []WhatsappMessageContentTemplateComponentsParameterParam `json:"parameters,omitzero"`
+	// Any of "quick_reply", "url".
+	SubType string `json:"sub_type,omitzero"`
+	// Any of "header", "body", "button".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r WhatsappMessageContentTemplateComponentParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappMessageContentTemplateComponentParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappMessageContentTemplateComponentParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[WhatsappMessageContentTemplateComponentParam](
+		"sub_type", "quick_reply", "url",
+	)
+	apijson.RegisterFieldValidator[WhatsappMessageContentTemplateComponentParam](
+		"type", "header", "body", "button",
+	)
+}
+
+type WhatsappMessageContentTemplateComponentsParameterParam struct {
+	Text param.Opt[string] `json:"text,omitzero"`
+	// Any of "text", "image", "video", "document", "currency", "date_time".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r WhatsappMessageContentTemplateComponentsParameterParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappMessageContentTemplateComponentsParameterParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappMessageContentTemplateComponentsParameterParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[WhatsappMessageContentTemplateComponentsParameterParam](
+		"type", "text", "image", "video", "document", "currency", "date_time",
+	)
+}
+
+// Template language. Required unless template_id is provided.
+//
+// The property Code is required.
+type WhatsappMessageContentTemplateLanguageParam struct {
+	// Language code (e.g. en_US)
+	Code   string            `json:"code" api:"required"`
+	Policy param.Opt[string] `json:"policy,omitzero"`
+	paramObj
+}
+
+func (r WhatsappMessageContentTemplateLanguageParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappMessageContentTemplateLanguageParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappMessageContentTemplateLanguageParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Text message content. Can only be sent within a 24-hour customer service window.
+//
+// The property Body is required.
+type WhatsappMessageContentTextParam struct {
+	// The text message body.
+	Body string `json:"body" api:"required"`
+	// Whether to show a URL preview in the message.
+	PreviewURL param.Opt[bool] `json:"preview_url,omitzero"`
+	paramObj
+}
+
+func (r WhatsappMessageContentTextParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappMessageContentTextParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappMessageContentTextParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappReaction struct {
+	Emoji     string `json:"emoji"`
+	MessageID string `json:"message_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Emoji       respjson.Field
+		MessageID   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappReaction) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappReaction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this WhatsappReaction to a WhatsappReactionParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// WhatsappReactionParam.Overrides()
+func (r WhatsappReaction) ToParam() WhatsappReactionParam {
+	return param.Override[WhatsappReactionParam](json.RawMessage(r.RawJSON()))
+}
+
+type WhatsappReactionParam struct {
+	Emoji     param.Opt[string] `json:"emoji,omitzero"`
+	MessageID param.Opt[string] `json:"message_id,omitzero"`
+	paramObj
+}
+
+func (r WhatsappReactionParam) MarshalJSON() (data []byte, err error) {
+	type shadow WhatsappReactionParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WhatsappReactionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type MessageGetResponse struct {
 	Data MessageGetResponseDataUnion `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1339,32 +3032,32 @@ func (r *MessageGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 // MessageGetResponseDataUnion contains all possible properties and values from
-// [OutboundMessagePayload], [shared.InboundMessagePayload].
+// [MessagingOutboundMessagePayload], [MessageGetResponseDataInbound].
 //
 // Use the [MessageGetResponseDataUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type MessageGetResponseDataUnion struct {
 	ID string `json:"id"`
-	// This field is a union of [[]OutboundMessagePayloadCc],
-	// [[]shared.InboundMessagePayloadCc]
+	// This field is a union of [[]MessagingOutboundMessagePayloadCc],
+	// [[]MessageGetResponseDataInboundCc]
 	Cc          MessageGetResponseDataUnionCc `json:"cc"`
 	CompletedAt time.Time                     `json:"completed_at"`
-	// This field is a union of [OutboundMessagePayloadCost],
-	// [shared.InboundMessagePayloadCost]
+	// This field is a union of [MessagingOutboundMessagePayloadCost],
+	// [MessageGetResponseDataInboundCost]
 	Cost MessageGetResponseDataUnionCost `json:"cost"`
-	// This field is a union of [OutboundMessagePayloadCostBreakdown],
-	// [shared.InboundMessagePayloadCostBreakdown]
+	// This field is a union of [MessagingOutboundMessagePayloadCostBreakdown],
+	// [MessageGetResponseDataInboundCostBreakdown]
 	CostBreakdown MessageGetResponseDataUnionCostBreakdown `json:"cost_breakdown"`
 	// Any of "outbound", "inbound".
-	Direction string                  `json:"direction"`
-	Encoding  string                  `json:"encoding"`
-	Errors    []shared.MessagingError `json:"errors"`
-	// This field is a union of [OutboundMessagePayloadFrom],
-	// [shared.InboundMessagePayloadFrom]
+	Direction string                     `json:"direction"`
+	Encoding  string                     `json:"encoding"`
+	Errors    []MessagingError0b38e7044b `json:"errors"`
+	// This field is a union of [MessagingOutboundMessagePayloadFrom],
+	// [MessageGetResponseDataInboundFrom]
 	From MessageGetResponseDataUnionFrom `json:"from"`
-	// This field is a union of [[]OutboundMessagePayloadMedia],
-	// [[]shared.InboundMessagePayloadMedia]
+	// This field is a union of [[]MessagingOutboundMessagePayloadMedia],
+	// [[]MessageGetResponseDataInboundMedia]
 	Media              MessageGetResponseDataUnionMedia `json:"media"`
 	MessagingProfileID string                           `json:"messaging_profile_id"`
 	NumChars           int64                            `json:"num_chars"`
@@ -1373,7 +3066,7 @@ type MessageGetResponseDataUnion struct {
 	ReceivedAt         time.Time                        `json:"received_at"`
 	RecordType         string                           `json:"record_type"`
 	SentAt             time.Time                        `json:"sent_at"`
-	// This field is from variant [OutboundMessagePayload].
+	// This field is from variant [MessagingOutboundMessagePayload].
 	SmartEncodingApplied  bool     `json:"smart_encoding_applied"`
 	Subject               string   `json:"subject"`
 	Tags                  []string `json:"tags"`
@@ -1381,12 +3074,12 @@ type MessageGetResponseDataUnion struct {
 	TcrCampaignID         string   `json:"tcr_campaign_id"`
 	TcrCampaignRegistered string   `json:"tcr_campaign_registered"`
 	Text                  string   `json:"text"`
-	// This field is a union of [[]OutboundMessagePayloadTo],
-	// [[]shared.InboundMessagePayloadTo]
+	// This field is a union of [[]MessagingOutboundMessagePayloadTo],
+	// [[]MessageGetResponseDataInboundTo]
 	To         MessageGetResponseDataUnionTo `json:"to"`
 	Type       string                        `json:"type"`
 	ValidUntil time.Time                     `json:"valid_until"`
-	// This field is from variant [OutboundMessagePayload].
+	// This field is from variant [MessagingOutboundMessagePayload].
 	WaitSeconds        float64 `json:"wait_seconds"`
 	WebhookFailoverURL string  `json:"webhook_failover_url"`
 	WebhookURL         string  `json:"webhook_url"`
@@ -1429,16 +3122,17 @@ type MessageGetResponseDataUnion struct {
 // [MessageGetResponseDataUnion] to add type safety for the return type of
 // [MessageGetResponseDataUnion.AsAny]
 type anyMessageGetResponseData interface {
-	ImplMessageGetResponseDataUnion()
+	implMessageGetResponseDataUnion()
 }
 
-func (OutboundMessagePayload) ImplMessageGetResponseDataUnion() {}
+func (MessagingOutboundMessagePayload) implMessageGetResponseDataUnion() {}
+func (MessageGetResponseDataInbound) implMessageGetResponseDataUnion()   {}
 
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := MessageGetResponseDataUnion.AsAny().(type) {
-//	case telnyx.OutboundMessagePayload:
-//	case shared.InboundMessagePayload:
+//	case telnyx.MessagingOutboundMessagePayload:
+//	case telnyx.MessageGetResponseDataInbound:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -1452,12 +3146,12 @@ func (u MessageGetResponseDataUnion) AsAny() anyMessageGetResponseData {
 	return nil
 }
 
-func (u MessageGetResponseDataUnion) AsOutbound() (v OutboundMessagePayload) {
+func (u MessageGetResponseDataUnion) AsOutbound() (v MessagingOutboundMessagePayload) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u MessageGetResponseDataUnion) AsInbound() (v shared.InboundMessagePayload) {
+func (u MessageGetResponseDataUnion) AsInbound() (v MessageGetResponseDataInbound) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1477,18 +3171,19 @@ func (r *MessageGetResponseDataUnion) UnmarshalJSON(data []byte) error {
 // [MessageGetResponseDataUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfOutboundMessagePayloadCcArray OfInboundMessagePayloadCcArray]
+// will be valid: OfMessagingOutboundMessagePayloadCcArray
+// OfMessageGetResponseDataInboundCcArray]
 type MessageGetResponseDataUnionCc struct {
-	// This field will be present if the value is a [[]OutboundMessagePayloadCc]
+	// This field will be present if the value is a
+	// [[]MessagingOutboundMessagePayloadCc] instead of an object.
+	OfMessagingOutboundMessagePayloadCcArray []MessagingOutboundMessagePayloadCc `json:",inline"`
+	// This field will be present if the value is a [[]MessageGetResponseDataInboundCc]
 	// instead of an object.
-	OfOutboundMessagePayloadCcArray []OutboundMessagePayloadCc `json:",inline"`
-	// This field will be present if the value is a [[]shared.InboundMessagePayloadCc]
-	// instead of an object.
-	OfInboundMessagePayloadCcArray []shared.InboundMessagePayloadCc `json:",inline"`
-	JSON                           struct {
-		OfOutboundMessagePayloadCcArray respjson.Field
-		OfInboundMessagePayloadCcArray  respjson.Field
-		raw                             string
+	OfMessageGetResponseDataInboundCcArray []MessageGetResponseDataInboundCc `json:",inline"`
+	JSON                                   struct {
+		OfMessagingOutboundMessagePayloadCcArray respjson.Field
+		OfMessageGetResponseDataInboundCcArray   respjson.Field
+		raw                                      string
 	} `json:"-"`
 }
 
@@ -1523,11 +3218,12 @@ func (r *MessageGetResponseDataUnionCost) UnmarshalJSON(data []byte) error {
 // For type safety it is recommended to directly use a variant of the
 // [MessageGetResponseDataUnion].
 type MessageGetResponseDataUnionCostBreakdown struct {
-	// This field is a union of [OutboundMessagePayloadCostBreakdownCarrierFee],
-	// [shared.InboundMessagePayloadCostBreakdownCarrierFee]
+	// This field is a union of
+	// [MessagingOutboundMessagePayloadCostBreakdownCarrierFee],
+	// [MessageGetResponseDataInboundCostBreakdownCarrierFee]
 	CarrierFee MessageGetResponseDataUnionCostBreakdownCarrierFee `json:"carrier_fee"`
-	// This field is a union of [OutboundMessagePayloadCostBreakdownRate],
-	// [shared.InboundMessagePayloadCostBreakdownRate]
+	// This field is a union of [MessagingOutboundMessagePayloadCostBreakdownRate],
+	// [MessageGetResponseDataInboundCostBreakdownRate]
 	Rate MessageGetResponseDataUnionCostBreakdownRate `json:"rate"`
 	JSON struct {
 		CarrierFee respjson.Field
@@ -1591,7 +3287,7 @@ type MessageGetResponseDataUnionFrom struct {
 	Carrier     string `json:"carrier"`
 	LineType    string `json:"line_type"`
 	PhoneNumber string `json:"phone_number"`
-	// This field is from variant [shared.InboundMessagePayloadFrom].
+	// This field is from variant [MessageGetResponseDataInboundFrom].
 	Status string `json:"status"`
 	JSON   struct {
 		Carrier     respjson.Field
@@ -1614,18 +3310,19 @@ func (r *MessageGetResponseDataUnionFrom) UnmarshalJSON(data []byte) error {
 // [MessageGetResponseDataUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfOutboundMessagePayloadMedia OfInboundMessagePayloadMedia]
+// will be valid: OfMessagingOutboundMessagePayloadMedia
+// OfMessageGetResponseDataInboundMedia]
 type MessageGetResponseDataUnionMedia struct {
-	// This field will be present if the value is a [[]OutboundMessagePayloadMedia]
-	// instead of an object.
-	OfOutboundMessagePayloadMedia []OutboundMessagePayloadMedia `json:",inline"`
 	// This field will be present if the value is a
-	// [[]shared.InboundMessagePayloadMedia] instead of an object.
-	OfInboundMessagePayloadMedia []shared.InboundMessagePayloadMedia `json:",inline"`
-	JSON                         struct {
-		OfOutboundMessagePayloadMedia respjson.Field
-		OfInboundMessagePayloadMedia  respjson.Field
-		raw                           string
+	// [[]MessagingOutboundMessagePayloadMedia] instead of an object.
+	OfMessagingOutboundMessagePayloadMedia []MessagingOutboundMessagePayloadMedia `json:",inline"`
+	// This field will be present if the value is a
+	// [[]MessageGetResponseDataInboundMedia] instead of an object.
+	OfMessageGetResponseDataInboundMedia []MessageGetResponseDataInboundMedia `json:",inline"`
+	JSON                                 struct {
+		OfMessagingOutboundMessagePayloadMedia respjson.Field
+		OfMessageGetResponseDataInboundMedia   respjson.Field
+		raw                                    string
 	} `json:"-"`
 }
 
@@ -1641,22 +3338,319 @@ func (r *MessageGetResponseDataUnionMedia) UnmarshalJSON(data []byte) error {
 // [MessageGetResponseDataUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfOutboundMessagePayloadToArray OfInboundMessagePayloadToArray]
+// will be valid: OfMessagingOutboundMessagePayloadToArray
+// OfMessageGetResponseDataInboundToArray]
 type MessageGetResponseDataUnionTo struct {
-	// This field will be present if the value is a [[]OutboundMessagePayloadTo]
+	// This field will be present if the value is a
+	// [[]MessagingOutboundMessagePayloadTo] instead of an object.
+	OfMessagingOutboundMessagePayloadToArray []MessagingOutboundMessagePayloadTo `json:",inline"`
+	// This field will be present if the value is a [[]MessageGetResponseDataInboundTo]
 	// instead of an object.
-	OfOutboundMessagePayloadToArray []OutboundMessagePayloadTo `json:",inline"`
-	// This field will be present if the value is a [[]shared.InboundMessagePayloadTo]
-	// instead of an object.
-	OfInboundMessagePayloadToArray []shared.InboundMessagePayloadTo `json:",inline"`
-	JSON                           struct {
-		OfOutboundMessagePayloadToArray respjson.Field
-		OfInboundMessagePayloadToArray  respjson.Field
-		raw                             string
+	OfMessageGetResponseDataInboundToArray []MessageGetResponseDataInboundTo `json:",inline"`
+	JSON                                   struct {
+		OfMessagingOutboundMessagePayloadToArray respjson.Field
+		OfMessageGetResponseDataInboundToArray   respjson.Field
+		raw                                      string
 	} `json:"-"`
 }
 
 func (r *MessageGetResponseDataUnionTo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageGetResponseDataInbound struct {
+	// Identifies the type of resource.
+	ID string                            `json:"id" format:"uuid"`
+	Cc []MessageGetResponseDataInboundCc `json:"cc"`
+	// Not used for inbound messages.
+	CompletedAt time.Time                         `json:"completed_at" api:"nullable" format:"date-time"`
+	Cost        MessageGetResponseDataInboundCost `json:"cost" api:"nullable"`
+	// Detailed breakdown of the message cost components.
+	CostBreakdown MessageGetResponseDataInboundCostBreakdown `json:"cost_breakdown" api:"nullable"`
+	// The direction of the message. Inbound messages are sent to you whereas outbound
+	// messages are sent from you.
+	//
+	// Any of "inbound".
+	Direction string `json:"direction"`
+	// Encoding scheme used for the message body.
+	Encoding string `json:"encoding"`
+	// These errors may point at addressees when referring to unsuccessful/unconfirmed
+	// delivery statuses.
+	Errors []MessagingError0b38e7044b           `json:"errors"`
+	From   MessageGetResponseDataInboundFrom    `json:"from"`
+	Media  []MessageGetResponseDataInboundMedia `json:"media"`
+	// Unique identifier for a messaging profile.
+	MessagingProfileID string `json:"messaging_profile_id"`
+	// The number of characters in the message text
+	NumChars int64 `json:"num_chars"`
+	// Unique identifier for a messaging profile.
+	OrganizationID string `json:"organization_id"`
+	// Number of parts into which the message's body must be split.
+	Parts int64 `json:"parts"`
+	// ISO 8601 formatted date indicating when the message request was received.
+	ReceivedAt time.Time `json:"received_at" format:"date-time"`
+	// Identifies the type of the resource.
+	//
+	// Any of "message".
+	RecordType string `json:"record_type"`
+	// Not used for inbound messages.
+	SentAt time.Time `json:"sent_at" api:"nullable" format:"date-time"`
+	// Message subject.
+	Subject string `json:"subject" api:"nullable"`
+	// Tags associated with the resource.
+	Tags []string `json:"tags"`
+	// Indicates whether the TCR campaign is billable.
+	TcrCampaignBillable bool `json:"tcr_campaign_billable"`
+	// The Campaign Registry (TCR) campaign ID associated with the message.
+	TcrCampaignID string `json:"tcr_campaign_id" api:"nullable"`
+	// The registration status of the TCR campaign.
+	TcrCampaignRegistered string `json:"tcr_campaign_registered" api:"nullable"`
+	// Message body (i.e., content) as a non-empty string.
+	//
+	// **Required for SMS**
+	Text string                            `json:"text"`
+	To   []MessageGetResponseDataInboundTo `json:"to"`
+	// The type of message. This value can be either 'sms' or 'mms'.
+	//
+	// Any of "SMS", "MMS".
+	Type string `json:"type"`
+	// Not used for inbound messages.
+	ValidUntil time.Time `json:"valid_until" api:"nullable" format:"date-time"`
+	// The failover URL where webhooks related to this message will be sent if sending
+	// to the primary URL fails.
+	WebhookFailoverURL string `json:"webhook_failover_url" api:"nullable" format:"url"`
+	// The URL where webhooks related to this message will be sent.
+	WebhookURL string `json:"webhook_url" api:"nullable" format:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                    respjson.Field
+		Cc                    respjson.Field
+		CompletedAt           respjson.Field
+		Cost                  respjson.Field
+		CostBreakdown         respjson.Field
+		Direction             respjson.Field
+		Encoding              respjson.Field
+		Errors                respjson.Field
+		From                  respjson.Field
+		Media                 respjson.Field
+		MessagingProfileID    respjson.Field
+		NumChars              respjson.Field
+		OrganizationID        respjson.Field
+		Parts                 respjson.Field
+		ReceivedAt            respjson.Field
+		RecordType            respjson.Field
+		SentAt                respjson.Field
+		Subject               respjson.Field
+		Tags                  respjson.Field
+		TcrCampaignBillable   respjson.Field
+		TcrCampaignID         respjson.Field
+		TcrCampaignRegistered respjson.Field
+		Text                  respjson.Field
+		To                    respjson.Field
+		Type                  respjson.Field
+		ValidUntil            respjson.Field
+		WebhookFailoverURL    respjson.Field
+		WebhookURL            respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageGetResponseDataInbound) RawJSON() string { return r.JSON.raw }
+func (r *MessageGetResponseDataInbound) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageGetResponseDataInboundCc struct {
+	// The carrier of the receiver.
+	Carrier string `json:"carrier"`
+	// The line-type of the receiver.
+	//
+	// Any of "Wireline", "Wireless", "VoWiFi", "VoIP", "Pre-Paid Wireless", "".
+	LineType string `json:"line_type"`
+	// Receiving address (+E.164 formatted phone number or short code).
+	PhoneNumber string `json:"phone_number"`
+	// Any of "queued", "sending", "sent", "delivered", "sending_failed",
+	// "delivery_failed", "delivery_unconfirmed".
+	Status string `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Carrier     respjson.Field
+		LineType    respjson.Field
+		PhoneNumber respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageGetResponseDataInboundCc) RawJSON() string { return r.JSON.raw }
+func (r *MessageGetResponseDataInboundCc) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageGetResponseDataInboundCost struct {
+	// The amount deducted from your account.
+	Amount string `json:"amount"`
+	// The ISO 4217 currency identifier.
+	Currency string `json:"currency"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount      respjson.Field
+		Currency    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageGetResponseDataInboundCost) RawJSON() string { return r.JSON.raw }
+func (r *MessageGetResponseDataInboundCost) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Detailed breakdown of the message cost components.
+type MessageGetResponseDataInboundCostBreakdown struct {
+	CarrierFee MessageGetResponseDataInboundCostBreakdownCarrierFee `json:"carrier_fee"`
+	Rate       MessageGetResponseDataInboundCostBreakdownRate       `json:"rate"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CarrierFee  respjson.Field
+		Rate        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageGetResponseDataInboundCostBreakdown) RawJSON() string { return r.JSON.raw }
+func (r *MessageGetResponseDataInboundCostBreakdown) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageGetResponseDataInboundCostBreakdownCarrierFee struct {
+	// The carrier fee amount.
+	Amount string `json:"amount"`
+	// The ISO 4217 currency identifier.
+	Currency string `json:"currency"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount      respjson.Field
+		Currency    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageGetResponseDataInboundCostBreakdownCarrierFee) RawJSON() string { return r.JSON.raw }
+func (r *MessageGetResponseDataInboundCostBreakdownCarrierFee) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageGetResponseDataInboundCostBreakdownRate struct {
+	// The rate amount applied.
+	Amount string `json:"amount"`
+	// The ISO 4217 currency identifier.
+	Currency string `json:"currency"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount      respjson.Field
+		Currency    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageGetResponseDataInboundCostBreakdownRate) RawJSON() string { return r.JSON.raw }
+func (r *MessageGetResponseDataInboundCostBreakdownRate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageGetResponseDataInboundFrom struct {
+	// The carrier of the sender.
+	Carrier string `json:"carrier"`
+	// The line-type of the sender.
+	//
+	// Any of "Wireline", "Wireless", "VoWiFi", "VoIP", "Pre-Paid Wireless", "".
+	LineType string `json:"line_type"`
+	// Sending address (+E.164 formatted phone number, alphanumeric sender ID, or short
+	// code).
+	PhoneNumber string `json:"phone_number"`
+	// Any of "received", "delivered".
+	Status string `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Carrier     respjson.Field
+		LineType    respjson.Field
+		PhoneNumber respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageGetResponseDataInboundFrom) RawJSON() string { return r.JSON.raw }
+func (r *MessageGetResponseDataInboundFrom) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageGetResponseDataInboundMedia struct {
+	// The MIME type of the requested media.
+	ContentType string `json:"content_type"`
+	// The SHA256 hash of the requested media.
+	HashSha256 string `json:"hash_sha256"`
+	// The size of the requested media.
+	Size int64 `json:"size"`
+	// The url of the media requested to be sent.
+	URL string `json:"url" format:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ContentType respjson.Field
+		HashSha256  respjson.Field
+		Size        respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageGetResponseDataInboundMedia) RawJSON() string { return r.JSON.raw }
+func (r *MessageGetResponseDataInboundMedia) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageGetResponseDataInboundTo struct {
+	// The carrier of the receiver.
+	Carrier string `json:"carrier"`
+	// The line-type of the receiver.
+	//
+	// Any of "Wireline", "Wireless", "VoWiFi", "VoIP", "Pre-Paid Wireless", "".
+	LineType string `json:"line_type"`
+	// Receiving address (+E.164 formatted phone number or short code).
+	PhoneNumber string `json:"phone_number"`
+	// Any of "queued", "sending", "sent", "delivered", "sending_failed",
+	// "delivery_failed", "delivery_unconfirmed", "webhook_delivered".
+	Status string `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Carrier     respjson.Field
+		LineType    respjson.Field
+		PhoneNumber respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageGetResponseDataInboundTo) RawJSON() string { return r.JSON.raw }
+func (r *MessageGetResponseDataInboundTo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1678,7 +3672,7 @@ type MessageCancelScheduledResponse struct {
 	Encoding string `json:"encoding"`
 	// These errors may point at addressees when referring to unsuccessful/unconfirmed
 	// delivery statuses.
-	Errors []shared.MessagingError               `json:"errors"`
+	Errors []MessagingError0b38e7044b            `json:"errors"`
 	From   MessageCancelScheduledResponseFrom    `json:"from"`
 	Media  []MessageCancelScheduledResponseMedia `json:"media"`
 	// Unique identifier for a messaging profile.
@@ -1989,7 +3983,7 @@ const (
 )
 
 type MessageGetGroupMessagesResponse struct {
-	Data []OutboundMessagePayload `json:"data"`
+	Data []MessagingOutboundMessagePayload `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -2005,7 +3999,7 @@ func (r *MessageGetGroupMessagesResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MessageScheduleResponse struct {
-	Data OutboundMessagePayload `json:"data"`
+	Data MessagingOutboundMessagePayload `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -2021,7 +4015,7 @@ func (r *MessageScheduleResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MessageSendResponse struct {
-	Data OutboundMessagePayload `json:"data"`
+	Data MessagingOutboundMessagePayload `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -2037,7 +4031,7 @@ func (r *MessageSendResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MessageSendGroupMmsResponse struct {
-	Data OutboundMessagePayload `json:"data"`
+	Data MessagingOutboundMessagePayload `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -2053,7 +4047,7 @@ func (r *MessageSendGroupMmsResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MessageSendLongCodeResponse struct {
-	Data OutboundMessagePayload `json:"data"`
+	Data MessagingOutboundMessagePayload `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -2069,7 +4063,7 @@ func (r *MessageSendLongCodeResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MessageSendNumberPoolResponse struct {
-	Data OutboundMessagePayload `json:"data"`
+	Data MessagingOutboundMessagePayload `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -2085,7 +4079,7 @@ func (r *MessageSendNumberPoolResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MessageSendShortCodeResponse struct {
-	Data OutboundMessagePayload `json:"data"`
+	Data MessagingOutboundMessagePayload `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -2113,6 +4107,93 @@ type MessageSendWithAlphanumericSenderResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MessageSendWithAlphanumericSenderResponse) RawJSON() string { return r.JSON.raw }
 func (r *MessageSendWithAlphanumericSenderResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageWhatsappResponse struct {
+	Data MessageWhatsappResponseData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageWhatsappResponse) RawJSON() string { return r.JSON.raw }
+func (r *MessageWhatsappResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageWhatsappResponseData struct {
+	// message ID
+	ID                 string                          `json:"id"`
+	Body               WhatsappMessageContent          `json:"body"`
+	Direction          string                          `json:"direction"`
+	Encoding           string                          `json:"encoding"`
+	From               MessageWhatsappResponseDataFrom `json:"from"`
+	MessagingProfileID string                          `json:"messaging_profile_id"`
+	OrganizationID     string                          `json:"organization_id"`
+	ReceivedAt         time.Time                       `json:"received_at" format:"date-time"`
+	RecordType         string                          `json:"record_type"`
+	To                 []RcsToItem                     `json:"to"`
+	Type               string                          `json:"type"`
+	// Seconds the message is queued due to rate limiting before being sent to the
+	// carrier. Represents the maximum wait across all applicable rate limits (account,
+	// carrier, campaign). 0.0 = no queuing delay.
+	WaitSeconds float64 `json:"wait_seconds" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                 respjson.Field
+		Body               respjson.Field
+		Direction          respjson.Field
+		Encoding           respjson.Field
+		From               respjson.Field
+		MessagingProfileID respjson.Field
+		OrganizationID     respjson.Field
+		ReceivedAt         respjson.Field
+		RecordType         respjson.Field
+		To                 respjson.Field
+		Type               respjson.Field
+		WaitSeconds        respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageWhatsappResponseData) RawJSON() string { return r.JSON.raw }
+func (r *MessageWhatsappResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageWhatsappResponseDataFrom struct {
+	// The carrier of the sender.
+	Carrier string `json:"carrier"`
+	// The line-type of the sender.
+	//
+	// Any of "Wireline", "Wireless", "VoWiFi", "VoIP", "Pre-Paid Wireless", "".
+	LineType string `json:"line_type"`
+	// Sending address (+E.164 formatted phone number, alphanumeric sender ID, or short
+	// code).
+	PhoneNumber string `json:"phone_number"`
+	// Any of "received", "delivered".
+	Status string `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Carrier     respjson.Field
+		LineType    respjson.Field
+		PhoneNumber respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageWhatsappResponseDataFrom) RawJSON() string { return r.JSON.raw }
+func (r *MessageWhatsappResponseDataFrom) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2528,3 +4609,35 @@ func (r MessageSendWithAlphanumericSenderParams) MarshalJSON() (data []byte, err
 func (r *MessageSendWithAlphanumericSenderParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type MessageWhatsappParams struct {
+	// Phone number in +E.164 format associated with Whatsapp account
+	From string `json:"from" api:"required"`
+	// Phone number in +E.164 format
+	To              string                      `json:"to" api:"required"`
+	WhatsappMessage WhatsappMessageContentParam `json:"whatsapp_message,omitzero" api:"required"`
+	// Messaging profile ID - required if the 'from' number is not SMS-enabled
+	MessagingProfileID param.Opt[string] `json:"messaging_profile_id,omitzero" format:"uuid"`
+	// The URL where webhooks related to this message will be sent.
+	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	// Message type - must be set to "WHATSAPP"
+	//
+	// Any of "WHATSAPP".
+	Type MessageWhatsappParamsType `json:"type,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParams) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Message type - must be set to "WHATSAPP"
+type MessageWhatsappParamsType string
+
+const (
+	MessageWhatsappParamsTypeWhatsapp MessageWhatsappParamsType = "WHATSAPP"
+)

@@ -60,7 +60,7 @@ func TestAIMissionRunTelnyxAgentLink(t *testing.T) {
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.AIMissionRunTelnyxAgentLinkParams{
 			MissionID:     "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-			TelnyxAgentID: "telnyx_agent_id",
+			TelnyxAgentID: "Telnyx Agent Id",
 		},
 	)
 	if err != nil {

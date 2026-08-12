@@ -79,16 +79,16 @@ func (r *LegacyReportingBatchDetailRecordMessagingService) Delete(ctx context.Co
 	return res, err
 }
 
-type BatchCsvPaginationMeta struct {
-	PageNumber   int64 `json:"page_number" api:"required"`
-	TotalPages   int64 `json:"total_pages" api:"required"`
+type BatchCsvPaginationMeta705dfa7312 struct {
+	PageNumber   int64 `json:"page_number"`
 	PageSize     int64 `json:"page_size"`
+	TotalPages   int64 `json:"total_pages"`
 	TotalResults int64 `json:"total_results"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PageNumber   respjson.Field
-		TotalPages   respjson.Field
 		PageSize     respjson.Field
+		TotalPages   respjson.Field
 		TotalResults respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -96,8 +96,8 @@ type BatchCsvPaginationMeta struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r BatchCsvPaginationMeta) RawJSON() string { return r.JSON.raw }
-func (r *BatchCsvPaginationMeta) UnmarshalJSON(data []byte) error {
+func (r BatchCsvPaginationMeta705dfa7312) RawJSON() string { return r.JSON.raw }
+func (r *BatchCsvPaginationMeta705dfa7312) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -190,8 +190,8 @@ func (r *LegacyReportingBatchDetailRecordMessagingGetResponse) UnmarshalJSON(dat
 }
 
 type LegacyReportingBatchDetailRecordMessagingListResponse struct {
-	Data []MdrDetailReportResponse `json:"data"`
-	Meta BatchCsvPaginationMeta    `json:"meta"`
+	Data []MdrDetailReportResponse        `json:"data"`
+	Meta BatchCsvPaginationMeta705dfa7312 `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

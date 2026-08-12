@@ -28,12 +28,12 @@ func TestInexplicitNumberOrderNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.InexplicitNumberOrders.New(context.TODO(), telnyx.InexplicitNumberOrderNewParams{
 		OrderingGroups: []telnyx.InexplicitNumberOrderNewParamsOrderingGroup{{
-			CountRequested:          "count_requested",
+			CountRequested:          "5",
 			CountryISO:              "US",
-			PhoneNumberType:         "phone_number_type",
-			AdministrativeArea:      telnyx.String("administrative_area"),
+			PhoneNumberType:         "local",
+			AdministrativeArea:      telnyx.String("CA"),
 			ExcludeHeldNumbers:      telnyx.Bool(true),
-			Features:                []string{"string"},
+			Features:                []string{"voice"},
 			Locality:                telnyx.String("locality"),
 			NationalDestinationCode: telnyx.String("national_destination_code"),
 			PhoneNumber: telnyx.InexplicitNumberOrderNewParamsOrderingGroupsPhoneNumber{

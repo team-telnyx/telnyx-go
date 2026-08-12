@@ -146,6 +146,7 @@ func TestIPConnectionUpdateWithOptionalParams(t *testing.T) {
 			AndroidPushCredentialID:          telnyx.String("06b09dfd-7154-4980-8b75-cebf7a9d4f8e"),
 			CallCostInWebhooks:               telnyx.Bool(false),
 			ConnectionName:                   telnyx.String("string"),
+			ConversationPersistence:          telnyx.Bool(true),
 			DefaultOnHoldComfortNoiseEnabled: telnyx.Bool(true),
 			DtmfType:                         telnyx.DtmfTypeRfc2833,
 			EncodeContactHeaderEnabled:       telnyx.Bool(true),

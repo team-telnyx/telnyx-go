@@ -190,20 +190,20 @@ const (
 	OAuthClientRecordTypeOAuthClient OAuthClientRecordType = "oauth_client"
 )
 
-type PaginationMetaOAuth struct {
+type OAuthOAuthPaginationMeta struct {
 	// Current page number
-	PageNumber int64 `json:"page_number" api:"required"`
-	// Total number of pages
-	TotalPages int64 `json:"total_pages" api:"required"`
+	PageNumber int64 `json:"page_number"`
 	// Number of items per page
 	PageSize int64 `json:"page_size"`
+	// Total number of pages
+	TotalPages int64 `json:"total_pages"`
 	// Total number of results
 	TotalResults int64 `json:"total_results"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PageNumber   respjson.Field
-		TotalPages   respjson.Field
 		PageSize     respjson.Field
+		TotalPages   respjson.Field
 		TotalResults respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -211,8 +211,8 @@ type PaginationMetaOAuth struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PaginationMetaOAuth) RawJSON() string { return r.JSON.raw }
-func (r *PaginationMetaOAuth) UnmarshalJSON(data []byte) error {
+func (r OAuthOAuthPaginationMeta) RawJSON() string { return r.JSON.raw }
+func (r *OAuthOAuthPaginationMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

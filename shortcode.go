@@ -41,7 +41,8 @@ func NewShortCodeService(opts ...option.RequestOption) (r ShortCodeService) {
 	return
 }
 
-// Retrieve a short code
+// Returns the messaging configuration and assignment details for the specified
+// short code.
 func (r *ShortCodeService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ShortCodeGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -67,7 +68,8 @@ func (r *ShortCodeService) Update(ctx context.Context, id string, body ShortCode
 	return res, err
 }
 
-// List short codes
+// Returns short codes owned by the authenticated account. Apply the documented
+// filters and pagination parameters to narrow the result set.
 func (r *ShortCodeService) List(ctx context.Context, query ShortCodeListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[shared.ShortCode], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -85,7 +87,8 @@ func (r *ShortCodeService) List(ctx context.Context, query ShortCodeListParams, 
 	return res, nil
 }
 
-// List short codes
+// Returns short codes owned by the authenticated account. Apply the documented
+// filters and pagination parameters to narrow the result set.
 func (r *ShortCodeService) ListAutoPaging(ctx context.Context, query ShortCodeListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[shared.ShortCode] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
