@@ -139,6 +139,23 @@ func (r *SimCardActionService) Disable(ctx context.Context, id string, opts ...o
 	return res, err
 }
 
+// This API disables voice calling on a SIM card. The SIM card will no longer be
+// able to make or receive calls.<br/> The API will trigger an asynchronous
+// operation called a SIM Card Action. The status of the SIM Card Action can be
+// followed through the
+// [List SIM Card Action](https://developers.telnyx.com/api-reference/sim-card-actions/list-sim-card-actions)
+// API.
+func (r *SimCardActionService) DisableVoice(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardActionDisableVoiceResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("sim_cards/%s/actions/disable_voice", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	return res, err
+}
+
 // This API enables a SIM card, connecting it to the network and making it possible
 // to consume data.<br/> To enable a SIM card, it must be associated with a SIM
 // card group.<br/> The API will trigger an asynchronous operation called a SIM
@@ -154,6 +171,25 @@ func (r *SimCardActionService) Enable(ctx context.Context, id string, opts ...op
 	}
 	path := fmt.Sprintf("sim_cards/%s/actions/enable", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	return res, err
+}
+
+// This API enables voice calling on a SIM card. When a <code>connection_id</code>
+// is provided, the SIM is associated with the specified Mobile Voice Connection.
+// The connection must be owned by the same user and of type
+// <code>mobile_voice</code>.<br/> The API will trigger an asynchronous operation
+// called a SIM Card Action. The status of the SIM Card Action can be followed
+// through the
+// [List SIM Card Action](https://developers.telnyx.com/api-reference/sim-card-actions/list-sim-card-actions)
+// API.
+func (r *SimCardActionService) EnableVoice(ctx context.Context, id string, body SimCardActionEnableVoiceParams, opts ...option.RequestOption) (res *SimCardActionEnableVoiceResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("sim_cards/%s/actions/enable_voice", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
 
@@ -287,9 +323,12 @@ type WirelessSimCardAction struct {
 	//	<li><code>enable_standby_sim_card</code> - move a SIM card previously on the <code>standby</code> status to the <code>enabled</code> status after it consumes data.</li>
 	//	<li><code>disable</code> - move the SIM card to the <code>disabled</code> status</li>
 	//	<li><code>set_standby</code> - move the SIM card to the <code>standby</code> status</li>
+	//	<li><code>enable_voice</code> - enable voice calling on the SIM card</li>
+	//	<li><code>disable_voice</code> - disable voice calling on the SIM card</li>
 	//	</ul>
 	//
-	// Any of "enable", "enable_standby_sim_card", "disable", "set_standby".
+	// Any of "enable", "enable_standby_sim_card", "disable", "set_standby",
+	// "enable_voice", "disable_voice".
 	ActionType WirelessSimCardActionActionType `json:"action_type"`
 	// ISO 8601 formatted date-time indicating when the resource was created.
 	CreatedAt  string `json:"created_at"`
@@ -330,6 +369,8 @@ func (r *WirelessSimCardAction) UnmarshalJSON(data []byte) error {
 //	<li><code>enable_standby_sim_card</code> - move a SIM card previously on the <code>standby</code> status to the <code>enabled</code> status after it consumes data.</li>
 //	<li><code>disable</code> - move the SIM card to the <code>disabled</code> status</li>
 //	<li><code>set_standby</code> - move the SIM card to the <code>standby</code> status</li>
+//	<li><code>enable_voice</code> - enable voice calling on the SIM card</li>
+//	<li><code>disable_voice</code> - disable voice calling on the SIM card</li>
 //	</ul>
 type WirelessSimCardActionActionType string
 
@@ -338,6 +379,8 @@ const (
 	WirelessSimCardActionActionTypeEnableStandbySimCard WirelessSimCardActionActionType = "enable_standby_sim_card"
 	WirelessSimCardActionActionTypeDisable              WirelessSimCardActionActionType = "disable"
 	WirelessSimCardActionActionTypeSetStandby           WirelessSimCardActionActionType = "set_standby"
+	WirelessSimCardActionActionTypeEnableVoice          WirelessSimCardActionActionType = "enable_voice"
+	WirelessSimCardActionActionTypeDisableVoice         WirelessSimCardActionActionType = "disable_voice"
 )
 
 type WirelessSimCardActionStatus struct {
@@ -455,6 +498,24 @@ func (r *SimCardActionDisableResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type SimCardActionDisableVoiceResponse struct {
+	// This object represents a SIM card action. It allows tracking the current status
+	// of an operation that impacts the SIM card.
+	Data WirelessSimCardAction `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SimCardActionDisableVoiceResponse) RawJSON() string { return r.JSON.raw }
+func (r *SimCardActionDisableVoiceResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type SimCardActionEnableResponse struct {
 	// This object represents a SIM card action. It allows tracking the current status
 	// of an operation that impacts the SIM card.
@@ -470,6 +531,24 @@ type SimCardActionEnableResponse struct {
 // Returns the unmodified JSON received from the API
 func (r SimCardActionEnableResponse) RawJSON() string { return r.JSON.raw }
 func (r *SimCardActionEnableResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SimCardActionEnableVoiceResponse struct {
+	// This object represents a SIM card action. It allows tracking the current status
+	// of an operation that impacts the SIM card.
+	Data WirelessSimCardAction `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SimCardActionEnableVoiceResponse) RawJSON() string { return r.JSON.raw }
+func (r *SimCardActionEnableVoiceResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -598,7 +677,7 @@ type SimCardActionListParamsFilter struct {
 	// Filter by action type.
 	//
 	// Any of "enable", "enable_standby_sim_card", "disable", "set_standby",
-	// "remove_public_ip", "set_public_ip".
+	// "remove_public_ip", "set_public_ip", "enable_voice", "disable_voice".
 	ActionType string `query:"action_type,omitzero" json:"-"`
 	// Filter by a specific status of the resource's lifecycle.
 	//
@@ -631,6 +710,11 @@ func (r *SimCardActionBulkDisableVoiceParams) UnmarshalJSON(data []byte) error {
 
 type SimCardActionBulkEnableVoiceParams struct {
 	SimCardGroupID string `json:"sim_card_group_id" api:"required"`
+	// The identifier of the Mobile Voice Connection to associate with the SIM cards.
+	// The connection must be owned by the same user and of type
+	// <code>mobile_voice</code>. If omitted, voice is enabled without a connection
+	// association.
+	ConnectionID param.Opt[string] `json:"connection_id,omitzero"`
 	paramObj
 }
 
@@ -652,6 +736,23 @@ func (r SimCardActionBulkSetPublicIPsParams) MarshalJSON() (data []byte, err err
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *SimCardActionBulkSetPublicIPsParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SimCardActionEnableVoiceParams struct {
+	// The identifier of the Mobile Voice Connection to associate with this SIM card.
+	// The connection must be owned by the same user and of type
+	// <code>mobile_voice</code>. If omitted, voice is enabled without a connection
+	// association.
+	ConnectionID param.Opt[string] `json:"connection_id,omitzero"`
+	paramObj
+}
+
+func (r SimCardActionEnableVoiceParams) MarshalJSON() (data []byte, err error) {
+	type shadow SimCardActionEnableVoiceParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *SimCardActionEnableVoiceParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

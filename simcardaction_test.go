@@ -93,7 +93,7 @@ func TestSimCardActionBulkDisableVoice(t *testing.T) {
 	}
 }
 
-func TestSimCardActionBulkEnableVoice(t *testing.T) {
+func TestSimCardActionBulkEnableVoiceWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -108,6 +108,7 @@ func TestSimCardActionBulkEnableVoice(t *testing.T) {
 	)
 	_, err := client.SimCards.Actions.BulkEnableVoice(context.TODO(), telnyx.SimCardActionBulkEnableVoiceParams{
 		SimCardGroupID: "6b14e151-8493-4fa1-8664-1cc4e6d14158",
+		ConnectionID:   telnyx.String("123456789"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -166,6 +167,29 @@ func TestSimCardActionDisable(t *testing.T) {
 	}
 }
 
+func TestSimCardActionDisableVoice(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.SimCards.Actions.DisableVoice(context.TODO(), "6a09cdc3-8948-47f0-aa62-74ac943d6c58")
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestSimCardActionEnable(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
@@ -180,6 +204,35 @@ func TestSimCardActionEnable(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.SimCards.Actions.Enable(context.TODO(), "6a09cdc3-8948-47f0-aa62-74ac943d6c58")
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestSimCardActionEnableVoiceWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.SimCards.Actions.EnableVoice(
+		context.TODO(),
+		"6a09cdc3-8948-47f0-aa62-74ac943d6c58",
+		telnyx.SimCardActionEnableVoiceParams{
+			ConnectionID: telnyx.String("123456789"),
+		},
+	)
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
