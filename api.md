@@ -4241,6 +4241,7 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EdgeComputePaginationMeta">EdgeComputePaginationMeta</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#KvNamespace">KvNamespace</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#KvNamespaceResponseWrapper">KvNamespaceResponseWrapper</a>
 
@@ -4286,6 +4287,30 @@ Methods:
 Methods:
 
 - <code title="post /storage/cloudfs/{id}/actions/rotate-meta-token">client.Storage.Cloudfs.Actions.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageCloudfActionService.RotateMetaToken">RotateMetaToken</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageCloudfActionRotateMetaTokenParams">StorageCloudfActionRotateMetaTokenParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#CloudfsFilesystemResponseWrapper">CloudfsFilesystemResponseWrapper</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+## Sqldbs
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SqlDatabase">SqlDatabase</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SqlDatabaseResponseWrapper">SqlDatabaseResponseWrapper</a>
+
+Methods:
+
+- <code title="post /storage/sqldbs">client.Storage.Sqldbs.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageSqldbService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageSqldbNewParams">StorageSqldbNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SqlDatabaseResponseWrapper">SqlDatabaseResponseWrapper</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /storage/sqldbs/{id}">client.Storage.Sqldbs.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageSqldbService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SqlDatabaseResponseWrapper">SqlDatabaseResponseWrapper</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /storage/sqldbs">client.Storage.Sqldbs.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageSqldbService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageSqldbListParams">StorageSqldbListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SqlDatabase">SqlDatabase</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /storage/sqldbs/{id}">client.Storage.Sqldbs.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageSqldbService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageSqldbDeleteParams">StorageSqldbDeleteParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+
+### Actions
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageSqldbActionQueryResponse">StorageSqldbActionQueryResponse</a>
+
+Methods:
+
+- <code title="post /storage/sqldbs/{id}/actions/query">client.Storage.Sqldbs.Actions.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageSqldbActionService.Query">Query</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageSqldbActionQueryParams">StorageSqldbActionQueryParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StorageSqldbActionQueryResponse">StorageSqldbActionQueryResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # SubNumberOrders
 

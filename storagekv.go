@@ -105,6 +105,28 @@ func (r *StorageKvService) Delete(ctx context.Context, id string, opts ...option
 	return res, err
 }
 
+type EdgeComputePaginationMeta struct {
+	PageNumber   int64 `json:"page_number"`
+	PageSize     int64 `json:"page_size"`
+	TotalPages   int64 `json:"total_pages"`
+	TotalResults int64 `json:"total_results"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EdgeComputePaginationMeta) RawJSON() string { return r.JSON.raw }
+func (r *EdgeComputePaginationMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type KvNamespace struct {
 	ID         string    `json:"id" format:"uuid"`
 	CreatedAt  time.Time `json:"created_at" format:"date-time"`

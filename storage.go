@@ -34,6 +34,8 @@ type StorageService struct {
 	// Manage CloudFS filesystems — JuiceFS-compatible filesystems backed by Telnyx
 	// Cloud Storage
 	Cloudfs StorageCloudfService
+	// Manage SQL databases and run SQL against them
+	Sqldbs StorageSqldbService
 }
 
 // NewStorageService generates a new service that applies the given options to each
@@ -47,6 +49,7 @@ func NewStorageService(opts ...option.RequestOption) (r StorageService) {
 	r.Migrations = NewStorageMigrationService(opts...)
 	r.Kvs = NewStorageKvService(opts...)
 	r.Cloudfs = NewStorageCloudfService(opts...)
+	r.Sqldbs = NewStorageSqldbService(opts...)
 	return
 }
 
