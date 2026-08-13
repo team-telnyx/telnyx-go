@@ -268,9 +268,9 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 			},
 			WebhookURL:       telnyx.String("https://www.example.com/server-b/"),
 			WebhookURLMethod: telnyx.CallActionAnswerParamsWebhookURLMethodPost,
-			WebhookURLs: map[string]string{
-				"call.hangup": "https://www.example.com/webhooks/hangup",
-				"call.bridge": "https://www.example.com/webhooks/bridge",
+			WebhookURLs: map[string][]string{
+				"call.hangup": {"https://www.example.com/webhooks/hangup"},
+				"call.bridge": {"https://www.example.com/webhooks/bridge"},
 			},
 			WebhookURLsMethod: telnyx.CallActionAnswerParamsWebhookURLsMethodPost,
 		},
@@ -1963,9 +1963,9 @@ func TestCallActionTransferWithOptionalParams(t *testing.T) {
 			},
 			WebhookURL:       telnyx.String("https://www.example.com/server-b/"),
 			WebhookURLMethod: telnyx.CallActionTransferParamsWebhookURLMethodPost,
-			WebhookURLs: map[string]string{
-				"call.answered": "https://www.example.com/webhooks/answered",
-				"call.hangup":   "https://www.example.com/webhooks/hangup",
+			WebhookURLs: map[string][]string{
+				"call.answered": {"https://www.example.com/webhooks/answered"},
+				"call.hangup":   {"https://www.example.com/webhooks/hangup"},
 			},
 			WebhookURLsMethod: telnyx.CallActionTransferParamsWebhookURLsMethodPost,
 		},
