@@ -362,6 +362,7 @@ type Client struct {
 	EmailValidations EmailValidationService
 	Pricing          PricingService
 	WebSearch        WebSearchService
+	MeetingSessions  MeetingSessionService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -586,6 +587,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.EmailValidations = NewEmailValidationService(opts...)
 	r.Pricing = NewPricingService(opts...)
 	r.WebSearch = NewWebSearchService(opts...)
+	r.MeetingSessions = NewMeetingSessionService(opts...)
 
 	return
 }
