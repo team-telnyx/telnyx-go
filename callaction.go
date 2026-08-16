@@ -3843,10 +3843,11 @@ type CallActionAnswerParams struct {
 	//
 	// Any of "POST", "GET".
 	WebhookURLMethod CallActionAnswerParamsWebhookURLMethod `json:"webhook_url_method,omitzero"`
-	// A map of event types to webhook URLs. When an event of the specified type
-	// occurs, the webhook URL associated with that event type will be called instead
-	// of `webhook_url`. Events not mapped here will use the default `webhook_url`.
-	WebhookURLs map[string]string `json:"webhook_urls,omitzero" format:"uri"`
+	// A map of event types to arrays of webhook URLs. When an event of the specified
+	// type occurs, the webhook URLs associated with that event type will be called
+	// instead of `webhook_url`. Events not mapped here will use the default
+	// `webhook_url`.
+	WebhookURLs map[string][]string `json:"webhook_urls,omitzero" format:"uri"`
 	// HTTP request method to invoke `webhook_urls`.
 	//
 	// Any of "POST", "GET".
@@ -7417,10 +7418,11 @@ type CallActionTransferParams struct {
 	//
 	// Any of "POST", "GET".
 	WebhookURLMethod CallActionTransferParamsWebhookURLMethod `json:"webhook_url_method,omitzero"`
-	// A map of event types to webhook URLs. When an event of the specified type
-	// occurs, the webhook URL associated with that event type will be called instead
-	// of `webhook_url`. Events not mapped here will use the default `webhook_url`.
-	WebhookURLs map[string]string `json:"webhook_urls,omitzero" format:"uri"`
+	// A map of event types to arrays of webhook URLs. When an event of the specified
+	// type occurs, the webhook URLs associated with that event type will be called
+	// instead of `webhook_url`. Events not mapped here will use the default
+	// `webhook_url`.
+	WebhookURLs map[string][]string `json:"webhook_urls,omitzero" format:"uri"`
 	// HTTP request method to invoke `webhook_urls`.
 	//
 	// Any of "POST", "GET".

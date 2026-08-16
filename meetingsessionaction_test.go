@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestPhoneNumberVoicemailNewWithOptionalParams(t *testing.T) {
+func TestMeetingSessionActionSendChat(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,18 +26,11 @@ func TestPhoneNumberVoicemailNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.PhoneNumbers.Voicemail.New(
+	_, err := client.MeetingSessions.Actions.SendChat(
 		context.TODO(),
-		"123455678900",
-		telnyx.PhoneNumberVoicemailNewParams{
-			VoicemailRequest: telnyx.VoicemailRequestParam{
-				Enabled: telnyx.Bool(true),
-				Greeting: telnyx.VoicemailRequestGreetingParam{
-					MediaName: telnyx.String("my_voicemail_greeting"),
-					Mode:      "custom_greeting",
-				},
-				Pin: telnyx.String("1234"),
-			},
+		"mtgsess_a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		telnyx.MeetingSessionActionSendChatParams{
+			Text: "I will send the summary after this call.",
 		},
 	)
 	if err != nil {
@@ -49,7 +42,7 @@ func TestPhoneNumberVoicemailNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestPhoneNumberVoicemailGet(t *testing.T) {
+func TestMeetingSessionActionSpeakWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -62,7 +55,15 @@ func TestPhoneNumberVoicemailGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.PhoneNumbers.Voicemail.Get(context.TODO(), "123455678900")
+	_, err := client.MeetingSessions.Actions.Speak(
+		context.TODO(),
+		"mtgsess_a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		telnyx.MeetingSessionActionSpeakParams{
+			Text:      "Here are the three decisions from this call.",
+			Interrupt: telnyx.Bool(false),
+			Voice:     telnyx.String("x"),
+		},
+	)
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -72,7 +73,7 @@ func TestPhoneNumberVoicemailGet(t *testing.T) {
 	}
 }
 
-func TestPhoneNumberVoicemailUpdateWithOptionalParams(t *testing.T) {
+func TestMeetingSessionActionStopSpeaking(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -85,20 +86,7 @@ func TestPhoneNumberVoicemailUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.PhoneNumbers.Voicemail.Update(
-		context.TODO(),
-		"123455678900",
-		telnyx.PhoneNumberVoicemailUpdateParams{
-			VoicemailRequest: telnyx.VoicemailRequestParam{
-				Enabled: telnyx.Bool(true),
-				Greeting: telnyx.VoicemailRequestGreetingParam{
-					MediaName: telnyx.String("my_voicemail_greeting"),
-					Mode:      "custom_greeting",
-				},
-				Pin: telnyx.String("1234"),
-			},
-		},
-	)
+	_, err := client.MeetingSessions.Actions.StopSpeaking(context.TODO(), "mtgsess_a1b2c3d4-e5f6-7890-abcd-ef1234567890")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

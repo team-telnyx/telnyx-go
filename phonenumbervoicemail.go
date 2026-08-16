@@ -38,7 +38,10 @@ func NewPhoneNumberVoicemailService(opts ...option.RequestOption) (r PhoneNumber
 	return
 }
 
-// Create voicemail settings for a phone number
+// Create voicemail settings for a phone number. You can also configure a custom
+// greeting by setting the `greeting` object: use `mode` `custom_greeting` together
+// with a `media_name` that points to an audio file uploaded through the Media
+// Storage API, or `mode` `default` to use the standard system greeting.
 func (r *PhoneNumberVoicemailService) New(ctx context.Context, phoneNumberID string, body PhoneNumberVoicemailNewParams, opts ...option.RequestOption) (res *PhoneNumberVoicemailNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumberID == "" {
@@ -62,7 +65,10 @@ func (r *PhoneNumberVoicemailService) Get(ctx context.Context, phoneNumberID str
 	return res, err
 }
 
-// Update voicemail settings for a phone number
+// Update voicemail settings for a phone number. You can also configure a custom
+// greeting by setting the `greeting` object: use `mode` `custom_greeting` together
+// with a `media_name` that points to an audio file uploaded through the Media
+// Storage API, or `mode` `default` to use the standard system greeting.
 func (r *PhoneNumberVoicemailService) Update(ctx context.Context, phoneNumberID string, body PhoneNumberVoicemailUpdateParams, opts ...option.RequestOption) (res *PhoneNumberVoicemailUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumberID == "" {
@@ -77,11 +83,18 @@ func (r *PhoneNumberVoicemailService) Update(ctx context.Context, phoneNumberID 
 type VoicemailPrefResponse struct {
 	// Whether voicemail is enabled.
 	Enabled bool `json:"enabled"`
+	// Controls the greeting a caller hears before leaving a voicemail. Set `mode` to
+	// `default` to play the standard system greeting, or to `custom_greeting` to play
+	// your own audio. When `mode` is `custom_greeting`, `media_name` is required and
+	// must reference an audio file already uploaded to your account through the Media
+	// Storage API.
+	Greeting VoicemailPrefResponseGreeting `json:"greeting"`
 	// The pin used for the voicemail.
 	Pin string `json:"pin"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled     respjson.Field
+		Greeting    respjson.Field
 		Pin         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -94,11 +107,48 @@ func (r *VoicemailPrefResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Controls the greeting a caller hears before leaving a voicemail. Set `mode` to
+// `default` to play the standard system greeting, or to `custom_greeting` to play
+// your own audio. When `mode` is `custom_greeting`, `media_name` is required and
+// must reference an audio file already uploaded to your account through the Media
+// Storage API.
+type VoicemailPrefResponseGreeting struct {
+	// The name of the media file to play as the greeting. Required when `mode` is
+	// `custom_greeting`; ignored when `mode` is `default`. The value must match the
+	// `media_name` of a file you previously uploaded with the Media Storage API
+	// (`POST /v2/media`).
+	MediaName string `json:"media_name" api:"nullable"`
+	// The greeting mode. `default` plays the standard system greeting.
+	// `custom_greeting` plays the audio referenced by `media_name`.
+	//
+	// Any of "default", "custom_greeting".
+	Mode string `json:"mode"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		MediaName   respjson.Field
+		Mode        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VoicemailPrefResponseGreeting) RawJSON() string { return r.JSON.raw }
+func (r *VoicemailPrefResponseGreeting) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type VoicemailRequestParam struct {
 	// Whether voicemail is enabled.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// The pin used for voicemail
 	Pin param.Opt[string] `json:"pin,omitzero"`
+	// Controls the greeting a caller hears before leaving a voicemail. Set `mode` to
+	// `default` to play the standard system greeting, or to `custom_greeting` to play
+	// your own audio. When `mode` is `custom_greeting`, `media_name` is required and
+	// must reference an audio file already uploaded to your account through the Media
+	// Storage API.
+	Greeting VoicemailRequestGreetingParam `json:"greeting,omitzero"`
 	paramObj
 }
 
@@ -108,6 +158,39 @@ func (r VoicemailRequestParam) MarshalJSON() (data []byte, err error) {
 }
 func (r *VoicemailRequestParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Controls the greeting a caller hears before leaving a voicemail. Set `mode` to
+// `default` to play the standard system greeting, or to `custom_greeting` to play
+// your own audio. When `mode` is `custom_greeting`, `media_name` is required and
+// must reference an audio file already uploaded to your account through the Media
+// Storage API.
+type VoicemailRequestGreetingParam struct {
+	// The name of the media file to play as the greeting. Required when `mode` is
+	// `custom_greeting`; ignored when `mode` is `default`. The value must match the
+	// `media_name` of a file you previously uploaded with the Media Storage API
+	// (`POST /v2/media`).
+	MediaName param.Opt[string] `json:"media_name,omitzero"`
+	// The greeting mode. `default` plays the standard system greeting.
+	// `custom_greeting` plays the audio referenced by `media_name`.
+	//
+	// Any of "default", "custom_greeting".
+	Mode string `json:"mode,omitzero"`
+	paramObj
+}
+
+func (r VoicemailRequestGreetingParam) MarshalJSON() (data []byte, err error) {
+	type shadow VoicemailRequestGreetingParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VoicemailRequestGreetingParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[VoicemailRequestGreetingParam](
+		"mode", "default", "custom_greeting",
+	)
 }
 
 type PhoneNumberVoicemailNewResponse struct {

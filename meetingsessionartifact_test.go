@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestPhoneNumberVoicemailNewWithOptionalParams(t *testing.T) {
+func TestMeetingSessionArtifactNew(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,18 +26,11 @@ func TestPhoneNumberVoicemailNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.PhoneNumbers.Voicemail.New(
+	_, err := client.MeetingSessions.Artifacts.New(
 		context.TODO(),
-		"123455678900",
-		telnyx.PhoneNumberVoicemailNewParams{
-			VoicemailRequest: telnyx.VoicemailRequestParam{
-				Enabled: telnyx.Bool(true),
-				Greeting: telnyx.VoicemailRequestGreetingParam{
-					MediaName: telnyx.String("my_voicemail_greeting"),
-					Mode:      "custom_greeting",
-				},
-				Pin: telnyx.String("1234"),
-			},
+		"mtgsess_a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		telnyx.MeetingSessionArtifactNewParams{
+			Type: telnyx.MeetingSessionArtifactNewParamsTypeSummary,
 		},
 	)
 	if err != nil {
@@ -49,7 +42,7 @@ func TestPhoneNumberVoicemailNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestPhoneNumberVoicemailGet(t *testing.T) {
+func TestMeetingSessionArtifactGet(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -62,7 +55,13 @@ func TestPhoneNumberVoicemailGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.PhoneNumbers.Voicemail.Get(context.TODO(), "123455678900")
+	_, err := client.MeetingSessions.Artifacts.Get(
+		context.TODO(),
+		"mtgart_b2c3d4e5-f6a7-8901-bcde-f23456789012",
+		telnyx.MeetingSessionArtifactGetParams{
+			ID: "mtgsess_a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		},
+	)
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -72,7 +71,7 @@ func TestPhoneNumberVoicemailGet(t *testing.T) {
 	}
 }
 
-func TestPhoneNumberVoicemailUpdateWithOptionalParams(t *testing.T) {
+func TestMeetingSessionArtifactList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -85,20 +84,7 @@ func TestPhoneNumberVoicemailUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.PhoneNumbers.Voicemail.Update(
-		context.TODO(),
-		"123455678900",
-		telnyx.PhoneNumberVoicemailUpdateParams{
-			VoicemailRequest: telnyx.VoicemailRequestParam{
-				Enabled: telnyx.Bool(true),
-				Greeting: telnyx.VoicemailRequestGreetingParam{
-					MediaName: telnyx.String("my_voicemail_greeting"),
-					Mode:      "custom_greeting",
-				},
-				Pin: telnyx.String("1234"),
-			},
-		},
-	)
+	_, err := client.MeetingSessions.Artifacts.List(context.TODO(), "mtgsess_a1b2c3d4-e5f6-7890-abcd-ef1234567890")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

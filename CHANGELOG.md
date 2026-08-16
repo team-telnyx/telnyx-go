@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.93.0](https://github.com/team-telnyx/telnyx-go/compare/v4.92.0...v4.93.0) (2026-08-16)
+
+
+### Features
+
+* promote from staging 18309ee ([3e81803](https://github.com/team-telnyx/telnyx-go/commit/3e818039edce0e5c4fa511ffab4edd3151c0c094))
+
+
+### Bug Fixes
+
+* **ci:** attest private release provenance ([#187](https://github.com/team-telnyx/telnyx-go/issues/187)) ([f490537](https://github.com/team-telnyx/telnyx-go/commit/f490537aee88cbe0325a6bd2d092db432283fd45))
+* **ci:** dispatch Go release gate explicitly ([#189](https://github.com/team-telnyx/telnyx-go/issues/189)) ([7aa7fab](https://github.com/team-telnyx/telnyx-go/commit/7aa7fab4eea4bde62b256646b77facaeecfcf8a3))
+* **ci:** validate Go release candidates ([#188](https://github.com/team-telnyx/telnyx-go/issues/188)) ([f6994cc](https://github.com/team-telnyx/telnyx-go/commit/f6994cc36e00e0fd4ed37d6b47d10b9fd1a05172))
+
 ## [4.92.0](https://github.com/team-telnyx/telnyx-go/compare/v4.91.0...v4.92.0) (2026-08-11)
 
 
