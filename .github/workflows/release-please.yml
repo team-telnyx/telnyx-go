@@ -268,7 +268,7 @@ jobs:
             exit 0
           fi
           open_prs=0
-          for attempt in 1 2 3; do
+          for _attempt in 1 2 3; do
             open_prs=$(gh pr list --repo "$REPO" --state open --json headRefName \
               --jq '[.[] | select(.headRefName | startswith("release-please--"))] | length')
             [ "$open_prs" -gt 0 ] && break
@@ -279,6 +279,28 @@ jobs:
             exit 1
           fi
           echo "Release PR present for unreleased commits — OK."
+
+      - name: Dispatch exact-head release PR gate
+        if: github.ref == 'refs/heads/next'
+        env:
+          GH_TOKEN: ${{ secrets.SDK_WRITE_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          mapfile -t release_prs < <(
+            gh pr list --repo "$REPO" --state open --json number,headRefName \
+              --jq '.[] | select(.headRefName | startswith("release-please--")) | .number'
+          )
+          if [ "${#release_prs[@]}" -ne 1 ]; then
+            echo "::error::Expected exactly one open Release Please PR before gate dispatch; found ${#release_prs[@]}"
+            exit 1
+          fi
+          gh workflow run release-pr-auto-merge.yml \
+            --repo "$REPO" \
+            --ref main \
+            -f pr_number="${release_prs[0]}" \
+            -f dry_run=false
+          echo "Dispatched exact-head gate for PR #${release_prs[0]}"
 
       - name: Run release-please (github-release)
         if: github.ref == 'refs/heads/main'
