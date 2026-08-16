@@ -23,8 +23,12 @@ jobs:
       id-token: write
     runs-on: ${{ github.repository == 'stainless-sdks/telnyx-go' && 'depot-ubuntu-24.04' || 'ubuntu-latest' }}
     if: |-
-      github.repository == 'stainless-sdks/telnyx-go' &&
-      (github.event_name == 'push' || github.event.pull_request.head.repo.fork) && (github.event_name != 'push' || github.event.head_commit.message != 'codegen metadata')
+      (github.repository == 'stainless-sdks/telnyx-go' &&
+       (github.event_name == 'push' || github.event.pull_request.head.repo.fork) &&
+       (github.event_name != 'push' || github.event.head_commit.message != 'codegen metadata')) ||
+      (github.repository == 'team-telnyx/telnyx-go' &&
+       github.event_name == 'pull_request' &&
+       startsWith(github.head_ref, 'release-please--'))
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
@@ -46,6 +50,16 @@ jobs:
           AUTH: ${{ steps.github-oidc.outputs.github_token }}
           SHA: ${{ github.sha }}
         run: ./scripts/utils/upload-artifact.sh
+
+      - name: Setup Go for release verification
+        if: github.repository == 'team-telnyx/telnyx-go'
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version-file: ./go.mod
+
+      - name: Build release candidate
+        if: github.repository == 'team-telnyx/telnyx-go'
+        run: go build ./...
   lint:
     timeout-minutes: 10
     name: lint
