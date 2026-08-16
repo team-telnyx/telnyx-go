@@ -5649,6 +5649,177 @@ func (r *CallAIGatherPartialResultsWebhookEvent) UnmarshalJSON(data []byte) erro
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type ArtifactCompletedWebhookEvent struct {
+	// Unique event id; deduplicate deliveries on it.
+	ID string `json:"id" api:"required"`
+	// Completed artifact, including its generated content.
+	Data ArtifactCompletedWebhookEventData `json:"data" api:"required"`
+	// Event type.
+	//
+	// Any of "artifact.completed".
+	Event ArtifactCompletedWebhookEventEvent `json:"event" api:"required"`
+	// When the event occurred.
+	OccurredAt time.Time `json:"occurred_at" api:"required" format:"date-time"`
+	// Envelope version.
+	Version string `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Data        respjson.Field
+		Event       respjson.Field
+		OccurredAt  respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ArtifactCompletedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ArtifactCompletedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Completed artifact, including its generated content.
+type ArtifactCompletedWebhookEventData struct {
+	// Id of the completed artifact.
+	ArtifactID string `json:"artifact_id" api:"required"`
+	// Generated artifact content.
+	Content ArtifactCompletedWebhookEventDataContent `json:"content" api:"required"`
+	// Model that generated the artifact.
+	ModelProvenance ArtifactCompletedWebhookEventDataModelProvenance `json:"model_provenance" api:"required"`
+	// The meeting session this event belongs to.
+	SessionID string `json:"session_id" api:"required"`
+	// Type of the completed artifact.
+	//
+	// Any of "summary", "action_items".
+	Type string `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ArtifactID      respjson.Field
+		Content         respjson.Field
+		ModelProvenance respjson.Field
+		SessionID       respjson.Field
+		Type            respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ArtifactCompletedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ArtifactCompletedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Generated artifact content.
+type ArtifactCompletedWebhookEventDataContent struct {
+	// Generated artifact text.
+	Text string `json:"text" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ArtifactCompletedWebhookEventDataContent) RawJSON() string { return r.JSON.raw }
+func (r *ArtifactCompletedWebhookEventDataContent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Model that generated the artifact.
+type ArtifactCompletedWebhookEventDataModelProvenance struct {
+	Model    string `json:"model" api:"required"`
+	Provider string `json:"provider" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Model       respjson.Field
+		Provider    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ArtifactCompletedWebhookEventDataModelProvenance) RawJSON() string { return r.JSON.raw }
+func (r *ArtifactCompletedWebhookEventDataModelProvenance) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Event type.
+type ArtifactCompletedWebhookEventEvent string
+
+const (
+	ArtifactCompletedWebhookEventEventArtifactCompleted ArtifactCompletedWebhookEventEvent = "artifact.completed"
+)
+
+type ArtifactFailedWebhookEvent struct {
+	// Unique event id; deduplicate deliveries on it.
+	ID string `json:"id" api:"required"`
+	// Failed artifact reference and reason.
+	Data ArtifactFailedWebhookEventData `json:"data" api:"required"`
+	// Event type.
+	//
+	// Any of "artifact.failed".
+	Event ArtifactFailedWebhookEventEvent `json:"event" api:"required"`
+	// When the event occurred.
+	OccurredAt time.Time `json:"occurred_at" api:"required" format:"date-time"`
+	// Envelope version.
+	Version string `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Data        respjson.Field
+		Event       respjson.Field
+		OccurredAt  respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ArtifactFailedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ArtifactFailedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Failed artifact reference and reason.
+type ArtifactFailedWebhookEventData struct {
+	// Id of the failed artifact.
+	ArtifactID string `json:"artifact_id" api:"required"`
+	// The meeting session this event belongs to.
+	SessionID string `json:"session_id" api:"required"`
+	// Type of the failed artifact.
+	//
+	// Any of "summary", "action_items".
+	Type string `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ArtifactID  respjson.Field
+		SessionID   respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ArtifactFailedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ArtifactFailedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Event type.
+type ArtifactFailedWebhookEventEvent string
+
+const (
+	ArtifactFailedWebhookEventEventArtifactFailed ArtifactFailedWebhookEventEvent = "artifact.failed"
+)
+
 type CallAnsweredWebhookEvent struct {
 	Data CallAnswered `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -7887,6 +8058,65 @@ func (r *NumberOrderStatusUpdateWebhookEventMeta) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type RecordingAvailableWebhookEvent struct {
+	// Unique event id; deduplicate deliveries on it.
+	ID string `json:"id" api:"required"`
+	// Available recording types.
+	Data RecordingAvailableWebhookEventData `json:"data" api:"required"`
+	// Event type.
+	//
+	// Any of "recording.available".
+	Event RecordingAvailableWebhookEventEvent `json:"event" api:"required"`
+	// When the event occurred.
+	OccurredAt time.Time `json:"occurred_at" api:"required" format:"date-time"`
+	// Envelope version.
+	Version string `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Data        respjson.Field
+		Event       respjson.Field
+		OccurredAt  respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RecordingAvailableWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *RecordingAvailableWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Available recording types.
+type RecordingAvailableWebhookEventData struct {
+	// Available recording types.
+	RecordingTypes []string `json:"recording_types" api:"required"`
+	// The meeting session this event belongs to.
+	SessionID string `json:"session_id" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		RecordingTypes respjson.Field
+		SessionID      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RecordingAvailableWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *RecordingAvailableWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Event type.
+type RecordingAvailableWebhookEventEvent string
+
+const (
+	RecordingAvailableWebhookEventEventRecordingAvailable RecordingAvailableWebhookEventEvent = "recording.available"
+)
+
 type ReplacedLinkClickWebhookEvent struct {
 	Data ReplacedLinkClick `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -7902,6 +8132,137 @@ func (r ReplacedLinkClickWebhookEvent) RawJSON() string { return r.JSON.raw }
 func (r *ReplacedLinkClickWebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type SessionStatusChangedWebhookEvent struct {
+	// Unique event id; deduplicate deliveries on it.
+	ID string `json:"id" api:"required"`
+	// Status transition details.
+	Data SessionStatusChangedWebhookEventData `json:"data" api:"required"`
+	// Event type.
+	//
+	// Any of "session.status_changed".
+	Event SessionStatusChangedWebhookEventEvent `json:"event" api:"required"`
+	// When the event occurred.
+	OccurredAt time.Time `json:"occurred_at" api:"required" format:"date-time"`
+	// Envelope version.
+	Version string `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Data        respjson.Field
+		Event       respjson.Field
+		OccurredAt  respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SessionStatusChangedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *SessionStatusChangedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Status transition details.
+type SessionStatusChangedWebhookEventData struct {
+	// Whether the session is recording at this lifecycle edge.
+	Recording bool `json:"recording" api:"required"`
+	// The meeting session this event belongs to.
+	SessionID string `json:"session_id" api:"required"`
+	// The new session status.
+	Status string `json:"status" api:"required"`
+	// Additional detail about the status (for example `timeout_exceeded_everyone_left`
+	// or `cancelled`), or null.
+	StatusDetail string `json:"status_detail" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Recording    respjson.Field
+		SessionID    respjson.Field
+		Status       respjson.Field
+		StatusDetail respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SessionStatusChangedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *SessionStatusChangedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Event type.
+type SessionStatusChangedWebhookEventEvent string
+
+const (
+	SessionStatusChangedWebhookEventEventSessionStatusChanged SessionStatusChangedWebhookEventEvent = "session.status_changed"
+)
+
+type TranscriptCompletedWebhookEvent struct {
+	// Unique event id; deduplicate deliveries on it.
+	ID string `json:"id" api:"required"`
+	// Finalized transcript details.
+	Data TranscriptCompletedWebhookEventData `json:"data" api:"required"`
+	// Event type.
+	//
+	// Any of "transcript.completed".
+	Event TranscriptCompletedWebhookEventEvent `json:"event" api:"required"`
+	// When the event occurred.
+	OccurredAt time.Time `json:"occurred_at" api:"required" format:"date-time"`
+	// Envelope version.
+	Version string `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Data        respjson.Field
+		Event       respjson.Field
+		OccurredAt  respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TranscriptCompletedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *TranscriptCompletedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Finalized transcript details.
+type TranscriptCompletedWebhookEventData struct {
+	// Session end time, or null when unavailable.
+	EndedAt time.Time `json:"ended_at" api:"required" format:"date-time"`
+	// Last transcript segment sequence number, or null for an empty transcript.
+	LastSeq int64 `json:"last_seq" api:"required"`
+	// Number of transcript segments observed during finalization.
+	SegmentCount int64 `json:"segment_count" api:"required"`
+	// The meeting session this event belongs to.
+	SessionID string `json:"session_id" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EndedAt      respjson.Field
+		LastSeq      respjson.Field
+		SegmentCount respjson.Field
+		SessionID    respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TranscriptCompletedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *TranscriptCompletedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Event type.
+type TranscriptCompletedWebhookEventEvent string
+
+const (
+	TranscriptCompletedWebhookEventEventTranscriptCompleted TranscriptCompletedWebhookEventEvent = "transcript.completed"
+)
 
 type TranscriptionWebhookEvent struct {
 	Data Transcription `json:"data"`
@@ -7922,7 +8283,8 @@ func (r *TranscriptionWebhookEvent) UnmarshalJSON(data []byte) error {
 // UnsafeUnwrapWebhookEventUnion contains all possible properties and values from
 // [CallAIGatherEndedWebhookEvent],
 // [CallAIGatherMessageHistoryUpdatedWebhookEvent],
-// [CallAIGatherPartialResultsWebhookEvent], [CallAnsweredWebhookEvent],
+// [CallAIGatherPartialResultsWebhookEvent], [ArtifactCompletedWebhookEvent],
+// [ArtifactFailedWebhookEvent], [CallAnsweredWebhookEvent],
 // [CallBridgedWebhookEvent], [CallConversationEndedWebhookEvent],
 // [CallConversationInsightsGeneratedWebhookEvent], [CallCostWebhookEvent],
 // [CallDeepfakeDetectionErrorWebhookEvent],
@@ -7957,12 +8319,15 @@ func (r *TranscriptionWebhookEvent) UnmarshalJSON(data []byte) error {
 // [FaxDelivered], [FaxFailed], [FaxMediaProcessed], [FaxQueued],
 // [FaxSendingStarted], [HostedNumberOrderEventWebhookEvent],
 // [InboundMessageWebhookEvent], [NumberOrderStatusUpdateWebhookEvent],
-// [ReplacedLinkClickWebhookEvent], [TranscriptionWebhookEvent].
+// [RecordingAvailableWebhookEvent], [ReplacedLinkClickWebhookEvent],
+// [SessionStatusChangedWebhookEvent], [TranscriptCompletedWebhookEvent],
+// [TranscriptionWebhookEvent].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnsafeUnwrapWebhookEventUnion struct {
 	// This field is a union of [CallAIGatherEnded],
 	// [CallAIGatherMessageHistoryUpdated], [CallAIGatherPartialResults],
+	// [ArtifactCompletedWebhookEventData], [ArtifactFailedWebhookEventData],
 	// [CallAnswered], [CallBridged], [CallConversationEnded],
 	// [CallConversationInsightsGenerated], [CallCostWebhookEventData],
 	// [CallDeepfakeDetectionErrorWebhookEventData],
@@ -7986,8 +8351,14 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// [OutboundMessage], [FaxDeliveredData], [FaxFailedData], [FaxMediaProcessedData],
 	// [FaxQueuedData], [FaxSendingStartedData],
 	// [HostedNumberOrderEventWebhookEventData], [InboundMessageWebhookEventData],
-	// [NumberOrderStatusUpdateWebhookEventData], [ReplacedLinkClick], [Transcription]
-	Data UnsafeUnwrapWebhookEventUnionData `json:"data"`
+	// [NumberOrderStatusUpdateWebhookEventData], [RecordingAvailableWebhookEventData],
+	// [ReplacedLinkClick], [SessionStatusChangedWebhookEventData],
+	// [TranscriptCompletedWebhookEventData], [Transcription]
+	Data       UnsafeUnwrapWebhookEventUnionData `json:"data"`
+	ID         string                            `json:"id"`
+	Event      string                            `json:"event"`
+	OccurredAt time.Time                         `json:"occurred_at"`
+	Version    string                            `json:"version"`
 	// This field is from variant [CampaignStatusUpdate].
 	BrandID string `json:"brandId"`
 	// This field is from variant [CampaignStatusUpdate].
@@ -8005,8 +8376,6 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// This field is from variant [CampaignStatusUpdate].
 	Type CampaignStatusUpdateType `json:"type"`
 	// This field is from variant [ConferenceFloorChanged].
-	ID string `json:"id"`
-	// This field is from variant [ConferenceFloorChanged].
 	EventType ConferenceFloorChangedEventType `json:"event_type"`
 	// This field is from variant [ConferenceFloorChanged].
 	Payload ConferenceFloorChangedPayload `json:"payload"`
@@ -8018,6 +8387,10 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	Meta UnsafeUnwrapWebhookEventUnionMeta `json:"meta"`
 	JSON struct {
 		Data                respjson.Field
+		ID                  respjson.Field
+		Event               respjson.Field
+		OccurredAt          respjson.Field
+		Version             respjson.Field
 		BrandID             respjson.Field
 		CampaignID          respjson.Field
 		CreateDate          respjson.Field
@@ -8026,7 +8399,6 @@ type UnsafeUnwrapWebhookEventUnion struct {
 		IsTMobileRegistered respjson.Field
 		Status              respjson.Field
 		Type                respjson.Field
-		ID                  respjson.Field
 		EventType           respjson.Field
 		Payload             respjson.Field
 		RecordType          respjson.Field
@@ -8046,6 +8418,16 @@ func (u UnsafeUnwrapWebhookEventUnion) AsCallAIGatherMessageHistoryUpdatedEvent(
 }
 
 func (u UnsafeUnwrapWebhookEventUnion) AsCallAIGatherPartialResultsEvent() (v CallAIGatherPartialResultsWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsArtifactCompletedWebhookEvent() (v ArtifactCompletedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsArtifactFailedWebhookEvent() (v ArtifactFailedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -8365,7 +8747,22 @@ func (u UnsafeUnwrapWebhookEventUnion) AsNumberOrderEvent() (v NumberOrderStatus
 	return
 }
 
+func (u UnsafeUnwrapWebhookEventUnion) AsRecordingAvailableWebhookEvent() (v RecordingAvailableWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 func (u UnsafeUnwrapWebhookEventUnion) AsReplacedLinkClickWebhookEvent() (v ReplacedLinkClickWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsSessionStatusChangedWebhookEvent() (v SessionStatusChangedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsTranscriptCompletedWebhookEvent() (v TranscriptCompletedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -8428,8 +8825,17 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	// [NumberOrderStatusUpdateWebhookEventDataPayload], [TranscriptionPayload]
 	Payload    UnsafeUnwrapWebhookEventUnionDataPayload `json:"payload"`
 	RecordType string                                   `json:"record_type"`
+	ArtifactID string                                   `json:"artifact_id"`
+	// This field is from variant [ArtifactCompletedWebhookEventData].
+	Content ArtifactCompletedWebhookEventDataContent `json:"content"`
+	// This field is from variant [ArtifactCompletedWebhookEventData].
+	ModelProvenance ArtifactCompletedWebhookEventDataModelProvenance `json:"model_provenance"`
+	SessionID       string                                           `json:"session_id"`
+	Type            string                                           `json:"type"`
 	// This field is from variant [CallConversationEnded].
 	CreatedAt time.Time `json:"created_at"`
+	// This field is from variant [RecordingAvailableWebhookEventData].
+	RecordingTypes []string `json:"recording_types"`
 	// This field is from variant [ReplacedLinkClick].
 	MessageID string `json:"message_id"`
 	// This field is from variant [ReplacedLinkClick].
@@ -8437,19 +8843,43 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	// This field is from variant [ReplacedLinkClick].
 	To string `json:"to"`
 	// This field is from variant [ReplacedLinkClick].
-	URL  string `json:"url"`
-	JSON struct {
-		ID          respjson.Field
-		EventType   respjson.Field
-		OccurredAt  respjson.Field
-		Payload     respjson.Field
-		RecordType  respjson.Field
-		CreatedAt   respjson.Field
-		MessageID   respjson.Field
-		TimeClicked respjson.Field
-		To          respjson.Field
-		URL         respjson.Field
-		raw         string
+	URL string `json:"url"`
+	// This field is from variant [SessionStatusChangedWebhookEventData].
+	Recording bool `json:"recording"`
+	// This field is from variant [SessionStatusChangedWebhookEventData].
+	Status string `json:"status"`
+	// This field is from variant [SessionStatusChangedWebhookEventData].
+	StatusDetail string `json:"status_detail"`
+	// This field is from variant [TranscriptCompletedWebhookEventData].
+	EndedAt time.Time `json:"ended_at"`
+	// This field is from variant [TranscriptCompletedWebhookEventData].
+	LastSeq int64 `json:"last_seq"`
+	// This field is from variant [TranscriptCompletedWebhookEventData].
+	SegmentCount int64 `json:"segment_count"`
+	JSON         struct {
+		ID              respjson.Field
+		EventType       respjson.Field
+		OccurredAt      respjson.Field
+		Payload         respjson.Field
+		RecordType      respjson.Field
+		ArtifactID      respjson.Field
+		Content         respjson.Field
+		ModelProvenance respjson.Field
+		SessionID       respjson.Field
+		Type            respjson.Field
+		CreatedAt       respjson.Field
+		RecordingTypes  respjson.Field
+		MessageID       respjson.Field
+		TimeClicked     respjson.Field
+		To              respjson.Field
+		URL             respjson.Field
+		Recording       respjson.Field
+		Status          respjson.Field
+		StatusDetail    respjson.Field
+		EndedAt         respjson.Field
+		LastSeq         respjson.Field
+		SegmentCount    respjson.Field
+		raw             string
 	} `json:"-"`
 }
 
@@ -9245,7 +9675,8 @@ func (r *UnsafeUnwrapWebhookEventUnionMeta) UnmarshalJSON(data []byte) error {
 // UnwrapWebhookEventUnion contains all possible properties and values from
 // [CallAIGatherEndedWebhookEvent],
 // [CallAIGatherMessageHistoryUpdatedWebhookEvent],
-// [CallAIGatherPartialResultsWebhookEvent], [CallAnsweredWebhookEvent],
+// [CallAIGatherPartialResultsWebhookEvent], [ArtifactCompletedWebhookEvent],
+// [ArtifactFailedWebhookEvent], [CallAnsweredWebhookEvent],
 // [CallBridgedWebhookEvent], [CallConversationEndedWebhookEvent],
 // [CallConversationInsightsGeneratedWebhookEvent], [CallCostWebhookEvent],
 // [CallDeepfakeDetectionErrorWebhookEvent],
@@ -9280,12 +9711,15 @@ func (r *UnsafeUnwrapWebhookEventUnionMeta) UnmarshalJSON(data []byte) error {
 // [FaxDelivered], [FaxFailed], [FaxMediaProcessed], [FaxQueued],
 // [FaxSendingStarted], [HostedNumberOrderEventWebhookEvent],
 // [InboundMessageWebhookEvent], [NumberOrderStatusUpdateWebhookEvent],
-// [ReplacedLinkClickWebhookEvent], [TranscriptionWebhookEvent].
+// [RecordingAvailableWebhookEvent], [ReplacedLinkClickWebhookEvent],
+// [SessionStatusChangedWebhookEvent], [TranscriptCompletedWebhookEvent],
+// [TranscriptionWebhookEvent].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnwrapWebhookEventUnion struct {
 	// This field is a union of [CallAIGatherEnded],
 	// [CallAIGatherMessageHistoryUpdated], [CallAIGatherPartialResults],
+	// [ArtifactCompletedWebhookEventData], [ArtifactFailedWebhookEventData],
 	// [CallAnswered], [CallBridged], [CallConversationEnded],
 	// [CallConversationInsightsGenerated], [CallCostWebhookEventData],
 	// [CallDeepfakeDetectionErrorWebhookEventData],
@@ -9309,8 +9743,14 @@ type UnwrapWebhookEventUnion struct {
 	// [OutboundMessage], [FaxDeliveredData], [FaxFailedData], [FaxMediaProcessedData],
 	// [FaxQueuedData], [FaxSendingStartedData],
 	// [HostedNumberOrderEventWebhookEventData], [InboundMessageWebhookEventData],
-	// [NumberOrderStatusUpdateWebhookEventData], [ReplacedLinkClick], [Transcription]
-	Data UnwrapWebhookEventUnionData `json:"data"`
+	// [NumberOrderStatusUpdateWebhookEventData], [RecordingAvailableWebhookEventData],
+	// [ReplacedLinkClick], [SessionStatusChangedWebhookEventData],
+	// [TranscriptCompletedWebhookEventData], [Transcription]
+	Data       UnwrapWebhookEventUnionData `json:"data"`
+	ID         string                      `json:"id"`
+	Event      string                      `json:"event"`
+	OccurredAt time.Time                   `json:"occurred_at"`
+	Version    string                      `json:"version"`
 	// This field is from variant [CampaignStatusUpdate].
 	BrandID string `json:"brandId"`
 	// This field is from variant [CampaignStatusUpdate].
@@ -9328,8 +9768,6 @@ type UnwrapWebhookEventUnion struct {
 	// This field is from variant [CampaignStatusUpdate].
 	Type CampaignStatusUpdateType `json:"type"`
 	// This field is from variant [ConferenceFloorChanged].
-	ID string `json:"id"`
-	// This field is from variant [ConferenceFloorChanged].
 	EventType ConferenceFloorChangedEventType `json:"event_type"`
 	// This field is from variant [ConferenceFloorChanged].
 	Payload ConferenceFloorChangedPayload `json:"payload"`
@@ -9341,6 +9779,10 @@ type UnwrapWebhookEventUnion struct {
 	Meta UnwrapWebhookEventUnionMeta `json:"meta"`
 	JSON struct {
 		Data                respjson.Field
+		ID                  respjson.Field
+		Event               respjson.Field
+		OccurredAt          respjson.Field
+		Version             respjson.Field
 		BrandID             respjson.Field
 		CampaignID          respjson.Field
 		CreateDate          respjson.Field
@@ -9349,7 +9791,6 @@ type UnwrapWebhookEventUnion struct {
 		IsTMobileRegistered respjson.Field
 		Status              respjson.Field
 		Type                respjson.Field
-		ID                  respjson.Field
 		EventType           respjson.Field
 		Payload             respjson.Field
 		RecordType          respjson.Field
@@ -9369,6 +9810,16 @@ func (u UnwrapWebhookEventUnion) AsCallAIGatherMessageHistoryUpdatedEvent() (v C
 }
 
 func (u UnwrapWebhookEventUnion) AsCallAIGatherPartialResultsEvent() (v CallAIGatherPartialResultsWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsArtifactCompletedWebhookEvent() (v ArtifactCompletedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsArtifactFailedWebhookEvent() (v ArtifactFailedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -9688,7 +10139,22 @@ func (u UnwrapWebhookEventUnion) AsNumberOrderEvent() (v NumberOrderStatusUpdate
 	return
 }
 
+func (u UnwrapWebhookEventUnion) AsRecordingAvailableWebhookEvent() (v RecordingAvailableWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 func (u UnwrapWebhookEventUnion) AsReplacedLinkClickWebhookEvent() (v ReplacedLinkClickWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsSessionStatusChangedWebhookEvent() (v SessionStatusChangedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsTranscriptCompletedWebhookEvent() (v TranscriptCompletedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -9751,8 +10217,17 @@ type UnwrapWebhookEventUnionData struct {
 	// [NumberOrderStatusUpdateWebhookEventDataPayload], [TranscriptionPayload]
 	Payload    UnwrapWebhookEventUnionDataPayload `json:"payload"`
 	RecordType string                             `json:"record_type"`
+	ArtifactID string                             `json:"artifact_id"`
+	// This field is from variant [ArtifactCompletedWebhookEventData].
+	Content ArtifactCompletedWebhookEventDataContent `json:"content"`
+	// This field is from variant [ArtifactCompletedWebhookEventData].
+	ModelProvenance ArtifactCompletedWebhookEventDataModelProvenance `json:"model_provenance"`
+	SessionID       string                                           `json:"session_id"`
+	Type            string                                           `json:"type"`
 	// This field is from variant [CallConversationEnded].
 	CreatedAt time.Time `json:"created_at"`
+	// This field is from variant [RecordingAvailableWebhookEventData].
+	RecordingTypes []string `json:"recording_types"`
 	// This field is from variant [ReplacedLinkClick].
 	MessageID string `json:"message_id"`
 	// This field is from variant [ReplacedLinkClick].
@@ -9760,19 +10235,43 @@ type UnwrapWebhookEventUnionData struct {
 	// This field is from variant [ReplacedLinkClick].
 	To string `json:"to"`
 	// This field is from variant [ReplacedLinkClick].
-	URL  string `json:"url"`
-	JSON struct {
-		ID          respjson.Field
-		EventType   respjson.Field
-		OccurredAt  respjson.Field
-		Payload     respjson.Field
-		RecordType  respjson.Field
-		CreatedAt   respjson.Field
-		MessageID   respjson.Field
-		TimeClicked respjson.Field
-		To          respjson.Field
-		URL         respjson.Field
-		raw         string
+	URL string `json:"url"`
+	// This field is from variant [SessionStatusChangedWebhookEventData].
+	Recording bool `json:"recording"`
+	// This field is from variant [SessionStatusChangedWebhookEventData].
+	Status string `json:"status"`
+	// This field is from variant [SessionStatusChangedWebhookEventData].
+	StatusDetail string `json:"status_detail"`
+	// This field is from variant [TranscriptCompletedWebhookEventData].
+	EndedAt time.Time `json:"ended_at"`
+	// This field is from variant [TranscriptCompletedWebhookEventData].
+	LastSeq int64 `json:"last_seq"`
+	// This field is from variant [TranscriptCompletedWebhookEventData].
+	SegmentCount int64 `json:"segment_count"`
+	JSON         struct {
+		ID              respjson.Field
+		EventType       respjson.Field
+		OccurredAt      respjson.Field
+		Payload         respjson.Field
+		RecordType      respjson.Field
+		ArtifactID      respjson.Field
+		Content         respjson.Field
+		ModelProvenance respjson.Field
+		SessionID       respjson.Field
+		Type            respjson.Field
+		CreatedAt       respjson.Field
+		RecordingTypes  respjson.Field
+		MessageID       respjson.Field
+		TimeClicked     respjson.Field
+		To              respjson.Field
+		URL             respjson.Field
+		Recording       respjson.Field
+		Status          respjson.Field
+		StatusDetail    respjson.Field
+		EndedAt         respjson.Field
+		LastSeq         respjson.Field
+		SegmentCount    respjson.Field
+		raw             string
 	} `json:"-"`
 }
 

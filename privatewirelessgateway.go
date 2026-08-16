@@ -143,7 +143,7 @@ func (r *PrivateWirelessGateway) UnmarshalJSON(data []byte) error {
 // The current status or failure details of the Private Wireless Gateway.
 type PrivateWirelessGatewayStatus struct {
 	// This attribute is an
-	// [error code](https://developers.telnyx.com/development/api-fundamentals/api-errors)
+	// [error code](https://developers.telnyx.com/docs/development/api-fundamentals/api-errors)
 	// related to the failure reason.
 	ErrorCode string `json:"error_code" api:"nullable"`
 	// This attribute provides a human-readable explanation of why a failure happened.

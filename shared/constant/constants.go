@@ -18,6 +18,7 @@ func ValueOf[T Constant[T]]() T {
 	return t.Default()
 }
 
+type Anam string                   // Always "anam"
 type Android string                // Always "android"
 type Arithmetic string             // Always "arithmetic"
 type Assistant string              // Always "assistant"
@@ -34,6 +35,7 @@ type Function string               // Always "function"
 type Handoff string                // Always "handoff"
 type Invite string                 // Always "invite"
 type Ios string                    // Always "ios"
+type Jpeg string                   // Always "jpeg"
 type Llm string                    // Always "llm"
 type MediaName string              // Always "media_name"
 type MediaURL string               // Always "media_url"
@@ -41,6 +43,8 @@ type Node string                   // Always "node"
 type NumberLiteral string          // Always "number_literal"
 type Pay string                    // Always "pay"
 type PredefinedMedia string        // Always "predefined_media"
+type ProviderRecordingMedia string // Always "provider_recording_media"
+type Recall string                 // Always "recall"
 type Refer string                  // Always "refer"
 type Retrieval string              // Always "retrieval"
 type S3Generic string              // Always "s3-generic"
@@ -55,6 +59,7 @@ type Transfer string               // Always "transfer"
 type UpdateDynamicVariables string // Always "update_dynamic_variables"
 type Variable string               // Always "variable"
 
+func (c Anam) Default() Anam                                     { return "anam" }
 func (c Android) Default() Android                               { return "android" }
 func (c Arithmetic) Default() Arithmetic                         { return "arithmetic" }
 func (c Assistant) Default() Assistant                           { return "assistant" }
@@ -71,6 +76,7 @@ func (c Function) Default() Function                             { return "funct
 func (c Handoff) Default() Handoff                               { return "handoff" }
 func (c Invite) Default() Invite                                 { return "invite" }
 func (c Ios) Default() Ios                                       { return "ios" }
+func (c Jpeg) Default() Jpeg                                     { return "jpeg" }
 func (c Llm) Default() Llm                                       { return "llm" }
 func (c MediaName) Default() MediaName                           { return "media_name" }
 func (c MediaURL) Default() MediaURL                             { return "media_url" }
@@ -78,6 +84,8 @@ func (c Node) Default() Node                                     { return "node"
 func (c NumberLiteral) Default() NumberLiteral                   { return "number_literal" }
 func (c Pay) Default() Pay                                       { return "pay" }
 func (c PredefinedMedia) Default() PredefinedMedia               { return "predefined_media" }
+func (c ProviderRecordingMedia) Default() ProviderRecordingMedia { return "provider_recording_media" }
+func (c Recall) Default() Recall                                 { return "recall" }
 func (c Refer) Default() Refer                                   { return "refer" }
 func (c Retrieval) Default() Retrieval                           { return "retrieval" }
 func (c S3Generic) Default() S3Generic                           { return "s3-generic" }
@@ -92,6 +100,7 @@ func (c Transfer) Default() Transfer                             { return "trans
 func (c UpdateDynamicVariables) Default() UpdateDynamicVariables { return "update_dynamic_variables" }
 func (c Variable) Default() Variable                             { return "variable" }
 
+func (c Anam) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
 func (c Android) MarshalJSON() ([]byte, error)                { return marshalString(c) }
 func (c Arithmetic) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Assistant) MarshalJSON() ([]byte, error)              { return marshalString(c) }
@@ -108,6 +117,7 @@ func (c Function) MarshalJSON() ([]byte, error)               { return marshalSt
 func (c Handoff) MarshalJSON() ([]byte, error)                { return marshalString(c) }
 func (c Invite) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c Ios) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
+func (c Jpeg) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
 func (c Llm) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c MediaName) MarshalJSON() ([]byte, error)              { return marshalString(c) }
 func (c MediaURL) MarshalJSON() ([]byte, error)               { return marshalString(c) }
@@ -115,6 +125,8 @@ func (c Node) MarshalJSON() ([]byte, error)                   { return marshalSt
 func (c NumberLiteral) MarshalJSON() ([]byte, error)          { return marshalString(c) }
 func (c Pay) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c PredefinedMedia) MarshalJSON() ([]byte, error)        { return marshalString(c) }
+func (c ProviderRecordingMedia) MarshalJSON() ([]byte, error) { return marshalString(c) }
+func (c Recall) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c Refer) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
 func (c Retrieval) MarshalJSON() ([]byte, error)              { return marshalString(c) }
 func (c S3Generic) MarshalJSON() ([]byte, error)              { return marshalString(c) }

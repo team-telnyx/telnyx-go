@@ -1619,11 +1619,11 @@ type CallDialParams struct {
 	//
 	// Any of "POST", "GET".
 	WebhookURLMethod CallDialParamsWebhookURLMethod `json:"webhook_url_method,omitzero"`
-	// A map of event types to webhook URLs. When an event of the specified type
-	// occurs, the webhook URL associated with that event type will be called instead
-	// of the default webhook URL. Events not mapped here will use the default webhook
-	// URL.
-	WebhookURLs map[string]string `json:"webhook_urls,omitzero" format:"uri"`
+	// A map of event types to arrays of webhook URLs. When an event of the specified
+	// type occurs, the webhook URLs associated with that event type will be called
+	// instead of the default webhook URL. Events not mapped here will use the default
+	// webhook URL.
+	WebhookURLs map[string][]string `json:"webhook_urls,omitzero" format:"uri"`
 	// HTTP request method to invoke `webhook_urls`.
 	//
 	// Any of "POST", "GET".

@@ -291,9 +291,9 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 		},
 		WebhookURL:       telnyx.String("https://www.example.com/server-b/"),
 		WebhookURLMethod: telnyx.CallDialParamsWebhookURLMethodPost,
-		WebhookURLs: map[string]string{
-			"call.hangup": "https://www.example.com/webhooks/hangup",
-			"call.bridge": "https://www.example.com/webhooks/bridge",
+		WebhookURLs: map[string][]string{
+			"call.hangup": {"https://www.example.com/webhooks/hangup"},
+			"call.bridge": {"https://www.example.com/webhooks/bridge"},
 		},
 		WebhookURLsMethod: telnyx.CallDialParamsWebhookURLsMethodPost,
 	})
