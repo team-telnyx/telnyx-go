@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.95.0](https://github.com/team-telnyx/telnyx-go/compare/v4.94.0...v4.95.0) (2026-08-17)
+
+
+### Features
+
+* promote from staging 43d5fb0 ([0e0f650](https://github.com/team-telnyx/telnyx-go/commit/0e0f650a4f26fbceab74b7e5db03a9ce3874aef0))
+
 ## [4.94.0](https://github.com/team-telnyx/telnyx-go/compare/v4.93.0...v4.94.0) (2026-08-17)
 
 
