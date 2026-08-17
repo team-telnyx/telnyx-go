@@ -81,7 +81,7 @@ func (r *MessagingProfileService) Update(ctx context.Context, messagingProfileID
 	return res, err
 }
 
-// Returns messaging profiles owned by the authenticated account. Apply the
+// Lists messaging profiles owned by the authenticated account. Apply the
 // documented filters and pagination parameters to narrow the result set.
 func (r *MessagingProfileService) List(ctx context.Context, query MessagingProfileListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MessagingProfile], err error) {
 	var raw *http.Response
@@ -100,7 +100,7 @@ func (r *MessagingProfileService) List(ctx context.Context, query MessagingProfi
 	return res, nil
 }
 
-// Returns messaging profiles owned by the authenticated account. Apply the
+// Lists messaging profiles owned by the authenticated account. Apply the
 // documented filters and pagination parameters to narrow the result set.
 func (r *MessagingProfileService) ListAutoPaging(ctx context.Context, query MessagingProfileListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MessagingProfile] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))

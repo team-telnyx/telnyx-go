@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.94.0](https://github.com/team-telnyx/telnyx-go/compare/v4.93.0...v4.94.0) (2026-08-17)
+
+
+### Features
+
+* promote from staging c1b727d ([c6f9881](https://github.com/team-telnyx/telnyx-go/commit/c6f98813c2e7e763826474b83e00c41cb1024f06))
+
+
+### Bug Fixes
+
+* **ci:** preserve release title in squash ([#190](https://github.com/team-telnyx/telnyx-go/issues/190)) ([5f7b46a](https://github.com/team-telnyx/telnyx-go/commit/5f7b46adf45a82c318f816c8b48d156468db867f))
+
 ## [4.93.0](https://github.com/team-telnyx/telnyx-go/compare/v4.92.0...v4.93.0) (2026-08-16)
 
 
