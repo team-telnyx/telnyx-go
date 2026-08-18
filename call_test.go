@@ -36,6 +36,7 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 		AnsweringMachineDetection: telnyx.CallDialParamsAnsweringMachineDetectionDetect,
 		AnsweringMachineDetectionConfig: telnyx.CallDialParamsAnsweringMachineDetectionConfig{
 			AfterGreetingSilenceMillis:      telnyx.Int(1000),
+			BeepDetectionProfile:            "freq_only",
 			BetweenWordsSilenceMillis:       telnyx.Int(1000),
 			GreetingDurationMillis:          telnyx.Int(1000),
 			GreetingSilenceDurationMillis:   telnyx.Int(2000),

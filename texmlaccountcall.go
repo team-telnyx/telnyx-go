@@ -632,6 +632,13 @@ type TexmlAccountCallCallsParamsBodyWithURL struct {
 	//
 	// Any of "Enable", "Disable", "DetectMessageEnd".
 	MachineDetection string `json:"MachineDetection,omitzero"`
+	// Selects which detectors must validate a beep. `both` requires the amplitude and
+	// frequency detectors to agree. `freq_only` uses the frequency detector alone, for
+	// beeps whose volume is too unsteady for the default profile. Only used when
+	// MachineDetection is enabled.
+	//
+	// Any of "both", "freq_only".
+	MachineDetectionBeepProfile string `json:"MachineDetectionBeepProfile,omitzero"`
 	// Defines whether media should be encrypted on the call. When set to `SRTP`, the
 	// call will use Secure Real-time Transport Protocol for media encryption. When set
 	// to `DTLS`, the call will use DTLS for media encryption. Only supported for SIP
@@ -701,6 +708,9 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
 		"MachineDetection", "Enable", "Disable", "DetectMessageEnd",
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
+		"MachineDetectionBeepProfile", "both", "freq_only",
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
 		"MediaEncryption", "disabled", "SRTP", "DTLS",
@@ -862,6 +872,13 @@ type TexmlAccountCallCallsParamsBodyWithTeXml struct {
 	//
 	// Any of "Enable", "Disable", "DetectMessageEnd".
 	MachineDetection string `json:"MachineDetection,omitzero"`
+	// Selects which detectors must validate a beep. `both` requires the amplitude and
+	// frequency detectors to agree. `freq_only` uses the frequency detector alone, for
+	// beeps whose volume is too unsteady for the default profile. Only used when
+	// MachineDetection is enabled.
+	//
+	// Any of "both", "freq_only".
+	MachineDetectionBeepProfile string `json:"MachineDetectionBeepProfile,omitzero"`
 	// Defines whether media should be encrypted on the call. When set to `SRTP`, the
 	// call will use Secure Real-time Transport Protocol for media encryption. When set
 	// to `DTLS`, the call will use DTLS for media encryption. Only supported for SIP
@@ -931,6 +948,9 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
 		"MachineDetection", "Enable", "Disable", "DetectMessageEnd",
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
+		"MachineDetectionBeepProfile", "both", "freq_only",
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
 		"MediaEncryption", "disabled", "SRTP", "DTLS",
@@ -1089,6 +1109,13 @@ type TexmlAccountCallCallsParamsBodyApplicationDefault struct {
 	//
 	// Any of "Enable", "Disable", "DetectMessageEnd".
 	MachineDetection string `json:"MachineDetection,omitzero"`
+	// Selects which detectors must validate a beep. `both` requires the amplitude and
+	// frequency detectors to agree. `freq_only` uses the frequency detector alone, for
+	// beeps whose volume is too unsteady for the default profile. Only used when
+	// MachineDetection is enabled.
+	//
+	// Any of "both", "freq_only".
+	MachineDetectionBeepProfile string `json:"MachineDetectionBeepProfile,omitzero"`
 	// Defines whether media should be encrypted on the call. When set to `SRTP`, the
 	// call will use Secure Real-time Transport Protocol for media encryption. When set
 	// to `DTLS`, the call will use DTLS for media encryption. Only supported for SIP
@@ -1158,6 +1185,9 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
 		"MachineDetection", "Enable", "Disable", "DetectMessageEnd",
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
+		"MachineDetectionBeepProfile", "both", "freq_only",
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
 		"MediaEncryption", "disabled", "SRTP", "DTLS",

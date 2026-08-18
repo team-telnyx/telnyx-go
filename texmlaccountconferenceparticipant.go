@@ -511,6 +511,13 @@ type TexmlAccountConferenceParticipantParticipantsParams struct {
 	//
 	// Any of "Enable", "DetectMessageEnd".
 	MachineDetection TexmlAccountConferenceParticipantParticipantsParamsMachineDetection `json:"MachineDetection,omitzero"`
+	// Selects which detectors must validate a beep. `both` requires the amplitude and
+	// frequency detectors to agree. `freq_only` uses the frequency detector alone, for
+	// beeps whose volume is too unsteady for the default profile. Only used when
+	// MachineDetection is enabled.
+	//
+	// Any of "both", "freq_only".
+	MachineDetectionBeepProfile TexmlAccountConferenceParticipantParticipantsParamsMachineDetectionBeepProfile `json:"MachineDetectionBeepProfile,omitzero"`
 	// The number of channels in the final recording. Defaults to `mono`.
 	//
 	// Any of "mono", "dual".
@@ -626,6 +633,17 @@ type TexmlAccountConferenceParticipantParticipantsParamsMachineDetection string
 const (
 	TexmlAccountConferenceParticipantParticipantsParamsMachineDetectionEnable           TexmlAccountConferenceParticipantParticipantsParamsMachineDetection = "Enable"
 	TexmlAccountConferenceParticipantParticipantsParamsMachineDetectionDetectMessageEnd TexmlAccountConferenceParticipantParticipantsParamsMachineDetection = "DetectMessageEnd"
+)
+
+// Selects which detectors must validate a beep. `both` requires the amplitude and
+// frequency detectors to agree. `freq_only` uses the frequency detector alone, for
+// beeps whose volume is too unsteady for the default profile. Only used when
+// MachineDetection is enabled.
+type TexmlAccountConferenceParticipantParticipantsParamsMachineDetectionBeepProfile string
+
+const (
+	TexmlAccountConferenceParticipantParticipantsParamsMachineDetectionBeepProfileBoth     TexmlAccountConferenceParticipantParticipantsParamsMachineDetectionBeepProfile = "both"
+	TexmlAccountConferenceParticipantParticipantsParamsMachineDetectionBeepProfileFreqOnly TexmlAccountConferenceParticipantParticipantsParamsMachineDetectionBeepProfile = "freq_only"
 )
 
 // The number of channels in the final recording. Defaults to `mono`.

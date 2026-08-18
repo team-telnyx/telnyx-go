@@ -712,6 +712,8 @@ func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetAPIKeyRef() *
 		return &vt.APIKeyRef.Value
 	} else if vt := u.OfAzure; vt != nil && vt.APIKeyRef.Valid() {
 		return &vt.APIKeyRef.Value
+	} else if vt := u.OfRime; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
 	}
 	return nil
 }
@@ -1025,6 +1027,8 @@ func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetAPIKeyRef() *string
 	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
 		return &vt.APIKeyRef.Value
 	} else if vt := u.OfAzure; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	} else if vt := u.OfRime; vt != nil && vt.APIKeyRef.Valid() {
 		return &vt.APIKeyRef.Value
 	}
 	return nil
@@ -1721,6 +1725,12 @@ type CallDialParamsAnsweringMachineDetectionConfig struct {
 	SilenceThreshold param.Opt[int64] `json:"silence_threshold,omitzero"`
 	// Maximum timeout threshold for overall detection.
 	TotalAnalysisTimeMillis param.Opt[int64] `json:"total_analysis_time_millis,omitzero"`
+	// Selects which detectors must validate a beep. `both` requires the amplitude and
+	// frequency detectors to agree. `freq_only` uses the frequency detector alone, for
+	// beeps whose volume is too unsteady for the default profile.
+	//
+	// Any of "both", "freq_only".
+	BeepDetectionProfile string `json:"beep_detection_profile,omitzero"`
 	paramObj
 }
 
@@ -1730,6 +1740,12 @@ func (r CallDialParamsAnsweringMachineDetectionConfig) MarshalJSON() (data []byt
 }
 func (r *CallDialParamsAnsweringMachineDetectionConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallDialParamsAnsweringMachineDetectionConfig](
+		"beep_detection_profile", "both", "freq_only",
+	)
 }
 
 // Optional configuration parameters to dial new participant into a conference.
