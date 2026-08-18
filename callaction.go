@@ -4506,6 +4506,8 @@ func (u CallActionGatherUsingAIParamsVoiceSettingsUnion) GetAPIKeyRef() *string 
 		return &vt.APIKeyRef.Value
 	} else if vt := u.OfAzure; vt != nil && vt.APIKeyRef.Valid() {
 		return &vt.APIKeyRef.Value
+	} else if vt := u.OfRime; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
 	}
 	return nil
 }
@@ -4627,7 +4629,12 @@ type CallActionGatherUsingSpeakParams struct {
 	//     to configure speed, volume, pitch, and language_boost.
 	//   - **Rime:** Use `Rime.<model_id>.<voice_id>` (e.g., `Rime.Arcana.cove`).
 	//     Supported model_ids: `Arcana`, `Mist`, `ArcanaV3`, `Coda`. Use
-	//     `voice_settings` to configure voice_speed.
+	//     `voice_settings` to configure voice_speed. To use your own Rime account,
+	//     provide your Rime API key as an integration secret in
+	//     `"voice_settings": {"type": "rime", "api_key_ref": "<secret_identifier>"}`.
+	//     See
+	//     [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
+	//     for details.
 	//   - **Resemble:** Use `Resemble.Turbo.<voice_id>` (e.g.,
 	//     `Resemble.Turbo.my_voice`). Only `Turbo` model is supported. Use
 	//     `voice_settings` to configure precision, sample_rate, and format.
@@ -4948,6 +4955,8 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetAPIKeyRef() *stri
 	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
 		return &vt.APIKeyRef.Value
 	} else if vt := u.OfAzure; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	} else if vt := u.OfRime; vt != nil && vt.APIKeyRef.Valid() {
 		return &vt.APIKeyRef.Value
 	}
 	return nil
@@ -5332,7 +5341,12 @@ type CallActionSpeakParams struct {
 	//     to configure speed, volume, pitch, and language_boost.
 	//   - **Rime:** Use `Rime.<model_id>.<voice_id>` (e.g., `Rime.Arcana.cove`).
 	//     Supported model_ids: `Arcana`, `Mist`, `ArcanaV3`, `Coda`. Use
-	//     `voice_settings` to configure voice_speed.
+	//     `voice_settings` to configure voice_speed. To use your own Rime account,
+	//     provide your Rime API key as an integration secret in
+	//     `"voice_settings": {"type": "rime", "api_key_ref": "<secret_identifier>"}`.
+	//     See
+	//     [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
+	//     for details.
 	//   - **Resemble:** Use `Resemble.Turbo.<voice_id>` (e.g.,
 	//     `Resemble.Turbo.my_voice`). Only `Turbo` model is supported. Use
 	//     `voice_settings` to configure precision, sample_rate, and format.
@@ -5652,6 +5666,8 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetAPIKeyRef() *string {
 	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
 		return &vt.APIKeyRef.Value
 	} else if vt := u.OfAzure; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	} else if vt := u.OfRime; vt != nil && vt.APIKeyRef.Valid() {
 		return &vt.APIKeyRef.Value
 	}
 	return nil
@@ -6218,6 +6234,8 @@ func (u CallActionStartConversationRelayParamsVoiceSettingsUnion) GetAPIKeyRef()
 	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
 		return &vt.APIKeyRef.Value
 	} else if vt := u.OfAzure; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	} else if vt := u.OfRime; vt != nil && vt.APIKeyRef.Valid() {
 		return &vt.APIKeyRef.Value
 	}
 	return nil
@@ -7485,6 +7503,12 @@ type CallActionTransferParamsAnsweringMachineDetectionConfig struct {
 	SilenceThreshold param.Opt[int64] `json:"silence_threshold,omitzero"`
 	// Maximum timeout threshold for overall detection.
 	TotalAnalysisTimeMillis param.Opt[int64] `json:"total_analysis_time_millis,omitzero"`
+	// Selects which detectors must validate a beep. `both` requires the amplitude and
+	// frequency detectors to agree. `freq_only` uses the frequency detector alone, for
+	// beeps whose volume is too unsteady for the default profile.
+	//
+	// Any of "both", "freq_only".
+	BeepDetectionProfile string `json:"beep_detection_profile,omitzero"`
 	paramObj
 }
 
@@ -7494,6 +7518,12 @@ func (r CallActionTransferParamsAnsweringMachineDetectionConfig) MarshalJSON() (
 }
 func (r *CallActionTransferParamsAnsweringMachineDetectionConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CallActionTransferParamsAnsweringMachineDetectionConfig](
+		"beep_detection_profile", "both", "freq_only",
+	)
 }
 
 // Defines whether media should be encrypted on the new call leg. For SIP URI
