@@ -5,6 +5,7 @@ import unittest
 from release_pr_auto_merge import GateError
 from validate_next_provenance import (
     PRODUCTION_POLICY_PATHS,
+    PROMOTION_TRANSFORM_PATHS,
     api_tree,
     changed_paths,
     require_policy_parity,
@@ -30,6 +31,15 @@ class GoNextProvenanceTests(unittest.TestCase):
             {"src/generated.go": A, "go.mod": A},
             {"src/generated.go": A, "go.mod": B},
             {"go.mod"},
+            "promotion",
+        )
+
+    def test_production_owned_codeowners_is_an_allowed_promotion_transform(self):
+        self.assertIn(".github/CODEOWNERS", PROMOTION_TRANSFORM_PATHS)
+        require_only_allowed_changes(
+            {".github/CODEOWNERS": A},
+            {".github/CODEOWNERS": B},
+            PROMOTION_TRANSFORM_PATHS,
             "promotion",
         )
 

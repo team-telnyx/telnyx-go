@@ -59,6 +59,7 @@ STAGING_ONLY_PATHS = frozenset(
 # Go promotion restores these production-maintained custom/dependency paths.
 PROMOTION_TRANSFORM_PATHS = frozenset(
     {
+        ".github/CODEOWNERS",
         "go.mod", "go.sum",
         "lib/webhook_verification.go", "lib/webhook_verification_test.go",
         "lib/websocket.go", "lib/speech_to_text_ws.go",
