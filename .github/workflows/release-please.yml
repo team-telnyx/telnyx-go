@@ -374,6 +374,24 @@ jobs:
           } >> "$GITHUB_OUTPUT"
           echo "Tag $TAG and its GitHub Release exist at exact commit $GITHUB_SHA"
 
+      - name: Set up Go for availability verification
+        if: github.ref == 'refs/heads/main' && steps.release.outputs.is_release == 'true'
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version-file: ./go.mod
+
+      - name: Verify Go tag and module availability
+        if: github.ref == 'refs/heads/main' && steps.release.outputs.is_release == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.release.outputs.version }}
+          RELEASE_SHA: ${{ steps.release.outputs.release_sha }}
+        run: |
+          python3 .github/scripts/verify_go_release.py \
+            --repository "$GITHUB_REPOSITORY" \
+            --version "$VERSION" \
+            --release-sha "$RELEASE_SHA"
+
       - name: Dispatch compatible release to CLI promotion
         if: github.ref == 'refs/heads/main' && steps.release.outputs.is_release == 'true'
         env:
