@@ -1332,6 +1332,11 @@ type RimeVoiceSettingsParam struct {
 	//
 	// Any of "rime".
 	Type RimeVoiceSettingsType `json:"type,omitzero" api:"required"`
+	// The `identifier` for an integration secret
+	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
+	// that refers to your Rime API key. Only required when using your own Rime
+	// account.
+	APIKeyRef param.Opt[string] `json:"api_key_ref,omitzero"`
 	// Speech speed multiplier. Default is 1.0.
 	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
 	paramObj

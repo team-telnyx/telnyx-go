@@ -51,6 +51,7 @@ func TestTexmlInitiateAICallWithOptionalParams(t *testing.T) {
 			}},
 			DetectionMode:                      telnyx.TexmlInitiateAICallParamsDetectionModePremium,
 			MachineDetection:                   telnyx.TexmlInitiateAICallParamsMachineDetectionEnable,
+			MachineDetectionBeepProfile:        telnyx.TexmlInitiateAICallParamsMachineDetectionBeepProfileFreqOnly,
 			MachineDetectionPromptEndTimeout:   telnyx.Int(5000),
 			MachineDetectionSilenceTimeout:     telnyx.Int(2000),
 			MachineDetectionSpeechEndThreshold: telnyx.Int(2000),

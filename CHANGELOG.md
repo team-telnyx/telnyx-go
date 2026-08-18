@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.96.0](https://github.com/team-telnyx/telnyx-go/compare/v4.95.0...v4.96.0) (2026-08-18)
+
+
+### Features
+
+* promote from staging 583e516 ([8093b54](https://github.com/team-telnyx/telnyx-go/commit/8093b54a04fd53bd9b3b77d43596ba593ec21879))
+
+
+### Bug Fixes
+
+* preserve Go release lifecycle fail closed ([#198](https://github.com/team-telnyx/telnyx-go/issues/198)) ([fb0e3a5](https://github.com/team-telnyx/telnyx-go/commit/fb0e3a5b837c60608ac713d810cfe70188e871bb))
+
 ## [4.95.0](https://github.com/team-telnyx/telnyx-go/compare/v4.94.0...v4.95.0) (2026-08-17)
 
 
