@@ -28,6 +28,8 @@ class ReleasePRGateWorkflowTests(unittest.TestCase):
         self.assertIn("verify_go_release.py", workflow)
         self.assertIn('--version "$VERSION"', workflow)
         self.assertIn('--release-sha "$RELEASE_SHA"', workflow)
+        self.assertNotIn("release-pr-auto-merge.yml", workflow)
+        self.assertNotIn("Dispatch exact-head release PR gate", workflow)
 
     def test_next_readiness_is_lightweight_and_fail_closed(self):
         workflow = (ROOT / ".github/workflows/next-readiness.yml").read_text()
