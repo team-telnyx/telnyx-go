@@ -319,6 +319,17 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 						Name:  telnyx.String("name"),
 						Value: telnyx.String("value"),
 					}},
+					Messages: []telnyx.InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion{{
+						OfWebhookToolRequestStartMessage: &telnyx.InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessage{
+							Content:  "Let me look that up for you.",
+							TimingMs: telnyx.Int(100),
+						},
+					}, {
+						OfWebhookToolRequestResponseDelayedMessage: &telnyx.InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessage{
+							Content:  "Still working on that.",
+							TimingMs: 5000,
+						},
+					}},
 					Method: "GET",
 					PathParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookPathParameters{
 						Properties: map[string]any{
@@ -747,6 +758,17 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 						Headers: []telnyx.InferenceEmbeddingWebhookToolParamsWebhookHeader{{
 							Name:  telnyx.String("name"),
 							Value: telnyx.String("value"),
+						}},
+						Messages: []telnyx.InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion{{
+							OfWebhookToolRequestStartMessage: &telnyx.InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessage{
+								Content:  "Let me look that up for you.",
+								TimingMs: telnyx.Int(100),
+							},
+						}, {
+							OfWebhookToolRequestResponseDelayedMessage: &telnyx.InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessage{
+								Content:  "Still working on that.",
+								TimingMs: 5000,
+							},
 						}},
 						Method: "GET",
 						PathParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookPathParameters{

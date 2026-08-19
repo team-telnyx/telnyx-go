@@ -46,6 +46,8 @@ type PredefinedMedia string        // Always "predefined_media"
 type ProviderRecordingMedia string // Always "provider_recording_media"
 type Recall string                 // Always "recall"
 type Refer string                  // Always "refer"
+type RequestResponseDelayed string // Always "request_response_delayed"
+type RequestStart string           // Always "request_start"
 type Retrieval string              // Always "retrieval"
 type S3Generic string              // Always "s3-generic"
 type SendDtmf string               // Always "send_dtmf"
@@ -87,6 +89,8 @@ func (c PredefinedMedia) Default() PredefinedMedia               { return "prede
 func (c ProviderRecordingMedia) Default() ProviderRecordingMedia { return "provider_recording_media" }
 func (c Recall) Default() Recall                                 { return "recall" }
 func (c Refer) Default() Refer                                   { return "refer" }
+func (c RequestResponseDelayed) Default() RequestResponseDelayed { return "request_response_delayed" }
+func (c RequestStart) Default() RequestStart                     { return "request_start" }
 func (c Retrieval) Default() Retrieval                           { return "retrieval" }
 func (c S3Generic) Default() S3Generic                           { return "s3-generic" }
 func (c SendDtmf) Default() SendDtmf                             { return "send_dtmf" }
@@ -128,6 +132,8 @@ func (c PredefinedMedia) MarshalJSON() ([]byte, error)        { return marshalSt
 func (c ProviderRecordingMedia) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c Recall) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c Refer) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
+func (c RequestResponseDelayed) MarshalJSON() ([]byte, error) { return marshalString(c) }
+func (c RequestStart) MarshalJSON() ([]byte, error)           { return marshalString(c) }
 func (c Retrieval) MarshalJSON() ([]byte, error)              { return marshalString(c) }
 func (c S3Generic) MarshalJSON() ([]byte, error)              { return marshalString(c) }
 func (c SendDtmf) MarshalJSON() ([]byte, error)               { return marshalString(c) }

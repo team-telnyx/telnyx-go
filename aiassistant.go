@@ -4506,6 +4506,12 @@ type InferenceEmbeddingWebhookToolParamsWebhookResp struct {
 	BodyParameters InferenceEmbeddingWebhookToolParamsWebhookBodyParametersResp `json:"body_parameters"`
 	// The headers to be sent to the external tool.
 	Headers []InferenceEmbeddingWebhookToolParamsWebhookHeaderResp `json:"headers"`
+	// Filler messages spoken while a synchronous webhook request is in progress.
+	// `request_start` messages are spoken immediately when the request begins.
+	// `request_response_delayed` messages are spoken after `timing_ms` has elapsed
+	// only if the webhook response is still pending. Filler messages are not used for
+	// asynchronous webhooks.
+	Messages []InferenceEmbeddingWebhookToolParamsWebhookMessagesUnionResp `json:"messages"`
 	// The HTTP method to be used when calling the external tool.
 	//
 	// Any of "GET", "POST", "PUT", "DELETE", "PATCH".
@@ -4538,6 +4544,7 @@ type InferenceEmbeddingWebhookToolParamsWebhookResp struct {
 		AsyncTimeoutMs         respjson.Field
 		BodyParameters         respjson.Field
 		Headers                respjson.Field
+		Messages               respjson.Field
 		Method                 respjson.Field
 		PathParameters         respjson.Field
 		QueryParameters        respjson.Field
@@ -4604,6 +4611,94 @@ type InferenceEmbeddingWebhookToolParamsWebhookHeaderResp struct {
 // Returns the unmodified JSON received from the API
 func (r InferenceEmbeddingWebhookToolParamsWebhookHeaderResp) RawJSON() string { return r.JSON.raw }
 func (r *InferenceEmbeddingWebhookToolParamsWebhookHeaderResp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InferenceEmbeddingWebhookToolParamsWebhookMessagesUnionResp contains all
+// possible properties and values from
+// [InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessageResp],
+// [InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessageResp].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type InferenceEmbeddingWebhookToolParamsWebhookMessagesUnionResp struct {
+	Content  string `json:"content"`
+	Type     string `json:"type"`
+	TimingMs int64  `json:"timing_ms"`
+	JSON     struct {
+		Content  respjson.Field
+		Type     respjson.Field
+		TimingMs respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u InferenceEmbeddingWebhookToolParamsWebhookMessagesUnionResp) AsWebhookToolRequestStartMessage() (v InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessageResp) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingWebhookToolParamsWebhookMessagesUnionResp) AsWebhookToolRequestResponseDelayedMessage() (v InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessageResp) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u InferenceEmbeddingWebhookToolParamsWebhookMessagesUnionResp) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *InferenceEmbeddingWebhookToolParamsWebhookMessagesUnionResp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessageResp struct {
+	// The text the assistant speaks.
+	Content string `json:"content" api:"required"`
+	// Speak the filler message immediately when the webhook request begins.
+	Type constant.RequestStart `json:"type" default:"request_start"`
+	// An optional delay value. This value is ignored for `request_start` messages.
+	TimingMs int64 `json:"timing_ms"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Content     respjson.Field
+		Type        respjson.Field
+		TimingMs    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessageResp) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessageResp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessageResp struct {
+	// The text the assistant speaks.
+	Content string `json:"content" api:"required"`
+	// The delay in milliseconds from the start of the webhook request.
+	TimingMs int64 `json:"timing_ms" api:"required"`
+	// Speak the filler message after the configured delay if the webhook response is
+	// still pending.
+	Type constant.RequestResponseDelayed `json:"type" default:"request_response_delayed"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Content     respjson.Field
+		TimingMs    respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessageResp) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessageResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -4734,6 +4829,12 @@ type InferenceEmbeddingWebhookToolParamsWebhook struct {
 	BodyParameters InferenceEmbeddingWebhookToolParamsWebhookBodyParameters `json:"body_parameters,omitzero"`
 	// The headers to be sent to the external tool.
 	Headers []InferenceEmbeddingWebhookToolParamsWebhookHeader `json:"headers,omitzero"`
+	// Filler messages spoken while a synchronous webhook request is in progress.
+	// `request_start` messages are spoken immediately when the request begins.
+	// `request_response_delayed` messages are spoken after `timing_ms` has elapsed
+	// only if the webhook response is still pending. Filler messages are not used for
+	// asynchronous webhooks.
+	Messages []InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion `json:"messages,omitzero"`
 	// The HTTP method to be used when calling the external tool.
 	//
 	// Any of "GET", "POST", "PUT", "DELETE", "PATCH".
@@ -4816,6 +4917,105 @@ func (r InferenceEmbeddingWebhookToolParamsWebhookHeader) MarshalJSON() (data []
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *InferenceEmbeddingWebhookToolParamsWebhookHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion struct {
+	OfWebhookToolRequestStartMessage           *InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessage           `json:",omitzero,inline"`
+	OfWebhookToolRequestResponseDelayedMessage *InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessage `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfWebhookToolRequestStartMessage, u.OfWebhookToolRequestResponseDelayedMessage)
+}
+func (u *InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion) asAny() any {
+	if !param.IsOmitted(u.OfWebhookToolRequestStartMessage) {
+		return u.OfWebhookToolRequestStartMessage
+	} else if !param.IsOmitted(u.OfWebhookToolRequestResponseDelayedMessage) {
+		return u.OfWebhookToolRequestResponseDelayedMessage
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion) GetContent() *string {
+	if vt := u.OfWebhookToolRequestStartMessage; vt != nil {
+		return (*string)(&vt.Content)
+	} else if vt := u.OfWebhookToolRequestResponseDelayedMessage; vt != nil {
+		return (*string)(&vt.Content)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion) GetType() *string {
+	if vt := u.OfWebhookToolRequestStartMessage; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfWebhookToolRequestResponseDelayedMessage; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion) GetTimingMs() *int64 {
+	if vt := u.OfWebhookToolRequestStartMessage; vt != nil && vt.TimingMs.Valid() {
+		return &vt.TimingMs.Value
+	} else if vt := u.OfWebhookToolRequestResponseDelayedMessage; vt != nil {
+		return (*int64)(&vt.TimingMs)
+	}
+	return nil
+}
+
+// The properties Content, Type are required.
+type InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessage struct {
+	// The text the assistant speaks.
+	Content string `json:"content" api:"required"`
+	// An optional delay value. This value is ignored for `request_start` messages.
+	TimingMs param.Opt[int64] `json:"timing_ms,omitzero"`
+	// Speak the filler message immediately when the webhook request begins.
+	//
+	// This field can be elided, and will marshal its zero value as "request_start".
+	Type constant.RequestStart `json:"type" default:"request_start"`
+	paramObj
+}
+
+func (r InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessage) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessage
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Content, TimingMs, Type are required.
+type InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessage struct {
+	// The text the assistant speaks.
+	Content string `json:"content" api:"required"`
+	// The delay in milliseconds from the start of the webhook request.
+	TimingMs int64 `json:"timing_ms" api:"required"`
+	// Speak the filler message after the configured delay if the webhook response is
+	// still pending.
+	//
+	// This field can be elided, and will marshal its zero value as
+	// "request_response_delayed".
+	Type constant.RequestResponseDelayed `json:"type" default:"request_response_delayed"`
+	paramObj
+}
+
+func (r InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessage) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessage
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
