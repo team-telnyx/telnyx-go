@@ -42,7 +42,9 @@ func NewGlobalIPService(opts ...option.RequestOption) (r GlobalIPService) {
 	return
 }
 
-// Create a Global IP.
+// Requests creation of a new Global IP, a static IP address announced from the
+// Telnyx network. Provisioning is asynchronous, so the request is accepted and the
+// Global IP becomes available once provisioning completes.
 func (r *GlobalIPService) New(ctx context.Context, body GlobalIPNewParams, opts ...option.RequestOption) (res *GlobalIPNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "global_ips"
@@ -50,7 +52,8 @@ func (r *GlobalIPService) New(ctx context.Context, body GlobalIPNewParams, opts 
 	return res, err
 }
 
-// Retrieve a Global IP.
+// Returns the details of a single Global IP, including its address and current
+// configuration.
 func (r *GlobalIPService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *GlobalIPGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -62,7 +65,8 @@ func (r *GlobalIPService) Get(ctx context.Context, id string, opts ...option.Req
 	return res, err
 }
 
-// List all Global IPs.
+// Returns a paginated list of the Global IPs on your account, including each IP's
+// address and configuration.
 func (r *GlobalIPService) List(ctx context.Context, query GlobalIPListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[GlobalIP], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -80,12 +84,13 @@ func (r *GlobalIPService) List(ctx context.Context, query GlobalIPListParams, op
 	return res, nil
 }
 
-// List all Global IPs.
+// Returns a paginated list of the Global IPs on your account, including each IP's
+// address and configuration.
 func (r *GlobalIPService) ListAutoPaging(ctx context.Context, query GlobalIPListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[GlobalIP] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a Global IP.
+// Deletes the specified Global IP and releases its address back to Telnyx.
 func (r *GlobalIPService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *GlobalIPDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

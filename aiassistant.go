@@ -64,7 +64,8 @@ func NewAIAssistantService(opts ...option.RequestOption) (r AIAssistantService) 
 	return
 }
 
-// Create a new AI Assistant.
+// Creates a new AI assistant from the provided configuration, including its model,
+// instructions, and attached tools, and returns the created assistant.
 func (r *AIAssistantService) New(ctx context.Context, body AIAssistantNewParams, opts ...option.RequestOption) (res *InferenceEmbedding, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants"
@@ -84,7 +85,9 @@ func (r *AIAssistantService) Get(ctx context.Context, assistantID string, query 
 	return res, err
 }
 
-// Update an AI Assistant's attributes.
+// Updates the specified AI assistant's attributes and returns the updated
+// assistant. The request can also control how the change is promoted across
+// assistant versions.
 func (r *AIAssistantService) Update(ctx context.Context, assistantID string, body AIAssistantUpdateParams, opts ...option.RequestOption) (res *InferenceEmbedding, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {

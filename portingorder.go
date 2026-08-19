@@ -73,7 +73,9 @@ func NewPortingOrderService(opts ...option.RequestOption) (r PortingOrderService
 	return
 }
 
-// Creates a new porting order object.
+// Creates a new porting order to bring phone numbers from another carrier to
+// Telnyx. Complete the order's requirements and then confirm it to submit the
+// port.
 func (r *PortingOrderService) New(ctx context.Context, body PortingOrderNewParams, opts ...option.RequestOption) (res *PortingOrderNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "porting_orders"
@@ -113,7 +115,8 @@ func (r *PortingOrderService) Update(ctx context.Context, id string, body Portin
 	return res, err
 }
 
-// Returns a list of your porting order.
+// Returns a paginated list of your porting orders. Supports filtering and sorting,
+// and can optionally include the phone numbers attached to each order.
 func (r *PortingOrderService) List(ctx context.Context, query PortingOrderListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingOrder], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -131,7 +134,8 @@ func (r *PortingOrderService) List(ctx context.Context, query PortingOrderListPa
 	return res, nil
 }
 
-// Returns a list of your porting order.
+// Returns a paginated list of your porting orders. Supports filtering and sorting,
+// and can optionally include the phone numbers attached to each order.
 func (r *PortingOrderService) ListAutoPaging(ctx context.Context, query PortingOrderListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingOrder] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
@@ -170,7 +174,8 @@ func (r *PortingOrderService) GetExceptionTypes(ctx context.Context, opts ...opt
 	return res, err
 }
 
-// Download a porting order loa template
+// Downloads the Letter of Authorization (LOA) template document for this porting
+// order, optionally rendered with a specific LOA configuration.
 func (r *PortingOrderService) GetLoaTemplate(ctx context.Context, id string, query PortingOrderGetLoaTemplateParams, opts ...option.RequestOption) (res *http.Response, err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/pdf")}, opts...)

@@ -37,7 +37,8 @@ func NewAIFineTuningJobService(opts ...option.RequestOption) (r AIFineTuningJobS
 	return
 }
 
-// Create a new fine tuning job.
+// Creates a new fine-tuning job that trains a model on the provided dataset, and
+// returns the created job.
 func (r *AIFineTuningJobService) New(ctx context.Context, body AIFineTuningJobNewParams, opts ...option.RequestOption) (res *FineTuningJob, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/fine_tuning/jobs"
@@ -45,7 +46,8 @@ func (r *AIFineTuningJobService) New(ctx context.Context, body AIFineTuningJobNe
 	return res, err
 }
 
-// Retrieve a fine tuning job by `job_id`.
+// Returns the details of a single fine-tuning job by its job_id, including its
+// current status.
 func (r *AIFineTuningJobService) Get(ctx context.Context, jobID string, opts ...option.RequestOption) (res *FineTuningJob, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if jobID == "" {
@@ -65,7 +67,7 @@ func (r *AIFineTuningJobService) List(ctx context.Context, opts ...option.Reques
 	return res, err
 }
 
-// Cancel a fine tuning job.
+// Cancels the specified in-progress fine-tuning job and returns the updated job.
 func (r *AIFineTuningJobService) Cancel(ctx context.Context, jobID string, opts ...option.RequestOption) (res *FineTuningJob, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if jobID == "" {

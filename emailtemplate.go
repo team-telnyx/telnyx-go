@@ -65,7 +65,8 @@ func (r *EmailTemplateService) Get(ctx context.Context, id string, opts ...optio
 	return res, err
 }
 
-// Updates one or more template fields.
+// Updates one or more fields of the specified email template and returns the
+// updated template.
 func (r *EmailTemplateService) Update(ctx context.Context, id string, body EmailTemplateUpdateParams, opts ...option.RequestOption) (res *EmailTemplateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

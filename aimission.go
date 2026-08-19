@@ -47,7 +47,8 @@ func NewAIMissionService(opts ...option.RequestOption) (r AIMissionService) {
 	return
 }
 
-// Create a new mission definition
+// Creates a new mission definition from the provided configuration and returns the
+// created mission. Execute the mission by starting runs against it.
 func (r *AIMissionService) New(ctx context.Context, body AIMissionNewParams, opts ...option.RequestOption) (res *MissionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/missions"
@@ -67,7 +68,9 @@ func (r *AIMissionService) Get(ctx context.Context, missionID string, opts ...op
 	return res, err
 }
 
-// List all missions for the organization
+// Returns a paginated list of all mission definitions in your organization.
+// Missions describe a goal and the tools, knowledge bases, and MCP servers agents
+// may use to accomplish it.
 func (r *AIMissionService) List(ctx context.Context, query AIMissionListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MissionData], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -85,12 +88,15 @@ func (r *AIMissionService) List(ctx context.Context, query AIMissionListParams, 
 	return res, nil
 }
 
-// List all missions for the organization
+// Returns a paginated list of all mission definitions in your organization.
+// Missions describe a goal and the tools, knowledge bases, and MCP servers agents
+// may use to accomplish it.
 func (r *AIMissionService) ListAutoPaging(ctx context.Context, query AIMissionListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MissionData] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Clone an existing mission
+// Creates a copy of the specified mission as a new mission definition, so you can
+// iterate on its configuration without modifying the original.
 func (r *AIMissionService) CloneMission(ctx context.Context, missionID string, opts ...option.RequestOption) (res *AIMissionCloneMissionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if missionID == "" {
@@ -102,7 +108,8 @@ func (r *AIMissionService) CloneMission(ctx context.Context, missionID string, o
 	return res, err
 }
 
-// Delete a mission
+// Permanently deletes the specified mission definition and returns no content on
+// success.
 func (r *AIMissionService) DeleteMission(ctx context.Context, missionID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -115,7 +122,9 @@ func (r *AIMissionService) DeleteMission(ctx context.Context, missionID string, 
 	return err
 }
 
-// List recent events across all missions
+// Returns a paginated list of recent events across every mission in your
+// organization, optionally filtered by event type. Useful for building activity
+// feeds or monitoring dashboards.
 func (r *AIMissionService) ListEvents(ctx context.Context, query AIMissionListEventsParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[EventData], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -133,12 +142,15 @@ func (r *AIMissionService) ListEvents(ctx context.Context, query AIMissionListEv
 	return res, nil
 }
 
-// List recent events across all missions
+// Returns a paginated list of recent events across every mission in your
+// organization, optionally filtered by event type. Useful for building activity
+// feeds or monitoring dashboards.
 func (r *AIMissionService) ListEventsAutoPaging(ctx context.Context, query AIMissionListEventsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[EventData] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.ListEvents(ctx, query, opts...))
 }
 
-// Update a mission definition
+// Replaces the specified mission's definition with the provided configuration and
+// returns the updated mission.
 func (r *AIMissionService) UpdateMission(ctx context.Context, missionID string, body AIMissionUpdateMissionParams, opts ...option.RequestOption) (res *MissionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if missionID == "" {

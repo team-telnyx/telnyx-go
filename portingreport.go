@@ -50,7 +50,8 @@ func (r *PortingReportService) New(ctx context.Context, body PortingReportNewPar
 	return res, err
 }
 
-// Retrieve a specific report generated.
+// Returns the details of a previously requested porting report, including its
+// status and parameters.
 func (r *PortingReportService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PortingReportGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

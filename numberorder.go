@@ -42,7 +42,8 @@ func NewNumberOrderService(opts ...option.RequestOption) (r NumberOrderService) 
 	return
 }
 
-// Creates a phone number order.
+// Creates an order to purchase the specified phone numbers and returns the created
+// order. Track fulfillment through the order's status.
 func (r *NumberOrderService) New(ctx context.Context, body NumberOrderNewParams, opts ...option.RequestOption) (res *NumberOrderNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "number_orders"
@@ -50,7 +51,8 @@ func (r *NumberOrderService) New(ctx context.Context, body NumberOrderNewParams,
 	return res, err
 }
 
-// Get an existing phone number order.
+// Returns the details of an existing phone number order, including its status and
+// the numbers included.
 func (r *NumberOrderService) Get(ctx context.Context, numberOrderID string, opts ...option.RequestOption) (res *NumberOrderGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if numberOrderID == "" {
@@ -62,7 +64,8 @@ func (r *NumberOrderService) Get(ctx context.Context, numberOrderID string, opts
 	return res, err
 }
 
-// Updates a phone number order.
+// Updates an existing phone number order, for example to satisfy regulatory
+// requirements attached to the order, and returns the updated order.
 func (r *NumberOrderService) Update(ctx context.Context, numberOrderID string, body NumberOrderUpdateParams, opts ...option.RequestOption) (res *NumberOrderUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if numberOrderID == "" {
@@ -74,7 +77,8 @@ func (r *NumberOrderService) Update(ctx context.Context, numberOrderID string, b
 	return res, err
 }
 
-// Get a paginated list of number orders.
+// Returns a paginated list of your phone number orders, with support for
+// filtering.
 func (r *NumberOrderService) List(ctx context.Context, query NumberOrderListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[NumberOrderListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -92,7 +96,8 @@ func (r *NumberOrderService) List(ctx context.Context, query NumberOrderListPara
 	return res, nil
 }
 
-// Get a paginated list of number orders.
+// Returns a paginated list of your phone number orders, with support for
+// filtering.
 func (r *NumberOrderService) ListAutoPaging(ctx context.Context, query NumberOrderListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[NumberOrderListResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }

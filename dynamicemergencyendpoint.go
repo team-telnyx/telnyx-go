@@ -42,7 +42,8 @@ func NewDynamicEmergencyEndpointService(opts ...option.RequestOption) (r Dynamic
 	return
 }
 
-// Creates a dynamic emergency endpoints.
+// Creates a dynamic emergency endpoint, associating a callback number and location
+// with a device for emergency calling.
 func (r *DynamicEmergencyEndpointService) New(ctx context.Context, body DynamicEmergencyEndpointNewParams, opts ...option.RequestOption) (res *DynamicEmergencyEndpointNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "dynamic_emergency_endpoints"

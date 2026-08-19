@@ -55,7 +55,8 @@ func (r *RecordingService) Get(ctx context.Context, recordingID string, opts ...
 	return res, err
 }
 
-// Returns a list of your call recordings.
+// Returns a paginated list of your call recordings, with support for filtering to
+// locate specific recordings.
 func (r *RecordingService) List(ctx context.Context, query RecordingListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[RecordingResponseData], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -73,12 +74,14 @@ func (r *RecordingService) List(ctx context.Context, query RecordingListParams, 
 	return res, nil
 }
 
-// Returns a list of your call recordings.
+// Returns a paginated list of your call recordings, with support for filtering to
+// locate specific recordings.
 func (r *RecordingService) ListAutoPaging(ctx context.Context, query RecordingListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[RecordingResponseData] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Permanently deletes a call recording.
+// Permanently deletes the specified call recording and returns the deleted
+// recording resource. The media is removed and can no longer be downloaded.
 func (r *RecordingService) Delete(ctx context.Context, recordingID string, opts ...option.RequestOption) (res *RecordingResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if recordingID == "" {

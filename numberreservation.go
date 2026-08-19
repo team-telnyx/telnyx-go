@@ -53,7 +53,8 @@ func (r *NumberReservationService) New(ctx context.Context, body NumberReservati
 	return res, err
 }
 
-// Gets a single phone number reservation.
+// Returns the details of a single phone number reservation, including its status
+// and the reserved numbers.
 func (r *NumberReservationService) Get(ctx context.Context, numberReservationID string, opts ...option.RequestOption) (res *NumberReservationGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if numberReservationID == "" {

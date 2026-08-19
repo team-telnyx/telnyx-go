@@ -44,7 +44,8 @@ func (r *AIMissionKnowledgeBaseService) NewKnowledgeBase(ctx context.Context, mi
 	return res, err
 }
 
-// Delete a knowledge base from a mission
+// Detaches the specified knowledge base from the mission so its content is no
+// longer available to agents in subsequent runs.
 func (r *AIMissionKnowledgeBaseService) DeleteKnowledgeBase(ctx context.Context, knowledgeBaseID string, body AIMissionKnowledgeBaseDeleteKnowledgeBaseParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -61,7 +62,8 @@ func (r *AIMissionKnowledgeBaseService) DeleteKnowledgeBase(ctx context.Context,
 	return err
 }
 
-// Get a specific knowledge base by ID
+// Returns the details of a single knowledge base attached to the specified
+// mission.
 func (r *AIMissionKnowledgeBaseService) GetKnowledgeBase(ctx context.Context, knowledgeBaseID string, query AIMissionKnowledgeBaseGetKnowledgeBaseParams, opts ...option.RequestOption) (res *AIMissionKnowledgeBaseGetKnowledgeBaseResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.MissionID == "" {
@@ -77,7 +79,8 @@ func (r *AIMissionKnowledgeBaseService) GetKnowledgeBase(ctx context.Context, kn
 	return res, err
 }
 
-// List all knowledge bases for a mission
+// Returns the knowledge bases attached to the specified mission. Knowledge bases
+// provide reference content agents can draw on during runs.
 func (r *AIMissionKnowledgeBaseService) ListKnowledgeBases(ctx context.Context, missionID string, opts ...option.RequestOption) (res *AIMissionKnowledgeBaseListKnowledgeBasesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if missionID == "" {
@@ -89,7 +92,7 @@ func (r *AIMissionKnowledgeBaseService) ListKnowledgeBases(ctx context.Context, 
 	return res, err
 }
 
-// Update a knowledge base definition
+// Replaces the definition of the specified knowledge base on this mission.
 func (r *AIMissionKnowledgeBaseService) UpdateKnowledgeBase(ctx context.Context, knowledgeBaseID string, body AIMissionKnowledgeBaseUpdateKnowledgeBaseParams, opts ...option.RequestOption) (res *AIMissionKnowledgeBaseUpdateKnowledgeBaseResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if body.MissionID == "" {

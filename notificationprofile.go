@@ -43,7 +43,8 @@ func NewNotificationProfileService(opts ...option.RequestOption) (r Notification
 	return
 }
 
-// Create a notification profile.
+// Creates a new notification profile, a named grouping used to organize
+// notification settings, and returns it.
 func (r *NotificationProfileService) New(ctx context.Context, body NotificationProfileNewParams, opts ...option.RequestOption) (res *NotificationProfileNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "notification_profiles"
@@ -51,7 +52,7 @@ func (r *NotificationProfileService) New(ctx context.Context, body NotificationP
 	return res, err
 }
 
-// Get a notification profile.
+// Returns the details of a single notification profile by its identifier.
 func (r *NotificationProfileService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *NotificationProfileGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -63,7 +64,7 @@ func (r *NotificationProfileService) Get(ctx context.Context, id string, opts ..
 	return res, err
 }
 
-// Update a notification profile.
+// Updates the specified notification profile and returns the updated profile.
 func (r *NotificationProfileService) Update(ctx context.Context, notificationProfileID string, body NotificationProfileUpdateParams, opts ...option.RequestOption) (res *NotificationProfileUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if notificationProfileID == "" {
@@ -98,7 +99,7 @@ func (r *NotificationProfileService) ListAutoPaging(ctx context.Context, query N
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a notification profile.
+// Deletes the specified notification profile from your account.
 func (r *NotificationProfileService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *NotificationProfileDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

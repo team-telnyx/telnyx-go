@@ -61,7 +61,7 @@ func (r *TrafficPolicyProfileService) Get(ctx context.Context, id string, opts .
 	return res, err
 }
 
-// Updates a traffic policy profile.
+// Updates the specified traffic policy profile and returns the updated profile.
 func (r *TrafficPolicyProfileService) Update(ctx context.Context, id string, body TrafficPolicyProfileUpdateParams, opts ...option.RequestOption) (res *TrafficPolicyProfileUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -98,7 +98,7 @@ func (r *TrafficPolicyProfileService) ListAutoPaging(ctx context.Context, query 
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Deletes the traffic policy profile.
+// Permanently deletes the specified traffic policy profile from your account.
 func (r *TrafficPolicyProfileService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *TrafficPolicyProfileDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

@@ -87,7 +87,7 @@ func (r *ReportMdrUsageReportService) ListAutoPaging(ctx context.Context, query 
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete messaging usage report by id
+// Permanently deletes the specified messaging usage report by its identifier.
 func (r *ReportMdrUsageReportService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *ReportMdrUsageReportDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

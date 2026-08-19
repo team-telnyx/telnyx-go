@@ -40,7 +40,7 @@ func NewFqdnService(opts ...option.RequestOption) (r FqdnService) {
 	return
 }
 
-// Create a new FQDN object.
+// Creates a new FQDN record and attaches it to the specified connection.
 func (r *FqdnService) New(ctx context.Context, body FqdnNewParams, opts ...option.RequestOption) (res *FqdnNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "fqdns"
@@ -60,7 +60,7 @@ func (r *FqdnService) Get(ctx context.Context, id string, opts ...option.Request
 	return res, err
 }
 
-// Update the details of a specific FQDN.
+// Updates the details of the specified FQDN record and returns the updated FQDN.
 func (r *FqdnService) Update(ctx context.Context, id string, body FqdnUpdateParams, opts ...option.RequestOption) (res *FqdnUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -95,7 +95,7 @@ func (r *FqdnService) ListAutoPaging(ctx context.Context, query FqdnListParams, 
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete an FQDN.
+// Permanently deletes the specified FQDN record from its connection.
 func (r *FqdnService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *FqdnDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

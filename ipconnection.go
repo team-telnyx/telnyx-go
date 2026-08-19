@@ -42,7 +42,8 @@ func NewIPConnectionService(opts ...option.RequestOption) (r IPConnectionService
 	return
 }
 
-// Creates an IP connection.
+// Creates a new IP-based SIP connection, which authenticates traffic by source IP
+// address.
 func (r *IPConnectionService) New(ctx context.Context, body IPConnectionNewParams, opts ...option.RequestOption) (res *IPConnectionNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ip_connections"
@@ -74,7 +75,8 @@ func (r *IPConnectionService) Update(ctx context.Context, id string, body IPConn
 	return res, err
 }
 
-// Returns a list of your IP connections.
+// Returns a paginated list of your IP-based SIP connections, with support for
+// filtering and sorting.
 func (r *IPConnectionService) List(ctx context.Context, query IPConnectionListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[IPConnection], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -92,12 +94,13 @@ func (r *IPConnectionService) List(ctx context.Context, query IPConnectionListPa
 	return res, nil
 }
 
-// Returns a list of your IP connections.
+// Returns a paginated list of your IP-based SIP connections, with support for
+// filtering and sorting.
 func (r *IPConnectionService) ListAutoPaging(ctx context.Context, query IPConnectionListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[IPConnection] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Deletes an existing IP connection.
+// Permanently deletes the specified IP connection from your account.
 func (r *IPConnectionService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *IPConnectionDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

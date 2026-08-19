@@ -316,6 +316,8 @@ func (r *PricingProductListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type PricingProductGetParams struct {
+	// Two-letter ISO 3166-1 alpha-2 country code (uppercase, e.g. US) to filter
+	// pricing to a single country.
 	FilterCountryISO param.Opt[string] `query:"filter[country_iso],omitzero" json:"-"`
 	// Page number (1-based).
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`

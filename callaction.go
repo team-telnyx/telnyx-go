@@ -94,7 +94,8 @@ func (r *CallActionService) Bridge(ctx context.Context, callControlIDToBridge st
 	return res, err
 }
 
-// Put the call in a queue.
+// Places the call into a queue, where it waits until it is removed or bridged to
+// another leg. Queue behavior is configured through the request body.
 func (r *CallActionService) Enqueue(ctx context.Context, callControlID string, body CallActionEnqueueParams, opts ...option.RequestOption) (res *CallActionEnqueueResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
@@ -227,7 +228,8 @@ func (r *CallActionService) JoinAIAssistant(ctx context.Context, callControlID s
 	return res, err
 }
 
-// Removes the call from a queue.
+// Removes the call from the queue it is currently waiting in. The call remains
+// active and can be directed with further call commands.
 func (r *CallActionService) LeaveQueue(ctx context.Context, callControlID string, body CallActionLeaveQueueParams, opts ...option.RequestOption) (res *CallActionLeaveQueueResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
@@ -556,7 +558,8 @@ func (r *CallActionService) StartTranscription(ctx context.Context, callControlI
 	return res, err
 }
 
-// Stop an AI assistant on the call.
+// Stops the AI assistant currently engaged on the call. The call remains active
+// and can continue with other call control commands.
 func (r *CallActionService) StopAIAssistant(ctx context.Context, callControlID string, body CallActionStopAIAssistantParams, opts ...option.RequestOption) (res *CallActionStopAIAssistantResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
@@ -689,7 +692,8 @@ func (r *CallActionService) StopStreaming(ctx context.Context, callControlID str
 	return res, err
 }
 
-// Stop real-time transcription.
+// Stops real-time transcription on the call. Transcription webhooks cease once the
+// command takes effect; the call itself is unaffected.
 func (r *CallActionService) StopTranscription(ctx context.Context, callControlID string, body CallActionStopTranscriptionParams, opts ...option.RequestOption) (res *CallActionStopTranscriptionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
@@ -743,7 +747,9 @@ func (r *CallActionService) Transfer(ctx context.Context, callControlID string, 
 	return res, err
 }
 
-// Updates client state
+// Updates the client state associated with the call. Client state is an opaque
+// value echoed back in subsequent webhooks for the call, letting you correlate
+// events with your application's state.
 func (r *CallActionService) UpdateClientState(ctx context.Context, callControlID string, body CallActionUpdateClientStateParams, opts ...option.RequestOption) (res *CallActionUpdateClientStateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {

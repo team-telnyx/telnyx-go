@@ -41,7 +41,8 @@ func NewSimCardOrderService(opts ...option.RequestOption) (r SimCardOrderService
 	return
 }
 
-// Creates a new order for SIM cards.
+// Creates a new order for physical SIM cards, including quantity and shipping
+// details, and returns the created order.
 func (r *SimCardOrderService) New(ctx context.Context, body SimCardOrderNewParams, opts ...option.RequestOption) (res *SimCardOrderNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "sim_card_orders"
@@ -49,7 +50,7 @@ func (r *SimCardOrderService) New(ctx context.Context, body SimCardOrderNewParam
 	return res, err
 }
 
-// Get a single SIM card order by its ID.
+// Returns the details of a single SIM card order by its ID, including its status.
 func (r *SimCardOrderService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardOrderGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

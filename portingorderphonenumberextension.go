@@ -41,7 +41,8 @@ func NewPortingOrderPhoneNumberExtensionService(opts ...option.RequestOption) (r
 	return
 }
 
-// Creates a new phone number extension.
+// Creates a phone number extension on the porting order, mapping extension ranges
+// to one of the order's phone numbers.
 func (r *PortingOrderPhoneNumberExtensionService) New(ctx context.Context, portingOrderID string, body PortingOrderPhoneNumberExtensionNewParams, opts ...option.RequestOption) (res *PortingOrderPhoneNumberExtensionNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if portingOrderID == "" {
@@ -80,7 +81,7 @@ func (r *PortingOrderPhoneNumberExtensionService) ListAutoPaging(ctx context.Con
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, portingOrderID, query, opts...))
 }
 
-// Deletes a phone number extension.
+// Deletes the specified phone number extension from the porting order.
 func (r *PortingOrderPhoneNumberExtensionService) Delete(ctx context.Context, id string, body PortingOrderPhoneNumberExtensionDeleteParams, opts ...option.RequestOption) (res *PortingOrderPhoneNumberExtensionDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if body.PortingOrderID == "" {

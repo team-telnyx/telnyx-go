@@ -43,7 +43,8 @@ func NewReportService(opts ...option.RequestOption) (r ReportService) {
 	return
 }
 
-// Fetch all Mdr records
+// Returns message detail records (MDRs) matching the provided criteria, such as
+// date range, direction, status, and message type.
 func (r *ReportService) ListMdrs(ctx context.Context, query ReportListMdrsParams, opts ...option.RequestOption) (res *ReportListMdrsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "reports/mdrs"
@@ -51,7 +52,8 @@ func (r *ReportService) ListMdrs(ctx context.Context, query ReportListMdrsParams
 	return res, err
 }
 
-// Fetch all Wdr records
+// Returns wireless detail records (WDRs) matching the provided criteria, such as
+// date range, SIM card, IMSI, or phone number, with pagination and sorting.
 func (r *ReportService) ListWdrs(ctx context.Context, query ReportListWdrsParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[ReportListWdrsResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -69,7 +71,8 @@ func (r *ReportService) ListWdrs(ctx context.Context, query ReportListWdrsParams
 	return res, nil
 }
 
-// Fetch all Wdr records
+// Returns wireless detail records (WDRs) matching the provided criteria, such as
+// date range, SIM card, IMSI, or phone number, with pagination and sorting.
 func (r *ReportService) ListWdrsAutoPaging(ctx context.Context, query ReportListWdrsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[ReportListWdrsResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.ListWdrs(ctx, query, opts...))
 }

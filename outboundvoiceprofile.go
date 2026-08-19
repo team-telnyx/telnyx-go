@@ -41,7 +41,8 @@ func NewOutboundVoiceProfileService(opts ...option.RequestOption) (r OutboundVoi
 	return
 }
 
-// Create an outbound voice profile.
+// Creates a new outbound voice profile defining calling permissions, destinations,
+// and limits for outbound calls, and returns the created profile.
 func (r *OutboundVoiceProfileService) New(ctx context.Context, body OutboundVoiceProfileNewParams, opts ...option.RequestOption) (res *OutboundVoiceProfileNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "outbound_voice_profiles"

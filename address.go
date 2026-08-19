@@ -63,7 +63,9 @@ func NewAddressService(opts ...option.RequestOption) (r AddressService) {
 	return
 }
 
-// Creates an address.
+// Creates a new address on your account from the provided details, for use with
+// services that require a physical address such as emergency calling and
+// regulatory compliance.
 func (r *AddressService) New(ctx context.Context, body AddressNewParams, opts ...option.RequestOption) (res *AddressNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "addresses"
@@ -83,7 +85,8 @@ func (r *AddressService) Get(ctx context.Context, id string, opts ...option.Requ
 	return res, err
 }
 
-// Returns a list of your addresses.
+// Returns a paginated list of the addresses on your account, with support for
+// filtering and sorting.
 func (r *AddressService) List(ctx context.Context, query AddressListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[Address], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -101,12 +104,13 @@ func (r *AddressService) List(ctx context.Context, query AddressListParams, opts
 	return res, nil
 }
 
-// Returns a list of your addresses.
+// Returns a paginated list of the addresses on your account, with support for
+// filtering and sorting.
 func (r *AddressService) ListAutoPaging(ctx context.Context, query AddressListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[Address] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Deletes an existing address.
+// Permanently deletes the specified address from your account.
 func (r *AddressService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *AddressDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

@@ -47,7 +47,8 @@ func NewRoomService(opts ...option.RequestOption) (r RoomService) {
 	return
 }
 
-// Synchronously create a Room.
+// Synchronously creates a new video room with the provided configuration and
+// returns the created room.
 func (r *RoomService) New(ctx context.Context, body RoomNewParams, opts ...option.RequestOption) (res *RoomNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rooms"
@@ -69,7 +70,8 @@ func (r *RoomService) Get(ctx context.Context, roomID string, query RoomGetParam
 	return res, err
 }
 
-// Synchronously update a Room.
+// Synchronously updates the specified video room's configuration and returns the
+// updated room.
 func (r *RoomService) Update(ctx context.Context, roomID string, body RoomUpdateParams, opts ...option.RequestOption) (res *RoomUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if roomID == "" {

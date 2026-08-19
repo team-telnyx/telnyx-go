@@ -148,7 +148,8 @@ func (r *ConferenceActionService) Play(ctx context.Context, id string, body Conf
 	return res, err
 }
 
-// Pause conference recording.
+// Pauses the active recording of the specified conference. Resume it later with
+// the record_resume action.
 func (r *ConferenceActionService) RecordPause(ctx context.Context, id string, body ConferenceActionRecordPauseParams, opts ...option.RequestOption) (res *ConferenceActionRecordPauseResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -160,7 +161,8 @@ func (r *ConferenceActionService) RecordPause(ctx context.Context, id string, bo
 	return res, err
 }
 
-// Resume conference recording.
+// Resumes a previously paused recording of the specified conference, continuing
+// capture from the point it was paused.
 func (r *ConferenceActionService) RecordResume(ctx context.Context, id string, body ConferenceActionRecordResumeParams, opts ...option.RequestOption) (res *ConferenceActionRecordResumeResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

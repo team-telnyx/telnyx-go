@@ -54,7 +54,8 @@ func (r *AIAssistantScheduledEventService) New(ctx context.Context, assistantID 
 	return res, err
 }
 
-// Retrieve a scheduled event by event ID
+// Returns the details of a single scheduled event configured for the specified
+// assistant.
 func (r *AIAssistantScheduledEventService) Get(ctx context.Context, eventID string, query AIAssistantScheduledEventGetParams, opts ...option.RequestOption) (res *ScheduledEventResponseUnion, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.AssistantID == "" {

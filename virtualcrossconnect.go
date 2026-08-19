@@ -54,7 +54,7 @@ func (r *VirtualCrossConnectService) New(ctx context.Context, body VirtualCrossC
 	return res, err
 }
 
-// Retrieve a Virtual Cross Connect.
+// Returns the details of a single virtual cross connect by its identifier.
 func (r *VirtualCrossConnectService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *VirtualCrossConnectGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -84,7 +84,8 @@ func (r *VirtualCrossConnectService) Update(ctx context.Context, id string, body
 	return res, err
 }
 
-// List all Virtual Cross Connects.
+// Returns a paginated list of the virtual cross connects on your account, with
+// support for filtering.
 func (r *VirtualCrossConnectService) List(ctx context.Context, query VirtualCrossConnectListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[VirtualCrossConnectCombined], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -102,12 +103,13 @@ func (r *VirtualCrossConnectService) List(ctx context.Context, query VirtualCros
 	return res, nil
 }
 
-// List all Virtual Cross Connects.
+// Returns a paginated list of the virtual cross connects on your account, with
+// support for filtering.
 func (r *VirtualCrossConnectService) ListAutoPaging(ctx context.Context, query VirtualCrossConnectListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[VirtualCrossConnectCombined] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a Virtual Cross Connect.
+// Deletes the specified virtual cross connect from your account.
 func (r *VirtualCrossConnectService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *VirtualCrossConnectDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

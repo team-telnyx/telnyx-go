@@ -50,7 +50,7 @@ func (r *WireguardInterfaceService) New(ctx context.Context, body WireguardInter
 	return res, err
 }
 
-// Retrieve a WireGuard Interfaces.
+// Returns the details of a single WireGuard interface by its identifier.
 func (r *WireguardInterfaceService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *WireguardInterfaceGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -62,7 +62,8 @@ func (r *WireguardInterfaceService) Get(ctx context.Context, id string, opts ...
 	return res, err
 }
 
-// List all WireGuard Interfaces.
+// Returns a paginated list of the WireGuard interfaces on your account, with
+// support for filtering.
 func (r *WireguardInterfaceService) List(ctx context.Context, query WireguardInterfaceListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[WireguardInterfaceRead], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -80,12 +81,13 @@ func (r *WireguardInterfaceService) List(ctx context.Context, query WireguardInt
 	return res, nil
 }
 
-// List all WireGuard Interfaces.
+// Returns a paginated list of the WireGuard interfaces on your account, with
+// support for filtering.
 func (r *WireguardInterfaceService) ListAutoPaging(ctx context.Context, query WireguardInterfaceListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[WireguardInterfaceRead] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a WireGuard Interface.
+// Deletes the specified WireGuard interface from its network.
 func (r *WireguardInterfaceService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *WireguardInterfaceDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

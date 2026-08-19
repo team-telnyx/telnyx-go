@@ -42,7 +42,9 @@ func NewGlobalIPAssignmentService(opts ...option.RequestOption) (r GlobalIPAssig
 	return
 }
 
-// Create a Global IP assignment.
+// Assigns a Global IP to a WireGuard peer so traffic destined for the IP is
+// delivered over that peer's tunnel. Assignment is asynchronous, so the request is
+// accepted and completes in the background.
 func (r *GlobalIPAssignmentService) New(ctx context.Context, body GlobalIPAssignmentNewParams, opts ...option.RequestOption) (res *GlobalIPAssignmentNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_assignments"
@@ -50,7 +52,8 @@ func (r *GlobalIPAssignmentService) New(ctx context.Context, body GlobalIPAssign
 	return res, err
 }
 
-// Retrieve a Global IP assignment.
+// Returns the details of a single Global IP assignment, including the Global IP
+// and WireGuard peer it links.
 func (r *GlobalIPAssignmentService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *GlobalIPAssignmentGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -62,7 +65,8 @@ func (r *GlobalIPAssignmentService) Get(ctx context.Context, id string, opts ...
 	return res, err
 }
 
-// Update a Global IP assignment.
+// Updates the specified Global IP assignment with the provided fields and returns
+// the updated assignment.
 func (r *GlobalIPAssignmentService) Update(ctx context.Context, globalIPAssignmentID string, body GlobalIPAssignmentUpdateParams, opts ...option.RequestOption) (res *GlobalIPAssignmentUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if globalIPAssignmentID == "" {
@@ -74,7 +78,8 @@ func (r *GlobalIPAssignmentService) Update(ctx context.Context, globalIPAssignme
 	return res, err
 }
 
-// List all Global IP assignments.
+// Returns a paginated list of your Global IP assignments, the links between Global
+// IPs and the WireGuard peers that receive their traffic.
 func (r *GlobalIPAssignmentService) List(ctx context.Context, query GlobalIPAssignmentListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[GlobalIPAssignment], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -92,12 +97,14 @@ func (r *GlobalIPAssignmentService) List(ctx context.Context, query GlobalIPAssi
 	return res, nil
 }
 
-// List all Global IP assignments.
+// Returns a paginated list of your Global IP assignments, the links between Global
+// IPs and the WireGuard peers that receive their traffic.
 func (r *GlobalIPAssignmentService) ListAutoPaging(ctx context.Context, query GlobalIPAssignmentListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[GlobalIPAssignment] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a Global IP assignment.
+// Deletes the specified Global IP assignment, detaching the Global IP from its
+// WireGuard peer.
 func (r *GlobalIPAssignmentService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *GlobalIPAssignmentDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

@@ -42,7 +42,8 @@ func NewAIConversationInsightService(opts ...option.RequestOption) (r AIConversa
 	return
 }
 
-// Create a new insight
+// Creates a new insight template defining an analysis to run over conversations,
+// and returns the created template.
 func (r *AIConversationInsightService) New(ctx context.Context, body AIConversationInsightNewParams, opts ...option.RequestOption) (res *InsightTemplateDetail, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/conversations/insights"
@@ -50,7 +51,8 @@ func (r *AIConversationInsightService) New(ctx context.Context, body AIConversat
 	return res, err
 }
 
-// Get insight by ID
+// Returns the details of a single insight template by its ID, including its
+// configuration.
 func (r *AIConversationInsightService) Get(ctx context.Context, insightID string, opts ...option.RequestOption) (res *InsightTemplateDetail, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if insightID == "" {
@@ -62,7 +64,7 @@ func (r *AIConversationInsightService) Get(ctx context.Context, insightID string
 	return res, err
 }
 
-// Update an insight template
+// Updates the specified insight template and returns the updated template.
 func (r *AIConversationInsightService) Update(ctx context.Context, insightID string, body AIConversationInsightUpdateParams, opts ...option.RequestOption) (res *InsightTemplateDetail, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if insightID == "" {
@@ -74,7 +76,8 @@ func (r *AIConversationInsightService) Update(ctx context.Context, insightID str
 	return res, err
 }
 
-// Get all insights
+// Returns a paginated list of your insight templates. Insight templates define
+// analyses that run over AI conversations to extract structured findings.
 func (r *AIConversationInsightService) List(ctx context.Context, query AIConversationInsightListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[InsightTemplate], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -92,12 +95,13 @@ func (r *AIConversationInsightService) List(ctx context.Context, query AIConvers
 	return res, nil
 }
 
-// Get all insights
+// Returns a paginated list of your insight templates. Insight templates define
+// analyses that run over AI conversations to extract structured findings.
 func (r *AIConversationInsightService) ListAutoPaging(ctx context.Context, query AIConversationInsightListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[InsightTemplate] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete insight by ID
+// Permanently deletes the specified insight template by its ID.
 func (r *AIConversationInsightService) Delete(ctx context.Context, insightID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)

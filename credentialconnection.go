@@ -45,7 +45,8 @@ func NewCredentialConnectionService(opts ...option.RequestOption) (r CredentialC
 	return
 }
 
-// Creates a credential connection.
+// Creates a new credential-based SIP connection. Credential connections
+// authenticate with a username and password rather than by IP address.
 func (r *CredentialConnectionService) New(ctx context.Context, body CredentialConnectionNewParams, opts ...option.RequestOption) (res *CredentialConnectionNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "credential_connections"

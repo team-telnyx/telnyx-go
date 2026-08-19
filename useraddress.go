@@ -44,7 +44,8 @@ func NewUserAddressService(opts ...option.RequestOption) (r UserAddressService) 
 	return
 }
 
-// Creates a user address.
+// Creates a new user address from the provided details and returns the created
+// address.
 func (r *UserAddressService) New(ctx context.Context, body UserAddressNewParams, opts ...option.RequestOption) (res *UserAddressNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "user_addresses"
@@ -64,7 +65,8 @@ func (r *UserAddressService) Get(ctx context.Context, id string, opts ...option.
 	return res, err
 }
 
-// Returns a list of your user addresses.
+// Returns a paginated list of your user addresses, with support for filtering and
+// sorting.
 func (r *UserAddressService) List(ctx context.Context, query UserAddressListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[UserAddressesUserAddress], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -82,7 +84,8 @@ func (r *UserAddressService) List(ctx context.Context, query UserAddressListPara
 	return res, nil
 }
 
-// Returns a list of your user addresses.
+// Returns a paginated list of your user addresses, with support for filtering and
+// sorting.
 func (r *UserAddressService) ListAutoPaging(ctx context.Context, query UserAddressListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[UserAddressesUserAddress] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }

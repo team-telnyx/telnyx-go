@@ -60,7 +60,8 @@ func (r *WirelessBlocklistService) Get(ctx context.Context, id string, opts ...o
 	return res, err
 }
 
-// Update a Wireless Blocklist.
+// Updates the specified wireless blocklist. The update is processed
+// asynchronously, so the request is accepted and completes in the background.
 func (r *WirelessBlocklistService) Update(ctx context.Context, id string, body WirelessBlocklistUpdateParams, opts ...option.RequestOption) (res *WirelessBlocklistUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -95,7 +96,7 @@ func (r *WirelessBlocklistService) ListAutoPaging(ctx context.Context, query Wir
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Deletes the Wireless Blocklist.
+// Permanently deletes the specified wireless blocklist from your account.
 func (r *WirelessBlocklistService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *WirelessBlocklistDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

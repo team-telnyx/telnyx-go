@@ -39,7 +39,8 @@ func NewAuthenticationProviderService(opts ...option.RequestOption) (r Authentic
 	return
 }
 
-// Creates an authentication provider.
+// Creates a new authentication provider for single sign-on, configured from the
+// provided identity provider details, and returns the created resource.
 func (r *AuthenticationProviderService) New(ctx context.Context, body AuthenticationProviderNewParams, opts ...option.RequestOption) (res *AuthenticationProviderNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "authentication_providers"

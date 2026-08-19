@@ -39,7 +39,8 @@ func NewNumberBlockOrderService(opts ...option.RequestOption) (r NumberBlockOrde
 	return
 }
 
-// Creates a phone number block order.
+// Creates an order for a block of consecutive phone numbers and returns the
+// created order. Track fulfillment through the order's status.
 func (r *NumberBlockOrderService) New(ctx context.Context, body NumberBlockOrderNewParams, opts ...option.RequestOption) (res *NumberBlockOrderNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "number_block_orders"

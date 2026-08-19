@@ -40,7 +40,8 @@ func NewTexmlApplicationService(opts ...option.RequestOption) (r TexmlApplicatio
 	return
 }
 
-// Creates a TeXML Application.
+// Creates a TeXML application, which defines the voice URLs and settings used to
+// serve TeXML instructions for calls, and returns the created application.
 func (r *TexmlApplicationService) New(ctx context.Context, body TexmlApplicationNewParams, opts ...option.RequestOption) (res *TexmlApplicationNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "texml_applications"
@@ -95,7 +96,7 @@ func (r *TexmlApplicationService) ListAutoPaging(ctx context.Context, query Texm
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Deletes a TeXML Application.
+// Permanently deletes the specified TeXML application from your account.
 func (r *TexmlApplicationService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *TexmlApplicationDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

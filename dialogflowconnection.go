@@ -63,7 +63,8 @@ func (r *DialogflowConnectionService) Get(ctx context.Context, connectionID stri
 	return res, err
 }
 
-// Updates a stored Dialogflow Connection.
+// Updates the stored Dialogflow connection for the specified connection and
+// returns the updated configuration.
 func (r *DialogflowConnectionService) Update(ctx context.Context, connectionID string, body DialogflowConnectionUpdateParams, opts ...option.RequestOption) (res *DialogflowConnectionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if connectionID == "" {
@@ -75,7 +76,7 @@ func (r *DialogflowConnectionService) Update(ctx context.Context, connectionID s
 	return res, err
 }
 
-// Deletes a stored Dialogflow Connection.
+// Deletes the stored Dialogflow connection for the specified connection.
 func (r *DialogflowConnectionService) Delete(ctx context.Context, connectionID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)

@@ -38,7 +38,7 @@ func NewSubNumberOrderService(opts ...option.RequestOption) (r SubNumberOrderSer
 	return
 }
 
-// Get an existing sub number order.
+// Returns the details of an existing sub number order, with support for filtering.
 func (r *SubNumberOrderService) Get(ctx context.Context, subNumberOrderID string, query SubNumberOrderGetParams, opts ...option.RequestOption) (res *SubNumberOrderGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if subNumberOrderID == "" {
@@ -50,7 +50,8 @@ func (r *SubNumberOrderService) Get(ctx context.Context, subNumberOrderID string
 	return res, err
 }
 
-// Updates a sub number order.
+// Updates the requirements of an existing sub number order and returns the updated
+// order.
 func (r *SubNumberOrderService) Update(ctx context.Context, subNumberOrderID string, body SubNumberOrderUpdateParams, opts ...option.RequestOption) (res *SubNumberOrderUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if subNumberOrderID == "" {

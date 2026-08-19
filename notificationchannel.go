@@ -43,7 +43,8 @@ func NewNotificationChannelService(opts ...option.RequestOption) (r Notification
 	return
 }
 
-// Create a notification channel.
+// Creates a new notification channel defining where notifications are delivered,
+// and returns the created channel.
 func (r *NotificationChannelService) New(ctx context.Context, body NotificationChannelNewParams, opts ...option.RequestOption) (res *NotificationChannelNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "notification_channels"
@@ -51,7 +52,7 @@ func (r *NotificationChannelService) New(ctx context.Context, body NotificationC
 	return res, err
 }
 
-// Get a notification channel.
+// Returns the details of a single notification channel by its identifier.
 func (r *NotificationChannelService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *NotificationChannelGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -63,7 +64,7 @@ func (r *NotificationChannelService) Get(ctx context.Context, id string, opts ..
 	return res, err
 }
 
-// Update a notification channel.
+// Updates the specified notification channel and returns the updated channel.
 func (r *NotificationChannelService) Update(ctx context.Context, notificationChannelID string, body NotificationChannelUpdateParams, opts ...option.RequestOption) (res *NotificationChannelUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if notificationChannelID == "" {
@@ -75,7 +76,8 @@ func (r *NotificationChannelService) Update(ctx context.Context, notificationCha
 	return res, err
 }
 
-// List notification channels.
+// Returns a paginated list of your notification channels, the destinations that
+// receive notifications.
 func (r *NotificationChannelService) List(ctx context.Context, query NotificationChannelListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[NotificationChannel], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -93,12 +95,14 @@ func (r *NotificationChannelService) List(ctx context.Context, query Notificatio
 	return res, nil
 }
 
-// List notification channels.
+// Returns a paginated list of your notification channels, the destinations that
+// receive notifications.
 func (r *NotificationChannelService) ListAutoPaging(ctx context.Context, query NotificationChannelListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[NotificationChannel] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a notification channel.
+// Deletes the specified notification channel so notifications are no longer
+// delivered to it.
 func (r *NotificationChannelService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *NotificationChannelDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

@@ -50,7 +50,7 @@ func (r *BundlePricingUserBundleService) New(ctx context.Context, params BundleP
 	return res, err
 }
 
-// Retrieves a user bundle by its ID.
+// Returns the details of a single user bundle on your account by its ID.
 func (r *BundlePricingUserBundleService) Get(ctx context.Context, userBundleID string, query BundlePricingUserBundleGetParams, opts ...option.RequestOption) (res *BundlePricingUserBundleGetResponse, err error) {
 	if !param.IsOmitted(query.AuthorizationBearer) {
 		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%v", query.AuthorizationBearer.Value)))
@@ -65,7 +65,8 @@ func (r *BundlePricingUserBundleService) Get(ctx context.Context, userBundleID s
 	return res, err
 }
 
-// Get a paginated list of user bundles.
+// Returns a paginated list of the bundles active on your account, with support for
+// filtering.
 func (r *BundlePricingUserBundleService) List(ctx context.Context, params BundlePricingUserBundleListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[UserBundle], err error) {
 	var raw *http.Response
 	if !param.IsOmitted(params.AuthorizationBearer) {
@@ -86,12 +87,14 @@ func (r *BundlePricingUserBundleService) List(ctx context.Context, params Bundle
 	return res, nil
 }
 
-// Get a paginated list of user bundles.
+// Returns a paginated list of the bundles active on your account, with support for
+// filtering.
 func (r *BundlePricingUserBundleService) ListAutoPaging(ctx context.Context, params BundlePricingUserBundleListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[UserBundle] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, params, opts...))
 }
 
-// Deactivates a user bundle by its ID.
+// Deactivates the specified user bundle on your account and returns the
+// deactivated bundle.
 func (r *BundlePricingUserBundleService) Deactivate(ctx context.Context, userBundleID string, body BundlePricingUserBundleDeactivateParams, opts ...option.RequestOption) (res *BundlePricingUserBundleDeactivateResponse, err error) {
 	if !param.IsOmitted(body.AuthorizationBearer) {
 		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%v", body.AuthorizationBearer.Value)))

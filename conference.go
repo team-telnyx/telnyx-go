@@ -65,7 +65,7 @@ func (r *ConferenceService) New(ctx context.Context, body ConferenceNewParams, o
 	return res, err
 }
 
-// Retrieve an existing conference
+// Returns the details of an existing conference, including its current status.
 func (r *ConferenceService) Get(ctx context.Context, id string, query ConferenceGetParams, opts ...option.RequestOption) (res *ConferenceGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -106,7 +106,8 @@ func (r *ConferenceService) ListAutoPaging(ctx context.Context, query Conference
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Lists conference participants
+// Returns a paginated list of participants in the specified conference, with
+// support for filtering.
 func (r *ConferenceService) ListParticipants(ctx context.Context, conferenceID string, query ConferenceListParticipantsParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[ConferenceListParticipantsResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -128,7 +129,8 @@ func (r *ConferenceService) ListParticipants(ctx context.Context, conferenceID s
 	return res, nil
 }
 
-// Lists conference participants
+// Returns a paginated list of participants in the specified conference, with
+// support for filtering.
 func (r *ConferenceService) ListParticipantsAutoPaging(ctx context.Context, conferenceID string, query ConferenceListParticipantsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[ConferenceListParticipantsResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.ListParticipants(ctx, conferenceID, query, opts...))
 }

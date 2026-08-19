@@ -96,7 +96,7 @@ func (r *AIToolService) ListAutoPaging(ctx context.Context, query AIToolListPara
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a custom AI tool.
+// Permanently deletes the specified custom AI tool from your account.
 func (r *AIToolService) Delete(ctx context.Context, toolID string, opts ...option.RequestOption) (res *AIToolDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if toolID == "" {

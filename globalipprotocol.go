@@ -34,7 +34,8 @@ func NewGlobalIPProtocolService(opts ...option.RequestOption) (r GlobalIPProtoco
 	return
 }
 
-// List all Global IP Protocols
+// Returns the network protocols supported for Global IP traffic, for use when
+// configuring Global IP resources.
 func (r *GlobalIPProtocolService) List(ctx context.Context, opts ...option.RequestOption) (res *GlobalIPProtocolListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_protocols"

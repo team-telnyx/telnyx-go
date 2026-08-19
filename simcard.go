@@ -57,7 +57,7 @@ func (r *SimCardService) Get(ctx context.Context, id string, query SimCardGetPar
 	return res, err
 }
 
-// Updates SIM card data
+// Updates the specified SIM card's attributes and returns the updated SIM card.
 func (r *SimCardService) Update(ctx context.Context, simCardID string, body SimCardUpdateParams, opts ...option.RequestOption) (res *SimCardUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if simCardID == "" {

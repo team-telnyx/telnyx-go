@@ -41,7 +41,8 @@ func NewPortingOrderPhoneNumberBlockService(opts ...option.RequestOption) (r Por
 	return
 }
 
-// Creates a new phone number block.
+// Creates a phone number block on the porting order, representing a contiguous
+// range of phone numbers to be ported together.
 func (r *PortingOrderPhoneNumberBlockService) New(ctx context.Context, portingOrderID string, body PortingOrderPhoneNumberBlockNewParams, opts ...option.RequestOption) (res *PortingOrderPhoneNumberBlockNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if portingOrderID == "" {
@@ -80,7 +81,7 @@ func (r *PortingOrderPhoneNumberBlockService) ListAutoPaging(ctx context.Context
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, portingOrderID, query, opts...))
 }
 
-// Deletes a phone number block.
+// Deletes the specified phone number block from the porting order.
 func (r *PortingOrderPhoneNumberBlockService) Delete(ctx context.Context, id string, body PortingOrderPhoneNumberBlockDeleteParams, opts ...option.RequestOption) (res *PortingOrderPhoneNumberBlockDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if body.PortingOrderID == "" {

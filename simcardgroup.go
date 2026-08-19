@@ -42,7 +42,8 @@ func NewSimCardGroupService(opts ...option.RequestOption) (r SimCardGroupService
 	return
 }
 
-// Creates a new SIM card group object
+// Creates a new SIM card group and returns it. Groups let you apply shared
+// settings to a set of SIM cards.
 func (r *SimCardGroupService) New(ctx context.Context, body SimCardGroupNewParams, opts ...option.RequestOption) (res *SimCardGroupNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "sim_card_groups"
@@ -62,7 +63,7 @@ func (r *SimCardGroupService) Get(ctx context.Context, id string, query SimCardG
 	return res, err
 }
 
-// Updates a SIM card group
+// Updates the specified SIM card group's attributes and returns the updated group.
 func (r *SimCardGroupService) Update(ctx context.Context, id string, body SimCardGroupUpdateParams, opts ...option.RequestOption) (res *SimCardGroupUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -97,7 +98,7 @@ func (r *SimCardGroupService) ListAutoPaging(ctx context.Context, query SimCardG
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Permanently deletes a SIM card group
+// Permanently deletes the specified SIM card group from your account.
 func (r *SimCardGroupService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardGroupDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

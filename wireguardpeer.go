@@ -51,7 +51,7 @@ func (r *WireguardPeerService) New(ctx context.Context, body WireguardPeerNewPar
 	return res, err
 }
 
-// Retrieve the WireGuard peer.
+// Returns the details of a single WireGuard peer by its identifier.
 func (r *WireguardPeerService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *WireguardPeerGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -63,7 +63,7 @@ func (r *WireguardPeerService) Get(ctx context.Context, id string, opts ...optio
 	return res, err
 }
 
-// Update the WireGuard peer.
+// Updates the specified WireGuard peer and returns the updated peer.
 func (r *WireguardPeerService) Update(ctx context.Context, id string, body WireguardPeerUpdateParams, opts ...option.RequestOption) (res *WireguardPeerUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -75,7 +75,7 @@ func (r *WireguardPeerService) Update(ctx context.Context, id string, body Wireg
 	return res, err
 }
 
-// List all WireGuard peers.
+// Returns a paginated list of your WireGuard peers, with support for filtering.
 func (r *WireguardPeerService) List(ctx context.Context, query WireguardPeerListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[WireguardPeer], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -93,12 +93,12 @@ func (r *WireguardPeerService) List(ctx context.Context, query WireguardPeerList
 	return res, nil
 }
 
-// List all WireGuard peers.
+// Returns a paginated list of your WireGuard peers, with support for filtering.
 func (r *WireguardPeerService) ListAutoPaging(ctx context.Context, query WireguardPeerListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[WireguardPeer] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete the WireGuard peer.
+// Deletes the specified WireGuard peer from its interface.
 func (r *WireguardPeerService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *WireguardPeerDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

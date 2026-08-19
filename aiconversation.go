@@ -52,7 +52,8 @@ func NewAIConversationService(opts ...option.RequestOption) (r AIConversationSer
 	return
 }
 
-// Create a new AI Conversation.
+// Creates a new AI conversation, the container for messages exchanged with an
+// assistant, and returns the created conversation.
 func (r *AIConversationService) New(ctx context.Context, body AIConversationNewParams, opts ...option.RequestOption) (res *Conversation, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/conversations"
