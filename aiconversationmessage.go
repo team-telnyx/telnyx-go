@@ -4,6 +4,7 @@ package telnyx
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -80,7 +81,8 @@ type AIConversationMessageListResponse struct {
 	// The datetime the message was created on the conversation. This does not
 	// necesarily correspond to the time the message was sent. The best field to use to
 	// determine the time the end user experienced the message is `sent_at`.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	CreatedAt time.Time                                                 `json:"created_at" format:"date-time"`
+	Metadata  map[string]AIConversationMessageListResponseMetadataUnion `json:"metadata"`
 	// The datetime the message was sent to the end user.
 	SentAt time.Time `json:"sent_at" format:"date-time"`
 	// Optional tool calls made by the assistant.
@@ -90,6 +92,7 @@ type AIConversationMessageListResponse struct {
 		Role        respjson.Field
 		Text        respjson.Field
 		CreatedAt   respjson.Field
+		Metadata    respjson.Field
 		SentAt      respjson.Field
 		ToolCalls   respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -111,6 +114,106 @@ const (
 	AIConversationMessageListResponseRoleAssistant AIConversationMessageListResponseRole = "assistant"
 	AIConversationMessageListResponseRoleTool      AIConversationMessageListResponseRole = "tool"
 )
+
+// AIConversationMessageListResponseMetadataUnion contains all possible properties
+// and values from [string], [int64], [bool],
+// [[]AIConversationMessageListResponseMetadataArrayUnionItem].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfInt OfBool
+// OfAIConversationMessageListResponseMetadataArray]
+type AIConversationMessageListResponseMetadataUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [int64] instead of an object.
+	OfInt int64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]AIConversationMessageListResponseMetadataArrayUnionItem] instead of an
+	// object.
+	OfAIConversationMessageListResponseMetadataArray []AIConversationMessageListResponseMetadataArrayUnionItem `json:",inline"`
+	JSON                                             struct {
+		OfString                                         respjson.Field
+		OfInt                                            respjson.Field
+		OfBool                                           respjson.Field
+		OfAIConversationMessageListResponseMetadataArray respjson.Field
+		raw                                              string
+	} `json:"-"`
+}
+
+func (u AIConversationMessageListResponseMetadataUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u AIConversationMessageListResponseMetadataUnion) AsInt() (v int64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u AIConversationMessageListResponseMetadataUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u AIConversationMessageListResponseMetadataUnion) AsAIConversationMessageListResponseMetadataArray() (v []AIConversationMessageListResponseMetadataArrayUnionItem) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u AIConversationMessageListResponseMetadataUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *AIConversationMessageListResponseMetadataUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// AIConversationMessageListResponseMetadataArrayUnionItem contains all possible
+// properties and values from [string], [int64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfInt OfBool]
+type AIConversationMessageListResponseMetadataArrayUnionItem struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [int64] instead of an object.
+	OfInt int64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfInt    respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u AIConversationMessageListResponseMetadataArrayUnionItem) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u AIConversationMessageListResponseMetadataArrayUnionItem) AsInt() (v int64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u AIConversationMessageListResponseMetadataArrayUnionItem) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u AIConversationMessageListResponseMetadataArrayUnionItem) RawJSON() string { return u.JSON.raw }
+
+func (r *AIConversationMessageListResponseMetadataArrayUnionItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type AIConversationMessageListResponseToolCall struct {
 	// Unique identifier for the tool call.
