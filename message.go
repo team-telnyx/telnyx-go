@@ -166,7 +166,7 @@ type MessagingError0b38e7044b struct {
 	Code   string                         `json:"code" api:"required"`
 	Title  string                         `json:"title" api:"required"`
 	Detail string                         `json:"detail"`
-	Meta   any                            `json:"meta"`
+	Meta   map[string]any                 `json:"meta"`
 	Source MessagingError0b38e7044bSource `json:"source"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {

@@ -176,65 +176,6 @@ func (r *EnterpriseService) BrandedCalling(ctx context.Context, enterpriseID str
 	return res, err
 }
 
-type BillingAddress struct {
-	// State or province code (e.g. `IL`, `ON`).
-	AdministrativeArea string `json:"administrative_area" api:"required"`
-	City               string `json:"city" api:"required"`
-	// ISO 3166-1 alpha-2 code (currently `US` or `CA`).
-	Country         string `json:"country" api:"required"`
-	PostalCode      string `json:"postal_code" api:"required"`
-	StreetAddress   string `json:"street_address" api:"required"`
-	ExtendedAddress string `json:"extended_address" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AdministrativeArea respjson.Field
-		City               respjson.Field
-		Country            respjson.Field
-		PostalCode         respjson.Field
-		StreetAddress      respjson.Field
-		ExtendedAddress    respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BillingAddress) RawJSON() string { return r.JSON.raw }
-func (r *BillingAddress) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this BillingAddress to a BillingAddressParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// BillingAddressParam.Overrides()
-func (r BillingAddress) ToParam() BillingAddressParam {
-	return param.Override[BillingAddressParam](json.RawMessage(r.RawJSON()))
-}
-
-// The properties AdministrativeArea, City, Country, PostalCode, StreetAddress are
-// required.
-type BillingAddressParam struct {
-	// State or province code (e.g. `IL`, `ON`).
-	AdministrativeArea string `json:"administrative_area" api:"required"`
-	City               string `json:"city" api:"required"`
-	// ISO 3166-1 alpha-2 code (currently `US` or `CA`).
-	Country         string            `json:"country" api:"required"`
-	PostalCode      string            `json:"postal_code" api:"required"`
-	StreetAddress   string            `json:"street_address" api:"required"`
-	ExtendedAddress param.Opt[string] `json:"extended_address,omitzero"`
-	paramObj
-}
-
-func (r BillingAddressParam) MarshalJSON() (data []byte, err error) {
-	type shadow BillingAddressParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BillingAddressParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type BillingContact struct {
 	Email     string `json:"email" api:"required" format:"email"`
 	FirstName string `json:"first_name" api:"required"`
@@ -286,9 +227,9 @@ func (r *BillingContactParam) UnmarshalJSON(data []byte) error {
 }
 
 type EnterprisePublic struct {
-	ID             string         `json:"id" format:"uuid"`
-	BillingAddress BillingAddress `json:"billing_address"`
-	BillingContact BillingContact `json:"billing_contact"`
+	ID             string          `json:"id" format:"uuid"`
+	BillingAddress PhysicalAddress `json:"billing_address"`
+	BillingContact BillingContact  `json:"billing_contact"`
 	// True once Branded Calling has been activated on this enterprise (see
 	// `POST /enterprises/{id}/branded_calling`).
 	BrandedCallingEnabled bool `json:"branded_calling_enabled"`
@@ -517,8 +458,8 @@ func (r *PhysicalAddressParam) UnmarshalJSON(data []byte) error {
 }
 
 type EnterpriseNewParams struct {
-	BillingAddress BillingAddressParam `json:"billing_address,omitzero" api:"required"`
-	BillingContact BillingContactParam `json:"billing_contact,omitzero" api:"required"`
+	BillingAddress PhysicalAddressParam `json:"billing_address,omitzero" api:"required"`
+	BillingContact BillingContactParam  `json:"billing_contact,omitzero" api:"required"`
 	// ISO 3166-1 alpha-2 country code. Currently `US` and `CA` are supported.
 	CountryCode     string `json:"country_code" api:"required"`
 	DoingBusinessAs string `json:"doing_business_as" api:"required"`
@@ -712,12 +653,12 @@ type EnterpriseUpdateParams struct {
 	// Updated state/province/country of incorporation. Optional on update.
 	JurisdictionOfIncorporation param.Opt[string] `json:"jurisdiction_of_incorporation,omitzero"`
 	// Legal name of the enterprise.
-	LegalName             param.Opt[string]   `json:"legal_name,omitzero"`
-	NumberOfEmployees     param.Opt[string]   `json:"number_of_employees,omitzero"`
-	OrganizationLegalType param.Opt[string]   `json:"organization_legal_type,omitzero"`
-	Website               param.Opt[string]   `json:"website,omitzero" format:"uri"`
-	BillingAddress        BillingAddressParam `json:"billing_address,omitzero"`
-	BillingContact        BillingContactParam `json:"billing_contact,omitzero"`
+	LegalName             param.Opt[string]    `json:"legal_name,omitzero"`
+	NumberOfEmployees     param.Opt[string]    `json:"number_of_employees,omitzero"`
+	OrganizationLegalType param.Opt[string]    `json:"organization_legal_type,omitzero"`
+	Website               param.Opt[string]    `json:"website,omitzero" format:"uri"`
+	BillingAddress        PhysicalAddressParam `json:"billing_address,omitzero"`
+	BillingContact        BillingContactParam  `json:"billing_contact,omitzero"`
 	// Any of "accounting", "finance", "billing", "collections", "business", "charity",
 	// "nonprofit", "communications", "telecom", "customer service", "support",
 	// "delivery", "shipping", "logistics", "education", "financial", "banking",

@@ -103,7 +103,9 @@ func TestEmailInboxMessageDraftsWithOptionalParams(t *testing.T) {
 		telnyx.EmailInboxMessageDraftsParams{
 			InboxID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			EmailDraftRequest: telnyx.EmailDraftRequestParam{
-				Attachments: []any{map[string]any{}},
+				Attachments: []map[string]any{{
+					"foo": "bar",
+				}},
 				Bcc: []telnyx.EmailAddressInputUnionParam{{
 					OfString: telnyx.String("string"),
 				}},
@@ -118,7 +120,9 @@ func TestEmailInboxMessageDraftsWithOptionalParams(t *testing.T) {
 				HTML:     telnyx.String("html"),
 				HTMLBody: telnyx.String("html_body"),
 				Labels:   []string{"string"},
-				Metadata: map[string]any{},
+				Metadata: map[string]any{
+					"foo": "bar",
+				},
 				ReplyTo:  telnyx.String("reply_to"),
 				Subject:  telnyx.String("subject"),
 				Tags:     []string{"string"},

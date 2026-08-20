@@ -224,7 +224,7 @@ type EmailDraft struct {
 	//
 	// Any of "draft", "sending", "sent".
 	Status      EmailDraftStatus `json:"status" api:"required"`
-	Attachments []any            `json:"attachments"`
+	Attachments []map[string]any `json:"attachments"`
 	Bcc         []EmailAddress   `json:"bcc"`
 	Cc          []EmailAddress   `json:"cc"`
 	CreatedAt   time.Time        `json:"created_at" format:"date-time"`
@@ -237,8 +237,8 @@ type EmailDraft struct {
 	// Mutable mailbox-state labels. Not propagated to Email Detail Records.
 	Labels []string `json:"labels"`
 	// Arbitrary customer-defined metadata.
-	Metadata any    `json:"metadata"`
-	ReplyTo  string `json:"reply_to" api:"nullable"`
+	Metadata map[string]any `json:"metadata"`
+	ReplyTo  string         `json:"reply_to" api:"nullable"`
 	// Inbound message this draft replies to. Server-owned; set only on reply drafts.
 	ReplyToMessageID string    `json:"reply_to_message_id" api:"nullable" format:"uuid"`
 	SentAt           time.Time `json:"sent_at" api:"nullable" format:"date-time"`
@@ -320,12 +320,12 @@ type EmailDraftRequestParam struct {
 	// Alias for `text_body`, matching the send endpoint.
 	Text        param.Opt[string]             `json:"text,omitzero"`
 	TextBody    param.Opt[string]             `json:"text_body,omitzero"`
-	Attachments []any                         `json:"attachments,omitzero"`
+	Attachments []map[string]any              `json:"attachments,omitzero"`
 	Bcc         []EmailAddressInputUnionParam `json:"bcc,omitzero"`
 	Cc          []EmailAddressInputUnionParam `json:"cc,omitzero"`
 	Headers     map[string]string             `json:"headers,omitzero"`
 	Labels      []string                      `json:"labels,omitzero"`
-	Metadata    any                           `json:"metadata,omitzero"`
+	Metadata    map[string]any                `json:"metadata,omitzero"`
 	Tags        []string                      `json:"tags,omitzero"`
 	To          []EmailAddressInputUnionParam `json:"to,omitzero"`
 	paramObj

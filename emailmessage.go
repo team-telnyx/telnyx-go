@@ -573,7 +573,7 @@ type EmailMessageBatchParamsMessage struct {
 	SandboxMode       param.Opt[bool] `json:"sandbox_mode,omitzero"`
 	// Deprecated alias for `scheduled_at`.
 	//
-	// Deprecated: deprecated
+	// Deprecated: Use scheduled_at instead.
 	SendAt param.Opt[time.Time] `json:"send_at,omitzero" format:"date-time"`
 	// Required unless `template_id` is supplied. When using a template, the template's
 	// subject is rendered; if the template has no subject or renders empty, the

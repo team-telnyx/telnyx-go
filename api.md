@@ -5411,14 +5411,12 @@ Methods:
 
 Params Types:
 
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#BillingAddressParam">BillingAddressParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#BillingContactParam">BillingContactParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#OrganizationContactParam">OrganizationContactParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#PhysicalAddressParam">PhysicalAddressParam</a>
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#BillingAddress">BillingAddress</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#BillingContact">BillingContact</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterprisePublic">EnterprisePublic</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterprisePublicWrapped">EnterprisePublicWrapped</a>

@@ -31,7 +31,9 @@ func TestStorageBucketNewPresignedURLWithOptionalParams(t *testing.T) {
 		"",
 		telnyx.StorageBucketNewPresignedURLParams{
 			BucketName: "",
-			Ttl:        telnyx.Int(60),
+			Body: telnyx.StorageBucketNewPresignedURLParamsBody{
+				Ttl: telnyx.Int(60),
+			},
 		},
 	)
 	if err != nil {

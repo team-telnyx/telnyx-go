@@ -31,7 +31,9 @@ func TestEmailInboxDraftNewWithOptionalParams(t *testing.T) {
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.EmailInboxDraftNewParams{
 			EmailDraftRequest: telnyx.EmailDraftRequestParam{
-				Attachments: []any{map[string]any{}},
+				Attachments: []map[string]any{{
+					"foo": "bar",
+				}},
 				Bcc: []telnyx.EmailAddressInputUnionParam{{
 					OfString: telnyx.String("string"),
 				}},
@@ -46,7 +48,9 @@ func TestEmailInboxDraftNewWithOptionalParams(t *testing.T) {
 				HTML:     telnyx.String("html"),
 				HTMLBody: telnyx.String("html_body"),
 				Labels:   []string{"important"},
-				Metadata: map[string]any{},
+				Metadata: map[string]any{
+					"foo": "bar",
+				},
 				ReplyTo:  telnyx.String("reply_to"),
 				Subject:  telnyx.String("Quarterly update"),
 				Tags:     []string{"string"},
@@ -118,7 +122,9 @@ func TestEmailInboxDraftUpdateWithOptionalParams(t *testing.T) {
 		telnyx.EmailInboxDraftUpdateParams{
 			InboxID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			EmailDraftRequest: telnyx.EmailDraftRequestParam{
-				Attachments: []any{map[string]any{}},
+				Attachments: []map[string]any{{
+					"foo": "bar",
+				}},
 				Bcc: []telnyx.EmailAddressInputUnionParam{{
 					OfString: telnyx.String("string"),
 				}},
@@ -133,7 +139,9 @@ func TestEmailInboxDraftUpdateWithOptionalParams(t *testing.T) {
 				HTML:     telnyx.String("html"),
 				HTMLBody: telnyx.String("html_body"),
 				Labels:   []string{"string"},
-				Metadata: map[string]any{},
+				Metadata: map[string]any{
+					"foo": "bar",
+				},
 				ReplyTo:  telnyx.String("reply_to"),
 				Subject:  telnyx.String("Quarterly update (revised)"),
 				Tags:     []string{"string"},
@@ -233,7 +241,9 @@ func TestEmailInboxDraftPatchWithOptionalParams(t *testing.T) {
 		telnyx.EmailInboxDraftPatchParams{
 			InboxID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			EmailDraftRequest: telnyx.EmailDraftRequestParam{
-				Attachments: []any{map[string]any{}},
+				Attachments: []map[string]any{{
+					"foo": "bar",
+				}},
 				Bcc: []telnyx.EmailAddressInputUnionParam{{
 					OfString: telnyx.String("string"),
 				}},
@@ -248,7 +258,9 @@ func TestEmailInboxDraftPatchWithOptionalParams(t *testing.T) {
 				HTML:     telnyx.String("html"),
 				HTMLBody: telnyx.String("html_body"),
 				Labels:   []string{"string"},
-				Metadata: map[string]any{},
+				Metadata: map[string]any{
+					"foo": "bar",
+				},
 				ReplyTo:  telnyx.String("reply_to"),
 				Subject:  telnyx.String("Quarterly update (revised)"),
 				Tags:     []string{"string"},

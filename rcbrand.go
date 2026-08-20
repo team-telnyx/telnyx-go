@@ -286,8 +286,11 @@ func (r *BrandResponse) UnmarshalJSON(data []byte) error {
 // BrandResponseIdentifiersUnion contains all possible properties and values from
 // [EinBrandIdentifier], [StockSymbolBrandIdentifier].
 //
+// Use the [BrandResponseIdentifiersUnion.AsAny] method to switch on the variant.
+//
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type BrandResponseIdentifiersUnion struct {
+	// Any of "EIN", "STOCK_SYMBOL".
 	IdentifierType string `json:"identifier_type"`
 	Value          string `json:"value"`
 	JSON           struct {
@@ -297,12 +300,40 @@ type BrandResponseIdentifiersUnion struct {
 	} `json:"-"`
 }
 
-func (u BrandResponseIdentifiersUnion) AsEinBrandIdentifier() (v EinBrandIdentifier) {
+// anyBrandResponseIdentifier is implemented by each variant of
+// [BrandResponseIdentifiersUnion] to add type safety for the return type of
+// [BrandResponseIdentifiersUnion.AsAny]
+type anyBrandResponseIdentifier interface {
+	implBrandResponseIdentifiersUnion()
+}
+
+func (EinBrandIdentifier) implBrandResponseIdentifiersUnion()         {}
+func (StockSymbolBrandIdentifier) implBrandResponseIdentifiersUnion() {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := BrandResponseIdentifiersUnion.AsAny().(type) {
+//	case telnyx.EinBrandIdentifier:
+//	case telnyx.StockSymbolBrandIdentifier:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u BrandResponseIdentifiersUnion) AsAny() anyBrandResponseIdentifier {
+	switch u.IdentifierType {
+	case "EIN":
+		return u.AsEin()
+	case "STOCK_SYMBOL":
+		return u.AsStockSymbol()
+	}
+	return nil
+}
+
+func (u BrandResponseIdentifiersUnion) AsEin() (v EinBrandIdentifier) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u BrandResponseIdentifiersUnion) AsStockSymbolBrandIdentifier() (v StockSymbolBrandIdentifier) {
+func (u BrandResponseIdentifiersUnion) AsStockSymbol() (v StockSymbolBrandIdentifier) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -500,32 +531,32 @@ func (r *RcBrandNewParamsIdentifiers) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type RcBrandNewParamsIdentifiersUnion struct {
-	OfEinBrandIdentifier         *EinBrandIdentifierParam         `json:",omitzero,inline"`
-	OfStockSymbolBrandIdentifier *StockSymbolBrandIdentifierParam `json:",omitzero,inline"`
+	OfEin         *EinBrandIdentifierParam         `json:",omitzero,inline"`
+	OfStockSymbol *StockSymbolBrandIdentifierParam `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u RcBrandNewParamsIdentifiersUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfEinBrandIdentifier, u.OfStockSymbolBrandIdentifier)
+	return param.MarshalUnion(u, u.OfEin, u.OfStockSymbol)
 }
 func (u *RcBrandNewParamsIdentifiersUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *RcBrandNewParamsIdentifiersUnion) asAny() any {
-	if !param.IsOmitted(u.OfEinBrandIdentifier) {
-		return u.OfEinBrandIdentifier
-	} else if !param.IsOmitted(u.OfStockSymbolBrandIdentifier) {
-		return u.OfStockSymbolBrandIdentifier
+	if !param.IsOmitted(u.OfEin) {
+		return u.OfEin
+	} else if !param.IsOmitted(u.OfStockSymbol) {
+		return u.OfStockSymbol
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u RcBrandNewParamsIdentifiersUnion) GetIdentifierType() *string {
-	if vt := u.OfEinBrandIdentifier; vt != nil {
+	if vt := u.OfEin; vt != nil {
 		return (*string)(&vt.IdentifierType)
-	} else if vt := u.OfStockSymbolBrandIdentifier; vt != nil {
+	} else if vt := u.OfStockSymbol; vt != nil {
 		return (*string)(&vt.IdentifierType)
 	}
 	return nil
@@ -533,12 +564,20 @@ func (u RcBrandNewParamsIdentifiersUnion) GetIdentifierType() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u RcBrandNewParamsIdentifiersUnion) GetValue() *string {
-	if vt := u.OfEinBrandIdentifier; vt != nil {
+	if vt := u.OfEin; vt != nil {
 		return (*string)(&vt.Value)
-	} else if vt := u.OfStockSymbolBrandIdentifier; vt != nil {
+	} else if vt := u.OfStockSymbol; vt != nil {
 		return (*string)(&vt.Value)
 	}
 	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[RcBrandNewParamsIdentifiersUnion](
+		"identifier_type",
+		apijson.Discriminator[EinBrandIdentifierParam]("EIN"),
+		apijson.Discriminator[StockSymbolBrandIdentifierParam]("STOCK_SYMBOL"),
+	)
 }
 
 type RcBrandUpdateParams struct {
@@ -621,32 +660,32 @@ func (r *RcBrandUpdateParamsIdentifiers) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type RcBrandUpdateParamsIdentifiersUnion struct {
-	OfEinBrandIdentifier         *EinBrandIdentifierParam         `json:",omitzero,inline"`
-	OfStockSymbolBrandIdentifier *StockSymbolBrandIdentifierParam `json:",omitzero,inline"`
+	OfEin         *EinBrandIdentifierParam         `json:",omitzero,inline"`
+	OfStockSymbol *StockSymbolBrandIdentifierParam `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u RcBrandUpdateParamsIdentifiersUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfEinBrandIdentifier, u.OfStockSymbolBrandIdentifier)
+	return param.MarshalUnion(u, u.OfEin, u.OfStockSymbol)
 }
 func (u *RcBrandUpdateParamsIdentifiersUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *RcBrandUpdateParamsIdentifiersUnion) asAny() any {
-	if !param.IsOmitted(u.OfEinBrandIdentifier) {
-		return u.OfEinBrandIdentifier
-	} else if !param.IsOmitted(u.OfStockSymbolBrandIdentifier) {
-		return u.OfStockSymbolBrandIdentifier
+	if !param.IsOmitted(u.OfEin) {
+		return u.OfEin
+	} else if !param.IsOmitted(u.OfStockSymbol) {
+		return u.OfStockSymbol
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u RcBrandUpdateParamsIdentifiersUnion) GetIdentifierType() *string {
-	if vt := u.OfEinBrandIdentifier; vt != nil {
+	if vt := u.OfEin; vt != nil {
 		return (*string)(&vt.IdentifierType)
-	} else if vt := u.OfStockSymbolBrandIdentifier; vt != nil {
+	} else if vt := u.OfStockSymbol; vt != nil {
 		return (*string)(&vt.IdentifierType)
 	}
 	return nil
@@ -654,10 +693,18 @@ func (u RcBrandUpdateParamsIdentifiersUnion) GetIdentifierType() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u RcBrandUpdateParamsIdentifiersUnion) GetValue() *string {
-	if vt := u.OfEinBrandIdentifier; vt != nil {
+	if vt := u.OfEin; vt != nil {
 		return (*string)(&vt.Value)
-	} else if vt := u.OfStockSymbolBrandIdentifier; vt != nil {
+	} else if vt := u.OfStockSymbol; vt != nil {
 		return (*string)(&vt.Value)
 	}
 	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[RcBrandUpdateParamsIdentifiersUnion](
+		"identifier_type",
+		apijson.Discriminator[EinBrandIdentifierParam]("EIN"),
+		apijson.Discriminator[StockSymbolBrandIdentifierParam]("STOCK_SYMBOL"),
+	)
 }

@@ -61,7 +61,8 @@ func (r *Messaging10dlcService) GetEnum(ctx context.Context, endpoint Messaging1
 }
 
 // Messaging10dlcGetEnumResponseUnion contains all possible properties and values
-// from [[]string], [[]map[string]any], [map[string]string], [map[string]any],
+// from [[]string], [[]map[string]any], [map[string]string],
+// [map[string]map[string]any],
 // [Messaging10dlcGetEnumResponseEnumPaginatedResponse].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
@@ -112,7 +113,7 @@ func (u Messaging10dlcGetEnumResponseUnion) AsEnumObjectToStringResponse() (v ma
 	return
 }
 
-func (u Messaging10dlcGetEnumResponseUnion) AsEnumObjecToObjecttResponse() (v map[string]any) {
+func (u Messaging10dlcGetEnumResponseUnion) AsEnumObjecToObjecttResponse() (v map[string]map[string]any) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
