@@ -1326,37 +1326,6 @@ const (
 	ResembleVoiceSettingsSampleRateSampleRate48000 ResembleVoiceSettingsSampleRate = "48000"
 )
 
-// The property Type is required.
-type RimeVoiceSettingsParam struct {
-	// Voice settings provider type
-	//
-	// Any of "rime".
-	Type RimeVoiceSettingsType `json:"type,omitzero" api:"required"`
-	// The `identifier` for an integration secret
-	// [/v2/integration_secrets](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
-	// that refers to your Rime API key. Only required when using your own Rime
-	// account.
-	APIKeyRef param.Opt[string] `json:"api_key_ref,omitzero"`
-	// Speech speed multiplier. Default is 1.0.
-	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
-	paramObj
-}
-
-func (r RimeVoiceSettingsParam) MarshalJSON() (data []byte, err error) {
-	type shadow RimeVoiceSettingsParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *RimeVoiceSettingsParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Voice settings provider type
-type RimeVoiceSettingsType string
-
-const (
-	RimeVoiceSettingsTypeRime RimeVoiceSettingsType = "rime"
-)
-
 type RoomParticipant struct {
 	// A unique identifier for the room participant.
 	ID string `json:"id" format:"uuid"`

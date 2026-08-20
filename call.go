@@ -533,7 +533,6 @@ type ConversationRelayEmbeddedConfigVoiceSettingsUnionParam struct {
 	OfAws        *AwsVoiceSettingsParam             `json:",omitzero,inline"`
 	OfMinimax    *shared.MinimaxVoiceSettingsParam  `json:",omitzero,inline"`
 	OfAzure      *shared.AzureVoiceSettingsParam    `json:",omitzero,inline"`
-	OfRime       *shared.RimeVoiceSettingsParam     `json:",omitzero,inline"`
 	OfResemble   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
 	OfInworld    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
 	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
@@ -546,7 +545,6 @@ func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) MarshalJSON() ([
 		u.OfAws,
 		u.OfMinimax,
 		u.OfAzure,
-		u.OfRime,
 		u.OfResemble,
 		u.OfInworld,
 		u.OfXai)
@@ -566,14 +564,20 @@ func (u *ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) asAny() any {
 		return u.OfMinimax
 	} else if !param.IsOmitted(u.OfAzure) {
 		return u.OfAzure
-	} else if !param.IsOmitted(u.OfRime) {
-		return u.OfRime
 	} else if !param.IsOmitted(u.OfResemble) {
 		return u.OfResemble
 	} else if !param.IsOmitted(u.OfInworld) {
 		return u.OfInworld
 	} else if !param.IsOmitted(u.OfXai) {
 		return u.OfXai
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetVoiceSpeed() *float64 {
+	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
+		return &vt.VoiceSpeed.Value
 	}
 	return nil
 }
@@ -694,8 +698,6 @@ func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetType() *strin
 		return (*string)(&vt.Type)
 	} else if vt := u.OfAzure; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfRime; vt != nil {
-		return (*string)(&vt.Type)
 	} else if vt := u.OfResemble; vt != nil {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfInworld; vt != nil {
@@ -712,18 +714,6 @@ func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetAPIKeyRef() *
 		return &vt.APIKeyRef.Value
 	} else if vt := u.OfAzure; vt != nil && vt.APIKeyRef.Valid() {
 		return &vt.APIKeyRef.Value
-	} else if vt := u.OfRime; vt != nil && vt.APIKeyRef.Valid() {
-		return &vt.APIKeyRef.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetVoiceSpeed() *float64 {
-	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
-		return &vt.VoiceSpeed.Value
-	} else if vt := u.OfRime; vt != nil && vt.VoiceSpeed.Valid() {
-		return &vt.VoiceSpeed.Value
 	}
 	return nil
 }
@@ -736,7 +726,6 @@ func init() {
 		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
 		apijson.Discriminator[shared.MinimaxVoiceSettingsParam]("minimax"),
 		apijson.Discriminator[shared.AzureVoiceSettingsParam]("azure"),
-		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
 		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
 		apijson.Discriminator[shared.InworldVoiceSettingsParam]("inworld"),
 		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
@@ -849,7 +838,6 @@ type ConversationRelayLanguageVoiceSettingsUnionParam struct {
 	OfAws        *AwsVoiceSettingsParam             `json:",omitzero,inline"`
 	OfMinimax    *shared.MinimaxVoiceSettingsParam  `json:",omitzero,inline"`
 	OfAzure      *shared.AzureVoiceSettingsParam    `json:",omitzero,inline"`
-	OfRime       *shared.RimeVoiceSettingsParam     `json:",omitzero,inline"`
 	OfResemble   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
 	OfInworld    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
 	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
@@ -862,7 +850,6 @@ func (u ConversationRelayLanguageVoiceSettingsUnionParam) MarshalJSON() ([]byte,
 		u.OfAws,
 		u.OfMinimax,
 		u.OfAzure,
-		u.OfRime,
 		u.OfResemble,
 		u.OfInworld,
 		u.OfXai)
@@ -882,14 +869,20 @@ func (u *ConversationRelayLanguageVoiceSettingsUnionParam) asAny() any {
 		return u.OfMinimax
 	} else if !param.IsOmitted(u.OfAzure) {
 		return u.OfAzure
-	} else if !param.IsOmitted(u.OfRime) {
-		return u.OfRime
 	} else if !param.IsOmitted(u.OfResemble) {
 		return u.OfResemble
 	} else if !param.IsOmitted(u.OfInworld) {
 		return u.OfInworld
 	} else if !param.IsOmitted(u.OfXai) {
 		return u.OfXai
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetVoiceSpeed() *float64 {
+	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
+		return &vt.VoiceSpeed.Value
 	}
 	return nil
 }
@@ -1010,8 +1003,6 @@ func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfAzure; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfRime; vt != nil {
-		return (*string)(&vt.Type)
 	} else if vt := u.OfResemble; vt != nil {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfInworld; vt != nil {
@@ -1028,18 +1019,6 @@ func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetAPIKeyRef() *string
 		return &vt.APIKeyRef.Value
 	} else if vt := u.OfAzure; vt != nil && vt.APIKeyRef.Valid() {
 		return &vt.APIKeyRef.Value
-	} else if vt := u.OfRime; vt != nil && vt.APIKeyRef.Valid() {
-		return &vt.APIKeyRef.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetVoiceSpeed() *float64 {
-	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
-		return &vt.VoiceSpeed.Value
-	} else if vt := u.OfRime; vt != nil && vt.VoiceSpeed.Valid() {
-		return &vt.VoiceSpeed.Value
 	}
 	return nil
 }
@@ -1052,7 +1031,6 @@ func init() {
 		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
 		apijson.Discriminator[shared.MinimaxVoiceSettingsParam]("minimax"),
 		apijson.Discriminator[shared.AzureVoiceSettingsParam]("azure"),
-		apijson.Discriminator[shared.RimeVoiceSettingsParam]("rime"),
 		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
 		apijson.Discriminator[shared.InworldVoiceSettingsParam]("inworld"),
 		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),

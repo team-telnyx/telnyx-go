@@ -46,11 +46,11 @@ func NewTextToSpeechService(opts ...option.RequestOption) (r TextToSpeechService
 // header.
 //
 // The `voice` parameter provides a convenient shorthand to specify provider,
-// model, and voice in a single string (e.g. `telnyx.NaturalHD.Alloy` or
-// `Telnyx.Ultra.<voice_id>`). Alternatively, specify `provider` explicitly along
-// with provider-specific parameters.
+// model, and voice in a single string (e.g. `Telnyx.Ultra.<voice_id>`).
+// Alternatively, specify `provider` explicitly along with provider-specific
+// parameters.
 //
-// Supported providers: `aws`, `telnyx`, `azure`, `elevenlabs`, `minimax`, `rime`,
+// Supported providers: `aws`, `telnyx`, `azure`, `elevenlabs`, `minimax`,
 // `resemble`, `xai`, `humain`.
 //
 // The Telnyx `Ultra` model supports 44 languages with emotion control, speed
@@ -80,8 +80,8 @@ func (r *TextToSpeechService) ListVoices(ctx context.Context, query TextToSpeech
 // `Authorization: Bearer <API_KEY>` header. Send JSON frames with text to
 // synthesize; receive JSON frames containing base64-encoded audio chunks.
 //
-// Supported providers: `aws`, `telnyx`, `azure`, `murfai`, `minimax`, `rime`,
-// `resemble`, `elevenlabs`, `xai`, `humain`.
+// Supported providers: `aws`, `telnyx`, `azure`, `murfai`, `minimax`, `resemble`,
+// `elevenlabs`, `xai`, `humain`.
 //
 // **Connection flow:**
 //
@@ -351,8 +351,8 @@ func (r *StreamServerEventUnionAudio) UnmarshalJSON(data []byte) error {
 // Server-to-client frame containing a base64-encoded audio chunk.
 type StreamServerEventAudioChunk struct {
 	// Base64-encoded audio data. May be `null` for providers that use
-	// `drop_concatenated_audio` mode (Telnyx Natural/NaturalHD, Rime, Minimax, MurfAI,
-	// Resemble) — in that case only streamed chunks carry audio.
+	// `drop_concatenated_audio` mode (Telnyx, Minimax, MurfAI, Resemble) — in that
+	// case only streamed chunks carry audio.
 	Audio string `json:"audio" api:"nullable"`
 	// Whether this audio was served from cache.
 	Cached bool `json:"cached"`
@@ -452,11 +452,11 @@ type TextToSpeechGenerateSpeechParams struct {
 	// The text to convert to speech.
 	Text param.Opt[string] `json:"text,omitzero"`
 	// Voice identifier in the format `provider.model_id.voice_id` or
-	// `provider.voice_id`. Examples: `telnyx.NaturalHD.Alloy`,
-	// `Telnyx.Ultra.<voice_id>`, `Telnyx.Bayan.Ahmed`, `Telnyx.Sukhan.urdu-professor`,
-	// `azure.en-US-AvaMultilingualNeural`, `aws.Polly.Generative.Lucia`. When
-	// provided, `provider`, `model_id`, and `voice_id` are extracted automatically and
-	// take precedence over individual parameters.
+	// `provider.voice_id`. Examples: `Telnyx.Ultra.<voice_id>`, `Telnyx.Bayan.Ahmed`,
+	// `Telnyx.Sukhan.urdu-professor`, `azure.en-US-AvaMultilingualNeural`,
+	// `aws.Polly.Generative.Lucia`. When provided, `provider`, `model_id`, and
+	// `voice_id` are extracted automatically and take precedence over individual
+	// parameters.
 	Voice param.Opt[string] `json:"voice,omitzero"`
 	// AWS Polly provider-specific parameters.
 	Aws TextToSpeechGenerateSpeechParamsAws `json:"aws,omitzero"`
@@ -477,15 +477,12 @@ type TextToSpeechGenerateSpeechParams struct {
 	OutputType TextToSpeechGenerateSpeechParamsOutputType `json:"output_type,omitzero"`
 	// TTS provider. Required unless `voice` is provided.
 	//
-	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "rime", "resemble",
-	// "xai", "humain".
+	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "resemble", "xai",
+	// "humain".
 	Provider TextToSpeechGenerateSpeechParamsProvider `json:"provider,omitzero"`
 	// Resemble AI provider-specific parameters.
 	Resemble TextToSpeechGenerateSpeechParamsResemble `json:"resemble,omitzero"`
-	// Rime provider-specific parameters.
-	Rime TextToSpeechGenerateSpeechParamsRime `json:"rime,omitzero"`
-	// Telnyx provider-specific parameters. Use `voice_speed` and `temperature` for
-	// `Natural` and `NaturalHD` models. For the `Ultra` model, use `voice_speed`,
+	// Telnyx provider-specific parameters. For the `Ultra` model, use `voice_speed`,
 	// `volume`, and `emotion`. `Bayan` and `Sukhan` don't use `temperature`, `volume`,
 	// or `emotion`, and don't support `voice_speed`. `Sukhan`'s `response_format` is
 	// restricted to `mp3` or `pcm` (no `wav`).
@@ -668,7 +665,6 @@ const (
 	TextToSpeechGenerateSpeechParamsProviderAzure      TextToSpeechGenerateSpeechParamsProvider = "azure"
 	TextToSpeechGenerateSpeechParamsProviderElevenlabs TextToSpeechGenerateSpeechParamsProvider = "elevenlabs"
 	TextToSpeechGenerateSpeechParamsProviderMinimax    TextToSpeechGenerateSpeechParamsProvider = "minimax"
-	TextToSpeechGenerateSpeechParamsProviderRime       TextToSpeechGenerateSpeechParamsProvider = "rime"
 	TextToSpeechGenerateSpeechParamsProviderResemble   TextToSpeechGenerateSpeechParamsProvider = "resemble"
 	TextToSpeechGenerateSpeechParamsProviderXai        TextToSpeechGenerateSpeechParamsProvider = "xai"
 	TextToSpeechGenerateSpeechParamsProviderHumain     TextToSpeechGenerateSpeechParamsProvider = "humain"
@@ -695,27 +691,7 @@ func (r *TextToSpeechGenerateSpeechParamsResemble) UnmarshalJSON(data []byte) er
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Rime provider-specific parameters.
-type TextToSpeechGenerateSpeechParamsRime struct {
-	// Audio output format.
-	ResponseFormat param.Opt[string] `json:"response_format,omitzero"`
-	// Audio sampling rate in Hz.
-	SamplingRate param.Opt[int64] `json:"sampling_rate,omitzero"`
-	// Voice speed multiplier.
-	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
-	paramObj
-}
-
-func (r TextToSpeechGenerateSpeechParamsRime) MarshalJSON() (data []byte, err error) {
-	type shadow TextToSpeechGenerateSpeechParamsRime
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TextToSpeechGenerateSpeechParamsRime) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Telnyx provider-specific parameters. Use `voice_speed` and `temperature` for
-// `Natural` and `NaturalHD` models. For the `Ultra` model, use `voice_speed`,
+// Telnyx provider-specific parameters. For the `Ultra` model, use `voice_speed`,
 // `volume`, and `emotion`. `Bayan` and `Sukhan` don't use `temperature`, `volume`,
 // or `emotion`, and don't support `voice_speed`. `Sukhan`'s `response_format` is
 // restricted to `mp3` or `pcm` (no `wav`).
@@ -724,8 +700,6 @@ type TextToSpeechGenerateSpeechParamsTelnyx struct {
 	ResponseFormat param.Opt[string] `json:"response_format,omitzero"`
 	// Audio sampling rate in Hz.
 	SamplingRate param.Opt[int64] `json:"sampling_rate,omitzero"`
-	// Sampling temperature. Applies to `Natural` and `NaturalHD` models only.
-	Temperature param.Opt[float64] `json:"temperature,omitzero"`
 	// Voice speed multiplier. Applies to all models except `Bayan` and `Sukhan`, which
 	// don't support it. Range: 0.5 to 2.0.
 	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
@@ -807,8 +781,8 @@ type TextToSpeechListVoicesParams struct {
 	APIKey param.Opt[string] `query:"api_key,omitzero" json:"-"`
 	// Filter voices by provider. If omitted, voices from all providers are returned.
 	//
-	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "rime", "resemble",
-	// "xai", "humain".
+	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "resemble", "xai",
+	// "humain".
 	Provider TextToSpeechListVoicesParamsProvider `query:"provider,omitzero" json:"-"`
 	paramObj
 }
@@ -831,7 +805,6 @@ const (
 	TextToSpeechListVoicesParamsProviderAzure      TextToSpeechListVoicesParamsProvider = "azure"
 	TextToSpeechListVoicesParamsProviderElevenlabs TextToSpeechListVoicesParamsProvider = "elevenlabs"
 	TextToSpeechListVoicesParamsProviderMinimax    TextToSpeechListVoicesParamsProvider = "minimax"
-	TextToSpeechListVoicesParamsProviderRime       TextToSpeechListVoicesParamsProvider = "rime"
 	TextToSpeechListVoicesParamsProviderResemble   TextToSpeechListVoicesParamsProvider = "resemble"
 	TextToSpeechListVoicesParamsProviderXai        TextToSpeechListVoicesParamsProvider = "xai"
 	TextToSpeechListVoicesParamsProviderHumain     TextToSpeechListVoicesParamsProvider = "humain"
@@ -840,32 +813,31 @@ const (
 type TextToSpeechGetSpeechParams struct {
 	// When `true`, bypass the audio cache and generate fresh audio.
 	DisableCache param.Opt[bool] `query:"disable_cache,omitzero" json:"-"`
-	// Model identifier for the chosen provider. Examples: `Natural`, `NaturalHD`,
-	// `Ultra` (Telnyx); `Polly.Generative` (AWS).
+	// Model identifier for the chosen provider. Examples: `Ultra`, `KokoroTTS`
+	// (Telnyx); `Polly.Generative` (AWS).
 	ModelID param.Opt[string] `query:"model_id,omitzero" json:"-"`
 	// Client-provided socket identifier for tracking. If not provided, one is
 	// generated server-side.
 	SocketID param.Opt[string] `query:"socket_id,omitzero" json:"-"`
 	// Voice identifier in the format `provider.model_id.voice_id` or
-	// `provider.voice_id` (e.g. `telnyx.NaturalHD.Telnyx_Alloy`,
-	// `Telnyx.Ultra.<voice_id>`, `Telnyx.Bayan.Ahmed`, `Telnyx.Sukhan.urdu-professor`,
-	// or `azure.en-US-AvaMultilingualNeural`). When provided, the `provider`,
-	// `model_id`, and `voice_id` are extracted automatically. Takes precedence over
-	// individual `provider`/`model_id`/`voice_id` parameters.
+	// `provider.voice_id` (e.g. `Telnyx.Ultra.<voice_id>`, `Telnyx.Bayan.Ahmed`,
+	// `Telnyx.Sukhan.urdu-professor`, or `azure.en-US-AvaMultilingualNeural`). When
+	// provided, the `provider`, `model_id`, and `voice_id` are extracted
+	// automatically. Takes precedence over individual `provider`/`model_id`/`voice_id`
+	// parameters.
 	Voice param.Opt[string] `query:"voice,omitzero" json:"-"`
 	// Voice identifier for the chosen provider.
 	VoiceID param.Opt[string] `query:"voice_id,omitzero" json:"-"`
-	// Audio output format override. Supported for Telnyx models. `pcm` and `wav` are
-	// available for `Natural`/`NaturalHD` models. The `Ultra` model outputs PCM at
-	// 24kHz s16le or MP3 at 128kbps 24kHz.
+	// Audio output format override. Supported for Telnyx models. The `Ultra` model
+	// outputs PCM at 24kHz s16le or MP3 at 128kbps 24kHz.
 	//
 	// Any of "pcm", "wav", "mp3".
 	AudioFormat TextToSpeechGetSpeechParamsAudioFormat `query:"audio_format,omitzero" json:"-"`
 	// TTS provider. Defaults to `telnyx` if not specified. Ignored when `voice` is
 	// provided.
 	//
-	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "murfai", "rime",
-	// "resemble", "xai", "humain".
+	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "murfai", "resemble",
+	// "xai", "humain".
 	Provider TextToSpeechGetSpeechParamsProvider `query:"provider,omitzero" json:"-"`
 	paramObj
 }
@@ -879,9 +851,8 @@ func (r TextToSpeechGetSpeechParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Audio output format override. Supported for Telnyx models. `pcm` and `wav` are
-// available for `Natural`/`NaturalHD` models. The `Ultra` model outputs PCM at
-// 24kHz s16le or MP3 at 128kbps 24kHz.
+// Audio output format override. Supported for Telnyx models. The `Ultra` model
+// outputs PCM at 24kHz s16le or MP3 at 128kbps 24kHz.
 type TextToSpeechGetSpeechParamsAudioFormat string
 
 const (
@@ -901,7 +872,6 @@ const (
 	TextToSpeechGetSpeechParamsProviderElevenlabs TextToSpeechGetSpeechParamsProvider = "elevenlabs"
 	TextToSpeechGetSpeechParamsProviderMinimax    TextToSpeechGetSpeechParamsProvider = "minimax"
 	TextToSpeechGetSpeechParamsProviderMurfai     TextToSpeechGetSpeechParamsProvider = "murfai"
-	TextToSpeechGetSpeechParamsProviderRime       TextToSpeechGetSpeechParamsProvider = "rime"
 	TextToSpeechGetSpeechParamsProviderResemble   TextToSpeechGetSpeechParamsProvider = "resemble"
 	TextToSpeechGetSpeechParamsProviderXai        TextToSpeechGetSpeechParamsProvider = "xai"
 	TextToSpeechGetSpeechParamsProviderHumain     TextToSpeechGetSpeechParamsProvider = "humain"
