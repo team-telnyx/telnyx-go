@@ -97,7 +97,7 @@ func (r *SubNumberOrderService) UpdateRequirementGroup(ctx context.Context, id s
 	return res, err
 }
 
-type SubNumberOrder struct {
+type NumbersSubNumberOrder struct {
 	ID          string `json:"id" format:"uuid"`
 	CountryCode string `json:"country_code"`
 	// An ISO 8901 datetime string denoting when the number order was created.
@@ -108,7 +108,11 @@ type SubNumberOrder struct {
 	IsBlockSubNumberOrder bool   `json:"is_block_sub_number_order"`
 	OrderRequestID        string `json:"order_request_id" format:"uuid"`
 	// Any of "local", "toll_free", "mobile", "national", "shared_cost", "landline".
-	PhoneNumberType SubNumberOrderPhoneNumberType `json:"phone_number_type"`
+	PhoneNumberType NumbersSubNumberOrderPhoneNumberType `json:"phone_number_type"`
+	// The first 50 phone numbers in the sub number order, including their per-number
+	// regulatory requirement statuses. Only present when
+	// filter[include_phone_numbers]=true is used.
+	PhoneNumbers []NumbersSubNumberOrderPhoneNumber `json:"phone_numbers"`
 	// The count of phone numbers in the number order.
 	PhoneNumbersCount      int64                                 `json:"phone_numbers_count"`
 	RecordType             string                                `json:"record_type"`
@@ -118,7 +122,7 @@ type SubNumberOrder struct {
 	// The status of the order.
 	//
 	// Any of "pending", "success", "failure".
-	Status SubNumberOrderStatus `json:"status"`
+	Status NumbersSubNumberOrderStatus `json:"status"`
 	// An ISO 8901 datetime string for when the number order was updated.
 	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
 	UserID    string    `json:"user_id" format:"uuid"`
@@ -131,6 +135,7 @@ type SubNumberOrder struct {
 		IsBlockSubNumberOrder  respjson.Field
 		OrderRequestID         respjson.Field
 		PhoneNumberType        respjson.Field
+		PhoneNumbers           respjson.Field
 		PhoneNumbersCount      respjson.Field
 		RecordType             respjson.Field
 		RegulatoryRequirements respjson.Field
@@ -144,29 +149,94 @@ type SubNumberOrder struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r SubNumberOrder) RawJSON() string { return r.JSON.raw }
-func (r *SubNumberOrder) UnmarshalJSON(data []byte) error {
+func (r NumbersSubNumberOrder) RawJSON() string { return r.JSON.raw }
+func (r *NumbersSubNumberOrder) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type SubNumberOrderPhoneNumberType string
+type NumbersSubNumberOrderPhoneNumberType string
 
 const (
-	SubNumberOrderPhoneNumberTypeLocal      SubNumberOrderPhoneNumberType = "local"
-	SubNumberOrderPhoneNumberTypeTollFree   SubNumberOrderPhoneNumberType = "toll_free"
-	SubNumberOrderPhoneNumberTypeMobile     SubNumberOrderPhoneNumberType = "mobile"
-	SubNumberOrderPhoneNumberTypeNational   SubNumberOrderPhoneNumberType = "national"
-	SubNumberOrderPhoneNumberTypeSharedCost SubNumberOrderPhoneNumberType = "shared_cost"
-	SubNumberOrderPhoneNumberTypeLandline   SubNumberOrderPhoneNumberType = "landline"
+	NumbersSubNumberOrderPhoneNumberTypeLocal      NumbersSubNumberOrderPhoneNumberType = "local"
+	NumbersSubNumberOrderPhoneNumberTypeTollFree   NumbersSubNumberOrderPhoneNumberType = "toll_free"
+	NumbersSubNumberOrderPhoneNumberTypeMobile     NumbersSubNumberOrderPhoneNumberType = "mobile"
+	NumbersSubNumberOrderPhoneNumberTypeNational   NumbersSubNumberOrderPhoneNumberType = "national"
+	NumbersSubNumberOrderPhoneNumberTypeSharedCost NumbersSubNumberOrderPhoneNumberType = "shared_cost"
+	NumbersSubNumberOrderPhoneNumberTypeLandline   NumbersSubNumberOrderPhoneNumberType = "landline"
 )
 
+type NumbersSubNumberOrderPhoneNumber struct {
+	ID                     string                                                   `json:"id" format:"uuid"`
+	BundleID               string                                                   `json:"bundle_id" api:"nullable" format:"uuid"`
+	CountryCode            string                                                   `json:"country_code"`
+	PhoneNumber            string                                                   `json:"phone_number"`
+	PhoneNumberType        string                                                   `json:"phone_number_type"`
+	RecordType             string                                                   `json:"record_type"`
+	RegulatoryRequirements []NumbersSubNumberOrderPhoneNumbersRegulatoryRequirement `json:"regulatory_requirements"`
+	RequirementsMet        bool                                                     `json:"requirements_met"`
+	RequirementsStatus     string                                                   `json:"requirements_status"`
+	Status                 string                                                   `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                     respjson.Field
+		BundleID               respjson.Field
+		CountryCode            respjson.Field
+		PhoneNumber            respjson.Field
+		PhoneNumberType        respjson.Field
+		RecordType             respjson.Field
+		RegulatoryRequirements respjson.Field
+		RequirementsMet        respjson.Field
+		RequirementsStatus     respjson.Field
+		Status                 respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumbersSubNumberOrderPhoneNumber) RawJSON() string { return r.JSON.raw }
+func (r *NumbersSubNumberOrderPhoneNumber) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NumbersSubNumberOrderPhoneNumbersRegulatoryRequirement struct {
+	// Any of "textual", "datetime", "address", "document".
+	FieldType string `json:"field_type"`
+	// The value of the requirement, this could be an id to a resource or a string
+	// value.
+	FieldValue string `json:"field_value"`
+	RecordType string `json:"record_type"`
+	// Unique id for a requirement.
+	RequirementID string `json:"requirement_id" format:"uuid"`
+	// The status of the regulatory requirement for this phone number.
+	//
+	// Any of "approved", "declined", "awaiting-value", "pending-approval".
+	Status string `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FieldType     respjson.Field
+		FieldValue    respjson.Field
+		RecordType    respjson.Field
+		RequirementID respjson.Field
+		Status        respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumbersSubNumberOrderPhoneNumbersRegulatoryRequirement) RawJSON() string { return r.JSON.raw }
+func (r *NumbersSubNumberOrderPhoneNumbersRegulatoryRequirement) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The status of the order.
-type SubNumberOrderStatus string
+type NumbersSubNumberOrderStatus string
 
 const (
-	SubNumberOrderStatusPending SubNumberOrderStatus = "pending"
-	SubNumberOrderStatusSuccess SubNumberOrderStatus = "success"
-	SubNumberOrderStatusFailure SubNumberOrderStatus = "failure"
+	NumbersSubNumberOrderStatusPending NumbersSubNumberOrderStatus = "pending"
+	NumbersSubNumberOrderStatusSuccess NumbersSubNumberOrderStatus = "success"
+	NumbersSubNumberOrderStatusFailure NumbersSubNumberOrderStatus = "failure"
 )
 
 type SubNumberOrderRegulatoryRequirement struct {
@@ -201,7 +271,7 @@ const (
 )
 
 type SubNumberOrderGetResponse struct {
-	Data SubNumberOrder `json:"data"`
+	Data NumbersSubNumberOrder `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -217,7 +287,7 @@ func (r *SubNumberOrderGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type SubNumberOrderUpdateResponse struct {
-	Data SubNumberOrder `json:"data"`
+	Data NumbersSubNumberOrder `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -233,8 +303,8 @@ func (r *SubNumberOrderUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type SubNumberOrderListResponse struct {
-	Data []SubNumberOrder `json:"data"`
-	Meta PaginationMeta   `json:"meta"`
+	Data []NumbersSubNumberOrder `json:"data"`
+	Meta PaginationMeta          `json:"meta"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -251,7 +321,7 @@ func (r *SubNumberOrderListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type SubNumberOrderCancelResponse struct {
-	Data SubNumberOrder `json:"data"`
+	Data NumbersSubNumberOrder `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -455,7 +525,7 @@ func (r *SubNumberOrderUpdateParams) UnmarshalJSON(data []byte) error {
 type SubNumberOrderListParams struct {
 	// Consolidated filter parameter (deepObject style). Originally: filter[status],
 	// filter[order_request_id], filter[country_code], filter[phone_number_type],
-	// filter[phone_numbers_count]
+	// filter[phone_numbers_count], filter[include_phone_numbers]
 	Filter SubNumberOrderListParamsFilter `query:"filter,omitzero" json:"-"`
 	paramObj
 }
@@ -471,10 +541,13 @@ func (r SubNumberOrderListParams) URLQuery() (v url.Values, err error) {
 
 // Consolidated filter parameter (deepObject style). Originally: filter[status],
 // filter[order_request_id], filter[country_code], filter[phone_number_type],
-// filter[phone_numbers_count]
+// filter[phone_numbers_count], filter[include_phone_numbers]
 type SubNumberOrderListParamsFilter struct {
 	// ISO alpha-2 country code.
 	CountryCode param.Opt[string] `query:"country_code,omitzero" json:"-"`
+	// Include the first 50 phone number objects in the results, including their
+	// per-number regulatory requirement statuses
+	IncludePhoneNumbers param.Opt[bool] `query:"include_phone_numbers,omitzero" json:"-"`
 	// ID of the number order the sub number order belongs to
 	OrderRequestID param.Opt[string] `query:"order_request_id,omitzero" format:"uuid" json:"-"`
 	// Phone Number Type
