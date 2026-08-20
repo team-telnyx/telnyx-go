@@ -230,6 +230,32 @@ func (r *MessageEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type SuppressedRecipient struct {
+	// Whether an authorized send may override this suppression.
+	OverrideAllowed bool `json:"override_allowed" api:"required"`
+	// Suppression reason returned by the recipient suppression service.
+	Reason string `json:"reason" api:"required"`
+	// Scope at which the suppression applies.
+	Scope string `json:"scope" api:"required"`
+	// Suppressed recipient email address.
+	To string `json:"to" api:"required" format:"email"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		OverrideAllowed respjson.Field
+		Reason          respjson.Field
+		Scope           respjson.Field
+		To              respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SuppressedRecipient) RawJSON() string { return r.JSON.raw }
+func (r *SuppressedRecipient) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Per-send open and click tracking overrides. Omitted properties inherit the
 // sender domain's tracking settings.
 type TrackingSettingsParam struct {

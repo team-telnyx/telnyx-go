@@ -2186,6 +2186,63 @@ const (
 	TranscriptionEngineParakeetConfigTranscriptionModelNvidiaParakeetV3 TranscriptionEngineParakeetConfigTranscriptionModel = "nvidia/parakeet-v3"
 )
 
+type TranscriptionEngineReson8ConfigParam struct {
+	// The language of the audio to be transcribed. `auto` (the default, also applied
+	// when `language` is omitted) enables automatic language detection.
+	//
+	// Any of "auto", "nl", "en", "fr", "fy", "de", "it", "pl", "pt", "es", "sv".
+	Language TranscriptionEngineReson8ConfigLanguage `json:"language,omitzero"`
+	// Engine identifier for Reson8 transcription service
+	//
+	// Any of "Reson8".
+	TranscriptionEngine TranscriptionEngineReson8ConfigTranscriptionEngine `json:"transcription_engine,omitzero"`
+	// The model to use for transcription.
+	//
+	// Any of "reson8/turns".
+	TranscriptionModel TranscriptionEngineReson8ConfigTranscriptionModel `json:"transcription_model,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionEngineReson8ConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionEngineReson8ConfigParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionEngineReson8ConfigParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The language of the audio to be transcribed. `auto` (the default, also applied
+// when `language` is omitted) enables automatic language detection.
+type TranscriptionEngineReson8ConfigLanguage string
+
+const (
+	TranscriptionEngineReson8ConfigLanguageAuto TranscriptionEngineReson8ConfigLanguage = "auto"
+	TranscriptionEngineReson8ConfigLanguageNl   TranscriptionEngineReson8ConfigLanguage = "nl"
+	TranscriptionEngineReson8ConfigLanguageEn   TranscriptionEngineReson8ConfigLanguage = "en"
+	TranscriptionEngineReson8ConfigLanguageFr   TranscriptionEngineReson8ConfigLanguage = "fr"
+	TranscriptionEngineReson8ConfigLanguageFy   TranscriptionEngineReson8ConfigLanguage = "fy"
+	TranscriptionEngineReson8ConfigLanguageDe   TranscriptionEngineReson8ConfigLanguage = "de"
+	TranscriptionEngineReson8ConfigLanguageIt   TranscriptionEngineReson8ConfigLanguage = "it"
+	TranscriptionEngineReson8ConfigLanguagePl   TranscriptionEngineReson8ConfigLanguage = "pl"
+	TranscriptionEngineReson8ConfigLanguagePt   TranscriptionEngineReson8ConfigLanguage = "pt"
+	TranscriptionEngineReson8ConfigLanguageEs   TranscriptionEngineReson8ConfigLanguage = "es"
+	TranscriptionEngineReson8ConfigLanguageSv   TranscriptionEngineReson8ConfigLanguage = "sv"
+)
+
+// Engine identifier for Reson8 transcription service
+type TranscriptionEngineReson8ConfigTranscriptionEngine string
+
+const (
+	TranscriptionEngineReson8ConfigTranscriptionEngineReson8 TranscriptionEngineReson8ConfigTranscriptionEngine = "Reson8"
+)
+
+// The model to use for transcription.
+type TranscriptionEngineReson8ConfigTranscriptionModel string
+
+const (
+	TranscriptionEngineReson8ConfigTranscriptionModelReson8Turns TranscriptionEngineReson8ConfigTranscriptionModel = "reson8/turns"
+)
+
 // The property TranscriptionEngine is required.
 type TranscriptionEngineSonioxConfigParam struct {
 	// Engine identifier for Soniox transcription service
@@ -2470,20 +2527,20 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type TranscriptionStartRequestTranscriptionEngineConfigUnionParam struct {
-	OfGoogle        *TranscriptionEngineGoogleConfigParam                          `json:",omitzero,inline"`
-	OfTelnyx        *TranscriptionEngineTelnyxConfigParam                          `json:",omitzero,inline"`
-	OfAzure         *TranscriptionEngineAzureConfigParam                           `json:",omitzero,inline"`
-	OfXAI           *TranscriptionEngineXaiConfigParam                             `json:",omitzero,inline"`
-	OfAssemblyAI    *TranscriptionEngineAssemblyaiConfigParam                      `json:",omitzero,inline"`
-	OfSpeechmatics  *TranscriptionEngineSpeechmaticsConfigParam                    `json:",omitzero,inline"`
-	OfSoniox        *TranscriptionEngineSonioxConfigParam                          `json:",omitzero,inline"`
-	OfParakeet      *TranscriptionEngineParakeetConfigParam                        `json:",omitzero,inline"`
-	OfHumain        *TranscriptionEngineHumainConfigParam                          `json:",omitzero,inline"`
-	OfReson8        *TranscriptionStartRequestTranscriptionEngineConfigReson8Param `json:",omitzero,inline"`
-	OfA             *TranscriptionEngineAConfigParam                               `json:",omitzero,inline"`
-	OfB             *TranscriptionEngineBConfigParam                               `json:",omitzero,inline"`
-	OfDeepgramNova2 *DeepgramNova2ConfigParam                                      `json:",omitzero,inline"`
-	OfDeepgramNova3 *DeepgramNova3ConfigParam                                      `json:",omitzero,inline"`
+	OfGoogle        *TranscriptionEngineGoogleConfigParam       `json:",omitzero,inline"`
+	OfTelnyx        *TranscriptionEngineTelnyxConfigParam       `json:",omitzero,inline"`
+	OfAzure         *TranscriptionEngineAzureConfigParam        `json:",omitzero,inline"`
+	OfXAI           *TranscriptionEngineXaiConfigParam          `json:",omitzero,inline"`
+	OfAssemblyAI    *TranscriptionEngineAssemblyaiConfigParam   `json:",omitzero,inline"`
+	OfSpeechmatics  *TranscriptionEngineSpeechmaticsConfigParam `json:",omitzero,inline"`
+	OfSoniox        *TranscriptionEngineSonioxConfigParam       `json:",omitzero,inline"`
+	OfParakeet      *TranscriptionEngineParakeetConfigParam     `json:",omitzero,inline"`
+	OfHumain        *TranscriptionEngineHumainConfigParam       `json:",omitzero,inline"`
+	OfReson8        *TranscriptionEngineReson8ConfigParam       `json:",omitzero,inline"`
+	OfA             *TranscriptionEngineAConfigParam            `json:",omitzero,inline"`
+	OfB             *TranscriptionEngineBConfigParam            `json:",omitzero,inline"`
+	OfDeepgramNova2 *DeepgramNova2ConfigParam                   `json:",omitzero,inline"`
+	OfDeepgramNova3 *DeepgramNova3ConfigParam                   `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -2840,48 +2897,11 @@ func init() {
 		apijson.Discriminator[TranscriptionEngineSonioxConfigParam]("Soniox"),
 		apijson.Discriminator[TranscriptionEngineParakeetConfigParam]("Parakeet"),
 		apijson.Discriminator[TranscriptionEngineHumainConfigParam]("Humain"),
-		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigReson8Param]("Reson8"),
+		apijson.Discriminator[TranscriptionEngineReson8ConfigParam]("Reson8"),
 		apijson.Discriminator[TranscriptionEngineAConfigParam]("A"),
 		apijson.Discriminator[TranscriptionEngineBConfigParam]("B"),
 		apijson.Discriminator[DeepgramNova2ConfigParam]("deepgram/nova-2"),
 		apijson.Discriminator[DeepgramNova3ConfigParam]("deepgram/nova-3"),
-	)
-}
-
-type TranscriptionStartRequestTranscriptionEngineConfigReson8Param struct {
-	// The language of the audio to be transcribed. `auto` (the default, also applied
-	// when `language` is omitted) enables automatic language detection.
-	//
-	// Any of "auto", "nl", "en", "fr", "fy", "de", "it", "pl", "pt", "es", "sv".
-	Language string `json:"language,omitzero"`
-	// Engine identifier for Reson8 transcription service
-	//
-	// Any of "Reson8".
-	TranscriptionEngine string `json:"transcription_engine,omitzero"`
-	// The model to use for transcription.
-	//
-	// Any of "reson8/turns".
-	TranscriptionModel string `json:"transcription_model,omitzero"`
-	paramObj
-}
-
-func (r TranscriptionStartRequestTranscriptionEngineConfigReson8Param) MarshalJSON() (data []byte, err error) {
-	type shadow TranscriptionStartRequestTranscriptionEngineConfigReson8Param
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscriptionStartRequestTranscriptionEngineConfigReson8Param) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigReson8Param](
-		"language", "auto", "nl", "en", "fr", "fy", "de", "it", "pl", "pt", "es", "sv",
-	)
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigReson8Param](
-		"transcription_engine", "Reson8",
-	)
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigReson8Param](
-		"transcription_model", "reson8/turns",
 	)
 }
 

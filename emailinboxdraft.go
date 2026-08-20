@@ -490,7 +490,7 @@ type EmailMessageResponse struct {
 	Data EmailMessage `json:"data" api:"required"`
 	// Recipients removed by suppression checks when at least one recipient remains and
 	// the message is accepted.
-	Suppressed []EmailMessageResponseSuppressed `json:"suppressed"`
+	Suppressed []SuppressedRecipient `json:"suppressed"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -503,32 +503,6 @@ type EmailMessageResponse struct {
 // Returns the unmodified JSON received from the API
 func (r EmailMessageResponse) RawJSON() string { return r.JSON.raw }
 func (r *EmailMessageResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EmailMessageResponseSuppressed struct {
-	// Whether an authorized send may override this suppression.
-	OverrideAllowed bool `json:"override_allowed" api:"required"`
-	// Suppression reason returned by the recipient suppression service.
-	Reason string `json:"reason" api:"required"`
-	// Scope at which the suppression applies.
-	Scope string `json:"scope" api:"required"`
-	// Suppressed recipient email address.
-	To string `json:"to" api:"required" format:"email"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		OverrideAllowed respjson.Field
-		Reason          respjson.Field
-		Scope           respjson.Field
-		To              respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailMessageResponseSuppressed) RawJSON() string { return r.JSON.raw }
-func (r *EmailMessageResponseSuppressed) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

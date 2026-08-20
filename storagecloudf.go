@@ -120,102 +120,9 @@ func (r *StorageCloudfService) Delete(ctx context.Context, id string, opts ...op
 	return res, err
 }
 
-type CloudfsFilesystemDetailResponseWrapper struct {
-	// A CloudFS filesystem as returned by get, update, and delete. `meta_url` omits
-	// the credential and there is no `meta_token` field — the token is only returned
-	// by create and rotate-meta-token.
-	Data CloudfsFilesystemDetailResponseWrapperData `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CloudfsFilesystemDetailResponseWrapper) RawJSON() string { return r.JSON.raw }
-func (r *CloudfsFilesystemDetailResponseWrapper) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A CloudFS filesystem as returned by get, update, and delete. `meta_url` omits
-// the credential and there is no `meta_token` field — the token is only returned
-// by create and rotate-meta-token.
-type CloudfsFilesystemDetailResponseWrapperData struct {
-	ID        string    `json:"id" format:"uuid"`
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Explanation of the most recent failed lifecycle action. Present only when the
-	// filesystem is in a `failed` state.
-	Error string `json:"error"`
-	// PostgreSQL connection URL for the filesystem's metadata database, without the
-	// credential. Combine it with your stored metadata token, or issue a new token
-	// with rotate-meta-token.
-	MetaURL    string `json:"meta_url"`
-	Name       string `json:"name"`
-	RecordType string `json:"record_type"`
-	Region     string `json:"region"`
-	// Name of the bucket that stores this filesystem's data. Created during
-	// provisioning.
-	S3Bucket string `json:"s3_bucket"`
-	// URL of the Telnyx Cloud Storage endpoint backing this filesystem.
-	S3Endpoint string `json:"s3_endpoint"`
-	// Lifecycle status of the filesystem. `ready` means it is fully provisioned and
-	// usable. `needs_format` means the storage bucket and metadata database were
-	// provisioned but the filesystem has not yet been formatted — run `juicefs format`
-	// with the filesystem's `meta_url` before mounting. `failed` means the last
-	// lifecycle action failed — see the filesystem's `error` message. `deleted`
-	// appears only in the delete response: deleted filesystems are excluded from list
-	// results and return a `404` on retrieval.
-	//
-	// Any of "provisioning", "ready", "needs_format", "deleting", "failed", "deleted".
-	Status    CloudfsFilesystemStatus `json:"status"`
-	UpdatedAt time.Time               `json:"updated_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Error       respjson.Field
-		MetaURL     respjson.Field
-		Name        respjson.Field
-		RecordType  respjson.Field
-		Region      respjson.Field
-		S3Bucket    respjson.Field
-		S3Endpoint  respjson.Field
-		Status      respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CloudfsFilesystemDetailResponseWrapperData) RawJSON() string { return r.JSON.raw }
-func (r *CloudfsFilesystemDetailResponseWrapperData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CloudfsFilesystemResponseWrapper struct {
-	// A CloudFS filesystem, including its metadata credential. This shape is returned
-	// only by create and rotate-meta-token.
-	Data CloudfsFilesystemResponseWrapperData `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CloudfsFilesystemResponseWrapper) RawJSON() string { return r.JSON.raw }
-func (r *CloudfsFilesystemResponseWrapper) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // A CloudFS filesystem, including its metadata credential. This shape is returned
 // only by create and rotate-meta-token.
-type CloudfsFilesystemResponseWrapperData struct {
+type CloudfsFilesystem struct {
 	ID        string    `json:"id" format:"uuid"`
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Metadata access token, in cleartext. Returned only by create and
@@ -266,8 +173,101 @@ type CloudfsFilesystemResponseWrapperData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CloudfsFilesystemResponseWrapperData) RawJSON() string { return r.JSON.raw }
-func (r *CloudfsFilesystemResponseWrapperData) UnmarshalJSON(data []byte) error {
+func (r CloudfsFilesystem) RawJSON() string { return r.JSON.raw }
+func (r *CloudfsFilesystem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A CloudFS filesystem as returned by get, update, and delete. `meta_url` omits
+// the credential and there is no `meta_token` field — the token is only returned
+// by create and rotate-meta-token.
+type CloudfsFilesystemDetail struct {
+	ID        string    `json:"id" format:"uuid"`
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Explanation of the most recent failed lifecycle action. Present only when the
+	// filesystem is in a `failed` state.
+	Error string `json:"error"`
+	// PostgreSQL connection URL for the filesystem's metadata database, without the
+	// credential. Combine it with your stored metadata token, or issue a new token
+	// with rotate-meta-token.
+	MetaURL    string `json:"meta_url"`
+	Name       string `json:"name"`
+	RecordType string `json:"record_type"`
+	Region     string `json:"region"`
+	// Name of the bucket that stores this filesystem's data. Created during
+	// provisioning.
+	S3Bucket string `json:"s3_bucket"`
+	// URL of the Telnyx Cloud Storage endpoint backing this filesystem.
+	S3Endpoint string `json:"s3_endpoint"`
+	// Lifecycle status of the filesystem. `ready` means it is fully provisioned and
+	// usable. `needs_format` means the storage bucket and metadata database were
+	// provisioned but the filesystem has not yet been formatted — run `juicefs format`
+	// with the filesystem's `meta_url` before mounting. `failed` means the last
+	// lifecycle action failed — see the filesystem's `error` message. `deleted`
+	// appears only in the delete response: deleted filesystems are excluded from list
+	// results and return a `404` on retrieval.
+	//
+	// Any of "provisioning", "ready", "needs_format", "deleting", "failed", "deleted".
+	Status    CloudfsFilesystemStatus `json:"status"`
+	UpdatedAt time.Time               `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Error       respjson.Field
+		MetaURL     respjson.Field
+		Name        respjson.Field
+		RecordType  respjson.Field
+		Region      respjson.Field
+		S3Bucket    respjson.Field
+		S3Endpoint  respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CloudfsFilesystemDetail) RawJSON() string { return r.JSON.raw }
+func (r *CloudfsFilesystemDetail) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CloudfsFilesystemDetailResponseWrapper struct {
+	// A CloudFS filesystem as returned by get, update, and delete. `meta_url` omits
+	// the credential and there is no `meta_token` field — the token is only returned
+	// by create and rotate-meta-token.
+	Data CloudfsFilesystemDetail `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CloudfsFilesystemDetailResponseWrapper) RawJSON() string { return r.JSON.raw }
+func (r *CloudfsFilesystemDetailResponseWrapper) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CloudfsFilesystemResponseWrapper struct {
+	// A CloudFS filesystem, including its metadata credential. This shape is returned
+	// only by create and rotate-meta-token.
+	Data CloudfsFilesystem `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CloudfsFilesystemResponseWrapper) RawJSON() string { return r.JSON.raw }
+func (r *CloudfsFilesystemResponseWrapper) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

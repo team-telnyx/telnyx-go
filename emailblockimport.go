@@ -76,35 +76,17 @@ func (r *EmailBlockImportService) Get(ctx context.Context, id string, opts ...op
 	return res, err
 }
 
-type EmailBlockImportResponse struct {
-	// Import job. Schema fields hidden: `account_id`, `csv_content`, `block_ttl_days`.
-	// Nullable fields use the omit-nullable pattern.
-	Data EmailBlockImportResponseData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailBlockImportResponse) RawJSON() string { return r.JSON.raw }
-func (r *EmailBlockImportResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Import job. Schema fields hidden: `account_id`, `csv_content`, `block_ttl_days`.
 // Nullable fields use the omit-nullable pattern.
-type EmailBlockImportResponseData struct {
+type EmailBlockImport struct {
 	ID        string    `json:"id" api:"required" format:"uuid"`
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// View-only.
 	//
 	// Any of "email_block_import".
-	RecordType string `json:"record_type" api:"required"`
+	RecordType EmailBlockImportRecordType `json:"record_type" api:"required"`
 	// Any of "pending", "processing", "completed", "failed".
-	Status string `json:"status" api:"required"`
+	Status EmailBlockImportStatus `json:"status" api:"required"`
 	// Data-row count at upload.
 	Total     int64     `json:"total" api:"required"`
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
@@ -125,7 +107,7 @@ type EmailBlockImportResponseData struct {
 	// Omitted when nil.
 	//
 	// Any of "sendgrid", "mailgun", "ses", "generic".
-	Provider string `json:"provider"`
+	Provider EmailBlockImportProvider `json:"provider"`
 	// Only when `status == completed`.
 	SkippedCount int64 `json:"skipped_count"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -151,8 +133,52 @@ type EmailBlockImportResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r EmailBlockImportResponseData) RawJSON() string { return r.JSON.raw }
-func (r *EmailBlockImportResponseData) UnmarshalJSON(data []byte) error {
+func (r EmailBlockImport) RawJSON() string { return r.JSON.raw }
+func (r *EmailBlockImport) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// View-only.
+type EmailBlockImportRecordType string
+
+const (
+	EmailBlockImportRecordTypeEmailBlockImport EmailBlockImportRecordType = "email_block_import"
+)
+
+type EmailBlockImportStatus string
+
+const (
+	EmailBlockImportStatusPending    EmailBlockImportStatus = "pending"
+	EmailBlockImportStatusProcessing EmailBlockImportStatus = "processing"
+	EmailBlockImportStatusCompleted  EmailBlockImportStatus = "completed"
+	EmailBlockImportStatusFailed     EmailBlockImportStatus = "failed"
+)
+
+// Omitted when nil.
+type EmailBlockImportProvider string
+
+const (
+	EmailBlockImportProviderSendgrid EmailBlockImportProvider = "sendgrid"
+	EmailBlockImportProviderMailgun  EmailBlockImportProvider = "mailgun"
+	EmailBlockImportProviderSes      EmailBlockImportProvider = "ses"
+	EmailBlockImportProviderGeneric  EmailBlockImportProvider = "generic"
+)
+
+type EmailBlockImportResponse struct {
+	// Import job. Schema fields hidden: `account_id`, `csv_content`, `block_ttl_days`.
+	// Nullable fields use the omit-nullable pattern.
+	Data EmailBlockImport `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailBlockImportResponse) RawJSON() string { return r.JSON.raw }
+func (r *EmailBlockImportResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

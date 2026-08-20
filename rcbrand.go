@@ -95,6 +95,63 @@ func (r *RcBrandService) Submit(ctx context.Context, id string, opts ...option.R
 	return res, err
 }
 
+type BrandAddress struct {
+	AdministrativeArea string `json:"administrative_area" api:"required"`
+	City               string `json:"city" api:"required"`
+	// The two-letter ISO 3166-1 country code.
+	CountryCode string `json:"country_code" api:"required"`
+	Line1       string `json:"line_1" api:"required"`
+	PostalCode  string `json:"postal_code" api:"required"`
+	Line2       string `json:"line_2" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AdministrativeArea respjson.Field
+		City               respjson.Field
+		CountryCode        respjson.Field
+		Line1              respjson.Field
+		PostalCode         respjson.Field
+		Line2              respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BrandAddress) RawJSON() string { return r.JSON.raw }
+func (r *BrandAddress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this BrandAddress to a BrandAddressParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// BrandAddressParam.Overrides()
+func (r BrandAddress) ToParam() BrandAddressParam {
+	return param.Override[BrandAddressParam](json.RawMessage(r.RawJSON()))
+}
+
+// The properties AdministrativeArea, City, CountryCode, Line1, PostalCode are
+// required.
+type BrandAddressParam struct {
+	AdministrativeArea string `json:"administrative_area" api:"required"`
+	City               string `json:"city" api:"required"`
+	// The two-letter ISO 3166-1 country code.
+	CountryCode string            `json:"country_code" api:"required"`
+	Line1       string            `json:"line_1" api:"required"`
+	PostalCode  string            `json:"postal_code" api:"required"`
+	Line2       param.Opt[string] `json:"line_2,omitzero"`
+	paramObj
+}
+
+func (r BrandAddressParam) MarshalJSON() (data []byte, err error) {
+	type shadow BrandAddressParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BrandAddressParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type BrandContact struct {
 	// Any of "BRAND", "PRIMARY", "OFFICER", "AGENT", "RESPONSIBLE_PARTY", "BILLING",
 	// "UNKNOWN".
@@ -187,7 +244,7 @@ const (
 )
 
 type BrandResponse struct {
-	Addresses        map[string]BrandResponseAddress          `json:"addresses" api:"required"`
+	Addresses        map[string]BrandAddress                  `json:"addresses" api:"required"`
 	BrandID          string                                   `json:"brand_id" api:"required" format:"uuid"`
 	Capabilities     CapabilitiesResponse                     `json:"capabilities" api:"required"`
 	Contacts         map[string]BrandContact                  `json:"contacts" api:"required"`
@@ -223,33 +280,6 @@ type BrandResponse struct {
 // Returns the unmodified JSON received from the API
 func (r BrandResponse) RawJSON() string { return r.JSON.raw }
 func (r *BrandResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type BrandResponseAddress struct {
-	AdministrativeArea string `json:"administrative_area" api:"required"`
-	City               string `json:"city" api:"required"`
-	// The two-letter ISO 3166-1 country code.
-	CountryCode string `json:"country_code" api:"required"`
-	Line1       string `json:"line_1" api:"required"`
-	PostalCode  string `json:"postal_code" api:"required"`
-	Line2       string `json:"line_2" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AdministrativeArea respjson.Field
-		City               respjson.Field
-		CountryCode        respjson.Field
-		Line1              respjson.Field
-		PostalCode         respjson.Field
-		Line2              respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BrandResponseAddress) RawJSON() string { return r.JSON.raw }
-func (r *BrandResponseAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -389,7 +419,7 @@ func (r *StockSymbolBrandIdentifierParam) UnmarshalJSON(data []byte) error {
 }
 
 type RcBrandNewParams struct {
-	Addresses map[string]RcBrandNewParamsAddresses `json:"addresses,omitzero" api:"required"`
+	Addresses map[string]BrandAddressParam `json:"addresses,omitzero" api:"required"`
 	// Named business contacts. Use the `brand` key for the required BRAND contact.
 	Contacts    RcBrandNewParamsContacts `json:"contacts,omitzero" api:"required"`
 	DisplayName string                   `json:"display_name" api:"required"`
@@ -414,27 +444,6 @@ func (r RcBrandNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *RcBrandNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties AdministrativeArea, City, CountryCode, Line1, PostalCode are
-// required.
-type RcBrandNewParamsAddresses struct {
-	AdministrativeArea string `json:"administrative_area" api:"required"`
-	City               string `json:"city" api:"required"`
-	// The two-letter ISO 3166-1 country code.
-	CountryCode string            `json:"country_code" api:"required"`
-	Line1       string            `json:"line_1" api:"required"`
-	PostalCode  string            `json:"postal_code" api:"required"`
-	Line2       param.Opt[string] `json:"line_2,omitzero"`
-	paramObj
-}
-
-func (r RcBrandNewParamsAddresses) MarshalJSON() (data []byte, err error) {
-	type shadow RcBrandNewParamsAddresses
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *RcBrandNewParamsAddresses) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -533,11 +542,11 @@ func (u RcBrandNewParamsIdentifiersUnion) GetValue() *string {
 }
 
 type RcBrandUpdateParams struct {
-	DisplayName param.Opt[string]                       `json:"display_name,omitzero"`
-	LegalName   param.Opt[string]                       `json:"legal_name,omitzero"`
-	ProfileID   param.Opt[string]                       `json:"profile_id,omitzero"`
-	WebsiteURL  param.Opt[string]                       `json:"website_url,omitzero" format:"uri"`
-	Addresses   map[string]RcBrandUpdateParamsAddresses `json:"addresses,omitzero"`
+	DisplayName param.Opt[string]            `json:"display_name,omitzero"`
+	LegalName   param.Opt[string]            `json:"legal_name,omitzero"`
+	ProfileID   param.Opt[string]            `json:"profile_id,omitzero"`
+	WebsiteURL  param.Opt[string]            `json:"website_url,omitzero" format:"uri"`
+	Addresses   map[string]BrandAddressParam `json:"addresses,omitzero"`
 	// Named business contacts. Use the `brand` key for the required BRAND contact.
 	Contacts RcBrandUpdateParamsContacts `json:"contacts,omitzero"`
 	// Named business identifiers. Use the `ein` key for the required EIN and
@@ -556,27 +565,6 @@ func (r RcBrandUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *RcBrandUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties AdministrativeArea, City, CountryCode, Line1, PostalCode are
-// required.
-type RcBrandUpdateParamsAddresses struct {
-	AdministrativeArea string `json:"administrative_area" api:"required"`
-	City               string `json:"city" api:"required"`
-	// The two-letter ISO 3166-1 country code.
-	CountryCode string            `json:"country_code" api:"required"`
-	Line1       string            `json:"line_1" api:"required"`
-	PostalCode  string            `json:"postal_code" api:"required"`
-	Line2       param.Opt[string] `json:"line_2,omitzero"`
-	paramObj
-}
-
-func (r RcBrandUpdateParamsAddresses) MarshalJSON() (data []byte, err error) {
-	type shadow RcBrandUpdateParamsAddresses
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *RcBrandUpdateParamsAddresses) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

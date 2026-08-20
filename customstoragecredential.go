@@ -16,7 +16,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
 // Call Recordings operations.
@@ -228,7 +227,7 @@ const (
 
 // CustomStorageConfigurationConfigurationUnion contains all possible properties
 // and values from [GcsConfigurationData], [S3ConfigurationData],
-// [CustomStorageConfigurationConfigurationS3Generic], [AzureConfigurationData].
+// [S3GenericConfigurationData], [AzureConfigurationData].
 //
 // Use the [CustomStorageConfigurationConfigurationUnion.AsAny] method to switch on
 // the variant.
@@ -243,7 +242,7 @@ type CustomStorageConfigurationConfigurationUnion struct {
 	AwsAccessKeyID     string `json:"aws_access_key_id"`
 	AwsSecretAccessKey string `json:"aws_secret_access_key"`
 	Region             string `json:"region"`
-	// This field is from variant [CustomStorageConfigurationConfigurationS3Generic].
+	// This field is from variant [S3GenericConfigurationData].
 	Endpoint string `json:"endpoint"`
 	// This field is from variant [AzureConfigurationData].
 	AccountKey string `json:"account_key"`
@@ -270,18 +269,17 @@ type anyCustomStorageConfigurationConfiguration interface {
 	implCustomStorageConfigurationConfigurationUnion()
 }
 
-func (GcsConfigurationData) implCustomStorageConfigurationConfigurationUnion() {}
-func (S3ConfigurationData) implCustomStorageConfigurationConfigurationUnion()  {}
-func (CustomStorageConfigurationConfigurationS3Generic) implCustomStorageConfigurationConfigurationUnion() {
-}
-func (AzureConfigurationData) implCustomStorageConfigurationConfigurationUnion() {}
+func (GcsConfigurationData) implCustomStorageConfigurationConfigurationUnion()       {}
+func (S3ConfigurationData) implCustomStorageConfigurationConfigurationUnion()        {}
+func (S3GenericConfigurationData) implCustomStorageConfigurationConfigurationUnion() {}
+func (AzureConfigurationData) implCustomStorageConfigurationConfigurationUnion()     {}
 
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := CustomStorageConfigurationConfigurationUnion.AsAny().(type) {
 //	case telnyx.GcsConfigurationData:
 //	case telnyx.S3ConfigurationData:
-//	case telnyx.CustomStorageConfigurationConfigurationS3Generic:
+//	case telnyx.S3GenericConfigurationData:
 //	case telnyx.AzureConfigurationData:
 //	default:
 //	  fmt.Errorf("no variant present")
@@ -310,7 +308,7 @@ func (u CustomStorageConfigurationConfigurationUnion) AsS3() (v S3ConfigurationD
 	return
 }
 
-func (u CustomStorageConfigurationConfigurationUnion) AsS3Generic() (v CustomStorageConfigurationConfigurationS3Generic) {
+func (u CustomStorageConfigurationConfigurationUnion) AsS3Generic() (v S3GenericConfigurationData) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -324,42 +322,6 @@ func (u CustomStorageConfigurationConfigurationUnion) AsAzure() (v AzureConfigur
 func (u CustomStorageConfigurationConfigurationUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *CustomStorageConfigurationConfigurationUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CustomStorageConfigurationConfigurationS3Generic struct {
-	// AWS credentials access key id.
-	AwsAccessKeyID string `json:"aws_access_key_id" api:"required"`
-	// AWS secret access key.
-	AwsSecretAccessKey string `json:"aws_secret_access_key" api:"required"`
-	// Storage backend type
-	Backend constant.S3Generic `json:"backend" default:"s3-generic"`
-	// Name of the bucket to be used to store recording files.
-	Bucket string `json:"bucket" api:"required"`
-	// URL of an S3-compatible storage endpoint, used to direct uploads and presigned
-	// download URLs to a non-AWS store (for example MinIO, Cloudflare R2, Wasabi,
-	// Backblaze B2, or Supabase). A bare host (https://s3.example.com) or a
-	// path-prefixed URL (https://xyz.supabase.co/storage/v1/s3) is accepted, and must
-	// use the http or https scheme.
-	Endpoint string `json:"endpoint" api:"required" format:"uri"`
-	// Region where the bucket is located.
-	Region string `json:"region" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AwsAccessKeyID     respjson.Field
-		AwsSecretAccessKey respjson.Field
-		Backend            respjson.Field
-		Bucket             respjson.Field
-		Endpoint           respjson.Field
-		Region             respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CustomStorageConfigurationConfigurationS3Generic) RawJSON() string { return r.JSON.raw }
-func (r *CustomStorageConfigurationConfigurationS3Generic) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -383,10 +345,10 @@ func (r *CustomStorageConfigurationParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CustomStorageConfigurationConfigurationUnionParam struct {
-	OfGcs       *GcsConfigurationDataParam                             `json:",omitzero,inline"`
-	OfS3        *S3ConfigurationDataParam                              `json:",omitzero,inline"`
-	OfS3Generic *CustomStorageConfigurationConfigurationS3GenericParam `json:",omitzero,inline"`
-	OfAzure     *AzureConfigurationDataParam                           `json:",omitzero,inline"`
+	OfGcs       *GcsConfigurationDataParam       `json:",omitzero,inline"`
+	OfS3        *S3ConfigurationDataParam        `json:",omitzero,inline"`
+	OfS3Generic *S3GenericConfigurationDataParam `json:",omitzero,inline"`
+	OfAzure     *AzureConfigurationDataParam     `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -505,41 +467,9 @@ func init() {
 		"backend",
 		apijson.Discriminator[GcsConfigurationDataParam]("gcs"),
 		apijson.Discriminator[S3ConfigurationDataParam]("s3"),
-		apijson.Discriminator[CustomStorageConfigurationConfigurationS3GenericParam]("s3-generic"),
+		apijson.Discriminator[S3GenericConfigurationDataParam]("s3-generic"),
 		apijson.Discriminator[AzureConfigurationDataParam]("azure"),
 	)
-}
-
-// The properties AwsAccessKeyID, AwsSecretAccessKey, Backend, Bucket, Endpoint,
-// Region are required.
-type CustomStorageConfigurationConfigurationS3GenericParam struct {
-	// AWS credentials access key id.
-	AwsAccessKeyID string `json:"aws_access_key_id" api:"required"`
-	// AWS secret access key.
-	AwsSecretAccessKey string `json:"aws_secret_access_key" api:"required"`
-	// Name of the bucket to be used to store recording files.
-	Bucket string `json:"bucket" api:"required"`
-	// URL of an S3-compatible storage endpoint, used to direct uploads and presigned
-	// download URLs to a non-AWS store (for example MinIO, Cloudflare R2, Wasabi,
-	// Backblaze B2, or Supabase). A bare host (https://s3.example.com) or a
-	// path-prefixed URL (https://xyz.supabase.co/storage/v1/s3) is accepted, and must
-	// use the http or https scheme.
-	Endpoint string `json:"endpoint" api:"required" format:"uri"`
-	// Region where the bucket is located.
-	Region string `json:"region" api:"required"`
-	// Storage backend type
-	//
-	// This field can be elided, and will marshal its zero value as "s3-generic".
-	Backend constant.S3Generic `json:"backend" default:"s3-generic"`
-	paramObj
-}
-
-func (r CustomStorageConfigurationConfigurationS3GenericParam) MarshalJSON() (data []byte, err error) {
-	type shadow CustomStorageConfigurationConfigurationS3GenericParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CustomStorageConfigurationConfigurationS3GenericParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type GcsConfigurationData struct {
@@ -676,6 +606,93 @@ func (r S3ConfigurationDataParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *S3ConfigurationDataParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type S3GenericConfigurationData struct {
+	// AWS credentials access key id.
+	AwsAccessKeyID string `json:"aws_access_key_id" api:"required"`
+	// AWS secret access key.
+	AwsSecretAccessKey string `json:"aws_secret_access_key" api:"required"`
+	// Storage backend type
+	//
+	// Any of "s3-generic".
+	Backend S3GenericConfigurationDataBackend `json:"backend" api:"required"`
+	// Name of the bucket to be used to store recording files.
+	Bucket string `json:"bucket" api:"required"`
+	// URL of an S3-compatible storage endpoint, used to direct uploads and presigned
+	// download URLs to a non-AWS store (for example MinIO, Cloudflare R2, Wasabi,
+	// Backblaze B2, or Supabase). A bare host (https://s3.example.com) or a
+	// path-prefixed URL (https://xyz.supabase.co/storage/v1/s3) is accepted, and must
+	// use the http or https scheme.
+	Endpoint string `json:"endpoint" api:"required" format:"uri"`
+	// Region where the bucket is located.
+	Region string `json:"region" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AwsAccessKeyID     respjson.Field
+		AwsSecretAccessKey respjson.Field
+		Backend            respjson.Field
+		Bucket             respjson.Field
+		Endpoint           respjson.Field
+		Region             respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r S3GenericConfigurationData) RawJSON() string { return r.JSON.raw }
+func (r *S3GenericConfigurationData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this S3GenericConfigurationData to a
+// S3GenericConfigurationDataParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// S3GenericConfigurationDataParam.Overrides()
+func (r S3GenericConfigurationData) ToParam() S3GenericConfigurationDataParam {
+	return param.Override[S3GenericConfigurationDataParam](json.RawMessage(r.RawJSON()))
+}
+
+// Storage backend type
+type S3GenericConfigurationDataBackend string
+
+const (
+	S3GenericConfigurationDataBackendS3Generic S3GenericConfigurationDataBackend = "s3-generic"
+)
+
+// The properties AwsAccessKeyID, AwsSecretAccessKey, Backend, Bucket, Endpoint,
+// Region are required.
+type S3GenericConfigurationDataParam struct {
+	// AWS credentials access key id.
+	AwsAccessKeyID string `json:"aws_access_key_id" api:"required"`
+	// AWS secret access key.
+	AwsSecretAccessKey string `json:"aws_secret_access_key" api:"required"`
+	// Storage backend type
+	//
+	// Any of "s3-generic".
+	Backend S3GenericConfigurationDataBackend `json:"backend,omitzero" api:"required"`
+	// Name of the bucket to be used to store recording files.
+	Bucket string `json:"bucket" api:"required"`
+	// URL of an S3-compatible storage endpoint, used to direct uploads and presigned
+	// download URLs to a non-AWS store (for example MinIO, Cloudflare R2, Wasabi,
+	// Backblaze B2, or Supabase). A bare host (https://s3.example.com) or a
+	// path-prefixed URL (https://xyz.supabase.co/storage/v1/s3) is accepted, and must
+	// use the http or https scheme.
+	Endpoint string `json:"endpoint" api:"required" format:"uri"`
+	// Region where the bucket is located.
+	Region string `json:"region" api:"required"`
+	paramObj
+}
+
+func (r S3GenericConfigurationDataParam) MarshalJSON() (data []byte, err error) {
+	type shadow S3GenericConfigurationDataParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *S3GenericConfigurationDataParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
